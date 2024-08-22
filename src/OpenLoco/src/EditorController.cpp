@@ -134,6 +134,10 @@ namespace OpenLoco::EditorController
         // New in OpenLoco
         options.generator = S5::LandGeneratorType::Original;
         options.numTerrainSmoothingPasses = 2;
+        options.numRiverbeds = 3;
+        options.minRiverWidth = 10;
+        options.maxRiverWidth = 20;
+        options.riverbankWidth = 20;
 
         resetScreenAge();
         throw GameException::Interrupt;

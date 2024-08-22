@@ -121,8 +121,12 @@ namespace OpenLoco::S5
         // new fields:
         LandGeneratorType generator;
         uint8_t numTerrainSmoothingPasses;
+        uint8_t numRiverbeds;
+        uint8_t minRiverWidth;
+        uint8_t maxRiverWidth;
+        uint8_t riverbankWidth;
 
-        std::byte pad_41BD[347];
+        std::byte pad_41BD[343];
     };
 #pragma pack(pop)
 

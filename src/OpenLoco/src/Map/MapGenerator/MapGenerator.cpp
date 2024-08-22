@@ -63,6 +63,49 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
+    static void generateRivers(const S5::Options& options, HeightMap& heightMap)
+    {
+        for (auto i = 0; i < options.numRiverbeds; i++)
+        {
+            const auto riverWidth = getGameState().rng.randNext(options.minRiverWidth, options.maxRiverWidth);
+            const auto riverbankWidth = options.riverbankWidth;
+            const auto riverbedHeight = options.minLandHeight;
+
+            // Pivot: generate a random X position
+            auto xStartPos = getGameState().rng.randNext(0.25 * heightMap.width, 0.75 * heightMap.width);
+            for (auto yPos = 0; yPos < heightMap.height; yPos++)
+            {
+                // Western riverbank (high to low)
+                for (auto xOffset = -riverbankWidth; xOffset < 0; xOffset++)
+                {
+                    auto pos = TilePos2(xStartPos + xOffset, yPos);
+                    heightMap[pos] /= riverbankWidth / -xOffset;
+                }
+
+                // Carve out the river
+                for (auto xOffset = 0; xOffset < riverWidth; xOffset++)
+                {
+                    auto pos = TilePos2(xStartPos + xOffset, yPos);
+                    heightMap[pos] = riverbedHeight;
+                }
+
+                // Eastern riverbank (low to high)
+                for (auto xOffset = riverbankWidth; xOffset < 2 * riverbankWidth; xOffset++)
+                {
+                    auto pos = TilePos2(xStartPos + xOffset, yPos);
+                    heightMap[pos] /= xOffset / riverbankWidth;
+                }
+
+                // Let the river meander slightly
+                if (yPos % 4 == 0)
+                {
+                    int8_t offset = getGameState().rng.randNext(0, 10) - 5;
+                    xStartPos += offset;
+                }
+            }
+        }
+    }
+
     // 0x004625D0
     static void generateLand(HeightMap& heightMap)
     {
@@ -949,6 +992,9 @@ namespace OpenLoco::World::MapGenerator
 
             generateHeightMap(options, heightMap);
             updateProgress(25);
+
+            generateRivers(options, heightMap);
+            updateProgress(30);
 
             generateLand(heightMap);
             updateProgress(35);
