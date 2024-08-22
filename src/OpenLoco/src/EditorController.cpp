@@ -134,7 +134,7 @@ namespace OpenLoco::EditorController
         // New in OpenLoco
         options.generator = S5::LandGeneratorType::Original;
         options.numTerrainSmoothingPasses = 2;
-        options.numRiverbeds = 1;
+        options.numRiverbeds = 0;
         options.minRiverWidth = 10;
         options.maxRiverWidth = 20;
         options.riverbankWidth = 5;
