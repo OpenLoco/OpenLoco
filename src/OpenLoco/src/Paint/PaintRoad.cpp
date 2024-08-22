@@ -507,7 +507,6 @@ namespace OpenLoco::Paint
             {
                 continue;
             }
-            // const auto trackExtraBaseImage = ImageId::fromUInt32(_roadExtraImageId);
 
             session.setTrackModId(mod);
 
@@ -521,25 +520,6 @@ namespace OpenLoco::Paint
             regs.ecx = rotation;
             regs.dx = height;
             call(roadPaintFunc, regs);
-            // if (paintStyle == 0 && elTrack.trackId() < Style0::kTrackPaintAdditionParts.size() && elTrack.sequenceIndex() < Style0::kTrackPaintAdditionParts[elTrack.trackId()].size())
-            //{
-            //     auto& parts = Style0::kTrackPaintAdditionParts[elTrack.trackId()];
-            //     auto& tppa = parts[elTrack.sequenceIndex()];
-
-            //    Style0::paintTrackAdditionPP(session, elTrack, rotation, trackExtraBaseImage, tppa);
-            //}
-            // else if (paintStyle == 1 && elTrack.trackId() < Style1::kTrackPaintAdditionParts.size() && elTrack.sequenceIndex() < Style1::kTrackPaintAdditionParts[elTrack.trackId()].size())
-            //{
-            //    auto& parts = Style1::kTrackPaintAdditionParts[elTrack.trackId()];
-            //    auto& tppa = parts[elTrack.sequenceIndex()];
-
-            //    Style1::paintTrackAdditionPP(session, elTrack, rotation, trackExtraBaseImage, tppa);
-            //}
-            // else
-            //{
-            //    assert(false);
-            //    Logging::error("Tried to draw invalid track id or sequence index: TrackId {} SequenceIndex {}", elTrack.trackId(), elTrack.sequenceIndex());
-            //}
         }
     }
 
