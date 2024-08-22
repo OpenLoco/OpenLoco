@@ -26,13 +26,11 @@
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <cstdint>
 #include <random>
 #include <vector>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::S5;
@@ -42,8 +40,6 @@ namespace OpenLoco::World::MapGenerator
 {
     static constexpr auto kCliffTerrainHeightDiff = 4;
     static constexpr auto kMountainTerrainHeight = 26;
-
-    static loco_global<uint8_t*, 0x00F00160> _heightMap;
 
     static fs::path _pngHeightmapPath{};
 
