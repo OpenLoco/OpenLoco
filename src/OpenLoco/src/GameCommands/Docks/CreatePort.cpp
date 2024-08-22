@@ -207,7 +207,7 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            if ((flags & Flags::apply) && !(flags & Flags::ghost))
+            if ((flags & Flags::apply) && !(flags & Flags::ghost) && !(flags & Flags::aiAllocated))
             {
                 World::TileManager::removeAllWallsOnTileBelow(tilePos, (args.pos.z + clearHeight) / World::kSmallZStep);
             }
@@ -319,7 +319,7 @@ namespace OpenLoco::GameCommands
             // Create new tile
             if (flags & Flags::apply)
             {
-                if (!(flags & Flags::ghost))
+                if (!(flags & Flags::ghost) && !(flags & Flags::aiAllocated))
                 {
                     World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
