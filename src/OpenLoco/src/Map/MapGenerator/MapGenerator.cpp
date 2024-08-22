@@ -300,9 +300,9 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x0046A0D8, 0x0046A227
-    static void generateTerrainInRandomAreas([[maybe_unused]] HeightMap& heightMap, uint8_t surfaceStyle, uint16_t randAmount, uint16_t baseAmount)
+    static void generateTerrainInRandomAreas(uint8_t surfaceStyle, uint16_t minTiles, uint16_t maxTiles)
     {
-        auto ecx = getGameState().rng.randNext(63) + 0x50;
+        auto ecx = getGameState().rng.randNext(80, 143);
         for (; ecx > 0; ecx--)
         {
             // TODO: could probably simplify / replace with two randNext(lo, hi) calls
@@ -311,7 +311,7 @@ namespace OpenLoco::World::MapGenerator
             auto yPos = ((randPos >> 16) * kMapRows) >> 16;
 
             auto pos = World::toWorldSpace(TilePos2(xPos, yPos));
-            auto ebx = getGameState().rng.randNext(randAmount - 1) + baseAmount;
+            auto ebx = getGameState().rng.randNext(minTiles, maxTiles - 1);
             for (; ebx > 0; ebx--)
             {
                 if (validCoords(pos))
@@ -343,13 +343,13 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A0D8
     static void generateTerrainInSmallRandomAreas([[maybe_unused]] HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        generateTerrainInRandomAreas(heightMap, surfaceStyle, 32, 0x18);
+        generateTerrainInRandomAreas(surfaceStyle, 24, 56);
     }
 
     // 0x0046A227
     static void generateTerrainInLargeRandomAreas([[maybe_unused]] HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        generateTerrainInRandomAreas(heightMap, surfaceStyle, 128, 0x104);
+        generateTerrainInRandomAreas(surfaceStyle, 128, 388);
     }
 
     // 0x0046A66D
