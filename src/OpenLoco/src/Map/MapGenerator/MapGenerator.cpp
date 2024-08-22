@@ -302,8 +302,8 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A0D8, 0x0046A227
     static void generateTerrainInRandomAreas(uint8_t surfaceStyle, uint16_t minTiles, uint16_t maxTiles)
     {
-        auto ecx = getGameState().rng.randNext(80, 143);
-        for (; ecx > 0; ecx--)
+        auto numberOfAreas = getGameState().rng.randNext(80, 143);
+        for (auto i = 0; i < numberOfAreas; i++)
         {
             // TODO: could probably simplify / replace with two randNext(lo, hi) calls
             auto randPos = getGameState().rng.randNext();
@@ -311,8 +311,8 @@ namespace OpenLoco::World::MapGenerator
             auto yPos = ((randPos >> 16) * kMapRows) >> 16;
 
             auto pos = World::toWorldSpace(TilePos2(xPos, yPos));
-            auto ebx = getGameState().rng.randNext(minTiles, maxTiles - 1);
-            for (; ebx > 0; ebx--)
+            auto numberOfTiles = getGameState().rng.randNext(minTiles, maxTiles - 1);
+            for (auto j = 0; j < numberOfTiles; j++)
             {
                 if (validCoords(pos))
                 {
