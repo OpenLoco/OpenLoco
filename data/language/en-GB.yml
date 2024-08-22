@@ -2404,3 +2404,8 @@ strings:
   2349: "Show Options Window"
   2350: "See-through bridges"
   2351: "See-through bridges toggle"
+  2352: "{COLOUR WINDOW_2}No. of riverbeds:"
+  2353: "{COLOUR WINDOW_2}Minimum river width:"
+  2354: "{COLOUR WINDOW_2}Maximum river width:"
+  2355: "{COLOUR WINDOW_2}Riverbank width:"
+  2356: "{COLOUR WINDOW_2}Meander rate:"

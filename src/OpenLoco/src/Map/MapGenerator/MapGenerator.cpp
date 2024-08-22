@@ -88,14 +88,14 @@ namespace OpenLoco::World::MapGenerator
                         pos = TilePos2(pos.y, pos.x);
                     }
 
-                    if (xOffset < riverbankWidth)
+                    if (riverbankWidth > 0 && xOffset < riverbankWidth)
                     {
                         // Western riverbank (high to low)
                         auto bankPos = riverbankWidth - xOffset;
                         auto bankHeight = riverbankWidth * bankPos / riverbankWidth;
                         heightMap[pos] = std::max<uint8_t>(riverbedHeight, bankHeight);
                     }
-                    else if (xOffset > easternBankOffset)
+                    else if (riverbankWidth > 0 && xOffset > easternBankOffset)
                     {
                         // Eastern riverbank (low to high)
                         auto bankPos = xOffset - easternBankOffset;
@@ -110,17 +110,21 @@ namespace OpenLoco::World::MapGenerator
                 }
 
                 // Let the river meander slightly
-                if (yPos % 4 == 0)
+                const auto meanderRate = options.riverMeanderRate;
+                if (meanderRate > 0 && yPos % 4 == 0)
                 {
-                    const auto meanderRate = options.riverMeanderRate;
                     const auto halfMeanderRate = meanderRate / 2;
 
                     int8_t meanderOffset = getGameState().rng.randNext(0, meanderRate) - halfMeanderRate;
                     xStartPos += meanderOffset;
 
-                    riverbankWidth += meanderOffset / halfMeanderRate;
-                    easternBankOffset += meanderOffset / halfMeanderRate;
-                    totalRiverWidth += meanderOffset / halfMeanderRate * 2;
+                    // Adjust bank width slightly as well
+                    if (options.riverbankWidth > 0)
+                    {
+                        riverbankWidth += meanderOffset / halfMeanderRate;
+                        easternBankOffset += meanderOffset / halfMeanderRate;
+                        totalRiverWidth += meanderOffset / halfMeanderRate * 2;
+                    }
                 }
             }
         }

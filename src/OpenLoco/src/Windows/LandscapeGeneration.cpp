@@ -933,14 +933,53 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             sea_level = Common::widx::generate_now + 1,
             sea_level_down,
             sea_level_up,
+
+            num_riverbeds,
+            num_riverbeds_down,
+            num_riverbeds_up,
+
+            min_river_width,
+            min_river_width_down,
+            min_river_width_up,
+
+            max_river_width,
+            max_river_width_down,
+            max_river_width_up,
+
+            riverbank_width,
+            riverbank_width_down,
+            riverbank_width_up,
+
+            meander_rate,
+            meander_rate_down,
+            meander_rate_up,
         };
 
-        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::sea_level_up) | (1 << widx::sea_level_down);
-        const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down);
+        // clang-format off
+        const uint64_t enabled_widgets = Common::enabled_widgets |
+            (1 << widx::sea_level_down) | (1 << widx::sea_level_up) |
+            (1 << widx::num_riverbeds_down) | (1 << widx::num_riverbeds_up) |
+            (1 << widx::min_river_width_down) | (1 << widx::min_river_width_up) |
+            (1 << widx::max_river_width_down) | (1 << widx::max_river_width_up) |
+            (1 << widx::riverbank_width_down) | (1 << widx::riverbank_width_up) |
+            (1 << widx::meander_rate_down) | (1 << widx::meander_rate_up);
+
+        const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) |
+            (1 << widx::num_riverbeds_down) | (1 << widx::num_riverbeds_up) |
+            (1 << widx::min_river_width_down) | (1 << widx::min_river_width_up) |
+            (1 << widx::max_river_width_down) | (1 << widx::max_river_width_up) |
+            (1 << widx::riverbank_width_down) | (1 << widx::riverbank_width_up) |
+            (1 << widx::meander_rate_down) | (1 << widx::meander_rate_up);
+        // clang-format on
 
         static constexpr Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_water),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::sea_level_units),
+            makeStepperWidgets({ 256, 68 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::uint16_raw),
+            makeStepperWidgets({ 256, 84 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
+            makeStepperWidgets({ 256, 100 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
+            makeStepperWidgets({ 256, 116 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
+            makeStepperWidgets({ 256, 132 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
             widgetEnd()
         };
 
@@ -956,19 +995,92 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 point,
                 Colour::black,
                 StringIds::sea_level);
+
+            point.y = window.y + window.widgets[widx::num_riverbeds].top;
+            tr.drawStringLeft(
+                point,
+                Colour::black,
+                StringIds::number_riverbeds);
+
+            point.y = window.y + window.widgets[widx::min_river_width].top;
+            tr.drawStringLeft(
+                point,
+                Colour::black,
+                StringIds::minimum_river_width);
+
+            point.y = window.y + window.widgets[widx::max_river_width].top;
+            tr.drawStringLeft(
+                point,
+                Colour::black,
+                StringIds::maximum_river_width);
+
+            point.y = window.y + window.widgets[widx::riverbank_width].top;
+            tr.drawStringLeft(
+                point,
+                Colour::black,
+                StringIds::riverbank_width);
+
+            point.y = window.y + window.widgets[widx::meander_rate].top;
+            tr.drawStringLeft(
+                point,
+                Colour::black,
+                StringIds::meander_rate);
         }
 
         // 0x0043E173
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
+            auto& gameState = getGameState();
+            auto& options = S5::getOptions();
+
             switch (widgetIndex)
             {
                 case widx::sea_level_up:
-                    getGameState().seaLevel = std::min<int8_t>(getGameState().seaLevel + 1, Scenario::kMaxSeaLevel);
+                    gameState.seaLevel = std::min<int8_t>(gameState.seaLevel + 1, Scenario::kMaxSeaLevel);
                     break;
 
                 case widx::sea_level_down:
-                    getGameState().seaLevel = std::max<int8_t>(Scenario::kMinSeaLevel, getGameState().seaLevel - 1);
+                    gameState.seaLevel = std::max<int8_t>(Scenario::kMinSeaLevel, gameState.seaLevel - 1);
+                    break;
+
+                case widx::num_riverbeds_up:
+                    options.numRiverbeds = std::min<int8_t>(options.numRiverbeds + 1, Scenario::kMaxNumRiverbeds);
+                    break;
+
+                case widx::num_riverbeds_down:
+                    options.numRiverbeds = std::max<int8_t>(Scenario::kMinNumRiverbeds, options.numRiverbeds - 1);
+                    break;
+
+                case widx::min_river_width_up:
+                    options.minRiverWidth = std::min<int8_t>(options.minRiverWidth + 1, Scenario::kMaxMinRiverWidth);
+                    break;
+
+                case widx::min_river_width_down:
+                    options.minRiverWidth = std::max<int8_t>(Scenario::kMinMinRiverWidth, options.minRiverWidth - 1);
+                    break;
+
+                case widx::max_river_width_up:
+                    options.maxRiverWidth = std::min<int8_t>(options.maxRiverWidth + 1, Scenario::kMaxMaxRiverWidth);
+                    break;
+
+                case widx::max_river_width_down:
+                    options.maxRiverWidth = std::max<int8_t>(Scenario::kMinMaxRiverWidth, options.maxRiverWidth - 1);
+                    break;
+
+                case widx::riverbank_width_up:
+                    options.riverbankWidth = std::min<int8_t>(options.riverbankWidth + 1, Scenario::kMaxRiverbankWidth);
+                    break;
+
+                case widx::riverbank_width_down:
+                    options.riverbankWidth = std::max<int8_t>(Scenario::kMinRiverbankWidth, options.riverbankWidth - 1);
+                    break;
+
+                case widx::meander_rate_up:
+                    options.riverMeanderRate = std::min<int8_t>(options.riverMeanderRate + 1, Scenario::kMaxRiverMeanderRate);
+                    break;
+
+                case widx::meander_rate_down:
+                    options.riverMeanderRate = std::max<int8_t>(Scenario::kMinRiverMeanderRate, options.riverMeanderRate - 1);
                     break;
 
                 default:
@@ -985,8 +1097,33 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            auto args = FormatArguments(window.widgets[widx::sea_level].textArgs);
-            args.push(getGameState().seaLevel);
+            auto& gameState = getGameState();
+            auto& options = S5::getOptions();
+
+            {
+                auto args = FormatArguments(window.widgets[widx::sea_level].textArgs);
+                args.push(gameState.seaLevel);
+            }
+            {
+                auto args = FormatArguments(window.widgets[widx::num_riverbeds].textArgs);
+                args.push<uint16_t>(options.numRiverbeds);
+            }
+            {
+                auto args = FormatArguments(window.widgets[widx::min_river_width].textArgs);
+                args.push<uint16_t>(options.minRiverWidth);
+            }
+            {
+                auto args = FormatArguments(window.widgets[widx::max_river_width].textArgs);
+                args.push<uint16_t>(options.maxRiverWidth);
+            }
+            {
+                auto args = FormatArguments(window.widgets[widx::riverbank_width].textArgs);
+                args.push<uint16_t>(options.riverbankWidth);
+            }
+            {
+                auto args = FormatArguments(window.widgets[widx::meander_rate].textArgs);
+                args.push<uint16_t>(options.riverMeanderRate);
+            }
         }
 
         static constexpr WindowEventList kEvents = {

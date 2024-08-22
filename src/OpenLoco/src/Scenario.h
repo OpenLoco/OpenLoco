@@ -94,6 +94,21 @@ namespace OpenLoco::Scenario
     constexpr uint8_t kMinSeaLevel = 0;
     constexpr uint8_t kMaxSeaLevel = 28;
 
+    constexpr uint8_t kMinNumRiverbeds = 0;
+    constexpr uint8_t kMaxNumRiverbeds = 4;
+
+    constexpr uint8_t kMinMinRiverWidth = 2;
+    constexpr uint8_t kMaxMinRiverWidth = 20;
+
+    constexpr uint8_t kMinMaxRiverWidth = 2;
+    constexpr uint8_t kMaxMaxRiverWidth = 30;
+
+    constexpr uint8_t kMinRiverbankWidth = 0;
+    constexpr uint8_t kMaxRiverbankWidth = 10;
+
+    constexpr uint8_t kMinRiverMeanderRate = 0;
+    constexpr uint8_t kMaxRiverMeanderRate = 20;
+
     constexpr uint8_t kMinBaseLandHeight = 0;
     constexpr uint8_t kMaxBaseLandHeight = 15;
 
