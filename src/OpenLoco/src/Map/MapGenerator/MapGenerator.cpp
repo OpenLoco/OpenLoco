@@ -302,16 +302,16 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A0D8, 0x0046A227
     static void generateTerrainInRandomAreas([[maybe_unused]] HeightMap& heightMap, uint8_t surfaceStyle, uint16_t randAmount, uint16_t baseAmount)
     {
-        auto ecx = getGameState().rng.randNext(64) + 0x50;
+        auto ecx = getGameState().rng.randNext(63) + 0x50;
         for (; ecx > 0; ecx--)
         {
             // TODO: could probably simplify / replace with two randNext(lo, hi) calls
             auto randPos = getGameState().rng.randNext();
-            auto xPos = (((randPos & 0xFFFF) * kMapColumns) >> 16) & 0xFF;
-            auto yPos = (((randPos >> 16) * kMapRows) >> 16) & 0xFF;
+            auto xPos = ((randPos & 0xFFFF) * kMapColumns) >> 16;
+            auto yPos = ((randPos >> 16) * kMapRows) >> 16;
 
             auto pos = World::toWorldSpace(TilePos2(xPos, yPos));
-            auto ebx = getGameState().rng.randNext(randAmount) + baseAmount;
+            auto ebx = getGameState().rng.randNext(randAmount - 1) + baseAmount;
             for (; ebx > 0; ebx--)
             {
                 if (validCoords(pos))
@@ -320,30 +320,21 @@ namespace OpenLoco::World::MapGenerator
                     auto surface = tile.surface();
                     if (surface != nullptr)
                     {
-                        auto height = surface->baseZ() / kSmallZStep;
-                        if (surface->slope())
-                        {
-                            height++;
-                            if (surface->isSlopeDoubleHeight())
-                            {
-                                height++;
-                            }
-                        }
-
+                        auto height = TileManager::getSurfaceCornerHeight(*surface) / kMicroToSmallZStep;
                         if (height > getGameState().seaLevel)
                         {
                             surface->setTerrain(surfaceStyle);
                             auto variation = getRandomTerrainVariation(*surface);
-                            if (variation)
+                            if (variation.has_value())
                             {
-                                surface->setVariation(*variation);
+                                surface->setVariation(variation.value());
                             }
                         }
                     }
                 }
 
-                auto randOffset = getGameState().rng.randNext(4);
-                auto offset = _503C6C[randOffset];
+                auto randRotation = getGameState().rng.randNext(3);
+                auto offset = kRotationOffset[randRotation];
                 pos += offset;
             }
         }
