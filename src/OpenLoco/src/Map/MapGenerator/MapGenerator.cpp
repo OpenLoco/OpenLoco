@@ -43,8 +43,6 @@ namespace OpenLoco::World::MapGenerator
     static constexpr auto kCliffTerrainHeightDiff = 4;
     static constexpr auto kMountainTerrainHeight = 26;
 
-    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
-
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
 
     static fs::path _pngHeightmapPath{};
@@ -790,7 +788,7 @@ namespace OpenLoco::World::MapGenerator
         for (remainingTilesDistance -= numTilesBetween; remainingTilesDistance > 0; remainingTilesDistance -= numTilesBetween)
         {
             // 0x0042E956
-            auto offset = _503C6C[rotation] * numTilesBetween;
+            auto offset = kRotationOffset[rotation] * numTilesBetween;
             targetPos += offset;
             if (!drawableCoords(targetPos))
             {
