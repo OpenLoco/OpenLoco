@@ -125,8 +125,9 @@ namespace OpenLoco::S5
         uint8_t minRiverWidth;
         uint8_t maxRiverWidth;
         uint8_t riverbankWidth;
+        uint8_t riverMeanderRate;
 
-        std::byte pad_41BD[343];
+        std::byte pad_41BD[342];
     };
 #pragma pack(pop)
 
