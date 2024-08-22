@@ -299,24 +299,57 @@ namespace OpenLoco::World::MapGenerator
         applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, false);
     }
 
-    // 0x0046A0D8
-    static void generateTerrainInSmallRandomAreas(HeightMap& heightMap, uint8_t surfaceStyle)
+    // 0x0046A0D8, 0x0046A227
+    static void generateTerrainInRandomAreas(uint8_t surfaceStyle, uint16_t minTiles, uint16_t maxTiles)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A0D8, regs);
-        _heightMap = nullptr;
+        auto numberOfAreas = getGameState().rng.randNext(80, 143);
+        for (auto i = 0; i < numberOfAreas; i++)
+        {
+            // TODO: could probably simplify / replace with two randNext(lo, hi) calls
+            auto randPos = getGameState().rng.randNext();
+            auto xPos = ((randPos & 0xFFFF) * kMapColumns) >> 16;
+            auto yPos = ((randPos >> 16) * kMapRows) >> 16;
+
+            auto pos = World::toWorldSpace(TilePos2(xPos, yPos));
+            auto numberOfTiles = getGameState().rng.randNext(minTiles, maxTiles - 1);
+            for (auto j = 0; j < numberOfTiles; j++)
+            {
+                if (validCoords(pos))
+                {
+                    auto tile = TileManager::get(pos);
+                    auto surface = tile.surface();
+                    if (surface != nullptr)
+                    {
+                        auto height = TileManager::getSurfaceCornerHeight(*surface) / kMicroToSmallZStep;
+                        if (height > getGameState().seaLevel)
+                        {
+                            surface->setTerrain(surfaceStyle);
+                            auto variation = getRandomTerrainVariation(*surface);
+                            if (variation.has_value())
+                            {
+                                surface->setVariation(variation.value());
+                            }
+                        }
+                    }
+                }
+
+                auto randRotation = getGameState().rng.randNext(3);
+                auto offset = kRotationOffset[randRotation];
+                pos += offset;
+            }
+        }
+    }
+
+    // 0x0046A0D8
+    static void generateTerrainInSmallRandomAreas([[maybe_unused]] HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        generateTerrainInRandomAreas(surfaceStyle, 24, 56);
     }
 
     // 0x0046A227
-    static void generateTerrainInLargeRandomAreas(HeightMap& heightMap, uint8_t surfaceStyle)
+    static void generateTerrainInLargeRandomAreas([[maybe_unused]] HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A227, regs);
-        _heightMap = nullptr;
+        generateTerrainInRandomAreas(surfaceStyle, 128, 388);
     }
 
     // 0x0046A66D
