@@ -65,7 +65,6 @@ namespace OpenLoco::Vehicles
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
-    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
     static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
@@ -3306,7 +3305,7 @@ namespace OpenLoco::Vehicles
             auto pos = nextNextPos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                pos -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                pos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
             }
 
             auto reverseTad = tad;

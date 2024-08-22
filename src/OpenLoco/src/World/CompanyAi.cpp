@@ -28,19 +28,19 @@
 #include "TownManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
 #include <numeric>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::World;
 
 namespace OpenLoco
 {
     static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
     static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
     static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
-
-    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
 
     // 0x004FE720
     static constexpr std::array<uint32_t, kAiThoughtCount> kThoughtTypeFlags = {
@@ -461,7 +461,7 @@ namespace OpenLoco
             {
                 if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
                 {
-                    const auto stationEndDiff = _503C6C[rotation] * (thought.var_04 - 1);
+                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
                     pos += stationEndDiff;
                 }
                 rotation ^= (1U << 1);
@@ -488,7 +488,7 @@ namespace OpenLoco
             {
                 if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
                 {
-                    const auto stationEndDiff = _503C6C[rotation] * (thought.var_04 - 1);
+                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
                     pos += stationEndDiff;
                 }
                 rotation ^= (1U << 1);
@@ -780,7 +780,7 @@ namespace OpenLoco
                     {
                         stationUnk.var_00 = _lastPlacedTrackStationId;
                     }
-                    placeArgs.pos += World::Pos3{ _503C6C[placeArgs.rotation], 0 };
+                    placeArgs.pos += World::Pos3{ kRotationOffset[placeArgs.rotation], 0 };
                 }
             }
         }
