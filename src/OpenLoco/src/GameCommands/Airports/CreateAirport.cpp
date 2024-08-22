@@ -379,6 +379,7 @@ namespace OpenLoco::GameCommands
             addTileToStation(_lastPlacedAirportStationId, args.pos, args.rotation);
 
             auto* station = StationManager::get(_lastPlacedAirportStationId);
+            station->flags |= StationFlags::flag_6;
             station->airportStartPos = args.pos;
             station->airportRotation = args.rotation;
             station->airportMovementOccupiedEdges = 0;
