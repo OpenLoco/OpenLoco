@@ -92,14 +92,14 @@ namespace OpenLoco::World::MapGenerator
                     {
                         // Western riverbank (high to low)
                         auto bankPos = riverbankWidth - xOffset;
-                        auto bankHeight = riverbankWidth * bankPos / riverbankWidth;
+                        auto bankHeight = heightMap[pos] * bankPos / riverbankWidth;
                         heightMap[pos] = std::max<uint8_t>(riverbedHeight, bankHeight);
                     }
                     else if (riverbankWidth > 0 && xOffset > easternBankOffset)
                     {
                         // Eastern riverbank (low to high)
                         auto bankPos = xOffset - easternBankOffset;
-                        auto bankHeight = riverbankWidth * bankPos / riverbankWidth;
+                        auto bankHeight = heightMap[pos] * bankPos / riverbankWidth;
                         heightMap[pos] = std::max<uint8_t>(riverbedHeight, bankHeight);
                     }
                     else
