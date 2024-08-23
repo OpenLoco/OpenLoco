@@ -1752,13 +1752,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 colour = vehicleTypeColours[index];
             }
 
-            if (_flashingItems & (1 << enumValue(companyId)))
+            // clang-format off
+            auto vehicleType = train.head->vehicleType;
+            if ((widgetIndex == widx::tabOwnership && _flashingItems & (1 << enumValue(companyId))) ||
+                (widgetIndex == widx::tabVehicles && _flashingItems & (1 << enumValue(vehicleType))))
             {
-                if (!(mapFrameNumber & (1 << 2)))
+                if (mapFrameNumber & (1 << 2))
                 {
                     colour = kFlashColours[colour];
                 }
             }
+            // clang-format on
         }
 
         return colour;
