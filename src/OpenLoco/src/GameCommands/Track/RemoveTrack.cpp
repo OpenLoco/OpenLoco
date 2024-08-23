@@ -154,7 +154,7 @@ namespace OpenLoco::GameCommands
     // 0x0048B04E
     static void playTrackRemovalSound(const World::Pos3 pos)
     {
-        const auto frequency = gPrng1().randNext(8191, 17955);
+        const auto frequency = gPrng2().randNext(17955, 26146);
         Audio::playSound(Audio::SoundId::demolish, pos, 0, frequency);
     }
 

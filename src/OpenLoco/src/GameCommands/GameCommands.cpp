@@ -615,7 +615,7 @@ namespace OpenLoco::GameCommands
     // 0x0048B013
     void playConstructionPlacementSound(World::Pos3 pos)
     {
-        const auto frequency = gPrng1().randNext(17955, 26146);
+        const auto frequency = gPrng2().randNext(17955, 26146);
         Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
     }
 }
