@@ -33,7 +33,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
     static constexpr Ui::Size kWindowSize = { 366, 217 };
-    static constexpr Ui::Size kLandTabSize = { 366, 247 };
+    static constexpr Ui::Size kLandTabSize = { 366, 252 };
 
     static constexpr uint8_t kRowHeight = 22; // CJK: 22
 
@@ -53,9 +53,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             tab_forests,
             tab_towns,
             tab_industries,
+            generate_now,
         };
 
-        const uint64_t enabled_widgets = (1 << widx::close_button) | (1 << tab_options) | (1 << tab_land) | (1 << tab_water) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries);
+        const uint64_t enabled_widgets = (1 << widx::close_button) | (1 << tab_options) | (1 << tab_land) | (1 << tab_water) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries) | (1 << generate_now);
 
 #define common_options_widgets(frame_height, window_caption_id)                                                                                            \
     makeWidget({ 0, 0 }, { 366, frame_height }, WidgetType::frame, WindowColour::primary),                                                                 \
@@ -67,11 +68,29 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_water),   \
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_forests), \
         makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_towns),  \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_industries)
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_industries), \
+        makeWidget({ 196, frame_height - 17 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape)
 
         // Defined at the bottom of this file.
         static void switchTabWidgets(Window* window);
         static void switchTab(Window* window, WidgetIndex_t widgetIndex);
+
+        static void confirmResetLandscape(int32_t promptType)
+        {
+            if (S5::getOptions().madeAnyChanges)
+            {
+                LandscapeGenerationConfirm::open(promptType);
+            }
+            else
+            {
+                WindowManager::close(WindowType::landscapeGenerationConfirm, 0);
+
+                if (promptType == 0)
+                    Scenario::generateLandscape();
+                else
+                    Scenario::eraseLandscape();
+            }
+        }
 
         static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
@@ -88,6 +107,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::tab_towns:
                 case widx::tab_industries:
                     switchTab(&window, widgetIndex);
+                    break;
+
+                case widx::generate_now:
+                    confirmResetLandscape(0);
                     break;
             }
         }
@@ -171,6 +194,23 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window.widgets[widx::close_button].left = window.width - 15;
             window.widgets[widx::close_button].right = window.width - 3;
+
+            auto& options = S5::getOptions();
+            if (options.generator == S5::LandGeneratorType::PngHeightMap)
+            {
+                if (World::MapGenerator::getPngHeightmapPath().empty())
+                    window.disabledWidgets |= (1 << widx::generate_now);
+                else
+                    window.disabledWidgets &= ~(1 << widx::generate_now);
+            }
+            else if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
+            {
+                window.disabledWidgets |= (1 << widx::generate_now);
+            }
+            else
+            {
+                window.disabledWidgets &= ~(1 << widx::generate_now);
+            }
         }
 
         static void update(Window& window)
@@ -185,7 +225,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            groupGeneral = Common::widx::tab_industries + 1,
+            groupGeneral = Common::widx::generate_now + 1,
             start_year,
             start_year_down,
             start_year_up,
@@ -200,8 +240,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             generate_when_game_starts,
 
             browseHeightmapFile,
-
-            generate_now,
         };
 
         // clang-format off
@@ -219,8 +257,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             (1 << widx::change_heightmap_btn) |
             (1 << widx::terrainSmoothingNumUp) |
             (1 << widx::terrainSmoothingNumDown) |
-            (1 << widx::generate_when_game_starts) |
-            (1 << widx::generate_now);
+            (1 << widx::generate_when_game_starts);
         // clang-format on
 
         static constexpr Widget widgets[] = {
@@ -240,8 +277,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             // PNG browser
             makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_browse),
 
-            // Generate button
-            makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
             widgetEnd()
         };
 
@@ -383,39 +418,15 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
                 self.disabledWidgets |= (1 << widx::generate_when_game_starts);
-
-                if (World::MapGenerator::getPngHeightmapPath().empty())
-                    self.disabledWidgets |= (1 << widx::generate_now);
-                else
-                    self.disabledWidgets &= ~(1 << widx::generate_now);
             }
             else if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
             {
                 self.activatedWidgets |= (1 << widx::generate_when_game_starts);
                 self.disabledWidgets &= ~(1 << widx::generate_when_game_starts);
-                self.disabledWidgets |= (1 << widx::generate_now);
             }
             else
             {
                 self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
-                self.disabledWidgets &= ~((1 << widx::generate_now) | (1 << widx::generate_when_game_starts));
-            }
-        }
-
-        static void confirmResetLandscape(int32_t promptType)
-        {
-            if (S5::getOptions().madeAnyChanges)
-            {
-                LandscapeGenerationConfirm::open(promptType);
-            }
-            else
-            {
-                WindowManager::close(WindowType::landscapeGenerationConfirm, 0);
-
-                if (promptType == 0)
-                    Scenario::generateLandscape();
-                else
-                    Scenario::eraseLandscape();
             }
         }
 
@@ -491,7 +502,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     else
                     {
                         WindowManager::closeConstructionWindows();
-                        confirmResetLandscape(1);
+                        Common::confirmResetLandscape(1);
                     }
                     break;
 
@@ -510,10 +521,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     }
                     break;
                 }
-
-                case widx::generate_now:
-                    confirmResetLandscape(0);
-                    break;
 
                 default:
                     Common::onMouseUp(window, widgetIndex);
@@ -583,7 +590,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            topography_style = Common::widx::tab_industries + 1,
+            topography_style = Common::widx::generate_now + 1,
             topography_style_btn,
             min_land_height,
             min_land_height_down,
@@ -599,12 +606,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t holdable_widgets = (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
         static constexpr Widget widgets[] = {
-            common_options_widgets(247, StringIds::title_landscape_generation_land),
+            common_options_widgets(252, StringIds::title_landscape_generation_land),
             makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeStepperWidgets({ 256, 68 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
             makeStepperWidgets({ 256, 84 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::hill_density_percent),
             makeWidget({ 10, 100 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
-            makeWidget({ 4, 116 }, { 358, 126 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+            makeWidget({ 4, 116 }, { 358, 112 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd()
         };
 
@@ -923,7 +930,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            sea_level = Common::widx::tab_industries + 1,
+            sea_level = Common::widx::generate_now + 1,
             sea_level_down,
             sea_level_up,
         };
@@ -932,7 +939,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down);
 
         static constexpr Widget widgets[] = {
-            common_options_widgets(247, StringIds::title_landscape_generation_water),
+            common_options_widgets(217, StringIds::title_landscape_generation_water),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::sea_level_units),
             widgetEnd()
         };
@@ -1000,7 +1007,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            number_of_forests = Common::widx::tab_industries + 1,
+            number_of_forests = Common::widx::generate_now + 1,
             number_of_forests_down,
             number_of_forests_up,
             minForestRadius,
@@ -1281,7 +1288,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            number_of_towns = Common::widx::tab_industries + 1,
+            number_of_towns = Common::widx::generate_now + 1,
             number_of_towns_down,
             number_of_towns_up,
             max_town_size,
@@ -1413,7 +1420,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            num_industries = Common::widx::tab_industries + 1,
+            num_industries = Common::widx::generate_now + 1,
             num_industries_btn,
             check_allow_industries_close_down,
             check_allow_industries_start_up,
