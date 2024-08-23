@@ -671,18 +671,24 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (trackEl == nullptr)
                             continue;
 
-                        colourFlash0 = _trackColours[trackEl->trackObjectId()];
+                        auto trackObjectId = trackEl->trackObjectId();
+                        colourFlash0 = colour0 = _trackColours[trackObjectId];
 
                         auto firstFlashable = Numerics::bitScanForward(_flashingItems);
                         if (firstFlashable != -1)
                         {
-                            if (_routeToObjectIdMap[firstFlashable] == colourFlash0)
+                            if (_routeToObjectIdMap[firstFlashable] == trackObjectId)
                             {
+                                // colourFlash1 = 0;
                                 colourFlash0 = kFlashColours[colourFlash0];
                             }
                         }
+                        else
+                        {
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
+                        }
 
-                        colour1 = colourFlash1 = colour0 = colourFlash0;
                         break;
                     }
 
