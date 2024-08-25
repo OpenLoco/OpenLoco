@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             if (_routeToObjectIdMap[firstFlashable] == trackObjectId)
                             {
-                                colourFlash0 = kFlashColours[colourFlash0];
+                                colourFlash1 = colourFlash0 = kFlashColours[colourFlash0];
                             }
                         }
                         else
