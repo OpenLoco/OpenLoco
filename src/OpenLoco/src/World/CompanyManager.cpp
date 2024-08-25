@@ -454,13 +454,8 @@ namespace OpenLoco::CompanyManager
         gameState.flags |= GameStateFlags::preferredOwnerName;
 
         // Any preference with respect to owner face?
-        ObjectHeader* preferredOwner = nullptr;
-        if (Config::get().usePreferredOwnerFace)
-        {
-            preferredOwner = &Config::get().preferredOwnerFace;
-        }
-
-        auto competitorId = selectNewCompetitorFromHeader(*preferredOwner);
+        auto competitorId = Config::get().usePreferredOwnerFace ? selectNewCompetitorFromHeader(Config::get().preferredOwnerFace)
+                                                                : selectNewCompetitor();
         // This might happen if a preferredOwner object header does not exist anymore.
         if (competitorId == kNullObjectId)
         {
