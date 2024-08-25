@@ -405,11 +405,11 @@ namespace OpenLoco::CompanyManager
             }
             if (getGameState().preferredAIAggressiveness != 0)
             {
-                metric += std::abs(kAiToMetric[installed.second._displayData->intelligence] - getGameState().preferredAIAggressiveness);
+                metric += std::abs(kAiToMetric[installed.second._displayData->aggressiveness] - getGameState().preferredAIAggressiveness);
             }
             if (getGameState().preferredAICompetitiveness != 0)
             {
-                metric += std::abs(kAiToMetric[installed.second._displayData->intelligence] - getGameState().preferredAICompetitiveness);
+                metric += std::abs(kAiToMetric[installed.second._displayData->competitiveness] - getGameState().preferredAICompetitiveness);
             }
             if (metric < bestInstalledValue)
             {
