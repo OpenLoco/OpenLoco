@@ -945,8 +945,7 @@ namespace OpenLoco::World::MapGenerator
         updateProgress(10);
 
         {
-            // Should be 384x384 (but generateLandscape goes out of bounds?)
-            HeightMap heightMap(512, 512, 512);
+            HeightMap heightMap(kMapRows, kMapRows, kMapRows);
 
             generateHeightMap(options, heightMap);
             updateProgress(25);
