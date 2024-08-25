@@ -769,6 +769,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
+            bool haveTrackOrRoad = false; // ch
             PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
             auto tile = TileManager::get(pos);
             for (auto& el : tile)
@@ -781,20 +782,27 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (surfaceEl == nullptr)
                             continue;
 
+                        uint8_t terrainColour0{}, terrainColour1{};
                         if (surfaceEl->water() == 0)
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = landImage->offset[0];
+                            terrainColour0 = landImage->offset[0];
+                            terrainColour1 = landImage->offset[1];
                         }
                         else
                         {
                             const auto* waterObj = ObjectManager::get<WaterObject>();
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = waterImage->offset[0];
+                            terrainColour0 = waterImage->offset[0];
+                            terrainColour1 = waterImage->offset[1];
                         }
 
-                        colour0 = colour1 = colourFlash0;
+                        colour0 = colourFlash0 = terrainColour0;
+                        if (!haveTrackOrRoad)
+                        {
+                            colour1 = colourFlash1 = terrainColour1;
+                        }
                         break;
                     }
 
@@ -829,8 +837,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             {
                                 colourFlash1 = colourFlash0 = kFlashColours[colour0];
                             }
+                            haveTrackOrRoad = true;
                             break;
                         }
+
                         [[fallthrough]];
                     }
 
