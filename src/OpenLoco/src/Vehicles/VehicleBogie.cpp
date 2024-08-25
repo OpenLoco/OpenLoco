@@ -6,6 +6,7 @@
 #include "Map/TrackElement.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
+#include "Random.h"
 #include "Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -296,6 +297,25 @@ namespace OpenLoco::Vehicles
         {
             assert(false);
             return false;
+        }
+    }
+
+    // 0x004BA873
+    // esi : vehBogie
+    void sub_4BA873(VehicleBogie& vehBogie)
+    {
+        vehBogie.timeoutToBreakdown = 0xFFFF;
+        if (vehBogie.reliability != 0)
+        {
+            int32_t reliabilityFactor = vehBogie.reliability / 256;
+            reliabilityFactor *= reliabilityFactor;
+            reliabilityFactor /= 16;
+
+            auto& prng = gPrng1();
+            int32_t randVal = (prng.randNext(65535) * (reliabilityFactor / 2)) / 65536;
+            reliabilityFactor -= reliabilityFactor / 4;
+            reliabilityFactor += randVal;
+            vehBogie.timeoutToBreakdown = static_cast<uint16_t>(std::max(4, reliabilityFactor));
         }
     }
 }

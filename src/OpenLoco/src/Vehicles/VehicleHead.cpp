@@ -6,6 +6,8 @@
 #include "Effects/SmokeEffect.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
+#include "GameCommands/Vehicles/VehicleSell.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -30,6 +32,7 @@
 #include "Random.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
+#include "Tutorial.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
@@ -69,8 +72,12 @@ namespace OpenLoco::Vehicles
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
-    static constexpr uint16_t kBusSignalTimeout = 960;   // Time to wait before turning around at barriers
-    static constexpr uint16_t kTramSignalTimeout = 2880; // Time to wait before turning around at barriers
+    static constexpr uint16_t kBusSignalTimeout = 960;                // Time to wait before turning around at barriers
+    static constexpr uint16_t kTramSignalTimeout = 2880;              // Time to wait before turning around at barriers
+    static constexpr uint8_t kAiSellCrashedVehicleTimeout = 14;       // Number of days after a crash before selling
+    static constexpr uint8_t kRestartStoppedRoadVehiclesTimeout = 20; // Number of days before stopped road vehicle (bus and tram) is restarted
+    static constexpr uint16_t kReliabilityLossPerDay = 4;
+    static constexpr uint16_t kReliabilityLossPerDayObsolete = 10;
 
     void VehicleHead::updateVehicle()
     {
@@ -182,12 +189,163 @@ namespace OpenLoco::Vehicles
         calculateRefundCost();
     }
 
+    // 0x004B8340
+    static void recalculateTrainMinReliability(VehicleHead& head)
+    {
+        Vehicle train(head);
+        const auto getReliability = [](const Car& car) -> uint16_t {
+            if (car.front->reliability == 0)
+            {
+                return 0xFFFFU;
+            }
+            return car.front->reliability;
+        };
+
+        const auto reliabilityPredicate = [&getReliability](const Car& carLhs, const Car& carRhs) {
+            return getReliability(carLhs) < getReliability(carRhs);
+        };
+
+        const auto minReliability = (*std::min_element(train.cars.begin(), train.cars.end(), reliabilityPredicate)).front->reliability;
+        train.veh2->reliability = minReliability == 0xFFFFU ? 0 : minReliability / 256;
+    }
+
     // 0x004B9509
     void VehicleHead::updateDaily()
     {
-        registers regs{};
-        regs.esi = X86Pointer(this);
-        call(0x004B9509, regs);
+        bool resetStoppedTimeout = true;
+        if (status == Status::stopped)
+        {
+            if (mode == TransportMode::road)
+            {
+                if (tileX != -1
+                    && hasVehicleFlags(VehicleFlags::commandStop))
+                {
+                    if (Tutorial::state() == Tutorial::State::none)
+                    {
+                        restartStoppedCarsTimeout++;
+                        if (restartStoppedCarsTimeout >= kRestartStoppedRoadVehiclesTimeout)
+                        {
+                            GameCommands::VehicleChangeRunningModeArgs args{};
+                            args.head = head;
+                            args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::startVehicle;
+                            auto regs = static_cast<Interop::registers>(args);
+                            regs.bl = GameCommands::Flags::apply;
+                            GameCommands::vehicleChangeRunningMode(regs);
+                            if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
+                            {
+                                liftUpVehicle();
+                            }
+                        }
+                        else
+                        {
+                            resetStoppedTimeout = false;
+                        }
+                    }
+                    else
+                    {
+                        resetStoppedTimeout = false;
+                    }
+                }
+            }
+            else
+            {
+                resetStoppedTimeout = false;
+            }
+        }
+        if (resetStoppedTimeout)
+        {
+            restartStoppedCarsTimeout = 0;
+        }
+
+        if (status == Status::crashed || status == Status::stuck)
+        {
+            crashedTimeout = Math::Bound::add(crashedTimeout, 1U);
+            if (!CompanyManager::isPlayerCompany(owner))
+            {
+                if (crashedTimeout >= kAiSellCrashedVehicleTimeout && var_60 != 0xFF)
+                {
+                    auto* aiCompany = CompanyManager::get(owner);
+                    auto& aiThought = aiCompany->aiThoughts[var_60];
+                    const auto toBeRemovedId = id;
+                    sub_4AD778();
+                    status = Status::stopped;
+                    Vehicle train(*this);
+                    train.veh2->currentSpeed = 0_mph;
+
+                    auto stashOwner = GameCommands::getUpdatingCompanyId();
+                    GameCommands::setUpdatingCompanyId(owner);
+
+                    GameCommands::VehicleSellArgs args{};
+                    args.car = toBeRemovedId;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+                    // 'this' pointer is invalid at this point!
+                    GameCommands::setUpdatingCompanyId(stashOwner);
+                    removeEntityFromThought(aiThought, toBeRemovedId);
+                    return;
+                }
+            }
+        }
+
+        Vehicle train(*this);
+        for (auto& car : train.cars)
+        {
+            // Bit of overkill iterating the whole car
+            // as only the first carComponent has cargo
+            // but matches vanilla. Remove when confirmed
+            // not used.
+            for (auto& carComponent : car)
+            {
+                if (carComponent.front->secondaryCargo.qty != 0)
+                {
+                    carComponent.front->secondaryCargo.numDays = Math::Bound::add(carComponent.front->secondaryCargo.numDays, 1U);
+                }
+                // Bit of overkill as back doesn't hold cargo but
+                // it matches vanilla. Remove when confirmed not used
+                if (carComponent.back->secondaryCargo.qty != 0)
+                {
+                    carComponent.back->secondaryCargo.numDays = Math::Bound::add(carComponent.back->secondaryCargo.numDays, 1U);
+                }
+                if (carComponent.body->primaryCargo.qty != 0)
+                {
+                    carComponent.body->primaryCargo.numDays = Math::Bound::add(carComponent.body->primaryCargo.numDays, 1U);
+                }
+            }
+        }
+
+        for (auto& car : train.cars)
+        {
+            auto& front = *car.front;
+            if (front.reliability == 0)
+            {
+                continue;
+            }
+
+            if (front.hasBreakdownFlags(BreakdownFlags::brokenDown))
+            {
+                front.breakdownTimeout--;
+                if (front.breakdownTimeout == 0)
+                {
+                    front.breakdownFlags &= ~BreakdownFlags::brokenDown;
+                    applyBreakdownToTrain();
+                }
+            }
+            else if (front.timeoutToBreakdown != 0xFFFFU)
+            {
+                front.timeoutToBreakdown = Math::Bound::sub(front.timeoutToBreakdown, 1U);
+
+                if (front.timeoutToBreakdown == 0)
+                {
+                    sub_4BA873(front);
+                    front.breakdownFlags |= BreakdownFlags::breakdownPending;
+                }
+            }
+            auto newReliability = front.reliability;
+            auto* vehObj = ObjectManager::get<VehicleObject>(front.objectId);
+            newReliability -= vehObj->obsolete <= getCurrentYear() ? kReliabilityLossPerDayObsolete : kReliabilityLossPerDay;
+            newReliability = std::max<uint16_t>(newReliability, 100);
+            front.reliability = newReliability;
+        }
+        recalculateTrainMinReliability(*this);
     }
 
     // 0x004BA8D4
@@ -232,7 +390,7 @@ namespace OpenLoco::Vehicles
                 {
                     car.front->breakdownFlags &= ~BreakdownFlags::breakdownPending;
                     car.front->breakdownFlags |= BreakdownFlags::brokenDown;
-                    car.front->var_6A = 5;
+                    car.front->breakdownTimeout = 5;
                     applyBreakdownToTrain();
 
                     auto soundId = (Audio::SoundId)gPrng1().randNext(26, 26 + 5);
