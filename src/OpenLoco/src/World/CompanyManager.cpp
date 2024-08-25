@@ -370,7 +370,7 @@ namespace OpenLoco::CompanyManager
 
         if (!loadedUnusedCompetitors.empty())
         {
-            const auto r = gPrng1().randNext(loadedUnusedCompetitors.size());
+            const auto r = ((gPrng1().randNext() & 0xFFFFU) * loadedUnusedCompetitors.size()) / 65536;
             return loadedUnusedCompetitors[r];
         }
 
@@ -427,7 +427,7 @@ namespace OpenLoco::CompanyManager
         {
             return kNullObjectId;
         }
-        const auto r = gPrng1().randNext(bestInstalled->size());
+        const auto r = ((gPrng1().randNext() & 0xFFFFU) * bestInstalled->size()) / 65536;
         const auto& chosenHeader = (*bestInstalled)[r];
         return selectNewCompetitorFromHeader(chosenHeader);
     }
