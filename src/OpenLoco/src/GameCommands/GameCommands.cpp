@@ -179,7 +179,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::gc_unk_53,                    nullptr,                   0x0047AF0B, true  },
         { GameCommand::buildCompanyHeadquarters,     buildCompanyHeadquarters,  0x0042ECFC, true  },
         { GameCommand::removeCompanyHeadquarters,    removeCompanyHeadquarters, 0x0042EEAF, true  },
-        { GameCommand::createAirport,                nullptr,                   0x00492C41, true  },
+        { GameCommand::createAirport,                createAirport,             0x00492C41, true  },
         { GameCommand::removeAirport,                removeAirport,             0x00493559, true  },
         { GameCommand::vehiclePlaceAir,              vehiclePlaceAir,           0x004267BE, true  },
         { GameCommand::vehiclePickupAir,             vehiclePickupAir,          0x00426B29, true  },

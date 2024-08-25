@@ -117,7 +117,8 @@ namespace OpenLoco
         World::Pos3 stationTiles[80];                 // 0x1D0 Note: z coordinate also contains rotation so always floor
         uint8_t var_3B0{};
         uint8_t var_3B1{};
-        uint16_t var_3B2{};
+        uint8_t var_3B2{};
+        uint8_t airportRotation{};               // 0x3B3
         World::Pos3 airportStartPos{};           // 0x3B4
         uint32_t airportMovementOccupiedEdges{}; // 0x3BA
         uint8_t pad_3BE[0x3D2 - 0x3BE]{};

@@ -38,7 +38,7 @@ namespace OpenLoco
     {
         none = 0,
         hasShadows = 1U << 0,
-
+        isHelipad = 1U << 1,
         acceptsLightPlanes = 1U << 2,
         acceptsHeavyPlanes = 1U << 3,
         acceptsHelicopter = 1U << 4,
