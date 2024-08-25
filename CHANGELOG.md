@@ -1,5 +1,6 @@
 24.08+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2372] Large (16xN) stations could not be created without cheats.
 - Fix: [#2592] Industry ghosts always destroy first industry instead of ghost.
 
 24.08 (2024-08-19)

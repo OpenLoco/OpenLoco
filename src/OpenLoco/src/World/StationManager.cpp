@@ -543,7 +543,7 @@ namespace OpenLoco::StationManager
 
         auto centreTile = World::Pos2(pos.x + World::kTileSize / 2, pos.y + World::kTileSize / 2);
         auto stationCentre = World::Pos2(station.x, station.y);
-        auto distance = Math::Vector::manhattanDistance2D(centreTile, stationCentre);
+        auto distance = Math::Vector::chebyshevDistance2D(centreTile, stationCentre);
 
         return distance > kStationDistanceLimit;
     }
