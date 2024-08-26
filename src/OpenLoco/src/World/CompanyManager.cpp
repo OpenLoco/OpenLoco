@@ -1008,6 +1008,10 @@ namespace OpenLoco::CompanyManager
     void aiDestroy(const CompanyId id)
     {
         auto* company = get(id);
+        if (company == nullptr)
+        {
+            return;
+        }
         if (company->headquartersX != -1)
         {
             GameCommands::HeadquarterRemovalArgs args{};
