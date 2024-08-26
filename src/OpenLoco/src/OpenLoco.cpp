@@ -99,7 +99,6 @@ namespace OpenLoco
     static loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
     static loco_global<uint32_t, 0x0050C19E> _last_tick_time;
 
-    static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
 
     static int32_t _monthsSinceLastAutosave;
