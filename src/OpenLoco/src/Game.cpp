@@ -24,7 +24,6 @@
 
 namespace OpenLoco::Game
 {
-    static loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
     static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
 
     // TODO: make accessible from Environment
@@ -182,7 +181,7 @@ namespace OpenLoco::Game
     // 0x0043C182
     void quitGame()
     {
-        _game_command_nest_level = 0;
+        GameCommands::resetCommandNestLevel();
 
         // Path for networked games; untested.
         if (isNetworked())

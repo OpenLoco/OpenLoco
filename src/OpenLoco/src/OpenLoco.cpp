@@ -33,6 +33,7 @@
 #include "Entities/EntityTweener.h"
 #include "Environment.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
@@ -95,9 +96,9 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CrashHandler::Handle _exHandler = nullptr;
 
-    loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
-    loco_global<uint32_t, 0x0050C19E> _last_tick_time;
-    loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
+    static loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
+    static loco_global<uint32_t, 0x0050C19E> _last_tick_time;
+
     static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
 
@@ -331,7 +332,8 @@ namespace OpenLoco
             {
                 _time_since_last_tick = 31;
             }
-            _game_command_nest_level = 0;
+
+            GameCommands::resetCommandNestLevel();
             Ui::update();
 
             addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
