@@ -3,6 +3,7 @@
 - Change: [#2600] The lanscape can now be regenerated from all tabs in the Landscape Generation window.
 - Fix: [#2372] Large (16xN) stations could not be created without cheats.
 - Fix: [#2592] Industry ghosts always destroy first industry instead of ghost.
+- Fix: [#2604] Crash when viewing the brige tooltip in the construction window.
 
 24.08 (2024-08-19)
 ------------------------------------------------------------------------
