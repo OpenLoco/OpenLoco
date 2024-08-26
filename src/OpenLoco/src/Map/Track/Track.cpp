@@ -116,7 +116,6 @@ namespace OpenLoco::World::Track
                                 result.stationObjectId = elStation->objectId();
                             }
                         }
-
                         result.roadObjectId = elRoad->roadObjectId();
                         result.connections.push_back(trackAndDirection2);
                     }
@@ -163,6 +162,7 @@ namespace OpenLoco::World::Track
                     result.stationObjectId = elStation->objectId();
                 }
             }
+            result.roadObjectId = elRoad->roadObjectId();
             result.connections.push_back(trackAndDirection2);
         }
         return result;

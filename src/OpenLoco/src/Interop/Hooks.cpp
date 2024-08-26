@@ -821,6 +821,7 @@ void OpenLoco::Interop::registerHooks()
     Paint::registerHooks();
     Config::registerHooks();
     ObjectManager::registerHooks();
+    Vehicles::registerHooks();
 
     // Part of 0x004691FA
     registerHook(
