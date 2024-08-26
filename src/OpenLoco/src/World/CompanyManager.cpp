@@ -1030,7 +1030,8 @@ namespace OpenLoco::CompanyManager
         StringManager::emptyUserString(company->name);
         company->name = StringIds::empty;
         StringManager::emptyUserString(company->ownerName);
-        company->ownerName = StringIds::empty;
+        // TODO: Change this when we want to diverge from vanilla
+        // company->ownerName = StringIds::empty;
 
         ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{
             ObjectType::competitor, company->competitorId }));
