@@ -21,7 +21,6 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
     static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
-    static loco_global<uint8_t, 0x0112C2ED> _112C2ED;
 
 #pragma pack(push, 1)
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
@@ -153,17 +152,6 @@ namespace OpenLoco::Vehicles
             auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, component.trackAndDirection.road._data & 0x7F);
             const auto tc = World::Track::getRoadConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
 
-            // *** FOR GLOBAL ISSUE
-            for (auto& c : tc.connections)
-            {
-                if (!(c & (1U << 2)))
-                {
-                    _112C2ED = tc.roadObjectId;
-                    break;
-                }
-            }
-            // *** FOR GLOBAL ISSUE
-
             bool routingFound = false;
             for (auto& connection : tc.connections)
             {
@@ -183,11 +171,7 @@ namespace OpenLoco::Vehicles
             component.trackAndDirection.road._data = routing & 0x1FF;
             if (component.isVehicle2())
             {
-                // *** FOR GLOBAL ISSUE
-                component.asVehicle2()->var_4F = _112C2ED;
-                // *** FOR GLOBAL ISSUE
-
-                // component.asVehicle2()->var_4F = tc.roadObjectId;
+                component.asVehicle2()->var_4F = tc.roadObjectId;
             }
 
             pos += World::TrackData::getUnkRoad(oldTaD & 0x7F).pos;

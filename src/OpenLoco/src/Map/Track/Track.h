@@ -34,7 +34,7 @@ namespace OpenLoco::World::Track
         sfl::static_vector<uint16_t, 16> connections;
         StationId stationId = StationId::null; // 0x01135FAE
         uint8_t stationObjectId = 0U;          // 0x01136087
-        uint8_t roadObjectId = 0U;             // 0x0112C2ED (I wouldn't trust this to be correct which connection!)
+        uint8_t roadObjectId = 0xFFU;          // 0x0112C2ED (I wouldn't trust this to be correct which connection!)
     };
 
     // requiredMods : 0x0113601A
