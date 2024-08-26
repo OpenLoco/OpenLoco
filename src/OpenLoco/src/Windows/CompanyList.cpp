@@ -630,6 +630,22 @@ namespace OpenLoco::Ui::Windows::CompanyList
         return window;
     }
 
+    void removeCompany(CompanyId id)
+    {
+        auto* w = WindowManager::find(WindowType::companyList);
+        if (w != nullptr)
+        {
+            for (auto i = 0; i < w->var_83C; i++)
+            {
+                if (static_cast<CompanyId>(w->rowInfo[i]) == id)
+                {
+                    w->rowInfo[i] = -1;
+                }
+            }
+        }
+        WindowManager::invalidate(WindowType::companyList);
+    }
+
     // 0x00435C69
     void openPerformanceIndexes()
     {

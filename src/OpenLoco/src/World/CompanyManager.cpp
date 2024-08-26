@@ -6,6 +6,7 @@
 #include "Effects/Effect.h"
 #include "Effects/MoneyEffect.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/Company/RemoveCompanyHeadquarters.h"
 #include "GameCommands/Company/RenameCompanyName.h"
 #include "GameCommands/Company/RenameCompanyOwner.h"
 #include "GameCommands/Company/UpdateOwnerStatus.h"
@@ -17,6 +18,7 @@
 #include "Localisation/Formatting.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
@@ -148,6 +150,23 @@ namespace OpenLoco::CompanyManager
     void setRecords(const Records& records)
     {
         getGameState().companyRecords = records;
+    }
+
+    void removeCompaniesRecords(CompanyId id)
+    {
+        auto records = getRecords();
+        for (auto i = 0U; i < 3; ++i)
+        {
+            if (records.speed[i] == kSpeedZero)
+            {
+                continue;
+            }
+            if (records.company[i] == id)
+            {
+                records.company[i] = CompanyId::null;
+            }
+        }
+        setRecords(records);
     }
 
     FixedVector<Company, Limits::kMaxCompanies> companies()
@@ -989,9 +1008,30 @@ namespace OpenLoco::CompanyManager
     void aiDestroy(const CompanyId id)
     {
         auto* company = get(id);
-        registers regs;
-        regs.esi = X86Pointer(company);
-        call(0x00435AEF, regs);
+        if (company->headquartersX != -1)
+        {
+            GameCommands::HeadquarterRemovalArgs args{};
+            args.pos = World::Pos3(company->headquartersX, company->headquartersY, company->headquartersZ * kSmallZStep);
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+        }
+
+        Ui::WindowManager::close(Ui::WindowType::company, enumValue(id));
+        Ui::WindowManager::close(Ui::WindowType::vehicleList, enumValue(id));
+        Ui::WindowManager::close(Ui::WindowType::stationList, enumValue(id));
+        Ui::WindowManager::close(Ui::WindowType::map);
+
+        Ui::Windows::CompanyList::removeCompany(id);
+        MessageManager::removeAllSubjectRefs(enumValue(id), MessageItemArgumentType::company);
+        removeCompaniesRecords(id);
+        StringManager::emptyUserString(company->name);
+        company->name = StringIds::empty;
+        StringManager::emptyUserString(company->ownerName);
+        company->ownerName = StringIds::empty;
+
+        ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{
+            ObjectType::competitor, company->competitorId }));
+        ObjectManager::reloadAll();
+        Ui::Dropdown::forceCloseCompanySelect();
     }
 }
 

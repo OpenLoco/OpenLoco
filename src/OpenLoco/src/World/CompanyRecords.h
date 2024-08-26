@@ -23,4 +23,5 @@ namespace OpenLoco::CompanyManager
     };
     const Records& getRecords();
     void setRecords(const Records& records);
+    void removeCompaniesRecords(CompanyId id);
 }

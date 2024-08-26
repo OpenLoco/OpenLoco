@@ -144,6 +144,7 @@ namespace OpenLoco::Ui::Windows
     {
         void openPerformanceIndexes();
         Window* open();
+        void removeCompany(CompanyId id);
     }
 
     namespace CompanyWindow
