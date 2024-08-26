@@ -2,6 +2,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "StringIds.h"
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
@@ -27,6 +28,11 @@ namespace OpenLoco::StringManager
 
     const char* getString(StringId id)
     {
+        if (id >= _strings.size())
+        {
+            Diagnostics::Logging::error("Tried to access invalid string id: {}", id);
+            return nullptr;
+        }
         char* str = _strings[id];
         return str;
     }

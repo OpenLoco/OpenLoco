@@ -2500,6 +2500,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto trackObj = ObjectManager::get<TrackObject>(_trackType);
             args.push(trackObj->name);
         }
+        Common::repositionTabs(&self);
+    }
+
+    static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t)
+    {
+        FormatArguments args{};
+        args.skip(2);
         if (_lastSelectedBridge != 0xFF)
         {
             auto bridgeObj = ObjectManager::get<BridgeObject>(_lastSelectedBridge);
@@ -2519,7 +2526,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 args.push<uint16_t>(bridgeObj->maxHeight);
             }
         }
-        Common::repositionTabs(&self);
+        return args;
     }
 
     // 0x004A0AE5
@@ -2961,6 +2968,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         .onUpdate = onUpdate,
         .onToolUpdate = onToolUpdate,
         .onToolDown = onToolDown,
+        .tooltip = tooltip,
         .cursor = cursor,
         .prepareDraw = prepareDraw,
         .draw = draw,
