@@ -27,43 +27,79 @@ namespace OpenLoco::GameCommands
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
-    struct NearbyStation
-    {
-        StationId id;
-        bool isPhysicallyAttached;
-    };
-
     // 0x0049060C
-    static NearbyStation sub_49060C(World::Pos3 pos, uint8_t dockObjectId, uint8_t rotation)
+    static StationManager::NearbyStation findNearbyStationDocks(World::Pos3 pos)
     {
-        registers regs;
-        regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.bl = dockObjectId;
-        regs.bh = rotation;
-        call(0x0049060C, regs);
-        NearbyStation result{};
-        result.id = static_cast<StationId>(regs.bx);
-        result.isPhysicallyAttached = regs.eax & (1U << 31);
-        return result;
+        const auto tilePosA = World::toTileSpace(pos) - World::TilePos2(1, 1);
+        const auto tilePosB = World::toTileSpace(pos) + World::TilePos2(2, 2);
+
+        for (const auto tilePos : World::getClampedRange(tilePosA, tilePosB))
+        {
+            const auto tile = World::TileManager::get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elStation = el.as<World::StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+                if (elStation->stationType() != StationType::docks)
+                {
+                    continue;
+                }
+                if (elStation->isGhost() || elStation->isAiAllocated())
+                {
+                    continue;
+                }
+                if (elStation->owner() != getUpdatingCompanyId())
+                {
+                    continue;
+                }
+                return StationManager::NearbyStation{ elStation->stationId(), true };
+            }
+        }
+
+        return StationManager::findNearbyStation(pos, getUpdatingCompanyId());
     }
 
     // 0x004906AC
-    static NearbyStation sub_4906AC(World::Pos3 pos, uint8_t dockObjectId, uint8_t rotation)
+    static StationManager::NearbyStation findNearbyStationDocksAi(World::Pos3 pos)
     {
-        // This one is for ai preview allocated docks
-        registers regs;
-        regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.bl = dockObjectId;
-        regs.bh = rotation;
-        call(0x004906AC, regs);
-        NearbyStation result{};
-        result.id = static_cast<StationId>(regs.bx);
-        result.isPhysicallyAttached = regs.eax & (1U << 31);
-        return result;
+        const auto tilePosA = World::toTileSpace(pos) - World::TilePos2(1, 1);
+        const auto tilePosB = World::toTileSpace(pos) + World::TilePos2(2, 2);
+
+        for (const auto tilePos : World::getClampedRange(tilePosA, tilePosB))
+        {
+            const auto tile = World::TileManager::get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elStation = el.as<World::StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+                if (elStation->stationType() != StationType::docks)
+                {
+                    continue;
+                }
+                if (elStation->isGhost())
+                {
+                    continue;
+                }
+                // This is the part that is different compared to findNearbyStationDocks
+                if (!elStation->isAiAllocated())
+                {
+                    continue;
+                }
+                if (elStation->owner() != getUpdatingCompanyId())
+                {
+                    continue;
+                }
+                return StationManager::NearbyStation{ elStation->stationId(), true };
+            }
+        }
+
+        return StationManager::findNearbyStation(pos, getUpdatingCompanyId());
     }
 
     enum class NearbyStationValidation
@@ -74,10 +110,10 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048BDCE & 0x0048BD40
-    static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint8_t docksObjectId, const uint8_t rotation, const uint8_t flags)
+    static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint8_t flags)
     {
-        auto func = (flags & Flags::aiAllocated) ? &sub_4906AC : &sub_49060C;
-        auto nearbyStation = func(pos, docksObjectId, rotation);
+        auto func = (flags & Flags::aiAllocated) ? &findNearbyStationDocksAi : &findNearbyStationDocks;
+        auto nearbyStation = func(pos);
         if (nearbyStation.id == StationId::null)
         {
             return std::make_pair(NearbyStationValidation::requiresNewStation, StationId::null);
@@ -427,7 +463,7 @@ namespace OpenLoco::GameCommands
         if ((flags & Flags::ghost) && (flags & Flags::apply))
         {
             _lastConstructedAdjoiningStationCentrePos = args.pos;
-            auto nearbyStation = flags & Flags::aiAllocated ? sub_4906AC(args.pos, args.type, args.rotation) : sub_49060C(args.pos, args.type, args.rotation);
+            auto nearbyStation = flags & Flags::aiAllocated ? findNearbyStationDocksAi(args.pos) : findNearbyStationDocks(args.pos);
             _lastConstructedAdjoiningStationId = static_cast<int16_t>(nearbyStation.id);
         }
 
@@ -435,7 +471,7 @@ namespace OpenLoco::GameCommands
         {
             if (flags & Flags::apply)
             {
-                auto [result, nearbyStationId] = validateNearbyStation(args.pos, args.type, args.rotation, flags);
+                auto [result, nearbyStationId] = validateNearbyStation(args.pos, flags);
                 switch (result)
                 {
                     case NearbyStationValidation::failure:
@@ -460,7 +496,7 @@ namespace OpenLoco::GameCommands
             else
             {
                 // Same as the other branch but deallocate after allocating and return failure on failure
-                auto [result, nearbyStationId] = validateNearbyStation(args.pos, args.type, args.rotation, flags);
+                auto [result, nearbyStationId] = validateNearbyStation(args.pos, flags);
                 switch (result)
                 {
                     case NearbyStationValidation::failure:

@@ -23,26 +23,41 @@ namespace OpenLoco::GameCommands
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
-    struct NearbyStation
-    {
-        StationId id;
-        bool isPhysicallyAttached;
-    };
-
     // 0x004900B8
-    static NearbyStation sub_4900B8(World::Pos3 pos, uint16_t tad, uint8_t roadObjectId)
+    static StationManager::NearbyStation findNearbyStationOnRoad(World::Pos3 pos, uint16_t tad, uint8_t roadObjectId)
     {
-        registers regs;
-        regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.bp = tad;
-        regs.bh = roadObjectId;
-        call(0x004900B8, regs);
-        NearbyStation result{};
-        result.id = static_cast<StationId>(regs.bx);
-        result.isPhysicallyAttached = regs.eax & (1U << 31);
-        return result;
+        {
+            auto [nextPos, nextRotation] = World::Track::getRoadConnectionEnd(pos, tad);
+            const auto rc = World::Track::getRoadConnections(nextPos, nextRotation, getUpdatingCompanyId(), roadObjectId, 0, 0);
+            if (rc.stationId != StationId::null)
+            {
+                if (StationManager::get(rc.stationId)->owner == getUpdatingCompanyId())
+                {
+                    return StationManager::NearbyStation{ rc.stationId, true };
+                }
+            }
+        }
+        {
+            auto tailTaD = tad;
+            const auto& roadSize = World::TrackData::getUnkRoad(tailTaD);
+            auto tailPos = pos + roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                tailPos -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+            tailTaD ^= (1U << 2); // Reverse
+            auto [nextTailPos, nextTailRotation] = World::Track::getRoadConnectionEnd(tailPos, tailTaD);
+            const auto tailRc = World::Track::getRoadConnections(nextTailPos, nextTailRotation, getUpdatingCompanyId(), roadObjectId, 0, 0);
+            if (tailRc.stationId != StationId::null)
+            {
+                if (StationManager::get(tailRc.stationId)->owner == getUpdatingCompanyId())
+                {
+                    return StationManager::NearbyStation{ tailRc.stationId, true };
+                }
+            }
+        }
+
+        return StationManager::findNearbyStation(pos, getUpdatingCompanyId());
     }
 
     enum class NearbyStationValidation
@@ -55,7 +70,7 @@ namespace OpenLoco::GameCommands
     // 0x0048CA3E & 0x0048C9C8
     static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint16_t tad, const uint8_t trackObjectId)
     {
-        auto nearbyStation = sub_4900B8(pos, tad, trackObjectId);
+        auto nearbyStation = findNearbyStationOnRoad(pos, tad, trackObjectId);
         if (nearbyStation.id == StationId::null)
         {
             return std::make_pair(NearbyStationValidation::requiresNewStation, StationId::null);
@@ -282,7 +297,7 @@ namespace OpenLoco::GameCommands
         {
             _lastConstructedAdjoiningStationCentrePos = roadStart;
             uint16_t tad = (args.roadId << 3) | args.rotation;
-            auto nearbyStation = sub_4900B8(roadStart, tad, args.roadObjectId);
+            auto nearbyStation = findNearbyStationOnRoad(roadStart, tad, args.roadObjectId);
             _lastConstructedAdjoiningStationId = static_cast<int16_t>(nearbyStation.id);
         }
 
