@@ -470,10 +470,10 @@ namespace OpenLoco::Vehicles
             intermediatePosition = nextNewPosition;
             component.spriteYaw = moveData.yaw;
             component.spritePitch = moveData.pitch;
-            if (component.getSubType() == VehicleEntityType::bogie)
+            if (component.isVehicleBogie())
             {
                 // collision checks
-                auto collideResult = checkForCollisions(component, intermediatePosition);
+                auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                 if (collideResult.has_value())
                 {
                     _vehicleUpdate_var_1136114 |= (1U << 2);
