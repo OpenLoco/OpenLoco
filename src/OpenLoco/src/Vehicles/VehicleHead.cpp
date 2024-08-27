@@ -527,7 +527,7 @@ namespace OpenLoco::Vehicles
         for (auto& car : train.cars)
         {
             auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-            if (vehicleObj->hasFlags(VehicleObjectFlags::flag_00))
+            if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionHead))
             {
                 unkEdx++;
                 if (unkEdx & 1U)
@@ -558,7 +558,7 @@ namespace OpenLoco::Vehicles
                     unpoweredCarCount++;
                 }
 
-                if (vehicleObj->hasFlags(VehicleObjectFlags::flag_01))
+                if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
                 {
                     unkCar = car;
                 }
@@ -581,11 +581,11 @@ namespace OpenLoco::Vehicles
         {
             [&train]() {
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-                if (vehicleObj->hasFlags(VehicleObjectFlags::flag_01))
+                if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
                 {
                     return;
                 }
-                if (!vehicleObj->hasFlags(VehicleObjectFlags::flag_05) && vehicleObj->power != 0)
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered) && vehicleObj->power != 0)
                 {
                     return;
                 }
@@ -593,18 +593,64 @@ namespace OpenLoco::Vehicles
                 for (auto& car : train.cars)
                 {
                     auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                    if (vehicleObj->hasFlags(VehicleObjectFlags::flag_01))
+                    if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
                     {
                         if (train.cars.firstCar.body->has38Flags(Flags38::isReversed))
                         {
                             sub_4AFFF3(*car.front);
                         }
                         sub_4AF4D6(*car.front, *train.cars.firstCar.front);
+                        break;
                     }
                 }
             }();
         }
         // 0x004AFBC0
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            int32_t unk = 0;
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered))
+                {
+                    sub_4AF4D6(*car.front, *train.cars.firstCar.front);
+                }
+                else
+                {
+                    unk++;
+                }
+            }
+            unk++;
+
+            VehicleBase* unkCar = train.tail;
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered))
+                {
+                    continue;
+                }
+                unk -= 2;
+                if (unk >= 0)
+                {
+                    continue;
+                }
+                unkCar = car.front;
+                break;
+            }
+            int32_t unk2 = 20;
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered))
+                {
+                    break;
+                }
+                sub_4AF4D6(*car.front, *unkCar);
+            }
+        }
+        // 0x004AFDC2
         registers regs{};
         regs.esi = X86Pointer(this);
         call(0x004AF7A4, regs);
