@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         std::array<PaletteIndex_t, 256> colours;
 
         std::fill(colours.begin(), colours.end(), PaletteIndex::index_0A);
-        std::fill(colours.begin() + 11, colours.begin() + 15, PaletteIndex::index_15);
+        std::fill(colours.begin() + 10, colours.begin() + 14, PaletteIndex::index_15);
 
         return colours;
     }(); // 0x004FDC5C
@@ -623,6 +623,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
+            bool haveTrackOrRoad = false; // ch
             PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
             auto tile = TileManager::get(pos);
             for (auto& el : tile)
@@ -635,20 +636,27 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (surfaceEl == nullptr)
                             continue;
 
+                        uint8_t terrainColour0{}, terrainColour1{};
                         if (surfaceEl->water() == 0)
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = landImage->offset[0];
+                            terrainColour0 = landImage->offset[0];
+                            terrainColour1 = landImage->offset[1];
                         }
                         else
                         {
                             const auto* waterObj = ObjectManager::get<WaterObject>();
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = waterImage->offset[0];
+                            terrainColour0 = waterImage->offset[0];
+                            terrainColour1 = waterImage->offset[1];
                         }
 
-                        colour0 = colour1 = colourFlash0;
+                        colour0 = colourFlash0 = terrainColour0;
+                        if (!haveTrackOrRoad)
+                        {
+                            colour1 = colourFlash1 = terrainColour1;
+                        }
                         break;
                     }
 
@@ -671,18 +679,22 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (trackEl == nullptr)
                             continue;
 
-                        colourFlash0 = _trackColours[trackEl->trackObjectId()];
+                        auto trackObjectId = trackEl->trackObjectId();
+                        colourFlash0 = colour0 = _trackColours[trackObjectId];
 
                         auto firstFlashable = Numerics::bitScanForward(_flashingItems);
                         if (firstFlashable != -1)
                         {
-                            if (_routeToObjectIdMap[firstFlashable] == colourFlash0)
+                            if (_routeToObjectIdMap[firstFlashable] == trackObjectId)
                             {
                                 colourFlash0 = kFlashColours[colourFlash0];
                             }
                         }
 
-                        colour1 = colourFlash1 = colour0 = colourFlash0;
+                        colourFlash1 = colourFlash0;
+                        colour1 = colour0;
+
+                        haveTrackOrRoad = true;
                         break;
                     }
 
@@ -717,6 +729,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                         colour1 = colour0;
                         colourFlash1 = colourFlash0;
+                        haveTrackOrRoad = true;
                         break;
                     }
 
@@ -754,6 +767,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
+            bool haveTrackOrRoad = false; // ch
             PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
             auto tile = TileManager::get(pos);
             for (auto& el : tile)
@@ -766,20 +780,27 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (surfaceEl == nullptr)
                             continue;
 
+                        uint8_t terrainColour0{}, terrainColour1{};
                         if (surfaceEl->water() == 0)
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = landImage->offset[0];
+                            terrainColour0 = landImage->offset[0];
+                            terrainColour1 = landImage->offset[1];
                         }
                         else
                         {
                             const auto* waterObj = ObjectManager::get<WaterObject>();
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = waterImage->offset[0];
+                            terrainColour0 = waterImage->offset[0];
+                            terrainColour1 = waterImage->offset[1];
                         }
 
-                        colour0 = colour1 = colourFlash0;
+                        colour0 = colourFlash0 = terrainColour0;
+                        if (!haveTrackOrRoad)
+                        {
+                            colour1 = colourFlash1 = terrainColour1;
+                        }
                         break;
                     }
 
@@ -814,8 +835,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             {
                                 colourFlash1 = colourFlash0 = kFlashColours[colour0];
                             }
+                            haveTrackOrRoad = true;
                             break;
                         }
+
                         [[fallthrough]];
                     }
 
@@ -1746,13 +1769,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 colour = vehicleTypeColours[index];
             }
 
-            if (_flashingItems & (1 << enumValue(companyId)))
+            // clang-format off
+            auto vehicleType = train.head->vehicleType;
+            if ((widgetIndex == widx::tabOwnership && _flashingItems & (1 << enumValue(companyId))) ||
+                (widgetIndex == widx::tabVehicles && _flashingItems & (1 << enumValue(vehicleType))))
             {
-                if (!(mapFrameNumber & (1 << 2)))
+                if (mapFrameNumber & (1 << 2))
                 {
                     colour = kFlashColours[colour];
                 }
             }
+            // clang-format on
         }
 
         return colour;
