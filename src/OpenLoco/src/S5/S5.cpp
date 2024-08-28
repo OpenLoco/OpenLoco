@@ -121,12 +121,12 @@ namespace OpenLoco::S5
         uint8_t tempPreview[128][128];
         auto* targetPtr = &tempPreview[0][0];
 
-        for (auto y = kTileSize; y < kMapHeight; y += kTileSize * kMapSkipFactor)
+        for (auto y = 1; y < kMapRows; y += kMapSkipFactor)
         {
-            for (auto x = kMapWidth - kTileSize * (kMapSkipFactor - 1); x > 0; x -= kTileSize * kMapSkipFactor)
+            for (auto x = kMapColumns - (kMapSkipFactor - 1); x > 0; x -= kMapSkipFactor)
             {
                 uint8_t colour = 0;
-                auto tile = TileManager::get(x, y);
+                auto tile = TileManager::get(TilePos2(x, y));
                 for (auto& el : tile)
                 {
                     switch (el.type())
