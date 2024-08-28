@@ -691,10 +691,55 @@ namespace OpenLoco::Vehicles
                 sub_4AF4D6(*car.front, *unkCar);
             }
         }
-        // 0x004AFDC2
-        registers regs{};
-        regs.esi = X86Pointer(this);
-        call(0x004AF7A4, regs);
+
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            const auto numCars = train.cars.size();
+            sfl::static_vector<Car, 4> targetCars;
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (vehicleObj->hasFlags(VehicleObjectFlags::flag_04))
+                {
+                    targetCars.push_back(car);
+                }
+            }
+            if (targetCars.size() >= 4)
+            {
+                const auto numCarsLhs = numCars / 2;
+                auto i = 0U;
+                for (auto& car : train.cars)
+                {
+                    if (i != numCarsLhs)
+                    {
+                        auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                        if (!vehicleObj->hasFlags(VehicleObjectFlags::flag_04))
+                        {
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        sub_4AF4D6(*targetCars[2].front, *car.front);
+                        sub_4AF4D6(*targetCars[3].front, *car.front);
+                        break;
+                    }
+                }
+            }
+        }
+        bool front = true;
+        for (auto& car : train.cars)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            if (!vehicleObj->hasFlags(VehicleObjectFlags::flag_07))
+            {
+                continue;
+            }
+            car.body->bodyIndex = front ? 0 : 1;
+            car.body->objectSpriteType = vehicleObj->var_24[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::flag_unk7;
+            front ^= true;
+        }
+        //sub_4AF5E1();
     }
 
     // 0x004B90F0
