@@ -116,17 +116,18 @@ namespace OpenLoco::S5
     // 0x0046DB4C
     void drawScenarioPreviewImage()
     {
-        const auto kMapSkipFactor = kMapRows / 128; // sizeof? = 3
         auto& options = S5::getOptions();
         uint8_t tempPreview[128][128];
-        auto* targetPtr = &tempPreview[0][0];
+        const auto kPreviewSize = sizeof(tempPreview[0]);
+        const auto kMapSkipFactor = kMapRows / kPreviewSize;
 
-        for (auto y = 1; y < kMapRows; y += kMapSkipFactor)
+        for (auto y = 0U; y < kPreviewSize; y++)
         {
-            for (auto x = kMapColumns - (kMapSkipFactor - 1); x > 0; x -= kMapSkipFactor)
+            for (auto x = 0U; x < kPreviewSize; x++)
             {
                 uint8_t colour = 0;
-                auto tile = TileManager::get(TilePos2(x, y));
+                auto pos = TilePos2(kMapColumns - (x + 1) * kMapSkipFactor + 1, y * kMapSkipFactor + 1);
+                auto tile = TileManager::get(pos);
                 for (auto& el : tile)
                 {
                     switch (el.type())
@@ -173,7 +174,7 @@ namespace OpenLoco::S5
                 }
 
                 // TODO: write to S5Options instead
-                *targetPtr++ = colour;
+                tempPreview[y][x] = colour;
             }
         }
 
@@ -183,16 +184,16 @@ namespace OpenLoco::S5
         // Compare our version to original
         auto numMismatches = 0U;
         auto foundMismatch = false;
-        for (auto y = 0; y < 128; y++)
+        for (auto y = 0U; y < kPreviewSize; y++)
         {
-            for (auto x = 0; x < 128; x++)
+            for (auto x = 0U; x < kPreviewSize; x++)
             {
                 if (tempPreview[y][x] != options.preview[y][x])
                 {
                     if (!foundMismatch)
                     {
                         foundMismatch = true;
-                        printf("First preview mismatch at (%d, %d)!", y, x);
+                        printf("First preview mismatch at (%d, %d)!\n", y, x);
                     }
                     numMismatches++;
                 }
