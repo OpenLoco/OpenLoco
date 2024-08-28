@@ -77,8 +77,8 @@ namespace OpenLoco::World::MapGenerator
             auto easternBankOffset = riverWidth + riverbankWidth;
 
             // Pivot: generate a random X position
-            auto xStartPos = getGameState().rng.randNext(0.15 * kMapColumns, 0.85 * kMapColumns);
-            for (auto yPos = 0; yPos < kMapRows; yPos++)
+            auto xStartPos = getGameState().rng.randNext(0.15 * heightMap.width, 0.85 * heightMap.width);
+            for (auto yPos = 0; yPos < heightMap.height; yPos++)
             {
                 for (auto xOffset = 0; xOffset < totalRiverWidth; xOffset++)
                 {
