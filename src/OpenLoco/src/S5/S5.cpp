@@ -117,8 +117,7 @@ namespace OpenLoco::S5
     void drawScenarioPreviewImage()
     {
         auto& options = S5::getOptions();
-        uint8_t tempPreview[128][128];
-        const auto kPreviewSize = sizeof(tempPreview[0]);
+        const auto kPreviewSize = sizeof(options.preview[0]);
         const auto kMapSkipFactor = kMapRows / kPreviewSize;
 
         for (auto y = 0U; y < kPreviewSize; y++)
@@ -173,40 +172,8 @@ namespace OpenLoco::S5
                     }
                 }
 
-                // TODO: write to S5Options instead
-                tempPreview[y][x] = colour;
+                options.preview[y][x] = colour;
             }
-        }
-
-        // Call original function
-        call(0x0046DB4C);
-
-        // Compare our version to original
-        auto numMismatches = 0U;
-        auto foundMismatch = false;
-        for (auto y = 0U; y < kPreviewSize; y++)
-        {
-            for (auto x = 0U; x < kPreviewSize; x++)
-            {
-                if (tempPreview[y][x] != options.preview[y][x])
-                {
-                    if (!foundMismatch)
-                    {
-                        foundMismatch = true;
-                        printf("First preview mismatch at (%d, %d)!\n", y, x);
-                    }
-                    numMismatches++;
-                }
-            }
-        }
-
-        if (numMismatches > 0)
-        {
-            printf("Found %d mismatching bytes!\n", numMismatches);
-        }
-        else
-        {
-            printf("Previews match!");
         }
     }
 
