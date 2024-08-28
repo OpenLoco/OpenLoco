@@ -155,10 +155,10 @@ namespace OpenLoco::S5
                         }
 
                         case ElementType::building:
+                        case ElementType::road:
                             colour = PaletteIndex::index_41;
                             break;
 
-                        case ElementType::road:
                         case ElementType::industry:
                             colour = PaletteIndex::index_7D;
                             break;
