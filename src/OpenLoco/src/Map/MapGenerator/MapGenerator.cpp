@@ -69,7 +69,7 @@ namespace OpenLoco::World::MapGenerator
         {
             const auto riverEastWest = getGameState().rng.randBool();
             const auto riverWidth = getGameState().rng.randNext(options.minRiverWidth, options.maxRiverWidth);
-            const auto riverbedHeight = options.minLandHeight;
+            const auto riverbedHeight = getGameState().seaLevel - 1;
 
             // We'll be varying the bank width as we meander
             auto riverbankWidth = options.riverbankWidth;
