@@ -97,7 +97,7 @@ namespace OpenLoco::S5
         char scenarioName[64];                                // 0x2A
         char scenarioDetails[256];                            // 0x6A
         ObjectHeader scenarioText;                            // 0x16A
-        uint16_t numberOfForests;                             // 0x17a
+        uint16_t numberOfForests;                             // 0x17A
         uint8_t minForestRadius;                              // 0x17C
         uint8_t maxForestRadius;                              // 0x17D
         uint8_t minForestDensity;                             // 0x17E
@@ -456,6 +456,9 @@ namespace OpenLoco::S5
     constexpr const char* filterSV5 = "*.SV5";
 
     Options& getOptions();
+
+    void drawScenarioPreviewImage();
+
     bool exportGameStateToFile(const fs::path& path, SaveFlags flags);
     bool exportGameStateToFile(Stream& stream, SaveFlags flags);
     void registerHooks();

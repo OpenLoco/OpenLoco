@@ -31,5 +31,4 @@ namespace OpenLoco::Game
     void setFlags(GameStateFlags flags);
     bool hasFlags(GameStateFlags flags);
     void removeFlags(GameStateFlags flags);
-    void sub_46DB4C();
 }

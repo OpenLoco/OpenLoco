@@ -37,12 +37,6 @@ namespace OpenLoco::Game
 
     static loco_global<char[512], 0x0112CE04> _savePath;
 
-    // 0x0046DB4C
-    void sub_46DB4C()
-    {
-        call(0x0046DB4C); // draw preview map
-    }
-
     using Ui::Windows::PromptBrowse::browse_type;
 
     static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
@@ -120,7 +114,7 @@ namespace OpenLoco::Game
         if (hasFlags(GameStateFlags::tileManagerLoaded))
         {
             S5::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
-            sub_46DB4C();
+            S5::drawScenarioPreviewImage();
         }
 
         auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / S5::getOptions().scenarioName;
