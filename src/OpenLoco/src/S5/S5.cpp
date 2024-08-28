@@ -113,6 +113,59 @@ namespace OpenLoco::S5
         return result;
     }
 
+    static PaletteIndex_t getPreviewColourByTilePos(const TilePos2& pos)
+    {
+        PaletteIndex_t colour = PaletteIndex::transparent;
+        auto tile = TileManager::get(pos);
+
+        for (auto& el : tile)
+        {
+            switch (el.type())
+            {
+                case ElementType::surface:
+                {
+                    auto* surfaceEl = el.as<SurfaceElement>();
+                    if (surfaceEl == nullptr)
+                        continue;
+
+                    if (surfaceEl->water() == 0)
+                    {
+                        const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+                        const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
+                        auto offset = surfaceEl->baseZ() / kMicroToSmallZStep * 2;
+                        colour = landImage->offset[offset];
+                    }
+                    else
+                    {
+                        const auto* waterObj = ObjectManager::get<WaterObject>();
+                        const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+                        auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
+                        colour = waterImage->offset[offset - 2];
+                    }
+                    break;
+                }
+
+                case ElementType::building:
+                case ElementType::road:
+                    colour = PaletteIndex::index_41;
+                    break;
+
+                case ElementType::industry:
+                    colour = PaletteIndex::index_7D;
+                    break;
+
+                case ElementType::tree:
+                    colour = PaletteIndex::index_64;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return colour;
+    }
+
     // 0x0046DB4C
     void drawScenarioPreviewImage()
     {
@@ -124,55 +177,8 @@ namespace OpenLoco::S5
         {
             for (auto x = 0U; x < kPreviewSize; x++)
             {
-                uint8_t colour = 0;
                 auto pos = TilePos2(kMapColumns - (x + 1) * kMapSkipFactor + 1, y * kMapSkipFactor + 1);
-                auto tile = TileManager::get(pos);
-                for (auto& el : tile)
-                {
-                    switch (el.type())
-                    {
-                        case ElementType::surface:
-                        {
-                            auto* surfaceEl = el.as<SurfaceElement>();
-                            if (surfaceEl == nullptr)
-                                continue;
-
-                            if (surfaceEl->water() == 0)
-                            {
-                                const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
-                                const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                                auto offset = surfaceEl->baseZ() / kMicroToSmallZStep * 2;
-                                colour = landImage->offset[offset];
-                            }
-                            else
-                            {
-                                const auto* waterObj = ObjectManager::get<WaterObject>();
-                                const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                                auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
-                                colour = waterImage->offset[offset - 2];
-                            }
-                            break;
-                        }
-
-                        case ElementType::building:
-                        case ElementType::road:
-                            colour = PaletteIndex::index_41;
-                            break;
-
-                        case ElementType::industry:
-                            colour = PaletteIndex::index_7D;
-                            break;
-
-                        case ElementType::tree:
-                            colour = PaletteIndex::index_64;
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-
-                options.preview[y][x] = colour;
+                options.preview[y][x] = getPreviewColourByTilePos(pos);
             }
         }
     }
