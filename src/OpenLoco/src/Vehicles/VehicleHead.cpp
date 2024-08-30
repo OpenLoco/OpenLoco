@@ -543,14 +543,19 @@ namespace OpenLoco::Vehicles
     // 0x004AF7A4
     void VehicleHead::sub_4AF7A4()
     {
-        Vehicle train(*this);
-        if (train.cars.empty())
         {
-            return;
+            Vehicle train(*this);
+            if (train.cars.empty())
+            {
+                return;
+            }
         }
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // Train is invalid after sub_4AF4D6
+            Vehicle train(*this);
+            // Ensure first car is powered if any powered vehicles available
             for (auto& car : train.cars)
             {
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
@@ -565,39 +570,47 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        uint32_t unkEdx = 0;
-        for (auto& car : train.cars)
         {
-            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-            if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionHead))
+            Vehicle train(*this);
+
+            // Alternate forward/backward if VehicleObjectFlags::alternateCarriageDirection set
+            bool directionForward = true;
+            for (auto& car : train.cars)
             {
-                unkEdx++;
-                if (unkEdx & 1U)
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (vehicleObj->hasFlags(VehicleObjectFlags::alternateCarriageDirection))
                 {
-                    if (car.body->has38Flags(Flags38::isReversed))
+                    if (directionForward)
                     {
-                        sub_4AFFF3(*car.front);
+                        if (car.body->has38Flags(Flags38::isReversed))
+                        {
+                            sub_4AFFF3(*car.front);
+                        }
                     }
-                }
-                else
-                {
-                    if (!car.body->has38Flags(Flags38::isReversed))
+                    else
                     {
-                        sub_4AFFF3(*car.front);
+                        if (!car.body->has38Flags(Flags38::isReversed))
+                        {
+                            sub_4AFFF3(*car.front);
+                        }
                     }
+                    directionForward ^= true;
                 }
             }
         }
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // Train is invalid after sub_4AF4D6
+            Vehicle train(*this);
+
             std::optional<Vehicles::Car> unkCar{};
-            uint8_t unpoweredCarCount = 0;
+            uint8_t poweredCarCount = 0;
             for (auto& car : train.cars)
             {
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (vehicleObj->power == 0)
+                if (vehicleObj->power != 0)
                 {
-                    unpoweredCarCount++;
+                    poweredCarCount++;
                 }
 
                 if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
@@ -609,18 +622,20 @@ namespace OpenLoco::Vehicles
             if (unkCar.has_value())
             {
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(unkCar->front->objectId);
-                if (vehicleObj->power == 0 || unpoweredCarCount >= 2)
+                if (vehicleObj->power == 0 || poweredCarCount >= 2)
                 {
-                    if (unkCar->body->has38Flags(Flags38::isReversed))
+                    if (!unkCar->body->has38Flags(Flags38::isReversed))
                     {
                         sub_4AFFF3(*unkCar->front);
                     }
-                    sub_4AF4D6(*unkCar->front, *train.cars.firstCar.front);
+                    sub_4AF4D6(*unkCar->front, *train.tail);
                 }
             }
         }
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // Train is invalid after sub_4AF4D6
+            Vehicle train(*this);
             [&train]() {
                 {
                     auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
@@ -639,7 +654,7 @@ namespace OpenLoco::Vehicles
                     auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
                     if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
                     {
-                        if (train.cars.firstCar.body->has38Flags(Flags38::isReversed))
+                        if (car.body->has38Flags(Flags38::isReversed))
                         {
                             sub_4AFFF3(*car.front);
                         }
@@ -652,6 +667,9 @@ namespace OpenLoco::Vehicles
         // 0x004AFBC0
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // Train is invalid after sub_4AF4D6
+            Vehicle train(*this);
+            // TODO: Needs rework!
             int32_t unk = 0;
             for (auto& car : train.cars)
             {
@@ -702,6 +720,8 @@ namespace OpenLoco::Vehicles
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // Train is invalid after sub_4AF4D6
+            Vehicle train(*this);
             const auto numCars = train.cars.size();
             sfl::static_vector<Car, 4> targetCars;
             for (auto& car : train.cars)
@@ -735,17 +755,21 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        bool front = true;
-        for (auto& car : train.cars)
         {
-            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-            if (!vehicleObj->hasFlags(VehicleObjectFlags::flag_07))
+            // Train is invalid after sub_4AF4D6
+            Vehicle train(*this);
+            bool front = true;
+            for (auto& car : train.cars)
             {
-                continue;
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::flag_07))
+                {
+                    continue;
+                }
+                car.body->bodyIndex = front ? 0 : 1;
+                car.body->objectSpriteType = vehicleObj->var_24[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::flag_unk7;
+                front ^= true;
             }
-            car.body->bodyIndex = front ? 0 : 1;
-            car.body->objectSpriteType = vehicleObj->var_24[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::flag_unk7;
-            front ^= true;
         }
         sub_4AF5E1(*this);
     }
