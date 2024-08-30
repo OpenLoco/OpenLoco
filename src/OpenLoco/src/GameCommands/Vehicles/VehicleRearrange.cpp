@@ -18,15 +18,6 @@ namespace OpenLoco::GameCommands
         EntityId head;
     };
 
-    // 0x004AF4D6
-    static void sub_4AF4D6(Vehicles::VehicleBogie& source, Vehicles::VehicleBase& dest)
-    {
-        registers regs{};
-        regs.esi = X86Pointer(&source);
-        regs.edi = X86Pointer(&dest);
-        call(0x004AF4D6, regs);
-    }
-
     // 0x004AF1DF
     static currency32_t vehicleRearrange(const VehicleRearrangeArgs& args, uint8_t flags)
     {
@@ -148,7 +139,7 @@ namespace OpenLoco::GameCommands
             std::optional<PlacementBackup> sourcePlacement = tryPickupTrain(sourceTrain);
             std::optional<PlacementBackup> destPlacement = tryPickupTrain(destTrain);
 
-            sub_4AF4D6(*sourceBogie, *destVehicle);
+            Vehicles::sub_4AF4D6(*sourceBogie, *destVehicle);
 
             // Vehicle has been invalidate so get it again
             sourceTrain = Vehicles::Vehicle(*sourceHead);

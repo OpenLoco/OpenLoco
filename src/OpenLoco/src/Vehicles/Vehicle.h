@@ -968,5 +968,7 @@ namespace OpenLoco::Vehicles
     void removeAllCargo(CarComponent& carComponent);
     VehicleBogie* flipCar(VehicleBogie& frontBogie);
 
+    void sub_4AF4D6(Vehicles::VehicleBogie& source, Vehicles::VehicleBase& dest);
+
     void registerHooks();
 }
