@@ -978,6 +978,8 @@ namespace OpenLoco::Paint
             case Ui::ViewportInteraction::InteractionItem::building:
             case Ui::ViewportInteraction::InteractionItem::industry:
             case Ui::ViewportInteraction::InteractionItem::headquarterBuilding:
+            case Ui::ViewportInteraction::InteractionItem::airport:
+            case Ui::ViewportInteraction::InteractionItem::dock:
                 return true;
             default:
                 return false;
@@ -1008,6 +1010,11 @@ namespace OpenLoco::Paint
         }
     }
 
+    static bool isTypeCullableBridge(const Ui::ViewportInteraction::InteractionItem type)
+    {
+        return (type == Ui::ViewportInteraction::InteractionItem::bridge);
+    }
+
     static bool isTypeCullableTrack(const Ui::ViewportInteraction::InteractionItem type)
     {
         switch (type)
@@ -1016,9 +1023,6 @@ namespace OpenLoco::Paint
             case Ui::ViewportInteraction::InteractionItem::trackExtra:
             case Ui::ViewportInteraction::InteractionItem::signal:
             case Ui::ViewportInteraction::InteractionItem::trainStation:
-            case Ui::ViewportInteraction::InteractionItem::airport:
-            case Ui::ViewportInteraction::InteractionItem::dock:
-            case Ui::ViewportInteraction::InteractionItem::bridge:
                 return true;
             default:
                 return false;
@@ -1073,6 +1077,11 @@ namespace OpenLoco::Paint
             {
                 return true;
             }
+        }
+        if (((viewFlags & Ui::ViewportFlags::seeThroughBridges) != Ui::ViewportFlags::none)
+            && (isTypeCullableBridge(ps.type)))
+        {
+            return true;
         }
         return false;
     }

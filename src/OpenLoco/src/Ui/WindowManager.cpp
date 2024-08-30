@@ -2007,6 +2007,12 @@ namespace OpenLoco::Ui::WindowManager
                     flagsChanged = true;
                 }
 
+                if (viewport->hasFlags(ViewportFlags::seeThroughBridges))
+                {
+                    viewport->flags &= ~(ViewportFlags::seeThroughBridges);
+                    flagsChanged = true;
+                }
+
                 if (viewport->hasFlags(ViewportFlags::seeThroughRoads))
                 {
                     viewport->flags &= ~(ViewportFlags::seeThroughRoads);
