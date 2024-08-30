@@ -540,6 +540,18 @@ namespace OpenLoco::Vehicles
         call(0x004AF5E1, regs);
     }
 
+    struct CarMetaData
+    {
+        EntityId frontId;
+        VehicleObjectFlags flags;
+        uint16_t power;
+        bool isReversed;
+        constexpr bool hasFlags(VehicleObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != VehicleObjectFlags::none;
+        }
+    };
+
     // 0x004AF7A4
     void VehicleHead::sub_4AF7A4()
     {
@@ -551,191 +563,100 @@ namespace OpenLoco::Vehicles
             }
         }
 
+        Vehicle train(*this);
+        // Pretty safe to assume this as its hard to exceed 30
+        // you can do about ~200 if you use some tricks
+        assert(train.cars.size() < 100);
+
+        sfl::static_vector<EntityId, 100> carPositions;
+        sfl::static_vector<CarMetaData, 100> carData;
+
+        for (auto& car : train.cars)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            CarMetaData data{};
+            data.frontId = car.front->id;
+            data.flags = vehicleObj->flags;
+            data.power = vehicleObj->power;
+            data.isReversed = car.body->has38Flags(Flags38::isReversed);
+            carData.push_back(data);
+            carPositions.push_back(car.front->id);
+        }
+
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
-            // Train is invalid after sub_4AF4D6
-            Vehicle train(*this);
             // Ensure first car is powered if any powered vehicles available
-            for (auto& car : train.cars)
+
+            for (auto i = 0U; i < carData.size(); ++i)
             {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (vehicleObj->power != 0)
+                auto& cd = carData[i];
+                if (cd.power != 0)
                 {
-                    if (car.front != train.cars.firstCar.front)
-                    {
-                        sub_4AF4D6(*car.front, *train.cars.firstCar.front);
-                    }
+                    std::rotate(carData.begin(), carData.begin() + i, carData.begin() + i + 1);
                     break;
                 }
             }
         }
 
         {
-            Vehicle train(*this);
-
             // Alternate forward/backward if VehicleObjectFlags::alternateCarriageDirection set
-            // TODO: Needs rework!
-            sfl::static_vector<Car, 100> alternatingCars;
-            for (auto& car : train.cars)
-            {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (vehicleObj->hasFlags(VehicleObjectFlags::alternateCarriageDirection))
-                {
-                    alternatingCars.push_back(car);
-                }
-            }
             bool directionForward = true;
-            for (auto& car : alternatingCars)
+            for (auto& cd : carData)
             {
-                if (directionForward)
+                if (cd.hasFlags(VehicleObjectFlags::alternateCarriageDirection))
                 {
-                    if (car.body->has38Flags(Flags38::isReversed))
-                    {
-                        sub_4AFFF3(*car.front);
-                    }
-                }
-                else
-                {
-                    if (!car.body->has38Flags(Flags38::isReversed))
-                    {
-                        sub_4AFFF3(*car.front);
-                    }
-                }
-                directionForward ^= true;
-            }
-        }
-        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
-        {
-            // Train is invalid after sub_4AF4D6
-            Vehicle train(*this);
-
-            std::optional<Vehicles::Car> unkCar{};
-            uint8_t poweredCarCount = 0;
-            for (auto& car : train.cars)
-            {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (vehicleObj->power != 0)
-                {
-                    poweredCarCount++;
-                }
-
-                if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
-                {
-                    unkCar = car;
-                }
-            }
-
-            if (unkCar.has_value())
-            {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(unkCar->front->objectId);
-                if (vehicleObj->power == 0 || poweredCarCount >= 2)
-                {
-                    if (!unkCar->body->has38Flags(Flags38::isReversed))
-                    {
-                        sub_4AFFF3(*unkCar->front);
-                    }
-                    sub_4AF4D6(*unkCar->front, *train.tail);
+                    cd.isReversed = directionForward;
+                    directionForward ^= true;
                 }
             }
         }
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
-            // Train is invalid after sub_4AF4D6
-            Vehicle train(*this);
-            [&train]() {
+            bool isFirst = true;
+            for (auto i = 0U; i < carData.size(); ++i)
+            {
+                auto& cd = carData[i];
+                if (cd.power != 0 || cd.hasFlags(VehicleObjectFlags::carriagePositionTail))
                 {
-                    auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-                    if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
+                    if (isFirst)
                     {
-                        return;
-                    }
-                    if (!vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered) && vehicleObj->power != 0)
-                    {
-                        return;
-                    }
-                }
-
-                for (auto& car : train.cars)
-                {
-                    auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                    if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
-                    {
-                        if (car.body->has38Flags(Flags38::isReversed))
+                        if (cd.hasFlags(VehicleObjectFlags::carriagePositionTail))
                         {
-                            sub_4AFFF3(*car.front);
+                            cd.isReversed = false;
+                            std::rotate(carData.begin(), carData.begin() + i, carData.begin() + i + 1);
                         }
-                        sub_4AF4D6(*car.front, *train.cars.firstCar.front);
-                        break;
+                        isFirst = false;
+                        continue;
                     }
+                    if (cd.hasFlags(VehicleObjectFlags::carriagePositionTail))
+                    {
+                        cd.isReversed = true;
+                        std::rotate(carData.begin() + i, carData.begin() + i + 1, carData.end());
+                    }
+                    break;
                 }
-            }();
+                isFirst = false;
+            }
         }
+
         // 0x004AFBC0
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
-            int32_t numNonCentreCars = 0;
-            // Train is invalid after sub_4AF4D6
+            const auto middle = (carData.size() / 2) + 1;
+            if (middle < carData.size())
             {
-                Vehicle train(*this);
-                // TODO: Needs rework!
-                sfl::static_vector<Car, 100> centerCars;
-                for (auto& car : train.cars)
-                {
-                    auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                    if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered))
-                    {
-                        centerCars.push_back(car);
-                    }
-                    else
-                    {
-                        numNonCentreCars++;
-                    }
-                }
-                numNonCentreCars++;
-                for (auto& car : centerCars)
-                {
-                    sub_4AF4D6(*car.front, *train.cars.firstCar.front);
-                }
-            }
-
-            Vehicle train(*this);
-            VehicleBase* unkCar = train.tail;
-            for (auto& car : train.cars)
-            {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered))
-                {
-                    continue;
-                }
-                numNonCentreCars -= 2;
-                if (numNonCentreCars >= 0)
-                {
-                    continue;
-                }
-                unkCar = car.front;
-                break;
-            }
-            int32_t unk2 = 20;
-            for (auto& car : train.cars)
-            {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (!vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered))
-                {
-                    break;
-                }
-                sub_4AF4D6(*car.front, *unkCar);
-                unk2--;
-                if (unk2 == 0)
-                {
-                    break;
-                }
+                std::partition(carData.begin(), carData.begin() + middle, [](auto& a) { return !a.hasFlags(VehicleObjectFlags::carriagePositionCentered); });
+                std::partition(carData.begin() + middle, carData.end(), [](auto& a) { return a.hasFlags(VehicleObjectFlags::carriagePositionCentered); });
             }
         }
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // 4+ flag_04's
+            // Move middle ones to middle
+            
             // Train is invalid after sub_4AF4D6
-            Vehicle train(*this);
+            // Vehicle train2(*this);
             const auto numCars = train.cars.size();
             sfl::static_vector<Car, 4> targetCars;
             for (auto& car : train.cars)
@@ -771,7 +692,7 @@ namespace OpenLoco::Vehicles
         }
         {
             // Train is invalid after sub_4AF4D6
-            Vehicle train(*this);
+            // Vehicle train(*this);
             bool front = true;
             for (auto& car : train.cars)
             {
