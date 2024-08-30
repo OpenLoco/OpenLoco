@@ -532,6 +532,14 @@ namespace OpenLoco::Vehicles
         call(0x004AFFF3, regs);
     }
 
+    // 0x004AF5E1
+    static void sub_4AF5E1(Vehicles::VehicleHead& head)
+    {
+        registers regs{};
+        regs.esi = X86Pointer(&head);
+        call(0x004AF5E1, regs);
+    }
+
     // 0x004AF7A4
     void VehicleHead::sub_4AF7A4()
     {
@@ -543,21 +551,14 @@ namespace OpenLoco::Vehicles
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
-            // TODO: Can do this better using train.cars.firstCar
-            // Swap the first powered vehicle to the front of the train
-            std::optional<Vehicles::Car> unpoweredCar{};
             for (auto& car : train.cars)
             {
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (vehicleObj->power == 0 && !unpoweredCar.has_value())
+                if (vehicleObj->power != 0)
                 {
-                    unpoweredCar = car;
-                }
-                else
-                {
-                    if (unpoweredCar.has_value())
+                    if (car.front != train.cars.firstCar.front)
                     {
-                        sub_4AF4D6(*car.front, *unpoweredCar->front);
+                        sub_4AF4D6(*car.front, *train.cars.firstCar.front);
                     }
                     break;
                 }
@@ -621,14 +622,16 @@ namespace OpenLoco::Vehicles
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
             [&train]() {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-                if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
                 {
-                    return;
-                }
-                if (!vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered) && vehicleObj->power != 0)
-                {
-                    return;
+                    auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
+                    if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionTail))
+                    {
+                        return;
+                    }
+                    if (!vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered) && vehicleObj->power != 0)
+                    {
+                        return;
+                    }
                 }
 
                 for (auto& car : train.cars)
@@ -689,6 +692,11 @@ namespace OpenLoco::Vehicles
                     break;
                 }
                 sub_4AF4D6(*car.front, *unkCar);
+                unk2--;
+                if (unk2 == 0)
+                {
+                    break;
+                }
             }
         }
 
@@ -739,7 +747,7 @@ namespace OpenLoco::Vehicles
             car.body->objectSpriteType = vehicleObj->var_24[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::flag_unk7;
             front ^= true;
         }
-        //sub_4AF5E1();
+        sub_4AF5E1(*this);
     }
 
     // 0x004B90F0

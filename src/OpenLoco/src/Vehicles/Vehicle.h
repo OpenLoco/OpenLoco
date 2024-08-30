@@ -1043,6 +1043,7 @@ namespace OpenLoco::Vehicles
      * returns nothing
      */
     void insertCarBefore(VehicleBogie& source, VehicleBase& dest);
+
     void registerHooks();
     void registerHeadHooks();
 
