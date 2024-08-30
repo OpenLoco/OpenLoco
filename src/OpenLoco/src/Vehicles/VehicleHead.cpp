@@ -574,28 +574,34 @@ namespace OpenLoco::Vehicles
             Vehicle train(*this);
 
             // Alternate forward/backward if VehicleObjectFlags::alternateCarriageDirection set
-            bool directionForward = true;
+            // TODO: Needs rework!
+            sfl::static_vector<Car, 100> alternatingCars;
             for (auto& car : train.cars)
             {
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
                 if (vehicleObj->hasFlags(VehicleObjectFlags::alternateCarriageDirection))
                 {
-                    if (directionForward)
-                    {
-                        if (car.body->has38Flags(Flags38::isReversed))
-                        {
-                            sub_4AFFF3(*car.front);
-                        }
-                    }
-                    else
-                    {
-                        if (!car.body->has38Flags(Flags38::isReversed))
-                        {
-                            sub_4AFFF3(*car.front);
-                        }
-                    }
-                    directionForward ^= true;
+                    alternatingCars.push_back(car);
                 }
+            }
+            bool directionForward = true;
+            for (auto& car : alternatingCars)
+            {
+                if (directionForward)
+                {
+                    if (car.body->has38Flags(Flags38::isReversed))
+                    {
+                        sub_4AFFF3(*car.front);
+                    }
+                }
+                else
+                {
+                    if (!car.body->has38Flags(Flags38::isReversed))
+                    {
+                        sub_4AFFF3(*car.front);
+                    }
+                }
+                directionForward ^= true;
             }
         }
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
@@ -667,24 +673,32 @@ namespace OpenLoco::Vehicles
         // 0x004AFBC0
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            int32_t numNonCentreCars = 0;
             // Train is invalid after sub_4AF4D6
-            Vehicle train(*this);
-            // TODO: Needs rework!
-            int32_t unk = 0;
-            for (auto& car : train.cars)
             {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered))
+                Vehicle train(*this);
+                // TODO: Needs rework!
+                sfl::static_vector<Car, 100> centerCars;
+                for (auto& car : train.cars)
+                {
+                    auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                    if (vehicleObj->hasFlags(VehicleObjectFlags::carriagePositionCentered))
+                    {
+                        centerCars.push_back(car);
+                    }
+                    else
+                    {
+                        numNonCentreCars++;
+                    }
+                }
+                numNonCentreCars++;
+                for (auto& car : centerCars)
                 {
                     sub_4AF4D6(*car.front, *train.cars.firstCar.front);
                 }
-                else
-                {
-                    unk++;
-                }
             }
-            unk++;
 
+            Vehicle train(*this);
             VehicleBase* unkCar = train.tail;
             for (auto& car : train.cars)
             {
@@ -693,8 +707,8 @@ namespace OpenLoco::Vehicles
                 {
                     continue;
                 }
-                unk -= 2;
-                if (unk >= 0)
+                numNonCentreCars -= 2;
+                if (numNonCentreCars >= 0)
                 {
                     continue;
                 }
