@@ -1952,13 +1952,11 @@ namespace OpenLoco::StringIds
     constexpr StringId menuSeeThroughScenery = 2315;
     constexpr StringId menuSeeThroughTracks = 2316;
     constexpr StringId menuSeeThroughTrees = 2317;
-    constexpr StringId menuSeeThroughBridges = 2350;
     constexpr StringId shortcutSeeThroughBuildings = 2318;
     constexpr StringId shortcutSeeThroughRoads = 2319;
     constexpr StringId shortcutSeeThroughScenery = 2320;
     constexpr StringId shortcutSeeThroughTracks = 2321;
     constexpr StringId shortcutSeeThroughTrees = 2322;
-    constexpr StringId shortcutSeeThroughBridges = 2351;
     constexpr StringId mountainModeTooltip = 2323;
     constexpr StringId vehicleTrackBehaviour = 2324;
     constexpr StringId tooltip_title_company = 2325;
@@ -1986,6 +1984,8 @@ namespace OpenLoco::StringIds
     constexpr StringId industry_table_header_production_last_month_desc = 2347;
     constexpr StringId sort_industry_production_last_month = 2348;
     constexpr StringId shortcut_show_options_window = 2349;
+    constexpr StringId menuSeeThroughBridges = 2350;
+    constexpr StringId shortcutSeeThroughBridges = 2351;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
