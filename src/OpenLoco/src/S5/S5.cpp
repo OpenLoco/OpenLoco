@@ -6,6 +6,7 @@
 #include "Entities/EntityManager.h"
 #include "Game.h"
 #include "GameException.hpp"
+#include "GameState.h"
 #include "GameStateFlags.h"
 #include "Graphics/DrawingContext.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -14,10 +15,13 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Objects/LandObject.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
+#include "Objects/WaterObject.h"
 #include "OpenLoco.h"
 #include "SawyerStream.h"
 #include "ScenarioManager.h"
@@ -109,7 +113,77 @@ namespace OpenLoco::S5
         return result;
     }
 
-    static void drawPreviewImage(void* pixels, Ui::Size size)
+    static PaletteIndex_t getPreviewColourByTilePos(const TilePos2& pos)
+    {
+        PaletteIndex_t colour = PaletteIndex::transparent;
+        auto tile = TileManager::get(pos);
+
+        for (auto& el : tile)
+        {
+            switch (el.type())
+            {
+                case ElementType::surface:
+                {
+                    auto* surfaceEl = el.as<SurfaceElement>();
+                    if (surfaceEl == nullptr)
+                        continue;
+
+                    if (surfaceEl->water() == 0)
+                    {
+                        const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+                        const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
+                        auto offset = surfaceEl->baseZ() / kMicroToSmallZStep * 2;
+                        colour = landImage->offset[offset];
+                    }
+                    else
+                    {
+                        const auto* waterObj = ObjectManager::get<WaterObject>();
+                        const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+                        auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
+                        colour = waterImage->offset[offset - 2];
+                    }
+                    break;
+                }
+
+                case ElementType::building:
+                case ElementType::road:
+                    colour = PaletteIndex::index_41;
+                    break;
+
+                case ElementType::industry:
+                    colour = PaletteIndex::index_7D;
+                    break;
+
+                case ElementType::tree:
+                    colour = PaletteIndex::index_64;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return colour;
+    }
+
+    // 0x0046DB4C
+    void drawScenarioPreviewImage()
+    {
+        auto& options = S5::getOptions();
+        const auto kPreviewSize = sizeof(options.preview[0]);
+        const auto kMapSkipFactor = kMapRows / kPreviewSize;
+
+        for (auto y = 0U; y < kPreviewSize; y++)
+        {
+            for (auto x = 0U; x < kPreviewSize; x++)
+            {
+                auto pos = TilePos2(kMapColumns - (x + 1) * kMapSkipFactor + 1, y * kMapSkipFactor + 1);
+                options.preview[y][x] = getPreviewColourByTilePos(pos);
+            }
+        }
+    }
+
+    static void drawSavePreviewImage(void* pixels, Ui::Size size)
     {
         auto mainViewport = WindowManager::getMainViewport();
         if (mainViewport == nullptr)
@@ -161,7 +235,7 @@ namespace OpenLoco::S5
         saveDetails->challengeProgress = playerCompany.challengeProgress;
         saveDetails->challengeFlags = playerCompany.challengeFlags;
         std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
-        drawPreviewImage(saveDetails->image, { 250, 200 });
+        drawSavePreviewImage(saveDetails->image, { 250, 200 });
         return saveDetails;
     }
 
