@@ -88,6 +88,13 @@ namespace OpenLoco::World::MapGenerator
                         pos = TilePos2(pos.y, pos.x);
                     }
 
+                    if (!validCoords(pos))
+                    {
+                        // We might meander back to a valid position later,
+                        // so we're only breaking out of the inner loop.
+                        break;
+                    }
+
                     if (riverbankWidth > 0 && xOffset < riverbankWidth)
                     {
                         // Western riverbank (high to low)
