@@ -1986,6 +1986,11 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcut_show_options_window = 2349;
     constexpr StringId menuSeeThroughBridges = 2350;
     constexpr StringId shortcutSeeThroughBridges = 2351;
+    constexpr StringId number_riverbeds = 2352;
+    constexpr StringId minimum_river_width = 2353;
+    constexpr StringId maximum_river_width = 2354;
+    constexpr StringId riverbank_width = 2355;
+    constexpr StringId meander_rate = 2356;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

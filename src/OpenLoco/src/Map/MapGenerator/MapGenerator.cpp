@@ -63,6 +63,81 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
+    static void generateRivers(const S5::Options& options, HeightMap& heightMap)
+    {
+        for (auto i = 0; i < options.numRiverbeds; i++)
+        {
+            auto& gs = getGameState();
+            const auto riverEastWest = gs.rng.randBool();
+            const auto riverWidth = gs.rng.randNext(options.minRiverWidth, options.maxRiverWidth);
+            const auto riverbedHeight = std::max<uint8_t>(gs.seaLevel > 0 ? gs.seaLevel - 1 : 1, options.minLandHeight);
+
+            // We'll be varying the bank width as we meander
+            auto riverbankWidth = options.riverbankWidth;
+            auto totalRiverWidth = riverWidth + 2 * riverbankWidth;
+            auto easternBankOffset = riverWidth + riverbankWidth;
+
+            // Pivot: generate a random X position
+            auto xStartPos = getGameState().rng.randNext(0.15 * heightMap.width, 0.85 * heightMap.width);
+            for (auto yPos = 0; yPos < heightMap.height; yPos++)
+            {
+                for (auto xOffset = 0; xOffset < totalRiverWidth; xOffset++)
+                {
+                    auto pos = TilePos2(xStartPos + xOffset, yPos);
+                    if (!riverEastWest)
+                    {
+                        pos = TilePos2(pos.y, pos.x);
+                    }
+
+                    if (!validCoords(pos))
+                    {
+                        // We might meander back to a valid position later,
+                        // so we're only breaking out of the inner loop.
+                        break;
+                    }
+
+                    if (riverbankWidth > 0 && xOffset < riverbankWidth)
+                    {
+                        // Western riverbank (high to low)
+                        auto bankPos = riverbankWidth - xOffset;
+                        auto bankHeight = heightMap[pos] * bankPos / riverbankWidth;
+                        heightMap[pos] = std::max<uint8_t>(riverbedHeight, bankHeight);
+                    }
+                    else if (riverbankWidth > 0 && xOffset > easternBankOffset)
+                    {
+                        // Eastern riverbank (low to high)
+                        auto bankPos = xOffset - easternBankOffset;
+                        auto bankHeight = heightMap[pos] * bankPos / riverbankWidth;
+                        heightMap[pos] = std::max<uint8_t>(riverbedHeight, bankHeight);
+                    }
+                    else
+                    {
+                        // Simply carve out the river
+                        heightMap[pos] = riverbedHeight;
+                    }
+                }
+
+                // Let the river meander slightly
+                const auto meanderRate = options.riverMeanderRate;
+                if (meanderRate > 0 && yPos % 4 == 0)
+                {
+                    const auto halfMeanderRate = meanderRate / 2;
+
+                    int8_t meanderOffset = getGameState().rng.randNext(0, meanderRate) - halfMeanderRate;
+                    xStartPos += meanderOffset;
+
+                    // Adjust bank width slightly as well
+                    if (options.riverbankWidth > 0)
+                    {
+                        riverbankWidth += meanderOffset / halfMeanderRate;
+                        easternBankOffset += meanderOffset / halfMeanderRate;
+                        totalRiverWidth += meanderOffset / halfMeanderRate * 2;
+                    }
+                }
+            }
+        }
+    }
+
     // 0x004625D0
     static void generateLand(HeightMap& heightMap)
     {
@@ -949,6 +1024,9 @@ namespace OpenLoco::World::MapGenerator
 
             generateHeightMap(options, heightMap);
             updateProgress(25);
+
+            generateRivers(options, heightMap);
+            updateProgress(30);
 
             generateLand(heightMap);
             updateProgress(35);
