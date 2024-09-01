@@ -1,4 +1,4 @@
-24.08+ (???)
+24.09 (2024-09-01)
 ------------------------------------------------------------------------
 - Feature: [#2597] The map generator now allows carving rivers through the landscape.
 - Change: [#2589] See-Through Bridges are now part of the viewing options
