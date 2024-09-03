@@ -174,17 +174,13 @@ namespace OpenLoco::World::MapGenerator
     void OriginalTerrainGenerator::copyHeightMapFromG1(Gfx::G1Element* g1Element, HeightMap& heightMap)
     {
         auto* src = g1Element->offset;
-        auto* dst = heightMap.data();
 
-        // TODO: rewrite to use TilePos2
         for (auto y = kMapRows - 1; y > 0; y--)
         {
-            dst += kMapColumns;
-
-            for (auto x = kMapColumns; x > 0; x--)
+            for (auto x = kMapColumns - 1; x > 0; x--)
             {
-                dst--;
-                *dst = std::max<uint8_t>(*dst, *src);
+                auto height = std::max<uint8_t>(*src, heightMap[TilePos2(x, y)]);
+                heightMap[TilePos2(x, y)] = height;
                 src++;
             }
 
