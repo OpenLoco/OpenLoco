@@ -195,30 +195,29 @@ namespace OpenLoco::World::MapGenerator
     // 0x00462590
     void OriginalTerrainGenerator::capSeaLevels(HeightMap& heightMap)
     {
-        auto seaLevel = getGameState().seaLevel;
-        auto* dst = heightMap.data();
+        const auto seaLevel = getGameState().seaLevel;
 
-        // TODO: rewrite to use TilePos2
-        for (auto i = kMapPitch * (kMapPitch - 1) - 1; i > 0; i--)
+        for (auto y = kMapRows - 1; y > 0; y--)
         {
-            if (seaLevel != *(dst))
-                continue;
+            for (auto x = kMapColumns - 1; x > 0; x--)
+            {
+                if (seaLevel != heightMap[TilePos2(x + 0, y + 0)])
+                    continue;
 
-            if (seaLevel != *(dst + 1))
-                continue;
+                if (seaLevel != heightMap[TilePos2(x + 1, y + 0)])
+                    continue;
 
-            if (seaLevel != *(dst + kMapPitch))
-                continue;
+                if (seaLevel != heightMap[TilePos2(x + 0, y + 1)])
+                    continue;
 
-            if (seaLevel != *(dst + kMapPitch + 1))
-                continue;
+                if (seaLevel != heightMap[TilePos2(x + 1, y + 1)])
+                    continue;
 
-            *dst += 1;
-            *(dst + 1) += 1;
-            *(dst + kMapPitch) += 1;
-            *(dst + kMapPitch + 1) += 1;
-
-            dst++;
+                heightMap[TilePos2(x + 0, y + 0)] += 1;
+                heightMap[TilePos2(x + 1, y + 0)] += 1;
+                heightMap[TilePos2(x + 0, y + 1)] += 1;
+                heightMap[TilePos2(x + 1, y + 1)] += 1;
+            }
         }
     }
 
