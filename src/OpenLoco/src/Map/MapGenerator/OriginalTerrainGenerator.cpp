@@ -31,8 +31,8 @@ namespace OpenLoco::World::MapGenerator
         }
 
         // 0x00462718
-        const auto randX = (randomVal >> 14) & 0x1FF;
-        const auto randY = (randomVal >> 23) & 0x1FF;
+        const auto randX = (randomVal >> 14) % (kMapColumns - 1);
+        const auto randY = (randomVal >> 23) % (kMapRows - 1);
         if (randX < 2 || randY < 2)
         {
             return;
@@ -58,7 +58,7 @@ namespace OpenLoco::World::MapGenerator
 
         if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) == Scenario::ScenarioFlags::none)
         {
-            if ((randX + featureWidth >= 382) || (randY + featureHeight >= 382))
+            if ((randX + featureWidth >= kMapColumns - 2) || (randY + featureHeight >= kMapRows - 2))
             {
                 return;
             }
@@ -86,16 +86,16 @@ namespace OpenLoco::World::MapGenerator
         int32_t x = randX;
         for (auto j = 0; j < featureWidth; ++j)
         {
-            int32_t y = (featureHeight + randY - 1) & 0x1FF;
+            int32_t y = (featureHeight + randY - 1) % (kMapRows - 1);
             for (auto i = 0; i < featureHeight; ++i)
             {
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 y--;
-                y &= 0x1FF;
+                y %= kMapRows - 1;
             }
             x++;
-            x &= 0x1FF;
+            x %= kMapColumns - 1;
         }
     }
 
@@ -111,10 +111,10 @@ namespace OpenLoco::World::MapGenerator
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 y++;
-                y &= 0x1FF;
+                y %= kMapRows - 1;
             }
             x++;
-            x &= 0x1FF;
+            x %= kMapColumns - 1;
         }
     }
 
@@ -124,16 +124,16 @@ namespace OpenLoco::World::MapGenerator
         int32_t y = randY;
         for (auto j = 0; j < featureHeight; ++j)
         {
-            int32_t x = (randX + featureWidth - 1) & 0x1FF;
+            int32_t x = (randX + featureWidth - 1) % (kMapColumns - 1);
             for (auto i = 0; i < featureWidth; ++i)
             {
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 x--;
-                x &= 0x1FF;
+                x %= kMapColumns - 1;
             }
             y++;
-            y &= 0x1FF;
+            y %= kMapRows - 1;
         }
     }
 
@@ -151,10 +151,10 @@ namespace OpenLoco::World::MapGenerator
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
 
                 x++;
-                x &= 0x1FF;
+                x %= kMapColumns - 1;
             }
             y++;
-            y &= 0x1FF;
+            y %= kMapRows - 1;
         }
     }
 
@@ -176,7 +176,7 @@ namespace OpenLoco::World::MapGenerator
         auto* src = g1Element->offset;
         auto* dst = heightMap.data();
 
-        for (auto y = kMapRows; y > 0; y--)
+        for (auto y = kMapRows - 1; y > 0; y--)
         {
             dst += kMapColumns;
 
