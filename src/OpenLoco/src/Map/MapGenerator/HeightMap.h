@@ -26,14 +26,6 @@ namespace OpenLoco::World::MapGenerator
         {
         }
 
-        HeightMap(const HeightMap& src)
-            : _height(src._height)
-            , width(src.width)
-            , height(src.height)
-            , pitch(src.pitch)
-        {
-        }
-
         uint8_t& operator[](TilePos2 pos)
         {
             assert(pos.x >= 0 || pos.y >= 0 || pos.x < width || pos.y < height);
