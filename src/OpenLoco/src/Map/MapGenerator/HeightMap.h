@@ -1,10 +1,13 @@
 #pragma once
 
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Engine/World.hpp>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::MapGenerator
 {
@@ -27,12 +30,18 @@ namespace OpenLoco::World::MapGenerator
         uint8_t& operator[](TilePos2 pos)
         {
             assert(pos.x >= 0 || pos.y >= 0 || pos.x < width || pos.y < height);
+            if (pos.x > 383 || pos.y > 383)
+                Logging::info("pos = ({}, {})", pos.x, pos.y);
+
             return _height[pos.y * width + pos.x];
         }
 
         const uint8_t& operator[](TilePos2 pos) const
         {
             assert(pos.x >= 0 || pos.y >= 0 || pos.x < width || pos.y < height);
+            if (pos.x > 383 || pos.y > 383)
+                Logging::info("pos = ({}, {})", pos.x, pos.y);
+
             return _height[pos.y * width + pos.x];
         }
 
