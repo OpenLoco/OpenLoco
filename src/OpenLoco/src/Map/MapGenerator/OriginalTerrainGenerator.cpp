@@ -31,8 +31,8 @@ namespace OpenLoco::World::MapGenerator
         }
 
         // 0x00462718
-        const auto randX = (randomVal >> 14) % (kMapColumns - 1);
-        const auto randY = (randomVal >> 23) % (kMapRows - 1);
+        const auto randX = (randomVal >> 14) % (heightMap.width - 1);
+        const auto randY = (randomVal >> 23) % (heightMap.height - 1);
         if (randX < 2 || randY < 2)
         {
             return;
@@ -58,7 +58,7 @@ namespace OpenLoco::World::MapGenerator
 
         if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) == Scenario::ScenarioFlags::none)
         {
-            if ((randX + featureWidth >= kMapColumns - 2) || (randY + featureHeight >= kMapRows - 2))
+            if ((randX + featureWidth >= heightMap.width - 2U) || (randY + featureHeight >= heightMap.height - 2U))
             {
                 return;
             }
@@ -86,16 +86,16 @@ namespace OpenLoco::World::MapGenerator
         int32_t x = randX;
         for (auto j = 0; j < featureWidth; ++j)
         {
-            int32_t y = (featureHeight + randY - 1) % (kMapRows - 1);
+            int32_t y = (featureHeight + randY - 1) % (heightMap.height - 1);
             for (auto i = 0; i < featureHeight; ++i)
             {
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 y--;
-                y %= kMapRows - 1;
+                y %= heightMap.height - 1;
             }
             x++;
-            x %= kMapColumns - 1;
+            x %= heightMap.width - 1;
         }
     }
 
@@ -111,10 +111,10 @@ namespace OpenLoco::World::MapGenerator
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 y++;
-                y %= kMapRows - 1;
+                y %= heightMap.height - 1;
             }
             x++;
-            x %= kMapColumns - 1;
+            x %= heightMap.width - 1;
         }
     }
 
@@ -124,16 +124,16 @@ namespace OpenLoco::World::MapGenerator
         int32_t y = randY;
         for (auto j = 0; j < featureHeight; ++j)
         {
-            int32_t x = (randX + featureWidth - 1) % (kMapColumns - 1);
+            int32_t x = (randX + featureWidth - 1) % (heightMap.width - 1);
             for (auto i = 0; i < featureWidth; ++i)
             {
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 x--;
-                x %= kMapColumns - 1;
+                x %= heightMap.width - 1;
             }
             y++;
-            y %= kMapRows - 1;
+            y %= heightMap.height - 1;
         }
     }
 
@@ -151,10 +151,10 @@ namespace OpenLoco::World::MapGenerator
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
 
                 x++;
-                x %= kMapColumns - 1;
+                x %= heightMap.width - 1;
             }
             y++;
-            y %= kMapRows - 1;
+            y %= heightMap.height - 1;
         }
     }
 
@@ -175,9 +175,9 @@ namespace OpenLoco::World::MapGenerator
     {
         auto* src = g1Element->offset;
 
-        for (auto y = kMapRows - 1; y > 0; y--)
+        for (auto y = heightMap.height - 1; y > 0; y--)
         {
-            for (auto x = kMapColumns - 1; x > 0; x--)
+            for (auto x = heightMap.width - 1; x > 0; x--)
             {
                 auto height = std::max<uint8_t>(*src, heightMap[TilePos2(x, y)]);
                 heightMap[TilePos2(x, y)] = height;
@@ -193,9 +193,9 @@ namespace OpenLoco::World::MapGenerator
     {
         const auto seaLevel = getGameState().seaLevel;
 
-        for (auto y = kMapRows - 1; y > 0; y--)
+        for (auto y = heightMap.height - 1; y > 0; y--)
         {
-            for (auto x = kMapColumns - 1; x > 0; x--)
+            for (auto x = heightMap.width - 1; x > 0; x--)
             {
                 if (seaLevel != heightMap[TilePos2(x + 0, y + 0)])
                     continue;

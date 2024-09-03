@@ -14,8 +14,8 @@ namespace OpenLoco::World::MapGenerator
         std::vector<uint8_t> _height;
 
     public:
-        int32_t const width;
-        int32_t const height;
+        const uint16_t width;
+        const uint16_t height;
 
         HeightMap(int32_t width, int32_t height)
             : _height(width * height)
