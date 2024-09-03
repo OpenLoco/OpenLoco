@@ -1020,7 +1020,7 @@ namespace OpenLoco::World::MapGenerator
         updateProgress(10);
 
         {
-            HeightMap heightMap(kMapRows, kMapRows, kMapRows);
+            HeightMap heightMap(kMapColumns, kMapRows);
 
             generateHeightMap(options, heightMap);
             updateProgress(25);

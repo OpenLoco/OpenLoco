@@ -16,26 +16,24 @@ namespace OpenLoco::World::MapGenerator
     public:
         int32_t const width;
         int32_t const height;
-        int32_t const pitch;
 
-        HeightMap(int32_t width, int32_t height, int32_t pitch)
-            : _height(width * pitch)
+        HeightMap(int32_t width, int32_t height)
+            : _height(width * height)
             , width(width)
             , height(height)
-            , pitch(pitch)
         {
         }
 
         uint8_t& operator[](TilePos2 pos)
         {
             assert(pos.x >= 0 || pos.y >= 0 || pos.x < width || pos.y < height);
-            return _height[pos.y * pitch + pos.x];
+            return _height[pos.y * width + pos.x];
         }
 
         const uint8_t& operator[](TilePos2 pos) const
         {
             assert(pos.x >= 0 || pos.y >= 0 || pos.x < width || pos.y < height);
-            return _height[pos.y * pitch + pos.x];
+            return _height[pos.y * width + pos.x];
         }
 
         uint8_t* data()
