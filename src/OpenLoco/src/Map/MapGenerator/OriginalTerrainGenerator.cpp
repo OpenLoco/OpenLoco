@@ -193,9 +193,9 @@ namespace OpenLoco::World::MapGenerator
     {
         const auto seaLevel = getGameState().seaLevel;
 
-        for (auto y = heightMap.height - 1; y > 0; y--)
+        for (auto y = 0; y < heightMap.height - 2; y++)
         {
-            for (auto x = heightMap.width - 1; x > 0; x--)
+            for (auto x = 0; x < heightMap.width - 2; x++)
             {
                 if (seaLevel != heightMap[TilePos2(x + 0, y + 0)])
                     continue;
