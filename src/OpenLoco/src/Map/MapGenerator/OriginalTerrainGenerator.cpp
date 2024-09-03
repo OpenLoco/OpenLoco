@@ -176,18 +176,18 @@ namespace OpenLoco::World::MapGenerator
         auto* src = g1Element->offset;
         auto* dst = heightMap.data();
 
-        for (auto y = World::kMapRows; y > 0; y--)
+        for (auto y = kMapRows; y > 0; y--)
         {
-            dst += World::kMapColumns;
+            dst += kMapColumns;
 
-            for (auto x = World::kMapColumns; x > 0; x--)
+            for (auto x = kMapColumns; x > 0; x--)
             {
                 dst--;
                 *dst = std::max<uint8_t>(*dst, *src);
                 src++;
             }
 
-            src += World::kMapPitch;
+            src += kMapPitch;
         }
     }
 
@@ -197,7 +197,7 @@ namespace OpenLoco::World::MapGenerator
         auto seaLevel = getGameState().seaLevel;
         auto* dst = heightMap.data();
 
-        for (auto i = World::kMapPitch * (World::kMapPitch - 1) - 1; i > 0; i--)
+        for (auto i = kMapPitch * (kMapPitch - 1) - 1; i > 0; i--)
         {
             if (seaLevel != *(dst))
                 continue;
@@ -205,16 +205,16 @@ namespace OpenLoco::World::MapGenerator
             if (seaLevel != *(dst + 1))
                 continue;
 
-            if (seaLevel != *(dst + World::kMapPitch))
+            if (seaLevel != *(dst + kMapPitch))
                 continue;
 
-            if (seaLevel != *(dst + World::kMapPitch + 1))
+            if (seaLevel != *(dst + kMapPitch + 1))
                 continue;
 
             *dst += 1;
             *(dst + 1) += 1;
-            *(dst + World::kMapPitch) += 1;
-            *(dst + World::kMapPitch + 1) += 1;
+            *(dst + kMapPitch) += 1;
+            *(dst + kMapPitch + 1) += 1;
 
             dst++;
         }
