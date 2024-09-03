@@ -176,6 +176,7 @@ namespace OpenLoco::World::MapGenerator
         auto* src = g1Element->offset;
         auto* dst = heightMap.data();
 
+        // TODO: rewrite to use TilePos2
         for (auto y = kMapRows - 1; y > 0; y--)
         {
             dst += kMapColumns;
@@ -197,6 +198,7 @@ namespace OpenLoco::World::MapGenerator
         auto seaLevel = getGameState().seaLevel;
         auto* dst = heightMap.data();
 
+        // TODO: rewrite to use TilePos2
         for (auto i = kMapPitch * (kMapPitch - 1) - 1; i > 0; i--)
         {
             if (seaLevel != *(dst))
