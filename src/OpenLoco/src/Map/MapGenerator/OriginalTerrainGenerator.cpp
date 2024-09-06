@@ -31,8 +31,8 @@ namespace OpenLoco::World::MapGenerator
         }
 
         // 0x00462718
-        const auto randX = (randomVal >> 14) % (heightMap.width - 1);
-        const auto randY = (randomVal >> 23) % (heightMap.height - 1);
+        const uint32_t randX = getGameState().rng.randNext(heightMap.width - 1);
+        const uint32_t randY = getGameState().rng.randNext(heightMap.height - 1);
         if (randX < 2 || randY < 2)
         {
             return;
