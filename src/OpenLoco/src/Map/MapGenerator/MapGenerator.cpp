@@ -521,12 +521,15 @@ namespace OpenLoco::World::MapGenerator
                 {
                     continue;
                 }
+
                 const auto typePattern = S5::getOptions().landDistributionPatterns[landObjectIdx];
-                if (typePattern != landDistributionPatterns[i])
+                const auto distPattern = landDistributionPatterns[i];
+                if (typePattern != distPattern)
                 {
                     continue;
                 }
-                _generateFuncs[i](heightMap, landObjectIdx);
+
+                _generateFuncs[enumValue(distPattern)](heightMap, landObjectIdx);
             }
         }
     }
