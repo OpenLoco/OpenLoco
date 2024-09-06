@@ -642,51 +642,43 @@ namespace OpenLoco::Vehicles
         // 0x004AFBC0
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            const auto numMiddles = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::carriagePositionCentered); });
             const auto middle = (carData.size() / 2) + 1;
             if (middle < carData.size())
             {
-                std::partition(carData.begin(), carData.begin() + middle, [](auto& a) { return !a.hasFlags(VehicleObjectFlags::carriagePositionCentered); });
-                std::partition(carData.begin() + middle, carData.end(), [](auto& a) { return a.hasFlags(VehicleObjectFlags::carriagePositionCentered); });
+                std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::carriagePositionCentered); });
+                const auto middleStart = middle - numMiddles / 2;
+                const auto middleEnd = middleStart + numMiddles;
+                std::rotate(carData.begin() + middleStart, carData.begin() + middleEnd, carData.end());
             }
         }
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
-            // 4+ flag_04's
-            // Move middle ones to middle
-            
-            // Train is invalid after sub_4AF4D6
-            // Vehicle train2(*this);
-            const auto numCars = train.cars.size();
-            sfl::static_vector<Car, 4> targetCars;
-            for (auto& car : train.cars)
+            const auto numFlag4s = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::flag_04); });
+            if (numFlag4s >= 4)
             {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (vehicleObj->hasFlags(VehicleObjectFlags::flag_04))
+                uint8_t moveCount = 0;
+                const auto middle = (carData.size() / 2) + 1;
+                std::array<CarMetaData, 2> toBeMoved{};
+                if (middle < carData.size())
                 {
-                    targetCars.push_back(car);
-                }
-            }
-            if (targetCars.size() >= 4)
-            {
-                const auto numCarsLhs = numCars / 2;
-                auto i = 0U;
-                for (auto& car : train.cars)
-                {
-                    if (i != numCarsLhs)
+                    for (auto i = 1U; i < carData.size() - 1; ++i)
                     {
-                        auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                        if (!vehicleObj->hasFlags(VehicleObjectFlags::flag_04))
+                        auto& cd = carData[i];
+                        if (cd.hasFlags(VehicleObjectFlags::flag_04))
                         {
-                            i++;
+                            toBeMoved[moveCount++] = cd;
+                            carData.erase(carData.begin() + i);
+                            i--;
+                            if (moveCount == 2)
+                            {
+                                break;
+                            }
                         }
                     }
-                    else
-                    {
-                        sub_4AF4D6(*targetCars[2].front, *car.front);
-                        sub_4AF4D6(*targetCars[3].front, *car.front);
-                        break;
-                    }
+                    carData.insert(carData.begin() + middle - 1, toBeMoved[0]);
+                    carData.insert(carData.begin() + middle, toBeMoved[1]);
                 }
             }
         }
