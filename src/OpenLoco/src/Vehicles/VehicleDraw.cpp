@@ -356,19 +356,19 @@ namespace OpenLoco
     {
         Vehicles::Vehicle train(car.front->head);
         DrawItems drawItems{};
-        const auto isReversed = car.body->has38Flags(Vehicles::Flags38::isReversed);
+        const auto isCarReversed = car.body->has38Flags(Vehicles::Flags38::isReversed);
         const auto isAnimated = mode == VehicleInlineMode::animated;
-        uint8_t componentIndex = isReversed ? vehObject.var_04 - 1 : 0;
+        uint8_t componentIndex = isCarReversed ? vehObject.var_04 - 1 : 0;
         for (auto& carComponent : car)
         {
             auto& v24 = vehObject.var_24[componentIndex];
             // 0x01136172
-            auto unkDist = isReversed ? v24.var_01 : v24.length;
+            auto unkDist = isCarReversed ? v24.var_01 : v24.length;
 
             if (carComponent.front->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
             {
                 auto unk = yaw;
-                if (isReversed)
+                if (carComponent.front->has38Flags(Vehicles::Flags38::isReversed))
                 {
                     unk ^= 1U << 5;
                 }
@@ -393,13 +393,13 @@ namespace OpenLoco
                 unk1136170 = bodySprites.bogeyPosition * 2;
                 backBogieDist += unk1136170;
             }
-            auto unk1136174 = isReversed ? v24.length : v24.var_01;
+            auto unk1136174 = isCarReversed ? v24.length : v24.var_01;
             backBogieDist -= unk1136174;
 
             if (carComponent.back->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
             {
                 auto unk = yaw;
-                if (!isReversed)
+                if (carComponent.back->has38Flags(Vehicles::Flags38::isReversed))
                 {
                     unk ^= 1U << 5;
                 }
@@ -422,7 +422,7 @@ namespace OpenLoco
                 auto& bodySprites = vehObject.bodySprites[carComponent.body->objectSpriteType];
 
                 auto unk = yaw;
-                if (isReversed)
+                if (carComponent.body->has38Flags(Vehicles::Flags38::isReversed))
                 {
                     unk ^= 1U << 5;
                 }
@@ -441,7 +441,7 @@ namespace OpenLoco
                 }
             }
             drawItems.totalDistance += unk1136170;
-            if (isReversed)
+            if (isCarReversed)
             {
                 componentIndex--;
             }
