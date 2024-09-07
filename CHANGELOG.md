@@ -1,4 +1,4 @@
-24.09+ (???)
+24.09.1 (2024-09-07)
 ------------------------------------------------------------------------
 - Change: [#2617] Report terrain generation progress more incrementally, so it doesn't appear stuck.
 - Fix: [#2613] Landscape types around cliffs aren't applied correctly.
