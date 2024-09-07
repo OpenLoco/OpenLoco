@@ -1,5 +1,6 @@
 24.09+ (???)
 ------------------------------------------------------------------------
+- Change: [#2617] Report terrain generation progress more incrementally, so it doesn't appear stuck.
 - Fix: [#2613] Landscape types around cliffs aren't applied correctly.
 - Fix: [#2614] Randomly generated landscape can use invalid coordinates, leading to a crash.
 - Fix: [#2618] Reversed car components displayed incorrectly in vehicle window.

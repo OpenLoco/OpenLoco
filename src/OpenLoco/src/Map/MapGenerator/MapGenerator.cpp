@@ -43,6 +43,12 @@ namespace OpenLoco::World::MapGenerator
 
     static fs::path _pngHeightmapPath{};
 
+    static void updateProgress(uint8_t value)
+    {
+        Ui::processMessagesMini();
+        Ui::ProgressBar::setProgress(value);
+    }
+
     // 0x004624F0
     static void generateHeightMap(const S5::Options& options, HeightMap& heightMap)
     {
@@ -494,16 +500,20 @@ namespace OpenLoco::World::MapGenerator
             }
         }
 
-        for (const auto pattern : {
-                 LandDistributionPattern::farFromWater,
-                 LandDistributionPattern::nearWater,
-                 LandDistributionPattern::onMountains,
-                 LandDistributionPattern::farFromMountains,
-                 LandDistributionPattern::inSmallRandomAreas,
-                 LandDistributionPattern::inLargeRandomAreas,
-                 LandDistributionPattern::aroundCliffs,
-             })
+        constexpr std::array landDistributionPatterns = {
+            LandDistributionPattern::farFromWater,
+            LandDistributionPattern::nearWater,
+            LandDistributionPattern::onMountains,
+            LandDistributionPattern::farFromMountains,
+            LandDistributionPattern::inSmallRandomAreas,
+            LandDistributionPattern::inLargeRandomAreas,
+            LandDistributionPattern::aroundCliffs,
+        };
+
+        for (auto i = 0U; i < landDistributionPatterns.size(); i++)
         {
+            updateProgress(55 + 12 * i);
+
             for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
             {
                 const auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
@@ -511,12 +521,15 @@ namespace OpenLoco::World::MapGenerator
                 {
                     continue;
                 }
+
                 const auto typePattern = S5::getOptions().landDistributionPatterns[landObjectIdx];
-                if (typePattern != pattern)
+                const auto distPattern = landDistributionPatterns[i];
+                if (typePattern != distPattern)
                 {
                     continue;
                 }
-                _generateFuncs[enumValue(pattern)](heightMap, landObjectIdx);
+
+                _generateFuncs[enumValue(distPattern)](heightMap, landObjectIdx);
             }
         }
     }
@@ -714,12 +727,6 @@ namespace OpenLoco::World::MapGenerator
         }
 
         return false;
-    }
-
-    static void updateProgress(uint8_t value)
-    {
-        Ui::processMessagesMini();
-        Ui::ProgressBar::setProgress(value);
     }
 
     // 0x004597FD
@@ -1039,10 +1046,10 @@ namespace OpenLoco::World::MapGenerator
         }
 
         generateSurfaceVariation();
-        updateProgress(65);
+        updateProgress(175);
 
         generateTrees();
-        updateProgress(75);
+        updateProgress(200);
 
         generateTowns();
         updateProgress(225);
