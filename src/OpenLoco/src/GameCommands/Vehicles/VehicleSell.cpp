@@ -87,7 +87,8 @@ namespace OpenLoco::GameCommands
                 }
                 Vehicles::Car car(vehBase);
                 VehicleManager::deleteCar(car);
-                head->sub_4AF7A4();
+
+                head->autoLayoutTrain();
                 head->updateTrainProperties();
                 head->applyBreakdownToTrain();
                 if (placeArgs.has_value())
