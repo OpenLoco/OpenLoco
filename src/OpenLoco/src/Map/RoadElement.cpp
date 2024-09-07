@@ -101,6 +101,11 @@ namespace OpenLoco::World
     bool updateLevelCrossingAnimation(const Animation& anim)
     {
         auto tile = TileManager::get(anim.pos);
+        bool shouldInvalidate = false;
+        bool hasAnimation = false;
+
+        // It's possible to have multiple level crossing elements on the same tile/baseZ
+        // this happens if you have tram tracks on road on track.
         for (auto& el : tile)
         {
             auto* elRoad = el.as<RoadElement>();
@@ -116,8 +121,6 @@ namespace OpenLoco::World
             {
                 continue;
             }
-            bool shouldInvalidate = false;
-            bool hasAnimation = false;
 
             const auto* levelCrossingObj = ObjectManager::get<LevelCrossingObject>(elRoad->levelCrossingObjectId());
 
@@ -156,14 +159,12 @@ namespace OpenLoco::World
                 }
                 elRoad->setUnk6l(newFrame);
             }
-
-            if (shouldInvalidate)
-            {
-                Ui::ViewportManager::invalidate(anim.pos, el.baseHeight(), el.clearHeight(), ZoomLevel::half);
-            }
-
-            return !hasAnimation;
         }
-        return true;
+        if (shouldInvalidate)
+        {
+            Ui::ViewportManager::invalidate(anim.pos, anim.baseZ * kSmallZStep, anim.baseZ * kSmallZStep + 32, ZoomLevel::half);
+        }
+
+        return !hasAnimation;
     }
 }

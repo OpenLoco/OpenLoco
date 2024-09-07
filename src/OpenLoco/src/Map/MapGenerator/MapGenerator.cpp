@@ -427,7 +427,7 @@ namespace OpenLoco::World::MapGenerator
         heightMap.resetMarkerFlags();
 
         // Mark tiles with sudden height changes in the next row
-        for (auto pos : getWorldRange())
+        for (auto pos : getDrawableTileRange())
         {
             auto heightA = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
             auto heightB = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
@@ -1020,7 +1020,7 @@ namespace OpenLoco::World::MapGenerator
         updateProgress(10);
 
         {
-            HeightMap heightMap(kMapRows, kMapRows, kMapRows);
+            HeightMap heightMap(kMapColumns, kMapRows);
 
             generateHeightMap(options, heightMap);
             updateProgress(25);
