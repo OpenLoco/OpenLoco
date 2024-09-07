@@ -1,5 +1,7 @@
 24.09+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2613] Landscape types around cliffs aren't applied correctly.
+- Fix: [#2614] Randomly generated landscape can use invalid coordinates, leading to a crash.
 
 24.09 (2024-09-01)
 ------------------------------------------------------------------------
