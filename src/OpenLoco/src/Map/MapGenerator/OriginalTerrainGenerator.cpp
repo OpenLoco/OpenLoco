@@ -31,8 +31,8 @@ namespace OpenLoco::World::MapGenerator
         }
 
         // 0x00462718
-        const auto randX = (randomVal >> 14) & 0x1FF;
-        const auto randY = (randomVal >> 23) & 0x1FF;
+        const uint32_t randX = getGameState().rng.randNext(heightMap.width - 1);
+        const uint32_t randY = getGameState().rng.randNext(heightMap.height - 1);
         if (randX < 2 || randY < 2)
         {
             return;
@@ -58,7 +58,7 @@ namespace OpenLoco::World::MapGenerator
 
         if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) == Scenario::ScenarioFlags::none)
         {
-            if ((randX + featureWidth >= 382) || (randY + featureHeight >= 382))
+            if ((randX + featureWidth >= heightMap.width - 2U) || (randY + featureHeight >= heightMap.height - 2U))
             {
                 return;
             }
@@ -86,16 +86,16 @@ namespace OpenLoco::World::MapGenerator
         int32_t x = randX;
         for (auto j = 0; j < featureWidth; ++j)
         {
-            int32_t y = (featureHeight + randY - 1) & 0x1FF;
+            int32_t y = (featureHeight + randY - 1) % (heightMap.height - 1);
             for (auto i = 0; i < featureHeight; ++i)
             {
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 y--;
-                y &= 0x1FF;
+                y %= heightMap.height - 1;
             }
             x++;
-            x &= 0x1FF;
+            x %= heightMap.width - 1;
         }
     }
 
@@ -111,10 +111,10 @@ namespace OpenLoco::World::MapGenerator
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 y++;
-                y &= 0x1FF;
+                y %= heightMap.height - 1;
             }
             x++;
-            x &= 0x1FF;
+            x %= heightMap.width - 1;
         }
     }
 
@@ -124,16 +124,16 @@ namespace OpenLoco::World::MapGenerator
         int32_t y = randY;
         for (auto j = 0; j < featureHeight; ++j)
         {
-            int32_t x = (randX + featureWidth - 1) & 0x1FF;
+            int32_t x = (randX + featureWidth - 1) % (heightMap.width - 1);
             for (auto i = 0; i < featureWidth; ++i)
             {
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 x--;
-                x &= 0x1FF;
+                x %= heightMap.width - 1;
             }
             y++;
-            y &= 0x1FF;
+            y %= heightMap.height - 1;
         }
     }
 
@@ -151,10 +151,10 @@ namespace OpenLoco::World::MapGenerator
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
 
                 x++;
-                x &= 0x1FF;
+                x %= heightMap.width - 1;
             }
             y++;
-            y &= 0x1FF;
+            y %= heightMap.height - 1;
         }
     }
 
@@ -174,49 +174,46 @@ namespace OpenLoco::World::MapGenerator
     void OriginalTerrainGenerator::copyHeightMapFromG1(Gfx::G1Element* g1Element, HeightMap& heightMap)
     {
         auto* src = g1Element->offset;
-        auto* dst = heightMap.data();
 
-        for (auto y = World::kMapRows; y > 0; y--)
+        for (auto y = heightMap.height - 1; y > 0; y--)
         {
-            dst += World::kMapColumns;
-
-            for (auto x = World::kMapColumns; x > 0; x--)
+            for (auto x = heightMap.width - 1; x > 0; x--)
             {
-                dst--;
-                *dst = std::max<uint8_t>(*dst, *src);
+                auto height = std::max<uint8_t>(*src, heightMap[TilePos2(x, y)]);
+                heightMap[TilePos2(x, y)] = height;
                 src++;
             }
 
-            src += World::kMapPitch;
+            src += kMapPitch;
         }
     }
 
     // 0x00462590
     void OriginalTerrainGenerator::capSeaLevels(HeightMap& heightMap)
     {
-        auto seaLevel = getGameState().seaLevel;
-        auto* dst = heightMap.data();
+        const auto seaLevel = getGameState().seaLevel;
 
-        for (auto i = World::kMapPitch * (World::kMapPitch - 1) - 1; i > 0; i--)
+        for (auto y = 0; y < heightMap.height - 2; y++)
         {
-            if (seaLevel != *(dst))
-                continue;
+            for (auto x = 0; x < heightMap.width - 2; x++)
+            {
+                if (seaLevel != heightMap[TilePos2(x + 0, y + 0)])
+                    continue;
 
-            if (seaLevel != *(dst + 1))
-                continue;
+                if (seaLevel != heightMap[TilePos2(x + 1, y + 0)])
+                    continue;
 
-            if (seaLevel != *(dst + World::kMapPitch))
-                continue;
+                if (seaLevel != heightMap[TilePos2(x + 0, y + 1)])
+                    continue;
 
-            if (seaLevel != *(dst + World::kMapPitch + 1))
-                continue;
+                if (seaLevel != heightMap[TilePos2(x + 1, y + 1)])
+                    continue;
 
-            *dst += 1;
-            *(dst + 1) += 1;
-            *(dst + World::kMapPitch) += 1;
-            *(dst + World::kMapPitch + 1) += 1;
-
-            dst++;
+                heightMap[TilePos2(x + 0, y + 0)] += 1;
+                heightMap[TilePos2(x + 1, y + 0)] += 1;
+                heightMap[TilePos2(x + 0, y + 1)] += 1;
+                heightMap[TilePos2(x + 1, y + 1)] += 1;
+            }
         }
     }
 
