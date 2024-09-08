@@ -231,9 +231,9 @@ namespace OpenLoco::World::MapGenerator
                 return landObjectIdx;
             }
         }
-        if (LastGameOptionManager::getLastLand() != LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastLandOption != 0xFF)
         {
-            return LastGameOptionManager::getLastLand();
+            return getGameState().lastLandOption;
         }
         return std::nullopt;
     }

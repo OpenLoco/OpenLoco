@@ -2,6 +2,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
 #include "GameCommands/General/TogglePause.h"
+#include "GameState.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
@@ -293,10 +294,10 @@ namespace OpenLoco::Input::Shortcuts
         if (isEditorMode())
             return;
 
-        if (LastGameOptionManager::getLastRailRoad() == LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastRailroadOption == 0xFF)
             return;
 
-        Windows::Construction::openWithFlags(LastGameOptionManager::getLastRailRoad());
+        Windows::Construction::openWithFlags(getGameState().lastRailroadOption);
     }
 
     // 0x004BF24F
@@ -305,10 +306,10 @@ namespace OpenLoco::Input::Shortcuts
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
-        if (LastGameOptionManager::getLastRoad() == LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastRoadOption == 0xFF)
             return;
 
-        Windows::Construction::openWithFlags(LastGameOptionManager::getLastRoad());
+        Windows::Construction::openWithFlags(getGameState().lastRoadOption);
     }
 
     // 0x004BF276
@@ -317,7 +318,7 @@ namespace OpenLoco::Input::Shortcuts
         if (isEditorMode())
             return;
 
-        if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastAirport == 0xFF)
             return;
 
         Windows::Construction::openWithFlags(1U << 31);
@@ -329,7 +330,7 @@ namespace OpenLoco::Input::Shortcuts
         if (isEditorMode())
             return;
 
-        if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastShipPort == 0xFF)
             return;
 
         Windows::Construction::openWithFlags(1U << 30);
@@ -341,10 +342,10 @@ namespace OpenLoco::Input::Shortcuts
         if (isEditorMode())
             return;
 
-        if (LastGameOptionManager::getLastBuildVehiclesOption() == LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastBuildVehiclesOption == 0xFF)
             return;
 
-        Windows::BuildVehicle::open(LastGameOptionManager::getLastBuildVehiclesOption(), 1U << 31);
+        Windows::BuildVehicle::open(getGameState().lastBuildVehiclesOption, 1U << 31);
     }
 
     // 0x004BF2D1
@@ -353,7 +354,7 @@ namespace OpenLoco::Input::Shortcuts
         if (isEditorMode())
             return;
 
-        Windows::VehicleList::open(CompanyManager::getControllingId(), LastGameOptionManager::getLastVehicleType());
+        Windows::VehicleList::open(CompanyManager::getControllingId(), getGameState().lastVehicleType);
     }
 
     // 0x004BF2F0

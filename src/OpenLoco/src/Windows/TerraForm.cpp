@@ -12,6 +12,7 @@
 #include "GameCommands/Terraform/RaiseWater.h"
 #include "GameCommands/Terraform/RemoveTree.h"
 #include "GameCommands/Terraform/RemoveWall.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -213,13 +214,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->var_83C = treeCount;
             auto rowHover = -1;
 
-            if (LastGameOptionManager::getLastTree() != LastGameOptionManager::kNoLastOption)
+            if (getGameState().lastTreeOption != 0xFF)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (LastGameOptionManager::getLastTree() == self->rowInfo[i])
+                    if (getGameState().lastTreeOption == self->rowInfo[i])
                     {
-                        rowHover = LastGameOptionManager::getLastTree();
+                        rowHover = getGameState().lastTreeOption;
                         break;
                     }
                 }
@@ -2145,13 +2146,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->var_83C = wallCount;
             auto rowHover = -1;
 
-            if (LastGameOptionManager::getLastWall() != LastGameOptionManager::kNoLastOption)
+            if (getGameState().lastWallOption != 0xFF)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (LastGameOptionManager::getLastWall() == self->rowInfo[i])
+                    if (getGameState().lastWallOption == self->rowInfo[i])
                     {
-                        rowHover = LastGameOptionManager::getLastWall();
+                        rowHover = getGameState().lastWallOption;
                         break;
                     }
                 }
@@ -2668,7 +2669,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             // Adjust Land Tab
             {
-                auto landObj = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLand());
+                auto landObj = ObjectManager::get<LandObject>(getGameState().lastLandOption);
                 uint32_t imageId = landObj->mapPixelImage + Land::ImageIds::toolbar_terraform_land;
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_adjust_land);

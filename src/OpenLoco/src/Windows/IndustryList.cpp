@@ -5,6 +5,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/CreateIndustry.h"
 #include "GameCommands/Industries/RemoveIndustry.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -645,7 +646,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     void reset()
     {
-        LastGameOptionManager::setLastIndustry(LastGameOptionManager::kNoLastOption);
+        LastGameOptionManager::setLastIndustry(0xFF);
     }
 
     // 0x0045792A
@@ -1219,8 +1220,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->var_83C = industryCount;
             auto rowHover = -1;
 
-            auto lastIndustryOption = LastGameOptionManager::getLastIndustry();
-            if (lastIndustryOption != LastGameOptionManager::kNoLastOption)
+            auto lastIndustryOption = getGameState().lastIndustryOption;
+            if (lastIndustryOption != 0xFF)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {

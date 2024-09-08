@@ -4,6 +4,7 @@
 #include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/CreateTown.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -594,8 +595,8 @@ namespace OpenLoco::Ui::Windows::TownList
     // 0x00496B50
     void reset()
     {
-        LastGameOptionManager::setLastBuildingOption(LastGameOptionManager::kNoLastOption);
-        LastGameOptionManager::setLastMiscBuildingOption(LastGameOptionManager::kNoLastOption);
+        LastGameOptionManager::setLastBuildingOption(0xFF);
+        LastGameOptionManager::setLastMiscBuildingOption(0xFF);
         _buildingRotation = 2;
         _townSize = 3;
     }
@@ -1398,11 +1399,11 @@ namespace OpenLoco::Ui::Windows::TownList
             self->var_83C = buildingCount;
             auto rowHover = -1;
 
-            auto lastSelectedBuilding = LastGameOptionManager::getLastBuildingOption();
+            auto lastSelectedBuilding = getGameState().lastBuildingOption;
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
-                lastSelectedBuilding = LastGameOptionManager::getLastMiscBuildingOption();
+                lastSelectedBuilding = getGameState().lastMiscBuildingOption;
 
-            if (lastSelectedBuilding != LastGameOptionManager::kNoLastOption)
+            if (lastSelectedBuilding != 0xFF)
             {
                 for (auto i = 0; i <= self->var_83C; i++)
                 {

@@ -1,5 +1,6 @@
 #include "Date.h"
 #include "Entities/EntityManager.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -823,7 +824,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->rowHeight = row_heights[tabIndex];
         self->frameNo = 0;
 
-        if (CompanyManager::getControllingId() == CompanyId(self->number) && LastGameOptionManager::getLastVehicleType() != type)
+        if (CompanyManager::getControllingId() == CompanyId(self->number) && getGameState().lastVehicleType != type)
         {
             LastGameOptionManager::setLastVehicleType(type);
             WindowManager::invalidate(WindowType::topToolbar);

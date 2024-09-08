@@ -3,6 +3,7 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -43,9 +44,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
-        auto lastRoadOption = LastGameOptionManager::getLastRoad();
+        auto lastRoadOption = getGameState().lastRoadOption;
 
-        if (self.widgets[Widx::road_menu].type != WidgetType::none && lastRoadOption != LastGameOptionManager::kNoLastOption)
+        if (self.widgets[Widx::road_menu].type != WidgetType::none && lastRoadOption != 0xFF)
         {
             uint32_t x = self.widgets[Widx::road_menu].left + self.x;
             uint32_t y = self.widgets[Widx::road_menu].top + self.y;
@@ -194,7 +195,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void terraformMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLand());
+        auto land = ObjectManager::get<LandObject>(getGameState().lastLandOption);
         auto water = ObjectManager::get<WaterObject>();
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
@@ -242,7 +243,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
-            if (objIndex == LastGameOptionManager::getLastRoad())
+            if (objIndex == getGameState().lastRoadOption)
                 highlightedItem = i;
         }
 

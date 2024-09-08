@@ -1,6 +1,7 @@
 #include "Construction.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -169,13 +170,13 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshDockList(_stationList);
 
-        if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastShipPort == 0xFF)
         {
             _lastSelectedStationType = _stationList[0];
         }
         else
         {
-            _lastSelectedStationType = LastGameOptionManager::getLastShipPort();
+            _lastSelectedStationType = getGameState().lastShipPort;
         }
 
         return nonTrackWindow();
@@ -195,13 +196,13 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshAirportList(_stationList);
 
-        if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastAirport == 0xFF)
         {
             _lastSelectedStationType = _stationList[0];
         }
         else
         {
-            _lastSelectedStationType = LastGameOptionManager::getLastAirport();
+            _lastSelectedStationType = getGameState().lastAirport;
         }
 
         return nonTrackWindow();

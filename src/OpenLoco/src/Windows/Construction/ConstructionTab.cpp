@@ -144,8 +144,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         Scenario::resetConstruction();
 
-        LastGameOptionManager::setLastAirport(LastGameOptionManager::kNoLastOption);
-        LastGameOptionManager::setLastShipPort(LastGameOptionManager::kNoLastOption);
+        LastGameOptionManager::setLastAirport(0xFF);
+        LastGameOptionManager::setLastShipPort(0xFF);
         getGameState().pickupDirection = 0;
     }
 

@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             // Land tab
             {
-                auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLand());
+                auto land = ObjectManager::get<LandObject>(getGameState().lastLandOption);
                 const uint32_t imageId = land->mapPixelImage + Land::ImageIds::toolbar_terraform_land;
                 Widget::drawTab(window, drawingCtx, imageId, widx::tab_land);
             }

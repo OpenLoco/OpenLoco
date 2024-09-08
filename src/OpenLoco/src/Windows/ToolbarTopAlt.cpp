@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -300,7 +301,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             window.widgets[Common::Widx::terraform_menu].type = WidgetType::toolbarTab;
             window.widgets[Widx::map_generation_menu].type = WidgetType::toolbarTab;
             window.widgets[Common::Widx::towns_menu].type = WidgetType::toolbarTab;
-            if (LastGameOptionManager::getLastRoad() != LastGameOptionManager::kNoLastOption)
+            if (getGameState().lastRoadOption != 0xFF)
             {
                 window.widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
             }
