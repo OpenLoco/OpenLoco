@@ -1041,17 +1041,17 @@ namespace OpenLoco::Ui::Windows::Construction
                 newTrackType &= ~(1 << 7);
                 auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
                 if (!roadObj->hasFlags(RoadObjectFlags::unk_01))
-                    LastGameOptionManager::setLastRoad(trackType);
+                    getGameState().lastRoadOption = trackType;
                 else
-                    LastGameOptionManager::setLastRailRoad(trackType);
+                    getGameState().lastRailroadOption = trackType;
             }
             else
             {
                 auto trackObj = ObjectManager::get<TrackObject>(newTrackType);
                 if (!trackObj->hasFlags(TrackObjectFlags::unk_02))
-                    LastGameOptionManager::setLastRailRoad(trackType);
+                    getGameState().lastRailroadOption = trackType;
                 else
-                    LastGameOptionManager::setLastRoad(trackType);
+                    getGameState().lastRoadOption = trackType;
             }
             WindowManager::invalidate(WindowType::topToolbar, 0);
         }

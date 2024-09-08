@@ -826,7 +826,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         if (CompanyManager::getControllingId() == CompanyId(self->number) && getGameState().lastVehicleType != type)
         {
-            LastGameOptionManager::setLastVehicleType(type);
+            getGameState().lastVehicleType = type;
             WindowManager::invalidate(WindowType::topToolbar);
         }
 

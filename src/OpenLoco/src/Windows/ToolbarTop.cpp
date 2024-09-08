@@ -564,7 +564,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
 
         itemIndex = _menuOptions[itemIndex];
-        LastGameOptionManager::setLastBuildVehiclesOption(itemIndex);
+        getGameState().lastBuildVehiclesOption = itemIndex;
 
         BuildVehicle::open(itemIndex, 1U << 31);
     }
@@ -628,7 +628,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
 
         auto vehicleType = VehicleType(_menuOptions[itemIndex]);
-        LastGameOptionManager::setLastVehicleType(vehicleType);
+        getGameState().lastVehicleType = vehicleType;
 
         VehicleList::open(CompanyManager::getControllingId(), vehicleType);
     }

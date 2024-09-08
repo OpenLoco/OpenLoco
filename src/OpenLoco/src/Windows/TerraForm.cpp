@@ -615,7 +615,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (index < 0)
                 {
                     self.rowHover = rowInfo;
-                    LastGameOptionManager::setLastTree(static_cast<uint8_t>(rowInfo));
+                    getGameState().lastTreeOption = static_cast<uint8_t>(rowInfo);
 
                     updateTreeColours(&self);
 
@@ -2422,7 +2422,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (index < 0)
                 {
                     self.rowHover = rowInfo;
-                    LastGameOptionManager::setLastWall(static_cast<uint8_t>(rowInfo));
+                    getGameState().lastWallOption = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);

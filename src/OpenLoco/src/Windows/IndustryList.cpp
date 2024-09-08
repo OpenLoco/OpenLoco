@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     void reset()
     {
-        LastGameOptionManager::setLastIndustry(0xFF);
+        getGameState().lastIndustryOption = 0xFF;
     }
 
     // 0x0045792A
@@ -804,7 +804,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 if (index < 0)
                 {
                     self.rowHover = rowInfo;
-                    LastGameOptionManager::setLastIndustry(rowInfo);
+                    getGameState().lastIndustryOption = rowInfo;
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);

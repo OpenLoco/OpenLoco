@@ -9,6 +9,7 @@
 #include "GameCommands/Road/RemoveRoadStation.h"
 #include "GameCommands/Track/CreateTrainStation.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
+#include "GameState.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
@@ -156,11 +157,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             if (_byte_1136063 & (1 << 7))
             {
-                LastGameOptionManager::setLastAirport(selectedStation);
+                getGameState().lastAirport = selectedStation;
             }
             else if (_byte_1136063 & (1 << 6))
             {
-                LastGameOptionManager::setLastShipPort(selectedStation);
+                getGameState().lastShipPort = selectedStation;
             }
             else if (_trackType & (1 << 7))
             {

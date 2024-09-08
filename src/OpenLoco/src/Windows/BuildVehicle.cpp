@@ -730,7 +730,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.currentSecondaryTab = 0;
                 if (newTab != getGameState().lastBuildVehiclesOption)
                 {
-                    LastGameOptionManager::setLastBuildVehiclesOption(newTab);
+                    getGameState().lastBuildVehiclesOption = newTab;
                     WindowManager::invalidate(WindowType::topToolbar, 0);
                 }
 
@@ -1660,11 +1660,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (setRail)
         {
-            LastGameOptionManager::setLastRailRoad(trackType | (isRoad ? (1 << 7) : 0));
+            getGameState().lastRailroadOption = trackType | (isRoad ? (1 << 7) : 0);
         }
         else
         {
-            LastGameOptionManager::setLastRoad(trackType | (isRoad ? (1 << 7) : 0));
+            getGameState().lastRoadOption = trackType | (isRoad ? (1 << 7) : 0);
         }
 
         // The window number doesn't really matter as there is only one top toolbar
