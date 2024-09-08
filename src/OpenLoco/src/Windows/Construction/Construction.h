@@ -1,6 +1,5 @@
 #pragma once
 
-#include "LastGameOptionManager.h"
 #include "Map/TileManager.h"
 #include "Objects/VehicleObject.h"
 #include "ScenarioConstruction.h"

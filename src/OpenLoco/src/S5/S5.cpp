@@ -11,7 +11,6 @@
 #include "Graphics/DrawingContext.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"

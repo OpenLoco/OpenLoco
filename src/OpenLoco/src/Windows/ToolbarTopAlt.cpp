@@ -10,7 +10,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/LandObject.h"

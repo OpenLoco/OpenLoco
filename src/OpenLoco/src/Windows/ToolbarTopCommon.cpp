@@ -9,7 +9,6 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/LandObject.h"

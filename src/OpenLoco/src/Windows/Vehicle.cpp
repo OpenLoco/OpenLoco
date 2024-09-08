@@ -30,7 +30,6 @@
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "LabelFrame.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"

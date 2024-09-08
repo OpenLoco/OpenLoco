@@ -10,7 +10,6 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
 #include "Network/Network.h"

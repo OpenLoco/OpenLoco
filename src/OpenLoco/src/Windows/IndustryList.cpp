@@ -11,7 +11,6 @@
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
