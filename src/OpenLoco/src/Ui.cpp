@@ -464,6 +464,17 @@ namespace OpenLoco::Ui
             {
                 case SDL_QUIT:
                     return false;
+                case SDL_WINDOWEVENT:
+                    switch (e.window.event)
+                    {
+                        case SDL_WINDOWEVENT_MOVED:
+                            positionChanged(e.window.data1, e.window.data2);
+                            break;
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                            resize(e.window.data1, e.window.data2);
+                            break;
+                    }
+                    break;
             }
         }
         return false;
