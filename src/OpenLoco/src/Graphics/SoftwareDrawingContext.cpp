@@ -1049,4 +1049,10 @@ namespace OpenLoco::Gfx
 
         return _state->rtStack.top();
     }
+
+    void SoftwareDrawingContext::reset()
+    {
+        _state->rtStack = {};
+    }
+
 }
