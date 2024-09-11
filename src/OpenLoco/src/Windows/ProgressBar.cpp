@@ -83,6 +83,10 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     // 0x004CF78A
     static void prepareDraw([[maybe_unused]] Window& self)
     {
+        // Keep the window centered.
+        self.x = (Ui::width() / 2) - (self.width / 2);
+        self.y = std::max(28, (Ui::height() / 2) - (self.height / 2));
+
         char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         strncpy(buffer, _captionString.c_str(), 256);
     }
