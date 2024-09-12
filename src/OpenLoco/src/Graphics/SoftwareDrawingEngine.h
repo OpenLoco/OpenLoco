@@ -72,7 +72,7 @@ namespace OpenLoco::Gfx
 
         SDL_Texture* _screenRGBATexture{};
 
-        std::unique_ptr<SoftwareDrawingContext> _ctx;
+        SoftwareDrawingContext _ctx;
         InvalidationGrid _invalidationGrid;
     };
 }
