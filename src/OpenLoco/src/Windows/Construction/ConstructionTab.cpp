@@ -2457,6 +2457,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             constructHeight = _word_1135FFE;
         }
 
+        // Height should never go negative
+        constructHeight = std::max<int16_t>(0, constructHeight);
+
         constructionLoop(constructPos, maxRetries, constructHeight);
     }
 
