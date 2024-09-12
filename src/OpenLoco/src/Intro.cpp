@@ -217,9 +217,7 @@ namespace OpenLoco::Intro
     void update()
     {
         auto& drawingEngine = Gfx::getDrawingEngine();
-
         auto& drawingCtx = drawingEngine.getDrawingContext();
-        drawingCtx.pushRenderTarget(drawingEngine.getScreenRT());
 
         addr<0x0005252E0, int32_t>() = 1;
         if (_state == State::end)
@@ -235,7 +233,5 @@ namespace OpenLoco::Intro
             kUpdateFunctions[enumValue(*_state)](drawingCtx);
         }
         sub_431695(0);
-
-        drawingCtx.popRenderTarget();
     }
 }
