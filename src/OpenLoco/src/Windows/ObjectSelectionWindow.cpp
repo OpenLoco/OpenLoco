@@ -79,10 +79,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         StringId name;
         ObjectType objectType;
         VehicleType vehicleType;
-        ObjectTabFlags flags;
         uint32_t baseImage;
         uint8_t animationLength;
         uint8_t animationDivisor;
+        ObjectTabFlags flags;
     };
 
     struct MainTabInfo
@@ -96,56 +96,56 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     // clang-format off
     static constexpr std::array kWorldRegionSubTabs{
-        SubTabInfo{ StringIds::object_world_region, ObjectType::region,    {}, ObjectTabFlags::none,     ImageIds::tab_object_world,      1, 1 },
-        SubTabInfo{ StringIds::object_currency,     ObjectType::currency,  {}, ObjectTabFlags::advanced, ImageIds::tab_object_currency,   1, 1 },
-        SubTabInfo{ StringIds::object_town_names,   ObjectType::townNames, {}, ObjectTabFlags::advanced, ImageIds::tab_object_town_names, 1, 1 },
+        SubTabInfo{ StringIds::object_world_region, ObjectType::region,    {}, ImageIds::tab_object_world,      1, 1, ObjectTabFlags::none     },
+        SubTabInfo{ StringIds::object_currency,     ObjectType::currency,  {}, ImageIds::tab_object_currency,   1, 1, ObjectTabFlags::advanced },
+        SubTabInfo{ StringIds::object_town_names,   ObjectType::townNames, {}, ImageIds::tab_object_town_names, 1, 1, ObjectTabFlags::advanced },
     };
 
     static constexpr std::array kVehicleSubTabs{
-        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::train,    ObjectTabFlags::none, InterfaceSkin::ImageIds::tab_vehicle_train_frame0,    8, 1 },
-        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::bus,      ObjectTabFlags::none, InterfaceSkin::ImageIds::tab_vehicle_bus_frame0,      8, 1 },
-        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::truck,    ObjectTabFlags::none, InterfaceSkin::ImageIds::tab_vehicle_truck_frame0,    8, 1 },
-        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::tram,     ObjectTabFlags::none, InterfaceSkin::ImageIds::tab_vehicle_tram_frame0,     8, 1 },
-        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::aircraft, ObjectTabFlags::none, InterfaceSkin::ImageIds::tab_vehicle_aircraft_frame0, 8, 2 },
-        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::ship,     ObjectTabFlags::none, InterfaceSkin::ImageIds::tab_vehicle_ship_frame0,     8, 3 },
+        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::train,    InterfaceSkin::ImageIds::tab_vehicle_train_frame0,    8, 1, ObjectTabFlags::none },
+        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::bus,      InterfaceSkin::ImageIds::tab_vehicle_bus_frame0,      8, 1, ObjectTabFlags::none },
+        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::truck,    InterfaceSkin::ImageIds::tab_vehicle_truck_frame0,    8, 1, ObjectTabFlags::none },
+        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::tram,     InterfaceSkin::ImageIds::tab_vehicle_tram_frame0,     8, 1, ObjectTabFlags::none },
+        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::aircraft, InterfaceSkin::ImageIds::tab_vehicle_aircraft_frame0, 8, 2, ObjectTabFlags::none },
+        SubTabInfo{ StringIds::object_vehicles, ObjectType::vehicle, VehicleType::ship,     InterfaceSkin::ImageIds::tab_vehicle_ship_frame0,     8, 3, ObjectTabFlags::none },
     };
 
     static constexpr std::array kLandSubTabs{
-        SubTabInfo{ StringIds::object_land,                ObjectType::land,       {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_landscape, 1, 1 },
-        SubTabInfo{ StringIds::object_trees,               ObjectType::tree,       {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_trees,     1, 1 },
-        SubTabInfo{ StringIds::object_water,               ObjectType::water,      {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_water,     1, 1 },
-        SubTabInfo{ StringIds::object_walls,               ObjectType::wall,       {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_walls,     1, 1 },
-        SubTabInfo{ StringIds::object_map_generation_data, ObjectType::hillShapes, {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_map,       1, 1 },
-        SubTabInfo{ StringIds::object_snow,                ObjectType::snow,       {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_snow,      1, 1 },
-        SubTabInfo{ StringIds::object_climate,             ObjectType::climate,    {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_climate,   1, 1 },
-        SubTabInfo{ StringIds::object_cliffs,              ObjectType::cliffEdge,  {}, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden, ImageIds::tab_object_cliff,     1, 1 },
+        SubTabInfo{ StringIds::object_land,                ObjectType::land,       {}, ImageIds::tab_object_landscape, 1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_trees,               ObjectType::tree,       {}, ImageIds::tab_object_trees,     1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_water,               ObjectType::water,      {}, ImageIds::tab_object_water,     1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_walls,               ObjectType::wall,       {}, ImageIds::tab_object_walls,     1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_map_generation_data, ObjectType::hillShapes, {}, ImageIds::tab_object_map,       1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_snow,                ObjectType::snow,       {}, ImageIds::tab_object_snow,      1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_climate,             ObjectType::climate,    {}, ImageIds::tab_object_climate,   1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_cliffs,              ObjectType::cliffEdge,  {}, ImageIds::tab_object_cliff,     1, 1, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
     };
 
     static constexpr std::array kTrackSubTabs{
-        SubTabInfo{ StringIds::object_track_stations, ObjectType::trainStation, {}, ObjectTabFlags::advanced,                                      ImageIds::tab_object_track_stations, 1, 1 },
-        SubTabInfo{ StringIds::object_track_extras,   ObjectType::trackExtra,   {}, ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular, ImageIds::tab_object_track_mods,     1, 1 },
-        SubTabInfo{ StringIds::object_signals,        ObjectType::trackSignal,  {}, ObjectTabFlags::advanced,                                      ImageIds::tab_object_signals,        1, 1 },
+        SubTabInfo{ StringIds::object_track_stations, ObjectType::trainStation, {}, ImageIds::tab_object_track_stations, 1, 1, ObjectTabFlags::advanced                                      },
+        SubTabInfo{ StringIds::object_track_extras,   ObjectType::trackExtra,   {}, ImageIds::tab_object_track_mods,     1, 1, ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
+        SubTabInfo{ StringIds::object_signals,        ObjectType::trackSignal,  {}, ImageIds::tab_object_signals,        1, 1, ObjectTabFlags::advanced                                      },
     };
 
     static constexpr std::array kRoadSubTabs{
-        SubTabInfo{ StringIds::object_road_stations,  ObjectType::roadStation,   {}, ObjectTabFlags::advanced,                                      ImageIds::tab_object_road_stations,   1, 1 },
-        SubTabInfo{ StringIds::object_road_extras,    ObjectType::roadExtra,     {}, ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular, ImageIds::tab_object_road_mods,       1, 1 },
-        SubTabInfo{ StringIds::object_level_crossing, ObjectType::levelCrossing, {}, ObjectTabFlags::advanced,                                      ImageIds::tab_object_level_crossings, 1, 1 },
-        SubTabInfo{ StringIds::object_street_lights,  ObjectType::streetLight,   {}, ObjectTabFlags::advanced,                                      ImageIds::tab_object_streetlights,    1, 1 },
+        SubTabInfo{ StringIds::object_road_stations,  ObjectType::roadStation,   {}, ImageIds::tab_object_road_stations,   1, 1, ObjectTabFlags::advanced                                      },
+        SubTabInfo{ StringIds::object_road_extras,    ObjectType::roadExtra,     {}, ImageIds::tab_object_road_mods,       1, 1, ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
+        SubTabInfo{ StringIds::object_level_crossing, ObjectType::levelCrossing, {}, ImageIds::tab_object_level_crossings, 1, 1, ObjectTabFlags::advanced                                      },
+        SubTabInfo{ StringIds::object_street_lights,  ObjectType::streetLight,   {}, ImageIds::tab_object_streetlights,    1, 1, ObjectTabFlags::advanced                                      },
     };
 
     static constexpr std::array kBuildingSubTabs{
-        SubTabInfo{ StringIds::object_buildings,   ObjectType::building,    {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_buildings,    1, 1 },
-        SubTabInfo{ StringIds::object_industries,  ObjectType::industry,    {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_industries,   1, 1 },
-        SubTabInfo{ StringIds::object_scaffolding, ObjectType::scaffolding, {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_construction, 1, 1 },
-        SubTabInfo{ StringIds::object_cargo,       ObjectType::cargo,       {}, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden, ImageIds::tab_object_cargo,        1, 1 },
+        SubTabInfo{ StringIds::object_buildings,   ObjectType::building,    {}, ImageIds::tab_object_buildings,    1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_industries,  ObjectType::industry,    {}, ImageIds::tab_object_industries,   1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_scaffolding, ObjectType::scaffolding, {}, ImageIds::tab_object_construction, 1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_cargo,       ObjectType::cargo,       {}, ImageIds::tab_object_cargo,        1, 1, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
     };
 
     static constexpr std::array kMiscSubTabs{
-        SubTabInfo{ StringIds::object_interface_styles,      ObjectType::interfaceSkin, {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_settings,  1, 1 },
-        SubTabInfo{ StringIds::object_scenario_descriptions, ObjectType::scenarioText,  {}, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden, ImageIds::tab_object_scenarios, 1, 1 },
-        SubTabInfo{ StringIds::object_animation_effects,     ObjectType::steam,         {}, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden, ImageIds::tab_object_smoke,     1, 1 },
-        SubTabInfo{ StringIds::object_sounds,                ObjectType::sound,         {}, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden, ImageIds::tab_object_audio,     1, 1 },
+        SubTabInfo{ StringIds::object_interface_styles,      ObjectType::interfaceSkin, {}, ImageIds::tab_object_settings,  1, 1, ObjectTabFlags::advanced                                },
+        SubTabInfo{ StringIds::object_scenario_descriptions, ObjectType::scenarioText,  {}, ImageIds::tab_object_scenarios, 1, 1, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        SubTabInfo{ StringIds::object_animation_effects,     ObjectType::steam,         {}, ImageIds::tab_object_smoke,     1, 1, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        SubTabInfo{ StringIds::object_sounds,                ObjectType::sound,         {}, ImageIds::tab_object_audio,     1, 1, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
     };
 
     static constexpr std::array kMainTabInfo{
