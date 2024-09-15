@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ObjectTabFlags);
 
-    struct TabDisplayInfo
+    struct MainTabInfo
     {
         StringId name;
         uint32_t image;
@@ -84,41 +84,41 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     // clang-format off
-    static constexpr std::array<TabDisplayInfo, kMaxObjectTypes> _tabDisplayInfo = {
-        TabDisplayInfo{ StringIds::object_interface_styles,      ImageIds::tab_object_settings,        ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_sounds,                ImageIds::tab_object_audio,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
-        TabDisplayInfo{ StringIds::object_currency,              ImageIds::tab_object_currency,        ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_animation_effects,     ImageIds::tab_object_smoke,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
-        TabDisplayInfo{ StringIds::object_cliffs,                ImageIds::tab_object_cliff,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
-        TabDisplayInfo{ StringIds::object_water,                 ImageIds::tab_object_water,           ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_land,                  ImageIds::tab_object_landscape,       ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_town_names,            ImageIds::tab_object_town_names,      ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_cargo,                 ImageIds::tab_object_cargo,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
-        TabDisplayInfo{ StringIds::object_walls,                 ImageIds::tab_object_walls,           ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_signals,               ImageIds::tab_object_signals,         ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_level_crossing,        ImageIds::tab_object_level_crossings, ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_street_lights,         ImageIds::tab_object_streetlights,    ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_tunnels,               ImageIds::tab_object_tunnels,         ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
-        TabDisplayInfo{ StringIds::object_bridges,               ImageIds::tab_object_bridges,         ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_track_stations,        ImageIds::tab_object_track_stations,  ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_track_extras,          ImageIds::tab_object_track_mods,      ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
-        TabDisplayInfo{ StringIds::object_tracks,                ImageIds::tab_object_track,           ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_road_stations,         ImageIds::tab_object_road_stations,   ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_road_extras,           ImageIds::tab_object_road_mods,       ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
-        TabDisplayInfo{ StringIds::object_roads,                 ImageIds::tab_object_road,            ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_airports,              ImageIds::tab_object_airports,        ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_docks,                 ImageIds::tab_object_docks,           ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_vehicles,              ImageIds::tab_object_vehicles,        ObjectTabFlags::advanced | ObjectTabFlags::filterByVehicleType },
-        TabDisplayInfo{ StringIds::object_trees,                 ImageIds::tab_object_trees,           ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_snow,                  ImageIds::tab_object_snow,            ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_climate,               ImageIds::tab_object_climate,         ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_map_generation_data,   ImageIds::tab_object_map,             ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_buildings,             ImageIds::tab_object_buildings,       ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_scaffolding,           ImageIds::tab_object_construction,    ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_industries,            ImageIds::tab_object_industries,      ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_world_region,          ImageIds::tab_object_world,           ObjectTabFlags::none },
-        TabDisplayInfo{ StringIds::object_company_owners,        ImageIds::tab_object_companies,       ObjectTabFlags::hideInEditor },
-        TabDisplayInfo{ StringIds::object_scenario_descriptions, ImageIds::tab_object_scenarios,       ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden }
+    static constexpr std::array<MainTabInfo, kMaxObjectTypes> _mainTabInfo = {
+        MainTabInfo{ StringIds::object_interface_styles,      ImageIds::tab_object_settings,        ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_sounds,                ImageIds::tab_object_audio,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        MainTabInfo{ StringIds::object_currency,              ImageIds::tab_object_currency,        ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_animation_effects,     ImageIds::tab_object_smoke,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        MainTabInfo{ StringIds::object_cliffs,                ImageIds::tab_object_cliff,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        MainTabInfo{ StringIds::object_water,                 ImageIds::tab_object_water,           ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_land,                  ImageIds::tab_object_landscape,       ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_town_names,            ImageIds::tab_object_town_names,      ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_cargo,                 ImageIds::tab_object_cargo,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        MainTabInfo{ StringIds::object_walls,                 ImageIds::tab_object_walls,           ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_signals,               ImageIds::tab_object_signals,         ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_level_crossing,        ImageIds::tab_object_level_crossings, ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_street_lights,         ImageIds::tab_object_streetlights,    ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_tunnels,               ImageIds::tab_object_tunnels,         ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        MainTabInfo{ StringIds::object_bridges,               ImageIds::tab_object_bridges,         ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_track_stations,        ImageIds::tab_object_track_stations,  ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_track_extras,          ImageIds::tab_object_track_mods,      ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
+        MainTabInfo{ StringIds::object_tracks,                ImageIds::tab_object_track,           ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_road_stations,         ImageIds::tab_object_road_stations,   ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_road_extras,           ImageIds::tab_object_road_mods,       ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
+        MainTabInfo{ StringIds::object_roads,                 ImageIds::tab_object_road,            ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_airports,              ImageIds::tab_object_airports,        ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_docks,                 ImageIds::tab_object_docks,           ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_vehicles,              ImageIds::tab_object_vehicles,        ObjectTabFlags::advanced | ObjectTabFlags::filterByVehicleType },
+        MainTabInfo{ StringIds::object_trees,                 ImageIds::tab_object_trees,           ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_snow,                  ImageIds::tab_object_snow,            ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_climate,               ImageIds::tab_object_climate,         ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_map_generation_data,   ImageIds::tab_object_map,             ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_buildings,             ImageIds::tab_object_buildings,       ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_scaffolding,           ImageIds::tab_object_construction,    ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_industries,            ImageIds::tab_object_industries,      ObjectTabFlags::advanced },
+        MainTabInfo{ StringIds::object_world_region,          ImageIds::tab_object_world,           ObjectTabFlags::none },
+        MainTabInfo{ StringIds::object_company_owners,        ImageIds::tab_object_companies,       ObjectTabFlags::hideInEditor },
+        MainTabInfo{ StringIds::object_scenario_descriptions, ImageIds::tab_object_scenarios,       ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden }
     };
     // clang-format on
 
@@ -272,7 +272,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static bool shouldShowTab(int8_t objectType, FilterLevel filterLevel)
     {
-        const ObjectTabFlags tabFlags = _tabDisplayInfo[objectType].flags;
+        const ObjectTabFlags tabFlags = _mainTabInfo[objectType].flags;
 
         if (filterLevel == FilterLevel::expert)
             return true;
@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     Window& openInTab(ObjectType objectType)
     {
         auto& window = *open();
-        auto& info = _tabDisplayInfo[enumValue(objectType)];
+        auto& info = _mainTabInfo[enumValue(objectType)];
 
         if ((info.flags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
         {
@@ -521,9 +521,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         // Update the title.
         auto args = FormatArguments(self.widgets[widx::caption].textArgs);
-        args.push(_tabDisplayInfo[self.currentTab].name);
+        args.push(_mainTabInfo[self.currentTab].name);
 
-        const auto& tabFlags = _tabDisplayInfo[self.currentTab].flags;
+        const auto& tabFlags = _mainTabInfo[self.currentTab].flags;
         const bool showSecondaryTabs = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
         for (int i = widx::vehicleTypeTrain; i <= widx::vehicleTypeShip; i++)
         {
@@ -578,14 +578,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
                     drawingCtx.drawImage(xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
+                    image = Gfx::recolour(_mainTabInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
                     drawingCtx.drawImage(xPos, yPos, image);
                 }
                 else
                 {
                     drawingCtx.drawImage(xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
+                    image = Gfx::recolour(_mainTabInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
                     drawingCtx.drawImage(xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
@@ -619,7 +619,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void drawVehicleTabs(Window* self, Gfx::DrawingContext& drawingCtx)
     {
-        const auto& tabFlags = _tabDisplayInfo[self->currentTab].flags;
+        const auto& tabFlags = _mainTabInfo[self->currentTab].flags;
         const bool showSecondaryTabs = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
         if (!showSecondaryTabs)
         {
@@ -1170,7 +1170,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         repositionTargetTab(&self, newTab);
 
-        const auto& tabFlags = _tabDisplayInfo[self.currentTab].flags;
+        const auto& tabFlags = _mainTabInfo[self.currentTab].flags;
         _filterByVehicleType = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
         _currentVehicleType = VehicleType::train;
 
@@ -1312,7 +1312,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             assignTabPositions(&self);
 
             auto currentTab = self.currentTab;
-            const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
+            const ObjectTabFlags tabFlags = _mainTabInfo[currentTab].flags;
             if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
             {
                 currentTab = _tabPositions[0].index;
