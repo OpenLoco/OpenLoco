@@ -77,9 +77,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     struct SubTabInfo
     {
         StringId name;
-        ObjectType subObjectType;
+        ObjectType objectType;
         VehicleType vehicleType;
-        ObjectTabFlags subFlags;
+        ObjectTabFlags flags;
         uint32_t baseImage;
         uint8_t animationLength;
         uint8_t animationDivisor;
@@ -272,9 +272,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     );
 
-    static bool shouldShowTab(int8_t index, FilterLevel filterLevel)
+    template<typename TTabInfo>
+    static bool shouldShowTab(TTabInfo& tabInfo, FilterLevel filterLevel)
     {
-        const ObjectTabFlags tabFlags = kMainTabInfo[index].flags;
+        const ObjectTabFlags tabFlags = tabInfo.flags;
 
         if (filterLevel == FilterLevel::expert)
             return true;
@@ -283,7 +284,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return false;
 
         // Skip all types that don't have any objects
-        auto objectType = enumValue(kMainTabInfo[index].objectType);
+        auto objectType = enumValue(tabInfo.objectType);
         if (_tabObjectCounts[objectType] == 0)
             return false;
 
@@ -304,13 +305,23 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return true;
     }
 
+    static bool shouldShowPrimaryTab(uint8_t index, FilterLevel filterLevel)
+    {
+        return shouldShowTab(kMainTabInfo[index], filterLevel);
+    }
+
+    static bool shouldShowSubTab(std::span<const SubTabInfo> subTabs, uint8_t index, FilterLevel filterLevel)
+    {
+        return shouldShowTab(subTabs[index], filterLevel);
+    }
+
     // 0x00473154
     static void assignTabPositions(Window* self)
     {
         uint8_t tabPos = 0;
         for (auto i = 0U; i < kMainTabInfo.size(); i++)
         {
-            if (!shouldShowTab(i, FilterLevel(self->var_856)))
+            if (!shouldShowPrimaryTab(i, FilterLevel(self->var_856)))
                 continue;
 
             // Assign tab position
@@ -496,7 +507,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.widgets[widx::closeButton].type = WidgetType::none;
         }
 
-        const auto& subTabs = kMainTabInfo[self.currentTab].subTabs;
+        const auto& currentTab = kMainTabInfo[self.currentTab];
+        const auto& subTabs = currentTab.subTabs;
         const bool showSecondaryTabs = !subTabs.empty();
 
         // Update page title
@@ -509,10 +521,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Toggle secondary tabs
         for (auto i = 0U; i < 8U; i++)
         {
-            bool subTabIsVisible = showSecondaryTabs && i < subTabs.size();
-
             const auto widgetIndex = i + widx::secondaryTab1;
-            self.widgets[widgetIndex].type = subTabIsVisible ? WidgetType::tab : WidgetType::none;
+
+            const bool subTabIsVisible = showSecondaryTabs && i < subTabs.size() && shouldShowSubTab(subTabs, i, FilterLevel(self.var_856));
+            if (!subTabIsVisible)
+                self.disabledWidgets |= 1ULL << widgetIndex;
+            else
+                self.disabledWidgets &= ~(1ULL << widgetIndex);
 
             if (subTabIsVisible)
                 self.enabledWidgets |= 1ULL << widgetIndex;
@@ -524,6 +539,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             else
                 self.activatedWidgets &= ~(1ULL << widgetIndex);
         }
+
+        Widget::leftAlignTabs(self, widx::secondaryTab1, widx::secondaryTab8, 30);
 
         if (showSecondaryTabs)
         {
@@ -588,6 +605,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (auto i = 0U; i < subTabs.size(); i++)
         {
+            auto widgetIndex = i + widx::secondaryTab1;
+            if (self->widgets[widgetIndex].type == WidgetType::none)
+                continue;
+
             auto& tabData = subTabs[i];
             auto frame = 0;
             if (self->currentSecondaryTab == i)
@@ -595,7 +616,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 frame = (self->frameNo >> tabData.animationDivisor) % tabData.animationLength;
             }
 
-            auto widgetIndex = i + widx::secondaryTab1;
             auto baseImage = currentTab.objectType == ObjectType::vehicle ? skin->img : 0;
             auto image = Gfx::recolour(baseImage + tabData.baseImage + frame, CompanyManager::getCompanyColour(CompanyId::neutral));
             Widget::drawTab(self, drawingCtx, image, widgetIndex);
@@ -1096,7 +1116,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             for (auto j = 0U; j < subTabs.size(); j++)
             {
-                if (objectType == subTabs[j].subObjectType)
+                if (objectType == subTabs[j].objectType)
                 {
                     targetTab = i;
                     targetSubTab = j;
@@ -1248,17 +1268,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case widx::secondaryTab8:
             {
                 auto& subTabs = kMainTabInfo[self.currentTab].subTabs;
-                auto previousSubType = subTabs[self.currentSecondaryTab].subObjectType;
+                auto previousSubType = subTabs[self.currentSecondaryTab].objectType;
 
                 self.currentSecondaryTab = w - widx::secondaryTab1;
-                auto currentSubType = subTabs[self.currentSecondaryTab].subObjectType;
+                auto currentSubType = subTabs[self.currentSecondaryTab].objectType;
                 _currentVehicleType = static_cast<VehicleType>(self.currentSecondaryTab);
 
                 // Do we need to reload the object list?
                 auto flags = FilterFlags(self.var_858);
                 if (previousSubType != currentSubType)
                 {
-                    populateTabObjectList(subTabs[self.currentSecondaryTab].subObjectType, flags);
+                    populateTabObjectList(subTabs[self.currentSecondaryTab].objectType, flags);
                 }
 
                 applyFilterToObjectList(flags);
