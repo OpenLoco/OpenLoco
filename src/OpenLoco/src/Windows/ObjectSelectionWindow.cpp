@@ -474,25 +474,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     static void switchPrimaryTab(Window& self, uint8_t tabIndex);
+    static void switchTabByObjectType(Window& self, ObjectType objectType);
 
     Window& openInTab(ObjectType objectType)
     {
-        // TODO: look up actual index
         auto& window = *open();
-        auto& info = kMainTabInfo[enumValue(objectType)];
-
-        if ((info.flags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
-        {
-            window.var_856 = enumValue(FilterLevel::expert);
-        }
-        else
-        {
-            window.var_856 = enumValue(FilterLevel::advanced);
-        }
-
+        window.var_856 = enumValue(FilterLevel::advanced);
         assignTabPositions(&window);
-        // TODO: look up actual index
-        switchPrimaryTab(window, enumValue(objectType));
+        switchTabByObjectType(window, objectType);
         return window;
     }
 
@@ -1089,6 +1078,42 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    static void switchTabByObjectType(Window& self, ObjectType objectType)
+    {
+        auto targetTab = 0;
+        auto targetSubTab = 0;
+        for (auto i = 0U; i < kMainTabInfo.size(); i++)
+        {
+            if (objectType == kMainTabInfo[i].objectType)
+            {
+                targetTab = i;
+                break;
+            }
+
+            auto& subTabs = kMainTabInfo[i].subTabs;
+            if (subTabs.empty())
+                continue;
+
+            for (auto j = 0U; j < subTabs.size(); j++)
+            {
+                if (objectType == subTabs[j].subObjectType)
+                {
+                    targetTab = i;
+                    targetSubTab = j;
+                    break;
+                }
+            }
+
+            if (targetSubTab != 0)
+                break;
+        }
+
+        self.currentTab = targetTab;
+        self.currentSecondaryTab = targetSubTab;
+
+        populateTabObjectList(objectType, FilterFlags(self.var_858));
+    }
+
     // 0x00473A13
     bool tryCloseWindow()
     {
@@ -1114,43 +1139,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (w != nullptr)
             {
                 auto objectType = res.value();
-                auto targetTab = 0;
-                auto targetSubTab = 0;
-                for (auto i = 0U; i < kMainTabInfo.size(); i++)
-                {
-                    if (objectType == kMainTabInfo[i].objectType)
-                    {
-                        targetTab = i;
-                        break;
-                    }
-
-                    auto& subTabs = kMainTabInfo[i].subTabs;
-                    if (subTabs.empty())
-                        continue;
-
-                    for (auto j = 0U; j < subTabs.size(); j++)
-                    {
-                        if (objectType == subTabs[j].subObjectType)
-                        {
-                            targetTab = i;
-                            targetSubTab = j;
-                            break;
-                        }
-                    }
-
-                    if (targetSubTab != 0)
-                        break;
-                }
+                switchTabByObjectType(*w, objectType);
 
                 w->rowHover = -1;
                 w->object = nullptr;
                 w->scrollAreas[0].contentWidth = 0;
                 ObjectManager::freeTemporaryObject();
                 w->invalidate();
-
-                w->currentTab = targetTab;
-                w->currentSecondaryTab = targetSubTab;
-                populateTabObjectList(objectType, static_cast<FilterFlags>(w->var_858));
 
                 auto objIndex = getFirstAvailableSelectedObject(w);
                 if (objIndex.index != -1)
