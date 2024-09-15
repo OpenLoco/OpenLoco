@@ -1219,9 +1219,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         if (_tabPositions[i].row != row)
                             continue;
 
-                        if (mousePos.X >= xPos && mousePos.Y >= yPos)
+                        if (mousePos.x >= xPos && mousePos.y >= yPos)
                         {
-                            if (mousePos.X < xPos + 31 && yPos + 27 > mousePos.Y)
+                            if (mousePos.x < xPos + 31 && yPos + 27 > mousePos.y)
                             {
                                 clickedTab = _tabPositions[i].index;
                                 break;
