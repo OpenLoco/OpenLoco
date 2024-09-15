@@ -509,7 +509,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         const auto& currentTab = kMainTabInfo[self.currentTab];
         const auto& subTabs = currentTab.subTabs;
-        const bool showSecondaryTabs = !subTabs.empty();
+        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.var_856) != FilterLevel::beginner;
 
         // Update page title
         auto args = FormatArguments(self.widgets[widx::caption].textArgs);
