@@ -544,16 +544,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         if (showSecondaryTabs)
         {
-            self.widgets[widx::scrollview].top = 85 - 23 + 28;
+            self.widgets[widx::scrollview].top = 62 + 28;
             self.widgets[widx::scrollviewFrame].type = WidgetType::panel;
             self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
-            self.widgets[widx::objectImage].top = 68 + 28;
         }
         else
         {
-            self.widgets[widx::scrollview].top = 85 - 23;
+            self.widgets[widx::scrollview].top = 62;
             self.widgets[widx::scrollviewFrame].type = WidgetType::none;
-            self.widgets[widx::objectImage].top = 68;
         }
     }
 
