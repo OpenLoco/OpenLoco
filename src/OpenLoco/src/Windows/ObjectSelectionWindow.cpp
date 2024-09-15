@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return window;
     }
 
-    static void switchTab(Window& self, uint8_t tabIndex);
+    static void switchPrimaryTab(Window& self, uint8_t tabIndex);
 
     Window& openInTab(ObjectType objectType)
     {
@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         assignTabPositions(&window);
         // TODO: look up actual index
-        switchTab(window, enumValue(objectType));
+        switchPrimaryTab(window, enumValue(objectType));
         return window;
     }
 
@@ -1165,9 +1165,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static void switchTab(Window& self, uint8_t tabIndex)
+    static void switchPrimaryTab(Window& self, uint8_t tabIndex)
     {
         self.currentTab = tabIndex;
+        self.currentSecondaryTab = 0;
+
         const auto& currentTab = kMainTabInfo[self.currentTab];
         _filterByVehicleType = currentTab.objectType == ObjectType::vehicle;
         _currentVehicleType = VehicleType::train;
@@ -1226,8 +1228,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
-                    // auto objectType = kMainTabInfo[clickedTab].objectType;
-                    switchTab(self, clickedTab);
+                    switchPrimaryTab(self, clickedTab);
                 }
 
                 break;
