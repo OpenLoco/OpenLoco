@@ -156,7 +156,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Visibility display;
     };
 
-    static loco_global<char[2], 0x005045F8> _strCheckmark;
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
 
     static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
