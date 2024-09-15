@@ -1126,14 +1126,13 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static loco_global<int16_t, 0x005233A4> _5233A4;
-
         // 0x004C072A
         static void volumeMouseDown(Window* w)
         {
             Input::setClickRepeatTicks(31);
 
-            int x = _5233A4 - w->x - w->widgets[Widx::volume].left - 10;
+            auto mousePos = Input::getScrollLastLocation();
+            int x = mousePos.x - w->x - w->widgets[Widx::volume].left - 10;
             x = std::clamp(x, 0, 80);
 
             Audio::setBgmVolume((x * 32) - 2560);
