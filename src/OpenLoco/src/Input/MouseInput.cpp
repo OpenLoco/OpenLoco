@@ -64,8 +64,8 @@ namespace OpenLoco::Input
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
-    static loco_global<uint16_t, 0x0052334A> _52334A;
-    static loco_global<uint16_t, 0x0052334C> _52334C;
+    static loco_global<uint16_t, 0x0052334A> _cursorPressedX;
+    static loco_global<uint16_t, 0x0052334C> _cursorPressedY;
 
     static loco_global<int8_t, 0x0052336C> _52336C;
 
@@ -95,8 +95,8 @@ namespace OpenLoco::Input
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x0052338E> _ticksSinceDragStart;
 
-    static loco_global<int16_t, 0x005233A4> _5233A4;
-    static loco_global<int16_t, 0x005233A6> _5233A6;
+    static loco_global<int16_t, 0x005233A4> _scrollLastX;
+    static loco_global<int16_t, 0x005233A6> _scrollLastY;
     static loco_global<Ui::WindowType, 0x005233A8> _hoverWindowType;
     static uint8_t _5233A9;
     static loco_global<Ui::WindowNumber_t, 0x005233AA> _hoverWindowNumber;
@@ -959,8 +959,8 @@ namespace OpenLoco::Input
     // 0x004C7AE7
     static void stateWidgetPressed(MouseButton button, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex)
     {
-        _52334A = x;
-        _52334C = y;
+        _cursorPressedX = x;
+        _cursorPressedY = y;
 
         auto pressedWindow = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
         if (pressedWindow == nullptr)
@@ -1587,15 +1587,15 @@ namespace OpenLoco::Input
                         }
                         [[fallthrough]];
                     default:
-                        _5233A4 = x;
-                        _5233A6 = y;
+                        _scrollLastX = x;
+                        _scrollLastY = y;
                         cursorId = window->callCursor(widgetIdx, x, y, cursorId);
                         break;
 
                     case Ui::WidgetType::scrollview:
                     {
-                        _5233A4 = x;
-                        _5233A6 = y;
+                        _scrollLastX = x;
+                        _scrollLastY = y;
 
                         auto res = Ui::ScrollView::getPart(
                             window,
@@ -1679,6 +1679,11 @@ namespace OpenLoco::Input
         return Ui::Point(_tooltipCursorX, _tooltipCursorY);
     }
 
+    Ui::Point getCursorPressedLocation()
+    {
+        return Ui::Point(_cursorPressedX, _cursorPressedY);
+    }
+
     Ui::Point getDragLastLocation()
     {
         return Ui::Point(_dragLastX, _dragLastY);
@@ -1686,7 +1691,7 @@ namespace OpenLoco::Input
 
     Ui::Point getScrollLastLocation()
     {
-        return Ui::Point(_5233A4, _5233A6);
+        return Ui::Point(_scrollLastX, _scrollLastY);
     }
 
     void setTooltipMouseLocation(const Ui::Point& loc)

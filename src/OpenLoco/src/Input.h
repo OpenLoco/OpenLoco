@@ -109,6 +109,7 @@ namespace OpenLoco::Input
     void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex);
 
     Ui::Point getScrollLastLocation();
+    Ui::Point getCursorPressedLocation();
     Ui::Point getDragLastLocation();
     Ui::Point getTooltipMouseLocation();
     void setTooltipMouseLocation(const Ui::Point& loc);

@@ -156,16 +156,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Visibility display;
     };
 
-    static loco_global<char[2], 0x005045F8> _strCheckmark;
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
 
     static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
     {
         return std::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
     }
-
-    static loco_global<uint16_t, 0x0052334A> _mousePosX;
-    static loco_global<uint16_t, 0x0052334C> _mousePosY;
 
     // _tabObjectCounts can be integrated after implementing sub_473A95
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
@@ -1211,6 +1207,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 int clickedTab = -1;
                 int y = widgets[widx::panel].top + self.y - 26;
                 int x = self.x + 3;
+                auto mousePos = Input::getCursorPressedLocation();
 
                 for (int row = 0; row < 2; row++)
                 {
@@ -1222,9 +1219,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         if (_tabPositions[i].row != row)
                             continue;
 
-                        if (_mousePosX >= xPos && _mousePosY >= yPos)
+                        if (mousePos.x >= xPos && mousePos.y >= yPos)
                         {
-                            if (_mousePosX < xPos + 31 && yPos + 27 > _mousePosY)
+                            if (mousePos.x < xPos + 31 && yPos + 27 > mousePos.y)
                             {
                                 clickedTab = _tabPositions[i].index;
                                 break;
