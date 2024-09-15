@@ -146,31 +146,27 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr std::array kMiscSubTabs{
         SubTabInfo{ StringIds::object_interface_styles,      ObjectType::interfaceSkin, {}, ObjectTabFlags::advanced,                                ImageIds::tab_object_settings,  1, 1 },
         SubTabInfo{ StringIds::object_scenario_descriptions, ObjectType::scenarioText,  {}, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden, ImageIds::tab_object_scenarios, 1, 1 },
-        SubTabInfo{ StringIds::object_sounds,                ObjectType::sound,         {}, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden, ImageIds::tab_object_audio,     1, 1 },
         SubTabInfo{ StringIds::object_animation_effects,     ObjectType::steam,         {}, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden, ImageIds::tab_object_smoke,     1, 1 },
+        SubTabInfo{ StringIds::object_sounds,                ObjectType::sound,         {}, ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden, ImageIds::tab_object_audio,     1, 1 },
     };
 
-    static constexpr std::array<MainTabInfo, kMaxObjectTypes> _mainTabInfo = {
-        MainTabInfo{ StringIds::object_world_region,          ObjectType::region,        ImageIds::tab_object_world,           kWorldRegionSubTabs, ObjectTabFlags::none },
-        MainTabInfo{ StringIds::object_vehicles,              ObjectType::vehicle,       ImageIds::tab_object_vehicles,        kVehicleSubTabs,     ObjectTabFlags::advanced },
-        MainTabInfo{ StringIds::object_land,                  ObjectType::land,          ImageIds::tab_object_landscape,       kLandSubTabs,        ObjectTabFlags::advanced },
-        MainTabInfo{ StringIds::object_tracks,                ObjectType::track,         ImageIds::tab_object_track,           kTrackSubTabs,       ObjectTabFlags::advanced },
-        MainTabInfo{ StringIds::object_roads,                 ObjectType::road,          ImageIds::tab_object_road,            kRoadSubTabs,        ObjectTabFlags::advanced },
-        MainTabInfo{ StringIds::object_airports,              ObjectType::airport,       ImageIds::tab_object_airports,        {},                  ObjectTabFlags::advanced },
-        MainTabInfo{ StringIds::object_docks,                 ObjectType::dock,          ImageIds::tab_object_docks,           {},                  ObjectTabFlags::advanced },
-        MainTabInfo{ StringIds::object_buildings,             ObjectType::building,      ImageIds::tab_object_buildings,       kBuildingSubTabs,    ObjectTabFlags::advanced },
-        MainTabInfo{ StringIds::object_bridges,               ObjectType::bridge,        ImageIds::tab_object_bridges,         {},                  ObjectTabFlags::advanced },
-        MainTabInfo{ StringIds::object_tunnels,               ObjectType::tunnel,        ImageIds::tab_object_tunnels,         {},                  ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
-        MainTabInfo{ StringIds::object_interface_styles,      ObjectType::interfaceSkin, ImageIds::tab_object_settings,        kMiscSubTabs,        ObjectTabFlags::advanced },
-        MainTabInfo{ StringIds::object_company_owners,        ObjectType::competitor,    ImageIds::tab_object_companies,       {},                  ObjectTabFlags::hideInEditor },
+    static constexpr std::array kMainTabInfo{
+        MainTabInfo{ StringIds::object_world_region,     ObjectType::region,        ImageIds::tab_object_world,     kWorldRegionSubTabs, ObjectTabFlags::none                                    },
+        MainTabInfo{ StringIds::object_vehicles,         ObjectType::vehicle,       ImageIds::tab_object_vehicles,  kVehicleSubTabs,     ObjectTabFlags::advanced                                },
+        MainTabInfo{ StringIds::object_land,             ObjectType::land,          ImageIds::tab_object_landscape, kLandSubTabs,        ObjectTabFlags::advanced                                },
+        MainTabInfo{ StringIds::object_tracks,           ObjectType::track,         ImageIds::tab_object_track,     kTrackSubTabs,       ObjectTabFlags::advanced                                },
+        MainTabInfo{ StringIds::object_roads,            ObjectType::road,          ImageIds::tab_object_road,      kRoadSubTabs,        ObjectTabFlags::advanced                                },
+        MainTabInfo{ StringIds::object_airports,         ObjectType::airport,       ImageIds::tab_object_airports,  {},                  ObjectTabFlags::advanced                                },
+        MainTabInfo{ StringIds::object_docks,            ObjectType::dock,          ImageIds::tab_object_docks,     {},                  ObjectTabFlags::advanced                                },
+        MainTabInfo{ StringIds::object_buildings,        ObjectType::building,      ImageIds::tab_object_buildings, kBuildingSubTabs,    ObjectTabFlags::advanced                                },
+        MainTabInfo{ StringIds::object_bridges,          ObjectType::bridge,        ImageIds::tab_object_bridges,   {},                  ObjectTabFlags::advanced                                },
+        MainTabInfo{ StringIds::object_tunnels,          ObjectType::tunnel,        ImageIds::tab_object_tunnels,   {},                  ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        MainTabInfo{ StringIds::object_interface_styles, ObjectType::interfaceSkin, ImageIds::tab_object_settings,  kMiscSubTabs,        ObjectTabFlags::advanced                                },
+        MainTabInfo{ StringIds::object_company_owners,   ObjectType::competitor,    ImageIds::tab_object_companies, {},                  ObjectTabFlags::hideInEditor                            },
     };
     // clang-format on
 
-    struct TabPosition
-    {
-        uint8_t index;
-        uint8_t row;
-    };
+    using TabPosition = uint8_t;
 
     enum class Visibility : uint8_t
     {
@@ -251,76 +247,36 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_object_selection),
         makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 65 }, { 600, 333 }, WindowColour::secondary),
+        Widgets::Panel({ 0, 42 }, { 600, 356 }, WindowColour::secondary),
 
         // Primary tab area
-        makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_6, WindowColour::secondary),
+        makeWidget({ 3, 15 }, { 589, 27 }, WidgetType::wt_6, WindowColour::secondary),
 
         // Filter options
         makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
-        makeWidget({ 4, 68 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
-        makeWidget({ 254, 68 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
+        makeWidget({ 4, 45 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
+        makeWidget({ 254, 45 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
 
         // Secondary tabs
-        makeRemapWidget({ 3, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeRemapWidget({ 34, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeRemapWidget({ 65, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeRemapWidget({ 96, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeRemapWidget({ 127, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeRemapWidget({ 158, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeRemapWidget({ 189, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeRemapWidget({ 220, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeRemapWidget({ 3, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeRemapWidget({ 34, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeRemapWidget({ 65, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeRemapWidget({ 96, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeRemapWidget({ 127, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeRemapWidget({ 158, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeRemapWidget({ 189, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeRemapWidget({ 220, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
 
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
         makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary)
+        makeWidget({ 391, 45 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary)
 
     );
 
-    // 0x0047322A
-    static void rotateTabs(uint8_t newStartPosition)
-    {
-        auto isSentinel = [](auto& entry) { return entry.index == 0xFF; };
-        auto sentinelPos = std::find_if(std::begin(_tabPositions), std::end(_tabPositions), isSentinel);
-
-        std::rotate(std::begin(_tabPositions), std::begin(_tabPositions) + newStartPosition, sentinelPos);
-
-        for (uint8_t i = 0; _tabPositions[i].index != 0xFF; i++)
-        {
-            _tabPositions[i].row = i < kPrimaryTabRowCapacity ? 0 : 1;
-        }
-    }
-
-    // 0x004731EE
-    static void repositionTargetTab(Window* self, uint8_t targetTab)
-    {
-        self->currentTab = targetTab;
-        for (auto i = 0U; i < std::size(_tabPositions); i++)
-        {
-            // Ended up in a position without info? Reassign positions first.
-            if (_tabPositions[i].index == 0xFF)
-            {
-                self->var_856 = enumValue(FilterLevel::advanced);
-                assignTabPositions(self);
-                return;
-            }
-
-            if (_tabPositions[i].index == targetTab)
-            {
-                // Found current tab, and its in bottom row? No change required
-                if (_tabPositions[i].row == 0)
-                    return;
-                // Otherwise, we'll rotate the tabs around, such that this one is in the bottom row
-                else
-                    return rotateTabs(i);
-            }
-        }
-    }
-
     static bool shouldShowTab(int8_t index, FilterLevel filterLevel)
     {
-        const ObjectTabFlags tabFlags = _mainTabInfo[index].flags;
+        const ObjectTabFlags tabFlags = kMainTabInfo[index].flags;
 
         if (filterLevel == FilterLevel::expert)
             return true;
@@ -329,7 +285,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return false;
 
         // Skip all types that don't have any objects
-        auto objectType = enumValue(_mainTabInfo[index].objectType);
+        auto objectType = enumValue(kMainTabInfo[index].objectType);
         if (_tabObjectCounts[objectType] == 0)
             return false;
 
@@ -353,35 +309,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00473154
     static void assignTabPositions(Window* self)
     {
-        uint8_t currentRow = 0;
-        uint8_t currentPos = 0;
-        uint8_t rowCapacity = kPrimaryTabRowCapacity;
         uint8_t tabPos = 0;
-
-        for (auto i = 0U; i < _mainTabInfo.size(); i++)
+        for (auto i = 0U; i < kMainTabInfo.size(); i++)
         {
             if (!shouldShowTab(i, FilterLevel(self->var_856)))
                 continue;
 
             // Assign tab position
-            _tabPositions[tabPos].index = i;
-            _tabPositions[tabPos].row = currentRow;
+            _tabPositions[tabPos] = i;
             tabPos++;
-
-            // Distribute tabs over two rows -- ensure there's capacity left in current row
-            currentPos++;
-            if (currentPos >= rowCapacity)
-            {
-                currentPos = 0;
-                rowCapacity = kSecondaryTabRowCapacity;
-                currentRow++;
-            }
         }
 
         // Add a marker to denote the last tab
-        _tabPositions[tabPos].index = 0xFF;
-
-        repositionTargetTab(self, _tabPositions[0].index);
+        _tabPositions[tabPos] = 0xFF;
     }
 
     static bool contains(const std::string_view& a, const std::string_view& b)
@@ -512,8 +452,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->object = nullptr;
 
         assignTabPositions(window);
-        static_assert(_mainTabInfo[0].objectType == ObjectType::region);
-        repositionTargetTab(window, 0);
+        static_assert(kMainTabInfo[0].objectType == ObjectType::region);
         populateTabObjectList(ObjectType::region, FilterFlags(window->var_858));
 
         ObjectManager::freeTemporaryObject();
@@ -542,7 +481,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         // TODO: look up actual index
         auto& window = *open();
-        auto& info = _mainTabInfo[enumValue(objectType)];
+        auto& info = kMainTabInfo[enumValue(objectType)];
 
         if ((info.flags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
         {
@@ -570,7 +509,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.widgets[widx::closeButton].type = WidgetType::none;
         }
 
-        const auto& subTabs = _mainTabInfo[self.currentTab].subTabs;
+        const auto& subTabs = kMainTabInfo[self.currentTab].subTabs;
         const bool showSecondaryTabs = !subTabs.empty();
 
         // Update page title
@@ -578,7 +517,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (showSecondaryTabs)
             args.push(subTabs[self.currentSecondaryTab].name);
         else
-            args.push(_mainTabInfo[self.currentTab].name);
+            args.push(kMainTabInfo[self.currentTab].name);
 
         // Toggle secondary tabs
         for (auto i = 0U; i < 8U; i++)
@@ -601,14 +540,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         if (showSecondaryTabs)
         {
-            self.widgets[widx::scrollview].top = 85 + 28;
+            self.widgets[widx::scrollview].top = 85 - 23 + 28;
             self.widgets[widx::scrollviewFrame].type = WidgetType::panel;
             self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
             self.widgets[widx::objectImage].top = 68 + 28;
         }
         else
         {
-            self.widgets[widx::scrollview].top = 85;
+            self.widgets[widx::scrollview].top = 85 - 23;
             self.widgets[widx::scrollviewFrame].type = WidgetType::none;
             self.widgets[widx::objectImage].top = 68;
         }
@@ -617,57 +556,40 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint16_t[kMaxObjectTypes], 0x0112C1C5> _112C1C5;
     static loco_global<uint32_t, 0x0112C209> _112C209;
 
-    static constexpr uint8_t kRowOffsetX = 10;
-    static constexpr uint8_t kRowOffsetY = 24;
-
     // 0x0047328D
     static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
     {
-        auto y = self->widgets[widx::panel].top + self->y - 26;
-        auto x = self->x + 3;
+        auto yPos = self->y + self->widgets[widx::tabArea].top;
+        auto xPos = self->x + 3;
 
-        for (auto row = 1; row >= 0; row--)
+        for (auto index = 0; _tabPositions[index] != 0xFF; index++)
         {
-            auto xPos = x + (row * kRowOffsetX);
-            auto yPos = y - (row * kRowOffsetY);
-            for (auto index = 0; _tabPositions[index].index != 0xFF; index++)
+            auto image = Gfx::recolour(ImageIds::tab, self->getColour(WindowColour::secondary).c());
+            if (_tabPositions[index] == self->currentTab)
             {
-                if (_tabPositions[index].row != row)
-                    continue;
+                image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
+                drawingCtx.drawImage(xPos, yPos, image);
 
-                auto image = Gfx::recolour(ImageIds::tab, self->getColour(WindowColour::secondary).c());
-                if (_tabPositions[index].index == self->currentTab)
-                {
-                    image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
-                    drawingCtx.drawImage(xPos, yPos, image);
-
-                    image = Gfx::recolour(_mainTabInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
-                    drawingCtx.drawImage(xPos, yPos, image);
-                }
-                else
-                {
-                    drawingCtx.drawImage(xPos, yPos, image);
-
-                    image = Gfx::recolour(_mainTabInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
-                    drawingCtx.drawImage(xPos, yPos, image);
-
-                    image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
-                    drawingCtx.drawImage(xPos, yPos, image);
-
-                    if (row < 1)
-                    {
-                        auto colour = Colours::getShade(self->getColour(WindowColour::secondary).c(), 7);
-                        drawingCtx.drawRect(xPos, yPos + 26, 31, 1, colour, Gfx::RectFlags::none);
-                    }
-                }
-                xPos += 31;
+                image = Gfx::recolour(kMainTabInfo[_tabPositions[index]].image, Colour::mutedSeaGreen);
+                drawingCtx.drawImage(xPos, yPos, image);
             }
+            else
+            {
+                drawingCtx.drawImage(xPos, yPos, image);
+
+                image = Gfx::recolour(kMainTabInfo[_tabPositions[index]].image, Colour::mutedSeaGreen);
+                drawingCtx.drawImage(xPos, yPos, image);
+
+                image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
+                drawingCtx.drawImage(xPos, yPos, image);
+            }
+            xPos += 31;
         }
     }
 
     static void drawSecondaryTabs(Window* self, Gfx::DrawingContext& drawingCtx)
     {
-        const auto& currentTab = _mainTabInfo[self->currentTab];
+        const auto& currentTab = kMainTabInfo[self->currentTab];
         const auto& subTabs = currentTab.subTabs;
         const bool showSecondaryTabs = !subTabs.empty();
         if (!showSecondaryTabs)
@@ -1196,15 +1118,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto objectType = res.value();
                 auto targetTab = 0;
                 auto targetSubTab = 0;
-                for (auto i = 0U; i < _mainTabInfo.size(); i++)
+                for (auto i = 0U; i < kMainTabInfo.size(); i++)
                 {
-                    if (objectType == _mainTabInfo[i].objectType)
+                    if (objectType == kMainTabInfo[i].objectType)
                     {
                         targetTab = i;
                         break;
                     }
 
-                    auto& subTabs = _mainTabInfo[i].subTabs;
+                    auto& subTabs = kMainTabInfo[i].subTabs;
                     if (subTabs.empty())
                         continue;
 
@@ -1222,14 +1144,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         break;
                 }
 
-                repositionTargetTab(w, targetTab);
-
                 w->rowHover = -1;
                 w->object = nullptr;
                 w->scrollAreas[0].contentWidth = 0;
                 ObjectManager::freeTemporaryObject();
                 w->invalidate();
 
+                w->currentTab = targetTab;
                 w->currentSecondaryTab = targetSubTab;
                 populateTabObjectList(objectType, static_cast<FilterFlags>(w->var_858));
 
@@ -1248,13 +1169,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void switchTab(Window& self, uint8_t tabIndex)
     {
-        repositionTargetTab(&self, tabIndex);
-
-        const auto& currentTab = _mainTabInfo[self.currentTab];
+        self.currentTab = tabIndex;
+        const auto& currentTab = kMainTabInfo[self.currentTab];
         _filterByVehicleType = currentTab.objectType == ObjectType::vehicle;
         _currentVehicleType = VehicleType::train;
 
-        auto objectType = _mainTabInfo[tabIndex].objectType;
+        auto objectType = kMainTabInfo[tabIndex].objectType;
         populateTabObjectList(objectType, FilterFlags(self.var_858));
 
         self.rowHover = -1;
@@ -1288,36 +1208,27 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case widx::tabArea:
             {
                 int clickedTab = -1;
-                int y = widgets[widx::panel].top + self.y - 26;
-                int x = self.x + 3;
+                int yPos = self.y + widgets[widx::tabArea].top;
+                int xPos = self.x + 3;
                 auto mousePos = Input::getCursorPressedLocation();
 
-                for (int row = 0; row < 2; row++)
+                for (int i = 0; _tabPositions[i] != 0xFF; i++)
                 {
-                    auto xPos = x + (row * kRowOffsetX);
-                    auto yPos = y - (row * kRowOffsetY);
-
-                    for (int i = 0; _tabPositions[i].index != 0xFF; i++)
+                    if (mousePos.x >= xPos && mousePos.y >= yPos)
                     {
-                        if (_tabPositions[i].row != row)
-                            continue;
-
-                        if (mousePos.x >= xPos && mousePos.y >= yPos)
+                        if (mousePos.x < xPos + 31 && yPos + 27 > mousePos.y)
                         {
-                            if (mousePos.x < xPos + 31 && yPos + 27 > mousePos.y)
-                            {
-                                clickedTab = _tabPositions[i].index;
-                                break;
-                            }
+                            clickedTab = _tabPositions[i];
+                            break;
                         }
-
-                        xPos += 31;
                     }
+
+                    xPos += 31;
                 }
 
                 if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
-                    // auto objectType = _mainTabInfo[clickedTab].objectType;
+                    // auto objectType = kMainTabInfo[clickedTab].objectType;
                     switchTab(self, clickedTab);
                 }
 
@@ -1342,7 +1253,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case widx::secondaryTab7:
             case widx::secondaryTab8:
             {
-                auto& subTabs = _mainTabInfo[self.currentTab].subTabs;
+                auto& subTabs = kMainTabInfo[self.currentTab].subTabs;
                 auto previousSubType = subTabs[self.currentSecondaryTab].subObjectType;
 
                 self.currentSecondaryTab = w - widx::secondaryTab1;
@@ -1408,22 +1319,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             assignTabPositions(&self);
 
             auto currentTab = self.currentTab;
-            const ObjectTabFlags tabFlags = _mainTabInfo[currentTab].flags;
+            const ObjectTabFlags tabFlags = kMainTabInfo[currentTab].flags;
             if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
             {
-                currentTab = _tabPositions[0].index;
-                auto objectType = _mainTabInfo[currentTab].objectType;
-                populateTabObjectList(objectType, static_cast<FilterFlags>(self.var_858));
+                currentTab = _tabPositions[0];
+                auto objectType = kMainTabInfo[currentTab].objectType;
+                populateTabObjectList(objectType, FilterFlags(self.var_858));
             }
-
-            repositionTargetTab(&self, currentTab);
         }
 
         // Toggle vanilla objects
         else if (itemIndex == 4)
         {
             self.var_858 = enumValue(FilterFlags(self.var_858) ^ FilterFlags::vanilla);
-            auto objectType = _mainTabInfo[self.currentTab].objectType;
+            auto objectType = kMainTabInfo[self.currentTab].objectType;
             populateTabObjectList(objectType, FilterFlags(self.var_858));
         }
 
@@ -1431,7 +1340,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         else if (itemIndex == 5)
         {
             self.var_858 = enumValue(FilterFlags(self.var_858) ^ FilterFlags::custom);
-            auto objectType = _mainTabInfo[self.currentTab].objectType;
+            auto objectType = kMainTabInfo[self.currentTab].objectType;
             populateTabObjectList(objectType, FilterFlags(self.var_858));
         }
 
