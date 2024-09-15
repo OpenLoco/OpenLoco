@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
 
     // 0x0112C21C
-    static TabPosition _tabPositions[36];
+    static TabPosition _tabPositions[std::size(kMainTabInfo)];
     static std::vector<TabObjectEntry> _tabObjectList;
     static uint16_t _numVisibleObjectsListed;
     static bool _filterByVehicleType = false;
