@@ -60,8 +60,6 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int kRowHeight = 12;
-    static constexpr int kPrimaryTabRowCapacity = 19;
-    static constexpr int kSecondaryTabRowCapacity = 18;
     static constexpr Ui::Size32 kWindowSize = { 600, 398 };
 
     enum class ObjectTabFlags : uint8_t
