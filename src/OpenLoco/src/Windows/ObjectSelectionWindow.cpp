@@ -1100,24 +1100,34 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         auto targetTab = 0;
         auto targetSubTab = 0;
-        for (auto i = 0U; i < kMainTabInfo.size(); i++)
+        auto targetType = kMainTabInfo[_tabPositions[0]].objectType;
+
+        for (auto i = 0U; i < std::size(_tabPositions) && _tabPositions[i] != 0xFF; i++)
         {
-            if (objectType == kMainTabInfo[i].objectType)
+            auto mainIndex = _tabPositions[i];
+            auto& mainTabInfo = kMainTabInfo[mainIndex];
+
+            if (objectType == mainTabInfo.objectType)
             {
                 targetTab = i;
+                targetType = objectType;
                 break;
             }
 
-            auto& subTabs = kMainTabInfo[i].subTabs;
+            auto& subTabs = mainTabInfo.subTabs;
             if (subTabs.empty())
                 continue;
 
             for (auto j = 0U; j < subTabs.size(); j++)
             {
+                if (!shouldShowTab(subTabs[j], FilterLevel(self.var_858)))
+                    continue;
+
                 if (objectType == subTabs[j].objectType)
                 {
                     targetTab = i;
                     targetSubTab = j;
+                    targetType = objectType;
                     break;
                 }
             }
@@ -1129,7 +1139,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.currentTab = targetTab;
         self.currentSecondaryTab = targetSubTab;
 
-        populateTabObjectList(objectType, FilterFlags(self.var_858));
+        populateTabObjectList(targetType, FilterFlags(self.var_858));
     }
 
     // 0x00473A13
@@ -1156,6 +1166,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto* w = WindowManager::find(WindowType::objectSelection);
             if (w != nullptr)
             {
+                // TODO: switch modes as needed?
                 auto objectType = res.value();
                 switchTabByObjectType(*w, objectType);
 
@@ -1327,17 +1338,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Switch level?
         else if (itemIndex >= 0 && itemIndex <= 2)
         {
+            // Keep track of currently selected object type
+            auto& currentTab = kMainTabInfo[self.currentTab];
+            auto currentObjectType = currentTab.objectType;
+            if (!currentTab.subTabs.empty())
+            {
+                auto& currentSubType = currentTab.subTabs[self.currentSecondaryTab];
+                currentObjectType = currentSubType.objectType;
+            }
+
             self.var_856 = itemIndex;
             assignTabPositions(&self);
 
-            auto currentTab = self.currentTab;
-            const ObjectTabFlags tabFlags = kMainTabInfo[currentTab].flags;
-            if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
-            {
-                currentTab = _tabPositions[0];
-                auto objectType = kMainTabInfo[currentTab].objectType;
-                populateTabObjectList(objectType, FilterFlags(self.var_858));
-            }
+            // Switch back to previously selected object type, if possible
+            switchTabByObjectType(self, currentObjectType);
         }
 
         // Toggle vanilla objects
