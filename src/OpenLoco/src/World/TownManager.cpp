@@ -120,6 +120,7 @@ namespace OpenLoco::TownManager
             }
 
             resetBuildingsInfluence();
+            break;
         }
 
         return town;
