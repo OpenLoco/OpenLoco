@@ -34,6 +34,7 @@
 #include "Title.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
+#include "Vehicles/RoutingManager.h"
 #include "Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
@@ -170,12 +171,6 @@ namespace OpenLoco::Scenario
         }
     }
 
-    // 0x004A8810
-    static void sub_4A8810()
-    {
-        call(0x004A8810);
-    }
-
     // TODO: Move to Terraform::reset
     // 0x004BAEC4
     static void sub_4BAEC4()
@@ -226,7 +221,7 @@ namespace OpenLoco::Scenario
         IndustryManager::reset();
         StationManager::reset();
 
-        sub_4A8810();
+        Vehicles::RoutingManager::resetRoutingTable();
         Vehicles::OrderManager::reset();
         sub_4BAEC4();
         sub_43C8FD();
