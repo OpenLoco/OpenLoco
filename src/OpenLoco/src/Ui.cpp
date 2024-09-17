@@ -333,18 +333,6 @@ namespace OpenLoco::Ui
         SDL_ShowCursor(1);
     }
 
-    // 0x0040447F
-    void initialiseInput()
-    {
-        call(0x0040447F);
-    }
-
-    // 0x004045C2
-    void disposeInput()
-    {
-        call(0x004045C2);
-    }
-
     // 0x004524C1
     void update()
     {
