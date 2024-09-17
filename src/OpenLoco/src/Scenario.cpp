@@ -171,13 +171,6 @@ namespace OpenLoco::Scenario
         }
     }
 
-    // TODO: Move to Terraform::reset
-    // 0x004BAEC4
-    static void sub_4BAEC4()
-    {
-        call(0x004BAEC4);
-    }
-
     // 0x0043C8FD
     static void sub_43C8FD()
     {
@@ -223,7 +216,7 @@ namespace OpenLoco::Scenario
 
         Vehicles::RoutingManager::resetRoutingTable();
         Vehicles::OrderManager::reset();
-        sub_4BAEC4();
+        Ui::Windows::Terraform::resetLastSelections();
         sub_43C8FD();
         MessageManager::reset();
     }
@@ -366,7 +359,7 @@ namespace OpenLoco::Scenario
 
         EntityManager::updateSpatialIndex();
         addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
-        sub_4BAEC4();
+        Ui::Windows::Terraform::resetLastSelections();
         MessageManager::reset();
 
         std::memcpy(gameState.scenarioDetails, S5::getOptions().scenarioDetails, sizeof(gameState.scenarioDetails));
