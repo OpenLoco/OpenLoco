@@ -54,6 +54,7 @@
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <array>
 #include <numeric>
+#include <vector>
 
 using namespace OpenLoco::Diagnostics;
 
@@ -207,7 +208,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
 
     // 0x0112C21C
-    static std::array<TabPosition, std::size(kMainTabInfo) + 1> _tabPositions;
+    static std::vector<TabPosition> _tabPositions;
     static std::vector<TabObjectEntry> _tabObjectList;
     static uint16_t _numVisibleObjectsListed;
     static bool _filterByVehicleType = false;
@@ -240,6 +241,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         scrollview,
         objectImage,
     };
+
+    static constexpr uint8_t kNumSecondaryTabs = 8;
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
@@ -318,19 +321,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00473154
     static void assignTabPositions(Window* self)
     {
-        uint8_t tabPos = 0;
+        _tabPositions.clear();
         for (auto i = 0U; i < kMainTabInfo.size(); i++)
         {
             if (!shouldShowPrimaryTab(i, FilterLevel(self->var_856)))
                 continue;
 
             // Assign tab position
-            _tabPositions[tabPos] = i;
-            tabPos++;
+            _tabPositions.emplace_back(i);
         }
-
-        // Add a marker to denote the last tab
-        _tabPositions[tabPos] = 0xFF;
     }
 
     static bool contains(const std::string_view& a, const std::string_view& b)
@@ -519,7 +518,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             args.push(kMainTabInfo[self.currentTab].name);
 
         // Toggle secondary tabs
-        for (auto i = 0U; i < 8U; i++)
+        for (auto i = 0U; i < kNumSecondaryTabs; i++)
         {
             const auto widgetIndex = i + widx::secondaryTab1;
 
@@ -564,22 +563,22 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto yPos = self->y + self->widgets[widx::tabArea].top;
         auto xPos = self->x + 3;
 
-        for (auto index = 0; _tabPositions[index] != 0xFF; index++)
+        for (auto index : _tabPositions)
         {
             auto image = Gfx::recolour(ImageIds::tab, self->getColour(WindowColour::secondary).c());
-            if (_tabPositions[index] == self->currentTab)
+            if (self->currentTab == index)
             {
                 image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
                 drawingCtx.drawImage(xPos, yPos, image);
 
-                image = Gfx::recolour(kMainTabInfo[_tabPositions[index]].image, Colour::mutedSeaGreen);
+                image = Gfx::recolour(kMainTabInfo[index].image, Colour::mutedSeaGreen);
                 drawingCtx.drawImage(xPos, yPos, image);
             }
             else
             {
                 drawingCtx.drawImage(xPos, yPos, image);
 
-                image = Gfx::recolour(kMainTabInfo[_tabPositions[index]].image, Colour::mutedSeaGreen);
+                image = Gfx::recolour(kMainTabInfo[index].image, Colour::mutedSeaGreen);
                 drawingCtx.drawImage(xPos, yPos, image);
 
                 image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
@@ -1102,7 +1101,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto targetSubTab = 0;
         auto targetType = kMainTabInfo[_tabPositions[0]].objectType;
 
-        for (auto i = 0U; i < std::size(_tabPositions) && _tabPositions[i] != 0xFF; i++)
+        for (auto i = 0U; i < std::size(_tabPositions); i++)
         {
             auto mainIndex = _tabPositions[i];
             auto& mainTabInfo = kMainTabInfo[mainIndex];
@@ -1236,13 +1235,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 int xPos = self.x + 3;
                 auto mousePos = Input::getCursorPressedLocation();
 
-                for (int i = 0; _tabPositions[i] != 0xFF; i++)
+                for (auto index : _tabPositions)
                 {
                     if (mousePos.x >= xPos && mousePos.y >= yPos)
                     {
                         if (mousePos.x < xPos + 31 && yPos + 27 > mousePos.y)
                         {
-                            clickedTab = _tabPositions[i];
+                            clickedTab = index;
                             break;
                         }
                     }
