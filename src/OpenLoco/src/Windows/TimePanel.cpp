@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         window->setWidgets(_widgets);
         window->enabledWidgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);
         window->var_854 = 0;
-        window->var_856 = 0;
+        window->numTicksVisible = 0;
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -165,7 +165,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         StringId format = StringIds::date_daymonthyear;
         if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
         {
-            if (self.var_856 >= 30)
+            if (self.numTicksVisible >= 30)
             {
                 format = StringIds::toolbar_status_paused;
             }
@@ -387,10 +387,10 @@ namespace OpenLoco::Ui::Windows::TimePanel
             w.var_854 = 0;
         }
 
-        w.var_856 += 1;
-        if (w.var_856 >= 60)
+        w.numTicksVisible += 1;
+        if (w.numTicksVisible >= 60)
         {
-            w.var_856 = 0;
+            w.numTicksVisible = 0;
         }
 
         if (_50A004 & (1 << 1))

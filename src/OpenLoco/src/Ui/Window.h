@@ -210,7 +210,11 @@ namespace OpenLoco::Ui
         uint16_t var_850 = 0;
         uint16_t var_852 = 0;
         uint16_t var_854 = 0; // used to limit updates
-        uint16_t var_856 = 0;
+        union
+        {
+            uint16_t filterLevel;     // ObjectSelectionWindow
+            uint16_t numTicksVisible; // TimePanel
+        };
         uint16_t var_858 = 0;
         union
         {

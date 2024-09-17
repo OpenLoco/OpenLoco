@@ -167,13 +167,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     using TabPosition = uint8_t;
 
+    // Used for TabObjectEntry::display
     enum class Visibility : uint8_t
     {
         hidden = 0,
         shown = 1,
     };
 
-    // Used for var_856
+    // Used for Window::filterLevel
     enum class FilterLevel : uint8_t
     {
         beginner = 0,
@@ -181,7 +182,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         expert = 2,
     };
 
-    // Used for var_858
+    // Used for Window::var_858
     enum class FilterFlags : uint8_t
     {
         none = 0,
@@ -324,7 +325,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         _tabPositions.clear();
         for (auto i = 0U; i < kMainTabInfo.size(); i++)
         {
-            if (!shouldShowPrimaryTab(i, FilterLevel(self->var_856)))
+            if (!shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
                 continue;
 
             // Assign tab position
@@ -454,7 +455,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
-        window->var_856 = enumValue(isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced);
+        window->filterLevel = enumValue(isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced);
         window->var_858 = enumValue(FilterFlags::vanilla | FilterFlags::custom);
         window->currentSecondaryTab = 0;
         window->object = nullptr;
@@ -489,7 +490,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     Window& openInTab(ObjectType objectType)
     {
         auto& window = *open();
-        window.var_856 = enumValue(FilterLevel::advanced);
+        window.filterLevel = enumValue(FilterLevel::advanced);
         assignTabPositions(&window);
         switchTabByObjectType(window, objectType);
         return window;
@@ -508,7 +509,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         const auto& currentTab = kMainTabInfo[self.currentTab];
         const auto& subTabs = currentTab.subTabs;
-        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.var_856) != FilterLevel::beginner;
+        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
 
         // Update page title
         auto args = FormatArguments(self.widgets[widx::caption].textArgs);
@@ -522,7 +523,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             const auto widgetIndex = i + widx::secondaryTab1;
 
-            const bool subTabIsVisible = showSecondaryTabs && i < subTabs.size() && shouldShowSubTab(subTabs, i, FilterLevel(self.var_856));
+            const bool subTabIsVisible = showSecondaryTabs && i < subTabs.size() && shouldShowSubTab(subTabs, i, FilterLevel(self.filterLevel));
             if (!subTabIsVisible)
                 self.disabledWidgets |= 1ULL << widgetIndex;
             else
@@ -912,7 +913,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             };
 
             FormatArguments args{};
-            args.push(levelStringIds[self.var_856]);
+            args.push(levelStringIds[self.filterLevel]);
 
             auto& widget = self.widgets[widx::filterLabel];
             auto point = Point(self.x + widget.left, self.y + widget.top);
@@ -1311,7 +1312,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::objSelectionFilterCustom);
 
             // Mark current level
-            Dropdown::setItemSelected(self.var_856);
+            Dropdown::setItemSelected(self.filterLevel);
 
             // Show vanilla objects?
             if ((FilterFlags(self.var_858) & FilterFlags::vanilla) != FilterFlags::none)
@@ -1330,7 +1331,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         if (itemIndex < 0)
         {
-            self.var_856 = (self.var_856 ^ 1) % 3;
+            self.filterLevel = (self.filterLevel ^ 1) % 3;
             assignTabPositions(&self);
         }
 
@@ -1346,7 +1347,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 currentObjectType = currentSubType.objectType;
             }
 
-            self.var_856 = itemIndex;
+            self.filterLevel = itemIndex;
             assignTabPositions(&self);
 
             // Switch back to previously selected object type, if possible
