@@ -3,6 +3,7 @@
 #include "EditorController.h"
 #include "Engine/Limits.h"
 #include "Objects/Object.h"
+#include "ScenarioConstruction.h"
 #include "ScenarioObjective.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -305,13 +306,7 @@ namespace OpenLoco::S5
         uint32_t magicNumber;                                                            // 0x000150 (0x00525F68)
         uint16_t numMapAnimations;                                                       // 0x000154 (0x00525F6C)
         int16_t tileUpdateStartLocation[2];                                              // 0x000156 (0x00525F6E)
-        uint8_t scenarioSignals[8];                                                      // 0x00015A (0x00525F72)
-        uint8_t scenarioBridges[8];                                                      // 0x000162 (0x00525F7A)
-        uint8_t scenarioTrainStations[8];                                                // 0x00016A (0x00525F82)
-        uint8_t scenarioTrackMods[8];                                                    // 0x000172 (0x00525F8A)
-        uint8_t var_17A[8];                                                              // 0x00017A (0x00525F92)
-        uint8_t scenarioRoadStations[8];                                                 // 0x000182 (0x00525F9A)
-        uint8_t scenarioRoadMods[8];                                                     // 0x00018A (0x00525FA2)
+        Scenario::Construction scenarioConstruction;                                     // 0x00015A (0x00525F72)
         uint8_t lastRailroadOption;                                                      // 0x000192 (0x00525FAA)
         uint8_t lastRoadOption;                                                          // 0x000193 (0x00525FAB)
         uint8_t lastAirport;                                                             // 0x000194 (0x00525FAC)
