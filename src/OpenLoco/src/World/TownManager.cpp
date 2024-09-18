@@ -44,7 +44,7 @@ namespace OpenLoco::TownManager
         printf("buffer: %s\n", buffer);
         buffer += strlen(buffer);
 
-        uint8_t tail = *reinterpret_cast<const uint8_t*>(srcPtr + strlen(srcPtr));
+        uint8_t tail = *reinterpret_cast<const uint8_t*>(srcPtr + strlen(srcPtr) + 1);
         return tail;
     }
 
