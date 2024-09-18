@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -86,38 +87,38 @@ namespace OpenLoco::Ui
         static constexpr uint32_t kContentUnk = 0xFFFFFFFEU;
 
         constexpr Widget(Ui::Point origin, Ui::Size size, WidgetType widgetType, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-            : left{ origin.x }
+            : type{ widgetType }
+            , windowColour{ colour }
+            , left{ origin.x }
             , right{ static_cast<int16_t>(origin.x + size.width - 1) }
             , top{ origin.y }
             , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
-            , type{ widgetType }
-            , windowColour{ colour }
             , content{ content }
             , tooltip{ tooltip }
         {
         }
 
         constexpr Widget(Ui::Point origin, Ui::Size size, WidgetType widgetType, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
-            : left{ origin.x }
+            : type{ widgetType }
+            , windowColour{ colour }
+            , left{ origin.x }
             , right{ static_cast<int16_t>(origin.x + size.width - 1) }
             , top{ origin.y }
             , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
-            , type{ widgetType }
-            , windowColour{ colour }
             , text{ content }
             , tooltip{ tooltip }
         {
         }
 
         constexpr Widget(WidgetType widgetType)
-            : left{}
+            : type{ widgetType }
+            , windowColour{}
+            , left{}
             , right{}
             , top{}
             , bottom{}
-            , type{ widgetType }
-            , windowColour{}
-            , content{}
-            , tooltip{}
+            , image{ ImageIds::null } // In case text is accidentally used will be also StringIds::null
+            , tooltip{ StringIds::null }
         {
         }
 
