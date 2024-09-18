@@ -111,7 +111,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
         makeWidget({ 3, 44 }, { 240, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
         makeWidget({ 3, 250 }, { 322, 21 }, WidgetType::wt_13, WindowColour::secondary),
-        widgetEnd()
     };
 
     static Pos2 mapWindowPosToLocation(Point pos)

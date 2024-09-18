@@ -226,7 +226,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeWidget({ 3, 83 }, { 290, 303 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary),
-        widgetEnd(),
     };
 
     // 0x0047322A

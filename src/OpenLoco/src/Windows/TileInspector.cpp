@@ -90,7 +90,6 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeWidget({ kWindowSize.width - 34, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderGhost, StringIds::tileInspectorHeaderGhostTip),
         makeWidget({ 4, 60 }, { kWindowSize.width - 8, 103 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
         makeWidget({ 4, 165 }, { kWindowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
-        widgetEnd(),
     };
 
     static void activateMapSelectionTool(Window* const self)

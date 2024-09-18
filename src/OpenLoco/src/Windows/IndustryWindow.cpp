@@ -91,7 +91,6 @@ namespace OpenLoco::Ui::Windows::Industry
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
             makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
-            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport) | (1 << demolish_industry);
@@ -391,7 +390,6 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr Widget widgets[] = {
             commonWidgets(222, 136, StringIds::title_industry_monthly_production),
-            widgetEnd(),
         };
 
         // 0x0045626F
@@ -431,7 +429,6 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr Widget widgets[] = {
             commonWidgets(300, 126, StringIds::title_statistics),
-            widgetEnd(),
         };
 
         // 0x00456665

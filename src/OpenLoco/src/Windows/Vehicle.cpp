@@ -158,7 +158,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
             makeWidget({ 240, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
             makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd()
         };
     }
 
@@ -180,7 +179,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             commonWidgets(265, 177, StringIds::title_vehicle_cargo),
             makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
             makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd()
         };
     }
 
@@ -195,7 +193,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x00522470
         static constexpr Widget widgets[] = {
             commonWidgets(636, 319, StringIds::title_company_finances),
-            widgetEnd(),
         };
     }
 
@@ -236,7 +233,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
             makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
             makeWidget({ 240, 164 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip),
-            widgetEnd(),
         };
     }
 
@@ -276,7 +272,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
             makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
-            widgetEnd()
         };
 
         constexpr uint64_t interactiveWidgets = (1 << widx::stopStart) | (1 << widx::pickup) | (1 << widx::passSignal) | (1 << widx::changeDirection) | (1 << widx::centreViewport);

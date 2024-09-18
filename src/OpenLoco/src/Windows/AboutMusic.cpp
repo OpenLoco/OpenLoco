@@ -36,7 +36,6 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { kWindowSize.width, 297 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 18 }, { kWindowSize.width - 8, 289 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

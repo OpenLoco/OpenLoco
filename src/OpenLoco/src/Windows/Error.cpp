@@ -44,7 +44,6 @@ namespace OpenLoco::Ui::Windows::Error
 
         static constexpr Widget widgets[] = {
             makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::panel, WindowColour::primary),
-            widgetEnd(),
         };
     }
 
@@ -59,7 +58,6 @@ namespace OpenLoco::Ui::Windows::Error
         static constexpr Widget widgets[] = {
             makeWidget({ 0, 0 }, { 250, 70 }, WidgetType::panel, WindowColour::primary),
             makeWidget({ 3, 3 }, { 64, 64 }, WidgetType::wt_3, WindowColour::secondary),
-            widgetEnd(),
         };
     }
 

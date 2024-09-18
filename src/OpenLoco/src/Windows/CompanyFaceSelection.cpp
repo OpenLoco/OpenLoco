@@ -52,7 +52,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         makeWidget({ 0, 15 }, { 400, 257 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 19 }, { 188, 248 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
         makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_6, WindowColour::secondary),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

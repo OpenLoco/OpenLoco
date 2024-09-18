@@ -33,7 +33,6 @@ namespace OpenLoco::Ui::Windows::About
         makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 245 }, WindowColour::secondary),
         makeWidget({ 100, 234 }, { kWindowSize.width / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::music_acknowledgements_btn),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

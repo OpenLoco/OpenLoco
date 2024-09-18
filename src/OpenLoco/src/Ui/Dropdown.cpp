@@ -166,7 +166,6 @@ namespace OpenLoco::Ui::Dropdown
 
         Widget widgets[] = {
             makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::wt_3, WindowColour::primary),
-            widgetEnd()
         };
 
         static WindowEventList events;

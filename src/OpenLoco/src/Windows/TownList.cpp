@@ -104,7 +104,6 @@ namespace OpenLoco::Ui::Windows::TownList
             makeWidget({ 284, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
             makeWidget({ 354, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
             makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2),
-            widgetEnd(),
         };
 
         enum SortMode : uint16_t
@@ -630,7 +629,6 @@ namespace OpenLoco::Ui::Windows::TownList
         static constexpr Widget widgets[] = {
             commonWidgets(220, 87, StringIds::title_build_new_towns),
             makeDropdownWidgets({ 100, 45 }, { 117, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size),
-            widgetEnd(),
         };
 
         constexpr StringId townSizeNames[9] = {
@@ -840,7 +838,6 @@ namespace OpenLoco::Ui::Windows::TownList
             makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 575, 46 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
             makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
-            widgetEnd(),
         };
 
         // 0x0049A8A6

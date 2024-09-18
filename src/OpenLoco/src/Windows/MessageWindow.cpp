@@ -71,7 +71,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static constexpr Widget widgets[] = {
             commonWidgets(366, 217, StringIds::title_messages),
             makeWidget({ 3, 45 }, { 360, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd(),
         };
 
         // 0x0042A6F5
@@ -405,7 +404,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             makeDropdownWidgets({ 236, 107 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 122 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeWidget({ 4, 137 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip),
-            widgetEnd(),
         };
 
         // 0x0042AA84

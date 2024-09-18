@@ -250,7 +250,6 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 211 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
             makeWidget({ 10, 227 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
             makeWidget({ 10, 243 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering),
-            widgetEnd(),
         };
 
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::show_fps) | (1 << Widx::uncap_fps) | (1 << Widx::cash_popup_rendering) | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
@@ -755,7 +754,6 @@ namespace OpenLoco::Ui::Windows::Options
             common_options_widgets(kWindowSize, StringIds::options_title_sound),
             makeDropdownWidgets({ 10, 49 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::play_title_music),
-            widgetEnd(),
         };
 
         static void audioDeviceMouseDown(Ui::Window* window);
@@ -963,7 +961,6 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
             makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 183, 108 }, { 173, 12 }, WidgetType::button, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip),
-            widgetEnd(),
         };
 
         static void volumeMouseDown(Window* w);
@@ -1361,7 +1358,6 @@ namespace OpenLoco::Ui::Windows::Options
             makeDropdownWidgets({ 183, 119 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
             makeWidget({ 10, 134 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
             makeWidget({ 10, 148 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip),
-            widgetEnd(),
         };
 
         static void languageMouseDown(Window* w);
@@ -1854,7 +1850,6 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 64 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
             makeWidget({ 10, 79 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::invert_right_mouse_dragging, StringIds::tooltip_invert_right_mouse_dragging),
             makeWidget({ 26, 94 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip),
-            widgetEnd(),
         };
 
         static void edgeScrollingMouseUp(Window* w);
@@ -2039,8 +2034,6 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Preferred owner preview
             makeWidget({ 345, 59 }, { 66, 66 }, WidgetType::button, WindowColour::secondary, Widget::kContentNull),
-
-            widgetEnd(),
         };
 
         static void loadPreferredFace(Window& self)
@@ -2357,7 +2350,6 @@ namespace OpenLoco::Ui::Windows::Options
             makeStepperWidgets({ 250, 226 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 241 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
 
-            widgetEnd(),
         };
 
         static loco_global<uint8_t, 0x0112A17E> _customObjectsInIndex;

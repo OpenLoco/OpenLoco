@@ -62,7 +62,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),              // 11
         makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),              // 12
         makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary), // 13
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

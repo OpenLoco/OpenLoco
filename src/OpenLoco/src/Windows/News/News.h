@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     {
         static constexpr Ui::Size kWindowSize = { 360, 117 };
 
-        extern const Widget widgets[7];
+        std::span<const Widget> getWidgets();
 
         void initViewport(Window& self);
         const WindowEventList& getEvents();
@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     {
         static constexpr Ui::Size kWindowSize = { 360, 159 };
 
-        extern const Widget widgets[7];
+        std::span<const Widget> getWidgets();
     }
 
     namespace Ticker
@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         };
         constexpr uint64_t enabledWidgets = (1 << widx::frame);
 
-        extern const Widget widgets[2];
+        std::span<const Widget> getWidgets();
 
         const WindowEventList& getEvents();
     }

@@ -125,7 +125,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
             makeWidget({ 534, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
             makeWidget({ 3, 56 }, { 634, 201 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd(),
         };
 
         enum SortMode : uint16_t
@@ -662,7 +661,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static constexpr Widget widgets[] = {
             commonWidgets(635, 322, StringIds::title_company_performance),
-            widgetEnd(),
         };
 
         // 0x004366D7
@@ -755,7 +753,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static constexpr Widget widgets[] = {
             commonWidgets(635, 322, StringIds::title_company_cargo_units),
-            widgetEnd(),
         };
 
         // 0x004369FB
@@ -848,7 +845,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static constexpr Widget widgets[] = {
             commonWidgets(635, 322, StringIds::title_cargo_distance_graphs),
-            widgetEnd(),
         };
 
         // 0x00436D1F
@@ -941,7 +937,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static constexpr Widget widgets[] = {
             commonWidgets(685, 322, StringIds::title_company_values),
-            widgetEnd(),
         };
 
         // 0x00437043
@@ -1034,7 +1029,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static constexpr Widget widgets[] = {
             commonWidgets(495, 342, StringIds::title_cargo_payment_rates),
-            widgetEnd(),
         };
 
         // 0x0043737D
@@ -1248,7 +1242,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static constexpr Widget widgets[] = {
             commonWidgets(495, 169, StringIds::title_speed_records),
-            widgetEnd(),
         };
 
         // 0x00437591

@@ -9,10 +9,6 @@
 
 namespace OpenLoco::Ui::Windows::TitleVersion
 {
-    static constexpr Widget widgets[] = {
-        widgetEnd()
-    };
-
     static const WindowEventList& getEvents();
 
     Window* open()
@@ -25,7 +21,6 @@ namespace OpenLoco::Ui::Windows::TitleVersion
             Ui::Size(width, height),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             getEvents());
-        window->setWidgets(widgets);
 
         return window;
     }

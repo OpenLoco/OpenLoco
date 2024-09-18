@@ -25,7 +25,6 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
         makeWidget({ 440, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
-        widgetEnd(),
     };
 
     static std::map<EditorController::Step, StringId> _stepNames = {

@@ -53,7 +53,6 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         makeRemapWidget({ 276, 15 }, { 91, 34 }, WidgetType::tab, WindowColour::secondary, ImageIds::wide_tab),
         makeRemapWidget({ 367, 15 }, { 91, 34 }, WidgetType::tab, WindowColour::secondary, ImageIds::wide_tab),
         makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        widgetEnd(),
     };
 
     constexpr auto kRowHeight = 24;

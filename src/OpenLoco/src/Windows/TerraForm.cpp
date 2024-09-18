@@ -150,7 +150,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 609, 70 }, { 24, 24 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
             makeWidget({ 609, 94 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::plant_cluster_selected_tree, StringIds::plant_cluster_selected_tree),
             makeWidget({ 609, 118 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::plant_cluster_random_tree, StringIds::plant_cluster_random_tree),
-            widgetEnd(),
         };
 
         enum treeCluster
@@ -936,7 +935,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_clear_area),
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area),
-            widgetEnd(),
         };
 
         // 0x004BC671
@@ -1165,7 +1163,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 57, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::mountainModeTooltip),
             makeWidget({ 83, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
             makeWidget({ 112, 94 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
-            widgetEnd(),
         };
 
         // 0x004BC9D1
@@ -1790,7 +1787,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area),
-            widgetEnd(),
         };
 
         // 0x004BCDAE
@@ -2104,7 +2100,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         static constexpr Widget widgets[] = {
             commonWidgets(418, 108, StringIds::title_build_walls),
             makeWidget({ 2, 45 }, { 391, 48 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd(),
         };
 
         // 0x004BC506

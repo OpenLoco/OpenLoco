@@ -103,7 +103,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::kWindowSize, flags, Ticker::getEvents());
 
-                window->setWidgets(Ticker::widgets);
+                window->setWidgets(Ticker::getWidgets());
                 window->enabledWidgets = Ticker::enabledWidgets;
 
                 window->initScrollWidgets();
@@ -141,14 +141,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
 
-            createNewsWindow(News2::kWindowSize, News2::widgets, Colour::grey, isOld, flags);
+            createNewsWindow(News2::kWindowSize, News2::getWidgets(), Colour::grey, isOld, flags);
         }
         else
         {
             WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent;
             constexpr auto colour = AdvancedColour(Colour::mutedDarkRed).translucent();
 
-            createNewsWindow(News1::kWindowSize, News1::widgets, colour, isOld, flags);
+            createNewsWindow(News1::kWindowSize, News1::getWidgets(), colour, isOld, flags);
         }
     }
 

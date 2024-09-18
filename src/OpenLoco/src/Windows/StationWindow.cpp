@@ -89,7 +89,6 @@ namespace OpenLoco::Ui::Windows::Station
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
-            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport);
@@ -333,7 +332,6 @@ namespace OpenLoco::Ui::Windows::Station
             makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 3, 125 }, { 195, 10 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment),
-            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station_catchment);
@@ -599,7 +597,6 @@ namespace OpenLoco::Ui::Windows::Station
             commonWidgets(249, 136),
             makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, WindowColour::secondary),
-            widgetEnd(),
         };
 
         // 0x0048EC3B

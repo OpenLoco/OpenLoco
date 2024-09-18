@@ -52,7 +52,6 @@ namespace OpenLoco::Ui::Windows::TextInput
         makeWidget({ 0, 15 }, { 330, 75 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 58 }, { 322, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeTextWidget({ 256, 74 }, { 70, 12 }, WidgetType::button, WindowColour::secondary, StringIds::label_button_ok),
-        widgetEnd(),
     };
 
     void registerHooks()

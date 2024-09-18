@@ -19,7 +19,6 @@ namespace OpenLoco::Ui::Windows::TitleLogo
 
     static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

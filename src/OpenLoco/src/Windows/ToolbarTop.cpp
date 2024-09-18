@@ -73,7 +73,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
         makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
         makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
-        widgetEnd(),
     };
 
     enum class LoadSaveDropdownId

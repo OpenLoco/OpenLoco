@@ -65,7 +65,6 @@ namespace OpenLoco::Ui::Windows::StationList
         makeWidget({ 404, 43 }, { 90, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
         makeWidget({ 494, 43 }, { 120, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
         makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        widgetEnd(),
     };
 
     struct TabDetails

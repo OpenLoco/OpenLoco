@@ -23,7 +23,6 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
     static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

@@ -34,7 +34,6 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::button, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
         makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_ok),
         makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_cancel),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

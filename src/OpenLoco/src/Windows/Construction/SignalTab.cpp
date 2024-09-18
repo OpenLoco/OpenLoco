@@ -26,13 +26,17 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
-    constexpr Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         commonWidgets(138, 167, StringIds::stringid_2),
         makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
         makeWidget({ 27, 110 }, { 40, 40 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
         makeWidget({ 71, 110 }, { 40, 40 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
-        widgetEnd(),
     };
+
+    std::span<const Widget> getWidgets()
+    {
+        return widgets;
+    }
 
     WindowEventList events;
 

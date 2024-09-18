@@ -83,7 +83,6 @@ namespace OpenLoco::Ui::Windows::Town
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
             makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::town_expand, StringIds::expand_this_town),
             makeWidget({ 198, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_town),
-            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport) | (1 << expand_town) | (1 << demolish_town);
@@ -381,7 +380,6 @@ namespace OpenLoco::Ui::Windows::Town
     {
         static constexpr Widget widgets[] = {
             commonWidgets(223, 161, StringIds::title_town_population),
-            widgetEnd(),
         };
 
         // 0x00499469
@@ -519,7 +517,6 @@ namespace OpenLoco::Ui::Windows::Town
     {
         static constexpr Widget widgets[] = {
             commonWidgets(340, 208, StringIds::title_town_local_authority),
-            widgetEnd(),
         };
 
         // 0x00499761

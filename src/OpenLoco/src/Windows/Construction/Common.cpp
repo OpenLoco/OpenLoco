@@ -572,10 +572,10 @@ namespace OpenLoco::Ui::Windows::Construction
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Construction::widgets, widx::tab_construction, Construction::getEvents(), Construction::enabledWidgets, &Construction::tabReset },
-            { Station::widgets,      widx::tab_station,      Station::getEvents(),      Station::enabledWidgets,      &Station::tabReset },
-            { Signal::widgets,       widx::tab_signal,       Signal::getEvents(),       Signal::enabledWidgets,       &Signal::tabReset },
-            { Overhead::widgets,     widx::tab_overhead,     Overhead::getEvents(),     Overhead::enabledWidgets,     &Overhead::tabReset },
+            { Construction::getWidgets(), widx::tab_construction, Construction::getEvents(), Construction::enabledWidgets, &Construction::tabReset },
+            { Station::getWidgets(),      widx::tab_station,      Station::getEvents(),      Station::enabledWidgets,      &Station::tabReset },
+            { Signal::getWidgets(),       widx::tab_signal,       Signal::getEvents(),       Signal::enabledWidgets,       &Signal::tabReset },
+            { Overhead::getWidgets(),     widx::tab_overhead,     Overhead::getEvents(),     Overhead::enabledWidgets,     &Overhead::tabReset },
         };
         // clang-format on
 
@@ -1086,7 +1086,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 WindowFlags::flag_11 | WindowFlags::noAutoClose,
                 Construction::getEvents());
 
-            window->setWidgets(Construction::widgets);
+            window->setWidgets(Construction::getWidgets());
             window->currentTab = 0;
             window->enabledWidgets = Construction::enabledWidgets;
             window->activatedWidgets = 0;

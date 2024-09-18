@@ -42,7 +42,6 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         makeWidget({ 104, 43 }, { 152, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectType),
         makeWidget({ 256, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
         makeWidget({ 4, 57 }, { 352, 176 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

@@ -34,7 +34,6 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 19 }, { 352, 218 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

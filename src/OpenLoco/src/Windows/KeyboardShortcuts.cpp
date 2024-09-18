@@ -28,7 +28,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 19 }, { 352, 202 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
         makeWidget({ 4, 223 }, { 150, 12 }, WidgetType::button, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip),
-        widgetEnd(),
     };
 
     namespace Widx

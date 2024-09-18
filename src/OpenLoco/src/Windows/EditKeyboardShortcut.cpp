@@ -28,7 +28,6 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::change_keyboard_shortcut),         // 1,
         makeWidget({ 265, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), // 2,
         makeWidget({ 0, 15 }, { kWindowSize.width, 57 }, WidgetType::panel, WindowColour::secondary),                                                    // 3,
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

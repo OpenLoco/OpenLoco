@@ -180,7 +180,6 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeStepperWidgets({ 80, 154 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             makeStepperWidgets({ 80, 170 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 186 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_date_change_apply),
-            widgetEnd(),
         };
 
         static uint64_t enabledWidgets
@@ -511,7 +510,6 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 10, 132 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_bankruptcy),
             makeWidget({ 10, 148 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_jail_status),
             makeWidget({ 10, 164 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::completeChallenge),
-            widgetEnd(),
         };
 
         static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button) | (1 << Widx::toggle_bankruptcy_button) | (1 << Widx::toggle_jail_status_button) | (1 << Widx::complete_challenge_button);
@@ -702,7 +700,6 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 4, 102 }, { kWindowSize.width - 8, 45 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
             makeWidget({ 10, 116 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
             makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
-            widgetEnd(),
         };
 
         static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred) | (1 << Widx::checkbox_display_locked_vehicles) | (1 << Widx::checkbox_build_locked_vehicles);
@@ -855,7 +852,6 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 3 + (kWindowSize.width / 2), 62 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_plus_10pct),
             makeWidget({ 10, 78 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_to_min),
             makeWidget({ 3 + (kWindowSize.width / 2), 78 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_to_max),
-            widgetEnd(),
         };
 
         static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::ratings_all_min_10pct) | (1 << Widx::ratings_all_plus_10pct) | (1 << Widx::ratings_all_to_min) | (1 << Widx::ratings_all_to_max);

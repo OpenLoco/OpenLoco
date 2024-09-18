@@ -54,7 +54,6 @@ namespace OpenLoco::Ui
         wt_28,
         wt_29,
         viewportCentreButton, // TODO: Make a better generic button so we get the same result.
-        end,
     };
 
     struct WidgetState
@@ -117,24 +116,26 @@ namespace OpenLoco::Ui
             , right{}
             , top{}
             , bottom{}
-            , image{ ImageIds::null } // In case text is accidentally used will be also StringIds::null
+            , content{ kContentNull }
             , tooltip{ StringIds::null }
         {
         }
 
-        WidgetType type;           // 0x00
-        WindowColour windowColour; // 0x01
-        int16_t left;              // 0x02
-        int16_t right;             // 0x04
-        int16_t top;               // 0x06
-        int16_t bottom;            // 0x08
+        constexpr Widget() = default;
+
+        WidgetType type{};           // 0x00
+        WindowColour windowColour{}; // 0x01
+        int16_t left{};              // 0x02
+        int16_t right{};             // 0x04
+        int16_t top{};               // 0x06
+        int16_t bottom{};            // 0x08
         union
         {
-            uint32_t image{};
+            uint32_t image{ ImageIds::null };
             StringId text;
             uint32_t content;
         };
-        StringId tooltip; // 0x0E
+        StringId tooltip{ StringIds::null }; // 0x0E
         FormatArgumentsBuffer textArgs;
         WidgetEventsList events;
 
@@ -213,12 +214,6 @@ namespace OpenLoco::Ui
     constexpr Widget makeTextWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
     {
         Widget out{ origin, size, type, colour, content, tooltip };
-        return out;
-    }
-
-    constexpr Widget widgetEnd()
-    {
-        Widget out{ WidgetType::end };
         return out;
     }
 

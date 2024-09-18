@@ -19,7 +19,6 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     // 0x00522504
     static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd()
     };
 
     // TODO: make vehicles versions of these call into this global, ?make Entity::id instead?

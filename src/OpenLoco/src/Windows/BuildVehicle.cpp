@@ -248,7 +248,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         makeDropdownWidgets({ 3, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterComponents),
         makeDropdownWidgets({ 48, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterCargoSupported),
 
-        widgetEnd(),
     };
 
     static constexpr uint32_t widxToTrackTypeTab(WidgetIndex_t widgetIndex)

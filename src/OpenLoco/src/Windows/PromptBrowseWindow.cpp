@@ -63,7 +63,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         makeWidget({ 88, 348 }, { 408, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 426, 364 }, { 70, 12 }, WidgetType::button, WindowColour::secondary, StringIds::label_button_ok),
         makeWidget({ 3, 45 }, { 494, 323 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        widgetEnd(),
     };
 
     static loco_global<uint8_t, 0x009D9D63> _type;

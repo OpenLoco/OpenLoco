@@ -278,7 +278,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             // PNG browser
             makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_browse),
 
-            widgetEnd()
         };
 
         // 0x0043DC30
@@ -613,7 +612,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeStepperWidgets({ 256, 84 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::hill_density_percent),
             makeWidget({ 10, 100 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
             makeWidget({ 4, 116 }, { 358, 112 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd()
         };
 
         // 0x0043DF89
@@ -981,7 +979,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeStepperWidgets({ 256, 100 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
             makeStepperWidgets({ 256, 116 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
             makeStepperWidgets({ 256, 132 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
-            widgetEnd()
         };
 
         // 0x0043DF89
@@ -1184,7 +1181,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeStepperWidgets({ 256, 127 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_random_trees_value),
             makeStepperWidgets({ 256, 142 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_altitude_for_trees_height),
             makeStepperWidgets({ 256, 157 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_altitude_for_trees_height),
-            widgetEnd()
         };
 
         // 0x0043E53A
@@ -1440,7 +1436,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             common_options_widgets(217, StringIds::title_landscape_generation_towns),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_of_towns_value),
             makeDropdownWidgets({ 176, 67 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
-            widgetEnd()
         };
 
         // 0x0043E9A3
@@ -1572,7 +1567,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
             makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game),
-            widgetEnd()
         };
 
         // 0x0043EB9D

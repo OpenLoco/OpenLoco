@@ -105,7 +105,6 @@ namespace OpenLoco::Ui
         switch (type)
         {
             case WidgetType::none:
-            case WidgetType::end:
                 break;
 
             case WidgetType::panel:

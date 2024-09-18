@@ -39,7 +39,6 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         makeWidget({ 8, 33 }, { 78, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_save),
         makeWidget({ 91, 33 }, { 78, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_dont_save),
         makeWidget({ 174, 33 }, { 78, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_cancel),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

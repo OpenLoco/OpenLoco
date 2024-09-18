@@ -24,7 +24,6 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     // 0x005234F4
     Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 200, 30 }, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd(),
     };
 
     static const WindowEventList& getEvents();

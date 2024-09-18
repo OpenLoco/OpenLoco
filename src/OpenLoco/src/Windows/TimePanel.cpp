@@ -57,7 +57,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
         makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
         makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
         makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
-        widgetEnd(),
     };
 
     static loco_global<uint16_t, 0x0050A004> _50A004;

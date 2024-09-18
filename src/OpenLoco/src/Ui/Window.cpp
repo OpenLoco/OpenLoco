@@ -386,12 +386,9 @@ namespace OpenLoco::Ui
             toolWidgetIndex = ToolManager::getToolWidgetIndex();
         }
 
-        for (WidgetIndex_t widx = 0;; widx++)
+        WidgetIndex_t widx{};
+        for (auto& widget : widgets)
         {
-            auto& widget = widgets[widx];
-            if (widget.type == WidgetType::end)
-                break;
-
             const bool activated = isActivated(widx);
             // This might be the remap flag, not entirely sure.
             const bool hasBit31 = (widget.content & (1U << 31)) != 0;
@@ -406,6 +403,7 @@ namespace OpenLoco::Ui
                         y + widget.bottom + 1);
                 }
             }
+            widx++;
         }
     }
 
@@ -420,14 +418,11 @@ namespace OpenLoco::Ui
     void Window::updateScrollWidgets()
     {
         uint32_t s = 0;
-        for (int w = 0;; ++w)
+        WidgetIndex_t widx = -1;
+        for (auto& widget : widgets)
         {
-            Ui::Widget* widget = &this->widgets[w];
-
-            if (widget->type == WidgetType::end)
-                break;
-
-            if (widget->type != WidgetType::scrollview)
+            widx++;
+            if (widget.type != WidgetType::scrollview)
                 continue;
 
             uint16_t scrollWidth = 0, scrollHeight = 0;
@@ -435,7 +430,7 @@ namespace OpenLoco::Ui
 
             bool invalidate = false;
 
-            if (widget->content & Scrollbars::horizontal)
+            if (widget.content & Scrollbars::horizontal)
             {
                 if (this->scrollAreas[s].contentWidth != scrollWidth + 1)
                 {
@@ -444,7 +439,7 @@ namespace OpenLoco::Ui
                 }
             }
 
-            if (widget->content & Scrollbars::vertical)
+            if (widget.content & Scrollbars::vertical)
             {
                 if (this->scrollAreas[s].contentHeight != scrollHeight + 1)
                 {
@@ -455,7 +450,7 @@ namespace OpenLoco::Ui
 
             if (invalidate)
             {
-                Ui::ScrollView::updateThumbs(this, w);
+                Ui::ScrollView::updateThumbs(this, widx);
                 this->invalidate();
             }
 
@@ -467,14 +462,12 @@ namespace OpenLoco::Ui
     void Window::initScrollWidgets()
     {
         uint32_t s = 0;
-        for (int w = 0;; ++w)
+        WidgetIndex_t widx = -1;
+        for (auto& widget : widgets)
         {
-            Ui::Widget* widget = &this->widgets[w];
+            widx++;
 
-            if (widget->type == WidgetType::end)
-                break;
-
-            if (widget->type != WidgetType::scrollview)
+            if (widget.type != WidgetType::scrollview)
                 continue;
 
             this->scrollAreas[s].flags = ScrollFlags::none;
@@ -486,16 +479,16 @@ namespace OpenLoco::Ui
             this->scrollAreas[s].contentOffsetY = 0;
             this->scrollAreas[s].contentHeight = scrollHeight + 1;
 
-            if (widget->content & Scrollbars::horizontal)
+            if (widget.content & Scrollbars::horizontal)
             {
                 this->scrollAreas[s].flags |= Ui::ScrollFlags::hscrollbarVisible;
             }
-            if (widget->content & Scrollbars::vertical)
+            if (widget.content & Scrollbars::vertical)
             {
                 this->scrollAreas[s].flags |= Ui::ScrollFlags::vscrollbarVisible;
             }
 
-            Ui::ScrollView::updateThumbs(this, w);
+            Ui::ScrollView::updateThumbs(this, widx);
             s++;
         }
     }
@@ -929,23 +922,23 @@ namespace OpenLoco::Ui
         WidgetIndex_t activeWidget = -1;
 
         WidgetIndex_t widgetIndex = -1;
-        for (Ui::Widget* widget = &this->widgets[0]; widget->type != WidgetType::end; widget++)
+        for (auto& widget : widgets)
         {
             widgetIndex++;
 
-            if (widget->type == WidgetType::none)
+            if (widget.type == WidgetType::none)
                 continue;
 
-            if (xPos < this->x + widget->left)
+            if (xPos < this->x + widget.left)
                 continue;
 
-            if (xPos > this->x + widget->right)
+            if (xPos > this->x + widget.right)
                 continue;
 
-            if (yPos < this->y + widget->top)
+            if (yPos < this->y + widget.top)
                 continue;
 
-            if (yPos > this->y + widget->bottom)
+            if (yPos > this->y + widget.bottom)
                 continue;
 
             activeWidget = widgetIndex;
@@ -1229,16 +1222,9 @@ namespace OpenLoco::Ui
         }
 
         uint8_t scrollviewIndex = 0;
-        for (WidgetIndex_t widgetIndex = 0; widgetIndex < 64; widgetIndex++)
+        for (auto& widget : widgets)
         {
-            auto widget = &this->widgets[widgetIndex];
-
-            if (widget->type == WidgetType::end)
-            {
-                break;
-            }
-
-            widget->draw(drawingCtx, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
+            widget.draw(drawingCtx, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
         }
 
         if (this->hasFlags(WindowFlags::whiteBorderMask))

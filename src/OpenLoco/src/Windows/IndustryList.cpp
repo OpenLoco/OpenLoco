@@ -96,7 +96,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
             makeWidget({ 603, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_last_month),
             makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd(),
         };
 
         enum SortMode : uint16_t
@@ -687,7 +686,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static constexpr Widget widgets[] = {
             commonWidgets(577, 171, StringIds::title_fund_new_industries),
             makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd(),
         };
 
         // 0x0045819F

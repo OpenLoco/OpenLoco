@@ -79,7 +79,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         makeDropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
         makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-        widgetEnd()
     };
 
     // clang-format off
