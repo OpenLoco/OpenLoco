@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::Error
             self.draw(drawingCtx);
 
             auto tr = Gfx::TextRenderer(drawingCtx);
-            auto colour = AdvancedColour(Colour::white).translucent(); //self.colours[0];
+            auto colour = AdvancedColour(Colour::white).translucent(); // self.colours[0];
 
             if (_errorCompetitorId == CompanyId::null)
             {

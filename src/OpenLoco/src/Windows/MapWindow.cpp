@@ -31,6 +31,7 @@
 #include "Ui/LastMapWindowAttributes.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -99,7 +100,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     const uint64_t enabledWidgets = (1 << closeButton) | (1 << tabOverall) | (1 << tabVehicles) | (1 << tabIndustries) | (1 << tabRoutes) | (1 << tabOwnership);
 
     static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 350, 272 }, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, { 350, 272 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_map),
         makeWidget({ 335, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 350, 230 }, WidgetType::panel, WindowColour::secondary),

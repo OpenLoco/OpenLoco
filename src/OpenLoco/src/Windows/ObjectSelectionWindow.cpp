@@ -45,6 +45,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -200,7 +201,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 600, 398 }, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_object_selection),
         makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 65 }, { 600, 333 }, WidgetType::panel, WindowColour::secondary),

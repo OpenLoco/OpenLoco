@@ -16,6 +16,7 @@
 #include "SceneManager.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Diagnostics;
@@ -42,7 +43,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 610, 412 }, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, { 610, 412 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::select_scenario_for_new_game),
         makeWidget({ 595, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 48 }, { 610, 364 }, WidgetType::wt_3, WindowColour::secondary),

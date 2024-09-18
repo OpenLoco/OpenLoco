@@ -17,6 +17,7 @@
 #include "Scenario.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Math/Bound.hpp>
@@ -45,7 +46,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                     \
+    Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),                                                                                    \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
         makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, WidgetType::panel, WindowColour::secondary),                                                         \

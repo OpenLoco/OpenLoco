@@ -26,6 +26,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
@@ -56,7 +57,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_industry_list) | (1 << widx::tab_new_industry);
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                     \
+    Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),                                                                                    \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
         makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, 154 }, WidgetType::panel, WindowColour::secondary),                                                                      \

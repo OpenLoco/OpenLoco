@@ -9,6 +9,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include <fmt/format.h>
 
@@ -33,7 +34,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
     };
 
     static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::objectErrorWindowTitle),
         makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),

@@ -18,6 +18,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 
@@ -44,7 +45,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
 
 #define commonWidgets(frameHeight, windowCaptionId)                                                                                                      \
-    makeWidget({ 0, 0 }, { 366, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                \
+    Widgets::Frame({ 0, 0 }, { 366, frameHeight }, WindowColour::primary),                                                                               \
         makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                               \
         makeWidget({ 351, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
         makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),                                                                 \

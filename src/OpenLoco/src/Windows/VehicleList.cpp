@@ -17,6 +17,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -60,7 +61,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     };
 
     Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 550, 213 }, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, { 550, 213 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 548, 13 }, WidgetType::caption_24, WindowColour::primary),
         makeWidget({ 535, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 550, 172 }, WidgetType::panel, WindowColour::secondary),

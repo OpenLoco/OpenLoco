@@ -117,7 +117,7 @@ namespace OpenLoco::Ui
             , type{ widgetType }
             , windowColour{}
             , content{}
-            , tooltip{ }
+            , tooltip{}
         {
         }
 

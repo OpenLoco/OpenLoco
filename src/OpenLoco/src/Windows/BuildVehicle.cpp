@@ -27,6 +27,7 @@
 #include "Ui/TextInput.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleDraw.h"
@@ -212,7 +213,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     // 0x5231D0
     static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 380, 233 }, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, { 380, 233 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 378, 13 }, WidgetType::caption_24, WindowColour::primary),
         makeWidget({ 365, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 380, 192 }, WidgetType::panel, WindowColour::secondary),

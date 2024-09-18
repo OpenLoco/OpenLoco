@@ -15,6 +15,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
@@ -49,7 +50,7 @@ namespace OpenLoco::Ui::Windows::StationList
     };
 
     static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 600, 197 }, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, { 600, 197 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::stringid_all_stations),
         makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 600, 155 }, WidgetType::panel, WindowColour::secondary),

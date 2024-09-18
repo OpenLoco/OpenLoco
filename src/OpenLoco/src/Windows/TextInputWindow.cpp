@@ -10,6 +10,7 @@
 #include "Objects/ObjectManager.h"
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -45,7 +46,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 330, 90 }, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, { 330, 90 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 328, 13 }, WidgetType::caption_25, WindowColour::primary),
         makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 330, 75 }, WidgetType::panel, WindowColour::secondary),

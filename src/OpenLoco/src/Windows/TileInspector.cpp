@@ -35,6 +35,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
@@ -75,7 +76,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
     }
 
     static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
         makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WidgetType::panel, WindowColour::secondary),

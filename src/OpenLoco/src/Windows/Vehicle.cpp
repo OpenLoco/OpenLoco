@@ -57,6 +57,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -93,7 +94,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    makeWidget({ 0, 0 }, { (frameWidth), (frameHeight) }, WidgetType::frame, WindowColour::primary),                                                                 \
+    Widgets::Frame({ 0, 0 }, { (frameWidth), (frameHeight) }, WindowColour::primary),                                                                                \
         makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                                \
         makeWidget({ (frameWidth)-15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
         makeWidget({ 0, 41 }, { 265, 136 }, WidgetType::panel, WindowColour::secondary),                                                                             \

@@ -9,6 +9,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <SDL2/SDL.h>
@@ -21,7 +22,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static constexpr int kRowHeight = 10; // CJK: 13
 
     static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
+        Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::keyboard_shortcuts),
         makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),
