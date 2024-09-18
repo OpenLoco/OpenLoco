@@ -73,7 +73,7 @@ namespace OpenLoco
         auto height = TileManager::getHeight(Pos2(x, y));
         auto pos = Pos3(x + kTileSize / 2, y + kTileSize / 2, height.landHeight);
 
-        auto rotated = Math::Vector::rotate(pos, Ui::WindowManager::getCurrentRotation());
+        auto rotated = World::gameToScreen(pos, Ui::WindowManager::getCurrentRotation());
         rotated.y -= 48;
 
         for (auto zoomLevel = 0; zoomLevel < 4; zoomLevel++)
