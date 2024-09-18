@@ -1667,7 +1667,7 @@ namespace OpenLoco::Input
 
     Ui::Point getTooltipMouseLocation()
     {
-        return Ui::Point(_tooltipCursor->x, _tooltipCursor->y);
+        return _tooltipCursor;
     }
 
     Ui::Point getCursorPressedLocation()
@@ -1677,18 +1677,17 @@ namespace OpenLoco::Input
 
     Ui::Point getDragLastLocation()
     {
-        return Ui::Point(_dragLast->x, _dragLast->y);
+        return _dragLast;
     }
 
     Ui::Point getScrollLastLocation()
     {
-        return Ui::Point(_scrollLast->x, _scrollLast->y);
+        return _scrollLast;
     }
 
     void setTooltipMouseLocation(const Ui::Point& loc)
     {
-        _tooltipCursor->x = loc.x;
-        _tooltipCursor->y = loc.y;
+        _tooltipCursor = loc;
     }
 
     uint16_t getTooltipTimeout()
