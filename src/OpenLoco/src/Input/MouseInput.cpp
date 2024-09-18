@@ -64,8 +64,7 @@ namespace OpenLoco::Input
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
-    static loco_global<uint16_t, 0x0052334A> _cursorPressedX;
-    static loco_global<uint16_t, 0x0052334C> _cursorPressedY;
+    static loco_global<Ui::Point, 0x0052334A> _cursorPressed;
 
     static loco_global<int8_t, 0x0052336C> _52336C;
 
@@ -959,8 +958,7 @@ namespace OpenLoco::Input
     // 0x004C7AE7
     static void stateWidgetPressed(MouseButton button, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex)
     {
-        _cursorPressedX = x;
-        _cursorPressedY = y;
+        _cursorPressed = { x, y };
 
         auto pressedWindow = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
         if (pressedWindow == nullptr)
@@ -1681,7 +1679,7 @@ namespace OpenLoco::Input
 
     Ui::Point getCursorPressedLocation()
     {
-        return Ui::Point(_cursorPressedX, _cursorPressedY);
+        return _cursorPressed;
     }
 
     Ui::Point getDragLastLocation()
