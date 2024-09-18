@@ -25,7 +25,7 @@ namespace OpenLoco
         uint8_t pad_06[0x8 - 0x6];
         uint8_t var_08;
         uint8_t var_09[4];
-        uint8_t var_0D[5];
+        uint8_t pad_0D[0x12 - 0xD];
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         // 0x0043CB89
