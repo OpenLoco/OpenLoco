@@ -34,30 +34,27 @@ namespace OpenLoco::TownManager
         return regs.eax;
     }
 
-    static uint32_t copyTownNameToBuffer(const TownNamesObject* namesObj, uint32_t offset, uint16_t index, char*& buffer)
+    // 0x00497D70
+    static uint32_t copyTownNameToBuffer(const TownNamesObject* namesObj, uint32_t offset, uint16_t index, char* buffer)
     {
         auto* offsetPtr = reinterpret_cast<const std::byte*>(namesObj) + offset;
         auto srcOffset = *reinterpret_cast<const int16_t*>(offsetPtr + index * 2);
 
         auto* srcPtr = reinterpret_cast<const char*>(offsetPtr + srcOffset);
         strcpy(buffer, srcPtr);
-        printf("buffer: %s\n", buffer);
-        buffer += strlen(buffer);
 
         uint8_t tail = *reinterpret_cast<const uint8_t*>(srcPtr + strlen(srcPtr) + 1);
         return tail;
     }
 
     // 0x00497A6A
-    static uint8_t townNameFromNamesObject(uint32_t rand_eax, char* buffer_edi)
+    static uint8_t townNameFromNamesObject(uint32_t rand_eax, const char* buffer)
     {
         auto* namesObj = ObjectManager::get<TownNamesObject>();
-        uint8_t ebx_test_after = 0;
+        uint8_t testsToRun = 0;
 
         for (auto& category : namesObj->categories)
         {
-            // printf("Category: count = %d, fill = %d, offset = %d\n", category.count, category.fill, category.offset);
-
             if (category.count == 0)
             {
                 continue;
@@ -69,21 +66,23 @@ namespace OpenLoco::TownManager
 
             if (dx >= 0)
             {
-                copyTownNameToBuffer(namesObj, category.offset, dx, buffer_edi);
+                char* strEnd = const_cast<char*>(buffer + strlen(buffer));
+                testsToRun |= copyTownNameToBuffer(namesObj, category.offset, dx, strEnd);
             }
         }
 
-        return ebx_test_after;
+        return testsToRun;
     }
 
     // 0x004978B7
     static bool generateTownName(Town* town)
     {
-        char buffer[256];
-        for (auto ecx = 400U; ecx > 0; ecx--)
+        for (auto attemptsLeft = 400U; attemptsLeft > 0; attemptsLeft--)
         {
+            char buffer[256]{};
             auto rand = town->prng.randNext();
             auto testsToRun = townNameFromNamesObject(rand, buffer);
+
             if (strlen(buffer) > StringManager::kUserStringSize)
             {
                 continue;
