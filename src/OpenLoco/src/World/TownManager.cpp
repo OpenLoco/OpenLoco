@@ -61,8 +61,8 @@ namespace OpenLoco::TownManager
             }
 
             int16_t ax = rand;
-            int16_t dx = category.count + category.fill;
-            dx = ((ax * dx) >> 16) - category.fill;
+            int16_t dx = category.count + category.bias;
+            dx = ((ax * dx) >> 16) - category.bias;
 
             if (dx > 0)
             {
@@ -70,7 +70,7 @@ namespace OpenLoco::TownManager
                 testsToRun |= copyTownNameToBuffer(namesObj, category.offset, dx, strEnd);
             }
 
-            for (auto shifts = category.count + category.fill; shifts > 0; shifts >>= 1)
+            for (auto shifts = category.count + category.bias; shifts > 0; shifts >>= 1)
             {
                 rand = std::rotr(rand, 1);
             }

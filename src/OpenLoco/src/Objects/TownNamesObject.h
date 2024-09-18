@@ -16,7 +16,7 @@ namespace OpenLoco
         struct Category
         {
             uint8_t count;
-            uint8_t fill;
+            uint8_t bias;
             StringId offset;
         };
         static constexpr auto kObjectType = ObjectType::townNames;
