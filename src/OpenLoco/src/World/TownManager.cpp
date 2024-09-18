@@ -145,8 +145,10 @@ namespace OpenLoco::TownManager
             for (auto& candidateTown : towns())
             {
                 // Ensure the town name doesn't exist yet
-                char candidateTownName[256] = "";
+                char candidateTownName[256]{};
                 StringManager::formatString(candidateTownName, candidateTown.name);
+
+                printf("*) \"%s\" vs %d) \"%s\"\n", buffer, enumValue(candidateTown.id()), candidateTownName);
                 if (strcmp(buffer, candidateTownName) == 0)
                 {
                     nameInUse = true;
@@ -155,7 +157,12 @@ namespace OpenLoco::TownManager
             }
 
             if (nameInUse)
+            {
+                printf("IN USE!\n");
                 continue;
+            }
+            else
+                printf("OKAY!\n");
 
             StringId newNameId = StringManager::userStringAllocate(buffer, 0);
             if (newNameId == StringIds::empty)
