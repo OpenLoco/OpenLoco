@@ -48,7 +48,7 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00497A6A
-    static uint8_t townNameFromNamesObject(uint32_t rand_eax, const char* buffer)
+    static uint8_t townNameFromNamesObject(uint32_t& rand, const char* buffer)
     {
         auto* namesObj = ObjectManager::get<TownNamesObject>();
         uint8_t testsToRun = 0;
@@ -60,14 +60,19 @@ namespace OpenLoco::TownManager
                 continue;
             }
 
-            int16_t ax = rand_eax & 0xFFFF;
+            int16_t ax = rand;
             int16_t dx = category.count + category.fill;
             dx = ((ax * dx) >> 16) - category.fill;
 
-            if (dx >= 0)
+            if (dx > 0)
             {
                 char* strEnd = const_cast<char*>(buffer + strlen(buffer));
                 testsToRun |= copyTownNameToBuffer(namesObj, category.offset, dx, strEnd);
+            }
+
+            for (auto shifts = category.count + category.fill; shifts > 0; shifts >>= 1)
+            {
+                rand = std::rotr(rand, 1);
             }
         }
 
@@ -82,6 +87,11 @@ namespace OpenLoco::TownManager
             char buffer[256]{};
             auto rand = town->prng.randNext();
             auto testsToRun = townNameFromNamesObject(rand, buffer);
+
+            if (strlen(buffer) == 0)
+            {
+                continue;
+            }
 
             if (strlen(buffer) > StringManager::kUserStringSize)
             {
