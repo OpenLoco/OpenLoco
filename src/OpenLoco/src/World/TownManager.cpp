@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
@@ -88,14 +89,10 @@ namespace OpenLoco::TownManager
                 continue;
             }
 
-            /*
-            // NB: the original game would perform this check. However, in OpenLoco,
-            // this is currently inaccessible outside TextRenderer (graphics) context.
-            if (Gfx::getStringWidth(buffer) > 200)
+            if (Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, buffer) > 200)
             {
                 continue;
             }
-            */
 
             // clang-format off
             if (testsToRun & 1)
