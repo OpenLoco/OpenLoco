@@ -71,8 +71,7 @@ namespace OpenLoco::Input
     static loco_global<Ui::Point32, 0x0113E72C> _cursor;
 
     // TODO: name?
-    static loco_global<int32_t, 0x00523338> _cursorX2;
-    static loco_global<int32_t, 0x0052333C> _cursorY2;
+    static loco_global<Ui::Point32, 0x00523338> _cursor2;
 
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
@@ -285,16 +284,15 @@ namespace OpenLoco::Input
         {
             case Tutorial::State::none:
             {
-                _cursorX2 = _cursor->x;
-                _cursorY2 = _cursor->y;
+                _cursor2 = _cursor;
                 break;
             }
 
             case Tutorial::State::playing:
             {
-                _cursorX2 = Tutorial::nextInput();
-                _cursorY2 = Tutorial::nextInput();
-                Ui::setCursorPosScaled(*_cursorX2, *_cursorY2);
+                _cursor2->x = Tutorial::nextInput();
+                _cursor2->y = Tutorial::nextInput();
+                Ui::setCursorPosScaled(_cursor2->x, _cursor2->y);
                 break;
             }
 
@@ -1667,7 +1665,7 @@ namespace OpenLoco::Input
 
     Ui::Point getMouseLocation2()
     {
-        return Ui::Point(_cursorX2, _cursorY2);
+        return Ui::Point(static_cast<int16_t>(_cursor2->x), static_cast<int16_t>(_cursor2->y));
     }
 
     Ui::Point getTooltipMouseLocation()
@@ -1754,8 +1752,8 @@ namespace OpenLoco::Input
     // 0x004C6FCE
     static MouseButton loc_4C6FCE(uint32_t& x, int16_t& y)
     {
-        x = _cursorX2;
-        y = _cursorY2;
+        x = _cursor2->x;
+        y = _cursor2->y;
         return MouseButton::released;
     }
 
@@ -1778,7 +1776,7 @@ namespace OpenLoco::Input
         }
 
         // 0x004C7136, 0x004C7165
-        _cursorX2 = 0x80000000;
+        _cursor2->x = 0x80000000;
         return MouseButton::rightReleased;
     }
 
