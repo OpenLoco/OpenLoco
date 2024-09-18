@@ -69,6 +69,13 @@ namespace OpenLoco::Ui
     };
 
 #pragma pack(push, 1)
+    struct Widget;
+
+    struct WidgetEventsList
+    {
+        void (*draw)(Gfx::DrawingContext&, const Widget&, const WidgetState&) = nullptr;
+    };
+
     struct Widget
     {
         // Indicates that the imageId has a colour set and not to replace it with the window colour
@@ -77,6 +84,42 @@ namespace OpenLoco::Ui
         static constexpr uint32_t kImageIdColourSet = (1U << 30);
         static constexpr uint32_t kContentNull = 0xFFFFFFFFU;
         static constexpr uint32_t kContentUnk = 0xFFFFFFFEU;
+
+        constexpr Widget(Ui::Point origin, Ui::Size size, WidgetType widgetType, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+            : left{ origin.x }
+            , right{ origin.x + size.width - 1 }
+            , top{ origin.y }
+            , bottom{ origin.y + size.height - 1 }
+            , type{ widgetType }
+            , windowColour{ colour }
+            , content{ content }
+            , tooltip{ tooltip }
+        {
+        }
+
+        constexpr Widget(Ui::Point origin, Ui::Size size, WidgetType widgetType, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
+            : left{ origin.x }
+            , right{ origin.x + size.width - 1 }
+            , top{ origin.y }
+            , bottom{ origin.y + size.height - 1 }
+            , type{ widgetType }
+            , windowColour{ colour }
+            , text{ content }
+            , tooltip{ tooltip }
+        {
+        }
+
+        constexpr Widget(WidgetType widgetType)
+            : left{}
+            , right{}
+            , top{}
+            , bottom{}
+            , type{ widgetType }
+            , windowColour{}
+            , content{}
+            , tooltip{ }
+        {
+        }
 
         WidgetType type;           // 0x00
         WindowColour windowColour; // 0x01
@@ -92,6 +135,7 @@ namespace OpenLoco::Ui
         };
         StringId tooltip; // 0x0E
         FormatArgumentsBuffer textArgs;
+        WidgetEventsList events;
 
         int16_t midX() const;
         int16_t midY() const;
@@ -108,20 +152,11 @@ namespace OpenLoco::Ui
         void draw(Gfx::DrawingContext& drawingCtx, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
     };
 #pragma pack(pop)
-    //static_assert(sizeof(Widget) == 0x10);
+    // static_assert(sizeof(Widget) == 0x10);
 
     static constexpr Widget makeWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
-        Widget out{};
-        out.left = origin.x;
-        out.right = origin.x + size.width - 1;
-        out.top = origin.y;
-        out.bottom = origin.y + size.height - 1;
-        out.type = type;
-        out.windowColour = colour;
-        out.content = content;
-        out.tooltip = tooltip;
-
+        Widget out{ origin, size, type, colour, content, tooltip };
         return out;
     }
 
@@ -176,24 +211,13 @@ namespace OpenLoco::Ui
 
     constexpr Widget makeTextWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
     {
-        Widget out{};
-        out.left = origin.x;
-        out.right = origin.x + size.width - 1;
-        out.top = origin.y;
-        out.bottom = origin.y + size.height - 1;
-        out.type = type;
-        out.windowColour = colour;
-        out.text = content;
-        out.tooltip = tooltip;
-
+        Widget out{ origin, size, type, colour, content, tooltip };
         return out;
     }
 
     constexpr Widget widgetEnd()
     {
-        Widget out{};
-        out.type = WidgetType::end;
-
+        Widget out{ WidgetType::end };
         return out;
     }
 

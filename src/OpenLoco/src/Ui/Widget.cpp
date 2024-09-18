@@ -96,6 +96,12 @@ namespace OpenLoco::Ui
         widgetState.hovered = (hoveredWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.scrollviewIndex = scrollviewIndex;
 
+        if (events.draw != nullptr)
+        {
+            events.draw(drawingCtx, *this, widgetState);
+            return;
+        }
+
         switch (type)
         {
             case WidgetType::none:
