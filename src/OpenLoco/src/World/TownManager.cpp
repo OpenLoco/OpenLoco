@@ -3,11 +3,14 @@
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Localisation/Formatting.h"
+#include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/TownNamesObject.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
@@ -15,6 +18,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::TownManager
 {
@@ -29,12 +33,134 @@ namespace OpenLoco::TownManager
         return regs.eax;
     }
 
+    static uint32_t copyTownNameToBuffer(const TownNamesObject* namesObj, uint32_t offset, uint16_t index, char*& buffer)
+    {
+        auto* offsetPtr = reinterpret_cast<const std::byte*>(namesObj) + offset;
+        auto srcOffset = *reinterpret_cast<const int16_t*>(offsetPtr + index * 2);
+
+        auto* srcPtr = reinterpret_cast<const char*>(offsetPtr + srcOffset);
+        strcpy(buffer, srcPtr);
+        printf("buffer: %s\n", buffer);
+        buffer += strlen(buffer);
+
+        uint8_t tail = *reinterpret_cast<const uint8_t*>(srcPtr + strlen(srcPtr));
+        return tail;
+    }
+
+    // 0x00497A6A
+    static uint8_t townNameFromNamesObject(uint32_t rand_eax, char* buffer_edi)
+    {
+        auto* namesObj = ObjectManager::get<TownNamesObject>();
+        uint8_t ebx_test_after = 0;
+
+        for (auto& category : namesObj->categories)
+        {
+            // printf("Category: count = %d, fill = %d, offset = %d\n", category.count, category.fill, category.offset);
+
+            if (category.count == 0)
+            {
+                continue;
+            }
+
+            int16_t ax = rand_eax & 0xFFFF;
+            int16_t dx = category.count + category.fill;
+            dx = ((ax * dx) >> 16) - category.fill;
+
+            if (dx >= 0)
+            {
+                copyTownNameToBuffer(namesObj, category.offset, dx, buffer_edi);
+            }
+        }
+
+        return ebx_test_after;
+    }
+
     // 0x004978B7
     static bool generateTownName(Town* town)
     {
-        registers regs;
-        regs.esi = X86Pointer(town);
-        return !(call(0x004978B7, regs) & X86_FLAG_CARRY);
+        char buffer[256];
+        for (auto ecx = 400U; ecx > 0; ecx--)
+        {
+            auto rand = town->prng.randNext();
+            auto testsToRun = townNameFromNamesObject(rand, buffer);
+            if (strlen(buffer) > StringManager::kUserStringSize)
+            {
+                continue;
+            }
+
+            /*
+            // NB: the original game would perform this check. However, in OpenLoco,
+            // this is currently inaccessible outside TextRenderer (graphics) context.
+            if (Gfx::getStringWidth(buffer) > 200)
+            {
+                continue;
+            }
+            */
+
+            // clang-format off
+            if (testsToRun & 1)
+            {
+                // Check that the town is adjacent to a large amount of water tiles on at least one side.
+                auto pos = Pos2(town->x, town->y);
+                if (!(TileManager::countSurroundingWaterTiles(pos + Pos2(6 * kTileSize, 0)) > 65 ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 6 * kTileSize)) > 65 ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0 - 6 * kTileSize, 0)) > 65 ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 0 - 6 * kTileSize)) > 65))
+                {
+                    continue;
+                }
+            }
+
+            if (testsToRun & 2)
+            {
+                auto pos = Pos2(town->x + kTileSize / 2, town->y + kTileSize / 2);
+                auto height = TileManager::getHeight(pos);
+                if (height.landHeight < 192)
+                {
+                    continue;
+                }
+            }
+
+            if (testsToRun & 4)
+            {
+                // Check that the town is adjacent to a low amount of water tiles on at least one side.
+                auto pos = Pos2(town->x, town->y);
+                if (!(TileManager::countSurroundingWaterTiles(pos + Pos2(6 * kTileSize, 0)) > 15 ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 6 * kTileSize)) > 15 ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0 - 6 * kTileSize, 0)) > 15 ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 0 - 6 * kTileSize)) > 15))
+                {
+                    continue;
+                }
+            }
+            // clang-format on
+
+            bool nameInUse = false;
+            for (auto& candidateTown : towns())
+            {
+                // Ensure the town name doesn't exist yet
+                char candidateTownName[256] = "";
+                StringManager::formatString(candidateTownName, candidateTown.name);
+                if (strcmp(buffer, candidateTownName) == 0)
+                {
+                    nameInUse = true;
+                    break;
+                }
+            }
+
+            if (nameInUse)
+                continue;
+
+            StringId newNameId = StringManager::userStringAllocate(buffer, 0);
+            if (newNameId == StringIds::empty)
+                continue;
+
+            town->name = newNameId;
+            town->updateLabel();
+            return true;
+        }
+
+        return false;
     }
 
     static auto& rawTowns() { return getGameState().towns; }

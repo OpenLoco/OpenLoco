@@ -11,12 +11,12 @@ namespace OpenLoco
     bool TownNamesObject::validate() const
     {
         const auto total = std::accumulate(
-            std::begin(unks), std::end(unks), 1, [](const int32_t res, const Unk& unk) {
-                if (unk.count == 0)
+            std::begin(categories), std::end(categories), 1, [](const int32_t res, const Category& category) {
+                if (category.count == 0)
                 {
                     return res;
                 }
-                return res * unk.count;
+                return res * category.count;
             });
         return total >= kMinNumNameCombinations;
     }
