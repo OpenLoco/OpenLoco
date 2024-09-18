@@ -68,8 +68,7 @@ namespace OpenLoco::Input
 
     static loco_global<int8_t, 0x0052336C> _52336C;
 
-    static loco_global<int32_t, 0x0113E72C> _cursorX;
-    static loco_global<int32_t, 0x0113E730> _cursorY;
+    static loco_global<Ui::Point32, 0x0113E72C> _cursor;
 
     // TODO: name?
     static loco_global<int32_t, 0x00523338> _cursorX2;
@@ -158,8 +157,7 @@ namespace OpenLoco::Input
 
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
     {
-        _cursorX = x;
-        _cursorY = y;
+        _cursor = { x, y };
         addr<0x0114084C, int32_t>() = relX;
         addr<0x01140840, int32_t>() = relY;
     }
@@ -287,8 +285,8 @@ namespace OpenLoco::Input
         {
             case Tutorial::State::none:
             {
-                _cursorX2 = _cursorX;
-                _cursorY2 = _cursorY;
+                _cursorX2 = _cursor->x;
+                _cursorY2 = _cursor->y;
                 break;
             }
 
@@ -1664,7 +1662,7 @@ namespace OpenLoco::Input
 
     Ui::Point getMouseLocation()
     {
-        return Ui::Point(_cursorX, _cursorY);
+        return Ui::Point(static_cast<int16_t>(_cursor->x), static_cast<int16_t>(_cursor->y));
     }
 
     Ui::Point getMouseLocation2()
