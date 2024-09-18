@@ -90,8 +90,7 @@ namespace OpenLoco::Input
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x0052338E> _ticksSinceDragStart;
 
-    static loco_global<int16_t, 0x005233A4> _scrollLastX;
-    static loco_global<int16_t, 0x005233A6> _scrollLastY;
+    static loco_global<Ui::Point, 0x005233A4> _scrollLast;
     static loco_global<Ui::WindowType, 0x005233A8> _hoverWindowType;
     static uint8_t _5233A9;
     static loco_global<Ui::WindowNumber_t, 0x005233AA> _hoverWindowNumber;
@@ -1579,15 +1578,15 @@ namespace OpenLoco::Input
                         }
                         [[fallthrough]];
                     default:
-                        _scrollLastX = x;
-                        _scrollLastY = y;
+                        _scrollLast->x = x;
+                        _scrollLast->y = y;
                         cursorId = window->callCursor(widgetIdx, x, y, cursorId);
                         break;
 
                     case Ui::WidgetType::scrollview:
                     {
-                        _scrollLastX = x;
-                        _scrollLastY = y;
+                        _scrollLast->x = x;
+                        _scrollLast->y = y;
 
                         auto res = Ui::ScrollView::getPart(
                             window,
@@ -1683,7 +1682,7 @@ namespace OpenLoco::Input
 
     Ui::Point getScrollLastLocation()
     {
-        return Ui::Point(_scrollLastX, _scrollLastY);
+        return Ui::Point(_scrollLast->x, _scrollLast->y);
     }
 
     void setTooltipMouseLocation(const Ui::Point& loc)
