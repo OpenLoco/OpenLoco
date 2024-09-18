@@ -60,14 +60,14 @@ namespace OpenLoco::TownManager
                 continue;
             }
 
-            int16_t ax = rand;
-            int16_t dx = category.count + category.bias;
-            dx = ((ax * dx) >> 16) - category.bias;
+            uint16_t ax = rand;
+            uint16_t dx = category.count + category.bias;
+            int16_t index = ((ax * dx) >> 16) - category.bias;
 
-            if (dx > 0)
+            if (index > 0)
             {
                 char* strEnd = const_cast<char*>(buffer + strlen(buffer));
-                testsToRun |= copyTownNameToBuffer(namesObj, category.offset, dx, strEnd);
+                testsToRun |= copyTownNameToBuffer(namesObj, category.offset, index, strEnd);
             }
 
             for (auto shifts = category.count + category.bias; shifts > 0; shifts >>= 1)
