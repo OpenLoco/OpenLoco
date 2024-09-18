@@ -1968,6 +1968,12 @@ namespace OpenLoco::Gfx
         return Impl::getStringWidth(buffer);
     }
 
+    uint16_t TextRenderer::getStringWidth(const Font base, const char* buffer)
+    {
+        Impl::setCurrentFont(base);
+        return Impl::getStringWidth(buffer);
+    }
+
     uint16_t TextRenderer::getMaxStringWidth(const char* buffer)
     {
         return Impl::getMaxStringWidth(buffer);
