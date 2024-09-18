@@ -22,7 +22,7 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::townNames;
         static constexpr auto kMinNumNameCombinations = 80;
 
-        StringId name; // 0x00
+        StringId name;          // 0x00
         Category categories[6]; // 0x02
 
         bool validate() const;
