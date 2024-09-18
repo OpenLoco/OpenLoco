@@ -2,6 +2,8 @@
 #include "Config.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
+#include "Graphics/TextRenderer.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
@@ -17,6 +19,7 @@
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::World;
 
 namespace OpenLoco
 {
@@ -53,12 +56,41 @@ namespace OpenLoco
         }
     }
 
+    // 0x004FF6F4
+    static constexpr std::array<Gfx::Font, 4> kZoomToTownFonts = {
+        Gfx::Font::medium_bold,
+        Gfx::Font::medium_bold,
+        Gfx::Font::medium_normal,
+        Gfx::Font::medium_normal,
+    };
+
     // 0x00497616
     void Town::updateLabel()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x00497616, regs);
+        char buffer[256]{};
+        StringManager::formatString(buffer, 256, name);
+
+        auto height = TileManager::getHeight(Pos2(x, y));
+        auto pos = Pos3(x + kTileSize / 2, y + kTileSize / 2, height.landHeight);
+
+        auto rotated = Math::Vector::rotate(pos, Ui::WindowManager::getCurrentRotation());
+        rotated.y -= 48;
+
+        for (auto zoomLevel = 0; zoomLevel < 4; zoomLevel++)
+        {
+            auto font = kZoomToTownFonts[zoomLevel];
+
+            auto nameWidth = (Gfx::TextRenderer::getStringWidth(font, buffer) + 2) << zoomLevel;
+            auto nameHeight = 11 << zoomLevel; // was a lookup on 0x4FF6FC; same for all zoom levels
+
+            auto xOffset = rotated.x - (nameWidth / 2);
+            auto yOffset = rotated.y - (nameHeight / 2);
+
+            labelFrame.left[zoomLevel] = xOffset >> zoomLevel;
+            labelFrame.right[zoomLevel] = (xOffset + nameWidth) >> zoomLevel;
+            labelFrame.top[zoomLevel] = yOffset >> zoomLevel;
+            labelFrame.bottom[zoomLevel] = (yOffset + nameHeight) >> zoomLevel;
+        }
     }
 
     // 0x0049749B
