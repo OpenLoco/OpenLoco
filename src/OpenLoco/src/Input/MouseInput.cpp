@@ -85,8 +85,7 @@ namespace OpenLoco::Input
     static loco_global<Ui::WindowType, 0x00523381> _tooltipWindowType;
     static loco_global<int16_t, 0x00523382> _tooltipWindowNumber;
     static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
-    static loco_global<uint16_t, 0x00523386> _tooltipCursorX;
-    static loco_global<uint16_t, 0x00523388> _tooltipCursorY;
+    static loco_global<Ui::Point, 0x00523386> _tooltipCursor;
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x0052338E> _ticksSinceDragStart;
@@ -356,8 +355,8 @@ namespace OpenLoco::Input
         switch (state())
         {
             case State::reset:
-                _tooltipCursorX = x;
-                _tooltipCursorY = y;
+                _tooltipCursor->x = x;
+                _tooltipCursor->y = y;
                 _tooltipTimeout = 0;
                 _tooltipWindowType = Ui::WindowType::undefined;
                 state(State::normal);
@@ -1232,7 +1231,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (_tooltipNotShownTicks < 500 || (x == _tooltipCursorX && y == _tooltipCursorY))
+        if (_tooltipNotShownTicks < 500 || (x == _tooltipCursor->x && y == _tooltipCursor->y))
         {
             _tooltipTimeout += _timeSinceLastTick;
             int bp = 2000;
@@ -1257,8 +1256,8 @@ namespace OpenLoco::Input
         }
 
         _tooltipTimeout = 0;
-        _tooltipCursorX = x;
-        _tooltipCursorY = y;
+        _tooltipCursor->x = x;
+        _tooltipCursor->y = y;
     }
 
     // 0x004C84BE
@@ -1342,8 +1341,8 @@ namespace OpenLoco::Input
                 _pressedWidgetIndex = widgetIndex;
                 _pressedWindowType = window->type;
                 _pressedWindowNumber = window->number;
-                _tooltipCursorX = x;
-                _tooltipCursorY = y;
+                _tooltipCursor->x = x;
+                _tooltipCursor->y = y;
                 Ui::ScrollView::scrollLeftBegin(x, y, window, widget, widgetIndex);
                 break;
 
@@ -1669,7 +1668,7 @@ namespace OpenLoco::Input
 
     Ui::Point getTooltipMouseLocation()
     {
-        return Ui::Point(_tooltipCursorX, _tooltipCursorY);
+        return Ui::Point(_tooltipCursor->x, _tooltipCursor->y);
     }
 
     Ui::Point getCursorPressedLocation()
@@ -1689,8 +1688,8 @@ namespace OpenLoco::Input
 
     void setTooltipMouseLocation(const Ui::Point& loc)
     {
-        _tooltipCursorX = loc.x;
-        _tooltipCursorY = loc.y;
+        _tooltipCursor->x = loc.x;
+        _tooltipCursor->y = loc.y;
     }
 
     uint16_t getTooltipTimeout()
