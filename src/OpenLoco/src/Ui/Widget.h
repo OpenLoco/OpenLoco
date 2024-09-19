@@ -5,6 +5,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include <array>
 #include <cstdint>
 
 namespace OpenLoco::Gfx
@@ -215,6 +216,67 @@ namespace OpenLoco::Ui
     {
         Widget out{ origin, size, type, colour, content, tooltip };
         return out;
+    }
+
+    namespace Detail
+    {
+        template<typename T>
+        struct WidgetsCount;
+
+        template<>
+        struct WidgetsCount<Widget>
+        {
+            static constexpr size_t count = 1;
+        };
+
+        template<size_t N>
+        struct WidgetsCount<std::array<Widget, N>>
+        {
+            static constexpr size_t count = N;
+        };
+
+        template<typename T>
+        struct IsWidgetsArray : std::false_type
+        {
+        };
+
+        template<std::size_t N>
+        struct IsWidgetsArray<std::array<Widget, N>> : std::true_type
+        {
+        };
+    }
+
+    template<typename... TArgs>
+    constexpr auto makeWidgets(TArgs&&... args)
+    {
+        constexpr auto totalCount = [&]() {
+            size_t count = 0;
+            ((count += Detail::WidgetsCount<std::decay_t<decltype(args)>>::count), ...);
+            return count;
+        }();
+
+        std::array<Widget, totalCount> res{};
+        size_t index = 0;
+
+        const auto append = [&](auto&& val) {
+            if constexpr (Detail::IsWidgetsArray<std::decay_t<decltype(val)>>::value)
+            {
+                for (auto&& widget : val)
+                {
+                    res[index] = std::move(widget);
+                    index++;
+                }
+            }
+            else
+            {
+                res[index] = std::move(val);
+                index++;
+            }
+        };
+
+        ((append(args)), ...);
+
+        return res;
     }
 
 }
