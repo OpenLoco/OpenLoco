@@ -139,8 +139,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Details
     {
-        static constexpr Ui::Size kMinWindowSize = { 192, 148 };
-        static constexpr Ui::Size kMaxWindowSize = { 400, 440 };
+        static constexpr Ui::Size32 kMinWindowSize = { 192, 148 };
+        static constexpr Ui::Size32 kMaxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -164,8 +164,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Cargo
     {
-        static constexpr Ui::Size kMinWindowSize = { 192, 142 };
-        static constexpr Ui::Size kMaxWindowSize = { 400, 440 };
+        static constexpr Ui::Size32 kMinWindowSize = { 192, 142 };
+        static constexpr Ui::Size32 kMaxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -185,8 +185,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Finances
     {
-        static constexpr Ui::Size kMinWindowSize = { 400, 202 };
-        static constexpr Ui::Size kMaxWindowSize = kMinWindowSize;
+        static constexpr Ui::Size32 kMinWindowSize = { 400, 202 };
+        static constexpr Ui::Size32 kMaxWindowSize = kMinWindowSize;
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
@@ -199,8 +199,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Route
     {
-        static constexpr Ui::Size kMinWindowSize = { 265, 202 };
-        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
+        static constexpr Ui::Size32 kMinWindowSize = { 265, 202 };
+        static constexpr Ui::Size32 kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -247,9 +247,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Main
     {
-        static constexpr Ui::Size kWindowSize = { 265, 177 };
-        static constexpr Ui::Size kMinWindowSize = { 192, 177 };
-        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
+        static constexpr Ui::Size32 kWindowSize = { 265, 177 };
+        static constexpr Ui::Size32 kMinWindowSize = { 192, 177 };
+        static constexpr Ui::Size32 kMaxWindowSize = { 600, 440 };
 
         enum widx
         {

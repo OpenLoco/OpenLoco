@@ -23,7 +23,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
-    static constexpr Ui::Size kWindowSize = { 610, 412 };
+    static constexpr Ui::Size32 kWindowSize = { 610, 412 };
 
     namespace widx
     {
@@ -104,8 +104,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         self = WindowManager::createWindow(
             WindowType::scenarioSelect,
-            Ui::Point({ static_cast<int16_t>(width() / 2 - kWindowSize.width / 2),
-                        std::max<int16_t>(height() / 2 - kWindowSize.height / 2, 28) }),
+            { width() / 2 - kWindowSize.width / 2, std::max<int16_t>(height() / 2 - kWindowSize.height / 2, 28) },
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::flag_12,
             getEvents());

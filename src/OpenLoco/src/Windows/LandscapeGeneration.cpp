@@ -33,8 +33,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
-    static constexpr Ui::Size kWindowSize = { 366, 217 };
-    static constexpr Ui::Size kLandTabSize = { 366, 252 };
+    static constexpr Ui::Size32 kWindowSize = { 366, 217 };
+    static constexpr Ui::Size32 kLandTabSize = { 366, 252 };
 
     static constexpr uint8_t kRowHeight = 22; // CJK: 22
 
@@ -1737,11 +1737,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window->invalidate();
 
-            const Ui::Size* newSize = &kWindowSize;
-            if (widgetIndex == widx::tab_land)
-                newSize = &kLandTabSize;
+            const auto newSize = [widgetIndex]() {
+                if (widgetIndex == widx::tab_land)
+                    return kLandTabSize;
+                else
+                    return kWindowSize;
+            }();
 
-            window->setSize(*newSize);
+            window->setSize(newSize);
 
             window->callOnResize();
             window->callPrepareDraw();

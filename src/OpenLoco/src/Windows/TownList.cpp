@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace TownList
     {
-        static constexpr Ui::Size kWindowSize = { 600, 197 };
+        static constexpr Ui::Size32 kWindowSize = { 600, 197 };
         static constexpr Ui::Size kMaxDimensions = { 600, 900 };
         static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
@@ -538,7 +538,7 @@ namespace OpenLoco::Ui::Windows::TownList
         else
         {
             // 0x00499CFC
-            auto origin = Ui::Point(Ui::width() - TownList::kWindowSize.width, 30);
+            auto origin = Ui::Point32(Ui::width() - TownList::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::townList,
@@ -617,7 +617,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildTowns
     {
-        static constexpr Ui::Size kWindowSize = { 220, 87 };
+        static constexpr Ui::Size32 kWindowSize = { 220, 87 };
 
         enum widx
         {
@@ -821,7 +821,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildBuildings
     {
-        static constexpr Ui::Size kWindowSize = { 600, 172 };
+        static constexpr Ui::Size32 kWindowSize = { 600, 172 };
 
         static constexpr uint8_t kRowHeight = 112;
 
@@ -1190,8 +1190,8 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
+            Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
                 updateActiveThumb(&self);

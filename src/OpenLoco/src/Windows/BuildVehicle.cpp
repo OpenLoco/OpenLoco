@@ -28,6 +28,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleDraw.h"
@@ -38,13 +39,12 @@
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <algorithm>
-#include "Ui/Widgets/PanelWidget.h"
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static constexpr Ui::Size kWindowSize = { 400, 305 };
+    static constexpr Ui::Size32 kWindowSize = { 400, 305 };
 
     enum widx
     {

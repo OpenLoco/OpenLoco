@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::Main
         auto window = WindowManager::createWindow(
             WindowType::main,
             { 0, 0 },
-            Ui::Size(uiWidth, uiHeight),
+            { uiWidth, uiHeight },
             Ui::WindowFlags::stickToBack,
             getEvents());
 

@@ -439,7 +439,7 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, Ui::Point(regs.ax, regs.eax >> 16), Ui::Size(regs.bx, regs.ebx >> 16), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, Ui::Point32(regs.ax, regs.eax >> 16), Ui::Size32(regs.bx, regs.ebx >> 16), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
                 regs = backup;
 
                 regs.esi = X86Pointer(w);
@@ -451,7 +451,7 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, Ui::Size(regs.bx, (((uint32_t)regs.ebx) >> 16)), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, Ui::Size32(regs.bx, (((uint32_t)regs.ebx) >> 16)), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
                 regs = backup;
 
                 regs.esi = X86Pointer(w);
@@ -861,7 +861,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param width @<bx>
      * @param height @<cx>
      */
-    static bool windowFitsWithinSpace(Ui::Point position, Ui::Size size)
+    static bool windowFitsWithinSpace(Ui::Point32 position, Ui::Size32 size)
     {
         if (position.x < 0)
             return false;
@@ -897,8 +897,8 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9F27
     static Window* createWindowOnScreen(
         WindowType type,
-        Ui::Point origin,
-        Ui::Size size,
+        Ui::Point32 origin,
+        Ui::Size32 size,
         Ui::WindowFlags flags,
         const WindowEventList& events)
     {
@@ -909,7 +909,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C9BA2
-    static bool windowFitsOnScreen(Ui::Point origin, Ui::Size size)
+    static bool windowFitsOnScreen(Ui::Point32 origin, Ui::Size32 size)
     {
         if (origin.x < -(size.width / 4))
             return false;
@@ -936,11 +936,11 @@ namespace OpenLoco::Ui::WindowManager
      */
     Window* createWindow(
         WindowType type,
-        Ui::Size size,
+        Ui::Size32 size,
         Ui::WindowFlags flags,
         const WindowEventList& events)
     {
-        Ui::Point position{};
+        Ui::Point32 position{};
 
         position.x = 0;  // dx
         position.y = 30; // ax
@@ -1064,8 +1064,8 @@ namespace OpenLoco::Ui::WindowManager
      */
     Window* createWindow(
         WindowType type,
-        Ui::Point origin,
-        Ui::Size size,
+        Ui::Point32 origin,
+        Ui::Size32 size,
         WindowFlags flags,
         const WindowEventList& events)
     {
@@ -1139,11 +1139,11 @@ namespace OpenLoco::Ui::WindowManager
         return newWindow;
     }
 
-    Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events)
+    Window* createWindowCentred(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events)
     {
         auto x = (Ui::width() / 2) - (size.width / 2);
         auto y = std::max(28, (Ui::height() / 2) - (size.height / 2));
-        return createWindow(type, Ui::Point(x, y), size, flags, events);
+        return createWindow(type, { x, y }, size, flags, events);
     }
 
     // 0x004C5FC8

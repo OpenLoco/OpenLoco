@@ -25,9 +25,9 @@
 
 namespace OpenLoco::Ui::Windows::ScenarioOptions
 {
-    static constexpr Ui::Size kChallengeWindowSize = { 366, 197 };
-    static constexpr Ui::Size kCompaniesWindowSize = { 366, 260 };
-    static constexpr Ui::Size kOtherWindowSize = { 366, 217 };
+    static constexpr Ui::Size32 kChallengeWindowSize = { 366, 197 };
+    static constexpr Ui::Size32 kCompaniesWindowSize = { 366, 260 };
+    static constexpr Ui::Size32 kOtherWindowSize = { 366, 217 };
 
     namespace Common
     {
@@ -1265,15 +1265,16 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self->invalidate();
 
-            const Ui::Size* newSize;
-            if (widgetIndex == widx::tab_challenge)
-                newSize = &kChallengeWindowSize;
-            else if (widgetIndex == widx::tab_companies)
-                newSize = &kCompaniesWindowSize;
-            else
-                newSize = &kOtherWindowSize;
+            const auto newSize = [widgetIndex]() {
+                if (widgetIndex == widx::tab_challenge)
+                    return kChallengeWindowSize;
+                else if (widgetIndex == widx::tab_companies)
+                    return kCompaniesWindowSize;
+                else
+                    return kOtherWindowSize;
+            }();
 
-            self->setSize(*newSize);
+            self->setSize(newSize);
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();

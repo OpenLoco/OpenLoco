@@ -206,7 +206,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Display
     {
-        static constexpr Ui::Size kWindowSize = { 400, 266 };
+        static constexpr Ui::Size32 kWindowSize = { 400, 266 };
 
         namespace Widx
         {
@@ -737,7 +737,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Sound
     {
-        static constexpr Ui::Size kWindowSize = { 366, 84 };
+        static constexpr Ui::Size32 kWindowSize = { 366, 84 };
 
         namespace Widx
         {
@@ -933,7 +933,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Music
     {
-        static constexpr Ui::Size kWindowSize = { 366, 129 };
+        static constexpr Ui::Size32 kWindowSize = { 366, 129 };
 
         namespace Widx
         {
@@ -1327,7 +1327,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Regional
     {
-        static constexpr Ui::Size kWindowSize = { 366, 167 };
+        static constexpr Ui::Size32 kWindowSize = { 366, 167 };
 
         namespace Widx
         {
@@ -1843,7 +1843,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Controls::Widx::edge_scrolling) | (1 << Controls::Widx::customize_keys) | (1 << Controls::Widx::zoom_to_cursor) | (1 << Controls::Widx::invertRightMouseViewPan);
 
-        static constexpr Ui::Size kWindowSize = { 366, 114 };
+        static constexpr Ui::Size32 kWindowSize = { 366, 114 };
 
         static constexpr Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_controls),
@@ -1992,7 +1992,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Company
     {
-        static constexpr Ui::Size kWindowSize = { 420, 134 };
+        static constexpr Ui::Size32 kWindowSize = { 420, 134 };
 
         namespace Widx
         {
@@ -2286,7 +2286,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Misc
     {
-        static constexpr Ui::Size kWindowSize = { 420, 266 };
+        static constexpr Ui::Size32 kWindowSize = { 420, 266 };
 
         namespace Widx
         {
@@ -2818,7 +2818,7 @@ namespace OpenLoco::Ui::Windows::Options
     {
         std::span<const Widget> widgets;
         const WindowEventList& events;
-        Ui::Size kWindowSize;
+        Ui::Size32 kWindowSize;
         const uint64_t* enabledWidgets;
     };
 

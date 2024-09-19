@@ -15,7 +15,7 @@
 
 namespace OpenLoco::Ui::Windows::TitleExit
 {
-    static constexpr Ui::Size kWindowSize = { 40, 28 };
+    static constexpr Ui::Size32 kWindowSize = { 40, 28 };
 
     namespace Widx
     {
@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     {
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleExit,
-            Ui::Point(Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height),
+            { Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height },
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             getEvents());

@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
-            Ui::Size(Ui::width(), 28),
+            { Ui::width(), 28 },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);

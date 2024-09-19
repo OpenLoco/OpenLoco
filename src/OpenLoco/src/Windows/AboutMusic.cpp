@@ -14,7 +14,7 @@
 
 namespace OpenLoco::Ui::Windows::AboutMusic
 {
-    static constexpr Ui::Size kWindowSize = { 500, 312 };
+    static constexpr Ui::Size32 kWindowSize = { 500, 312 };
     static constexpr uint8_t kRowHeight = 10; // CJK: 12
 
     constexpr uint16_t numSongs = 31;

@@ -15,4 +15,17 @@ namespace OpenLoco::Ui
         {
         }
     };
+
+    // TODO: Remove the Size struct and rename this one to Size once interop is gone.
+    struct Size32
+    {
+        int32_t width = 0;
+        int32_t height = 0;
+
+        constexpr Size32(const int32_t _width, const int32_t _height)
+            : width(_width)
+            , height(_height)
+        {
+        }
+    };
 }

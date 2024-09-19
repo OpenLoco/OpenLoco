@@ -31,7 +31,7 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Town
 {
-    static constexpr Ui::Size kWindowSize = { 223, 161 };
+    static constexpr Ui::Size32 kWindowSize = { 223, 161 };
 
     namespace Common
     {
@@ -229,7 +229,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSize(Ui::Size(192, 161), Ui::Size(600, 440));
+            self.setSize({ 192, 161 }, { 600, 440 });
 
             if (self.viewports[0] != nullptr)
             {
@@ -496,7 +496,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSize(Ui::Size(299, 172), Ui::Size(299, 327));
+            self.setSize({ 299, 172 }, { 299, 327 });
         }
 
         static constexpr WindowEventList kEvents = {
@@ -596,7 +596,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSize(Ui::Size(340, 208), Ui::Size(340, 208));
+            self.setSize({ 340, 208 }, { 340, 208 });
         }
 
         static constexpr WindowEventList kEvents = {

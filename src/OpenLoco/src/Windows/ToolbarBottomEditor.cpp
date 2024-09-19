@@ -145,8 +145,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     // 0x0043CCCD
     void open()
     {
-        Ui::Point origin = Ui::Point(0, Ui::height() - kWindowHeight);
-        Ui::Size windowSize = Ui::Size(Ui::width(), kWindowHeight);
+        const auto origin = Ui::Point32(0, Ui::height() - kWindowHeight);
+        const auto windowSize = Ui::Size32(Ui::width(), kWindowHeight);
 
         auto window = WindowManager::createWindow(
             WindowType::editorToolbar,

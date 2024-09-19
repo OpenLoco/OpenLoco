@@ -214,8 +214,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self.maxWidth = 800;
         self.maxHeight = 800;
 
-        Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-        Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
+        Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
+        Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
         self.setSize(kMinWindowSize, kMaxWindowSize);
     }
 
@@ -2296,11 +2296,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _mapPixels = static_cast<PaletteIndex_t*>(ptr);
         _mapAltPixels = &_mapPixels[kRenderedMapSize];
 
-        Ui::Size size = { 350, 272 };
+        Ui::Size32 size = { 350, 272 };
 
         if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
         {
-            size = Ui::getLastMapWindowAttributes().size;
+            size = { Ui::getLastMapWindowAttributes().size.width, Ui::getLastMapWindowAttributes().size.height };
             size.width = std::clamp<uint16_t>(size.width, 350, Ui::width());
             size.height = std::clamp<uint16_t>(size.height, 272, Ui::height() - 56);
         }

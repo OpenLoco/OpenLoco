@@ -144,7 +144,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleMenu,
-            Ui::Point((Ui::width() - kWW) / 2, Ui::height() - kWH - 25),
+            { (Ui::width() - kWW) / 2, Ui::height() - kWH - 25 },
             { kWW, kWH },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             getEvents());

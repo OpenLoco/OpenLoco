@@ -17,8 +17,8 @@ namespace OpenLoco::Ui::Windows::TitleVersion
         auto height = 16;
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::openLocoVersion,
-            Ui::Point(8, Ui::height() - height),
-            Ui::Size(width, height),
+            { 8, Ui::height() - height },
+            { width, height },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             getEvents());
 

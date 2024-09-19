@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Status
     {
-        static constexpr Ui::Size kWindowSize = { 270, 182 };
+        static constexpr Ui::Size32 kWindowSize = { 270, 182 };
 
         enum widx
         {
@@ -396,7 +396,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(Status::kWindowSize, Ui::Size(640, 400));
+            self.setSize(Status::kWindowSize, { 640, 400 });
 
             if (self.viewports[0] != nullptr)
             {
@@ -656,7 +656,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Details
     {
-        static constexpr Ui::Size kWindowSize = { 340, 194 };
+        static constexpr Ui::Size32 kWindowSize = { 340, 194 };
 
         loco_global<World::Pos3, 0x009C68D6> _headquarterGhostPos;
         loco_global<uint8_t, 0x009C68F0> _headquarterGhostRotation;
@@ -1200,7 +1200,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace ColourScheme
     {
-        static constexpr Ui::Size kWindowSize = { 265, 252 };
+        static constexpr Ui::Size32 kWindowSize = { 265, 252 };
 
         enum widx
         {
@@ -1664,7 +1664,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Finances
     {
-        static constexpr Ui::Size kWindowSize = { 636, 319 };
+        static constexpr Ui::Size32 kWindowSize = { 636, 319 };
 
         enum widx
         {
@@ -2202,7 +2202,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace CargoDelivered
     {
-        static constexpr Ui::Size kWindowSize = { 240, 382 };
+        static constexpr Ui::Size32 kWindowSize = { 240, 382 };
 
         static constexpr Widget widgets[] = {
             commonWidgets(240, 382, StringIds::title_company_cargo_delivered),
@@ -2378,7 +2378,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
-        static constexpr Ui::Size kWindowSize = { 320, 182 };
+        static constexpr Ui::Size32 kWindowSize = { 320, 182 };
 
         static constexpr Widget widgets[] = {
             commonWidgets(320, 182, StringIds::title_company_challenge),
@@ -2607,7 +2607,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
-            const Ui::Size* kWindowSize;
+            const Ui::Size32* kWindowSize;
         };
 
         // clang-format off
