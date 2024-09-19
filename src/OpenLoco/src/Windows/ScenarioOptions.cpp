@@ -45,15 +45,18 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
 
-#define commonWidgets(frameHeight, windowCaptionId)                                                                                                      \
-    Widgets::Frame({ 0, 0 }, { 366, frameHeight }, WindowColour::primary),                                                                               \
-        makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                               \
-        makeWidget({ 351, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),                                                                                \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_challenge),          \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),            \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_financial_options),          \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_options)
+        static constexpr auto makeCommonWidgets(int32_t frameHeight, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { 366, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                makeWidget({ 351, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_challenge),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
+                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_financial_options),
+                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_options));
+        }
 
         // 0x00440082
         static void update(Window& window)
@@ -176,7 +179,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         const uint64_t holdableWidgets = (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(197, StringIds::title_scenario_challenge),
+            Common::makeCommonWidgets(197, StringIds::title_scenario_challenge),
             makeDropdownWidgets({ 10, 52 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeStepperWidgets({ 10, 67 }, { 163, 12 }, WidgetType::textbox, WindowColour::secondary),
             makeDropdownWidgets({ 193, 67 }, { 163, 12 }, WidgetType::combobox, WindowColour::secondary),
@@ -573,7 +576,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(327, StringIds::title_company_options),
+            Common::makeCommonWidgets(327, StringIds::title_company_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_competing_companies_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
             makeWidget({ 5, 102 - 14 - 5 }, { 356, 63 }, WidgetType::groupbox, WindowColour::secondary, StringIds::selection_of_competing_companies),
@@ -847,7 +850,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(217, StringIds::title_financial_options),
+            Common::makeCommonWidgets(217, StringIds::title_financial_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::starting_loan_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_loan_size_value),
             makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::loan_interest_rate_value)
@@ -989,7 +992,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(217, StringIds::title_scenario_options),
+            Common::makeCommonWidgets(217, StringIds::title_scenario_options),
             makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
             makeDropdownWidgets({ 196, 67 }, { 160, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
             makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change)

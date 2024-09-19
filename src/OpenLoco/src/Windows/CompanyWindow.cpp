@@ -66,18 +66,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_status) | (1 << widx::tab_details) | (1 << widx::tab_colour_scheme) | (1 << widx::tab_finances) | (1 << widx::tab_cargo_delivered) | (1 << widx::tab_challenge);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),                                                                                    \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        Widgets::Panel({ 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),                                                                                     \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),                \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_headquarters_and_details),       \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_colour_scheme),                  \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_finances),                       \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_cargo_delivered),                       \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_challenge_for_this_game),       \
-        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company)
+        static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
+                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_headquarters_and_details),
+                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_colour_scheme),
+                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_finances),
+                makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_cargo_delivered),
+                makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_challenge_for_this_game),
+                makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company));
+        }
 
         // 0x004343FC
         static void disableChallengeTab(Window* self)
@@ -124,7 +127,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(270, 182, StringIds::title_company),
+            Common::makeCommonWidgets(270, 182, StringIds::title_company),
             makeWidget({ 3, 160 }, { 242, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 3, 44 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
@@ -675,7 +678,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(340, 194, StringIds::title_company_details),
+            Common::makeCommonWidgets(340, 194, StringIds::title_company_details),
             makeWidget({ 219, 54 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 315, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this)
@@ -1284,7 +1287,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // clang-format on
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(265, 252, StringIds::title_company_colour_scheme),
+            Common::makeCommonWidgets(265, 252, StringIds::title_company_colour_scheme),
             makeWidget({ 15, 81 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
             makeWidget({ 15, 98 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
             makeWidget({ 15, 115 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_electric_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
@@ -1681,7 +1684,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         constexpr uint16_t expenditureColumnWidth = 128;
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(636, 319, StringIds::title_company_finances),
+            Common::makeCommonWidgets(636, 319, StringIds::title_company_finances),
             makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
             makeStepperWidgets({ 87, 264 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::company_current_loan_value),
             makeWidget({ 320, 264 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
@@ -2209,7 +2212,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static constexpr Ui::Size32 kWindowSize = { 240, 382 };
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(240, 382, StringIds::title_company_cargo_delivered)
+            Common::makeCommonWidgets(240, 382, StringIds::title_company_cargo_delivered)
 
         );
 
@@ -2386,7 +2389,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static constexpr Ui::Size32 kWindowSize = { 320, 182 };
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(320, 182, StringIds::title_company_challenge)
+            Common::makeCommonWidgets(320, 182, StringIds::title_company_challenge)
 
         );
 

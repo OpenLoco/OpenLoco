@@ -57,13 +57,16 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_industry_list) | (1 << widx::tab_new_industry);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),                                                                                    \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        Widgets::Panel({ 0, 41 }, { frameWidth, 154 }, WindowColour::secondary),                                                                                     \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industries_list),                         \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_fund_new_industries)
+        static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { frameWidth, 154 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industries_list),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_fund_new_industries));
+        }
 
         static void refreshIndustryList(Window* self);
         static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
@@ -91,7 +94,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_industry_name) | (1 << sort_industry_status) | (1 << sort_industry_production_transported) | (1 << sort_industry_production_last_month) | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(600, 197, StringIds::title_industries),
+            Common::makeCommonWidgets(600, 197, StringIds::title_industries),
             makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_name),
             makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_status),
             makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
@@ -686,7 +689,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(577, 171, StringIds::title_fund_new_industries),
+            Common::makeCommonWidgets(577, 171, StringIds::title_fund_new_industries),
             makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
         );

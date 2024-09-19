@@ -77,18 +77,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_company_list) | (1 << widx::tab_performance) | (1 << widx::tab_cargo_units) | (1 << widx::tab_cargo_distance) | (1 << widx::tab_values) | (1 << widx::tab_payment_rates) | (1 << widx::tab_speed_records);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),                                                                                    \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        Widgets::Panel({ 0, 41 }, { frameWidth, 231 }, WindowColour::secondary),                                                                                     \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_compare_companies),                           \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_performance),                        \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_graphs),                               \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_distance_graphs),                      \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_values),                            \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_payment_rates),                       \
-        makeRemapWidget({ 189, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records)
+        static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { frameWidth, 231 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_compare_companies),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_performance),
+                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_graphs),
+                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_distance_graphs),
+                makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_values),
+                makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_payment_rates),
+                makeRemapWidget({ 189, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records));
+        }
 
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
         static void onUpdate(Window& self);
@@ -120,7 +123,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_name) | (1 << sort_status) | (1 << sort_performance) | (1 << sort_value) | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(640, 272, StringIds::title_company_list),
+            Common::makeCommonWidgets(640, 272, StringIds::title_company_list),
             makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
             makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
             makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
@@ -662,7 +665,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(635, 322, StringIds::title_company_performance)
+            Common::makeCommonWidgets(635, 322, StringIds::title_company_performance)
 
         );
 
@@ -755,7 +758,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(635, 322, StringIds::title_company_cargo_units)
+            Common::makeCommonWidgets(635, 322, StringIds::title_company_cargo_units)
 
         );
 
@@ -848,7 +851,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(635, 322, StringIds::title_cargo_distance_graphs)
+            Common::makeCommonWidgets(635, 322, StringIds::title_cargo_distance_graphs)
 
         );
 
@@ -941,7 +944,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(685, 322, StringIds::title_company_values)
+            Common::makeCommonWidgets(685, 322, StringIds::title_company_values)
 
         );
 
@@ -1034,7 +1037,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(495, 342, StringIds::title_cargo_payment_rates)
+            Common::makeCommonWidgets(495, 342, StringIds::title_cargo_payment_rates)
 
         );
 
@@ -1248,7 +1251,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(495, 169, StringIds::title_speed_records)
+            Common::makeCommonWidgets(495, 169, StringIds::title_speed_records)
 
         );
 

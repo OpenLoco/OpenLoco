@@ -42,13 +42,16 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_messages) | (1 << widx::tab_settings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),                                                                                    \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),                                                                                            \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),                         \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_message_options)
+        static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
+                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_message_options));
+        }
 
         static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -70,7 +73,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(366, 217, StringIds::title_messages),
+            Common::makeCommonWidgets(366, 217, StringIds::title_messages),
             makeWidget({ 3, 45 }, { 360, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
         );
@@ -397,7 +400,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::company_major_news) | (1 << widx::company_major_news_dropdown) | (1 << widx::competitor_major_news) | (1 << widx::competitor_major_news_dropdown) | (1 << widx::company_minor_news) | (1 << widx::company_minor_news_dropdown) | (1 << widx::competitor_minor_news) | (1 << widx::competitor_minor_news_dropdown) | (1 << widx::general_news) | (1 << widx::general_news_dropdown) | (1 << widx::advice) | (1 << widx::advice_dropdown) | (1 << widx::playSoundEffects);
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(366, 155, StringIds::title_messages),
+            Common::makeCommonWidgets(366, 155, StringIds::title_messages),
             makeDropdownWidgets({ 236, 47 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 62 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 77 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),

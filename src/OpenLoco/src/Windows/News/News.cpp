@@ -31,9 +31,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 {
     namespace News1
     {
-        static constexpr Widget widgets[] = {
-            commonWidgets(360, 117, WidgetType::wt_3),
-        };
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(360, 117, WidgetType::wt_3)
+
+        );
 
         std::span<const Widget> getWidgets()
         {
@@ -882,9 +883,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
     namespace News2
     {
-        static constexpr Widget widgets[] = {
-            commonWidgets(360, 159, WidgetType::wt_6),
-        };
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(360, 159, WidgetType::wt_6)
+
+        );
 
         std::span<const Widget> getWidgets()
         {

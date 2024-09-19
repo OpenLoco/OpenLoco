@@ -54,14 +54,17 @@ namespace OpenLoco::Ui::Windows::Station
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_station) | (1 << widx::tab_cargo) | (1 << widx::tab_cargo_ratings);
 
-#define commonWidgets(frameWidth, frameHeight)                                                                                                                       \
-    Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),                                                                                    \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_23, WindowColour::primary, StringIds::title_station),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        Widgets::Panel({ 0, 41 }, { frameWidth, 95 }, WindowColour::secondary),                                                                                      \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station),                                 \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station_cargo),                          \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station_cargo_ratings)
+        static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_23, WindowColour::primary, StringIds::title_station),
+                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { frameWidth, 95 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station_cargo),
+                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station_cargo_ratings));
+        }
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window& self);
@@ -86,7 +89,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static constexpr auto widgets = makeWidgets(
             // commonWidgets(kWindowSize.width, kWindowSize.height),
-            commonWidgets(223, 136),
+            Common::makeCommonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this)
@@ -330,7 +333,7 @@ namespace OpenLoco::Ui::Windows::Station
         };
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(223, 136),
+            Common::makeCommonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 3, 125 }, { 195, 10 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment)
@@ -597,7 +600,7 @@ namespace OpenLoco::Ui::Windows::Station
         };
 
         static constexpr auto widgets = makeWidgets(
-            commonWidgets(249, 136),
+            Common::makeCommonWidgets(249, 136),
             makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, WindowColour::secondary)
 

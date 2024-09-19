@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     };
 
     static constexpr auto widgets = makeWidgets(
-        commonWidgets(138, 276, StringIds::stringid_2),
+        Common::makeCommonWidgets(138, 276, StringIds::stringid_2),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),
         makeWidget({ 25, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve, StringIds::tooltip_left_hand_curve),

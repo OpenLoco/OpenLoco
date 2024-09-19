@@ -186,18 +186,21 @@ namespace OpenLoco::Ui::Windows::Options
             free(__11364A0);
         }
 
-#define common_options_widgets(kWindowSize, window_caption_id)                                                                                                                         \
-    Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),                                                                                                                      \
-        makeWidget({ 1, 1 }, { (uint16_t)(kWindowSize.width - 2), 13 }, WidgetType::caption_25, WindowColour::primary, window_caption_id),                                             \
-        makeWidget({ (int16_t)(kWindowSize.width - 15), 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        Widgets::Panel({ 0, 41 }, { kWindowSize.width, 102 }, WindowColour::secondary),                                                                                                \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_display_options),                                           \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_sound_options),                                            \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_music_options),                                            \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_regional_options),                                         \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_control_options),                                         \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),                                         \
-        makeRemapWidget({ 189, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_miscellaneous_options)
+        static constexpr auto makeCommonWidgets(Ui::Size32 windowSize, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, windowSize, WindowColour::primary),
+                makeWidget({ 1, 1 }, { (uint16_t)(windowSize.width - 2), 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                makeWidget({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { windowSize.width, 102 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_display_options),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_sound_options),
+                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_music_options),
+                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_regional_options),
+                makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_control_options),
+                makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
+                makeRemapWidget({ 189, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_miscellaneous_options));
+        }
 
         static constexpr int tabWidgets = (1 << Widx::tab_display) | (1 << Widx::tab_sound) | (1 << Widx::tab_music) | (1 << Widx::tab_regional) | (1 << Widx::tab_controls) | (1 << Widx::tab_company) | (1 << Widx::tab_miscellaneous);
 
@@ -236,7 +239,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         static constexpr auto _widgets = makeWidgets(
-            common_options_widgets(kWindowSize, StringIds::options_title_display),
+            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_display),
             makeWidget({ 4, 49 }, { 392, 97 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_hardware),
             makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
             makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
@@ -753,7 +756,7 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Sound::Widx::audio_device) | (1 << Sound::Widx::audio_device_btn) | (1 << Sound::Widx::play_title_music);
 
         static constexpr auto _widgets = makeWidgets(
-            common_options_widgets(kWindowSize, StringIds::options_title_sound),
+            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_sound),
             makeDropdownWidgets({ 10, 49 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::play_title_music)
 
@@ -956,7 +959,7 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Music::Widx::currently_playing) | (1 << Music::Widx::currently_playing_btn) | (1 << Music::Widx::music_controls_stop) | (1 << Music::Widx::music_controls_play) | (1 << Music::Widx::music_controls_next) | (1 << Music::Widx::volume) | (1 << Music::Widx::music_playlist) | (1 << Music::Widx::music_playlist_btn) | (1 << Music::Widx::edit_selection);
 
         static constexpr auto _widgets = makeWidgets(
-            common_options_widgets(kWindowSize, StringIds::options_title_music),
+            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
             makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
             makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
@@ -1354,7 +1357,7 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Regional::Widx::language) | (1 << Regional::Widx::language_btn) | (1 << Regional::Widx::distance_speed) | (1 << Regional::Widx::distance_speed_btn) | (1 << Regional::Widx::heights) | (1 << Regional::Widx::heights_btn) | (1 << Regional::Widx::currency) | (1 << Regional::Widx::currency_btn) | (1 << Regional::Widx::preferred_currency) | (1 << Regional::Widx::preferred_currency_btn) | (1 << Regional::Widx::preferred_currency_for_new_games) | (1 << Regional::Widx::preferred_currency_always);
 
         static constexpr auto _widgets = makeWidgets(
-            common_options_widgets(kWindowSize, StringIds::options_title_regional),
+            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_regional),
             makeDropdownWidgets({ 183, 49 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringptr),
             makeDropdownWidgets({ 183, 69 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeDropdownWidgets({ 183, 84 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
@@ -1850,7 +1853,7 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr Ui::Size32 kWindowSize = { 366, 114 };
 
         static constexpr auto _widgets = makeWidgets(
-            common_options_widgets(kWindowSize, StringIds::options_title_controls),
+            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_controls),
             makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
             makeWidget({ 10, 64 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
             makeWidget({ 10, 79 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::invert_right_mouse_dragging, StringIds::tooltip_invert_right_mouse_dragging),
@@ -2025,7 +2028,7 @@ namespace OpenLoco::Ui::Windows::Options
         // clang-format on
 
         static constexpr auto _widgets = makeWidgets(
-            common_options_widgets(kWindowSize, StringIds::options_title_company),
+            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_company),
 
             // Preferred owner group
             makeWidget({ 4, 50 }, { 412, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferred_owner_name),
@@ -2336,7 +2339,7 @@ namespace OpenLoco::Ui::Windows::Options
         // clang-format on
 
         static constexpr auto _widgets = makeWidgets(
-            common_options_widgets(kWindowSize, StringIds::options_title_miscellaneous),
+            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_miscellaneous),
 
             // Gameplay tweaks group
             makeWidget({ 4, 49 }, { 412, 62 }, WidgetType::groupbox, WindowColour::secondary, StringIds::gameplay_tweaks),
