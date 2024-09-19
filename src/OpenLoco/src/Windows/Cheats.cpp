@@ -172,7 +172,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::financial_cheats),
             // money
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_increase_funds),
-            makeStepperWidgets({ 80, 62 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeStepperWidget({ 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
             makeWidget({ 180, 62 }, { 60, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_add),
             // loan
             makeWidget({ 4, 86 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_clear_loan),
@@ -180,9 +180,9 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 180, 100 }, { 60, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_clear),
             // date/time
             makeWidget({ 4, 124 }, { kWindowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
-            makeStepperWidgets({ 80, 138 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 154 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 170 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeStepperWidget({ 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            makeStepperWidget({ 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            makeStepperWidget({ 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 186 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_date_change_apply)
 
         );
@@ -508,7 +508,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::company_cheats),
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_target_company),
-            makeDropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WidgetType::textbox, WindowColour::secondary),
+            makeDropdownWidget({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary),
             makeWidget({ 4, 86 }, { kWindowSize.width - 8, 96 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
             makeWidget({ 10, 100 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_switch_to_company),
             makeWidget({ 10, 116 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_acquire_company_assets),

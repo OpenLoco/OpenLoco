@@ -173,11 +173,7 @@ namespace OpenLoco::Ui
         return out;
     }
 
-#define makeDropdownWidgets(...) \
-    makeWidget(__VA_ARGS__),     \
-        makeDropdownButtonWidget(__VA_ARGS__)
-
-    [[maybe_unused]] static constexpr Widget makeDropdownButtonWidget(Ui::Point32 origin, Ui::Size32 size, [[maybe_unused]] WidgetType type, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
+    static constexpr Widget makeDropdownButtonWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 12;
         const int16_t yPos = origin.y + 1;
@@ -187,12 +183,7 @@ namespace OpenLoco::Ui
         return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::dropdown, tooltip);
     }
 
-#define makeStepperWidgets(...)                 \
-    makeWidget(__VA_ARGS__),                    \
-        makeStepperDecreaseWidget(__VA_ARGS__), \
-        makeStepperIncreaseWidget(__VA_ARGS__)
-
-    [[maybe_unused]] static constexpr Widget makeStepperDecreaseWidget(Ui::Point32 origin, Ui::Size32 size, [[maybe_unused]] WidgetType type, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
+    static constexpr Widget makeStepperDecreaseWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 26;
         const int16_t yPos = origin.y + 1;
@@ -202,7 +193,7 @@ namespace OpenLoco::Ui
         return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::stepper_minus, tooltip);
     }
 
-    [[maybe_unused]] static constexpr Widget makeStepperIncreaseWidget(Ui::Point32 origin, Ui::Size32 size, [[maybe_unused]] WidgetType type, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
+    static constexpr Widget makeStepperIncreaseWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 13;
         const int16_t yPos = origin.y + 1;
@@ -282,4 +273,20 @@ namespace OpenLoco::Ui
         return res;
     }
 
+    static constexpr auto makeStepperWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    {
+        // TODO: Make this a single widget.
+        return makeWidgets(
+            makeWidget(origin, size, WidgetType::textbox, colour, content, tooltip),
+            makeStepperDecreaseWidget(origin, size, colour),
+            makeStepperIncreaseWidget(origin, size, colour));
+    }
+
+    static constexpr auto makeDropdownWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    {
+        // TODO: Make this a single widget.
+        return makeWidgets(
+            makeWidget(origin, size, WidgetType::combobox, colour, content, tooltip),
+            makeDropdownButtonWidget(origin, size, colour));
+    }
 }

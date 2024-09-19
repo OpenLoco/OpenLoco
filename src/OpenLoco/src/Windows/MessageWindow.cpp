@@ -401,12 +401,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 155, StringIds::title_messages),
-            makeDropdownWidgets({ 236, 47 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 62 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 77 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 92 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 107 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 122 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidget({ 236, 47 }, { 124, 12 }, WindowColour::secondary),
+            makeDropdownWidget({ 236, 62 }, { 124, 12 }, WindowColour::secondary),
+            makeDropdownWidget({ 236, 77 }, { 124, 12 }, WindowColour::secondary),
+            makeDropdownWidget({ 236, 92 }, { 124, 12 }, WindowColour::secondary),
+            makeDropdownWidget({ 236, 107 }, { 124, 12 }, WindowColour::secondary),
+            makeDropdownWidget({ 236, 122 }, { 124, 12 }, WindowColour::secondary),
             makeWidget({ 4, 137 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
 
         );

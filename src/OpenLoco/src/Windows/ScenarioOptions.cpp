@@ -180,13 +180,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(197, StringIds::title_scenario_challenge),
-            makeDropdownWidgets({ 10, 52 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeStepperWidgets({ 10, 67 }, { 163, 12 }, WidgetType::textbox, WindowColour::secondary),
-            makeDropdownWidgets({ 193, 67 }, { 163, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidget({ 10, 52 }, { 346, 12 }, WindowColour::secondary),
+            makeStepperWidget({ 10, 67 }, { 163, 12 }, WindowColour::secondary),
+            makeDropdownWidget({ 193, 67 }, { 163, 12 }, WindowColour::secondary),
             makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::and_be_the_top_company),
             makeWidget({ 10, 98 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::and_be_within_the_top_companies),
             makeWidget({ 10, 113 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::with_a_time_limit),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::time_limit_years_value)
+            makeStepperWidget({ 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::time_limit_years_value)
 
         );
 
@@ -577,12 +577,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(327, StringIds::title_company_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_competing_companies_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
+            makeStepperWidget({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::max_competing_companies_value),
+            makeStepperWidget({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
             makeWidget({ 5, 102 - 14 - 5 }, { 356, 63 }, WidgetType::groupbox, WindowColour::secondary, StringIds::selection_of_competing_companies),
-            makeDropdownWidgets({ 246, 102 - 4 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 246, 117 - 4 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 246, 132 - 4 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidget({ 246, 102 - 4 }, { 110, 12 }, WindowColour::secondary),
+            makeDropdownWidget({ 246, 117 - 4 }, { 110, 12 }, WindowColour::secondary),
+            makeDropdownWidget({ 246, 132 - 4 }, { 110, 12 }, WindowColour::secondary),
             makeWidget({ 5, 150 }, { 356, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::forbid_competing_companies_from_using),
             makeWidget({ 15, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
             makeWidget({ 15, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
@@ -851,9 +851,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_financial_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::starting_loan_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_loan_size_value),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::loan_interest_rate_value)
+            makeStepperWidget({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::starting_loan_value),
+            makeStepperWidget({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::max_loan_size_value),
+            makeStepperWidget({ 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::loan_interest_rate_value)
 
         );
 
@@ -994,7 +994,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_scenario_options),
             makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
-            makeDropdownWidgets({ 196, 67 }, { 160, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeDropdownWidget({ 196, 67 }, { 160, 12 }, WindowColour::secondary, StringIds::empty),
             makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change)
 
         );

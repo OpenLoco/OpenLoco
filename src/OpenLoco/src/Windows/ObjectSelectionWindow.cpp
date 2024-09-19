@@ -211,7 +211,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_6, WindowColour::secondary),
 
         // Filter options
-        makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WidgetType::combobox, WindowColour::primary, StringIds::empty),
+        makeDropdownWidget({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
         makeWidget({ 4, 68 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 254, 68 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
 

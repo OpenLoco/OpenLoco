@@ -241,16 +241,16 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_display),
             makeWidget({ 4, 49 }, { 392, 97 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_hardware),
-            makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
-            makeStepperWidgets({ 235, 95 }, { 154, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeDropdownWidget({ 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+            makeDropdownWidget({ 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
+            makeStepperWidget({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 111 }, { 174, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
             makeWidget({ 10, 127 }, { 174, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
 
             makeWidget({ 4, 150 }, { 392, 112 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_map_rendering),
-            makeDropdownWidgets({ 235, 164 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
-            makeDropdownWidgets({ 235, 180 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
-            makeDropdownWidgets({ 235, 196 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeDropdownWidget({ 235, 164 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
+            makeDropdownWidget({ 235, 180 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
+            makeDropdownWidget({ 235, 196 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 211 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
             makeWidget({ 10, 227 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
             makeWidget({ 10, 243 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering)
@@ -757,7 +757,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_sound),
-            makeDropdownWidgets({ 10, 49 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
+            makeDropdownWidget({ 10, 49 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::play_title_music)
 
         );
@@ -960,12 +960,12 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
-            makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
+            makeDropdownWidget({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
             makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
             makeWidget({ 58, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
             makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
-            makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
+            makeDropdownWidget({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 183, 108 }, { 173, 12 }, WidgetType::button, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
 
         );
@@ -1358,11 +1358,11 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_regional),
-            makeDropdownWidgets({ 183, 49 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringptr),
-            makeDropdownWidgets({ 183, 69 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
-            makeDropdownWidgets({ 183, 84 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
-            makeDropdownWidgets({ 183, 104 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid, StringIds::current_game_currency_tip),
-            makeDropdownWidgets({ 183, 119 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
+            makeDropdownWidget({ 183, 49 }, { 173, 12 }, WindowColour::secondary, StringIds::stringptr),
+            makeDropdownWidget({ 183, 69 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
+            makeDropdownWidget({ 183, 84 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
+            makeDropdownWidget({ 183, 104 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid, StringIds::current_game_currency_tip),
+            makeDropdownWidget({ 183, 119 }, { 173, 12 }, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
             makeWidget({ 10, 134 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
             makeWidget({ 10, 148 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip)
 
@@ -2356,8 +2356,8 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Save options group
             makeWidget({ 4, 196 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
-            makeDropdownWidgets({ 250, 211 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 250, 226 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeDropdownWidget({ 250, 211 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
+            makeStepperWidget({ 250, 226 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 241 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip)
 
         );

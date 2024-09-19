@@ -246,8 +246,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         // TODO: can be moved after drawVehicleOverview has been implemented
         makeWidget({ 4, 72 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 50, 72 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
-        makeDropdownWidgets({ 3, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterComponents),
-        makeDropdownWidgets({ 48, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterCargoSupported)
+        makeDropdownWidget({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
+        makeDropdownWidget({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported)
 
     );
 
