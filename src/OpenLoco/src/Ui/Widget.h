@@ -220,17 +220,20 @@ namespace OpenLoco::Ui
 
     namespace Detail
     {
-        template<typename T>
-        struct WidgetsCount;
+        template<typename T, typename Enable = void>
+        struct WidgetsCount
+        {
+            static constexpr size_t count = 0;
+        };
 
-        template<>
-        struct WidgetsCount<Widget>
+        template<typename T>
+        struct WidgetsCount<T, std::enable_if_t<std::is_base_of_v<Widget, T>>>
         {
             static constexpr size_t count = 1;
         };
 
-        template<size_t N>
-        struct WidgetsCount<std::array<Widget, N>>
+        template<typename T, std::size_t N>
+        struct WidgetsCount<std::array<T, N>, std::enable_if_t<std::is_base_of_v<Widget, T>>>
         {
             static constexpr size_t count = N;
         };
