@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             (1 << widx::generate_when_game_starts);
         // clang-format on
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             common_options_widgets(217, StringIds::title_landscape_generation_options),
 
             // General options
@@ -276,9 +276,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeWidget({ 10, 136 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
             // PNG browser
-            makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_browse),
+            makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_browse)
 
-        };
+        );
 
         // 0x0043DC30
         static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
@@ -605,14 +605,15 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hillsEdgeOfMap);
         const uint64_t holdable_widgets = (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             common_options_widgets(252, StringIds::title_landscape_generation_land),
             makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeStepperWidgets({ 256, 68 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
             makeStepperWidgets({ 256, 84 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::hill_density_percent),
             makeWidget({ 10, 100 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
-            makeWidget({ 4, 116 }, { 358, 112 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        };
+            makeWidget({ 4, 116 }, { 358, 112 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+        );
 
         // 0x0043DF89
         static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
@@ -971,15 +972,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             (1 << widx::meander_rate_down) | (1 << widx::meander_rate_up);
         // clang-format on
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             common_options_widgets(217, StringIds::title_landscape_generation_water),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::sea_level_units),
             makeStepperWidgets({ 256, 68 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::uint16_raw),
             makeStepperWidgets({ 256, 84 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
             makeStepperWidgets({ 256, 100 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
             makeStepperWidgets({ 256, 116 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
-            makeStepperWidgets({ 256, 132 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
-        };
+            makeStepperWidgets({ 256, 132 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units)
+
+        );
 
         // 0x0043DF89
         static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
@@ -1171,7 +1173,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets | (1ULL << widx::number_of_forests_up) | (1ULL << widx::number_of_forests_down) | (1ULL << widx::min_forest_radius_up) | (1ULL << widx::min_forest_radius_down) | (1ULL << widx::max_forest_radius_up) | (1ULL << widx::max_forest_radius_down) | (1ULL << widx::min_forest_density_up) | (1ULL << widx::min_forest_density_down) | (1 << widx::max_forest_density_up) | (1ULL << widx::max_forest_density_down) | (1ULL << widx::number_random_trees_up) | (1ULL << widx::number_random_trees_down) | (1ULL << widx::min_altitude_for_trees_up) | (1ULL << widx::min_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_up);
         const uint64_t holdable_widgets = (1ULL << widx::number_of_forests_up) | (1ULL << widx::number_of_forests_down) | (1ULL << widx::min_forest_radius_up) | (1ULL << widx::min_forest_radius_down) | (1ULL << widx::max_forest_radius_up) | (1ULL << widx::max_forest_radius_down) | (1ULL << widx::min_forest_density_up) | (1ULL << widx::min_forest_density_down) | (1ULL << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1ULL << widx::number_random_trees_up) | (1ULL << widx::number_random_trees_down) | (1ULL << widx::min_altitude_for_trees_up) | (1ULL << widx::min_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_up);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             common_options_widgets(217, StringIds::title_landscape_generation_forests),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_of_forests_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_forest_radius_blocks),
@@ -1180,8 +1182,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_forest_density_percent),
             makeStepperWidgets({ 256, 127 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_random_trees_value),
             makeStepperWidgets({ 256, 142 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_altitude_for_trees_height),
-            makeStepperWidgets({ 256, 157 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_altitude_for_trees_height),
-        };
+            makeStepperWidgets({ 256, 157 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_altitude_for_trees_height)
+
+        );
 
         // 0x0043E53A
         static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
@@ -1432,11 +1435,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down) | (1 << widx::max_town_size) | (1 << widx::max_town_size_btn);
         const uint64_t holdable_widgets = (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             common_options_widgets(217, StringIds::title_landscape_generation_towns),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_of_towns_value),
-            makeDropdownWidgets({ 176, 67 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
-        };
+            makeDropdownWidgets({ 176, 67 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary)
+
+        );
 
         // 0x0043E9A3
         static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
@@ -1562,12 +1566,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::num_industries) | (1 << widx::num_industries_btn) | (1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up);
         const uint64_t holdable_widgets = 0;
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             common_options_widgets(217, StringIds::title_landscape_generation_industries),
             makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
-            makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game),
-        };
+            makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game)
+
+        );
 
         // 0x0043EB9D
         static void draw(Window& window, Gfx::DrawingContext& drawingCtx)

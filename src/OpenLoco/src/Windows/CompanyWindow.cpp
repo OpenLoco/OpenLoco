@@ -123,14 +123,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             change_owner_name,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(270, 182, StringIds::title_company),
             makeWidget({ 3, 160 }, { 242, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 3, 44 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
             makeWidget({ 178, 57 }, { 66, 66 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull),
-            makeWidget({ 154, 124 }, { 112, 22 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name),
-        };
+            makeWidget({ 154, 124 }, { 112, 22 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name)
+
+        );
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
 
@@ -673,12 +674,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             centre_on_viewport,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(340, 194, StringIds::title_company_details),
             makeWidget({ 219, 54 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 315, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
-        };
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this)
+
+        );
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
 
@@ -1281,7 +1283,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
         // clang-format on
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(265, 252, StringIds::title_company_colour_scheme),
             makeWidget({ 15, 81 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
             makeWidget({ 15, 98 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
@@ -1314,8 +1316,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             makeWidget({ 239, 180 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
             makeWidget({ 239, 197 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
             makeWidget({ 239, 214 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 231 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-        };
+            makeWidget({ 239, 231 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour)
+
+        );
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | allMainColours | allSecondaryColours | allColourChecks;
 
@@ -1677,12 +1680,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         constexpr uint16_t expenditureColumnWidth = 128;
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(636, 319, StringIds::title_company_finances),
             makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
             makeStepperWidgets({ 87, 264 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::company_current_loan_value),
-            makeWidget({ 320, 264 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay), // loan_autopay
-        };
+            makeWidget({ 320, 264 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
+
+        );
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase) | (1 << widx::loan_autopay);
 
@@ -2204,9 +2208,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size32 kWindowSize = { 240, 382 };
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(240, 382, StringIds::title_company_cargo_delivered),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(240, 382, StringIds::title_company_cargo_delivered)
+
+        );
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select);
 
@@ -2380,9 +2385,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size32 kWindowSize = { 320, 182 };
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(320, 182, StringIds::title_company_challenge),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(320, 182, StringIds::title_company_challenge)
+
+        );
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets;
 

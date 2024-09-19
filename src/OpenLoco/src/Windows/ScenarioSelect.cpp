@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         };
     }
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 610, 412 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::select_scenario_for_new_game),
         makeWidget({ 595, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -52,8 +52,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         makeRemapWidget({ 185, 15 }, { 91, 34 }, WidgetType::tab, WindowColour::secondary, ImageIds::wide_tab),
         makeRemapWidget({ 276, 15 }, { 91, 34 }, WidgetType::tab, WindowColour::secondary, ImageIds::wide_tab),
         makeRemapWidget({ 367, 15 }, { 91, 34 }, WidgetType::tab, WindowColour::secondary, ImageIds::wide_tab),
-        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-    };
+        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+    );
 
     constexpr auto kRowHeight = 24;
     static bool _warnOnce = false;

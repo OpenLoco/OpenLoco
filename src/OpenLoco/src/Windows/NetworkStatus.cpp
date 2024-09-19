@@ -26,12 +26,13 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
     static constexpr Ui::Size32 kWindowSize = { 441, 91 };
 
-    static constexpr Widget widgets[] = {
+    static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 441, 91 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 439, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::empty),
         makeWidget({ 426, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 15 }, { 441, 76 }, WindowColour::secondary),
-    };
+        Widgets::Panel({ 0, 15 }, { 441, 76 }, WindowColour::secondary)
+
+    );
 
     static std::string _text;
     static CloseCallback _cbClose;

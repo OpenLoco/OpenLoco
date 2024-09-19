@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         scrollview,
     };
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::objectErrorWindowTitle),
         makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -42,8 +42,9 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         makeWidget({ 4, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectId),
         makeWidget({ 104, 43 }, { 152, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectType),
         makeWidget({ 256, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
-        makeWidget({ 4, 57 }, { 352, 176 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-    };
+        makeWidget({ 4, 57 }, { 352, 176 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+    );
 
     static const WindowEventList& getEvents();
 

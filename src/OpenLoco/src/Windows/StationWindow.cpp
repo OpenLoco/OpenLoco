@@ -84,13 +84,14 @@ namespace OpenLoco::Ui::Windows::Station
             centre_on_viewport,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             // commonWidgets(kWindowSize.width, kWindowSize.height),
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
-        };
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this)
+
+        );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport);
 
@@ -328,12 +329,13 @@ namespace OpenLoco::Ui::Windows::Station
             station_catchment,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 3, 125 }, { 195, 10 }, WidgetType::wt_13, WindowColour::secondary),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment),
-        };
+            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment)
+
+        );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station_catchment);
 
@@ -594,11 +596,12 @@ namespace OpenLoco::Ui::Windows::Station
             status_bar,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(249, 136),
             makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
-            makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, WindowColour::secondary),
-        };
+            makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, WindowColour::secondary)
+
+        );
 
         // 0x0048EC3B
         static void prepareDraw(Window& self)

@@ -20,12 +20,13 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static constexpr uint16_t kWindowHeight = 32;
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
         makeWidget({ 440, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
-    };
+        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary)
+
+    );
 
     static std::map<EditorController::Step, StringId> _stepNames = {
         { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },

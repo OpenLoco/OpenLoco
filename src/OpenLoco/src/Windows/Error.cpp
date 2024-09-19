@@ -43,9 +43,10 @@ namespace OpenLoco::Ui::Windows::Error
             frame,
         };
 
-        static constexpr Widget widgets[] = {
-            makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::panel, WindowColour::primary),
-        };
+        static constexpr auto widgets = makeWidgets(
+            makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::panel, WindowColour::primary)
+
+        );
     }
 
     namespace ErrorCompetitor
@@ -56,10 +57,11 @@ namespace OpenLoco::Ui::Windows::Error
             innerFrame,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             Widgets::Panel({ 0, 0 }, { 250, 70 }, WindowColour::primary),
-            makeWidget({ 3, 3 }, { 64, 64 }, WidgetType::wt_3, WindowColour::secondary),
-        };
+            makeWidget({ 3, 3 }, { 64, 64 }, WidgetType::wt_3, WindowColour::secondary)
+
+        );
     }
 
     static char* formatErrorString(StringId title, StringId message, FormatArguments args, char* buffer)

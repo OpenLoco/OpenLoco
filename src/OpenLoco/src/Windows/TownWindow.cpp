@@ -77,14 +77,15 @@ namespace OpenLoco::Ui::Windows::Town
             demolish_town,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(223, 161, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 104 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 139 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
             makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::town_expand, StringIds::expand_this_town),
-            makeWidget({ 198, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_town),
-        };
+            makeWidget({ 198, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_town)
+
+        );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport) | (1 << expand_town) | (1 << demolish_town);
 
@@ -379,9 +380,10 @@ namespace OpenLoco::Ui::Windows::Town
 
     namespace Population
     {
-        static constexpr Widget widgets[] = {
-            commonWidgets(223, 161, StringIds::title_town_population),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(223, 161, StringIds::title_town_population)
+
+        );
 
         // 0x00499469
         static void prepareDraw(Window& self)
@@ -516,9 +518,10 @@ namespace OpenLoco::Ui::Windows::Town
 
     namespace CompanyRatings
     {
-        static constexpr Widget widgets[] = {
-            commonWidgets(340, 208, StringIds::title_town_local_authority),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(340, 208, StringIds::title_town_local_authority)
+
+        );
 
         // 0x00499761
         static void prepareDraw(Window& self)

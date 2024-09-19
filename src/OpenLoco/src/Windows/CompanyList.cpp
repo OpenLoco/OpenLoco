@@ -119,14 +119,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_name) | (1 << sort_status) | (1 << sort_performance) | (1 << sort_value) | (1 << scrollview);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(640, 272, StringIds::title_company_list),
             makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
             makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
             makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
             makeWidget({ 534, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
-            makeWidget({ 3, 56 }, { 634, 201 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        };
+            makeWidget({ 3, 56 }, { 634, 201 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+        );
 
         enum SortMode : uint16_t
         {
@@ -660,9 +661,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(635, 322, StringIds::title_company_performance),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(635, 322, StringIds::title_company_performance)
+
+        );
 
         // 0x004366D7
         static void onResize(Window& self)
@@ -752,9 +754,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(635, 322, StringIds::title_company_cargo_units),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(635, 322, StringIds::title_company_cargo_units)
+
+        );
 
         // 0x004369FB
         static void onResize(Window& self)
@@ -844,9 +847,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(635, 322, StringIds::title_cargo_distance_graphs),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(635, 322, StringIds::title_cargo_distance_graphs)
+
+        );
 
         // 0x00436D1F
         static void onResize(Window& self)
@@ -936,9 +940,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(685, 322, StringIds::title_company_values),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(685, 322, StringIds::title_company_values)
+
+        );
 
         // 0x00437043
         static void onResize(Window& self)
@@ -1028,9 +1033,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(495, 342, StringIds::title_cargo_payment_rates),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(495, 342, StringIds::title_cargo_payment_rates)
+
+        );
 
         // 0x0043737D
         static void onResize(Window& self)
@@ -1241,9 +1247,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(495, 169, StringIds::title_speed_records),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(495, 169, StringIds::title_speed_records)
+
+        );
 
         // 0x00437591
         static void onResize(Window& self)

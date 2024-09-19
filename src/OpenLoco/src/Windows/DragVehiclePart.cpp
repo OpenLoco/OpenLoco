@@ -17,9 +17,10 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     };
 
     // 0x00522504
-    static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, WindowColour::primary),
-    };
+    static constexpr auto widgets = makeWidgets(
+        makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, WindowColour::primary)
+
+    );
 
     // TODO: make vehicles versions of these call into this global, ?make Entity::id instead?
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;

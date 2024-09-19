@@ -17,9 +17,10 @@ namespace OpenLoco::Ui::Windows::TitleLogo
         };
     }
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary)
+
+    );
 
     static const WindowEventList& getEvents();
 

@@ -15,9 +15,10 @@ namespace OpenLoco::Ui::Windows::Main
         };
     }
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 0, 0 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, { 0, 0 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk)
+
+    );
 
     static const WindowEventList& getEvents();
 

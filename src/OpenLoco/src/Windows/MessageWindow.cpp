@@ -69,10 +69,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(366, 217, StringIds::title_messages),
-            makeWidget({ 3, 45 }, { 360, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        };
+            makeWidget({ 3, 45 }, { 360, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+        );
 
         // 0x0042A6F5
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
@@ -395,7 +396,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::company_major_news) | (1 << widx::company_major_news_dropdown) | (1 << widx::competitor_major_news) | (1 << widx::competitor_major_news_dropdown) | (1 << widx::company_minor_news) | (1 << widx::company_minor_news_dropdown) | (1 << widx::competitor_minor_news) | (1 << widx::competitor_minor_news_dropdown) | (1 << widx::general_news) | (1 << widx::general_news_dropdown) | (1 << widx::advice) | (1 << widx::advice_dropdown) | (1 << widx::playSoundEffects);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(366, 155, StringIds::title_messages),
             makeDropdownWidgets({ 236, 47 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 62 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
@@ -403,8 +404,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             makeDropdownWidgets({ 236, 92 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 107 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 122 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 4, 137 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip),
-        };
+            makeWidget({ 4, 137 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
+
+        );
 
         // 0x0042AA84
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)

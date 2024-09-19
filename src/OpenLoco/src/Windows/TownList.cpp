@@ -98,14 +98,15 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_town_name) | (1 << sort_town_type) | (1 << sort_town_population) | (1 << sort_town_stations) | (1 << scrollview);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(600, 197, StringIds::title_towns),
             makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
             makeWidget({ 204, 43 }, { 80, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
             makeWidget({ 284, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
             makeWidget({ 354, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
-            makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2),
-        };
+            makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2)
+
+        );
 
         enum SortMode : uint16_t
         {
@@ -627,10 +628,11 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << current_size) | (1 << select_size);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(220, 87, StringIds::title_build_new_towns),
-            makeDropdownWidgets({ 100, 45 }, { 117, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size),
-        };
+            makeDropdownWidgets({ 100, 45 }, { 117, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size)
+
+        );
 
         constexpr StringId townSizeNames[9] = {
             StringIds::town_size_1,
@@ -834,12 +836,13 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(640, 172, StringIds::title_build_new_buildings),
             makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 575, 46 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
-            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
-        };
+            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
+
+        );
 
         // 0x0049A8A6
         static void prepareDraw(Ui::Window& self)

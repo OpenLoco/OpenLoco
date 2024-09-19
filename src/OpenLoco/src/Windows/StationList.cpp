@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::StationList
         scrollview,
     };
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 197 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::stringid_all_stations),
         makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -65,8 +65,9 @@ namespace OpenLoco::Ui::Windows::StationList
         makeWidget({ 204, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_station_status),
         makeWidget({ 404, 43 }, { 90, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
         makeWidget({ 494, 43 }, { 120, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
-        makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-    };
+        makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+    );
 
     struct TabDetails
     {

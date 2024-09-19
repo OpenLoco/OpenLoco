@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::objective_type) | (1 << widx::objective_type_btn) | (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::objective_cargo) | (1 << widx::objective_cargo_btn) | (1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
         const uint64_t holdableWidgets = (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(197, StringIds::title_scenario_challenge),
             makeDropdownWidgets({ 10, 52 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeStepperWidgets({ 10, 67 }, { 163, 12 }, WidgetType::textbox, WindowColour::secondary),
@@ -183,8 +183,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::and_be_the_top_company),
             makeWidget({ 10, 98 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::and_be_within_the_top_companies),
             makeWidget({ 10, 113 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::with_a_time_limit),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::time_limit_years_value),
-        };
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::time_limit_years_value)
+
+        );
 
         // 0x0043FC91
         static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
@@ -571,7 +572,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             player_forbid_ships,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(327, StringIds::title_company_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_competing_companies_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
@@ -592,8 +593,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             makeWidget({ 130, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
             makeWidget({ 130, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
             makeWidget({ 260, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
-            makeWidget({ 260, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
-        };
+            makeWidget({ 260, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships)
+
+        );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up) | (1ULL << widx::preferred_intelligence) | (1ULL << widx::preferred_intelligence_btn) | (1ULL << widx::preferred_aggressiveness) | (1ULL << widx::preferred_aggressiveness_btn) | (1ULL << widx::preferred_competitiveness) | (1ULL << widx::preferred_competitiveness_btn) | (1ULL << widx::competitor_forbid_trains) | (1ULL << widx::competitor_forbid_buses) | (1ULL << widx::competitor_forbid_trucks) | (1ULL << widx::competitor_forbid_trams) | (1ULL << widx::competitor_forbid_aircraft) | (1ULL << widx::competitor_forbid_ships) | (1ULL << widx::player_forbid_trains) | (1ULL << widx::player_forbid_buses) | (1ULL << widx::player_forbid_trucks) | (1ULL << widx::player_forbid_trams) | (1ULL << widx::player_forbid_aircraft) | (1ULL << widx::player_forbid_ships);
         const uint64_t holdableWidgets = (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up);
@@ -844,12 +846,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             loan_interest_rate_up,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(217, StringIds::title_financial_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::starting_loan_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_loan_size_value),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::loan_interest_rate_value),
-        };
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::loan_interest_rate_value)
+
+        );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
         const uint64_t holdableWidgets = (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
@@ -985,12 +988,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             change_details_btn,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(217, StringIds::title_scenario_options),
             makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
             makeDropdownWidgets({ 196, 67 }, { 160, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
-        };
+            makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change)
+
+        );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::change_name_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
         const uint64_t holdableWidgets = 0;

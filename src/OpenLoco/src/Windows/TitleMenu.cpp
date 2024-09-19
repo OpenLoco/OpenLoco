@@ -120,14 +120,15 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         };
     }
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_new_game),
         makeWidget({ kBtnMainSize, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_load_game),
         makeWidget({ kBtnMainSize * 2, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_show_tutorial),
         makeWidget({ kBtnMainSize * 3, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_scenario_editor),
         makeWidget({ kBtnMainSize * 4 - 31, kBtnMainSize - 27 }, { 31, 27 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_chat_tooltip),
-        makeWidget({ 0, kBtnMainSize }, { kWW, kBtnSubHeight }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip),
-    };
+        makeWidget({ 0, kBtnMainSize }, { kWW, kBtnSubHeight }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip)
+
+    );
 
     static void sub_439112(Window* window);
     static void sub_4391CC(int16_t itemIndex);

@@ -90,14 +90,15 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_industry_name) | (1 << sort_industry_status) | (1 << sort_industry_production_transported) | (1 << sort_industry_production_last_month) | (1 << scrollview);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(600, 197, StringIds::title_industries),
             makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_name),
             makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_status),
             makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
             makeWidget({ 603, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_last_month),
-            makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        };
+            makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+        );
 
         enum SortMode : uint16_t
         {
@@ -684,10 +685,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(577, 171, StringIds::title_fund_new_industries),
-            makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        };
+            makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+        );
 
         // 0x0045819F
         static void prepareDraw(Window& self)

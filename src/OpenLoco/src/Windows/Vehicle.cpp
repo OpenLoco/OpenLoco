@@ -153,13 +153,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t enabledWidgets = (1 << widx::buildNew) | (1 << widx::pickup) | (1 << widx::remove) | (1 << widx::carList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(265, 177, StringIds::title_vehicle_details),
             makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_new_vehicle_for),
             makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
             makeWidget({ 240, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
-            makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        };
+            makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+        );
     }
 
     namespace Cargo
@@ -176,11 +177,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t enabledWidgets = (1 << widx::refit) | (1 << widx::cargoList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(265, 177, StringIds::title_vehicle_cargo),
             makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
-            makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        };
+            makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+        );
     }
 
     namespace Finances
@@ -192,9 +194,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t holdableWidgets = 0;
 
         // 0x00522470
-        static constexpr Widget widgets[] = {
-            commonWidgets(636, 319, StringIds::title_company_finances),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(636, 319, StringIds::title_company_finances)
+
+        );
     }
 
     namespace Route
@@ -221,7 +224,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t holdableWidgets = 0;
         constexpr auto lineHeight = 10;
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(265, 189, StringIds::title_vehicle_route),
             makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),
             makeWidget({ 3, 44 }, { 118, 12 }, WidgetType::button, WindowColour::secondary, StringIds::local_mode_button),
@@ -233,8 +236,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
             makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
             makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
-            makeWidget({ 240, 164 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip),
-        };
+            makeWidget({ 240, 164 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip)
+
+        );
     }
 
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
@@ -263,7 +267,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             centreViewport = 16,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(265, 177, StringIds::stringid),
             makeWidget({ 3, 44 }, { 237, 120 }, WidgetType::viewport, WindowColour::secondary),
             makeWidget({ 3, 155 }, { 237, 21 }, WidgetType::wt_13, WindowColour::secondary),
@@ -272,8 +276,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),
             makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
             makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
-        };
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this)
+
+        );
 
         constexpr uint64_t interactiveWidgets = (1 << widx::stopStart) | (1 << widx::pickup) | (1 << widx::passSignal) | (1 << widx::changeDirection) | (1 << widx::centreViewport);
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::speedControl) | interactiveWidgets;

@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         };
     }
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
         makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
         makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
@@ -72,8 +72,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
         makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
-    };
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary)
+
+    );
 
     enum class LoadSaveDropdownId
     {

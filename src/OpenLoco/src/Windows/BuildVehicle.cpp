@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
 
     // 0x5231D0
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 380, 233 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 378, 13 }, WidgetType::caption_24, WindowColour::primary),
         makeWidget({ 365, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -247,9 +247,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         makeWidget({ 4, 72 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 50, 72 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
         makeDropdownWidgets({ 3, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterComponents),
-        makeDropdownWidgets({ 48, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterCargoSupported),
+        makeDropdownWidgets({ 48, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterCargoSupported)
 
-    };
+    );
 
     static constexpr uint32_t widxToTrackTypeTab(WidgetIndex_t widgetIndex)
     {

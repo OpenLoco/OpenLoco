@@ -27,13 +27,12 @@ namespace OpenLoco::Ui::Windows::About
         };
     }
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::about_locomotion_caption),
         makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 245 }, WindowColour::secondary),
-        makeWidget({ 100, 234 }, { kWindowSize.width / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::music_acknowledgements_btn),
-    };
+        makeWidget({ 100, 234 }, { kWindowSize.width / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::music_acknowledgements_btn));
 
     static const WindowEventList& getEvents();
 

@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         };
     }
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
         makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -90,8 +90,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeWidget({ kWindowSize.width - 49, 46 }, { 15, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderDirection, StringIds::tileInspectorHeaderDirectionTip),
         makeWidget({ kWindowSize.width - 34, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderGhost, StringIds::tileInspectorHeaderGhostTip),
         makeWidget({ 4, 60 }, { kWindowSize.width - 8, 103 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
-        makeWidget({ 4, 165 }, { kWindowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
-    };
+        makeWidget({ 4, 165 }, { kWindowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data)
+
+    );
 
     static void activateMapSelectionTool(Window* const self)
     {

@@ -22,9 +22,10 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         };
     }
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary),
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary)
+
+    );
 
     static const WindowEventList& getEvents();
 

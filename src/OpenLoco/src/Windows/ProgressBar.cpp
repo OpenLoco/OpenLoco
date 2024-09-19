@@ -26,11 +26,12 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
     static constexpr Ui::Size32 kWindowSize = { 350, 47 };
 
-    static constexpr Widget widgets[] = {
+    static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 47 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::buffer_1250),
-        Widgets::Panel({ 0, 15 }, { 350, 32 }, WindowColour::secondary),
-    };
+        Widgets::Panel({ 0, 15 }, { 350, 32 }, WindowColour::secondary)
+
+    );
 
     static std::string _captionString;
     static uint8_t _progressBarStyle = 0; // 0x005233C8

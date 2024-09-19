@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         cargo_type_btn,
     };
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 550, 213 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 548, 13 }, WidgetType::caption_24, WindowColour::primary),
         makeWidget({ 535, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -79,8 +79,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
         makeWidget({ 479, 43 }, { 67, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
         makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         makeDropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-        makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-    };
+        makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty)
+
+    );
 
     // clang-format off
     constexpr uint16_t _tabWidgets = (1 << Widx::tab_trains) | (1 << Widx::tab_buses) | (1 << Widx::tab_trucks) | (1 << Widx::tab_trams) | (1 << Widx::tab_aircraft) | (1 << Widx::tab_ships);

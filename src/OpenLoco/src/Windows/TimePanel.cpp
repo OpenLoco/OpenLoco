@@ -48,16 +48,16 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void formatChallenge(FormatArguments& args);
     static void sendChatMessage(const char* str);
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                                   // 0,
-        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),                                                                                                   // 1,
-        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),                                                                                       // 2,
-        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),                       // 3,
-        makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
-        makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
-        makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
-        makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                                  // 0,
+        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),                                                                                                  // 1,
+        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),                                                                                      // 2,
+        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),                      // 3,
+        makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                          // 4,
+        makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                        // 5,
+        makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),            // 6,
+        makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward) // 7,
+    );
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
 

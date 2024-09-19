@@ -86,13 +86,14 @@ namespace OpenLoco::Ui::Windows::Industry
             demolish_industry,
         };
 
-        static constexpr Widget widgets[] = {
+        static constexpr auto widgets = makeWidgets(
             commonWidgets(223, 137, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
-        };
+            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry)
+
+        );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport) | (1 << demolish_industry);
 
@@ -389,9 +390,10 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr Ui::Size32 kMaxWindowSize = { 299, 337 };
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(222, 136, StringIds::title_industry_monthly_production),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(222, 136, StringIds::title_industry_monthly_production)
+
+        );
 
         // 0x0045626F
         static void prepareDraw(Window& self)
@@ -428,9 +430,10 @@ namespace OpenLoco::Ui::Windows::Industry
     {
         static constexpr Ui::Size32 kWindowSize = { 300, 127 };
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(300, 126, StringIds::title_statistics),
-        };
+        static constexpr auto widgets = makeWidgets(
+            commonWidgets(300, 126, StringIds::title_statistics)
+
+        );
 
         // 0x00456665
         static void prepareDraw(Window& self)
