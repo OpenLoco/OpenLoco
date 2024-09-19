@@ -164,9 +164,10 @@ namespace OpenLoco::Ui::Dropdown
             frame = 0,
         };
 
-        Widget widgets[] = {
-            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::wt_3, WindowColour::primary),
-        };
+        static auto widgets = makeWidgets(
+            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::wt_3, WindowColour::primary)
+
+        );
 
         static WindowEventList events;
 
@@ -320,7 +321,7 @@ namespace OpenLoco::Ui::Dropdown
 
             common::initEvents();
 
-            common::widgets[0].windowColour = WindowColour::primary;
+            window->widgets[0].windowColour = WindowColour::primary;
             window->setColour(WindowColour::primary, colour);
 
             _dropdownHighlightedIndex = -1;
