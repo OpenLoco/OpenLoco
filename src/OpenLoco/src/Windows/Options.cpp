@@ -25,6 +25,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
@@ -189,7 +190,7 @@ namespace OpenLoco::Ui::Windows::Options
     Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),                                                                                                                      \
         makeWidget({ 1, 1 }, { (uint16_t)(kWindowSize.width - 2), 13 }, WidgetType::caption_25, WindowColour::primary, window_caption_id),                                             \
         makeWidget({ (int16_t)(kWindowSize.width - 15), 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { kWindowSize.width, 102 }, WidgetType::panel, WindowColour::secondary),                                                                                 \
+        Widgets::Panel({ 0, 41 }, { kWindowSize.width, 102 }, WindowColour::secondary),                                                                                                \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_display_options),                                           \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_sound_options),                                            \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_music_options),                                            \

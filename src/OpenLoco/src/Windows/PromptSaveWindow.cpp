@@ -8,6 +8,7 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -32,7 +33,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     };
 
     static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 260, 48 }, WidgetType::panel, WindowColour::primary),
+        Widgets::Panel({ 0, 0 }, { 260, 48 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 258, 13 }, WidgetType::caption_22, WindowColour::primary, StringIds::empty),
         makeWidget({ 247, 2 }, { 11, 11 }, WidgetType::button, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
         makeWidget({ 2, 17 }, { 256, 12 }, WidgetType::wt_13, WindowColour::primary, StringIds::empty),

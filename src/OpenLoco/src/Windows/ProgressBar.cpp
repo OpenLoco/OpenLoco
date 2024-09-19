@@ -7,6 +7,7 @@
 #include "SceneManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
 
@@ -28,7 +29,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     static constexpr Widget widgets[] = {
         Widgets::Frame({ 0, 0 }, { 350, 47 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::buffer_1250),
-        makeWidget({ 0, 15 }, { 350, 32 }, WidgetType::panel, WindowColour::secondary),
+        Widgets::Panel({ 0, 15 }, { 350, 32 }, WindowColour::secondary),
     };
 
     static std::string _captionString;

@@ -9,6 +9,7 @@
 #include "Objects/ObjectManager.h"
 #include "Scenario.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
@@ -25,7 +26,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     };
 
     static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, WindowColour::primary),
+        Widgets::Panel({ 0, 0 }, { 280, 92 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, WindowColour::primary),
         makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::button, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
         makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_ok),
