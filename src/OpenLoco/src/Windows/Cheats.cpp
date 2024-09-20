@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (widgetIndex == Widx::target_company_dropdown)
+            if (widgetIndex == Widx::target_company_dropdown_btn)
                 Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
         }
 
@@ -652,7 +652,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             if (itemIndex == -1)
                 return;
 
-            if (widgetIndex == Widx::target_company_dropdown)
+            if (widgetIndex == Widx::target_company_dropdown_btn)
             {
                 _targetCompanyId = Dropdown::getCompanyIdFromSelection(itemIndex);
                 self.invalidate();
