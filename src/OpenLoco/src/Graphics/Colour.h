@@ -287,6 +287,20 @@ namespace OpenLoco
 
     namespace PaletteIndex
     {
+        // All indexes are of the form {swatch colour name}{shade}
+        // Shades are from dark 0x0 to light 0xB
+        // Most swatches are 0xB in length apart from:
+        //   transparent (1),
+        //   grey (4),
+        //   brightYellow (3),
+        //   textRemap (6)
+        //
+        // There are 3 unused indexes:
+        //   textRemap4,
+        //   textRemap5,
+        //   hotPinkUnused
+        // 0xFF is technically unused as well
+
         constexpr PaletteIndex_t transparent = 0;
         constexpr PaletteIndex_t textRemap0 = 0x01;
         constexpr PaletteIndex_t textRemap1 = 0x02;
