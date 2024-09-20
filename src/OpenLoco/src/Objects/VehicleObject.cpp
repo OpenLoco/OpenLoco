@@ -423,6 +423,11 @@ namespace OpenLoco
                 continue;
             }
             ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+            if (modHeader.getType() != ObjectType::steam)
+            {
+                continue;
+            }
             if (dependencies != nullptr)
             {
                 dependencies->required.push_back(modHeader);
@@ -432,7 +437,6 @@ namespace OpenLoco
             {
                 anim.objectId = res->id;
             }
-            remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
         for (auto i = 0U, index = 0U; i < numCompatibleVehicles; ++i)
