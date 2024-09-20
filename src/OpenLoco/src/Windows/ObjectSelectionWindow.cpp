@@ -946,11 +946,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawingCtx.drawRect(self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
         }
 
-        auto type = self.currentTab;
+        ObjectType type{};
+        auto& currentTab = kMainTabInfo[self.currentTab];
+        if (!currentTab.subTabs.empty())
+            type = currentTab.subTabs[self.currentSecondaryTab].objectType;
+        else
+            type = currentTab.objectType;
 
         auto args = FormatArguments();
-        args.push(_112C1C5[type]);
-        args.push(ObjectManager::getMaxObjects(static_cast<ObjectType>(type)));
+        args.push(_112C1C5[enumValue(type)]);
+        args.push(ObjectManager::getMaxObjects(type));
 
         {
             auto point = Point(self.x + 3, self.y + self.height - 12);
