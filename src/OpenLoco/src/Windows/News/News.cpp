@@ -29,6 +29,14 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
+    static loco_global<uint32_t, 0x00525CD0> _dword_525CD0;
+    static loco_global<uint32_t, 0x00525CD4> _dword_525CD4;
+    static loco_global<uint32_t, 0x00525CD8> _dword_525CD8;
+    static loco_global<uint32_t, 0x00525CDC> _dword_525CDC;
+    static loco_global<uint16_t, 0x00525CE0> _word_525CE0;
+    static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
+    static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
+
     namespace News1
     {
         static constexpr auto widgets = makeWidgets(

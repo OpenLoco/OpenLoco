@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
+#include "Input.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Message.h"
@@ -15,6 +16,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {
+    static loco_global<uint16_t, 0x00525CE0> _word_525CE0;
+
     static constexpr auto widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 111, 26 }, WidgetType::wt_3, WindowColour::primary)
 
@@ -66,7 +69,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     // 0x00429EEB
     static void onUpdate(Window& self)
     {
-        auto window = WindowManager::findAtAlt(_cursorX2, _cursorY2);
+        auto cursor = Input::getMouseLocation2();
+        auto window = WindowManager::findAtAlt(cursor.x, cursor.y);
 
         if (window == &self)
         {

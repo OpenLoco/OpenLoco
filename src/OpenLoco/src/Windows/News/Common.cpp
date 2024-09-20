@@ -15,6 +15,12 @@ using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
+    static loco_global<uint32_t, 0x00525CD0> _dword_525CD0;
+    static loco_global<uint32_t, 0x00525CD4> _dword_525CD4;
+    static loco_global<uint32_t, 0x00525CD8> _dword_525CD8;
+    static loco_global<uint32_t, 0x00525CDC> _dword_525CDC;
+    static loco_global<uint16_t, 0x00525CE0> _word_525CE0;
+
     static void createNewsWindow(Ui::Size32 kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
     {
         _word_525CE0 = 5;
