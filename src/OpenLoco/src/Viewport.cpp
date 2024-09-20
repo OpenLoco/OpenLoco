@@ -187,10 +187,10 @@ namespace OpenLoco::Ui
             // TODO: unused
             options.foregroundCullHeight = viewHeight / 2 + viewY;
         }
-        PaletteIndex_t fillColour = PaletteIndex::index_D8;
+        PaletteIndex_t fillColour = PaletteIndex::brown2;
         if (hasFlags(ViewportFlags::underground_view | ViewportFlags::flag_7 | ViewportFlags::flag_8))
         {
-            fillColour = PaletteIndex::index_0A;
+            fillColour = PaletteIndex::black0;
         }
         options.rotation = getRotation();
         options.viewFlags = flags;

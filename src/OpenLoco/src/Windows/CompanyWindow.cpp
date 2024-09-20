@@ -1958,7 +1958,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto point = Point(x, y);
             tr.drawStringRight(point, Colour::black, mainFormat, args);
 
-            drawingCtx.fillRect(x - expenditureColumnWidth + 10, y - 2, x, y - 2, PaletteIndex::index_0A, Gfx::RectFlags::none);
+            drawingCtx.fillRect(x - expenditureColumnWidth + 10, y - 2, x, y - 2, PaletteIndex::black0, Gfx::RectFlags::none);
         }
 
         // 0x0043361E
