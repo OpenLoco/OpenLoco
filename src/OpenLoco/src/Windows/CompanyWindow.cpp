@@ -1686,7 +1686,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(636, 319, StringIds::title_company_finances),
             makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
-            makeStepperWidget({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
+            makeStepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
             makeWidget({ 320, 264 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
 
         );

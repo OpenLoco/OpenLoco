@@ -81,8 +81,8 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
         makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
-        makeStepperWidget({ 19, 24 }, { 55, 12 }, WindowColour::secondary),
-        makeStepperWidget({ 92, 24 }, { 55, 12 }, WindowColour::secondary),
+        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WindowColour::secondary),
+        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WindowColour::secondary),
         makeWidget({ kWindowSize.width - 26, 18 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
         makeWidget({ 4, 46 }, { kWindowSize.width - 98, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderNameType, StringIds::tileInspectorHeaderNameTypeTip), // name
         makeWidget({ kWindowSize.width - 109, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderBaseHeight, StringIds::tileInspectorHeaderBaseHeightTip),

@@ -78,8 +78,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         makeWidget({ 414, 43 }, { 65, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
         makeWidget({ 479, 43 }, { 67, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
         makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeDropdownWidget({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::empty),
-        makeDropdownWidget({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::empty)
+        makeDropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::empty),
+        makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::empty)
 
     );
 

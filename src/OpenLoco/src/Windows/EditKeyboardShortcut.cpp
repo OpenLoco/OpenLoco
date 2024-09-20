@@ -25,11 +25,10 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),                                                                                    // 0,
-        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::change_keyboard_shortcut),         // 1,
-        makeWidget({ 265, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), // 2,
-        Widgets::Panel({ 0, 15 }, { kWindowSize.width, 57 }, WindowColour::secondary)                                                                    // 3,
-    );
+        Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
+        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::change_keyboard_shortcut),
+        makeWidget({ 265, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel({ 0, 15 }, { kWindowSize.width, 57 }, WindowColour::secondary));
 
     static const WindowEventList& getEvents();
 

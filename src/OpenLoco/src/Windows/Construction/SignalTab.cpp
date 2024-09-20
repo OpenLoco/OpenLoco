@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 {
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 167, StringIds::stringid_2),
-        makeDropdownWidget({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
+        makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
         makeWidget({ 27, 110 }, { 40, 40 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
         makeWidget({ 71, 110 }, { 40, 40 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction));
 

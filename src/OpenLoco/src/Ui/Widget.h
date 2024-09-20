@@ -273,7 +273,7 @@ namespace OpenLoco::Ui
         return res;
     }
 
-    constexpr auto makeStepperWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    constexpr auto makeStepperWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
         // TODO: Make this a single widget.
         return makeWidgets(
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui
             makeStepperIncreaseWidget(origin, size, colour));
     }
 
-    constexpr auto makeDropdownWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    constexpr auto makeDropdownWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
         // TODO: Make this a single widget.
         return makeWidgets(
