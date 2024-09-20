@@ -213,7 +213,7 @@ namespace OpenLoco::Gfx
 
         auto& drawingEngine = getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();
-        drawingCtx.clearSingle(PaletteIndex::index_0A);
+        drawingCtx.clearSingle(PaletteIndex::black0);
     }
 
     // 0x004CD406

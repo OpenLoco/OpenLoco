@@ -122,7 +122,7 @@ namespace OpenLoco::GameCommands
         auto& prng = gPrng1();
         newBogie->var_44 = prng.randNext();
         newBogie->creationDay = getCurrentDay();
-        newBogie->var_46 = 0;
+        newBogie->animationIndex = 0;
         newBogie->var_47 = 0;
         newBogie->secondaryCargo.acceptedTypes = 0;
         newBogie->secondaryCargo.type = 0xFF;

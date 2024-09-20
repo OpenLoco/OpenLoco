@@ -119,7 +119,7 @@ namespace OpenLoco
     {
         none = 0U,
         hasSprites = 1U << 0,         // If not set then no bogie will be loaded
-        rotationalSymmetry = 1U << 1, // requires 16 rather than 32 sprites
+        rotationalSymmetry = 1U << 1, // requires half the number of sprites i.e. 16 instead of 32
         hasGentleSprites = 1U << 2,   // for gentle slopes
         hasSteepSprites = 1U << 3,    // for steep slopes
         unk_4 = 1U << 4,              // Increases bounding box size
@@ -128,15 +128,15 @@ namespace OpenLoco
 
     struct VehicleObjectBogieSprite
     {
-        uint8_t rollStates;      // 0x0 valid values 1, 2, 4 related to bogie->var_46 (identical in value to numRollSprites)
-        BogieSpriteFlags flags;  // 0x1 BogieSpriteFlags
-        uint8_t width;           // 0x2 sprite width
-        uint8_t heightNegative;  // 0x3 sprite height negative
-        uint8_t heightPositive;  // 0x4 sprite height positive
-        uint8_t numRollSprites;  // 0x5
-        uint32_t flatImageIds;   // 0x6 flat sprites
-        uint32_t gentleImageIds; // 0xA gentle sprites
-        uint32_t steepImageIds;  // 0xE steep sprites
+        uint8_t numAnimationFrames;   // 0x0 valid values 1, 2, 4 related to bogie->animationIndex (identical in value to numFramesPerRotation)
+        BogieSpriteFlags flags;       // 0x1 BogieSpriteFlags
+        uint8_t width;                // 0x2 sprite width
+        uint8_t heightNegative;       // 0x3 sprite height negative
+        uint8_t heightPositive;       // 0x4 sprite height positive
+        uint8_t numFramesPerRotation; // 0x5
+        uint32_t flatImageIds;        // 0x6 flat sprites
+        uint32_t gentleImageIds;      // 0xA gentle sprites
+        uint32_t steepImageIds;       // 0xE steep sprites
 
         constexpr bool hasFlags(BogieSpriteFlags flagsToTest) const
         {
@@ -149,7 +149,7 @@ namespace OpenLoco
     {
         none = 0U,
         hasSprites = 1U << 0,         // If not set then no body will be loaded
-        rotationalSymmetry = 1U << 1, // requires 32 rather than 64 sprites
+        rotationalSymmetry = 1U << 1, // requires half the number of sprites i.e. 32 instead of 64
         hasUnkSprites = 1U << 2,
         hasGentleSprites = 1U << 3, // for gentle slopes
         hasSteepSprites = 1U << 4,  // for steep slopes

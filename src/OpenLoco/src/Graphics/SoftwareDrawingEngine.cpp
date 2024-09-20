@@ -204,7 +204,7 @@ namespace OpenLoco::Gfx
         _ctx.pushRenderTarget(rt);
 
         // Set the normal background colour.
-        _ctx.clearSingle(PaletteIndex::index_0A);
+        _ctx.clearSingle(PaletteIndex::black0);
     }
 
     /**

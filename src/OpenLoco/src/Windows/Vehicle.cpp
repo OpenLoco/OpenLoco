@@ -3327,7 +3327,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto strFormat = StringIds::black_stringid;
                 if (self.var_842 == rowNum)
                 {
-                    drawingCtx.fillRect(0, y, self.width, y + 9, PaletteIndex::index_0A, Gfx::RectFlags::none);
+                    drawingCtx.fillRect(0, y, self.width, y + 9, PaletteIndex::black0, Gfx::RectFlags::none);
                     strFormat = StringIds::white_stringid;
                 }
                 if (self.rowHover == rowNum)
@@ -3376,7 +3376,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto strFormat = StringIds::black_stringid;
             if (self.var_842 == rowNum)
             {
-                drawingCtx.fillRect(0, loc.y, self.width, loc.y + lineHeight, PaletteIndex::index_0A, Gfx::RectFlags::none);
+                drawingCtx.fillRect(0, loc.y, self.width, loc.y + lineHeight, PaletteIndex::black0, Gfx::RectFlags::none);
                 strFormat = StringIds::white_stringid;
             }
             if (self.rowHover == rowNum)

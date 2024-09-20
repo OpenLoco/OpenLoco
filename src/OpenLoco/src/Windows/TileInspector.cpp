@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             StringId formatString;
             if (self.var_842 == rowNum)
             {
-                drawingCtx.fillRect(0, yPos, self.width, yPos + self.rowHeight, PaletteIndex::index_0A, Gfx::RectFlags::none);
+                drawingCtx.fillRect(0, yPos, self.width, yPos + self.rowHeight, PaletteIndex::black0, Gfx::RectFlags::none);
                 formatString = StringIds::white_stringid;
             }
             else if (self.rowHover == rowNum)

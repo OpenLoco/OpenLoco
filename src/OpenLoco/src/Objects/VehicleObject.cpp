@@ -286,7 +286,7 @@ namespace OpenLoco
                 continue;
             }
 
-            switch (bogieSprite.rollStates)
+            switch (bogieSprite.numAnimationFrames)
             {
                 case 1:
                 case 2:
@@ -423,6 +423,11 @@ namespace OpenLoco
                 continue;
             }
             ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+            if (modHeader.getType() != ObjectType::steam)
+            {
+                continue;
+            }
             if (dependencies != nullptr)
             {
                 dependencies->required.push_back(modHeader);
@@ -432,7 +437,6 @@ namespace OpenLoco
             {
                 anim.objectId = res->id;
             }
-            remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
         for (auto i = 0U, index = 0U; i < numCompatibleVehicles; ++i)
@@ -511,21 +515,21 @@ namespace OpenLoco
             if (bodySprite.hasFlags(BodySpriteFlags::hasGentleSprites))
             {
                 bodySprite.gentleImageId = offset + imgRes.imageOffset;
-                const auto numGentleFrames = bodySprite.numFramesPerRotation * 8;
-                offset += numGentleFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+                const auto numGentleTransitionFrames = bodySprite.numFramesPerRotation * (4 + 4); // transition frames up/down deg6
+                offset += numGentleTransitionFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
 
                 bodySprite.slopedYawAccuracy = getYawAccuracySloped(bodySprite.numSlopedRotationFrames);
-                const auto numSlopedFrames = bodySprite.numFramesPerRotation * bodySprite.numSlopedRotationFrames * 2;
-                offset += numSlopedFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+                const auto numGentleFrames = bodySprite.numFramesPerRotation * bodySprite.numSlopedRotationFrames * 2; // up/down deg12
+                offset += numGentleFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
 
                 if (bodySprite.hasFlags(BodySpriteFlags::hasSteepSprites))
                 {
                     bodySprite.steepImageId = offset + imgRes.imageOffset;
-                    const auto numSteepFrames = bodySprite.numFramesPerRotation * 8;
-                    offset += numSteepFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+                    const auto numSteepTransitionFrames = bodySprite.numFramesPerRotation * (4 + 4); // transition frames up/down deg18
+                    offset += numSteepTransitionFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
                     // TODO: add these two together??
-                    const auto numUnkFrames = bodySprite.numSlopedRotationFrames * bodySprite.numFramesPerRotation * 2;
-                    offset += numUnkFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+                    const auto numSteepFrames = bodySprite.numSlopedRotationFrames * bodySprite.numFramesPerRotation * 2; // up/down deg25
+                    offset += numSteepFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
                 }
             }
 
@@ -561,22 +565,22 @@ namespace OpenLoco
             {
                 continue;
             }
-            bogieSprite.numRollSprites = bogieSprite.rollStates;
+            bogieSprite.numFramesPerRotation = bogieSprite.numAnimationFrames;
             bogieSprite.flatImageIds = offset + imgRes.imageOffset;
 
-            const auto numRollFrames = bogieSprite.numRollSprites * 32;
-            offset += numRollFrames / (bogieSprite.hasFlags(BogieSpriteFlags::rotationalSymmetry) ? 2 : 1);
+            const auto numFlatFrames = bogieSprite.numFramesPerRotation * 32;
+            offset += numFlatFrames / (bogieSprite.hasFlags(BogieSpriteFlags::rotationalSymmetry) ? 2 : 1);
 
             if (bogieSprite.hasFlags(BogieSpriteFlags::hasGentleSprites))
             {
                 bogieSprite.gentleImageIds = offset + imgRes.imageOffset;
-                const auto numGentleFrames = bogieSprite.numRollSprites * 64;
+                const auto numGentleFrames = bogieSprite.numFramesPerRotation * 32 * 2; // up and down 12 deg
                 offset += numGentleFrames / (bogieSprite.hasFlags(BogieSpriteFlags::rotationalSymmetry) ? 2 : 1);
 
                 if (bogieSprite.hasFlags(BogieSpriteFlags::hasSteepSprites))
                 {
                     bogieSprite.steepImageIds = offset + imgRes.imageOffset;
-                    const auto numSteepFrames = bogieSprite.numRollSprites * 64;
+                    const auto numSteepFrames = bogieSprite.numFramesPerRotation * 32 * 2; // up and down 25 deg
                     offset += numSteepFrames / (bogieSprite.hasFlags(BogieSpriteFlags::rotationalSymmetry) ? 2 : 1);
                 }
             }
@@ -652,7 +656,7 @@ namespace OpenLoco
             bogieSprite.width = 0;
             bogieSprite.heightNegative = 0;
             bogieSprite.heightPositive = 0;
-            bogieSprite.numRollSprites = 0;
+            bogieSprite.numFramesPerRotation = 0;
         }
 
         rackRailType = 0;
