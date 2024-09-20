@@ -27,7 +27,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::CompanyList
 {
-    static loco_global<Colour[32], 0x004F9442> _cargoLineColour;
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
 
@@ -1051,6 +1050,42 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             self.setSize(kWindowSize, kWindowSize);
         }
+
+        // 0x004F9442
+        static constexpr Colour _cargoLineColour[32] = {
+            Colour::red,
+            Colour::mutedPurple,
+            Colour::yellow,
+            Colour::blue,
+            Colour::orange,
+            Colour::green,
+            Colour::mutedDarkRed,
+            Colour::mutedDarkTeal,
+            Colour::mutedDarkYellow,
+            Colour::black,
+            Colour::white,
+            Colour::mutedDarkPurple,
+            Colour::purple,
+            Colour::darkBlue,
+            Colour::mutedTeal,
+            Colour::darkGreen,
+            Colour::mutedSeaGreen,
+            Colour::mutedGrassGreen,
+            Colour::mutedAvocadoGreen,
+            Colour::mutedOliveGreen,
+            Colour::darkYellow,
+            Colour::amber,
+            Colour::grey,
+            Colour::darkOrange,
+            Colour::mutedYellow,
+            Colour::brown,
+            Colour::mutedOrange,
+            Colour::darkRed,
+            Colour::darkPink,
+            Colour::pink,
+            Colour::mutedRed,
+            Colour::grey,
+        };
 
         // 0x00437949
         static void drawGraphLegend(Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
