@@ -81,7 +81,7 @@ namespace OpenLoco::Paint
                 {
                     yawIndex &= 0xF;
                 }
-                const auto imageIndex = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.flatImageIds;
+                const auto imageIndex = sprite.numFramesPerRotation * yawIndex + bogie->animationIndex + sprite.flatImageIds;
                 ImageId imageId{};
                 if (bogie->has38Flags(Flags38::isGhost))
                 {
@@ -128,7 +128,7 @@ namespace OpenLoco::Paint
             case Pitch::down12deg:
             case Pitch::down10deg:
             {
-                const auto imageIndex = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
+                const auto imageIndex = sprite.numFramesPerRotation * yawIndex + bogie->animationIndex + sprite.gentleImageIds;
                 ImageId imageId{};
                 if (bogie->has38Flags(Flags38::isGhost))
                 {
@@ -153,7 +153,7 @@ namespace OpenLoco::Paint
             }
             default:
             {
-                const auto imageIndex = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
+                const auto imageIndex = sprite.numFramesPerRotation * yawIndex + bogie->animationIndex + sprite.steepImageIds;
                 ImageId imageId{};
                 if (bogie->has38Flags(Flags38::isGhost))
                 {

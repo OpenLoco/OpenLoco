@@ -9,35 +9,35 @@ namespace OpenLoco
     enum class Colour : uint8_t
     {
         black = 0,
-        grey = 1,
+        grey = 1,//0
         white = 2,
         mutedDarkPurple = 3,
-        mutedPurple = 4,
-        purple = 5,
+        mutedPurple = 4,//9
+        purple = 5,//12
         darkBlue = 6,
-        blue = 7,
-        mutedDarkTeal = 8,
+        blue = 7,//10
+        mutedDarkTeal = 8,//15
         mutedTeal = 9,
         darkGreen = 10,
-        mutedSeaGreen = 11,
-        mutedGrassGreen = 12,
-        green = 13,
-        mutedAvocadoGreen = 14,
-        mutedOliveGreen = 15,
-        yellow = 16,
+        mutedSeaGreen = 11,//11
+        mutedGrassGreen = 12,//5
+        green = 13,//7
+        mutedAvocadoGreen = 14,//6
+        mutedOliveGreen = 15,//1
+        yellow = 16,//3
         darkYellow = 17,
-        orange = 18,
-        amber = 19,
+        orange = 18,//14
+        amber = 19,//18/19
         darkOrange = 20,
-        mutedDarkYellow = 21,
+        mutedDarkYellow = 21,//2
         mutedYellow = 22,
-        brown = 23,
-        mutedOrange = 24,
-        mutedDarkRed = 25,
+        brown = 23,//17
+        mutedOrange = 24,//8
+        mutedDarkRed = 25,//4
         darkRed = 26,
-        red = 27,
+        red = 27,//13
         darkPink = 28,
-        pink = 29,
+        pink = 29,//16
         mutedRed = 30,
         max,
     };

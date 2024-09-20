@@ -286,8 +286,8 @@ namespace OpenLoco
                     unk &= 0xFU;
                 }
 
-                const auto rollIndex = (bogieSprites.numRollSprites - 1) & roll;
-                auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
+                const auto rollIndex = (bogieSprites.numFramesPerRotation - 1) & roll;
+                auto spriteIndex = bogieSprites.numFramesPerRotation * unk + rollIndex + bogieSprites.flatImageIds;
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), drawItems.totalDistance + unkDist, false });
             }
 
@@ -317,8 +317,8 @@ namespace OpenLoco
                     unk &= 0xFU;
                 }
 
-                const auto rollIndex = (bogieSprites.numRollSprites - 1) & roll;
-                auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
+                const auto rollIndex = (bogieSprites.numFramesPerRotation - 1) & roll;
+                auto spriteIndex = bogieSprites.numFramesPerRotation * unk + rollIndex + bogieSprites.flatImageIds;
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), backBogieDist, false });
             }
 
@@ -380,8 +380,8 @@ namespace OpenLoco
                     unk &= 0xFU;
                 }
 
-                const auto rollIndex = isAnimated ? carComponent.front->var_46 : 0;
-                auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
+                const auto animationIndex = isAnimated ? carComponent.front->animationIndex : 0;
+                auto spriteIndex = bogieSprites.numFramesPerRotation * unk + animationIndex + bogieSprites.flatImageIds;
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.front->colourScheme), drawItems.totalDistance + unkDist, false });
             }
 
@@ -411,8 +411,8 @@ namespace OpenLoco
                     unk &= 0xFU;
                 }
 
-                const auto rollIndex = isAnimated ? carComponent.back->var_46 : 0;
-                auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
+                const auto animationIndex = isAnimated ? carComponent.back->animationIndex : 0;
+                auto spriteIndex = bogieSprites.numFramesPerRotation * unk + animationIndex + bogieSprites.flatImageIds;
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.back->colourScheme), backBogieDist, false });
             }
 
