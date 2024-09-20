@@ -17,10 +17,10 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     };
 
     // 0x00522504
-    static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd()
-    };
+    static constexpr auto widgets = makeWidgets(
+        makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, WindowColour::primary)
+
+    );
 
     // TODO: make vehicles versions of these call into this global, ?make Entity::id instead?
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
@@ -40,9 +40,9 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         auto pos = Input::getTooltipMouseLocation();
         pos.y -= 30;
         pos.x -= width / 2;
-        Ui::Size size = { width, 60 };
+        Ui::Size32 size = { width, 60 };
 
-        auto self = WindowManager::createWindow(WindowType::dragVehiclePart, pos, size, WindowFlags::transparent | WindowFlags::stickToFront, getEvents());
+        auto self = WindowManager::createWindow(WindowType::dragVehiclePart, { pos.x, pos.y }, size, WindowFlags::transparent | WindowFlags::stickToFront, getEvents());
         self->setWidgets(widgets);
         self->widgets[widx::frame].right = width - 1;
 

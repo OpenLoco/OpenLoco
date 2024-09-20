@@ -31,6 +31,8 @@
 #include "Ui/LastMapWindowAttributes.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -98,20 +100,20 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     const uint64_t enabledWidgets = (1 << closeButton) | (1 << tabOverall) | (1 << tabVehicles) | (1 << tabIndustries) | (1 << tabRoutes) | (1 << tabOwnership);
 
-    static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 350, 272 }, WidgetType::frame, WindowColour::primary),
+    static constexpr auto widgets = makeWidgets(
+        Widgets::Frame({ 0, 0 }, { 350, 272 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_map),
         makeWidget({ 335, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 350, 230 }, WidgetType::panel, WindowColour::secondary),
+        Widgets::Panel({ 0, 41 }, { 350, 230 }, WindowColour::secondary),
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_vehicles),
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_industries),
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
         makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
         makeWidget({ 3, 44 }, { 240, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
-        makeWidget({ 3, 250 }, { 322, 21 }, WidgetType::wt_13, WindowColour::secondary),
-        widgetEnd()
-    };
+        makeWidget({ 3, 250 }, { 322, 21 }, WidgetType::wt_13, WindowColour::secondary)
+
+    );
 
     static Pos2 mapWindowPosToLocation(Point pos)
     {
@@ -213,8 +215,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self.maxWidth = 800;
         self.maxHeight = 800;
 
-        Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-        Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
+        Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
+        Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
         self.setSize(kMinWindowSize, kMaxWindowSize);
     }
 
@@ -2295,11 +2297,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _mapPixels = static_cast<PaletteIndex_t*>(ptr);
         _mapAltPixels = &_mapPixels[kRenderedMapSize];
 
-        Ui::Size size = { 350, 272 };
+        Ui::Size32 size = { 350, 272 };
 
         if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
         {
-            size = Ui::getLastMapWindowAttributes().size;
+            size = { Ui::getLastMapWindowAttributes().size.width, Ui::getLastMapWindowAttributes().size.height };
             size.width = std::clamp<uint16_t>(size.width, 350, Ui::width());
             size.height = std::clamp<uint16_t>(size.height, 272, Ui::height() - 56);
         }

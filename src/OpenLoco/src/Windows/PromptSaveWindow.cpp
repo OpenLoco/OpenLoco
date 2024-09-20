@@ -8,6 +8,7 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -31,16 +32,16 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         cancelButton,
     };
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 260, 48 }, WidgetType::panel, WindowColour::primary),
+    static constexpr auto _widgets = makeWidgets(
+        Widgets::Panel({ 0, 0 }, { 260, 48 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 258, 13 }, WidgetType::caption_22, WindowColour::primary, StringIds::empty),
         makeWidget({ 247, 2 }, { 11, 11 }, WidgetType::button, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
         makeWidget({ 2, 17 }, { 256, 12 }, WidgetType::wt_13, WindowColour::primary, StringIds::empty),
         makeWidget({ 8, 33 }, { 78, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_save),
         makeWidget({ 91, 33 }, { 78, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_dont_save),
-        makeWidget({ 174, 33 }, { 78, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_cancel),
-        widgetEnd(),
-    };
+        makeWidget({ 174, 33 }, { 78, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_cancel)
+
+    );
 
     static const WindowEventList& getEvents();
 

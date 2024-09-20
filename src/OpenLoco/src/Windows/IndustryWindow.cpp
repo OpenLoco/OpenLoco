@@ -20,6 +20,8 @@
 #include "SceneManager.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
@@ -46,15 +48,18 @@ namespace OpenLoco::Ui::Windows::Industry
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_2) | (1 << widx::tab_transported);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                     \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, WindowColour::secondary),                                                                       \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industry),                                \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),                       \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),                       \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics)
+        static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { frameWidth, 95 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industry),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),
+                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),
+                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics));
+        }
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window& self);
@@ -70,11 +75,11 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Industry
     {
-        static constexpr Ui::Size kWindowSize = { 223, 137 };
+        static constexpr Ui::Size32 kWindowSize = { 223, 137 };
 
-        static constexpr Ui::Size kMinWindowSize = { 192, 137 };
+        static constexpr Ui::Size32 kMinWindowSize = { 192, 137 };
 
-        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
+        static constexpr Ui::Size32 kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -84,14 +89,14 @@ namespace OpenLoco::Ui::Windows::Industry
             demolish_industry,
         };
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(223, 137, StringIds::title_town),
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(223, 137, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
-            widgetEnd(),
-        };
+            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry)
+
+        );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport) | (1 << demolish_industry);
 
@@ -347,9 +352,9 @@ namespace OpenLoco::Ui::Windows::Industry
     namespace Production
     {
 
-        static constexpr Ui::Size kMinWindowSize = { 299, 282 };
+        static constexpr Ui::Size32 kMinWindowSize = { 299, 282 };
 
-        static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
+        static constexpr Ui::Size32 kMaxWindowSize = { 299, 337 };
 
         // 0x00455FD9
         static void prepareDraw(Window& self)
@@ -384,14 +389,14 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Production2
     {
-        static constexpr Ui::Size kMinWindowSize = { 299, 282 };
+        static constexpr Ui::Size32 kMinWindowSize = { 299, 282 };
 
-        static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
+        static constexpr Ui::Size32 kMaxWindowSize = { 299, 337 };
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(222, 136, StringIds::title_industry_monthly_production),
-            widgetEnd(),
-        };
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(222, 136, StringIds::title_industry_monthly_production)
+
+        );
 
         // 0x0045626F
         static void prepareDraw(Window& self)
@@ -426,12 +431,12 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Transported
     {
-        static constexpr Ui::Size kWindowSize = { 300, 127 };
+        static constexpr Ui::Size32 kWindowSize = { 300, 127 };
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(300, 126, StringIds::title_statistics),
-            widgetEnd(),
-        };
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(300, 126, StringIds::title_statistics)
+
+        );
 
         // 0x00456665
         static void prepareDraw(Window& self)

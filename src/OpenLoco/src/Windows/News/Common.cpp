@@ -15,7 +15,7 @@ using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static void createNewsWindow(Ui::Size kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
+    static void createNewsWindow(Ui::Size32 kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
     {
         _word_525CE0 = 5;
 
@@ -28,9 +28,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         int16_t x = (Ui::width() / 2) - (kWindowSize.width / 2);
-        Ui::Point origin = { x, y };
 
-        auto window = WindowManager::createWindow(WindowType::news, origin, kWindowSize, flags, News1::getEvents());
+        auto window = WindowManager::createWindow(
+            WindowType::news,
+            { x, y },
+            kWindowSize,
+            flags,
+            News1::getEvents());
 
         window->setWidgets(widgets);
         window->enabledWidgets = Common::enabledWidgets;
@@ -96,14 +100,16 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             if (newsSettings == NewsType::ticker)
             {
                 _word_525CE0 = 0;
-                int16_t x = Ui::width() - 138;
-                int16_t y = Ui::height() - 25;
-                Ui::Point origin = { x, y };
                 WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
-                auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::kWindowSize, flags, Ticker::getEvents());
+                auto window = WindowManager::createWindow(
+                    WindowType::news,
+                    { Ui::width() - 138, Ui::height() - 25 },
+                    Ticker::kWindowSize,
+                    flags,
+                    Ticker::getEvents());
 
-                window->setWidgets(Ticker::widgets);
+                window->setWidgets(Ticker::getWidgets());
                 window->enabledWidgets = Ticker::enabledWidgets;
 
                 window->initScrollWidgets();
@@ -141,14 +147,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
 
-            createNewsWindow(News2::kWindowSize, News2::widgets, Colour::grey, isOld, flags);
+            createNewsWindow(News2::kWindowSize, News2::getWidgets(), Colour::grey, isOld, flags);
         }
         else
         {
             WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent;
             constexpr auto colour = AdvancedColour(Colour::mutedDarkRed).translucent();
 
-            createNewsWindow(News1::kWindowSize, News1::widgets, colour, isOld, flags);
+            createNewsWindow(News1::kWindowSize, News1::getWidgets(), colour, isOld, flags);
         }
     }
 

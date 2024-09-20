@@ -49,13 +49,16 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
-    constexpr Widget widgets[] = {
-        commonWidgets(138, 190, StringIds::stringid_2),
-        makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
+    static constexpr auto widgets = makeWidgets(
+        Common::makeCommonWidgets(138, 190, StringIds::stringid_2),
+        makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
         makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, WindowColour::secondary),
-        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
-        widgetEnd(),
-    };
+        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90));
+
+    std::span<const Widget> getWidgets()
+    {
+        return widgets;
+    }
 
     WindowEventList events;
 

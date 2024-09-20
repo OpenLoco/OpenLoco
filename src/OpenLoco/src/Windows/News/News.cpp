@@ -31,10 +31,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 {
     namespace News1
     {
-        constexpr Widget widgets[] = {
-            commonWidgets(360, 117, WidgetType::wt_3),
-            widgetEnd(),
-        };
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(360, 117, WidgetType::wt_3)
+
+        );
+
+        std::span<const Widget> getWidgets()
+        {
+            return widgets;
+        }
 
         // 0x00429BB7
         static void onMouseUp([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex)
@@ -878,9 +883,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
     namespace News2
     {
-        constexpr Widget widgets[] = {
-            commonWidgets(360, 159, WidgetType::wt_6),
-            widgetEnd(),
-        };
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(360, 159, WidgetType::wt_6)
+
+        );
+
+        std::span<const Widget> getWidgets()
+        {
+            return widgets;
+        }
     }
 }

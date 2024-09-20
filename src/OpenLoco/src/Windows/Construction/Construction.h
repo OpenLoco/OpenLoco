@@ -4,6 +4,7 @@
 #include "Map/TileManager.h"
 #include "Objects/VehicleObject.h"
 #include "ScenarioConstruction.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -115,15 +116,18 @@ namespace OpenLoco::Ui::Windows::Construction
             tab_overhead,
         };
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                     \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, WidgetType::wt_3, WindowColour::secondary),                                                          \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_track_road_construction),                     \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_station_construction),                       \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_signal_construction),                        \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_electrification_construction)
+        constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
+                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, WidgetType::wt_3, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_track_road_construction),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_station_construction),
+                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_signal_construction),
+                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_electrification_construction));
+        }
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
 
@@ -154,7 +158,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
     namespace Construction
     {
-        static constexpr Ui::Size kWindowSize = { 138, 276 };
+        static constexpr Ui::Size32 kWindowSize = { 138, 276 };
 
         enum widx
         {
@@ -215,7 +219,7 @@ namespace OpenLoco::Ui::Windows::Construction
         };
         //clang-format on
 
-        extern const Widget widgets[32];
+        std::span<const Widget> getWidgets();
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | allConstruction;
 
@@ -245,7 +249,7 @@ namespace OpenLoco::Ui::Windows::Construction
             rotate,
         };
 
-        extern const Widget widgets[13];
+        std::span<const Widget> getWidgets();
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
 
@@ -264,7 +268,7 @@ namespace OpenLoco::Ui::Windows::Construction
             single_direction,
         };
 
-        extern const Widget widgets[13];
+        std::span<const Widget> getWidgets();
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
 
@@ -286,7 +290,7 @@ namespace OpenLoco::Ui::Windows::Construction
             track_dropdown,
         };
 
-        extern const Widget widgets[16];
+        std::span<const Widget> getWidgets();
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
 

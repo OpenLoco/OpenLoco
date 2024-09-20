@@ -16,13 +16,14 @@
 #include "SceneManager.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
-    static constexpr Ui::Size kWindowSize = { 610, 412 };
+    static constexpr Ui::Size32 kWindowSize = { 610, 412 };
 
     namespace widx
     {
@@ -41,8 +42,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         };
     }
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 610, 412 }, WidgetType::frame, WindowColour::primary),
+    static constexpr auto _widgets = makeWidgets(
+        Widgets::Frame({ 0, 0 }, { 610, 412 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::select_scenario_for_new_game),
         makeWidget({ 595, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 48 }, { 610, 364 }, WidgetType::wt_3, WindowColour::secondary),
@@ -51,9 +52,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         makeRemapWidget({ 185, 15 }, { 91, 34 }, WidgetType::tab, WindowColour::secondary, ImageIds::wide_tab),
         makeRemapWidget({ 276, 15 }, { 91, 34 }, WidgetType::tab, WindowColour::secondary, ImageIds::wide_tab),
         makeRemapWidget({ 367, 15 }, { 91, 34 }, WidgetType::tab, WindowColour::secondary, ImageIds::wide_tab),
-        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        widgetEnd(),
-    };
+        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+    );
 
     constexpr auto kRowHeight = 24;
     static bool _warnOnce = false;
@@ -104,8 +105,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         self = WindowManager::createWindow(
             WindowType::scenarioSelect,
-            Ui::Point({ static_cast<int16_t>(width() / 2 - kWindowSize.width / 2),
-                        std::max<int16_t>(height() / 2 - kWindowSize.height / 2, 28) }),
+            { width() / 2 - kWindowSize.width / 2, std::max<int16_t>(height() / 2 - kWindowSize.height / 2, 28) },
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::flag_12,
             getEvents());

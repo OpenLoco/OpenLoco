@@ -26,6 +26,8 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
@@ -55,13 +57,16 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_industry_list) | (1 << widx::tab_new_industry);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                     \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 154 }, WidgetType::panel, WindowColour::secondary),                                                                      \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industries_list),                         \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_fund_new_industries)
+        static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { frameWidth, 154 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industries_list),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_fund_new_industries));
+        }
 
         static void refreshIndustryList(Window* self);
         static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
@@ -71,7 +76,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace IndustryList
     {
-        static constexpr Ui::Size kWindowSize = { 759, 197 };
+        static constexpr Ui::Size32 kWindowSize = { 759, 197 };
         static constexpr Ui::Size kMaxDimensions = { 759, 900 };
         static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
@@ -88,15 +93,15 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_industry_name) | (1 << sort_industry_status) | (1 << sort_industry_production_transported) | (1 << sort_industry_production_last_month) | (1 << scrollview);
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(600, 197, StringIds::title_industries),
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(600, 197, StringIds::title_industries),
             makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_name),
             makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_status),
             makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
             makeWidget({ 603, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_last_month),
-            makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd(),
-        };
+            makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+        );
 
         enum SortMode : uint16_t
         {
@@ -593,7 +598,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         else
         {
             // 0x00457878
-            auto origin = Ui::Point(Ui::width() - IndustryList::kWindowSize.width, 30);
+            auto origin = Ui::Point32(Ui::width() - IndustryList::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::industryList,
@@ -672,7 +677,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace NewIndustries
     {
-        static constexpr Ui::Size kWindowSize = { 578, 172 };
+        static constexpr Ui::Size32 kWindowSize = { 578, 172 };
 
         static constexpr uint8_t kRowHeight = 112;
 
@@ -683,11 +688,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(577, 171, StringIds::title_fund_new_industries),
-            makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            widgetEnd(),
-        };
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(577, 171, StringIds::title_fund_new_industries),
+            makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+        );
 
         // 0x0045819F
         static void prepareDraw(Window& self)
@@ -1269,8 +1274,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
+            Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
                 updateActiveThumb(&self);

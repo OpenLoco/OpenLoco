@@ -45,6 +45,8 @@
 #include "Ui/Dropdown.h"
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -60,7 +62,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr int kRowHeight = 12;
     static constexpr int kPrimaryTabRowCapacity = 19;
     static constexpr int kSecondaryTabRowCapacity = 18;
-    static constexpr Ui::Size kWindowSize = { 600, 398 };
+    static constexpr Ui::Size32 kWindowSize = { 600, 398 };
 
     enum class ObjectTabFlags : uint8_t
     {
@@ -199,17 +201,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         objectImage,
     };
 
-    static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 600, 398 }, WidgetType::frame, WindowColour::primary),
+    static constexpr auto widgets = makeWidgets(
+        Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_object_selection),
         makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 65 }, { 600, 333 }, WidgetType::panel, WindowColour::secondary),
+        Widgets::Panel({ 0, 65 }, { 600, 333 }, WindowColour::secondary),
 
         // Primary tab area
         makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_6, WindowColour::secondary),
 
         // Filter options
-        makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WidgetType::combobox, WindowColour::primary, StringIds::empty),
+        makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
         makeWidget({ 4, 68 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 254, 68 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
 
@@ -222,11 +224,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeRemapWidget({ 158, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ships),
 
         // Scroll and preview areas
-        makeWidget({ 3, 83 }, { 290, 303 }, WidgetType::panel, WindowColour::secondary),
+        Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
         makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary),
-        widgetEnd(),
-    };
+        makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary)
+
+    );
 
     // 0x0047322A
     static void rotateTabs(uint8_t newStartPosition)

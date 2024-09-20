@@ -25,6 +25,8 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/Town.h"
 #include "World/TownManager.h"
@@ -61,15 +63,18 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_town_list) | (1 << widx::tab_build_town) | (1 << widx::tab_build_buildings) | (1 << widx::tab_build_misc_buildings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                     \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 155 }, WidgetType::panel, WindowColour::secondary),                                                                      \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_list),                               \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_town),                             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_buildings),                        \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_misc_buildings)
+        static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
+        {
+            return makeWidgets(
+                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel({ 0, 41 }, { frameWidth, 155 }, WindowColour::secondary),
+                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_list),
+                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_town),
+                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_buildings),
+                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_misc_buildings));
+        }
 
         static void prepareDraw(Window& self);
         static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
@@ -79,7 +84,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace TownList
     {
-        static constexpr Ui::Size kWindowSize = { 600, 197 };
+        static constexpr Ui::Size32 kWindowSize = { 600, 197 };
         static constexpr Ui::Size kMaxDimensions = { 600, 900 };
         static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
@@ -96,15 +101,15 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_town_name) | (1 << sort_town_type) | (1 << sort_town_population) | (1 << sort_town_stations) | (1 << scrollview);
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(600, 197, StringIds::title_towns),
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(600, 197, StringIds::title_towns),
             makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
             makeWidget({ 204, 43 }, { 80, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
             makeWidget({ 284, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
             makeWidget({ 354, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
-            makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2),
-            widgetEnd(),
-        };
+            makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2)
+
+        );
 
         enum SortMode : uint16_t
         {
@@ -537,7 +542,7 @@ namespace OpenLoco::Ui::Windows::TownList
         else
         {
             // 0x00499CFC
-            auto origin = Ui::Point(Ui::width() - TownList::kWindowSize.width, 30);
+            auto origin = Ui::Point32(Ui::width() - TownList::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::townList,
@@ -616,7 +621,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildTowns
     {
-        static constexpr Ui::Size kWindowSize = { 220, 87 };
+        static constexpr Ui::Size32 kWindowSize = { 220, 87 };
 
         enum widx
         {
@@ -626,11 +631,11 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << current_size) | (1 << select_size);
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(220, 87, StringIds::title_build_new_towns),
-            makeDropdownWidgets({ 100, 45 }, { 117, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size),
-            widgetEnd(),
-        };
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(220, 87, StringIds::title_build_new_towns),
+            makeDropdownWidgets({ 100, 45 }, { 117, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size)
+
+        );
 
         constexpr StringId townSizeNames[9] = {
             StringIds::town_size_1,
@@ -821,7 +826,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildBuildings
     {
-        static constexpr Ui::Size kWindowSize = { 600, 172 };
+        static constexpr Ui::Size32 kWindowSize = { 600, 172 };
 
         static constexpr uint8_t kRowHeight = 112;
 
@@ -834,13 +839,13 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour);
 
-        static constexpr Widget widgets[] = {
-            commonWidgets(640, 172, StringIds::title_build_new_buildings),
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(640, 172, StringIds::title_build_new_buildings),
             makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 575, 46 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
-            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
-            widgetEnd(),
-        };
+            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
+
+        );
 
         // 0x0049A8A6
         static void prepareDraw(Ui::Window& self)
@@ -1191,8 +1196,8 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
+            Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
                 updateActiveThumb(&self);

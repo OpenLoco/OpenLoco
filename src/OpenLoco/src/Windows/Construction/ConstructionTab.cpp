@@ -90,8 +90,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         uint8_t rotation;
     };
 
-    constexpr Widget widgets[] = {
-        commonWidgets(138, 276, StringIds::stringid_2),
+    static constexpr auto widgets = makeWidgets(
+        Common::makeCommonWidgets(138, 276, StringIds::stringid_2),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),
         makeWidget({ 25, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve, StringIds::tooltip_left_hand_curve),
@@ -110,12 +110,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         makeWidget({ 57, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_level, StringIds::tooltip_level),
         makeWidget({ 81, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::tooltip_slope_up),
         makeWidget({ 105, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
-        makeDropdownWidgets({ 40, 123 }, { 58, 20 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
+        makeDropdownWidgets({ 40, 123 }, { 58, 20 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
         makeWidget({ 3, 145 }, { 132, 100 }, WidgetType::wt_6, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_construct),
         makeWidget({ 6, 248 }, { 46, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
-        makeWidget({ 57, 248 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
-        widgetEnd(),
-    };
+        makeWidget({ 57, 248 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90));
+
+    std::span<const Widget> getWidgets()
+    {
+        return widgets;
+    }
 
     const uint8_t trackPieceWidgets[] = {
         widx::straight,

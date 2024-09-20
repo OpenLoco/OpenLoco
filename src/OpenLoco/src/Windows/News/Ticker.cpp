@@ -15,10 +15,15 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {
-    constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 111, 26 }, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd(),
-    };
+    static constexpr auto widgets = makeWidgets(
+        makeWidget({ 0, 0 }, { 111, 26 }, WidgetType::wt_3, WindowColour::primary)
+
+    );
+
+    std::span<const Widget> getWidgets()
+    {
+        return widgets;
+    }
 
     // 0x00429EA2
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)

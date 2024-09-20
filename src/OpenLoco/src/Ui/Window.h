@@ -236,7 +236,7 @@ namespace OpenLoco::Ui
         int16_t var_88C;
         sfl::small_vector<Widget, 16> widgets;
 
-        Window(Ui::Point position, Ui::Size size);
+        Window(Ui::Point32 position, Ui::Size32 size);
 
         void setWidgets(std::span<const Widget> newWidgets)
         {
@@ -244,7 +244,7 @@ namespace OpenLoco::Ui
             widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
         }
 
-        constexpr bool setSize(Ui::Size minSize, Ui::Size maxSize)
+        constexpr bool setSize(Ui::Size32 minSize, Ui::Size32 maxSize)
         {
             bool hasResized = false;
 
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui
             return hasResized;
         }
 
-        constexpr void setSize(Ui::Size size)
+        constexpr void setSize(Ui::Size32 size)
         {
             setSize(size, size);
         }

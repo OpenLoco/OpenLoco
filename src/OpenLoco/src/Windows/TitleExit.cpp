@@ -15,7 +15,7 @@
 
 namespace OpenLoco::Ui::Windows::TitleExit
 {
-    static constexpr Ui::Size kWindowSize = { 40, 28 };
+    static constexpr Ui::Size32 kWindowSize = { 40, 28 };
 
     namespace Widx
     {
@@ -25,10 +25,10 @@ namespace OpenLoco::Ui::Windows::TitleExit
         };
     }
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game),
-        widgetEnd(),
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game)
+
+    );
 
     static const WindowEventList& getEvents();
 
@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     {
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleExit,
-            Ui::Point(Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height),
+            { Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height },
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             getEvents());

@@ -38,10 +38,10 @@ namespace OpenLoco::Ui::Windows::ToolTip
     };
 
     // 0x005234CC
-    Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 200, 32 }, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd(),
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, { 200, 32 }, WidgetType::wt_3, WindowColour::primary)
+
+    );
 
     void registerHooks()
     {
@@ -83,9 +83,6 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         int width = wrappedWidth + 3;
         int height = (_lineBreakCount + 1) * 10 + 4;
-        _widgets[widx::text].right = width;
-        _widgets[widx::text].bottom = height;
-
         int x, y;
 
         int maxY = Ui::height() - height;
@@ -100,11 +97,14 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         auto tooltip = WindowManager::createWindow(
             WindowType::tooltip,
-            Ui::Point(x, y),
-            Ui::Size(width, height),
+            { x, y },
+            { width, height },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
             getEvents());
         tooltip->setWidgets(_widgets);
+        tooltip->widgets[widx::text].right = width;
+        tooltip->widgets[widx::text].bottom = height;
+
         _tooltipNotShownTicks = 0;
     }
 
