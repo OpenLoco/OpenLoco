@@ -215,62 +215,61 @@ namespace OpenLoco
         }
 
         constexpr explicit operator Colour() const { return static_cast<Colour>(enumValue(_c) & ~(outlineFlag | insetFlag | translucentFlag)); }
-        constexpr Colour c() const { return static_cast<Colour>(*this); }
+        [[nodiscard]] constexpr Colour c() const { return _c; }
         constexpr explicit operator uint8_t() const { return enumValue(_c); }
-        constexpr uint8_t u8() const { return static_cast<uint8_t>(*this); }
+        [[nodiscard]] constexpr uint8_t u8() const { return static_cast<uint8_t>(*this); }
 
-        constexpr AdvancedColour outline()
+        [[nodiscard]] constexpr AdvancedColour outline() const
         {
-            _c = static_cast<Colour>(enumValue(_c) | outlineFlag);
-            return *this;
+            return { static_cast<Colour>(enumValue(_c) | outlineFlag) };
         }
-        constexpr bool isOutline() const { return enumValue(_c) & outlineFlag; }
+        [[nodiscard]] constexpr bool isOutline() const { return enumValue(_c) & outlineFlag; }
 
-        constexpr AdvancedColour inset()
+        [[nodiscard]] constexpr AdvancedColour inset() const
         {
-            _c = static_cast<Colour>(enumValue(_c) | insetFlag);
-            return *this;
+            return { static_cast<Colour>(enumValue(_c) | insetFlag) };
         }
-        constexpr bool isInset() const { return enumValue(_c) & insetFlag; }
+        [[nodiscard]] constexpr bool isInset() const { return enumValue(_c) & insetFlag; }
 
-        constexpr AdvancedColour translucent()
+        [[nodiscard]] constexpr AdvancedColour translucent() const
         {
-            _c = static_cast<Colour>(enumValue(_c) | translucentFlag);
-            return *this;
+            return { static_cast<Colour>(enumValue(_c) | translucentFlag) };
         }
-        constexpr bool isTranslucent() const { return enumValue(_c) & translucentFlag; }
+        [[nodiscard]] constexpr bool isTranslucent() const { return enumValue(_c) & translucentFlag; }
 
-        constexpr AdvancedColour opaque()
+        [[nodiscard]] constexpr AdvancedColour opaque()
         {
-            _c = static_cast<Colour>(enumValue(_c) & ~translucentFlag);
-            return *this;
+            return { static_cast<Colour>(enumValue(_c) & ~translucentFlag) };
         }
-        constexpr AdvancedColour clearInset()
+        [[nodiscard]] constexpr bool isOpaque() const { return !isTranslucent(); }
+
+        [[nodiscard]] constexpr AdvancedColour clearInset()
         {
-            _c = static_cast<Colour>(enumValue(_c) & ~insetFlag);
-            return *this;
+            return { static_cast<Colour>(enumValue(_c) & ~insetFlag) };
         }
-        constexpr AdvancedColour clearOutline()
+
+        [[nodiscard]] constexpr AdvancedColour clearOutline()
         {
-            _c = static_cast<Colour>(enumValue(_c) & ~outlineFlag);
-            return *this;
+            return { static_cast<Colour>(enumValue(_c) & ~outlineFlag) };
         }
-        constexpr bool isOpaque() const { return !isTranslucent(); }
-        static constexpr AdvancedColour FF()
+
+        [[nodiscard]] static constexpr AdvancedColour FF()
         {
-            return AdvancedColour(static_cast<Colour>(ff));
+            return { static_cast<Colour>(ff) };
         }
-        constexpr bool isFF() const { return enumValue(_c) == ff; }
-        static constexpr AdvancedColour FE()
+        [[nodiscard]] constexpr bool isFF() const { return enumValue(_c) == ff; }
+
+        [[nodiscard]] static constexpr AdvancedColour FE()
         {
-            return AdvancedColour(static_cast<Colour>(fe));
+            return { static_cast<Colour>(fe) };
         }
-        constexpr bool isFE() const { return enumValue(_c) == fe; }
-        static constexpr AdvancedColour FD()
+        [[nodiscard]] constexpr bool isFE() const { return enumValue(_c) == fe; }
+
+        [[nodiscard]] static constexpr AdvancedColour FD()
         {
-            return AdvancedColour(static_cast<Colour>(fd));
+            return { static_cast<Colour>(fd) };
         }
-        constexpr bool isFD() const { return enumValue(_c) == fd; }
+        [[nodiscard]] constexpr bool isFD() const { return enumValue(_c) == fd; }
     };
     static_assert(sizeof(AdvancedColour) == 1);
 
