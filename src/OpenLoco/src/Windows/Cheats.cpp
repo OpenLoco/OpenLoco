@@ -17,6 +17,7 @@
 #include "Scenario.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
@@ -173,17 +174,17 @@ namespace OpenLoco::Ui::Windows::Cheats
             // money
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_increase_funds),
             makeStepperWidgets({ 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 180, 62 }, { 60, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_add),
+            Widgets::Button({ 180, 62 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_add),
             // loan
             makeWidget({ 4, 86 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_clear_loan),
             makeWidget({ 80, 100 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary),
-            makeWidget({ 180, 100 }, { 60, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_clear),
+            Widgets::Button({ 180, 100 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_clear),
             // date/time
             makeWidget({ 4, 124 }, { kWindowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
             makeStepperWidgets({ 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
             makeStepperWidgets({ 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
             makeStepperWidgets({ 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 10, 186 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_date_change_apply)
+            Widgets::Button({ 10, 186 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_date_change_apply)
 
         );
 
@@ -510,11 +511,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_target_company),
             makeDropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary),
             makeWidget({ 4, 86 }, { kWindowSize.width - 8, 96 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
-            makeWidget({ 10, 100 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_switch_to_company),
-            makeWidget({ 10, 116 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
-            makeWidget({ 10, 132 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_bankruptcy),
-            makeWidget({ 10, 148 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_jail_status),
-            makeWidget({ 10, 164 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::completeChallenge)
+            Widgets::Button({ 10, 100 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_switch_to_company),
+            Widgets::Button({ 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
+            Widgets::Button({ 10, 132 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_toggle_bankruptcy),
+            Widgets::Button({ 10, 148 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_toggle_jail_status),
+            Widgets::Button({ 10, 164 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::completeChallenge)
 
         );
 
@@ -701,8 +702,8 @@ namespace OpenLoco::Ui::Windows::Cheats
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::vehicle_cheats),
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_vehicle_reliability),
-            makeWidget({ 10, 62 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_zero),
-            makeWidget({ 10, 78 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_hundred),
+            Widgets::Button({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_zero),
+            Widgets::Button({ 10, 78 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_hundred),
             makeWidget({ 4, 102 }, { kWindowSize.width - 8, 45 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
             makeWidget({ 10, 116 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
             makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles)
@@ -855,10 +856,10 @@ namespace OpenLoco::Ui::Windows::Cheats
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::town_cheats),
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_ratings),
-            makeWidget({ 10, 62 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_min_10pct),
-            makeWidget({ 3 + (kWindowSize.width / 2), 62 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_plus_10pct),
-            makeWidget({ 10, 78 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_to_min),
-            makeWidget({ 3 + (kWindowSize.width / 2), 78 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_to_max)
+            Widgets::Button({ 10, 62 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_min_10pct),
+            Widgets::Button({ 3 + (kWindowSize.width / 2), 62 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_plus_10pct),
+            Widgets::Button({ 10, 78 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_to_min),
+            Widgets::Button({ 3 + (kWindowSize.width / 2), 78 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_to_max)
 
         );
 

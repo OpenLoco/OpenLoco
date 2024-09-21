@@ -10,6 +10,7 @@
 #include "Objects/ObjectManager.h"
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
@@ -52,7 +53,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 330, 75 }, WindowColour::secondary),
         makeWidget({ 4, 58 }, { 322, 14 }, WidgetType::textbox, WindowColour::secondary),
-        makeTextWidget({ 256, 74 }, { 70, 12 }, WidgetType::button, WindowColour::secondary, StringIds::label_button_ok)
+        Widgets::Button({ 256, 74 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok)
 
     );
 

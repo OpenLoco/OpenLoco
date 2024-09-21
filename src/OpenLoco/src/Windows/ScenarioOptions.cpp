@@ -18,6 +18,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
@@ -993,9 +994,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_scenario_options),
-            makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            Widgets::Button({ 281, 52 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
             makeDropdownWidgets({ 196, 67 }, { 160, 12 }, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change)
+            Widgets::Button({ 281, 82 }, { 75, 12 }, WindowColour::secondary, StringIds::change)
 
         );
 
