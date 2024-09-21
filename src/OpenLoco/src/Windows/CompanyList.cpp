@@ -29,34 +29,43 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::CompanyList
 {
-    static loco_global<Colour[32], 0x004F9442> _cargoLineColour;
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
-    static loco_global<uint16_t, 0x0113DC7A> _graphLeft;
-    static loco_global<uint16_t, 0x0113DC7C> _graphTop;
-    static loco_global<uint16_t, 0x0113DC7E> _graphRight;
-    static loco_global<uint16_t, 0x0113DC80> _graphBottom;
-    static loco_global<uint16_t, 0x0113DC82> _graphYOffset;
-    static loco_global<uint16_t, 0x0113DC84> _graphXOffset;
-    static loco_global<uint32_t, 0x0113DC86> _graphYAxisLabelIncrement;
-    static loco_global<uint16_t, 0x0113DC8A> _graphLineCount;
-    static loco_global<uint32_t[32], 0x0113DC8C> _graphYData;
-    static loco_global<uint32_t, 0x0113DD0C> _graphDataTypeSize;
-    static loco_global<uint16_t[32], 0x0113DD10> _graphDataStart;
-    static loco_global<uint32_t, 0x0113DD50> _dword_113DD50;
-    static loco_global<PaletteIndex_t[32], 0x0113DD54> _graphLineColour;
-    static loco_global<uint16_t, 0x0113DD74> _graphDataEnd;
-    static loco_global<uint16_t, 0x0113DD76> _graphXLabel;
-    static loco_global<uint32_t, 0x0113DD78> _graphXAxisRange;
-    static loco_global<uint32_t, 0x0113DD7C> _dword_113DD7C;
-    static loco_global<uint16_t, 0x0113DD80> _word_113DD80; // graphXAxisIncrement?
-    static loco_global<uint16_t, 0x0113DD82> _graphXAxisLabelIncrement;
-    static loco_global<uint16_t, 0x0113DD84> _graphYLabel;
-    static loco_global<uint32_t, 0x0113DD86> _dword_113DD86;
-    static loco_global<uint32_t, 0x0113DD8A> _dword_113DD8A;
-    static loco_global<uint32_t, 0x0113DD8E> _dword_113DD8E;
-    static loco_global<uint8_t, 0x0113DD99> _byte_113DD99;
-    static loco_global<uint16_t[32], 0x0113DD9A> _graphItemId;
+
+#pragma pack(push, 1)
+    struct GraphSettings
+    {
+        uint16_t left;                 // 0x0113DC7A
+        uint16_t top;                  // 0x0113DC7C
+        uint16_t right;                // 0x0113DC7E
+        uint16_t bottom;               // 0x0113DC80
+        uint16_t yOffset;              // 0x0113DC82
+        uint16_t xOffset;              // 0x0113DC84
+        uint32_t yAxisLabelIncrement;  // 0x0113DC86
+        uint16_t lineCount;            // 0x0113DC8A
+        uint32_t* yData[32];           // 0x0113DC8C
+        uint32_t dataTypeSize;         // 0x0113DD0C
+        uint16_t dataStart[32];        // 0x0113DD10
+        uint32_t dword_113DD50;        // 0x0113DD50
+        PaletteIndex_t lineColour[32]; // 0x0113DD54
+        uint16_t dataEnd;              // 0x0113DD74
+        uint16_t xLabel;               // 0x0113DD76
+        uint32_t xAxisRange;           // 0x0113DD78
+        uint32_t dword_113DD7C;        // 0x0113DD7C
+        uint16_t word_113DD80;         // 0x0113DD80 -- graphXAxisIncrement?
+        uint16_t xAxisLabelIncrement;  // 0x0113DD82
+        uint16_t yLabel;               // 0x0113DD84
+        uint32_t dword_113DD86;        // 0x0113DD86
+        uint32_t dword_113DD8A;        // 0x0113DD8A
+        uint32_t dword_113DD8E;        // 0x0113DD8E
+        uint8_t pad_113DD92[7];        // 0x0113DD92
+        uint8_t byte_113DD99;          // 0x0113DD99
+        uint16_t itemId[32];           // 0x0113DD9A
+    };
+#pragma pack(pop)
+
+    static_assert(sizeof(GraphSettings) == 0x0113DD9A + 64 - 0x0113DC7A);
+    static loco_global<GraphSettings, 0x0113DC7A> _graphSettings;
 
     namespace Common
     {
@@ -681,14 +690,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
 
-            _graphLeft = self.x + 4;
-            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphRight = 520;
-            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
-            _graphYOffset = 17;
-            _graphXOffset = 40;
-            _graphYAxisLabelIncrement = 20;
-            _dword_113DD50 = 0;
+            _graphSettings->left = self.x + 4;
+            _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 4;
+            _graphSettings->right = 520;
+            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings->yOffset = 17;
+            _graphSettings->xOffset = 40;
+            _graphSettings->yAxisLabelIncrement = 20;
+            _graphSettings->dword_113DD50 = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -705,23 +714,23 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphYData[count] = reinterpret_cast<uint32_t>(&company.performanceIndexHistory[0]);
-                _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colours::getShade(companyColour, 6);
-                _graphItemId[count] = enumValue(companyId);
+                _graphSettings->yData[count] = reinterpret_cast<uint32_t*>(&company.performanceIndexHistory[0]);
+                _graphSettings->dataStart[count] = maxHistorySize - company.historySize;
+                _graphSettings->lineColour[count] = Colours::getShade(companyColour, 6);
+                _graphSettings->itemId[count] = enumValue(companyId);
                 count++;
             }
 
-            _graphLineCount = count;
-            _graphDataEnd = maxHistorySize;
-            _graphDataTypeSize = 2;
-            _graphXLabel = StringIds::rawdate_short;
-            _graphYLabel = StringIds::percentage_one_decimal_place;
-            _word_113DD80 = 4;
-            _graphXAxisLabelIncrement = 12;
-            _dword_113DD86 = 0;
-            _dword_113DD8A = 100;
-            _dword_113DD8E = 2;
+            _graphSettings->lineCount = count;
+            _graphSettings->dataEnd = maxHistorySize;
+            _graphSettings->dataTypeSize = 2;
+            _graphSettings->xLabel = StringIds::rawdate_short;
+            _graphSettings->yLabel = StringIds::percentage_one_decimal_place;
+            _graphSettings->word_113DD80 = 4;
+            _graphSettings->xAxisLabelIncrement = 12;
+            _graphSettings->dword_113DD86 = 0;
+            _graphSettings->dword_113DD8A = 100;
+            _graphSettings->dword_113DD8E = 2;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -774,14 +783,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
 
-            _graphLeft = self.x + 4;
-            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphRight = 525;
-            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
-            _graphYOffset = 17;
-            _graphXOffset = 45;
-            _graphYAxisLabelIncrement = 25;
-            _dword_113DD50 = 0;
+            _graphSettings->left = self.x + 4;
+            _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 4;
+            _graphSettings->right = 525;
+            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings->yOffset = 17;
+            _graphSettings->xOffset = 45;
+            _graphSettings->yAxisLabelIncrement = 25;
+            _graphSettings->dword_113DD50 = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -798,23 +807,23 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargoUnitsDeliveredHistory[0]);
-                _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colours::getShade(companyColour, 6);
-                _graphItemId[count] = enumValue(companyId);
+                _graphSettings->yData[count] = &company.cargoUnitsDeliveredHistory[0];
+                _graphSettings->dataStart[count] = maxHistorySize - company.historySize;
+                _graphSettings->lineColour[count] = Colours::getShade(companyColour, 6);
+                _graphSettings->itemId[count] = enumValue(companyId);
                 count++;
             }
 
-            _graphLineCount = count;
-            _graphDataEnd = maxHistorySize;
-            _graphDataTypeSize = 4;
-            _graphXLabel = StringIds::rawdate_short;
-            _graphYLabel = StringIds::cargo_units_delivered;
-            _word_113DD80 = 4;
-            _graphXAxisLabelIncrement = 12;
-            _dword_113DD86 = 0;
-            _dword_113DD8A = 1000;
-            _dword_113DD8E = 2;
+            _graphSettings->lineCount = count;
+            _graphSettings->dataEnd = maxHistorySize;
+            _graphSettings->dataTypeSize = 4;
+            _graphSettings->xLabel = StringIds::rawdate_short;
+            _graphSettings->yLabel = StringIds::cargo_units_delivered;
+            _graphSettings->word_113DD80 = 4;
+            _graphSettings->xAxisLabelIncrement = 12;
+            _graphSettings->dword_113DD86 = 0;
+            _graphSettings->dword_113DD8A = 1000;
+            _graphSettings->dword_113DD8E = 2;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -867,14 +876,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
 
-            _graphLeft = self.x + 4;
-            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphRight = 545;
-            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
-            _graphYOffset = 17;
-            _graphXOffset = 65;
-            _graphYAxisLabelIncrement = 25;
-            _dword_113DD50 = 0;
+            _graphSettings->left = self.x + 4;
+            _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 4;
+            _graphSettings->right = 545;
+            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings->yOffset = 17;
+            _graphSettings->xOffset = 65;
+            _graphSettings->yAxisLabelIncrement = 25;
+            _graphSettings->dword_113DD50 = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -891,23 +900,23 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargoUnitsDistanceHistory[0]);
-                _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colours::getShade(companyColour, 6);
-                _graphItemId[count] = enumValue(companyId);
+                _graphSettings->yData[count] = &company.cargoUnitsDistanceHistory[0];
+                _graphSettings->dataStart[count] = maxHistorySize - company.historySize;
+                _graphSettings->lineColour[count] = Colours::getShade(companyColour, 6);
+                _graphSettings->itemId[count] = enumValue(companyId);
                 count++;
             }
 
-            _graphLineCount = count;
-            _graphDataEnd = maxHistorySize;
-            _graphDataTypeSize = 4;
-            _graphXLabel = StringIds::rawdate_short;
-            _graphYLabel = StringIds::cargo_units_delivered;
-            _word_113DD80 = 4;
-            _graphXAxisLabelIncrement = 12;
-            _dword_113DD86 = 0;
-            _dword_113DD8A = 1000;
-            _dword_113DD8E = 2;
+            _graphSettings->lineCount = count;
+            _graphSettings->dataEnd = maxHistorySize;
+            _graphSettings->dataTypeSize = 4;
+            _graphSettings->xLabel = StringIds::rawdate_short;
+            _graphSettings->yLabel = StringIds::cargo_units_delivered;
+            _graphSettings->word_113DD80 = 4;
+            _graphSettings->xAxisLabelIncrement = 12;
+            _graphSettings->dword_113DD86 = 0;
+            _graphSettings->dword_113DD8A = 1000;
+            _graphSettings->dword_113DD8E = 2;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -960,14 +969,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
 
-            _graphLeft = self.x + 4;
-            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphRight = 570;
-            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
-            _graphYOffset = 17;
-            _graphXOffset = 90;
-            _graphYAxisLabelIncrement = 25;
-            _dword_113DD50 = 0;
+            _graphSettings->left = self.x + 4;
+            _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 4;
+            _graphSettings->right = 570;
+            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings->yOffset = 17;
+            _graphSettings->xOffset = 90;
+            _graphSettings->yAxisLabelIncrement = 25;
+            _graphSettings->dword_113DD50 = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -984,23 +993,23 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
-                _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colours::getShade(companyColour, 6);
-                _graphItemId[count] = enumValue(companyId);
+                _graphSettings->yData[count] = reinterpret_cast<uint32_t*>(&company.companyValueHistory[0]);
+                _graphSettings->dataStart[count] = maxHistorySize - company.historySize;
+                _graphSettings->lineColour[count] = Colours::getShade(companyColour, 6);
+                _graphSettings->itemId[count] = enumValue(companyId);
                 count++;
             }
 
-            _graphLineCount = count;
-            _graphDataEnd = maxHistorySize;
-            _graphDataTypeSize = 6;
-            _graphXLabel = StringIds::rawdate_short;
-            _graphYLabel = StringIds::small_company_value_currency;
-            _word_113DD80 = 4;
-            _graphXAxisLabelIncrement = 12;
-            _dword_113DD86 = 0;
-            _dword_113DD8A = 10000;
-            _dword_113DD8E = 2;
+            _graphSettings->lineCount = count;
+            _graphSettings->dataEnd = maxHistorySize;
+            _graphSettings->dataTypeSize = 6;
+            _graphSettings->xLabel = StringIds::rawdate_short;
+            _graphSettings->yLabel = StringIds::small_company_value_currency;
+            _graphSettings->word_113DD80 = 4;
+            _graphSettings->xAxisLabelIncrement = 12;
+            _graphSettings->dword_113DD86 = 0;
+            _graphSettings->dword_113DD8A = 10000;
+            _graphSettings->dword_113DD8E = 2;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -1047,6 +1056,42 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.setSize(kWindowSize, kWindowSize);
         }
 
+        // 0x004F9442
+        static constexpr Colour _cargoLineColour[32] = {
+            Colour::red,
+            Colour::mutedPurple,
+            Colour::yellow,
+            Colour::blue,
+            Colour::orange,
+            Colour::green,
+            Colour::mutedDarkRed,
+            Colour::mutedDarkTeal,
+            Colour::mutedDarkYellow,
+            Colour::black,
+            Colour::white,
+            Colour::mutedDarkPurple,
+            Colour::purple,
+            Colour::darkBlue,
+            Colour::mutedTeal,
+            Colour::darkGreen,
+            Colour::mutedSeaGreen,
+            Colour::mutedGrassGreen,
+            Colour::mutedAvocadoGreen,
+            Colour::mutedOliveGreen,
+            Colour::darkYellow,
+            Colour::amber,
+            Colour::grey,
+            Colour::darkOrange,
+            Colour::mutedYellow,
+            Colour::brown,
+            Colour::mutedOrange,
+            Colour::darkRed,
+            Colour::darkPink,
+            Colour::pink,
+            Colour::mutedRed,
+            Colour::grey,
+        };
+
         // 0x00437949
         static void drawGraphLegend(Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
         {
@@ -1092,14 +1137,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
 
-            _graphLeft = self.x + 4;
-            _graphTop = self.y + self.widgets[Common::widx::panel].top + 14;
-            _graphRight = 380;
-            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 28;
-            _graphYOffset = 17;
-            _graphXOffset = 80;
-            _graphYAxisLabelIncrement = 25;
-            _dword_113DD50 = 0;
+            _graphSettings->left = self.x + 4;
+            _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 14;
+            _graphSettings->right = 380;
+            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 28;
+            _graphSettings->yOffset = 17;
+            _graphSettings->xOffset = 80;
+            _graphSettings->yAxisLabelIncrement = 25;
+            _graphSettings->dword_113DD50 = 0;
 
             auto count = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
@@ -1110,44 +1155,44 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 auto colour = _cargoLineColour[i];
 
-                _graphYData[count] = reinterpret_cast<uint32_t>(&_deliveredCargoPayment[i][0]);
-                _graphDataStart[count] = 0;
-                _graphLineColour[count] = Colours::getShade(colour, 6);
-                _graphItemId[count] = i;
+                _graphSettings->yData[count] = reinterpret_cast<uint32_t*>(&_deliveredCargoPayment[i][0]);
+                _graphSettings->dataStart[count] = 0;
+                _graphSettings->lineColour[count] = Colours::getShade(colour, 6);
+                _graphSettings->itemId[count] = i;
                 count++;
             }
 
-            _graphLineCount = count;
-            _graphDataEnd = 60;
-            _graphDataTypeSize = 4;
-            _graphXLabel = StringIds::cargo_delivered_days;
-            _graphYLabel = StringIds::cargo_delivered_currency;
-            _word_113DD80 = 5;
-            _graphXAxisLabelIncrement = 20;
-            _dword_113DD86 = 0;
-            _dword_113DD8A = 0;
-            _dword_113DD8E = 0;
+            _graphSettings->lineCount = count;
+            _graphSettings->dataEnd = 60;
+            _graphSettings->dataTypeSize = 4;
+            _graphSettings->xLabel = StringIds::cargo_delivered_days;
+            _graphSettings->yLabel = StringIds::cargo_delivered_currency;
+            _graphSettings->word_113DD80 = 5;
+            _graphSettings->xAxisLabelIncrement = 20;
+            _graphSettings->dword_113DD86 = 0;
+            _graphSettings->dword_113DD8A = 0;
+            _graphSettings->dword_113DD8E = 0;
 
-            _graphXAxisRange = 2;
-            _dword_113DD7C = 2;
-            _byte_113DD99 = 1;
+            _graphSettings->xAxisRange = 2;
+            _graphSettings->dword_113DD7C = 2;
+            _graphSettings->byte_113DD99 = 1;
 
             Common::drawGraph(&self, drawingCtx);
 
             if (self.var_854 != 0)
             {
                 auto i = 0;
-                while (Numerics::bitScanForward(self.var_854) != _graphItemId[i])
+                while (Numerics::bitScanForward(self.var_854) != _graphSettings->itemId[i])
                 {
                     i++;
                 }
 
-                _dword_113DD50 = 0xFFFFFFFF & ~(1 << i);
+                _graphSettings->dword_113DD50 = 0xFFFFFFFF & ~(1 << i);
 
                 if (_word_9C68C7 & (1 << 2))
-                    _graphLineColour[i] = 10;
+                    _graphSettings->lineColour[i] = 10;
 
-                _dword_113DD8E = _dword_113DD8E | (1 << 2);
+                _graphSettings->dword_113DD8E = _graphSettings->dword_113DD8E | (1 << 2);
 
                 Common::drawGraph(&self, drawingCtx);
             }
@@ -1719,9 +1764,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             auto totalMonths = (getCurrentYear() * 12) + static_cast<uint16_t>(getCurrentMonth());
 
-            _graphXAxisRange = totalMonths;
-            _dword_113DD7C = 1;
-            _byte_113DD99 = 1;
+            _graphSettings->xAxisRange = totalMonths;
+            _graphSettings->dword_113DD7C = 1;
+            _graphSettings->byte_113DD99 = 1;
 
             Common::drawGraph(self, drawingCtx);
 
@@ -1729,17 +1774,17 @@ namespace OpenLoco::Ui::Windows::CompanyList
             {
                 auto i = 0;
                 auto bitScan = Numerics::bitScanForward(self->var_854);
-                while (bitScan != _graphItemId[i] && bitScan != -1)
+                while (bitScan != _graphSettings->itemId[i] && bitScan != -1)
                 {
                     i++;
                 }
 
-                _dword_113DD50 = 0xFFFFFFFF & ~(1 << i);
+                _graphSettings->dword_113DD50 = 0xFFFFFFFF & ~(1 << i);
 
                 if (_word_9C68C7 & (1 << 2))
-                    _graphLineColour[i] = 10;
+                    _graphSettings->lineColour[i] = 10;
 
-                _dword_113DD8E = _dword_113DD8E | (1 << 2);
+                _graphSettings->dword_113DD8E = _graphSettings->dword_113DD8E | (1 << 2);
 
                 Common::drawGraph(self, drawingCtx);
             }
