@@ -9,9 +9,9 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
-#include "Ui/Widgets/ButtonWidget.h"
 
 #include <SDL2/SDL.h>
 #include <cstring>
