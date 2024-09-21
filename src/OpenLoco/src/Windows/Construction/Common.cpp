@@ -76,42 +76,42 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         Common::createConstructionWindow();
 
-        Common::refreshSignalList(_signalList, _trackType);
+        Common::refreshSignalList(_cState->signalList, _cState->trackType);
 
-        auto lastSignal = Scenario::getConstruction().signals[_trackType];
+        auto lastSignal = Scenario::getConstruction().signals[_cState->trackType];
 
         if (lastSignal == 0xFF)
-            lastSignal = _signalList[0];
+            lastSignal = _cState->signalList[0];
 
-        _lastSelectedSignal = lastSignal;
+        _cState->lastSelectedSignal = lastSignal;
 
-        Common::refreshStationList(_stationList, _trackType, TransportMode::rail);
+        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::rail);
 
-        auto lastStation = Scenario::getConstruction().trainStations[_trackType];
+        auto lastStation = Scenario::getConstruction().trainStations[_cState->trackType];
 
         if (lastStation == 0xFF)
-            lastStation = _stationList[0];
+            lastStation = _cState->stationList[0];
 
-        _lastSelectedStationType = lastStation;
+        _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::rail);
+        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::rail);
 
-        auto lastBridge = Scenario::getConstruction().bridges[_trackType];
+        auto lastBridge = Scenario::getConstruction().bridges[_cState->trackType];
 
         if (lastBridge == 0xFF)
-            lastBridge = _bridgeList[0];
+            lastBridge = _cState->bridgeList[0];
 
-        _lastSelectedBridge = lastBridge;
+        _cState->lastSelectedBridge = lastBridge;
 
-        Common::refreshModList(_modList, _trackType, TransportMode::rail);
+        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::rail);
 
-        auto lastMod = Scenario::getConstruction().trackMods[_trackType];
+        auto lastMod = Scenario::getConstruction().trackMods[_cState->trackType];
 
         if (lastMod == 0xFF)
             lastMod = 0;
 
-        _lastSelectedMods = lastMod;
-        _byte_113603A = 0;
+        _cState->lastSelectedMods = lastMod;
+        _cState->byte_113603A = 0;
 
         return trackWindow();
     }
@@ -120,35 +120,35 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         Common::createConstructionWindow();
 
-        _lastSelectedSignal = 0xFF;
+        _cState->lastSelectedSignal = 0xFF;
 
-        Common::refreshStationList(_stationList, _trackType, TransportMode::road);
+        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::road);
 
-        auto lastStation = Scenario::getConstruction().roadStations[(_trackType & ~(1ULL << 7))];
+        auto lastStation = Scenario::getConstruction().roadStations[(_cState->trackType & ~(1ULL << 7))];
 
         if (lastStation == 0xFF)
-            lastStation = _stationList[0];
+            lastStation = _cState->stationList[0];
 
-        _lastSelectedStationType = lastStation;
+        _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::road);
+        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::road);
 
-        auto lastBridge = Scenario::getConstruction().bridges[(_trackType & ~(1ULL << 7))];
+        auto lastBridge = Scenario::getConstruction().bridges[(_cState->trackType & ~(1ULL << 7))];
 
         if (lastBridge == 0xFF)
-            lastBridge = _bridgeList[0];
+            lastBridge = _cState->bridgeList[0];
 
-        _lastSelectedBridge = lastBridge;
+        _cState->lastSelectedBridge = lastBridge;
 
-        Common::refreshModList(_modList, _trackType, TransportMode::road);
+        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::road);
 
-        auto lastMod = Scenario::getConstruction().roadMods[(_trackType & ~(1ULL << 7))];
+        auto lastMod = Scenario::getConstruction().roadMods[(_cState->trackType & ~(1ULL << 7))];
 
         if (lastMod == 0xff)
             lastMod = 0;
 
-        _lastSelectedMods = lastMod;
-        _byte_113603A = 0;
+        _cState->lastSelectedMods = lastMod;
+        _cState->byte_113603A = 0;
 
         return trackWindow();
     }
@@ -157,25 +157,25 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         Common::createConstructionWindow();
 
-        _lastSelectedSignal = 0xFF;
+        _cState->lastSelectedSignal = 0xFF;
 
-        _modList[0] = 0xFF;
-        _modList[1] = 0xFF;
-        _modList[2] = 0xFF;
-        _modList[3] = 0xFF;
+        _cState->modList[0] = 0xFF;
+        _cState->modList[1] = 0xFF;
+        _cState->modList[2] = 0xFF;
+        _cState->modList[3] = 0xFF;
 
-        _lastSelectedMods = 0;
-        _lastSelectedBridge = 0xFF;
+        _cState->lastSelectedMods = 0;
+        _cState->lastSelectedBridge = 0xFF;
 
-        Common::refreshDockList(_stationList);
+        Common::refreshDockList(_cState->stationList);
 
         if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
         {
-            _lastSelectedStationType = _stationList[0];
+            _cState->lastSelectedStationType = _cState->stationList[0];
         }
         else
         {
-            _lastSelectedStationType = LastGameOptionManager::getLastShipPort();
+            _cState->lastSelectedStationType = LastGameOptionManager::getLastShipPort();
         }
 
         return nonTrackWindow();
@@ -185,23 +185,23 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         Common::createConstructionWindow();
 
-        _lastSelectedSignal = 0xFF;
-        _modList[0] = 0xFF;
-        _modList[1] = 0xFF;
-        _modList[2] = 0xFF;
-        _modList[3] = 0xFF;
-        _lastSelectedMods = 0;
-        _lastSelectedBridge = 0xFF;
+        _cState->lastSelectedSignal = 0xFF;
+        _cState->modList[0] = 0xFF;
+        _cState->modList[1] = 0xFF;
+        _cState->modList[2] = 0xFF;
+        _cState->modList[3] = 0xFF;
+        _cState->lastSelectedMods = 0;
+        _cState->lastSelectedBridge = 0xFF;
 
-        Common::refreshAirportList(_stationList);
+        Common::refreshAirportList(_cState->stationList);
 
         if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
         {
-            _lastSelectedStationType = _stationList[0];
+            _cState->lastSelectedStationType = _cState->stationList[0];
         }
         else
         {
-            _lastSelectedStationType = LastGameOptionManager::getLastAirport();
+            _cState->lastSelectedStationType = LastGameOptionManager::getLastAirport();
         }
 
         return nonTrackWindow();
@@ -211,8 +211,8 @@ namespace OpenLoco::Ui::Windows::Construction
     Window* openAtTrack(const Window& main, TrackElement* track, const Pos2 pos)
     {
         auto* viewport = main.viewports[0];
-        _backupTileElement = *reinterpret_cast<TileElement*>(track);
-        auto* copyElement = (*_backupTileElement).as<TrackElement>();
+        _cState->backupTileElement = *reinterpret_cast<TileElement*>(track);
+        auto* copyElement = (_cState->backupTileElement).as<TrackElement>();
         if (copyElement == nullptr)
         {
             return nullptr;
@@ -235,63 +235,63 @@ namespace OpenLoco::Ui::Windows::Construction
             Common::resetWindow(*wnd, Common::widx::tab_construction);
         }
 
-        _trackType = copyElement->trackObjectId();
-        _byte_1136063 = 0;
-        Common::setTrackOptions(_trackType);
+        _cState->trackType = copyElement->trackObjectId();
+        _cState->byte_1136063 = 0;
+        Common::setTrackOptions(_cState->trackType);
 
-        _constructionHover = 0;
-        _byte_113607E = 1;
-        _trackCost = 0x80000000;
-        _byte_1136076 = 0;
-        _lastSelectedTrackModSection = 0;
+        _cState->constructionHover = 0;
+        _cState->byte_113607E = 1;
+        _cState->trackCost = 0x80000000;
+        _cState->byte_1136076 = 0;
+        _cState->lastSelectedTrackModSection = 0;
 
         Common::setNextAndPreviousTrackTile(*copyElement, pos);
 
         const bool isCloserToNext = Common::isPointCloserToNextOrPreviousTile(Input::getDragLastLocation(), *viewport);
 
-        const auto chosenLoc = isCloserToNext ? *_nextTile : *_previousTile;
-        const auto chosenRotation = isCloserToNext ? *_nextTileRotation : *_previousTileRotation;
-        _x = chosenLoc.x;
-        _y = chosenLoc.y;
-        _constructionZ = chosenLoc.z;
-        _constructionRotation = chosenRotation;
-        _lastSelectedTrackPiece = 0;
-        _lastSelectedTrackGradient = 0;
+        const auto chosenLoc = isCloserToNext ? _cState->nextTile : _cState->previousTile;
+        const auto chosenRotation = isCloserToNext ? _cState->nextTileRotation : _cState->previousTileRotation;
+        _cState->x = chosenLoc.x;
+        _cState->y = chosenLoc.y;
+        _cState->constructionZ = chosenLoc.z;
+        _cState->constructionRotation = chosenRotation;
+        _cState->lastSelectedTrackPiece = 0;
+        _cState->lastSelectedTrackGradient = 0;
 
-        Common::refreshSignalList(_signalList, _trackType);
-        auto lastSignal = Scenario::getConstruction().signals[_trackType];
+        Common::refreshSignalList(_cState->signalList, _cState->trackType);
+        auto lastSignal = Scenario::getConstruction().signals[_cState->trackType];
 
         if (lastSignal == 0xFF)
-            lastSignal = _signalList[0];
+            lastSignal = _cState->signalList[0];
 
-        _lastSelectedSignal = lastSignal;
+        _cState->lastSelectedSignal = lastSignal;
 
-        Common::refreshStationList(_stationList, _trackType, TransportMode::rail);
+        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::rail);
 
-        auto lastStation = Scenario::getConstruction().trainStations[_trackType];
+        auto lastStation = Scenario::getConstruction().trainStations[_cState->trackType];
 
         if (lastStation == 0xFF)
-            lastStation = _stationList[0];
+            lastStation = _cState->stationList[0];
 
-        _lastSelectedStationType = lastStation;
+        _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::rail);
+        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::rail);
 
-        auto lastBridge = Scenario::getConstruction().bridges[_trackType];
+        auto lastBridge = Scenario::getConstruction().bridges[_cState->trackType];
 
         if (lastBridge == 0xFF)
-            lastBridge = _bridgeList[0];
+            lastBridge = _cState->bridgeList[0];
 
-        _lastSelectedBridge = lastBridge;
+        _cState->lastSelectedBridge = lastBridge;
 
         if (copyElement->hasBridge())
         {
-            _lastSelectedBridge = copyElement->bridge();
+            _cState->lastSelectedBridge = copyElement->bridge();
         }
-        Common::refreshModList(_modList, _trackType, TransportMode::rail);
+        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::rail);
 
-        _lastSelectedMods = copyElement->mods();
-        _byte_113603A = 0;
+        _cState->lastSelectedMods = copyElement->mods();
+        _cState->byte_113603A = 0;
         auto* window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
@@ -306,8 +306,8 @@ namespace OpenLoco::Ui::Windows::Construction
     Window* openAtRoad(const Window& main, RoadElement* road, const Pos2 pos)
     {
         auto* viewport = main.viewports[0];
-        _backupTileElement = *reinterpret_cast<TileElement*>(road);
-        auto* copyElement = (*_backupTileElement).as<RoadElement>();
+        _cState->backupTileElement = *reinterpret_cast<TileElement*>(road);
+        auto* copyElement = (_cState->backupTileElement).as<RoadElement>();
         if (copyElement == nullptr)
         {
             return nullptr;
@@ -325,61 +325,61 @@ namespace OpenLoco::Ui::Windows::Construction
             Common::resetWindow(*wnd, Common::widx::tab_construction);
         }
 
-        _trackType = copyElement->roadObjectId() | (1 << 7);
-        _byte_1136063 = 0;
-        Common::setTrackOptions(_trackType);
+        _cState->trackType = copyElement->roadObjectId() | (1 << 7);
+        _cState->byte_1136063 = 0;
+        Common::setTrackOptions(_cState->trackType);
 
-        _constructionHover = 0;
-        _byte_113607E = 1;
-        _trackCost = 0x80000000;
-        _byte_1136076 = 0;
-        _lastSelectedTrackModSection = 0;
+        _cState->constructionHover = 0;
+        _cState->byte_113607E = 1;
+        _cState->trackCost = 0x80000000;
+        _cState->byte_1136076 = 0;
+        _cState->lastSelectedTrackModSection = 0;
 
         Common::setNextAndPreviousRoadTile(*copyElement, pos);
 
         const bool isCloserToNext = Common::isPointCloserToNextOrPreviousTile(Input::getDragLastLocation(), *viewport);
 
-        const auto chosenLoc = isCloserToNext ? *_nextTile : *_previousTile;
-        const auto chosenRotation = isCloserToNext ? *_nextTileRotation : *_previousTileRotation;
-        _x = chosenLoc.x;
-        _y = chosenLoc.y;
-        _constructionZ = chosenLoc.z;
-        _constructionRotation = chosenRotation;
-        _lastSelectedTrackPiece = 0;
-        _lastSelectedTrackGradient = 0;
-        _lastSelectedSignal = 0xFF;
+        const auto chosenLoc = isCloserToNext ? _cState->nextTile : _cState->previousTile;
+        const auto chosenRotation = isCloserToNext ? _cState->nextTileRotation : _cState->previousTileRotation;
+        _cState->x = chosenLoc.x;
+        _cState->y = chosenLoc.y;
+        _cState->constructionZ = chosenLoc.z;
+        _cState->constructionRotation = chosenRotation;
+        _cState->lastSelectedTrackPiece = 0;
+        _cState->lastSelectedTrackGradient = 0;
+        _cState->lastSelectedSignal = 0xFF;
 
-        Common::refreshStationList(_stationList, _trackType, TransportMode::road);
+        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::road);
 
-        auto lastStation = Scenario::getConstruction().roadStations[(_trackType & ~(1ULL << 7))];
+        auto lastStation = Scenario::getConstruction().roadStations[(_cState->trackType & ~(1ULL << 7))];
 
         if (lastStation == 0xFF)
-            lastStation = _stationList[0];
+            lastStation = _cState->stationList[0];
 
-        _lastSelectedStationType = lastStation;
+        _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::road);
+        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::road);
 
-        auto lastBridge = Scenario::getConstruction().bridges[(_trackType & ~(1ULL << 7))];
+        auto lastBridge = Scenario::getConstruction().bridges[(_cState->trackType & ~(1ULL << 7))];
 
         if (lastBridge == 0xFF)
-            lastBridge = _bridgeList[0];
+            lastBridge = _cState->bridgeList[0];
 
-        _lastSelectedBridge = lastBridge;
+        _cState->lastSelectedBridge = lastBridge;
         if (copyElement->hasBridge())
         {
-            _lastSelectedBridge = copyElement->bridge();
+            _cState->lastSelectedBridge = copyElement->bridge();
         }
 
-        Common::refreshModList(_modList, _trackType, TransportMode::road);
+        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::road);
 
-        _lastSelectedMods = 0;
-        auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1ULL << 7));
+        _cState->lastSelectedMods = 0;
+        auto* roadObj = ObjectManager::get<RoadObject>(_cState->trackType & ~(1ULL << 7));
         if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
         {
-            _lastSelectedMods = copyElement->mods();
+            _cState->lastSelectedMods = copyElement->mods();
         }
-        _byte_113603A = 0;
+        _cState->byte_113603A = 0;
 
         auto* window = WindowManager::find(WindowType::construction);
 
@@ -398,7 +398,7 @@ namespace OpenLoco::Ui::Windows::Construction
         if (mainWindow)
         {
             auto viewport = mainWindow->viewports[0];
-            _viewportFlags = viewport->flags;
+            _cState->viewportFlags = viewport->flags;
         }
 
         auto window = WindowManager::find(WindowType::construction);
@@ -412,19 +412,19 @@ namespace OpenLoco::Ui::Windows::Construction
 
                 if (roadObj->hasFlags(RoadObjectFlags::unk_03))
                 {
-                    if (_trackType & (1 << 7))
+                    if (_cState->trackType & (1 << 7))
                     {
-                        trackType = _trackType & ~(1 << 7);
+                        trackType = _cState->trackType & ~(1 << 7);
                         roadObj = ObjectManager::get<RoadObject>(trackType);
 
                         if (roadObj->hasFlags(RoadObjectFlags::unk_03))
                         {
-                            _trackType = static_cast<uint8_t>(flags);
+                            _cState->trackType = static_cast<uint8_t>(flags);
 
                             Common::sub_4A3A50();
 
-                            _lastSelectedTrackPiece = 0;
-                            _lastSelectedTrackGradient = 0;
+                            _cState->lastSelectedTrackPiece = 0;
+                            _cState->lastSelectedTrackGradient = 0;
 
                             return window;
                         }
@@ -441,22 +441,22 @@ namespace OpenLoco::Ui::Windows::Construction
         if (mainWindow)
         {
             auto viewport = mainWindow->viewports[0];
-            viewport->flags = _viewportFlags;
+            viewport->flags = _cState->viewportFlags;
         }
 
-        _trackType = static_cast<uint8_t>(flags);
-        _byte_1136063 = flags >> 24;
-        _x = 0x1800;
-        _y = 0x1800;
-        _constructionZ = 0x100;
-        _constructionRotation = 0;
-        _constructionHover = 0;
-        _byte_113607E = 1;
-        _trackCost = 0x80000000;
-        _byte_1136076 = 0;
-        _lastSelectedTrackPiece = 0;
-        _lastSelectedTrackGradient = 0;
-        _lastSelectedTrackModSection = 0;
+        _cState->trackType = static_cast<uint8_t>(flags);
+        _cState->byte_1136063 = flags >> 24;
+        _cState->x = 0x1800;
+        _cState->y = 0x1800;
+        _cState->constructionZ = 0x100;
+        _cState->constructionRotation = 0;
+        _cState->constructionHover = 0;
+        _cState->byte_113607E = 1;
+        _cState->trackCost = 0x80000000;
+        _cState->byte_1136076 = 0;
+        _cState->lastSelectedTrackPiece = 0;
+        _cState->lastSelectedTrackGradient = 0;
+        _cState->lastSelectedTrackModSection = 0;
 
         Common::setTrackOptions(flags);
 
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::Construction
             return;
         if (window->currentTab == Common::widx::tab_station - Common::widx::tab_construction)
         {
-            if (_byte_1136063 & ((1 << 7) | (1 << 6)))
+            if (_cState->byte_1136063 & ((1 << 7) | (1 << 6)))
                 WindowManager::close(window);
             else
                 window->callOnMouseUp(Common::widx::tab_construction);
@@ -532,7 +532,7 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::constructArrow) != GhostVisibilityFlags::none)
         {
-            World::TileManager::mapInvalidateTileFull(World::Pos2(_x, _y));
+            World::TileManager::mapInvalidateTileFull(World::Pos2(_cState->x, _cState->y));
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::constructArrow;
         }
@@ -544,14 +544,14 @@ namespace OpenLoco::Ui::Windows::Construction
 
     uint16_t getLastSelectedMods()
     {
-        return _lastSelectedMods;
+        return _cState->lastSelectedMods;
     }
 
     uint16_t getLastSelectedTrackModSection()
     {
         if (WindowManager::find(WindowType::construction) != nullptr)
         {
-            return _lastSelectedTrackModSection;
+            return _cState->lastSelectedTrackModSection;
         }
         else
         {
@@ -614,18 +614,18 @@ namespace OpenLoco::Ui::Windows::Construction
             const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.rotation();
             const auto& trackSize = TrackData::getUnkTrack(trackAndDirection);
             const auto nextTile = firstTile + trackSize.pos;
-            _nextTile = nextTile;
-            _nextTileRotation = trackSize.rotationEnd;
+            _cState->nextTile = nextTile;
+            _cState->nextTileRotation = trackSize.rotationEnd;
 
             // Get coordinates of the previous tile before the start of the track piece
             const auto unk = World::kReverseRotation[trackSize.rotationBegin];
             auto previousTile = firstTile;
-            _previousTileRotation = unk;
+            _cState->previousTileRotation = unk;
             if (unk < 12)
             {
                 previousTile += World::Pos3{ World::kRotationOffset[unk], 0 };
             }
-            _previousTile = previousTile;
+            _cState->previousTile = previousTile;
         }
 
         void setNextAndPreviousRoadTile(const RoadElement& elRoad, const World::Pos2& pos)
@@ -638,28 +638,28 @@ namespace OpenLoco::Ui::Windows::Construction
             const auto trackAndDirection = (elRoad.roadId() << 3) | elRoad.rotation();
             const auto& trackSize = TrackData::getUnkRoad(trackAndDirection);
             const auto nextTile = firstTile + trackSize.pos;
-            _nextTile = nextTile;
-            _nextTileRotation = trackSize.rotationEnd;
+            _cState->nextTile = nextTile;
+            _cState->nextTileRotation = trackSize.rotationEnd;
 
             // Get coordinates of the previous tile before the start of the track piece
             const auto unk = World::kReverseRotation[trackSize.rotationBegin];
             auto previousTile = firstTile;
-            _previousTileRotation = unk;
+            _cState->previousTileRotation = unk;
             if (unk < 12)
             {
                 previousTile += World::Pos3{ World::kRotationOffset[unk], 0 };
             }
-            _previousTile = previousTile;
+            _cState->previousTile = previousTile;
         }
 
         // True for next, false for previous
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport)
         {
-            const auto vpPosNext = gameToScreen(*_nextTile + World::Pos3(16, 16, 0), viewport.getRotation());
+            const auto vpPosNext = gameToScreen(_cState->nextTile + World::Pos3(16, 16, 0), viewport.getRotation());
             const auto uiPosNext = viewport.viewportToScreen(vpPosNext);
             const auto distanceToNext = Math::Vector::manhattanDistance2D(uiPosNext, point);
 
-            const auto vpPosPrevious = gameToScreen(*_previousTile + World::Pos3(16, 16, 0), viewport.getRotation());
+            const auto vpPosPrevious = gameToScreen(_cState->previousTile + World::Pos3(16, 16, 0), viewport.getRotation());
             const auto uiPosPrevious = viewport.viewportToScreen(vpPosPrevious);
             const auto distanceToPrevious = Math::Vector::manhattanDistance2D(uiPosPrevious, point);
 
@@ -685,11 +685,11 @@ namespace OpenLoco::Ui::Windows::Construction
             removeConstructionGhosts();
             World::mapInvalidateMapSelectionTiles();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
-            _trackCost = 0x80000000;
-            _signalCost = 0x80000000;
-            _stationCost = 0x80000000;
-            _modCost = 0x80000000;
-            _byte_1136076 = 0;
+            _cState->trackCost = 0x80000000;
+            _cState->signalCost = 0x80000000;
+            _cState->stationCost = 0x80000000;
+            _cState->modCost = 0x80000000;
+            _cState->byte_1136076 = 0;
 
             if (ToolManager::isToolActive(self->type, self->number))
                 ToolManager::toolCancel();
@@ -728,7 +728,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             auto company = CompanyManager::getPlayerCompany();
             auto companyColour = company->mainColours.primary;
-            auto roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
+            auto roadObj = ObjectManager::get<RoadObject>(_cState->trackType & ~(1 << 7));
             // Construction Tab
             {
                 auto imageId = roadObj->image;
@@ -761,7 +761,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                         drawingCtx.pushRenderTarget(*clipped);
 
-                        auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
+                        auto roadStationObj = ObjectManager::get<RoadStationObject>(_cState->lastSelectedStationType);
                         auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
                         drawingCtx.drawImage(-4, -10, imageId);
                         auto colour = Colours::getTranslucent(companyColour);
@@ -788,9 +788,9 @@ namespace OpenLoco::Ui::Windows::Construction
 
                     for (auto i = 0; i < 2; i++)
                     {
-                        if (_modList[i] != 0xFF)
+                        if (_cState->modList[i] != 0xFF)
                         {
-                            auto roadExtraObj = ObjectManager::get<RoadExtraObject>(_modList[i]);
+                            auto roadExtraObj = ObjectManager::get<RoadExtraObject>(_cState->modList[i]);
                             auto imageId = roadExtraObj->var_0E;
                             if (self->currentTab == widx::tab_overhead - widx::tab_construction)
                                 imageId += (self->frameNo / 2) % 8;
@@ -827,7 +827,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             auto company = CompanyManager::getPlayerCompany();
             auto companyColour = company->mainColours.primary;
-            auto trackObj = ObjectManager::get<TrackObject>(_trackType);
+            auto trackObj = ObjectManager::get<TrackObject>(_cState->trackType);
             // Construction Tab
             {
                 auto imageId = trackObj->image;
@@ -838,7 +838,7 @@ namespace OpenLoco::Ui::Windows::Construction
             }
             // Station Tab
             {
-                if (_byte_1136063 & (1 << 7))
+                if (_cState->byte_1136063 & (1 << 7))
                 {
                     auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_airport;
 
@@ -846,7 +846,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 }
                 else
                 {
-                    if (_byte_1136063 & (1 << 6))
+                    if (_cState->byte_1136063 & (1 << 6))
                     {
                         auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port;
 
@@ -876,7 +876,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                                 drawingCtx.pushRenderTarget(*clipped);
 
-                                auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
+                                auto trainStationObj = ObjectManager::get<TrainStationObject>(_cState->lastSelectedStationType);
                                 auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
                                 drawingCtx.drawImage(-4, -9, imageId);
 
@@ -914,7 +914,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         drawingCtx.pushRenderTarget(*clipped);
 
-                        auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
+                        auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_cState->lastSelectedSignal);
                         auto imageId = trainSignalObject->image;
                         if (self->currentTab == widx::tab_signal - widx::tab_construction)
                         {
@@ -943,9 +943,9 @@ namespace OpenLoco::Ui::Windows::Construction
 
                     for (auto i = 0; i < 4; i++)
                     {
-                        if (_modList[i] != 0xFF)
+                        if (_cState->modList[i] != 0xFF)
                         {
-                            auto trackExtraObj = ObjectManager::get<TrackExtraObject>(_modList[i]);
+                            auto trackExtraObj = ObjectManager::get<TrackExtraObject>(_cState->modList[i]);
                             auto imageId = trackExtraObj->var_0E;
                             if (self->currentTab == widx::tab_overhead - widx::tab_construction)
                                 imageId += (self->frameNo / 2) % 8;
@@ -961,7 +961,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049ED33
         void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
         {
-            if (_trackType & (1 << 7))
+            if (_cState->trackType & (1 << 7))
             {
                 drawRoadTabs(self, drawingCtx);
             }
@@ -1062,16 +1062,16 @@ namespace OpenLoco::Ui::Windows::Construction
             if (isEditorMode())
                 disabledWidgets |= (1ULL << Common::widx::tab_station);
 
-            if (_byte_1136063 & (1 << 7 | 1 << 6))
+            if (_cState->byte_1136063 & (1 << 7 | 1 << 6))
                 disabledWidgets |= (1ULL << Common::widx::tab_construction);
 
-            if (_lastSelectedSignal == 0xFF)
+            if (_cState->lastSelectedSignal == 0xFF)
                 disabledWidgets |= (1ULL << Common::widx::tab_signal);
 
-            if (_modList[0] == 0xFF && _modList[1] == 0xFF && _modList[2] == 0xFF && _modList[3] == 0xFF)
+            if (_cState->modList[0] == 0xFF && _cState->modList[1] == 0xFF && _cState->modList[2] == 0xFF && _cState->modList[3] == 0xFF)
                 disabledWidgets |= (1ULL << Common::widx::tab_overhead);
 
-            if (_lastSelectedStationType == 0xFF)
+            if (_cState->lastSelectedStationType == 0xFF)
                 disabledWidgets |= (1ULL << Common::widx::tab_station);
 
             self->disabledWidgets = disabledWidgets;
@@ -1261,7 +1261,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         continue;
                     if (currentYear > obsoleteYear)
                         continue;
-                    for (size_t k = 0; k < std::size(_stationList); k++)
+                    for (size_t k = 0; k < std::size(_cState->stationList); k++)
                     {
                         if (&stationList[k] == &stationList[stationCount])
                         {
@@ -1349,11 +1349,11 @@ namespace OpenLoco::Ui::Windows::Construction
                         continue;
                     if (currentYear < bridgeObj->designedYear)
                         continue;
-                    for (size_t k = 0; k < std::size(_bridgeList); k++)
+                    for (size_t k = 0; k < std::size(_cState->bridgeList); k++)
                     {
                         if (&bridgeList[k] == &bridgeList[bridgeCount])
                         {
-                            _bridgeList[bridgeCount] = i;
+                            _cState->bridgeList[bridgeCount] = i;
                             bridgeCount++;
                             break;
                         }
@@ -1363,9 +1363,9 @@ namespace OpenLoco::Ui::Windows::Construction
                 }
             }
 
-            _bridgeList[bridgeCount] = 0xFF;
+            _cState->bridgeList[bridgeCount] = 0xFF;
 
-            sortList(_bridgeList);
+            sortList(_cState->bridgeList);
         }
 
         // 0x004781C5, 0x004A693D
@@ -1440,27 +1440,27 @@ namespace OpenLoco::Ui::Windows::Construction
         void sub_4A3A50()
         {
             removeConstructionGhosts();
-            setTrackOptions(_trackType);
-            refreshStationList(_stationList, _trackType, TransportMode::road);
+            setTrackOptions(_cState->trackType);
+            refreshStationList(_cState->stationList, _cState->trackType, TransportMode::road);
 
-            auto lastStation = Scenario::getConstruction().roadStations[(_trackType & ~(1ULL << 7))];
+            auto lastStation = Scenario::getConstruction().roadStations[(_cState->trackType & ~(1ULL << 7))];
             if (lastStation == 0xFF)
-                lastStation = _stationList[0];
-            _lastSelectedStationType = lastStation;
+                lastStation = _cState->stationList[0];
+            _cState->lastSelectedStationType = lastStation;
 
-            refreshBridgeList(_bridgeList, _trackType, TransportMode::road);
+            refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::road);
 
-            auto lastBridge = Scenario::getConstruction().bridges[(_trackType & ~(1ULL << 7))];
+            auto lastBridge = Scenario::getConstruction().bridges[(_cState->trackType & ~(1ULL << 7))];
             if (lastBridge == 0xFF)
-                lastBridge = _bridgeList[0];
-            _lastSelectedBridge = lastBridge;
+                lastBridge = _cState->bridgeList[0];
+            _cState->lastSelectedBridge = lastBridge;
 
-            refreshModList(_modList, _trackType, TransportMode::road);
+            refreshModList(_cState->modList, _cState->trackType, TransportMode::road);
 
-            auto lastMod = Scenario::getConstruction().roadMods[(_trackType & ~(1ULL << 7))];
+            auto lastMod = Scenario::getConstruction().roadMods[(_cState->trackType & ~(1ULL << 7))];
             if (lastMod == 0xFF)
                 lastMod = 0;
-            _lastSelectedMods = lastMod;
+            _cState->lastSelectedMods = lastMod;
 
             auto window = WindowManager::find(WindowType::construction);
 
@@ -1507,7 +1507,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         continue;
                     if (currentYear > signalObj->obsoleteYear)
                         continue;
-                    for (size_t k = 0; k < std::size(_signalList); k++)
+                    for (size_t k = 0; k < std::size(_cState->signalList); k++)
                     {
                         if (&signalList[k] == &signalList[signalCount])
                         {
@@ -1546,7 +1546,7 @@ namespace OpenLoco::Ui::Windows::Construction
         switch (self.currentTab)
         {
             case Common::widx::tab_construction - Common::widx::tab_construction:
-                if (_constructionHover == 1)
+                if (_cState->constructionHover == 1)
                 {
                     self.callOnMouseUp(Construction::widx::rotate_90);
                     removeConstructionGhosts();

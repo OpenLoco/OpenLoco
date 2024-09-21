@@ -79,9 +79,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 break;
 
             case widx::rotate:
-                _constructionRotation++;
-                _constructionRotation = _constructionRotation & 3;
-                _stationCost = 0x80000000;
+                _cState->constructionRotation++;
+                _cState->constructionRotation = _cState->constructionRotation & 3;
+                _cState->stationCost = 0x80000000;
                 self.invalidate();
                 break;
         }
@@ -92,8 +92,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     {
         for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
         {
-            auto station = _stationList[stationIndex];
-            if (station == _lastSelectedStationType)
+            auto station = _cState->stationList[stationIndex];
+            if (station == _cState->lastSelectedStationType)
                 Dropdown::setHighlightedItem(stationIndex);
 
             auto obj = ObjectManager::get<obj_type>(station);
@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             case widx::station_dropdown:
             {
                 uint8_t stationCount = 0;
-                while (_stationList[stationCount] != 0xFF)
+                while (_cState->stationList[stationCount] != 0xFF)
                     stationCount++;
 
                 auto widget = self.widgets[widx::station];
@@ -119,15 +119,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 auto height = widget.height();
                 Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), stationCount, (1 << 7));
 
-                if (_byte_1136063 & (1 << 7))
+                if (_cState->byte_1136063 & (1 << 7))
                 {
                     AddStationsToDropdown<AirportObject>(stationCount);
                 }
-                else if (_byte_1136063 & (1 << 6))
+                else if (_cState->byte_1136063 & (1 << 6))
                 {
                     AddStationsToDropdown<DockObject>(stationCount);
                 }
-                else if (_trackType & (1 << 7))
+                else if (_cState->trackType & (1 << 7))
                 {
                     AddStationsToDropdown<RoadStationObject>(stationCount);
                 }
@@ -154,25 +154,25 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             if (itemIndex == -1)
                 return;
 
-            auto selectedStation = _stationList[itemIndex];
-            _lastSelectedStationType = selectedStation;
+            auto selectedStation = _cState->stationList[itemIndex];
+            _cState->lastSelectedStationType = selectedStation;
 
-            if (_byte_1136063 & (1 << 7))
+            if (_cState->byte_1136063 & (1 << 7))
             {
                 LastGameOptionManager::setLastAirport(selectedStation);
             }
-            else if (_byte_1136063 & (1 << 6))
+            else if (_cState->byte_1136063 & (1 << 6))
             {
                 LastGameOptionManager::setLastShipPort(selectedStation);
             }
-            else if (_trackType & (1 << 7))
+            else if (_cState->trackType & (1 << 7))
             {
-                auto trackType = _trackType & ~(1 << 7);
+                auto trackType = _cState->trackType & ~(1 << 7);
                 Scenario::getConstruction().roadStations[trackType] = selectedStation;
             }
             else
             {
-                Scenario::getConstruction().trainStations[_trackType] = selectedStation;
+                Scenario::getConstruction().trainStations[_cState->trackType] = selectedStation;
             }
 
             self.invalidate();
@@ -195,36 +195,36 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 Windows::Station::sub_491BC6();
                 World::resetMapSelectionFlag(World::MapSelectionFlags::catchmentArea);
             }
-            if (_stationGhostType & (1 << 15))
+            if (_cState->stationGhostType & (1 << 15))
             {
                 GameCommands::AirportRemovalArgs args;
-                args.pos = _stationGhostPos;
+                args.pos = _cState->stationGhostPos;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
-            else if (_stationGhostType & (1 << 14))
+            else if (_cState->stationGhostType & (1 << 14))
             {
                 GameCommands::PortRemovalArgs args;
-                args.pos = _stationGhostPos;
+                args.pos = _cState->stationGhostPos;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
-            else if (_stationGhostType & (1 << 7))
+            else if (_cState->stationGhostType & (1 << 7))
             {
                 GameCommands::RoadStationRemovalArgs args;
-                args.pos = _stationGhostPos;
-                args.rotation = _stationGhostRotation;
-                args.roadId = _stationGhostTrackId;
-                args.index = _stationGhostTileIndex;
-                args.roadObjectId = _stationGhostType & ~(1 << 7);
+                args.pos = _cState->stationGhostPos;
+                args.rotation = _cState->stationGhostRotation;
+                args.roadId = _cState->stationGhostTrackId;
+                args.index = _cState->stationGhostTileIndex;
+                args.roadObjectId = _cState->stationGhostType & ~(1 << 7);
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             else
             {
                 GameCommands::TrainStationRemovalArgs args;
-                args.pos = _stationGhostPos;
-                args.rotation = _stationGhostRotation;
-                args.trackId = _stationGhostTrackId;
-                args.index = _stationGhostTileIndex;
-                args.type = _stationGhostType;
+                args.pos = _cState->stationGhostPos;
+                args.rotation = _cState->stationGhostRotation;
+                args.trackId = _cState->stationGhostTrackId;
+                args.index = _cState->stationGhostTileIndex;
+                args.type = _cState->stationGhostType;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::station;
@@ -255,9 +255,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static void onToolUpdateFail()
     {
         removeConstructionGhosts();
-        if (_stationCost != 0x80000000U)
+        if (_cState->stationCost != 0x80000000U)
         {
-            _stationCost = 0x80000000U;
+            _cState->stationCost = 0x80000000U;
             Ui::WindowManager::invalidate(Ui::WindowType::construction);
         }
     }
@@ -283,21 +283,21 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
-            if (*_stationGhostPos == args->pos && *_stationGhostRotation == args->rotation && *_stationGhostTypeDockAirport == args->type)
+            if (_cState->stationGhostPos == args->pos && _cState->stationGhostRotation == args->rotation && _cState->stationGhostTypeDockAirport == args->type)
             {
                 return;
             }
             removeConstructionGhosts();
         }
 
-        _stationGhostPos = args->pos;
-        _stationGhostRotation = args->rotation;
-        _stationGhostTypeDockAirport = args->type;
-        _stationGhostType = (1U << 15);
+        _cState->stationGhostPos = args->pos;
+        _cState->stationGhostRotation = args->rotation;
+        _cState->stationGhostTypeDockAirport = args->type;
+        _cState->stationGhostType = (1U << 15);
 
         const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
-        _stationCost = cost;
+        _cState->stationCost = cost;
 
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
 
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        _constructingStationId = _lastConstructedAdjoiningStationId;
+        _cState->constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
@@ -318,11 +318,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             pos = args->pos;
         }
 
-        sub_491C6F(_stationGhostTypeDockAirport, pos, _stationGhostRotation, CatchmentFlags::flag_0);
+        sub_491C6F(_cState->stationGhostTypeDockAirport, pos, _cState->stationGhostRotation, CatchmentFlags::flag_0);
         Windows::Station::sub_491BC6();
-        auto res = calcAcceptedCargoAirportGhost(station, _stationGhostTypeDockAirport, pos, _stationGhostRotation, 0xFFFFFFFFU);
-        _constructingStationAcceptedCargoTypes = res.accepted;
-        _constructingStationProducedCargoTypes = res.produced;
+        auto res = calcAcceptedCargoAirportGhost(station, _cState->stationGhostTypeDockAirport, pos, _cState->stationGhostRotation, 0xFFFFFFFFU);
+        _cState->constructingStationAcceptedCargoTypes = res.accepted;
+        _cState->constructingStationProducedCargoTypes = res.produced;
     }
 
     // 0x004A5158
@@ -346,21 +346,21 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
-            if (*_stationGhostPos == args->pos && *_stationGhostRotation == args->rotation && *_stationGhostTypeDockAirport == args->type)
+            if (_cState->stationGhostPos == args->pos && _cState->stationGhostRotation == args->rotation && _cState->stationGhostTypeDockAirport == args->type)
             {
                 return;
             }
             removeConstructionGhosts();
         }
 
-        _stationGhostPos = args->pos;
-        _stationGhostRotation = args->rotation;
-        _stationGhostTypeDockAirport = args->type;
-        _stationGhostType = (1U << 14);
+        _cState->stationGhostPos = args->pos;
+        _cState->stationGhostRotation = args->rotation;
+        _cState->stationGhostTypeDockAirport = args->type;
+        _cState->stationGhostType = (1U << 14);
 
         const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
-        _stationCost = cost;
+        _cState->stationCost = cost;
 
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
 
@@ -371,7 +371,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        _constructingStationId = _lastConstructedAdjoiningStationId;
+        _cState->constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
@@ -384,8 +384,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         sub_491D20(pos, CatchmentFlags::flag_0);
         Windows::Station::sub_491BC6();
         auto res = calcAcceptedCargoDockGhost(station, pos, 0xFFFFFFFFU);
-        _constructingStationAcceptedCargoTypes = res.accepted;
-        _constructingStationProducedCargoTypes = res.produced;
+        _cState->constructingStationAcceptedCargoTypes = res.accepted;
+        _cState->constructingStationProducedCargoTypes = res.produced;
     }
 
     // 0x004A4D21
@@ -400,26 +400,26 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
-            if (*_stationGhostPos == args->pos
-                && *_stationGhostRotation == args->rotation
-                && *_stationGhostTrackId == args->roadId
-                && *_stationGhostTileIndex == args->index
-                && *_stationGhostType == (args->roadObjectId | (1 << 7)))
+            if (_cState->stationGhostPos == args->pos
+                && _cState->stationGhostRotation == args->rotation
+                && _cState->stationGhostTrackId == args->roadId
+                && _cState->stationGhostTileIndex == args->index
+                && _cState->stationGhostType == (args->roadObjectId | (1 << 7)))
             {
                 return;
             }
             removeConstructionGhosts();
         }
 
-        _stationGhostPos = args->pos;
-        _stationGhostRotation = args->rotation;
-        _stationGhostTrackId = args->roadId;
-        _stationGhostTileIndex = args->index;
-        _stationGhostType = args->roadObjectId | (1 << 7);
+        _cState->stationGhostPos = args->pos;
+        _cState->stationGhostRotation = args->rotation;
+        _cState->stationGhostTrackId = args->roadId;
+        _cState->stationGhostTileIndex = args->index;
+        _cState->stationGhostType = args->roadObjectId | (1 << 7);
 
         const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
-        _stationCost = cost;
+        _cState->stationCost = cost;
 
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
 
@@ -430,7 +430,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        _constructingStationId = _lastConstructedAdjoiningStationId;
+        _cState->constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
@@ -456,8 +456,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         auto res = calcAcceptedCargoTrainStationGhost(station, pos, filter);
-        _constructingStationAcceptedCargoTypes = res.accepted;
-        _constructingStationProducedCargoTypes = res.produced;
+        _cState->constructingStationAcceptedCargoTypes = res.accepted;
+        _cState->constructingStationProducedCargoTypes = res.produced;
     }
 
     // 0x004A4B2E
@@ -472,26 +472,26 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
-            if (*_stationGhostPos == args->pos
-                && *_stationGhostRotation == args->rotation
-                && *_stationGhostTrackId == args->trackId
-                && *_stationGhostTileIndex == args->index
-                && *_stationGhostType == args->trackObjectId)
+            if (_cState->stationGhostPos == args->pos
+                && _cState->stationGhostRotation == args->rotation
+                && _cState->stationGhostTrackId == args->trackId
+                && _cState->stationGhostTileIndex == args->index
+                && _cState->stationGhostType == args->trackObjectId)
             {
                 return;
             }
             removeConstructionGhosts();
         }
 
-        _stationGhostPos = args->pos;
-        _stationGhostRotation = args->rotation;
-        _stationGhostTrackId = args->trackId;
-        _stationGhostTileIndex = args->index;
-        _stationGhostType = args->trackObjectId;
+        _cState->stationGhostPos = args->pos;
+        _cState->stationGhostRotation = args->rotation;
+        _cState->stationGhostTrackId = args->trackId;
+        _cState->stationGhostTileIndex = args->index;
+        _cState->stationGhostType = args->trackObjectId;
 
         const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
-        _stationCost = cost;
+        _cState->stationCost = cost;
 
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
 
@@ -502,7 +502,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        _constructingStationId = _lastConstructedAdjoiningStationId;
+        _cState->constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
@@ -516,8 +516,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         Windows::Station::sub_491BC6();
 
         auto res = calcAcceptedCargoTrainStationGhost(station, pos, 0xFFFFFFFFU);
-        _constructingStationAcceptedCargoTypes = res.accepted;
-        _constructingStationProducedCargoTypes = res.produced;
+        _cState->constructingStationAcceptedCargoTypes = res.accepted;
+        _cState->constructingStationProducedCargoTypes = res.produced;
     }
 
     // 0x0049E421
@@ -527,15 +527,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             return;
         }
-        if (_byte_1136063 & (1 << 7))
+        if (_cState->byte_1136063 & (1 << 7))
         {
             onToolUpdateAirport({ x, y });
         }
-        else if (_byte_1136063 & (1 << 6))
+        else if (_cState->byte_1136063 & (1 << 6))
         {
             onToolUpdateDock({ x, y });
         }
-        else if (_trackType & (1 << 7))
+        else if (_cState->trackType & (1 << 7))
         {
             onToolUpdateRoadStation({ x, y });
         }
@@ -555,8 +555,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         GameCommands::AirportPlacementArgs placementArgs;
-        placementArgs.type = _lastSelectedStationType;
-        placementArgs.rotation = _constructionRotation;
+        placementArgs.type = _cState->lastSelectedStationType;
+        placementArgs.rotation = _cState->constructionRotation;
 
         const auto airportObj = ObjectManager::get<AirportObject>(placementArgs.type);
         const auto [minPos, maxPos] = airportObj->getAirportExtents(World::toTileSpace(*pos), placementArgs.rotation);
@@ -598,7 +598,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        const auto* airportObject = ObjectManager::get<AirportObject>(_lastSelectedStationType);
+        const auto* airportObject = ObjectManager::get<AirportObject>(_cState->lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
         formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(airportObject->name);
@@ -695,7 +695,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         GameCommands::PortPlacementArgs placementArgs;
-        placementArgs.type = _lastSelectedStationType;
+        placementArgs.type = _cState->lastSelectedStationType;
         placementArgs.pos = World::Pos3(pos->x, pos->y, waterHeight * World::kSmallZStep);
         if (directionOfIndustry != 0xFF)
         {
@@ -736,7 +736,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        const auto* dockObject = ObjectManager::get<DockObject>(_lastSelectedStationType);
+        const auto* dockObject = ObjectManager::get<DockObject>(_cState->lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
         formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(dockObject->name);
@@ -765,7 +765,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         placementArgs.roadId = elRoad->roadId();
         placementArgs.index = elRoad->sequenceIndex();
         placementArgs.roadObjectId = elRoad->roadObjectId();
-        placementArgs.type = _lastSelectedStationType;
+        placementArgs.type = _cState->lastSelectedStationType;
         return { placementArgs };
     }
 
@@ -780,7 +780,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        const auto* roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
+        const auto* roadStationObject = ObjectManager::get<RoadStationObject>(_cState->lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
         formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(roadStationObject->name);
@@ -812,7 +812,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         placementArgs.trackId = elTrack->trackId();
         placementArgs.index = elTrack->sequenceIndex();
         placementArgs.trackObjectId = elTrack->trackObjectId();
-        placementArgs.type = _lastSelectedStationType;
+        placementArgs.type = _cState->lastSelectedStationType;
         return { placementArgs };
     }
 
@@ -827,13 +827,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        const auto* trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
+        const auto* trainStationObject = ObjectManager::get<TrainStationObject>(_cState->lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
         formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(trainStationObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
-        if (args->trackObjectId != _trackType)
+        if (args->trackObjectId != _cState->trackType)
         {
             Error::open(StringIds::null, StringIds::wrong_type_of_track_road);
             return;
@@ -852,15 +852,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        if (_byte_1136063 & (1 << 7))
+        if (_cState->byte_1136063 & (1 << 7))
         {
             onToolDownAirport(x, y);
         }
-        else if (_byte_1136063 & (1 << 6))
+        else if (_cState->byte_1136063 & (1 << 6))
         {
             onToolDownDock(x, y);
         }
-        else if (_trackType & (1 << 7))
+        else if (_cState->trackType & (1 << 7))
         {
             onToolDownRoadStation(x, y);
         }
@@ -879,43 +879,43 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto captionArgs = FormatArguments(self.widgets[Common::widx::caption].textArgs);
 
-        if (_byte_1136063 & (1 << 7))
+        if (_cState->byte_1136063 & (1 << 7))
         {
             self.widgets[widx::rotate].type = WidgetType::buttonWithImage;
 
-            auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
+            auto airportObj = ObjectManager::get<AirportObject>(_cState->lastSelectedStationType);
 
             self.widgets[widx::station].text = airportObj->name;
 
             captionArgs.push(StringIds::title_airport);
         }
-        else if (_byte_1136063 & (1 << 6))
+        else if (_cState->byte_1136063 & (1 << 6))
         {
-            auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
+            auto dockObj = ObjectManager::get<DockObject>(_cState->lastSelectedStationType);
 
             self.widgets[widx::station].text = dockObj->name;
 
             captionArgs.push(StringIds::title_ship_port);
         }
-        else if (_trackType & (1 << 7))
+        else if (_cState->trackType & (1 << 7))
         {
-            auto trackType = _trackType & ~(1 << 7);
+            auto trackType = _cState->trackType & ~(1 << 7);
 
             auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
             captionArgs.push(roadObj->name);
 
-            auto roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
+            auto roadStationObject = ObjectManager::get<RoadStationObject>(_cState->lastSelectedStationType);
 
             self.widgets[widx::station].text = roadStationObject->name;
         }
         else
         {
-            auto trackObj = ObjectManager::get<TrackObject>(_trackType);
+            auto trackObj = ObjectManager::get<TrackObject>(_cState->trackType);
 
             captionArgs.push(trackObj->name);
 
-            auto trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
+            auto trainStationObject = ObjectManager::get<TrainStationObject>(_cState->lastSelectedStationType);
 
             self.widgets[widx::station].text = trainStationObject->name;
         }
@@ -936,21 +936,21 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         int16_t xPos = self.widgets[widx::image].left + self.x;
         int16_t yPos = self.widgets[widx::image].top + self.y;
 
-        if (_byte_1136063 & (1 << 7))
+        if (_cState->byte_1136063 & (1 << 7))
         {
-            auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
+            auto airportObj = ObjectManager::get<AirportObject>(_cState->lastSelectedStationType);
             auto imageId = Gfx::recolour(airportObj->image, companyColour);
             drawingCtx.drawImage(xPos, yPos, imageId);
         }
-        else if (_byte_1136063 & (1 << 6))
+        else if (_cState->byte_1136063 & (1 << 6))
         {
-            auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
+            auto dockObj = ObjectManager::get<DockObject>(_cState->lastSelectedStationType);
             auto imageId = Gfx::recolour(dockObj->image, companyColour);
             drawingCtx.drawImage(xPos, yPos, imageId);
         }
-        else if (_trackType & (1 << 7))
+        else if (_cState->trackType & (1 << 7))
         {
-            auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
+            auto roadStationObj = ObjectManager::get<RoadStationObject>(_cState->lastSelectedStationType);
 
             auto imageId = Gfx::recolour(roadStationObj->image + RoadStation::ImageIds::preview_image, companyColour);
             drawingCtx.drawImage(xPos, yPos, imageId);
@@ -966,7 +966,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
+            auto trainStationObj = ObjectManager::get<TrainStationObject>(_cState->lastSelectedStationType);
 
             auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
             drawingCtx.drawImage(xPos, yPos, imageId);
@@ -981,13 +981,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             drawingCtx.drawImage(xPos, yPos, imageId);
         }
 
-        if (_stationCost != 0x80000000 && _stationCost != 0)
+        if (_cState->stationCost != 0x80000000 && _cState->stationCost != 0)
         {
             auto& widget = self.widgets[widx::image];
             auto point = Point(self.x + 69, widget.bottom + self.y + 4);
 
             FormatArguments args{};
-            args.push<uint32_t>(_stationCost);
+            args.push<uint32_t>(_cState->stationCost);
 
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
@@ -1003,13 +1003,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         FormatArguments args{};
 
         // Todo: change globals type to be StationId and make this StationId::null
-        if (_constructingStationId == 0xFFFFFFFF)
+        if (_cState->constructingStationId == 0xFFFFFFFF)
         {
             args.push(StringIds::new_station);
         }
         else
         {
-            auto station = StationManager::get(StationId(*_constructingStationId));
+            auto station = StationManager::get(StationId(_cState->constructingStationId));
             args.push(station->name);
             args.push(station->town);
         }
@@ -1027,7 +1027,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         origin = Point(xPos, yPos);
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_accepts);
 
-        if (_constructingStationAcceptedCargoTypes == 0)
+        if (_cState->constructingStationAcceptedCargoTypes == 0)
         {
             origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
         }
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             yPos--;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
             {
-                if (_constructingStationAcceptedCargoTypes & (1 << i))
+                if (_cState->constructingStationAcceptedCargoTypes & (1 << i))
                 {
                     auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)
@@ -1056,7 +1056,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_produces);
 
-        if (_constructingStationProducedCargoTypes == 0)
+        if (_cState->constructingStationProducedCargoTypes == 0)
         {
             origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
         }
@@ -1065,7 +1065,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             yPos--;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
             {
-                if (_constructingStationProducedCargoTypes & (1 << i))
+                if (_cState->constructingStationProducedCargoTypes & (1 << i))
                 {
                     auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)

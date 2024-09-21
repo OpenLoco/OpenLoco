@@ -25,82 +25,109 @@ namespace OpenLoco::Ui::Windows::Construction
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GhostVisibilityFlags);
 
+    static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
+
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
-    static loco_global<uint32_t, 0x01135F3E> _trackCost;
-    static loco_global<uint32_t, 0x01135F42> _dword_1135F42;
-    static loco_global<uint32_t, 0x01135F46> _modCost;
-    static loco_global<uint32_t, 0x01135F4E> _signalCost;
-    static loco_global<uint32_t, 0x01135F6C> _stationCost;
-    static loco_global<uint32_t, 0x01135F70> _constructingStationId;
-    static loco_global<uint32_t, 0x01135F74> _constructingStationAcceptedCargoTypes;
-    static loco_global<uint32_t, 0x01135F78> _constructingStationProducedCargoTypes;
-    static loco_global<ViewportFlags, 0x01135F86> _viewportFlags;
-    static loco_global<uint16_t, 0x01135FB4> _x;
-    static loco_global<uint16_t, 0x01135FB6> _y;
-    static loco_global<uint16_t, 0x01135FB8> _constructionZ;
-    static loco_global<World::Pos3, 0x01135FBA> _ghostTrackPos;
-    static loco_global<World::Pos3, 0x01135FC0> _ghostRemovalTrackPos;
-    static loco_global<uint8_t, 0x0113606A> _ghostRemovalTrackId;
-    static loco_global<uint8_t, 0x0113606B> _stationGhostRotation;
-    static loco_global<uint8_t, 0x0113606C> _stationGhostTrackId;
-    static loco_global<uint8_t, 0x0113606D> _stationGhostTileIndex;
-    static loco_global<uint8_t, 0x01136069> _ghostRemovalTrackRotation;
-    static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
-    static loco_global<World::Pos3, 0x01135FC6> _nextTile;
-    static loco_global<uint16_t, 0x01135FCC> _nextTileRotation;
-    static loco_global<World::Pos3, 0x01135FCE> _previousTile;
-    static loco_global<uint16_t, 0x01135FD4> _previousTileRotation;
-    static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
-    static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
-    static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
-    static loco_global<World::Pos3, 0x01135FE6> _stationGhostPos;
-    static loco_global<uint16_t, 0x01135FEE> _stationGhostType;
-    static loco_global<uint8_t, 0x01136089> _stationGhostTypeDockAirport;
-    static loco_global<World::Pos3, 0x01135FF8> _modGhostPos;
-    static loco_global<uint16_t, 0x01135FFE> _word_1135FFE;
-    static loco_global<int16_t, 0x01136000> _word_1136000;
-    static loco_global<uint16_t, 0x01136002> _signalGhostSides;
-    static loco_global<World::Pos3, 0x01136004> _signalGhostPos;
-    static loco_global<uint16_t, 0x0113600A> _signalGhostTrackObjId;
-    static loco_global<uint8_t, 0x01136010> _modGhostTrackObjId;
-    static loco_global<uint8_t[17], 0x0113601D> _signalList;
-    static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
-    static loco_global<uint8_t, 0x0113602F> _isSignalBothDirections;
-    static loco_global<uint8_t[9], 0x01136030> _bridgeList;
-    static loco_global<uint8_t, 0x01136039> _lastSelectedBridge;
-    static loco_global<uint8_t, 0x0113603A> _byte_113603A;
-    static loco_global<uint8_t[17], 0x0113603B> _stationList;
-    static loco_global<uint8_t, 0x0113604C> _lastSelectedStationType;
-    static loco_global<uint8_t, 0x0113604D> _signalGhostRotation;
-    static loco_global<uint8_t, 0x0113604E> _signalGhostTrackId;
-    static loco_global<uint8_t, 0x0113604F> _signalGhostTileIndex;
-    static loco_global<uint8_t[4], 0x01136054> _modList;
-    static loco_global<uint8_t, 0x01136058> _modGhostRotation;
-    static loco_global<uint8_t, 0x01136059> _modGhostTrackId;
-    static loco_global<uint8_t, 0x0113605A> _modGhostTileIndex;
-    static loco_global<uint8_t, 0x0113605D> _makeJunction;
-    static loco_global<uint8_t, 0x01136061> _constructionHover;
-    static loco_global<uint8_t, 0x01136062> _trackType;
-    static loco_global<uint8_t, 0x01136063> _byte_1136063;
-    static loco_global<uint8_t, 0x01136064> _constructionRotation;
-    static loco_global<uint8_t, 0x01136065> _byte_1136065;
-    static loco_global<uint8_t, 0x01136066> _constructionArrowFrameNum;
-    static loco_global<uint8_t, 0x01136067> _lastSelectedTrackPiece;
-    static loco_global<uint8_t, 0x01136068> _lastSelectedTrackGradient;
-    static loco_global<uint8_t, 0x0113606E> _lastSelectedTrackModSection;
-    static loco_global<uint8_t, 0x01136072> _byte_1136072;
-    static loco_global<uint8_t, 0x01136073> _byte_1136073;
-    static loco_global<uint8_t, 0x01136075> _byte_1136075;
-    static loco_global<uint8_t, 0x01136076> _byte_1136076;
-    static loco_global<uint8_t, 0x01136077> _byte_1136077;
-    static loco_global<uint8_t, 0x01136078> _byte_1136078;
-    static loco_global<uint8_t, 0x01136079> _lastSelectedTrackPieceId;
-    static loco_global<uint8_t, 0x0113607E> _byte_113607E;
-    static loco_global<World::TileElement, 0x01136090> _backupTileElement;
+
+#pragma pack(push, 1)
+    struct ConstructionState
+    {
+        uint32_t trackCost;                             // 0x01135F3E
+        uint32_t dword_1135F42;                         // 0x01135F42
+        uint32_t modCost;                               // 0x01135F46
+        uint32_t pad_1135F4A;                           // 0x01135F4A
+        uint32_t signalCost;                            // 0x01135F4E
+        uint8_t pad_1135F52[26];                        // 0x01135F52
+        uint32_t stationCost;                           // 0x01135F6C
+        uint32_t constructingStationId;                 // 0x01135F70
+        uint32_t constructingStationAcceptedCargoTypes; // 0x01135F74
+        uint32_t constructingStationProducedCargoTypes; // 0x01135F78
+        uint8_t pad_1135F7C[10];                        // 0x01135F7C
+        ViewportFlags viewportFlags;                    // 0x01135F86
+        uint8_t pad_1135F88[44];                        // 0x01135F88
+        uint16_t x;                                     // 0x01135FB4
+        uint16_t y;                                     // 0x01135FB6
+        uint16_t constructionZ;                         // 0x01135FB8
+        World::Pos3 ghostTrackPos;                      // 0x01135FBA
+        World::Pos3 ghostRemovalTrackPos;               // 0x01135FC0
+        World::Pos3 nextTile;                           // 0x01135FC6
+        uint16_t nextTileRotation;                      // 0x01135FCC
+        World::Pos3 previousTile;                       // 0x01135FCE
+        uint16_t previousTileRotation;                  // 0x01135FD4
+        uint16_t word_1135FD6;                          // 0x01135FD6
+        uint16_t word_1135FD8;                          // 0x01135FD8
+        uint8_t pad_1135FDA[10];                        // 0x01135FDA
+        uint16_t lastSelectedMods;                      // 0x01135FE4
+        World::Pos3 stationGhostPos;                    // 0x01135FE6
+        uint8_t pad_1135FEC[2];                         // 0x01135FEC
+        uint16_t stationGhostType;                      // 0x01135FEE
+        uint8_t pad_1135FF0[8];                         // 0x01135FF0
+        World::Pos3 modGhostPos;                        // 0x01135FF8
+        uint16_t word_1135FFE;                          // 0x01135FFE
+        int16_t word_1136000;                           // 0x01136000
+        uint16_t signalGhostSides;                      // 0x01136002
+        World::Pos3 signalGhostPos;                     // 0x01136004
+        uint16_t signalGhostTrackObjId;                 // 0x0113600A
+        uint8_t pad_113600C[4];                         // 0x0113600C
+        uint8_t modGhostTrackObjId;                     // 0x01136010
+        uint8_t pad_11360011[12];                       // 0x01136011
+        uint8_t signalList[17];                         // 0x0113601D
+        uint8_t lastSelectedSignal;                     // 0x0113602E
+        uint8_t isSignalBothDirections;                 // 0x0113602F
+        uint8_t bridgeList[9];                          // 0x01136030
+        uint8_t lastSelectedBridge;                     // 0x01136039
+        uint8_t byte_113603A;                           // 0x0113603A
+        uint8_t stationList[17];                        // 0x0113603B
+        uint8_t lastSelectedStationType;                // 0x0113604C
+        uint8_t signalGhostRotation;                    // 0x0113604D
+        uint8_t signalGhostTrackId;                     // 0x0113604E
+        uint8_t signalGhostTileIndex;                   // 0x0113604F
+        uint8_t pad_1136050[4];                         // 0x01136050
+        uint8_t modList[4];                             // 0x01136054
+        uint8_t modGhostRotation;                       // 0x01136058
+        uint8_t modGhostTrackId;                        // 0x01136059
+        uint8_t modGhostTileIndex;                      // 0x0113605A
+        uint8_t pad_113605B[2];                         // 0x0113605B
+        uint8_t makeJunction;                           // 0x0113605D
+        uint8_t pad_113605E[3];                         // 0x0113605E
+        uint8_t constructionHover;                      // 0x01136061
+        uint8_t trackType;                              // 0x01136062
+        uint8_t byte_1136063;                           // 0x01136063
+        uint8_t constructionRotation;                   // 0x01136064
+        uint8_t byte_1136065;                           // 0x01136065
+        uint8_t constructionArrowFrameNum;              // 0x01136066
+        uint8_t lastSelectedTrackPiece;                 // 0x01136067
+        uint8_t lastSelectedTrackGradient;              // 0x01136068
+        uint8_t ghostRemovalTrackRotation;              // 0x01136069
+        uint8_t ghostRemovalTrackId;                    // 0x0113606A
+        uint8_t stationGhostRotation;                   // 0x0113606B
+        uint8_t stationGhostTrackId;                    // 0x0113606C
+        uint8_t stationGhostTileIndex;                  // 0x0113606D
+        uint8_t lastSelectedTrackModSection;            // 0x0113606E
+        uint8_t pad_113606F[3];                         // 0x0113606F
+        uint8_t byte_1136072;                           // 0x01136072
+        uint8_t byte_1136073;                           // 0x01136073
+        uint8_t pad_1136074;                            // 0x01136074
+        uint8_t byte_1136075;                           // 0x01136075
+        uint8_t byte_1136076;                           // 0x01136076
+        uint8_t byte_1136077;                           // 0x01136077
+        uint8_t byte_1136078;                           // 0x01136078
+        uint8_t lastSelectedTrackPieceId;               // 0x01136079
+        uint8_t pad_113607A[4];                         // 0x0113607A
+        uint8_t byte_113607E;                           // 0x0113607E
+        uint8_t pad_113607F[10];                        // 0x0113607F
+        uint8_t stationGhostTypeDockAirport;            // 0x01136089
+        uint8_t pad_113608A[6];                         // 0x0113608A
+        World::TileElement backupTileElement;           // 0x01136090
+    };
+#pragma pack(pop)
+
+    static_assert(sizeof(ConstructionState) == 0x01136090 + 8 - 0x01135F3E);
+    static loco_global<ConstructionState, 0x01135F3E> _cState;
 
     namespace Common
     {

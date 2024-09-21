@@ -70,10 +70,10 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             {
                 auto checkboxIndex = widgetIndex - widx::checkbox_1;
 
-                _lastSelectedMods = _lastSelectedMods ^ (1 << checkboxIndex);
+                _cState->lastSelectedMods = _cState->lastSelectedMods ^ (1 << checkboxIndex);
 
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting/deselecting overhead wires for trams
-                Scenario::getConstruction().trackMods[_trackType & ~(1 << 7)] = _lastSelectedMods;
+                Scenario::getConstruction().trackMods[_cState->trackType & ~(1 << 7)] = _cState->lastSelectedMods;
 
                 self.invalidate();
                 break;
@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 Dropdown::add(1, StringIds::block_section);
                 Dropdown::add(2, StringIds::all_connected_track);
 
-                Dropdown::setHighlightedItem(_lastSelectedTrackModSection);
+                Dropdown::setHighlightedItem(_cState->lastSelectedTrackModSection);
                 break;
             }
 
@@ -123,7 +123,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         if (itemIndex != -1)
         {
-            _lastSelectedTrackModSection = itemIndex;
+            _cState->lastSelectedTrackModSection = itemIndex;
             self.invalidate();
         }
     }
@@ -153,13 +153,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
 
         GameCommands::RoadModsPlacementArgs args;
-        args.type = _lastSelectedMods;
+        args.type = _cState->lastSelectedMods;
         args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
         args.rotation = elRoad->rotation();
         args.roadId = elRoad->roadId();
         args.index = elRoad->sequenceIndex();
         args.roadObjType = elRoad->roadObjectId();
-        args.modSection = _lastSelectedTrackModSection;
+        args.modSection = _cState->lastSelectedTrackModSection;
         return { args };
     }
 
@@ -182,13 +182,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
 
         GameCommands::TrackModsPlacementArgs args;
-        args.type = _lastSelectedMods;
+        args.type = _cState->lastSelectedMods;
         args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         args.rotation = elTrack->rotation();
         args.trackId = elTrack->trackId();
         args.index = elTrack->sequenceIndex();
         args.trackObjType = elTrack->trackObjectId();
-        args.modSection = _lastSelectedTrackModSection;
+        args.modSection = _cState->lastSelectedTrackModSection;
         return { args };
     }
 
@@ -197,28 +197,28 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     {
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::overhead) != GhostVisibilityFlags::none)
         {
-            if (_modGhostTrackObjId & (1 << 7))
+            if (_cState->modGhostTrackObjId & (1 << 7))
             {
                 GameCommands::RoadModsRemovalArgs args;
-                args.pos = _modGhostPos;
-                args.rotation = _modGhostRotation;
-                args.roadId = _modGhostTrackId;
-                args.index = _modGhostTileIndex;
-                args.roadObjType = _modGhostTrackObjId & ~(1 << 7);
-                args.type = _lastSelectedMods;
-                args.modSection = _lastSelectedTrackModSection;
+                args.pos = _cState->modGhostPos;
+                args.rotation = _cState->modGhostRotation;
+                args.roadId = _cState->modGhostTrackId;
+                args.index = _cState->modGhostTileIndex;
+                args.roadObjType = _cState->modGhostTrackObjId & ~(1 << 7);
+                args.type = _cState->lastSelectedMods;
+                args.modSection = _cState->lastSelectedTrackModSection;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             else
             {
                 GameCommands::TrackModsRemovalArgs args;
-                args.pos = _modGhostPos;
-                args.rotation = _modGhostRotation;
-                args.trackId = _modGhostTrackId;
-                args.index = _modGhostTileIndex;
-                args.trackObjType = _modGhostTrackObjId & ~(1 << 7);
-                args.type = _lastSelectedMods;
-                args.modSection = _lastSelectedTrackModSection;
+                args.pos = _cState->modGhostPos;
+                args.rotation = _cState->modGhostRotation;
+                args.trackId = _cState->modGhostTrackId;
+                args.index = _cState->modGhostTileIndex;
+                args.trackObjType = _cState->modGhostTrackObjId & ~(1 << 7);
+                args.type = _cState->lastSelectedMods;
+                args.modSection = _cState->lastSelectedTrackModSection;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::overhead;
@@ -231,11 +231,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         if (res != GameCommands::FAILURE)
         {
             _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::overhead;
-            _modGhostPos = args.pos;
-            _modGhostRotation = args.rotation;
-            _modGhostTrackId = args.roadId;
-            _modGhostTileIndex = args.index;
-            _modGhostTrackObjId = args.roadObjType | (1 << 7); // This looks wrong!
+            _cState->modGhostPos = args.pos;
+            _cState->modGhostRotation = args.rotation;
+            _cState->modGhostTrackId = args.roadId;
+            _cState->modGhostTileIndex = args.index;
+            _cState->modGhostTrackObjId = args.roadObjType | (1 << 7); // This looks wrong!
         }
         return res;
     }
@@ -246,11 +246,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         if (res != GameCommands::FAILURE)
         {
             _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::overhead;
-            _modGhostPos = args.pos;
-            _modGhostRotation = args.rotation;
-            _modGhostTrackId = args.trackId;
-            _modGhostTileIndex = args.index;
-            _modGhostTrackObjId = args.trackObjType;
+            _cState->modGhostPos = args.pos;
+            _cState->modGhostRotation = args.rotation;
+            _cState->modGhostTrackId = args.trackId;
+            _cState->modGhostTileIndex = args.index;
+            _cState->modGhostTrackObjId = args.trackObjType;
         }
         return res;
     }
@@ -263,15 +263,15 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             return;
         }
 
-        if (_trackType & (1 << 7))
+        if (_cState->trackType & (1 << 7))
         {
             auto placementArgs = getRoadModsPlacementArgsFromCursor(x, y);
-            if (!placementArgs || ((placementArgs->roadObjType | (1 << 7)) != _trackType))
+            if (!placementArgs || ((placementArgs->roadObjType | (1 << 7)) != _cState->trackType))
             {
                 removeConstructionGhosts();
-                if (_modCost != 0x80000000)
+                if (_cState->modCost != 0x80000000)
                 {
-                    _modCost = 0x80000000;
+                    _cState->modCost = 0x80000000;
                     self.invalidate();
                 }
                 return;
@@ -279,11 +279,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             if ((_ghostVisibilityFlags & GhostVisibilityFlags::overhead) != GhostVisibilityFlags::none)
             {
-                if (*_modGhostPos == placementArgs->pos
-                    && _modGhostRotation == placementArgs->rotation
-                    && _modGhostTrackId == placementArgs->roadId
-                    && _modGhostTileIndex == placementArgs->index
-                    && _modGhostTrackObjId == placementArgs->roadObjType)
+                if (_cState->modGhostPos == placementArgs->pos
+                    && _cState->modGhostRotation == placementArgs->rotation
+                    && _cState->modGhostTrackId == placementArgs->roadId
+                    && _cState->modGhostTileIndex == placementArgs->index
+                    && _cState->modGhostTrackObjId == placementArgs->roadObjType)
                 {
                     return;
                 }
@@ -292,21 +292,21 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             removeConstructionGhosts();
 
             auto cost = placeRoadModGhost(*placementArgs);
-            if (cost != _modCost)
+            if (cost != _cState->modCost)
             {
-                _modCost = cost;
+                _cState->modCost = cost;
                 self.invalidate();
             }
         }
         else
         {
             auto placementArgs = getTrackModsPlacementArgsFromCursor(x, y);
-            if (!placementArgs || (placementArgs->trackObjType != _trackType))
+            if (!placementArgs || (placementArgs->trackObjType != _cState->trackType))
             {
                 removeConstructionGhosts();
-                if (_modCost != 0x80000000)
+                if (_cState->modCost != 0x80000000)
                 {
-                    _modCost = 0x80000000;
+                    _cState->modCost = 0x80000000;
                     self.invalidate();
                 }
                 return;
@@ -314,11 +314,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             if ((_ghostVisibilityFlags & GhostVisibilityFlags::overhead) != GhostVisibilityFlags::none)
             {
-                if (*_modGhostPos == placementArgs->pos
-                    && _modGhostRotation == placementArgs->rotation
-                    && _modGhostTrackId == placementArgs->trackId
-                    && _modGhostTileIndex == placementArgs->index
-                    && _modGhostTrackObjId == placementArgs->trackObjType)
+                if (_cState->modGhostPos == placementArgs->pos
+                    && _cState->modGhostRotation == placementArgs->rotation
+                    && _cState->modGhostTrackId == placementArgs->trackId
+                    && _cState->modGhostTileIndex == placementArgs->index
+                    && _cState->modGhostTrackObjId == placementArgs->trackObjType)
                 {
                     return;
                 }
@@ -327,9 +327,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             removeConstructionGhosts();
 
             auto cost = placeTrackModGhost(*placementArgs);
-            if (cost != _modCost)
+            if (cost != _cState->modCost)
             {
-                _modCost = cost;
+                _cState->modCost = cost;
                 self.invalidate();
             }
         }
@@ -345,7 +345,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         removeConstructionGhosts();
 
-        if (_trackType & (1 << 7))
+        if (_cState->trackType & (1 << 7))
         {
             auto args = getRoadModsPlacementArgsFromCursor(x, y);
             if (!args)
@@ -353,7 +353,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 return;
             }
 
-            if ((args->roadObjType | (1 << 7)) != _trackType)
+            if ((args->roadObjType | (1 << 7)) != _cState->trackType)
             {
                 Error::open(StringIds::error_cant_build_this_here, StringIds::wrong_type_of_track_road);
                 return;
@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 return;
             }
 
-            if (args->trackObjType != _trackType)
+            if (args->trackObjType != _cState->trackType)
             {
                 Error::open(StringIds::error_cant_build_this_here, StringIds::wrong_type_of_track_road);
                 return;
@@ -395,7 +395,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         self->widgets[widgetIndex].type = WidgetType::checkbox;
         self->widgets[widgetIndex].text = name;
 
-        if (_lastSelectedMods & (1 << checkboxIndex))
+        if (_cState->lastSelectedMods & (1 << checkboxIndex))
             self->activatedWidgets |= (1ULL << widgetIndex);
     }
 
@@ -411,9 +411,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         self.widgets[widx::checkbox_3].type = WidgetType::none;
         self.widgets[widx::checkbox_4].type = WidgetType::none;
 
-        if (_trackType & (1 << 7))
+        if (_cState->trackType & (1 << 7))
         {
-            auto trackType = _trackType & ~(1 << 7);
+            auto trackType = _cState->trackType & ~(1 << 7);
             auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
             auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
@@ -421,25 +421,25 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             for (auto i = 0; i < 2; i++)
             {
-                if (_modList[i] != 0xFF)
+                if (_cState->modList[i] != 0xFF)
                 {
-                    auto extraName = ObjectManager::get<RoadExtraObject>(_modList[i])->name;
+                    auto extraName = ObjectManager::get<RoadExtraObject>(_cState->modList[i])->name;
                     setCheckbox(&self, i, extraName);
                 }
             }
         }
         else
         {
-            auto trackObj = ObjectManager::get<TrackObject>(_trackType);
+            auto trackObj = ObjectManager::get<TrackObject>(_cState->trackType);
 
             auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(trackObj->name);
 
             for (auto i = 0; i < 4; i++)
             {
-                if (_modList[i] != 0xFF)
+                if (_cState->modList[i] != 0xFF)
                 {
-                    auto extraName = ObjectManager::get<TrackExtraObject>(_modList[i])->name;
+                    auto extraName = ObjectManager::get<TrackExtraObject>(_cState->modList[i])->name;
                     setCheckbox(&self, i, extraName);
                 }
             }
@@ -453,7 +453,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         self.widgets[widx::image].tooltip = StringIds::null;
 
-        if (_lastSelectedMods & 0xF)
+        if (_cState->lastSelectedMods & 0xF)
         {
             self.widgets[widx::image].type = WidgetType::wt_3;
             self.widgets[widx::track].type = WidgetType::combobox;
@@ -474,7 +474,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             StringIds::all_connected_track,
         };
 
-        self.widgets[widx::track].text = modString[_lastSelectedTrackModSection];
+        self.widgets[widx::track].text = modString[_cState->lastSelectedTrackModSection];
 
         Common::repositionTabs(&self);
     }
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     {
         self.draw(drawingCtx);
         Common::drawTabs(&self, drawingCtx);
-        if (_lastSelectedMods & 0xF)
+        if (_cState->lastSelectedMods & 0xF)
         {
             auto xPos = self.x + self.widgets[widx::image].left + 1;
             auto yPos = self.y + self.widgets[widx::image].top + 1;
@@ -512,14 +512,14 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
                 _byte_522095 = _byte_522095 | (1 << 0);
 
-                if (_trackType & (1 << 7))
+                if (_cState->trackType & (1 << 7))
                 {
-                    uint8_t trackType = _trackType & ~(1 << 7);
-                    Construction::drawRoad(previewPos, _lastSelectedMods, trackType, 0, WindowManager::getCurrentRotation(), drawingCtx);
+                    uint8_t trackType = _cState->trackType & ~(1 << 7);
+                    Construction::drawRoad(previewPos, _cState->lastSelectedMods, trackType, 0, WindowManager::getCurrentRotation(), drawingCtx);
                 }
                 else
                 {
-                    Construction::drawTrack(previewPos, _lastSelectedMods, _trackType, 0, WindowManager::getCurrentRotation(), drawingCtx);
+                    Construction::drawTrack(previewPos, _cState->lastSelectedMods, _cState->trackType, 0, WindowManager::getCurrentRotation(), drawingCtx);
                 }
                 _byte_522095 = _byte_522095 & ~(1 << 0);
 
@@ -527,10 +527,10 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
         }
 
-        if (_modCost != 0x80000000 && _modCost != 0)
+        if (_cState->modCost != 0x80000000 && _cState->modCost != 0)
         {
             FormatArguments args{};
-            args.push<uint32_t>(_modCost);
+            args.push<uint32_t>(_cState->modCost);
 
             auto tr = Gfx::TextRenderer(drawingCtx);
 
