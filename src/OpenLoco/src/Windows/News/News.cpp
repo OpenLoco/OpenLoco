@@ -287,8 +287,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             return view;
         }
 
-        // 0x00429209
-        void initViewport(Window& self)
+        // TODO: deduplicate with initViewport1
+        static void initViewport0(Window& self)
         {
             SavedView view;
             view.mapX = -1;
@@ -297,6 +297,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)0xFFU;
             view.entityId = EntityId::null;
+
             auto news = MessageManager::get(MessageManager::getActiveIndex());
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
@@ -328,19 +329,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self.widgets[Common::widx::viewport1Button].type = WidgetType::buttonWithImage;
             }
 
-            uint32_t ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;
-            uint32_t edx = view.mapY << 16 | view.mapX | 1 << 30;
-
-            if (!view.isEmpty() && view.isEntityView())
+            if (_nState.savedView[0] != view)
             {
-                ecx = view.rotation << 8 | (uint8_t)view.zoomLevel;
-                edx = enumValue(view.entityId) | view.flags << 16;
-            }
-
-            if (_nState.dword_525CD0 != ecx || _nState.dword_525CD4 != edx)
-            {
-                _nState.dword_525CD0 = ecx;
-                _nState.dword_525CD4 = edx;
+                _nState.savedView[0] = view;
                 self.viewportRemove(0);
                 self.invalidate();
 
@@ -357,7 +348,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     self.widgets[Common::widx::viewport1Button].right = 175;
                 }
 
-                if (edx != 0xFFFFFFFF)
+                if (!view.isEmpty())
                 {
                     int16_t x = self.widgets[Common::widx::viewport1].left + 1 + self.x;
                     int16_t y = self.widgets[Common::widx::viewport1].top + 1 + self.y;
@@ -389,14 +380,23 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     self.invalidate();
                 }
             }
+        }
 
+        // TODO: deduplicate with initViewport0
+        static void initViewport1(Window& self)
+        {
+            SavedView view;
             view.mapX = -1;
             view.mapY = -1;
             view.surfaceZ = -1;
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)0xFFU;
             view.entityId = EntityId::null;
-            selectable = false;
+
+            auto news = MessageManager::get(MessageManager::getActiveIndex());
+            const auto& mtd = getMessageTypeDescriptor(news->type);
+
+            bool selectable = false;
 
             if (MessageManager::getActiveIndex() != MessageId::null)
             {
@@ -424,19 +424,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self.widgets[Common::widx::viewport2Button].type = WidgetType::buttonWithImage;
             }
 
-            ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;
-            edx = view.mapY << 16 | view.mapX | 1 << 30;
-
-            if (!view.isEmpty() && view.isEntityView())
+            if (_nState.savedView[1] != view)
             {
-                ecx = view.rotation << 8 | (uint8_t)view.zoomLevel;
-                edx = enumValue(view.entityId) | view.flags << 16;
-            }
-
-            if (_nState.dword_525CD8 != ecx || _nState.dword_525CDC != edx)
-            {
-                _nState.dword_525CD8 = ecx;
-                _nState.dword_525CDC = edx;
+                _nState.savedView[1] = view;
                 self.viewportRemove(1);
                 self.invalidate();
 
@@ -445,7 +435,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self.widgets[Common::widx::viewport2Button].left = 184;
                 self.widgets[Common::widx::viewport2Button].right = 355;
 
-                if (edx != 0xFFFFFFFF)
+                if (!view.isEmpty())
                 {
                     int16_t x = self.widgets[Common::widx::viewport2].left + 1 + self.x;
                     int16_t y = self.widgets[Common::widx::viewport2].top + 1 + self.y;
@@ -473,6 +463,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
+        // 0x00429209
+        void initViewports(Window& self)
+        {
+            initViewport0(self);
+            initViewport1(self);
+        }
+
         // 0x0042A136
         static void drawNewsSubjectImages(Window* self, Gfx::DrawingContext& drawingCtx, Message* news)
         {
@@ -480,7 +477,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 const auto itemSubject = news->itemSubjects[i];
                 const auto& viewWidget = self->widgets[Common::widx::viewport1 + i];
-                const auto subjectType = SubjectType((i == 0 ? _nState.dword_525CD0 : _nState.dword_525CD8) & 0xFF);
+                const SubjectType subjectType = SubjectType((uint8_t)_nState.savedView[i].zoomLevel);
 
                 if (subjectType == SubjectType::companyFace && itemSubject != 0xFFFFU)
                 {
@@ -872,9 +869,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onResize = initViewport,
+            .onResize = initViewports,
             .onUpdate = onUpdate,
-            .viewportRotate = initViewport,
+            .viewportRotate = initViewports,
             .draw = draw,
         };
 

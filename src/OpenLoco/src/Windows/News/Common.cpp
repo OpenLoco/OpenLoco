@@ -44,12 +44,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, colour);
 
-        _nState.dword_525CD0 = 0xFFFFFFFF;
-        _nState.dword_525CD4 = 0xFFFFFFFF;
-        _nState.dword_525CD8 = 0xFFFFFFFF;
-        _nState.dword_525CDC = 0xFFFFFFFF;
+        _nState.savedView[0].clear();
+        _nState.savedView[1].clear();
 
-        News1::initViewport(*window);
+        News1::initViewports(*window);
     }
 
     // 0x00428F8B
