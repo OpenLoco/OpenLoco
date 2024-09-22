@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
         makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
         makeWidget({ 3, 44 }, { 240, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
-        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary)
+        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::Center)
 
     );
 

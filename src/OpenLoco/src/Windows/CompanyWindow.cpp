@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(270, 182, StringIds::title_company),
-            Widgets::Label({ 3, 160 }, { 242, 21 }, WindowColour::secondary),
+            Widgets::Label({ 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::Center),
             makeWidget({ 3, 44 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
             makeWidget({ 178, 57 }, { 66, 66 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull),

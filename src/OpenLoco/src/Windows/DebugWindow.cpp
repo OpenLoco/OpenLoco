@@ -22,6 +22,7 @@ namespace OpenLoco::Ui::Windows::Debug
     static constexpr int32_t kTitlebarHeight = 13;
     static constexpr int32_t kLabelHeight = 12;
     static constexpr int32_t kButtonHeight = 12;
+    static constexpr int32_t kRowSize = 12;
 
     namespace widx
     {
@@ -32,6 +33,9 @@ namespace OpenLoco::Ui::Windows::Debug
             close,
             panel,
             button_1,
+            label_1,
+            label_2,
+            label_3,
         };
     }
 
@@ -43,8 +47,11 @@ namespace OpenLoco::Ui::Windows::Debug
         makeWidget({ kWindowSize.width - 15, kMargin }, { 13, kTitlebarHeight }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
 
         Widgets::Panel({ 0, kTitlebarHeight + kMargin }, { kWindowSize.width, 245 }, WindowColour::secondary),
-        Widgets::Button({ kMargin, kTitlebarHeight + kMargin }, { kWindowSize.width / 2, kButtonHeight }, WindowColour::secondary, StringIds::openloco),
-        Widgets::Label({ kMargin, kTitlebarHeight + kMargin + kButtonHeight + kMargin }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco));
+        Widgets::Button({ kMargin, kTitlebarHeight + kMargin + (0 * (kRowSize + kMargin)) }, { kWindowSize.width / 2, kButtonHeight }, WindowColour::secondary, StringIds::openloco),
+        Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (1 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::Left, StringIds::openloco),
+        Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (2 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::Center, StringIds::openloco),
+        Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (3 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::Right, StringIds::openloco)
+    );
 
     // 0x0043B26C
     Window* open()

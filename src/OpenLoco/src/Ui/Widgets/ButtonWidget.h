@@ -10,6 +10,7 @@ namespace OpenLoco::Ui::Widgets
             : Widget(origin, size, WidgetType::button, colour, content, tooltip)
         {
             events.draw = &draw;
+            contentAlign = ContentAlign::Center;
         }
 
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
