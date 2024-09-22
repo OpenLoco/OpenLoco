@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         objectImage,
     };
 
-    static constexpr uint8_t kNumSecondaryTabs = 8;
+    static constexpr uint8_t kMaxNumSecondaryTabs = 8;
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             args.push(kMainTabInfo[self.currentTab].name);
 
         // Toggle secondary tabs
-        for (auto i = 0U; i < kNumSecondaryTabs; i++)
+        for (auto i = 0U; i < kMaxNumSecondaryTabs; i++)
         {
             const auto widgetIndex = i + widx::secondaryTab1;
 
