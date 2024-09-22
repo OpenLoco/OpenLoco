@@ -87,14 +87,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         if (self.var_852 == 0 && !isPaused())
         {
-            _nState.word_525CE0 = _nState.word_525CE0 + 2;
+            _nState.numCharsToDisplay = _nState.numCharsToDisplay + 2;
 
-            if (!((_nState.word_525CE0 & (1 << 15)) || _nState.word_525CE0 & 7))
+            if (!((_nState.numCharsToDisplay & (1 << 15)) || _nState.numCharsToDisplay & 7))
             {
                 if (MessageManager::getActiveIndex() != MessageId::null)
                 {
                     auto news = MessageManager::get(MessageManager::getActiveIndex());
-                    auto cx = _nState.word_525CE0 >> 2;
+                    auto cx = _nState.numCharsToDisplay >> 2;
                     char* newsString = news->messageString;
                     auto newsStringChar = *newsString;
 
@@ -217,13 +217,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
                 break;
         }
 
-        if ((_nState.word_525CE0 >> 2) > i)
+        if ((_nState.numCharsToDisplay >> 2) > i)
         {
-            _nState.word_525CE0 = _nState.word_525CE0 | (1 << 15);
+            _nState.numCharsToDisplay = _nState.numCharsToDisplay | (1 << 15);
         }
 
         auto point = Point(55, 0);
-        tr.drawStringTicker(point, StringIds::buffer_2039, Colour::black, 4, ((_nState.word_525CE0 & ~(1 << 15)) >> 2), 109);
+        tr.drawStringTicker(point, StringIds::buffer_2039, Colour::black, 4, ((_nState.numCharsToDisplay & ~(1 << 15)) >> 2), 109);
 
         drawingCtx.popRenderTarget();
     }

@@ -9,7 +9,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     struct NewsState
     {
         SavedView savedView[2];
-        uint16_t word_525CE0;
+        uint16_t slideInHeight;
+        uint16_t numCharsToDisplay;
     };
 
     enum class SubjectType : int8_t

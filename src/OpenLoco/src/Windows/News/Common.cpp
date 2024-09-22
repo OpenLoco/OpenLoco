@@ -19,14 +19,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
     static void createNewsWindow(Ui::Size32 kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
     {
-        _nState.word_525CE0 = 5;
+        _nState.slideInHeight = 5;
 
-        int16_t y = Ui::height() - _nState.word_525CE0;
+        int16_t y = Ui::height() - _nState.slideInHeight;
 
         if (getGameSpeed() != GameSpeed::Normal || isOld)
         {
             y = Ui::height() - kWindowSize.height;
-            _nState.word_525CE0 = kWindowSize.height;
+            _nState.slideInHeight = kWindowSize.height;
         }
 
         int16_t x = (Ui::width() / 2) - (kWindowSize.width / 2);
@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (newsSettings == NewsType::ticker)
             {
-                _nState.word_525CE0 = 0;
+                _nState.numCharsToDisplay = 0;
                 WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
                 auto window = WindowManager::createWindow(

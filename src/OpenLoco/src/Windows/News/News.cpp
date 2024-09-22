@@ -151,11 +151,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429D2C
         static void onUpdate(Window& self)
         {
-            uint16_t height = _nState.word_525CE0 + 4;
+            uint16_t height = _nState.slideInHeight + 4;
 
-            _nState.word_525CE0 = std::min(height, self.height);
+            _nState.slideInHeight = std::min(height, self.height);
 
-            height = Ui::height() - _nState.word_525CE0 - self.y;
+            height = Ui::height() - _nState.slideInHeight - self.y;
             auto width = (Ui::width() / 2) - (kWindowSize.width / 2) - self.x;
 
             if (width != 0 || height != 0)
