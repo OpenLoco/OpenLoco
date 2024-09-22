@@ -321,6 +321,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Construction/OverheadTab.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Construction/SignalTab.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Construction/StationTab.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/DebugWindow.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/DragVehiclePart.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/EditKeyboardShortcut.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Error.cpp"

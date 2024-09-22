@@ -69,6 +69,8 @@ namespace OpenLoco::Ui
         networkStatus = 59,
         objectLoadError = 60,
 
+        debug = 61,
+
         undefined = 255
     };
 }
