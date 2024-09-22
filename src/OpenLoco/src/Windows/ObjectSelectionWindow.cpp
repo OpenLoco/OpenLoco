@@ -123,12 +123,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     static constexpr std::array kTrackSubTabs{
+        SubTabInfo{ StringIds::object_tracks,         ObjectType::track,        {}, ImageIds::tab_object_track,          1, 1, ObjectTabFlags::advanced                                      },
         SubTabInfo{ StringIds::object_track_stations, ObjectType::trainStation, {}, ImageIds::tab_object_track_stations, 1, 1, ObjectTabFlags::advanced                                      },
         SubTabInfo{ StringIds::object_track_extras,   ObjectType::trackExtra,   {}, ImageIds::tab_object_track_mods,     1, 1, ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
         SubTabInfo{ StringIds::object_signals,        ObjectType::trackSignal,  {}, ImageIds::tab_object_signals,        1, 1, ObjectTabFlags::advanced                                      },
     };
 
     static constexpr std::array kRoadSubTabs{
+        SubTabInfo{ StringIds::object_roads,          ObjectType::road,          {}, ImageIds::tab_object_road,            1, 1, ObjectTabFlags::advanced                                      },
         SubTabInfo{ StringIds::object_road_stations,  ObjectType::roadStation,   {}, ImageIds::tab_object_road_stations,   1, 1, ObjectTabFlags::advanced                                      },
         SubTabInfo{ StringIds::object_road_extras,    ObjectType::roadExtra,     {}, ImageIds::tab_object_road_mods,       1, 1, ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
         SubTabInfo{ StringIds::object_level_crossing, ObjectType::levelCrossing, {}, ImageIds::tab_object_level_crossings, 1, 1, ObjectTabFlags::advanced                                      },
