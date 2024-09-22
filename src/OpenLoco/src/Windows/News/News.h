@@ -10,9 +10,17 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     {
         uint32_t dword_525CD0; // 0x00525CD0
         uint32_t dword_525CD4; // 0x00525CD4
+
         uint32_t dword_525CD8; // 0x00525CD8
         uint32_t dword_525CDC; // 0x00525CDC
+
         uint16_t word_525CE0;  // 0x00525CE0
+    };
+
+    enum class SubjectType : int8_t
+    {
+        companyFace = -2,
+        vehicleImage = -3,
     };
 
     extern NewsState _nState;

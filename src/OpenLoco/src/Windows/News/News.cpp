@@ -258,7 +258,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::company:
                     // Used to indicate to drawNewsSubjectImages to draw a company image
                     // TODO: Do this better
-                    view.zoomLevel = (ZoomLevel)0xFEU;
+                    view.zoomLevel = enumValue(SubjectType::companyFace);
                     self->invalidate();
                     *selectable = true;
                     break;
@@ -279,7 +279,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::vehicleTab:
                     // Used to indicate to drawNewsSubjectImages to draw a vehicle image
                     // TODO: Do this better
-                    view.zoomLevel = (ZoomLevel)0xFDU;
+                    view.zoomLevel = enumValue(SubjectType::vehicleImage);
                     self->invalidate();
                     *selectable = true;
                     break;
@@ -480,10 +480,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 const auto itemSubject = news->itemSubjects[i];
                 const auto& viewWidget = self->widgets[Common::widx::viewport1 + i];
-                const int32_t unk = i == 0 ? _nState.dword_525CD0 : _nState.dword_525CD8;
-                // see getView as to where these magic numbers come from
-                // TODO: Do this better
-                if (unk == -2 && itemSubject != 0xFFFFU)
+                const auto subjectType = SubjectType((i == 0 ? _nState.dword_525CD0 : _nState.dword_525CD8) & 0xFF);
+
+                if (subjectType == SubjectType::companyFace && itemSubject != 0xFFFFU)
                 {
                     const auto* company = CompanyManager::get(CompanyId(itemSubject));
                     const auto* competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
@@ -499,7 +498,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         drawingCtx.drawImage(Ui::Point(x, y), ImageId(ImageIds::owner_jailed));
                     }
                 }
-                if (unk == -3 && itemSubject != 0xFFFFU)
+
+                if (subjectType == SubjectType::vehicleImage && itemSubject != 0xFFFFU)
                 {
                     const auto x = self->x + viewWidget.left;
                     const auto y = self->y + viewWidget.top;
