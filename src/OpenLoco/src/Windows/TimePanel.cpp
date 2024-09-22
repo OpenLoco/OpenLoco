@@ -28,7 +28,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TimePanel
 {
-    static constexpr Ui::Size32 kWindowSize = { 145, 27 };
+    static constexpr Ui::Size32 kWindowSize = { 140, 29 };
 
     namespace Widx
     {
