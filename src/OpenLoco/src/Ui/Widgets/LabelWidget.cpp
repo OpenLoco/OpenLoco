@@ -10,7 +10,7 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CB21D
     void Label::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        if (widget.text == StringIds::null)
+        if (widget.text == StringIds::null || widget.text == StringIds::empty)
         {
             return;
         }
