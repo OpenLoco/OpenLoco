@@ -10,9 +10,6 @@
 #include "News.h"
 #include "SceneManager.h"
 #include "Ui/Widget.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {

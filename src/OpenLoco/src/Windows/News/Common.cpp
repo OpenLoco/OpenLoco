@@ -8,10 +8,6 @@
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
-using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
@@ -91,13 +87,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             auto newsSettings = Config::get().old.newsSettings[static_cast<uint8_t>(messageSubType)];
 
-            if (newsSettings == NewsType::none)
+            if (newsSettings == Config::NewsType::none)
             {
                 news->setActive(false);
                 return;
             }
 
-            if (newsSettings == NewsType::ticker)
+            if (newsSettings == Config::NewsType::ticker)
             {
                 _nState.numCharsToDisplay = 0;
                 WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
