@@ -15,22 +15,18 @@ using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static loco_global<uint32_t, 0x00525CD0> _dword_525CD0;
-    static loco_global<uint32_t, 0x00525CD4> _dword_525CD4;
-    static loco_global<uint32_t, 0x00525CD8> _dword_525CD8;
-    static loco_global<uint32_t, 0x00525CDC> _dword_525CDC;
-    static loco_global<uint16_t, 0x00525CE0> _word_525CE0;
+    NewsState _nState{};
 
     static void createNewsWindow(Ui::Size32 kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
     {
-        _word_525CE0 = 5;
+        _nState.word_525CE0 = 5;
 
-        int16_t y = Ui::height() - _word_525CE0;
+        int16_t y = Ui::height() - _nState.word_525CE0;
 
         if (getGameSpeed() != GameSpeed::Normal || isOld)
         {
             y = Ui::height() - kWindowSize.height;
-            _word_525CE0 = kWindowSize.height;
+            _nState.word_525CE0 = kWindowSize.height;
         }
 
         int16_t x = (Ui::width() / 2) - (kWindowSize.width / 2);
@@ -48,10 +44,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, colour);
 
-        _dword_525CD0 = 0xFFFFFFFF;
-        _dword_525CD4 = 0xFFFFFFFF;
-        _dword_525CD8 = 0xFFFFFFFF;
-        _dword_525CDC = 0xFFFFFFFF;
+        _nState.dword_525CD0 = 0xFFFFFFFF;
+        _nState.dword_525CD4 = 0xFFFFFFFF;
+        _nState.dword_525CD8 = 0xFFFFFFFF;
+        _nState.dword_525CDC = 0xFFFFFFFF;
 
         News1::initViewport(*window);
     }
@@ -105,7 +101,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (newsSettings == NewsType::ticker)
             {
-                _word_525CE0 = 0;
+                _nState.word_525CE0 = 0;
                 WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
                 auto window = WindowManager::createWindow(

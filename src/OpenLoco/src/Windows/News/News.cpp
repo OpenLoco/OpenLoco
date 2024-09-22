@@ -29,11 +29,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static loco_global<uint32_t, 0x00525CD0> _dword_525CD0;
-    static loco_global<uint32_t, 0x00525CD4> _dword_525CD4;
-    static loco_global<uint32_t, 0x00525CD8> _dword_525CD8;
-    static loco_global<uint32_t, 0x00525CDC> _dword_525CDC;
-    static loco_global<uint16_t, 0x00525CE0> _word_525CE0;
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
 
@@ -156,11 +151,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429D2C
         static void onUpdate(Window& self)
         {
-            uint16_t height = _word_525CE0 + 4;
+            uint16_t height = _nState.word_525CE0 + 4;
 
-            _word_525CE0 = std::min(height, self.height);
+            _nState.word_525CE0 = std::min(height, self.height);
 
-            height = Ui::height() - _word_525CE0 - self.y;
+            height = Ui::height() - _nState.word_525CE0 - self.y;
             auto width = (Ui::width() / 2) - (kWindowSize.width / 2) - self.x;
 
             if (width != 0 || height != 0)
@@ -342,10 +337,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 edx = enumValue(view.entityId) | view.flags << 16;
             }
 
-            if (_dword_525CD0 != ecx || _dword_525CD4 != edx)
+            if (_nState.dword_525CD0 != ecx || _nState.dword_525CD4 != edx)
             {
-                _dword_525CD0 = ecx;
-                _dword_525CD4 = edx;
+                _nState.dword_525CD0 = ecx;
+                _nState.dword_525CD4 = edx;
                 self.viewportRemove(0);
                 self.invalidate();
 
@@ -438,10 +433,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 edx = enumValue(view.entityId) | view.flags << 16;
             }
 
-            if (_dword_525CD8 != ecx || _dword_525CDC != edx)
+            if (_nState.dword_525CD8 != ecx || _nState.dword_525CDC != edx)
             {
-                _dword_525CD8 = ecx;
-                _dword_525CDC = edx;
+                _nState.dword_525CD8 = ecx;
+                _nState.dword_525CDC = edx;
                 self.viewportRemove(1);
                 self.invalidate();
 
@@ -485,7 +480,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 const auto itemSubject = news->itemSubjects[i];
                 const auto& viewWidget = self->widgets[Common::widx::viewport1 + i];
-                const int32_t unk = i == 0 ? *_dword_525CD0 : *_dword_525CD8;
+                const int32_t unk = i == 0 ? _nState.dword_525CD0 : _nState.dword_525CD8;
                 // see getView as to where these magic numbers come from
                 // TODO: Do this better
                 if (unk == -2 && itemSubject != 0xFFFFU)

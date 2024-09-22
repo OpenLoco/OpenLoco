@@ -16,8 +16,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {
-    static loco_global<uint16_t, 0x00525CE0> _word_525CE0;
-
     static constexpr auto widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 111, 26 }, WidgetType::wt_3, WindowColour::primary)
 
@@ -89,14 +87,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         if (self.var_852 == 0 && !isPaused())
         {
-            _word_525CE0 = _word_525CE0 + 2;
+            _nState.word_525CE0 = _nState.word_525CE0 + 2;
 
-            if (!(_word_525CE0 & 0x8007))
+            if (!((_nState.word_525CE0 & (1 << 15)) || _nState.word_525CE0 & 7))
             {
                 if (MessageManager::getActiveIndex() != MessageId::null)
                 {
                     auto news = MessageManager::get(MessageManager::getActiveIndex());
-                    auto cx = _word_525CE0 >> 2;
+                    auto cx = _nState.word_525CE0 >> 2;
                     char* newsString = news->messageString;
                     auto newsStringChar = *newsString;
 
@@ -219,13 +217,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
                 break;
         }
 
-        if ((_word_525CE0 >> 2) > i)
+        if ((_nState.word_525CE0 >> 2) > i)
         {
-            _word_525CE0 = _word_525CE0 | (1 << 15);
+            _nState.word_525CE0 = _nState.word_525CE0 | (1 << 15);
         }
 
         auto point = Point(55, 0);
-        tr.drawStringTicker(point, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
+        tr.drawStringTicker(point, StringIds::buffer_2039, Colour::black, 4, ((_nState.word_525CE0 & ~(1 << 15)) >> 2), 109);
 
         drawingCtx.popRenderTarget();
     }
