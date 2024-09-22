@@ -10,6 +10,7 @@
 #include "Objects/ObjectManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
@@ -27,7 +28,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::change_keyboard_shortcut),
-        makeWidget({ 265, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton({ 265, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 57 }, WindowColour::secondary));
 
     static const WindowEventList& getEvents();

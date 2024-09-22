@@ -25,6 +25,7 @@
 #include "Ui.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Utility/String.hpp>
@@ -121,12 +122,12 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_new_game),
-        makeWidget({ kBtnMainSize, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_load_game),
-        makeWidget({ kBtnMainSize * 2, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_show_tutorial),
-        makeWidget({ kBtnMainSize * 3, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_scenario_editor),
-        makeWidget({ kBtnMainSize * 4 - 31, kBtnMainSize - 27 }, { 31, 27 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_chat_tooltip),
-        makeWidget({ 0, kBtnMainSize }, { kWW, kBtnSubHeight }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip)
+        Widgets::ImageButton({ 0, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_new_game),
+        Widgets::ImageButton({ kBtnMainSize, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_load_game),
+        Widgets::ImageButton({ kBtnMainSize * 2, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_show_tutorial),
+        Widgets::ImageButton({ kBtnMainSize * 3, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_scenario_editor),
+        Widgets::ImageButton({ kBtnMainSize * 4 - 31, kBtnMainSize - 27 }, { 31, 27 }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_chat_tooltip),
+        Widgets::ImageButton({ 0, kBtnMainSize }, { kWW, kBtnSubHeight }, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip)
 
     );
 

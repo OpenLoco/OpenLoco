@@ -47,6 +47,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
@@ -251,7 +252,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_object_selection),
-        makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 42 }, { 600, 356 }, WindowColour::secondary),
 
         // Primary tab area
@@ -275,7 +276,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
         makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeWidget({ 391, 45 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary)
+        Widgets::ImageButton({ 391, 45 }, { 114, 114 }, WindowColour::secondary)
 
     );
 

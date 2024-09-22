@@ -20,6 +20,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
@@ -60,7 +61,7 @@ namespace OpenLoco::Ui::Windows::Station
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
                 makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_23, WindowColour::primary, StringIds::title_station),
-                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 95 }, WindowColour::secondary),
                 makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station),
                 makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station_cargo),
@@ -337,7 +338,7 @@ namespace OpenLoco::Ui::Windows::Station
             Common::makeCommonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             Widgets::Label({ 3, 125 }, { 195, 10 }, WindowColour::secondary, ContentAlign::Center),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment)
+            Widgets::ImageButton({ 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment)
 
         );
 

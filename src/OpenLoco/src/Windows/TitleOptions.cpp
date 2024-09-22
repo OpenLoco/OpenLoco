@@ -8,6 +8,7 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::Ui::Windows::TitleOptions
@@ -23,7 +24,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
     }
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary)
+        Widgets::ImageButton({ 0, 0 }, kWindowSize, WindowColour::secondary)
 
     );
 

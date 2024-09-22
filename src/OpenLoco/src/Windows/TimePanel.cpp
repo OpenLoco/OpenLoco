@@ -20,6 +20,7 @@
 #include "Ui.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -51,8 +52,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),
-        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
+        Widgets::ImageButton({ 113, 1 }, { 26, 26 }, WindowColour::primary),
+        Widgets::ImageButton({ 2, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
         makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
         makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),
         makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),

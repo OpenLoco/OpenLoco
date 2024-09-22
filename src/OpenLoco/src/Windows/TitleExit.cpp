@@ -11,6 +11,7 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::Ui::Windows::TitleExit
@@ -26,7 +27,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game)
+        Widgets::ImageButton({ 0, 0 }, kWindowSize, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game)
 
     );
 

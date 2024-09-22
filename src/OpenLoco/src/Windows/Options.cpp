@@ -26,6 +26,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -192,7 +193,7 @@ namespace OpenLoco::Ui::Windows::Options
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, windowSize, WindowColour::primary),
                 makeWidget({ 1, 1 }, { (uint16_t)(windowSize.width - 2), 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
-                makeWidget({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::ImageButton({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { windowSize.width, 102 }, WindowColour::secondary),
                 makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_display_options),
                 makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_sound_options),
@@ -962,9 +963,9 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
             makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
-            makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
-            makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
-            makeWidget({ 58, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
+            Widgets::ImageButton({ 10, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
+            Widgets::ImageButton({ 34, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
+            Widgets::ImageButton({ 58, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
             makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
             makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
             Widgets::Button({ 183, 108 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)

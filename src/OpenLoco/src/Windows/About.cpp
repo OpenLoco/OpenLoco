@@ -9,6 +9,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 
@@ -31,7 +32,7 @@ namespace OpenLoco::Ui::Windows::About
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::about_locomotion_caption),
-        makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 245 }, WindowColour::secondary),
         Widgets::Button({ 100, 234 }, { kWindowSize.width / 2, 12 }, WindowColour::secondary, StringIds::music_acknowledgements_btn));
 

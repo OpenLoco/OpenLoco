@@ -26,6 +26,7 @@
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/Town.h"
@@ -68,7 +69,7 @@ namespace OpenLoco::Ui::Windows::TownList
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
                 makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
-                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 155 }, WindowColour::secondary),
                 makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_list),
                 makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_town),
@@ -842,7 +843,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(640, 172, StringIds::title_build_new_buildings),
             makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, WindowColour::secondary, 2),
-            makeWidget({ 575, 46 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
+            Widgets::ImageButton({ 575, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
             makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
 
         );
