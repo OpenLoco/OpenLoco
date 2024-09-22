@@ -215,8 +215,12 @@ namespace OpenLoco
         }
 
         constexpr explicit operator Colour() const { return static_cast<Colour>(enumValue(_c) & ~(outlineFlag | insetFlag | translucentFlag)); }
-        [[nodiscard]] constexpr Colour c() const { return _c; }
+
+        // Returns the Colour without any additional flags set.
+        [[nodiscard]] constexpr Colour c() const { return static_cast<Colour>(*this); }
+
         constexpr explicit operator uint8_t() const { return enumValue(_c); }
+
         [[nodiscard]] constexpr uint8_t u8() const { return static_cast<uint8_t>(*this); }
 
         [[nodiscard]] constexpr AdvancedColour outline() const
@@ -237,18 +241,18 @@ namespace OpenLoco
         }
         [[nodiscard]] constexpr bool isTranslucent() const { return enumValue(_c) & translucentFlag; }
 
-        [[nodiscard]] constexpr AdvancedColour opaque()
+        [[nodiscard]] constexpr AdvancedColour opaque() const
         {
             return { static_cast<Colour>(enumValue(_c) & ~translucentFlag) };
         }
         [[nodiscard]] constexpr bool isOpaque() const { return !isTranslucent(); }
 
-        [[nodiscard]] constexpr AdvancedColour clearInset()
+        [[nodiscard]] constexpr AdvancedColour clearInset() const
         {
             return { static_cast<Colour>(enumValue(_c) & ~insetFlag) };
         }
 
-        [[nodiscard]] constexpr AdvancedColour clearOutline()
+        [[nodiscard]] constexpr AdvancedColour clearOutline() const
         {
             return { static_cast<Colour>(enumValue(_c) & ~outlineFlag) };
         }
