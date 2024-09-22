@@ -2333,7 +2333,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         window->currentTab = 0;
         window->savedView.mapX = 1;
         window->var_854 = 0;
-        window->var_856 = 0;
 
         assignIndustryColours();
         assignRouteColours();
