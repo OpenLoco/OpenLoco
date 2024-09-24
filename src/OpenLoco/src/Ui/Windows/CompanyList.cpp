@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         uint16_t xOffset;              // 0x0113DC84
         uint32_t yAxisLabelIncrement;  // 0x0113DC86
         uint16_t lineCount;            // 0x0113DC8A
-        uint32_t* yData[32];           // 0x0113DC8C
+        std::byte* yData[32];          // 0x0113DC8C
         uint32_t dataTypeSize;         // 0x0113DD0C
         uint16_t dataStart[32];        // 0x0113DD10
         uint32_t dword_113DD50;        // 0x0113DD50
@@ -715,7 +715,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphSettings->yData[count] = reinterpret_cast<uint32_t*>(&company.performanceIndexHistory[0]);
+                _graphSettings->yData[count] = reinterpret_cast<std::byte*>(&company.performanceIndexHistory[0]);
                 _graphSettings->dataStart[count] = maxHistorySize - company.historySize;
                 _graphSettings->lineColour[count] = Colours::getShade(companyColour, 6);
                 _graphSettings->itemId[count] = enumValue(companyId);
@@ -808,7 +808,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphSettings->yData[count] = &company.cargoUnitsDeliveredHistory[0];
+                _graphSettings->yData[count] = reinterpret_cast<std::byte*>(&company.cargoUnitsDeliveredHistory[0]);
                 _graphSettings->dataStart[count] = maxHistorySize - company.historySize;
                 _graphSettings->lineColour[count] = Colours::getShade(companyColour, 6);
                 _graphSettings->itemId[count] = enumValue(companyId);
@@ -901,7 +901,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphSettings->yData[count] = &company.cargoUnitsDistanceHistory[0];
+                _graphSettings->yData[count] = reinterpret_cast<std::byte*>(&company.cargoUnitsDistanceHistory[0]);
                 _graphSettings->dataStart[count] = maxHistorySize - company.historySize;
                 _graphSettings->lineColour[count] = Colours::getShade(companyColour, 6);
                 _graphSettings->itemId[count] = enumValue(companyId);
@@ -994,7 +994,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphSettings->yData[count] = reinterpret_cast<uint32_t*>(&company.companyValueHistory[0]);
+                _graphSettings->yData[count] = reinterpret_cast<std::byte*>(&company.companyValueHistory[0]);
                 _graphSettings->dataStart[count] = maxHistorySize - company.historySize;
                 _graphSettings->lineColour[count] = Colours::getShade(companyColour, 6);
                 _graphSettings->itemId[count] = enumValue(companyId);
@@ -1156,7 +1156,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 auto colour = _cargoLineColour[i];
 
-                _graphSettings->yData[count] = reinterpret_cast<uint32_t*>(&_deliveredCargoPayment[i][0]);
+                _graphSettings->yData[count] = reinterpret_cast<std::byte*>(&_deliveredCargoPayment[i][0]);
                 _graphSettings->dataStart[count] = 0;
                 _graphSettings->lineColour[count] = Colours::getShade(colour, 6);
                 _graphSettings->itemId[count] = i;
