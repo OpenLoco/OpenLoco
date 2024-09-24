@@ -58,7 +58,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         uint16_t yLabel;               // 0x0113DD84
         uint32_t dword_113DD86;        // 0x0113DD86
         uint32_t dword_113DD8A;        // 0x0113DD8A
-        uint32_t dword_113DD8E;        // 0x0113DD8E
+        uint32_t flags;                // 0x0113DD8E
         uint8_t pad_113DD92[7];        // 0x0113DD92
         uint8_t byte_113DD99;          // 0x0113DD99
         uint16_t itemId[32];           // 0x0113DD9A
@@ -731,7 +731,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->dword_113DD8A = 100;
-            _graphSettings->dword_113DD8E = 2;
+            _graphSettings->flags = 1 << 1;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -824,7 +824,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->dword_113DD8A = 1000;
-            _graphSettings->dword_113DD8E = 2;
+            _graphSettings->flags = 1 << 1;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -917,7 +917,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->dword_113DD8A = 1000;
-            _graphSettings->dword_113DD8E = 2;
+            _graphSettings->flags = 1 << 1;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -1010,7 +1010,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->dword_113DD8A = 10000;
-            _graphSettings->dword_113DD8E = 2;
+            _graphSettings->flags = 1 << 1;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -1172,7 +1172,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 20;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->dword_113DD8A = 0;
-            _graphSettings->dword_113DD8E = 0;
+            _graphSettings->flags = 1 << 0;
 
             _graphSettings->xAxisRange = 2;
             _graphSettings->dword_113DD7C = 2;
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (_word_9C68C7 & (1 << 2))
                     _graphSettings->lineColour[i] = 10;
 
-                _graphSettings->dword_113DD8E = _graphSettings->dword_113DD8E | (1 << 2);
+                _graphSettings->flags |= 1 << 2;
 
                 Common::drawGraph(&self, drawingCtx);
             }
@@ -1785,7 +1785,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (_word_9C68C7 & (1 << 2))
                     _graphSettings->lineColour[i] = 10;
 
-                _graphSettings->dword_113DD8E = _graphSettings->dword_113DD8E | (1 << 2);
+                _graphSettings->flags |= 1 << 2;
 
                 Common::drawGraph(self, drawingCtx);
             }
