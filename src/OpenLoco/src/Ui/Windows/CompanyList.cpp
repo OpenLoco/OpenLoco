@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     };
 #pragma pack(pop)
 
-    static_assert(sizeof(GraphSettings) == 0x0113DD9A + 64 - 0x0113DC7A);
+    static_assert(sizeof(GraphSettings) == 0x0113DD9A + sizeof(GraphSettings::itemId) - 0x0113DC7A);
     static loco_global<GraphSettings, 0x0113DC7A> _graphSettings;
 
     namespace Common
