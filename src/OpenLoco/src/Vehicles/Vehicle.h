@@ -281,7 +281,7 @@ namespace OpenLoco::Vehicles
         bool hasVehicleFlags(VehicleFlags flagsToTest) const;
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
-        bool updateComponent();
+        bool updateComponent(bool honk);
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
         int32_t updateTrackMotion(int32_t unk1);
@@ -364,7 +364,7 @@ namespace OpenLoco::Vehicles
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
         void updateBreakdown();
-        void updateVehicle();
+        void updateVehicle(bool honk);
         bool update();
         void updateMonthly();
         void updateDaily();
@@ -497,9 +497,9 @@ namespace OpenLoco::Vehicles
         uint8_t var_52;
         IncomeStats lastIncome; // 0x53
 
-        bool update();
+        bool update(bool honk);
         bool updateRoad();
-        bool updateRail();
+        bool updateRail(bool honk);
         int32_t updateRoadMotion(int32_t distance);
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found

@@ -17,6 +17,7 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <Vehicles/VehicleManager.h>
 #include <array>
 #include <unordered_map>
 
@@ -561,6 +562,12 @@ namespace OpenLoco::Input::Shortcuts
         GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::ExtraFastForward }, GameCommands::Flags::apply);
     }
 
+    static void honkAllHorns()
+    {
+        // GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::MAX }, GameCommands::Flags::apply);
+        VehicleManager::honkAllTrains();
+    }
+
     void initialize()
     {
         // clang-format off
@@ -616,6 +623,7 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::gameSpeedNormal,                 StringIds::shortcut_game_speed_normal,                  gameSpeedNormal,                "gameSpeedNormal",                  "");
         ShortcutManager::add(Shortcut::gameSpeedFastForward,            StringIds::shortcut_game_speed_fast_forward,            gameSpeedFastForward,           "gameSpeedFastForward",             "");
         ShortcutManager::add(Shortcut::gameSpeedExtraFastForward,       StringIds::shortcut_game_speed_extra_fast_forward,      gameSpeedExtraFastForward,      "gameSpeedExtraFastForward",        "");
+        ShortcutManager::add(Shortcut::honkAllHorns,                    StringIds::shortcut_game_speed_extra_fast_forward,      honkAllHorns,                   "honkAllHorns",                     "H");
         // clang-format on
     }
 }

@@ -58,6 +58,7 @@ namespace OpenLoco::Input
         gameSpeedNormal,
         gameSpeedFastForward,
         gameSpeedExtraFastForward,
+        honkAllHorns,
     };
 
     namespace Shortcuts

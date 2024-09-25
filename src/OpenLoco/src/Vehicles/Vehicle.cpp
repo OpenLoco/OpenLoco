@@ -475,14 +475,14 @@ namespace OpenLoco::Vehicles
         return trackType;
     }
 
-    bool VehicleBase::updateComponent()
+    bool VehicleBase::updateComponent(bool honk)
     {
         switch (getSubType())
         {
             case VehicleEntityType::head:
                 return !asVehicleHead()->update();
             case VehicleEntityType::vehicle_1:
-                return !asVehicle1()->update();
+                return !asVehicle1()->update(honk);
             case VehicleEntityType::vehicle_2:
                 return !asVehicle2()->update();
             case VehicleEntityType::bogie:

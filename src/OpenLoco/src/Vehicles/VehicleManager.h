@@ -18,6 +18,7 @@ namespace OpenLoco::VehicleManager
 {
     using VehicleList = EntityManager::EntityList<EntityManager::EntityListIterator<Vehicles::VehicleHead>, EntityManager::EntityListType::vehicleHead>;
 
+    void honkAllTrains();
     void update();
     void updateMonthly();
     void updateDaily();

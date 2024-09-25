@@ -23,6 +23,14 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::VehicleManager
 {
+    void honkAllTrains()
+    {
+        for (auto* v : VehicleList())
+        {
+            v->updateVehicle(true);
+        }
+    }
+
     // 0x004A8826
     void update()
     {
@@ -30,7 +38,7 @@ namespace OpenLoco::VehicleManager
         {
             for (auto* v : VehicleList())
             {
-                v->updateVehicle();
+                v->updateVehicle(false);
             }
         }
     }

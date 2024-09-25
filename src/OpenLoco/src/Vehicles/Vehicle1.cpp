@@ -30,7 +30,7 @@ namespace OpenLoco::Vehicles
     static_assert(distanceTraveledInATick(speedFromDistanceInATick(100)) == 100);
 
     // 0x004A9788
-    bool Vehicle1::update()
+    bool Vehicle1::update(bool honk)
     {
         switch (mode)
         {
@@ -40,7 +40,7 @@ namespace OpenLoco::Vehicles
             case TransportMode::road:
                 return updateRoad();
             case TransportMode::rail:
-                return updateRail();
+                return updateRail(honk);
             default:
                 return false;
         }
@@ -152,7 +152,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A97A6
-    bool Vehicle1::updateRail()
+    bool Vehicle1::updateRail(bool honk)
     {
         Vehicle train{ head };
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
@@ -226,6 +226,12 @@ namespace OpenLoco::Vehicles
         distance1 = std::min(distance1, unk2);
         _vehicleUpdate_var_1136114 = 0;
         var_3C += distance1 - updateTrackMotion(distance1);
+
+        if (honk)
+        {
+            railProduceCrossingWhistle(*train.veh2);
+            return true;
+        }
 
         if (!(_vehicleUpdate_var_1136114 & (1U << 1)))
         {

@@ -79,13 +79,13 @@ namespace OpenLoco::Vehicles
     static constexpr uint16_t kReliabilityLossPerDay = 4;
     static constexpr uint16_t kReliabilityLossPerDayObsolete = 10;
 
-    void VehicleHead::updateVehicle()
+    void VehicleHead::updateVehicle(bool honk)
     {
         // TODO: Refactor to use the Vehicle super class
         VehicleBase* v = this;
         while (v != nullptr)
         {
-            if (v->updateComponent())
+            if (v->updateComponent(honk))
             {
                 break;
             }
