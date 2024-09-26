@@ -59,7 +59,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
         uint32_t dword_113DD86;        // 0x0113DD86
         uint32_t dword_113DD8A;        // 0x0113DD8A
         uint32_t flags;                // 0x0113DD8E
-        uint8_t pad_113DD92[7];        // 0x0113DD92
+        uint16_t canvasLeft;           // 0x0113DD92
+        uint16_t word_113DD94;         // 0x0113DD94
+        uint16_t canvasHeight;         // 0x0113DD96
+        uint8_t numValueShifts;        // 0x0113DD98 -- factors of two
         uint8_t byte_113DD99;          // 0x0113DD99
         uint16_t itemId[32];           // 0x0113DD9A
     };
@@ -1716,15 +1719,95 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
         }
 
+        // 0x004CF869
+        static int64_t graphGetMaxValue(const GraphSettings& gs)
+        {
+            int64_t maxValue = 0; // eax
+            for (auto i = 0U; i < gs.lineCount; i++)
+            {
+                // esi
+                std::byte* dataEndPtr = gs.yData[i] + gs.dataEnd * gs.dataTypeSize;
+
+                // edi
+                std::byte* dataStartPtr = dataEndPtr - gs.dataStart[i] * gs.dataTypeSize;
+
+                while (dataStartPtr < dataEndPtr)
+                {
+                    if (gs.flags & (1 << 1))
+                    {
+                        dataEndPtr -= gs.dataTypeSize;
+                    }
+
+                    switch (gs.dataTypeSize)
+                    {
+                        case 2:
+                            maxValue = std::max<int64_t>(maxValue, std::abs(*reinterpret_cast<int16_t*>(dataStartPtr)));
+                            break;
+
+                        case 4:
+                            maxValue = std::max<int64_t>(maxValue, std::abs(*reinterpret_cast<int32_t*>(dataStartPtr)));
+                            break;
+
+                        case 6:
+                            maxValue = std::max<int64_t>(maxValue, std::abs(reinterpret_cast<currency48_t*>(dataStartPtr)->asInt64()));
+                            break;
+                    }
+
+                    dataStartPtr += gs.dataTypeSize;
+                    if (gs.flags & (1 << 1))
+                    {
+                        dataEndPtr += gs.dataTypeSize;
+                    }
+                }
+            }
+
+            return maxValue;
+        }
+
+        // 0x004CFA49
+        static void graphDrawLegend(const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
+        {
+        }
+
         // 0x004CF824
         static void drawGraph(Window* self, Gfx::DrawingContext& drawingCtx)
         {
             const auto& rt = drawingCtx.currentRenderTarget();
+            auto& gs = *_graphSettings;
 
-            registers regs;
-            regs.esi = X86Pointer(self);
-            regs.edi = X86Pointer(&rt);
-            call(0x004CF824, regs);
+            gs.canvasLeft = gs.xOffset + gs.left;
+            gs.canvasHeight = gs.bottom - gs.yOffset;
+
+            // TODO: unused? remove?
+            gs.word_113DD94 = gs.top + gs.bottom - gs.yOffset;
+
+            int64_t maxValue = graphGetMaxValue(gs);
+
+            // 0x004CFA02
+            auto height = gs.canvasHeight;
+            if (gs.flags & (1 << 0))
+            {
+                // half height? never set, anyway. remove?
+                height >>= 1;
+            }
+
+            // Count number of shifts until we reach zero
+            gs.numValueShifts = 0;
+            for (auto value = maxValue; value > 0; value >>= 1)
+                gs.numValueShifts++;
+
+            if (gs.flags & (1 << 2))
+            {
+                graphDrawLegend(gs, drawingCtx);
+            }
+
+            // 0x004CFD59
+            uint32_t dword_113658C = 0;
+
+            // registers regs;
+            // regs.esi = X86Pointer(self);
+            // regs.edi = X86Pointer(&rt);
+            // call(0x004CF824, regs);
         }
 
         // 0x00437810
