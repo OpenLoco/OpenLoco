@@ -8,23 +8,21 @@
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
-using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
+    NewsState _nState{};
+
     static void createNewsWindow(Ui::Size32 kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
     {
-        _word_525CE0 = 5;
+        _nState.slideInHeight = 5;
 
-        int16_t y = Ui::height() - _word_525CE0;
+        int16_t y = Ui::height() - _nState.slideInHeight;
 
         if (getGameSpeed() != GameSpeed::Normal || isOld)
         {
             y = Ui::height() - kWindowSize.height;
-            _word_525CE0 = kWindowSize.height;
+            _nState.slideInHeight = kWindowSize.height;
         }
 
         int16_t x = (Ui::width() / 2) - (kWindowSize.width / 2);
@@ -42,12 +40,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, colour);
 
-        _dword_525CD0 = 0xFFFFFFFF;
-        _dword_525CD4 = 0xFFFFFFFF;
-        _dword_525CD8 = 0xFFFFFFFF;
-        _dword_525CDC = 0xFFFFFFFF;
+        _nState.savedView[0].clear();
+        _nState.savedView[1].clear();
 
-        News1::initViewport(*window);
+        News1::initViewports(*window);
     }
 
     // 0x00428F8B
@@ -91,15 +87,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             auto newsSettings = Config::get().old.newsSettings[static_cast<uint8_t>(messageSubType)];
 
-            if (newsSettings == NewsType::none)
+            if (newsSettings == Config::NewsType::none)
             {
                 news->setActive(false);
                 return;
             }
 
-            if (newsSettings == NewsType::ticker)
+            if (newsSettings == Config::NewsType::ticker)
             {
-                _word_525CE0 = 0;
+                _nState.numCharsToDisplay = 0;
                 WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
                 auto window = WindowManager::createWindow(
