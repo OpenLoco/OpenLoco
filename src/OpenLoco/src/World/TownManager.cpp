@@ -101,17 +101,7 @@ namespace OpenLoco::TownManager
         // Figure out if we need to reset building influence
         for (auto& otherTown : towns())
         {
-            if (otherTown.numBuildings > 0)
-            {
-                continue;
-            }
-
-            if (otherTown.population > 0)
-            {
-                continue;
-            }
-
-            if (otherTown.populationCapacity > 0)
+            if (otherTown.numBuildings == 0 && otherTown.population == 0 && otherTown.populationCapacity == 0)
             {
                 continue;
             }
