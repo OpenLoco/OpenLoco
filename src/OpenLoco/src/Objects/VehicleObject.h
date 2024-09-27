@@ -106,8 +106,8 @@ namespace OpenLoco
 
     struct VehicleObjectCar
     {
-        uint8_t frontBogiePosition;  // 0x00 distance from front of body to bogie pivot point
-        uint8_t backBogiePosition;   // 0x01 distance from back of body to bogie pivot point
+        uint8_t frontBogiePosition;  // 0x00 distance from front of car component (not strictly body) to bogie pivot point
+        uint8_t backBogiePosition;   // 0x01 distance from back of car component (not strictly body) to bogie pivot point
         uint8_t frontBogieSpriteInd; // 0x02 index of bogieSprites struct
         uint8_t backBogieSpriteInd;  // 0x03 index of bogieSprites struct
         uint8_t bodySpriteInd;       // 0x04 index of a bodySprites struct
