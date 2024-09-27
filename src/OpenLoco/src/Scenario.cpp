@@ -28,6 +28,7 @@
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
+#include "ScenarioConstruction.h"
 #include "ScenarioManager.h"
 #include "ScenarioObjective.h"
 #include "SceneManager.h"
@@ -157,18 +158,6 @@ namespace OpenLoco::Scenario
     void setCurrentSeason(Season season)
     {
         getGameState().currentSeason = season;
-    }
-
-    // 0x00475988
-    static void resetRoadObjects()
-    {
-        auto& construction = getGameState().scenarioConstruction;
-        for (auto i = 0U; i < 8; i++)
-        {
-            construction.var_17A[i] = 0xFF;
-            construction.roadStations[i] = 0xFF;
-            construction.roadMods[i] = 0xFF;
-        }
     }
 
     // 0x0043C8FD
