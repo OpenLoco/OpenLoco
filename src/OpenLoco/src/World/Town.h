@@ -40,6 +40,7 @@ namespace OpenLoco
     namespace Gfx
     {
         class DrawingContext;
+        class RenderTarget;
     }
 
 #pragma pack(push, 1)
@@ -73,7 +74,7 @@ namespace OpenLoco
         bool empty() const;
         TownId id() const;
         void update();
-        void drawLabel(Gfx::DrawingContext& drawingCtx);
+        void drawLabel(Gfx::DrawingContext& drawingCtx, const Gfx::RenderTarget& rt);
         void updateLabel();
         void updateMonthly();
         void adjustCompanyRating(CompanyId cid, int amount);

@@ -64,9 +64,8 @@ namespace OpenLoco
         Gfx::Font::medium_normal,
     };
 
-    void Town::drawLabel(Gfx::DrawingContext& drawingCtx)
+    void Town::drawLabel(Gfx::DrawingContext& drawingCtx, const Gfx::RenderTarget& rt)
     {
-        const auto& rt = drawingCtx.currentRenderTarget();
         if (!labelFrame.contains(rt.getDrawableRect(), rt.zoomLevel))
         {
             return;

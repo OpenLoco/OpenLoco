@@ -100,7 +100,7 @@ namespace OpenLoco::Ui
 
         for (auto& town : TownManager::towns())
         {
-            town.drawLabel(drawingCtx);
+            town.drawLabel(drawingCtx, rt);
         }
 
         drawingCtx.popRenderTarget();
