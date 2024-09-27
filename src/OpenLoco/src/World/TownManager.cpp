@@ -21,9 +21,10 @@ namespace OpenLoco::TownManager
     static loco_global<Town*, 0x01135C38> _dword_1135C38;
 
     // 0x0049B45F
-    static uint32_t calcCargoInfluenceFlags()
+    static uint32_t calcCargoInfluenceFlags(Town* town)
     {
         registers regs;
+        regs.esi = X86Pointer(town);
         call(0x0049B45F, regs);
         return regs.eax;
     }
@@ -87,7 +88,7 @@ namespace OpenLoco::TownManager
 
         std::fill_n(&town->monthlyCargoDelivered[0], std::size(town->monthlyCargoDelivered), 0);
 
-        town->cargoInfluenceFlags = calcCargoInfluenceFlags();
+        town->cargoInfluenceFlags = calcCargoInfluenceFlags(town);
         town->buildSpeed = 1;
 
         // Figure out a name for this town?
