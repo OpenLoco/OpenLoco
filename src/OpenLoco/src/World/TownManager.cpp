@@ -20,6 +20,99 @@ namespace OpenLoco::TownManager
 {
     static loco_global<Town*, 0x01135C38> _dword_1135C38;
 
+    // 0x0049B45F
+    static uint32_t calcCargoInfluenceFlags(Town* town)
+    {
+        registers regs;
+        regs.esi = X86Pointer(town);
+        call(0x0049B45F, regs);
+        return regs.eax;
+    }
+
+    // 0x004978B7
+    static bool generateTownName(Town* town)
+    {
+        registers regs;
+        regs.esi = X86Pointer(town);
+        return !(call(0x004978B7, regs) & X86_FLAG_CARRY);
+    }
+
+    static auto& rawTowns() { return getGameState().towns; }
+
+    // 0x00496FE7
+    Town* initialiseTown(World::Pos2 pos)
+    {
+        Town* town = nullptr;
+        for (auto& candidateTown : rawTowns())
+        {
+            if (candidateTown.empty())
+            {
+                town = &candidateTown;
+                break;
+            }
+        }
+
+        // No space for a new town?
+        if (town == nullptr)
+        {
+            return nullptr;
+        }
+
+        // Initialise the new town
+        town->x = pos.x;
+        town->y = pos.y;
+        town->flags = TownFlags::none;
+        town->population = 0;
+        town->populationCapacity = 0;
+        town->numBuildings = 0;
+        town->size = TownSize::hamlet;
+        town->historySize = 1;
+        town->history[0] = 0;
+        town->historyMinPopulation = 0;
+
+        std::fill_n(&town->var_150[0], std::size(town->var_150), 0);
+
+        town->var_19C[0][0] = 0;
+        town->var_19C[0][1] = 0;
+        town->var_19C[1][0] = 0;
+        town->var_19C[1][1] = 0;
+        town->numStations = 0;
+        town->numberOfAirports = 0;
+        town->var_1A8 = 0;
+
+        town->prng = getGameState().rng;
+
+        std::fill_n(&town->companyRatings[0], std::size(town->companyRatings), 500);
+
+        town->companiesWithRating = 0;
+
+        std::fill_n(&town->monthlyCargoDelivered[0], std::size(town->monthlyCargoDelivered), 0);
+
+        town->cargoInfluenceFlags = calcCargoInfluenceFlags(town);
+        town->buildSpeed = 1;
+
+        // Figure out a name for this town?
+        if (!generateTownName(town))
+        {
+            town->name = StringIds::null;
+            return nullptr;
+        }
+
+        // Figure out if we need to reset building influence
+        for (auto& otherTown : towns())
+        {
+            if (otherTown.numBuildings == 0 && otherTown.population == 0 && otherTown.populationCapacity == 0)
+            {
+                continue;
+            }
+
+            resetBuildingsInfluence();
+            break;
+        }
+
+        return town;
+    }
+
     // 0x00497DC1
     // The return value of this function is also being returned via dword_1135C38.
     // esi population
@@ -70,8 +163,6 @@ namespace OpenLoco::TownManager
 
         return town;
     }
-
-    static auto& rawTowns() { return getGameState().towns; }
 
     // 0x00497348
     void resetBuildingsInfluence()

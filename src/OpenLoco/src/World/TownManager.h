@@ -8,6 +8,7 @@
 
 namespace OpenLoco::TownManager
 {
+    Town* initialiseTown(World::Pos2 pos);
     void reset();
     FixedVector<Town, Limits::kMaxTowns> towns();
     Town* get(TownId id);
