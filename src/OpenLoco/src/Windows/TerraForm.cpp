@@ -12,6 +12,7 @@
 #include "GameCommands/Terraform/RaiseWater.h"
 #include "GameCommands/Terraform/RemoveTree.h"
 #include "GameCommands/Terraform/RemoveWall.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -2840,5 +2841,15 @@ namespace OpenLoco::Ui::Windows::Terraform
     void setLastPlacedTree(World::TreeElement* elTree)
     {
         _lastPlacedTree = elTree;
+    }
+
+    // 0x004BAEC4
+    void resetLastSelections()
+    {
+        _treeRotation = 2;
+
+        auto& gameState = getGameState();
+        gameState.lastTreeOption = 0xFF;
+        gameState.lastWallOption = 0xFF;
     }
 }

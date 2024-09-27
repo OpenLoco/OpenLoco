@@ -8,7 +8,19 @@ namespace OpenLoco::Scenario
         return getGameState().scenarioConstruction;
     }
 
-    void resetConstruction()
+    // 0x00475988
+    void resetRoadObjects()
+    {
+        auto& construction = getGameState().scenarioConstruction;
+        for (auto i = 0U; i < 8; i++)
+        {
+            construction.var_17A[i] = 0xFF;
+            construction.roadStations[i] = 0xFF;
+            construction.roadMods[i] = 0xFF;
+        }
+    }
+
+    void resetTrackObjects()
     {
         auto& construction = getConstruction();
         std::fill(std::begin(construction.signals), std::end(construction.signals), 0xFF);
