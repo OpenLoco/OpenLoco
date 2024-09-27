@@ -267,20 +267,20 @@ namespace OpenLoco
                 continue;
             }
 
-            auto& v24 = vehObject.var_24[i];
+            auto& componentObject = vehObject.carComponents[i];
             // 0x01136172
-            auto unkDist = v24.length;
+            auto unkDist = componentObject.frontBogiePosition;
 
-            if (v24.frontBogieSpriteInd != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
+            if (componentObject.frontBogieSpriteInd != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
             {
                 auto unk = yaw;
-                if (v24.bodySpriteInd & SpriteIndex::flag_unk7)
+                if (componentObject.bodySpriteInd & SpriteIndex::flag_unk7)
                 {
                     unk ^= 1U << 5;
                 }
                 unk /= 2;
 
-                auto& bogieSprites = vehObject.bogieSprites[v24.frontBogieSpriteInd];
+                auto& bogieSprites = vehObject.bogieSprites[componentObject.frontBogieSpriteInd];
                 if (bogieSprites.hasFlags(BogieSpriteFlags::rotationalSymmetry))
                 {
                     unk &= 0xFU;
@@ -291,27 +291,27 @@ namespace OpenLoco
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), drawItems.totalDistance + unkDist, false });
             }
 
-            auto unk1136170 = 0;
+            auto carComponentLength = 0;
             auto backBogieDist = drawItems.totalDistance;
-            if (v24.bodySpriteInd != SpriteIndex::null)
+            if (componentObject.bodySpriteInd != SpriteIndex::null)
             {
-                auto& bodySprites = vehObject.bodySprites[v24.bodySpriteInd & ~(1U << 7)];
-                unk1136170 = bodySprites.bogeyPosition * 2;
-                backBogieDist += unk1136170;
+                auto& bodySprites = vehObject.bodySprites[componentObject.bodySpriteInd & ~(1U << 7)];
+                carComponentLength = bodySprites.halfLength * 2;
+                backBogieDist += carComponentLength;
             }
-            auto unk1136174 = v24.var_01;
-            backBogieDist -= v24.var_01;
+            auto unk1136174 = componentObject.backBogiePosition;
+            backBogieDist -= componentObject.backBogiePosition;
 
-            if (v24.backBogieSpriteInd != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
+            if (componentObject.backBogieSpriteInd != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
             {
                 auto unk = yaw;
-                if (!(v24.bodySpriteInd & SpriteIndex::flag_unk7))
+                if (!(componentObject.bodySpriteInd & SpriteIndex::flag_unk7))
                 {
                     unk ^= 1U << 5;
                 }
                 unk /= 2;
 
-                auto& bogieSprites = vehObject.bogieSprites[v24.backBogieSpriteInd];
+                auto& bogieSprites = vehObject.bogieSprites[componentObject.backBogieSpriteInd];
                 if (bogieSprites.hasFlags(BogieSpriteFlags::rotationalSymmetry))
                 {
                     unk &= 0xFU;
@@ -322,13 +322,13 @@ namespace OpenLoco
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), backBogieDist, false });
             }
 
-            auto bodyDist = drawItems.totalDistance + (unkDist + unk1136170 - unk1136174) / 2;
-            if (v24.bodySpriteInd != SpriteIndex::null)
+            auto bodyDist = drawItems.totalDistance + (unkDist + carComponentLength - unk1136174) / 2;
+            if (componentObject.bodySpriteInd != SpriteIndex::null)
             {
-                auto& bodySprites = vehObject.bodySprites[v24.bodySpriteInd & ~SpriteIndex::flag_unk7];
+                auto& bodySprites = vehObject.bodySprites[componentObject.bodySpriteInd & ~SpriteIndex::flag_unk7];
 
                 auto unk = yaw;
-                if (v24.bodySpriteInd & SpriteIndex::flag_unk7)
+                if (componentObject.bodySpriteInd & SpriteIndex::flag_unk7)
                 {
                     unk ^= 1U << 5;
                 }
@@ -347,7 +347,7 @@ namespace OpenLoco
 
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), bodyDist, true });
             }
-            drawItems.totalDistance += unk1136170;
+            drawItems.totalDistance += carComponentLength;
         }
         return drawItems;
     }
@@ -361,9 +361,9 @@ namespace OpenLoco
         uint8_t componentIndex = isCarReversed ? vehObject.var_04 - 1 : 0;
         for (auto& carComponent : car)
         {
-            auto& v24 = vehObject.var_24[componentIndex];
+            auto& componentObject = vehObject.carComponents[componentIndex];
             // 0x01136172
-            auto unkDist = isCarReversed ? v24.var_01 : v24.length;
+            auto unkDist = isCarReversed ? componentObject.backBogiePosition : componentObject.frontBogiePosition;
 
             if (carComponent.front->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
             {
@@ -385,15 +385,15 @@ namespace OpenLoco
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.front->colourScheme), drawItems.totalDistance + unkDist, false });
             }
 
-            auto unk1136170 = 0;
+            auto carComponentLength = 0;
             auto backBogieDist = drawItems.totalDistance;
-            if (v24.bodySpriteInd != SpriteIndex::null)
+            if (componentObject.bodySpriteInd != SpriteIndex::null)
             {
-                auto& bodySprites = vehObject.bodySprites[v24.bodySpriteInd & ~(1U << 7)];
-                unk1136170 = bodySprites.bogeyPosition * 2;
-                backBogieDist += unk1136170;
+                auto& bodySprites = vehObject.bodySprites[componentObject.bodySpriteInd & ~(1U << 7)];
+                carComponentLength = bodySprites.halfLength * 2;
+                backBogieDist += carComponentLength;
             }
-            auto unk1136174 = isCarReversed ? v24.length : v24.var_01;
+            auto unk1136174 = isCarReversed ? componentObject.frontBogiePosition : componentObject.backBogiePosition;
             backBogieDist -= unk1136174;
 
             if (carComponent.back->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
@@ -416,7 +416,7 @@ namespace OpenLoco
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.back->colourScheme), backBogieDist, false });
             }
 
-            auto bodyDist = drawItems.totalDistance + (unkDist + unk1136170 - unk1136174) / 2;
+            auto bodyDist = drawItems.totalDistance + (unkDist + carComponentLength - unk1136174) / 2;
             if (carComponent.body->objectSpriteType != SpriteIndex::null)
             {
                 auto& bodySprites = vehObject.bodySprites[carComponent.body->objectSpriteType];
@@ -440,7 +440,7 @@ namespace OpenLoco
                     drawItems.items.push_back(DrawItem{ ImageId(brakingImageIndex, carComponent.body->colourScheme), bodyDist, true });
                 }
             }
-            drawItems.totalDistance += unk1136170;
+            drawItems.totalDistance += carComponentLength;
             if (isCarReversed)
             {
                 componentIndex--;

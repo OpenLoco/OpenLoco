@@ -190,7 +190,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        newBogie->objectSpriteType = vehObject.var_24[bodyNumber].frontBogieSpriteInd;
+        newBogie->objectSpriteType = vehObject.carComponents[bodyNumber].frontBogieSpriteInd;
         if (newBogie->objectSpriteType != SpriteIndex::null)
         {
             newBogie->spriteWidth = vehObject.bogieSprites[newBogie->objectSpriteType].width;
@@ -209,7 +209,7 @@ namespace OpenLoco::GameCommands
             return nullptr;
         }
         newBogie->var_38 = Flags38::isReversed;
-        newBogie->objectSpriteType = vehObject.var_24[bodyNumber].backBogieSpriteInd;
+        newBogie->objectSpriteType = vehObject.carComponents[bodyNumber].backBogieSpriteInd;
         if (newBogie->objectSpriteType != SpriteIndex::null)
         {
             newBogie->spriteWidth = vehObject.bogieSprites[newBogie->objectSpriteType].width;
@@ -274,7 +274,7 @@ namespace OpenLoco::GameCommands
         newBody->spriteHeightPositive = 1;
 
         // different onwards to create bogie
-        auto spriteType = vehObject.var_24[bodyNumber].bodySpriteInd;
+        auto spriteType = vehObject.carComponents[bodyNumber].bodySpriteInd;
         if (spriteType != SpriteIndex::null)
         {
             if (spriteType & SpriteIndex::flag_unk7)

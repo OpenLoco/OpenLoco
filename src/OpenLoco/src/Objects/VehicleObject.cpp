@@ -671,13 +671,13 @@ namespace OpenLoco
         auto length = 0;
         for (auto i = 0; i < var_04; ++i)
         {
-            if (var_24[i].bodySpriteInd == 0xFF)
+            if (carComponents[i].bodySpriteInd == 0xFF)
             {
                 continue;
             }
 
-            auto unk = var_24[i].bodySpriteInd & (VehicleObject::kMaxBodySprites - 1);
-            length += bodySprites[unk].bogeyPosition * 2;
+            auto unk = carComponents[i].bodySpriteInd & (VehicleObject::kMaxBodySprites - 1);
+            length += bodySprites[unk].halfLength * 2;
         }
         return length;
     }
