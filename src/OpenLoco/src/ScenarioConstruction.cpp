@@ -8,7 +8,7 @@ namespace OpenLoco::Scenario
         return getGameState().scenarioConstruction;
     }
 
-    void resetConstruction()
+    void resetTrackObjects()
     {
         auto& construction = getConstruction();
         std::fill(std::begin(construction.signals), std::end(construction.signals), 0xFF);

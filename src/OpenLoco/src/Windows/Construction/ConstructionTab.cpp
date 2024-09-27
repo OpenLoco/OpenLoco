@@ -142,7 +142,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049B50C
     void reset()
     {
-        Scenario::resetConstruction();
+        Scenario::resetTrackObjects();
 
         LastGameOptionManager::setLastAirport(LastGameOptionManager::kNoLastOption);
         LastGameOptionManager::setLastShipPort(LastGameOptionManager::kNoLastOption);
