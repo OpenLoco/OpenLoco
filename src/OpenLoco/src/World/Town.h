@@ -37,6 +37,11 @@ namespace OpenLoco
         bool isBridge;
     };
 
+    namespace Gfx
+    {
+        class DrawingContext;
+    }
+
 #pragma pack(push, 1)
     struct Town
     {
@@ -68,6 +73,7 @@ namespace OpenLoco
         bool empty() const;
         TownId id() const;
         void update();
+        void drawLabel(Gfx::DrawingContext& drawingCtx);
         void updateLabel();
         void updateMonthly();
         void adjustCompanyRating(CompanyId cid, int amount);

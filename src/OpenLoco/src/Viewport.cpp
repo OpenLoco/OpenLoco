@@ -84,13 +84,6 @@ namespace OpenLoco::Ui
         drawingCtx.popRenderTarget();
     }
 
-    static constexpr std::array<Gfx::Font, 4> kZoomToTownFonts = {
-        Gfx::Font::medium_bold,
-        Gfx::Font::medium_bold,
-        Gfx::Font::medium_normal,
-        Gfx::Font::medium_normal,
-    };
-
     // 0x004977E5
     static void drawTownNames(Gfx::DrawingContext& drawingCtx)
     {
@@ -105,21 +98,9 @@ namespace OpenLoco::Ui
 
         drawingCtx.pushRenderTarget(unZoomedRt);
 
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
-        char buffer[512]{};
-        for (const auto& town : TownManager::towns())
+        for (auto& town : TownManager::towns())
         {
-            if (!town.labelFrame.contains(rt.getDrawableRect(), rt.zoomLevel))
-            {
-                continue;
-            }
-
-            StringManager::formatString(buffer, town.name);
-            tr.setCurrentFont(kZoomToTownFonts[rt.zoomLevel]);
-
-            auto point = Point(town.labelFrame.left[rt.zoomLevel] + 1, town.labelFrame.top[rt.zoomLevel] + 1);
-            tr.drawString(point, AdvancedColour(Colour::white).outline(), buffer);
+            town.drawLabel(drawingCtx);
         }
 
         drawingCtx.popRenderTarget();
