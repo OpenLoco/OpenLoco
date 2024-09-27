@@ -40,7 +40,7 @@ namespace OpenLoco
     namespace Gfx
     {
         class DrawingContext;
-        class RenderTarget;
+        struct RenderTarget;
     }
 
 #pragma pack(push, 1)
