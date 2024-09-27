@@ -76,6 +76,7 @@ namespace OpenLoco::TownManager
         town->var_19C[1][0] = 0;
         town->var_19C[1][1] = 0;
         town->numStations = 0;
+        town->numberOfAirports = 0;
         town->var_1A8 = 0;
 
         town->prng = getGameState().rng;
