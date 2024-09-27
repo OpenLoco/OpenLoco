@@ -99,8 +99,6 @@ namespace OpenLoco::Ui
     void createWindow(const Config::Display& cfg);
     void initialise();
     void initialiseCursors();
-    void initialiseInput();
-    void disposeInput();
     void disposeCursors();
     void setCursor(CursorId id);
     CursorId getCursor();

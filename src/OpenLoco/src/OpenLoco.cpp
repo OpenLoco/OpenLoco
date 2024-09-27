@@ -147,7 +147,6 @@ namespace OpenLoco
         Audio::disposeDSound();
         Audio::close();
         Ui::disposeCursors();
-        Ui::disposeInput();
         Localisation::unloadLanguageFile();
 
         auto tempFilePath = Environment::getPathNoWarning(Environment::PathId::_1tmp);
@@ -877,7 +876,6 @@ namespace OpenLoco
 
             Ui::createWindow(cfg.display);
             call(0x004078FE); // getSystemInfo used for some config, multiplayer name,
-            Ui::initialiseInput();
             Audio::initialiseDSound();
             run();
             exitCleanly();
