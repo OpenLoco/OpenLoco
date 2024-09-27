@@ -96,7 +96,7 @@ namespace OpenLoco::Vehicles
             return;
 
         const auto* vehicleObject = getObject();
-        int32_t var_05 = vehicleObject->var_24[bodyIndex].var_05;
+        int32_t var_05 = vehicleObject->carComponents[bodyIndex].var_05;
         if (var_05 == 0)
         {
             return;
@@ -865,7 +865,7 @@ namespace OpenLoco::Vehicles
     {
         const auto* vehicleObject = getObject();
 
-        uint8_t var_05 = vehicleObject->var_24[bodyIndex].var_05;
+        uint8_t var_05 = vehicleObject->carComponents[bodyIndex].var_05;
         if (var_05 == 0)
             return;
 
@@ -1071,7 +1071,7 @@ namespace OpenLoco::Vehicles
             if (ScenarioManager::getScenarioTicks() & 3)
                 return;
 
-            auto positionFactor = vehicleObject->bodySprites[0].bogeyPosition * var_05 / 256;
+            auto positionFactor = vehicleObject->bodySprites[0].halfLength * var_05 / 256;
             auto invertedDirection = spriteYaw ^ (1 << 5);
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
@@ -1273,7 +1273,7 @@ namespace OpenLoco::Vehicles
         if ((ScenarioManager::getScenarioTicks() % frequency) != 0)
             return;
 
-        auto positionFactor = vehicleObject->bodySprites[0].bogeyPosition;
+        auto positionFactor = vehicleObject->bodySprites[0].halfLength;
         auto invertedDirection = spriteYaw ^ (1 << 5);
         auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 4;
 

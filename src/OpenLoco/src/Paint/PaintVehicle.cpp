@@ -210,14 +210,14 @@ namespace OpenLoco::Paint
         }
         else
         {
-            auto& unk = vehObject->var_24[body->bodyIndex];
-            auto offsetModifier = unk.length - unk.var_01;
+            auto& componentObject = vehObject->carComponents[body->bodyIndex];
+            auto offsetModifier = componentObject.frontBogiePosition - componentObject.backBogiePosition;
             if (body->has38Flags(Flags38::isReversed))
             {
                 offsetModifier = -offsetModifier;
             }
 
-            if (unk.bodySpriteInd & SpriteIndex::flag_unk7)
+            if (componentObject.bodySpriteInd & SpriteIndex::flag_unk7)
             {
                 offsetModifier = -offsetModifier;
             }
@@ -225,7 +225,7 @@ namespace OpenLoco::Paint
             const auto unk1 = Math::Trigonometry::computeXYVector(offsetModifier, originalYaw) / 2;
             boundBoxOffsets.x = unk1.x;
             boundBoxOffsets.y = unk1.y;
-            offsetModifier = sprite.bogeyPosition * 2 - 4;
+            offsetModifier = sprite.halfLength * 2 - 4;
             originalYaw &= 0x1F;
             boundBoxOffsets.x += (_5001B4[originalYaw * 4] * offsetModifier) >> 8;
             boundBoxOffsets.y += (_5001B4[originalYaw * 4 + 1] * offsetModifier) >> 8;
