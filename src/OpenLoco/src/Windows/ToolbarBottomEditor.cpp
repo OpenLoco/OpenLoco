@@ -20,13 +20,13 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static constexpr uint16_t kWindowHeight = 32;
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
         makeWidget({ 440, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
-        widgetEnd(),
-    };
+        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary)
+
+    );
 
     static std::map<EditorController::Step, StringId> _stepNames = {
         { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
@@ -146,8 +146,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     // 0x0043CCCD
     void open()
     {
-        Ui::Point origin = Ui::Point(0, Ui::height() - kWindowHeight);
-        Ui::Size windowSize = Ui::Size(Ui::width(), kWindowHeight);
+        const auto origin = Ui::Point32(0, Ui::height() - kWindowHeight);
+        const auto windowSize = Ui::Size32(Ui::width(), kWindowHeight);
 
         auto window = WindowManager::createWindow(
             WindowType::editorToolbar,

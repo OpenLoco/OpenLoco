@@ -35,6 +35,8 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
@@ -47,7 +49,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 {
     static TilePos2 _currentPosition{};
 
-    static constexpr Ui::Size kWindowSize = { 350, 200 };
+    static constexpr Ui::Size32 kWindowSize = { 350, 200 };
 
     namespace widx
     {
@@ -74,13 +76,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
         };
     }
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
+    static constexpr auto _widgets = makeWidgets(
+        Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
         makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WidgetType::panel, WindowColour::secondary),
-        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
-        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
+        Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
+        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WindowColour::secondary),
+        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WindowColour::secondary),
         makeWidget({ kWindowSize.width - 26, 18 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
         makeWidget({ 4, 46 }, { kWindowSize.width - 98, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderNameType, StringIds::tileInspectorHeaderNameTypeTip), // name
         makeWidget({ kWindowSize.width - 109, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderBaseHeight, StringIds::tileInspectorHeaderBaseHeightTip),
@@ -88,9 +90,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeWidget({ kWindowSize.width - 49, 46 }, { 15, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderDirection, StringIds::tileInspectorHeaderDirectionTip),
         makeWidget({ kWindowSize.width - 34, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderGhost, StringIds::tileInspectorHeaderGhostTip),
         makeWidget({ 4, 60 }, { kWindowSize.width - 8, 103 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
-        makeWidget({ 4, 165 }, { kWindowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
-        widgetEnd(),
-    };
+        makeWidget({ 4, 165 }, { kWindowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data)
+
+    );
 
     static void activateMapSelectionTool(Window* const self)
     {
@@ -347,7 +349,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             StringId formatString;
             if (self.var_842 == rowNum)
             {
-                drawingCtx.fillRect(0, yPos, self.width, yPos + self.rowHeight, PaletteIndex::index_0A, Gfx::RectFlags::none);
+                drawingCtx.fillRect(0, yPos, self.width, yPos + self.rowHeight, PaletteIndex::black0, Gfx::RectFlags::none);
                 formatString = StringIds::white_stringid;
             }
             else if (self.rowHover == rowNum)

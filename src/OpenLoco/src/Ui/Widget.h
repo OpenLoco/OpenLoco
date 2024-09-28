@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include <array>
 #include <cstdint>
 
 namespace OpenLoco::Gfx
@@ -53,7 +55,6 @@ namespace OpenLoco::Ui
         wt_28,
         wt_29,
         viewportCentreButton, // TODO: Make a better generic button so we get the same result.
-        end,
     };
 
     struct WidgetState
@@ -69,6 +70,13 @@ namespace OpenLoco::Ui
     };
 
 #pragma pack(push, 1)
+    struct Widget;
+
+    struct WidgetEventsList
+    {
+        void (*draw)(Gfx::DrawingContext&, const Widget&, const WidgetState&) = nullptr;
+    };
+
     struct Widget
     {
         // Indicates that the imageId has a colour set and not to replace it with the window colour
@@ -78,20 +86,59 @@ namespace OpenLoco::Ui
         static constexpr uint32_t kContentNull = 0xFFFFFFFFU;
         static constexpr uint32_t kContentUnk = 0xFFFFFFFEU;
 
-        WidgetType type;           // 0x00
-        WindowColour windowColour; // 0x01
-        int16_t left;              // 0x02
-        int16_t right;             // 0x04
-        int16_t top;               // 0x06
-        int16_t bottom;            // 0x08
+        constexpr Widget(Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+            : type{ widgetType }
+            , windowColour{ colour }
+            , left{ static_cast<int16_t>(origin.x) }
+            , right{ static_cast<int16_t>(origin.x + size.width - 1) }
+            , top{ static_cast<int16_t>(origin.y) }
+            , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
+            , content{ content }
+            , tooltip{ tooltip }
+        {
+        }
+
+        constexpr Widget(Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
+            : type{ widgetType }
+            , windowColour{ colour }
+            , left{ static_cast<int16_t>(origin.x) }
+            , right{ static_cast<int16_t>(origin.x + size.width - 1) }
+            , top{ static_cast<int16_t>(origin.y) }
+            , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
+            , text{ content }
+            , tooltip{ tooltip }
+        {
+        }
+
+        constexpr Widget(WidgetType widgetType)
+            : type{ widgetType }
+            , windowColour{}
+            , left{}
+            , right{}
+            , top{}
+            , bottom{}
+            , content{ kContentNull }
+            , tooltip{ StringIds::null }
+        {
+        }
+
+        constexpr Widget() = default;
+
+        WidgetType type{};           // 0x00
+        WindowColour windowColour{}; // 0x01
+        int16_t left{};              // 0x02
+        int16_t right{};             // 0x04
+        int16_t top{};               // 0x06
+        int16_t bottom{};            // 0x08
         union
         {
-            uint32_t image{};
+            uint32_t image{ ImageIds::null };
             StringId text;
             uint32_t content;
         };
-        StringId tooltip; // 0x0E
+        StringId tooltip{ StringIds::null }; // 0x0E
         FormatArgumentsBuffer textArgs;
+        WidgetEventsList events;
 
         int16_t midX() const;
         int16_t midY() const;
@@ -108,24 +155,15 @@ namespace OpenLoco::Ui
         void draw(Gfx::DrawingContext& drawingCtx, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
     };
 #pragma pack(pop)
-    //static_assert(sizeof(Widget) == 0x10);
+    // static_assert(sizeof(Widget) == 0x10);
 
-    static constexpr Widget makeWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    constexpr Widget makeWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
-        Widget out{};
-        out.left = origin.x;
-        out.right = origin.x + size.width - 1;
-        out.top = origin.y;
-        out.bottom = origin.y + size.height - 1;
-        out.type = type;
-        out.windowColour = colour;
-        out.content = content;
-        out.tooltip = tooltip;
-
+        Widget out{ origin, size, type, colour, content, tooltip };
         return out;
     }
 
-    constexpr Widget makeRemapWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    constexpr Widget makeRemapWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
         Widget out = makeWidget(origin, size, type, colour, content, tooltip);
 
@@ -135,11 +173,7 @@ namespace OpenLoco::Ui
         return out;
     }
 
-#define makeDropdownWidgets(...) \
-    makeWidget(__VA_ARGS__),     \
-        makeDropdownButtonWidget(__VA_ARGS__)
-
-    [[maybe_unused]] static constexpr Widget makeDropdownButtonWidget(Ui::Point origin, Ui::Size size, [[maybe_unused]] WidgetType type, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
+    constexpr Widget makeDropdownButtonWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 12;
         const int16_t yPos = origin.y + 1;
@@ -149,12 +183,7 @@ namespace OpenLoco::Ui
         return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::dropdown, tooltip);
     }
 
-#define makeStepperWidgets(...)                 \
-    makeWidget(__VA_ARGS__),                    \
-        makeStepperDecreaseWidget(__VA_ARGS__), \
-        makeStepperIncreaseWidget(__VA_ARGS__)
-
-    [[maybe_unused]] static constexpr Widget makeStepperDecreaseWidget(Ui::Point origin, Ui::Size size, [[maybe_unused]] WidgetType type, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
+    constexpr Widget makeStepperDecreaseWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 26;
         const int16_t yPos = origin.y + 1;
@@ -164,7 +193,7 @@ namespace OpenLoco::Ui
         return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::stepper_minus, tooltip);
     }
 
-    [[maybe_unused]] static constexpr Widget makeStepperIncreaseWidget(Ui::Point origin, Ui::Size size, [[maybe_unused]] WidgetType type, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
+    constexpr Widget makeStepperIncreaseWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 13;
         const int16_t yPos = origin.y + 1;
@@ -174,27 +203,90 @@ namespace OpenLoco::Ui
         return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::stepper_plus, tooltip);
     }
 
-    constexpr Widget makeTextWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
+    constexpr Widget makeTextWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
     {
-        Widget out{};
-        out.left = origin.x;
-        out.right = origin.x + size.width - 1;
-        out.top = origin.y;
-        out.bottom = origin.y + size.height - 1;
-        out.type = type;
-        out.windowColour = colour;
-        out.text = content;
-        out.tooltip = tooltip;
-
+        Widget out{ origin, size, type, colour, content, tooltip };
         return out;
     }
 
-    constexpr Widget widgetEnd()
+    namespace Detail
     {
-        Widget out{};
-        out.type = WidgetType::end;
+        template<typename T, typename Enable = void>
+        struct WidgetsCount
+        {
+            static constexpr size_t count = 0;
+        };
 
-        return out;
+        template<typename T>
+        struct WidgetsCount<T, std::enable_if_t<std::is_base_of_v<Widget, T>>>
+        {
+            static constexpr size_t count = 1;
+        };
+
+        template<typename T, std::size_t N>
+        struct WidgetsCount<std::array<T, N>, std::enable_if_t<std::is_base_of_v<Widget, T>>>
+        {
+            static constexpr size_t count = N;
+        };
+
+        template<typename T>
+        struct IsWidgetsArray : std::false_type
+        {
+        };
+
+        template<std::size_t N>
+        struct IsWidgetsArray<std::array<Widget, N>> : std::true_type
+        {
+        };
     }
 
+    template<typename... TArgs>
+    constexpr auto makeWidgets(TArgs&&... args)
+    {
+        constexpr auto totalCount = [&]() {
+            size_t count = 0;
+            ((count += Detail::WidgetsCount<std::decay_t<decltype(args)>>::count), ...);
+            return count;
+        }();
+
+        std::array<Widget, totalCount> res{};
+        size_t index = 0;
+
+        const auto append = [&](auto&& val) {
+            if constexpr (Detail::IsWidgetsArray<std::decay_t<decltype(val)>>::value)
+            {
+                for (auto&& widget : val)
+                {
+                    res[index] = std::move(widget);
+                    index++;
+                }
+            }
+            else
+            {
+                res[index] = std::move(val);
+                index++;
+            }
+        };
+
+        ((append(args)), ...);
+
+        return res;
+    }
+
+    constexpr auto makeStepperWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    {
+        // TODO: Make this a single widget.
+        return makeWidgets(
+            makeWidget(origin, size, WidgetType::textbox, colour, content, tooltip),
+            makeStepperDecreaseWidget(origin, size, colour),
+            makeStepperIncreaseWidget(origin, size, colour));
+    }
+
+    constexpr auto makeDropdownWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    {
+        // TODO: Make this a single widget.
+        return makeWidgets(
+            makeWidget(origin, size, WidgetType::combobox, colour, content, tooltip),
+            makeDropdownButtonWidget(origin, size, colour));
+    }
 }

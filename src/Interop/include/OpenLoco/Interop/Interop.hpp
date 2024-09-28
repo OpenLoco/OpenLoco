@@ -1,6 +1,7 @@
 #pragma once
 
 #include <OpenLoco/Core/Exception.hpp>
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -340,6 +341,7 @@ namespace OpenLoco::Interop
 
         reference operator[](int idx)
         {
+            assert(idx >= 0 && static_cast<size_t>(idx) < size());
 #ifndef NDEBUG
             if (idx < 0 || static_cast<size_t>(idx) >= size())
             {

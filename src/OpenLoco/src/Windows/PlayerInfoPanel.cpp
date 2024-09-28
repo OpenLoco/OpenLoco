@@ -26,7 +26,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
-    static constexpr Ui::Size kWindowSize = { 140, 27 };
+    static constexpr Ui::Size32 kWindowSize = { 140, 27 };
 
     namespace Widx
     {
@@ -46,14 +46,14 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static void companyValueMouseUp();
 
     // 0x00509d08
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 1, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),
         makeWidget({ 27, 2 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_company_value),
-        makeWidget({ 27, 14 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_performance_index),
-        widgetEnd(),
-    };
+        makeWidget({ 27, 14 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_performance_index)
+
+    );
 
     std::vector<const Company*> _sortedCompanies;
 
@@ -157,8 +157,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         auto window = WindowManager::createWindow(
             WindowType::playerInfoToolbar,
-            Ui::Point(0, Ui::height() - kWindowSize.height),
-            Ui::Size(kWindowSize.width, kWindowSize.height),
+            { 0, Ui::height() - kWindowSize.height },
+            { kWindowSize.width, kWindowSize.height },
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);

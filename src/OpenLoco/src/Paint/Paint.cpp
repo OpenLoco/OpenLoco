@@ -1274,11 +1274,6 @@ namespace OpenLoco::Paint
             return paletteMap[*index] != 0;
         }
 
-        if (image.isBlended())
-        {
-            return false;
-        }
-
         return (*index != 0);
     }
 

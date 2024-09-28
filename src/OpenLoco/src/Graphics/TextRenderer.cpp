@@ -38,13 +38,13 @@ namespace OpenLoco::Gfx
             if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
                 return;
 
-            _textColours[1] = pal1;
-            _textColours[2] = PaletteIndex::transparent;
-            _textColours[3] = PaletteIndex::transparent;
+            _textColours[PaletteIndex::textRemap0] = pal1;
+            _textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
+            _textColours[PaletteIndex::textRemap2] = PaletteIndex::transparent;
             if ((_currentFontFlags & TextDrawFlags::outline) != TextDrawFlags::none)
             {
-                _textColours[2] = pal2;
-                _textColours[3] = pal3;
+                _textColours[PaletteIndex::textRemap1] = pal2;
+                _textColours[PaletteIndex::textRemap2] = pal3;
             }
         }
 
@@ -160,25 +160,25 @@ namespace OpenLoco::Gfx
                     case ControlCodes::windowColour1:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::primary).c();
-                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour2:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::secondary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour3:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::tertiary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour4:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::quaternary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
 
@@ -190,8 +190,8 @@ namespace OpenLoco::Gfx
 
                         if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
                         {
-                            ctx.drawImageSolid(pos, imageId, _textColours[3]);
-                            ctx.drawImageSolid(pos + Ui::Point{ 1, 1 }, imageId, _textColours[1]);
+                            ctx.drawImageSolid(pos, imageId, _textColours[PaletteIndex::textRemap2]);
+                            ctx.drawImageSolid(pos + Ui::Point{ 1, 1 }, imageId, _textColours[PaletteIndex::textRemap0]);
                         }
                         else
                         {
@@ -335,10 +335,10 @@ namespace OpenLoco::Gfx
                 _currentFontFlags = _currentFontFlags | TextDrawFlags::extraDark;
             }
 
-            _textColours[0] = PaletteIndex::transparent;
-            _textColours[1] = Colours::getShade(Colour::mutedDarkPurple, 5);
-            _textColours[2] = Colours::getShade(Colour::mutedRed, 5);
-            _textColours[3] = Colours::getShade(Colour::blue, 5);
+            _textColours[PaletteIndex::transparent] = PaletteIndex::transparent;
+            _textColours[PaletteIndex::textRemap0] = Colours::getShade(Colour::mutedDarkPurple, 5);
+            _textColours[PaletteIndex::textRemap1] = Colours::getShade(Colour::mutedRed, 5);
+            _textColours[PaletteIndex::textRemap2] = Colours::getShade(Colour::blue, 5);
 
             if (colour.isOutline())
             {
@@ -356,26 +356,26 @@ namespace OpenLoco::Gfx
             {
                 if ((_currentFontFlags & TextDrawFlags::dark) != TextDrawFlags::none && (_currentFontFlags & TextDrawFlags::extraDark) != TextDrawFlags::none)
                 {
-                    _textColours[1] = Colours::getShade(colour.c(), 2);
-                    _textColours[2] = PaletteIndex::transparent;
-                    _textColours[3] = Colours::getShade(colour.c(), 4);
+                    _textColours[PaletteIndex::textRemap0] = Colours::getShade(colour.c(), 2);
+                    _textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
+                    _textColours[PaletteIndex::textRemap2] = Colours::getShade(colour.c(), 4);
                 }
                 else if ((_currentFontFlags & TextDrawFlags::dark) != TextDrawFlags::none)
                 {
-                    _textColours[1] = Colours::getShade(colour.c(), 3);
-                    _textColours[2] = PaletteIndex::transparent;
-                    _textColours[3] = Colours::getShade(colour.c(), 5);
+                    _textColours[PaletteIndex::textRemap0] = Colours::getShade(colour.c(), 3);
+                    _textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
+                    _textColours[PaletteIndex::textRemap2] = Colours::getShade(colour.c(), 5);
                 }
                 else
                 {
-                    _textColours[1] = Colours::getShade(colour.c(), 4);
-                    _textColours[2] = PaletteIndex::transparent;
-                    _textColours[3] = Colours::getShade(colour.c(), 6);
+                    _textColours[PaletteIndex::textRemap0] = Colours::getShade(colour.c(), 4);
+                    _textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
+                    _textColours[PaletteIndex::textRemap2] = Colours::getShade(colour.c(), 6);
                 }
             }
             else
             {
-                setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::black0, PaletteIndex::black0);
             }
 
             return loopNewline(ctx, &rt, origin, str);
@@ -571,9 +571,9 @@ namespace OpenLoco::Gfx
             drawString(ctx, rt, point, colour, buffer);
 
             // Draw underline
-            ctx.drawRect(point.x, point.y + 11, width, 1, _textColours[1], RectFlags::none);
-            if (_textColours[2] != 0)
-                ctx.drawRect(point.x, point.y + 12, width, 1, _textColours[2], RectFlags::none);
+            ctx.drawRect(point.x, point.y + 11, width, 1, _textColours[PaletteIndex::textRemap0], RectFlags::none);
+            if (_textColours[PaletteIndex::textRemap1] != 0)
+                ctx.drawRect(point.x, point.y + 12, width, 1, _textColours[PaletteIndex::textRemap1], RectFlags::none);
 
             return point;
         }
@@ -602,9 +602,9 @@ namespace OpenLoco::Gfx
             auto point = drawString(ctx, rt, origin, colour, buffer);
 
             // Draw underline
-            ctx.drawRect(origin.x, origin.y + 11, width, 1, _textColours[1], RectFlags::none);
-            if (_textColours[2] != 0)
-                ctx.drawRect(origin.x, origin.y + 12, width, 1, _textColours[2], RectFlags::none);
+            ctx.drawRect(origin.x, origin.y + 11, width, 1, _textColours[PaletteIndex::textRemap0], RectFlags::none);
+            if (_textColours[PaletteIndex::textRemap1] != 0)
+                ctx.drawRect(origin.x, origin.y + 12, width, 1, _textColours[PaletteIndex::textRemap1], RectFlags::none);
 
             return point;
         }
@@ -797,7 +797,7 @@ namespace OpenLoco::Gfx
 
             _currentFontFlags = TextDrawFlags::none;
 
-            setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+            setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::black0, PaletteIndex::black0);
 
             Ui::Point pos = loc;
             while (true)
@@ -903,25 +903,25 @@ namespace OpenLoco::Gfx
                     case ControlCodes::windowColour1:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::primary).c();
-                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour2:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::secondary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour3:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::tertiary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour4:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::quaternary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
 
@@ -1145,25 +1145,25 @@ namespace OpenLoco::Gfx
                     case ControlCodes::windowColour1:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::primary).c();
-                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour2:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::secondary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour3:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::tertiary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour4:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::quaternary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
 
@@ -1965,6 +1965,12 @@ namespace OpenLoco::Gfx
 
     uint16_t TextRenderer::getStringWidth(const char* buffer)
     {
+        return Impl::getStringWidth(buffer);
+    }
+
+    uint16_t TextRenderer::getStringWidth(const Font base, const char* buffer)
+    {
+        Impl::setCurrentFont(base);
         return Impl::getStringWidth(buffer);
     }
 

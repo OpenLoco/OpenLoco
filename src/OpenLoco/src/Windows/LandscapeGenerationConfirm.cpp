@@ -9,11 +9,12 @@
 #include "Objects/ObjectManager.h"
 #include "Scenario.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 {
-    static constexpr Ui::Size kWindowSize = { 280, 92 };
+    static constexpr Ui::Size32 kWindowSize = { 280, 92 };
 
     enum widx
     {
@@ -24,14 +25,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         button_cancel = 4,
     };
 
-    static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, WindowColour::primary),
+    static constexpr auto widgets = makeWidgets(
+        Widgets::Panel({ 0, 0 }, { 280, 92 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, WindowColour::primary),
         makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::button, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
         makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_ok),
-        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_cancel),
-        widgetEnd()
-    };
+        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::button, WindowColour::primary, StringIds::label_button_cancel)
+
+    );
 
     // 0x004C18A5
     static void draw(Window& window, Gfx::DrawingContext& drawingCtx)

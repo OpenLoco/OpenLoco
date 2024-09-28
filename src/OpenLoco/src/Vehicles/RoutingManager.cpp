@@ -1,5 +1,6 @@
 #include "RoutingManager.h"
 #include "GameState.h"
+#include <algorithm>
 
 namespace OpenLoco::Vehicles::RoutingManager
 {
@@ -49,6 +50,12 @@ namespace OpenLoco::Vehicles::RoutingManager
     {
         auto& vehRoutingArr = routings()[routing.getVehicleRef()];
         std::fill(std::begin(vehRoutingArr), std::end(vehRoutingArr), kRoutingNull);
+    }
+
+    // 0x004A8810
+    void resetRoutingTable()
+    {
+        std::fill_n(&routings()[0][0], Limits::kMaxVehicles * Limits::kMaxRoutingsPerVehicle, kRoutingNull);
     }
 
     RingView::Iterator::Iterator(const RoutingHandle& begin, bool isEnd, Direction direction)

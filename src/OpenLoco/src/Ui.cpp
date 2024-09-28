@@ -333,18 +333,6 @@ namespace OpenLoco::Ui
         SDL_ShowCursor(1);
     }
 
-    // 0x0040447F
-    void initialiseInput()
-    {
-        call(0x0040447F);
-    }
-
-    // 0x004045C2
-    void disposeInput()
-    {
-        call(0x004045C2);
-    }
-
     // 0x004524C1
     void update()
     {
@@ -464,6 +452,17 @@ namespace OpenLoco::Ui
             {
                 case SDL_QUIT:
                     return false;
+                case SDL_WINDOWEVENT:
+                    switch (e.window.event)
+                    {
+                        case SDL_WINDOWEVENT_MOVED:
+                            positionChanged(e.window.data1, e.window.data2);
+                            break;
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                            resize(e.window.data1, e.window.data2);
+                            break;
+                    }
+                    break;
             }
         }
         return false;

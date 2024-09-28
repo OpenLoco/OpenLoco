@@ -225,6 +225,7 @@ namespace OpenLoco::GameCommands
     CompanyId getUpdatingCompanyId();
     void setUpdatingCompanyId(CompanyId companyId);
     uint8_t getCommandNestLevel();
+    void resetCommandNestLevel();
 
     void playConstructionPlacementSound(World::Pos3 pos);
 }

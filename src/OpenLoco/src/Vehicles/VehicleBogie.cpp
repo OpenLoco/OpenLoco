@@ -110,10 +110,10 @@ namespace OpenLoco::Vehicles
         {
             auto* vehObj = ObjectManager::get<VehicleObject>(objectId);
             auto& bogieSprites = vehObj->bogieSprites[objectSpriteType];
-            const auto newRoll = (bogieSprites.rollStates - 1) & (var_44 / 4096);
-            if (newRoll != var_46)
+            const auto newAnimationIndex = (bogieSprites.numAnimationFrames - 1) & (var_44 / 4096);
+            if (newAnimationIndex != animationIndex)
             {
-                var_46 = newRoll;
+                animationIndex = newAnimationIndex;
                 invalidateSprite();
             }
         }

@@ -1,5 +1,8 @@
 24.09.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2629] The object selection window now groups relevant object tabs together.
+- Fix: [#2612] Crash when constructing trams underground with Shift key pressed.
+- Fix: [#2625] Crash when resizing the window during the Intro.
 
 24.09.1 (2024-09-07)
 ------------------------------------------------------------------------

@@ -23,21 +23,6 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
-    // 0x00496FE7
-    // TODO: only used here, but move to town manager?
-    static Town* initialiseTown(Pos2 pos)
-    {
-        registers regs;
-        regs.eax = pos.x;
-        regs.ecx = pos.y;
-        call(0x00496FE7, regs);
-
-        if (regs.esi != -1)
-            return reinterpret_cast<Town*>(regs.esi);
-        else
-            return nullptr;
-    }
-
     // 0x00496E09
     static bool checkSurroundings(Pos2 pos, bool checkSurroundingWater)
     {
@@ -152,7 +137,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        newTown = initialiseTown(pos);
+        newTown = TownManager::initialiseTown(pos);
         if (!newTown)
         {
             setErrorText(StringIds::too_many_towns);

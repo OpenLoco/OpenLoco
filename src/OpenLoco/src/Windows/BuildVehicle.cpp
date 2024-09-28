@@ -27,6 +27,8 @@
 #include "Ui/TextInput.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleDraw.h"
@@ -42,7 +44,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static constexpr Ui::Size kWindowSize = { 400, 305 };
+    static constexpr Ui::Size32 kWindowSize = { 400, 305 };
 
     enum widx
     {
@@ -211,11 +213,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
 
     // 0x5231D0
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 380, 233 }, WidgetType::frame, WindowColour::primary),
+    static constexpr auto _widgets = makeWidgets(
+        Widgets::Frame({ 0, 0 }, { 380, 233 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 378, 13 }, WidgetType::caption_24, WindowColour::primary),
         makeWidget({ 365, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 380, 192 }, WidgetType::panel, WindowColour::secondary),
+        Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
 
         // Primary tabs
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
@@ -244,11 +246,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         // TODO: can be moved after drawVehicleOverview has been implemented
         makeWidget({ 4, 72 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 50, 72 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
-        makeDropdownWidgets({ 3, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterComponents),
-        makeDropdownWidgets({ 48, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterCargoSupported),
+        makeDropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
+        makeDropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported)
 
-        widgetEnd(),
-    };
+    );
 
     static constexpr uint32_t widxToTrackTypeTab(WidgetIndex_t widgetIndex)
     {
@@ -1446,9 +1447,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                         auto colouredString = StringIds::black_stringid;
 
-                        const auto lockedHoverRowColour = PaletteIndex::index_3D;
+                        const auto lockedHoverRowColour = PaletteIndex::mutedDarkRed3;
                         constexpr auto normalHoverRowColour = enumValue(ExtColour::unk30);
-                        const auto lockedRowColour = PaletteIndex::index_3F;
+                        const auto lockedRowColour = PaletteIndex::mutedDarkRed5;
 
                         if (window.rowHover == vehicleType)
                         {

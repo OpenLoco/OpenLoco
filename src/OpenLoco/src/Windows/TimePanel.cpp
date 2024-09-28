@@ -28,7 +28,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TimePanel
 {
-    static constexpr Ui::Size kWindowSize = { 145, 27 };
+    static constexpr Ui::Size32 kWindowSize = { 140, 27 };
 
     namespace Widx
     {
@@ -48,17 +48,15 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void formatChallenge(FormatArguments& args);
     static void sendChatMessage(const char* str);
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                                   // 0,
-        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),                                                                                                   // 1,
-        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),                                                                                       // 2,
-        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),                       // 3,
-        makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
-        makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
-        makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
-        makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
-        widgetEnd(),
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
+        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
+        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),
+        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
+        makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
+        makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),
+        makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
+        makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
 
@@ -68,14 +66,14 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         auto window = WindowManager::createWindow(
             WindowType::timeToolbar,
-            Ui::Point(Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height),
-            Ui::Size(kWindowSize.width, kWindowSize.height),
+            { Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height },
+            { kWindowSize.width, kWindowSize.height },
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);
         window->enabledWidgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);
         window->var_854 = 0;
-        window->var_856 = 0;
+        window->numTicksVisible = 0;
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -167,7 +165,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         StringId format = StringIds::date_daymonthyear;
         if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
         {
-            if (self.var_856 >= 30)
+            if (self.numTicksVisible >= 30)
             {
                 format = StringIds::toolbar_status_paused;
             }
@@ -389,10 +387,10 @@ namespace OpenLoco::Ui::Windows::TimePanel
             w.var_854 = 0;
         }
 
-        w.var_856 += 1;
-        if (w.var_856 >= 60)
+        w.numTicksVisible += 1;
+        if (w.numTicksVisible >= 60)
         {
-            w.var_856 = 0;
+            w.numTicksVisible = 0;
         }
 
         if (_50A004 & (1 << 1))

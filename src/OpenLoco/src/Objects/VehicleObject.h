@@ -104,22 +104,22 @@ namespace OpenLoco
     };
     static_assert(sizeof(VehicleObjectSimpleAnimation) == 0x3);
 
-    struct VehicleObjectUnk
+    struct VehicleObjectCar
     {
-        uint8_t length; // 0x00
-        uint8_t var_01;
+        uint8_t frontBogiePosition;  // 0x00 distance from front of car component (not strictly body) to bogie pivot point
+        uint8_t backBogiePosition;   // 0x01 distance from back of car component (not strictly body) to bogie pivot point
         uint8_t frontBogieSpriteInd; // 0x02 index of bogieSprites struct
         uint8_t backBogieSpriteInd;  // 0x03 index of bogieSprites struct
         uint8_t bodySpriteInd;       // 0x04 index of a bodySprites struct
         uint8_t var_05;
     };
-    static_assert(sizeof(VehicleObjectUnk) == 0x6);
+    static_assert(sizeof(VehicleObjectCar) == 0x6);
 
     enum class BogieSpriteFlags : uint8_t
     {
         none = 0U,
         hasSprites = 1U << 0,         // If not set then no bogie will be loaded
-        rotationalSymmetry = 1U << 1, // requires 16 rather than 32 sprites
+        rotationalSymmetry = 1U << 1, // requires half the number of sprites i.e. 16 instead of 32
         hasGentleSprites = 1U << 2,   // for gentle slopes
         hasSteepSprites = 1U << 3,    // for steep slopes
         unk_4 = 1U << 4,              // Increases bounding box size
@@ -128,15 +128,15 @@ namespace OpenLoco
 
     struct VehicleObjectBogieSprite
     {
-        uint8_t rollStates;      // 0x0 valid values 1, 2, 4 related to bogie->var_46 (identical in value to numRollSprites)
-        BogieSpriteFlags flags;  // 0x1 BogieSpriteFlags
-        uint8_t width;           // 0x2 sprite width
-        uint8_t heightNegative;  // 0x3 sprite height negative
-        uint8_t heightPositive;  // 0x4 sprite height positive
-        uint8_t numRollSprites;  // 0x5
-        uint32_t flatImageIds;   // 0x6 flat sprites
-        uint32_t gentleImageIds; // 0xA gentle sprites
-        uint32_t steepImageIds;  // 0xE steep sprites
+        uint8_t numAnimationFrames;   // 0x0 valid values 1, 2, 4 related to bogie->animationIndex (identical in value to numFramesPerRotation)
+        BogieSpriteFlags flags;       // 0x1 BogieSpriteFlags
+        uint8_t width;                // 0x2 sprite width
+        uint8_t heightNegative;       // 0x3 sprite height negative
+        uint8_t heightPositive;       // 0x4 sprite height positive
+        uint8_t numFramesPerRotation; // 0x5
+        uint32_t flatImageIds;        // 0x6 flat sprites
+        uint32_t gentleImageIds;      // 0xA gentle sprites
+        uint32_t steepImageIds;       // 0xE steep sprites
 
         constexpr bool hasFlags(BogieSpriteFlags flagsToTest) const
         {
@@ -149,7 +149,7 @@ namespace OpenLoco
     {
         none = 0U,
         hasSprites = 1U << 0,         // If not set then no body will be loaded
-        rotationalSymmetry = 1U << 1, // requires 32 rather than 64 sprites
+        rotationalSymmetry = 1U << 1, // requires half the number of sprites i.e. 32 instead of 64
         hasUnkSprites = 1U << 2,
         hasGentleSprites = 1U << 3, // for gentle slopes
         hasSteepSprites = 1U << 4,  // for steep slopes
@@ -166,7 +166,7 @@ namespace OpenLoco
         uint8_t numCargoLoadFrames;      // 0x03
         uint8_t numCargoFrames;          // 0x04
         uint8_t numRollFrames;           // 0x05
-        uint8_t bogeyPosition;           // 0x06
+        uint8_t halfLength;              // 0x06 the longest distance from pivot of body to either end of car component (not strictly body half length see crocidile train car)
         BodySpriteFlags flags;           // 0x07
         uint8_t width;                   // 0x08 sprite width
         uint8_t heightNegative;          // 0x09 sprite height negative
@@ -225,18 +225,18 @@ namespace OpenLoco
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03
         uint8_t var_04;
-        uint8_t trackType;              // 0x05
-        uint8_t numTrackExtras;         // 0x06
-        uint8_t costIndex;              // 0x07
-        int16_t costFactor;             // 0x08
-        uint8_t reliability;            // 0x0A
-        uint8_t runCostIndex;           // 0x0B
-        int16_t runCostFactor;          // 0x0C
-        uint8_t colourType;             // 0x0E
-        uint8_t numCompatibleVehicles;  // 0x0F
-        uint16_t compatibleVehicles[8]; // 0x10 array of compatible vehicle_types
-        uint8_t requiredTrackExtras[4]; // 0x20
-        VehicleObjectUnk var_24[4];
+        uint8_t trackType;                                    // 0x05
+        uint8_t numTrackExtras;                               // 0x06
+        uint8_t costIndex;                                    // 0x07
+        int16_t costFactor;                                   // 0x08
+        uint8_t reliability;                                  // 0x0A
+        uint8_t runCostIndex;                                 // 0x0B
+        int16_t runCostFactor;                                // 0x0C
+        uint8_t colourType;                                   // 0x0E
+        uint8_t numCompatibleVehicles;                        // 0x0F
+        uint16_t compatibleVehicles[8];                       // 0x10 array of compatible vehicle_types
+        uint8_t requiredTrackExtras[4];                       // 0x20
+        VehicleObjectCar carComponents[4];                    // 0x24
         VehicleObjectBodySprite bodySprites[kMaxBodySprites]; // 0x3C
         VehicleObjectBogieSprite bogieSprites[2];             // 0xB4
         uint16_t power;                                       // 0xD8

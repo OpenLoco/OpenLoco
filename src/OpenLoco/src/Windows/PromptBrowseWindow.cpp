@@ -17,6 +17,8 @@
 #include "Ui.h"
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -53,17 +55,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         scrollview,
     };
 
-    static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 500, 380 }, WidgetType::frame, WindowColour::primary),
+    static constexpr auto widgets = makeWidgets(
+        Widgets::Frame({ 0, 0 }, { 500, 380 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 498, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::empty),
         makeWidget({ 485, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 500, 365 }, WidgetType::panel, WindowColour::secondary),
+        Widgets::Panel({ 0, 15 }, { 500, 365 }, WindowColour::secondary),
         makeWidget({ 473, 18 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
         makeWidget({ 88, 348 }, { 408, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 426, 364 }, { 70, 12 }, WidgetType::button, WindowColour::secondary, StringIds::label_button_ok),
-        makeWidget({ 3, 45 }, { 494, 323 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        widgetEnd(),
-    };
+        makeWidget({ 3, 45 }, { 494, 323 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+
+    );
 
     static loco_global<uint8_t, 0x009D9D63> _type;
     static loco_global<BrowseFileType, 0x009DA284> _fileType;

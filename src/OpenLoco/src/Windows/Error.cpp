@@ -12,6 +12,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -42,10 +43,10 @@ namespace OpenLoco::Ui::Windows::Error
             frame,
         };
 
-        static constexpr Widget widgets[] = {
-            makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::panel, WindowColour::primary),
-            widgetEnd(),
-        };
+        static constexpr auto widgets = makeWidgets(
+            makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::panel, WindowColour::primary)
+
+        );
     }
 
     namespace ErrorCompetitor
@@ -56,11 +57,11 @@ namespace OpenLoco::Ui::Windows::Error
             innerFrame,
         };
 
-        static constexpr Widget widgets[] = {
-            makeWidget({ 0, 0 }, { 250, 70 }, WidgetType::panel, WindowColour::primary),
-            makeWidget({ 3, 3 }, { 64, 64 }, WidgetType::wt_3, WindowColour::secondary),
-            widgetEnd(),
-        };
+        static constexpr auto widgets = makeWidgets(
+            Widgets::Panel({ 0, 0 }, { 250, 70 }, WindowColour::primary),
+            makeWidget({ 3, 3 }, { 64, 64 }, WidgetType::wt_3, WindowColour::secondary)
+
+        );
     }
 
     static char* formatErrorString(StringId title, StringId message, FormatArguments args, char* buffer)
@@ -130,14 +131,14 @@ namespace OpenLoco::Ui::Windows::Error
 
             // Position error message around the cursor
             auto mousePos = Input::getMouseLocation();
-            Ui::Point windowPosition = mousePos + Ui::Point(-width / 2, 26);
-            windowPosition.x = std::clamp<int16_t>(windowPosition.x, 0, Ui::width() - width - 40);
-            windowPosition.y = std::clamp<int16_t>(windowPosition.y, 22, Ui::height() - height - 40);
+            Ui::Point32 windowPosition = Ui::Point32{ mousePos.x, mousePos.y } + Ui::Point32(-width / 2, 26);
+            windowPosition.x = std::clamp<int32_t>(windowPosition.x, 0, Ui::width() - width - 40);
+            windowPosition.y = std::clamp<int32_t>(windowPosition.y, 22, Ui::height() - height - 40);
 
             auto error = WindowManager::createWindow(
                 WindowType::error,
                 windowPosition,
-                Ui::Size(width, height),
+                { width, height },
                 WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
                 Common::getEvents());
 
@@ -220,7 +221,7 @@ namespace OpenLoco::Ui::Windows::Error
             self.draw(drawingCtx);
 
             auto tr = Gfx::TextRenderer(drawingCtx);
-            auto colour = AdvancedColour(Colour::white).translucent(); //self.colours[0];
+            auto colour = AdvancedColour(Colour::white).translucent(); // self.colours[0];
 
             if (_errorCompetitorId == CompanyId::null)
             {

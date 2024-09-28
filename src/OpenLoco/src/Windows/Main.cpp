@@ -15,10 +15,10 @@ namespace OpenLoco::Ui::Windows::Main
         };
     }
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 0, 0 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),
-        widgetEnd(),
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, { 0, 0 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk)
+
+    );
 
     static const WindowEventList& getEvents();
 
@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::Main
         auto window = WindowManager::createWindow(
             WindowType::main,
             { 0, 0 },
-            Ui::Size(uiWidth, uiHeight),
+            { uiWidth, uiHeight },
             Ui::WindowFlags::stickToBack,
             getEvents());
 

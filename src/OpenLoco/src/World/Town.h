@@ -56,8 +56,8 @@ namespace OpenLoco
         uint8_t history[20 * 12];     // 0x5C (20 years, 12 months)
         int32_t historyMinPopulation; // 0x14C
         uint8_t var_150[8];
-        uint16_t monthlyCargoDelivered[32];
-        uint32_t cargoInfluenceFlags;
+        uint16_t monthlyCargoDelivered[32]; // 0x158
+        uint32_t cargoInfluenceFlags;       // 0x198
         uint16_t var_19C[2][2];
         uint8_t buildSpeed;       // 0x1A4, 1=slow build speed, 4=fast build speed
         uint8_t numberOfAirports; // 0x1A5

@@ -611,6 +611,11 @@ namespace OpenLoco::GameCommands
         return _gameCommandNestLevel;
     }
 
+    void resetCommandNestLevel()
+    {
+        _gameCommandNestLevel = 0;
+    }
+
     // TODO: Maybe move this somewhere else used by multiple game commands
     // 0x0048B013
     void playConstructionPlacementSound(World::Pos3 pos)

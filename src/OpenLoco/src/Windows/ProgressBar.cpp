@@ -6,6 +6,8 @@
 #include "Localisation/StringIds.h"
 #include "SceneManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
 
@@ -22,14 +24,14 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         panel,
     };
 
-    static constexpr Ui::Size kWindowSize = { 350, 47 };
+    static constexpr Ui::Size32 kWindowSize = { 350, 47 };
 
-    static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 350, 47 }, WidgetType::frame, WindowColour::primary),
+    static constexpr auto widgets = makeWidgets(
+        Widgets::Frame({ 0, 0 }, { 350, 47 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::buffer_1250),
-        makeWidget({ 0, 15 }, { 350, 32 }, WidgetType::panel, WindowColour::secondary),
-        widgetEnd(),
-    };
+        Widgets::Panel({ 0, 15 }, { 350, 32 }, WindowColour::secondary)
+
+    );
 
     static std::string _captionString;
     static uint8_t _progressBarStyle = 0; // 0x005233C8
@@ -83,6 +85,10 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     // 0x004CF78A
     static void prepareDraw([[maybe_unused]] Window& self)
     {
+        // Keep the window centered.
+        self.x = (Ui::width() / 2) - (self.width / 2);
+        self.y = std::max(28, (Ui::height() / 2) - (self.height / 2));
+
         char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         strncpy(buffer, _captionString.c_str(), 256);
     }

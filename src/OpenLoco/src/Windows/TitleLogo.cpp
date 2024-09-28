@@ -7,7 +7,7 @@
 
 namespace OpenLoco::Ui::Windows::TitleLogo
 {
-    static constexpr Ui::Size kWindowSize = { 298, 170 };
+    static constexpr Ui::Size32 kWindowSize = { 298, 170 };
 
     namespace Widx
     {
@@ -17,10 +17,10 @@ namespace OpenLoco::Ui::Windows::TitleLogo
         };
     }
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd(),
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary)
+
+    );
 
     static const WindowEventList& getEvents();
 

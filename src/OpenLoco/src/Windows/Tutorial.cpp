@@ -19,12 +19,12 @@ namespace OpenLoco::Ui::Windows::Tutorial
         frame,
     };
 
-    static constexpr Ui::Size kWindowSize = { 140, 29 };
+    static constexpr Ui::Size32 kWindowSize = { 140, 29 };
 
-    static constexpr Widget widgets[] = {
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd(),
-    };
+    static constexpr auto widgets = makeWidgets(
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary)
+
+    );
 
     static const WindowEventList& getEvents();
 
@@ -33,8 +33,8 @@ namespace OpenLoco::Ui::Windows::Tutorial
     {
         auto window = WindowManager::createWindow(
             WindowType::tutorial,
-            Ui::Point(kWindowSize.width, Ui::height() - 27),
-            Ui::Size(Ui::width() - 280, 27),
+            { kWindowSize.width, Ui::height() - 27 },
+            { Ui::width() - 280, 27 },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             getEvents());
 

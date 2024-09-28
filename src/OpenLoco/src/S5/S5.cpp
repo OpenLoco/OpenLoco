@@ -146,15 +146,15 @@ namespace OpenLoco::S5
 
                 case ElementType::building:
                 case ElementType::road:
-                    colour = PaletteIndex::index_41;
+                    colour = PaletteIndex::mutedDarkRed7;
                     break;
 
                 case ElementType::industry:
-                    colour = PaletteIndex::index_7D;
+                    colour = PaletteIndex::mutedPurple7;
                     break;
 
                 case ElementType::tree:
-                    colour = PaletteIndex::index_64;
+                    colour = PaletteIndex::green6;
                     break;
 
                 default:

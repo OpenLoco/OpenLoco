@@ -8,29 +8,31 @@
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
-using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static void createNewsWindow(Ui::Size kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
-    {
-        _word_525CE0 = 5;
+    NewsState _nState{};
 
-        int16_t y = Ui::height() - _word_525CE0;
+    static void createNewsWindow(Ui::Size32 kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
+    {
+        _nState.slideInHeight = 5;
+
+        int16_t y = Ui::height() - _nState.slideInHeight;
 
         if (getGameSpeed() != GameSpeed::Normal || isOld)
         {
             y = Ui::height() - kWindowSize.height;
-            _word_525CE0 = kWindowSize.height;
+            _nState.slideInHeight = kWindowSize.height;
         }
 
         int16_t x = (Ui::width() / 2) - (kWindowSize.width / 2);
-        Ui::Point origin = { x, y };
 
-        auto window = WindowManager::createWindow(WindowType::news, origin, kWindowSize, flags, News1::getEvents());
+        auto window = WindowManager::createWindow(
+            WindowType::news,
+            { x, y },
+            kWindowSize,
+            flags,
+            News1::getEvents());
 
         window->setWidgets(widgets);
         window->enabledWidgets = Common::enabledWidgets;
@@ -38,12 +40,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, colour);
 
-        _dword_525CD0 = 0xFFFFFFFF;
-        _dword_525CD4 = 0xFFFFFFFF;
-        _dword_525CD8 = 0xFFFFFFFF;
-        _dword_525CDC = 0xFFFFFFFF;
+        _nState.savedView[0].clear();
+        _nState.savedView[1].clear();
 
-        News1::initViewport(*window);
+        News1::initViewports(*window);
     }
 
     // 0x00428F8B
@@ -87,23 +87,25 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             auto newsSettings = Config::get().old.newsSettings[static_cast<uint8_t>(messageSubType)];
 
-            if (newsSettings == NewsType::none)
+            if (newsSettings == Config::NewsType::none)
             {
                 news->setActive(false);
                 return;
             }
 
-            if (newsSettings == NewsType::ticker)
+            if (newsSettings == Config::NewsType::ticker)
             {
-                _word_525CE0 = 0;
-                int16_t x = Ui::width() - 138;
-                int16_t y = Ui::height() - 25;
-                Ui::Point origin = { x, y };
+                _nState.numCharsToDisplay = 0;
                 WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
-                auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::kWindowSize, flags, Ticker::getEvents());
+                auto window = WindowManager::createWindow(
+                    WindowType::news,
+                    { Ui::width() - 138, Ui::height() - 25 },
+                    Ticker::kWindowSize,
+                    flags,
+                    Ticker::getEvents());
 
-                window->setWidgets(Ticker::widgets);
+                window->setWidgets(Ticker::getWidgets());
                 window->enabledWidgets = Ticker::enabledWidgets;
 
                 window->initScrollWidgets();
@@ -141,14 +143,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
 
-            createNewsWindow(News2::kWindowSize, News2::widgets, Colour::grey, isOld, flags);
+            createNewsWindow(News2::kWindowSize, News2::getWidgets(), Colour::grey, isOld, flags);
         }
         else
         {
             WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent;
             constexpr auto colour = AdvancedColour(Colour::mutedDarkRed).translucent();
 
-            createNewsWindow(News1::kWindowSize, News1::widgets, colour, isOld, flags);
+            createNewsWindow(News1::kWindowSize, News1::getWidgets(), colour, isOld, flags);
         }
     }
 

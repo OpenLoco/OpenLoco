@@ -22,10 +22,10 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     };
 
     // 0x005234F4
-    Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 200, 30 }, WidgetType::wt_3, WindowColour::primary),
-        widgetEnd(),
-    };
+    static constexpr auto _widgets = makeWidgets(
+        makeWidget({ 0, 0 }, { 200, 30 }, WidgetType::wt_3, WindowColour::primary)
+
+    );
 
     static const WindowEventList& getEvents();
 
@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         }
         else
         {
-            window = WindowManager::createWindow(WindowType::mapTooltip, Ui::Point(x, y), Ui::Size(width, height), WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground, getEvents());
+            window = WindowManager::createWindow(WindowType::mapTooltip, { x, y }, { width, height }, WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground, getEvents());
             window->setWidgets(_widgets);
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_06);
@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             auto right = left + 25;
             auto bottom = top + 25;
 
-            drawingCtx.fillRect(left, top, right, bottom, PaletteIndex::index_0A, Gfx::RectFlags::none);
+            drawingCtx.fillRect(left, top, right, bottom, PaletteIndex::black0, Gfx::RectFlags::none);
 
             auto* company = CompanyManager::get(_mapTooltipOwner);
             auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);

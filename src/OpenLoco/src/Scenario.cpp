@@ -28,12 +28,14 @@
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
+#include "ScenarioConstruction.h"
 #include "ScenarioManager.h"
 #include "ScenarioObjective.h"
 #include "SceneManager.h"
 #include "Title.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
+#include "Vehicles/RoutingManager.h"
 #include "Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
@@ -158,25 +160,6 @@ namespace OpenLoco::Scenario
         getGameState().currentSeason = season;
     }
 
-    // 0x00475988
-    static void sub_475988()
-    {
-        call(0x00475988);
-    }
-
-    // 0x004A8810
-    static void sub_4A8810()
-    {
-        call(0x004A8810);
-    }
-
-    // TODO: Move to Terraform::reset
-    // 0x004BAEC4
-    static void sub_4BAEC4()
-    {
-        call(0x004BAEC4);
-    }
-
     // 0x0043C8FD
     static void sub_43C8FD()
     {
@@ -215,14 +198,14 @@ namespace OpenLoco::Scenario
 
         initialiseDate(1900);
         initialiseSnowLine();
-        sub_475988();
+        resetRoadObjects();
         TownManager::reset();
         IndustryManager::reset();
         StationManager::reset();
 
-        sub_4A8810();
+        Vehicles::RoutingManager::resetRoutingTable();
         Vehicles::OrderManager::reset();
-        sub_4BAEC4();
+        Ui::Windows::Terraform::resetLastSelections();
         sub_43C8FD();
         MessageManager::reset();
     }
@@ -365,7 +348,7 @@ namespace OpenLoco::Scenario
 
         EntityManager::updateSpatialIndex();
         addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
-        sub_4BAEC4();
+        Ui::Windows::Terraform::resetLastSelections();
         MessageManager::reset();
 
         std::memcpy(gameState.scenarioDetails, S5::getOptions().scenarioDetails, sizeof(gameState.scenarioDetails));

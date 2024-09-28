@@ -9,6 +9,8 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <SDL2/SDL.h>
@@ -20,15 +22,15 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
     static constexpr int kRowHeight = 10; // CJK: 13
 
-    static constexpr Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
+    static constexpr auto _widgets = makeWidgets(
+        Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::keyboard_shortcuts),
         makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),
+        Widgets::Panel({ 0, 15 }, { 360, 223 }, WindowColour::secondary),
         makeWidget({ 4, 19 }, { 352, 202 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
-        makeWidget({ 4, 223 }, { 150, 12 }, WidgetType::button, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip),
-        widgetEnd(),
-    };
+        makeWidget({ 4, 223 }, { 150, 12 }, WidgetType::button, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip)
+
+    );
 
     namespace Widx
     {

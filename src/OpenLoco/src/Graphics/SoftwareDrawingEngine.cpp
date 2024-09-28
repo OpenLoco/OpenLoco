@@ -27,9 +27,7 @@ namespace OpenLoco::Gfx
     SoftwareDrawingEngine::SoftwareDrawingEngine()
     {
         RenderTarget rtDummy{};
-
-        _ctx = std::make_unique<SoftwareDrawingContext>();
-        _ctx->pushRenderTarget(rtDummy);
+        _ctx.pushRenderTarget(rtDummy);
     }
 
     SoftwareDrawingEngine::~SoftwareDrawingEngine()
@@ -199,11 +197,14 @@ namespace OpenLoco::Gfx
 
         _invalidationGrid.reset(scaledWidth, scaledHeight, blockWidth, blockHeight);
 
-        // Create a new drawing context.
-        _ctx = std::make_unique<SoftwareDrawingContext>();
+        // Reset the drawing context, this holds the old screen render target.
+        _ctx.reset();
 
         // Push the screen render target so that by default we render to that.
-        _ctx->pushRenderTarget(rt);
+        _ctx.pushRenderTarget(rt);
+
+        // Set the normal background colour.
+        _ctx.clearSingle(PaletteIndex::black0);
     }
 
     /**
@@ -260,7 +261,7 @@ namespace OpenLoco::Gfx
         // Draw FPS counter.
         if (Config::get().showFPS)
         {
-            Gfx::drawFPS(*_ctx);
+            Gfx::drawFPS(_ctx);
         }
     }
 
@@ -279,15 +280,15 @@ namespace OpenLoco::Gfx
         rt.zoomLevel = 0;
 
         // Set the render target to the screen rt.
-        _ctx->pushRenderTarget(rt);
+        _ctx.pushRenderTarget(rt);
 
         // TODO: Remove main window and draw that independent from UI.
 
         // Draw UI.
-        Ui::WindowManager::render(*_ctx, rect);
+        Ui::WindowManager::render(_ctx, rect);
 
         // Restore state.
-        _ctx->popRenderTarget();
+        _ctx.popRenderTarget();
     }
 
     void SoftwareDrawingEngine::present()
@@ -349,9 +350,7 @@ namespace OpenLoco::Gfx
 
     DrawingContext& SoftwareDrawingEngine::getDrawingContext()
     {
-        assert(_ctx != nullptr);
-
-        return *_ctx;
+        return _ctx;
     }
 
     bool SoftwareDrawingEngine::isInitialized() const

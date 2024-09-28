@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         };
     }
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),  // 0
         makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary), // 1
         makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary), // 2
@@ -59,11 +59,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),            // 9
         makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),            // 10
 
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),              // 11
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),              // 12
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary), // 13
-        widgetEnd(),
-    };
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),             // 11
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),             // 12
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary) // 13
+    );
 
     static const WindowEventList& getEvents();
 
@@ -73,7 +72,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
-            Ui::Size(Ui::width(), 28),
+            { Ui::width(), 28 },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);

@@ -39,7 +39,7 @@ namespace OpenLoco::Intro
 
     static void updateEnd(Gfx::DrawingContext& drawingCtx)
     {
-        drawingCtx.clearSingle(PaletteIndex::index_0A);
+        drawingCtx.clearSingle(PaletteIndex::black0);
         if (!_50C196)
         {
             // Audio::stopIntro(); Note: There is no sound!
@@ -78,7 +78,7 @@ namespace OpenLoco::Intro
 
         Gfx::loadPalette(ImageIds::atari_intro_palette, 0);
 
-        drawingCtx.clearSingle(PaletteIndex::index_3F);
+        drawingCtx.clearSingle(PaletteIndex::mutedDarkRed5); // this isn't actually mutedDarkRed5 as the atari palette is different
 
         const auto pos = Ui::Point(Ui::width() / 2 - 216, Ui::height() / 2 - 54);
         drawingCtx.drawImage(pos, ImageId(ImageIds::atari_logo_intro_left));
@@ -108,7 +108,7 @@ namespace OpenLoco::Intro
         {
             Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, 0);
 
-            drawingCtx.clearSingle(PaletteIndex::index_0A);
+            drawingCtx.clearSingle(PaletteIndex::black0);
 
             const auto pos = Ui::Point(Ui::width() / 2 - 320 + 70, Ui::height() / 2 - 58);
             drawingCtx.drawImage(pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
@@ -135,7 +135,7 @@ namespace OpenLoco::Intro
         Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, modifier);
         if (_50C190 >= 100)
         {
-            drawingCtx.clearSingle(PaletteIndex::index_0A);
+            drawingCtx.clearSingle(PaletteIndex::black0);
 
             _state = State::displayNoticeBegin;
         }
@@ -157,7 +157,7 @@ namespace OpenLoco::Intro
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.clearSingle(PaletteIndex::index_0A);
+        drawingCtx.clearSingle(PaletteIndex::black0);
 
         const auto pos = Ui::Point(Ui::width() / 2, Ui::height() / 2);
 
@@ -217,9 +217,7 @@ namespace OpenLoco::Intro
     void update()
     {
         auto& drawingEngine = Gfx::getDrawingEngine();
-
         auto& drawingCtx = drawingEngine.getDrawingContext();
-        drawingCtx.pushRenderTarget(drawingEngine.getScreenRT());
 
         addr<0x0005252E0, int32_t>() = 1;
         if (_state == State::end)
@@ -235,7 +233,5 @@ namespace OpenLoco::Intro
             kUpdateFunctions[enumValue(*_state)](drawingCtx);
         }
         sub_431695(0);
-
-        drawingCtx.popRenderTarget();
     }
 }

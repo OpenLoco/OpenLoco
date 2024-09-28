@@ -3,22 +3,267 @@
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Graphics/TextRenderer.h"
+#include "Localisation/Formatting.h"
+#include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/TownNamesObject.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::TownManager
 {
     static loco_global<Town*, 0x01135C38> _dword_1135C38;
+
+    // 0x0049B45F
+    static uint32_t calcCargoInfluenceFlags(Town* town)
+    {
+        registers regs;
+        regs.esi = X86Pointer(town);
+        call(0x0049B45F, regs);
+        return regs.eax;
+    }
+
+    enum class LocationFlags : uint8_t
+    {
+        none = 0,
+        adjacentToLargeWaterBody = 1 << 0,
+        notMountaineous = 1 << 1,
+        adjacentToSmallWaterBody = 1 << 2,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(LocationFlags);
+
+    // 0x00497D70
+    static LocationFlags copyTownNameToBuffer(const TownNamesObject* namesObj, uint32_t categoryOffset, uint16_t index, char* buffer)
+    {
+        // Offset into the string table for the requested category, located just after the names object header.
+        auto* offsetPtr = reinterpret_cast<const std::byte*>(namesObj) + categoryOffset;
+        auto srcOffset = *reinterpret_cast<const int16_t*>(offsetPtr + index * 2);
+
+        auto* srcPtr = reinterpret_cast<const char*>(offsetPtr + srcOffset);
+        strcpy(buffer, srcPtr);
+
+        // Location flags are stored at the end of the string
+        LocationFlags flags = *reinterpret_cast<const LocationFlags*>(srcPtr + strlen(srcPtr) + 1);
+        return flags;
+    }
+
+    // 0x00497A6A
+    static LocationFlags townNameFromNamesObject(uint32_t rand, const char* buffer)
+    {
+        auto* namesObj = ObjectManager::get<TownNamesObject>();
+        LocationFlags locationFlags = LocationFlags::none;
+
+        // Town names are concatenated from six morpheme categories:
+        // {CAT1}{CAT2}{CAT3}{CAT4}{CAT5}{CAT6}
+        // Seperators are defined in each of the category strings; either '-', ' ', or nothing.
+        // Categories can be completely empty, or can be skipped based on randomness.
+        // e.g. "Fort " + "Apple " + "Green" for "Fort Apple Green"
+
+        for (auto& category : namesObj->categories)
+        {
+            if (category.count == 0)
+            {
+                continue;
+            }
+
+            uint16_t ax = rand;
+            uint16_t dx = category.count + category.bias;
+            int16_t index = ((ax * dx) >> 16) - category.bias;
+
+            if (index > 0)
+            {
+                char* strEnd = const_cast<char*>(buffer + strlen(buffer));
+                locationFlags |= copyTownNameToBuffer(namesObj, category.offset, index, strEnd);
+            }
+
+            for (auto shifts = category.count + category.bias; shifts > 0; shifts >>= 1)
+            {
+                rand = std::rotr(rand, 1);
+            }
+        }
+
+        return locationFlags;
+    }
+
+    // 0x004978B7
+    static bool generateTownName(Town* town)
+    {
+        for (auto attemptsLeft = 400U; attemptsLeft > 0; attemptsLeft--)
+        {
+            char buffer[256]{};
+            auto rand = town->prng.randNext();
+            auto locationFlags = townNameFromNamesObject(rand, buffer);
+
+            if (strlen(buffer) == 0)
+            {
+                continue;
+            }
+
+            if (strlen(buffer) > StringManager::kUserStringSize)
+            {
+                continue;
+            }
+
+            if (Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, buffer) > 200)
+            {
+                continue;
+            }
+
+            // clang-format off
+            auto numSurroundingWaterTilesAboveThreshold = [](Pos2 pos, uint8_t threshold) {
+                return TileManager::countSurroundingWaterTiles(pos + Pos2(6 * kTileSize, 0)) > threshold ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 6 * kTileSize)) > threshold ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0 - 6 * kTileSize, 0)) > threshold ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 0 - 6 * kTileSize)) > threshold;
+            };
+            // clang-format on
+
+            if ((locationFlags & LocationFlags::adjacentToLargeWaterBody) != LocationFlags::none)
+            {
+                // Check that the town is adjacent to a large amount of water tiles on at least one side.
+                auto pos = Pos2(town->x, town->y);
+                if (!(numSurroundingWaterTilesAboveThreshold(pos, 65)))
+                {
+                    continue;
+                }
+            }
+
+            if ((locationFlags & LocationFlags::notMountaineous) != LocationFlags::none)
+            {
+                auto pos = Pos2(town->x + kTileSize / 2, town->y + kTileSize / 2);
+                auto height = TileManager::getHeight(pos);
+                if (height.landHeight < 192)
+                {
+                    continue;
+                }
+            }
+
+            if ((locationFlags & LocationFlags::adjacentToSmallWaterBody) != LocationFlags::none)
+            {
+                // Check that the town is adjacent to a low amount of water tiles on at least one side.
+                auto pos = Pos2(town->x, town->y);
+                if (!(numSurroundingWaterTilesAboveThreshold(pos, 15)))
+                {
+                    continue;
+                }
+            }
+
+            bool nameInUse = false;
+            for (auto& candidateTown : towns())
+            {
+                // Ensure the town name doesn't exist yet
+                char candidateTownName[256]{};
+                StringManager::formatString(candidateTownName, candidateTown.name);
+
+                if (strcmp(buffer, candidateTownName) == 0)
+                {
+                    nameInUse = true;
+                    break;
+                }
+            }
+
+            if (nameInUse)
+                continue;
+
+            StringId newNameId = StringManager::userStringAllocate(buffer, 0);
+            if (newNameId == StringIds::empty)
+                continue;
+
+            town->name = newNameId;
+            town->updateLabel();
+            return true;
+        }
+
+        return false;
+    }
+
+    static auto& rawTowns() { return getGameState().towns; }
+
+    // 0x00496FE7
+    Town* initialiseTown(World::Pos2 pos)
+    {
+        Town* town = nullptr;
+        for (auto& candidateTown : rawTowns())
+        {
+            if (candidateTown.empty())
+            {
+                town = &candidateTown;
+                break;
+            }
+        }
+
+        // No space for a new town?
+        if (town == nullptr)
+        {
+            return nullptr;
+        }
+
+        // Initialise the new town
+        town->x = pos.x;
+        town->y = pos.y;
+        town->flags = TownFlags::none;
+        town->population = 0;
+        town->populationCapacity = 0;
+        town->numBuildings = 0;
+        town->size = TownSize::hamlet;
+        town->historySize = 1;
+        town->history[0] = 0;
+        town->historyMinPopulation = 0;
+
+        std::fill_n(&town->var_150[0], std::size(town->var_150), 0);
+
+        town->var_19C[0][0] = 0;
+        town->var_19C[0][1] = 0;
+        town->var_19C[1][0] = 0;
+        town->var_19C[1][1] = 0;
+        town->numStations = 0;
+        town->numberOfAirports = 0;
+        town->var_1A8 = 0;
+
+        town->prng = getGameState().rng;
+
+        std::fill_n(&town->companyRatings[0], std::size(town->companyRatings), 500);
+
+        town->companiesWithRating = 0;
+
+        std::fill_n(&town->monthlyCargoDelivered[0], std::size(town->monthlyCargoDelivered), 0);
+
+        town->cargoInfluenceFlags = calcCargoInfluenceFlags(town);
+        town->buildSpeed = 1;
+
+        // Figure out a name for this town?
+        if (!generateTownName(town))
+        {
+            town->name = StringIds::null;
+            return nullptr;
+        }
+
+        // Figure out if we need to reset building influence
+        for (auto& otherTown : towns())
+        {
+            if (otherTown.numBuildings == 0 && otherTown.population == 0 && otherTown.populationCapacity == 0)
+            {
+                continue;
+            }
+
+            resetBuildingsInfluence();
+            break;
+        }
+
+        return town;
+    }
 
     // 0x00497DC1
     // The return value of this function is also being returned via dword_1135C38.
@@ -70,8 +315,6 @@ namespace OpenLoco::TownManager
 
         return town;
     }
-
-    static auto& rawTowns() { return getGameState().towns; }
 
     // 0x00497348
     void resetBuildingsInfluence()

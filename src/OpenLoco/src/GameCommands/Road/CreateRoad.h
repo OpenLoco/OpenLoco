@@ -31,7 +31,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.eax = pos.x;
             regs.cx = pos.y;
-            regs.edi = pos.z | (mods << 16);
+            regs.edi = (0xFFFFU & pos.z) | (mods << 16);
             regs.bh = rotation;
             regs.edx = roadObjectId | (roadId << 8) | (bridge << 24);
             return regs;

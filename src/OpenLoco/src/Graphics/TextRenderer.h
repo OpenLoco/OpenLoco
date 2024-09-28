@@ -38,6 +38,8 @@ namespace OpenLoco::Gfx
         uint16_t getStringWidth(const char* buffer);
         uint16_t getMaxStringWidth(const char* buffer);
 
+        static uint16_t getStringWidth(Font base, const char* buffer);
+
         Ui::Point drawString(
             Ui::Point origin,
             AdvancedColour colour,

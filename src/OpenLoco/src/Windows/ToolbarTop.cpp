@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         };
     }
 
-    static constexpr Widget _widgets[] = {
+    static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
         makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
         makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
@@ -72,9 +72,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
         makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
-        widgetEnd(),
-    };
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary)
+
+    );
 
     enum class LoadSaveDropdownId
     {
@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
-            Ui::Size(Ui::width(), 28),
+            { Ui::width(), 28 },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);

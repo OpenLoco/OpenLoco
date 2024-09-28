@@ -635,7 +635,7 @@ namespace OpenLoco::Vehicles
         TransportMode mode; // 0x42 field same in all vehicles
         uint8_t pad_43;
         uint16_t var_44;
-        uint8_t var_46;              // 0x46 roll
+        uint8_t animationIndex;      // 0x46 animation index
         uint8_t var_47;              // 0x47 cargo sprite index (unused)
         VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
         uint16_t var_52;
