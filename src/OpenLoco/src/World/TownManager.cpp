@@ -48,7 +48,7 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00497A6A
-    static uint8_t townNameFromNamesObject(uint32_t& rand, const char* buffer)
+    static uint8_t townNameFromNamesObject(uint32_t rand, const char* buffer)
     {
         auto* namesObj = ObjectManager::get<TownNamesObject>();
         uint8_t testsToRun = 0;
