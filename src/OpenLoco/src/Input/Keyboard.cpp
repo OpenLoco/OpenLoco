@@ -327,6 +327,11 @@ namespace OpenLoco::Input
                 continue;
             }
 
+            if (tryShortcut(Shortcut::openDebugWindow, nextKey->keyCode, _keyModifier))
+            {
+                continue;
+            }
+
             if (!isTitleMode())
             {
                 for (const auto& shortcut : ShortcutManager::getList())

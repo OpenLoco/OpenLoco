@@ -34,6 +34,8 @@
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -71,7 +73,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
                 makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
-                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
                 makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),
                 makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_headquarters_and_details),
@@ -79,7 +81,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_finances),
                 makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_cargo_delivered),
                 makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_challenge_for_this_game),
-                makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company));
+                Widgets::ImageButton({ 0, 14 }, { 26, 26 }, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company));
         }
 
         // 0x004343FC
@@ -128,11 +130,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(270, 182, StringIds::title_company),
-            makeWidget({ 3, 160 }, { 242, 21 }, WidgetType::wt_13, WindowColour::secondary),
+            Widgets::Label({ 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::Center),
             makeWidget({ 3, 44 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
-            makeWidget({ 178, 57 }, { 66, 66 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull),
-            makeWidget({ 154, 124 }, { 112, 22 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name)
+            Widgets::ImageButton({ 178, 57 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull),
+            Widgets::ImageButton({ 154, 124 }, { 112, 22 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name)
 
         );
 
@@ -680,7 +682,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(340, 194, StringIds::title_company_details),
             makeWidget({ 219, 54 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
-            makeWidget({ 315, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
+            Widgets::ImageButton({ 315, 92 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this)
 
         );

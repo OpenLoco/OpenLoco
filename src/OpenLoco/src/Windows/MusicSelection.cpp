@@ -11,6 +11,7 @@
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 
@@ -32,7 +33,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::music_selection_title),
-        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton({ 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 360, 223 }, WindowColour::secondary),
         makeWidget({ 4, 19 }, { 352, 218 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip)
 

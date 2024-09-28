@@ -527,6 +527,7 @@ namespace OpenLoco::StringIds
 
     constexpr StringId error_cant_build_this_here = 583;
     constexpr StringId date_monthyear = 584;
+    constexpr StringId openloco = 585;
 
     constexpr StringId expenditure_income = 587;
     constexpr StringId train_income = 588;

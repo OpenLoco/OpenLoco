@@ -39,6 +39,7 @@
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -76,7 +77,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
                 makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
-                makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { 130, 74 }, WindowColour::secondary),
                 makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_clear_land),
                 makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_adjust_land),
@@ -150,10 +151,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(634, 162, StringIds::title_plant_trees),
             makeWidget({ 3, 45 }, { 605, 101 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-            makeWidget({ 609, 46 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
+            Widgets::ImageButton({ 609, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
             makeWidget({ 609, 70 }, { 24, 24 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
-            makeWidget({ 609, 94 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::plant_cluster_selected_tree, StringIds::plant_cluster_selected_tree),
-            makeWidget({ 609, 118 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::plant_cluster_random_tree, StringIds::plant_cluster_random_tree)
+            Widgets::ImageButton({ 609, 94 }, { 24, 24 }, WindowColour::secondary, ImageIds::plant_cluster_selected_tree, StringIds::plant_cluster_selected_tree),
+            Widgets::ImageButton({ 609, 118 }, { 24, 24 }, WindowColour::secondary, ImageIds::plant_cluster_random_tree, StringIds::plant_cluster_random_tree)
 
         );
 
@@ -1164,8 +1165,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 49, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_adjust_land_tool),
             makeWidget({ 50, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
             makeWidget({ 96, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
-            makeWidget({ 57, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::mountainModeTooltip),
-            makeWidget({ 83, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
+            Widgets::ImageButton({ 57, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::mountainModeTooltip),
+            Widgets::ImageButton({ 83, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
             makeWidget({ 112, 94 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary)
 
         );

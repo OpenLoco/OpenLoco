@@ -16,6 +16,7 @@
 #include "Ui.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
@@ -49,9 +50,9 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),
-        makeWidget({ 27, 2 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_company_value),
-        makeWidget({ 27, 14 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_performance_index)
+        Widgets::ImageButton({ 1, 1 }, { 26, 26 }, WindowColour::primary),
+        Widgets::ImageButton({ 27, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_company_value),
+        Widgets::ImageButton({ 27, 14 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_performance_index)
 
     );
 

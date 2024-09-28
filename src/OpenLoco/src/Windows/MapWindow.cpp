@@ -32,6 +32,8 @@
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
@@ -103,7 +105,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 272 }, WindowColour::primary),
         makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_map),
-        makeWidget({ 335, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton({ 335, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 350, 230 }, WindowColour::secondary),
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_vehicles),
@@ -111,7 +113,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
         makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
         makeWidget({ 3, 44 }, { 240, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
-        makeWidget({ 3, 250 }, { 322, 21 }, WidgetType::wt_13, WindowColour::secondary)
+        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::Center)
 
     );
 

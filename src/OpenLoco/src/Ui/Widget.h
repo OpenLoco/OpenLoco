@@ -22,6 +22,13 @@ namespace OpenLoco::Ui
     struct Window;
     enum class WindowColour : uint8_t;
 
+    enum class ContentAlign
+    {
+        Left = 0,
+        Center,
+        Right,
+    };
+
     enum class WidgetType : uint8_t
     {
         none = 0,
@@ -137,6 +144,7 @@ namespace OpenLoco::Ui
             uint32_t content;
         };
         StringId tooltip{ StringIds::null }; // 0x0E
+        ContentAlign contentAlign{ ContentAlign::Left };
         FormatArgumentsBuffer textArgs;
         WidgetEventsList events;
 

@@ -35,6 +35,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
 #include "World/StationManager.h"
@@ -54,7 +55,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         Common::makeCommonWidgets(138, 190, StringIds::stringid_2),
         makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
         makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, WindowColour::secondary),
-        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90));
+        Widgets::ImageButton({ 112, 104 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90));
 
     std::span<const Widget> getWidgets()
     {

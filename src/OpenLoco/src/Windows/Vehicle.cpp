@@ -56,7 +56,10 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
@@ -98,7 +101,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { (frameWidth), (frameHeight) }, WindowColour::primary),
                 makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
-                makeWidget({ (frameWidth)-15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::ImageButton({ (frameWidth)-15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { 265, 136 }, WindowColour::secondary),
                 makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_main),
                 makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_details),
@@ -157,9 +160,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 177, StringIds::title_vehicle_details),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_new_vehicle_for),
-            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
-            makeWidget({ 240, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
+            Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_new_vehicle_for),
+            Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
+            Widgets::ImageButton({ 240, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
             makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
         );
@@ -181,7 +184,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 177, StringIds::title_vehicle_cargo),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
+            Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
             makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
         );
@@ -229,16 +232,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 189, StringIds::title_vehicle_route),
             makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),
-            makeWidget({ 3, 44 }, { 118, 12 }, WidgetType::button, WindowColour::secondary, StringIds::local_mode_button),
-            makeWidget({ 121, 44 }, { 119, 12 }, WidgetType::button, WindowColour::secondary, StringIds::express_mode_button),
+            Widgets::Button({ 3, 44 }, { 118, 12 }, WindowColour::secondary, StringIds::local_mode_button),
+            Widgets::Button({ 121, 44 }, { 119, 12 }, WindowColour::secondary, StringIds::express_mode_button),
             makeWidget({ 3, 58 }, { 237, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_route_scrollview),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
-            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
-            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
-            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
-            makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
-            makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
-            makeWidget({ 240, 164 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip)
+            Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
+            Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
+            Widgets::ImageButton({ 240, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
+            Widgets::ImageButton({ 240, 116 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
+            Widgets::ImageButton({ 240, 140 }, { 24, 12 }, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
+            Widgets::ImageButton({ 240, 152 }, { 24, 12 }, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
+            Widgets::ImageButton({ 240, 164 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip)
 
         );
     }
@@ -272,11 +275,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 177, StringIds::stringid),
             makeWidget({ 3, 44 }, { 237, 120 }, WidgetType::viewport, WindowColour::secondary),
-            makeWidget({ 3, 155 }, { 237, 21 }, WidgetType::wt_13, WindowColour::secondary),
+            Widgets::Label({ 3, 155 }, { 237, 21 }, WindowColour::secondary, ContentAlign::Center),
             makeWidget({ 240, 46 }, { 24, 115 }, WidgetType::slider, WindowColour::secondary),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
-            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),
-            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
+            Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
+            Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),
+            Widgets::ImageButton({ 240, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
             makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this)
 

@@ -24,7 +24,9 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -191,7 +193,7 @@ namespace OpenLoco::Ui::Windows::Options
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, windowSize, WindowColour::primary),
                 makeWidget({ 1, 1 }, { (uint16_t)(windowSize.width - 2), 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
-                makeWidget({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::ImageButton({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { windowSize.width, 102 }, WindowColour::secondary),
                 makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_display_options),
                 makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_sound_options),
@@ -961,12 +963,12 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
             makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
-            makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
-            makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
-            makeWidget({ 58, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
+            Widgets::ImageButton({ 10, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
+            Widgets::ImageButton({ 34, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
+            Widgets::ImageButton({ 58, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
             makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
             makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            makeWidget({ 183, 108 }, { 173, 12 }, WidgetType::button, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
+            Widgets::Button({ 183, 108 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
 
         );
 
@@ -1857,7 +1859,7 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
             makeWidget({ 10, 64 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
             makeWidget({ 10, 79 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::invert_right_mouse_dragging, StringIds::tooltip_invert_right_mouse_dragging),
-            makeWidget({ 26, 94 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
+            Widgets::Button({ 26, 94 }, { 160, 12 }, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
 
         );
 
@@ -2035,14 +2037,14 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Preferred owner face
             makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::usePreferredCompanyFace, StringIds::usePreferredCompanyFaceTip),
-            makeWidget({ 265, 79 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            Widgets::Button({ 265, 79 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
 
             // Preferred owner name
             makeWidget({ 10, 97 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
-            makeWidget({ 265, 112 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            Widgets::Button({ 265, 112 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
 
             // Preferred owner preview
-            makeWidget({ 345, 59 }, { 66, 66 }, WidgetType::button, WindowColour::secondary, Widget::kContentNull)
+            Widgets::Button({ 345, 59 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull)
 
         );
 

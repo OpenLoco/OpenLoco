@@ -18,7 +18,9 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -50,7 +52,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { 366, frameHeight }, WindowColour::primary),
                 makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
-                makeWidget({ 351, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::ImageButton({ 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
                 makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_challenge),
                 makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
@@ -993,9 +995,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_scenario_options),
-            makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            Widgets::Button({ 281, 52 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
             makeDropdownWidgets({ 196, 67 }, { 160, 12 }, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change)
+            Widgets::Button({ 281, 82 }, { 75, 12 }, WindowColour::secondary, StringIds::change)
 
         );
 

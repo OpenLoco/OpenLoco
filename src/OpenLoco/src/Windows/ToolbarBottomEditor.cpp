@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include <map>
 
 namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
@@ -22,9 +23,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static constexpr auto _widgets = makeWidgets(
         makeWidget({ 0, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
+        Widgets::ImageButton({ 2, 2 }, { 196, 30 }, WindowColour::primary),
         makeWidget({ 440, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary)
+        Widgets::ImageButton({ 442, 2 }, { 196, 30 }, WindowColour::primary)
 
     );
 
