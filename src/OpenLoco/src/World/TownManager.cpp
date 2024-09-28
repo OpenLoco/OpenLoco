@@ -15,6 +15,7 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -34,8 +35,17 @@ namespace OpenLoco::TownManager
         return regs.eax;
     }
 
+    enum class LocationFlags : uint8_t
+    {
+        none = 0,
+        adjacentToLargeWaterBody = 1 << 0,
+        notMountaineous = 1 << 1,
+        adjacentToSmallWaterBody = 1 << 2,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(LocationFlags);
+
     // 0x00497D70
-    static uint32_t copyTownNameToBuffer(const TownNamesObject* namesObj, uint32_t offset, uint16_t index, char* buffer)
+    static LocationFlags copyTownNameToBuffer(const TownNamesObject* namesObj, uint32_t offset, uint16_t index, char* buffer)
     {
         auto* offsetPtr = reinterpret_cast<const std::byte*>(namesObj) + offset;
         auto srcOffset = *reinterpret_cast<const int16_t*>(offsetPtr + index * 2);
@@ -43,15 +53,16 @@ namespace OpenLoco::TownManager
         auto* srcPtr = reinterpret_cast<const char*>(offsetPtr + srcOffset);
         strcpy(buffer, srcPtr);
 
-        uint8_t tail = *reinterpret_cast<const uint8_t*>(srcPtr + strlen(srcPtr) + 1);
-        return tail;
+        // Location flags are stored at the end of the string
+        LocationFlags flags = *reinterpret_cast<const LocationFlags*>(srcPtr + strlen(srcPtr) + 1);
+        return flags;
     }
 
     // 0x00497A6A
-    static uint8_t townNameFromNamesObject(uint32_t rand, const char* buffer)
+    static LocationFlags townNameFromNamesObject(uint32_t rand, const char* buffer)
     {
         auto* namesObj = ObjectManager::get<TownNamesObject>();
-        uint8_t testsToRun = 0;
+        LocationFlags locationFlags = LocationFlags::none;
 
         for (auto& category : namesObj->categories)
         {
@@ -67,7 +78,7 @@ namespace OpenLoco::TownManager
             if (index > 0)
             {
                 char* strEnd = const_cast<char*>(buffer + strlen(buffer));
-                testsToRun |= copyTownNameToBuffer(namesObj, category.offset, index, strEnd);
+                locationFlags |= copyTownNameToBuffer(namesObj, category.offset, index, strEnd);
             }
 
             for (auto shifts = category.count + category.bias; shifts > 0; shifts >>= 1)
@@ -76,7 +87,7 @@ namespace OpenLoco::TownManager
             }
         }
 
-        return testsToRun;
+        return locationFlags;
     }
 
     // 0x004978B7
@@ -86,7 +97,7 @@ namespace OpenLoco::TownManager
         {
             char buffer[256]{};
             auto rand = town->prng.randNext();
-            auto testsToRun = townNameFromNamesObject(rand, buffer);
+            auto locationFlags = townNameFromNamesObject(rand, buffer);
 
             if (strlen(buffer) == 0)
             {
@@ -112,7 +123,7 @@ namespace OpenLoco::TownManager
             };
             // clang-format on
 
-            if (testsToRun & 1)
+            if ((locationFlags & LocationFlags::adjacentToLargeWaterBody) != LocationFlags::none)
             {
                 // Check that the town is adjacent to a large amount of water tiles on at least one side.
                 auto pos = Pos2(town->x, town->y);
@@ -122,7 +133,7 @@ namespace OpenLoco::TownManager
                 }
             }
 
-            if (testsToRun & 2)
+            if ((locationFlags & LocationFlags::notMountaineous) != LocationFlags::none)
             {
                 auto pos = Pos2(town->x + kTileSize / 2, town->y + kTileSize / 2);
                 auto height = TileManager::getHeight(pos);
@@ -132,7 +143,7 @@ namespace OpenLoco::TownManager
                 }
             }
 
-            if (testsToRun & 4)
+            if ((locationFlags & LocationFlags::adjacentToSmallWaterBody) != LocationFlags::none)
             {
                 // Check that the town is adjacent to a low amount of water tiles on at least one side.
                 auto pos = Pos2(town->x, town->y);
