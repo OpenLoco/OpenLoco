@@ -64,6 +64,12 @@ namespace OpenLoco::TownManager
         auto* namesObj = ObjectManager::get<TownNamesObject>();
         LocationFlags locationFlags = LocationFlags::none;
 
+        // Town names are concatenated from six morpheme categories:
+        // {CAT1}{CAT2}{CAT3}{CAT4}{CAT5}{CAT6}
+        // Seperators are defined in each of the category strings; either '-', ' ', or nothing.
+        // Categories can be completely empty, or can be skipped based on randomness.
+        // e.g. "Fort " + "Apple " + "Green" for "Fort Apple Green"
+
         for (auto& category : namesObj->categories)
         {
             if (category.count == 0)
