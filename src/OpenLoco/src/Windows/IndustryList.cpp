@@ -5,12 +5,12 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/CreateIndustry.h"
 #include "GameCommands/Industries/RemoveIndustry.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -650,7 +650,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     void reset()
     {
-        LastGameOptionManager::setLastIndustry(LastGameOptionManager::kNoLastOption);
+        getGameState().lastIndustryOption = 0xFF;
     }
 
     // 0x0045792A
@@ -808,7 +808,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 if (index < 0)
                 {
                     self.rowHover = rowInfo;
-                    LastGameOptionManager::setLastIndustry(rowInfo);
+                    getGameState().lastIndustryOption = rowInfo;
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
@@ -1224,8 +1224,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->var_83C = industryCount;
             auto rowHover = -1;
 
-            auto lastIndustryOption = LastGameOptionManager::getLastIndustry();
-            if (lastIndustryOption != LastGameOptionManager::kNoLastOption)
+            auto lastIndustryOption = getGameState().lastIndustryOption;
+            if (lastIndustryOption != 0xFF)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {

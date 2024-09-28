@@ -30,7 +30,6 @@
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "LabelFrame.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -3468,7 +3467,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case TransportMode::road:
                 {
-                    auto roadObjId = head.trackType == LastGameOptionManager::kNoLastOption ? LastGameOptionManager::getLastTrackType() : head.trackType;
+                    auto roadObjId = head.trackType == 0xFF ? getGameState().lastTrackTypeOption : head.trackType;
                     auto roadObj = ObjectManager::get<RoadObject>(roadObjId);
                     image = roadObj->image + (isPlaced ? 32 : 33);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;

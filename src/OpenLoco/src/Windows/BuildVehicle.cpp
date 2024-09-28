@@ -4,12 +4,12 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Vehicles/CreateVehicle.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -412,9 +412,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (veh->getTransportMode() != TransportMode::rail)
         {
             targetTrackType |= (1 << 7);
-            if (targetTrackType == LastGameOptionManager::kNoLastOption)
+            if (targetTrackType == 0xFF)
             {
-                targetTrackType = LastGameOptionManager::getLastTrackType();
+                targetTrackType = getGameState().lastTrackTypeOption;
             }
         }
 
@@ -728,9 +728,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.rowHeight = _scrollRowHeight[newTab];
                 window.frameNo = 0;
                 window.currentSecondaryTab = 0;
-                if (newTab != LastGameOptionManager::getLastBuildVehiclesOption())
+                if (newTab != getGameState().lastBuildVehiclesOption)
                 {
-                    LastGameOptionManager::setLastBuildVehiclesOption(newTab);
+                    getGameState().lastBuildVehiclesOption = newTab;
                     WindowManager::invalidate(WindowType::topToolbar, 0);
                 }
 
@@ -1552,9 +1552,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             else if (vehicleObj && vehicleObj->mode == TransportMode::road)
             {
                 auto trackType = vehicleObj->trackType;
-                if (trackType == LastGameOptionManager::kNoLastOption)
+                if (trackType == 0xFF)
                 {
-                    trackType = LastGameOptionManager::getLastTrackType();
+                    trackType = getGameState().lastTrackTypeOption;
                 }
                 roadTrackTypes |= (1 << trackType);
             }
@@ -1616,13 +1616,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         uint32_t trackTab = 0;
         for (; trackTab < _numTrackTypeTabs; trackTab++)
         {
-            if (LastGameOptionManager::getLastRailRoad() == _trackTypesForTab[trackTab])
+            if (getGameState().lastRailroadOption == _trackTypesForTab[trackTab])
             {
                 found = true;
                 break;
             }
 
-            if (LastGameOptionManager::getLastRoad() == _trackTypesForTab[trackTab])
+            if (getGameState().lastRoadOption == _trackTypesForTab[trackTab])
             {
                 found = true;
                 break;
@@ -1660,11 +1660,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (setRail)
         {
-            LastGameOptionManager::setLastRailRoad(trackType | (isRoad ? (1 << 7) : 0));
+            getGameState().lastRailroadOption = trackType | (isRoad ? (1 << 7) : 0);
         }
         else
         {
-            LastGameOptionManager::setLastRoad(trackType | (isRoad ? (1 << 7) : 0));
+            getGameState().lastRoadOption = trackType | (isRoad ? (1 << 7) : 0);
         }
 
         // The window number doesn't really matter as there is only one top toolbar

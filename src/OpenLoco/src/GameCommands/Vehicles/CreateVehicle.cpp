@@ -6,7 +6,6 @@
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "Map/Tile.h"
 #include "MessageManager.h"

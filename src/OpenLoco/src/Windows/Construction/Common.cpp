@@ -1,6 +1,7 @@
 #include "Construction.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -169,13 +170,13 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshDockList(_cState->stationList);
 
-        if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastShipPort == 0xFF)
         {
             _cState->lastSelectedStationType = _cState->stationList[0];
         }
         else
         {
-            _cState->lastSelectedStationType = LastGameOptionManager::getLastShipPort();
+            _cState->lastSelectedStationType = getGameState().lastShipPort;
         }
 
         return nonTrackWindow();
@@ -195,13 +196,13 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshAirportList(_cState->stationList);
 
-        if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastAirport == 0xFF)
         {
             _cState->lastSelectedStationType = _cState->stationList[0];
         }
         else
         {
-            _cState->lastSelectedStationType = LastGameOptionManager::getLastAirport();
+            _cState->lastSelectedStationType = getGameState().lastAirport;
         }
 
         return nonTrackWindow();
@@ -1040,17 +1041,17 @@ namespace OpenLoco::Ui::Windows::Construction
                 newTrackType &= ~(1 << 7);
                 auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
                 if (!roadObj->hasFlags(RoadObjectFlags::unk_01))
-                    LastGameOptionManager::setLastRoad(trackType);
+                    getGameState().lastRoadOption = trackType;
                 else
-                    LastGameOptionManager::setLastRailRoad(trackType);
+                    getGameState().lastRailroadOption = trackType;
             }
             else
             {
                 auto trackObj = ObjectManager::get<TrackObject>(newTrackType);
                 if (!trackObj->hasFlags(TrackObjectFlags::unk_02))
-                    LastGameOptionManager::setLastRailRoad(trackType);
+                    getGameState().lastRailroadOption = trackType;
                 else
-                    LastGameOptionManager::setLastRoad(trackType);
+                    getGameState().lastRoadOption = trackType;
             }
             WindowManager::invalidate(WindowType::topToolbar, 0);
         }

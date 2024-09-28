@@ -11,7 +11,6 @@
 #include "Graphics/DrawingContext.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -603,8 +602,8 @@ namespace OpenLoco::S5
     void sub_4BAEC4() // TerraformConfig
     {
         addr<0x001136496, uint8_t>() = 2; // last tree rotation
-        LastGameOptionManager::setLastTree(LastGameOptionManager::kNoLastOption);
-        LastGameOptionManager::setLastWall(LastGameOptionManager::kNoLastOption);
+        getGameState().lastTreeOption = 0xFF;
+        getGameState().lastWallOption = 0xFF;
     }
 
     // 0x00441FA7

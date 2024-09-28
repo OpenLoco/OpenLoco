@@ -10,7 +10,6 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/CreateTown.h"
 #include "GameState.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
@@ -231,9 +230,9 @@ namespace OpenLoco::World::MapGenerator
                 return landObjectIdx;
             }
         }
-        if (LastGameOptionManager::getLastLand() != LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastLandOption != 0xFF)
         {
-            return LastGameOptionManager::getLastLand();
+            return getGameState().lastLandOption;
         }
         return std::nullopt;
     }

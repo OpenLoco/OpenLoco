@@ -4,12 +4,12 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
-#include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
 #include "Network/Network.h"
@@ -435,7 +435,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
-            if (objIndex == LastGameOptionManager::getLastRailRoad())
+            if (objIndex == getGameState().lastRailroadOption)
                 highlightedItem = i;
         }
 
@@ -550,7 +550,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        Dropdown::setHighlightedItem(LastGameOptionManager::getLastBuildVehiclesOption());
+        Dropdown::setHighlightedItem(getGameState().lastBuildVehiclesOption);
     }
 
     // 0x0043ADC7
@@ -563,7 +563,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
 
         itemIndex = _menuOptions[itemIndex];
-        LastGameOptionManager::setLastBuildVehiclesOption(itemIndex);
+        getGameState().lastBuildVehiclesOption = itemIndex;
 
         BuildVehicle::open(itemIndex, 1U << 31);
     }
@@ -614,7 +614,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        Dropdown::setHighlightedItem(static_cast<uint8_t>(LastGameOptionManager::getLastVehicleType()));
+        Dropdown::setHighlightedItem(static_cast<uint8_t>(getGameState().lastVehicleType));
     }
 
     // 0x0043ACEF
@@ -627,7 +627,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
 
         auto vehicleType = VehicleType(_menuOptions[itemIndex]);
-        LastGameOptionManager::setLastVehicleType(vehicleType);
+        getGameState().lastVehicleType = vehicleType;
 
         VehicleList::open(CompanyManager::getControllingId(), vehicleType);
     }
@@ -762,7 +762,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
-            uint8_t ebx = LastGameOptionManager::getLastRailRoad();
+            uint8_t ebx = getGameState().lastRailroadOption;
             if ((ebx & (1 << 7)) != 0)
             {
                 ebx = ebx & ~(1 << 7);
@@ -805,7 +805,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             };
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(LastGameOptionManager::getLastVehicleType())], companyColour);
+            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(getGameState().lastVehicleType)], companyColour);
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window.getColour(WindowColour::quaternary).c());
 
             y--;
@@ -836,7 +836,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             // Figure out what icon to show on the button face.
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[LastGameOptionManager::getLastBuildVehiclesOption()], companyColour);
+            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[getGameState().lastBuildVehiclesOption], companyColour);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::Widx::build_vehicles_menu))
                 fg_image++;
@@ -879,8 +879,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         if (_lastPortOption == 0
-            && LastGameOptionManager::getLastAirport() != LastGameOptionManager::kNoLastOption
-            && LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
+            && getGameState().lastAirport != 0xFF
+            && getGameState().lastShipPort == 0xFF)
         {
             _lastPortOption = 1;
         }
@@ -910,17 +910,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         else
             window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
 
-        if (LastGameOptionManager::getLastRoad() != LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastRoadOption != 0xFF)
             window.widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
         else
             window.widgets[Common::Widx::road_menu].type = WidgetType::none;
 
-        if (LastGameOptionManager::getLastRailRoad() != LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastRailroadOption != 0xFF)
             window.widgets[Common::Widx::railroad_menu].type = WidgetType::toolbarTab;
         else
             window.widgets[Common::Widx::railroad_menu].type = WidgetType::none;
 
-        if (LastGameOptionManager::getLastAirport() != LastGameOptionManager::kNoLastOption || LastGameOptionManager::getLastShipPort() != LastGameOptionManager::kNoLastOption)
+        if (getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF)
             window.widgets[Common::Widx::port_menu].type = WidgetType::toolbarTab;
         else
             window.widgets[Common::Widx::port_menu].type = WidgetType::none;
