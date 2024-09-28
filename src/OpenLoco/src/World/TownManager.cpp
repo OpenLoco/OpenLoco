@@ -45,9 +45,10 @@ namespace OpenLoco::TownManager
     OPENLOCO_ENABLE_ENUM_OPERATORS(LocationFlags);
 
     // 0x00497D70
-    static LocationFlags copyTownNameToBuffer(const TownNamesObject* namesObj, uint32_t offset, uint16_t index, char* buffer)
+    static LocationFlags copyTownNameToBuffer(const TownNamesObject* namesObj, uint32_t categoryOffset, uint16_t index, char* buffer)
     {
-        auto* offsetPtr = reinterpret_cast<const std::byte*>(namesObj) + offset;
+        // Offset into the string table for the requested category, located just after the names object header.
+        auto* offsetPtr = reinterpret_cast<const std::byte*>(namesObj) + categoryOffset;
         auto srcOffset = *reinterpret_cast<const int16_t*>(offsetPtr + index * 2);
 
         auto* srcPtr = reinterpret_cast<const char*>(offsetPtr + srcOffset);
