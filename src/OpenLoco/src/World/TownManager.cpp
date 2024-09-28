@@ -104,14 +104,19 @@ namespace OpenLoco::TownManager
             }
 
             // clang-format off
+            auto numSurroundingWaterTilesAboveThreshold = [](Pos2 pos, uint8_t threshold) {
+                return TileManager::countSurroundingWaterTiles(pos + Pos2(6 * kTileSize, 0)) > threshold ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 6 * kTileSize)) > threshold ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0 - 6 * kTileSize, 0)) > threshold ||
+                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 0 - 6 * kTileSize)) > threshold;
+            };
+            // clang-format on
+
             if (testsToRun & 1)
             {
                 // Check that the town is adjacent to a large amount of water tiles on at least one side.
                 auto pos = Pos2(town->x, town->y);
-                if (!(TileManager::countSurroundingWaterTiles(pos + Pos2(6 * kTileSize, 0)) > 65 ||
-                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 6 * kTileSize)) > 65 ||
-                    TileManager::countSurroundingWaterTiles(pos + Pos2(0 - 6 * kTileSize, 0)) > 65 ||
-                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 0 - 6 * kTileSize)) > 65))
+                if (!(numSurroundingWaterTilesAboveThreshold(pos, 65)))
                 {
                     continue;
                 }
@@ -131,15 +136,11 @@ namespace OpenLoco::TownManager
             {
                 // Check that the town is adjacent to a low amount of water tiles on at least one side.
                 auto pos = Pos2(town->x, town->y);
-                if (!(TileManager::countSurroundingWaterTiles(pos + Pos2(6 * kTileSize, 0)) > 15 ||
-                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 6 * kTileSize)) > 15 ||
-                    TileManager::countSurroundingWaterTiles(pos + Pos2(0 - 6 * kTileSize, 0)) > 15 ||
-                    TileManager::countSurroundingWaterTiles(pos + Pos2(0, 0 - 6 * kTileSize)) > 15))
+                if (!(numSurroundingWaterTilesAboveThreshold(pos, 15)))
                 {
                     continue;
                 }
             }
-            // clang-format on
 
             bool nameInUse = false;
             for (auto& candidateTown : towns())
