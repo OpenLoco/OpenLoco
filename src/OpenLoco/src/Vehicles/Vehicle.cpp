@@ -279,6 +279,53 @@ namespace OpenLoco::Vehicles
         World::TilePos2{ -1, 1 },
     };
 
+    static bool checkTrainForSelfCollision(const EntityId sourceVehicleId, const VehicleBase& candidateVehicle)
+    {
+        bool noSelfCollision = false;
+        Vehicle collideTrain(candidateVehicle.getHead());
+        bool carFound = false;
+        uint32_t numCarsToCheck = 0;
+        for (auto& car : collideTrain.cars)
+        {
+            for (auto& carComponent : car)
+            {
+
+                if (!carFound)
+                {
+                    carComponent.applyToComponents([&carFound, &numCarsToCheck, targetId = candidateVehicle.id](auto& c) {
+                        if (c.id == targetId)
+                        {
+                            carFound = true;
+                            numCarsToCheck = 3;
+                        }
+                    });
+                }
+                if (carFound)
+                {
+                    carComponent.applyToComponents([&noSelfCollision, targetId = sourceVehicleId](auto& c) {
+                        if (c.id == targetId)
+                        {
+                            noSelfCollision = true;
+                        }
+                    });
+                }
+            }
+            if (noSelfCollision)
+            {
+                return true;
+            }
+            if (carFound)
+            {
+                numCarsToCheck--;
+                if (numCarsToCheck == 0)
+                {
+                    break;
+                }
+            }
+        }
+        return false;
+    }
+
     // 0x004B1876
     static std::optional<EntityId> checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
     {
@@ -335,97 +382,11 @@ namespace OpenLoco::Vehicles
                     return vehicleBase->id;
                 }
 
-                bool noSelfCollision = false;
-                {
-                    Vehicle collideTrain(vehicleBase->getHead());
-                    bool carFound = false;
-                    uint32_t numCarsToCheck = 0;
-                    for (auto& car : collideTrain.cars)
-                    {
-                        for (auto& carComponent : car)
-                        {
-
-                            if (!carFound)
-                            {
-                                carComponent.applyToComponents([&carFound, &numCarsToCheck, targetId = vehicleBase->id](auto& c) {
-                                    if (c.id == targetId)
-                                    {
-                                        carFound = true;
-                                        numCarsToCheck = 3;
-                                    }
-                                });
-                            }
-                            if (carFound)
-                            {
-                                carComponent.applyToComponents([&noSelfCollision, targetId = bogie.id](auto& c) {
-                                    if (c.id == targetId)
-                                    {
-                                        noSelfCollision = true;
-                                    }
-                                });
-                            }
-                        }
-                        if (noSelfCollision)
-                        {
-                            break;
-                        }
-                        if (carFound)
-                        {
-                            numCarsToCheck--;
-                            if (numCarsToCheck == 0)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (noSelfCollision)
+                if (checkTrainForSelfCollision(bogie.id, *vehicleBase))
                 {
                     continue;
                 }
-                {
-                    bool carFound = false;
-                    uint32_t numCarsToCheck = 0;
-                    for (auto& car : srcTrain.cars)
-                    {
-                        for (auto& carComponent : car)
-                        {
-
-                            if (!carFound)
-                            {
-                                carComponent.applyToComponents([&carFound, &numCarsToCheck, targetId = bogie.id](auto& c) {
-                                    if (c.id == targetId)
-                                    {
-                                        carFound = true;
-                                        numCarsToCheck = 3;
-                                    }
-                                });
-                            }
-                            if (carFound)
-                            {
-                                carComponent.applyToComponents([&noSelfCollision, targetId = vehicleBase->id](auto& c) {
-                                    if (c.id == targetId)
-                                    {
-                                        noSelfCollision = true;
-                                    }
-                                });
-                            }
-                        }
-                        if (noSelfCollision)
-                        {
-                            break;
-                        }
-                        if (carFound)
-                        {
-                            numCarsToCheck--;
-                            if (numCarsToCheck == 0)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (noSelfCollision)
+                if (checkTrainForSelfCollision(vehicleBase->id, bogie))
                 {
                     continue;
                 }
