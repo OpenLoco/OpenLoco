@@ -17,7 +17,7 @@ namespace OpenLoco
         {
             uint8_t count;
             uint8_t bias;
-            StringId offset;
+            uint16_t offset;
         };
         static constexpr auto kObjectType = ObjectType::townNames;
         static constexpr auto kMinNumNameCombinations = 80;
