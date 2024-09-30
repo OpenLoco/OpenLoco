@@ -32,6 +32,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 {
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
+    static loco_global<uint32_t, 0x0113658C> _dword_113658C;
 
 #pragma pack(push, 1)
     struct GraphSettings
@@ -47,7 +48,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         std::byte* yData[32];          // 0x0113DC8C
         uint32_t dataTypeSize;         // 0x0113DD0C
         uint16_t dataStart[32];        // 0x0113DD10
-        uint32_t dword_113DD50;        // 0x0113DD50
+        uint32_t linesToDraw;          // 0x0113DD50
         PaletteIndex_t lineColour[32]; // 0x0113DD54
         uint16_t dataEnd;              // 0x0113DD74
         uint16_t xLabel;               // 0x0113DD76
@@ -701,7 +702,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 40;
             _graphSettings->yAxisLabelIncrement = 20;
-            _graphSettings->dword_113DD50 = 0;
+            _graphSettings->linesToDraw = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -794,7 +795,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 45;
             _graphSettings->yAxisLabelIncrement = 25;
-            _graphSettings->dword_113DD50 = 0;
+            _graphSettings->linesToDraw = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -887,7 +888,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 65;
             _graphSettings->yAxisLabelIncrement = 25;
-            _graphSettings->dword_113DD50 = 0;
+            _graphSettings->linesToDraw = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -980,7 +981,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 90;
             _graphSettings->yAxisLabelIncrement = 25;
-            _graphSettings->dword_113DD50 = 0;
+            _graphSettings->linesToDraw = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -1148,7 +1149,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 80;
             _graphSettings->yAxisLabelIncrement = 25;
-            _graphSettings->dword_113DD50 = 0;
+            _graphSettings->linesToDraw = 0;
 
             auto count = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
@@ -1191,7 +1192,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     i++;
                 }
 
-                _graphSettings->dword_113DD50 = 0xFFFFFFFF & ~(1 << i);
+                // Draw all lines except hilighted data
+                _graphSettings->linesToDraw = 0xFFFFFFFF & ~(1 << i);
 
                 if (_word_9C68C7 & (1 << 2))
                     _graphSettings->lineColour[i] = 10;
@@ -1765,8 +1767,85 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004CFA49
-        static void graphDrawLegend(const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
+        static void graphDrawLegendInteraction(const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
         {
+        }
+
+        static void drawGraphLineSegments(const uint8_t lineIndex, const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
+        {
+            auto previousPos = Ui::Point(-1, 0);
+
+            // esi
+            std::byte* dataEndPtr = gs.yData[lineIndex];
+            if ((gs.flags & (1 << 1)) == 0)
+                dataEndPtr += gs.dataEnd * gs.dataTypeSize;
+
+            // ecx
+            uint16_t dataStartOffset = gs.dataStart[lineIndex];
+
+            // edi -- invalid if gs.flags & (1 << 1)
+            std::byte* dataStartPtr = dataEndPtr - dataStartOffset * gs.dataTypeSize;
+
+            while (dataStartPtr < dataEndPtr)
+            {
+                if (gs.flags & (1 << 1))
+                {
+                    dataEndPtr -= gs.dataTypeSize;
+                }
+
+                int64_t value = 0;
+                switch (gs.dataTypeSize)
+                {
+                    case 2:
+                        // NB: confirm arithmetic right shift
+                        value = *reinterpret_cast<int16_t*>(dataStartPtr) >> gs.numValueShifts;
+                        break;
+
+                    case 4:
+                        // NB: confirm arithmetic right shift
+                        value = *reinterpret_cast<int32_t*>(dataStartPtr) >> gs.numValueShifts;
+                        break;
+
+                    case 6:
+                        // NB: confirm arithmetic right shift
+                        value = reinterpret_cast<currency48_t*>(dataStartPtr)->asInt64() >> gs.numValueShifts;
+                        break;
+                }
+
+                auto xPos = dataStartOffset * gs.word_113DD80 + gs.canvasLeft;
+                auto yPos = -value + gs.bottom - gs.yOffset;
+
+                if (gs.flags & (1 << 0)) // unused?
+                {
+                    yPos -= gs.canvasHeight / 2;
+                }
+
+                yPos += gs.top;
+
+                if (_dword_113658C != 1)
+                {
+                    auto colour = gs.lineColour[lineIndex];
+                    drawingCtx.drawRect(xPos, xPos, yPos, yPos, colour, Gfx::RectFlags::none);
+
+                    if (previousPos.x != -1)
+                    {
+                        auto targetPos = Ui::Point(xPos, yPos);
+                        drawingCtx.drawLine(previousPos, targetPos, colour);
+                        previousPos = targetPos;
+                    }
+                }
+                else
+                {
+                    auto colour = gs.lineColour[lineIndex];
+                    drawingCtx.drawRect(xPos, xPos + 1, yPos, yPos + 1, colour, Gfx::RectFlags::none);
+                }
+
+                dataStartPtr += gs.dataTypeSize;
+                if (gs.flags & (1 << 1))
+                {
+                    dataEndPtr += gs.dataTypeSize;
+                }
+            }
         }
 
         // 0x004CF824
@@ -1796,18 +1875,36 @@ namespace OpenLoco::Ui::Windows::CompanyList
             for (auto value = maxValue; value > 0; value >>= 1)
                 gs.numValueShifts++;
 
-            if (gs.flags & (1 << 2))
+            if (!(gs.flags & (1 << 2)))
             {
-                graphDrawLegend(gs, drawingCtx);
+                graphDrawLegendInteraction(gs, drawingCtx);
             }
 
             // 0x004CFD59
-            uint32_t dword_113658C = 0;
+            _dword_113658C = 0; // iteration/pass??
+            while (true)
+            {
+                if ((gs.byte_113DD99 & (1U << _dword_113658C)) == 0)
+                {
+                    _dword_113658C++;
+                    if (_dword_113658C == 2)
+                        return;
+                }
 
-            // registers regs;
-            // regs.esi = X86Pointer(self);
-            // regs.edi = X86Pointer(&rt);
-            // call(0x004CF824, regs);
+                for (auto i = 0U; i < gs.lineCount; i++)
+                {
+                    if ((gs.linesToDraw & (1U << i)) == 0)
+                    {
+                        continue;
+                    }
+
+                    drawGraphLineSegments(i, gs, drawingCtx);
+                }
+
+                _dword_113658C++;
+                if (_dword_113658C == 2)
+                    return;
+            }
         }
 
         // 0x00437810
@@ -1863,7 +1960,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     i++;
                 }
 
-                _graphSettings->dword_113DD50 = 0xFFFFFFFF & ~(1 << i);
+                _graphSettings->linesToDraw = 0xFFFFFFFF & ~(1 << i);
 
                 if (_word_9C68C7 & (1 << 2))
                     _graphSettings->lineColour[i] = 10;
