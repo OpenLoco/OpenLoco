@@ -53,6 +53,7 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <array>
 #include <numeric>
@@ -394,7 +395,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
 
             const std::string_view name = entry.object._name;
-            const std::string_view filename = entry.object._filename;
+            const auto filename = fs::u8path(entry.object._filename).filename().u8string();
 
             const bool containsName = contains(name, pattern);
             const bool containsFileName = contains(filename, pattern);
