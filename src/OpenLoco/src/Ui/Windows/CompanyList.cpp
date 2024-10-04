@@ -1951,6 +1951,17 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004CF824
         static void drawGraph(Window* self, Gfx::DrawingContext& drawingCtx)
         {
+            if (Input::hasKeyModifier(Input::KeyModifier::shift))
+            {
+                self->invalidate();
+                const auto& rt = drawingCtx.currentRenderTarget();
+                registers regs;
+                regs.esi = X86Pointer(self);
+                regs.edi = X86Pointer(&rt);
+                call(0x004CF824, regs);
+                return;
+            }
+
             auto& gs = *_graphSettings;
 
             gs.canvasLeft = gs.xOffset + gs.left;
