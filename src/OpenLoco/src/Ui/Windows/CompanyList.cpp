@@ -57,8 +57,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
         uint16_t word_113DD80;         // 0x0113DD80 -- graphXAxisIncrement?
         uint16_t xAxisLabelIncrement;  // 0x0113DD82
         StringId yLabel;               // 0x0113DD84
-        uint32_t dword_113DD86;        // 0x0113DD86
-        uint32_t dword_113DD8A;        // 0x0113DD8A
+        uint32_t dword_113DD86;        // 0x0113DD86 -- always 0
+        uint32_t dword_113DD8A;        // 0x0113DD8A -- y axis step?
         uint32_t flags;                // 0x0113DD8E
         uint16_t canvasLeft;           // 0x0113DD92
         uint16_t word_113DD94;         // 0x0113DD94
@@ -1994,7 +1994,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             // Count number of shifts until we reach zero
             gs.numValueShifts = 0;
-            for (auto value = maxValue; value > 0; value >>= 1)
+            for (auto value = maxValue; (value >> 32) > 0; value >>= 1)
                 gs.numValueShifts++;
 
             if (!(gs.flags & (1 << 2)))
