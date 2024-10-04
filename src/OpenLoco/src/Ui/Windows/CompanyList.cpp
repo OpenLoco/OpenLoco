@@ -1904,24 +1904,23 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 switch (gs.dataTypeSize)
                 {
                     case 2:
-                        // NB: confirm arithmetic right shift
                         value = *reinterpret_cast<int16_t*>(dataPtr);
                         break;
 
                     case 4:
-                        // NB: confirm arithmetic right shift
                         value = *reinterpret_cast<int32_t*>(dataPtr);
                         break;
 
                     case 6:
-                        // NB: confirm arithmetic right shift
                         value = reinterpret_cast<currency48_t*>(dataPtr)->asInt64();
                         break;
                 }
+
+                // NB: confirm arithmetic right shift
                 value >>= gs.numValueShifts;
 
-                auto xPos = gs.canvasLeft + dataIndex * gs.word_113DD80;
-                auto yPos = -value + gs.height - gs.yOffset;
+                int16_t xPos = gs.canvasLeft + dataIndex * gs.word_113DD80;
+                int16_t yPos = gs.height - value - gs.yOffset;
 
                 if (gs.flags & (1 << 0)) // unused?
                 {
