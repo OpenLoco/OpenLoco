@@ -1907,19 +1907,20 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
                     case 2:
                         // NB: confirm arithmetic right shift
-                        value = *reinterpret_cast<int16_t*>(dataPtr) >> gs.numValueShifts;
+                        value = *reinterpret_cast<int16_t*>(dataPtr);
                         break;
 
                     case 4:
                         // NB: confirm arithmetic right shift
-                        value = *reinterpret_cast<int32_t*>(dataPtr) >> gs.numValueShifts;
+                        value = *reinterpret_cast<int32_t*>(dataPtr);
                         break;
 
                     case 6:
                         // NB: confirm arithmetic right shift
-                        value = reinterpret_cast<currency48_t*>(dataPtr)->asInt64() >> gs.numValueShifts;
+                        value = reinterpret_cast<currency48_t*>(dataPtr)->asInt64();
                         break;
                 }
+                value >>= gs.numValueShifts;
 
                 auto xPos = gs.canvasLeft + dataIndex * gs.word_113DD80;
                 auto yPos = -value + gs.bottom - gs.yOffset;
@@ -1934,7 +1935,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (_dword_113658C != 1)
                 {
                     auto colour = gs.lineColour[lineIndex];
-                    drawingCtx.drawRect(xPos, xPos, yPos, yPos, colour, Gfx::RectFlags::none);
+                    drawingCtx.drawRect(xPos, yPos, 2, 2, colour, Gfx::RectFlags::none);
 
                     if (previousPos.x != -1)
                     {
@@ -1946,7 +1947,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                 {
                     auto colour = gs.lineColour[lineIndex];
-                    drawingCtx.drawRect(xPos, xPos + 1, yPos, yPos + 1, colour, Gfx::RectFlags::none);
+                    drawingCtx.drawRect(xPos, yPos, 2, 2, colour, Gfx::RectFlags::none);
                 }
 
                 dataIndex++;
