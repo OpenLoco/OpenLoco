@@ -1812,10 +1812,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                     auto tr = Gfx::TextRenderer(drawingCtx);
                     auto formatArgs = FormatArguments{};
-                    formatArgs.push(StringIds::graph_label_format);
+                    formatArgs.push(gs.xLabel);
                     formatArgs.push(eax);
 
-                    tr.drawStringLeft({ xPos, yPos }, Colour::black, gs.xLabel, formatArgs);
+                    tr.drawStringCentred({ xPos, yPos }, Colour::black, StringIds::graph_label_format, formatArgs);
                 }
 
                 eax += gs.dword_113DD7C;
