@@ -53,15 +53,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         uint16_t dataEnd;              // 0x0113DD74
         StringId xLabel;               // 0x0113DD76
         uint32_t xAxisRange;           // 0x0113DD78
-        uint32_t dword_113DD7C;        // 0x0113DD7C -- value is 1 or 2
+        uint32_t xAxisStepSize;        // 0x0113DD7C
         uint16_t word_113DD80;         // 0x0113DD80 -- graphXAxisIncrement?
         uint16_t xAxisLabelIncrement;  // 0x0113DD82
         StringId yLabel;               // 0x0113DD84
         uint32_t dword_113DD86;        // 0x0113DD86 -- always 0
-        uint32_t dword_113DD8A;        // 0x0113DD8A -- y axis step?
+        uint32_t yAxisStepSize;        // 0x0113DD8A
         uint32_t flags;                // 0x0113DD8E
         uint16_t canvasLeft;           // 0x0113DD92
-        uint16_t word_113DD94;         // 0x0113DD94
+        uint16_t canvasBottom;         // 0x0113DD94
         uint16_t canvasHeight;         // 0x0113DD96
         uint8_t numValueShifts;        // 0x0113DD98 -- factors of two
         uint8_t byte_113DD99;          // 0x0113DD99
@@ -734,7 +734,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->word_113DD80 = 4;
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
-            _graphSettings->dword_113DD8A = 100;
+            _graphSettings->yAxisStepSize = 100;
             _graphSettings->flags = 1 << 1;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
@@ -827,7 +827,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->word_113DD80 = 4;
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
-            _graphSettings->dword_113DD8A = 1000;
+            _graphSettings->yAxisStepSize = 1000;
             _graphSettings->flags = 1 << 1;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
@@ -920,7 +920,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->word_113DD80 = 4;
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
-            _graphSettings->dword_113DD8A = 1000;
+            _graphSettings->yAxisStepSize = 1000;
             _graphSettings->flags = 1 << 1;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
@@ -1013,7 +1013,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->word_113DD80 = 4;
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
-            _graphSettings->dword_113DD8A = 10000;
+            _graphSettings->yAxisStepSize = 10000;
             _graphSettings->flags = 1 << 1;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
@@ -1175,11 +1175,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->word_113DD80 = 5;
             _graphSettings->xAxisLabelIncrement = 20;
             _graphSettings->dword_113DD86 = 0;
-            _graphSettings->dword_113DD8A = 0;
+            _graphSettings->yAxisStepSize = 0;
             _graphSettings->flags = 0;
 
             _graphSettings->xAxisRange = 2;
-            _graphSettings->dword_113DD7C = 2;
+            _graphSettings->xAxisStepSize = 2;
             _graphSettings->byte_113DD99 = 1;
 
             Common::drawGraph(&self, drawingCtx);
@@ -1781,7 +1781,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto eax = gs.xAxisRange;
             if (gs.flags & (1 << 1))
             {
-                eax -= (gs.dataEnd - 1) * gs.dword_113DD7C;
+                eax -= (gs.dataEnd - 1) * gs.xAxisStepSize;
             }
             // eax expected at _common_format_args.bits+2
 
@@ -1816,7 +1816,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     tr.drawStringCentred({ xPos, yPos }, Colour::black, StringIds::graph_label_format, formatArgs);
                 }
 
-                eax += gs.dword_113DD7C;
+                eax += gs.xAxisStepSize;
             }
 
             // 0x004CFB5C
@@ -1977,7 +1977,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             gs.canvasHeight = gs.height - gs.yOffset;
 
             // TODO: unused? remove?
-            gs.word_113DD94 = gs.top + gs.height - gs.yOffset;
+            gs.canvasBottom = gs.top + gs.height - gs.yOffset;
 
             int64_t maxValue = graphGetMaxValue(gs);
 
@@ -2068,7 +2068,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto totalMonths = (getCurrentYear() * 12) + static_cast<uint16_t>(getCurrentMonth());
 
             _graphSettings->xAxisRange = totalMonths;
-            _graphSettings->dword_113DD7C = 1;
+            _graphSettings->xAxisStepSize = 1;
             _graphSettings->byte_113DD99 = 1;
 
             Common::drawGraph(self, drawingCtx);
