@@ -1176,7 +1176,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 20;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->dword_113DD8A = 0;
-            _graphSettings->flags = 1 << 0;
+            _graphSettings->flags = 0;
 
             _graphSettings->xAxisRange = 2;
             _graphSettings->dword_113DD7C = 2;
