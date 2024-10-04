@@ -1822,7 +1822,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
 
             // 0x004CFB5C
-            auto edx = 0U;
+            auto edx = 0;
             while (true)
             {
                 // TODO: can be moved down, around FormatArguments. Kept here for verification
@@ -1983,12 +1983,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
             int64_t maxValue = graphGetMaxValue(gs);
 
             // 0x004CFA02
+            /*
+            // variable is never used?
             auto height = gs.canvasHeight;
             if (gs.flags & (1 << 0))
             {
                 // half height? never set, anyway. remove?
                 height >>= 1;
             }
+            */
 
             // Count number of shifts until we reach zero
             gs.numValueShifts = 0;
