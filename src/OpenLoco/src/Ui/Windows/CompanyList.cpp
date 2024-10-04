@@ -1834,7 +1834,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto paletteIndex = Colours::getShade(colour, 6);
 
                     auto xPos = gs.left + gs.xOffset - 2;
-                    auto width = gs.right;
+                    auto width = gs.right - gs.xOffset + 3;
                     auto yPos = -edx + gs.canvasHeight + gs.top;
                     if (gs.flags & (1 << 0)) // never set
                     {
