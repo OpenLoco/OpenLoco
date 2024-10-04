@@ -1882,26 +1882,24 @@ namespace OpenLoco::Ui::Windows::CompanyList
             // 0x004CFD59 after loop, which is back in drawGraph
         }
 
+        // 0x004CFD87
         static void drawGraphLineSegments(const uint8_t lineIndex, const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
         {
             auto previousPos = Ui::Point(-1, 0);
 
-            // esi
-            std::byte* dataEndPtr = gs.yData[lineIndex];
-            if ((gs.flags & (1 << 1)) == 0)
-                dataEndPtr += gs.dataEnd * gs.dataTypeSize;
+            auto dataIndex = 0U;
+            std::byte* dataPtr = gs.yData[lineIndex];
+            if ((gs.flags & (1 << 1)) != 0)
+            {
+                dataIndex = gs.dataStart[lineIndex];
+                dataPtr = &dataPtr[gs.dataTypeSize * (gs.dataEnd - dataIndex)];
+            }
 
-            // ecx
-            uint16_t dataStartOffset = gs.dataStart[lineIndex];
-
-            // edi -- invalid if gs.flags & (1 << 1)
-            std::byte* dataStartPtr = dataEndPtr - dataStartOffset * gs.dataTypeSize;
-
-            while (dataStartPtr < dataEndPtr)
+            while (dataIndex < gs.dataEnd)
             {
                 if (gs.flags & (1 << 1))
                 {
-                    dataEndPtr -= gs.dataTypeSize;
+                    dataPtr -= gs.dataTypeSize;
                 }
 
                 int64_t value = 0;
@@ -1909,21 +1907,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
                     case 2:
                         // NB: confirm arithmetic right shift
-                        value = *reinterpret_cast<int16_t*>(dataStartPtr) >> gs.numValueShifts;
+                        value = *reinterpret_cast<int16_t*>(dataPtr) >> gs.numValueShifts;
                         break;
 
                     case 4:
                         // NB: confirm arithmetic right shift
-                        value = *reinterpret_cast<int32_t*>(dataStartPtr) >> gs.numValueShifts;
+                        value = *reinterpret_cast<int32_t*>(dataPtr) >> gs.numValueShifts;
                         break;
 
                     case 6:
                         // NB: confirm arithmetic right shift
-                        value = reinterpret_cast<currency48_t*>(dataStartPtr)->asInt64() >> gs.numValueShifts;
+                        value = reinterpret_cast<currency48_t*>(dataPtr)->asInt64() >> gs.numValueShifts;
                         break;
                 }
 
-                auto xPos = dataStartOffset * gs.word_113DD80 + gs.canvasLeft;
+                auto xPos = gs.canvasLeft + dataIndex * gs.word_113DD80;
                 auto yPos = -value + gs.bottom - gs.yOffset;
 
                 if (gs.flags & (1 << 0)) // unused?
@@ -1951,10 +1949,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     drawingCtx.drawRect(xPos, xPos + 1, yPos, yPos + 1, colour, Gfx::RectFlags::none);
                 }
 
-                dataStartPtr += gs.dataTypeSize;
+                dataIndex++;
+
                 if (gs.flags & (1 << 1))
                 {
-                    dataEndPtr += gs.dataTypeSize;
+                    dataPtr += gs.dataTypeSize;
                 }
             }
         }
