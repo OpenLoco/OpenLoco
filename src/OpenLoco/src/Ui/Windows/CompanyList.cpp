@@ -1933,19 +1933,19 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (_dword_113658C != 1)
                 {
                     auto colour = gs.lineColour[lineIndex];
-                    drawingCtx.drawRect(xPos, yPos, 2, 2, colour, Gfx::RectFlags::none);
+                    drawingCtx.drawRect(xPos, yPos, 1, 1, colour, Gfx::RectFlags::none);
 
+                    auto targetPos = Ui::Point(xPos, yPos);
                     if (previousPos.x != -1)
                     {
-                        auto targetPos = Ui::Point(xPos, yPos);
                         drawingCtx.drawLine(previousPos, targetPos, colour);
-                        previousPos = targetPos;
                     }
+                    previousPos = targetPos;
                 }
                 else
                 {
                     auto colour = gs.lineColour[lineIndex];
-                    drawingCtx.drawRect(xPos, yPos, 2, 2, colour, Gfx::RectFlags::none);
+                    drawingCtx.drawRect(xPos, yPos, 1, 1, colour, Gfx::RectFlags::none);
                 }
 
                 dataIndex++;
