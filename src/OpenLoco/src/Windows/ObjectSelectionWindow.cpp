@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     struct TabObjectEntry
     {
         ObjectManager::ObjectIndexId index;
-        ObjectManager::ObjectIndexEntry object;
+        ObjectManager::ObjectIndexEntry2 object;
         Visibility display;
     };
 
@@ -348,14 +348,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static std::optional<VehicleType> getVehicleTypeFromObject(TabObjectEntry& entry)
     {
-        auto* displayData = entry.object._displayData;
-        if (displayData == nullptr || displayData->vehicleSubType == 0xFF)
+        auto& displayData = entry.object._displayData;
+        if (displayData.vehicleSubType == 0xFF)
         {
-            Logging::info("Could not load determine vehicle type for object '{}', skipping", entry.object._header->getName());
+            Logging::info("Could not load determine vehicle type for object '{}', skipping", entry.object._header.getName());
             return std::nullopt;
         }
 
-        return static_cast<VehicleType>(displayData->vehicleSubType);
+        return static_cast<VehicleType>(displayData.vehicleSubType);
     }
 
     static void applyFilterToObjectList(FilterFlags filterFlags)
@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto& entry : _tabObjectList)
         {
             // Apply vanilla/custom object filters
-            const bool isVanillaObj = entry.object._header->isVanilla();
+            const bool isVanillaObj = entry.object._header.isVanilla();
             if (isVanillaObj && (filterFlags & FilterFlags::vanilla) == FilterFlags::none)
             {
                 entry.display = Visibility::hidden;
@@ -413,7 +413,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         const auto objects = ObjectManager::getAvailableObjects(objectType);
         _tabObjectList.reserve(objects.size());
-        for (auto [index, object] : objects)
+        for (auto& [index, object] : objects)
         {
             auto entry = TabObjectEntry{ index, object, Visibility::shown };
             _tabObjectList.emplace_back(std::move(entry));
@@ -439,7 +439,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return { static_cast<int16_t>(_tabObjectList[0].index), _tabObjectList[0].object };
         }
 
-        return { -1, ObjectManager::ObjectIndexEntry{} };
+        return { -1, ObjectManager::ObjectIndexEntry2{} };
     }
 
     static const WindowEventList& getEvents();
@@ -475,8 +475,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (objIndex.index != -1)
         {
             window->rowHover = objIndex.index;
-            window->object = reinterpret_cast<std::byte*>(objIndex.object._header);
-            ObjectManager::loadTemporaryObject(*objIndex.object._header);
+            window->object = reinterpret_cast<std::byte*>(&objIndex.object._header);
+            ObjectManager::loadTemporaryObject(objIndex.object._header);
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473579
-    static void drawPreviewImage(ObjectHeader* header, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object* objectPtr)
+    static void drawPreviewImage(const ObjectHeader* header, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object* objectPtr)
     {
         auto type = header->getType();
 
@@ -779,7 +779,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         object->drawDescription(drawingCtx, x, y, width);
     }
 
-    static void drawDescription(ObjectHeader* header, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object* objectPtr)
+    static void drawDescription(const ObjectHeader* header, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object* objectPtr)
     {
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
@@ -834,7 +834,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         drawingCtx.popRenderTarget();
     }
 
-    static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
+    static void drawDatDetails(const ObjectManager::ObjectIndexEntry2& indexEntry, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
     {
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
@@ -851,7 +851,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         {
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-            strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename) + 1);
+            strncpy(buffer, indexEntry._filename.c_str(), indexEntry._filename.length() + 1);
 
             FormatArguments args{};
             args.push<StringId>(StringIds::buffer_1250);
@@ -930,9 +930,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         bool doDefault = true;
         if (self.object != nullptr)
         {
-            auto objectPtr = self.object;
-            auto var = ObjectManager::ObjectIndexEntry::read(&objectPtr)._header;
-            if (var->getType() != ObjectType::townNames && var->getType() != ObjectType::climate)
+            auto* objectPtr = &ObjectManager::getObjectInIndex(self.rowHover)._header;
+            if (objectPtr->getType() != ObjectType::townNames && objectPtr->getType() != ObjectType::climate)
             {
                 doDefault = false;
             }
@@ -976,10 +975,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         {
-            auto objectPtr = self.object;
+            auto* objectPtr = &ObjectManager::getObjectInIndex(self.rowHover)._header;
 
             drawPreviewImage(
-                ObjectManager::ObjectIndexEntry::read(&objectPtr)._header,
+                objectPtr,
                 drawingCtx,
                 widgets[widx::objectImage].midX() + 1 + self.x,
                 widgets[widx::objectImage].midY() + 1 + self.y,
@@ -994,19 +993,18 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
             *buffer++ = ControlCodes::windowColour2;
-            auto objectPtr = self.object;
 
-            strncpy(buffer, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name, 510);
+            strncpy(buffer, ObjectManager::getObjectInIndex(self.rowHover)._name.c_str(), 510);
 
             auto point = Point(x, y);
             tr.drawStringCentredClipped(point, width, Colour::black, StringIds::buffer_2039);
         }
 
         {
-            auto objectPtr = self.object;
+            auto* objectPtr = &ObjectManager::getObjectInIndex(self.rowHover)._header;
 
             drawDescription(
-                ObjectManager::ObjectIndexEntry::read(&objectPtr)._header,
+                objectPtr,
                 &self,
                 drawingCtx,
                 self.widgets[widx::scrollview].right + self.x + 4,
@@ -1015,10 +1013,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         {
-            auto objectPtr = self.object;
-
             drawDatDetails(
-                ObjectManager::ObjectIndexEntry::read(&objectPtr),
+                ObjectManager::getObjectInIndex(self.rowHover),
                 &self,
                 drawingCtx,
                 self.widgets[widx::scrollview].right + self.x + 4,
@@ -1063,7 +1059,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto objectPtr = self.object;
             if (objectPtr != nullptr)
             {
-                auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
+                auto& windowObjectName = ObjectManager::getObjectInIndex(self.rowHover)._name;
                 if (entry.object._name == windowObjectName)
                 {
                     drawingCtx.fillRect(0, y, self.width, y + kRowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
@@ -1097,7 +1093,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             char buffer[512]{};
             buffer[0] = textColour;
-            strncpy(&buffer[1], entry.object._name, 510);
+            strncpy(&buffer[1], entry.object._name.c_str(), 510);
             tr.setCurrentFont(Gfx::Font::medium_bold);
 
             auto point = Point(15, y);
@@ -1190,9 +1186,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (objIndex.index != -1)
                 {
                     w->rowHover = objIndex.index;
-                    w->object = reinterpret_cast<std::byte*>(objIndex.object._header);
+                    w->object = reinterpret_cast<std::byte*>(&objIndex.object._header);
 
-                    ObjectManager::loadTemporaryObject(*objIndex.object._header);
+                    ObjectManager::loadTemporaryObject(objIndex.object._header);
                 }
             }
             return false;
@@ -1220,9 +1216,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (objIndex.index != -1)
         {
             self.rowHover = objIndex.index;
-            self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
+            self.object = reinterpret_cast<std::byte*>(&objIndex.object._header);
 
-            ObjectManager::loadTemporaryObject(*objIndex.object._header);
+            ObjectManager::loadTemporaryObject(objIndex.object._header);
         }
 
         applyFilterToObjectList(FilterFlags(self.var_858));
@@ -1412,7 +1408,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
         }
 
-        return { -1, ObjectManager::ObjectIndexEntry{} };
+        return { -1, ObjectManager::ObjectIndexEntry2{} };
     }
 
     // 0x0047390A
@@ -1424,12 +1420,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         self.rowHover = objIndex.index;
-        self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
+        self.object = reinterpret_cast<std::byte*>(&objIndex.object._header);
         ObjectManager::freeTemporaryObject();
 
         if (objIndex.index != -1)
         {
-            ObjectManager::loadTemporaryObject(*objIndex.object._header);
+            ObjectManager::loadTemporaryObject(objIndex.object._header);
         }
 
         self.invalidate();
@@ -1448,7 +1444,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, Input::getMouseLocation().x);
 
-        auto type = objIndex.object._header->getType();
+        auto type = objIndex.object._header.getType();
 
         const auto selectionFlags = getSelectedObjectFlags();
         if (ObjectManager::getMaxObjects(type) == 1)
@@ -1462,7 +1458,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     ObjectManager::ObjectSelectionMeta meta{};
                     std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
                     meta.numImages = _112C209;
-                    ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldObject._header, selectionFlags, meta);
+                    ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldObject._header, selectionFlags, meta);
                     std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
                     _112C209 = meta.numImages;
                 }
@@ -1479,7 +1475,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         ObjectManager::ObjectSelectionMeta meta{};
         std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
         meta.numImages = _112C209;
-        bool success = ObjectManager::selectObjectFromIndex(mode, *object, selectionFlags, meta);
+        bool success = ObjectManager::selectObjectFromIndex(mode, object, selectionFlags, meta);
         std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
         _112C209 = meta.numImages;
 

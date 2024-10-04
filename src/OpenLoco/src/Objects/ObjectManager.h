@@ -157,6 +157,7 @@ namespace OpenLoco::ObjectManager
     {
         ObjectHeader2 fileSizeHeader;
         ObjectHeader3 displayData;
+        DependentObjects dependentObjects;
     };
 
     void freeTemporaryObject();

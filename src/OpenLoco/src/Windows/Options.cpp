@@ -1625,7 +1625,7 @@ namespace OpenLoco::Ui::Windows::Options
             for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
-                Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
+                Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name.c_str());
 
                 if ((selectedObjectFlags[object.first] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
                 {
@@ -1655,10 +1655,10 @@ namespace OpenLoco::Ui::Windows::Options
 
                     if (ebp.index != -1)
                     {
-                        ObjectManager::unload(*ebp.object._header);
+                        ObjectManager::unload(ebp.object._header);
                     }
 
-                    ObjectManager::load(*object.second._header);
+                    ObjectManager::load(object.second._header);
                     ObjectManager::reloadAll();
                     Gfx::loadCurrency();
                     ObjectManager::markOnlyLoadedObjects(selectedObjectFlags);
@@ -1680,7 +1680,7 @@ namespace OpenLoco::Ui::Windows::Options
             for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
-                Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
+                Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name.c_str());
 
                 // TODO: Mark current value as selected
             }
@@ -1703,7 +1703,7 @@ namespace OpenLoco::Ui::Windows::Options
                 if (index == ax)
                 {
                     auto& cfg = OpenLoco::Config::get();
-                    cfg.preferredCurrency = *object.second._header;
+                    cfg.preferredCurrency = object.second._header;
 
                     setPreferredCurrencyNameBuffer();
                     Config::write();
@@ -2768,7 +2768,7 @@ namespace OpenLoco::Ui::Windows::Options
         if (res.has_value())
         {
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::preferred_currency_buffer));
-            strcpy(buffer, res->_name);
+            strcpy(buffer, res->_name.c_str());
         }
     }
 

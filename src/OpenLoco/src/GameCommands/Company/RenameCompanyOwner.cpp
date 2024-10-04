@@ -168,7 +168,7 @@ namespace OpenLoco::GameCommands
 
             if (strcmpSpecial(companyName, objectName.c_str()))
             {
-                foundInstalledObject = *object.second._header;
+                foundInstalledObject = object.second._header;
                 break;
             }
         }

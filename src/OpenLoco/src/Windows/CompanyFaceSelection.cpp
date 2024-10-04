@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     struct ObjectRow
     {
-        ObjectManager::ObjectIndexEntry object;
+        ObjectManager::ObjectIndexEntry2 object;
         int16_t rowIndex;
     };
     static ObjectRow getObjectFromSelection(const int16_t& y)
@@ -155,14 +155,15 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
         if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
         {
-            return { ObjectManager::ObjectIndexEntry{}, -1 };
+            return { ObjectManager::ObjectIndexEntry2{}, -1 };
         }
 
         if (isInUseCompetitor(objects[rowIndex].first))
         {
-            return { ObjectManager::ObjectIndexEntry{}, -1 };
+            return { ObjectManager::ObjectIndexEntry2{}, -1 };
         }
 
+        // TODO: THIS IS BROKEN
         return { objects[rowIndex].second, rowIndex };
     }
 
@@ -186,7 +187,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
             GameCommands::ChangeCompanyFaceArgs args{};
             args.companyId = self.owner;
-            args.objHeader = *objRow.object._header;
+            args.objHeader = objRow.object._header;
 
             const auto result = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
             if (result)
@@ -197,7 +198,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         else if (_callingWindowType == WindowType::options)
         {
             auto& config = Config::get();
-            config.preferredOwnerFace = *objRow.object._header;
+            config.preferredOwnerFace = objRow.object._header;
             Config::write();
 
             WindowManager::close(&self);
@@ -217,8 +218,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
         if (objRow.rowIndex != -1)
         {
-            self.object = reinterpret_cast<std::byte*>(objRow.object._header);
-            ObjectManager::loadTemporaryObject(*objRow.object._header);
+            self.object = reinterpret_cast<std::byte*>(&objRow.object._header);
+            ObjectManager::loadTemporaryObject(objRow.object._header);
         }
         else
         {
@@ -282,8 +283,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto width = self.width - self.widgets[widx::scrollview].right - 6;
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *str++ = ControlCodes::windowColour2;
-            auto objectPtr = self.object;
-            strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
+            strcpy(str, ObjectManager::getObjectInIndex(self.rowHover)._name.c_str());
 
             tr.drawStringCentredClipped(Point(x, y), width, Colour::black, StringIds::buffer_2039);
         }

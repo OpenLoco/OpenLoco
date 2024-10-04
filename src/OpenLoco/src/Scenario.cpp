@@ -501,17 +501,17 @@ namespace OpenLoco::Scenario
         const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
         if (oldCurrency.index != -1)
         {
-            if (*oldCurrency.object._header == preferredCurreny)
+            if (oldCurrency.object._header == preferredCurreny)
             {
                 ObjectManager::freeSelectionList();
                 return;
             }
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
         }
         if (!ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta))
         {
             // Failed so reselect the old currency and give up
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
             ObjectManager::freeSelectionList();
             return;
         }

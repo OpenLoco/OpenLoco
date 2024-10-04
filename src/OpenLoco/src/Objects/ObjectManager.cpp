@@ -461,24 +461,8 @@ namespace OpenLoco::ObjectManager
         _isPartialLoaded = true;
         _isTemporaryObject = 0xFF;
 
-        auto* depObjs = Interop::addr<0x0050D158, uint8_t*>();
         DependentObjects dependencies;
-        callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF) ? &dependencies : nullptr);
-
-        if (depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF))
-        {
-            *depObjs++ = static_cast<uint8_t>(dependencies.required.size());
-            if (!dependencies.required.empty())
-            {
-                std::copy(dependencies.required.begin(), dependencies.required.end(), reinterpret_cast<ObjectHeader*>(depObjs));
-                depObjs += sizeof(ObjectHeader) * dependencies.required.size();
-            }
-            *depObjs++ = static_cast<uint8_t>(dependencies.willLoad.size());
-            if (!dependencies.willLoad.empty())
-            {
-                std::copy(dependencies.willLoad.begin(), dependencies.willLoad.end(), reinterpret_cast<ObjectHeader*>(depObjs));
-            }
-        }
+        callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, &dependencies);
 
         _isTemporaryObject = 0;
         _isPartialLoaded = false;
@@ -489,6 +473,7 @@ namespace OpenLoco::ObjectManager
         TempLoadMetaData result{};
         result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
         result.displayData.numImages = _numImages;
+        result.dependentObjects = dependencies;
 
         if (header.getType() == ObjectType::competitor)
         {
