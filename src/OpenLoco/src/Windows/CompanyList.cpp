@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         std::byte* yData[32];          // 0x0113DC8C
         uint32_t dataTypeSize;         // 0x0113DD0C
         uint16_t dataStart[32];        // 0x0113DD10
-        uint32_t linesToDraw;          // 0x0113DD50
+        uint32_t linesToExclude;       // 0x0113DD50
         PaletteIndex_t lineColour[32]; // 0x0113DD54
         uint16_t dataEnd;              // 0x0113DD74
         StringId xLabel;               // 0x0113DD76
@@ -701,7 +701,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 40;
             _graphSettings->yAxisLabelIncrement = 20;
-            _graphSettings->linesToDraw = 0;
+            _graphSettings->linesToExclude = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -794,7 +794,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 45;
             _graphSettings->yAxisLabelIncrement = 25;
-            _graphSettings->linesToDraw = 0;
+            _graphSettings->linesToExclude = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -887,7 +887,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 65;
             _graphSettings->yAxisLabelIncrement = 25;
-            _graphSettings->linesToDraw = 0;
+            _graphSettings->linesToExclude = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -980,7 +980,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 90;
             _graphSettings->yAxisLabelIncrement = 25;
-            _graphSettings->linesToDraw = 0;
+            _graphSettings->linesToExclude = 0;
 
             uint16_t maxHistorySize = 1;
 
@@ -1148,7 +1148,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 80;
             _graphSettings->yAxisLabelIncrement = 25;
-            _graphSettings->linesToDraw = 0;
+            _graphSettings->linesToExclude = 0;
 
             auto count = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
@@ -1191,8 +1191,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     i++;
                 }
 
-                // Draw all lines except hilighted data
-                _graphSettings->linesToDraw = 0xFFFFFFFF & ~(1 << i);
+                // Exclude all lines except hilighted data
+                _graphSettings->linesToExclude = 0xFFFFFFFF & ~(1 << i);
 
                 if (_word_9C68C7 & (1 << 2))
                     _graphSettings->lineColour[i] = 10;
@@ -1771,8 +1771,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
             }
 
-            printf("maxValue is now %lld\n", maxValue);
-
             return maxValue;
         }
 
@@ -2016,7 +2014,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 for (auto i = 0U; i < gs.lineCount; i++)
                 {
-                    if ((gs.linesToDraw & (1U << i)) == 0)
+                    if ((gs.linesToExclude & (1U << i)) != 0)
                     {
                         continue;
                     }
@@ -2083,7 +2081,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     i++;
                 }
 
-                _graphSettings->linesToDraw = 0xFFFFFFFF & ~(1 << i);
+                // Exclude all except hilighted data
+                _graphSettings->linesToExclude = 0xFFFFFFFF & ~(1 << i);
 
                 if (_word_9C68C7 & (1 << 2))
                     _graphSettings->lineColour[i] = 10;
