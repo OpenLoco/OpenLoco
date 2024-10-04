@@ -1724,44 +1724,55 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004CF869
         static int64_t graphGetMaxValue(const GraphSettings& gs)
         {
-            int64_t maxValue = 0; // eax
-            for (auto i = 0U; i < gs.lineCount; i++)
+            int64_t maxValue = 0;
+            for (auto lineIndex = 0U; lineIndex < gs.lineCount; lineIndex++)
             {
-                // esi
-                std::byte* dataEndPtr = gs.yData[i] + gs.dataEnd * gs.dataTypeSize;
-
-                // edi
-                std::byte* dataStartPtr = dataEndPtr - gs.dataStart[i] * gs.dataTypeSize;
-
-                while (dataStartPtr < dataEndPtr)
+                auto dataIndex = 0U;
+                std::byte* dataPtr = gs.yData[lineIndex];
+                if ((gs.flags & (1 << 1)) != 0)
                 {
-                    if (gs.flags & (1 << 1))
+                    dataIndex = gs.dataStart[lineIndex];
+                    dataPtr = &dataPtr[gs.dataTypeSize * (gs.dataEnd - dataIndex)];
+                }
+
+                while (dataIndex < gs.dataEnd)
+                {
+                    // Data front-to-back?
+                    // NB: all charts except cargo delivery
+                    if ((gs.flags & (1 << 1)) != 0)
                     {
-                        dataEndPtr -= gs.dataTypeSize;
+                        dataPtr -= gs.dataTypeSize;
                     }
 
+                    int64_t value{};
                     switch (gs.dataTypeSize)
                     {
                         case 2:
-                            maxValue = std::max<int64_t>(maxValue, std::abs(*reinterpret_cast<int16_t*>(dataStartPtr)));
+                            value = std::abs(*reinterpret_cast<int16_t*>(dataPtr));
                             break;
 
                         case 4:
-                            maxValue = std::max<int64_t>(maxValue, std::abs(*reinterpret_cast<int32_t*>(dataStartPtr)));
+                            value = std::abs(*reinterpret_cast<int32_t*>(dataPtr));
                             break;
 
                         case 6:
-                            maxValue = std::max<int64_t>(maxValue, std::abs(reinterpret_cast<currency48_t*>(dataStartPtr)->asInt64()));
+                            value = std::abs(reinterpret_cast<currency48_t*>(dataPtr)->asInt64());
                             break;
                     }
 
-                    dataStartPtr += gs.dataTypeSize;
-                    if (gs.flags & (1 << 1))
+                    maxValue = std::max(maxValue, value);
+                    dataIndex++;
+
+                    // Data back-to-front?
+                    // NB: for cargo delivery chart
+                    if ((gs.flags & (1 << 1)) == 0)
                     {
-                        dataEndPtr += gs.dataTypeSize;
+                        dataPtr += gs.dataTypeSize;
                     }
                 }
             }
+
+            printf("maxValue is now %lld\n", maxValue);
 
             return maxValue;
         }
