@@ -403,8 +403,17 @@ namespace OpenLoco::ObjectManager
         }
 
         // Vanilla would branch and perform more efficient readChunk if size was known from installedObject.ObjectHeader2
-        auto data = stream.readChunk();
-
+        std::span<const std::byte> data;
+        try
+        {
+            data = stream.readChunk();
+        }
+        catch (const Exception::RuntimeError&)
+        {
+            // Something wrong has happened and installed object checksum is broken
+            Logging::error("Data could not be read!");
+            return std::nullopt;
+        }
         if (!computeObjectChecksum(preLoadObj.header, data))
         {
             // Something wrong has happened and installed object checksum is broken
