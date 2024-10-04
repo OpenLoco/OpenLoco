@@ -39,8 +39,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         uint16_t left;                 // 0x0113DC7A
         uint16_t top;                  // 0x0113DC7C
-        uint16_t right;                // 0x0113DC7E // width!
-        uint16_t bottom;               // 0x0113DC80
+        uint16_t width;                // 0x0113DC7E
+        uint16_t height;               // 0x0113DC80
         uint16_t yOffset;              // 0x0113DC82
         uint16_t xOffset;              // 0x0113DC84
         uint32_t yAxisLabelIncrement;  // 0x0113DC86
@@ -697,8 +697,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings->left = self.x + 4;
             _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings->right = 520;
-            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings->width = 520;
+            _graphSettings->height = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 40;
             _graphSettings->yAxisLabelIncrement = 20;
@@ -790,8 +790,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings->left = self.x + 4;
             _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings->right = 525;
-            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings->width = 525;
+            _graphSettings->height = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 45;
             _graphSettings->yAxisLabelIncrement = 25;
@@ -883,8 +883,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings->left = self.x + 4;
             _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings->right = 545;
-            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings->width = 545;
+            _graphSettings->height = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 65;
             _graphSettings->yAxisLabelIncrement = 25;
@@ -976,8 +976,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings->left = self.x + 4;
             _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings->right = 570;
-            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings->width = 570;
+            _graphSettings->height = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 90;
             _graphSettings->yAxisLabelIncrement = 25;
@@ -1144,8 +1144,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings->left = self.x + 4;
             _graphSettings->top = self.y + self.widgets[Common::widx::panel].top + 14;
-            _graphSettings->right = 380;
-            _graphSettings->bottom = self.height - self.widgets[Common::widx::panel].top - 28;
+            _graphSettings->width = 380;
+            _graphSettings->height = self.height - self.widgets[Common::widx::panel].top - 28;
             _graphSettings->yOffset = 17;
             _graphSettings->xOffset = 80;
             _graphSettings->yAxisLabelIncrement = 25;
@@ -1806,7 +1806,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (remainder == 0)
                 {
                     int16_t xPos = ecx * gs.word_113DD80 + gs.left + gs.xOffset;
-                    int16_t yPos = gs.top + gs.bottom - gs.yOffset + 5;
+                    int16_t yPos = gs.top + gs.height - gs.yOffset + 5;
 
                     auto tr = Gfx::TextRenderer(drawingCtx);
                     auto formatArgs = FormatArguments{};
@@ -1832,7 +1832,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto paletteIndex = Colours::getShade(colour, 6);
 
                     auto xPos = gs.left + gs.xOffset - 2;
-                    auto width = gs.right - gs.xOffset + 3;
+                    auto width = gs.width - gs.xOffset + 3;
                     auto yPos = -edx + gs.canvasHeight + gs.top;
                     if (gs.flags & (1 << 0)) // never set
                     {
@@ -1921,7 +1921,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 value >>= gs.numValueShifts;
 
                 auto xPos = gs.canvasLeft + dataIndex * gs.word_113DD80;
-                auto yPos = -value + gs.bottom - gs.yOffset;
+                auto yPos = -value + gs.height - gs.yOffset;
 
                 if (gs.flags & (1 << 0)) // unused?
                 {
@@ -1974,10 +1974,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto& gs = *_graphSettings;
 
             gs.canvasLeft = gs.xOffset + gs.left;
-            gs.canvasHeight = gs.bottom - gs.yOffset;
+            gs.canvasHeight = gs.height - gs.yOffset;
 
             // TODO: unused? remove?
-            gs.word_113DD94 = gs.top + gs.bottom - gs.yOffset;
+            gs.word_113DD94 = gs.top + gs.height - gs.yOffset;
 
             int64_t maxValue = graphGetMaxValue(gs);
 
