@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         uint16_t left;                 // 0x0113DC7A
         uint16_t top;                  // 0x0113DC7C
-        uint16_t right;                // 0x0113DC7E
+        uint16_t right;                // 0x0113DC7E // width!
         uint16_t bottom;               // 0x0113DC80
         uint16_t yOffset;              // 0x0113DC82
         uint16_t xOffset;              // 0x0113DC84
@@ -51,12 +51,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         uint32_t linesToDraw;          // 0x0113DD50
         PaletteIndex_t lineColour[32]; // 0x0113DD54
         uint16_t dataEnd;              // 0x0113DD74
-        uint16_t xLabel;               // 0x0113DD76
+        StringId xLabel;               // 0x0113DD76
         uint32_t xAxisRange;           // 0x0113DD78
-        uint32_t dword_113DD7C;        // 0x0113DD7C
+        uint32_t dword_113DD7C;        // 0x0113DD7C -- value is 1 or 2
         uint16_t word_113DD80;         // 0x0113DD80 -- graphXAxisIncrement?
         uint16_t xAxisLabelIncrement;  // 0x0113DD82
-        uint16_t yLabel;               // 0x0113DD84
+        StringId yLabel;               // 0x0113DD84
         uint32_t dword_113DD86;        // 0x0113DD86
         uint32_t dword_113DD8A;        // 0x0113DD8A
         uint32_t flags;                // 0x0113DD8E
@@ -1767,8 +1767,108 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004CFA49
-        static void graphDrawLegendInteraction(const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
+        static void graphDrawAxesAndLabels(Window* self, const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
         {
+            auto eax = gs.xAxisRange;
+            if (gs.flags & (1 << 1))
+            {
+                eax -= (gs.dataEnd - 1) * gs.dword_113DD7C;
+            }
+            // eax expected at _common_format_args.bits+2
+
+            // 0x004CFA74
+            for (auto ecx = 0U; ecx < gs.dataEnd; ecx++)
+            {
+                // auto quotient = eax / gs.xAxisLabelIncrement;  // eax
+                auto remainder = eax % gs.xAxisLabelIncrement; // edx
+
+                // Draw vertical lines for each of the data points
+                {
+                    auto xPos = ecx * gs.word_113DD80 + gs.left + gs.xOffset;
+                    auto height = gs.canvasHeight + (remainder > 0 ? 3 : 0);
+
+                    auto colour = self->getColour(WindowColour::secondary).c();
+                    auto paletteIndex = Colours::getShade(colour, remainder == 0 ? 6 : 4);
+
+                    drawingCtx.drawRect(xPos, gs.top, 1, height, paletteIndex, Gfx::RectFlags::none);
+                }
+
+                // No remainder means we get to draw a label on the horizontal axis, too
+                if (remainder == 0)
+                {
+                    int16_t xPos = ecx * gs.word_113DD80 + gs.left + gs.xOffset;
+                    int16_t yPos = gs.top + gs.bottom - gs.yOffset + 5;
+
+                    auto tr = Gfx::TextRenderer(drawingCtx);
+                    auto formatArgs = FormatArguments{};
+                    formatArgs.push(StringIds::graph_label_format);
+                    formatArgs.push(eax);
+
+                    tr.drawStringLeft({ xPos, yPos }, Colour::black, gs.xLabel, formatArgs);
+                }
+
+                eax += gs.dword_113DD7C;
+            }
+
+            // 0x004CFB5C
+            auto edx = 0U;
+            while (true)
+            {
+                // TODO: can be moved down, around FormatArguments. Kept here for verification
+                int64_t ebx_eax = static_cast<int64_t>(edx) << gs.numValueShifts;
+
+                // Draw horizontal lines for each of the vertical axis labels
+                {
+                    auto colour = self->getColour(WindowColour::secondary).c();
+                    auto paletteIndex = Colours::getShade(colour, 6);
+
+                    auto xPos = gs.left + gs.xOffset - 2;
+                    auto width = gs.right;
+                    auto yPos = -edx + gs.canvasHeight + gs.top;
+                    if (gs.flags & (1 << 0)) // never set
+                    {
+                        yPos -= gs.canvasHeight / 2;
+                    }
+
+                    drawingCtx.drawRect(xPos, yPos, width, 1, paletteIndex, Gfx::RectFlags::none);
+                }
+
+                // Draw the value label as well
+                {
+                    int16_t xPos = gs.left + gs.xOffset - 3;
+                    // int16_t width = gs.xOffset - 3; // set but not used
+                    int16_t yPos = -edx + gs.canvasHeight + gs.top - 5;
+                    if (gs.flags & (1 << 0)) // never set
+                    {
+                        yPos -= gs.canvasHeight / 2;
+                    }
+
+                    auto tr = Gfx::TextRenderer(drawingCtx);
+                    auto formatArgs = FormatArguments{};
+                    formatArgs.push(gs.yLabel);
+                    formatArgs.push<currency48_t>(ebx_eax);
+
+                    tr.drawStringRight({ xPos, yPos }, Colour::black, StringIds::graph_label_format, formatArgs);
+                }
+
+                if (gs.flags & (1 << 0)) // never set
+                {
+                    // presumably draws negative numbers as well
+                }
+
+                // 0x004CFD36
+                edx += gs.yAxisLabelIncrement;
+                auto ebp = edx;
+                if (gs.flags & (1 << 0))
+                {
+                    ebp <<= 1;
+                }
+
+                if (ebp >= gs.canvasHeight)
+                    break;
+            }
+
+            // 0x004CFD59 after loop, which is back in drawGraph
         }
 
         static void drawGraphLineSegments(const uint8_t lineIndex, const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
@@ -1851,7 +1951,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004CF824
         static void drawGraph(Window* self, Gfx::DrawingContext& drawingCtx)
         {
-            const auto& rt = drawingCtx.currentRenderTarget();
             auto& gs = *_graphSettings;
 
             gs.canvasLeft = gs.xOffset + gs.left;
@@ -1877,7 +1976,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             if (!(gs.flags & (1 << 2)))
             {
-                graphDrawLegendInteraction(gs, drawingCtx);
+                graphDrawAxesAndLabels(self, gs, drawingCtx);
             }
 
             // 0x004CFD59
