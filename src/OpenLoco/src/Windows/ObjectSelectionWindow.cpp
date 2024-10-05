@@ -1059,8 +1059,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto objectPtr = self.object;
             if (objectPtr != nullptr)
             {
-                auto& windowObjectName = ObjectManager::getObjectInIndex(self.rowHover)._name;
-                if (entry.object._name == windowObjectName)
+                auto& hoverObject = ObjectManager::getObjectInIndex(self.rowHover)._header;
+                if (entry.object._header == hoverObject)
                 {
                     drawingCtx.fillRect(0, y, self.width, y + kRowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                     textColour = ControlCodes::windowColour2;

@@ -163,8 +163,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             return { ObjectManager::ObjectIndexEntry2{}, -1 };
         }
 
-        // TODO: THIS IS BROKEN
-        return { objects[rowIndex].second, rowIndex };
+        return { objects[rowIndex].second, static_cast<int16_t>(objects[rowIndex].first) };
     }
 
     // 0x00435314
@@ -316,7 +315,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 break;
             }
 
-            if (index == self.rowHover)
+            if (static_cast<int16_t>(object.first) == self.rowHover)
             {
                 inlineColour = ControlCodes::windowColour2;
                 drawingCtx.fillRect(0, y, self.width, y + 9, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
