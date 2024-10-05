@@ -188,9 +188,16 @@ namespace OpenLoco
     enum class VehicleObjectFlags : uint16_t
     {
         none = 0U,
-        flag_02 = 1U << 2, // rollable? APT Passenger carriage
-        flag_03 = 1U << 3, // rollable? APT Driving carriage
+        alternateCarriageDirection = 1U << 0, // first carriage forwards, second carriage backwards, repeat for train
+        carriagePositionTopAndTail = 1U << 1, // If more than one carriage one must be tail
+        flag_02 = 1U << 2,                    // rollable? APT Passenger carriage
+        flag_03 = 1U << 3,                    // rollable? APT Driving carriage
+        flag_04 = 1U << 4,
+        carriagePositionCentered = 1U << 5,
         rackRail = 1U << 6,
+        // Alternates between sprite 0 and sprite 1 for each carriage of this type in a train
+        // NOTE: This is for carriages and not carriage components (which can also do similar)
+        alternateCarriageSprite = 1U << 7,
         unk_08 = 1U << 8,
         unk_09 = 1U << 9, // anytrack??
         speedControl = 1U << 10,

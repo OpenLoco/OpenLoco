@@ -594,7 +594,7 @@ namespace OpenLoco::GameCommands
     // 0x004AE6DE
     static void updateWholeVehicle(VehicleHead* const head)
     {
-        head->sub_4AF7A4();
+        head->autoLayoutTrain();
         auto company = CompanyManager::get(_updatingCompanyId);
         company->recalculateTransportCounts();
 
