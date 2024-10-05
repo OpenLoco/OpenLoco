@@ -123,7 +123,7 @@ namespace OpenLoco::ObjectManager
         return false;
     }
 
-    static void saveIndex(const IndexHeader& )
+    static void saveIndex(const IndexHeader&)
     {
         // Core::Timer saveTimer;
 
@@ -241,6 +241,12 @@ namespace OpenLoco::ObjectManager
 
         freeTemporaryObject();
 
+        auto duplicate = std::find_if(_installedObjectList2.begin(), _installedObjectList2.end(), [&newEntry](auto& entry) { return newEntry._header == entry._header; });
+        if (duplicate != _installedObjectList2.end())
+        {
+            Logging::error("Duplicate object found {}, {} won't be added to index", duplicate->_filename, newEntry._filename);
+            return;
+        }
         _installedObjectList2.push_back(newEntry); // Previously ordered by name...
 
         _installedObjectCount++;
@@ -349,9 +355,9 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        //reloadAll();
+        // reloadAll();
 
-        //return true;
+        // return true;
     }
 
     // 0x00470F3C
@@ -660,9 +666,9 @@ namespace OpenLoco::ObjectManager
         return selectObjectFromIndexInternal(mode, false, objHeader, objectFlags, selectionMetaData);
     }
 
-    //ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
+    // ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
     //{
-    //    ObjectIndexEntry entry{};
+    //     ObjectIndexEntry entry{};
 
     //    entry._header = (ObjectHeader*)*ptr;
     //    *ptr += sizeof(ObjectHeader);
