@@ -43,11 +43,9 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::ObjectManager
 {
-    static std::vector<ObjectIndexEntry2> _installedObjectList2;
+    // Was previously 0x0050D13C count was in 0x0112A110
+    static std::vector<ObjectIndexEntry2> _installedObjectList;
 
-    // 0x0050D13C
-    static std::byte* _installedObjectList;
-    static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
     static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
     static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
@@ -113,7 +111,7 @@ namespace OpenLoco::ObjectManager
     // 0x00471712
     static bool hasCustomObjectsInIndex()
     {
-        for (auto& obj : _installedObjectList2)
+        for (auto& obj : _installedObjectList)
         {
             if (obj._header.isCustom())
             {
@@ -220,14 +218,12 @@ namespace OpenLoco::ObjectManager
         }
 
         const auto partialNewEntry = createPartialNewEntry(objHeader, filepath);
-        _installedObjectList2.push_back(partialNewEntry);
-        _installedObjectCount++;
+        _installedObjectList.push_back(partialNewEntry);
 
         _isPartialLoaded = true;
         const auto loadResult = loadTemporaryObject(objHeader);
         _isPartialLoaded = false;
-        _installedObjectList2.erase(_installedObjectList2.begin() + _installedObjectList2.size() - 1);
-        _installedObjectCount--;
+        _installedObjectList.erase(_installedObjectList.begin() + _installedObjectList.size() - 1);
 
         if (!loadResult.has_value())
         {
@@ -241,15 +237,13 @@ namespace OpenLoco::ObjectManager
 
         freeTemporaryObject();
 
-        auto duplicate = std::find_if(_installedObjectList2.begin(), _installedObjectList2.end(), [&newEntry](auto& entry) { return newEntry._header == entry._header; });
-        if (duplicate != _installedObjectList2.end())
+        auto duplicate = std::find_if(_installedObjectList.begin(), _installedObjectList.end(), [&newEntry](auto& entry) { return newEntry._header == entry._header; });
+        if (duplicate != _installedObjectList.end())
         {
             Logging::error("Duplicate object found {}, {} won't be added to index", duplicate->_filename, newEntry._filename);
             return;
         }
-        _installedObjectList2.push_back(newEntry); // Previously ordered by name...
-
-        _installedObjectCount++;
+        _installedObjectList.push_back(newEntry); // Previously ordered by name...
     }
 
     // 0x0047118B
@@ -261,9 +255,8 @@ namespace OpenLoco::ObjectManager
 
         // Reset
         reloadAll();
-        _installedObjectList2.clear();
+        _installedObjectList.clear();
 
-        _installedObjectCount = 0;
         // Create new index by iterating all DAT files and processing
         IndexHeader header{};
         uint8_t progress = 0; // Progress is used for the ProgressBar Ui element
@@ -296,7 +289,7 @@ namespace OpenLoco::ObjectManager
         // New index creation completed. Reset and save result.
         reloadAll();
         header.fileSize = 0;
-        header.numObjects = _installedObjectCount;
+        header.numObjects = _installedObjectList.size();
         header.state = currentState;
         saveIndex(header);
 
@@ -376,18 +369,18 @@ namespace OpenLoco::ObjectManager
 
     uint32_t getNumInstalledObjects()
     {
-        return *_installedObjectCount;
+        return _installedObjectList.size();
     }
 
     std::vector<std::pair<ObjectIndexId, ObjectIndexEntry2>> getAvailableObjects(ObjectType type)
     {
         std::vector<std::pair<ObjectIndexId, ObjectIndexEntry2>> list;
 
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
         {
-            if (_installedObjectList2[i]._header.getType() == type)
+            if (_installedObjectList[i]._header.getType() == type)
             {
-                list.push_back(std::make_pair(i, _installedObjectList2[i]));
+                list.push_back(std::make_pair(i, _installedObjectList[i]));
             }
         }
 
@@ -417,7 +410,7 @@ namespace OpenLoco::ObjectManager
 
     const ObjectIndexEntry2& getObjectInIndex(ObjectIndexId index)
     {
-        return _installedObjectList2[index];
+        return _installedObjectList[index];
     }
 
     bool isObjectInstalled(const ObjectHeader& objectHeader)
@@ -466,9 +459,9 @@ namespace OpenLoco::ObjectManager
             val &= ~SelectedObjectsFlags::requiredByAnother;
         }
 
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
         {
-            auto& entry = _installedObjectList2[i];
+            auto& entry = _installedObjectList[i];
             if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
             {
                 continue;
@@ -487,9 +480,9 @@ namespace OpenLoco::ObjectManager
         std::fill(std::begin(selectionMetaData.numSelectedObjects), std::end(selectionMetaData.numSelectedObjects), 0U);
 
         uint32_t totalNumImages = 0;
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
         {
-            auto& entry = _installedObjectList2[i];
+            auto& entry = _installedObjectList[i];
             if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
             {
                 continue;
@@ -881,11 +874,11 @@ namespace OpenLoco::ObjectManager
 
     static void applyLoadedObjectMarkToIndex(std::span<SelectedObjectsFlags> objectFlags, const std::array<std::span<uint8_t>, kMaxObjectTypes>& loadedObjectFlags)
     {
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
         {
             objectFlags[i] &= ~(SelectedObjectsFlags::inUse | SelectedObjectsFlags::selected);
 
-            auto entry = _installedObjectList2[i];
+            auto entry = _installedObjectList[i];
 
             auto objHandle = findObjectHandle(entry._header);
             if (!objHandle.has_value())
@@ -963,15 +956,15 @@ namespace OpenLoco::ObjectManager
             return;
         }
 
-        SelectedObjectsFlags* selectFlags = new SelectedObjectsFlags[_installedObjectCount]{};
+        SelectedObjectsFlags* selectFlags = new SelectedObjectsFlags[_installedObjectList.size()]{};
         _50D144 = selectFlags;
-        std::span<SelectedObjectsFlags> objectFlags{ selectFlags, _installedObjectCount };
+        std::span<SelectedObjectsFlags> objectFlags{ selectFlags, _installedObjectList.size() };
         // throw on nullptr?
 
         _objectSelectionMeta = ObjectSelectionMeta{};
         _numObjectsPerType = std::array<uint16_t, kMaxObjectTypes>{};
 
-        for (auto& entry : _installedObjectList2)
+        for (auto& entry : _installedObjectList)
         {
             (*_numObjectsPerType)[enumValue(entry._header.getType())]++;
         }
@@ -1053,9 +1046,9 @@ namespace OpenLoco::ObjectManager
 
     static bool validateObjectTypeSelection(std::span<SelectedObjectsFlags> objectFlags, const ObjectType type, auto&& predicate)
     {
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
         {
-            auto entry = _installedObjectList2[i];
+            auto& entry = _installedObjectList[i];
             if (((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
                 && type == entry._header.getType()
                 && predicate(entry))
