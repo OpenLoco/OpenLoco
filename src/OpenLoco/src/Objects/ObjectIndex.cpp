@@ -121,22 +121,112 @@ namespace OpenLoco::ObjectManager
         return false;
     }
 
-    static void saveIndex(const IndexHeader&)
+    static void serialiseEntry(Stream& stream, const ObjectIndexEntry2& entry)
     {
-        // Core::Timer saveTimer;
+        // Header
+        stream.writeValue(entry._header);
 
-        // FileStream stream;
-        // const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
-        // stream.open(indexPath, StreamMode::write);
-        // if (!stream.isOpen())
-        //{
-        //     Logging::error("Unable to save object index.");
-        //     return;
-        // }
-        // stream.writeValue(header);
-        // stream.write(_installedObjectList, header.fileSize);
+        // Filepath
+        stream.writeValue<uint32_t>(entry._filename.size());
+        stream.write(entry._filename.data(), entry._filename.size());
 
-        // Logging::verbose("Saved object index in {} milliseconds.", saveTimer.elapsed());
+        // Header2
+        stream.writeValue(entry._header2.decodedFileSize);
+
+        // Name NULL
+        stream.writeValue<uint32_t>(entry._name.size());
+        stream.write(entry._name.data(), entry._name.size());
+
+        // Header3 NULL
+        stream.write(&entry._displayData, sizeof(entry._displayData));
+
+        // ObjectList1
+        stream.writeValue<uint32_t>(entry._alsoLoadObjects.size());
+        for (auto& alo : entry._alsoLoadObjects)
+        {
+            stream.writeValue(alo);
+        }
+
+        // ObjectList2
+        stream.writeValue<uint32_t>(entry._requiredObjects.size());
+        for (auto& ro : entry._requiredObjects)
+        {
+            stream.writeValue(ro);
+        }
+    }
+
+    static void serialiseIndex(Stream& stream, const IndexHeader& header, const std::vector<ObjectIndexEntry2>& entries)
+    {
+        stream.writeValue(header);
+        stream.writeValue<uint32_t>(entries.size());
+        for (auto& entry : entries)
+        {
+            serialiseEntry(stream, entry);
+        }
+    }
+
+    static ObjectIndexEntry2 deserialiseEntry(Stream& stream)
+    {
+        ObjectIndexEntry2 entry{};
+        // Header
+        entry._header = stream.readValue<ObjectHeader>();
+
+        // Filepath
+        entry._filename.resize(stream.readValue<uint32_t>());
+        stream.read(entry._filename.data(), entry._filename.size());
+
+        // Header2
+        entry._header2.decodedFileSize = stream.readValue<uint32_t>();
+
+        // Name
+        entry._name.resize(stream.readValue<uint32_t>());
+        stream.read(entry._name.data(), entry._name.size());
+
+        // Header3
+        entry._displayData = stream.readValue<ObjectHeader3>();
+
+        // ObjectList1
+        entry._alsoLoadObjects.resize(stream.readValue<uint32_t>());
+        for (auto& alo : entry._alsoLoadObjects)
+        {
+            alo = stream.readValue<ObjectHeader>();
+        }
+
+        // ObjectList2
+        entry._requiredObjects.resize(stream.readValue<uint32_t>());
+        for (auto& alo : entry._requiredObjects)
+        {
+            alo = stream.readValue<ObjectHeader>();
+        }
+        return entry;
+    }
+
+    static std::vector<ObjectIndexEntry2> deserialiseIndex(Stream& stream)
+    {
+        std::vector<ObjectIndexEntry2> entries;
+        entries.resize(stream.readValue<uint32_t>());
+        for (auto& entry : entries)
+        {
+            entry = deserialiseEntry(stream);
+        }
+        return entries;
+    }
+
+    static void saveIndex(const IndexHeader& header)
+    {
+        Core::Timer saveTimer;
+
+        FileStream stream;
+        const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
+        stream.open(indexPath, StreamMode::write);
+        if (!stream.isOpen())
+        {
+            Logging::error("Unable to save object index.");
+            return;
+        }
+        serialiseIndex(stream, header, _installedObjectList);
+
+        Logging::verbose("Saved object index in {} milliseconds.", saveTimer.elapsed());
     }
 
     static ObjectIndexEntry2 createPartialNewEntry(const ObjectHeader& objHeader, const fs::path filepath)
@@ -320,26 +410,16 @@ namespace OpenLoco::ObjectManager
             auto header = stream.readValue<IndexHeader>();
             if (header.state != currentState)
             {
-                Logging::info("Object index out of date.");
                 return false;
             }
             else
             {
-                return false;
-                // if (_installedObjectList != nullptr)
-                //{
-                //     free(_installedObjectList);
-                // }
-                //_installedObjectList = static_cast<std::byte*>(malloc(header.fileSize));
-                // if (_installedObjectList == nullptr)
-                //{
-                //     exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
-                //     return false;
-                // }
-                // stream.read(_installedObjectList, header.fileSize);
-                //_installedObjectCount = header.numObjects;
-
-                // Logging::verbose("Loaded object index in {} milliseconds.", loadTimer.elapsed());
+                _installedObjectList = deserialiseIndex(stream);
+                if (_installedObjectList.empty())
+                {
+                    return false;
+                }
+                Logging::verbose("Loaded object index in {} milliseconds.", loadTimer.elapsed());
             }
         }
         catch (const std::runtime_error& ex)
@@ -348,9 +428,9 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        // reloadAll();
+        reloadAll();
 
-        // return true;
+        return true;
     }
 
     // 0x00470F3C
