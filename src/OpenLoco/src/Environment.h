@@ -60,9 +60,11 @@ namespace OpenLoco::Environment
         autosave,
         landscape,
         _1tmp,
-        objects,
+        vanillaObjects,
         scenarios,
         heightmap,
+        customObjects,
+        objects,
     };
 
     void autoCreateDirectory(const fs::path& path);

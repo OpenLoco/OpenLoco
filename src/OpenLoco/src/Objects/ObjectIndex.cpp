@@ -58,7 +58,6 @@ namespace OpenLoco::ObjectManager
 
     static constexpr uint8_t kCurrentIndexVersion = 4;
 
-#pragma pack(push, 1)
     struct ObjectFolderState
     {
         uint32_t numObjects = 0;
@@ -69,21 +68,36 @@ namespace OpenLoco::ObjectManager
             return (numObjects == rhs.numObjects) && (totalFileSize == rhs.totalFileSize) && (dateHash == rhs.dateHash);
         }
     };
-    static_assert(sizeof(ObjectFolderState) == 0xC);
+
+    struct ObjectFoldersState
+    {
+        ObjectFolderState vanillaInstall;
+        ObjectFolderState install;
+        ObjectFolderState customObjects;
+
+        constexpr bool operator==(const ObjectFoldersState& rhs) const
+        {
+            return (vanillaInstall == rhs.vanillaInstall) && (install == rhs.install) && (customObjects == rhs.customObjects);
+        }
+    };
+
     struct IndexHeader
     {
-        ObjectFolderState state;
+        uint32_t version;
+        ObjectFoldersState state;
         uint32_t fileSize;
         uint32_t numObjects; // duplicates ObjectFolderState.numObjects but without high 1 and includes corrupted .dat's
     };
-    static_assert(sizeof(IndexHeader) == 0x14);
-#pragma pack(pop)
 
     // 0x00470F3C
     static ObjectFolderState getCurrentObjectFolderState(fs::path path, bool shouldRecurse)
     {
-        ObjectFolderState currentState;
+        ObjectFolderState currentState{};
 
+        if (!fs::exists(path))
+        {
+            return currentState;
+        }
         auto func = [&currentState](const fs::directory_entry& file) {
             if (!file.is_regular_file())
             {
@@ -115,9 +129,6 @@ namespace OpenLoco::ObjectManager
                 func(file);
             }
         }
-
-        // NB: vanilla used to set just flag 24 to 1; we use it as a version byte.
-        currentState.numObjects |= kCurrentIndexVersion << 24;
 
         return currentState;
     }
@@ -349,8 +360,68 @@ namespace OpenLoco::ObjectManager
         _installedObjectList.push_back(newEntry); // Previously ordered by name...
     }
 
+    static void addObjectsInFolder(fs::path path, bool shouldRecurse, uint32_t numObjects)
+    {
+        if (!fs::exists(path))
+        {
+            return;
+        }
+        uint8_t progress = 0; // Progress is used for the ProgressBar Ui element
+        uint32_t i = 0;
+        auto func = [&i, &numObjects, &progress](const fs::directory_entry& file) {
+            if (!file.is_regular_file())
+            {
+                return true;
+            }
+            const auto extension = file.path().extension().u8string();
+            if (!Utility::iequals(extension, ".DAT"))
+            {
+                return true;
+            }
+            Ui::processMessagesMini();
+            i++;
+
+            // Cheap calculation of (curObjectCount / totalObjectCount) * 256
+            const auto newProgress = (i << 8) / ((numObjects & 0xFFFFFF) + 1);
+            if (progress != newProgress)
+            {
+                progress = newProgress;
+                Ui::ProgressBar::setProgress(newProgress);
+            }
+
+            // For now there are a few places that assume there are int16_t max items
+            if (_installedObjectList.size() >= static_cast<size_t>(std::numeric_limits<ObjectIndexId>::max()))
+            {
+                return false;
+            }
+            addObjectToIndex(file.path());
+            return true;
+        };
+
+        if (shouldRecurse)
+        {
+            for (const auto& file : fs::recursive_directory_iterator(path, fs::directory_options::skip_permission_denied))
+            {
+                if (!func(file))
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            for (const auto& file : fs::directory_iterator(path, fs::directory_options::skip_permission_denied))
+            {
+                if (!func(file))
+                {
+                    break;
+                }
+            }
+        }
+    }
+
     // 0x0047118B
-    static void createIndex(const ObjectFolderState& currentState)
+    static void createIndex(const ObjectFoldersState& currentState)
     {
         Ui::processMessagesMini();
         const auto progressString = _isFirstTime ? StringIds::starting_for_the_first_time : StringIds::checking_object_files;
@@ -362,37 +433,13 @@ namespace OpenLoco::ObjectManager
 
         // Create new index by iterating all DAT files and processing
         IndexHeader header{};
-        uint8_t progress = 0; // Progress is used for the ProgressBar Ui element
+        header.version = kCurrentIndexVersion;
+        const auto vanillaObjectPath = Environment::getPathNoWarning(Environment::PathId::vanillaObjects);
+        addObjectsInFolder(vanillaObjectPath, false, currentState.vanillaInstall.numObjects);
         const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
-        for (const auto& file : fs::recursive_directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
-        {
-            if (!file.is_regular_file())
-            {
-                continue;
-            }
-            const auto extension = file.path().extension().u8string();
-            if (!Utility::iequals(extension, ".DAT"))
-            {
-                continue;
-            }
-            Ui::processMessagesMini();
-            header.state.numObjects++;
-
-            // Cheap calculation of (curObjectCount / totalObjectCount) * 256
-            const auto newProgress = (header.state.numObjects << 8) / ((currentState.numObjects & 0xFFFFFF) + 1);
-            if (progress != newProgress)
-            {
-                progress = newProgress;
-                Ui::ProgressBar::setProgress(newProgress);
-            }
-
-            // For now there are a few places that assume there are int16_t max items
-            if (_installedObjectList.size() >= static_cast<size_t>(std::numeric_limits<ObjectIndexId>::max()))
-            {
-                break;
-            }
-            addObjectToIndex(file.path());
-        }
+        addObjectsInFolder(objectPath, true, currentState.install.numObjects);
+        const auto customObjectPath = Environment::getPathNoWarning(Environment::PathId::customObjects);
+        addObjectsInFolder(customObjectPath, true, currentState.customObjects.numObjects);
 
         // New index creation completed. Reset and save result.
         reloadAll();
@@ -404,7 +451,7 @@ namespace OpenLoco::ObjectManager
         Ui::ProgressBar::end();
     }
 
-    static bool tryLoadIndex(const ObjectFolderState& currentState)
+    static bool tryLoadIndex(const ObjectFoldersState& currentState)
     {
         Core::Timer loadTimer;
 
@@ -426,7 +473,7 @@ namespace OpenLoco::ObjectManager
         {
             // 0x00112A14C -> 160
             auto header = stream.readValue<IndexHeader>();
-            if (header.state != currentState)
+            if (header.version != kCurrentIndexVersion || header.state != currentState)
             {
                 return false;
             }
@@ -455,8 +502,14 @@ namespace OpenLoco::ObjectManager
     void loadIndex()
     {
         // 0x00112A138 -> 144
-        const auto vanillaObjectPath = Environment::getPathNoWarning(Environment::PathId::objects);
-        const auto currentState = getCurrentObjectFolderState(vanillaObjectPath, false);
+        const auto vanillaObjectPath = Environment::getPathNoWarning(Environment::PathId::vanillaObjects);
+        const auto vanillaState = getCurrentObjectFolderState(vanillaObjectPath, false);
+        const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
+        const auto objectState = getCurrentObjectFolderState(vanillaObjectPath, true);
+        const auto customObjectPath = Environment::getPathNoWarning(Environment::PathId::customObjects);
+        const auto customState = getCurrentObjectFolderState(vanillaObjectPath, true);
+
+        const auto currentState = ObjectFoldersState{ vanillaState, objectState, customState };
 
         if (!tryLoadIndex(currentState))
         {

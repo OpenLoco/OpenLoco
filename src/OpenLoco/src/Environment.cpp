@@ -303,8 +303,10 @@ namespace OpenLoco::Environment
             case PathId::autosave:
             case PathId::landscape:
             case PathId::heightmap:
+            case PathId::customObjects:
                 return Platform::getUserDirectory();
             case PathId::languageFiles:
+            case PathId::objects:
 #if defined(__APPLE__) && defined(__MACH__)
                 return Platform::GetBundlePath();
 #else
@@ -317,7 +319,7 @@ namespace OpenLoco::Environment
 
     static fs::path getSubPath(PathId id)
     {
-        static constexpr const char* kPaths[] = {
+        static constexpr std::array<const char*, 59> kPaths = {
             "Data/g1.DAT",
             "plugin.dat",
             "plugin2.dat",
@@ -375,10 +377,12 @@ namespace OpenLoco::Environment
             "ObjData",
             "Scenarios",
             "heightmap",
+            "objects",
+            "objects",
         };
 
         size_t index = (size_t)id;
-        if (index >= Utility::length(kPaths))
+        if (index >= kPaths.size())
         {
             throw Exception::RuntimeError("Invalid PathId: " + std::to_string((int32_t)id));
         }
