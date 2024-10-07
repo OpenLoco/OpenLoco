@@ -44,7 +44,7 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::ObjectManager
 {
     // Was previously 0x0050D13C count was in 0x0112A110
-    static std::vector<ObjectIndexEntry2> _installedObjectList;
+    static std::vector<ObjectIndexEntry> _installedObjectList;
 
     static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
     static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
@@ -121,23 +121,23 @@ namespace OpenLoco::ObjectManager
         return false;
     }
 
-    static void serialiseEntry(Stream& stream, const ObjectIndexEntry2& entry)
+    static void serialiseEntry(Stream& stream, const ObjectIndexEntry& entry)
     {
         // Header
         stream.writeValue(entry._header);
 
         // Filepath
-        stream.writeValue<uint32_t>(entry._filename.size());
-        stream.write(entry._filename.data(), entry._filename.size());
+        stream.writeValue<uint32_t>(entry._filepath.size());
+        stream.write(entry._filepath.data(), entry._filepath.size());
 
         // Header2
         stream.writeValue(entry._header2.decodedFileSize);
 
-        // Name NULL
+        // Name
         stream.writeValue<uint32_t>(entry._name.size());
         stream.write(entry._name.data(), entry._name.size());
 
-        // Header3 NULL
+        // Header3
         stream.write(&entry._displayData, sizeof(entry._displayData));
 
         // ObjectList1
@@ -155,7 +155,7 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static void serialiseIndex(Stream& stream, const IndexHeader& header, const std::vector<ObjectIndexEntry2>& entries)
+    static void serialiseIndex(Stream& stream, const IndexHeader& header, const std::vector<ObjectIndexEntry>& entries)
     {
         stream.writeValue(header);
         stream.writeValue<uint32_t>(entries.size());
@@ -165,15 +165,15 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static ObjectIndexEntry2 deserialiseEntry(Stream& stream)
+    static ObjectIndexEntry deserialiseEntry(Stream& stream)
     {
-        ObjectIndexEntry2 entry{};
+        ObjectIndexEntry entry{};
         // Header
         entry._header = stream.readValue<ObjectHeader>();
 
         // Filepath
-        entry._filename.resize(stream.readValue<uint32_t>());
-        stream.read(entry._filename.data(), entry._filename.size());
+        entry._filepath.resize(stream.readValue<uint32_t>());
+        stream.read(entry._filepath.data(), entry._filepath.size());
 
         // Header2
         entry._header2.decodedFileSize = stream.readValue<uint32_t>();
@@ -194,16 +194,16 @@ namespace OpenLoco::ObjectManager
 
         // ObjectList2
         entry._requiredObjects.resize(stream.readValue<uint32_t>());
-        for (auto& alo : entry._requiredObjects)
+        for (auto& ro : entry._requiredObjects)
         {
-            alo = stream.readValue<ObjectHeader>();
+            ro = stream.readValue<ObjectHeader>();
         }
         return entry;
     }
 
-    static std::vector<ObjectIndexEntry2> deserialiseIndex(Stream& stream)
+    static std::vector<ObjectIndexEntry> deserialiseIndex(Stream& stream)
     {
-        std::vector<ObjectIndexEntry2> entries;
+        std::vector<ObjectIndexEntry> entries;
         entries.resize(stream.readValue<uint32_t>());
         for (auto& entry : entries)
         {
@@ -229,15 +229,15 @@ namespace OpenLoco::ObjectManager
         Logging::verbose("Saved object index in {} milliseconds.", saveTimer.elapsed());
     }
 
-    static ObjectIndexEntry2 createPartialNewEntry(const ObjectHeader& objHeader, const fs::path filepath)
+    static ObjectIndexEntry createPartialNewEntry(const ObjectHeader& objHeader, const fs::path filepath)
     {
-        ObjectIndexEntry2 entry{};
+        ObjectIndexEntry entry{};
 
         // Header
         entry._header = objHeader;
 
         // Filepath
-        entry._filename = filepath.u8string();
+        entry._filepath = filepath.u8string();
 
         // Header2 NULL
         entry._header2.decodedFileSize = std::numeric_limits<uint32_t>::max();
@@ -258,15 +258,15 @@ namespace OpenLoco::ObjectManager
     }
 
     // TODO: Take dependent object vectors from loadTemporary
-    static ObjectIndexEntry2 createNewEntry(const ObjectHeader& objHeader, const fs::path filepath, const TempLoadMetaData& metaData)
+    static ObjectIndexEntry createNewEntry(const ObjectHeader& objHeader, const fs::path filepath, const TempLoadMetaData& metaData)
     {
-        ObjectIndexEntry2 entry{};
+        ObjectIndexEntry entry{};
 
         // Header
         entry._header = objHeader;
 
         // Filepath
-        entry._filename = filepath.u8string();
+        entry._filepath = filepath.u8string();
 
         // Header2 NULL
         entry._header2 = metaData.fileSizeHeader;
@@ -330,7 +330,7 @@ namespace OpenLoco::ObjectManager
         auto duplicate = std::find_if(_installedObjectList.begin(), _installedObjectList.end(), [&newEntry](auto& entry) { return newEntry._header == entry._header; });
         if (duplicate != _installedObjectList.end())
         {
-            Logging::error("Duplicate object found {}, {} won't be added to index", duplicate->_filename, newEntry._filename);
+            Logging::error("Duplicate object found {}, {} won't be added to index", duplicate->_filepath, newEntry._filepath);
             return;
         }
         _installedObjectList.push_back(newEntry); // Previously ordered by name...
@@ -452,9 +452,9 @@ namespace OpenLoco::ObjectManager
         return _installedObjectList.size();
     }
 
-    std::vector<std::pair<ObjectIndexId, ObjectIndexEntry2>> getAvailableObjects(ObjectType type)
+    std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> getAvailableObjects(ObjectType type)
     {
-        std::vector<std::pair<ObjectIndexId, ObjectIndexEntry2>> list;
+        std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> list;
 
         for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
         {
@@ -467,7 +467,7 @@ namespace OpenLoco::ObjectManager
         return list;
     }
 
-    static std::optional<std::pair<ObjectIndexId, ObjectIndexEntry2>> internalFindObjectInIndex(const ObjectHeader& objectHeader)
+    static std::optional<std::pair<ObjectIndexId, ObjectIndexEntry>> internalFindObjectInIndex(const ObjectHeader& objectHeader)
     {
         const auto objects = getAvailableObjects(objectHeader.getType());
         auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return obj.second._header == objectHeader; });
@@ -478,7 +478,7 @@ namespace OpenLoco::ObjectManager
         return *res;
     }
 
-    std::optional<ObjectIndexEntry2> findObjectInIndex(const ObjectHeader& objectHeader)
+    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader)
     {
         auto res = internalFindObjectInIndex(objectHeader);
         if (!res.has_value())
@@ -488,7 +488,7 @@ namespace OpenLoco::ObjectManager
         return res->second;
     }
 
-    const ObjectIndexEntry2& getObjectInIndex(ObjectIndexId index)
+    const ObjectIndexEntry& getObjectInIndex(ObjectIndexId index)
     {
         return _installedObjectList[index];
     }
@@ -511,7 +511,7 @@ namespace OpenLoco::ObjectManager
             }
         }
 
-        return { -1, ObjectIndexEntry2{} };
+        return { -1, ObjectIndexEntry{} };
     }
 
     // 0x0047400C
@@ -577,7 +577,7 @@ namespace OpenLoco::ObjectManager
 
     static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData);
 
-    static bool selectObjectInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData, ObjectIndexId index, const ObjectIndexEntry2& entry)
+    static bool selectObjectInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData, ObjectIndexId index, const ObjectIndexEntry& entry)
     {
         if (!isRecursed)
         {
@@ -650,7 +650,7 @@ namespace OpenLoco::ObjectManager
         return true;
     }
 
-    static bool deselectObjectInternal(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData, ObjectIndexId index, const ObjectIndexEntry2& entry)
+    static bool deselectObjectInternal(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData, ObjectIndexId index, const ObjectIndexEntry& entry)
     {
         // Object already deselected
         if ((objectFlags[index] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
@@ -738,47 +738,6 @@ namespace OpenLoco::ObjectManager
     {
         return selectObjectFromIndexInternal(mode, false, objHeader, objectFlags, selectionMetaData);
     }
-
-    // ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
-    //{
-    //     ObjectIndexEntry entry{};
-
-    //    entry._header = (ObjectHeader*)*ptr;
-    //    *ptr += sizeof(ObjectHeader);
-
-    //    entry._filename = (char*)*ptr;
-    //    *ptr += strlen(entry._filename) + 1;
-
-    //    // decoded_chunk_size
-    //    // ObjectHeader2* h2 = (ObjectHeader2*)ptr;
-    //    *ptr += sizeof(ObjectHeader2);
-
-    //    entry._name = (char*)*ptr;
-    //    *ptr += strlen(entry._name) + 1;
-
-    //    entry._displayData = reinterpret_cast<ObjectHeader3*>(*ptr);
-    //    *ptr += sizeof(ObjectHeader3);
-
-    //    uint8_t* countA = (uint8_t*)*ptr;
-    //    *ptr += sizeof(uint8_t);
-    //    entry._requiredObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countA);
-    //    for (int n = 0; n < *countA; n++)
-    //    {
-    //        // header* subh = (header*)ptr;
-    //        *ptr += sizeof(ObjectHeader);
-    //    }
-
-    //    uint8_t* countB = (uint8_t*)*ptr;
-    //    *ptr += sizeof(uint8_t);
-    //    entry._alsoLoadObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countB);
-    //    for (int n = 0; n < *countB; n++)
-    //    {
-    //        // header* subh = (header*)ptr;
-    //        *ptr += sizeof(ObjectHeader);
-    //    }
-
-    //    return entry;
-    //}
 
     // 0x00472DA1
     static void markInUseObjectsByTile(std::array<std::span<uint8_t>, kMaxObjectTypes>& loadedObjectFlags)
@@ -1160,7 +1119,7 @@ namespace OpenLoco::ObjectManager
     // 0x00474167
     std::optional<ObjectType> validateObjectSelection(std::span<SelectedObjectsFlags> objectFlags)
     {
-        const auto atLeastOneSelected = [](const ObjectIndexEntry2&) { return true; };
+        const auto atLeastOneSelected = [](const ObjectIndexEntry&) { return true; };
         // Validate all the simple object types that
         // require at least one item selected of the type
         for (auto& [objectType, errorMessage] : kValidateTypeAndErrorMessage)
@@ -1175,7 +1134,7 @@ namespace OpenLoco::ObjectManager
         // Validate the more complex road object type that
         // has more complex logic
         if (!validateObjectTypeSelection(
-                objectFlags, ObjectType::road, [](const ObjectIndexEntry2& entry) {
+                objectFlags, ObjectType::road, [](const ObjectIndexEntry& entry) {
                     const auto tempObj = loadTemporaryObject(entry._header);
                     if (!tempObj.has_value())
                     {

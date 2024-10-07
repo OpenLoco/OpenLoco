@@ -388,7 +388,7 @@ namespace OpenLoco::ObjectManager
             return std::nullopt;
         }
 
-        const auto filePath = fs::u8path(installedObject->_filename);
+        const auto filePath = fs::u8path(installedObject->_filepath);
 
         FileStream fs(filePath, StreamMode::read);
         SawyerStreamReader stream(fs);

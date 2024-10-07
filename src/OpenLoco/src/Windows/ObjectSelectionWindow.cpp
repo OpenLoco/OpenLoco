@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     struct TabObjectEntry
     {
         ObjectManager::ObjectIndexId index;
-        ObjectManager::ObjectIndexEntry2 object;
+        ObjectManager::ObjectIndexEntry object;
         Visibility display;
     };
 
@@ -395,7 +395,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
 
             const std::string_view name = entry.object._name;
-            const auto filename = fs::u8path(entry.object._filename).filename().u8string();
+            const auto filename = fs::u8path(entry.object._filepath).filename().u8string();
 
             const bool containsName = contains(name, pattern);
             const bool containsFileName = contains(filename, pattern);
@@ -419,6 +419,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             _tabObjectList.emplace_back(std::move(entry));
         }
 
+        std::sort(_tabObjectList.begin(), _tabObjectList.end(), [](const TabObjectEntry& lhs, const TabObjectEntry& rhs) { return lhs.object._name < rhs.object._name; });
+
         applyFilterToObjectList(filterFlags);
     }
 
@@ -439,7 +441,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return { static_cast<int16_t>(_tabObjectList[0].index), _tabObjectList[0].object };
         }
 
-        return { -1, ObjectManager::ObjectIndexEntry2{} };
+        return { -1, ObjectManager::ObjectIndexEntry{} };
     }
 
     static const WindowEventList& getEvents();
@@ -834,7 +836,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         drawingCtx.popRenderTarget();
     }
 
-    static void drawDatDetails(const ObjectManager::ObjectIndexEntry2& indexEntry, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
+    static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
     {
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
@@ -851,7 +853,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         {
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-            strncpy(buffer, indexEntry._filename.c_str(), indexEntry._filename.length() + 1);
+            strncpy(buffer, indexEntry._filepath.c_str(), indexEntry._filepath.length() + 1);
 
             FormatArguments args{};
             args.push<StringId>(StringIds::buffer_1250);
@@ -1408,7 +1410,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
         }
 
-        return { -1, ObjectManager::ObjectIndexEntry2{} };
+        return { -1, ObjectManager::ObjectIndexEntry{} };
     }
 
     // 0x0047390A

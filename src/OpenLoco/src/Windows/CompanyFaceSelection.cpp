@@ -29,7 +29,9 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
     static loco_global<CompanyId, 0x9C68F2> _9C68F2; // Use in a game command??
-    static loco_global<uint16_t, 0x112C1C1> _numberCompetitorObjects;
+
+    // Count was previously 0x112C1C1
+    static std::vector<std::pair<ObjectManager::ObjectIndexId, ObjectManager::ObjectIndexEntry>> _competitorList;
 
     static WindowType _callingWindowType;
 
@@ -61,11 +63,18 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static std::vector<uint32_t> _inUseCompetitors;
 
+    static void populateCompetitorList()
+    {
+        _competitorList = ObjectManager::getAvailableObjects(ObjectType::competitor);
+
+        std::sort(_competitorList.begin(), _competitorList.end(), [](const auto& lhs, const auto& rhs) { return lhs.second._name < rhs.second._name; });
+    }
+
     // 0x00434F52
     void open(const CompanyId id, const WindowType callingWindowType)
     {
         auto* self = WindowManager::bringToFront(WindowType::companyFaceSelection, 0);
-
+        populateCompetitorList();
         if (self != nullptr)
         {
             _9C68F2 = id;
@@ -84,7 +93,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->setColour(WindowColour::secondary, skin->colour_0A);
 
-            self->rowCount = _numberCompetitorObjects;
+            self->rowCount = static_cast<uint16_t>(_competitorList.size());
             self->rowHover = -1;
             self->object = nullptr;
         }
@@ -119,6 +128,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
             WindowManager::invalidate(WindowType::options);
         }
+        _competitorList.clear();
     }
 
     // 0x435299
@@ -135,7 +145,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x4352BB
     static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const scrollWidth, uint16_t* const scrollHeight)
     {
-        *scrollHeight = _numberCompetitorObjects * kRowHeight;
+        *scrollHeight = static_cast<uint16_t>(_competitorList.size()) * kRowHeight;
     }
 
     static bool isInUseCompetitor(const uint32_t objIndex)
@@ -145,25 +155,24 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     struct ObjectRow
     {
-        ObjectManager::ObjectIndexEntry2 object;
+        ObjectManager::ObjectIndexEntry object;
         int16_t rowIndex;
     };
     static ObjectRow getObjectFromSelection(const int16_t& y)
     {
         const int16_t rowIndex = y / kRowHeight;
-        const auto objects = ObjectManager::getAvailableObjects(ObjectType::competitor);
 
-        if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
+        if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= _competitorList.size())
         {
-            return { ObjectManager::ObjectIndexEntry2{}, -1 };
+            return { ObjectManager::ObjectIndexEntry{}, -1 };
         }
 
-        if (isInUseCompetitor(objects[rowIndex].first))
+        if (isInUseCompetitor(_competitorList[rowIndex].first))
         {
-            return { ObjectManager::ObjectIndexEntry2{}, -1 };
+            return { ObjectManager::ObjectIndexEntry{}, -1 };
         }
 
-        return { objects[rowIndex].second, static_cast<int16_t>(objects[rowIndex].first) };
+        return { _competitorList[rowIndex].second, static_cast<int16_t>(_competitorList[rowIndex].first) };
     }
 
     // 0x00435314
@@ -300,7 +309,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         auto index = 0;
-        for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
+        for (const auto& object : _competitorList)
         {
             const int16_t y = index * kRowHeight;
             uint8_t inlineColour = ControlCodes::Colour::black;

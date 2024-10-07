@@ -24,12 +24,12 @@ namespace OpenLoco::ObjectManager
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SelectedObjectsFlags);
 
-    struct ObjectIndexEntry2
+    struct ObjectIndexEntry
     {
         ObjectHeader _header;
         ObjectHeader2 _header2;
         ObjectHeader3 _displayData;
-        std::string _filename; // u8string
+        std::string _filepath; // u8string
         std::string _name;
         std::vector<ObjectHeader> _requiredObjects;
         std::vector<ObjectHeader> _alsoLoadObjects;
@@ -38,7 +38,7 @@ namespace OpenLoco::ObjectManager
     struct ObjIndexPair
     {
         int16_t index;
-        ObjectIndexEntry2 object;
+        ObjectIndexEntry object;
     };
 
     // Index into the overall ObjectIndex. Note: Not a type specific index!
@@ -48,10 +48,10 @@ namespace OpenLoco::ObjectManager
 
     void loadIndex();
 
-    std::vector<std::pair<ObjectIndexId, ObjectIndexEntry2>> getAvailableObjects(ObjectType type);
+    std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> getAvailableObjects(ObjectType type);
     bool isObjectInstalled(const ObjectHeader& objectHeader);
-    std::optional<ObjectIndexEntry2> findObjectInIndex(const ObjectHeader& objectHeader);
-    const ObjectIndexEntry2& getObjectInIndex(ObjectIndexId index);
+    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader);
+    const ObjectIndexEntry& getObjectInIndex(ObjectIndexId index);
     ObjIndexPair getActiveObject(ObjectType objectType, std::span<SelectedObjectsFlags> objectIndexFlags);
 
 #pragma pack(push, 1)
