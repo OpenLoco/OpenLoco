@@ -80,26 +80,40 @@ namespace OpenLoco::ObjectManager
 #pragma pack(pop)
 
     // 0x00470F3C
-    static ObjectFolderState getCurrentObjectFolderState()
+    static ObjectFolderState getCurrentObjectFolderState(fs::path path, bool shouldRecurse)
     {
         ObjectFolderState currentState;
-        const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
-        for (const auto& file : fs::recursive_directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
-        {
+
+        auto func = [&currentState](const fs::directory_entry& file) {
             if (!file.is_regular_file())
             {
-                continue;
+                return;
             }
             const auto extension = file.path().extension().u8string();
             if (!Utility::iequals(extension, ".DAT"))
             {
-                continue;
+                return;
             }
             currentState.numObjects++;
             const auto lastWrite = file.last_write_time().time_since_epoch().count();
             currentState.dateHash ^= ((lastWrite >> 32) ^ (lastWrite & 0xFFFFFFFF));
             currentState.dateHash = std::rotr(currentState.dateHash, 5);
             currentState.totalFileSize += file.file_size();
+        };
+
+        if (shouldRecurse)
+        {
+            for (const auto& file : fs::recursive_directory_iterator(path, fs::directory_options::skip_permission_denied))
+            {
+                func(file);
+            }
+        }
+        else
+        {
+            for (const auto& file : fs::directory_iterator(path, fs::directory_options::skip_permission_denied))
+            {
+                func(file);
+            }
         }
 
         // NB: vanilla used to set just flag 24 to 1; we use it as a version byte.
@@ -257,7 +271,6 @@ namespace OpenLoco::ObjectManager
         return entry;
     }
 
-    // TODO: Take dependent object vectors from loadTemporary
     static ObjectIndexEntry createNewEntry(const ObjectHeader& objHeader, const fs::path filepath, const TempLoadMetaData& metaData)
     {
         ObjectIndexEntry entry{};
@@ -268,13 +281,13 @@ namespace OpenLoco::ObjectManager
         // Filepath
         entry._filepath = filepath.u8string();
 
-        // Header2 NULL
+        // Header2
         entry._header2 = metaData.fileSizeHeader;
 
-        // Name NULL
+        // Name
         entry._name = StringManager::getString(0x2000);
 
-        // Header3 NULL
+        // Header3
         entry._displayData = metaData.displayData;
 
         // ObjectList1
@@ -442,7 +455,8 @@ namespace OpenLoco::ObjectManager
     void loadIndex()
     {
         // 0x00112A138 -> 144
-        const auto currentState = getCurrentObjectFolderState();
+        const auto vanillaObjectPath = Environment::getPathNoWarning(Environment::PathId::objects);
+        const auto currentState = getCurrentObjectFolderState(vanillaObjectPath, false);
 
         if (!tryLoadIndex(currentState))
         {
