@@ -406,7 +406,7 @@ namespace OpenLoco::CompanyManager
                     continue;
                 }
                 auto& loadedHeader = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::competitor, id });
-                if (loadedHeader == installed.second._header)
+                if (loadedHeader == installed.object._header)
                 {
                     isInUse = true;
                     break;
@@ -420,25 +420,25 @@ namespace OpenLoco::CompanyManager
             uint8_t metric = 0;
             if (getGameState().preferredAIIntelligence != 0)
             {
-                metric += std::abs(kAiToMetric[installed.second._displayData.intelligence] - getGameState().preferredAIIntelligence);
+                metric += std::abs(kAiToMetric[installed.object._displayData.intelligence] - getGameState().preferredAIIntelligence);
             }
             if (getGameState().preferredAIAggressiveness != 0)
             {
-                metric += std::abs(kAiToMetric[installed.second._displayData.aggressiveness] - getGameState().preferredAIAggressiveness);
+                metric += std::abs(kAiToMetric[installed.object._displayData.aggressiveness] - getGameState().preferredAIAggressiveness);
             }
             if (getGameState().preferredAICompetitiveness != 0)
             {
-                metric += std::abs(kAiToMetric[installed.second._displayData.competitiveness] - getGameState().preferredAICompetitiveness);
+                metric += std::abs(kAiToMetric[installed.object._displayData.competitiveness] - getGameState().preferredAICompetitiveness);
             }
             if (metric < bestInstalledValue)
             {
-                bestInstalled = std::vector<ObjectHeader>{ installed.second._header };
+                bestInstalled = std::vector<ObjectHeader>{ installed.object._header };
                 bestInstalledValue = metric;
             }
             else if (metric == bestInstalledValue)
             {
                 assert(bestInstalled.has_value());
-                bestInstalled->push_back(installed.second._header);
+                bestInstalled->push_back(installed.object._header);
             }
         }
 
@@ -991,13 +991,13 @@ namespace OpenLoco::CompanyManager
         std::vector<uint32_t> inUseCompetitors;
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
         {
-            auto competitorId = ObjectManager::findObjectHandle(object.second._header);
+            auto competitorId = ObjectManager::findObjectHandle(object.object._header);
             if (competitorId)
             {
                 auto res = std::find(takenCompetitorIds.begin(), takenCompetitorIds.end(), competitorId->id);
                 if (res != takenCompetitorIds.end())
                 {
-                    inUseCompetitors.push_back(object.first);
+                    inUseCompetitors.push_back(object.index);
                 }
             }
         }

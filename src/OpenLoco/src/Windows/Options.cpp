@@ -1625,9 +1625,9 @@ namespace OpenLoco::Ui::Windows::Options
             for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
-                Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name.c_str());
+                Dropdown::add(index, StringIds::dropdown_stringptr, object.object._name.c_str());
 
-                if ((selectedObjectFlags[object.first] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
+                if ((selectedObjectFlags[object.index] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
                 {
                     Dropdown::setItemSelected(index);
                 }
@@ -1658,7 +1658,7 @@ namespace OpenLoco::Ui::Windows::Options
                         ObjectManager::unload(ebp.object._header);
                     }
 
-                    ObjectManager::load(object.second._header);
+                    ObjectManager::load(object.object._header);
                     ObjectManager::reloadAll();
                     Gfx::loadCurrency();
                     ObjectManager::markOnlyLoadedObjects(selectedObjectFlags);
@@ -1680,7 +1680,7 @@ namespace OpenLoco::Ui::Windows::Options
             for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
-                Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name.c_str());
+                Dropdown::add(index, StringIds::dropdown_stringptr, object.object._name.c_str());
 
                 // TODO: Mark current value as selected
             }
@@ -1703,7 +1703,7 @@ namespace OpenLoco::Ui::Windows::Options
                 if (index == ax)
                 {
                     auto& cfg = OpenLoco::Config::get();
-                    cfg.preferredCurrency = object.second._header;
+                    cfg.preferredCurrency = object.object._header;
 
                     setPreferredCurrencyNameBuffer();
                     Config::write();

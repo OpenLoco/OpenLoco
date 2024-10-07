@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static loco_global<CompanyId, 0x9C68F2> _9C68F2; // Use in a game command??
 
     // Count was previously 0x112C1C1
-    static std::vector<std::pair<ObjectManager::ObjectIndexId, ObjectManager::ObjectIndexEntry>> _competitorList;
+    static std::vector<ObjectManager::ObjIndexPair> _competitorList;
 
     static WindowType _callingWindowType;
 
@@ -67,7 +67,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     {
         _competitorList = ObjectManager::getAvailableObjects(ObjectType::competitor);
 
-        std::sort(_competitorList.begin(), _competitorList.end(), [](const auto& lhs, const auto& rhs) { return lhs.second._name < rhs.second._name; });
+        std::sort(_competitorList.begin(), _competitorList.end(), [](const auto& lhs, const auto& rhs) { return lhs.object._name < rhs.object._name; });
     }
 
     // 0x00434F52
@@ -153,26 +153,21 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         return std::find(_inUseCompetitors.begin(), _inUseCompetitors.end(), objIndex) != _inUseCompetitors.end();
     }
 
-    struct ObjectRow
-    {
-        ObjectManager::ObjectIndexEntry object;
-        int16_t rowIndex;
-    };
-    static ObjectRow getObjectFromSelection(const int16_t& y)
+    static ObjectManager::ObjIndexPair getObjectFromSelection(const int16_t& y)
     {
         const int16_t rowIndex = y / kRowHeight;
 
         if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= _competitorList.size())
         {
-            return { ObjectManager::ObjectIndexEntry{}, -1 };
+            return { -1, ObjectManager::ObjectIndexEntry{} };
         }
 
-        if (isInUseCompetitor(_competitorList[rowIndex].first))
+        if (isInUseCompetitor(_competitorList[rowIndex].index))
         {
-            return { ObjectManager::ObjectIndexEntry{}, -1 };
+            return { -1, ObjectManager::ObjectIndexEntry{} };
         }
 
-        return { _competitorList[rowIndex].second, static_cast<int16_t>(_competitorList[rowIndex].first) };
+        return _competitorList[rowIndex];
     }
 
     // 0x00435314
@@ -180,7 +175,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     {
         const auto objRow = getObjectFromSelection(y);
 
-        if (objRow.rowIndex == -1)
+        if (objRow.index == -1)
         {
             return;
         }
@@ -217,14 +212,14 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scroll_index)
     {
         auto objRow = getObjectFromSelection(y);
-        if (self.rowHover == objRow.rowIndex)
+        if (self.rowHover == objRow.index)
         {
             return;
         }
-        self.rowHover = objRow.rowIndex;
+        self.rowHover = objRow.index;
         ObjectManager::freeTemporaryObject();
 
-        if (objRow.rowIndex != -1)
+        if (objRow.index != -1)
         {
             self.object = reinterpret_cast<std::byte*>(&objRow.object._header);
             ObjectManager::loadTemporaryObject(objRow.object._header);
@@ -324,18 +319,18 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 break;
             }
 
-            if (static_cast<int16_t>(object.first) == self.rowHover)
+            if (object.index == self.rowHover)
             {
                 inlineColour = ControlCodes::windowColour2;
                 drawingCtx.fillRect(0, y, self.width, y + 9, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
             }
 
-            std::string name(object.second._name);
+            std::string name(object.object._name);
             name.insert(0, 1, inlineColour);
 
             tr.setCurrentFont(Gfx::Font::medium_bold);
             AdvancedColour stringColour = Colour::black;
-            if (isInUseCompetitor(object.first))
+            if (isInUseCompetitor(object.index))
             {
                 tr.setCurrentFont(Gfx::Font::m1);
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();

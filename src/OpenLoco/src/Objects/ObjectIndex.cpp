@@ -373,6 +373,11 @@ namespace OpenLoco::ObjectManager
                 Ui::ProgressBar::setProgress(newProgress);
             }
 
+            // For now there are a few places that assume there are int16_t max items
+            if (_installedObjectList.size() >= static_cast<size_t>(std::numeric_limits<ObjectIndexId>::max()))
+            {
+                break;
+            }
             addObjectToIndex(file.path());
         }
 
@@ -452,25 +457,25 @@ namespace OpenLoco::ObjectManager
         return _installedObjectList.size();
     }
 
-    std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> getAvailableObjects(ObjectType type)
+    std::vector<ObjIndexPair> getAvailableObjects(ObjectType type)
     {
-        std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> list;
+        std::vector<ObjIndexPair> list;
 
-        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
             if (_installedObjectList[i]._header.getType() == type)
             {
-                list.push_back(std::make_pair(i, _installedObjectList[i]));
+                list.push_back(ObjIndexPair{ i, _installedObjectList[i] });
             }
         }
 
         return list;
     }
 
-    static std::optional<std::pair<ObjectIndexId, ObjectIndexEntry>> internalFindObjectInIndex(const ObjectHeader& objectHeader)
+    static std::optional<ObjIndexPair> internalFindObjectInIndex(const ObjectHeader& objectHeader)
     {
         const auto objects = getAvailableObjects(objectHeader.getType());
-        auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return obj.second._header == objectHeader; });
+        auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return obj.object._header == objectHeader; });
         if (res == std::end(objects))
         {
             return std::nullopt;
@@ -485,7 +490,7 @@ namespace OpenLoco::ObjectManager
         {
             return std::nullopt;
         }
-        return res->second;
+        return res->object;
     }
 
     const ObjectIndexEntry& getObjectInIndex(ObjectIndexId index)
@@ -539,7 +544,7 @@ namespace OpenLoco::ObjectManager
             val &= ~SelectedObjectsFlags::requiredByAnother;
         }
 
-        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
             auto& entry = _installedObjectList[i];
             if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
@@ -560,7 +565,7 @@ namespace OpenLoco::ObjectManager
         std::fill(std::begin(selectionMetaData.numSelectedObjects), std::end(selectionMetaData.numSelectedObjects), 0U);
 
         uint32_t totalNumImages = 0;
-        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
             auto& entry = _installedObjectList[i];
             if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
@@ -913,7 +918,7 @@ namespace OpenLoco::ObjectManager
 
     static void applyLoadedObjectMarkToIndex(std::span<SelectedObjectsFlags> objectFlags, const std::array<std::span<uint8_t>, kMaxObjectTypes>& loadedObjectFlags)
     {
-        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
             objectFlags[i] &= ~(SelectedObjectsFlags::inUse | SelectedObjectsFlags::selected);
 
@@ -1085,7 +1090,7 @@ namespace OpenLoco::ObjectManager
 
     static bool validateObjectTypeSelection(std::span<SelectedObjectsFlags> objectFlags, const ObjectType type, auto&& predicate)
     {
-        for (ObjectIndexId i = 0; i < _installedObjectList.size(); i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
             auto& entry = _installedObjectList[i];
             if (((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
