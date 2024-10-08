@@ -89,46 +89,64 @@ namespace OpenLoco::ObjectManager
         uint32_t numObjects; // duplicates ObjectFolderState.numObjects but without high 1 and includes corrupted .dat's
     };
 
-    // 0x00470F3C
-    static ObjectFolderState getCurrentObjectFolderState(fs::path path, bool shouldRecurse)
+    // Iterates an objects folder
+    // optionally recurses
+    // func takes a const fs::directory_entry parameter and returns false to stop iteration
+    template<typename Func>
+    static void iterateObjectFolder(fs::path path, bool shouldRecurse, Func&& func)
     {
-        ObjectFolderState currentState{};
-
         if (!fs::exists(path))
         {
-            return currentState;
+            return;
         }
-        auto func = [&currentState](const fs::directory_entry& file) {
+        auto f = [&func](const fs::directory_entry& file) {
             if (!file.is_regular_file())
             {
-                return;
+                return true;
             }
             const auto extension = file.path().extension().u8string();
             if (!Utility::iequals(extension, ".DAT"))
             {
-                return;
+                return true;
             }
-            currentState.numObjects++;
-            const auto lastWrite = file.last_write_time().time_since_epoch().count();
-            currentState.dateHash ^= ((lastWrite >> 32) ^ (lastWrite & 0xFFFFFFFF));
-            currentState.dateHash = std::rotr(currentState.dateHash, 5);
-            currentState.totalFileSize += file.file_size();
+            return func(file);
         };
 
         if (shouldRecurse)
         {
             for (const auto& file : fs::recursive_directory_iterator(path, fs::directory_options::skip_permission_denied))
             {
-                func(file);
+                if (!f(file))
+                {
+                    break;
+                }
             }
         }
         else
         {
             for (const auto& file : fs::directory_iterator(path, fs::directory_options::skip_permission_denied))
             {
-                func(file);
+                if (!f(file))
+                {
+                    break;
+                }
             }
         }
+    }
+
+    // 0x00470F3C
+    static ObjectFolderState getCurrentObjectFolderState(fs::path path, bool shouldRecurse)
+    {
+        ObjectFolderState currentState{};
+
+        iterateObjectFolder(path, shouldRecurse, [&currentState](const fs::directory_entry& file) {
+            currentState.numObjects++;
+            const auto lastWrite = file.last_write_time().time_since_epoch().count();
+            currentState.dateHash ^= ((lastWrite >> 32) ^ (lastWrite & 0xFFFFFFFF));
+            currentState.dateHash = std::rotr(currentState.dateHash, 5);
+            currentState.totalFileSize += file.file_size();
+            return true;
+        });
 
         return currentState;
     }
@@ -362,22 +380,9 @@ namespace OpenLoco::ObjectManager
 
     static void addObjectsInFolder(fs::path path, bool shouldRecurse, uint32_t numObjects)
     {
-        if (!fs::exists(path))
-        {
-            return;
-        }
         uint8_t progress = 0; // Progress is used for the ProgressBar Ui element
         uint32_t i = 0;
-        auto func = [&i, &numObjects, &progress](const fs::directory_entry& file) {
-            if (!file.is_regular_file())
-            {
-                return true;
-            }
-            const auto extension = file.path().extension().u8string();
-            if (!Utility::iequals(extension, ".DAT"))
-            {
-                return true;
-            }
+        iterateObjectFolder(path, shouldRecurse, [&i, &numObjects, &progress](const fs::directory_entry& file) {
             Ui::processMessagesMini();
             i++;
 
@@ -396,28 +401,7 @@ namespace OpenLoco::ObjectManager
             }
             addObjectToIndex(file.path());
             return true;
-        };
-
-        if (shouldRecurse)
-        {
-            for (const auto& file : fs::recursive_directory_iterator(path, fs::directory_options::skip_permission_denied))
-            {
-                if (!func(file))
-                {
-                    break;
-                }
-            }
-        }
-        else
-        {
-            for (const auto& file : fs::directory_iterator(path, fs::directory_options::skip_permission_denied))
-            {
-                if (!func(file))
-                {
-                    break;
-                }
-            }
-        }
+        });
     }
 
     // 0x0047118B
@@ -471,7 +455,6 @@ namespace OpenLoco::ObjectManager
 
         try
         {
-            // 0x00112A14C -> 160
             auto header = stream.readValue<IndexHeader>();
             if (header.version != kCurrentIndexVersion || header.state != currentState)
             {
@@ -505,9 +488,9 @@ namespace OpenLoco::ObjectManager
         const auto vanillaObjectPath = Environment::getPathNoWarning(Environment::PathId::vanillaObjects);
         const auto vanillaState = getCurrentObjectFolderState(vanillaObjectPath, false);
         const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
-        const auto objectState = getCurrentObjectFolderState(vanillaObjectPath, true);
+        const auto objectState = getCurrentObjectFolderState(objectPath, true);
         const auto customObjectPath = Environment::getPathNoWarning(Environment::PathId::customObjects);
-        const auto customState = getCurrentObjectFolderState(vanillaObjectPath, true);
+        const auto customState = getCurrentObjectFolderState(customObjectPath, true);
 
         const auto currentState = ObjectFoldersState{ vanillaState, objectState, customState };
 
