@@ -34,7 +34,7 @@ namespace OpenLoco::ObjectManager
         std::vector<ObjectHeader> _requiredObjects;
         std::vector<ObjectHeader> _alsoLoadObjects;
     };
-    
+
     // Index into the overall ObjectIndex. Note: Not a type specific index!
     using ObjectIndexId = int16_t;
 
