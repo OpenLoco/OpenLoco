@@ -31,6 +31,7 @@
 #include "RoadExtraObject.h"
 #include "RoadObject.h"
 #include "RoadStationObject.h"
+#include "S5/Objects.h"
 #include "S5/SawyerStream.h"
 #include "ScaffoldingObject.h"
 #include "ScenarioTextObject.h"
@@ -88,6 +89,197 @@ namespace OpenLoco::ObjectManager
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
 
     loco_global<ObjectRepositoryItem[kMaxObjectTypes], 0x4FE0B8> _objectRepository;
+    struct RawObjectDatas
+    {
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::interfaceSkin)> _interfaceSkins;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::sound)> _sounds;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::currency)> _currencys;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::steam)> _steams;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::cliffEdge)> _cliffEdges;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::water)> _waters;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::land)> _lands;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::townNames)> _townNamess;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::cargo)> _cargos;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::wall)> _walls;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::trackSignal)> _trackSignals;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::levelCrossing)> _levelCrossings;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::streetLight)> _streetLights;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::tunnel)> _tunnels;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::bridge)> _bridges;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::trainStation)> _trainStations;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::trackExtra)> _trackExtras;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::track)> _tracks;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::roadStation)> _roadStations;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::roadExtra)> _roadExtras;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::road)> _roads;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::airport)> _airports;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::dock)> _docks;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::vehicle)> _vehicles;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::tree)> _trees;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::snow)> _snows;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::climate)> _climates;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::hillShapes)> _hillShapess;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::building)> _buildings;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::scaffolding)> _scaffoldings;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::industry)> _industrys;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::region)> _regions;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::competitor)> _competitors;
+        std::array<std::unique_ptr<std::byte[]>, getMaxObjects(ObjectType::scenarioText)> _scenarioTexts;
+
+        std::array<std::span<std::unique_ptr<std::byte[]>>, kMaxObjectTypes> _datas = {
+            _interfaceSkins,
+            _sounds,
+            _currencys,
+            _steams,
+            _cliffEdges,
+            _waters,
+            _lands,
+            _townNamess,
+            _cargos,
+            _walls,
+            _trackSignals,
+            _levelCrossings,
+            _streetLights,
+            _tunnels,
+            _bridges,
+            _trainStations,
+            _trackExtras,
+            _tracks,
+            _roadStations,
+            _roadExtras,
+            _roads,
+            _airports,
+            _docks,
+            _vehicles,
+            _trees,
+            _snows,
+            _climates,
+            _hillShapess,
+            _buildings,
+            _scaffoldings,
+            _industrys,
+            _regions,
+            _competitors,
+            _scenarioTexts,
+        };
+    };
+
+    static RawObjectDatas _rawObjectDatas;
+
+    struct ObjectHeaderDatas
+    {
+        std::array<InterfaceSkinObject, getMaxObjects(ObjectType::interfaceSkin)> _interfaceSkins{};
+        std::array<SoundObject, getMaxObjects(ObjectType::sound)> _sounds{};
+        std::array<CurrencyObject, getMaxObjects(ObjectType::currency)> _currencys{};
+        std::array<SteamObject, getMaxObjects(ObjectType::steam)> _steams{};
+        std::array<CliffEdgeObject, getMaxObjects(ObjectType::cliffEdge)> _cliffEdges{};
+        std::array<WaterObject, getMaxObjects(ObjectType::water)> _waters{};
+        std::array<LandObject, getMaxObjects(ObjectType::land)> _lands{};
+        std::array<TownNamesObject, getMaxObjects(ObjectType::townNames)> _townNamess{};
+        std::array<CargoObject, getMaxObjects(ObjectType::cargo)> _cargos{};
+        std::array<WallObject, getMaxObjects(ObjectType::wall)> _walls{};
+        std::array<TrainSignalObject, getMaxObjects(ObjectType::trackSignal)> _trackSignals{};
+        std::array<LevelCrossingObject, getMaxObjects(ObjectType::levelCrossing)> _levelCrossings{};
+        std::array<StreetLightObject, getMaxObjects(ObjectType::streetLight)> _streetLights{};
+        std::array<TunnelObject, getMaxObjects(ObjectType::tunnel)> _tunnels{};
+        std::array<BridgeObject, getMaxObjects(ObjectType::bridge)> _bridges{};
+        std::array<TrainStationObject, getMaxObjects(ObjectType::trainStation)> _trainStations{};
+        std::array<TrackExtraObject, getMaxObjects(ObjectType::trackExtra)> _trackExtras{};
+        std::array<TrackObject, getMaxObjects(ObjectType::track)> _tracks{};
+        std::array<RoadStationObject, getMaxObjects(ObjectType::roadStation)> _roadStations{};
+        std::array<RoadExtraObject, getMaxObjects(ObjectType::roadExtra)> _roadExtras{};
+        std::array<RoadObject, getMaxObjects(ObjectType::road)> _roads{};
+        std::array<AirportObject, getMaxObjects(ObjectType::airport)> _airports{};
+        std::array<DockObject, getMaxObjects(ObjectType::dock)> _docks{};
+        std::array<VehicleObject, getMaxObjects(ObjectType::vehicle)> _vehicles{};
+        std::array<TreeObject, getMaxObjects(ObjectType::tree)> _trees{};
+        std::array<SnowObject, getMaxObjects(ObjectType::snow)> _snows{};
+        std::array<ClimateObject, getMaxObjects(ObjectType::climate)> _climates{};
+        std::array<HillShapesObject, getMaxObjects(ObjectType::hillShapes)> _hillShapess{};
+        std::array<BuildingObject, getMaxObjects(ObjectType::building)> _buildings{};
+        std::array<ScaffoldingObject, getMaxObjects(ObjectType::scaffolding)> _scaffoldings{};
+        std::array<IndustryObject, getMaxObjects(ObjectType::industry)> _industrys{};
+        std::array<RegionObject, getMaxObjects(ObjectType::region)> _regions{};
+        std::array<CompetitorObject, getMaxObjects(ObjectType::competitor)> _competitors{};
+        std::array<ScenarioTextObject, getMaxObjects(ObjectType::scenarioText)> _scenarioTexts{};
+
+        Object* getObject(const LoadedObjectHandle handle)
+        {
+            switch (handle.type)
+            {
+                case ObjectType::interfaceSkin:
+                    return (Object*)&_interfaceSkins[handle.id];
+                case ObjectType::sound:
+                    return (Object*)&_sounds[handle.id];
+                case ObjectType::currency:
+                    return (Object*)&_currencys[handle.id];
+                case ObjectType::steam:
+                    return (Object*)&_steams[handle.id];
+                case ObjectType::cliffEdge:
+                    return (Object*)&_cliffEdges[handle.id];
+                case ObjectType::water:
+                    return (Object*)&_waters[handle.id];
+                case ObjectType::land:
+                    return (Object*)&_lands[handle.id];
+                case ObjectType::townNames:
+                    return (Object*)&_townNamess[handle.id];
+                case ObjectType::cargo:
+                    return (Object*)&_cargos[handle.id];
+                case ObjectType::wall:
+                    return (Object*)&_walls[handle.id];
+                case ObjectType::trackSignal:
+                    return (Object*)&_trackSignals[handle.id];
+                case ObjectType::levelCrossing:
+                    return (Object*)&_levelCrossings[handle.id];
+                case ObjectType::streetLight:
+                    return (Object*)&_streetLights[handle.id];
+                case ObjectType::tunnel:
+                    return (Object*)&_tunnels[handle.id];
+                case ObjectType::bridge:
+                    return (Object*)&_bridges[handle.id];
+                case ObjectType::trainStation:
+                    return (Object*)&_trainStations[handle.id];
+                case ObjectType::trackExtra:
+                    return (Object*)&_trackExtras[handle.id];
+                case ObjectType::track:
+                    return (Object*)&_tracks[handle.id];
+                case ObjectType::roadStation:
+                    return (Object*)&_roadStations[handle.id];
+                case ObjectType::roadExtra:
+                    return (Object*)&_roadExtras[handle.id];
+                case ObjectType::road:
+                    return (Object*)&_roads[handle.id];
+                case ObjectType::airport:
+                    return (Object*)&_airports[handle.id];
+                case ObjectType::dock:
+                    return (Object*)&_docks[handle.id];
+                case ObjectType::vehicle:
+                    return (Object*)&_vehicles[handle.id];
+                case ObjectType::tree:
+                    return (Object*)&_trees[handle.id];
+                case ObjectType::snow:
+                    return (Object*)&_snows[handle.id];
+                case ObjectType::climate:
+                    return (Object*)&_climates[handle.id];
+                case ObjectType::hillShapes:
+                    return (Object*)&_hillShapess[handle.id];
+                case ObjectType::building:
+                    return (Object*)&_buildings[handle.id];
+                case ObjectType::scaffolding:
+                    return (Object*)&_scaffoldings[handle.id];
+                case ObjectType::industry:
+                    return (Object*)&_industrys[handle.id];
+                case ObjectType::region:
+                    return (Object*)&_regions[handle.id];
+                case ObjectType::competitor:
+                    return (Object*)&_competitors[handle.id];
+                case ObjectType::scenarioText:
+                    return (Object*)&_scenarioTexts[handle.id];
+            }
+            return nullptr;
+        }
+    };
+    static ObjectHeaderDatas _objectHeaderDatas;
 
     static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
@@ -310,6 +502,7 @@ namespace OpenLoco::ObjectManager
     static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, std::span<const std::byte> data, DependentObjects* dependencies = nullptr)
     {
         return visitObject(handle.type, obj, [&](auto&& obj) {
+            std::memcpy(obj, data.data(), sizeof(*obj));
             return obj->load(handle, data, dependencies);
         });
     }
@@ -325,7 +518,7 @@ namespace OpenLoco::ObjectManager
         forEachLoadedObject([&loadedObjects](const LoadedObjectHandle& handle) {
             auto* obj = getAny(handle);
             auto& extHdr = getRepositoryItem(handle.type).objectEntryExtendeds[handle.id];
-            callObjectLoad(handle, *obj, std::span<const std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
+            callObjectLoad(handle, *obj, std::span(_rawObjectDatas._datas[enumValue(handle.type)][handle.id].get(), extHdr.dataSize));
             loadedObjects++;
         });
 
@@ -376,7 +569,7 @@ namespace OpenLoco::ObjectManager
     struct PreLoadedObject
     {
         std::span<std::byte> objectData;
-        Object* object; // Owning pointer!
+        std::unique_ptr<std::byte[]> object;
         ObjectHeader header;
     };
 
@@ -413,22 +606,22 @@ namespace OpenLoco::ObjectManager
         }
 
         // Copy the object into Loco freeable memory (required for when load loads the object)
-        preLoadObj.object = reinterpret_cast<Object*>(malloc(data.size()));
+        preLoadObj.object = std::make_unique<std::byte[]>(data.size());
         if (preLoadObj.object == nullptr)
         {
             return std::nullopt;
         }
-        std::copy(std::begin(data), std::end(data), reinterpret_cast<std::byte*>(preLoadObj.object));
+        std::copy(std::begin(data), std::end(data), preLoadObj.object.get());
 
-        preLoadObj.objectData = std::span<std::byte>(reinterpret_cast<std::byte*>(preLoadObj.object), data.size());
+        preLoadObj.objectData = std::span<std::byte>(preLoadObj.object.get(), data.size());
 
-        if (!callObjectValidate(preLoadObj.header.getType(), *preLoadObj.object))
-        {
-            free(preLoadObj.object);
-            // Object failed validation
-            Logging::error("Object {} in index failed validation! (This should not be possible)", header.getName());
-            return std::nullopt;
-        }
+        // if (!callObjectValidate(preLoadObj.header.getType(), *preLoadObj.object))
+        //{
+        //     free(preLoadObj.object);
+        //     // Object failed validation
+        //     Logging::error("Object {} in index failed validation! (This should not be possible)", header.getName());
+        //     return std::nullopt;
+        // }
 
         _decodedSize = preLoadObj.objectData.size();
 
@@ -448,13 +641,13 @@ namespace OpenLoco::ObjectManager
         const uint32_t oldNumImages = getTotalNumImages();
         setTotalNumImages(Gfx::G1ExpectedCount::kDisc);
 
-        _temporaryObject = preLoadObj->object;
+        _temporaryObject = reinterpret_cast<Object*>(malloc(0x1000));
         _isPartialLoaded = true;
         _isTemporaryObject = 0xFF;
 
         auto* depObjs = Interop::addr<0x0050D158, uint8_t*>();
         DependentObjects dependencies;
-        callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF) ? &dependencies : nullptr);
+        callObjectLoad({ preLoadObj->header.getType(), 0 }, **_temporaryObject, preLoadObj->objectData, depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF) ? &dependencies : nullptr);
 
         if (depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF))
         {
@@ -483,15 +676,15 @@ namespace OpenLoco::ObjectManager
 
         if (header.getType() == ObjectType::competitor)
         {
-            auto* competitor = reinterpret_cast<CompetitorObject*>(preLoadObj->object);
+            auto* competitor = reinterpret_cast<S5::CompetitorObject*>(preLoadObj->object.get());
             result.displayData.aggressiveness = competitor->aggressiveness;
             result.displayData.competitiveness = competitor->competitiveness;
             result.displayData.intelligence = competitor->intelligence;
         }
         else if (header.getType() == ObjectType::vehicle)
         {
-            auto* vehicle = reinterpret_cast<VehicleObject*>(preLoadObj->object);
-            result.displayData.vehicleSubType = enumValue(vehicle->type);
+            auto* vehicle = reinterpret_cast<S5::VehicleObject*>(preLoadObj->object.get());
+            result.displayData.vehicleSubType = vehicle->type;
         }
 
         return result;
@@ -524,12 +717,14 @@ namespace OpenLoco::ObjectManager
 
         if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
         {
-            free(preLoadObj->object);
+            preLoadObj->object.release();
             // Too many objects loaded and no free image space
             return false;
         }
 
-        _objectRepository[enumValue(preLoadObj->header.getType())].objects[id] = preLoadObj->object;
+        _rawObjectDatas._datas[enumValue(preLoadObj->header.getType())][id] = std::move(preLoadObj->object);
+        _objectRepository[enumValue(preLoadObj->header.getType())].objects[id] = _objectHeaderDatas.getObject(LoadedObjectHandle(preLoadObj->header.getType(), id));
+        preLoadObj->object = nullptr;
         auto& extendedHeader = _objectRepository[enumValue(preLoadObj->header.getType())].objectEntryExtendeds[id];
         extendedHeader = ObjectEntry2{
             preLoadObj->header, preLoadObj->objectData.size()
@@ -537,7 +732,7 @@ namespace OpenLoco::ObjectManager
 
         if (!*_isPartialLoaded)
         {
-            callObjectLoad({ preLoadObj->header.getType(), id }, *preLoadObj->object, preLoadObj->objectData);
+            callObjectLoad({ preLoadObj->header.getType(), id }, *_objectRepository[enumValue(preLoadObj->header.getType())].objects[id], preLoadObj->objectData);
         }
 
         return true;
@@ -564,7 +759,7 @@ namespace OpenLoco::ObjectManager
             return;
         }
         unload(*handle);
-        free(_objectRepository[enumValue(handle->type)].objects[handle->id]);
+        //free(_objectRepository[enumValue(handle->type)].objects[handle->id]);
         _objectRepository[enumValue(handle->type)].objects[handle->id] = reinterpret_cast<Object*>(-1);
     }
 
@@ -1072,6 +1267,15 @@ namespace OpenLoco::ObjectManager
                 regs = backup;
 
                 return res ? 0 : X86_FLAG_CARRY;
+            });
+
+        registerHook(
+            0x0047237D,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                reloadAll();
+                regs = backup;
+                return 0;
             });
     }
 }
