@@ -671,9 +671,9 @@ namespace OpenLoco::ObjectManager
     // All object files are based on their internal object header name but
     // there is a chance of a name collision this function works out if the name
     // is possible and if not permutes the name until it is valid.
-    static fs::path findObjectPath(std::string& filename)
+    static fs::path findCustomObjectPath(std::string& filename)
     {
-        auto objPath = Environment::getPath(Environment::PathId::vanillaObjects) / (filename + ".DAT");
+        auto objPath = Environment::getPath(Environment::PathId::customObjects) / (filename + ".DAT");
         while (fs::exists(objPath))
         {
             permutateObjectFilename(filename);
@@ -710,7 +710,7 @@ namespace OpenLoco::ObjectManager
         // Get new file path
         std::string filename = objectname;
         sanatiseObjectFilename(filename);
-        const auto objPath = findObjectPath(filename);
+        const auto objPath = findCustomObjectPath(filename);
 
         // Create new file and output object file
         Ui::ProgressBar::setProgress(180);
