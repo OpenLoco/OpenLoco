@@ -1,11 +1,8 @@
 #pragma once
 
-#include <memory>
-#include <string>
 #include <vector>
 
 #include <filesystem>
-#include <png.h>
 
 namespace OpenLoco::Gfx
 {
@@ -19,23 +16,19 @@ namespace OpenLoco::Gfx
 
     class PngImage
     {
-    public:
-        PngImage(std::vector<png_byte> img, int w, int h, int c);
+        std::vector<uint8_t> imageData;
 
+    public:
+        const int width{};
+        const int height{};
+        const int channels{};
+
+        PngImage() = default;
         PngImage(int w, int h, int c);
 
-        std::vector<png_byte> imageData;
-        int width{};
-        int height{};
-        int channels{};
+        static std::unique_ptr<PngImage> loadFromFile(const std::filesystem::path& filePath);
 
         Colour32 getPixel(int x, int y);
-    };
-
-    class PngOps
-    {
-    public:
-        static std::unique_ptr<PngImage> loadPng(const std::filesystem::path& filePath);
     };
 
 }

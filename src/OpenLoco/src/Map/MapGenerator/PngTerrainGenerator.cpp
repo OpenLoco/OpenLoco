@@ -20,7 +20,7 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        auto pngImage = Gfx::PngOps::loadPng(path);
+        auto pngImage = Gfx::PngImage::loadFromFile(path);
         if (pngImage == nullptr)
         {
             Logging::error("Can't load heightmap file ({})", path);
