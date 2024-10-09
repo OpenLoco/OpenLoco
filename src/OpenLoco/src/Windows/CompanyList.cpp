@@ -1943,7 +1943,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                 {
                     auto colour = gs.lineColour[lineIndex];
-                    drawingCtx.drawRect(xPos, yPos, 1, 1, colour, Gfx::RectFlags::none);
+                    drawingCtx.drawRect(xPos, yPos, 2, 2, colour, Gfx::RectFlags::none);
                 }
 
                 dataIndex++;
