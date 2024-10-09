@@ -20,7 +20,7 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        auto pngImage = Gfx::PngOps::loadPng(path.string());
+        auto pngImage = Gfx::PngOps::loadPng(path);
         if (pngImage == nullptr)
         {
             Logging::error("Can't load heightmap file ({})", path);
@@ -39,10 +39,9 @@ namespace OpenLoco::World::MapGenerator
         {
             for (int32_t x = 0; x < width; x++)
             {
-                png_byte red, green, blue, alpha;
-                pngImage->getPixel(x, y, red, green, blue, alpha);
+                const auto pixelColour = pngImage->getPixel(x, y);
 
-                auto imgHeight = std::max({ red, green, blue });
+                auto imgHeight = std::max({ pixelColour.r, pixelColour.g, pixelColour.b });
                 heightMap[{ TilePos2(y, x) }] += imgHeight * scalingFactor; // this must be { y, x } otherwise the heightmap is mirrored
             }
         }
