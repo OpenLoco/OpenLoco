@@ -1949,7 +1949,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 dataIndex++;
 
-                if (gs.flags & (1 << 1))
+                if (!(gs.flags & (1 << 1)))
                 {
                     dataPtr += gs.dataTypeSize;
                 }
@@ -1981,20 +1981,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
             int64_t maxValue = graphGetMaxValue(gs);
 
             // 0x004CFA02
-            /*
-            // variable is never used?
+
             auto height = gs.canvasHeight;
             if (gs.flags & (1 << 0))
             {
-                // half height? never set, anyway. remove?
+                // half height flag never set likely for negative values
                 height >>= 1;
             }
-            */
 
-            // Count number of shifts until we reach zero
+            // We work out the number of shifts required to bring a 64bit value
+            // into something that is within the height range
             gs.numValueShifts = 0;
-            for (auto value = maxValue; (value >> 32) > 0; value >>= 1)
+            for (auto adjustedMaxValue = maxValue; adjustedMaxValue > height; adjustedMaxValue >>= 1)
+            {
                 gs.numValueShifts++;
+            }
 
             if (!(gs.flags & (1 << 2)))
             {
