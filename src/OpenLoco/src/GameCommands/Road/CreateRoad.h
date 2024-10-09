@@ -37,4 +37,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void createRoad(registers& regs);
 }
