@@ -2003,14 +2003,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
 
             // 0x004CFD59
-            _dword_113658C = 0; // iteration/pass??
-            while (true)
+            for (_dword_113658C = 0; _dword_113658C < 2; _dword_113658C++) // iteration/pass??
             {
                 if ((gs.byte_113DD99 & (1U << _dword_113658C)) == 0)
                 {
-                    _dword_113658C++;
-                    if (_dword_113658C == 2)
-                        return;
+                    continue;
                 }
 
                 for (auto i = 0U; i < gs.lineCount; i++)
@@ -2022,10 +2019,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                     drawGraphLineSegments(i, gs, drawingCtx);
                 }
-
-                _dword_113658C++;
-                if (_dword_113658C == 2)
-                    return;
             }
         }
 
