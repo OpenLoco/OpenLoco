@@ -57,6 +57,7 @@
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <array>
 #include <numeric>
+#include <ranges>
 #include <vector>
 
 using namespace OpenLoco::Diagnostics;
@@ -419,7 +420,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             _tabObjectList.emplace_back(std::move(entry));
         }
 
-        std::sort(_tabObjectList.begin(), _tabObjectList.end(), [](const TabObjectEntry& lhs, const TabObjectEntry& rhs) { return lhs.object._name < rhs.object._name; });
+        std::ranges::sort(_tabObjectList, {}, [](const auto& el) { return el.object._name; });
 
         applyFilterToObjectList(filterFlags);
     }
@@ -441,7 +442,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return { static_cast<int16_t>(_tabObjectList[0].index), _tabObjectList[0].object };
         }
 
-        return { -1, ObjectManager::ObjectIndexEntry{} };
+        return { ObjectManager::kNullObjectIndex, ObjectManager::ObjectIndexEntry{} };
     }
 
     static const WindowEventList& getEvents();
@@ -474,7 +475,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         ObjectManager::freeTemporaryObject();
 
         auto objIndex = getFirstAvailableSelectedObject(window);
-        if (objIndex.index != -1)
+        if (objIndex.index != ObjectManager::kNullObjectIndex)
         {
             window->rowHover = objIndex.index;
             window->object = reinterpret_cast<std::byte*>(&objIndex.object._header);
@@ -632,16 +633,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr uint8_t kDescriptionRowHeight = 10;
 
     template<typename T>
-    static void callDrawPreviewImage(Gfx::DrawingContext& drawingCtx, const Ui::Point& drawingOffset, Object* objectPtr)
+    static void callDrawPreviewImage(Gfx::DrawingContext& drawingCtx, const Ui::Point& drawingOffset, const Object& objectPtr)
     {
-        auto object = reinterpret_cast<T*>(objectPtr);
+        auto object = reinterpret_cast<const T*>(&objectPtr);
         object->drawPreviewImage(drawingCtx, drawingOffset.x, drawingOffset.y);
     }
 
     // 0x00473579
-    static void drawPreviewImage(const ObjectHeader* header, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object* objectPtr)
+    static void drawPreviewImage(const ObjectHeader& header, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, const Object& objectPtr)
     {
-        auto type = header->getType();
+        auto type = header.getType();
 
         // Clip the draw area to simplify image draw
         Ui::Point drawAreaPos = Ui::Point{ x, y } - kObjectPreviewOffset;
@@ -775,13 +776,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     template<typename T>
-    static void callDrawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, const int16_t width, Object* objectPtr)
+    static void callDrawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, const int16_t width, const Object& objectPtr)
     {
-        auto object = reinterpret_cast<T*>(objectPtr);
+        auto object = reinterpret_cast<const T*>(&objectPtr);
         object->drawDescription(drawingCtx, x, y, width);
     }
 
-    static void drawDescription(const ObjectHeader* header, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object* objectPtr)
+    static void drawDescription(const ObjectHeader& header, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object& objectPtr)
     {
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
@@ -794,7 +795,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         drawingCtx.pushRenderTarget(*clipped);
 
-        switch (header->getType())
+        switch (header.getType())
         {
             case ObjectType::levelCrossing:
                 callDrawDescription<LevelCrossingObject>(drawingCtx, 0, 0, width, objectPtr);
@@ -932,8 +933,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         bool doDefault = true;
         if (self.object != nullptr)
         {
-            auto* objectPtr = &ObjectManager::getObjectInIndex(self.rowHover)._header;
-            if (objectPtr->getType() != ObjectType::townNames && objectPtr->getType() != ObjectType::climate)
+            auto& objectHeader = ObjectManager::getObjectInIndex(self.rowHover)._header;
+            if (objectHeader.getType() != ObjectType::townNames && objectHeader.getType() != ObjectType::climate)
             {
                 doDefault = false;
             }
@@ -977,14 +978,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         {
-            auto* objectPtr = &ObjectManager::getObjectInIndex(self.rowHover)._header;
+            auto& objectHeader = ObjectManager::getObjectInIndex(self.rowHover)._header;
 
             drawPreviewImage(
-                objectPtr,
+                objectHeader,
                 drawingCtx,
                 widgets[widx::objectImage].midX() + 1 + self.x,
                 widgets[widx::objectImage].midY() + 1 + self.y,
-                temporaryObject);
+                *temporaryObject);
         }
 
         auto x = self.widgets[widx::objectImage].midX() + self.x;
@@ -1003,15 +1004,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         {
-            auto* objectPtr = &ObjectManager::getObjectInIndex(self.rowHover)._header;
+            auto& objHeader = ObjectManager::getObjectInIndex(self.rowHover)._header;
 
             drawDescription(
-                objectPtr,
+                objHeader,
                 &self,
                 drawingCtx,
                 self.widgets[widx::scrollview].right + self.x + 4,
                 y + kDescriptionRowHeight,
-                temporaryObject);
+                *temporaryObject);
         }
 
         {
@@ -1185,7 +1186,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 w->invalidate();
 
                 auto objIndex = getFirstAvailableSelectedObject(w);
-                if (objIndex.index != -1)
+                if (objIndex.index != ObjectManager::kNullObjectIndex)
                 {
                     w->rowHover = objIndex.index;
                     w->object = reinterpret_cast<std::byte*>(&objIndex.object._header);
@@ -1215,7 +1216,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         ObjectManager::freeTemporaryObject();
         auto objIndex = getFirstAvailableSelectedObject(&self);
 
-        if (objIndex.index != -1)
+        if (objIndex.index != ObjectManager::kNullObjectIndex)
         {
             self.rowHover = objIndex.index;
             self.object = reinterpret_cast<std::byte*>(&objIndex.object._header);
@@ -1410,7 +1411,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
         }
 
-        return { -1, ObjectManager::ObjectIndexEntry{} };
+        return { ObjectManager::kNullObjectIndex, ObjectManager::ObjectIndexEntry{} };
     }
 
     // 0x0047390A
@@ -1418,14 +1419,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         auto objIndex = getObjectFromSelection(&self, y);
 
-        if (objIndex.index == self.rowHover || objIndex.index == -1)
+        if (objIndex.index == self.rowHover || objIndex.index == ObjectManager::kNullObjectIndex)
             return;
 
         self.rowHover = objIndex.index;
         self.object = reinterpret_cast<std::byte*>(&objIndex.object._header);
         ObjectManager::freeTemporaryObject();
 
-        if (objIndex.index != -1)
+        if (objIndex.index != ObjectManager::kNullObjectIndex)
         {
             ObjectManager::loadTemporaryObject(objIndex.object._header);
         }
@@ -1440,7 +1441,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto index = objIndex.index;
         auto object = objIndex.object._header;
 
-        if (index == -1)
+        if (index == ObjectManager::kNullObjectIndex)
             return;
 
         self.invalidate();
@@ -1455,7 +1456,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             {
                 auto [oldIndex, oldObject] = ObjectManager::getActiveObject(type, selectionFlags);
 
-                if (oldIndex != -1)
+                if (oldIndex != ObjectManager ::kNullObjectIndex)
                 {
                     ObjectManager::ObjectSelectionMeta meta{};
                     std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));

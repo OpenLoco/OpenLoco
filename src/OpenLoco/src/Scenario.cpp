@@ -499,7 +499,7 @@ namespace OpenLoco::Scenario
 
         ObjectManager::prepareSelectionList(true);
         const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
-        if (oldCurrency.index != -1)
+        if (oldCurrency.index != ObjectManager::kNullObjectIndex)
         {
             if (oldCurrency.object._header == preferredCurreny)
             {

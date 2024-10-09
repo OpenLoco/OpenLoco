@@ -23,6 +23,7 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <optional>
+#include <ranges>
 
 using namespace OpenLoco::Interop;
 
@@ -67,7 +68,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     {
         _competitorList = ObjectManager::getAvailableObjects(ObjectType::competitor);
 
-        std::sort(_competitorList.begin(), _competitorList.end(), [](const auto& lhs, const auto& rhs) { return lhs.object._name < rhs.object._name; });
+        std::ranges::sort(
+            _competitorList, {}, [](auto& el) { return el.object._name; });
     }
 
     // 0x00434F52
@@ -153,18 +155,18 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         return std::find(_inUseCompetitors.begin(), _inUseCompetitors.end(), objIndex) != _inUseCompetitors.end();
     }
 
-    static ObjectManager::ObjIndexPair getObjectFromSelection(const int16_t& y)
+    static ObjectManager::ObjIndexPair getObjectFromSelection(const int16_t y)
     {
         const int16_t rowIndex = y / kRowHeight;
 
         if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= _competitorList.size())
         {
-            return { -1, ObjectManager::ObjectIndexEntry{} };
+            return { ObjectManager::kNullObjectIndex, ObjectManager::ObjectIndexEntry{} };
         }
 
         if (isInUseCompetitor(_competitorList[rowIndex].index))
         {
-            return { -1, ObjectManager::ObjectIndexEntry{} };
+            return { ObjectManager::kNullObjectIndex, ObjectManager::ObjectIndexEntry{} };
         }
 
         return _competitorList[rowIndex];
@@ -175,7 +177,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     {
         const auto objRow = getObjectFromSelection(y);
 
-        if (objRow.index == -1)
+        if (objRow.index == ObjectManager::kNullObjectIndex)
         {
             return;
         }
@@ -219,7 +221,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         self.rowHover = objRow.index;
         ObjectManager::freeTemporaryObject();
 
-        if (objRow.index != -1)
+        if (objRow.index != ObjectManager::kNullObjectIndex)
         {
             self.object = reinterpret_cast<std::byte*>(&objRow.object._header);
             ObjectManager::loadTemporaryObject(objRow.object._header);
@@ -325,7 +327,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 drawingCtx.fillRect(0, y, self.width, y + 9, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
             }
 
-            std::string name(object.object._name);
+            // copy name as we need to modify it
+            std::string name = object.object._name;
             name.insert(0, 1, inlineColour);
 
             tr.setCurrentFont(Gfx::Font::medium_bold);

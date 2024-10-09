@@ -566,7 +566,7 @@ namespace OpenLoco::ObjectManager
             }
         }
 
-        return { -1, ObjectIndexEntry{} };
+        return { ObjectManager::kNullObjectIndex, ObjectIndexEntry{} };
     }
 
     // 0x0047400C

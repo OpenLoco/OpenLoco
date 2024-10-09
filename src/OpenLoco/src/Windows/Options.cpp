@@ -1653,7 +1653,7 @@ namespace OpenLoco::Ui::Windows::Options
                 {
                     auto ebp = ObjectManager::getActiveObject(ObjectType::currency, selectedObjectFlags);
 
-                    if (ebp.index != -1)
+                    if (ebp.index != ObjectManager::kNullObjectIndex)
                     {
                         ObjectManager::unload(ebp.object._header);
                     }

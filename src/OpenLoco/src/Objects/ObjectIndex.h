@@ -37,6 +37,7 @@ namespace OpenLoco::ObjectManager
 
     // Index into the overall ObjectIndex. Note: Not a type specific index!
     using ObjectIndexId = int16_t;
+    constexpr ObjectIndexId kNullObjectIndex = -1;
 
     struct ObjIndexPair
     {
