@@ -369,7 +369,7 @@ namespace OpenLoco::ObjectManager
 
         freeTemporaryObject();
 
-        auto duplicate = std::find_if(_installedObjectList.begin(), _installedObjectList.end(), [&newEntry](auto& entry) { return newEntry._header == entry._header; });
+        auto duplicate = std::ranges::find(_installedObjectList, objHeader, &ObjectIndexEntry::_header);
         if (duplicate != _installedObjectList.end())
         {
             Logging::error("Duplicate object found {}, {} won't be added to index", duplicate->_filepath, newEntry._filepath);
@@ -524,13 +524,12 @@ namespace OpenLoco::ObjectManager
 
     static std::optional<ObjIndexPair> internalFindObjectInIndex(const ObjectHeader& objectHeader)
     {
-        const auto objects = getAvailableObjects(objectHeader.getType());
-        auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return obj.object._header == objectHeader; });
-        if (res == std::end(objects))
+        auto res = std::ranges::find(_installedObjectList, objectHeader, &ObjectIndexEntry::_header);
+        if (res == std::end(_installedObjectList))
         {
             return std::nullopt;
         }
-        return *res;
+        return ObjIndexPair{ static_cast<ObjectIndexId>(std::distance(std::begin(_installedObjectList), res)), *res };
     }
 
     std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader)
@@ -1106,17 +1105,14 @@ namespace OpenLoco::ObjectManager
     // 0x00474874
     void loadSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags)
     {
-        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        for (auto i = 0U; i < objectFlags.size(); i++)
         {
-            auto objects = getAvailableObjects(type);
-            for (auto& [i, object] : objects)
+            if ((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
             {
-                if ((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+                auto& header = _installedObjectList[i]._header;
+                if (!findObjectHandle(header))
                 {
-                    if (!findObjectHandle(object._header))
-                    {
-                        load(object._header);
-                    }
+                    load(header);
                 }
             }
         }
