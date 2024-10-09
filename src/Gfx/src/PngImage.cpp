@@ -1,33 +1,39 @@
 #include "PngImage.h"
-#include "Logging.h"
+
+#include <OpenLoco/Diagnostics/Logging.h>
+#include <cassert>
+#include <fstream>
+#include <png.h>
 
 using namespace OpenLoco::Diagnostics;
 
-namespace OpenLoco::World::MapGenerator
+namespace OpenLoco::Gfx
 {
-    PngImage::PngImage(std::vector<png_byte> img, int w, int h, int c)
-    {
-        imageData = img;
-        width = w;
-        height = h;
-        channels = c;
-    }
-
     PngImage::PngImage(int w, int h, int c)
+        : width(w)
+        , height(h)
+        , channels(c)
     {
+        assert(w > 0);
+        assert(h > 0);
+        assert(c > 0);
+
         imageData = std::vector<png_byte>(w * h * c);
-        width = w;
-        height = h;
-        channels = c;
     }
 
-    void PngImage::getPixel(int x, int y, png_byte& red, png_byte& green, png_byte& blue, png_byte& alpha)
+    Colour32 PngImage::getPixel(int x, int y)
     {
-        int index = (y * width + x) * channels;
-        red = imageData[index];
-        green = imageData[index + 1];
-        blue = imageData[index + 2];
-        alpha = imageData[index + 3];
+        const size_t index = (y * width + x) * channels;
+        assert(index + channels < imageData.size());
+
+        // NOTE: It always assumes the image is in RGBA format, odd PNG files will cause
+        // to read garbage data.
+        return {
+            imageData[index + 0],
+            imageData[index + 1],
+            imageData[index + 2],
+            imageData[index + 3]
+        };
     }
 
     static void libpngErrorHandler(png_structp, png_const_charp error_msg)
@@ -40,9 +46,9 @@ namespace OpenLoco::World::MapGenerator
         Logging::warn("{}", error_msg);
     }
 
-    std::unique_ptr<PngImage> PngOps::loadPng(std::string filename)
+    std::unique_ptr<PngImage> PngImage::loadFromFile(const std::filesystem::path& filePath)
     {
-        std::ifstream inFile(filename, std::ios::binary);
+        std::ifstream inFile(filePath, std::ios::binary);
 
         png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, libpngErrorHandler, libpngWarningHandler);
         if (!png)

@@ -26,4 +26,5 @@ target_link_libraries(Engine
         Utility
         Interop
         Math
+        Gfx
 )

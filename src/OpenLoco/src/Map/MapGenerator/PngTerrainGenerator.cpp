@@ -1,9 +1,9 @@
 #include "PngTerrainGenerator.h"
 #include "Logging.h"
 #include "MapGenerator.h"
-#include "PngImage.h"
 #include "S5/S5.h"
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Gfx/PngImage.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <png.h>
 
@@ -20,7 +20,7 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        auto pngImage = PngOps::loadPng(path.string());
+        auto pngImage = Gfx::PngImage::loadFromFile(path);
         if (pngImage == nullptr)
         {
             Logging::error("Can't load heightmap file ({})", path);
@@ -39,10 +39,9 @@ namespace OpenLoco::World::MapGenerator
         {
             for (int32_t x = 0; x < width; x++)
             {
-                png_byte red, green, blue, alpha;
-                pngImage->getPixel(x, y, red, green, blue, alpha);
+                const auto pixelColour = pngImage->getPixel(x, y);
 
-                auto imgHeight = std::max({ red, green, blue });
+                auto imgHeight = std::max({ pixelColour.r, pixelColour.g, pixelColour.b });
                 heightMap[{ TilePos2(y, x) }] += imgHeight * scalingFactor; // this must be { y, x } otherwise the heightmap is mirrored
             }
         }
