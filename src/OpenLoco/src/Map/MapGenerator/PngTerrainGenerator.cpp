@@ -1,9 +1,9 @@
 #include "PngTerrainGenerator.h"
 #include "Logging.h"
 #include "MapGenerator.h"
-#include "PngImage.h"
 #include "S5/S5.h"
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Gfx/PngImage.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <png.h>
 
@@ -20,7 +20,7 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        auto pngImage = PngOps::loadPng(path.string());
+        auto pngImage = Gfx::PngOps::loadPng(path.string());
         if (pngImage == nullptr)
         {
             Logging::error("Can't load heightmap file ({})", path);
