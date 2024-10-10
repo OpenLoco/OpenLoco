@@ -5,14 +5,14 @@
 // #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 // #include "Map/BuildingElement.h"
-// #include "Map/RoadElement.h"
-// #include "Map/StationElement.h"
+#include "Map/RoadElement.h"
+#include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
-// #include "Map/TileClearance.h"
+#include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
+#include "Map/TrackElement.h"
 #include "SceneManager.h"
-// #include "Map/TrackElement.h"
 // #include "Map/TreeElement.h"
 #include "Objects/BridgeObject.h"
 // #include "Objects/LevelCrossingObject.h"
@@ -21,7 +21,7 @@
 #include "Objects/RoadObject.h"
 // #include "Objects/TrackObject.h"
 // #include "World/CompanyManager.h"
-// #include "World/StationManager.h"
+#include "World/StationManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::GameCommands
@@ -56,281 +56,292 @@ namespace OpenLoco::GameCommands
         return false;
     }
 
-    // struct ClearFunctionArgs
-    //{
-    //     World::Pos3 pos;
-    //     uint8_t rotation;
-    //     uint8_t trackId;
-    //     uint8_t unkFlags;
-    //     uint8_t bridgeId;
-    //     uint8_t trackObjectId;
-    //     uint8_t index;
-    //     bool isLastIndex;
-    //     uint8_t flags;
-    // };
+    struct ClearFunctionArgs
+    {
+        World::Pos3 pos;
+        uint8_t rotation;
+        uint8_t roadId;
+        uint8_t bridgeId;
+        uint8_t roadObjectId;
+        uint8_t index;
+        bool isLastIndex;
+        uint8_t flags;
+        std::array<uint8_t, 16> roadIdUnk;
+    };
 
-    //// 0x0049C4FF
-    // static World::TileClearance::ClearFuncResult clearTrack(World::TrackElement& elTrack, const ClearFunctionArgs& args)
-    //{
-    //     if (elTrack.hasBridge())
-    //     {
-    //         _byte_1136075 = elTrack.bridge();
-    //     }
+    // 0x00476EC4
+    static World::TileClearance::ClearFuncResult clearTrack(World::TrackElement& elTrack, const ClearFunctionArgs& args)
+    {
+        //     if (elTrack.hasBridge())
+        //     {
+        //         _byte_1136075 = elTrack.bridge();
+        //     }
 
-    //    const auto& targetPiece = World::TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
-    //    const auto& newPiece = World::TrackData::getTrackPiece(args.trackId)[args.index];
+        //    const auto& targetPiece = World::TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
+        //    const auto& newPiece = World::TrackData::getTrackPiece(args.trackId)[args.index];
 
-    //    const auto targetConnectFlags = targetPiece.connectFlags[elTrack.rotation()];
-    //    const auto newConnectFlags = newPiece.connectFlags[args.rotation];
-    //    if (!(targetConnectFlags & newConnectFlags))
-    //    {
-    //        return World::TileClearance::ClearFuncResult::noCollision;
-    //    }
+        //    const auto targetConnectFlags = targetPiece.connectFlags[elTrack.rotation()];
+        //    const auto newConnectFlags = newPiece.connectFlags[args.rotation];
+        //    if (!(targetConnectFlags & newConnectFlags))
+        //    {
+        //        return World::TileClearance::ClearFuncResult::noCollision;
+        //    }
 
-    //    if (args.unkFlags & (1U << 2))
-    //    {
-    //        setErrorText(StringIds::junctions_not_possible);
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    if (args.unkFlags & (1U << 2))
+        //    {
+        //        setErrorText(StringIds::junctions_not_possible);
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    if (!sub_431E6A(elTrack.owner(), reinterpret_cast<const World::TileElement*>(&elTrack)))
-    //    {
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    if (!sub_431E6A(elTrack.owner(), reinterpret_cast<const World::TileElement*>(&elTrack)))
+        //    {
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    if (((World::TrackData::getTrackMiscData(elTrack.trackId()).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none)
-    //        || ((World::TrackData::getTrackMiscData(args.trackId).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none))
-    //    {
-    //        setErrorText(StringIds::junction_must_be_entirely_level);
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    if (((World::TrackData::getTrackMiscData(elTrack.trackId()).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none)
+        //        || ((World::TrackData::getTrackMiscData(args.trackId).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none))
+        //    {
+        //        setErrorText(StringIds::junction_must_be_entirely_level);
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    auto* targetTrackObj = ObjectManager::get<TrackObject>(elTrack.trackObjectId());
-    //    auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
-    //    if (elTrack.baseHeight() != args.pos.z)
-    //    {
-    //        FormatArguments::common(targetTrackObj->name);
-    //        setErrorText(StringIds::string_id_in_the_way_wrong_height_for_junction);
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    auto* targetTrackObj = ObjectManager::get<TrackObject>(elTrack.trackObjectId());
+        //    auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
+        //    if (elTrack.baseHeight() != args.pos.z)
+        //    {
+        //        FormatArguments::common(targetTrackObj->name);
+        //        setErrorText(StringIds::string_id_in_the_way_wrong_height_for_junction);
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    if (elTrack.hasSignal())
-    //    {
-    //        setErrorText(StringIds::signal_in_the_way);
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    if (elTrack.hasSignal())
+        //    {
+        //        setErrorText(StringIds::signal_in_the_way);
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    if (elTrack.hasStationElement())
-    //    {
-    //        setErrorText(StringIds::station_in_the_way);
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    if (elTrack.hasStationElement())
+        //    {
+        //        setErrorText(StringIds::station_in_the_way);
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    if (!((args.rotation ^ elTrack.rotation()) & 0b1))
-    //    {
-    //        if (((World::TrackData::getTrackMiscData(elTrack.trackId()).flags ^ World::TrackData::getTrackMiscData(args.trackId).flags) & CommonTraitFlags::oneSided) != CommonTraitFlags::none)
-    //        {
-    //            setErrorText(StringIds::track_combination_not_possible);
-    //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //        }
-    //    }
+        //    if (!((args.rotation ^ elTrack.rotation()) & 0b1))
+        //    {
+        //        if (((World::TrackData::getTrackMiscData(elTrack.trackId()).flags ^ World::TrackData::getTrackMiscData(args.trackId).flags) & CommonTraitFlags::oneSided) != CommonTraitFlags::none)
+        //        {
+        //            setErrorText(StringIds::track_combination_not_possible);
+        //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //        }
+        //    }
 
-    //    if (elTrack.hasBridge())
-    //    {
-    //        if (elTrack.bridge() != args.bridgeId)
-    //        {
-    //            setErrorText(StringIds::bridge_types_must_match);
-    //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //        }
+        //    if (elTrack.hasBridge())
+        //    {
+        //        if (elTrack.bridge() != args.bridgeId)
+        //        {
+        //            setErrorText(StringIds::bridge_types_must_match);
+        //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //        }
 
-    //        auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridgeId);
-    //        if ((bridgeObj->disabledTrackCfg & CommonTraitFlags::junction) != CommonTraitFlags::none)
-    //        {
-    //            setErrorText(StringIds::bridge_not_suitable_for_junction);
-    //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //        }
-    //    }
+        //        auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridgeId);
+        //        if ((bridgeObj->disabledTrackCfg & CommonTraitFlags::junction) != CommonTraitFlags::none)
+        //        {
+        //            setErrorText(StringIds::bridge_not_suitable_for_junction);
+        //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //        }
+        //    }
 
-    //    if (elTrack.trackObjectId() == args.trackObjectId)
-    //    {
-    //        if (elTrack.trackId() == args.trackId)
-    //        {
-    //            if (elTrack.rotation() == args.rotation)
-    //            {
-    //                if (elTrack.sequenceIndex() == args.index)
-    //                {
-    //                    setErrorText(StringIds::already_built_here);
-    //                    return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //                }
-    //            }
-    //        }
-    //        // This is working out reversed elements
-    //        if (World::TrackData::getTrackMiscData(elTrack.trackId()).reverseTrackId == args.trackId)
-    //        {
-    //            if (((World::TrackData::getTrackMiscData(elTrack.trackId()).reverseRotation + elTrack.rotation()) & 0x3) == args.rotation)
-    //            {
-    //                if (args.isLastIndex && elTrack.sequenceIndex() == 0)
-    //                {
-    //                    setErrorText(StringIds::already_built_here);
-    //                    return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //                }
-    //            }
-    //        }
-    //    }
+        //    if (elTrack.trackObjectId() == args.trackObjectId)
+        //    {
+        //        if (elTrack.trackId() == args.trackId)
+        //        {
+        //            if (elTrack.rotation() == args.rotation)
+        //            {
+        //                if (elTrack.sequenceIndex() == args.index)
+        //                {
+        //                    setErrorText(StringIds::already_built_here);
+        //                    return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //                }
+        //            }
+        //        }
+        //        // This is working out reversed elements
+        //        if (World::TrackData::getTrackMiscData(elTrack.trackId()).reverseTrackId == args.trackId)
+        //        {
+        //            if (((World::TrackData::getTrackMiscData(elTrack.trackId()).reverseRotation + elTrack.rotation()) & 0x3) == args.rotation)
+        //            {
+        //                if (args.isLastIndex && elTrack.sequenceIndex() == 0)
+        //                {
+        //                    setErrorText(StringIds::already_built_here);
+        //                    return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //                }
+        //            }
+        //        }
+        //    }
 
-    //    if (elTrack.trackObjectId() == args.trackObjectId)
-    //    {
-    //        if (!targetTrackObj->hasTraitFlags(TrackTraitFlags::junction))
-    //        {
-    //            setErrorText(StringIds::junctions_not_possible);
-    //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        if (!(targetTrackObj->compatibleTracks & (1U << args.trackObjectId))
-    //            && !(trackObj->compatibleTracks & (1U << elTrack.trackObjectId())))
-    //        {
-    //            FormatArguments::common(targetTrackObj->name);
-    //            setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
-    //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //        }
-    //    }
+        //    if (elTrack.trackObjectId() == args.trackObjectId)
+        //    {
+        //        if (!targetTrackObj->hasTraitFlags(TrackTraitFlags::junction))
+        //        {
+        //            setErrorText(StringIds::junctions_not_possible);
+        //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (!(targetTrackObj->compatibleTracks & (1U << args.trackObjectId))
+        //            && !(trackObj->compatibleTracks & (1U << elTrack.trackObjectId())))
+        //        {
+        //            FormatArguments::common(targetTrackObj->name);
+        //            setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
+        //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //        }
+        //    }
 
-    //    _byte_1136073 = _byte_1136073 | (1U << 3);
-    //    return World::TileClearance::ClearFuncResult::noCollision;
-    //}
+        //    _byte_1136073 = _byte_1136073 | (1U << 3);
+        return World::TileClearance::ClearFuncResult::noCollision;
+    }
 
-    //// 0x0049C401
-    // static World::TileClearance::ClearFuncResult clearRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args, bool& hasLevelCrossing)
-    //{
-    //     if (elRoad.hasBridge())
-    //     {
-    //         _byte_1136075 = elRoad.bridge();
-    //         auto* bridgeObj = ObjectManager::get<BridgeObject>(elRoad.bridge());
-    //         if ((bridgeObj->disabledTrackCfg & CommonTraitFlags::junction) != CommonTraitFlags::none)
-    //         {
-    //             setErrorText(StringIds::bridge_not_suitable_for_junction);
-    //             return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //         }
-    //     }
+    // 0x00476FAB
+    static World::TileClearance::ClearFuncResult clearRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args, bool& hasLevelCrossing)
+    {
+        //     if (elRoad.hasBridge())
+        //     {
+        //         _byte_1136075 = elRoad.bridge();
+        //         auto* bridgeObj = ObjectManager::get<BridgeObject>(elRoad.bridge());
+        //         if ((bridgeObj->disabledTrackCfg & CommonTraitFlags::junction) != CommonTraitFlags::none)
+        //         {
+        //             setErrorText(StringIds::bridge_not_suitable_for_junction);
+        //             return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //         }
+        //     }
 
-    //    auto* roadObj = ObjectManager::get<RoadObject>(elRoad.roadObjectId());
-    //    auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
+        //    auto* roadObj = ObjectManager::get<RoadObject>(elRoad.roadObjectId());
+        //    auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
 
-    //    if (!(roadObj->compatibleTracks & (1U << args.trackObjectId))
-    //        && !(trackObj->compatibleRoads & (1U << elRoad.roadObjectId())))
-    //    {
-    //        FormatArguments::common(roadObj->name);
-    //        setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    if (!(roadObj->compatibleTracks & (1U << args.trackObjectId))
+        //        && !(trackObj->compatibleRoads & (1U << elRoad.roadObjectId())))
+        //    {
+        //        FormatArguments::common(roadObj->name);
+        //        setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    if (elRoad.hasSignalElement())
-    //    {
-    //        setErrorText(StringIds::signal_in_the_way);
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    if (elRoad.hasSignalElement())
+        //    {
+        //        setErrorText(StringIds::signal_in_the_way);
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    if (elRoad.hasStationElement())
-    //    {
-    //        setErrorText(StringIds::station_in_the_way);
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    if (elRoad.hasStationElement())
+        //    {
+        //        setErrorText(StringIds::station_in_the_way);
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    if (elRoad.hasBridge())
-    //    {
-    //        if (elRoad.bridge() != args.bridgeId)
-    //        {
-    //            setErrorText(StringIds::bridge_types_must_match);
-    //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //        }
-    //    }
+        //    if (elRoad.hasBridge())
+        //    {
+        //        if (elRoad.bridge() != args.bridgeId)
+        //        {
+        //            setErrorText(StringIds::bridge_types_must_match);
+        //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //        }
+        //    }
 
-    //    if (elRoad.roadId() != 0
-    //        || args.trackId != 0
-    //        || !((elRoad.rotation() - args.rotation) & 0b1)
-    //        || elRoad.baseHeight() != args.pos.z)
-    //    {
-    //        setErrorText(StringIds::level_crossing_only_possible_with_straight_road_and_track_at_same_level);
-    //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-    //    }
+        //    if (elRoad.roadId() != 0
+        //        || args.trackId != 0
+        //        || !((elRoad.rotation() - args.rotation) & 0b1)
+        //        || elRoad.baseHeight() != args.pos.z)
+        //    {
+        //        setErrorText(StringIds::level_crossing_only_possible_with_straight_road_and_track_at_same_level);
+        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        //    }
 
-    //    hasLevelCrossing = true;
-    //    _byte_1136073 = _byte_1136073 | (1U << 2);
+        //    hasLevelCrossing = true;
+        //    _byte_1136073 = _byte_1136073 | (1U << 2);
 
-    //    if (!(args.flags & (Flags::aiAllocated | Flags::ghost))
-    //        && (args.flags & Flags::apply))
-    //    {
-    //        elRoad.setHasLevelCrossing(true);
-    //        elRoad.setLevelCrossingObjectId(getGameState().currentDefaultLevelCrossingType);
-    //        elRoad.setUnk7_10(false);
-    //        elRoad.setUnk6l(0);
-    //    }
+        //    if (!(args.flags & (Flags::aiAllocated | Flags::ghost))
+        //        && (args.flags & Flags::apply))
+        //    {
+        //        elRoad.setHasLevelCrossing(true);
+        //        elRoad.setLevelCrossingObjectId(getGameState().currentDefaultLevelCrossingType);
+        //        elRoad.setUnk7_10(false);
+        //        elRoad.setUnk6l(0);
+        //    }
 
-    //    return World::TileClearance::ClearFuncResult::noCollision;
-    //}
+        return World::TileClearance::ClearFuncResult::noCollision;
+    }
 
-    //// 0x0049C275
-    // static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const ClearFunctionArgs& args)
-    //{
-    //     switch (el.type())
-    //     {
-    //         case World::ElementType::track:
-    //         {
-    //             auto* elTrack = el.as<World::TrackElement>();
-    //             if (elTrack != nullptr)
-    //             {
-    //                 return clearTrack(*elTrack, args);
-    //             }
-    //             break;
-    //         }
-    //         case World::ElementType::station:
-    //         {
-    //             auto* elStation = el.as<World::StationElement>();
-    //             if (elStation->stationType() == StationType::trainStation)
-    //             {
-    //                 return World::TileClearance::ClearFuncResult::noCollision;
-    //             }
-    //             return World::TileClearance::ClearFuncResult::collision;
-    //         }
-    //         case World::ElementType::signal:
-    //             return World::TileClearance::ClearFuncResult::noCollision;
-    //         case World::ElementType::building:
-    //         {
-    //             auto* elBuilding = el.as<World::BuildingElement>();
-    //             if (elBuilding == nullptr)
-    //             {
-    //                 return World::TileClearance::ClearFuncResult::noCollision;
-    //             }
-    //             _byte_1136073 = _byte_1136073 | (1U << 4);
-    //             return World::TileClearance::clearBuildingCollision(*elBuilding, args.pos, removedBuildings, args.flags, totalCost);
-    //         }
-    //         case World::ElementType::tree:
-    //         {
-    //             auto* elTree = el.as<World::TreeElement>();
-    //             if (elTree == nullptr)
-    //             {
-    //                 return World::TileClearance::ClearFuncResult::noCollision;
-    //             }
-    //             return World::TileClearance::clearTreeCollision(*elTree, args.pos, args.flags, totalCost);
-    //         }
-    //         case World::ElementType::road:
-    //         {
-    //             auto* elRoad = el.as<World::RoadElement>();
-    //             if (elRoad != nullptr)
-    //             {
-    //                 return clearRoad(*elRoad, args, hasLevelCrossing);
-    //             }
-    //             break;
-    //         }
-    //         case World::ElementType::surface:
-    //         case World::ElementType::wall:
-    //         case World::ElementType::industry:
-    //             return World::TileClearance::ClearFuncResult::collision;
-    //     }
-    //     return World::TileClearance::ClearFuncResult::collision;
-    // }
+    // 0x00476D40
+    static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, bool& hasStation, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, uint8_t& levelCrossingObjId, const ClearFunctionArgs& args)
+    {
+        // stack
+        // 0x0 = totalCost
+        // 0xC = roadObjectId
+        // 0xD = roadId
+        // 0xE = bridge
+        // 0x14 = flags
+        // 0x15 = rotation
+        // 0x0112C2E2 = hasLevelCrossing
+        // 0x0112C2E3 = levelCrossingObjId
+        // 0x0112C2EC = hasStation
+
+        switch (el.type())
+        {
+            case World::ElementType::track:
+            {
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack != nullptr)
+                {
+                    return clearTrack(*elTrack, args);
+                }
+                break;
+            }
+            case World::ElementType::station:
+            {
+                auto* elStation = el.as<World::StationElement>();
+                if (elStation->stationType() == StationType::roadStation)
+                {
+                    return World::TileClearance::ClearFuncResult::noCollision;
+                }
+                return World::TileClearance::ClearFuncResult::collision;
+            }
+            case World::ElementType::signal:
+                return World::TileClearance::ClearFuncResult::noCollision;
+            case World::ElementType::building:
+            {
+                auto* elBuilding = el.as<World::BuildingElement>();
+                if (elBuilding == nullptr)
+                {
+                    return World::TileClearance::ClearFuncResult::noCollision;
+                }
+                _byte_1136073 = _byte_1136073 | (1U << 4);
+                return World::TileClearance::clearBuildingCollision(*elBuilding, args.pos, removedBuildings, args.flags, totalCost);
+            }
+            case World::ElementType::tree:
+            {
+                auto* elTree = el.as<World::TreeElement>();
+                if (elTree == nullptr)
+                {
+                    return World::TileClearance::ClearFuncResult::noCollision;
+                }
+                return World::TileClearance::clearTreeCollision(*elTree, args.pos, args.flags, totalCost);
+            }
+            case World::ElementType::road:
+            {
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad != nullptr)
+                {
+                    return clearRoad(*elRoad, args, hasLevelCrossing);
+                }
+                break;
+            }
+            case World::ElementType::surface:
+            case World::ElementType::wall:
+            case World::ElementType::industry:
+                return World::TileClearance::ClearFuncResult::collision;
+        }
+        return World::TileClearance::ClearFuncResult::collision;
+    }
 
     // 0x00475FBC
     static uint32_t createRoad(const RoadPlacementArgs& args, uint8_t flags)
@@ -457,28 +468,32 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            //        // 0x0113607C
-            //        bool hasLevelCrossing = false;
+            // 0x0113C2E2
+            bool hasLevelCrossing = false;
+            // 0x0113C2E3
+            uint8_t levelCrossingObjId = 0xFFU;
+            // 0x0113C2EC
+            bool hasStation = false;
 
-            //        ClearFunctionArgs clearArgs{};
-            //        clearArgs.pos = trackLoc;
-            //        clearArgs.rotation = args.rotation;
-            //        clearArgs.trackId = args.trackId;
-            //        clearArgs.unkFlags = args.unkFlags;
-            //        clearArgs.bridgeId = args.bridge;
-            //        clearArgs.trackObjectId = args.trackObjectId;
-            //        clearArgs.index = piece.index;
-            //        clearArgs.isLastIndex = piece.index == (trackPieces.size() - 1);
-            //        clearArgs.flags = flags;
+            ClearFunctionArgs clearArgs{};
+            clearArgs.pos = roadLoc;
+            clearArgs.rotation = args.rotation;
+            clearArgs.roadId = args.roadId;
+            clearArgs.bridgeId = args.bridge;
+            clearArgs.roadObjectId = args.roadObjectId;
+            clearArgs.index = piece.index;
+            clearArgs.isLastIndex = piece.index == (roadPieces.size() - 1);
+            clearArgs.flags = flags;
+            clearArgs.roadIdUnk[args.roadId] |= 1U << args.rotation;
 
-            //        auto clearFunc = [&totalCost, &hasLevelCrossing, &removedBuildings, &clearArgs](World::TileElement& el) {
-            //            return clearFunction(el, totalCost, hasLevelCrossing, removedBuildings, clearArgs);
-            //        };
+            auto clearFunc = [&totalCost, &hasLevelCrossing, &hasStation, &removedBuildings, &levelCrossingObjId, &clearArgs](World::TileElement& el) {
+                return clearFunction(el, totalCost, hasLevelCrossing, hasStation, removedBuildings, levelCrossingObjId, clearArgs);
+            };
 
-            //        if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, quarterTile, clearFunc))
-            //        {
-            //            return FAILURE;
-            //        }
+            if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ, clearZ, quarterTile, clearFunc))
+            {
+                return FAILURE;
+            }
 
             //        if (hasLevelCrossing)
             //        {
