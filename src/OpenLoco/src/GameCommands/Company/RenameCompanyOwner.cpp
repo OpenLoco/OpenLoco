@@ -116,14 +116,14 @@ namespace OpenLoco::GameCommands
         std::optional<ObjectHeader> foundInstalledObject = std::nullopt;
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
         {
-            auto res = std::find(competitorInstalledObjects.begin(), competitorInstalledObjects.end(), object.first);
+            auto res = std::find(competitorInstalledObjects.begin(), competitorInstalledObjects.end(), object.index);
             if (res != competitorInstalledObjects.end())
             {
                 continue;
             }
 
             // Copy the string as it needs some processing
-            std::string objectName = object.second._name;
+            std::string objectName = object.object._name;
             // Not sure what ControlCodes::pop16 is doing in the object name but it is at the start of all the object names
             objectName.erase(std::remove(std::begin(objectName), std::end(objectName), static_cast<char>(ControlCodes::pop16)));
 
@@ -168,7 +168,7 @@ namespace OpenLoco::GameCommands
 
             if (strcmpSpecial(companyName, objectName.c_str()))
             {
-                foundInstalledObject = *object.second._header;
+                foundInstalledObject = object.object._header;
                 break;
             }
         }

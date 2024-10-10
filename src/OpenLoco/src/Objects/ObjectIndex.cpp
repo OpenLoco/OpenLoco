@@ -43,8 +43,9 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::ObjectManager
 {
-    static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
-    static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
+    // Was previously 0x0050D13C count was in 0x0112A110
+    static std::vector<ObjectIndexEntry> _installedObjectList;
+
     static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
     static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
@@ -55,9 +56,8 @@ namespace OpenLoco::ObjectManager
     static loco_global<ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
     static loco_global<std::array<uint16_t, kMaxObjectTypes>, 0x0112C181> _numObjectsPerType;
 
-    static constexpr uint8_t kCurrentIndexVersion = 3;
+    static constexpr uint8_t kCurrentIndexVersion = 4;
 
-#pragma pack(push, 1)
     struct ObjectFolderState
     {
         uint32_t numObjects = 0;
@@ -68,41 +68,85 @@ namespace OpenLoco::ObjectManager
             return (numObjects == rhs.numObjects) && (totalFileSize == rhs.totalFileSize) && (dateHash == rhs.dateHash);
         }
     };
-    static_assert(sizeof(ObjectFolderState) == 0xC);
+
+    struct ObjectFoldersState
+    {
+        ObjectFolderState vanillaInstall;
+        ObjectFolderState install;
+        ObjectFolderState customObjects;
+
+        constexpr bool operator==(const ObjectFoldersState& rhs) const
+        {
+            return (vanillaInstall == rhs.vanillaInstall) && (install == rhs.install) && (customObjects == rhs.customObjects);
+        }
+    };
+
     struct IndexHeader
     {
-        ObjectFolderState state;
+        uint32_t version;
+        ObjectFoldersState state;
         uint32_t fileSize;
         uint32_t numObjects; // duplicates ObjectFolderState.numObjects but without high 1 and includes corrupted .dat's
     };
-    static_assert(sizeof(IndexHeader) == 0x14);
-#pragma pack(pop)
 
-    // 0x00470F3C
-    static ObjectFolderState getCurrentObjectFolderState()
+    // Iterates an objects folder
+    // optionally recurses
+    // func takes a const fs::directory_entry parameter and returns false to stop iteration
+    template<typename Func>
+    static void iterateObjectFolder(fs::path path, bool shouldRecurse, Func&& func)
     {
-        ObjectFolderState currentState;
-        const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
-        for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
+        if (!fs::exists(path))
         {
+            return;
+        }
+        auto f = [&func](const fs::directory_entry& file) {
             if (!file.is_regular_file())
             {
-                continue;
+                return true;
             }
             const auto extension = file.path().extension().u8string();
             if (!Utility::iequals(extension, ".DAT"))
             {
-                continue;
+                return true;
             }
+            return func(file);
+        };
+
+        if (shouldRecurse)
+        {
+            for (const auto& file : fs::recursive_directory_iterator(path, fs::directory_options::skip_permission_denied))
+            {
+                if (!f(file))
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            for (const auto& file : fs::directory_iterator(path, fs::directory_options::skip_permission_denied))
+            {
+                if (!f(file))
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    // 0x00470F3C
+    static ObjectFolderState getCurrentObjectFolderState(fs::path path, bool shouldRecurse)
+    {
+        ObjectFolderState currentState{};
+
+        iterateObjectFolder(path, shouldRecurse, [&currentState](const fs::directory_entry& file) {
             currentState.numObjects++;
             const auto lastWrite = file.last_write_time().time_since_epoch().count();
             currentState.dateHash ^= ((lastWrite >> 32) ^ (lastWrite & 0xFFFFFFFF));
             currentState.dateHash = std::rotr(currentState.dateHash, 5);
             currentState.totalFileSize += file.file_size();
-        }
-
-        // NB: vanilla used to set just flag 24 to 1; we use it as a version byte.
-        currentState.numObjects |= kCurrentIndexVersion << 24;
+            return true;
+        });
 
         return currentState;
     }
@@ -110,14 +154,105 @@ namespace OpenLoco::ObjectManager
     // 0x00471712
     static bool hasCustomObjectsInIndex()
     {
-        auto* ptr = *_installedObjectList;
-        for (uint32_t i = 0; i < _installedObjectCount; i++)
+        for (auto& obj : _installedObjectList)
         {
-            auto entry = ObjectIndexEntry::read(&ptr);
-            if (entry._header->isCustom())
+            if (obj._header.isCustom())
+            {
                 return true;
+            }
         }
         return false;
+    }
+
+    static void serialiseEntry(Stream& stream, const ObjectIndexEntry& entry)
+    {
+        // Header
+        stream.writeValue(entry._header);
+
+        // Filepath
+        stream.writeValue<uint32_t>(entry._filepath.size());
+        stream.write(entry._filepath.data(), entry._filepath.size());
+
+        // Header2
+        stream.writeValue(entry._header2.decodedFileSize);
+
+        // Name
+        stream.writeValue<uint32_t>(entry._name.size());
+        stream.write(entry._name.data(), entry._name.size());
+
+        // Header3
+        stream.write(&entry._displayData, sizeof(entry._displayData));
+
+        // ObjectList1
+        stream.writeValue<uint32_t>(entry._alsoLoadObjects.size());
+        for (auto& alo : entry._alsoLoadObjects)
+        {
+            stream.writeValue(alo);
+        }
+
+        // ObjectList2
+        stream.writeValue<uint32_t>(entry._requiredObjects.size());
+        for (auto& ro : entry._requiredObjects)
+        {
+            stream.writeValue(ro);
+        }
+    }
+
+    static void serialiseIndex(Stream& stream, const IndexHeader& header, const std::vector<ObjectIndexEntry>& entries)
+    {
+        stream.writeValue(header);
+        stream.writeValue<uint32_t>(entries.size());
+        for (auto& entry : entries)
+        {
+            serialiseEntry(stream, entry);
+        }
+    }
+
+    static ObjectIndexEntry deserialiseEntry(Stream& stream)
+    {
+        ObjectIndexEntry entry{};
+        // Header
+        entry._header = stream.readValue<ObjectHeader>();
+
+        // Filepath
+        entry._filepath.resize(stream.readValue<uint32_t>());
+        stream.read(entry._filepath.data(), entry._filepath.size());
+
+        // Header2
+        entry._header2.decodedFileSize = stream.readValue<uint32_t>();
+
+        // Name
+        entry._name.resize(stream.readValue<uint32_t>());
+        stream.read(entry._name.data(), entry._name.size());
+
+        // Header3
+        entry._displayData = stream.readValue<ObjectHeader3>();
+
+        // ObjectList1
+        entry._alsoLoadObjects.resize(stream.readValue<uint32_t>());
+        for (auto& alo : entry._alsoLoadObjects)
+        {
+            alo = stream.readValue<ObjectHeader>();
+        }
+
+        // ObjectList2
+        entry._requiredObjects.resize(stream.readValue<uint32_t>());
+        for (auto& ro : entry._requiredObjects)
+        {
+            ro = stream.readValue<ObjectHeader>();
+        }
+        return entry;
+    }
+
+    static std::vector<ObjectIndexEntry> deserialiseIndex(Stream& stream)
+    {
+        std::vector<ObjectIndexEntry> entries;
+        entries.resize(stream.readValue<uint32_t>());
+        for (auto& entry : entries)
+        {
+            entry = deserialiseEntry(stream);
+        }
+        return entries;
     }
 
     static void saveIndex(const IndexHeader& header)
@@ -132,104 +267,69 @@ namespace OpenLoco::ObjectManager
             Logging::error("Unable to save object index.");
             return;
         }
-        stream.writeValue(header);
-        stream.write(*_installedObjectList, header.fileSize);
+        serialiseIndex(stream, header, _installedObjectList);
 
         Logging::verbose("Saved object index in {} milliseconds.", saveTimer.elapsed());
     }
 
-    static std::pair<ObjectIndexEntry, size_t> createPartialNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename)
+    static ObjectIndexEntry createPartialNewEntry(const ObjectHeader& objHeader, const fs::path filepath)
     {
         ObjectIndexEntry entry{};
-        size_t newEntrySize = 0;
 
         // Header
-        std::memcpy(&entryBuffer[newEntrySize], &objHeader, sizeof(objHeader));
-        entry._header = reinterpret_cast<ObjectHeader*>(&entryBuffer[newEntrySize]);
-        newEntrySize += sizeof(objHeader);
+        entry._header = objHeader;
 
-        // Filename
-        std::strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), filename.u8string().c_str());
-        entry._filename = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
-        newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
+        // Filepath
+        entry._filepath = filepath.u8string();
 
         // Header2 NULL
-        ObjectHeader2 objHeader2;
-        objHeader2.decodedFileSize = std::numeric_limits<uint32_t>::max();
-        std::memcpy(&entryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
-        newEntrySize += sizeof(objHeader2);
+        entry._header2.decodedFileSize = std::numeric_limits<uint32_t>::max();
 
         // Name NULL
-        entryBuffer[newEntrySize] = std::byte(0);
-        entry._name = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
-        newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
+        entry._name = "";
 
         // Header3 NULL
-        ObjectHeader3 objHeader3{};
-        std::memcpy(&entryBuffer[newEntrySize], &objHeader3, sizeof(objHeader3));
-        newEntrySize += sizeof(objHeader3);
+        entry._displayData = ObjectHeader3{};
 
         // ObjectList1
-        const uint8_t size1 = 0;
-        entryBuffer[newEntrySize++] = std::byte(size1);
+        entry._alsoLoadObjects.clear();
 
         // ObjectList2
-        const uint8_t size2 = 0;
-        entryBuffer[newEntrySize++] = std::byte(size2);
+        entry._requiredObjects.clear();
 
-        return std::make_pair(entry, newEntrySize);
+        return entry;
     }
 
-    // TODO: Take dependent object vectors from loadTemporary
-    static std::pair<ObjectIndexEntry, size_t> createNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename, const TempLoadMetaData& metaData)
+    static ObjectIndexEntry createNewEntry(const ObjectHeader& objHeader, const fs::path filepath, const TempLoadMetaData& metaData)
     {
         ObjectIndexEntry entry{};
-        size_t newEntrySize = 0;
 
         // Header
-        std::memcpy(&entryBuffer[newEntrySize], &objHeader, sizeof(objHeader));
-        entry._header = reinterpret_cast<ObjectHeader*>(&entryBuffer[newEntrySize]);
-        newEntrySize += sizeof(objHeader);
+        entry._header = objHeader;
 
-        // Filename
-        std::strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), filename.u8string().c_str());
-        entry._filename = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
-        newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
+        // Filepath
+        entry._filepath = filepath.u8string();
 
         // Header2
-        std::memcpy(&entryBuffer[newEntrySize], &metaData.fileSizeHeader, sizeof(metaData.fileSizeHeader));
-        newEntrySize += sizeof(metaData.fileSizeHeader);
+        entry._header2 = metaData.fileSizeHeader;
 
         // Name
-        strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), StringManager::getString(0x2000));
-        entry._name = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
-        newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
+        entry._name = StringManager::getString(0x2000);
 
         // Header3
-        std::memcpy(&entryBuffer[newEntrySize], &metaData.displayData, sizeof(metaData.displayData));
-        newEntrySize += sizeof(metaData.displayData);
+        entry._displayData = metaData.displayData;
 
-        auto* ptr = &_dependentObjectVectorData[0];
+        // ObjectList1
+        entry._alsoLoadObjects = metaData.dependentObjects.willLoad;
 
-        // ObjectList1 (required objects)
-        const uint8_t size1 = uint8_t(*ptr++);
-        entryBuffer[newEntrySize++] = std::byte(size1);
-        std::memcpy(&entryBuffer[newEntrySize], ptr, sizeof(ObjectHeader) * size1);
-        newEntrySize += sizeof(ObjectHeader) * size1;
-        ptr += sizeof(ObjectHeader) * size1;
+        // ObjectList2
+        entry._requiredObjects = metaData.dependentObjects.required;
 
-        // ObjectList2 (also loads objects {used for category selection})
-        const uint8_t size2 = uint8_t(*ptr++);
-        entryBuffer[newEntrySize++] = std::byte(size2);
-        std::memcpy(&entryBuffer[newEntrySize], ptr, sizeof(ObjectHeader) * size2);
-        newEntrySize += sizeof(ObjectHeader) * size2;
-        ptr += sizeof(ObjectHeader) * size2;
-
-        return std::make_pair(entry, newEntrySize);
+        return entry;
     }
 
     // Adds a new object to the index by: 1. creating a partial index, 2. validating, 3. creating a full index entry
-    static void addObjectToIndex(const fs::path filepath, size_t& usedBufferSize)
+    static void addObjectToIndex(const fs::path filepath)
     {
         ObjectHeader objHeader{};
         try
@@ -249,19 +349,13 @@ namespace OpenLoco::ObjectManager
             return;
         }
 
-        const auto curObjPos = usedBufferSize;
-        const auto partialNewEntry = createPartialNewEntry(&_installedObjectList[usedBufferSize], objHeader, filepath.filename());
-        usedBufferSize += partialNewEntry.second;
-        _installedObjectCount++;
+        const auto partialNewEntry = createPartialNewEntry(objHeader, filepath);
+        _installedObjectList.push_back(partialNewEntry);
 
         _isPartialLoaded = true;
-        _dependentObjectsVector = _dependentObjectVectorData;
         const auto loadResult = loadTemporaryObject(objHeader);
-        _dependentObjectsVector = reinterpret_cast<std::byte*>(-1);
         _isPartialLoaded = false;
-        _installedObjectCount--;
-        // Rewind as it is only a partial object loaded
-        usedBufferSize = curObjPos;
+        _installedObjectList.pop_back();
 
         if (!loadResult.has_value())
         {
@@ -271,35 +365,47 @@ namespace OpenLoco::ObjectManager
 
         // Load full entry into temp buffer.
         // 0x009D1CC8
-        std::byte newEntryBuffer[0x2000] = {};
-        const auto [newEntry, newEntrySize] = createNewEntry(newEntryBuffer, objHeader, filepath.filename(), loadResult.value());
+        const auto newEntry = createNewEntry(objHeader, filepath, loadResult.value());
 
         freeTemporaryObject();
 
-        auto* indexPtr = *_installedObjectList;
-        // This ptr will be pointing at where in the object list to install the new entry
-        auto* installPtr = indexPtr;
-        for (uint32_t i = 0; i < _installedObjectCount; i++)
+        auto duplicate = std::ranges::find(_installedObjectList, objHeader, &ObjectIndexEntry::_header);
+        if (duplicate != _installedObjectList.end())
         {
-            auto entry = ObjectIndexEntry::read(&indexPtr);
-            if (strcmp(newEntry._name, entry._name) < 0)
-            {
-                break;
-            }
-            // If cmp < 0 then we will want to install at the previous indexPtr location
-            installPtr = indexPtr;
+            Logging::error("Duplicate object found {}, {} won't be added to index", duplicate->_filepath, newEntry._filepath);
+            return;
         }
+        _installedObjectList.push_back(newEntry); // Previously ordered by name...
+    }
 
-        auto moveSize = usedBufferSize - (installPtr - *_installedObjectList);
-        std::memmove(installPtr + newEntrySize, installPtr, moveSize);
-        std::memcpy(installPtr, newEntryBuffer, newEntrySize);
-        usedBufferSize += newEntrySize;
+    static void addObjectsInFolder(fs::path path, bool shouldRecurse, uint32_t numObjects)
+    {
+        uint8_t progress = 0; // Progress is used for the ProgressBar Ui element
+        uint32_t i = 0;
+        iterateObjectFolder(path, shouldRecurse, [&i, &numObjects, &progress](const fs::directory_entry& file) {
+            Ui::processMessagesMini();
+            i++;
 
-        _installedObjectCount++;
+            // Cheap calculation of (curObjectCount / totalObjectCount) * 256
+            const auto newProgress = (i << 8) / ((numObjects & 0xFFFFFF) + 1);
+            if (progress != newProgress)
+            {
+                progress = newProgress;
+                Ui::ProgressBar::setProgress(newProgress);
+            }
+
+            // For now there are a few places that assume there are int16_t max items
+            if (_installedObjectList.size() >= static_cast<size_t>(std::numeric_limits<ObjectIndexId>::max()))
+            {
+                return false;
+            }
+            addObjectToIndex(file.path());
+            return true;
+        });
     }
 
     // 0x0047118B
-    static void createIndex(const ObjectFolderState& currentState)
+    static void createIndex(const ObjectFoldersState& currentState)
     {
         Ui::processMessagesMini();
         const auto progressString = _isFirstTime ? StringIds::starting_for_the_first_time : StringIds::checking_object_files;
@@ -307,77 +413,29 @@ namespace OpenLoco::ObjectManager
 
         // Reset
         reloadAll();
-        if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
-        {
-            free(*_installedObjectList);
-        }
+        _installedObjectList.clear();
 
-        // Prepare initial object list buffer (we will grow this as required)
-        size_t bufferSize = 0x4000;
-        _installedObjectList = static_cast<std::byte*>(malloc(bufferSize));
-        if (_installedObjectList == nullptr)
-        {
-            _installedObjectList = reinterpret_cast<std::byte*>(-1);
-            exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
-            return;
-        }
-
-        _installedObjectCount = 0;
         // Create new index by iterating all DAT files and processing
         IndexHeader header{};
-        uint8_t progress = 0;      // Progress is used for the ProgressBar Ui element
-        size_t usedBufferSize = 0; // Keep track of used space to allow for growth and for final sizing
+        header.version = kCurrentIndexVersion;
+        const auto vanillaObjectPath = Environment::getPathNoWarning(Environment::PathId::vanillaObjects);
+        addObjectsInFolder(vanillaObjectPath, false, currentState.vanillaInstall.numObjects);
         const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
-        for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
-        {
-            if (!file.is_regular_file())
-            {
-                continue;
-            }
-            const auto extension = file.path().extension().u8string();
-            if (!Utility::iequals(extension, ".DAT"))
-            {
-                continue;
-            }
-            Ui::processMessagesMini();
-            header.state.numObjects++;
-
-            // Cheap calculation of (curObjectCount / totalObjectCount) * 256
-            const auto newProgress = (header.state.numObjects << 8) / ((currentState.numObjects & 0xFFFFFF) + 1);
-            if (progress != newProgress)
-            {
-                progress = newProgress;
-                Ui::ProgressBar::setProgress(newProgress);
-            }
-
-            // Grow object list buffer if near limit
-            const auto remainingBuffer = bufferSize - usedBufferSize;
-            if (remainingBuffer < 0x231E)
-            {
-                // Original grew buffer at slower rate. Memory is cheap though
-                bufferSize *= 2;
-                _installedObjectList = static_cast<std::byte*>(realloc(*_installedObjectList, bufferSize));
-                if (_installedObjectList == nullptr)
-                {
-                    exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
-                    return;
-                }
-            }
-
-            addObjectToIndex(file.path(), usedBufferSize);
-        }
+        addObjectsInFolder(objectPath, true, currentState.install.numObjects);
+        const auto customObjectPath = Environment::getPathNoWarning(Environment::PathId::customObjects);
+        addObjectsInFolder(customObjectPath, true, currentState.customObjects.numObjects);
 
         // New index creation completed. Reset and save result.
         reloadAll();
-        header.fileSize = usedBufferSize;
-        header.numObjects = _installedObjectCount;
+        header.fileSize = 0;
+        header.numObjects = _installedObjectList.size();
         header.state = currentState;
         saveIndex(header);
 
         Ui::ProgressBar::end();
     }
 
-    static bool tryLoadIndex(const ObjectFolderState& currentState)
+    static bool tryLoadIndex(const ObjectFoldersState& currentState)
     {
         Core::Timer loadTimer;
 
@@ -397,28 +455,18 @@ namespace OpenLoco::ObjectManager
 
         try
         {
-            // 0x00112A14C -> 160
             auto header = stream.readValue<IndexHeader>();
-            if (header.state != currentState)
+            if (header.version != kCurrentIndexVersion || header.state != currentState)
             {
-                Logging::info("Object index out of date.");
                 return false;
             }
             else
             {
-                if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
+                _installedObjectList = deserialiseIndex(stream);
+                if (_installedObjectList.empty())
                 {
-                    free(*_installedObjectList);
-                }
-                _installedObjectList = static_cast<std::byte*>(malloc(header.fileSize));
-                if (_installedObjectList == nullptr)
-                {
-                    exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
                     return false;
                 }
-                stream.read(*_installedObjectList, header.fileSize);
-                _installedObjectCount = header.numObjects;
-
                 Logging::verbose("Loaded object index in {} milliseconds.", loadTimer.elapsed());
             }
         }
@@ -437,7 +485,14 @@ namespace OpenLoco::ObjectManager
     void loadIndex()
     {
         // 0x00112A138 -> 144
-        const auto currentState = getCurrentObjectFolderState();
+        const auto vanillaObjectPath = Environment::getPathNoWarning(Environment::PathId::vanillaObjects);
+        const auto vanillaState = getCurrentObjectFolderState(vanillaObjectPath, false);
+        const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
+        const auto objectState = getCurrentObjectFolderState(objectPath, true);
+        const auto customObjectPath = Environment::getPathNoWarning(Environment::PathId::customObjects);
+        const auto customState = getCurrentObjectFolderState(customObjectPath, true);
+
+        const auto currentState = ObjectFoldersState{ vanillaState, objectState, customState };
 
         if (!tryLoadIndex(currentState))
         {
@@ -449,33 +504,32 @@ namespace OpenLoco::ObjectManager
 
     uint32_t getNumInstalledObjects()
     {
-        return *_installedObjectCount;
+        return _installedObjectList.size();
     }
 
-    std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> getAvailableObjects(ObjectType type)
+    std::vector<ObjIndexPair> getAvailableObjects(ObjectType type)
     {
-        auto ptr = (std::byte*)_installedObjectList;
-        std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> list;
+        std::vector<ObjIndexPair> list;
 
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
-            auto entry = ObjectIndexEntry::read(&ptr);
-            if (entry._header->getType() == type)
-                list.emplace_back(std::pair<ObjectIndexId, ObjectIndexEntry>(i, entry));
+            if (_installedObjectList[i]._header.getType() == type)
+            {
+                list.push_back(ObjIndexPair{ i, _installedObjectList[i] });
+            }
         }
 
         return list;
     }
 
-    static std::optional<std::pair<ObjectIndexId, ObjectIndexEntry>> internalFindObjectInIndex(const ObjectHeader& objectHeader)
+    static std::optional<ObjIndexPair> internalFindObjectInIndex(const ObjectHeader& objectHeader)
     {
-        const auto objects = getAvailableObjects(objectHeader.getType());
-        auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return *obj.second._header == objectHeader; });
-        if (res == std::end(objects))
+        auto res = std::ranges::find(_installedObjectList, objectHeader, &ObjectIndexEntry::_header);
+        if (res == std::end(_installedObjectList))
         {
             return std::nullopt;
         }
-        return *res;
+        return ObjIndexPair{ static_cast<ObjectIndexId>(std::distance(std::begin(_installedObjectList), res)), *res };
     }
 
     std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader)
@@ -485,7 +539,12 @@ namespace OpenLoco::ObjectManager
         {
             return std::nullopt;
         }
-        return res->second;
+        return res->object;
+    }
+
+    const ObjectIndexEntry& getObjectInIndex(ObjectIndexId index)
+    {
+        return _installedObjectList[index];
     }
 
     bool isObjectInstalled(const ObjectHeader& objectHeader)
@@ -506,7 +565,7 @@ namespace OpenLoco::ObjectManager
             }
         }
 
-        return { -1, ObjectIndexEntry{} };
+        return { ObjectManager::kNullObjectIndex, ObjectIndexEntry{} };
     }
 
     // 0x0047400C
@@ -534,10 +593,9 @@ namespace OpenLoco::ObjectManager
             val &= ~SelectedObjectsFlags::requiredByAnother;
         }
 
-        auto ptr = (std::byte*)_installedObjectList;
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
-            auto entry = ObjectIndexEntry::read(&ptr);
+            auto& entry = _installedObjectList[i];
             if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
             {
                 continue;
@@ -556,17 +614,16 @@ namespace OpenLoco::ObjectManager
         std::fill(std::begin(selectionMetaData.numSelectedObjects), std::end(selectionMetaData.numSelectedObjects), 0U);
 
         uint32_t totalNumImages = 0;
-        auto ptr = (std::byte*)_installedObjectList;
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
-            auto entry = ObjectIndexEntry::read(&ptr);
+            auto& entry = _installedObjectList[i];
             if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
             {
                 continue;
             }
 
-            selectionMetaData.numSelectedObjects[enumValue(entry._header->getType())]++;
-            totalNumImages += entry._displayData->numImages;
+            selectionMetaData.numSelectedObjects[enumValue(entry._header.getType())]++;
+            totalNumImages += entry._displayData.numImages;
         }
 
         selectionMetaData.numImages = totalNumImages;
@@ -628,7 +685,7 @@ namespace OpenLoco::ObjectManager
         }
 
         // If this object was selected too many images would be needed when loading
-        if (entry._displayData->numImages + selectionMetaData.numImages > Gfx::G1ExpectedCount::kObjects)
+        if (entry._displayData.numImages + selectionMetaData.numImages > Gfx::G1ExpectedCount::kObjects)
         {
             GameCommands::setErrorText(StringIds::not_enough_space_for_graphics);
             return false;
@@ -641,7 +698,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        selectionMetaData.numImages += entry._displayData->numImages;
+        selectionMetaData.numImages += entry._displayData.numImages;
         selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]++;
         objectFlags[index] |= SelectedObjectsFlags::selected;
         return true;
@@ -685,7 +742,7 @@ namespace OpenLoco::ObjectManager
             }
         }
 
-        selectionMetaData.numImages -= entry._displayData->numImages;
+        selectionMetaData.numImages -= entry._displayData.numImages;
         selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]--;
         objectFlags[index] &= ~SelectedObjectsFlags::selected;
         return true;
@@ -734,47 +791,6 @@ namespace OpenLoco::ObjectManager
     bool selectObjectFromIndex(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
     {
         return selectObjectFromIndexInternal(mode, false, objHeader, objectFlags, selectionMetaData);
-    }
-
-    ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
-    {
-        ObjectIndexEntry entry{};
-
-        entry._header = (ObjectHeader*)*ptr;
-        *ptr += sizeof(ObjectHeader);
-
-        entry._filename = (char*)*ptr;
-        *ptr += strlen(entry._filename) + 1;
-
-        // decoded_chunk_size
-        // ObjectHeader2* h2 = (ObjectHeader2*)ptr;
-        *ptr += sizeof(ObjectHeader2);
-
-        entry._name = (char*)*ptr;
-        *ptr += strlen(entry._name) + 1;
-
-        entry._displayData = reinterpret_cast<ObjectHeader3*>(*ptr);
-        *ptr += sizeof(ObjectHeader3);
-
-        uint8_t* countA = (uint8_t*)*ptr;
-        *ptr += sizeof(uint8_t);
-        entry._requiredObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countA);
-        for (int n = 0; n < *countA; n++)
-        {
-            // header* subh = (header*)ptr;
-            *ptr += sizeof(ObjectHeader);
-        }
-
-        uint8_t* countB = (uint8_t*)*ptr;
-        *ptr += sizeof(uint8_t);
-        entry._alsoLoadObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countB);
-        for (int n = 0; n < *countB; n++)
-        {
-            // header* subh = (header*)ptr;
-            *ptr += sizeof(ObjectHeader);
-        }
-
-        return entry;
     }
 
     // 0x00472DA1
@@ -951,14 +967,13 @@ namespace OpenLoco::ObjectManager
 
     static void applyLoadedObjectMarkToIndex(std::span<SelectedObjectsFlags> objectFlags, const std::array<std::span<uint8_t>, kMaxObjectTypes>& loadedObjectFlags)
     {
-        auto ptr = (std::byte*)_installedObjectList;
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
             objectFlags[i] &= ~(SelectedObjectsFlags::inUse | SelectedObjectsFlags::selected);
 
-            auto entry = ObjectIndexEntry::read(&ptr);
+            auto entry = _installedObjectList[i];
 
-            auto objHandle = findObjectHandle(*entry._header);
+            auto objHandle = findObjectHandle(entry._header);
             if (!objHandle.has_value())
             {
                 continue;
@@ -1034,20 +1049,17 @@ namespace OpenLoco::ObjectManager
             return;
         }
 
-        SelectedObjectsFlags* selectFlags = new SelectedObjectsFlags[_installedObjectCount]{};
+        SelectedObjectsFlags* selectFlags = new SelectedObjectsFlags[_installedObjectList.size()]{};
         _50D144 = selectFlags;
-        std::span<SelectedObjectsFlags> objectFlags{ selectFlags, _installedObjectCount };
+        std::span<SelectedObjectsFlags> objectFlags{ selectFlags, _installedObjectList.size() };
         // throw on nullptr?
 
         _objectSelectionMeta = ObjectSelectionMeta{};
         _numObjectsPerType = std::array<uint16_t, kMaxObjectTypes>{};
 
-        auto ptr = (std::byte*)_installedObjectList;
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (auto& entry : _installedObjectList)
         {
-            auto entry = ObjectIndexEntry::read(&ptr);
-
-            (*_numObjectsPerType)[enumValue(entry._header->getType())]++;
+            (*_numObjectsPerType)[enumValue(entry._header.getType())]++;
         }
         if (markInUse)
         {
@@ -1093,17 +1105,14 @@ namespace OpenLoco::ObjectManager
     // 0x00474874
     void loadSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags)
     {
-        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        for (auto i = 0U; i < objectFlags.size(); i++)
         {
-            auto objects = getAvailableObjects(type);
-            for (auto& [i, object] : objects)
+            if ((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
             {
-                if ((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+                auto& header = _installedObjectList[i]._header;
+                if (!findObjectHandle(header))
                 {
-                    if (!findObjectHandle(*object._header))
-                    {
-                        load(*object._header);
-                    }
+                    load(header);
                 }
             }
         }
@@ -1119,7 +1128,7 @@ namespace OpenLoco::ObjectManager
             {
                 if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
                 {
-                    unload(*object._header);
+                    unload(object._header);
                 }
             }
         }
@@ -1127,12 +1136,11 @@ namespace OpenLoco::ObjectManager
 
     static bool validateObjectTypeSelection(std::span<SelectedObjectsFlags> objectFlags, const ObjectType type, auto&& predicate)
     {
-        auto ptr = (std::byte*)_installedObjectList;
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
-            auto entry = ObjectIndexEntry::read(&ptr);
+            auto& entry = _installedObjectList[i];
             if (((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
-                && type == entry._header->getType()
+                && type == entry._header.getType()
                 && predicate(entry))
             {
                 return true;
@@ -1178,7 +1186,7 @@ namespace OpenLoco::ObjectManager
         // has more complex logic
         if (!validateObjectTypeSelection(
                 objectFlags, ObjectType::road, [](const ObjectIndexEntry& entry) {
-                    const auto tempObj = loadTemporaryObject(*entry._header);
+                    const auto tempObj = loadTemporaryObject(entry._header);
                     if (!tempObj.has_value())
                     {
                         return false;

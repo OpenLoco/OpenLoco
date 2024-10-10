@@ -388,7 +388,7 @@ namespace OpenLoco::ObjectManager
             return std::nullopt;
         }
 
-        const auto filePath = Environment::getPath(Environment::PathId::objects) / fs::u8path(installedObject->_filename);
+        const auto filePath = fs::u8path(installedObject->_filepath);
 
         FileStream fs(filePath, StreamMode::read);
         SawyerStreamReader stream(fs);
@@ -403,8 +403,17 @@ namespace OpenLoco::ObjectManager
         }
 
         // Vanilla would branch and perform more efficient readChunk if size was known from installedObject.ObjectHeader2
-        auto data = stream.readChunk();
-
+        std::span<const std::byte> data;
+        try
+        {
+            data = stream.readChunk();
+        }
+        catch (const Exception::RuntimeError&)
+        {
+            // Something wrong has happened and installed object checksum is broken
+            Logging::error("Data could not be read!");
+            return std::nullopt;
+        }
         if (!computeObjectChecksum(preLoadObj.header, data))
         {
             // Something wrong has happened and installed object checksum is broken
@@ -452,24 +461,8 @@ namespace OpenLoco::ObjectManager
         _isPartialLoaded = true;
         _isTemporaryObject = 0xFF;
 
-        auto* depObjs = Interop::addr<0x0050D158, uint8_t*>();
         DependentObjects dependencies;
-        callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF) ? &dependencies : nullptr);
-
-        if (depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF))
-        {
-            *depObjs++ = static_cast<uint8_t>(dependencies.required.size());
-            if (!dependencies.required.empty())
-            {
-                std::copy(dependencies.required.begin(), dependencies.required.end(), reinterpret_cast<ObjectHeader*>(depObjs));
-                depObjs += sizeof(ObjectHeader) * dependencies.required.size();
-            }
-            *depObjs++ = static_cast<uint8_t>(dependencies.willLoad.size());
-            if (!dependencies.willLoad.empty())
-            {
-                std::copy(dependencies.willLoad.begin(), dependencies.willLoad.end(), reinterpret_cast<ObjectHeader*>(depObjs));
-            }
-        }
+        callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, &dependencies);
 
         _isTemporaryObject = 0;
         _isPartialLoaded = false;
@@ -480,6 +473,7 @@ namespace OpenLoco::ObjectManager
         TempLoadMetaData result{};
         result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
         result.displayData.numImages = _numImages;
+        result.dependentObjects = dependencies;
 
         if (header.getType() == ObjectType::competitor)
         {
@@ -677,9 +671,9 @@ namespace OpenLoco::ObjectManager
     // All object files are based on their internal object header name but
     // there is a chance of a name collision this function works out if the name
     // is possible and if not permutes the name until it is valid.
-    static fs::path findObjectPath(std::string& filename)
+    static fs::path findCustomObjectPath(std::string& filename)
     {
-        auto objPath = Environment::getPath(Environment::PathId::objects) / (filename + ".DAT");
+        auto objPath = Environment::getPath(Environment::PathId::customObjects) / (filename + ".DAT");
         while (fs::exists(objPath))
         {
             permutateObjectFilename(filename);
@@ -716,7 +710,7 @@ namespace OpenLoco::ObjectManager
         // Get new file path
         std::string filename = objectname;
         sanatiseObjectFilename(filename);
-        const auto objPath = findObjectPath(filename);
+        const auto objPath = findCustomObjectPath(filename);
 
         // Create new file and output object file
         Ui::ProgressBar::setProgress(180);
