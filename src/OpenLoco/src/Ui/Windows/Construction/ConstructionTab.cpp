@@ -217,6 +217,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         args.mods = _cState->lastSelectedMods;
         args.bridge = _cState->lastSelectedBridge;
         args.roadObjectId = _cState->trackType & ~(1 << 7);
+        args.unkFlags = 0;
 
         _cState->dword_1135F42 = GameCommands::doCommand(args, GameCommands::Flags::apply);
         if (_cState->dword_1135F42 == GameCommands::FAILURE)
@@ -2258,6 +2259,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         args.rotation = roadId->rotation;
         args.roadObjectId = _cState->trackType & ~(1 << 7);
         args.roadId = roadId->id;
+        args.unkFlags = 0;
         return args;
     }
 

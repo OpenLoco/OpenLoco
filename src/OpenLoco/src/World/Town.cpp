@@ -492,6 +492,7 @@ namespace OpenLoco
             args.mods = 0;
             args.bridge = 0xFF;
             args.roadObjectId = roadObjId.value();
+            args.unkFlags = 0;
             return GameCommands::doCommand(args, GameCommands::Flags::apply) == GameCommands::FAILURE;
         };
         squareSearch({ x, y }, 9, placeRoadAtTile);
