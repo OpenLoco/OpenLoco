@@ -355,7 +355,7 @@ namespace OpenLoco::ObjectManager
         _isPartialLoaded = true;
         const auto loadResult = loadTemporaryObject(objHeader);
         _isPartialLoaded = false;
-        _installedObjectList.erase(_installedObjectList.begin() + _installedObjectList.size() - 1);
+        _installedObjectList.pop_back();
 
         if (!loadResult.has_value())
         {
