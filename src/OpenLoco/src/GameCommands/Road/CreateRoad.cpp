@@ -1,10 +1,10 @@
 #include "CreateRoad.h"
 // #include "Audio/Audio.h"
 #include "Economy/Economy.h"
-// #include "GameState.h"
-// #include "Localisation/FormatArguments.hpp"
+#include "GameState.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
-// #include "Map/BuildingElement.h"
+#include "Map/BuildingElement.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
@@ -12,14 +12,14 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
-#include "SceneManager.h"
-// #include "Map/TreeElement.h"
+#include "Map/TreeElement.h"
 #include "Objects/BridgeObject.h"
+#include "SceneManager.h"
 // #include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
-// #include "Objects/TrackObject.h"
+#include "Objects/TrackObject.h"
 // #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
@@ -66,38 +66,116 @@ namespace OpenLoco::GameCommands
         uint8_t index;
         bool isLastIndex;
         uint8_t flags;
+        uint8_t unkFlags;
         std::array<uint8_t, 16> roadIdUnk;
     };
 
     // 0x00476EC4
-    static World::TileClearance::ClearFuncResult clearTrack(World::TrackElement& elTrack, const ClearFunctionArgs& args)
+    static World::TileClearance::ClearFuncResult clearTrack(World::TrackElement& elTrack, const ClearFunctionArgs& args, bool& hasLevelCrossing)
     {
-        //     if (elTrack.hasBridge())
-        //     {
-        //         _byte_1136075 = elTrack.bridge();
-        //     }
+        if (elTrack.hasBridge())
+        {
+            _byte_1136075 = elTrack.bridge();
+            auto* bridgeObj = ObjectManager::get<BridgeObject>(elTrack.bridge());
+            if ((bridgeObj->disabledTrackCfg & CommonTraitFlags::junction) != CommonTraitFlags::none)
+            {
+                setErrorText(StringIds::bridge_not_suitable_for_junction);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
 
-        //    const auto& targetPiece = World::TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
-        //    const auto& newPiece = World::TrackData::getTrackPiece(args.trackId)[args.index];
+        auto* trackObj = ObjectManager::get<TrackObject>(elTrack.trackObjectId());
+        auto* roadObj = ObjectManager::get<RoadObject>(args.roadObjectId);
 
-        //    const auto targetConnectFlags = targetPiece.connectFlags[elTrack.rotation()];
-        //    const auto newConnectFlags = newPiece.connectFlags[args.rotation];
-        //    if (!(targetConnectFlags & newConnectFlags))
-        //    {
-        //        return World::TileClearance::ClearFuncResult::noCollision;
-        //    }
+        if (!(trackObj->compatibleRoads & (1U << args.roadObjectId))
+            && !(roadObj->compatibleTracks & (1U << elTrack.trackObjectId())))
+        {
+            FormatArguments::common(trackObj->name);
+            setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
 
-        //    if (args.unkFlags & (1U << 2))
-        //    {
-        //        setErrorText(StringIds::junctions_not_possible);
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
+        if (elTrack.hasSignal())
+        {
+            setErrorText(StringIds::signal_in_the_way);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
 
-        //    if (!sub_431E6A(elTrack.owner(), reinterpret_cast<const World::TileElement*>(&elTrack)))
-        //    {
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
+        if (elTrack.hasStationElement())
+        {
+            setErrorText(StringIds::station_in_the_way);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
 
+        if (elTrack.hasBridge())
+        {
+            if (elTrack.bridge() != args.bridgeId)
+            {
+                setErrorText(StringIds::bridge_types_must_match);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
+
+        if (elTrack.trackId() != 0
+            || args.roadId != 0
+            || !((elTrack.rotation() - args.rotation) & 0b1)
+            || elTrack.baseHeight() != args.pos.z)
+        {
+            setErrorText(StringIds::level_crossing_only_possible_with_straight_road_and_track_at_same_level);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        hasLevelCrossing = true;
+        _byte_1136073 = _byte_1136073 | (1U << 2);
+
+        if (!(args.flags & (Flags::aiAllocated | Flags::ghost))
+            && (args.flags & Flags::apply))
+        {
+            elTrack.setHasLevelCrossing(true);
+        }
+        return World::TileClearance::ClearFuncResult::noCollision;
+    }
+
+    // 0x00476FAB
+    static World::TileClearance::ClearFuncResult clearRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args)
+    {
+        if (!elRoad.isGhost() && !elRoad.isAiAllocated())
+        {
+            _byte_1136073 = _byte_1136073 | (1U << 6);
+        }
+
+        if (elRoad.hasBridge())
+        {
+            _byte_1136075 = elRoad.bridge();
+        }
+
+        const auto& targetPiece = World::TrackData::getRoadPiece(elRoad.roadId())[elRoad.sequenceIndex()];
+        const auto& newPiece = World::TrackData::getRoadPiece(args.roadId)[args.index];
+
+        const auto targetConnectFlags = targetPiece.connectFlags[elRoad.rotation()];
+        const auto newConnectFlags = newPiece.connectFlags[args.rotation];
+        if (!(targetConnectFlags & newConnectFlags))
+        {
+            return World::TileClearance::ClearFuncResult::noCollision;
+        }
+
+        const auto& targetRoadObj = ObjectManager::get<RoadObject>(elRoad.roadObjectId());
+
+        if ((args.flags & Flags::aiAllocated) && (args.unkFlags & (1U << 4)) && targetRoadObj->hasFlags(RoadObjectFlags::unk_00))
+        {
+            setErrorText(StringIds::junctions_not_possible);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        const auto& gs = getGameState();
+        if (!(gs.roadObjectIdIsFlag7 & (1U << elRoad.roadObjectId()))
+            || !(gs.roadObjectIdIsFlag7 & (1U << args.roadObjectId)))
+        {
+            if (!sub_431E6A(elRoad.owner(), reinterpret_cast<const World::TileElement*>(&elRoad)))
+            {
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
         //    if (((World::TrackData::getTrackMiscData(elTrack.trackId()).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none)
         //        || ((World::TrackData::getTrackMiscData(args.trackId).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none))
         //    {
@@ -198,75 +276,6 @@ namespace OpenLoco::GameCommands
         //    }
 
         //    _byte_1136073 = _byte_1136073 | (1U << 3);
-        return World::TileClearance::ClearFuncResult::noCollision;
-    }
-
-    // 0x00476FAB
-    static World::TileClearance::ClearFuncResult clearRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args, bool& hasLevelCrossing)
-    {
-        //     if (elRoad.hasBridge())
-        //     {
-        //         _byte_1136075 = elRoad.bridge();
-        //         auto* bridgeObj = ObjectManager::get<BridgeObject>(elRoad.bridge());
-        //         if ((bridgeObj->disabledTrackCfg & CommonTraitFlags::junction) != CommonTraitFlags::none)
-        //         {
-        //             setErrorText(StringIds::bridge_not_suitable_for_junction);
-        //             return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //         }
-        //     }
-
-        //    auto* roadObj = ObjectManager::get<RoadObject>(elRoad.roadObjectId());
-        //    auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
-
-        //    if (!(roadObj->compatibleTracks & (1U << args.trackObjectId))
-        //        && !(trackObj->compatibleRoads & (1U << elRoad.roadObjectId())))
-        //    {
-        //        FormatArguments::common(roadObj->name);
-        //        setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
-
-        //    if (elRoad.hasSignalElement())
-        //    {
-        //        setErrorText(StringIds::signal_in_the_way);
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
-
-        //    if (elRoad.hasStationElement())
-        //    {
-        //        setErrorText(StringIds::station_in_the_way);
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
-
-        //    if (elRoad.hasBridge())
-        //    {
-        //        if (elRoad.bridge() != args.bridgeId)
-        //        {
-        //            setErrorText(StringIds::bridge_types_must_match);
-        //            return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //        }
-        //    }
-
-        //    if (elRoad.roadId() != 0
-        //        || args.trackId != 0
-        //        || !((elRoad.rotation() - args.rotation) & 0b1)
-        //        || elRoad.baseHeight() != args.pos.z)
-        //    {
-        //        setErrorText(StringIds::level_crossing_only_possible_with_straight_road_and_track_at_same_level);
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
-
-        //    hasLevelCrossing = true;
-        //    _byte_1136073 = _byte_1136073 | (1U << 2);
-
-        //    if (!(args.flags & (Flags::aiAllocated | Flags::ghost))
-        //        && (args.flags & Flags::apply))
-        //    {
-        //        elRoad.setHasLevelCrossing(true);
-        //        elRoad.setLevelCrossingObjectId(getGameState().currentDefaultLevelCrossingType);
-        //        elRoad.setUnk7_10(false);
-        //        elRoad.setUnk6l(0);
-        //    }
 
         return World::TileClearance::ClearFuncResult::noCollision;
     }
@@ -292,7 +301,7 @@ namespace OpenLoco::GameCommands
                 auto* elTrack = el.as<World::TrackElement>();
                 if (elTrack != nullptr)
                 {
-                    return clearTrack(*elTrack, args);
+                    return clearTrack(*elTrack, args, hasLevelCrossing);
                 }
                 break;
             }
@@ -331,7 +340,7 @@ namespace OpenLoco::GameCommands
                 auto* elRoad = el.as<World::RoadElement>();
                 if (elRoad != nullptr)
                 {
-                    return clearRoad(*elRoad, args, hasLevelCrossing);
+                    return clearRoad(*elRoad, args);
                 }
                 break;
             }
@@ -485,6 +494,7 @@ namespace OpenLoco::GameCommands
             clearArgs.isLastIndex = piece.index == (roadPieces.size() - 1);
             clearArgs.flags = flags;
             clearArgs.roadIdUnk[args.roadId] |= 1U << args.rotation;
+            clearArgs.unkFlags = args.unkFlags;
 
             auto clearFunc = [&totalCost, &hasLevelCrossing, &hasStation, &removedBuildings, &levelCrossingObjId, &clearArgs](World::TileElement& el) {
                 return clearFunction(el, totalCost, hasLevelCrossing, hasStation, removedBuildings, levelCrossingObjId, clearArgs);
