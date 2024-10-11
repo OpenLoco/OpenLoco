@@ -205,7 +205,11 @@ namespace OpenLoco::Vehicles
             return getReliability(carLhs) < getReliability(carRhs);
         };
 
-        const auto minReliability = (*std::min_element(train.cars.begin(), train.cars.end(), reliabilityPredicate)).front->reliability;
+        auto minReliability = 0xFFFFU;
+        if (!train.cars.empty())
+        {
+            minReliability = (*std::min_element(train.cars.begin(), train.cars.end(), reliabilityPredicate)).front->reliability;
+        }
         train.veh2->reliability = minReliability == 0xFFFFU ? 0 : minReliability / 256;
     }
 
