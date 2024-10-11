@@ -136,8 +136,28 @@ namespace OpenLoco::GameCommands
         return World::TileClearance::ClearFuncResult::noCollision;
     }
 
+    // Checks to see if this is an overlay road
+    // such as a tram on top of a road
+    static bool isPotentialOverlayRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args)
+    {
+        if (elRoad.roadId() == args.roadId
+            && elRoad.rotation() == args.rotation
+            && elRoad.sequenceIndex() == args.index)
+        {
+            return true;
+        }
+        else if (
+            World::TrackData::getRoadMiscData(elRoad.roadId()).reverseRoadId == args.roadId
+            && (elRoad.rotation() ^ (1U << 1)) == args.rotation
+            && (World::TrackData::getRoadMiscData(elRoad.roadId()).reverseLane - 1 - elRoad.sequenceIndex()) == args.index)
+        {
+            return true;
+        }
+        return false;
+    }
+
     // 0x00476FAB
-    static World::TileClearance::ClearFuncResult clearRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args)
+    static World::TileClearance::ClearFuncResult clearRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args, uint8_t& levelCrossingObjId)
     {
         if (!elRoad.isGhost() && !elRoad.isAiAllocated())
         {
@@ -176,33 +196,74 @@ namespace OpenLoco::GameCommands
                 return World::TileClearance::ClearFuncResult::collisionErrorSet;
             }
         }
-        //    if (((World::TrackData::getTrackMiscData(elTrack.trackId()).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none)
-        //        || ((World::TrackData::getTrackMiscData(args.trackId).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none))
-        //    {
-        //        setErrorText(StringIds::junction_must_be_entirely_level);
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
 
-        //    auto* targetTrackObj = ObjectManager::get<TrackObject>(elTrack.trackObjectId());
-        //    auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
-        //    if (elTrack.baseHeight() != args.pos.z)
-        //    {
-        //        FormatArguments::common(targetTrackObj->name);
-        //        setErrorText(StringIds::string_id_in_the_way_wrong_height_for_junction);
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
+        bool confirmedOverlay = false;
+        if (elRoad.baseHeight() == args.pos.z)
+        {
+            if ((World::TrackData::getRoadMiscData(elRoad.roadId()).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none)
+            {
+                if (isPotentialOverlayRoad(elRoad, args))
+                {
+                    _byte_1136073 = _byte_1136073 | (1U << 5);
+                    if (elRoad.roadObjectId() != args.roadObjectId)
+                    {
+                        confirmedOverlay = true;
+                    }
+                    if (args.unkFlags & ((1U << 4) | (1U << 5))
+                        && args.flags & Flags::aiAllocated
+                        && !elRoad.isAiAllocated())
+                    {
+                        if ((args.unkFlags & (1U << 4))
+                            || elRoad.owner() == getUpdatingCompanyId())
+                        {
+                            confirmedOverlay = true;
+                        }
+                    }
+                }
+            }
+        }
 
-        //    if (elTrack.hasSignal())
-        //    {
-        //        setErrorText(StringIds::signal_in_the_way);
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
+        if (!confirmedOverlay)
+        {
+            // 0x477130
+            if (((World::TrackData::getRoadMiscData(elRoad.roadId()).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none)
+                || ((World::TrackData::getRoadMiscData(args.roadId).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none))
+            {
+                setErrorText(StringIds::junction_must_be_entirely_level);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
 
-        //    if (elTrack.hasStationElement())
-        //    {
-        //        setErrorText(StringIds::station_in_the_way);
-        //        return World::TileClearance::ClearFuncResult::collisionErrorSet;
-        //    }
+            if (elRoad.baseHeight() != args.pos.z)
+            {
+                FormatArguments::common(targetRoadObj->name);
+                setErrorText(StringIds::string_id_in_the_way_wrong_height_for_junction);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
+
+        if (elRoad.hasLevelCrossing())
+        {
+            levelCrossingObjId = elRoad.levelCrossingObjectId();
+        }
+
+        _alternateTrackObjectId = elRoad.roadObjectId();
+
+        if (elRoad.hasSignalElement())
+        {
+            setErrorText(StringIds::signal_in_the_way);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        if (elRoad.hasStationElement())
+        {
+            if (args.roadId != 0
+                || (args.rotation != elRoad.rotation() && (args.rotation != (elRoad.rotation() ^ (1U << 1)))))
+            {
+                setErrorText(StringIds::station_in_the_way);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+            // 0x004771BC iterate to find station el
+        }
 
         //    if (!((args.rotation ^ elTrack.rotation()) & 0b1))
         //    {
@@ -340,7 +401,7 @@ namespace OpenLoco::GameCommands
                 auto* elRoad = el.as<World::RoadElement>();
                 if (elRoad != nullptr)
                 {
-                    return clearRoad(*elRoad, args);
+                    return clearRoad(*elRoad, args, levelCrossingObjId);
                 }
                 break;
             }
