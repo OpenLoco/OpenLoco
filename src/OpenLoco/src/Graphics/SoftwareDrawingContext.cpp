@@ -927,7 +927,7 @@ namespace OpenLoco::Gfx
 
                     // Reset non vertical line vars
                     xStart = x + 1;
-                    length = 1;
+                    length = 0; // NB: will be incremented in next iteration
                     y += yStep;
                     error += deltaX;
                 }
