@@ -4,13 +4,10 @@
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Ui/Window.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui
 {
-    static loco_global<uint32_t, 0x0113658C> _dword_113658C;
+    static uint32_t _dword_113658C; // 0x0113658C
 
     // TODO: replace with templated functions
     static int64_t graphGetValueFromPointer(const std::byte* dataPtr, const uint8_t dataTypeSize)
