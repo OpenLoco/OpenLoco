@@ -2,7 +2,6 @@
 #include "Economy/Currency.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
-#include "Input.h"
 #include "Ui/Window.h"
 
 namespace OpenLoco::Ui
@@ -247,17 +246,6 @@ namespace OpenLoco::Ui
     // 0x004CF824
     void drawGraph(GraphSettings& gs, Window* self, Gfx::DrawingContext& drawingCtx)
     {
-        if (Input::hasKeyModifier(Input::KeyModifier::shift))
-        {
-            self->invalidate();
-            const auto& rt = drawingCtx.currentRenderTarget();
-            registers regs;
-            regs.esi = X86Pointer(self);
-            regs.edi = X86Pointer(&rt);
-            call(0x004CF824, regs);
-            return;
-        }
-
         gs.canvasLeft = gs.xOffset + gs.left;
         gs.canvasHeight = gs.height - gs.yOffset;
 
