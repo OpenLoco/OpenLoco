@@ -12,6 +12,25 @@ namespace OpenLoco::Ui
 {
     static loco_global<uint32_t, 0x0113658C> _dword_113658C;
 
+    // TODO: replace with templated functions
+    static int64_t graphGetValueFromPointer(const std::byte* dataPtr, const uint8_t dataTypeSize)
+    {
+        switch (dataTypeSize)
+        {
+            case 2:
+                return *reinterpret_cast<const int16_t*>(dataPtr);
+
+            case 4:
+                return *reinterpret_cast<const int32_t*>(dataPtr);
+
+            case 6:
+                return reinterpret_cast<const currency48_t*>(dataPtr)->asInt64();
+
+            default:
+                return 0;
+        }
+    }
+
     // 0x004CF869
     static int64_t graphGetMaxValue(const GraphSettings& gs)
     {
@@ -35,23 +54,8 @@ namespace OpenLoco::Ui
                     dataPtr -= gs.dataTypeSize;
                 }
 
-                int64_t value{};
-                switch (gs.dataTypeSize)
-                {
-                    case 2:
-                        value = std::abs(*reinterpret_cast<int16_t*>(dataPtr));
-                        break;
-
-                    case 4:
-                        value = std::abs(*reinterpret_cast<int32_t*>(dataPtr));
-                        break;
-
-                    case 6:
-                        value = std::abs(reinterpret_cast<currency48_t*>(dataPtr)->asInt64());
-                        break;
-                }
-
-                maxValue = std::max(maxValue, value);
+                int64_t value = graphGetValueFromPointer(dataPtr, gs.dataTypeSize);
+                maxValue = std::max(maxValue, std::abs(value));
                 dataIndex++;
 
                 // Data back-to-front?
@@ -191,23 +195,7 @@ namespace OpenLoco::Ui
                 dataPtr -= gs.dataTypeSize;
             }
 
-            int64_t value = 0;
-            switch (gs.dataTypeSize)
-            {
-                case 2:
-                    value = *reinterpret_cast<int16_t*>(dataPtr);
-                    break;
-
-                case 4:
-                    value = *reinterpret_cast<int32_t*>(dataPtr);
-                    break;
-
-                case 6:
-                    value = reinterpret_cast<currency48_t*>(dataPtr)->asInt64();
-                    break;
-            }
-
-            // NB: confirm arithmetic right shift
+            int64_t value = graphGetValueFromPointer(dataPtr, gs.dataTypeSize);
             value >>= gs.numValueShifts;
 
             int16_t xPos = gs.canvasLeft + dataIndex * gs.word_113DD80;
