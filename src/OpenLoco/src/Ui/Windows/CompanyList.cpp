@@ -696,7 +696,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 100;
-            _graphSettings->flags = 1 << 1;
+            _graphSettings->flags = GraphFlags::dataFrontToBack;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -789,7 +789,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 1000;
-            _graphSettings->flags = 1 << 1;
+            _graphSettings->flags = GraphFlags::dataFrontToBack;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -882,7 +882,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 1000;
-            _graphSettings->flags = 1 << 1;
+            _graphSettings->flags = GraphFlags::dataFrontToBack;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 10000;
-            _graphSettings->flags = 1 << 1;
+            _graphSettings->flags = GraphFlags::dataFrontToBack;
 
             Common::drawGraphAndLegend(&self, drawingCtx);
         }
@@ -1137,7 +1137,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisLabelIncrement = 20;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 0;
-            _graphSettings->flags = 0;
+            _graphSettings->flags = GraphFlags::none;
 
             _graphSettings->xAxisRange = 2;
             _graphSettings->xAxisStepSize = 2;
@@ -1159,7 +1159,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (_word_9C68C7 & (1 << 2))
                     _graphSettings->lineColour[i] = 10;
 
-                _graphSettings->flags |= 1 << 2;
+                _graphSettings->flags |= GraphFlags::hideAxesAndLabels;
 
                 Ui::drawGraph(*_graphSettings, &self, drawingCtx);
             }
@@ -1741,7 +1741,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (_word_9C68C7 & (1 << 2))
                     _graphSettings->lineColour[i] = 10;
 
-                _graphSettings->flags |= 1 << 2;
+                _graphSettings->flags |= GraphFlags::hideAxesAndLabels;
 
                 Ui::drawGraph(*_graphSettings, self, drawingCtx);
             }

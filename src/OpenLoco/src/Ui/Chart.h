@@ -2,6 +2,7 @@
 
 #include "Graphics/Colour.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstddef>
 
 namespace OpenLoco::Gfx
@@ -12,6 +13,15 @@ namespace OpenLoco::Gfx
 namespace OpenLoco::Ui
 {
     struct Window;
+
+    enum class GraphFlags : uint32_t
+    {
+        none = 0U,
+        showNegativeValues = 1U << 0,
+        dataFrontToBack = 1U << 1,
+        hideAxesAndLabels = 1U << 2,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(GraphFlags);
 
 #pragma pack(push, 1)
     struct GraphSettings
@@ -38,7 +48,7 @@ namespace OpenLoco::Ui
         StringId yLabel;               // 0x0113DD84
         uint32_t dword_113DD86;        // 0x0113DD86 -- always 0
         uint32_t yAxisStepSize;        // 0x0113DD8A
-        uint32_t flags;                // 0x0113DD8E
+        GraphFlags flags;              // 0x0113DD8E
         uint16_t canvasLeft;           // 0x0113DD92
         uint16_t canvasBottom;         // 0x0113DD94
         uint16_t canvasHeight;         // 0x0113DD96

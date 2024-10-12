@@ -36,7 +36,7 @@ namespace OpenLoco::Ui
         {
             auto dataIndex = 0U;
             std::byte* dataPtr = gs.yData[lineIndex];
-            if ((gs.flags & (1 << 1)) != 0)
+            if ((gs.flags & GraphFlags::dataFrontToBack) != GraphFlags::none)
             {
                 dataIndex = gs.dataStart[lineIndex];
                 dataPtr = &dataPtr[gs.dataTypeSize * (gs.dataEnd - dataIndex)];
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui
             {
                 // Data front-to-back?
                 // NB: all charts except cargo delivery
-                if ((gs.flags & (1 << 1)) != 0)
+                if ((gs.flags & GraphFlags::dataFrontToBack) != GraphFlags::none)
                 {
                     dataPtr -= gs.dataTypeSize;
                 }
@@ -57,7 +57,7 @@ namespace OpenLoco::Ui
 
                 // Data back-to-front?
                 // NB: for cargo delivery chart
-                if ((gs.flags & (1 << 1)) == 0)
+                if ((gs.flags & GraphFlags::dataFrontToBack) == GraphFlags::none)
                 {
                     dataPtr += gs.dataTypeSize;
                 }
@@ -71,7 +71,7 @@ namespace OpenLoco::Ui
     static void graphDrawAxesAndLabels(const GraphSettings& gs, Window* self, Gfx::DrawingContext& drawingCtx)
     {
         auto eax = gs.xAxisRange;
-        if (gs.flags & (1 << 1))
+        if ((gs.flags & GraphFlags::dataFrontToBack) != GraphFlags::none)
         {
             eax -= (gs.dataEnd - 1) * gs.xAxisStepSize;
         }
@@ -126,7 +126,7 @@ namespace OpenLoco::Ui
                 auto xPos = gs.left + gs.xOffset - 2;
                 auto width = gs.width - gs.xOffset + 3;
                 auto yPos = -edx + gs.canvasHeight + gs.top;
-                if (gs.flags & (1 << 0)) // never set
+                if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
                 {
                     yPos -= gs.canvasHeight / 2;
                 }
@@ -139,7 +139,7 @@ namespace OpenLoco::Ui
                 int16_t xPos = gs.left + gs.xOffset - 3;
                 // int16_t width = gs.xOffset - 3; // set but not used
                 int16_t yPos = -edx + gs.canvasHeight + gs.top - 5;
-                if (gs.flags & (1 << 0)) // never set
+                if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
                 {
                     yPos -= gs.canvasHeight / 2;
                 }
@@ -152,7 +152,7 @@ namespace OpenLoco::Ui
                 tr.drawStringRight({ xPos, yPos }, Colour::black, StringIds::graph_label_format, formatArgs);
             }
 
-            if (gs.flags & (1 << 0)) // never set
+            if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
             {
                 // presumably draws negative numbers as well
             }
@@ -160,7 +160,7 @@ namespace OpenLoco::Ui
             // 0x004CFD36
             edx += gs.yAxisLabelIncrement;
             auto ebp = edx;
-            if (gs.flags & (1 << 0))
+            if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
             {
                 ebp <<= 1;
             }
@@ -179,7 +179,7 @@ namespace OpenLoco::Ui
 
         auto dataIndex = 0U;
         std::byte* dataPtr = gs.yData[lineIndex];
-        if ((gs.flags & (1 << 1)) != 0)
+        if ((gs.flags & GraphFlags::dataFrontToBack) != GraphFlags::none)
         {
             dataIndex = gs.dataStart[lineIndex];
             dataPtr = &dataPtr[gs.dataTypeSize * (gs.dataEnd - dataIndex)];
@@ -187,7 +187,7 @@ namespace OpenLoco::Ui
 
         while (dataIndex < gs.dataEnd)
         {
-            if (gs.flags & (1 << 1))
+            if ((gs.flags & GraphFlags::dataFrontToBack) != GraphFlags::none)
             {
                 dataPtr -= gs.dataTypeSize;
             }
@@ -198,7 +198,7 @@ namespace OpenLoco::Ui
             int16_t xPos = gs.canvasLeft + dataIndex * gs.word_113DD80;
             int16_t yPos = gs.height - value - gs.yOffset;
 
-            if (gs.flags & (1 << 0)) // unused?
+            if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
             {
                 yPos -= gs.canvasHeight / 2;
             }
@@ -225,7 +225,7 @@ namespace OpenLoco::Ui
 
             dataIndex++;
 
-            if (!(gs.flags & (1 << 1)))
+            if ((gs.flags & GraphFlags::dataFrontToBack) == GraphFlags::none)
             {
                 dataPtr += gs.dataTypeSize;
             }
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui
         // 0x004CFA02
 
         auto height = gs.canvasHeight;
-        if (gs.flags & (1 << 0))
+        if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
         {
             // half height flag never set likely for negative values
             height >>= 1;
@@ -271,7 +271,7 @@ namespace OpenLoco::Ui
             gs.numValueShifts++;
         }
 
-        if (!(gs.flags & (1 << 2)))
+        if ((gs.flags & GraphFlags::hideAxesAndLabels) == GraphFlags::none)
         {
             graphDrawAxesAndLabels(gs, self, drawingCtx);
         }
