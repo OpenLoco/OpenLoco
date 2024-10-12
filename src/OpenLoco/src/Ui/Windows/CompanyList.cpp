@@ -2,7 +2,6 @@
 #include "Economy/Economy.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -13,6 +12,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "Ui/Chart.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/FrameWidget.h"
@@ -32,44 +32,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 {
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
-    static loco_global<uint32_t, 0x0113658C> _dword_113658C;
-
-#pragma pack(push, 1)
-    struct GraphSettings
-    {
-        uint16_t left;                 // 0x0113DC7A
-        uint16_t top;                  // 0x0113DC7C
-        uint16_t width;                // 0x0113DC7E
-        uint16_t height;               // 0x0113DC80
-        uint16_t yOffset;              // 0x0113DC82
-        uint16_t xOffset;              // 0x0113DC84
-        uint32_t yAxisLabelIncrement;  // 0x0113DC86
-        uint16_t lineCount;            // 0x0113DC8A
-        std::byte* yData[32];          // 0x0113DC8C
-        uint32_t dataTypeSize;         // 0x0113DD0C
-        uint16_t dataStart[32];        // 0x0113DD10
-        uint32_t linesToExclude;       // 0x0113DD50
-        PaletteIndex_t lineColour[32]; // 0x0113DD54
-        uint16_t dataEnd;              // 0x0113DD74
-        StringId xLabel;               // 0x0113DD76
-        uint32_t xAxisRange;           // 0x0113DD78
-        uint32_t xAxisStepSize;        // 0x0113DD7C
-        uint16_t word_113DD80;         // 0x0113DD80 -- graphXAxisIncrement?
-        uint16_t xAxisLabelIncrement;  // 0x0113DD82
-        StringId yLabel;               // 0x0113DD84
-        uint32_t dword_113DD86;        // 0x0113DD86 -- always 0
-        uint32_t yAxisStepSize;        // 0x0113DD8A
-        uint32_t flags;                // 0x0113DD8E
-        uint16_t canvasLeft;           // 0x0113DD92
-        uint16_t canvasBottom;         // 0x0113DD94
-        uint16_t canvasHeight;         // 0x0113DD96
-        uint8_t numValueShifts;        // 0x0113DD98 -- factors of two
-        uint8_t byte_113DD99;          // 0x0113DD99
-        uint16_t itemId[32];           // 0x0113DD9A
-    };
-#pragma pack(pop)
-
-    static_assert(sizeof(GraphSettings) == 0x0113DD9A + sizeof(GraphSettings::itemId) - 0x0113DC7A);
     static loco_global<GraphSettings, 0x0113DC7A> _graphSettings;
 
     namespace Common
@@ -113,7 +75,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void refreshCompanyList(Window* self);
         static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
-        static void drawGraph(Window* self, Gfx::DrawingContext& drawingCtx);
         static void drawGraphAndLegend(Window* self, Gfx::DrawingContext& drawingCtx);
     }
 
@@ -1182,7 +1143,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisStepSize = 2;
             _graphSettings->byte_113DD99 = 1;
 
-            Common::drawGraph(&self, drawingCtx);
+            Ui::drawGraph(*_graphSettings, &self, drawingCtx);
 
             if (self.var_854 != 0)
             {
@@ -1200,7 +1161,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphSettings->flags |= 1 << 2;
 
-                Common::drawGraph(&self, drawingCtx);
+                Ui::drawGraph(*_graphSettings, &self, drawingCtx);
             }
 
             {
@@ -1721,307 +1682,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
         }
 
-        // 0x004CF869
-        static int64_t graphGetMaxValue(const GraphSettings& gs)
-        {
-            int64_t maxValue = 0;
-            for (auto lineIndex = 0U; lineIndex < gs.lineCount; lineIndex++)
-            {
-                auto dataIndex = 0U;
-                std::byte* dataPtr = gs.yData[lineIndex];
-                if ((gs.flags & (1 << 1)) != 0)
-                {
-                    dataIndex = gs.dataStart[lineIndex];
-                    dataPtr = &dataPtr[gs.dataTypeSize * (gs.dataEnd - dataIndex)];
-                }
-
-                while (dataIndex < gs.dataEnd)
-                {
-                    // Data front-to-back?
-                    // NB: all charts except cargo delivery
-                    if ((gs.flags & (1 << 1)) != 0)
-                    {
-                        dataPtr -= gs.dataTypeSize;
-                    }
-
-                    int64_t value{};
-                    switch (gs.dataTypeSize)
-                    {
-                        case 2:
-                            value = std::abs(*reinterpret_cast<int16_t*>(dataPtr));
-                            break;
-
-                        case 4:
-                            value = std::abs(*reinterpret_cast<int32_t*>(dataPtr));
-                            break;
-
-                        case 6:
-                            value = std::abs(reinterpret_cast<currency48_t*>(dataPtr)->asInt64());
-                            break;
-                    }
-
-                    maxValue = std::max(maxValue, value);
-                    dataIndex++;
-
-                    // Data back-to-front?
-                    // NB: for cargo delivery chart
-                    if ((gs.flags & (1 << 1)) == 0)
-                    {
-                        dataPtr += gs.dataTypeSize;
-                    }
-                }
-            }
-
-            return maxValue;
-        }
-
-        // 0x004CFA49
-        static void graphDrawAxesAndLabels(Window* self, const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
-        {
-            auto eax = gs.xAxisRange;
-            if (gs.flags & (1 << 1))
-            {
-                eax -= (gs.dataEnd - 1) * gs.xAxisStepSize;
-            }
-            // eax expected at _common_format_args.bits+2
-
-            // 0x004CFA74
-            for (auto ecx = 0U; ecx < gs.dataEnd; ecx++)
-            {
-                // auto quotient = eax / gs.xAxisLabelIncrement;  // eax
-                auto remainder = eax % gs.xAxisLabelIncrement; // edx
-
-                // Draw vertical lines for each of the data points
-                {
-                    auto xPos = ecx * gs.word_113DD80 + gs.left + gs.xOffset;
-                    auto height = gs.canvasHeight + (remainder > 0 ? 3 : 0);
-
-                    auto colour = self->getColour(WindowColour::secondary).c();
-                    auto paletteIndex = Colours::getShade(colour, remainder == 0 ? 6 : 4);
-
-                    drawingCtx.drawRect(xPos, gs.top, 1, height, paletteIndex, Gfx::RectFlags::none);
-                }
-
-                // No remainder means we get to draw a label on the horizontal axis, too
-                if (remainder == 0)
-                {
-                    int16_t xPos = ecx * gs.word_113DD80 + gs.left + gs.xOffset;
-                    int16_t yPos = gs.top + gs.height - gs.yOffset + 5;
-
-                    auto tr = Gfx::TextRenderer(drawingCtx);
-                    auto formatArgs = FormatArguments{};
-                    formatArgs.push(gs.xLabel);
-                    formatArgs.push(eax);
-
-                    tr.drawStringCentred({ xPos, yPos }, Colour::black, StringIds::graph_label_format, formatArgs);
-                }
-
-                eax += gs.xAxisStepSize;
-            }
-
-            // 0x004CFB5C
-            auto edx = 0;
-            while (true)
-            {
-                // TODO: can be moved down, around FormatArguments. Kept here for verification
-                int64_t ebx_eax = static_cast<int64_t>(edx) << gs.numValueShifts;
-
-                // Draw horizontal lines for each of the vertical axis labels
-                {
-                    auto colour = self->getColour(WindowColour::secondary).c();
-                    auto paletteIndex = Colours::getShade(colour, 6);
-
-                    auto xPos = gs.left + gs.xOffset - 2;
-                    auto width = gs.width - gs.xOffset + 3;
-                    auto yPos = -edx + gs.canvasHeight + gs.top;
-                    if (gs.flags & (1 << 0)) // never set
-                    {
-                        yPos -= gs.canvasHeight / 2;
-                    }
-
-                    drawingCtx.drawRect(xPos, yPos, width, 1, paletteIndex, Gfx::RectFlags::none);
-                }
-
-                // Draw the value label as well
-                {
-                    int16_t xPos = gs.left + gs.xOffset - 3;
-                    // int16_t width = gs.xOffset - 3; // set but not used
-                    int16_t yPos = -edx + gs.canvasHeight + gs.top - 5;
-                    if (gs.flags & (1 << 0)) // never set
-                    {
-                        yPos -= gs.canvasHeight / 2;
-                    }
-
-                    auto tr = Gfx::TextRenderer(drawingCtx);
-                    auto formatArgs = FormatArguments{};
-                    formatArgs.push(gs.yLabel);
-                    formatArgs.push<currency48_t>(ebx_eax);
-
-                    tr.drawStringRight({ xPos, yPos }, Colour::black, StringIds::graph_label_format, formatArgs);
-                }
-
-                if (gs.flags & (1 << 0)) // never set
-                {
-                    // presumably draws negative numbers as well
-                }
-
-                // 0x004CFD36
-                edx += gs.yAxisLabelIncrement;
-                auto ebp = edx;
-                if (gs.flags & (1 << 0))
-                {
-                    ebp <<= 1;
-                }
-
-                if (ebp >= gs.canvasHeight)
-                    break;
-            }
-
-            // 0x004CFD59 after loop, which is back in drawGraph
-        }
-
-        // 0x004CFD87
-        static void drawGraphLineSegments(const uint8_t lineIndex, const GraphSettings& gs, Gfx::DrawingContext& drawingCtx)
-        {
-            auto previousPos = Ui::Point(-1, 0);
-
-            auto dataIndex = 0U;
-            std::byte* dataPtr = gs.yData[lineIndex];
-            if ((gs.flags & (1 << 1)) != 0)
-            {
-                dataIndex = gs.dataStart[lineIndex];
-                dataPtr = &dataPtr[gs.dataTypeSize * (gs.dataEnd - dataIndex)];
-            }
-
-            while (dataIndex < gs.dataEnd)
-            {
-                if (gs.flags & (1 << 1))
-                {
-                    dataPtr -= gs.dataTypeSize;
-                }
-
-                int64_t value = 0;
-                switch (gs.dataTypeSize)
-                {
-                    case 2:
-                        value = *reinterpret_cast<int16_t*>(dataPtr);
-                        break;
-
-                    case 4:
-                        value = *reinterpret_cast<int32_t*>(dataPtr);
-                        break;
-
-                    case 6:
-                        value = reinterpret_cast<currency48_t*>(dataPtr)->asInt64();
-                        break;
-                }
-
-                // NB: confirm arithmetic right shift
-                value >>= gs.numValueShifts;
-
-                int16_t xPos = gs.canvasLeft + dataIndex * gs.word_113DD80;
-                int16_t yPos = gs.height - value - gs.yOffset;
-
-                if (gs.flags & (1 << 0)) // unused?
-                {
-                    yPos -= gs.canvasHeight / 2;
-                }
-
-                yPos += gs.top;
-
-                if (_dword_113658C != 1)
-                {
-                    auto colour = gs.lineColour[lineIndex];
-                    drawingCtx.drawRect(xPos, yPos, 1, 1, colour, Gfx::RectFlags::none);
-
-                    auto targetPos = Ui::Point(xPos, yPos);
-                    if (previousPos.x != -1)
-                    {
-                        drawingCtx.drawLine(previousPos, targetPos, colour);
-                    }
-                    previousPos = targetPos;
-                }
-                else
-                {
-                    auto colour = gs.lineColour[lineIndex];
-                    drawingCtx.drawRect(xPos, yPos, 2, 2, colour, Gfx::RectFlags::none);
-                }
-
-                dataIndex++;
-
-                if (!(gs.flags & (1 << 1)))
-                {
-                    dataPtr += gs.dataTypeSize;
-                }
-            }
-        }
-
-        // 0x004CF824
-        static void drawGraph(Window* self, Gfx::DrawingContext& drawingCtx)
-        {
-            if (Input::hasKeyModifier(Input::KeyModifier::shift))
-            {
-                self->invalidate();
-                const auto& rt = drawingCtx.currentRenderTarget();
-                registers regs;
-                regs.esi = X86Pointer(self);
-                regs.edi = X86Pointer(&rt);
-                call(0x004CF824, regs);
-                return;
-            }
-
-            auto& gs = *_graphSettings;
-
-            gs.canvasLeft = gs.xOffset + gs.left;
-            gs.canvasHeight = gs.height - gs.yOffset;
-
-            // TODO: unused? remove?
-            gs.canvasBottom = gs.top + gs.height - gs.yOffset;
-
-            int64_t maxValue = graphGetMaxValue(gs);
-
-            // 0x004CFA02
-
-            auto height = gs.canvasHeight;
-            if (gs.flags & (1 << 0))
-            {
-                // half height flag never set likely for negative values
-                height >>= 1;
-            }
-
-            // We work out the number of shifts required to bring a 64bit value
-            // into something that is within the height range
-            gs.numValueShifts = 0;
-            for (auto adjustedMaxValue = maxValue; adjustedMaxValue > height; adjustedMaxValue >>= 1)
-            {
-                gs.numValueShifts++;
-            }
-
-            if (!(gs.flags & (1 << 2)))
-            {
-                graphDrawAxesAndLabels(self, gs, drawingCtx);
-            }
-
-            // 0x004CFD59
-            for (_dword_113658C = 0; _dword_113658C < 2; _dword_113658C++) // iteration/pass??
-            {
-                if ((gs.byte_113DD99 & (1U << _dword_113658C)) == 0)
-                {
-                    continue;
-                }
-
-                for (auto i = 0U; i < gs.lineCount; i++)
-                {
-                    if ((gs.linesToExclude & (1U << i)) != 0)
-                    {
-                        continue;
-                    }
-
-                    drawGraphLineSegments(i, gs, drawingCtx);
-                }
-            }
-        }
-
         // 0x00437810
         static void drawGraphLegend(Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
         {
@@ -2064,7 +1724,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->xAxisStepSize = 1;
             _graphSettings->byte_113DD99 = 1;
 
-            Common::drawGraph(self, drawingCtx);
+            Ui::drawGraph(*_graphSettings, self, drawingCtx);
 
             if (self->var_854 != 0)
             {
@@ -2083,7 +1743,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphSettings->flags |= 1 << 2;
 
-                Common::drawGraph(self, drawingCtx);
+                Ui::drawGraph(*_graphSettings, self, drawingCtx);
             }
 
             auto x = self->width + self->x - 104;
