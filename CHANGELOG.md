@@ -5,6 +5,7 @@
 - Fix: [#2612] Crash when constructing trams underground with Shift key pressed.
 - Fix: [#2625] Crash when resizing the window during the Intro.
 - Fix: [#2628] Crash when a train has no cars.
+- Fix: [#2657] Lines depicting aircraft routes are drawn slightly fuzzy in the map window.
 
 24.09.1 (2024-09-07)
 ------------------------------------------------------------------------
