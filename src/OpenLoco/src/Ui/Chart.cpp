@@ -70,18 +70,16 @@ namespace OpenLoco::Ui
     // 0x004CFA49
     static void graphDrawAxesAndLabels(const GraphSettings& gs, Window* self, Gfx::DrawingContext& drawingCtx)
     {
-        auto eax = gs.xAxisRange;
+        auto xAxisLabelValue = gs.xAxisRange;
         if ((gs.flags & GraphFlags::dataFrontToBack) != GraphFlags::none)
         {
-            eax -= (gs.dataEnd - 1) * gs.xAxisStepSize;
+            xAxisLabelValue -= (gs.dataEnd - 1) * gs.xAxisStepSize;
         }
-        // eax expected at _common_format_args.bits+2
 
         // 0x004CFA74
         for (auto ecx = 0U; ecx < gs.dataEnd; ecx++)
         {
-            // auto quotient = eax / gs.xAxisLabelIncrement;  // eax
-            auto remainder = eax % gs.xAxisLabelIncrement; // edx
+            auto remainder = xAxisLabelValue % gs.xAxisLabelIncrement;
 
             // Draw vertical lines for each of the data points
             {
@@ -103,21 +101,18 @@ namespace OpenLoco::Ui
                 auto tr = Gfx::TextRenderer(drawingCtx);
                 auto formatArgs = FormatArguments{};
                 formatArgs.push(gs.xLabel);
-                formatArgs.push(eax);
+                formatArgs.push(xAxisLabelValue);
 
                 tr.drawStringCentred({ xPos, yPos }, Colour::black, StringIds::graph_label_format, formatArgs);
             }
 
-            eax += gs.xAxisStepSize;
+            xAxisLabelValue += gs.xAxisStepSize;
         }
 
         // 0x004CFB5C
-        auto edx = 0;
+        auto yAxisPos = 0;
         while (true)
         {
-            // TODO: can be moved down, around FormatArguments. Kept here for verification
-            int64_t ebx_eax = static_cast<int64_t>(edx) << gs.numValueShifts;
-
             // Draw horizontal lines for each of the vertical axis labels
             {
                 auto colour = self->getColour(WindowColour::secondary).c();
@@ -125,47 +120,55 @@ namespace OpenLoco::Ui
 
                 auto xPos = gs.left + gs.xOffset - 2;
                 auto width = gs.width - gs.xOffset + 3;
-                auto yPos = -edx + gs.canvasHeight + gs.top;
+                auto yPos = -yAxisPos + gs.canvasHeight + gs.top;
                 if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
                 {
                     yPos -= gs.canvasHeight / 2;
                 }
 
                 drawingCtx.drawRect(xPos, yPos, width, 1, paletteIndex, Gfx::RectFlags::none);
+
+                // Draw negative counterpart?
+                if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
+                {
+                }
             }
 
             // Draw the value label as well
             {
                 int16_t xPos = gs.left + gs.xOffset - 3;
                 // int16_t width = gs.xOffset - 3; // set but not used
-                int16_t yPos = -edx + gs.canvasHeight + gs.top - 5;
+                int16_t yPos = -yAxisPos + gs.canvasHeight + gs.top - 5;
                 if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
                 {
                     yPos -= gs.canvasHeight / 2;
                 }
 
+                int64_t yAxisLabelValue = static_cast<int64_t>(yAxisPos) << gs.numValueShifts;
+
                 auto tr = Gfx::TextRenderer(drawingCtx);
                 auto formatArgs = FormatArguments{};
                 formatArgs.push(gs.yLabel);
-                formatArgs.push<currency48_t>(ebx_eax);
+                formatArgs.push<currency48_t>(yAxisLabelValue);
 
                 tr.drawStringRight({ xPos, yPos }, Colour::black, StringIds::graph_label_format, formatArgs);
-            }
 
-            if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
-            {
-                // presumably draws negative numbers as well
+                // Draw negative counterpart?
+                if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
+                {
+                }
             }
 
             // 0x004CFD36
-            edx += gs.yAxisLabelIncrement;
-            auto ebp = edx;
+            yAxisPos += gs.yAxisLabelIncrement;
+
+            auto quadrantHeight = yAxisPos;
             if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
             {
-                ebp <<= 1;
+                quadrantHeight *= 2;
             }
 
-            if (ebp >= gs.canvasHeight)
+            if (quadrantHeight >= gs.canvasHeight)
                 break;
         }
 
