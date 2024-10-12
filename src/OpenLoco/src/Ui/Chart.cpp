@@ -84,7 +84,7 @@ namespace OpenLoco::Ui
             // Draw vertical lines for each of the data points
             {
                 auto xPos = ecx * gs.word_113DD80 + gs.left + gs.xOffset;
-                auto height = gs.canvasHeight + (remainder > 0 ? 3 : 0);
+                auto height = gs.canvasHeight + (remainder == 0 ? 3 : 0);
 
                 auto colour = self->getColour(WindowColour::secondary).c();
                 auto paletteIndex = Colours::getShade(colour, remainder == 0 ? 6 : 4);
