@@ -131,6 +131,8 @@ namespace OpenLoco::Ui
                 // Draw negative counterpart?
                 if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
                 {
+                    yPos = yAxisPos + gs.top + gs.canvasHeight / 2;
+                    drawingCtx.drawRect(xPos, yPos, width, 1, paletteIndex, Gfx::RectFlags::none);
                 }
             }
 
@@ -156,6 +158,13 @@ namespace OpenLoco::Ui
                 // Draw negative counterpart?
                 if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
                 {
+                    yPos = yAxisPos + gs.top + gs.canvasHeight / 2 - 5;
+
+                    formatArgs = FormatArguments{};
+                    formatArgs.push(gs.yLabel);
+                    formatArgs.push<currency48_t>(-yAxisLabelValue);
+
+                    tr.drawStringRight({ xPos, yPos }, Colour::black, StringIds::graph_label_format, formatArgs);
                 }
             }
 
