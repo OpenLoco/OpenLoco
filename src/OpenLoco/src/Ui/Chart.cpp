@@ -76,13 +76,13 @@ namespace OpenLoco::Ui
         }
 
         // 0x004CFA74
-        for (auto ecx = 0U; ecx < gs.dataEnd; ecx++)
+        for (auto xTickPos = 0U; xTickPos < gs.dataEnd; xTickPos++)
         {
             auto remainder = xAxisLabelValue % gs.xAxisLabelIncrement;
 
             // Draw vertical lines for each of the data points
             {
-                auto xPos = ecx * gs.word_113DD80 + gs.left + gs.xOffset;
+                auto xPos = xTickPos * gs.xAxisTickIncrement + gs.left + gs.xOffset;
                 auto height = gs.canvasHeight + (remainder == 0 ? 3 : 0);
 
                 auto colour = self->getColour(WindowColour::secondary).c();
@@ -94,7 +94,7 @@ namespace OpenLoco::Ui
             // No remainder means we get to draw a label on the horizontal axis, too
             if (remainder == 0)
             {
-                int16_t xPos = ecx * gs.word_113DD80 + gs.left + gs.xOffset;
+                int16_t xPos = xTickPos * gs.xAxisTickIncrement + gs.left + gs.xOffset;
                 int16_t yPos = gs.top + gs.height - gs.yOffset + 5;
 
                 auto tr = Gfx::TextRenderer(drawingCtx);
@@ -206,7 +206,7 @@ namespace OpenLoco::Ui
             int64_t value = graphGetValueFromPointer(dataPtr, gs.dataTypeSize);
             value >>= gs.numValueShifts;
 
-            int16_t xPos = gs.canvasLeft + dataIndex * gs.word_113DD80;
+            int16_t xPos = gs.canvasLeft + dataIndex * gs.xAxisTickIncrement;
             int16_t yPos = gs.height - value - gs.yOffset;
 
             if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
@@ -259,7 +259,6 @@ namespace OpenLoco::Ui
         auto height = gs.canvasHeight;
         if ((gs.flags & GraphFlags::showNegativeValues) != GraphFlags::none)
         {
-            // half height flag never set likely for negative values
             height >>= 1;
         }
 

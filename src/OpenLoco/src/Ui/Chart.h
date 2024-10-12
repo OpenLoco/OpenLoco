@@ -14,7 +14,7 @@ namespace OpenLoco::Ui
 {
     struct Window;
 
-    enum class GraphFlags : uint32_t
+    enum class GraphFlags : uint8_t
     {
         none = 0U,
         showNegativeValues = 1U << 0,
@@ -23,7 +23,6 @@ namespace OpenLoco::Ui
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GraphFlags);
 
-#pragma pack(push, 1)
     struct GraphSettings
     {
         uint16_t left;                 // 0x0113DC7A
@@ -43,7 +42,7 @@ namespace OpenLoco::Ui
         StringId xLabel;               // 0x0113DD76
         uint32_t xAxisRange;           // 0x0113DD78
         uint32_t xAxisStepSize;        // 0x0113DD7C
-        uint16_t word_113DD80;         // 0x0113DD80 -- graphXAxisIncrement?
+        uint16_t xAxisTickIncrement;   // 0x0113DD80
         uint16_t xAxisLabelIncrement;  // 0x0113DD82
         StringId yLabel;               // 0x0113DD84
         uint32_t dword_113DD86;        // 0x0113DD86 -- always 0
@@ -56,9 +55,6 @@ namespace OpenLoco::Ui
         uint8_t byte_113DD99;          // 0x0113DD99
         uint16_t itemId[32];           // 0x0113DD9A
     };
-#pragma pack(pop)
-
-    static_assert(sizeof(GraphSettings) == 0x0113DD9A + sizeof(GraphSettings::itemId) - 0x0113DC7A);
 
     void drawGraph(GraphSettings& gs, Window* self, Gfx::DrawingContext& drawingCtx);
 }

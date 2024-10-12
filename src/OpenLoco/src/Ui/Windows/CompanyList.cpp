@@ -692,7 +692,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->dataTypeSize = 2;
             _graphSettings->xLabel = StringIds::rawdate_short;
             _graphSettings->yLabel = StringIds::percentage_one_decimal_place;
-            _graphSettings->word_113DD80 = 4;
+            _graphSettings->xAxisTickIncrement = 4;
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 100;
@@ -785,7 +785,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->dataTypeSize = 4;
             _graphSettings->xLabel = StringIds::rawdate_short;
             _graphSettings->yLabel = StringIds::cargo_units_delivered;
-            _graphSettings->word_113DD80 = 4;
+            _graphSettings->xAxisTickIncrement = 4;
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 1000;
@@ -878,7 +878,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->dataTypeSize = 4;
             _graphSettings->xLabel = StringIds::rawdate_short;
             _graphSettings->yLabel = StringIds::cargo_units_delivered;
-            _graphSettings->word_113DD80 = 4;
+            _graphSettings->xAxisTickIncrement = 4;
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 1000;
@@ -971,7 +971,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->dataTypeSize = 6;
             _graphSettings->xLabel = StringIds::rawdate_short;
             _graphSettings->yLabel = StringIds::small_company_value_currency;
-            _graphSettings->word_113DD80 = 4;
+            _graphSettings->xAxisTickIncrement = 4;
             _graphSettings->xAxisLabelIncrement = 12;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 10000;
@@ -1133,7 +1133,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings->dataTypeSize = 4;
             _graphSettings->xLabel = StringIds::cargo_delivered_days;
             _graphSettings->yLabel = StringIds::cargo_delivered_currency;
-            _graphSettings->word_113DD80 = 5;
+            _graphSettings->xAxisTickIncrement = 5;
             _graphSettings->xAxisLabelIncrement = 20;
             _graphSettings->dword_113DD86 = 0;
             _graphSettings->yAxisStepSize = 0;
@@ -1153,7 +1153,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     i++;
                 }
 
-                // Exclude all lines except hilighted data
+                // Exclude all lines except highlighted data
                 _graphSettings->linesToExclude = 0xFFFFFFFF & ~(1 << i);
 
                 if (_word_9C68C7 & (1 << 2))
