@@ -33,6 +33,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace Common
     {
+        static constexpr Ui::Size32 kMaxWindowSize = { 800, 940 }; // NB: frame background is only 800px :(
+        static constexpr Ui::Size32 kMinWindowSize = { 300, 272 };
+
         enum widx
         {
             frame,
@@ -77,8 +80,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanyList
     {
-        static constexpr Ui::Size32 kMaxWindowSize = { 640, 470 };
-        static constexpr Ui::Size32 kMinWindowSize = { 300, 272 };
         static constexpr Ui::Size32 kWindowSize = { 640, 272 };
 
         static constexpr uint8_t kRowHeight = 25;
@@ -154,7 +155,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004363CB
         static void onResize(Window& self)
         {
-            self.setSize(kMinWindowSize, kMaxWindowSize);
+            self.setSize(Common::kMinWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00437BA0
@@ -520,10 +521,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436198
         static void tabReset(Window* self)
         {
-            self->minWidth = kMinWindowSize.width;
-            self->minHeight = kMinWindowSize.height;
-            self->maxWidth = kMaxWindowSize.width;
-            self->maxHeight = kMaxWindowSize.height;
+            self->minWidth = Common::kMinWindowSize.width;
+            self->minHeight = Common::kMinWindowSize.height;
+            self->maxWidth = Common::kMaxWindowSize.width;
+            self->maxHeight = Common::kMaxWindowSize.height;
             self->width = kWindowSize.width;
             self->height = kWindowSize.height;
             self->var_83C = 0;
@@ -590,10 +591,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         window->currentTab = 0;
-        window->minWidth = CompanyList::kMinWindowSize.width;
-        window->minHeight = CompanyList::kMinWindowSize.height;
-        window->maxWidth = CompanyList::kMaxWindowSize.width;
-        window->maxHeight = CompanyList::kMaxWindowSize.height;
+        window->minWidth = Common::kMinWindowSize.width;
+        window->minHeight = Common::kMinWindowSize.height;
+        window->maxWidth = Common::kMaxWindowSize.width;
+        window->maxHeight = Common::kMaxWindowSize.height;
 
         window->invalidate();
 
@@ -644,7 +645,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004366D7
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00436490
@@ -737,7 +738,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004369FB
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x004367B4
@@ -830,7 +831,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436D1F
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00436AD8
@@ -923,7 +924,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437043
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00436DFC
@@ -1016,7 +1017,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x0043737D
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x004F9442
