@@ -31,9 +31,9 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Ui::Windows::CompanyList
 {
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
-    static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
 
-    static GraphSettings _graphSettings;
+    static uint16_t _hoverItemTicks;     // 0x009C68C7
+    static GraphSettings _graphSettings; // 0x0113DC7A
 
     namespace Common
     {
@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::companyList, self.number, self.currentTab + Common::widx::tab_company_list);
 
-            _word_9C68C7++;
+            _hoverItemTicks++;
 
             // Add three companies every tick.
             updateCompanyList(&self);
@@ -1080,7 +1080,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     stringId = StringIds::small_white_string;
                 }
 
-                if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
+                if (!(self->var_854 & (1 << cargoCount)) || !(_hoverItemTicks & (1 << 2)))
                 {
                     drawingCtx.fillRect(x, y + 3, x + 4, y + 7, palette, Gfx::RectFlags::none);
                 }
@@ -1157,8 +1157,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 // Exclude all lines except highlighted data
                 _graphSettings.linesToExclude = 0xFFFFFFFF & ~(1 << i);
 
-                if (_word_9C68C7 & (1 << 2))
-                    _graphSettings.lineColour[i] = 10;
+                if (_hoverItemTicks & 4)
+                    _graphSettings.lineColour[i] = PaletteIndex::black0;
 
                 _graphSettings.flags |= GraphFlags::hideAxesAndLabels;
 
@@ -1442,13 +1442,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case widx::tab_performance:
                 case widx::tab_values:
                 {
-                    _word_9C68C7++;
+                    _hoverItemTicks++;
                     setLegendHover(&self, x, y);
                     break;
                 }
                 case widx::tab_payment_rates:
                 {
-                    _word_9C68C7++;
+                    _hoverItemTicks++;
                     CargoPaymentRates::setLegendHover(&self, x, y);
                     break;
                 }
@@ -1700,7 +1700,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     stringId = StringIds::small_white_string;
                 }
 
-                if (!(self->var_854 & (1 << companyCount)) || !(_word_9C68C7 & (1 << 2)))
+                if (!(self->var_854 & (1 << companyCount)) || !(_hoverItemTicks & (1 << 2)))
                 {
                     drawingCtx.fillRect(x, y + 3, x + 4, y + 7, colour, Gfx::RectFlags::none);
                 }
@@ -1739,7 +1739,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 // Exclude all except hilighted data
                 _graphSettings.linesToExclude = 0xFFFFFFFF & ~(1 << i);
 
-                if (_word_9C68C7 & (1 << 2))
+                if (_hoverItemTicks & (1 << 2))
                     _graphSettings.lineColour[i] = 10;
 
                 _graphSettings.flags |= GraphFlags::hideAxesAndLabels;
