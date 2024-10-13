@@ -31,6 +31,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
     static uint16_t _hoverItemTicks;     // 0x009C68C7
     static GraphSettings _graphSettings; // 0x0113DC7A
 
+    static constexpr auto kLegendWidth = 100;
+    static constexpr auto kWindowPadding = 4;
+
     namespace Common
     {
         static constexpr Ui::Size32 kMaxWindowSize = { 800, 940 }; // NB: frame background is only 800px :(
@@ -1164,7 +1167,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
 
             {
-                auto x = self.width + self.x - 104;
+                auto x = self.width + self.x - kLegendWidth - kWindowPadding;
                 auto y = self.y + 52;
 
                 drawGraphLegend(&self, drawingCtx, x, y);
@@ -1197,7 +1200,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto* frontWindow = WindowManager::findAt(location);
                 const auto xDiff = location.x - x;
                 const auto yDiff = location.y - y;
-                if (frontWindow != nullptr && frontWindow == self && xDiff <= 100 && xDiff >= 0 && yDiff < 320 && yDiff >= 0)
+                if (frontWindow != nullptr && frontWindow == self && xDiff <= kLegendWidth && xDiff >= 0 && yDiff < 320 && yDiff >= 0)
                 {
                     auto listY = yDiff;
                     uint8_t cargoItem = 0;
@@ -1398,7 +1401,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto* frontWindow = WindowManager::findAt(location);
                 const auto xDiff = location.x - x;
                 const auto yDiff = location.y - y;
-                if (frontWindow != nullptr && frontWindow == self && xDiff <= 100 && xDiff >= 0 && yDiff < 150 && yDiff >= 0)
+                if (frontWindow != nullptr && frontWindow == self && xDiff <= kLegendWidth && xDiff >= 0 && yDiff < 150 && yDiff >= 0)
                 {
                     auto listY = yDiff;
                     for (auto& company : CompanyManager::companies())
@@ -1430,8 +1433,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_company_list);
 
-            auto x = self.width - 104 + self.x;
-            auto y = self.y + 52;
+            auto legendX = self.x + self.width - kWindowPadding - kLegendWidth;
+            auto legendY = self.y + 52;
 
             switch (self.currentTab + widx::tab_company_list)
             {
@@ -1441,13 +1444,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case widx::tab_values:
                 {
                     _hoverItemTicks++;
-                    setLegendHover(&self, x, y);
+                    setLegendHover(&self, legendX, legendY);
                     break;
                 }
                 case widx::tab_payment_rates:
                 {
                     _hoverItemTicks++;
-                    CargoPaymentRates::setLegendHover(&self, x, y);
+                    CargoPaymentRates::setLegendHover(&self, legendX, legendY);
                     break;
                 }
                 case widx::tab_speed_records:
@@ -1745,7 +1748,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 Ui::drawGraph(_graphSettings, self, drawingCtx);
             }
 
-            auto x = self->width + self->x - 104;
+            auto x = self->width + self->x - kLegendWidth - kWindowPadding;
             auto y = self->y + 52;
 
             Common::drawGraphLegend(self, drawingCtx, x, y);
