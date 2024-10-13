@@ -659,8 +659,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings.width = 520;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings.width = self.width - kLegendWidth - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 40;
             _graphSettings.yAxisLabelIncrement = 20;
@@ -752,8 +752,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings.width = 525;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings.width = self.width - kLegendWidth - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 45;
             _graphSettings.yAxisLabelIncrement = 25;
@@ -845,8 +845,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings.width = 545;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings.width = self.width - kLegendWidth - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 65;
             _graphSettings.yAxisLabelIncrement = 25;
@@ -938,8 +938,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings.width = 570;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings.width = self.width - kLegendWidth - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 90;
             _graphSettings.yAxisLabelIncrement = 25;
@@ -1106,8 +1106,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 14;
-            _graphSettings.width = 380;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 28;
+            _graphSettings.width = self.width - kLegendWidth - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 20 - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 80;
             _graphSettings.yAxisLabelIncrement = 25;
