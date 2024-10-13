@@ -694,8 +694,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 2;
             _graphSettings.xLabel = StringIds::rawdate_short;
             _graphSettings.yLabel = StringIds::percentage_one_decimal_place;
-            _graphSettings.xAxisTickIncrement = 4;
-            _graphSettings.xAxisLabelIncrement = 12;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 120;
+            _graphSettings.xAxisLabelIncrement = _graphSettings.xAxisTickIncrement * 3;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 100;
             _graphSettings.flags = GraphFlags::dataFrontToBack;
@@ -787,8 +787,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 4;
             _graphSettings.xLabel = StringIds::rawdate_short;
             _graphSettings.yLabel = StringIds::cargo_units_delivered;
-            _graphSettings.xAxisTickIncrement = 4;
-            _graphSettings.xAxisLabelIncrement = 12;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 120;
+            _graphSettings.xAxisLabelIncrement = _graphSettings.xAxisTickIncrement * 3;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 1000;
             _graphSettings.flags = GraphFlags::dataFrontToBack;
@@ -880,8 +880,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 4;
             _graphSettings.xLabel = StringIds::rawdate_short;
             _graphSettings.yLabel = StringIds::cargo_units_delivered;
-            _graphSettings.xAxisTickIncrement = 4;
-            _graphSettings.xAxisLabelIncrement = 12;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 120;
+            _graphSettings.xAxisLabelIncrement = _graphSettings.xAxisTickIncrement * 3;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 1000;
             _graphSettings.flags = GraphFlags::dataFrontToBack;
@@ -973,8 +973,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 6;
             _graphSettings.xLabel = StringIds::rawdate_short;
             _graphSettings.yLabel = StringIds::small_company_value_currency;
-            _graphSettings.xAxisTickIncrement = 4;
-            _graphSettings.xAxisLabelIncrement = 12;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 120;
+            _graphSettings.xAxisLabelIncrement = _graphSettings.xAxisTickIncrement * 3;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 10000;
             _graphSettings.flags = GraphFlags::dataFrontToBack;
@@ -1136,8 +1136,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 4;
             _graphSettings.xLabel = StringIds::cargo_delivered_days;
             _graphSettings.yLabel = StringIds::cargo_delivered_currency;
-            _graphSettings.xAxisTickIncrement = 5;
-            _graphSettings.xAxisLabelIncrement = 20;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 60;
+            _graphSettings.xAxisLabelIncrement = _graphSettings.xAxisTickIncrement * 4;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 0;
             _graphSettings.flags = GraphFlags::none;
