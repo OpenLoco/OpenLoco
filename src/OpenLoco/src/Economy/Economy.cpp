@@ -46,7 +46,7 @@ namespace OpenLoco::Economy
         20,
     };
 
-    static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
+    static currency32_t _deliveredCargoPayment[32][60]; // 0x009C68F8
 
     static auto& currencyMultiplicationFactors()
     {
@@ -76,6 +76,11 @@ namespace OpenLoco::Economy
                 _deliveredCargoPayment[cargoItem][(numDays / 2) - 1] = CompanyManager::calculateDeliveredCargoPayment(cargoItem, 100, 10, numDays);
             }
         }
+    }
+
+    currency32_t* getDeliveryCargoPaymentsTable(uint8_t cargoType)
+    {
+        return &_deliveredCargoPayment[cargoType][0];
     }
 
     uint32_t getCurrencyMultiplicationFactor(uint8_t costIndex)

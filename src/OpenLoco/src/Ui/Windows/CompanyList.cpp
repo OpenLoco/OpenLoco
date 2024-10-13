@@ -30,8 +30,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::CompanyList
 {
-    static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
-
     static uint16_t _hoverItemTicks;     // 0x009C68C7
     static GraphSettings _graphSettings; // 0x0113DC7A
 
@@ -1121,8 +1119,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     continue;
 
                 auto colour = _cargoLineColour[i];
+                auto* deliveredCargoPayment = Economy::getDeliveryCargoPaymentsTable(i);
 
-                _graphSettings.yData[count] = reinterpret_cast<std::byte*>(&_deliveredCargoPayment[i][0]);
+                _graphSettings.yData[count] = reinterpret_cast<std::byte*>(deliveredCargoPayment);
                 _graphSettings.dataStart[count] = 0;
                 _graphSettings.lineColour[count] = Colours::getShade(colour, 6);
                 _graphSettings.itemId[count] = i;
