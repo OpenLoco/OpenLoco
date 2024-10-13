@@ -1173,20 +1173,24 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 drawGraphLegend(&self, drawingCtx, x, y);
             }
 
+            auto canvasMidX = _graphSettings.xOffset + (_graphSettings.width - _graphSettings.xOffset) / 2;
+
+            // Chart title
             {
-                auto point = Point(self.x + 8, self.widgets[Common::widx::panel].top + self.y + 1);
+                auto point = Point(self.x + canvasMidX, self.widgets[Common::widx::panel].top + self.y + 1);
 
                 FormatArguments args{};
                 args.push<uint16_t>(100);
                 args.push<uint16_t>(10);
 
-                tr.drawStringLeft(point, Colour::black, StringIds::cargo_deliver_graph_title, args);
+                tr.drawStringCentred(point, Colour::black, StringIds::cargo_deliver_graph_title, args);
             }
 
+            // X axis label ("Transit time")
             {
-                auto point = Point(self.x + 160, self.height + self.y - 13);
+                auto point = Point(self.x + canvasMidX, self.height + self.y - 13);
 
-                tr.drawStringLeft(point, Colour::black, StringIds::cargo_transit_time);
+                tr.drawStringCentred(point, Colour::black, StringIds::cargo_transit_time);
             }
         }
 
