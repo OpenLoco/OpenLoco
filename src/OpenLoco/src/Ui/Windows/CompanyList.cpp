@@ -23,9 +23,7 @@
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::CompanyList
