@@ -93,7 +93,7 @@ namespace OpenLoco::Ui
             if (remainder == 0)
             {
                 int16_t xPos = xTickPos * gs.xAxisTickIncrement + gs.left + gs.xOffset;
-                int16_t yPos = gs.top + gs.height - gs.yOffset + 5;
+                int16_t yPos = gs.canvasBottom + 5;
 
                 auto tr = Gfx::TextRenderer(drawingCtx);
                 auto formatArgs = FormatArguments{};
@@ -246,8 +246,6 @@ namespace OpenLoco::Ui
     {
         gs.canvasLeft = gs.xOffset + gs.left;
         gs.canvasHeight = gs.height - gs.yOffset;
-
-        // TODO: unused? remove?
         gs.canvasBottom = gs.top + gs.height - gs.yOffset;
 
         int64_t maxValue = graphGetMaxValue(gs);
