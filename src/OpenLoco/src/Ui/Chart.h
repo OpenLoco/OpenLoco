@@ -23,6 +23,14 @@ namespace OpenLoco::Ui
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GraphFlags);
 
+    enum class GraphPointFlags : uint8_t
+    {
+        none = 0U,
+        drawLines = 1U << 0,
+        drawPoints = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(GraphPointFlags);
+
     struct GraphSettings
     {
         uint16_t left;                 // 0x0113DC7A
@@ -52,7 +60,7 @@ namespace OpenLoco::Ui
         uint16_t canvasBottom;         // 0x0113DD94
         uint16_t canvasHeight;         // 0x0113DD96
         uint8_t numValueShifts;        // 0x0113DD98 -- factors of two
-        uint8_t byte_113DD99;          // 0x0113DD99
+        GraphPointFlags pointFlags;    // 0x0113DD99
         uint16_t itemId[32];           // 0x0113DD9A
     };
 

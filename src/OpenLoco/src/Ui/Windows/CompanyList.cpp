@@ -1142,7 +1142,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.xAxisRange = 2;
             _graphSettings.xAxisStepSize = 2;
-            _graphSettings.byte_113DD99 = 1;
+            _graphSettings.pointFlags = GraphPointFlags::drawLines;
 
             Ui::drawGraph(_graphSettings, &self, drawingCtx);
 
@@ -1723,7 +1723,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.xAxisRange = totalMonths;
             _graphSettings.xAxisStepSize = 1;
-            _graphSettings.byte_113DD99 = 1;
+            _graphSettings.pointFlags = GraphPointFlags::drawLines;
 
             Ui::drawGraph(_graphSettings, self, drawingCtx);
 

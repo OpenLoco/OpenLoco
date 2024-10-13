@@ -6,8 +6,6 @@
 
 namespace OpenLoco::Ui
 {
-    static uint32_t _dword_113658C; // 0x0113658C
-
     // TODO: replace with templated functions
     static int64_t graphGetValueFromPointer(const std::byte* dataPtr, const uint8_t dataTypeSize)
     {
@@ -184,7 +182,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CFD87
-    static void drawGraphLineSegments(const GraphSettings& gs, const uint8_t lineIndex, Gfx::DrawingContext& drawingCtx)
+    static void drawGraphLineSegments(const GraphSettings& gs, const uint8_t lineIndex, Gfx::DrawingContext& drawingCtx, GraphPointFlags pointFlag)
     {
         auto previousPos = Ui::Point(-1, 0);
 
@@ -216,7 +214,7 @@ namespace OpenLoco::Ui
 
             yPos += gs.top;
 
-            if (_dword_113658C != 1)
+            if (pointFlag == GraphPointFlags::drawLines)
             {
                 auto colour = gs.lineColour[lineIndex];
                 drawingCtx.drawRect(xPos, yPos, 1, 1, colour, Gfx::RectFlags::none);
@@ -228,7 +226,7 @@ namespace OpenLoco::Ui
                 }
                 previousPos = targetPos;
             }
-            else
+            else if (pointFlag == GraphPointFlags::drawPoints)
             {
                 auto colour = gs.lineColour[lineIndex];
                 drawingCtx.drawRect(xPos, yPos, 2, 2, colour, Gfx::RectFlags::none);
@@ -276,9 +274,10 @@ namespace OpenLoco::Ui
         }
 
         // 0x004CFD59
-        for (_dword_113658C = 0; _dword_113658C < 2; _dword_113658C++) // iteration/pass??
+        for (auto j = 0; j < 2; j++)
         {
-            if ((gs.byte_113DD99 & (1U << _dword_113658C)) == 0)
+            auto pointFlag = GraphPointFlags(1U << j);
+            if ((gs.pointFlags & pointFlag) == GraphPointFlags::none)
             {
                 continue;
             }
@@ -290,7 +289,7 @@ namespace OpenLoco::Ui
                     continue;
                 }
 
-                drawGraphLineSegments(gs, i, drawingCtx);
+                drawGraphLineSegments(gs, i, drawingCtx, pointFlag);
             }
         }
     }
