@@ -11,7 +11,7 @@
 #include "Ui/TextInput.h"
 #include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
-#include "Windows/Construction/Construction.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
