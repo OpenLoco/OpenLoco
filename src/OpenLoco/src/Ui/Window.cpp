@@ -101,7 +101,7 @@ namespace OpenLoco::Ui
         return (this->activatedWidgets & (1ULL << index)) != 0;
     }
 
-    bool Window::isHoldable(Ui::WidgetIndex_t index)
+    bool Window::isHoldable(WidgetIndex_t index)
     {
         return (this->holdableWidgets & (1ULL << index)) != 0;
     }
@@ -997,7 +997,7 @@ namespace OpenLoco::Ui
         eventHandlers->event_09(*this);
     }
 
-    void Window::callToolUpdate(int16_t widgetIndex, int16_t xPos, int16_t yPos)
+    void Window::callToolUpdate(WidgetIndex_t widgetIndex, int16_t xPos, int16_t yPos)
     {
         if (eventHandlers->onToolUpdate == nullptr)
             return;
@@ -1005,7 +1005,7 @@ namespace OpenLoco::Ui
         eventHandlers->onToolUpdate(*this, widgetIndex, xPos, yPos);
     }
 
-    void Window::callToolDown(int16_t widgetIndex, int16_t xPos, int16_t yPos)
+    void Window::callToolDown(WidgetIndex_t widgetIndex, int16_t xPos, int16_t yPos)
     {
         if (eventHandlers->onToolDown == nullptr)
             return;
@@ -1013,7 +1013,7 @@ namespace OpenLoco::Ui
         eventHandlers->onToolDown(*this, widgetIndex, xPos, yPos);
     }
 
-    void Window::callToolDragContinue(const int16_t widgetIndex, const int16_t xPos, const int16_t yPos)
+    void Window::callToolDragContinue(const WidgetIndex_t widgetIndex, const int16_t xPos, const int16_t yPos)
     {
         if (eventHandlers->toolDragContinue == nullptr)
             return;
@@ -1021,7 +1021,7 @@ namespace OpenLoco::Ui
         eventHandlers->toolDragContinue(*this, widgetIndex, xPos, yPos);
     }
 
-    void Window::callToolDragEnd(const int16_t widgetIndex)
+    void Window::callToolDragEnd(const WidgetIndex_t widgetIndex)
     {
         if (eventHandlers->toolDragEnd == nullptr)
             return;
@@ -1029,7 +1029,7 @@ namespace OpenLoco::Ui
         eventHandlers->toolDragEnd(*this, widgetIndex);
     }
 
-    void Window::callToolAbort(int16_t widgetIndex)
+    void Window::callToolAbort(WidgetIndex_t widgetIndex)
     {
         if (eventHandlers->onToolAbort == nullptr)
             return;
@@ -1045,7 +1045,7 @@ namespace OpenLoco::Ui
         return eventHandlers->toolCursor(*this, xPos, yPos, fallback, *out);
     }
 
-    Ui::CursorId Window::callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    Ui::CursorId Window::callCursor(WidgetIndex_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (eventHandlers->cursor == nullptr)
             return fallback;
@@ -1070,7 +1070,7 @@ namespace OpenLoco::Ui
         return this;
     }
 
-    void Window::call_3(int8_t widgetIndex)
+    void Window::call_3(WidgetIndex_t widgetIndex)
     {
         if (eventHandlers->event_03 == nullptr)
             return;
@@ -1078,7 +1078,7 @@ namespace OpenLoco::Ui
         eventHandlers->event_03(*this, widgetIndex);
     }
 
-    void Window::callOnMouseDown(Ui::WidgetIndex_t widgetIndex)
+    void Window::callOnMouseDown(WidgetIndex_t widgetIndex)
     {
         if (eventHandlers->onMouseDown == nullptr)
             return;
@@ -1086,7 +1086,7 @@ namespace OpenLoco::Ui
         eventHandlers->onMouseDown(*this, widgetIndex);
     }
 
-    void Window::callOnDropdown(Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+    void Window::callOnDropdown(WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (eventHandlers->onDropdown == nullptr)
             return;
@@ -1142,7 +1142,7 @@ namespace OpenLoco::Ui
         this->eventHandlers->viewportRotate(*this);
     }
 
-    std::optional<FormatArguments> Window::callTooltip(int16_t widgetIndex)
+    std::optional<FormatArguments> Window::callTooltip(WidgetIndex_t widgetIndex)
     {
         // We only return std::nullopt when required by the tooltip function
         if (eventHandlers->tooltip == nullptr)
