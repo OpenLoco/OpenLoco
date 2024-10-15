@@ -17,7 +17,9 @@ namespace OpenLoco::Gfx
 
 namespace OpenLoco::Ui
 {
-    using WidgetIndex_t = int8_t;
+    using WidgetIndex_t = int16_t;
+
+    constexpr WidgetIndex_t kWidgetIndexNull = -1;
 
     struct Window;
     enum class WindowColour : uint8_t;

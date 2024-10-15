@@ -1578,7 +1578,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     }
 
                     WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
-                    if (newWidgetIndex == -1)
+                    if (newWidgetIndex == kWidgetIndexNull)
                         break;
 
                     auto widget = window->widgets[newWidgetIndex];
@@ -1954,7 +1954,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
 
             WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
-            if (newWidgetIndex == -1)
+            if (newWidgetIndex == kWidgetIndexNull)
                 return;
 
             auto widget = window->widgets[newWidgetIndex];

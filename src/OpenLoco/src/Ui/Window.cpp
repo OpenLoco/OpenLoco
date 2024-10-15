@@ -374,7 +374,7 @@ namespace OpenLoco::Ui
     // 0x004C99B9
     void Window::invalidatePressedImageButtons()
     {
-        WidgetIndex_t pressedWidgetIndex = -1;
+        WidgetIndex_t pressedWidgetIndex = kWidgetIndexNull;
         if (Input::isPressed(type, number) || Input::isDropdownActive(type, number))
         {
             pressedWidgetIndex = Input::getPressedWidgetIndex();
@@ -919,9 +919,9 @@ namespace OpenLoco::Ui
     {
         this->callPrepareDraw();
 
-        WidgetIndex_t activeWidget = -1;
+        WidgetIndex_t activeWidget = kWidgetIndexNull;
 
-        WidgetIndex_t widgetIndex = -1;
+        WidgetIndex_t widgetIndex = kWidgetIndexNull;
         for (auto& widget : widgets)
         {
             widgetIndex++;
@@ -944,9 +944,9 @@ namespace OpenLoco::Ui
             activeWidget = widgetIndex;
         }
 
-        if (activeWidget == -1)
+        if (activeWidget == kWidgetIndexNull)
         {
-            return -1;
+            return kWidgetIndexNull;
         }
 
         if (this->widgets[activeWidget].type == WidgetType::combobox)
@@ -1241,7 +1241,7 @@ namespace OpenLoco::Ui
 
     WidgetIndex_t Window::firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
     {
-        WidgetIndex_t activeIndex = -1;
+        WidgetIndex_t activeIndex = kWidgetIndexNull;
         for (WidgetIndex_t i = minIndex; i <= maxIndex; i++)
         {
             if (this->isActivated(i))
@@ -1283,7 +1283,7 @@ namespace OpenLoco::Ui
     WidgetIndex_t Window::nextAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
     {
         WidgetIndex_t activeIndex = firstActivatedWidgetInRange(minIndex, maxIndex);
-        if (activeIndex == -1)
+        if (activeIndex == kWidgetIndexNull)
             return activeIndex;
 
         // Offset, wrapping around if needed.
