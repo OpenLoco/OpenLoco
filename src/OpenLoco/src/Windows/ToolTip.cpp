@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     void open(Ui::Window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
-        if (window == nullptr || widgetIndex == -1)
+        if (window == nullptr || widgetIndex == kWidgetIndexNull)
         {
             return;
         }
