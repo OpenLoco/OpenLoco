@@ -78,9 +78,9 @@ namespace OpenLoco::Economy
         }
     }
 
-    currency32_t* getDeliveryCargoPaymentsTable(uint8_t cargoType)
+    std::span<currency32_t> getDeliveryCargoPaymentsTable(uint8_t cargoType)
     {
-        return &_deliveredCargoPayment[cargoType][0];
+        return std::span(_deliveredCargoPayment[cargoType]);
     }
 
     uint32_t getCurrencyMultiplicationFactor(uint8_t costIndex)

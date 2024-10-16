@@ -1117,9 +1117,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     continue;
 
                 auto colour = _cargoLineColour[i];
-                auto* deliveredCargoPayment = Economy::getDeliveryCargoPaymentsTable(i);
+                auto deliveredCargoPayment = Economy::getDeliveryCargoPaymentsTable(i);
 
-                _graphSettings.yData[count] = reinterpret_cast<std::byte*>(deliveredCargoPayment);
+                _graphSettings.yData[count] = reinterpret_cast<std::byte*>(deliveredCargoPayment.data());
                 _graphSettings.dataStart[count] = 0;
                 _graphSettings.lineColour[count] = Colours::getShade(colour, 6);
                 _graphSettings.itemId[count] = i;
@@ -1127,7 +1127,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
 
             _graphSettings.lineCount = count;
-            _graphSettings.dataEnd = 60;
+            _graphSettings.dataEnd = std::size(Economy::getDeliveryCargoPaymentsTable(0));
             _graphSettings.dataTypeSize = 4;
             _graphSettings.xLabel = StringIds::cargo_delivered_days;
             _graphSettings.yLabel = StringIds::cargo_delivered_currency;
