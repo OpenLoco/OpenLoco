@@ -1127,7 +1127,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
 
             _graphSettings.lineCount = count;
-            _graphSettings.dataEnd = std::size(Economy::getDeliveryCargoPaymentsTable(0));
+            _graphSettings.dataEnd = static_cast<uint16_t>(std::size(Economy::getDeliveryCargoPaymentsTable(0)));
             _graphSettings.dataTypeSize = 4;
             _graphSettings.xLabel = StringIds::cargo_delivered_days;
             _graphSettings.yLabel = StringIds::cargo_delivered_currency;
