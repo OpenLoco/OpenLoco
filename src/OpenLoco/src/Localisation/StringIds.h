@@ -1460,7 +1460,7 @@ namespace OpenLoco::StringIds
     constexpr StringId companies_plural = 1783;
     constexpr StringId rawdate_short = 1784;
     constexpr StringId percentage_one_decimal_place = 1785;
-
+    constexpr StringId graph_label_format = 1786;
     constexpr StringId cargo_units_delivered = 1787;
     constexpr StringId player_info_performance = 1788;
     constexpr StringId player_info_performance_decrease = 1789;
@@ -1469,7 +1469,6 @@ namespace OpenLoco::StringIds
     constexpr StringId small_black_string = 1792;
     constexpr StringId small_white_string = 1793;
     constexpr StringId airport_type_not_suitable_for_aircraft = 1794;
-
     constexpr StringId currency_symbol = 1795;
     constexpr StringId cargo_delivered_days = 1796;
     constexpr StringId cargo_delivered_currency = 1797;
