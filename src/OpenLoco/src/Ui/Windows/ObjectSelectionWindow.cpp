@@ -266,14 +266,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 
         // Secondary tabs
-        makeWidget({ 3, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab)),
-        makeWidget({ 34, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab)),
-        makeWidget({ 65, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab)),
-        makeWidget({ 96, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab)),
-        makeWidget({ 127, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab)),
-        makeWidget({ 158, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab)),
-        makeWidget({ 189, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab)),
-        makeWidget({ 220, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab)),
+        makeWidget({ 3, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeWidget({ 34, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeWidget({ 65, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeWidget({ 96, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeWidget({ 127, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeWidget({ 158, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeWidget({ 189, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        makeWidget({ 220, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
 
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
