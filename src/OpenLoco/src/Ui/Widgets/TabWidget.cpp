@@ -12,56 +12,37 @@ namespace OpenLoco::Ui::Widgets
     {
         auto* window = widgetState.window;
         Ui::Point placeForImage(widget.left + window->x, widget.top + window->y);
-        const bool isColourSet = widget.image & Widget::kImageIdColourSet;
-        ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
-        if (widget.type == WidgetType::wt_6 || widget.type == WidgetType::toolbarTab || widget.type == WidgetType::tab || widget.type == WidgetType::wt_4)
+
+        ImageId imageId = ImageId{ widget.image };
+        if (widgetState.activated)
         {
-            if (widgetState.activated)
-            {
-                // TODO: remove image addition
-                imageId = imageId.withIndexOffset(1);
-            }
+            // TODO: remove image addition
+            imageId = imageId.withIndexOffset(1);
         }
 
         auto colour = widgetState.colour;
         if (widgetState.disabled)
         {
-            // TODO: this is odd most likely this is another flag like Widget::kImageIdColourSet
-            if (imageId.hasSecondary())
-            {
-                return;
-            }
-
-            // No colour applied image
-            const auto pureImage = ImageId{ imageId.getIndex() };
             uint8_t c;
             if (colour.isTranslucent())
             {
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid(placeForImage + Ui::Point{ 1, 1 }, pureImage, c);
+                drawingCtx.drawImageSolid(placeForImage + Ui::Point{ 1, 1 }, imageId, c);
                 c = Colours::getShade(colour.c(), 2);
-                drawingCtx.drawImageSolid(placeForImage, pureImage, c);
+                drawingCtx.drawImageSolid(placeForImage, imageId, c);
             }
             else
             {
                 c = Colours::getShade(colour.c(), 6);
-                drawingCtx.drawImageSolid(placeForImage + Ui::Point{ 1, 1 }, pureImage, c);
+                drawingCtx.drawImageSolid(placeForImage + Ui::Point{ 1, 1 }, imageId, c);
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid(placeForImage, pureImage, c);
+                drawingCtx.drawImageSolid(placeForImage, imageId, c);
             }
 
             return;
         }
 
-        if (!isColourSet && imageId.hasSecondary())
-        {
-            imageId = imageId.withSecondary(colour.c());
-        }
-
-        if (!isColourSet && imageId.hasPrimary())
-        {
-            imageId = imageId.withPrimary(colour.c());
-        }
+        imageId = imageId.withPrimary(colour.c());
 
         drawingCtx.drawImage(placeForImage, imageId);
     }
