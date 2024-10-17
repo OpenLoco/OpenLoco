@@ -6,13 +6,13 @@
 
 namespace OpenLoco::Ui::Widgets
 {
-    // NOTE: Called drawTabImpl because Widget has a static function called drawTab
     // 0x004CADE8
-    static void drawTabImpl(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    static void drawTabBackground(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
         Ui::Point placeForImage(widget.left + window->x, widget.top + window->y);
 
+        // TODO: This is always ImageIds::tab at the moment, we should make this implicit.
         ImageId imageId = ImageId{ widget.image };
         if (widgetState.activated)
         {
@@ -59,6 +59,8 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        drawTabImpl(drawingCtx, widget, widgetState);
+        drawTabBackground(drawingCtx, widget, widgetState);
+
+        // TODO: Draw the content of the tab once the background is implicit.
     }
 }
