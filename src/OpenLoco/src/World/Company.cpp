@@ -276,7 +276,10 @@ namespace OpenLoco
     void companyEmotionEvent(CompanyId companyId, Emotion emotion)
     {
         auto company = CompanyManager::get(companyId);
-        company->activeEmotions[enumValue(emotion)] = kEmotionDurations[enumValue(emotion)];
+        if (company != nullptr)
+        {
+            company->activeEmotions[enumValue(emotion)] = kEmotionDurations[enumValue(emotion)];
+        }
     }
 
     static bool shouldSetObservation(Company& company, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object)
