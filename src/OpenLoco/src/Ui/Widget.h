@@ -173,16 +173,6 @@ namespace OpenLoco::Ui
         return out;
     }
 
-    constexpr Widget makeRemapWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-    {
-        Widget out = makeWidget(origin, size, type, colour, content, tooltip);
-
-        // TODO: implement this as a constant.
-        out.content |= (1U << 29);
-
-        return out;
-    }
-
     constexpr Widget makeDropdownButtonWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 12;
