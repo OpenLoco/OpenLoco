@@ -42,6 +42,9 @@ namespace OpenLoco::Ui::Windows::Debug
             label_1,
             label_2,
             label_3,
+            tab_1,
+            tab_2,
+            tab_3,
         };
     }
 
@@ -83,6 +86,7 @@ namespace OpenLoco::Ui::Windows::Debug
 
         window->setWidgets(_widgets);
         window->enabledWidgets = ~0ULL;
+        window->disabledWidgets = 1U << widx::tab_3;
         window->initScrollWidgets();
 
         const auto interface = ObjectManager::get<InterfaceSkinObject>();

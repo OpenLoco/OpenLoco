@@ -54,11 +54,6 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        if (widgetState.disabled)
-        {
-            return;
-        }
-
         drawTabBackground(drawingCtx, widget, widgetState);
 
         // TODO: Draw the content of the tab once the background is implicit.
