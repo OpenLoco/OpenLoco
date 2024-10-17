@@ -14,9 +14,9 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , roadId(regs.dh & 0xF)
             , mods(regs.di >> 16)
-            , bridge(regs.edx >> 24)
+            , bridge((regs.edx >> 24) & 0xFF)
             , roadObjectId(regs.dl)
-            , unkFlags(regs.edx >> 16)
+            , unkFlags((regs.edx >> 16) & 0xFF)
         {
         }
 
