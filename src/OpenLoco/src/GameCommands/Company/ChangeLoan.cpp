@@ -14,7 +14,7 @@ namespace OpenLoco::GameCommands
     {
         GameCommands::setExpenditureType(ExpenditureType::LoanInterest);
 
-        auto* company = CompanyManager::get(CompanyManager::getUpdatingCompanyId());
+        auto* company = CompanyManager::get(GameCommands::getUpdatingCompanyId());
         const currency32_t loanDifference = company->currentLoan - newLoan;
 
         if (company->currentLoan > newLoan)
@@ -39,8 +39,8 @@ namespace OpenLoco::GameCommands
         {
             company->currentLoan = newLoan;
             company->cash -= loanDifference;
-            Ui::WindowManager::invalidate(Ui::WindowType::company, static_cast<uint16_t>(CompanyManager::getUpdatingCompanyId()));
-            if (CompanyManager::getControllingId() == CompanyManager::getUpdatingCompanyId())
+            Ui::WindowManager::invalidate(Ui::WindowType::company, static_cast<uint16_t>(GameCommands::getUpdatingCompanyId()));
+            if (CompanyManager::getControllingId() == GameCommands::getUpdatingCompanyId())
             {
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
             }

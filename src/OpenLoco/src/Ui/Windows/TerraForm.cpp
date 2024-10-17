@@ -554,9 +554,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                         break;
                     case treeCluster::selected:
                     {
-                        auto previousId = CompanyManager::getUpdatingCompanyId();
+                        auto previousId = GameCommands::getUpdatingCompanyId();
                         if (isEditorMode())
-                            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+                            GameCommands::setUpdatingCompanyId(CompanyId::neutral);
 
                         if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 320, 3, placementArgs->type))
                         {
@@ -569,13 +569,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                         }
 
                         if (isEditorMode())
-                            CompanyManager::setUpdatingCompanyId(previousId);
+                            GameCommands::setUpdatingCompanyId(previousId);
                         break;
                     }
                     case treeCluster::random:
-                        auto previousId = CompanyManager::getUpdatingCompanyId();
+                        auto previousId = GameCommands::getUpdatingCompanyId();
                         if (isEditorMode())
-                            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+                            GameCommands::setUpdatingCompanyId(CompanyId::neutral);
 
                         if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 384, 4, std::nullopt))
                         {
@@ -588,7 +588,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         }
 
                         if (isEditorMode())
-                            CompanyManager::setUpdatingCompanyId(previousId);
+                            GameCommands::setUpdatingCompanyId(previousId);
                         break;
                 }
             }

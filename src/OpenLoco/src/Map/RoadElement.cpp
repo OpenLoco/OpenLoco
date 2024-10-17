@@ -81,8 +81,8 @@ namespace OpenLoco::World
                 return true;
         }
 
-        CompanyId backup = CompanyManager::getUpdatingCompanyId();
-        CompanyManager::setUpdatingCompanyId(owner());
+        CompanyId backup = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(owner());
 
         GameCommands::RoadRemovalArgs args;
         args.pos = World::Pos3(loc.x, loc.y, baseHeight());
@@ -92,7 +92,7 @@ namespace OpenLoco::World
         args.objectId = roadObjectId();
         GameCommands::doCommand(args, GameCommands::Flags::apply);
 
-        CompanyManager::setUpdatingCompanyId(backup);
+        GameCommands::setUpdatingCompanyId(backup);
 
         return false;
     }

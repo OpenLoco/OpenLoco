@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (isNetworked())
         {
-            if (CompanyManager::getUpdatingCompanyId() == CompanyManager::getControllingId())
+            if (GameCommands::getUpdatingCompanyId() == CompanyManager::getControllingId())
             {
                 GameCommands::do_72();
                 MultiPlayer::setFlag(MultiPlayer::flags::flag_2);
