@@ -203,12 +203,6 @@ namespace OpenLoco::Ui
         return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::stepper_plus, tooltip);
     }
 
-    constexpr Widget makeTextWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
-    {
-        Widget out{ origin, size, type, colour, content, tooltip };
-        return out;
-    }
-
     namespace Detail
     {
         template<typename T, typename Enable = void>
