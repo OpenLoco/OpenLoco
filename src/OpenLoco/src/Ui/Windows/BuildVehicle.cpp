@@ -221,22 +221,22 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
 
         // Primary tabs
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trucks),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trams),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_ships),
+        makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_train_vehicles),
+        makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_buses),
+        makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_trucks),
+        makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_trams),
+        makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_aircraft),
+        makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_ships),
 
         // Secondary tabs
-        makeRemapWidget({ 5, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 36, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 67, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 98, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 129, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 160, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 191, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 222, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeWidget({ 5, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
+        makeWidget({ 36, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
+        makeWidget({ 67, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
+        makeWidget({ 98, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
+        makeWidget({ 129, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
+        makeWidget({ 160, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
+        makeWidget({ 191, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
+        makeWidget({ 222, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
 
         // Scroll and preview areas
         makeWidget({ 3, 102 }, { 374, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),

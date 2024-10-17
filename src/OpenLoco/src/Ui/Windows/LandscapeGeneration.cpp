@@ -68,12 +68,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, window_caption_id),
                 Widgets::ImageButton({ 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),
-                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_options),
-                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_land),
-                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_water),
-                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_forests),
-                makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_towns),
-                makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_industries),
+                makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_landscape_generation_options),
+                makeWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_landscape_generation_land),
+                makeWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_landscape_generation_water),
+                makeWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_landscape_generation_forests),
+                makeWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_landscape_generation_towns),
+                makeWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_landscape_generation_industries),
                 Widgets::Button({ 196, frame_height - 17 }, { 160, 12 }, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape));
         }
 

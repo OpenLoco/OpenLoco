@@ -75,12 +75,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
-                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),
-                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_headquarters_and_details),
-                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_colour_scheme),
-                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_finances),
-                makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_cargo_delivered),
-                makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_challenge_for_this_game),
+                makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_company_owner_and_status),
+                makeWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_company_headquarters_and_details),
+                makeWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_company_colour_scheme),
+                makeWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_company_finances),
+                makeWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_cargo_delivered),
+                makeWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_company_challenge_for_this_game),
                 Widgets::ImageButton({ 0, 14 }, { 26, 26 }, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company));
         }
 
