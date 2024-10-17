@@ -61,9 +61,9 @@ namespace OpenLoco::Ui::Windows::Debug
         Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (3 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::Center, StringIds::openloco),
         Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (4 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::Right, StringIds::openloco),
 
-        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_town),
-        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_population_graph),
-        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_town_ratings_each_company)
+        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
+        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
+        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
 
     );
 

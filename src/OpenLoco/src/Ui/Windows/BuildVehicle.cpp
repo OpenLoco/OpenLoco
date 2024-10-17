@@ -222,22 +222,22 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
 
         // Primary tabs
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_train_vehicles),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_buses),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_trucks),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_trams),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_aircraft),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_build_new_ships),
+        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
+        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
+        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trucks),
+        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trams),
+        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
+        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_ships),
 
         // Secondary tabs
-        Widgets::Tab({ 5, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 36, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 67, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 98, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 129, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 160, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 191, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 222, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tooltip_vehicles_for),
+        Widgets::Tab({ 5, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab({ 36, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab({ 67, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab({ 98, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab({ 129, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab({ 160, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab({ 191, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab({ 222, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
 
         // Scroll and preview areas
         makeWidget({ 3, 102 }, { 374, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),

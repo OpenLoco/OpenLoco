@@ -65,13 +65,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 231 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tab_compare_companies),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tab_company_performance),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tab_cargo_graphs),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tab_cargo_distance_graphs),
-                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tab_company_values),
-                Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tab_cargo_payment_rates),
-                Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::withRemap(ImageIds::tab), StringIds::tab_speed_records));
+                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_compare_companies),
+                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_performance),
+                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_graphs),
+                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_distance_graphs),
+                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_values),
+                Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_payment_rates),
+                Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records));
         }
 
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
