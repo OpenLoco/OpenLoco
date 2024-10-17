@@ -31,8 +31,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
     static uint16_t _hoverItemTicks;     // 0x009C68C7
     static GraphSettings _graphSettings; // 0x0113DC7A
 
+    static constexpr auto kLegendMargin = 6;
+    static constexpr auto kLegendWidth = 100;
+    static constexpr auto kWindowPadding = 4;
+
     namespace Common
     {
+        static constexpr Ui::Size32 kMaxWindowSize = { 800, 940 }; // NB: frame background is only 800px :(
+        static constexpr Ui::Size32 kMinWindowSize = { 300, 272 };
+
         enum widx
         {
             frame,
@@ -77,8 +84,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanyList
     {
-        static constexpr Ui::Size32 kMaxWindowSize = { 640, 470 };
-        static constexpr Ui::Size32 kMinWindowSize = { 300, 272 };
         static constexpr Ui::Size32 kWindowSize = { 640, 272 };
 
         static constexpr uint8_t kRowHeight = 25;
@@ -154,7 +159,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004363CB
         static void onResize(Window& self)
         {
-            self.setSize(kMinWindowSize, kMaxWindowSize);
+            self.setSize(Common::kMinWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00437BA0
@@ -520,10 +525,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436198
         static void tabReset(Window* self)
         {
-            self->minWidth = kMinWindowSize.width;
-            self->minHeight = kMinWindowSize.height;
-            self->maxWidth = kMaxWindowSize.width;
-            self->maxHeight = kMaxWindowSize.height;
+            self->minWidth = Common::kMinWindowSize.width;
+            self->minHeight = Common::kMinWindowSize.height;
+            self->maxWidth = Common::kMaxWindowSize.width;
+            self->maxHeight = Common::kMaxWindowSize.height;
             self->width = kWindowSize.width;
             self->height = kWindowSize.height;
             self->var_83C = 0;
@@ -590,10 +595,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         window->currentTab = 0;
-        window->minWidth = CompanyList::kMinWindowSize.width;
-        window->minHeight = CompanyList::kMinWindowSize.height;
-        window->maxWidth = CompanyList::kMaxWindowSize.width;
-        window->maxHeight = CompanyList::kMaxWindowSize.height;
+        window->minWidth = Common::kMinWindowSize.width;
+        window->minHeight = Common::kMinWindowSize.height;
+        window->maxWidth = Common::kMaxWindowSize.width;
+        window->maxHeight = Common::kMaxWindowSize.height;
 
         window->invalidate();
 
@@ -644,7 +649,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004366D7
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00436490
@@ -655,8 +660,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings.width = 520;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 40;
             _graphSettings.yAxisLabelIncrement = 20;
@@ -689,7 +694,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 2;
             _graphSettings.xLabel = StringIds::rawdate_short;
             _graphSettings.yLabel = StringIds::percentage_one_decimal_place;
-            _graphSettings.xAxisTickIncrement = 4;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 120;
             _graphSettings.xAxisLabelIncrement = 12;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 100;
@@ -737,7 +742,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004369FB
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x004367B4
@@ -748,8 +753,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings.width = 525;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 45;
             _graphSettings.yAxisLabelIncrement = 25;
@@ -782,7 +787,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 4;
             _graphSettings.xLabel = StringIds::rawdate_short;
             _graphSettings.yLabel = StringIds::cargo_units_delivered;
-            _graphSettings.xAxisTickIncrement = 4;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 120;
             _graphSettings.xAxisLabelIncrement = 12;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 1000;
@@ -830,7 +835,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436D1F
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00436AD8
@@ -841,8 +846,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings.width = 545;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 65;
             _graphSettings.yAxisLabelIncrement = 25;
@@ -875,7 +880,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 4;
             _graphSettings.xLabel = StringIds::rawdate_short;
             _graphSettings.yLabel = StringIds::cargo_units_delivered;
-            _graphSettings.xAxisTickIncrement = 4;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 120;
             _graphSettings.xAxisLabelIncrement = 12;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 1000;
@@ -923,7 +928,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437043
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00436DFC
@@ -934,8 +939,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
-            _graphSettings.width = 570;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 8;
+            _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 90;
             _graphSettings.yAxisLabelIncrement = 25;
@@ -968,7 +973,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 6;
             _graphSettings.xLabel = StringIds::rawdate_short;
             _graphSettings.yLabel = StringIds::small_company_value_currency;
-            _graphSettings.xAxisTickIncrement = 4;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 120;
             _graphSettings.xAxisLabelIncrement = 12;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 10000;
@@ -1016,7 +1021,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x0043737D
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x004F9442
@@ -1102,8 +1107,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphSettings.left = self.x + 4;
             _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 14;
-            _graphSettings.width = 380;
-            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 28;
+            _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
+            _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 20 - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
             _graphSettings.xOffset = 80;
             _graphSettings.yAxisLabelIncrement = 25;
@@ -1131,7 +1136,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _graphSettings.dataTypeSize = 4;
             _graphSettings.xLabel = StringIds::cargo_delivered_days;
             _graphSettings.yLabel = StringIds::cargo_delivered_currency;
-            _graphSettings.xAxisTickIncrement = 5;
+            _graphSettings.xAxisTickIncrement = (_graphSettings.width - _graphSettings.xOffset) / 60;
             _graphSettings.xAxisLabelIncrement = 20;
             _graphSettings.dword_113DD86 = 0;
             _graphSettings.yAxisStepSize = 0;
@@ -1163,26 +1168,30 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
 
             {
-                auto x = self.width + self.x - 104;
+                auto x = self.width + self.x - kLegendWidth - kWindowPadding;
                 auto y = self.y + 52;
 
                 drawGraphLegend(&self, drawingCtx, x, y);
             }
 
+            auto canvasMidX = _graphSettings.xOffset + (_graphSettings.width - _graphSettings.xOffset) / 2;
+
+            // Chart title
             {
-                auto point = Point(self.x + 8, self.widgets[Common::widx::panel].top + self.y + 1);
+                auto point = Point(self.x + canvasMidX, self.widgets[Common::widx::panel].top + self.y + 1);
 
                 FormatArguments args{};
                 args.push<uint16_t>(100);
                 args.push<uint16_t>(10);
 
-                tr.drawStringLeft(point, Colour::black, StringIds::cargo_deliver_graph_title, args);
+                tr.drawStringCentred(point, Colour::black, StringIds::cargo_deliver_graph_title, args);
             }
 
+            // X axis label ("Transit time")
             {
-                auto point = Point(self.x + 160, self.height + self.y - 13);
+                auto point = Point(self.x + canvasMidX, self.height + self.y - 13);
 
-                tr.drawStringLeft(point, Colour::black, StringIds::cargo_transit_time);
+                tr.drawStringCentred(point, Colour::black, StringIds::cargo_transit_time);
             }
         }
 
@@ -1196,7 +1205,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto* frontWindow = WindowManager::findAt(location);
                 const auto xDiff = location.x - x;
                 const auto yDiff = location.y - y;
-                if (frontWindow != nullptr && frontWindow == self && xDiff <= 100 && xDiff >= 0 && yDiff < 320 && yDiff >= 0)
+                if (frontWindow != nullptr && frontWindow == self && xDiff <= kLegendWidth && xDiff >= 0 && yDiff < 320 && yDiff >= 0)
                 {
                     auto listY = yDiff;
                     uint8_t cargoItem = 0;
@@ -1397,7 +1406,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto* frontWindow = WindowManager::findAt(location);
                 const auto xDiff = location.x - x;
                 const auto yDiff = location.y - y;
-                if (frontWindow != nullptr && frontWindow == self && xDiff <= 100 && xDiff >= 0 && yDiff < 150 && yDiff >= 0)
+                if (frontWindow != nullptr && frontWindow == self && xDiff <= kLegendWidth && xDiff >= 0 && yDiff < 150 && yDiff >= 0)
                 {
                     auto listY = yDiff;
                     for (auto& company : CompanyManager::companies())
@@ -1429,8 +1438,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_company_list);
 
-            auto x = self.width - 104 + self.x;
-            auto y = self.y + 52;
+            auto legendX = self.x + self.width - kWindowPadding - kLegendWidth;
+            auto legendY = self.y + 52;
 
             switch (self.currentTab + widx::tab_company_list)
             {
@@ -1440,13 +1449,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case widx::tab_values:
                 {
                     _hoverItemTicks++;
-                    setLegendHover(&self, x, y);
+                    setLegendHover(&self, legendX, legendY);
                     break;
                 }
                 case widx::tab_payment_rates:
                 {
                     _hoverItemTicks++;
-                    CargoPaymentRates::setLegendHover(&self, x, y);
+                    CargoPaymentRates::setLegendHover(&self, legendX, legendY);
                     break;
                 }
                 case widx::tab_speed_records:
@@ -1744,7 +1753,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 Ui::drawGraph(_graphSettings, self, drawingCtx);
             }
 
-            auto x = self->width + self->x - 104;
+            auto x = self->width + self->x - kLegendWidth - kWindowPadding;
             auto y = self->y + 52;
 
             Common::drawGraphLegend(self, drawingCtx, x, y);
