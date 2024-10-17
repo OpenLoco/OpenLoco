@@ -22,6 +22,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
@@ -269,12 +270,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_options),
 
             // General options
-            makeWidget({ 4, 50 }, { 358, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::landscapeOptionsGroupGeneral),
+            Widgets::GroupBox({ 4, 50 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGeneral),
             makeStepperWidgets({ 256, 65 }, { 100, 12 }, WindowColour::secondary, StringIds::start_year_value),
             makeDropdownWidgets({ 176, 81 }, { 180, 12 }, WindowColour::secondary),
 
             // Generator options
-            makeWidget({ 4, 105 }, { 358, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
+            Widgets::GroupBox({ 4, 105 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
             Widgets::Button({ 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
             makeStepperWidgets({ 256, 120 }, { 100, 12 }, WindowColour::secondary),
             makeWidget({ 10, 136 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
