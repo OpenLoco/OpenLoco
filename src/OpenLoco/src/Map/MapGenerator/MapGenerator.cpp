@@ -743,7 +743,7 @@ namespace OpenLoco::World::MapGenerator
         if (numIndustriesAvailable == 0)
             return;
 
-        CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral);
 
         auto progressTicksPerIndustry = (maxProgress - minProgress) / numIndustriesAvailable;
         auto currentProgress = minProgress;

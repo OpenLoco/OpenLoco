@@ -87,7 +87,7 @@ namespace OpenLoco::IndustryManager
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
         {
-            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+            GameCommands::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
             {
                 industry.update();
@@ -100,7 +100,7 @@ namespace OpenLoco::IndustryManager
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
-            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+            GameCommands::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
             {
                 industry.updateDaily();
@@ -512,7 +512,7 @@ namespace OpenLoco::IndustryManager
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
-            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+            GameCommands::setUpdatingCompanyId(CompanyId::neutral);
             tryCreateNewIndustriesMonthly();
 
             for (auto& industry : industries())

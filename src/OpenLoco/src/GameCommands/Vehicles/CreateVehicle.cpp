@@ -741,7 +741,7 @@ namespace OpenLoco::GameCommands
         setExpenditureType(ExpenditureType::VehiclePurchases);
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
 
-        const auto* company = CompanyManager::get(CompanyManager::getUpdatingCompanyId());
+        const auto* company = CompanyManager::get(GameCommands::getUpdatingCompanyId());
         auto vehicleIsLocked = !company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleTypeId));
 
         if (vehicleIsLocked && !Config::get().buildLockedVehicles)

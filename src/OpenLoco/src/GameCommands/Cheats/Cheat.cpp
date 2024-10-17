@@ -25,7 +25,7 @@ namespace OpenLoco::GameCommands
     {
         static uint32_t acquireAssets(CompanyId targetCompanyId)
         {
-            auto ourCompanyId = CompanyManager::getUpdatingCompanyId();
+            auto ourCompanyId = GameCommands::getUpdatingCompanyId();
 
             // First phase: change ownership of all tile elements that currently belong to the target company.
             for (auto& element : TileManager::getElements())
@@ -167,7 +167,7 @@ namespace OpenLoco::GameCommands
 
         static uint32_t vehicleReliability(int32_t newReliablity)
         {
-            auto ourCompanyId = CompanyManager::getUpdatingCompanyId();
+            auto ourCompanyId = GameCommands::getUpdatingCompanyId();
 
             for (auto* vehicle : VehicleManager::VehicleList())
             {
