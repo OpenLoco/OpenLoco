@@ -2579,7 +2579,7 @@ namespace OpenLoco::ImageIds
         return numbers[num];
     }
 
-    static constexpr uint32_t withRemap(uint32_t imageId)
+    constexpr uint32_t withRemap(uint32_t imageId)
     {
         // TODO: implement this as a constant.
         return imageId | (1U << 29);
