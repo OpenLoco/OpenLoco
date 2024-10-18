@@ -93,7 +93,7 @@ namespace OpenLoco::Ui
         void (*viewportRotate)(Window&) = nullptr;
         uint32_t event_22{};
         std::optional<FormatArguments> (*tooltip)(Window&, WidgetIndex_t) = nullptr;
-        Ui::CursorId (*cursor)(Window&, int16_t, int16_t, int16_t, Ui::CursorId) = nullptr;
+        Ui::CursorId (*cursor)(Window&, WidgetIndex_t, int16_t, int16_t, Ui::CursorId) = nullptr;
         void (*onMove)(Window&, const int16_t x, const int16_t y) = nullptr;
         void (*prepareDraw)(Window&) = nullptr;
         void (*draw)(Window&, Gfx::DrawingContext&) = nullptr;
@@ -359,35 +359,35 @@ namespace OpenLoco::Ui
         WidgetIndex_t findWidgetAt(int16_t xPos, int16_t yPos);
         void draw(Gfx::DrawingContext& drawingCtx);
 
-        void callClose();                                                                              // 0
-        void callOnMouseUp(WidgetIndex_t widgetIndex);                                                 // 1
-        Ui::Window* callOnResize();                                                                    // 2
-        void call_3(int8_t widgetIndex);                                                               // 3
-        void callOnMouseDown(int8_t widgetIndex);                                                      // 4
-        void callOnDropdown(WidgetIndex_t widgetIndex, int16_t itemIndex);                             // 5
-        void callOnPeriodicUpdate();                                                                   // 6
-        void callUpdate();                                                                             // 7
-        void call_8();                                                                                 // 8
-        void call_9();                                                                                 // 9
-        void callToolUpdate(int16_t widgetIndex, int16_t xPos, int16_t yPos);                          // 10
-        void callToolDown(int16_t widgetIndex, int16_t xPos, int16_t yPos);                            // 11
-        void callToolDragContinue(const int16_t widgetIndex, const int16_t xPos, const int16_t yPos);  // 12
-        void callToolDragEnd(const int16_t widgetIndex);                                               // 13
-        void callToolAbort(int16_t widgetIndex);                                                       // 14
-        Ui::CursorId callToolCursor(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out);     // 15
-        void callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16
-        void callScrollMouseDown(int16_t x, int16_t y, uint8_t scrollIndex);                           // 17
-        void callScrollMouseDrag(int16_t x, int16_t y, uint8_t scrollIndex);                           // 18
-        void callScrollMouseOver(int16_t x, int16_t y, uint8_t scrollIndex);                           // 19
-        void callTextInput(WidgetIndex_t caller, const char* buffer);                                  // 20
-        void callViewportRotate();                                                                     // 21
-        std::optional<FormatArguments> callTooltip(int16_t widgetIndex);                               // 23
-        Ui::CursorId callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback); // 24
-        void callOnMove(int16_t xPos, int16_t yPos);                                                   // 25
-        void callPrepareDraw();                                                                        // 26
-        void callDraw(Gfx::DrawingContext& ctx);                                                       // 27
-        void callDrawScroll(Gfx::DrawingContext& drawingCtx, uint32_t scrollIndex);                    // 28
-        bool callKeyUp(uint32_t charCode, uint32_t keyCode);                                           // 29
+        void callClose();                                                                                    // 0
+        void callOnMouseUp(WidgetIndex_t widgetIndex);                                                       // 1
+        Ui::Window* callOnResize();                                                                          // 2
+        void call_3(WidgetIndex_t widgetIndex);                                                              // 3
+        void callOnMouseDown(WidgetIndex_t widgetIndex);                                                     // 4
+        void callOnDropdown(WidgetIndex_t widgetIndex, int16_t itemIndex);                                   // 5
+        void callOnPeriodicUpdate();                                                                         // 6
+        void callUpdate();                                                                                   // 7
+        void call_8();                                                                                       // 8
+        void call_9();                                                                                       // 9
+        void callToolUpdate(WidgetIndex_t widgetIndex, int16_t xPos, int16_t yPos);                          // 10
+        void callToolDown(WidgetIndex_t widgetIndex, int16_t xPos, int16_t yPos);                            // 11
+        void callToolDragContinue(WidgetIndex_t widgetIndex, const int16_t xPos, const int16_t yPos);        // 12
+        void callToolDragEnd(WidgetIndex_t widgetIndex);                                                     // 13
+        void callToolAbort(WidgetIndex_t widgetIndex);                                                       // 14
+        Ui::CursorId callToolCursor(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out);           // 15
+        void callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);         // 16
+        void callScrollMouseDown(int16_t x, int16_t y, uint8_t scrollIndex);                                 // 17
+        void callScrollMouseDrag(int16_t x, int16_t y, uint8_t scrollIndex);                                 // 18
+        void callScrollMouseOver(int16_t x, int16_t y, uint8_t scrollIndex);                                 // 19
+        void callTextInput(WidgetIndex_t caller, const char* buffer);                                        // 20
+        void callViewportRotate();                                                                           // 21
+        std::optional<FormatArguments> callTooltip(WidgetIndex_t widgetIndex);                               // 23
+        Ui::CursorId callCursor(WidgetIndex_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback); // 24
+        void callOnMove(int16_t xPos, int16_t yPos);                                                         // 25
+        void callPrepareDraw();                                                                              // 26
+        void callDraw(Gfx::DrawingContext& ctx);                                                             // 27
+        void callDrawScroll(Gfx::DrawingContext& drawingCtx, uint32_t scrollIndex);                          // 28
+        bool callKeyUp(uint32_t charCode, uint32_t keyCode);                                                 // 29
 
         WidgetIndex_t firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
         WidgetIndex_t prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);

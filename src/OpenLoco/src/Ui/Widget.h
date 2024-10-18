@@ -17,7 +17,9 @@ namespace OpenLoco::Gfx
 
 namespace OpenLoco::Ui
 {
-    using WidgetIndex_t = int8_t;
+    using WidgetIndex_t = int16_t;
+
+    constexpr WidgetIndex_t kWidgetIndexNull = -1;
 
     struct Window;
     enum class WindowColour : uint8_t;
@@ -171,16 +173,6 @@ namespace OpenLoco::Ui
         return out;
     }
 
-    constexpr Widget makeRemapWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-    {
-        Widget out = makeWidget(origin, size, type, colour, content, tooltip);
-
-        // TODO: implement this as a constant.
-        out.content |= (1U << 29);
-
-        return out;
-    }
-
     constexpr Widget makeDropdownButtonWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 12;
@@ -209,12 +201,6 @@ namespace OpenLoco::Ui
         const uint16_t height = size.height - 2;
 
         return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::stepper_plus, tooltip);
-    }
-
-    constexpr Widget makeTextWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
-    {
-        Widget out{ origin, size, type, colour, content, tooltip };
-        return out;
     }
 
     namespace Detail

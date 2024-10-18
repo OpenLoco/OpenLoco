@@ -642,7 +642,7 @@ namespace OpenLoco::Ui::WindowManager
             if (w.hasFlags(WindowFlags::noBackground))
             {
                 auto index = w.findWidgetAt(x, y);
-                if (index == -1)
+                if (index == kWidgetIndexNull)
                 {
                     continue;
                 }
@@ -683,7 +683,7 @@ namespace OpenLoco::Ui::WindowManager
             if (w.hasFlags(WindowFlags::noBackground))
             {
                 auto index = w.findWidgetAt(x, y);
-                if (index == -1)
+                if (index == kWidgetIndexNull)
                 {
                     continue;
                 }
@@ -1553,7 +1553,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C628E
     static bool windowWheelInput(Window& window, int wheel)
     {
-        int widgetIndex = -1;
+        WidgetIndex_t widgetIndex = kWidgetIndexNull;
         int scrollIndex = -1;
         for (auto& widget : window.widgets)
         {
@@ -1602,7 +1602,7 @@ namespace OpenLoco::Ui::WindowManager
             else
             {
                 auto widgetIndex = window->findWidgetAt(cursorPosition.x, cursorPosition.y);
-                if (widgetIndex != -1)
+                if (widgetIndex != kWidgetIndexNull)
                 {
                     if (window->widgets[widgetIndex].type == WidgetType::scrollview)
                     {

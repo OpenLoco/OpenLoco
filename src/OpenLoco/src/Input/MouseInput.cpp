@@ -317,7 +317,7 @@ namespace OpenLoco::Input
 
         Ui::Window* window = WindowManager::findAt(x, y);
 
-        Ui::WidgetIndex_t widgetIndex = -1;
+        Ui::WidgetIndex_t widgetIndex = kWidgetIndexNull;
         if (window != nullptr)
         {
             widgetIndex = window->findWidgetAt(x, y);
@@ -346,7 +346,7 @@ namespace OpenLoco::Input
         }
 
         Ui::Widget* widget = nullptr;
-        if (widgetIndex != -1)
+        if (widgetIndex != kWidgetIndexNull)
         {
             widget = &window->widgets[widgetIndex];
         }
@@ -1024,7 +1024,7 @@ namespace OpenLoco::Input
             case MouseButton::leftPressed: // 1
                 if (Input::state() == State::dropdownActive)
                 {
-                    if (window != nullptr && widgetIndex != -1)
+                    if (window != nullptr && widgetIndex != kWidgetIndexNull)
                     {
                         auto buttonWidget = &window->widgets[widgetIndex];
                         Audio::playSound(Audio::SoundId::clickUp, window->x + buttonWidget->midX());
@@ -1176,7 +1176,7 @@ namespace OpenLoco::Input
             widgetOverFlatbuttonInvalidate();
         }
 
-        if (window != nullptr && widgetIndex != -1)
+        if (window != nullptr && widgetIndex != kWidgetIndexNull)
         {
             if (!window->isDisabled(widgetIndex))
             {
@@ -1185,7 +1185,7 @@ namespace OpenLoco::Input
         }
 
         StringId tooltipStringId = StringIds::null;
-        if (window != nullptr && widgetIndex != -1)
+        if (window != nullptr && widgetIndex != kWidgetIndexNull)
         {
             if (widget->type == Ui::WidgetType::scrollview)
             {
