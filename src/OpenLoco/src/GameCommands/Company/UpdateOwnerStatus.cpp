@@ -11,7 +11,7 @@ namespace OpenLoco::GameCommands
     {
         if (flags & Flags::apply)
         {
-            auto companyId = CompanyManager::getUpdatingCompanyId();
+            auto companyId = GameCommands::getUpdatingCompanyId();
             auto* company = CompanyManager::get(companyId);
             if (company == nullptr)
             {

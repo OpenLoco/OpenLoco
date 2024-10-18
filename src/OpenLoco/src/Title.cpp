@@ -137,7 +137,7 @@ namespace OpenLoco::Title
     // 0x0046AD7D
     void start()
     {
-        CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
+        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
         if (isPaused())
         {
             registers regs;

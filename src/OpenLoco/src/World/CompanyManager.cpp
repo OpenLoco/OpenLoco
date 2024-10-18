@@ -48,7 +48,6 @@ using namespace OpenLoco::Ui;
 namespace OpenLoco::CompanyManager
 {
     static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
-    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
     static void produceCompanies();
 
@@ -91,16 +90,6 @@ namespace OpenLoco::CompanyManager
         // Reset primary company colours.
         rawCompanies()[0].mainColours.primary = Colour::mutedSeaGreen;
         updateColours();
-    }
-
-    CompanyId getUpdatingCompanyId()
-    {
-        return _updatingCompanyId;
-    }
-
-    void setUpdatingCompanyId(CompanyId id)
-    {
-        _updatingCompanyId = id;
     }
 
     // 0x00525FB7
@@ -241,7 +230,7 @@ namespace OpenLoco::CompanyManager
                 // which will be sent to all the clients
                 if (!isNetworked() || isNetworkHost())
                 {
-                    setUpdatingCompanyId(id);
+                    GameCommands::setUpdatingCompanyId(id);
                     aiThink(id);
                 }
             }
@@ -644,7 +633,8 @@ namespace OpenLoco::CompanyManager
             return;
         }
 
-        auto company = CompanyManager::get(_updatingCompanyId);
+        auto companyId = GameCommands::getUpdatingCompanyId();
+        auto company = CompanyManager::get(companyId);
         if (company == nullptr)
         {
             return;
@@ -668,7 +658,7 @@ namespace OpenLoco::CompanyManager
             if (vehicle->position.x == Location::null)
                 continue;
 
-            if (vehicle->owner != _updatingCompanyId)
+            if (vehicle->owner != companyId)
                 continue;
 
             GameCommands::UpdateOwnerStatusArgs args{};
@@ -849,7 +839,7 @@ namespace OpenLoco::CompanyManager
         {
             GameCommands::ChangeCompanyOwnerNameArgs args{};
 
-            args.companyId = CompanyId(_updatingCompanyId);
+            args.companyId = GameCommands::getUpdatingCompanyId();
             args.bufferIndex = 1;
             std::memcpy(args.newName, Config::get().preferredOwnerName.c_str(), 36);
 
@@ -868,7 +858,7 @@ namespace OpenLoco::CompanyManager
         }
 
         // Only continue if we've not set a custom company name yet.
-        auto* company = get(_updatingCompanyId);
+        auto* company = get(GameCommands::getUpdatingCompanyId());
         if (company == nullptr || company->name != StringIds::new_company)
             return;
 
@@ -889,7 +879,7 @@ namespace OpenLoco::CompanyManager
 
             GameCommands::ChangeCompanyNameArgs changeCompanyNameArgs{};
 
-            changeCompanyNameArgs.companyId = CompanyId(_updatingCompanyId);
+            changeCompanyNameArgs.companyId = GameCommands::getUpdatingCompanyId();
             changeCompanyNameArgs.bufferIndex = 1;
             std::memcpy(changeCompanyNameArgs.buffer, companyName, 36);
 
@@ -954,7 +944,7 @@ namespace OpenLoco::CompanyManager
 
     uint32_t competingColourMask()
     {
-        return competingColourMask(_updatingCompanyId);
+        return competingColourMask(GameCommands::getUpdatingCompanyId());
     }
 
     // 0x00434F2D
