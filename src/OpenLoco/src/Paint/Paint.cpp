@@ -934,10 +934,12 @@ namespace OpenLoco::Paint
     // 0x0045E7B5
     void PaintSession::arrangeStructs()
     {
+        // Create a new dummy paint struct that will act as the head
+        // that all others attach to.
         _paintHead = _nextFreePaintStruct;
         _nextFreePaintStruct++;
-
         PaintStruct* ps = &(*_paintHead)->basic;
+        *ps = PaintStruct{};
         ps->nextQuadrantPS = nullptr;
 
         uint32_t quadrantIndex = _quadrantBackIndex;
@@ -1570,37 +1572,37 @@ namespace OpenLoco::Paint
             case 0:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
                 }
                 break;
             case 1:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
                 }
                 break;
             case 2:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
                 }
                 break;
             case 3:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
                 }
                 break;
         }
