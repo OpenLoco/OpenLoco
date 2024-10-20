@@ -167,7 +167,7 @@ namespace OpenLoco::Game
         else if (isNetworked())
         {
             // 0x0043C0DB
-            if (CompanyManager::getControllingId() == CompanyManager::getUpdatingCompanyId())
+            if (CompanyManager::getControllingId() == GameCommands::getUpdatingCompanyId())
             {
                 MultiPlayer::setFlag(MultiPlayer::flags::flag_4);
                 MultiPlayer::setFlag(MultiPlayer::flags::flag_3);
@@ -188,12 +188,12 @@ namespace OpenLoco::Game
         {
             clearScreenFlag(ScreenFlags::networked);
             auto playerCompanyId = CompanyManager::getControllingId();
-            auto previousUpdatingId = CompanyManager::getUpdatingCompanyId();
-            CompanyManager::setUpdatingCompanyId(playerCompanyId);
+            auto previousUpdatingId = GameCommands::getUpdatingCompanyId();
+            GameCommands::setUpdatingCompanyId(playerCompanyId);
 
             Ui::WindowManager::closeAllFloatingWindows();
 
-            CompanyManager::setUpdatingCompanyId(previousUpdatingId);
+            GameCommands::setUpdatingCompanyId(previousUpdatingId);
             setScreenFlag(ScreenFlags::networked);
 
             // If the other party is leaving the game, go back to the title screen.

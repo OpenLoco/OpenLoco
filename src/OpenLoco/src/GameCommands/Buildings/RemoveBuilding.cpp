@@ -17,7 +17,7 @@ namespace OpenLoco::GameCommands
     // 0x00497D8D
     static std::optional<int16_t> getCompanyRating(World::Pos2& pos)
     {
-        auto companyId = CompanyManager::getUpdatingCompanyId();
+        auto companyId = GameCommands::getUpdatingCompanyId();
         if (companyId != CompanyId::neutral)
         {
             auto res = TownManager::getClosestTownAndDensity(pos);
