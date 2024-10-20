@@ -1,4 +1,4 @@
-24.09.1+ (???)
+24.10 (2024-10-20)
 ------------------------------------------------------------------------
 - Feature: [#1687] Objects can be placed in sub folders in new custom object folder.
 - Feature: [#2629] The object selection window now groups relevant object tabs together.
