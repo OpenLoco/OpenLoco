@@ -1054,6 +1054,13 @@ namespace OpenLoco::Audio
         }
     }
 
+    static bool isTrackInCurrentEra(int32_t track)
+    {
+        auto currentYear = getCurrentYear();
+        const auto& trackInfo = kMusicInfo[track];
+        return currentYear >= trackInfo.startYear && currentYear <= trackInfo.endYear;
+    }
+
     static int32_t chooseNextMusicTrack(int32_t excludeTrack)
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
@@ -1066,17 +1073,35 @@ namespace OpenLoco::Audio
         {
             case MusicPlaylistType::currentEra:
                 addCurrentEraSongsToPlaylist(excludeTrack, playlist);
+                if (playlist.empty() && isTrackInCurrentEra(excludeTrack))
+                {
+                    // The only track available in the current era is excludeTrack, so choose it regardless.
+                    return excludeTrack;
+                }
                 break;
             case MusicPlaylistType::all:
                 addAllSongsToPlaylist(excludeTrack, playlist);
                 break;
             case MusicPlaylistType::custom:
+                bool excludeTrackInCustomList = false;
                 for (auto i = 0; i < kNumMusicTracks; i++)
                 {
-                    if (i != excludeTrack && (cfg.enabledMusic[i] & 1))
+                    if (cfg.enabledMusic[i] & 1)
                     {
-                        playlist.push_back(i);
+                        if (i == excludeTrack)
+                        {
+                            excludeTrackInCustomList = true;
+                        }
+                        else
+                        {
+                            playlist.push_back(i);
+                        }
                     }
+                }
+                if (playlist.empty() && excludeTrackInCustomList)
+                {
+                    // Choose excludeTrack anyway, since it is the only track the player has selected.
+                    return excludeTrack;
                 }
                 break;
         }
@@ -1119,7 +1144,7 @@ namespace OpenLoco::Audio
             // Choose a track to play, unless we have requested one track in particular.
             if (_currentSong == kNoSong || !requestedSong)
             {
-                uint8_t trackToExclude = _lastSong;
+                uint8_t trackToExclude = _currentSong; // Exclude the song that just finished playing
                 _lastSong = _currentSong;
                 _currentSong = chooseNextMusicTrack(trackToExclude);
             }
@@ -1145,11 +1170,6 @@ namespace OpenLoco::Audio
     {
         auto* channel = getChannel(ChannelId::music);
         if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
-        {
-            return;
-        }
-
-        if (currentTrackPathId == sample)
         {
             return;
         }
