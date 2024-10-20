@@ -262,7 +262,17 @@ namespace OpenLoco::Ui
         auto* window = widgetState.window;
         Ui::Point placeForImage(widget.left + window->x, widget.top + window->y);
         const bool isColourSet = widget.image & Widget::kImageIdColourSet;
-        ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
+        ImageId imageId;
+        if (widget.type == WidgetType::tab)
+        {
+            // NOTE: This is a hack since some code dynamically sets the type so it will take this path instead the new one.
+            // TabWidget is always with primary colour, so we have to add it.
+            imageId = ImageId::fromUInt32((widget.image | (1U << 29)) & ~Widget::kImageIdColourSet);
+        }
+        else
+        {
+            imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
+        }
         if (widget.type == WidgetType::wt_6 || widget.type == WidgetType::toolbarTab || widget.type == WidgetType::tab || widget.type == WidgetType::wt_4)
         {
             if (widgetState.activated)
