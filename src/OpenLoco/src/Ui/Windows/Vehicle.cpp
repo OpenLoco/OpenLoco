@@ -1966,8 +1966,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         {
                             cargoTextHeight += 5;
                         }
-                        drawCargoText(drawingCtx, width, cargoTextHeight, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
-                        drawCargoText(drawingCtx, width, cargoTextHeight, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
+                        drawCargoText(drawingCtx, width - 24, cargoTextHeight, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
+                        drawCargoText(drawingCtx, width - 24, cargoTextHeight, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
                     }
                     else
                     {
