@@ -1825,7 +1825,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return (object->hasFlags(VehicleObjectFlags::refittable));
         }
 
-        // 004B3DDE
+        // 0x004B3DDE
         static void prepareDraw(Window& self)
         {
             Common::setActiveTabs(&self);
@@ -1864,7 +1864,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
-        // 004B3F0D
+        // 0x004B3F0D
         static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
@@ -1928,7 +1928,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             y += 10;
         }
 
-        // 004B3F62
+        // 0x004B3F62
         static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t i)
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
@@ -1983,7 +1983,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        // 004B41BD
+        // 0x004B41BD
         static void onMouseUp(Window& self, const WidgetIndex_t i)
         {
             switch (i)
@@ -2006,7 +2006,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        // 004B41E2
+        // 0x004B41E2
         static void onMouseDown(Window& self, const WidgetIndex_t i)
         {
             switch (i)
@@ -2017,7 +2017,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        // 004B41E9
+        // 0x004B41E9
         static void onDropdown(Window& self, const WidgetIndex_t i, const int16_t dropdownIndex)
         {
             switch (i)
