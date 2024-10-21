@@ -921,28 +921,24 @@ namespace OpenLoco::World::TileManager
         auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingTrees = 0;
-        for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
+        for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 10, 10 }))
         {
-            for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
+            if (!World::validCoords(tilePos))
+                continue;
+
+            auto tile = get(tilePos);
+            for (auto& element : tile)
             {
-                auto tilePos = initialTilePos + World::TilePos2(xOffset, yOffset);
-                if (!World::validCoords(tilePos))
+                // NB: vanilla was checking for trees above the surface element.
+                // This has been omitted from our implementation.
+                auto* tree = element.as<TreeElement>();
+                if (tree == nullptr)
                     continue;
 
-                auto tile = get(tilePos);
-                for (auto& element : tile)
-                {
-                    // NB: vanilla was checking for trees above the surface element.
-                    // This has been omitted from our implementation.
-                    auto* tree = element.as<TreeElement>();
-                    if (tree == nullptr)
-                        continue;
+                if (tree->isGhost())
+                    continue;
 
-                    if (tree->isGhost())
-                        continue;
-
-                    surroundingTrees++;
-                }
+                surroundingTrees++;
             }
         }
 
