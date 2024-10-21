@@ -225,6 +225,36 @@ namespace OpenLoco::GameCommands
         return true;
     }
 
+    // 0x004773FE
+    static bool finalJunctionChecks(const World::RoadElement& elRoad, const ClearFunctionArgs& args, const RoadObject& targetRoadObj, const RoadObject& newRoadObj)
+    {
+        if (World::TrackData::getRoadPiece(args.roadId).size() > 1
+            || World::TrackData::getRoadPiece(elRoad.roadId()).size() > 1)
+        {
+            setErrorText(StringIds::junction_not_possible);
+            return false;
+        }
+
+        return roadTraitAndCompatbilityCheck(elRoad, args, targetRoadObj, newRoadObj);
+    }
+
+    static bool aiUnkCheck(const World::RoadElement& elRoad, const ClearFunctionArgs& args)
+    {
+        if (!(args.unkFlags & ((1U << 4) | (1U << 5))))
+        {
+            return false;
+        }
+        if (!(args.flags & Flags::aiAllocated))
+        {
+            return false;
+        }
+        if (elRoad.isAiAllocated())
+        {
+            return false;
+        }
+        return ((args.unkFlags & (1U << 4)) || elRoad.owner() == getUpdatingCompanyId());
+    }
+
     // 0x00476FAB
     static RoadClearFunctionResult clearRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args)
     {
@@ -270,6 +300,7 @@ namespace OpenLoco::GameCommands
         }
 
         bool confirmedOverlay = false;
+        const bool aiUnk = aiUnkCheck(elRoad, args);
         if (elRoad.baseHeight() == args.pos.z)
         {
             if ((World::TrackData::getRoadMiscData(elRoad.roadId()).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none)
@@ -281,15 +312,9 @@ namespace OpenLoco::GameCommands
                     {
                         confirmedOverlay = true;
                     }
-                    if (args.unkFlags & ((1U << 4) | (1U << 5))
-                        && args.flags & Flags::aiAllocated
-                        && !elRoad.isAiAllocated())
+                    if (aiUnk)
                     {
-                        if ((args.unkFlags & (1U << 4))
-                            || elRoad.owner() == getUpdatingCompanyId())
-                        {
-                            confirmedOverlay = true;
-                        }
+                        confirmedOverlay = true;
                     }
                 }
             }
@@ -419,18 +444,19 @@ namespace OpenLoco::GameCommands
             if (elRoad.roadObjectId() == args.roadObjectId)
             {
                 // 0x004773BC
-                if (args.unkFlags & ((1U << 5) | (1U << 4)))
+                if (aiUnk)
                 {
-                    if ((args.flags & Flags::aiAllocated)
-                        && !elRoad.isAiAllocated())
+                    // 0x004773FE
+                    if (!finalJunctionChecks(elRoad, args, *targetRoadObj, *newRoadObj))
                     {
-                        if ((args.unkFlags & (1U << 4))
-                            || elRoad.owner() == getUpdatingCompanyId())
-                        {
-                            // 0x004773FE
-                        }
+                        return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
                     }
+                    res.roadIdUnk[elRoad.roadId()] |= 1U << elRoad.rotation();
+                    res.roadIdUnk[elRoad.roadId()] |= 1U << 7;
+
+                    return res;
                 }
+
                 setErrorText(StringIds::already_built_here);
                 return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
             }
@@ -449,12 +475,38 @@ namespace OpenLoco::GameCommands
             if (!isConnectableSequence)
             {
                 // 0x004773FE
+                if (!finalJunctionChecks(elRoad, args, *targetRoadObj, *newRoadObj))
+                {
+                    return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
+                }
+                if (elRoad.roadObjectId() == args.roadObjectId)
+                {
+                    res.roadIdUnk[elRoad.roadId()] |= 1U << elRoad.rotation();
+                    res.roadIdUnk[elRoad.roadId()] |= 1U << 7;
+                }
+                return res;
             }
             // 0x004773A5
             _byte_1136073 = _byte_1136073 | (1U << 5);
             if (elRoad.roadObjectId() == args.roadObjectId)
             {
                 // 0x004773BC
+                if (aiUnk)
+                {
+                    // 0x004773FE
+                    if (!finalJunctionChecks(elRoad, args, *targetRoadObj, *newRoadObj))
+                    {
+                        return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
+                    }
+
+                    res.roadIdUnk[elRoad.roadId()] |= 1U << elRoad.rotation();
+                    res.roadIdUnk[elRoad.roadId()] |= 1U << 7;
+
+                    return res;
+                }
+
+                setErrorText(StringIds::already_built_here);
+                return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
             }
             // 0x0047744C
             if (!roadTraitAndCompatbilityCheck(elRoad, args, *targetRoadObj, *newRoadObj))
@@ -466,10 +518,8 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x004773FE
-        if (World::TrackData::getRoadPiece(args.roadId).size() > 1
-            || World::TrackData::getRoadPiece(elRoad.roadId()).size() > 1)
+        if (!finalJunctionChecks(elRoad, args, *targetRoadObj, *newRoadObj))
         {
-            setErrorText(StringIds::junction_not_possible);
             return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
         }
 
@@ -477,12 +527,6 @@ namespace OpenLoco::GameCommands
         {
             res.roadIdUnk[elRoad.roadId()] |= 1U << elRoad.rotation();
             res.roadIdUnk[elRoad.roadId()] |= 1U << 7;
-        }
-        // 0x0047744C
-
-        if (!roadTraitAndCompatbilityCheck(elRoad, args, *targetRoadObj, *newRoadObj))
-        {
-            return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
         }
 
         return res;
