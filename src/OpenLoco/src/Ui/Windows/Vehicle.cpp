@@ -1954,27 +1954,26 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Get width of the drawing
                 auto width = getWidthVehicleInline(car);
                 // Actually draw it
-                width = drawVehicleInline(drawingCtx, car, Ui::Point(24 - width, (self.rowHeight - 22) / 2 + y), VehicleInlineMode::basic);
+                width = drawVehicleInline(drawingCtx, car, Ui::Point(24 - width, y + (self.rowHeight - 22) / 2), VehicleInlineMode::basic);
 
                 if (body->primaryCargo.type != 0xFF)
                 {
-
-                    int16_t cargoTextHeight = self.rowHeight / 2 + y - ((self.rowHeight - 22) / 2) - 10;
+                    int16_t cargoTextYPos = y + self.rowHeight / 2 - ((self.rowHeight - 22) / 2) - 10;
                     if (front->secondaryCargo.qty != 0 || body->primaryCargo.qty != 0)
                     {
                         if (body->primaryCargo.qty == 0 || front->secondaryCargo.qty == 0)
                         {
-                            cargoTextHeight += 5;
+                            cargoTextYPos += 5;
                         }
-                        drawCargoText(drawingCtx, width - 24, cargoTextHeight, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
-                        drawCargoText(drawingCtx, width - 24, cargoTextHeight, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
+                        drawCargoText(drawingCtx, width - 24, cargoTextYPos, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
+                        drawCargoText(drawingCtx, width - 24, cargoTextYPos, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
                     }
                     else
                     {
                         FormatArguments args{};
                         args.push<StringId>(StringIds::cargo_empty);
 
-                        auto point = Point(width - 24, cargoTextHeight + 5);
+                        auto point = Point(width - 24, cargoTextYPos + 5);
                         tr.drawStringLeft(point, Colour::black, strFormat, args);
                     }
                 }
