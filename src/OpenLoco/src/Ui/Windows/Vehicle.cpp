@@ -1974,7 +1974,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         FormatArguments args{};
                         args.push<StringId>(StringIds::cargo_empty);
 
-                        auto point = Point(width, cargoTextHeight + 5);
+                        auto point = Point(width - 24, cargoTextHeight + 5);
                         tr.drawStringLeft(point, Colour::black, strFormat, args);
                     }
                 }
