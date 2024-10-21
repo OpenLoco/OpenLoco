@@ -863,19 +863,15 @@ namespace OpenLoco::World::TileManager
         auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingWaterTiles = 0;
-        for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
+        for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 10, 10 }))
         {
-            for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
-            {
-                auto tilePos = initialTilePos + World::TilePos2(xOffset, yOffset);
-                if (!World::validCoords(tilePos))
-                    continue;
+            if (!World::validCoords(tilePos))
+                continue;
 
-                auto tile = get(tilePos);
-                auto* surface = tile.surface();
-                if (surface != nullptr && surface->water() > 0)
-                    surroundingWaterTiles++;
-            }
+            auto tile = get(tilePos);
+            auto* surface = tile.surface();
+            if (surface != nullptr && surface->water() > 0)
+                surroundingWaterTiles++;
         }
 
         return surroundingWaterTiles;
