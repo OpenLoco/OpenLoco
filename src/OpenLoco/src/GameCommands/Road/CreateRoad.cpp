@@ -200,6 +200,30 @@ namespace OpenLoco::GameCommands
         }
         return nullptr;
     }
+    // 0x0047744C
+    static bool roadTraitAndCompatbilityCheck(const World::RoadElement& elRoad, const ClearFunctionArgs& args, const RoadObject& targetRoadObj, const RoadObject& newRoadObj)
+    {
+        if (elRoad.roadObjectId() == args.roadObjectId)
+        {
+            if (!targetRoadObj.hasTraitFlags(RoadTraitFlags::junction))
+            {
+                setErrorText(StringIds::junctions_not_possible);
+                return false;
+            }
+        }
+        else
+        {
+            if (!(targetRoadObj.compatibleRoads & (1U << args.roadObjectId))
+                && !(newRoadObj.compatibleRoads & (1U << elRoad.roadObjectId())))
+            {
+                FormatArguments::common(targetRoadObj.name);
+                setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     // 0x00476FAB
     static RoadClearFunctionResult clearRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args)
@@ -343,6 +367,24 @@ namespace OpenLoco::GameCommands
             }
         }
 
+        // Exact overlays are allowed only if objectIds are different
+        // NOTE: Doesn't take into account sequence index
+        const bool isExactOverlay = args.roadId == elRoad.roadId()
+            && args.rotation == elRoad.rotation()
+            && args.index == elRoad.sequenceIndex();
+        // A reverse overlay is ultimately the same as an exact overlay
+        // NOTE: Doesn't take into account sequence index
+        const bool isReverseExactOverlay = !isExactOverlay
+            && (World::TrackData::getRoadMiscData(elRoad.roadId()).reverseRoadId == args.roadId)
+            && (((World::TrackData::getRoadMiscData(elRoad.roadId()).reverseRotation + elRoad.rotation()) & 0x3) == args.rotation)
+            && (World::TrackData::getRoadMiscData(elRoad.roadId()).reverseLane == World::TrackData::getRoadMiscData(args.roadId).reverseLane);
+
+        // Ends can connect to starts or middles can connect if exactly the same (tram/road curve overlay)
+        // NOTE: Doesn't take into account size 1 pieces that have additional allowances (tram tight curve overlay on straight road)
+        const bool isConnectableSequence = (elRoad.sequenceIndex() == 0 && args.isLastIndex)               // is Start Road && connect is End
+            || (elRoad.sequenceIndex() != 0 && elRoad.isFlag6() && args.index == 0)                        // is End Road && connect is Start
+            || (elRoad.sequenceIndex() != 0 && !elRoad.isFlag6() && elRoad.sequenceIndex() == args.index); // is Middle Road && connect same id
+
         if (elRoad.hasBridge())
         {
             if (elRoad.bridge() != args.bridgeId)
@@ -359,24 +401,9 @@ namespace OpenLoco::GameCommands
                     setErrorText(StringIds::bridge_not_suitable_for_junction);
                     return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
                 }
-                if (args.roadId != elRoad.roadId()
-                    || args.rotation != elRoad.rotation()
-                    || args.index != elRoad.sequenceIndex())
+                if (!isExactOverlay)
                 {
-                    // This is working out reversed elements
-                    if ((World::TrackData::getRoadMiscData(elRoad.roadId()).reverseRoadId != args.roadId)
-                        || (((World::TrackData::getRoadMiscData(elRoad.roadId()).reverseRotation + elRoad.rotation()) & 0x3) != args.rotation)
-                        || (World::TrackData::getRoadMiscData(elRoad.roadId()).reverseLane != World::TrackData::getRoadMiscData(args.roadId).reverseLane))
-                    {
-                        setErrorText(StringIds::bridge_not_suitable_for_junction);
-                        return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
-                    }
-                    if (args.isLastIndex && elRoad.sequenceIndex() != 0)
-                    {
-                        setErrorText(StringIds::bridge_not_suitable_for_junction);
-                        return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
-                    }
-                    if ((elRoad.isFlag6() && args.index != 0) || elRoad.sequenceIndex() != args.index)
+                    if (!isReverseExactOverlay || !isConnectableSequence)
                     {
                         setErrorText(StringIds::bridge_not_suitable_for_junction);
                         return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
@@ -386,77 +413,58 @@ namespace OpenLoco::GameCommands
         }
         // 0x004772F4
 
-        if (elRoad.roadId() == args.roadId)
+        if (isExactOverlay)
         {
-            if (elRoad.rotation() == args.rotation)
+            _byte_1136073 = _byte_1136073 | (1U << 5);
+            if (elRoad.roadObjectId() == args.roadObjectId)
             {
-                if (elRoad.sequenceIndex() == args.index)
+                // 0x004773BC
+                if (args.unkFlags & ((1U << 5) | (1U << 4)))
                 {
-                    _byte_1136073 = _byte_1136073 | (1U << 5);
-                    if (elRoad.roadObjectId() == args.roadObjectId)
+                    if ((args.flags & Flags::aiAllocated)
+                        && !elRoad.isAiAllocated())
                     {
-                        // 0x004773BC
-                        if (args.unkFlags & ((1U << 5) | (1U << 4)))
-                        {
-                            if ((args.flags & Flags::aiAllocated)
-                                && !elRoad.isAiAllocated())
-                            {
-                                if ((args.unkFlags & (1U << 4))
-                                    || elRoad.owner() == getUpdatingCompanyId())
-                                {
-                                    // 0x004773FE
-                                }
-                            }
-                        }
-                        setErrorText(StringIds::already_built_here);
-                        return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
-                    }
-                    // 0x0047744C
-                }
-            }
-        }
-        // 0x00477336
-        if (World::TrackData::getRoadMiscData(elRoad.roadId()).reverseRoadId == args.roadId)
-        {
-            if (((World::TrackData::getRoadMiscData(elRoad.roadId()).reverseRotation + elRoad.rotation()) & 0x3) == args.rotation)
-            {
-                if (World::TrackData::getRoadMiscData(elRoad.roadId()).reverseLane == World::TrackData::getRoadMiscData(args.roadId).reverseLane)
-                {
-                    if (elRoad.sequenceIndex() == 0)
-                    {
-                        if (!args.isLastIndex)
+                        if ((args.unkFlags & (1U << 4))
+                            || elRoad.owner() == getUpdatingCompanyId())
                         {
                             // 0x004773FE
                         }
                     }
-                    else
-                    {
-                        if (elRoad.isFlag6())
-                        {
-                            if (args.index != 0)
-                            {
-                                // 0x004773FE
-                            }
-                        }
-                        else
-                        {
-                            if (args.index != elRoad.sequenceIndex())
-                            {
-                                // 0x004773FE
-                            }
-                        }
-                    }
-
-                    // 0x004773A5
-                    _byte_1136073 = _byte_1136073 | (1U << 5);
-                    if (elRoad.roadObjectId() == args.roadObjectId)
-                    {
-                        // 0x004773BC
-                    }
-                    // 0x0047744C
                 }
+                setErrorText(StringIds::already_built_here);
+                return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
             }
+            // 0x0047744C
+
+            if (!roadTraitAndCompatbilityCheck(elRoad, args, *targetRoadObj, *newRoadObj))
+            {
+                return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
+            }
+
+            return res;
         }
+        // 0x00477336
+        if (isReverseExactOverlay)
+        {
+            if (!isConnectableSequence)
+            {
+                // 0x004773FE
+            }
+            // 0x004773A5
+            _byte_1136073 = _byte_1136073 | (1U << 5);
+            if (elRoad.roadObjectId() == args.roadObjectId)
+            {
+                // 0x004773BC
+            }
+            // 0x0047744C
+            if (!roadTraitAndCompatbilityCheck(elRoad, args, *targetRoadObj, *newRoadObj))
+            {
+                return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
+            }
+
+            return res;
+        }
+
         // 0x004773FE
         if (World::TrackData::getRoadPiece(args.roadId).size() > 1
             || World::TrackData::getRoadPiece(elRoad.roadId()).size() > 1)
@@ -472,23 +480,9 @@ namespace OpenLoco::GameCommands
         }
         // 0x0047744C
 
-        if (elRoad.roadObjectId() == args.roadObjectId)
+        if (!roadTraitAndCompatbilityCheck(elRoad, args, *targetRoadObj, *newRoadObj))
         {
-            if (!targetRoadObj->hasTraitFlags(RoadTraitFlags::junction))
-            {
-                setErrorText(StringIds::junctions_not_possible);
-                return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
-            }
-        }
-        else
-        {
-            if (!(targetRoadObj->compatibleRoads & (1U << args.roadObjectId))
-                && !(newRoadObj->compatibleRoads & (1U << elRoad.roadObjectId())))
-            {
-                FormatArguments::common(targetRoadObj->name);
-                setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
-                return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
-            }
+            return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
         }
 
         return res;
