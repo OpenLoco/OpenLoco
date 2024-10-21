@@ -952,11 +952,23 @@ namespace OpenLoco::World::TileManager
     // 0x004C5604
     uint16_t countNearbyWaterTiles(Pos2 pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004C5604, regs);
-        return regs.dx;
+        // Search a 10x10 area offset from position passed.
+        // NB: these are not tiles surrounding the position!
+        auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(10, 10);
+
+        uint16_t nearbyWaterTiles = 0;
+        for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 10, 10 }))
+        {
+            if (!World::validCoords(tilePos))
+                continue;
+
+            auto tile = get(tilePos);
+            auto* surface = tile.surface();
+            if (surface != nullptr && surface->water() > 0)
+                nearbyWaterTiles++;
+        }
+
+        return nearbyWaterTiles;
     }
 
     static bool update(TileElement& el, const World::Pos2& loc)
