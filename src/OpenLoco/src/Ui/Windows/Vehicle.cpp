@@ -1946,15 +1946,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 StringId strFormat = StringIds::black_stringid;
                 auto front = car.front;
                 auto body = car.body;
+
+                // Draw hover background if applicable
                 if (front->id == EntityId(self.rowHover))
                 {
                     drawingCtx.fillRect(0, y, self.width, y + self.rowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                     strFormat = StringIds::wcolour2_stringid;
                 }
+
+                constexpr auto kCargoXPos = 24;
+
                 // Get width of the drawing
                 auto width = getWidthVehicleInline(car);
                 // Actually draw it
-                width = drawVehicleInline(drawingCtx, car, Ui::Point(24 - width, y + (self.rowHeight - 22) / 2), VehicleInlineMode::basic);
+                drawVehicleInline(drawingCtx, car, Ui::Point(kCargoXPos - width, y + (self.rowHeight - 22) / 2), VehicleInlineMode::basic);
 
                 if (body->primaryCargo.type != 0xFF)
                 {
@@ -1965,15 +1970,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         {
                             cargoTextYPos += 5;
                         }
-                        drawCargoText(drawingCtx, width - 24, cargoTextYPos, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
-                        drawCargoText(drawingCtx, width - 24, cargoTextYPos, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
+                        drawCargoText(drawingCtx, kCargoXPos, cargoTextYPos, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
+                        drawCargoText(drawingCtx, kCargoXPos, cargoTextYPos, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
                     }
                     else
                     {
                         FormatArguments args{};
                         args.push<StringId>(StringIds::cargo_empty);
 
-                        auto point = Point(width - 24, cargoTextYPos + 5);
+                        auto point = Point(kCargoXPos, cargoTextYPos + 5);
                         tr.drawStringLeft(point, Colour::black, strFormat, args);
                     }
                 }
