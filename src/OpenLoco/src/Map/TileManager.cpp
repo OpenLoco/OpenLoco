@@ -916,9 +916,6 @@ namespace OpenLoco::World::TileManager
         uint16_t surroundingTrees = 0;
         for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 10, 10 }))
         {
-            if (!World::validCoords(tilePos))
-                continue;
-
             auto tile = get(tilePos);
             for (auto& element : tile)
             {
