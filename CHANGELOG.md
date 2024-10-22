@@ -1,3 +1,7 @@
+24.10+ (???)
+------------------------------------------------------------------------
+- Fix: [#2676] Cargo labels are misaligned in vehicle window.
+
 24.10 (2024-10-20)
 ------------------------------------------------------------------------
 - Feature: [#1687] Objects can be placed in sub folders in new custom object folder.
