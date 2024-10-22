@@ -938,8 +938,8 @@ namespace OpenLoco::World::TileManager
     // 0x004C5604
     uint16_t countNearbyWaterTiles(Pos2 pos)
     {
-        // Search a 10x10 area offset from position passed.
-        // NB: these are not tiles surrounding the position!
+        // Search a 20x20 area in a checkerboard pattern, centred at pos.
+        // Initial tile position is the top left of the area.
         auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(10, 10);
 
         uint16_t nearbyWaterTiles = 0;
