@@ -453,7 +453,7 @@ namespace OpenLoco::GameCommands
                         return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
                     }
                     res.roadIdUnk[elRoad.roadId()] |= 1U << elRoad.rotation();
-                    res.roadIdUnk[elRoad.roadId()] |= 1U << 7;
+                    res.roadIdUnk[0] |= 1U << 7;
 
                     return res;
                 }
@@ -483,7 +483,7 @@ namespace OpenLoco::GameCommands
                 if (elRoad.roadObjectId() == args.roadObjectId)
                 {
                     res.roadIdUnk[elRoad.roadId()] |= 1U << elRoad.rotation();
-                    res.roadIdUnk[elRoad.roadId()] |= 1U << 7;
+                    res.roadIdUnk[0] |= 1U << 7;
                 }
                 return res;
             }
@@ -501,7 +501,7 @@ namespace OpenLoco::GameCommands
                     }
 
                     res.roadIdUnk[elRoad.roadId()] |= 1U << elRoad.rotation();
-                    res.roadIdUnk[elRoad.roadId()] |= 1U << 7;
+                    res.roadIdUnk[0] |= 1U << 7;
 
                     return res;
                 }
@@ -527,7 +527,7 @@ namespace OpenLoco::GameCommands
         if (elRoad.roadObjectId() == args.roadObjectId)
         {
             res.roadIdUnk[elRoad.roadId()] |= 1U << elRoad.rotation();
-            res.roadIdUnk[elRoad.roadId()] |= 1U << 7;
+            res.roadIdUnk[0] |= 1U << 7;
         }
 
         return res;
@@ -674,6 +674,9 @@ namespace OpenLoco::GameCommands
         // 0x0112C2EA
         StationId stationId = StationId::null;
 
+        std::array<uint8_t, 16> roadIdUnk = {};
+        roadIdUnk[args.roadId] |= 1U << args.rotation;
+
         for (auto& piece : roadPieces)
         {
             const auto roadLoc = args.pos + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
@@ -738,9 +741,6 @@ namespace OpenLoco::GameCommands
             bool hasLevelCrossing = false;
             // 0x0113C2E3
             uint8_t levelCrossingObjId = 0xFFU;
-
-            std::array<uint8_t, 16> roadIdUnk = {};
-            roadIdUnk[args.roadId] |= 1U << args.rotation;
 
             ClearFunctionArgs clearArgs{};
             clearArgs.pos = roadLoc;
