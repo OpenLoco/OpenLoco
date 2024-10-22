@@ -865,9 +865,6 @@ namespace OpenLoco::World::TileManager
         uint16_t surroundingWaterTiles = 0;
         for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 10, 10 }))
         {
-            if (!World::validCoords(tilePos))
-                continue;
-
             auto tile = get(tilePos);
             auto* surface = tile.surface();
             if (surface != nullptr && surface->water() > 0)
