@@ -77,6 +77,10 @@ namespace OpenLoco::World
             _6 |= value & 0xF;
         }                                          // _6u
         uint8_t bridge() const { return _6 >> 5; } // _6u
+        void setBridgeObjectId(const uint8_t bridge) {
+            _6 &= ~0xE0;
+            _6 |= bridge << 5;
+        }
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         void setHasStationElement(bool state)
         {
@@ -118,6 +122,11 @@ namespace OpenLoco::World
         {
             _7 &= ~0xC0;
             _7 |= (mods & 0x3) << 6;
+        }
+        void setMod(uint8_t mod, bool value)
+        {
+            _7 &= ~(1U << (mod + 6));
+            _7 |= value ? (1U << (mod + 6)) : 0;
         }
         CompanyId owner() const { return CompanyId(_7 & 0xF); } // _7l
         void setOwner(CompanyId newOwner) { _7 = (_7 & 0xF0) | (enumValue(newOwner) & 0xF); }
