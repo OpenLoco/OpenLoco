@@ -943,9 +943,10 @@ namespace OpenLoco::World::TileManager
         auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(10, 10);
 
         uint16_t nearbyWaterTiles = 0;
-        for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 10, 10 }))
+        for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 20, 20 }))
         {
-            if (!World::validCoords(tilePos))
+            // Skip every other tile, depending on initial position
+            if ((tilePos.x & 1) != (initialTilePos.x & 1) || (tilePos.y & 1) != (initialTilePos.y & 1))
                 continue;
 
             auto tile = get(tilePos);
