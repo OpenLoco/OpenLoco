@@ -13,7 +13,7 @@ namespace OpenLoco::GameCommands
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , roadId(regs.dh & 0xF)
-            , mods(regs.di >> 16)
+            , mods(regs.edi >> 16)
             , bridge((regs.edx >> 24) & 0xFF)
             , roadObjectId(regs.dl)
             , unkFlags((regs.edx >> 16) & 0xFF)

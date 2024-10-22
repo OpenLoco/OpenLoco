@@ -326,6 +326,52 @@ namespace OpenLoco::World::TileManager
         return insertElementEnd(type, baseZ, occupiedQuads, source, dest, lastFound);
     }
 
+    // 0x0046166C
+    RoadElement* insertElementRoad(const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
+    {
+        checkFreeElementsAndReorganise();
+
+        auto [source, dest] = insertElementPrepareDest(toTileSpace(pos));
+        if (source == nullptr)
+        {
+            return nullptr;
+        }
+
+        bool lastFound = false;
+        auto isRoadStation = [](const TileElement* source, SmallZ baseZ) {
+            if (baseZ == source->baseZ())
+            {
+                return false;
+            }
+            auto* srcStation = source->as<StationElement>();
+            if (srcStation == nullptr)
+            {
+                return false;
+            }
+            return srcStation->stationType() == StationType::roadStation;
+        };
+
+        // Copy all of the elements that are underneath the new tile (or till end)
+        while (baseZ >= source->baseZ() || !isRoadStation(source, baseZ))
+        {
+            *dest = *source;
+            source->setBaseZ(0xFFU);
+            source++;
+            if (dest->isLast())
+            {
+                // The new element will become the last
+                // so we are clearing the flag
+                dest->setLastFlag(false);
+                dest++;
+                lastFound = true;
+                break;
+            }
+            dest++;
+        }
+
+        return insertElementEnd(ElementType::road, baseZ, occupiedQuads, source, dest, lastFound)->as<RoadElement>();
+    }
+
     // 0x00461578
     TileElement* insertElementAfterNoReorg(TileElement* after, ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
     {

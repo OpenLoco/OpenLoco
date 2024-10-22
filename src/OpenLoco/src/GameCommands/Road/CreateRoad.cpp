@@ -14,14 +14,15 @@
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
 #include "Objects/BridgeObject.h"
-#include "SceneManager.h"
-// #include "Objects/LevelCrossingObject.h"
+#include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
 #include "Objects/TrackObject.h"
-// #include "World/CompanyManager.h"
+#include "S5/S5.h"
+#include "SceneManager.h"
+#include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
@@ -668,6 +669,10 @@ namespace OpenLoco::GameCommands
 
         auto& roadPieces = World::TrackData::getRoadPiece(args.roadId);
         std::set<World::Pos3, World::LessThanPos3> removedBuildings;
+        // 0x0113C2EC
+        bool hasStation = false;
+        // 0x0112C2EA
+        StationId stationId = StationId::null;
 
         for (auto& piece : roadPieces)
         {
@@ -733,10 +738,7 @@ namespace OpenLoco::GameCommands
             bool hasLevelCrossing = false;
             // 0x0113C2E3
             uint8_t levelCrossingObjId = 0xFFU;
-            // 0x0113C2EC
-            bool hasStation = false;
-            // 0x0112C2EA
-            StationId stationId = StationId::null;
+
             std::array<uint8_t, 16> roadIdUnk = {};
             roadIdUnk[args.roadId] |= 1U << args.rotation;
 
@@ -775,111 +777,147 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            //        if (hasLevelCrossing)
-            //        {
-            //            auto* levelCrossObj = ObjectManager::get<LevelCrossingObject>(getGameState().currentDefaultLevelCrossingType);
-            //            totalCost += Economy::getInflationAdjustedCost(levelCrossObj->costFactor, levelCrossObj->costIndex, 10);
-            //        }
+            if (levelCrossingObjId == 0xFFU)
+            {
+                levelCrossingObjId = getGameState().currentDefaultLevelCrossingType;
+            }
+            if (hasLevelCrossing)
+            {
+                auto* levelCrossObj = ObjectManager::get<LevelCrossingObject>(levelCrossingObjId);
+                totalCost += Economy::getInflationAdjustedCost(levelCrossObj->costFactor, levelCrossObj->costIndex, 10);
+            }
 
-            //        if ((flags & Flags::apply) && !(flags & (Flags::ghost | Flags::aiAllocated)))
-            //        {
-            //            World::TileManager::removeAllWallsOnTileBelow(World::toTileSpace(trackLoc), baseZ);
-            //        }
+            if ((flags & Flags::apply) && !(flags & (Flags::ghost | Flags::aiAllocated)))
+            {
+                World::TileManager::removeAllWallsOnTileBelow(World::toTileSpace(roadLoc), baseZ);
+            }
 
-            //        // 0x0049C015
-            //        const auto posFlags = World::TileClearance::getPositionFlags();
+            // 0x00476408
+            const auto posFlags = World::TileClearance::getPositionFlags();
 
-            //        // Abridged flags for just above/underground
-            //        const auto newGroundFlags = posFlags & (ElementPositionFlags::aboveGround | ElementPositionFlags::underground);
-            //        if (_byte_1136072 != ElementPositionFlags::none && (*_byte_1136072 & newGroundFlags) == ElementPositionFlags::none)
-            //        {
-            //            setErrorText(StringIds::cant_build_partly_above_partly_below_ground);
-            //            return FAILURE;
-            //        }
-            //        _byte_1136072 = newGroundFlags;
+            // Abridged flags for just above/underground
+            const auto newGroundFlags = posFlags & (ElementPositionFlags::aboveGround | ElementPositionFlags::underground);
+            if (_byte_1136072 != ElementPositionFlags::none && (*_byte_1136072 & newGroundFlags) == ElementPositionFlags::none)
+            {
+                setErrorText(StringIds::cant_build_partly_above_partly_below_ground);
+                return FAILURE;
+            }
+            _byte_1136072 = newGroundFlags;
 
-            //        if ((posFlags & ElementPositionFlags::partiallyUnderwater) != ElementPositionFlags::none)
-            //        {
-            //            setErrorText(StringIds::cant_build_this_underwater);
-            //            return FAILURE;
-            //        }
-            //        if ((posFlags & ElementPositionFlags::underwater) != ElementPositionFlags::none)
-            //        {
-            //            setErrorText(StringIds::too_close_to_water_surface);
-            //            return FAILURE;
-            //        }
+            if ((posFlags & ElementPositionFlags::partiallyUnderwater) != ElementPositionFlags::none)
+            {
+                setErrorText(StringIds::cant_build_this_underwater);
+                return FAILURE;
+            }
+            if ((posFlags & ElementPositionFlags::underwater) != ElementPositionFlags::none)
+            {
+                setErrorText(StringIds::too_close_to_water_surface);
+                return FAILURE;
+            }
 
-            //        if (!(flags & Flags::apply))
-            //        {
-            //            continue;
-            //        }
+            if (!(flags & Flags::apply))
+            {
+                continue;
+            }
 
-            //        if (CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
-            //        {
-            //            companyEmotionEvent(getUpdatingCompanyId(), Emotion::thinking);
-            //        }
-            //        if (!(flags & (Flags::ghost | Flags::aiAllocated)))
-            //        {
-            //            World::TileManager::removeSurfaceIndustryAtHeight(trackLoc);
-            //            World::TileManager::setTerrainStyleAsClearedAtHeight(trackLoc);
-            //        }
+            if (CompanyManager::isPlayerCompany(companyId))
+            {
+                companyEmotionEvent(getUpdatingCompanyId(), Emotion::thinking);
+            }
+            if (!(flags & (Flags::ghost | Flags::aiAllocated)))
+            {
+                World::TileManager::removeSurfaceIndustryAtHeight(roadLoc);
+                World::TileManager::setTerrainStyleAsClearedAtHeight(roadLoc);
+            }
 
-            //        auto* newElTrack = World::TileManager::insertElement<World::TrackElement>(trackLoc, baseZ, quarterTile.getBaseQuarterOccupied());
-            //        if (newElTrack == nullptr)
-            //        {
-            //            return FAILURE;
-            //        }
-            //        newElTrack->setClearZ(clearZ);
-            //        newElTrack->setRotation(args.rotation);
-            //        newElTrack->setTrackObjectId(args.trackObjectId);
-            //        newElTrack->setSequenceIndex(piece.index);
-            //        newElTrack->setTrackId(args.trackId);
-            //        newElTrack->setOwner(getUpdatingCompanyId());
-            //        for (auto i = 0U; i < 4; ++i)
-            //        {
-            //            if (validMods & (1U << i))
-            //            {
-            //                newElTrack->setMod(i, true);
-            //            }
-            //        }
-            //        newElTrack->setBridgeObjectId(args.bridge);
-            //        newElTrack->setHasBridge(_byte_1136073 & (1U << 1));
-            //        newElTrack->setHasLevelCrossing(hasLevelCrossing);
-            //        newElTrack->setFlag6(piece.index == (trackPieces.size() - 1));
-            //        newElTrack->setGhost(flags & Flags::ghost);
-            //        newElTrack->setAiAllocated(flags & Flags::aiAllocated);
-            //        if (!(flags & Flags::aiAllocated))
-            //        {
-            //            World::TileManager::mapInvalidateTileFull(trackLoc);
-            //        }
+            auto* newElRoad = World::TileManager::insertElementRoad(roadLoc, baseZ, quarterTile.getBaseQuarterOccupied());
+            if (newElRoad == nullptr)
+            {
+                return FAILURE;
+            }
+            newElRoad->setClearZ(clearZ);
+            newElRoad->setRotation(args.rotation);
+            newElRoad->setRoadObjectId(args.roadObjectId);
+            newElRoad->setSequenceIndex(piece.index);
+            newElRoad->setRoadId(args.roadId);
+            newElRoad->setOwner(companyId);
+            for (auto i = 0U; i < 2; ++i)
+            {
+                if (validMods & (1U << i))
+                {
+                    newElRoad->setMod(i, true);
+                }
+            }
+            if ((getGameState().roadObjectIdIsNotTram & (1U << args.roadObjectId)) && companyId != CompanyId::neutral)
+            {
+                newElRoad->setUnk7_40(true);
+            }
+            newElRoad->setBridgeObjectId(args.bridge);
+            newElRoad->setHasBridge(_byte_1136073 & (1U << 1));
+            if (hasLevelCrossing && !(flags & Flags::aiAllocated))
+            {
+                newElRoad->setHasLevelCrossing(true);
+                newElRoad->setLevelCrossingObjectId(levelCrossingObjId);
+            }
+            else
+            {
+                newElRoad->setHasLevelCrossing(false);
+                newElRoad->setLevelCrossingObjectId(0);
+            }
+            newElRoad->setHasStationElement(hasStation);
+            newElRoad->setFlag6(piece.index == (roadPieces.size() - 1));
+            newElRoad->setGhost(flags & Flags::ghost);
+            newElRoad->setAiAllocated(flags & Flags::aiAllocated);
+            if (!(flags & Flags::aiAllocated))
+            {
+                World::TileManager::mapInvalidateTileFull(roadLoc);
+            }
         }
 
-        //    if (_byte_1136073 & (1U << 0))
-        //    {
-        //        auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridge);
-        //        const auto heightCost = _byte_1136074 * bridgeObj->heightCostFactor;
-        //        const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->baseCostFactor + heightCost, bridgeObj->costIndex, 10);
-        //        auto cost = (bridgeBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
-        //        if (_byte_1136073 & (1U << 7))
-        //        {
-        //            cost *= 2;
-        //        }
-        //        totalCost += cost;
-        //    }
+        // TODO: Verify if we remembered to do this for track
+        auto& options = S5::getOptions();
+        options.madeAnyChanges = 1;
 
-        //    if ((_byte_1136072 & ElementPositionFlags::underground) != ElementPositionFlags::none)
-        //    {
-        //        const auto tunnelBaseCost = Economy::getInflationAdjustedCost(trackObj->tunnelCostFactor, 2, 8);
-        //        auto cost = (tunnelBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
+        // 0x47656B TODO: special road code...
 
-        //        totalCost += cost;
-        //    }
+        if ((_byte_1136073 & (1U << 0)) && !(_byte_1136073 & (1U << 6)))
+        {
+            auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridge);
+            const auto heightCost = _byte_1136074 * bridgeObj->heightCostFactor;
+            const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->baseCostFactor + heightCost, bridgeObj->costIndex, 10);
+            auto cost = (bridgeBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
+            if (_byte_1136073 & (1U << 7))
+            {
+                cost *= 2;
+            }
+            totalCost += cost;
+        }
 
-        //    if ((flags & Flags::apply) && !(flags & (Flags::aiAllocated | Flags::ghost)))
-        //    {
-        //        playConstructionPlacementSound(getPosition());
-        //    }
-        //    return totalCost;
+        if (((_byte_1136072 & ElementPositionFlags::underground) != ElementPositionFlags::none) && !(_byte_1136073 & (1U << 6)))
+        {
+            const auto tunnelBaseCost = Economy::getInflationAdjustedCost(roadObj->tunnelCostFactor, 2, 8);
+            auto cost = (tunnelBaseCost * World::TrackData::getTrackMiscData(args.roadId).costFactor) / 256;
+
+            totalCost += cost;
+        }
+
+        if ((flags & Flags::apply) && hasStation)
+        {
+            auto* station = StationManager::get(stationId);
+            station->invalidate();
+            recalculateStationModes(stationId);
+            recalculateStationCenter(stationId);
+            station->updateLabel();
+            station->invalidate();
+        }
+        if ((flags & Flags::apply)
+            && !(flags & (Flags::aiAllocated | Flags::ghost))
+            && getUpdatingCompanyId() != CompanyId::neutral
+            && totalCost != 0)
+        {
+            playConstructionPlacementSound(getPosition());
+        }
+        return totalCost;
     }
 
     void createRoad(registers& regs)
