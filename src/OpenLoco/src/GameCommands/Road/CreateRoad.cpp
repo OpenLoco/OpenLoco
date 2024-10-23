@@ -879,6 +879,103 @@ namespace OpenLoco::GameCommands
         options.madeAnyChanges = 1;
 
         // 0x47656B TODO: special road code...
+        if ((flags & Flags::apply)
+            && !(flags & (Flags::aiAllocated | Flags::ghost))
+            && (roadIdUnk[0] & (1U << 7))
+            && roadObj->hasFlags(RoadObjectFlags::unk_02))
+        {
+            for (auto i = 0U; i < 4; ++i)
+            {
+                const auto rot0 = i;
+                const auto rot1 = (i + 1) & 0x3;
+                const auto rot2 = (i + 2) & 0x3;
+                const auto rot3 = (i + 3) & 0x3;
+
+                const auto rot0Flag = (1U << rot0);
+                const auto rot1Flag = (1U << rot1);
+                const auto rot2Flag = (1U << rot2);
+                const auto rot3Flag = (1U << rot3);
+
+                auto placeAddition = [&args, companyId, validMods, flags](uint8_t rotation, uint8_t roadId) {
+                    World::TileManager::removeSurfaceIndustryAtHeight(args.pos);
+                    World::TileManager::setTerrainStyleAsClearedAtHeight(args.pos);
+
+                    auto* newElRoad = World::TileManager::insertElement<World::RoadElement>(args.pos, args.pos.z / World::kSmallZStep, 0xFU);
+                    if (newElRoad == nullptr)
+                    {
+                        return;
+                    }
+                    newElRoad->setClearZ(args.pos.z / World::kSmallZStep + 8);
+                    newElRoad->setRotation(rotation);
+                    newElRoad->setRoadObjectId(args.roadObjectId);
+                    newElRoad->setSequenceIndex(0);
+                    newElRoad->setRoadId(roadId);
+                    newElRoad->setOwner(companyId);
+                    for (auto i = 0U; i < 2; ++i)
+                    {
+                        if (validMods & (1U << i))
+                        {
+                            newElRoad->setMod(i, true);
+                        }
+                    }
+                    newElRoad->setBridgeObjectId(args.bridge);
+                    newElRoad->setHasBridge(_byte_1136073 & (1U << 1));
+
+                    newElRoad->setFlag6(true);
+                    newElRoad->setGhost(flags & Flags::ghost);
+                    newElRoad->setAiAllocated(flags & Flags::aiAllocated);
+                };
+
+                auto requiresAdditionalLeft = [&roadIdUnk, rot0Flag, rot1Flag, rot2Flag, rot3Flag]() {
+                    if ((roadIdUnk[0] & rot0Flag)
+                        && ((roadIdUnk[0] & rot3Flag)
+                            || (roadIdUnk[0] & rot1Flag)
+                            || (roadIdUnk[1] & rot1Flag)
+                            || (roadIdUnk[2] & rot2Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[0] & rot2Flag) && (roadIdUnk[0] & rot3Flag))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[0] & rot3Flag) && ((roadIdUnk[2] & rot0Flag) || (roadIdUnk[1] & rot3Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[2] & rot0Flag) && ((roadIdUnk[1] & rot1Flag) || (roadIdUnk[2] & rot2Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[1] & rot3Flag) && ((roadIdUnk[1] & rot1Flag) || (roadIdUnk[2] & rot2Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[0] & rot1Flag) && (roadIdUnk[2] & rot0Flag))
+                    {
+                        return true;
+                    }
+                    return false;
+                };
+                if (requiresAdditionalLeft())
+                {
+                    if (!(roadIdUnk[2] & rot1Flag))
+                    {
+                        bool place = !(roadIdUnk[1] & rot0Flag);
+                        roadIdUnk[1] |= rot0Flag;
+                        if (place)
+                        {
+                            placeAddition(i, 1);
+                        }
+                    }
+                }
+                // 0x0047677A
+
+                // place addition right
+                // place addition left inverse
+                // place addition right inverse
+            }
+        }
 
         if ((_byte_1136073 & (1U << 0)) && !(_byte_1136073 & (1U << 6)))
         {
