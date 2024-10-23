@@ -363,33 +363,36 @@ namespace OpenLoco::GameCommands
             }
 
             auto* elStation = getRoadStationElement(args.pos);
-            res.stationId = elStation->stationId();
-            // Check if either the road object is compatible with the station object
-            // or if the station object is compatible with the road object
-            for (const auto compatStationObjId : newRoadObj->stations)
+            if (elStation != nullptr)
             {
-                if (compatStationObjId == elStation->objectId())
+                res.stationId = elStation->stationId();
+                // Check if either the road object is compatible with the station object
+                // or if the station object is compatible with the road object
+                for (const auto compatStationObjId : newRoadObj->stations)
                 {
-                    res.hasStation = true;
-                    break;
-                }
-            }
-            if (!res.hasStation)
-            {
-                auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
-                for (const auto compatRoadObjId : roadStationObj->mods)
-                {
-                    if (compatRoadObjId == args.roadObjectId)
+                    if (compatStationObjId == elStation->objectId())
                     {
                         res.hasStation = true;
                         break;
                     }
                 }
-            }
-            if (!res.hasStation)
-            {
-                setErrorText(StringIds::station_in_the_way);
-                return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
+                if (!res.hasStation)
+                {
+                    auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
+                    for (const auto compatRoadObjId : roadStationObj->mods)
+                    {
+                        if (compatRoadObjId == args.roadObjectId)
+                        {
+                            res.hasStation = true;
+                            break;
+                        }
+                    }
+                }
+                if (!res.hasStation)
+                {
+                    setErrorText(StringIds::station_in_the_way);
+                    return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
+                }
             }
         }
 
@@ -1049,7 +1052,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 // 0x00476AB2
-                auto requiresAdditionalStraight2 = [&roadIdUnk, rot0Flag, rot1Flag, rot2Flag, rot3Flag]() {
+                auto requiresAdditionalStraight2 = [&roadIdUnk, rot1Flag, rot2Flag]() {
                     if ((roadIdUnk[2] & rot1Flag)
                         && (roadIdUnk[2] & rot2Flag))
                     {
