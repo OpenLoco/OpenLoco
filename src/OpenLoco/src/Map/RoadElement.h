@@ -77,7 +77,8 @@ namespace OpenLoco::World
             _6 |= value & 0xF;
         }                                          // _6u
         uint8_t bridge() const { return _6 >> 5; } // _6u
-        void setBridgeObjectId(const uint8_t bridge) {
+        void setBridgeObjectId(const uint8_t bridge)
+        {
             _6 &= ~0xE0;
             _6 |= bridge << 5;
         }
