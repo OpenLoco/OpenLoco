@@ -1058,7 +1058,6 @@ namespace OpenLoco::GameCommands
                     return false;
                 };
 
-                
                 if (requiresAdditionalStraight2())
                 {
                     if (!(roadIdUnk[0] & rot2Flag))
