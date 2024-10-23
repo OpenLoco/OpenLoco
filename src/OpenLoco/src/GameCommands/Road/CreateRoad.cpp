@@ -970,10 +970,107 @@ namespace OpenLoco::GameCommands
                     }
                 }
                 // 0x0047677A
+                auto requiresAdditionalRight = [&roadIdUnk, rot0Flag, rot1Flag, rot2Flag, rot3Flag]() {
+                    if ((roadIdUnk[0] & rot2Flag)
+                        && ((roadIdUnk[2] & rot2Flag)
+                            || (roadIdUnk[1] & rot1Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[1] & rot0Flag) && ((roadIdUnk[1] & rot2Flag) || (roadIdUnk[2] & rot3Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[2] & rot1Flag) && ((roadIdUnk[1] & rot2Flag) || (roadIdUnk[2] & rot3Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[0] & rot1Flag) && ((roadIdUnk[0] & rot2Flag) || (roadIdUnk[1] & rot3Flag)))
+                    {
+                        return true;
+                    }
+                    return false;
+                };
 
-                // place addition right
-                // place addition left inverse
-                // place addition right inverse
+                if (requiresAdditionalRight())
+                {
+                    if (!(roadIdUnk[1] & rot0Flag))
+                    {
+                        bool place = !(roadIdUnk[2] & rot1Flag);
+                        roadIdUnk[1] |= rot1Flag;
+                        if (place)
+                        {
+                            placeAddition(i + 1, 2);
+                        }
+                    }
+                }
+                // 0x004768F0
+                auto requiresAdditionalStraight1 = [&roadIdUnk, rot0Flag, rot1Flag, rot2Flag, rot3Flag]() {
+                    if ((roadIdUnk[1] & rot0Flag)
+                        && ((roadIdUnk[1] & rot1Flag)
+                            || (roadIdUnk[2] & rot2Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[2] & rot0Flag) && ((roadIdUnk[1] & rot1Flag) || (roadIdUnk[2] & rot2Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[1] & rot3Flag) && ((roadIdUnk[1] & rot1Flag) || (roadIdUnk[2] & rot2Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[1] & rot0Flag) && ((roadIdUnk[1] & rot2Flag) || (roadIdUnk[2] & rot3Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[2] & rot1Flag) && ((roadIdUnk[1] & rot2Flag) || (roadIdUnk[2] & rot3Flag)))
+                    {
+                        return true;
+                    }
+                    if ((roadIdUnk[2] & rot1Flag) && (roadIdUnk[1] & rot1Flag))
+                    {
+                        return true;
+                    }
+                    return false;
+                };
+
+                if (requiresAdditionalStraight1())
+                {
+                    if (!(roadIdUnk[0] & rot2Flag))
+                    {
+                        bool place = !(roadIdUnk[0] & rot0Flag);
+                        roadIdUnk[0] |= rot0Flag;
+                        if (place)
+                        {
+                            placeAddition(i, 0);
+                        }
+                    }
+                }
+
+                // 0x00476AB2
+                auto requiresAdditionalStraight2 = [&roadIdUnk, rot0Flag, rot1Flag, rot2Flag, rot3Flag]() {
+                    if ((roadIdUnk[2] & rot1Flag)
+                        && (roadIdUnk[2] & rot2Flag))
+                    {
+                        return true;
+                    }
+                    return false;
+                };
+
+                
+                if (requiresAdditionalStraight2())
+                {
+                    if (!(roadIdUnk[0] & rot2Flag))
+                    {
+                        bool place = !(roadIdUnk[0] & rot0Flag);
+                        roadIdUnk[0] |= rot0Flag;
+                        if (place)
+                        {
+                            placeAddition(i, 0);
+                        }
+                    }
+                }
             }
         }
 
