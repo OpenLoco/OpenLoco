@@ -878,10 +878,13 @@ namespace OpenLoco::GameCommands
         }
 
         // TODO: Verify if we remembered to do this for track
-        auto& options = S5::getOptions();
-        options.madeAnyChanges = 1;
+        if (flags & Flags::apply)
+        {
+            auto& options = S5::getOptions();
+            options.madeAnyChanges = 1;
+        }
 
-        // 0x47656B TODO: special road code...
+        // 0x47656B
         if ((flags & Flags::apply)
             && !(flags & (Flags::aiAllocated | Flags::ghost))
             && (roadIdUnk[0] & (1U << 7))
