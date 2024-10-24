@@ -258,6 +258,15 @@ namespace OpenLoco::GameCommands
             regs = backup;
             return 0;
         });
+
+        // Used by a gc_unk_53 and sub_485849 ai function  instead of going via doCommand
+        registerHook(0x00475FBC, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createRoad(backup);
+
+            regs = backup;
+            return 0;
+        });
     }
 
     static uint32_t loc_4314EA();
