@@ -222,7 +222,7 @@ namespace OpenLoco::Paint
                 offsetModifier = -offsetModifier;
             }
 
-            const auto unk1 = Math::Trigonometry::computeXYVector(offsetModifier, originalYaw) / 2;
+            const auto unk1 = Math::Trigonometry::computeXYVector(offsetModifier, originalYaw) / 8;
             boundBoxOffsets.x = unk1.x;
             boundBoxOffsets.y = unk1.y;
             offsetModifier = sprite.halfLength * 2 - 4;
