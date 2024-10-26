@@ -592,7 +592,7 @@ namespace OpenLoco
     }
 
     // 0x004B6D93
-    int16_t drawVehicleInline(Gfx::DrawingContext& drawingCtx, const Vehicles::Car& car, Ui::Point loc, VehicleInlineMode mode, std::optional<Colour> disabled)
+    int16_t drawVehicleInline(Gfx::DrawingContext& drawingCtx, const Vehicles::Car& car, Ui::Point loc, VehicleInlineMode mode, VehiclePartsToDraw parts, std::optional<Colour> disabled)
     {
         // This has been simplified from vanilla.
 
@@ -609,6 +609,14 @@ namespace OpenLoco
 
         for (auto& item : screenDistDrawItems.items)
         {
+            if (parts == VehiclePartsToDraw::body && !item.isBody)
+            {
+                continue;
+            }
+            if (parts == VehiclePartsToDraw::bogies && item.isBody)
+            {
+                continue;
+            }
             if (disabled.has_value())
             {
                 const auto shade1 = Colours::getShade(disabled.value(), 5);
@@ -640,10 +648,13 @@ namespace OpenLoco
     // 0x004B6D43
     int16_t drawTrainInline(Gfx::DrawingContext& drawingCtx, const Vehicles::Vehicle& train, Ui::Point loc)
     {
-        // Vanilla does this slightly differently draw bogie then draw body
         for (auto& car : train.cars)
         {
-            loc.x += drawVehicleInline(drawingCtx, car, loc, VehicleInlineMode::animated);
+            loc.x += drawVehicleInline(drawingCtx, car, loc, VehicleInlineMode::animated, VehiclePartsToDraw::bogies);
+        }
+        for (auto& car : train.cars)
+        {
+            loc.x += drawVehicleInline(drawingCtx, car, loc, VehicleInlineMode::animated, VehiclePartsToDraw::body);
         }
         return loc.x;
     }
