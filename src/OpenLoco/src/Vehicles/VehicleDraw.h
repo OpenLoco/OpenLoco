@@ -32,9 +32,8 @@ namespace OpenLoco
     };
     enum class VehiclePartsToDraw : uint8_t
     {
-        both, // Bogies and bodies
         bogies,
-        body
+        bodies
     };
     int16_t drawVehicleInline(Gfx::DrawingContext& drawingCtx, const Vehicles::Car& car, Ui::Point loc, VehicleInlineMode mode, VehiclePartsToDraw parts, std::optional<Colour> disabled = std::nullopt);
     int16_t getWidthVehicleInline(const Vehicles::Car& car);

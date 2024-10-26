@@ -609,7 +609,7 @@ namespace OpenLoco
 
         for (auto& item : screenDistDrawItems.items)
         {
-            if (parts == VehiclePartsToDraw::body && !item.isBody)
+            if (parts == VehiclePartsToDraw::bodies && !item.isBody)
             {
                 continue;
             }
@@ -648,13 +648,15 @@ namespace OpenLoco
     // 0x004B6D43
     int16_t drawTrainInline(Gfx::DrawingContext& drawingCtx, const Vehicles::Vehicle& train, Ui::Point loc)
     {
+        const auto startX = loc.x;
         for (auto& car : train.cars)
         {
             loc.x += drawVehicleInline(drawingCtx, car, loc, VehicleInlineMode::animated, VehiclePartsToDraw::bogies);
         }
+        loc.x = startX;
         for (auto& car : train.cars)
         {
-            loc.x += drawVehicleInline(drawingCtx, car, loc, VehicleInlineMode::animated, VehiclePartsToDraw::body);
+            loc.x += drawVehicleInline(drawingCtx, car, loc, VehicleInlineMode::animated, VehiclePartsToDraw::bodies);
         }
         return loc.x;
     }
