@@ -11,8 +11,6 @@
 namespace OpenLoco::CompanyManager
 {
     void reset();
-    CompanyId getUpdatingCompanyId();
-    void setUpdatingCompanyId(CompanyId id);
 
     uint8_t getMaxCompetingCompanies();
     void setMaxCompetingCompanies(uint8_t competingCompanies);

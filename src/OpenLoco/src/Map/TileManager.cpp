@@ -1008,7 +1008,7 @@ namespace OpenLoco::World::TileManager
             return;
         }
 
-        CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral);
         auto pos = getGameState().tileUpdateStartLocation;
         for (; pos.y < World::kMapHeight; pos.y += 16 * World::kTileSize)
         {
@@ -1088,7 +1088,7 @@ namespace OpenLoco::World::TileManager
     {
         if (!elBuilding.isGhost() && !elBuilding.isAiAllocated())
         {
-            if (CompanyManager::getUpdatingCompanyId() != CompanyId::neutral)
+            if (GameCommands::getUpdatingCompanyId() != CompanyId::neutral)
             {
                 createDestructExplosion(World::Pos3(pos.x + 16, pos.y + 16, elBuilding.baseHeight()));
             }

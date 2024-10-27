@@ -1226,7 +1226,7 @@ namespace OpenLoco::Ui::WindowManager
     void dispatchUpdateAll()
     {
         _523508++;
-        CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
+        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
 
         std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
             w.callUpdate();

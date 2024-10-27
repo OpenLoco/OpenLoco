@@ -289,7 +289,7 @@ namespace OpenLoco
 
     void sub_431695(uint16_t var_F253A0)
     {
-        CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
+        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
         for (auto i = 0; i < var_F253A0; i++)
         {
             MessageManager::sub_428E47();

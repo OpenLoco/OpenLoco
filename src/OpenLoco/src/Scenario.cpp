@@ -6,6 +6,7 @@
 #include "Entities/EntityManager.h"
 #include "Environment.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
@@ -185,7 +186,7 @@ namespace OpenLoco::Scenario
     {
         WindowManager::closeConstructionWindows();
 
-        CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral);
         WindowManager::setCurrentRotation(0);
 
         CompanyManager::reset();

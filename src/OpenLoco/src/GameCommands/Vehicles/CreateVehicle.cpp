@@ -38,7 +38,7 @@ namespace OpenLoco::GameCommands
     constexpr auto kNumVehicleComponentsInCarComponent = 3; // Bogie body
     constexpr auto kNumVehicleComponentsInBase = 4;         // head unk_1 unk_2 tail
     constexpr auto kMaxNumVehicleComponentsInCar = kNumVehicleComponentsInCarComponent * kMaxNumCarComponentsInCar;
-    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
+
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<const World::TileElement*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
@@ -54,7 +54,7 @@ namespace OpenLoco::GameCommands
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
     {
-        if (CompanyManager::isPlayerCompany(_updatingCompanyId))
+        if (CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
         {
             return true;
         }
@@ -105,7 +105,7 @@ namespace OpenLoco::GameCommands
     static VehicleBogie* createBogie(const EntityId head, const uint16_t vehicleTypeId, [[maybe_unused]] const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createVehicleBaseEntity<VehicleBogie>();
-        newBogie->owner = _updatingCompanyId;
+        newBogie->owner = getUpdatingCompanyId();
         newBogie->head = head;
         newBogie->bodyIndex = bodyNumber;
         newBogie->trackType = lastVeh->getTrackType();
@@ -224,7 +224,7 @@ namespace OpenLoco::GameCommands
         auto newBody = createVehicleBaseEntity<VehicleBody>();
         // TODO: move this into the create function somehow
         newBody->setSubType(bodyNumber == 0 ? VehicleEntityType::body_start : VehicleEntityType::body_continued);
-        newBody->owner = _updatingCompanyId;
+        newBody->owner = getUpdatingCompanyId();
         newBody->head = head;
         newBody->bodyIndex = bodyNumber;
         newBody->trackType = lastVeh->getTrackType();
@@ -335,7 +335,7 @@ namespace OpenLoco::GameCommands
         }
 
         const auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
-        const auto company = CompanyManager::get(_updatingCompanyId);
+        const auto company = CompanyManager::get(getUpdatingCompanyId());
         _1136140 = company->mainColours; // Copy to global variable. Can be removed when all global uses confirmed
         auto colourScheme = company->mainColours;
         if (company->customVehicleColoursSet & (1 << vehObject->colourType))
@@ -377,7 +377,7 @@ namespace OpenLoco::GameCommands
         std::array<bool, Limits::kMaxVehicles> _unkArr{};
         for (auto* v : VehicleManager::VehicleList())
         {
-            if (v->owner == _updatingCompanyId && v->vehicleType == type)
+            if (v->owner == getUpdatingCompanyId() && v->vehicleType == type)
             {
                 if (v->ordinalNumber != 0)
                 {
@@ -400,7 +400,7 @@ namespace OpenLoco::GameCommands
     {
         auto* const newHead = createVehicleBaseEntity<VehicleHead>();
         EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicleHead);
-        newHead->owner = _updatingCompanyId;
+        newHead->owner = getUpdatingCompanyId();
         newHead->head = newHead->id;
         newHead->vehicleFlags |= VehicleFlags::commandStop;
         newHead->trackType = trackType;
@@ -439,7 +439,7 @@ namespace OpenLoco::GameCommands
     static Vehicle1* createVehicle1(const EntityId head, VehicleBase* const lastVeh)
     {
         auto* const newVeh1 = createVehicleBaseEntity<Vehicle1>();
-        newVeh1->owner = _updatingCompanyId;
+        newVeh1->owner = getUpdatingCompanyId();
         newVeh1->head = head;
         newVeh1->trackType = lastVeh->getTrackType();
         newVeh1->mode = lastVeh->getTransportMode();
@@ -470,7 +470,7 @@ namespace OpenLoco::GameCommands
     static Vehicle2* createVehicle2(const EntityId head, VehicleBase* const lastVeh)
     {
         auto* const newVeh2 = createVehicleBaseEntity<Vehicle2>();
-        newVeh2->owner = _updatingCompanyId;
+        newVeh2->owner = getUpdatingCompanyId();
         newVeh2->head = head;
         newVeh2->trackType = lastVeh->getTrackType();
         newVeh2->mode = lastVeh->getTransportMode();
@@ -506,7 +506,7 @@ namespace OpenLoco::GameCommands
     static VehicleTail* createVehicleTail(const EntityId head, VehicleBase* const lastVeh)
     {
         auto* const newTail = createVehicleBaseEntity<VehicleTail>();
-        newTail->owner = _updatingCompanyId;
+        newTail->owner = getUpdatingCompanyId();
         newTail->head = head;
         newTail->trackType = lastVeh->getTrackType();
         newTail->mode = lastVeh->getTransportMode();
@@ -595,7 +595,7 @@ namespace OpenLoco::GameCommands
     static void updateWholeVehicle(VehicleHead* const head)
     {
         head->sub_4AF7A4();
-        auto company = CompanyManager::get(_updatingCompanyId);
+        auto company = CompanyManager::get(getUpdatingCompanyId());
         company->recalculateTransportCounts();
 
         if (_backupVeh0 != reinterpret_cast<VehicleHead*>(-1))
@@ -741,7 +741,7 @@ namespace OpenLoco::GameCommands
         setExpenditureType(ExpenditureType::VehiclePurchases);
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
 
-        const auto* company = CompanyManager::get(CompanyManager::getUpdatingCompanyId());
+        const auto* company = CompanyManager::get(GameCommands::getUpdatingCompanyId());
         auto vehicleIsLocked = !company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleTypeId));
 
         if (vehicleIsLocked && !Config::get().buildLockedVehicles)

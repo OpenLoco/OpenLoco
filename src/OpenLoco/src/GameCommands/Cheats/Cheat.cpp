@@ -15,21 +15,17 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
-
     namespace Cheats
     {
         static uint32_t acquireAssets(CompanyId targetCompanyId)
         {
-            auto ourCompanyId = CompanyManager::getUpdatingCompanyId();
+            auto ourCompanyId = GameCommands::getUpdatingCompanyId();
 
             // First phase: change ownership of all tile elements that currently belong to the target company.
             for (auto& element : TileManager::getElements())
@@ -171,7 +167,7 @@ namespace OpenLoco::GameCommands
 
         static uint32_t vehicleReliability(int32_t newReliablity)
         {
-            auto ourCompanyId = CompanyManager::getUpdatingCompanyId();
+            auto ourCompanyId = GameCommands::getUpdatingCompanyId();
 
             for (auto* vehicle : VehicleManager::VehicleList())
             {
@@ -273,13 +269,14 @@ namespace OpenLoco::GameCommands
     {
         if (flags & Flags::apply)
         {
-            auto* company = CompanyManager::get(_updatingCompanyId);
+            auto companyId = GameCommands::getUpdatingCompanyId();
+            auto* company = CompanyManager::get(companyId);
             company->jailStatus = 30;
-            Ui::WindowManager::invalidate(Ui::WindowType::company, static_cast<Ui::WindowNumber_t>(*_updatingCompanyId));
+            Ui::WindowManager::invalidate(Ui::WindowType::company, static_cast<Ui::WindowNumber_t>(companyId));
             Ui::WindowManager::invalidate(Ui::WindowType::news);
             Ui::WindowManager::invalidate(static_cast<Ui::WindowType>(0x2E));
-            MessageManager::post(MessageType::companyCheated, CompanyId::null, static_cast<uint16_t>(*_updatingCompanyId), 0xFFFF);
-            companyEmotionEvent(_updatingCompanyId, Emotion::dejected);
+            MessageManager::post(MessageType::companyCheated, CompanyId::null, enumValue(companyId), 0xFFFF);
+            companyEmotionEvent(companyId, Emotion::dejected);
         }
         return 0;
     }
