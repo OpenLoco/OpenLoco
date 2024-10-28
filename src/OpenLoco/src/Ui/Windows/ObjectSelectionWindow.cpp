@@ -420,8 +420,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             _tabObjectList.emplace_back(std::move(entry));
         }
 
-        std::ranges::sort(_tabObjectList, {}, [](const auto& el) { return el.object._name; });
-
         applyFilterToObjectList(filterFlags);
     }
 

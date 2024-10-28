@@ -424,6 +424,7 @@ namespace OpenLoco::ObjectManager
         addObjectsInFolder(objectPath, true, currentState.install.numObjects);
         const auto customObjectPath = Environment::getPathNoWarning(Environment::PathId::customObjects);
         addObjectsInFolder(customObjectPath, true, currentState.customObjects.numObjects);
+        std::ranges::sort(_installedObjectList, {}, [](const auto& entry) { return entry._name; });
 
         // New index creation completed. Reset and save result.
         reloadAll();
