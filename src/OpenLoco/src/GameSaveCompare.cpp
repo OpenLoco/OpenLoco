@@ -564,6 +564,8 @@ namespace OpenLoco::GameSaveCompare
             Logging::info("Size of TileElements1 = {}", tileElements1.size());
             Logging::info("Size of TileElements2 = {}", tileElements2.size());
         }
+        int x = 0;
+        int y = 0;
         int elementCount = 0;
         for (auto iterator1 = smaller.begin(), iterator2 = larger.begin(); iterator1 != smaller.end();
              ++iterator1, ++iterator2)
@@ -573,16 +575,27 @@ namespace OpenLoco::GameSaveCompare
                 S5::TileElement tile1 = tileElements1.at(elementCount);
                 S5::TileElement tile2 = tileElements2.at(elementCount);
 
+
                 if (!bitWiseEqual(tile1, tile2))
                 {
                     if (divergentBytesTotal == 0)
                     {
                         Logging::info("DIVERGENCE");
-                        Logging::info("TILE ELEMENT[{}]", elementCount);
+                        Logging::info("TILE ELEMENT[{}] x:{}, y:{}", elementCount, x, y);
                     }
-                    divergentBytesTotal = bitWiseLogDivergence("Elements[" + std::to_string(elementCount) + "]", tile1, tile2, displayAllDivergences, divergentBytesTotal);
+                    divergentBytesTotal = bitWiseLogDivergence("Elements[" + std::to_string(elementCount) + "] x:" + std::to_string(x) + ", y:" + std::to_string(y), tile1, tile2, displayAllDivergences, divergentBytesTotal);
                 }
                 elementCount++;
+
+                if (tile1.isLast())
+                {
+                    x++;
+                    if (x == 384)
+                    {
+                        x = 0;
+                        y++;
+                    }
+                }
             }
         }
         if (!displayAllDivergences && divergentBytesTotal > 0)
