@@ -352,7 +352,7 @@ namespace OpenLoco::World::TileManager
         };
 
         // Copy all of the elements that are underneath the new tile (or till end)
-        while (baseZ >= source->baseZ() || !isRoadStation(source, baseZ))
+        while (baseZ >= source->baseZ() && !isRoadStation(source, baseZ))
         {
             *dest = *source;
             source->setBaseZ(0xFFU);
