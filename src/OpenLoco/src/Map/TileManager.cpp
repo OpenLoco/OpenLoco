@@ -863,19 +863,12 @@ namespace OpenLoco::World::TileManager
         auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingWaterTiles = 0;
-        for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
+        for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 10, 10 }))
         {
-            for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
-            {
-                auto tilePos = initialTilePos + World::TilePos2(xOffset, yOffset);
-                if (!World::validCoords(tilePos))
-                    continue;
-
-                auto tile = get(tilePos);
-                auto* surface = tile.surface();
-                if (surface != nullptr && surface->water() > 0)
-                    surroundingWaterTiles++;
-            }
+            auto tile = get(tilePos);
+            auto* surface = tile.surface();
+            if (surface != nullptr && surface->water() > 0)
+                surroundingWaterTiles++;
         }
 
         return surroundingWaterTiles;
@@ -921,28 +914,21 @@ namespace OpenLoco::World::TileManager
         auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingTrees = 0;
-        for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
+        for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 10, 10 }))
         {
-            for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
+            auto tile = get(tilePos);
+            for (auto& element : tile)
             {
-                auto tilePos = initialTilePos + World::TilePos2(xOffset, yOffset);
-                if (!World::validCoords(tilePos))
+                // NB: vanilla was checking for trees above the surface element.
+                // This has been omitted from our implementation.
+                auto* tree = element.as<TreeElement>();
+                if (tree == nullptr)
                     continue;
 
-                auto tile = get(tilePos);
-                for (auto& element : tile)
-                {
-                    // NB: vanilla was checking for trees above the surface element.
-                    // This has been omitted from our implementation.
-                    auto* tree = element.as<TreeElement>();
-                    if (tree == nullptr)
-                        continue;
+                if (tree->isGhost())
+                    continue;
 
-                    if (tree->isGhost())
-                        continue;
-
-                    surroundingTrees++;
-                }
+                surroundingTrees++;
             }
         }
 
@@ -952,11 +938,24 @@ namespace OpenLoco::World::TileManager
     // 0x004C5604
     uint16_t countNearbyWaterTiles(Pos2 pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004C5604, regs);
-        return regs.dx;
+        // Search a 20x20 area in a checkerboard pattern, centred at pos.
+        // Initial tile position is the top left of the area.
+        auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(10, 10);
+
+        uint16_t nearbyWaterTiles = 0;
+        for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 20, 20 }))
+        {
+            // Skip every other tile, depending on initial position
+            if ((tilePos.x & 1) != (initialTilePos.x & 1) || (tilePos.y & 1) != (initialTilePos.y & 1))
+                continue;
+
+            auto tile = get(tilePos);
+            auto* surface = tile.surface();
+            if (surface != nullptr && surface->water() > 0)
+                nearbyWaterTiles++;
+        }
+
+        return nearbyWaterTiles;
     }
 
     static bool update(TileElement& el, const World::Pos2& loc)
