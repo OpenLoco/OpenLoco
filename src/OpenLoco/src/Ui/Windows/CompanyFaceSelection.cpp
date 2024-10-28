@@ -67,9 +67,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static void populateCompetitorList()
     {
         _competitorList = ObjectManager::getAvailableObjects(ObjectType::competitor);
-
-        std::ranges::sort(
-            _competitorList, {}, [](auto& el) { return el.object._name; });
     }
 
     // 0x00434F52
