@@ -132,14 +132,14 @@ namespace OpenLoco::Ui
             , mapY(mapY)
             , zoomLevel(zoomLevel)
             , rotation(rotation)
-            , surfaceZ(surfaceZ){};
+            , surfaceZ(surfaceZ) {};
 
         SavedView(EntityId entityId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
             : entityId(entityId)
             , flags(flags)
             , zoomLevel(zoomLevel)
             , rotation(rotation)
-            , surfaceZ(surfaceZ){};
+            , surfaceZ(surfaceZ) {};
 
         bool isEmpty() const
         {

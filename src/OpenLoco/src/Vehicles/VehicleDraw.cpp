@@ -248,7 +248,7 @@ namespace OpenLoco
     struct DrawItems
     {
         // Max num items is kMaxBodySprites * (2 bogies + 1 body)
-        sfl::static_vector<DrawItem, VehicleObject::kMaxBodySprites*(2 + 1)> items;
+        sfl::static_vector<DrawItem, VehicleObject::kMaxBodySprites * (2 + 1)> items;
         int32_t totalDistance;
     };
 
