@@ -7,7 +7,7 @@ jobs:
     name: Check code formatting
     runs-on: ubuntu-latest
     container:
-      image: openrct2/openrct2-build:8-format
+      image: openrct2/openrct2-build:17-format
     steps:
       - name: Checkout
         uses: actions/checkout@v4

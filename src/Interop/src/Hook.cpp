@@ -28,11 +28,11 @@ namespace OpenLoco::Interop
 
 // This macro writes a little-endian 4-byte long value into *data
 // It is used to avoid type punning.
-#define WRITE_ADDRESS_STRICTALIAS(data, addr) \
-    *(data + 0) = ((addr)&0x000000ff) >> 0;   \
-    *(data + 1) = ((addr)&0x0000ff00) >> 8;   \
-    *(data + 2) = ((addr)&0x00ff0000) >> 16;  \
-    *(data + 3) = ((addr)&0xff000000) >> 24;
+#define WRITE_ADDRESS_STRICTALIAS(data, addr)  \
+    *(data + 0) = ((addr) & 0x000000ff) >> 0;  \
+    *(data + 1) = ((addr) & 0x0000ff00) >> 8;  \
+    *(data + 2) = ((addr) & 0x00ff0000) >> 16; \
+    *(data + 3) = ((addr) & 0xff000000) >> 24;
 
     static bool hookFunc(uintptr_t address, uintptr_t hookAddress, [[maybe_unused]] int32_t stacksize)
     {
