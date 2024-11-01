@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#2697] Add initial OpenGraphics custom assets.
 - Fix: [#2676] Cargo labels are misaligned in vehicle window.
+- Fix: [#2678] Incorrect vehicle draw order and general vehicle clipping.
 - Fix: [#2690] Inability to remove certain track pieces.
 - Fix: [#2691] Scenarios with original procedural terrain generation could crash.
 - Fix: [#2692] Inability to place certain track pieces.
