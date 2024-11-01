@@ -560,31 +560,94 @@ namespace OpenLoco::GameSaveCompare
 
         if (tileElements1.size() != tileElements2.size())
         {
-            Logging::info("The TileElements sizes are different. Will compare up to the smallest TileElements size.");
+            Logging::info("The TileElements sizes are different.");
             Logging::info("Size of TileElements1 = {}", tileElements1.size());
             Logging::info("Size of TileElements2 = {}", tileElements2.size());
         }
-        int elementCount = 0;
-        for (auto iterator1 = smaller.begin(), iterator2 = larger.begin(); iterator1 != smaller.end();
-             ++iterator1, ++iterator2)
-        {
-            if (iterator2 != larger.end())
-            {
-                S5::TileElement tile1 = tileElements1.at(elementCount);
-                S5::TileElement tile2 = tileElements2.at(elementCount);
 
-                if (!bitWiseEqual(tile1, tile2))
+        int elementCount = 0;
+        auto iterator1 = tileElements1.begin();
+        auto iterator2 = tileElements2.begin();
+        for (auto y = 0; y < 384; ++y)
+        {
+            for (auto x = 0; x < 384; ++x)
+            {
+                auto allElementsOnTile = [](auto& iter) {
+                    std::vector<S5::TileElement> ts;
+                    do
+                    {
+                        ts.push_back(*iter);
+                    } while (!iter++->isLast());
+                    return ts;
+                };
+                const auto t1s = allElementsOnTile(iterator1);
+                const auto t2s = allElementsOnTile(iterator2);
+                auto i = 0U;
+                auto limit = std::min(t1s.size(), t2s.size());
+                for (; i < limit; ++i)
+                {
+                    if (!bitWiseEqual(t1s[i], t2s[i]))
+                    {
+                        if (divergentBytesTotal == 0)
+                        {
+                            Logging::info("DIVERGENCE");
+                        }
+                        if (divergentBytesTotal == 0 || displayAllDivergences)
+                        {
+                            Logging::info("TILE ELEMENT[{}] x:{}, y:{}", elementCount, x, y);
+                        }
+                        divergentBytesTotal = bitWiseLogDivergence("Elements[" + std::to_string(elementCount) + "] x:" + std::to_string(x) + ", y:" + std::to_string(y), t1s[i], t2s[i], displayAllDivergences, divergentBytesTotal);
+                    }
+                    elementCount++;
+                }
+
+                for (; i < t1s.size(); ++i)
                 {
                     if (divergentBytesTotal == 0)
                     {
                         Logging::info("DIVERGENCE");
-                        Logging::info("TILE ELEMENT[{}]", elementCount);
                     }
-                    divergentBytesTotal = bitWiseLogDivergence("Elements[" + std::to_string(elementCount) + "]", tile1, tile2, displayAllDivergences, divergentBytesTotal);
+                    if (divergentBytesTotal == 0 || displayAllDivergences)
+                    {
+                        Logging::info("Extra TILE ELEMENT [{}] x:{}, y:{}", elementCount, x, y);
+                    }
+                    if (displayAllDivergences)
+                    {
+                        std::span<const std::byte> bytesSpanLhs = getBytesSpan(t1s[i]);
+                        for (size_t offset = 0; offset < sizeof(S5::TileElement); offset++)
+                        {
+                            Logging::info("    OFFSET: {}", offset);
+                            Logging::info("    LHS: {:#x}", bytesSpanLhs[offset]);
+                        }
+                    }
+                    divergentBytesTotal += sizeof(S5::TileElement);
+                    elementCount++;
                 }
-                elementCount++;
+                for (; i < t2s.size(); ++i)
+                {
+                    if (divergentBytesTotal == 0)
+                    {
+                        Logging::info("DIVERGENCE");
+                    }
+                    if (divergentBytesTotal == 0 || displayAllDivergences)
+                    {
+                        Logging::info("Removed TILE ELEMENT [{}] x:{}, y:{}", elementCount, x, y);
+                    }
+
+                    if (displayAllDivergences)
+                    {
+                        std::span<const std::byte> bytesSpanRhs = getBytesSpan(t2s[i]);
+                        for (size_t offset = 0; offset < sizeof(S5::TileElement); offset++)
+                        {
+                            Logging::info("    OFFSET: {}", offset);
+                            Logging::info("    RHS: {:#x}", bytesSpanRhs[offset]);
+                        }
+                    }
+                    divergentBytesTotal += sizeof(S5::TileElement);
+                }
             }
         }
+
         if (!displayAllDivergences && divergentBytesTotal > 0)
         {
             Logging::info(" {} other diverging bytes omitted", divergentBytesTotal);
