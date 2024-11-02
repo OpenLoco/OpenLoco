@@ -1038,6 +1038,14 @@ namespace OpenLoco::Audio
         }
     }
 
+    static void addAllSongsToPlaylist(std::vector<uint8_t>& playlist)
+    {
+        for (auto i = 0; i < kNumMusicTracks; i++)
+        {
+            playlist.push_back(i);
+        }
+    }
+
     static void addCurrentEraSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
     {
         auto currentYear = getCurrentYear();
@@ -1050,6 +1058,43 @@ namespace OpenLoco::Audio
                 {
                     playlist.push_back(i);
                 }
+            }
+        }
+    }
+
+    static void addCurrentEraSongsToPlaylist(std::vector<uint8_t>& playlist)
+    {
+        auto currentYear = getCurrentYear();
+        for (auto i = 0; i < kNumMusicTracks; i++)
+        {
+            const auto& mi = kMusicInfo[i];
+            if (currentYear >= mi.startYear && currentYear <= mi.endYear)
+            {
+                playlist.push_back(i);
+            }
+        }
+    }
+
+    static void addCustomSelectionSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
+    {
+        const auto& cfg = Config::get().old;
+        for (auto i = 0; i < kNumMusicTracks; i++)
+        {
+            if (i != excludeTrack && (cfg.enabledMusic[i] & 1))
+            {
+                playlist.push_back(i);
+            }
+        }
+    }
+
+    static void addCustomSelectionSongsToPlaylist(std::vector<uint8_t>& playlist)
+    {
+        const auto& cfg = Config::get().old;
+        for (auto i = 0; i < kNumMusicTracks; i++)
+        {
+            if (cfg.enabledMusic[i] & 1)
+            {
+                playlist.push_back(i);
             }
         }
     }
@@ -1071,13 +1116,7 @@ namespace OpenLoco::Audio
                 addAllSongsToPlaylist(excludeTrack, playlist);
                 break;
             case MusicPlaylistType::custom:
-                for (auto i = 0; i < kNumMusicTracks; i++)
-                {
-                    if (i != excludeTrack && (cfg.enabledMusic[i] & 1))
-                    {
-                        playlist.push_back(i);
-                    }
-                }
+                addCustomSelectionSongsToPlaylist(excludeTrack, playlist);
                 break;
         }
 
@@ -1206,6 +1245,68 @@ namespace OpenLoco::Audio
     const MusicInfo* getMusicInfo(MusicId track)
     {
         return &kMusicInfo[track];
+    }
+
+    static void sortPlaylistByYear(std::vector<uint8_t>& tracks)
+    {
+        // Sort using lambda expression that compares tracks by start year, or end year if the start years are the same.
+        std::sort(tracks.begin(), tracks.end(), [](int a, int b) {
+            auto aStartYear = kMusicInfo[a].startYear;
+            auto bStartYear = kMusicInfo[b].startYear;
+            if (aStartYear == bStartYear)
+            {
+                auto aEndYear = kMusicInfo[a].endYear;
+                auto bEndYear = kMusicInfo[b].endYear;
+                return aEndYear < bEndYear;
+            }
+            return aStartYear < bStartYear;
+        });
+    }
+
+    static void sortPlaylistAlphabetically(std::vector<uint8_t>& tracks)
+    {
+        // Sort alphabetically using lambda expression that compares localised music titles
+        std::sort(tracks.begin(), tracks.end(), [](int a, int b) {
+            return StringManager::getString(kMusicInfo[a].titleId) < StringManager::getString(kMusicInfo[b].titleId);
+
+        });
+    }
+
+    // Sorts a vector of kMusicInfo IDs by the prefered ordering method.
+    static void sortPlaylist(std::vector<uint8_t>& tracks)
+    {
+        // TODO put a switch statement here
+        sortPlaylistByYear(tracks);
+        sortPlaylistAlphabetically(tracks);
+    }
+
+    /* Returns a vector of internal numerical IDs of the music tracks,
+    * sorted by the player's prefered ordering method.
+    */
+    std::vector<uint8_t> getCurrentMusicPlaylistSorted()
+    {
+        auto vector = std::vector<uint8_t>();
+
+        // Add tracks based on what playlist type the player has selected
+        switch (Config::get().old.musicPlaylist)
+        {
+            case Config::MusicPlaylistType::currentEra:
+                addCurrentEraSongsToPlaylist(vector);
+                break;
+
+            case Config::MusicPlaylistType::custom:
+                addCustomSelectionSongsToPlaylist(vector);
+                break;
+
+            case Config::MusicPlaylistType::all:
+                addAllSongsToPlaylist(vector);
+                break;
+        }
+
+        // Sort by player's prefered ordering method
+        sortPlaylist(vector);
+
+        return vector;
     }
 
     // 0x0048AA67

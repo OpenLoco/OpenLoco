@@ -141,6 +141,8 @@ namespace OpenLoco::Audio
     const MusicInfo* getMusicInfo(MusicId track);
     constexpr int32_t kNumMusicTracks = 29;
 
+    std::vector<uint8_t> getCurrentMusicPlaylistSorted();
+
     constexpr bool isObjectSoundId(SoundId id)
     {
         return static_cast<int32_t>(id) & 0x8000;

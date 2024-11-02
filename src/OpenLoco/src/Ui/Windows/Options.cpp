@@ -1226,49 +1226,9 @@ namespace OpenLoco::Ui::Windows::Options
 
 #pragma mark - Widget 11
 
-        static std::vector<int> get_available_tracks()
+        static std::vector<uint8_t> get_available_tracks()
         {
-            auto vector = std::vector<int>();
-
-            if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::currentEra)
-            {
-                uint16_t year = getCurrentYear();
-                for (int i = 0; i < Audio::kNumMusicTracks; i++)
-                {
-                    auto info = Audio::getMusicInfo(i);
-                    if (year >= info->startYear && year <= info->endYear)
-                    {
-                        vector.push_back(i);
-                    }
-                }
-            }
-            else if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::all)
-            {
-                for (int i = 0; i < Audio::kNumMusicTracks; i++)
-                {
-                    vector.push_back(i);
-                }
-            }
-            else if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::custom)
-            {
-                for (int i = 0; i < Audio::kNumMusicTracks; i++)
-                {
-                    if (Config::get().old.enabledMusic[i] & 1)
-                    {
-                        vector.push_back(i);
-                    }
-                }
-
-                if (vector.size() == 0)
-                {
-                    for (int i = 0; i < Audio::kNumMusicTracks; i++)
-                    {
-                        vector.push_back(i);
-                    }
-                }
-            }
-
-            return vector;
+            return Audio::getCurrentMusicPlaylistSorted();
         }
 
         // 0x004C0875
