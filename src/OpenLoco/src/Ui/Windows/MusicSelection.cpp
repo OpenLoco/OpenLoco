@@ -21,6 +21,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
+    static std::vector<uint8_t> _musicTracks;
+
     enum widx
     {
         frame,
@@ -62,7 +64,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window->setColour(WindowColour::primary, interface->colour_0B);
         window->setColour(WindowColour::secondary, interface->colour_10);
 
-        window->rowCount = Audio::kNumMusicTracks;
+        // Get all music tracks in the game, sorted in the preferred order.
+        _musicTracks = Audio::getAllMusicSorted();
+
+        window->rowCount = (uint16_t) _musicTracks.size();
         window->rowHover = -1;
 
         return window;
@@ -89,6 +94,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         uint16_t y = 0;
         for (uint16_t i = 0; i < window.rowCount; i++)
         {
+            auto track = _musicTracks[i];
+
             if (y + kRowHeight < rt.y)
             {
                 y += kRowHeight;
@@ -112,7 +119,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             drawingCtx.fillRectInset(2, y, 11, y + 10, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::fillDarker | Gfx::RectInsetFlags::borderInset);
 
             // Draw checkmark if track is enabled.
-            if (config.enabledMusic[i])
+            if (config.enabledMusic[track])
             {
                 auto point = Point(2, y);
 
@@ -125,7 +132,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw track name.
             {
                 auto point = Point(15, y);
-                StringId music_title_id = Audio::getMusicInfo(i)->titleId;
+                StringId music_title_id = Audio::getMusicInfo(track)->titleId;
 
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
@@ -140,7 +147,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C176C
     static void getScrollSize([[maybe_unused]] Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = kRowHeight * Audio::kNumMusicTracks;
+        *scrollHeight = kRowHeight * window.rowCount;
     }
 
     // 0x004C1757
@@ -157,7 +164,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1799
     static void onScrollMouseDown(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
-        uint16_t currentTrack = y / kRowHeight;
+        uint16_t currentTrack = _musicTracks[y / kRowHeight];
         if (currentTrack > window.rowCount)
             return;
 

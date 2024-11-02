@@ -1272,16 +1272,30 @@ namespace OpenLoco::Audio
         });
     }
 
-    // Sorts a vector of kMusicInfo IDs by the prefered ordering method.
+    // Sorts a vector of kMusicInfo IDs by the preferred ordering method.
     static void sortPlaylist(std::vector<uint8_t>& tracks)
     {
         // TODO put a switch statement here
-        sortPlaylistByYear(tracks);
         sortPlaylistAlphabetically(tracks);
+        sortPlaylistByYear(tracks);
     }
 
     /* Returns a vector of internal numerical IDs of the music tracks,
-    * sorted by the player's prefered ordering method.
+    * sorted by the player's preferred ordering method.
+    */
+    std::vector<uint8_t> getAllMusicSorted()
+    {
+        auto vector = std::vector<uint8_t>();
+        addAllSongsToPlaylist(vector);
+        // Sort by player's preferred ordering method
+        sortPlaylist(vector);
+
+        return vector;
+    }
+
+    /* Returns a vector of internal numerical IDs of the music tracks,
+    * limited to what type of playlist the user has selected in the music options from vanilla,
+    * sorted by the player's preferred ordering method.
     */
     std::vector<uint8_t> getCurrentMusicPlaylistSorted()
     {
@@ -1303,7 +1317,7 @@ namespace OpenLoco::Audio
                 break;
         }
 
-        // Sort by player's prefered ordering method
+        // Sort by player's preferred ordering method
         sortPlaylist(vector);
 
         return vector;
