@@ -2578,4 +2578,5 @@ namespace OpenLoco::ImageIds
         }
         return numbers[num];
     }
+
 }

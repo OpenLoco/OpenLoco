@@ -12,6 +12,7 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include <vector>
 
@@ -24,6 +25,9 @@ namespace OpenLoco::Ui::Windows::Debug
     static constexpr int32_t kLabelHeight = 12;
     static constexpr int32_t kButtonHeight = 12;
     static constexpr int32_t kRowSize = 24;
+
+    static constexpr int32_t kTabWidth = 31;
+    static constexpr int32_t kTabHeight = 27;
 
     namespace widx
     {
@@ -38,6 +42,9 @@ namespace OpenLoco::Ui::Windows::Debug
             label_1,
             label_2,
             label_3,
+            tab_1,
+            tab_2,
+            tab_3,
         };
     }
 
@@ -55,7 +62,13 @@ namespace OpenLoco::Ui::Windows::Debug
 
         Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (2 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::Left, StringIds::openloco),
         Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (3 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::Center, StringIds::openloco),
-        Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (4 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::Right, StringIds::openloco));
+        Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (4 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::Right, StringIds::openloco),
+
+        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
+        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
+        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
+
+    );
 
     // 0x0043B26C
     Window* open()
@@ -73,6 +86,7 @@ namespace OpenLoco::Ui::Windows::Debug
 
         window->setWidgets(_widgets);
         window->enabledWidgets = ~0ULL;
+        window->disabledWidgets = 1U << widx::tab_3;
         window->initScrollWidgets();
 
         const auto interface = ObjectManager::get<InterfaceSkinObject>();

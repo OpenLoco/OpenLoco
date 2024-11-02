@@ -61,6 +61,7 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -103,11 +104,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ (frameWidth)-15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { 265, 136 }, WindowColour::secondary),
-                makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_main),
-                makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_details),
-                makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_cargo),
-                makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_finance),
-                makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_route));
+                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_main),
+                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_details),
+                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_cargo),
+                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_finance),
+                Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_route));
         }
 
         constexpr uint64_t enabledWidgets = (1 << closeButton) | (1 << tabMain) | (1 << tabDetails) | (1 << tabCargo) | (1 << tabFinances) | (1 << tabRoute);
@@ -1825,7 +1826,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return (object->hasFlags(VehicleObjectFlags::refittable));
         }
 
-        // 004B3DDE
+        // 0x004B3DDE
         static void prepareDraw(Window& self)
         {
             Common::setActiveTabs(&self);
@@ -1864,7 +1865,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
-        // 004B3F0D
+        // 0x004B3F0D
         static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
@@ -1928,7 +1929,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             y += 10;
         }
 
-        // 004B3F62
+        // 0x004B3F62
         static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t i)
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
@@ -1946,35 +1947,39 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 StringId strFormat = StringIds::black_stringid;
                 auto front = car.front;
                 auto body = car.body;
+
+                // Draw hover background if applicable
                 if (front->id == EntityId(self.rowHover))
                 {
                     drawingCtx.fillRect(0, y, self.width, y + self.rowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                     strFormat = StringIds::wcolour2_stringid;
                 }
+
+                constexpr auto kCargoXPos = 24;
+
                 // Get width of the drawing
                 auto width = getWidthVehicleInline(car);
                 // Actually draw it
-                width = drawVehicleInline(drawingCtx, car, Ui::Point(24 - width, (self.rowHeight - 22) / 2 + y), VehicleInlineMode::basic);
+                drawVehicleInline(drawingCtx, car, Ui::Point(kCargoXPos - width, y + (self.rowHeight - 22) / 2), VehicleInlineMode::basic);
 
                 if (body->primaryCargo.type != 0xFF)
                 {
-
-                    int16_t cargoTextHeight = self.rowHeight / 2 + y - ((self.rowHeight - 22) / 2) - 10;
+                    int16_t cargoTextYPos = y + self.rowHeight / 2 - ((self.rowHeight - 22) / 2) - 10;
                     if (front->secondaryCargo.qty != 0 || body->primaryCargo.qty != 0)
                     {
                         if (body->primaryCargo.qty == 0 || front->secondaryCargo.qty == 0)
                         {
-                            cargoTextHeight += 5;
+                            cargoTextYPos += 5;
                         }
-                        drawCargoText(drawingCtx, width, cargoTextHeight, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
-                        drawCargoText(drawingCtx, width, cargoTextHeight, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
+                        drawCargoText(drawingCtx, kCargoXPos, cargoTextYPos, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
+                        drawCargoText(drawingCtx, kCargoXPos, cargoTextYPos, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
                     }
                     else
                     {
                         FormatArguments args{};
                         args.push<StringId>(StringIds::cargo_empty);
 
-                        auto point = Point(width, cargoTextHeight + 5);
+                        auto point = Point(kCargoXPos, cargoTextYPos + 5);
                         tr.drawStringLeft(point, Colour::black, strFormat, args);
                     }
                 }
@@ -1983,7 +1988,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        // 004B41BD
+        // 0x004B41BD
         static void onMouseUp(Window& self, const WidgetIndex_t i)
         {
             switch (i)
@@ -2006,7 +2011,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        // 004B41E2
+        // 0x004B41E2
         static void onMouseDown(Window& self, const WidgetIndex_t i)
         {
             switch (i)
@@ -2017,7 +2022,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        // 004B41E9
+        // 0x004B41E9
         static void onDropdown(Window& self, const WidgetIndex_t i, const int16_t dropdownIndex)
         {
             switch (i)

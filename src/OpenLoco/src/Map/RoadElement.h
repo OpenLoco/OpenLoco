@@ -75,7 +75,7 @@ namespace OpenLoco::World
         {
             _6 &= ~0xF;
             _6 |= value & 0xF;
-        }                                          // _6u
+        } // _6u
         uint8_t bridge() const { return _6 >> 5; } // _6u
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         void setHasStationElement(bool state)

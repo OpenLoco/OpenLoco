@@ -1,6 +1,7 @@
 #include "TownManager.h"
 #include "CompanyManager.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Graphics/TextRenderer.h"
@@ -297,7 +298,7 @@ namespace OpenLoco::TownManager
         }
         if (rating != 0)
         {
-            auto companyId = CompanyManager::getUpdatingCompanyId();
+            auto companyId = GameCommands::getUpdatingCompanyId();
             if (companyId != CompanyId::neutral)
             {
                 if (!isEditorMode())
@@ -406,7 +407,7 @@ namespace OpenLoco::TownManager
                 auto town = get(id);
                 if (town != nullptr && !town->empty())
                 {
-                    CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+                    GameCommands::setUpdatingCompanyId(CompanyId::neutral);
                     town->update();
                 }
             }

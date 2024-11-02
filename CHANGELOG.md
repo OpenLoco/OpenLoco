@@ -1,7 +1,13 @@
-24.09.1+ (???)
+24.10+ (???)
+------------------------------------------------------------------------
+- Fix: [#2676] Cargo labels are misaligned in vehicle window.
+
+24.10 (2024-10-20)
 ------------------------------------------------------------------------
 - Feature: [#1687] Objects can be placed in sub folders in new custom object folder.
 - Feature: [#2629] The object selection window now groups relevant object tabs together.
+- Change: [#2666] The charts in the company list window can now be resized.
+- Fix: [#2540, #2655] Incorrect drawing order for track and track additions causing vehicle clipping.
 - Fix: [#2612] Crash when constructing trams underground with Shift key pressed.
 - Fix: [#2625] Crash when resizing the window during the Intro.
 - Fix: [#2628] Crash when a train has no cars.
