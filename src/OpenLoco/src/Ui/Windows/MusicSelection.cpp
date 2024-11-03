@@ -67,7 +67,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         // Get all music tracks in the game, sorted in the preferred order.
         _musicTracks = Audio::getAllMusicSorted();
 
-        window->rowCount = (uint16_t) _musicTracks.size();
+        window->rowCount = (uint16_t)_musicTracks.size();
         window->rowHover = -1;
 
         return window;

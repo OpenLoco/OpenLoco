@@ -942,7 +942,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Music
     {
-        static constexpr Ui::Size32 kWindowSize = { 366, 129+15 };
+        static constexpr Ui::Size32 kWindowSize = { 366, 144 };
 
         namespace Widx
         {
@@ -979,14 +979,14 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
-            makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid), // "Currently playing:" dropdown
-            Widgets::ImageButton({ 10, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip), // "Stop music" button
-            Widgets::ImageButton({ 34, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip), // "Play music" button
-            Widgets::ImageButton({ 58, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip), // "Next music track" button
-            makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip), // Volume slider
-            makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid), // Music playlist type dropdown
-            Widgets::Button({ 183, 108 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip), // "Edit Selection..." button
-            makeDropdownWidgets({ 160, 123 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid) // The new "Sort Music By" dropdown
+            makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::ImageButton({ 10, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
+            Widgets::ImageButton({ 34, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
+            Widgets::ImageButton({ 58, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
+            makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
+            makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::Button({ 183, 108 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip),
+            makeDropdownWidgets({ 160, 123 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid)
 
         );
 
@@ -1061,27 +1061,26 @@ namespace OpenLoco::Ui::Windows::Options
                 StringId value;
                 switch (Config::get().sortMusicBy)
                 {
-                case Config::MusicSortType::alphabetical:
-                    value = StringIds::sort_alphabetical;
-                    break;
+                    case Config::MusicSortType::alphabetical:
+                        value = StringIds::sort_alphabetical;
+                        break;
 
-                case Config::MusicSortType::alphabetical_reverse:
-                    value = StringIds::sort_alphabetical_reverse;
-                    break;
+                    case Config::MusicSortType::alphabetical_reverse:
+                        value = StringIds::sort_alphabetical_reverse;
+                        break;
 
-                case Config::MusicSortType::era:
-                    value = StringIds::sort_era;
-                    break;
+                    case Config::MusicSortType::era:
+                        value = StringIds::sort_era;
+                        break;
 
-                case Config::MusicSortType::era_reverse:
-                    value = StringIds::sort_era_reverse;
-                    break;
+                    case Config::MusicSortType::era_reverse:
+                        value = StringIds::sort_era_reverse;
+                        break;
 
-                case Config::MusicSortType::original:
-                default:
-                    value = StringIds::sort_original;
-                    break;
-
+                    case Config::MusicSortType::original:
+                    default:
+                        value = StringIds::sort_original;
+                        break;
                 }
 
                 auto args = FormatArguments(w.widgets[Widx::sort_music_by].textArgs);

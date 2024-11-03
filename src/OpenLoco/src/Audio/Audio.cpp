@@ -1277,31 +1277,31 @@ namespace OpenLoco::Audio
     {
         switch (Config::get().sortMusicBy)
         {
-        case Config::MusicSortType::original:
-            // Assume it is already in original order
-            break;
+            case Config::MusicSortType::original:
+                // Assume it is already in original order
+                break;
 
-        case Config::MusicSortType::alphabetical:
-            sortPlaylistAlphabetically(tracks, false);
-            break;
+            case Config::MusicSortType::alphabetical:
+                sortPlaylistAlphabetically(tracks, false);
+                break;
 
-        case Config::MusicSortType::alphabetical_reverse:
-            sortPlaylistAlphabetically(tracks, true);
-            break;
+            case Config::MusicSortType::alphabetical_reverse:
+                sortPlaylistAlphabetically(tracks, true);
+                break;
 
-        case Config::MusicSortType::era:
-            sortPlaylistByYear(tracks, false);
-            break;
+            case Config::MusicSortType::era:
+                sortPlaylistByYear(tracks, false);
+                break;
 
-        case Config::MusicSortType::era_reverse:
-            sortPlaylistByYear(tracks, true);
-            break;
+            case Config::MusicSortType::era_reverse:
+                sortPlaylistByYear(tracks, true);
+                break;
         }
     }
 
     /* Returns a vector of internal numerical IDs of the music tracks,
-    * sorted by the player's preferred ordering method.
-    */
+     * sorted by the player's preferred ordering method.
+     */
     std::vector<uint8_t> getAllMusicSorted()
     {
         auto vector = std::vector<uint8_t>();
@@ -1313,9 +1313,9 @@ namespace OpenLoco::Audio
     }
 
     /* Returns a vector of internal numerical IDs of the music tracks,
-    * limited to what type of playlist the user has selected in the music options from vanilla,
-    * sorted by the player's preferred ordering method.
-    */
+     * limited to what type of playlist the user has selected in the music options from vanilla,
+     * sorted by the player's preferred ordering method.
+     */
     std::vector<uint8_t> getCurrentMusicPlaylistSorted()
     {
         auto vector = std::vector<uint8_t>();

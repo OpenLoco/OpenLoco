@@ -1,7 +1,7 @@
 24.10+ (???)
 ------------------------------------------------------------------------
 - Fix: [#2676] Cargo labels are misaligned in vehicle window.
-- Feature: [#2695] Option to change the music sort order of the Options - Music and Music Selection windows.
+- Feature: [#2695] Ability to change the music sort order of the Options - Music and Edit Music Selection windows.
 
 24.10 (2024-10-20)
 ------------------------------------------------------------------------
