@@ -1040,10 +1040,7 @@ namespace OpenLoco::Audio
 
     static void addAllSongsToPlaylist(std::vector<uint8_t>& playlist)
     {
-        for (auto i = 0; i < kNumMusicTracks; i++)
-        {
-            playlist.push_back(i);
-        }
+        addAllSongsToPlaylist(-1, playlist);
     }
 
     static void addCurrentEraSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
@@ -1064,15 +1061,7 @@ namespace OpenLoco::Audio
 
     static void addCurrentEraSongsToPlaylist(std::vector<uint8_t>& playlist)
     {
-        auto currentYear = getCurrentYear();
-        for (auto i = 0; i < kNumMusicTracks; i++)
-        {
-            const auto& mi = kMusicInfo[i];
-            if (currentYear >= mi.startYear && currentYear <= mi.endYear)
-            {
-                playlist.push_back(i);
-            }
-        }
+        addCurrentEraSongsToPlaylist(-1, playlist);
     }
 
     static void addCustomSelectionSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
@@ -1089,14 +1078,7 @@ namespace OpenLoco::Audio
 
     static void addCustomSelectionSongsToPlaylist(std::vector<uint8_t>& playlist)
     {
-        const auto& cfg = Config::get().old;
-        for (auto i = 0; i < kNumMusicTracks; i++)
-        {
-            if (cfg.enabledMusic[i] & 1)
-            {
-                playlist.push_back(i);
-            }
-        }
+        addCustomSelectionSongsToPlaylist(-1, playlist);
     }
 
     static int32_t chooseNextMusicTrack(int32_t excludeTrack)
@@ -1276,6 +1258,7 @@ namespace OpenLoco::Audio
     static void sortPlaylist(std::vector<uint8_t>& tracks)
     {
         // TODO put a switch statement here
+        // Assume it is already in original order
         sortPlaylistAlphabetically(tracks);
         sortPlaylistByYear(tracks);
     }
