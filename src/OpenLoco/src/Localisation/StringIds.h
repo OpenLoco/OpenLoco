@@ -1991,6 +1991,12 @@ namespace OpenLoco::StringIds
     constexpr StringId maximum_river_width = 2354;
     constexpr StringId riverbank_width = 2355;
     constexpr StringId meander_rate = 2356;
+    constexpr StringId sort_music_by = 2357;
+    constexpr StringId sort_original = 2358;
+    constexpr StringId sort_alphabetical = 2359;
+    constexpr StringId sort_alphabetical_reverse = 2360;
+    constexpr StringId sort_era = 2361;
+    constexpr StringId sort_era_reverse = 2362;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

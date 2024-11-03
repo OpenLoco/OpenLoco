@@ -57,6 +57,15 @@ namespace OpenLoco::Config
         custom,
     };
 
+    enum class MusicSortType : uint8_t
+    {
+        original,
+        alphabetical,
+        alphabetical_reverse,
+        era,
+        era_reverse,
+    };
+
     struct LocoConfig
     {
         // This struct has been deprecated; please use Config::KeyboardShortcut instead.
@@ -203,6 +212,8 @@ namespace OpenLoco::Config
         std::string preferredOwnerName;
         bool usePreferredOwnerFace;
         ObjectHeader preferredOwnerFace;
+
+        MusicSortType sortMusicBy = MusicSortType::original;
 
         std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
 

@@ -942,7 +942,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Music
     {
-        static constexpr Ui::Size32 kWindowSize = { 366, 129 };
+        static constexpr Ui::Size32 kWindowSize = { 366, 129+15 };
 
         namespace Widx
         {
@@ -956,21 +956,37 @@ namespace OpenLoco::Ui::Windows::Options
                 volume,
                 music_playlist,
                 music_playlist_btn,
-                edit_selection
+                edit_selection,
+                sort_music_by,
+                sort_music_by_btn,
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Music::Widx::currently_playing) | (1 << Music::Widx::currently_playing_btn) | (1 << Music::Widx::music_controls_stop) | (1 << Music::Widx::music_controls_play) | (1 << Music::Widx::music_controls_next) | (1 << Music::Widx::volume) | (1 << Music::Widx::music_playlist) | (1 << Music::Widx::music_playlist_btn) | (1 << Music::Widx::edit_selection);
+        // clang-format off
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets |
+            (1 << Music::Widx::currently_playing) |
+            (1 << Music::Widx::currently_playing_btn) |
+            (1 << Music::Widx::music_controls_stop) |
+            (1 << Music::Widx::music_controls_play) |
+            (1 << Music::Widx::music_controls_next) |
+            (1 << Music::Widx::volume) |
+            (1 << Music::Widx::music_playlist) |
+            (1 << Music::Widx::music_playlist_btn) |
+            (1 << Music::Widx::edit_selection) |
+            (1 << Music::Widx::sort_music_by) |
+            (1 << Music::Widx::sort_music_by_btn);
+        // clang-format on
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
-            makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::ImageButton({ 10, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
-            Widgets::ImageButton({ 34, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
-            Widgets::ImageButton({ 58, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
-            makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
-            makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::Button({ 183, 108 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
+            makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid), // "Currently playing:" dropdown
+            Widgets::ImageButton({ 10, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip), // "Stop music" button
+            Widgets::ImageButton({ 34, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip), // "Play music" button
+            Widgets::ImageButton({ 58, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip), // "Next music track" button
+            makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip), // Volume slider
+            makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid), // Music playlist type dropdown
+            Widgets::Button({ 183, 108 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip), // "Edit Selection..." button
+            makeDropdownWidgets({ 160, 123 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid) // The new "Sort Music By" dropdown
 
         );
 
@@ -982,6 +998,8 @@ namespace OpenLoco::Ui::Windows::Options
         static void musicPlaylistDropdown(Window* w, int16_t ax);
         static void currentlyPlayingMouseDown(Window* w);
         static void currentlyPlayingDropdown(Window* w, int16_t ax);
+        static void sortMusicByMouseDown(Window* w);
+        static void sortMusicByDropdown(Window* w, int16_t ax);
 
         static void prepareDraw(Window& w)
         {
@@ -1039,6 +1057,37 @@ namespace OpenLoco::Ui::Windows::Options
                 w.disabledWidgets &= ~(1 << Widx::edit_selection);
             }
 
+            { // "Sort Music by:" dropdown
+                StringId value;
+                switch (Config::get().sortMusicBy)
+                {
+                case Config::MusicSortType::alphabetical:
+                    value = StringIds::sort_alphabetical;
+                    break;
+
+                case Config::MusicSortType::alphabetical_reverse:
+                    value = StringIds::sort_alphabetical_reverse;
+                    break;
+
+                case Config::MusicSortType::era:
+                    value = StringIds::sort_era;
+                    break;
+
+                case Config::MusicSortType::era_reverse:
+                    value = StringIds::sort_era_reverse;
+                    break;
+
+                case Config::MusicSortType::original:
+                default:
+                    value = StringIds::sort_original;
+                    break;
+
+                }
+
+                auto args = FormatArguments(w.widgets[Widx::sort_music_by].textArgs);
+                args.push(value);
+            }
+
             sub_4C13BE(&w);
         }
 
@@ -1052,20 +1101,30 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::drawTabs(&w, drawingCtx);
 
+            // "Currently playing:" label
             {
                 auto point = Point(w.x + 10, w.y + w.widgets[Widx::currently_playing_btn].top);
                 tr.drawStringLeft(point, Colour::black, StringIds::currently_playing);
             }
 
+            // "Volume:" label
             {
                 auto point = Point(w.x + 183, w.y + w.widgets[Widx::volume].top + 7);
                 tr.drawStringLeft(point, Colour::black, StringIds::volume);
             }
 
+            // volume slider track
             drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
 
+            // volume slider thumb
             int16_t x = 90 + (Config::get().old.volume / 32);
             drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left + x, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w.getColour(WindowColour::secondary).c()));
+
+            // "Sort Music By:" label
+            {
+                auto point = Point(w.x + 10, w.y + w.widgets[Widx::sort_music_by_btn].top);
+                tr.drawStringLeft(point, Colour::black, StringIds::sort_music_by);
+            }
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi)
@@ -1118,6 +1177,9 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::volume:
                     volumeMouseDown(&w);
                     break;
+                case Widx::sort_music_by_btn:
+                    sortMusicByMouseDown(&w);
+                    break;
             }
         }
 
@@ -1131,6 +1193,9 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
                 case Widx::currently_playing_btn:
                     currentlyPlayingDropdown(&window, itemIndex);
+                    break;
+                case Widx::sort_music_by_btn:
+                    sortMusicByDropdown(&window, itemIndex);
                     break;
             }
         }
@@ -1269,6 +1334,34 @@ namespace OpenLoco::Ui::Windows::Options
             _songProgress = 0;
 
             w->invalidate();
+        }
+
+        static void sortMusicByMouseDown(Window* w)
+        {
+            Widget dropdown = w->widgets[Widx::sort_music_by];
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 5, 0x80);
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::sort_original);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::sort_alphabetical);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::sort_alphabetical_reverse);
+            Dropdown::add(3, StringIds::dropdown_stringid, StringIds::sort_era);
+            Dropdown::add(4, StringIds::dropdown_stringid, StringIds::sort_era_reverse);
+
+            Dropdown::setItemSelected((uint8_t)Config::get().sortMusicBy);
+        }
+
+        static void sortMusicByDropdown(Window* w, int16_t ax)
+        {
+            if (ax == -1)
+                return;
+
+            auto& cfg = Config::get();
+            cfg.sortMusicBy = (Config::MusicSortType)ax;
+            Config::write();
+
+            w->invalidate();
+
+            // Any code that needs to be executed when the music sort order is changed goes here
         }
 
         // 0x004C0A37

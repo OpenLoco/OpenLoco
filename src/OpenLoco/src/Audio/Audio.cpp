@@ -1229,38 +1229,74 @@ namespace OpenLoco::Audio
         return &kMusicInfo[track];
     }
 
-    static void sortPlaylistByYear(std::vector<uint8_t>& tracks)
+    static void sortPlaylistAlphabetically(std::vector<uint8_t>& tracks, bool reversed = false)
+    {
+        // Sort alphabetically using lambda expression that compares localised music titles
+        std::sort(tracks.begin(), tracks.end(), [reversed](int a, int b) {
+            const char* aTitle = StringManager::getString(kMusicInfo[a].titleId);
+            const char* bTitle = StringManager::getString(kMusicInfo[b].titleId);
+
+            // Compare the two strings alphabetically.
+            // Todo: make sure this is actually alphabetical no matter what localisation the player is using.
+            auto comparison = strcoll(aTitle, bTitle) < 0;
+
+            if (reversed)
+            {
+                return !comparison;
+            }
+            return comparison;
+        });
+    }
+
+    static void sortPlaylistByYear(std::vector<uint8_t>& tracks, bool reversed = false)
     {
         // Sort using lambda expression that compares tracks by start year, or end year if the start years are the same.
-        std::sort(tracks.begin(), tracks.end(), [](int a, int b) {
+        std::sort(tracks.begin(), tracks.end(), [reversed](int a, int b) {
             auto aStartYear = kMusicInfo[a].startYear;
             auto bStartYear = kMusicInfo[b].startYear;
             if (aStartYear == bStartYear)
             {
                 auto aEndYear = kMusicInfo[a].endYear;
                 auto bEndYear = kMusicInfo[b].endYear;
+                if (reversed)
+                {
+                    return aEndYear >= bEndYear;
+                }
                 return aEndYear < bEndYear;
             }
+            if (reversed)
+            {
+                return aStartYear >= bStartYear;
+            }
             return aStartYear < bStartYear;
-        });
-    }
-
-    static void sortPlaylistAlphabetically(std::vector<uint8_t>& tracks)
-    {
-        // Sort alphabetically using lambda expression that compares localised music titles
-        std::sort(tracks.begin(), tracks.end(), [](int a, int b) {
-            return StringManager::getString(kMusicInfo[a].titleId) < StringManager::getString(kMusicInfo[b].titleId);
-
         });
     }
 
     // Sorts a vector of kMusicInfo IDs by the preferred ordering method.
     static void sortPlaylist(std::vector<uint8_t>& tracks)
     {
-        // TODO put a switch statement here
-        // Assume it is already in original order
-        sortPlaylistAlphabetically(tracks);
-        sortPlaylistByYear(tracks);
+        switch (Config::get().sortMusicBy)
+        {
+        case Config::MusicSortType::original:
+            // Assume it is already in original order
+            break;
+
+        case Config::MusicSortType::alphabetical:
+            sortPlaylistAlphabetically(tracks, false);
+            break;
+
+        case Config::MusicSortType::alphabetical_reverse:
+            sortPlaylistAlphabetically(tracks, true);
+            break;
+
+        case Config::MusicSortType::era:
+            sortPlaylistByYear(tracks, false);
+            break;
+
+        case Config::MusicSortType::era_reverse:
+            sortPlaylistByYear(tracks, true);
+            break;
+        }
     }
 
     /* Returns a vector of internal numerical IDs of the music tracks,
