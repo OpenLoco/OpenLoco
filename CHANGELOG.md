@@ -1,7 +1,7 @@
 24.10+ (???)
 ------------------------------------------------------------------------
 - Fix: [#2676] Cargo labels are misaligned in vehicle window.
-- Fix: [#2691] Scenarios with original procedural terrain generation would crash.
+- Fix: [#2691] Scenarios with original procedural terrain generation could crash.
 
 24.10 (2024-10-20)
 ------------------------------------------------------------------------
