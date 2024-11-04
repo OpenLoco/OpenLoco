@@ -584,8 +584,22 @@ namespace OpenLoco
 
         auto screenDistDrawItems = toScreenDistDrawItems(drawItems, yaw);
 
+        // Draw all bogies
         for (auto& item : screenDistDrawItems.items)
         {
+            if (item.isBody)
+            {
+                continue;
+            }
+            drawingCtx.drawImage(loc + Ui::Point(item.dist, 0), item.image);
+        }
+        // Then draw the bodies
+        for (auto& item : screenDistDrawItems.items)
+        {
+            if (!item.isBody)
+            {
+                continue;
+            }
             drawingCtx.drawImage(loc + Ui::Point(item.dist, 0), item.image);
         }
         return screenDistDrawItems.totalDistance;
