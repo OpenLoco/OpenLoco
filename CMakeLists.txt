@@ -146,12 +146,18 @@ if (UNIX)
     endif ()
 endif()
 
+FetchContent_Declare(openloco_objects
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.0/objects.zip
+            URL_HASH SHA256=3fd5b10681d8f2f9842213d8fca98222485f509193894af15c290abd29a28126)
+FetchContent_MakeAvailable(openloco_objects)
+
 add_subdirectory(src)
 
 if (MSVC)
     add_custom_target(OpenLocoExe ALL
         COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe"
         COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
         COMMENT "Copying over data folder and executable"
         DEPENDS OpenLoco
     )
@@ -176,3 +182,4 @@ install(FILES "src/Resources/src/logo/icon_x256.png" DESTINATION "${CMAKE_INSTAL
 install(FILES "src/Resources/src/logo/icon_x512.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/512x512/apps" RENAME "openloco.png")
 install(FILES "src/Resources/src/logo/icon_steam.svg" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps" RENAME "openloco.svg")
 install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
+install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
