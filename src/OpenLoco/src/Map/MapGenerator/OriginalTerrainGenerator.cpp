@@ -92,7 +92,7 @@ namespace OpenLoco::World::MapGenerator
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 auto mod = heightMap.height - 1;
-                y = (--y + mod) % mod;
+                y = (y - 1 + mod) % mod;
             }
             x++;
             x %= heightMap.width - 1;
@@ -130,7 +130,7 @@ namespace OpenLoco::World::MapGenerator
                 const auto data = *src++;
                 heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 auto mod = heightMap.width - 1;
-                x = (--x + mod) % mod;
+                x = (x - 1 + mod) % mod;
             }
             y++;
             y %= heightMap.height - 1;
