@@ -211,28 +211,28 @@ namespace OpenLoco::Paint
         else
         {
             auto& componentObject = vehObject->carComponents[body->bodyIndex];
-            auto offsetModifier = componentObject.frontBogiePosition - componentObject.backBogiePosition;
+            auto overhangLength = componentObject.frontBogiePosition - componentObject.backBogiePosition;
             if (body->has38Flags(Flags38::isReversed))
             {
-                offsetModifier = -offsetModifier;
+                overhangLength = -overhangLength;
             }
 
             if (componentObject.bodySpriteInd & SpriteIndex::flag_unk7)
             {
-                offsetModifier = -offsetModifier;
+                overhangLength = -overhangLength;
             }
 
-            const auto unk1 = Math::Trigonometry::computeXYVector(offsetModifier, originalYaw) / 8;
-            boundBoxOffsets.x = unk1.x;
-            boundBoxOffsets.y = unk1.y;
-            offsetModifier = sprite.halfLength * 2 - 4;
+            const auto overhangOffset = Math::Trigonometry::computeXYVector(overhangLength, originalYaw) / 8;
+            boundBoxOffsets.x = overhangOffset.x;
+            boundBoxOffsets.y = overhangOffset.y;
+            const auto bodyLength = sprite.halfLength * 2 - 4;
             originalYaw &= 0x1F;
-            boundBoxOffsets.x += (_5001B4[originalYaw * 4] * offsetModifier) >> 8;
-            boundBoxOffsets.y += (_5001B4[originalYaw * 4 + 1] * offsetModifier) >> 8;
+            boundBoxOffsets.x += (_5001B4[originalYaw * 4] * bodyLength) >> 8;
+            boundBoxOffsets.y += (_5001B4[originalYaw * 4 + 1] * bodyLength) >> 8;
             boundBoxOffsets.z = body->position.z + 11;
             boundBoxSize = {
-                static_cast<coord_t>((_5001B4[originalYaw * 4 + 2] * offsetModifier) >> 8),
-                static_cast<coord_t>((_5001B4[originalYaw * 4 + 3] * offsetModifier) >> 8),
+                static_cast<coord_t>((_5001B4[originalYaw * 4 + 2] * bodyLength) >> 8),
+                static_cast<coord_t>((_5001B4[originalYaw * 4 + 3] * bodyLength) >> 8),
                 15
             };
         }
