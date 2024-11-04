@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.22)
-cmake_policy(VERSION 3.22)
+cmake_minimum_required(VERSION 3.26)
+cmake_policy(VERSION 3.26)
 
 set (PROJECT openloco)
 
@@ -156,8 +156,8 @@ add_subdirectory(src)
 if (MSVC)
     add_custom_target(OpenLocoExe ALL
         COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
         COMMENT "Copying over data folder and executable"
         DEPENDS OpenLoco
     )
