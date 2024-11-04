@@ -368,7 +368,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             // Apply vanilla/custom object filters
             const bool isVanillaObj = entry.object._header.isVanilla();
-            const bool isOpenLocoObj = entry.object._header.getSourceGame() == 3;
+            const bool isOpenLocoObj = entry.object._header.getSourceGame() == SourceGame::openLoco;
             const bool isCustomObj = !isVanillaObj && !isOpenLocoObj;
             if (isVanillaObj && (filterFlags & FilterFlags::vanilla) == FilterFlags::none)
             {

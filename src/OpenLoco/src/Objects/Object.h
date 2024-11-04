@@ -48,6 +48,14 @@ namespace OpenLoco
     constexpr size_t kMaxObjectTypes = 34;
     constexpr uint8_t kCargoTypeNull = 0xFF;
 
+    enum class SourceGame : uint8_t
+    {
+        custom,
+        vanilla, // Note: Most custom objects set this unfortunately so can't be trusted
+        data,    // tbc?
+        openLoco,
+    };
+
 #pragma pack(push, 1)
     struct ObjectHeader
     {
@@ -64,9 +72,9 @@ namespace OpenLoco
             return std::string_view(name, sizeof(name));
         }
 
-        constexpr uint8_t getSourceGame() const
+        constexpr SourceGame getSourceGame() const
         {
-            return (flags >> 6) & 0x3;
+            return static_cast<SourceGame>((flags >> 6) & 0x3);
         }
 
         constexpr ObjectType getType() const
@@ -81,7 +89,7 @@ namespace OpenLoco
 
         constexpr bool isCustom() const
         {
-            return getSourceGame() == 0;
+            return getSourceGame() == SourceGame::custom;
         }
 
         constexpr bool isEmpty() const;
