@@ -2368,7 +2368,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             constructHeight = std::max(getMaxConstructHeightFromExistingSelection(), constructHeight);
         }
 
-        _constructionArrowPos->z = constructHeight - getMaxPieceHeight(trackPieces);
+        constructHeight -= getMaxPieceHeight(trackPieces);
+        _constructionArrowPos->z = constructHeight;
         constructHeight -= 16;
         auto maxRetries = 2;
 
@@ -2434,7 +2435,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 return;
             }
             constructPos = World::toWorldSpace(constRes->first);
-            constructHeight = constRes->second;
+            constructHeight = std::max(constructHeight, constRes->second);
 
             _cState->makeJunction = 0;
         }
