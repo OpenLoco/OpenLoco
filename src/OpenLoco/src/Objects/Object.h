@@ -50,9 +50,17 @@ namespace OpenLoco
 
     enum class SourceGame : uint8_t
     {
+        // See below note for vanilla.
+        // If object SourceGame is custom then object header will be fully compared
+        // when looking for matches (i.e. takes into account object header checksum).
+        // This means that non-custom objects might have different versions but still
+        // be considered as the same object.
         custom,
-        vanilla, // Note: Most custom objects set this unfortunately so can't be trusted
         data,    // tbc?
+        // Most custom objects set this, so can't be trusted to be only on vanilla.
+        // Use the isVanilla() function to actually check for custom as that does
+        // a lookup against the vanilla object list
+        vanilla,
         openLoco,
     };
 
