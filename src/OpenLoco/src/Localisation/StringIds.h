@@ -1991,6 +1991,7 @@ namespace OpenLoco::StringIds
     constexpr StringId maximum_river_width = 2354;
     constexpr StringId riverbank_width = 2355;
     constexpr StringId meander_rate = 2356;
+    constexpr StringId objSelectionFilterOpenLoco = 2357;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

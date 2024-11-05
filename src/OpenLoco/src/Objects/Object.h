@@ -48,6 +48,23 @@ namespace OpenLoco
     constexpr size_t kMaxObjectTypes = 34;
     constexpr uint8_t kCargoTypeNull = 0xFF;
 
+    enum class SourceGame : uint8_t
+    {
+        // See below note for vanilla.
+        // If object SourceGame is custom then object header will be fully compared
+        // when looking for matches (i.e. takes into account object header checksum).
+        // This means that non-custom objects might have different versions but still
+        // be considered as the same object.
+        custom = 0,
+        data = 1, // tbc?
+
+        // Most custom objects set this, so can't be trusted to be only on vanilla.
+        // Use the isVanilla() function to actually check for custom as that does
+        // a lookup against the vanilla object list
+        vanilla = 2,
+        openLoco = 3,
+    };
+
 #pragma pack(push, 1)
     struct ObjectHeader
     {
@@ -64,9 +81,9 @@ namespace OpenLoco
             return std::string_view(name, sizeof(name));
         }
 
-        constexpr uint8_t getSourceGame() const
+        constexpr SourceGame getSourceGame() const
         {
-            return (flags >> 6) & 0x3;
+            return static_cast<SourceGame>((flags >> 6) & 0x3);
         }
 
         constexpr ObjectType getType() const
@@ -81,7 +98,7 @@ namespace OpenLoco
 
         constexpr bool isCustom() const
         {
-            return getSourceGame() == 0;
+            return getSourceGame() == SourceGame::custom;
         }
 
         constexpr bool isEmpty() const;

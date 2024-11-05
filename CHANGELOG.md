@@ -1,5 +1,6 @@
 24.10+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2697] Add initial OpenGraphics custom assets.
 - Fix: [#2676] Cargo labels are misaligned in vehicle window.
 - Fix: [#2691] Scenarios with original procedural terrain generation could crash.
 
