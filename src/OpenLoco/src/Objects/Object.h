@@ -55,14 +55,14 @@ namespace OpenLoco
         // when looking for matches (i.e. takes into account object header checksum).
         // This means that non-custom objects might have different versions but still
         // be considered as the same object.
-        custom,
-        data, // tbc?
+        custom = 0,
+        data = 1, // tbc?
 
         // Most custom objects set this, so can't be trusted to be only on vanilla.
         // Use the isVanilla() function to actually check for custom as that does
         // a lookup against the vanilla object list
-        vanilla,
-        openLoco,
+        vanilla = 2,
+        openLoco = 3,
     };
 
 #pragma pack(push, 1)
