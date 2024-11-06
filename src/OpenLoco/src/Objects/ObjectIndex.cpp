@@ -1029,7 +1029,7 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    constexpr std::array<ObjectHeader, 1> kDefaultObjects = { ObjectHeader{ static_cast<uint32_t>(enumValue(ObjectType::region)), { 'R', 'E', 'G', 'U', 'S', ' ', ' ', ' ' }, 0U } };
+    constexpr std::array<ObjectHeader, 1> kDefaultObjects = { ObjectHeader{ ObjectType::region, SourceGame::vanilla, "REGUS   " } };
 
     // 0x00472D19
     static void selectDefaultObjects(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& meta)

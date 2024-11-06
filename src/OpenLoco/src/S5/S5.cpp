@@ -40,6 +40,7 @@
 #include <OpenLoco/Utility/Exception.hpp>
 #include <fstream>
 #include <iomanip>
+#include <sfl/static_unordered_flat_map.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -613,6 +614,47 @@ namespace OpenLoco::S5
         return importSaveToGameState(fs, flags);
     }
 
+    // struct NonCustomObjectHeaderHash
+    //{
+    //     template<class T>
+    //     static inline void hashCombine(std::size_t& seed, const T& v)
+    //     {
+    //         std::hash<T> hasher;
+    //         seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2); // Based on boost::hash_combine
+    //     }
+
+    //    std::size_t operator()(ObjectHeader const& header) const noexcept
+    //    {
+    //        std::size_t h = 0U;
+    //        hashCombine(h, header.flags & 0xFFU);
+    //        hashCombine(h, header.getName());
+    //        return h;
+    //    }
+    //};
+
+    static const sfl::static_unordered_flat_map<ObjectHeader, ObjectHeader, 7> _assetPack = {
+        { ObjectHeader{ ObjectType::vehicle, SourceGame::vanilla, "4F      " }, ObjectHeader{ ObjectType::vehicle, SourceGame::openLoco, "OGFOWL  " } },
+        { ObjectHeader{ ObjectType::vehicle, SourceGame::vanilla, "A3      " }, ObjectHeader{ ObjectType::vehicle, SourceGame::openLoco, "OGRAVNA2" } },
+        { ObjectHeader{ ObjectType::vehicle, SourceGame::vanilla, "HST     " }, ObjectHeader{ ObjectType::vehicle, SourceGame::openLoco, "OGCL41  " } },
+        { ObjectHeader{ ObjectType::vehicle, SourceGame::vanilla, "JINTY   " }, ObjectHeader{ ObjectType::vehicle, SourceGame::openLoco, "OGJINT  " } },
+        { ObjectHeader{ ObjectType::vehicle, SourceGame::vanilla, "MK3     " }, ObjectHeader{ ObjectType::vehicle, SourceGame::openLoco, "OGMK3   " } },
+        { ObjectHeader{ ObjectType::vehicle, SourceGame::vanilla, "SPECIAL " }, ObjectHeader{ ObjectType::vehicle, SourceGame::openLoco, "OGSPCL  " } },
+        { ObjectHeader{ ObjectType::vehicle, SourceGame::vanilla, "ST8FT   " }, ObjectHeader{ ObjectType::vehicle, SourceGame::openLoco, "OGST8F  " } },
+    };
+
+    static void assetPackObjectReplacement(std::span<ObjectHeader> requiredObjects)
+    {
+        for (auto& objHeader : requiredObjects)
+        {
+            auto res = _assetPack.find(objHeader);
+
+            if (res != _assetPack.end())
+            {
+                objHeader = res->second;
+            }
+        }
+    }
+
     bool importSaveToGameState(Stream& stream, LoadFlags flags)
     {
         _gameSpeed = 0;
@@ -732,6 +774,11 @@ namespace OpenLoco::S5
                 {
                     throw LoadException("Not a single player saved game", StringIds::error_file_is_not_single_player_save);
                 }
+            }
+
+            if (hasLoadFlags(flags, LoadFlags::scenario))
+            {
+                assetPackObjectReplacement(file->requiredObjects);
             }
 
             // Load required objects

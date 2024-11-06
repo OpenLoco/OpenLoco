@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
 #include <cstring>
 #include <limits>
@@ -76,6 +77,30 @@ namespace OpenLoco
         char name[8];
         uint32_t checksum;
 
+        constexpr ObjectHeader()
+            : flags(0xFFFFFFFFU)
+            , name{ '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF' }
+            , checksum(0xFFFFFFFFU)
+        {
+        }
+
+        // Constructor for only non-custom objects as flags not set
+        constexpr ObjectHeader(ObjectType type, SourceGame source, std::string_view _name)
+            : flags(static_cast<uint32_t>(type) | (static_cast<uint32_t>(source) << 6))
+            , checksum(0)
+        {
+            assert(_name.size() == 8);
+            assert(source != SourceGame::custom);
+            name[0] = _name[0];
+            name[1] = _name[1];
+            name[2] = _name[2];
+            name[3] = _name[3];
+            name[4] = _name[4];
+            name[5] = _name[5];
+            name[6] = _name[6];
+            name[7] = _name[7];
+        }
+
         std::string_view getName() const
         {
             return std::string_view(name, sizeof(name));
@@ -127,7 +152,7 @@ namespace OpenLoco
     };
     static_assert(sizeof(ObjectHeader) == 0x10);
 #pragma pack(pop)
-    constexpr ObjectHeader kEmptyObjectHeader = ObjectHeader{ 0xFFFFFFFFU, { '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF' }, 0xFFFFFFFFU };
+    constexpr ObjectHeader kEmptyObjectHeader = ObjectHeader{};
 
     constexpr bool ObjectHeader::isEmpty() const
     {
