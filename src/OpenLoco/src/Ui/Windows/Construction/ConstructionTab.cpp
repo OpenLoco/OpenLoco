@@ -2060,15 +2060,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(World::toTileSpace(*mapPos), height) };
     }
 
-    static int16_t getMaxPieceHeight(const std::span<const TrackData::PreviewTrack> piece)
+    static int16_t getMinPieceHeight(const std::span<const TrackData::PreviewTrack> piece)
     {
-        int16_t maxPieceHeight = 0;
-
-        for (const auto& part : piece)
-        {
-            maxPieceHeight = std::max(maxPieceHeight, part.z);
-        }
-        return maxPieceHeight;
+        return std::ranges::min_element(piece, {}, &TrackData::PreviewTrack::z)->z;
     }
 
     // 0x004A193B
@@ -2368,7 +2362,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             constructHeight = std::max(getMaxConstructHeightFromExistingSelection(), constructHeight);
         }
 
-        _constructionArrowPos->z = constructHeight - getMaxPieceHeight(trackPieces);
+        constructHeight -= getMinPieceHeight(trackPieces);
+        _constructionArrowPos->z = constructHeight;
         constructHeight -= 16;
         auto maxRetries = 2;
 
@@ -2434,7 +2429,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 return;
             }
             constructPos = World::toWorldSpace(constRes->first);
-            constructHeight = constRes->second;
+            constructHeight = std::max(constructHeight, constRes->second);
 
             _cState->makeJunction = 0;
         }
@@ -2445,7 +2440,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             const auto piece = getPiece(_cState->byte_1136065);
 
-            constructHeight -= getMaxPieceHeight(piece);
+            constructHeight -= getMinPieceHeight(piece);
             constructHeight -= 16;
             maxRetries = 2;
 

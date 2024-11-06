@@ -30,7 +30,7 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elTrack->baseHeight() != args.pos.z)
+            if (elTrack->baseHeight() != pos.z)
             {
                 continue;
             }
