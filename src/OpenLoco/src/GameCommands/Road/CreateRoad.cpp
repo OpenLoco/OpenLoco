@@ -1003,7 +1003,7 @@ namespace OpenLoco::GameCommands
                     if (!(roadIdUnk[1] & rot0Flag))
                     {
                         bool place = !(roadIdUnk[2] & rot1Flag);
-                        roadIdUnk[1] |= rot1Flag;
+                        roadIdUnk[2] |= rot1Flag;
                         if (place)
                         {
                             placeAddition(i + 1, 2);
