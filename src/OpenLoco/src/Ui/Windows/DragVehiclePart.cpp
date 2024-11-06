@@ -85,7 +85,8 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
             {
                 if (car.front == _dragCarComponent)
                 {
-                    drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic);
+                    drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bogies);
+                    drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bodies);
                     break;
                 }
             }
