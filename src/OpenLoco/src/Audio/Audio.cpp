@@ -1027,18 +1027,15 @@ namespace OpenLoco::Audio
         }
     }
 
-    static void addAllSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
+    static void addAllSongsToPlaylist(std::vector<uint8_t>& playlist)
     {
         for (auto i = 0; i < kNumMusicTracks; i++)
         {
-            if (i != excludeTrack)
-            {
-                playlist.push_back(i);
-            }
+            playlist.push_back(i);
         }
     }
 
-    static void addCurrentEraSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
+    static void addCurrentEraSongsToPlaylist(std::vector<uint8_t>& playlist)
     {
         auto currentYear = getCurrentYear();
         for (auto i = 0; i < kNumMusicTracks; i++)
@@ -1046,65 +1043,75 @@ namespace OpenLoco::Audio
             const auto& mi = kMusicInfo[i];
             if (currentYear >= mi.startYear && currentYear <= mi.endYear)
             {
-                if (i != excludeTrack)
-                {
-                    playlist.push_back(i);
-                }
+                playlist.push_back(i);
             }
         }
     }
 
-    static void addCustomSelectionSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
+    static void addCustomSelectionSongsToPlaylist(std::vector<uint8_t>& playlist)
     {
         const auto& cfg = Config::get().old;
         for (auto i = 0; i < kNumMusicTracks; i++)
         {
-            if (i != excludeTrack && (cfg.enabledMusic[i] & 1))
+            if (cfg.enabledMusic[i] & 1)
             {
                 playlist.push_back(i);
             }
         }
     }
 
-    static void addSelectedPlaylistToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
+    static void addSelectedPlaylistToPlaylist(std::vector<uint8_t>& playlist)
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
         switch (Config::get().old.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
-                addCurrentEraSongsToPlaylist(excludeTrack, playlist);
+                addCurrentEraSongsToPlaylist(playlist);
                 break;
             case MusicPlaylistType::all:
-                addAllSongsToPlaylist(excludeTrack, playlist);
+                addAllSongsToPlaylist(playlist);
                 break;
             case MusicPlaylistType::custom:
-                addCustomSelectionSongsToPlaylist(excludeTrack, playlist);
+                addCustomSelectionSongsToPlaylist(playlist);
                 break;
         }
     }
 
-    std::vector<uint8_t> makeSelectedPlaylist(int32_t excludeTrack)
+    std::vector<uint8_t> makeSelectedPlaylist()
     {
         static std::vector<uint8_t> playlist;
         playlist.clear();
-        addSelectedPlaylistToPlaylist(excludeTrack, playlist);
+        addSelectedPlaylistToPlaylist(playlist);
+
+        return playlist;
     }
 
-    static int32_t chooseNextMusicTrack(int32_t excludeTrack)
+    static int32_t chooseNextMusicTrack()
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
         const auto& cfg = Config::get().old;
 
-        static std::vector<uint8_t> playlist = makeSelectedPlaylist(excludeTrack);
+        static std::vector<uint8_t> playlist = makeSelectedPlaylist();
 
         if (playlist.empty() && cfg.musicPlaylist != MusicPlaylistType::currentEra)
         {
-            addCurrentEraSongsToPlaylist(excludeTrack, playlist);
+            addCurrentEraSongsToPlaylist(playlist);
         }
 
         if (playlist.empty())
         {
-            addAllSongsToPlaylist(excludeTrack, playlist);
+            addAllSongsToPlaylist(playlist);
+        }
+
+        // Remove _lastSong if it is present and not the only song, so that you do not get the same song twice.
+        // Assumes there is no more than one occurence of that song in the playlist.
+        if (playlist.size() > 1)
+        {
+            auto position = std::find(playlist.begin(), playlist.end(), _lastSong);
+            if (position != playlist.end())
+            {
+                playlist.erase(position);
+            }
         }
 
         auto r = std::rand() % playlist.size();
@@ -1135,9 +1142,8 @@ namespace OpenLoco::Audio
             // Choose a track to play, unless we have requested one track in particular.
             if (_currentSong == kNoSong || !requestedSong)
             {
-                uint8_t trackToExclude = _lastSong;
                 _lastSong = _currentSong;
-                _currentSong = chooseNextMusicTrack(trackToExclude);
+                _currentSong = chooseNextMusicTrack();
             }
             else
             {
