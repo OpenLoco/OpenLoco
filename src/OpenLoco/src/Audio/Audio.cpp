@@ -1054,15 +1054,22 @@ namespace OpenLoco::Audio
         }
     }
 
-    static int32_t chooseNextMusicTrack(int32_t excludeTrack)
+    static void addCustomSelectionSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
+    {
+        const auto& cfg = Config::get().old;
+        for (auto i = 0; i < kNumMusicTracks; i++)
+        {
+            if (i != excludeTrack && (cfg.enabledMusic[i] & 1))
+            {
+                playlist.push_back(i);
+            }
+        }
+    }
+
+    static void addSelectedPlaylistToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
-
-        static std::vector<uint8_t> playlist;
-        playlist.clear();
-
-        const auto& cfg = Config::get().old;
-        switch (cfg.musicPlaylist)
+        switch (Config::get().old.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
                 addCurrentEraSongsToPlaylist(excludeTrack, playlist);
@@ -1071,15 +1078,24 @@ namespace OpenLoco::Audio
                 addAllSongsToPlaylist(excludeTrack, playlist);
                 break;
             case MusicPlaylistType::custom:
-                for (auto i = 0; i < kNumMusicTracks; i++)
-                {
-                    if (i != excludeTrack && (cfg.enabledMusic[i] & 1))
-                    {
-                        playlist.push_back(i);
-                    }
-                }
+                addCustomSelectionSongsToPlaylist(excludeTrack, playlist);
                 break;
         }
+    }
+
+    std::vector<uint8_t> makeSelectedPlaylist(int32_t excludeTrack)
+    {
+        static std::vector<uint8_t> playlist;
+        playlist.clear();
+        addSelectedPlaylistToPlaylist(excludeTrack, playlist);
+    }
+
+    static int32_t chooseNextMusicTrack(int32_t excludeTrack)
+    {
+        using MusicPlaylistType = Config::MusicPlaylistType;
+        const auto& cfg = Config::get().old;
+
+        static std::vector<uint8_t> playlist = makeSelectedPlaylist(excludeTrack);
 
         if (playlist.empty() && cfg.musicPlaylist != MusicPlaylistType::currentEra)
         {
