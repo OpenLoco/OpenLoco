@@ -1107,7 +1107,7 @@ namespace OpenLoco::Audio
         // Assumes there is no more than one occurence of that song in the playlist.
         if (playlist.size() > 1)
         {
-            auto position = std::find(playlist.begin(), playlist.end(), _lastSong);
+            auto position = std::find(playlist.begin(), playlist.end(), *_lastSong);
             if (position != playlist.end())
             {
                 playlist.erase(position);
