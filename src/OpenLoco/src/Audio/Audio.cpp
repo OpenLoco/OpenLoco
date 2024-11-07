@@ -1079,8 +1079,7 @@ namespace OpenLoco::Audio
 
     std::vector<uint8_t> makeSelectedPlaylist()
     {
-        static std::vector<uint8_t> playlist;
-        playlist.clear();
+        std::vector<uint8_t> playlist = std::vector<uint8_t>();
         addSelectedPlaylistToPlaylist(playlist);
 
         return playlist;
@@ -1089,9 +1088,13 @@ namespace OpenLoco::Audio
     static int32_t chooseNextMusicTrack()
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
-        const auto& cfg = Config::get().old;
 
-        static std::vector<uint8_t> playlist = makeSelectedPlaylist();
+        static std::vector<uint8_t> playlist;
+        playlist.clear();
+
+        addSelectedPlaylistToPlaylist(playlist);
+
+        const auto& cfg = Config::get().old;
 
         if (playlist.empty() && cfg.musicPlaylist != MusicPlaylistType::currentEra)
         {
