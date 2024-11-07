@@ -1226,55 +1226,18 @@ namespace OpenLoco::Ui::Windows::Options
 
 #pragma mark - Widget 11
 
-        static std::vector<int> get_available_tracks()
+        /**
+         * Returns a vector of music track IDs that this dropdown is to be populated with.
+         */
+        static auto getTracks()
         {
-            auto vector = std::vector<int>();
-
-            if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::currentEra)
-            {
-                uint16_t year = getCurrentYear();
-                for (int i = 0; i < Audio::kNumMusicTracks; i++)
-                {
-                    auto info = Audio::getMusicInfo(i);
-                    if (year >= info->startYear && year <= info->endYear)
-                    {
-                        vector.push_back(i);
-                    }
-                }
-            }
-            else if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::all)
-            {
-                for (int i = 0; i < Audio::kNumMusicTracks; i++)
-                {
-                    vector.push_back(i);
-                }
-            }
-            else if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::custom)
-            {
-                for (int i = 0; i < Audio::kNumMusicTracks; i++)
-                {
-                    if (Config::get().old.enabledMusic[i] & 1)
-                    {
-                        vector.push_back(i);
-                    }
-                }
-
-                if (vector.size() == 0)
-                {
-                    for (int i = 0; i < Audio::kNumMusicTracks; i++)
-                    {
-                        vector.push_back(i);
-                    }
-                }
-            }
-
-            return vector;
+            return Audio::makeSelectedPlaylist();
         }
 
         // 0x004C0875
         static void currentlyPlayingMouseDown(Window* w)
         {
-            auto tracks = get_available_tracks();
+            auto tracks = getTracks();
 
             Widget dropdown = w->widgets[Widx::currently_playing];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), tracks.size(), 0x80);
@@ -1297,7 +1260,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (ax == -1)
                 return;
 
-            auto tracks = get_available_tracks();
+            auto tracks = getTracks();
             int track = tracks.at(ax);
             if (track == _currentSong)
                 return;
