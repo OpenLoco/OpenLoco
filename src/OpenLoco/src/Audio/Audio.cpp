@@ -1060,9 +1060,12 @@ namespace OpenLoco::Audio
         }
     }
 
-    static void addSelectedPlaylistToPlaylist(std::vector<uint8_t>& playlist)
+    std::vector<uint8_t> makeSelectedPlaylist()
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
+
+        std::vector<uint8_t> playlist = std::vector<uint8_t>();
+
         switch (Config::get().old.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
@@ -1075,12 +1078,6 @@ namespace OpenLoco::Audio
                 addCustomSelectionSongsToPlaylist(playlist);
                 break;
         }
-    }
-
-    std::vector<uint8_t> makeSelectedPlaylist()
-    {
-        std::vector<uint8_t> playlist = std::vector<uint8_t>();
-        addSelectedPlaylistToPlaylist(playlist);
 
         return playlist;
     }
@@ -1090,9 +1087,7 @@ namespace OpenLoco::Audio
         using MusicPlaylistType = Config::MusicPlaylistType;
 
         static std::vector<uint8_t> playlist;
-        playlist.clear();
-
-        addSelectedPlaylistToPlaylist(playlist);
+        playlist = makeSelectedPlaylist();
 
         const auto& cfg = Config::get().old;
 

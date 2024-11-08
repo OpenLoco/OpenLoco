@@ -1226,18 +1226,10 @@ namespace OpenLoco::Ui::Windows::Options
 
 #pragma mark - Widget 11
 
-        /**
-         * Returns a vector of music track IDs that this dropdown is to be populated with.
-         */
-        static auto getTracks()
-        {
-            return Audio::makeSelectedPlaylist();
-        }
-
         // 0x004C0875
         static void currentlyPlayingMouseDown(Window* w)
         {
-            auto tracks = getTracks();
+            auto tracks = Audio::makeSelectedPlaylist();
 
             Widget dropdown = w->widgets[Widx::currently_playing];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), tracks.size(), 0x80);
@@ -1260,7 +1252,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (ax == -1)
                 return;
 
-            auto tracks = getTracks();
+            auto tracks = Audio::makeSelectedPlaylist();
             int track = tracks.at(ax);
             if (track == _currentSong)
                 return;
