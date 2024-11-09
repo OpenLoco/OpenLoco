@@ -25,7 +25,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <cassert>
-#include <numeric> // std::iota
+#include <numeric>
 #include <unordered_map>
 
 #ifdef _WIN32
@@ -1037,7 +1037,7 @@ namespace OpenLoco::Audio
 
     static std::vector<uint8_t> makeCurrentEraPlaylist()
     {
-        std::vector<uint8_t> playlist = std::vector<uint8_t>();
+        auto playlist = std::vector<uint8_t>();
         auto currentYear = getCurrentYear();
 
         for (auto i = 0; i < kNumMusicTracks; i++)
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Audio
 
     static std::vector<uint8_t> makeCustomSelectionPlaylist()
     {
-        std::vector<uint8_t> playlist = std::vector<uint8_t>();
+        auto playlist = std::vector<uint8_t>();
 
         const auto& cfg = Config::get().old;
         for (auto i = 0; i < kNumMusicTracks; i++)
@@ -1075,18 +1075,16 @@ namespace OpenLoco::Audio
         switch (Config::get().old.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
-            default:
                 return makeCurrentEraPlaylist();
-                break;
 
             case MusicPlaylistType::all:
                 return makeAllMusicPlaylist();
-                break;
 
             case MusicPlaylistType::custom:
                 return makeCustomSelectionPlaylist();
-                break;
         }
+
+        throw Exception::RuntimeError("Invalid MusicPlaylistType");
     }
 
     static int32_t chooseNextMusicTrack()
