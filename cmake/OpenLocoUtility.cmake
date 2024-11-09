@@ -9,6 +9,7 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
         $<$<CONFIG:Release>:/Oi>            # Intrinsics
         $<$<CONFIG:RelWithDebInfo>:/Oi>     # Intrinsics
         /Zc:char8_t-                        # Enable char8_t<->char conversion :(
+        /Zc:__cplusplus                     # Enable correct reporting for __cplusplus
     )
 
     # GNU/CLANG
