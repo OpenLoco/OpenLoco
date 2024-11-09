@@ -25,8 +25,8 @@
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <cassert>
-#include <unordered_map>
 #include <numeric> // std::iota
+#include <unordered_map>
 
 #ifdef _WIN32
 #define __HAS_DEFAULT_DEVICE__
