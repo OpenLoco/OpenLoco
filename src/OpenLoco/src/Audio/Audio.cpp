@@ -26,6 +26,7 @@
 #include <array>
 #include <cassert>
 #include <unordered_map>
+#include <numeric> // std::iota
 
 #ifdef _WIN32
 #define __HAS_DEFAULT_DEVICE__
@@ -1027,17 +1028,18 @@ namespace OpenLoco::Audio
         }
     }
 
-    static void addAllSongsToPlaylist(std::vector<uint8_t>& playlist)
+    static std::vector<uint8_t> makeAllMusicPlaylist()
     {
-        for (auto i = 0; i < kNumMusicTracks; i++)
-        {
-            playlist.push_back(i);
-        }
+        std::vector<uint8_t> playlist(kNumMusicTracks);
+        std::iota(playlist.begin(), playlist.end(), 0);
+        return playlist;
     }
 
-    static void addCurrentEraSongsToPlaylist(std::vector<uint8_t>& playlist)
+    static std::vector<uint8_t> makeCurrentEraPlaylist()
     {
+        std::vector<uint8_t> playlist = std::vector<uint8_t>();
         auto currentYear = getCurrentYear();
+
         for (auto i = 0; i < kNumMusicTracks; i++)
         {
             const auto& mi = kMusicInfo[i];
@@ -1046,10 +1048,14 @@ namespace OpenLoco::Audio
                 playlist.push_back(i);
             }
         }
+
+        return playlist;
     }
 
-    static void addCustomSelectionSongsToPlaylist(std::vector<uint8_t>& playlist)
+    static std::vector<uint8_t> makeCustomSelectionPlaylist()
     {
+        std::vector<uint8_t> playlist = std::vector<uint8_t>();
+
         const auto& cfg = Config::get().old;
         for (auto i = 0; i < kNumMusicTracks; i++)
         {
@@ -1058,28 +1064,29 @@ namespace OpenLoco::Audio
                 playlist.push_back(i);
             }
         }
+
+        return playlist;
     }
 
     std::vector<uint8_t> makeSelectedPlaylist()
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
 
-        std::vector<uint8_t> playlist = std::vector<uint8_t>();
-
         switch (Config::get().old.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
-                addCurrentEraSongsToPlaylist(playlist);
+            default:
+                return makeCurrentEraPlaylist();
                 break;
+
             case MusicPlaylistType::all:
-                addAllSongsToPlaylist(playlist);
+                return makeAllMusicPlaylist();
                 break;
+
             case MusicPlaylistType::custom:
-                addCustomSelectionSongsToPlaylist(playlist);
+                return makeCustomSelectionPlaylist();
                 break;
         }
-
-        return playlist;
     }
 
     static int32_t chooseNextMusicTrack()
@@ -1093,12 +1100,12 @@ namespace OpenLoco::Audio
 
         if (playlist.empty() && cfg.musicPlaylist != MusicPlaylistType::currentEra)
         {
-            addCurrentEraSongsToPlaylist(playlist);
+            playlist = makeCurrentEraPlaylist();
         }
 
         if (playlist.empty())
         {
-            addAllSongsToPlaylist(playlist);
+            playlist = makeAllMusicPlaylist();
         }
 
         // Remove _lastSong if it is present and not the only song, so that you do not get the same song twice.
