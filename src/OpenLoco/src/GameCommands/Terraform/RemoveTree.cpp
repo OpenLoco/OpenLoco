@@ -43,23 +43,33 @@ namespace OpenLoco::GameCommands
         {
             // TODO: refactor! Figure out what info it actually needs.
             if (element.rawData()[0] != elementType)
+            {
                 continue;
+            }
 
             if (element.baseHeight() != pos.z)
+            {
                 continue;
+            }
 
             auto* treeElement = element.as<World::TreeElement>();
             if (treeElement == nullptr)
+            {
                 continue;
+            }
 
             if (treeElement->treeObjectId() != type)
+            {
                 continue;
+            }
 
             auto treeObj = ObjectManager::get<TreeObject>(treeElement->treeObjectId());
             currency32_t removalCost = Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
 
             if (flags & Flags::apply)
+            {
                 World::TileManager::removeTree(*treeElement, flags, pos);
+            }
 
             auto& options = S5::getOptions();
             options.madeAnyChanges = 1;

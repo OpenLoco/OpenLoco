@@ -76,7 +76,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 xPos += 91;
             }
             else
+            {
                 widget.type = WidgetType::none;
+            }
         }
     }
 
@@ -84,12 +86,16 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     static void initList(Window* self)
     {
         if (self->info == 0xFFFFFFFF)
+        {
             return;
+        }
 
         using namespace ScenarioManager;
         auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
         if (hasScenarioInCategory(self->currentTab, scenarioInfo))
+        {
             return;
+        }
 
         // Reset currently selected scenario if it is not in the current category.
         self->info = 0xFFFFFFFF;
@@ -103,7 +109,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     {
         Window* self = WindowManager::bringToFront(WindowType::scenarioSelect);
         if (self != nullptr)
+        {
             return self;
+        }
 
         self = WindowManager::createWindow(
             WindowType::scenarioSelect,
@@ -176,7 +184,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         {
             Widget& widget = self.widgets[widx::tab0 + i];
             if (widget.type == WidgetType::none)
+            {
                 continue;
+            }
 
             const auto offset = self.currentTab == i ? 1 : 0;
             auto origin = Ui::Point(widget.midX() + self.x, widget.midY() + self.y - 3 - offset);
@@ -190,7 +200,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         // Scenario selected?
         if (self.info == 0 || self.info == 0xFFFFFFFF)
+        {
             return;
+        }
 
         using namespace ScenarioManager;
         auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self.info);
@@ -337,7 +349,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y = point.y;
 
             if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
+            {
                 return;
+            }
 
             // Delayed start for competing companies
             args = FormatArguments();
@@ -364,7 +378,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         {
             auto* scenarioInfo = getNthScenarioFromCategory(self.currentTab, i);
             if (scenarioInfo == nullptr)
+            {
                 continue;
+            }
 
             if (y + kRowHeight < rt.y)
             {
@@ -449,7 +465,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             {
                 uint8_t selectedCategory = widgetIndex - widx::tab0;
                 if (self.currentTab == selectedCategory)
+                {
                     return;
+                }
 
                 self.currentTab = selectedCategory;
 
@@ -483,11 +501,15 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         auto index = y / kRowHeight;
         if (index > scenarioCount)
+        {
             return;
+        }
 
         auto* scenarioInfo = ScenarioManager::getNthScenarioFromCategory(self.currentTab, index);
         if (scenarioInfo == nullptr)
+        {
             return;
+        }
 
         // Mouse click sound
         Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
@@ -509,11 +531,15 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         auto index = y / kRowHeight;
         if (index > scenarioCount)
+        {
             return;
+        }
 
         auto* scenarioEntry = ScenarioManager::getNthScenarioFromCategory(self.currentTab, index);
         if (scenarioEntry == nullptr)
+        {
             return;
+        }
 
         if (self.info != reinterpret_cast<uintptr_t>(scenarioEntry))
         {

@@ -136,7 +136,9 @@ namespace OpenLoco
         for (auto variant = 0; variant < 6; variant++)
         {
             if ((var_3C & (1 << variant)) == 0)
+            {
                 continue;
+            }
 
             sprites[variant] = imgRes.imageOffset + totalImageCount;
             totalImageCount += numVariantImages;

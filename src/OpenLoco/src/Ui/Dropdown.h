@@ -123,7 +123,9 @@ namespace OpenLoco::Ui::Dropdown
     {
         auto result = getSelectedItem(index);
         if (result)
+        {
             return static_cast<T>(*result);
+        }
         return std::nullopt;
     }
 }

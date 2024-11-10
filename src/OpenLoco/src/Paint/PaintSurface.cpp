@@ -766,11 +766,15 @@ namespace OpenLoco::Paint
         PaintSession& session, uint8_t edge, const TileDescriptor& self, const TileDescriptor& neighbour)
     {
         if (neighbour.elSurface == nullptr)
+        {
             return;
+        }
 
         if (neighbour.edgeHeight.neighbour1 != neighbour.edgeHeight.self1
             || neighbour.edgeHeight.neighbour0 != neighbour.edgeHeight.self0)
+        {
             return;
+        }
 
         // If either is industrial
         if (neighbour.landObjectId == 0xFFU || self.landObjectId == 0xFFU)
@@ -818,18 +822,26 @@ namespace OpenLoco::Paint
         {
             // same tint
             if (cl == dh)
+            {
                 return;
+            }
 
             if ((_F003D3[self.landObjectId] & LandObjectFlags::unk4) != LandObjectFlags::none)
+            {
                 return;
+            }
         }
         else
         {
             if ((_F003D3[self.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+            {
                 return;
+            }
 
             if ((_F003D3[neighbour.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+            {
                 return;
+            }
         }
 
         const auto baseImageId = ImageId(kSurfaceSmoothFromSlope[edge][displaySlope]);

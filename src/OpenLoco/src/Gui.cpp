@@ -136,6 +136,8 @@ namespace OpenLoco::Gui
 
         window = WindowManager::find(WindowType::options);
         if (window != nullptr)
+        {
             window->moveToCentre();
+        }
     }
 }

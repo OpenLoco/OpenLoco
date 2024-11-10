@@ -58,7 +58,9 @@ namespace OpenLoco::Platform
 
         auto nullBytePos = pszPath.find(L'\0');
         if (nullBytePos != std::wstring::npos)
+        {
             pszPath.resize(nullBytePos);
+        }
 
         return pszPath;
     }
@@ -173,7 +175,9 @@ namespace OpenLoco::Platform
 
         const auto ntdllHandle = GetModuleHandleW(L"ntdll.dll");
         if (ntdllHandle == nullptr)
+        {
             return false;
+        }
 
         using RtlGetVersionFn = LONG(WINAPI*)(PRTL_OSVERSIONINFOW);
 
@@ -186,17 +190,23 @@ namespace OpenLoco::Platform
 #pragma GCC diagnostic pop
 #endif
         if (RtlGetVersionFp == nullptr)
+        {
             return false;
+        }
 
         RTL_OSVERSIONINFOW info{};
         info.dwOSVersionInfoSize = sizeof(info);
 
         if (RtlGetVersionFp(&info) != 0)
+        {
             return false;
+        }
 
         // VT100 support was first introduced in 10.0.10586
         if (std::tie(info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber) >= std::make_tuple(10U, 0U, 10586U))
+        {
             return true;
+        }
 
         return false;
     }
@@ -210,25 +220,35 @@ namespace OpenLoco::Platform
     bool enableVT100TerminalMode()
     {
         if (!isStdOutRedirected())
+        {
             return false;
+        }
 
         if (!hasTerminalVT100Support())
+        {
             return false;
+        }
 
         HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
         if (hOut == INVALID_HANDLE_VALUE)
+        {
             return false;
+        }
 
         DWORD dwMode = 0;
 
         if (!GetConsoleMode(hOut, &dwMode))
+        {
             return false;
+        }
 
         dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 
         if (!SetConsoleMode(hOut, dwMode))
+        {
             return false;
+        }
 
         return true;
     }

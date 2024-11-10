@@ -98,9 +98,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 uint32_t imageId = skin->img;
                 if (window->currentTab == widx::tab_challenge - widx::tab_challenge)
+                {
                     imageId += challengeTabImageIds[(window->frameNo / 4) % std::size(challengeTabImageIds)];
+                }
                 else
+                {
                     imageId += challengeTabImageIds[0];
+                }
 
                 Widget::drawTab(window, drawingCtx, imageId, widx::tab_challenge);
             }
@@ -134,9 +138,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 uint32_t imageId = skin->img;
                 if (window->currentTab == widx::tab_finances - widx::tab_challenge)
+                {
                     imageId += financesTabImageIds[(window->frameNo / 2) % std::size(financesTabImageIds)];
+                }
                 else
+                {
                     imageId += financesTabImageIds[0];
+                }
 
                 Widget::drawTab(window, drawingCtx, imageId, widx::tab_finances);
             }
@@ -225,7 +233,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
+            {
                 return;
+            }
 
             switch (widgetIndex)
             {
@@ -253,7 +263,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(objectiveTypeLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(objectiveTypeLabelIds); i++)
+                    {
                         Dropdown::add(i, StringIds::dropdown_stringid, objectiveTypeLabelIds[i]);
+                    }
 
                     Dropdown::setItemSelected(enumValue(Scenario::getObjective().type));
                     break;
@@ -280,11 +292,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                             uint16_t stepSize{};
                             uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
                             if (clickRepeatTicks < 100)
+                            {
                                 stepSize = 100;
+                            }
                             else if (clickRepeatTicks >= 100)
+                            {
                                 stepSize = 1000;
+                            }
                             else if (clickRepeatTicks >= 200)
+                            {
                                 stepSize = 10000;
+                            }
 
                             // Round off cargo to the nearest multiple of the step size.
                             uint16_t cargoFactor = (Scenario::getObjective().deliveredCargoAmount - stepSize) / stepSize;
@@ -320,11 +338,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                             uint16_t stepSize{};
                             uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
                             if (clickRepeatTicks < 100)
+                            {
                                 stepSize = 100;
+                            }
                             else if (clickRepeatTicks >= 100)
+                            {
                                 stepSize = 1000;
+                            }
                             else if (clickRepeatTicks >= 200)
+                            {
                                 stepSize = 10000;
+                            }
 
                             // Round off cargo to the nearest multiple of the step size.
                             uint16_t cargoFactor = (Scenario::getObjective().deliveredCargoAmount + stepSize) / stepSize;
@@ -346,7 +370,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     {
                         auto cargoObject = ObjectManager::get<CargoObject>(cargoIdx);
                         if (cargoObject != nullptr)
+                        {
                             numCargoObjects++;
+                        }
                     }
 
                     Widget& target = self.widgets[widx::objective_cargo];
@@ -357,13 +383,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     {
                         auto cargoObject = ObjectManager::get<CargoObject>(cargoIdx);
                         if (cargoObject == nullptr)
+                        {
                             continue;
+                        }
 
                         Dropdown::add(dropdownIndex, StringIds::dropdown_stringid, cargoObject->name);
                         cargoByDropdownIndex[dropdownIndex] = cargoIdx;
 
                         if (cargoIdx == Scenario::getObjective().deliveredCargoType)
+                        {
                             Dropdown::setItemSelected(dropdownIndex);
+                        }
 
                         dropdownIndex++;
                     }
@@ -464,10 +494,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.activatedWidgets &= ~((1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit));
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beTopCompany) != Scenario::ObjectiveFlags::none)
+            {
                 self.activatedWidgets |= 1 << widx::check_be_top_company;
+            }
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != Scenario::ObjectiveFlags::none)
+            {
                 self.activatedWidgets |= 1 << widx::check_be_within_top_three_companies;
+            }
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
             {
@@ -503,7 +537,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         if (window != nullptr)
         {
             if (ToolManager::isToolActive(window->type, window->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             window = WindowManager::bringToFront(WindowType::scenarioOptions, 0);
         }
@@ -641,7 +677,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
+            {
                 return;
+            }
 
             auto& state = getGameState();
 
@@ -696,7 +734,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
+                    {
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
+                    }
 
                     Dropdown::setItemSelected(state.preferredAIIntelligence);
                     break;
@@ -708,7 +748,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
+                    {
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
+                    }
 
                     Dropdown::setItemSelected(state.preferredAIAggressiveness);
                     break;
@@ -720,7 +762,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
+                    {
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
+                    }
 
                     Dropdown::setItemSelected(state.preferredAICompetitiveness);
                     break;
@@ -894,13 +938,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::starting_loan_up:
                     CompanyManager::setStartingLoanSize(std::min<uint16_t>(CompanyManager::getStartingLoanSize() + 50, Scenario::kMaxStartLoanUnits));
                     if (CompanyManager::getStartingLoanSize() > CompanyManager::getMaxLoanSize())
+                    {
                         CompanyManager::setMaxLoanSize(CompanyManager::getStartingLoanSize());
+                    }
                     break;
 
                 case widx::max_loan_size_down:
                     CompanyManager::setMaxLoanSize(std::max<int16_t>(CompanyManager::getMaxLoanSize() - 50, Scenario::kMinLoanSizeUnits));
                     if (CompanyManager::getStartingLoanSize() > CompanyManager::getMaxLoanSize())
+                    {
                         CompanyManager::setStartingLoanSize((CompanyManager::getMaxLoanSize()));
+                    }
                     break;
 
                 case widx::max_loan_size_up:
@@ -1100,7 +1148,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(scenarioGroupLabelIds), 0x80);
 
                 for (size_t i = 0; i < std::size(scenarioGroupLabelIds); i++)
+                {
                     Dropdown::add(i, StringIds::dropdown_stringid, scenarioGroupLabelIds[i]);
+                }
 
                 Dropdown::setItemSelected(S5::getOptions().difficulty);
             }
@@ -1155,7 +1205,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void unloadScenarioTextObjects()
         {
             if (ObjectManager::get<ScenarioTextObject>() == nullptr)
+            {
                 return;
+            }
 
             LoadedObjectHandle handle = { ObjectType::scenarioText, 0 };
             auto header = ObjectManager::getHeader(handle);
@@ -1257,7 +1309,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (ToolManager::isToolActive(self->type, self->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
@@ -1278,11 +1332,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             const auto newSize = [widgetIndex]() {
                 if (widgetIndex == widx::tab_challenge)
+                {
                     return kChallengeWindowSize;
+                }
                 else if (widgetIndex == widx::tab_companies)
+                {
                     return kCompaniesWindowSize;
+                }
                 else
+                {
                     return kOtherWindowSize;
+                }
             }();
 
             self->setSize(newSize);

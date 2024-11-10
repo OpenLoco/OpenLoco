@@ -133,7 +133,9 @@ namespace OpenLoco
         {
             std::byte* const nextOffset = reinterpret_cast<std::byte*>(reinterpret_cast<std::byte*>(_buffer) + size);
             if (nextOffset > _bufferStart + _capacity)
+            {
                 throw Exception::OutOfRange("FormatArguments: attempting to advance outside of buffer");
+            }
             return nextOffset;
         }
     };
@@ -149,17 +151,19 @@ namespace OpenLoco
 
         FormatArgumentsView(const FormatArguments& newargs)
             : args(newargs.getBufferStart())
-            , end(newargs.getBufferStart() + newargs.getCapacity()) {};
+            , end(newargs.getBufferStart() + newargs.getCapacity()){};
 
         FormatArgumentsView(const FormatArgumentsBuffer& newargs)
             : args(newargs.data())
-            , end(newargs.data() + newargs.capacity()) {};
+            , end(newargs.data() + newargs.capacity()){};
 
         template<typename T>
         T pop()
         {
             if (args == nullptr)
+            {
                 return T{};
+            }
 
             T value;
             std::memcpy(&value, args, sizeof(T));
@@ -172,7 +176,9 @@ namespace OpenLoco
         void skip()
         {
             if (args == nullptr)
+            {
                 return;
+            }
             args += sizeof(T);
         }
 

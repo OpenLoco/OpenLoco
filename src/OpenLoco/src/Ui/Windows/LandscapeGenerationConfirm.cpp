@@ -44,9 +44,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 
         FormatArguments args{};
         if (window.var_846 == 0)
+        {
             args.push(StringIds::prompt_confirm_generate_landscape);
+        }
         else
+        {
             args.push(StringIds::prompt_confirm_random_landscape);
+        }
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
         tr.drawStringCentredWrapped(origin, window.width, Colour::black, StringIds::wcolour2_stringid, args);
@@ -67,9 +71,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
                 WindowManager::close(&window);
 
                 if (status == 0)
+                {
                     Scenario::generateLandscape();
+                }
                 else
+                {
                     Scenario::eraseLandscape();
+                }
                 break;
         }
     }
@@ -101,9 +109,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 
         window->var_846 = promptType;
         if (promptType == 0)
+        {
             window->widgets[widx::caption].text = StringIds::title_generate_new_landscape;
+        }
         else
+        {
             window->widgets[widx::caption].text = StringIds::title_random_landscape_option;
+        }
 
         return window;
     }

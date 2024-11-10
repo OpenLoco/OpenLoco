@@ -60,7 +60,9 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
                 getEvents());
 
             if (window == nullptr)
+            {
                 return nullptr;
+            }
 
             window->setWidgets(_widgets);
             window->enabledWidgets = (1 << widx::closeButton) | (1 << widx::saveButton) | (1 << widx::dontSaveButton) | (1 << widx::cancelButton);
@@ -91,9 +93,13 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         else
         {
             if (savePromptType == LoadOrQuitMode::loadGamePrompt)
+            {
                 window->widgets[widx::caption].text = StringIds::title_load_landscape;
+            }
             else
+            {
                 window->widgets[widx::caption].text = StringIds::title_quit_scenario_editor;
+            }
         }
 
         static constexpr std::array<const StringId, 3> kTypeToPrompt = {

@@ -435,7 +435,9 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         // DROPDOWN_ITEM_UNDEFINED
         if (itemIndex == -1)
+        {
             return;
+        }
 
         OpenLoco::Tutorial::start(itemIndex);
     }

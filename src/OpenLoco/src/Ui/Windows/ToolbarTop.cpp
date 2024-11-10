@@ -190,10 +190,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         S5::SaveFlags flags = S5::SaveFlags::none;
         if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
+        {
             flags = S5::SaveFlags::packCustomObjects;
+        }
 
         if (!S5::exportGameStateToFile(path, flags))
+        {
             Error::open(StringIds::error_game_save_failed, StringIds::null);
+        }
     }
 
     static void startOrCloseServer()
@@ -213,7 +217,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         auto id = Dropdown::getSelectedItem<LoadSaveDropdownId>(itemIndex);
         if (!id)
+        {
             return;
+        }
 
         switch (*id)
         {
@@ -284,10 +290,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::showBelow(window, widgetIndex, 4, 0);
 
         if (!Audio::isAudioEnabled())
+        {
             Dropdown::setItemSelected(0);
+        }
 
         if (Config::get().old.musicPlaying)
+        {
             Dropdown::setItemSelected(1);
+        }
 
         Dropdown::setHighlightedItem(0);
     }
@@ -296,7 +306,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void audioMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         switch (itemIndex)
         {
@@ -339,19 +351,27 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::showBelow(window, widgetIndex, 8, 0);
 
         if (isSandboxMode())
+        {
             Dropdown::setItemSelected(5);
+        }
 
         if (isPauseOverrideEnabled())
+        {
             Dropdown::setItemSelected(6);
+        }
 
         if (isDriverCheatEnabled())
+        {
             Dropdown::setItemSelected(7);
+        }
     }
 
     static void cheatsMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = 0;
+        }
 
         switch (itemIndex)
         {
@@ -373,23 +393,35 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             case 5:
                 if (!isSandboxMode())
+                {
                     setScreenFlag(ScreenFlags::sandboxMode);
+                }
                 else
+                {
                     clearScreenFlag(ScreenFlags::sandboxMode);
+                }
                 break;
 
             case 6:
                 if (!isPauseOverrideEnabled())
+                {
                     setScreenFlag(ScreenFlags::pauseOverrideEnabled);
+                }
                 else
+                {
                     clearScreenFlag(ScreenFlags::pauseOverrideEnabled);
+                }
                 break;
 
             case 7:
                 if (!isDriverCheatEnabled())
+                {
                     setScreenFlag(ScreenFlags::driverCheatEnabled);
+                }
                 else
+                {
                     clearScreenFlag(ScreenFlags::driverCheatEnabled);
+                }
                 break;
         }
     }
@@ -407,7 +439,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         _availableObjects[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
 
         if (availableTracks.size() == 0)
+        {
             return;
+        }
 
         auto companyColour = CompanyManager::getPlayerCompanyColour();
 
@@ -436,7 +470,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
             if (objIndex == getGameState().lastRailroadOption)
+            {
                 highlightedItem = i;
+            }
         }
 
         Dropdown::showBelow(window, widgetIndex, std::size(availableTracks), 25, (1 << 6));
@@ -447,10 +483,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void railroadMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         if (itemIndex == -1)
+        {
             return;
+        }
 
         uint8_t objIndex = availableTracks[itemIndex];
         Construction::openWithFlags(objIndex);
@@ -476,13 +516,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         if (ddIndex == 0)
+        {
             return;
+        }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
 
         ddIndex = 0;
         if (_lastPortOption != _menuOptions[0])
+        {
             ddIndex++;
+        }
 
         Dropdown::setHighlightedItem(ddIndex);
     }
@@ -491,7 +535,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void portMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         _lastPortOption = _menuOptions[itemIndex];
 
@@ -538,7 +584,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         for (uint8_t vehicleType = 0; vehicleType < vehicleTypeCount; vehicleType++)
         {
             if ((availableVehicles & (1 << vehicleType)) == 0)
+            {
                 continue;
+            }
 
             auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
@@ -557,10 +605,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void buildVehiclesMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         if (itemIndex == -1)
+        {
             return;
+        }
 
         itemIndex = _menuOptions[itemIndex];
         getGameState().lastBuildVehiclesOption = itemIndex;
@@ -582,10 +634,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         for (auto* v : VehicleManager::VehicleList())
         {
             if (v->owner != player_company_id)
+            {
                 continue;
+            }
 
             if (v->has38Flags(Vehicles::Flags38::isGhost))
+            {
                 continue;
+            }
 
             vehicle_counts[static_cast<uint8_t>(v->vehicleType)]++;
         }
@@ -594,7 +650,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         for (uint16_t vehicleType = 0; vehicleType < vehicleTypeCount; vehicleType++)
         {
             if ((availableVehicles & (1 << vehicleType)) == 0)
+            {
                 continue;
+            }
 
             auto& interfaceParam = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
@@ -604,9 +662,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             // TODO: replace with locale-based plurals.
             StringId vehicleStringId;
             if (vehicle_count == 1)
+            {
                 vehicleStringId = interfaceParam.numSingular;
+            }
             else
+            {
                 vehicleStringId = interfaceParam.numPlural;
+            }
 
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicleImage, vehicleStringId, vehicle_count });
             _menuOptions[ddIndex] = vehicleType;
@@ -621,10 +683,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void vehiclesMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         if (itemIndex == -1)
+        {
             return;
+        }
 
         auto vehicleType = VehicleType(_menuOptions[itemIndex]);
         getGameState().lastVehicleType = vehicleType;
@@ -655,10 +721,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void stationsMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         if (itemIndex > 4)
+        {
             return;
+        }
 
         StationList::open(CompanyManager::getControllingId(), itemIndex);
     }
@@ -839,7 +909,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[getGameState().lastBuildVehiclesOption], companyColour);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::Widx::build_vehicles_menu))
+            {
                 fg_image++;
+            }
 
             drawingCtx.drawImage(x, y, fg_image);
         }
@@ -901,29 +973,49 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         window.widgets[Common::Widx::stations_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_stations);
 
         if (_lastTownOption == 0)
+        {
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
+        }
         else
+        {
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
+        }
 
         if (_lastPortOption == 0)
+        {
             window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_airports);
+        }
         else
+        {
             window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
+        }
 
         if (getGameState().lastRoadOption != 0xFF)
+        {
             window.widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
+        }
         else
+        {
             window.widgets[Common::Widx::road_menu].type = WidgetType::none;
+        }
 
         if (getGameState().lastRailroadOption != 0xFF)
+        {
             window.widgets[Common::Widx::railroad_menu].type = WidgetType::toolbarTab;
+        }
         else
+        {
             window.widgets[Common::Widx::railroad_menu].type = WidgetType::none;
+        }
 
         if (getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF)
+        {
             window.widgets[Common::Widx::port_menu].type = WidgetType::toolbarTab;
+        }
         else
+        {
             window.widgets[Common::Widx::port_menu].type = WidgetType::none;
+        }
 
         uint32_t x = std::max(640, Ui::width()) - 1;
         Common::rightAlignTabs(&window, x, { Common::Widx::towns_menu, Common::Widx::stations_menu, Common::Widx::vehicles_menu });

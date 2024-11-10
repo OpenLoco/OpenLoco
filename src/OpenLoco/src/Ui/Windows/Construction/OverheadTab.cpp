@@ -119,7 +119,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::track_dropdown)
+        {
             return;
+        }
 
         if (itemIndex != -1)
         {
@@ -396,7 +398,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         self->widgets[widgetIndex].text = name;
 
         if (_cState->lastSelectedMods & (1 << checkboxIndex))
+        {
             self->activatedWidgets |= (1ULL << widgetIndex);
+        }
     }
 
     // 0x0049E7D3
@@ -464,7 +468,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             if (isNetworkHost())
             {
                 if (ToolManager::getToolWindowType() == WindowType::construction)
+                {
                     self.widgets[widx::image].tooltip = StringIds::click_track_to_upgrade;
+                }
             }
         }
 

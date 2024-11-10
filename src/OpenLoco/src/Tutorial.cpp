@@ -53,7 +53,9 @@ namespace OpenLoco::Tutorial
         std::ifstream file(filename, std::ios::in | std::ios::binary);
         file.unsetf(std::ios::skipws);
         if (!file)
+        {
             throw;
+        }
 
         std::vector<uint16_t> tutorial;
         auto start = std::istream_iterator<uint8_t>(file);
@@ -66,7 +68,9 @@ namespace OpenLoco::Tutorial
 
             // We expect an even number of bytes
             if (it == end)
+            {
                 throw;
+            }
 
             auto const secondByte = *it;
             tutorial.push_back(secondByte << 8 | firstByte);
@@ -79,7 +83,9 @@ namespace OpenLoco::Tutorial
     void start(int16_t tutorialNumber)
     {
         if (tutorialNumber < 0 || tutorialNumber > 3)
+        {
             return;
+        }
 
         // NB: only used by tutorial widget drawing after.
         _tutorialNumber = tutorialNumber;
@@ -105,7 +111,9 @@ namespace OpenLoco::Tutorial
         if (config.display.mode != Config::ScreenMode::window || currentResolution != newResolution)
         {
             if (!Ui::setDisplayMode(Config::ScreenMode::window, newResolution))
+            {
                 return;
+            }
         }
 
         // Get the environment file for this tutorial.

@@ -76,16 +76,24 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* track = tileElement->as<TrackElement>();
         if (track == nullptr)
+        {
             return false;
+        }
         if (!track->hasStationElement())
+        {
             return false;
+        }
 
         tileElement++;
         auto* station = tileElement->as<StationElement>();
         if (station == nullptr)
+        {
             return false;
+        }
         if (station->isAiAllocated())
+        {
             return false;
+        }
 
         interaction.type = InteractionItem::trainStation;
         interaction.object = station;
@@ -98,9 +106,13 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* road = tileElement->as<RoadElement>();
         if (road == nullptr)
+        {
             return false;
+        }
         if (!road->hasStationElement())
+        {
             return false;
+        }
 
         World::StationElement* station = nullptr;
         World::Tile tile{ World::toTileSpace(interaction.pos), tileElement };
@@ -121,7 +133,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         interaction.object = station;
         interaction.type = InteractionItem::dock;
         if (station->isAiAllocated())
+        {
             return false;
+        }
 
         interaction.type = InteractionItem::roadStation;
         return getStationArguments(interaction);
@@ -133,9 +147,13 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* station = tileElement->as<StationElement>();
         if (station == nullptr)
+        {
             return false;
+        }
         if (station->isGhost())
+        {
             return false;
+        }
 
         interaction.value = enumValue(station->stationId());
         interaction.type = InteractionItem::stationLabel;
@@ -205,9 +223,13 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* industryTile = tileElement->as<IndustryElement>();
         if (industryTile == nullptr)
+        {
             return false;
+        }
         if (industryTile->isGhost())
+        {
             return false;
+        }
 
         interaction.value = enumValue(industryTile->industryId());
         auto industry = industryTile->industry();
@@ -340,7 +362,9 @@ namespace OpenLoco::Ui::ViewportInteraction
     InteractionArg getItemLeft(int16_t tempX, int16_t tempY)
     {
         if (OpenLoco::isTitleMode())
+        {
             return InteractionArg{};
+        }
 
         auto interactionsToInclude = ~(InteractionItemFlags::entity | InteractionItemFlags::townLabel | InteractionItemFlags::stationLabel);
         auto res = getMapCoordinatesFromPos(tempX, tempY, interactionsToInclude);
@@ -398,14 +422,20 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         auto window = WindowManager::findAt(tempX, tempY);
         if (window == nullptr)
+        {
             return InteractionArg{};
+        }
 
         auto viewport = window->viewports[0];
         if (viewport == nullptr)
+        {
             return InteractionArg{};
+        }
 
         if (viewport->zoom > Config::get().old.vehiclesMinScale)
+        {
             return InteractionArg{};
+        }
 
         uint32_t nearestDistance = std::numeric_limits<uint32_t>().max();
         Vehicles::VehicleBase* nearestVehicle = nullptr;
@@ -440,7 +470,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* track = tileElement->as<TrackElement>();
         if (track == nullptr)
+        {
             return false;
+        }
 
         if (track->isGhost())
         {
@@ -477,7 +509,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* track = tileElement->as<TrackElement>();
         if (track == nullptr)
+        {
             return false;
+        }
 
         if (track->isGhost())
         {
@@ -561,7 +595,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* road = tileElement->as<RoadElement>();
         if (road == nullptr)
+        {
             return false;
+        }
 
         if (road->isGhost())
         {
@@ -598,7 +634,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* road = tileElement->as<RoadElement>();
         if (road == nullptr)
+        {
             return false;
+        }
 
         if (road->isGhost())
         {
@@ -902,7 +940,9 @@ namespace OpenLoco::Ui::ViewportInteraction
     InteractionArg rightOver(int16_t x, int16_t y)
     {
         if (OpenLoco::isTitleMode())
+        {
             return InteractionArg{};
+        }
 
         // Interaction types to exclude by default
         auto interactionsToExclude = InteractionItemFlags::none | InteractionItemFlags::surface | InteractionItemFlags::water;
@@ -1450,10 +1490,14 @@ namespace OpenLoco::Ui::ViewportInteraction
         for (auto vp : w->viewports)
         {
             if (vp == nullptr)
+            {
                 continue;
+            }
 
             if (!vp->containsUi({ screenPos.x, screenPos.y }))
+            {
                 continue;
+            }
 
             chosenV = vp;
             auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });

@@ -378,7 +378,9 @@ namespace OpenLoco::GameSaveCompare
     bool compareGameStates(S5::GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences)
     {
         if (displayAllDivergences)
+        {
             Logging::info("display all divergences!");
+        }
 
         bool foundDivergence = false;
 

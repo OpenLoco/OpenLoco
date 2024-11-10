@@ -323,7 +323,9 @@ void SawyerStreamWriter::encodeRunLengthMulti(MemoryStream& buffer, std::span<co
     auto src = data.data();
     auto srcLen = data.size();
     if (srcLen == 0)
+    {
         return;
+    }
 
     // Need to emit at least one byte, otherwise there is nothing to repeat
     buffer.writeValue(std::byte{ 0xFF });
@@ -362,7 +364,9 @@ void SawyerStreamWriter::encodeRunLengthMulti(MemoryStream& buffer, std::span<co
 
                 // Maximum repeat count is 8
                 if (repeatCount == 8)
+                {
                     break;
+                }
             }
         }
 

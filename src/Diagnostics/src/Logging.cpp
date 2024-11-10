@@ -26,7 +26,9 @@ namespace OpenLoco::Diagnostics::Logging
             for (auto& sink : _sinks)
             {
                 if (!sink->passesLevelFilter(level))
+                {
                     continue;
+                }
 
                 sink->print(level, message);
             }
@@ -42,7 +44,9 @@ namespace OpenLoco::Diagnostics::Logging
             for (auto& sink : _sinks)
             {
                 if (sink->passesLevelFilter(level))
+                {
                     return true;
+                }
             }
 
             return false;

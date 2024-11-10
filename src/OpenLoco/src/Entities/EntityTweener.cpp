@@ -17,7 +17,9 @@ namespace OpenLoco
         for (auto* ent : entsView)
         {
             if (!pred(ent))
+            {
                 continue;
+            }
 
             list.push_back(ent);
             posList.emplace_back(ent->position);
@@ -80,20 +82,26 @@ namespace OpenLoco
         {
             auto* ent = _entities[i];
             if (ent == nullptr)
+            {
                 continue;
+            }
 
             auto& posA = _prePos[i];
             auto& posB = _postPos[i];
 
             if (posA == posB)
+            {
                 continue;
+            }
 
             auto newPos = World::Pos3{ static_cast<int16_t>(std::round(posB.x * alpha + posA.x * inv)),
                                        static_cast<int16_t>(std::round(posB.y * alpha + posA.y * inv)),
                                        static_cast<int16_t>(std::round(posB.z * alpha + posA.z * inv)) };
 
             if (ent->position == newPos)
+            {
                 continue;
+            }
 
             ent->moveTo(newPos);
             ent->invalidateSprite();
@@ -106,12 +114,16 @@ namespace OpenLoco
         {
             auto* ent = _entities[i];
             if (ent == nullptr)
+            {
                 continue;
+            }
 
             auto& newPos = _postPos[i];
 
             if (ent->position == newPos)
+            {
                 continue;
+            }
 
             ent->moveTo(newPos);
             ent->invalidateSprite();

@@ -86,7 +86,9 @@ namespace OpenLoco::World::MapGenerator
     void SimplexTerrainGenerator::smooth(int32_t iterations, HeightMapRange heightMap)
     {
         if (iterations == 0)
+        {
             return;
+        }
 
         const auto progressSteps = (25 - 15) / iterations;
         auto currentProgress = 15;

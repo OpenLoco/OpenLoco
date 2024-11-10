@@ -91,10 +91,14 @@ namespace OpenLoco::GameCommands
         for (auto* vehicle : vehicleList)
         {
             if (vehicle->vehicleType != VehicleType::aircraft)
+            {
                 continue;
+            }
 
             if (vehicle->tileX == -1)
+            {
                 continue;
+            }
 
             if (vehicle->stationId == stationId)
             {
@@ -241,10 +245,14 @@ namespace OpenLoco::GameCommands
             maxPos += World::Pos2{ tilePos.x, tilePos.y };
 
             if (minPos.x > maxPos.x)
+            {
                 std::swap(minPos.x, maxPos.x);
+            }
 
             if (minPos.y > maxPos.y)
+            {
                 std::swap(minPos.y, maxPos.y);
+            }
 
             // Ensure that current airport tile fits within these min/max bounds
             if (args.pos.x < minPos.x || args.pos.y < minPos.y || args.pos.x > maxPos.x || args.pos.y > maxPos.y)

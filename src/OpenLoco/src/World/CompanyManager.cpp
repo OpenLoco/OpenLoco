@@ -66,7 +66,9 @@ namespace OpenLoco::CompanyManager
     {
         // First, empty all non-empty companies.
         for (auto& company : companies())
+        {
             company.name = StringIds::empty;
+        }
 
         getGameState().produceAICompanyTimeout = 0;
 
@@ -537,7 +539,9 @@ namespace OpenLoco::CompanyManager
             for (const auto& company : companies())
             {
                 if (!isPlayerCompany(company.id()))
+                {
                     activeCompanies++;
+                }
             }
 
             auto& prng = gPrng1();
@@ -567,7 +571,9 @@ namespace OpenLoco::CompanyManager
         }
 
         if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
             return StringIds::company_status_bankrupt;
+        }
 
         const StringId observationStatusStrings[] = {
             StringIds::company_status_empty,
@@ -580,7 +586,9 @@ namespace OpenLoco::CompanyManager
 
         StringId statusString = observationStatusStrings[company->observationStatus];
         if (company->observationStatus == ObservationStatus::empty || company->observationTownId == TownId::null)
+        {
             return StringIds::company_status_empty;
+        }
 
         switch (company->observationStatus)
         {
@@ -589,13 +597,17 @@ namespace OpenLoco::CompanyManager
                 {
                     auto* obj = ObjectManager::get<RoadObject>(company->observationObject & 0xFF7F);
                     if (obj != nullptr)
+                    {
                         args.push(obj->name);
+                    }
                 }
                 else
                 {
                     auto* obj = ObjectManager::get<TrackObject>(company->observationObject);
                     if (obj != nullptr)
+                    {
                         args.push(obj->name);
+                    }
                 }
                 break;
 
@@ -603,7 +615,9 @@ namespace OpenLoco::CompanyManager
             {
                 auto* obj = ObjectManager::get<AirportObject>(company->observationObject);
                 if (obj != nullptr)
+                {
                     args.push(obj->name);
+                }
                 break;
             }
 
@@ -611,7 +625,9 @@ namespace OpenLoco::CompanyManager
             {
                 auto* obj = ObjectManager::get<DockObject>(company->observationObject);
                 if (obj != nullptr)
+                {
                     args.push(obj->name);
+                }
                 break;
             }
 
@@ -642,24 +658,34 @@ namespace OpenLoco::CompanyManager
 
         company->updateCounter += 1;
         if ((company->updateCounter % 128) != 0)
+        {
             return;
+        }
 
         for (size_t i = 0; i < WindowManager::count(); i++)
         {
             auto w = WindowManager::get(i);
 
             if (w->type != WindowType::vehicle)
+            {
                 continue;
+            }
 
             auto* vehicle = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
             if (vehicle == nullptr)
+            {
                 continue;
+            }
 
             if (vehicle->position.x == Location::null)
+            {
                 continue;
+            }
 
             if (vehicle->owner != companyId)
+            {
                 continue;
+            }
 
             GameCommands::UpdateOwnerStatusArgs args{};
             args.ownerStatus = OwnerStatus(vehicle->id);
@@ -670,11 +696,15 @@ namespace OpenLoco::CompanyManager
 
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
+        {
             return;
+        }
 
         auto viewport = main->viewports[0];
         if (viewport == nullptr)
+        {
             return;
+        }
 
         auto screenPosition = viewport->getUiCentre();
 
@@ -737,7 +767,9 @@ namespace OpenLoco::CompanyManager
     {
         auto* company = get(id);
         if (company == nullptr || OpenLoco::isEditorMode())
+        {
             return;
+        }
 
         WindowManager::invalidate(WindowType::company, enumValue(id));
 
@@ -832,7 +864,9 @@ namespace OpenLoco::CompanyManager
     void setPreferredName()
     {
         if (!Config::get().usePreferredOwnerName)
+        {
             return;
+        }
 
         // First, set the owner name.
         GameCommands::setErrorTitle(StringIds::cannot_change_owner_name);
@@ -860,7 +894,9 @@ namespace OpenLoco::CompanyManager
         // Only continue if we've not set a custom company name yet.
         auto* company = get(GameCommands::getUpdatingCompanyId());
         if (company == nullptr || company->name != StringIds::new_company)
+        {
             return;
+        }
 
         // Temporarily store the preferred name in buffer string 2039.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -935,7 +971,9 @@ namespace OpenLoco::CompanyManager
         for (auto& company : companies())
         {
             if (company.id() == companyId)
+            {
                 continue;
+            }
 
             mask |= similarColourMask[enumValue(company.mainColours.primary)];
         }

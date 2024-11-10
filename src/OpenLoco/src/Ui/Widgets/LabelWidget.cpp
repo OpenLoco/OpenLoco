@@ -56,10 +56,16 @@ namespace OpenLoco::Ui::Widgets
         int16_t width = widget.right - widget.left - 2;
 
         if (widget.contentAlign == ContentAlign::Left)
+        {
             tr.drawStringLeftClipped(Point(x, y), width, colour, widget.text, formatArgs);
+        }
         else if (widget.contentAlign == ContentAlign::Center)
+        {
             tr.drawStringCentredClipped(Point(x, y), width, colour, widget.text, formatArgs);
+        }
         else if (widget.contentAlign == ContentAlign::Right)
+        {
             tr.drawStringLeftClipped(Point(x, y), width, colour, widget.text, formatArgs);
+        }
     }
 }

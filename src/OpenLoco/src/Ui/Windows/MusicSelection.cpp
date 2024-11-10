@@ -46,7 +46,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     {
         Window* window = WindowManager::bringToFront(WindowType::musicSelection, 0);
         if (window != nullptr)
+        {
             return window;
+        }
 
         window = WindowManager::createWindow(
             WindowType::musicSelection,
@@ -159,7 +161,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     {
         uint16_t currentTrack = y / kRowHeight;
         if (currentTrack > window.rowCount)
+        {
             return;
+        }
 
         auto& config = Config::get().old;
 
@@ -169,11 +173,15 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         // Are any tracks enabled?
         uint8_t anyEnabled = 0;
         for (uint8_t i = 0; i < Audio::kNumMusicTracks; i++)
+        {
             anyEnabled |= config.enabledMusic[i];
+        }
 
         // Ensure at least this track is enabled.
         if (!anyEnabled)
+        {
             config.enabledMusic[currentTrack] = true;
+        }
 
         Config::write();
         Audio::revalidateCurrentTrack();
@@ -185,7 +193,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     {
         uint16_t currentTrack = y / kRowHeight;
         if (currentTrack > window.rowCount || currentTrack == window.rowHover)
+        {
             return;
+        }
 
         window.rowHover = currentTrack;
         window.invalidate();

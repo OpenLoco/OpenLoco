@@ -23,16 +23,24 @@ namespace OpenLoco::GameCommands
             for (auto& company : CompanyManager::companies())
             {
                 if (company.headquartersX != pos.x)
+                {
                     continue;
+                }
 
                 if (company.headquartersY != pos.y)
+                {
                     continue;
+                }
 
                 if (company.headquartersZ != baseZ)
+                {
                     continue;
+                }
 
                 if (!sub_431E6A(company.id(), nullptr))
+                {
                     return GameCommands::FAILURE;
+                }
 
                 targetCompanyId = company.id();
                 break;

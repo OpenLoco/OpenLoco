@@ -482,7 +482,9 @@ namespace OpenLoco::World::TileManager
         TileHeight height{ 16, 0 };
         // Off the map
         if ((unsigned)pos.x >= (World::kMapWidth - 1) || (unsigned)pos.y >= (World::kMapHeight - 1))
+        {
             return height;
+        }
 
         auto tile = TileManager::get(pos);
         // Get the surface element for the tile
@@ -868,7 +870,9 @@ namespace OpenLoco::World::TileManager
             auto tile = get(tilePos);
             auto* surface = tile.surface();
             if (surface != nullptr && surface->water() > 0)
+            {
                 surroundingWaterTiles++;
+            }
         }
 
         return surroundingWaterTiles;
@@ -923,10 +927,14 @@ namespace OpenLoco::World::TileManager
                 // This has been omitted from our implementation.
                 auto* tree = element.as<TreeElement>();
                 if (tree == nullptr)
+                {
                     continue;
+                }
 
                 if (tree->isGhost())
+                {
                     continue;
+                }
 
                 surroundingTrees++;
             }
@@ -947,12 +955,16 @@ namespace OpenLoco::World::TileManager
         {
             // Skip every other tile, depending on initial position
             if ((tilePos.x & 1) != (initialTilePos.x & 1) || (tilePos.y & 1) != (initialTilePos.y & 1))
+            {
                 continue;
+            }
 
             auto tile = get(tilePos);
             auto* surface = tile.surface();
             if (surface != nullptr && surface->water() > 0)
+            {
                 nearbyWaterTiles++;
+            }
         }
 
         return nearbyWaterTiles;
@@ -1017,7 +1029,9 @@ namespace OpenLoco::World::TileManager
                 for (auto& el : tile)
                 {
                     if (el.isGhost())
+                    {
                         continue;
+                    }
 
                     // If update removed/added tiles we must stop loop as pointer is invalid
                     if (!update(el, pos))

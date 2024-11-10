@@ -132,14 +132,14 @@ namespace OpenLoco::Ui
             , mapY(mapY)
             , zoomLevel(zoomLevel)
             , rotation(rotation)
-            , surfaceZ(surfaceZ) {};
+            , surfaceZ(surfaceZ){};
 
         SavedView(EntityId entityId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
             : entityId(entityId)
             , flags(flags)
             , zoomLevel(zoomLevel)
             , rotation(rotation)
-            , surfaceZ(surfaceZ) {};
+            , surfaceZ(surfaceZ){};
 
         bool isEmpty() const
         {
@@ -159,7 +159,9 @@ namespace OpenLoco::Ui
         World::Pos3 getPos() const
         {
             if (isEntityView())
+            {
                 return {};
+            }
 
             return { mapX, static_cast<coord_t>(mapY & 0x3FFF), surfaceZ };
         }

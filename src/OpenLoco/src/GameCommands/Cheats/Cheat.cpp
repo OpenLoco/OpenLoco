@@ -35,7 +35,9 @@ namespace OpenLoco::GameCommands
                 {
                     // Check to verify that roadElement is owned by the target company
                     if (roadElement->owner() == targetCompanyId)
+                    {
                         roadElement->setOwner(ourCompanyId);
+                    }
                     continue;
                 }
 
@@ -44,7 +46,9 @@ namespace OpenLoco::GameCommands
                 {
                     // Check to verify that the trackElement is owned by the target company.
                     if (trackElement->owner() == targetCompanyId)
+                    {
                         trackElement->setOwner(ourCompanyId);
+                    }
                     continue;
                 }
             }
@@ -53,7 +57,9 @@ namespace OpenLoco::GameCommands
             for (auto& station : StationManager::stations())
             {
                 if (station.owner != targetCompanyId)
+                {
                     continue;
+                }
 
                 station.owner = ourCompanyId;
             }
@@ -62,7 +68,9 @@ namespace OpenLoco::GameCommands
             for (auto* vehicle : VehicleManager::VehicleList())
             {
                 if (vehicle->owner != targetCompanyId)
+                {
                     continue;
+                }
 
                 Vehicles::Vehicle train(*vehicle);
                 train.applyToComponents([ourCompanyId](Vehicles::VehicleBase& component) {
@@ -95,7 +103,9 @@ namespace OpenLoco::GameCommands
             {
                 // Does this town have a rating for our company?
                 if (!(town.companiesWithRating &= (1 << enumValue(companyId))))
+                {
                     continue;
+                }
 
                 int16_t newRanking{};
                 if (absolute)
@@ -123,7 +133,9 @@ namespace OpenLoco::GameCommands
 
             // Already controlling the target company?
             if (targetCompanyId == ourId)
+            {
                 return 0;
+            }
 
             // Is the other player controlling the target company? Swap companies.
             if (targetCompanyId == otherId)
@@ -156,7 +168,9 @@ namespace OpenLoco::GameCommands
         {
             auto company = CompanyManager::get(targetCompanyId);
             if ((company->challengeFlags & CompanyFlags::challengeCompleted) != CompanyFlags::none)
+            {
                 return 0;
+            }
 
             company->challengeFlags &= ~(CompanyFlags::challengeBeatenByOpponent | CompanyFlags::challengeCompleted | CompanyFlags::challengeFailed);
             company->challengeProgress = 100;
@@ -172,7 +186,9 @@ namespace OpenLoco::GameCommands
             for (auto* vehicle : VehicleManager::VehicleList())
             {
                 if (vehicle->owner != ourCompanyId)
+                {
                     continue;
+                }
 
                 Vehicles::Vehicle train(*vehicle);
                 train.veh2->reliability = newReliablity;
@@ -197,7 +213,9 @@ namespace OpenLoco::GameCommands
     static uint32_t cheat(const GameCommands::GenericCheatArgs& args, uint8_t flags)
     {
         if (!(flags & GameCommands::Flags::apply))
+        {
             return 0;
+        }
 
         switch (args.subcommand)
         {

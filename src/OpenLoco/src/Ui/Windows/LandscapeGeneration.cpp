@@ -93,9 +93,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 WindowManager::close(WindowType::landscapeGenerationConfirm, 0);
 
                 if (promptType == 0)
+                {
                     Scenario::generateLandscape();
+                }
                 else
+                {
                     Scenario::eraseLandscape();
+                }
             }
         }
 
@@ -138,9 +142,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 uint32_t imageId = skin->img;
                 if (window->currentTab == widx::tab_options - widx::tab_options)
+                {
                     imageId += optionTabImageIds[(window->frameNo / 2) % std::size(optionTabImageIds)];
+                }
                 else
+                {
                     imageId += optionTabImageIds[0];
+                }
 
                 Widget::drawTab(window, drawingCtx, imageId, widx::tab_options);
             }
@@ -157,7 +165,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 const auto waterObj = ObjectManager::get<WaterObject>();
                 uint32_t imageId = waterObj->image + Water::ImageIds::kToolbarTerraformWater;
                 if (window->currentTab == widx::tab_water - widx::tab_options)
+                {
                     imageId += (window->frameNo / 2) % 16;
+                }
 
                 Widget::drawTab(window, drawingCtx, imageId, widx::tab_water);
             }
@@ -206,9 +216,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             if (options.generator == S5::LandGeneratorType::PngHeightMap)
             {
                 if (World::MapGenerator::getPngHeightmapPath().empty())
+                {
                     window.disabledWidgets |= (1 << widx::generate_now);
+                }
                 else
+                {
                     window.disabledWidgets &= ~(1 << widx::generate_now);
+                }
             }
             else if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
             {
@@ -348,7 +362,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                         args.push(filename.c_str());
                     }
                     else
+                    {
                         args.push(StringManager::getString(StringIds::noneSelected));
+                    }
 
                     auto pos = Point(window.x + 10, window.y + window.widgets[widx::browseHeightmapFile].top);
                     tr.drawStringLeft(pos, Colour::black, StringIds::currentHeightmapFile, args);
@@ -460,13 +476,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 case widx::start_year_up:
                     if (options.scenarioStartYear + 1 <= Scenario::kMaxYear)
+                    {
                         options.scenarioStartYear += 1;
+                    }
                     window.invalidate();
                     break;
 
                 case widx::start_year_down:
                     if (options.scenarioStartYear - 1 >= Scenario::kMinYear)
+                    {
                         options.scenarioStartYear -= 1;
+                    }
                     window.invalidate();
                     break;
 
@@ -486,7 +506,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(generatorIds), 0x80);
 
                     for (size_t i = 0; i < std::size(generatorIds); i++)
+                    {
                         Dropdown::add(i, generatorIds[i]);
+                    }
 
                     Dropdown::setHighlightedItem(static_cast<uint8_t>(options.generator));
                     break;
@@ -555,7 +577,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         if (window != nullptr)
         {
             if (ToolManager::isToolActive(window->type, window->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             window = WindowManager::bringToFront(WindowType::landscapeGeneration, 0);
         }
@@ -680,7 +704,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 auto landObject = ObjectManager::get<LandObject>(i);
                 if (landObject == nullptr)
+                {
                     continue;
+                }
 
                 // Draw tile icon.
                 const uint32_t imageId = landObject->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
@@ -729,7 +755,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 auto landObject = ObjectManager::get<LandObject>(i);
                 if (landObject == nullptr)
+                {
                     continue;
+                }
 
                 *scrollHeight += kRowHeight;
             }
@@ -787,7 +815,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(topographyStyleIds), 0x80);
 
                     for (size_t i = 0; i < std::size(topographyStyleIds); i++)
+                    {
                         Dropdown::add(i, topographyStyleIds[i]);
+                    }
 
                     Dropdown::setHighlightedItem(static_cast<uint8_t>(options.topographyStyle));
                     break;
@@ -829,17 +859,23 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static int16_t scrollPosToLandIndex(int16_t xPos, int16_t yPos)
         {
             if (xPos < 150)
+            {
                 return -1;
+            }
 
             for (uint16_t i = 0; i < kMaxLandObjects; i++)
             {
                 auto landObject = ObjectManager::get<LandObject>(i);
                 if (landObject == nullptr)
+                {
                     continue;
+                }
 
                 yPos -= kRowHeight;
                 if (yPos < 0)
+                {
                     return i;
+                }
             }
 
             return -1;
@@ -850,7 +886,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             int16_t landIndex = scrollPosToLandIndex(xPos, yPos);
             if (landIndex == -1)
+            {
                 return;
+            }
 
             window.rowHover = landIndex;
 
@@ -862,7 +900,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Dropdown::show(dropdownX, dropdownY, 188, 12, window.getColour(WindowColour::secondary), std::size(landDistributionLabelIds), 0x80);
 
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
+            {
                 Dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
+            }
 
             Dropdown::setItemSelected(enumValue(S5::getOptions().landDistributionPatterns[landIndex]));
         }
@@ -887,9 +927,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window.widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
             if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) != Scenario::ScenarioFlags::none)
+            {
                 window.activatedWidgets |= (1 << widx::hillsEdgeOfMap);
+            }
             else
+            {
                 window.activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);
+            }
         }
 
         // 0x0043E2A2
@@ -1269,7 +1313,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     options.minForestRadius = std::min<int16_t>(options.minForestRadius + 1, Scenario::kMaxForestRadius);
                     if (options.minForestRadius > options.maxForestRadius)
+                    {
                         options.maxForestRadius = options.minForestRadius;
+                    }
                     break;
                 }
                 case widx::min_forest_radius_down:
@@ -1286,14 +1332,18 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     options.maxForestRadius = std::clamp<int8_t>(options.maxForestRadius - 1, Scenario::kMinForestRadius, Scenario::kMaxForestRadius);
                     if (options.maxForestRadius < options.minForestRadius)
+                    {
                         options.minForestRadius = options.maxForestRadius;
+                    }
                     break;
                 }
                 case widx::min_forest_density_up:
                 {
                     options.minForestDensity = std::min<int8_t>(options.minForestDensity + 1, Scenario::kMaxForestDensity);
                     if (options.minForestDensity > options.maxForestDensity)
+                    {
                         options.maxForestDensity = options.minForestDensity;
+                    }
                     break;
                 }
                 case widx::min_forest_density_down:
@@ -1310,7 +1360,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     options.maxForestDensity = std::max<int8_t>(Scenario::kMinForestDensity, options.maxForestDensity - 1);
                     if (options.maxForestDensity < options.minForestDensity)
+                    {
                         options.minForestDensity = options.maxForestDensity;
+                    }
                     break;
                 }
                 case widx::number_random_trees_up:
@@ -1327,7 +1379,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     options.minAltitudeForTrees = std::min<int8_t>(options.minAltitudeForTrees + 1, Scenario::kMaxAltitudeTrees);
                     if (options.minAltitudeForTrees > options.maxAltitudeForTrees)
+                    {
                         options.maxAltitudeForTrees = options.minAltitudeForTrees;
+                    }
                     break;
                 }
                 case widx::min_altitude_for_trees_down:
@@ -1344,7 +1398,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     options.maxAltitudeForTrees = std::max<int8_t>(Scenario::kMinAltitudeTrees, options.maxAltitudeForTrees - 1);
                     if (options.maxAltitudeForTrees < options.minAltitudeForTrees)
+                    {
                         options.minAltitudeForTrees = options.maxAltitudeForTrees;
+                    }
                     break;
                 }
                 default:
@@ -1483,7 +1539,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::max_town_size_btn || itemIndex == -1)
+            {
                 return;
+            }
 
             S5::getOptions().maxTownSize = itemIndex + 1;
             window.invalidate();
@@ -1525,7 +1583,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(townSizeLabels), 0x80);
 
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
+                    {
                         Dropdown::add(i, townSizeLabels[i]);
+                    }
 
                     Dropdown::setHighlightedItem(options.maxTownSize - 1);
                     break;
@@ -1604,7 +1664,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::num_industries_btn || itemIndex == -1)
+            {
                 return;
+            }
 
             S5::getOptions().numberOfIndustries = itemIndex;
             window.invalidate();
@@ -1621,7 +1683,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(numIndustriesLabels), 0x80);
 
                     for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
+                    {
                         Dropdown::add(i, numIndustriesLabels[i]);
+                    }
 
                     Dropdown::setHighlightedItem(S5::getOptions().numberOfIndustries);
                     break;
@@ -1647,9 +1711,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window.widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
             window.activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
             if (!IndustryManager::hasFlags(IndustryManager::Flags::disallowIndustriesCloseDown))
+            {
                 window.activatedWidgets |= 1 << widx::check_allow_industries_close_down;
+            }
             if (!IndustryManager::hasFlags(IndustryManager::Flags::disallowIndustriesStartUp))
+            {
                 window.activatedWidgets |= 1 << widx::check_allow_industries_start_up;
+            }
         }
 
         static constexpr WindowEventList kEvents = {
@@ -1704,7 +1772,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void switchTab(Window* window, WidgetIndex_t widgetIndex)
         {
             if (ToolManager::isToolActive(window->type, window->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             window->currentTab = widgetIndex - widx::tab_options;
             window->frameNo = 0;
@@ -1750,9 +1820,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             const auto newSize = [widgetIndex]() {
                 if (widgetIndex == widx::tab_land)
+                {
                     return kLandTabSize;
+                }
                 else
+                {
                     return kWindowSize;
+                }
             }();
 
             window->setSize(newSize);

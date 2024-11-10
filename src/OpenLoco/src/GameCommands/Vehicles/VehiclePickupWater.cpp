@@ -31,7 +31,9 @@ namespace OpenLoco::GameCommands
         }
 
         if (!(flags & Flags::ghost))
+        {
             Vehicles::playPickupSound(train.veh2);
+        }
 
         if (train.head->stationId != StationId::null)
         {

@@ -127,14 +127,20 @@ namespace OpenLoco
     Exhaust* Exhaust::create(World::Pos3 loc, uint8_t type)
     {
         if (!World::validCoords(loc))
+        {
             return nullptr;
+        }
         auto surface = World::TileManager::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
 
         if (surface == nullptr)
+        {
             return nullptr;
+        }
 
         if (loc.z <= surface->baseHeight())
+        {
             return nullptr;
+        }
 
         auto _exhaust = static_cast<Exhaust*>(EntityManager::createEntityMisc());
 

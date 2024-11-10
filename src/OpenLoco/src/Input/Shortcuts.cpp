@@ -57,7 +57,9 @@ namespace OpenLoco::Input::Shortcuts
     static void pauseUnpauseGame()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         GameCommands::doCommand(GameCommands::PauseGameArgs{}, GameCommands::Flags::apply);
     }
@@ -67,7 +69,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         Window* main = WindowManager::getMainWindow();
         if (main == nullptr)
+        {
             return;
+        }
 
         main->viewportZoomOut(false);
         TownManager::updateLabels();
@@ -79,7 +83,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         Window* main = WindowManager::getMainWindow();
         if (main == nullptr)
+        {
             return;
+        }
 
         main->viewportZoomIn(false);
         TownManager::updateLabels();
@@ -91,7 +97,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         Window* main = WindowManager::getMainWindow();
         if (main == nullptr)
+        {
             return;
+        }
 
         main->viewportRotateRight();
         TownManager::updateLabels();
@@ -103,13 +111,17 @@ namespace OpenLoco::Input::Shortcuts
     static void rotateConstructionObject()
     {
         if (Windows::Vehicle::rotate())
+        {
             return;
+        }
 
         auto window = WindowManager::find(WindowType::terraform);
         if (window != nullptr)
         {
             if (Ui::Windows::Terraform::rotate(*window))
+            {
                 return;
+            }
         }
 
         // 0x004A5D48
@@ -117,21 +129,27 @@ namespace OpenLoco::Input::Shortcuts
         if (window != nullptr)
         {
             if (Ui::Windows::Construction::rotate(*window))
+            {
                 return;
+            }
         }
 
         window = WindowManager::find(WindowType::townList);
         if (window != nullptr)
         {
             if (Ui::Windows::TownList::rotate(*window))
+            {
                 return;
+            }
         }
 
         window = WindowManager::find(WindowType::company);
         if (window != nullptr)
         {
             if (Ui::Windows::CompanyWindow::rotate(*window))
+            {
                 return;
+            }
         }
     }
 
@@ -140,7 +158,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::underground_view;
@@ -151,7 +171,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::seeThroughBuildings;
@@ -162,7 +184,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::seeThroughBridges;
@@ -173,7 +197,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::seeThroughRoads;
@@ -185,7 +211,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::seeThroughScenery;
@@ -197,7 +225,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::seeThroughTracks;
@@ -208,7 +238,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::seeThroughTrees;
@@ -220,7 +252,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::height_marks_on_land;
@@ -232,7 +266,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
@@ -244,7 +280,9 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::one_way_direction_arrows;
@@ -255,7 +293,9 @@ namespace OpenLoco::Input::Shortcuts
     static void adjustLand()
     {
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        {
             return;
+        }
 
         Windows::Terraform::openAdjustLand();
     }
@@ -264,7 +304,9 @@ namespace OpenLoco::Input::Shortcuts
     static void adjustWater()
     {
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        {
             return;
+        }
 
         Windows::Terraform::openAdjustWater();
     }
@@ -273,7 +315,9 @@ namespace OpenLoco::Input::Shortcuts
     static void plantTrees()
     {
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        {
             return;
+        }
 
         Windows::Terraform::openPlantTrees();
     }
@@ -282,7 +326,9 @@ namespace OpenLoco::Input::Shortcuts
     static void bulldozeArea()
     {
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        {
             return;
+        }
 
         Windows::Terraform::openClearArea();
     }
@@ -291,10 +337,14 @@ namespace OpenLoco::Input::Shortcuts
     static void buildTracks()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         if (getGameState().lastRailroadOption == 0xFF)
+        {
             return;
+        }
 
         Windows::Construction::openWithFlags(getGameState().lastRailroadOption);
     }
@@ -303,10 +353,14 @@ namespace OpenLoco::Input::Shortcuts
     static void buildRoads()
     {
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        {
             return;
+        }
 
         if (getGameState().lastRoadOption == 0xFF)
+        {
             return;
+        }
 
         Windows::Construction::openWithFlags(getGameState().lastRoadOption);
     }
@@ -315,10 +369,14 @@ namespace OpenLoco::Input::Shortcuts
     static void buildAirports()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         if (getGameState().lastAirport == 0xFF)
+        {
             return;
+        }
 
         Windows::Construction::openWithFlags(1U << 31);
     }
@@ -327,10 +385,14 @@ namespace OpenLoco::Input::Shortcuts
     static void buildShipPorts()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         if (getGameState().lastShipPort == 0xFF)
+        {
             return;
+        }
 
         Windows::Construction::openWithFlags(1U << 30);
     }
@@ -339,10 +401,14 @@ namespace OpenLoco::Input::Shortcuts
     static void buildNewVehicles()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         if (getGameState().lastBuildVehiclesOption == 0xFF)
+        {
             return;
+        }
 
         Windows::BuildVehicle::open(getGameState().lastBuildVehiclesOption, 1U << 31);
     }
@@ -351,7 +417,9 @@ namespace OpenLoco::Input::Shortcuts
     static void showVehiclesList()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         Windows::VehicleList::open(CompanyManager::getControllingId(), getGameState().lastVehicleType);
     }
@@ -360,7 +428,9 @@ namespace OpenLoco::Input::Shortcuts
     static void showStationsList()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         Windows::StationList::open(CompanyManager::getControllingId(), 0);
     }
@@ -369,7 +439,9 @@ namespace OpenLoco::Input::Shortcuts
     static void showTownsList()
     {
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        {
             return;
+        }
 
         Windows::TownList::open();
     }
@@ -378,7 +450,9 @@ namespace OpenLoco::Input::Shortcuts
     static void showIndustriesList()
     {
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        {
             return;
+        }
 
         Windows::IndustryList::open();
     }
@@ -387,7 +461,9 @@ namespace OpenLoco::Input::Shortcuts
     static void showMap()
     {
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        {
             return;
+        }
 
         Windows::MapWindow::open();
     }
@@ -396,7 +472,9 @@ namespace OpenLoco::Input::Shortcuts
     static void showCompaniesList()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         Ui::Windows::CompanyList::open();
     }
@@ -405,7 +483,9 @@ namespace OpenLoco::Input::Shortcuts
     static void showCompanyInformation()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         Ui::Windows::CompanyWindow::open(CompanyManager::getControllingId());
     }
@@ -414,7 +494,9 @@ namespace OpenLoco::Input::Shortcuts
     static void showFinances()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         Windows::CompanyWindow::openFinances(CompanyManager::getControllingId());
     }
@@ -423,7 +505,9 @@ namespace OpenLoco::Input::Shortcuts
     static void showAnnouncementsList()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         Windows::MessageWindow::open();
     }
@@ -443,7 +527,9 @@ namespace OpenLoco::Input::Shortcuts
     static void toggleLastAnnouncement()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         auto window = WindowManager::find(WindowType::news);
         if (window)
@@ -460,16 +546,22 @@ namespace OpenLoco::Input::Shortcuts
     static void sendMessage()
     {
         if (isEditorMode())
+        {
             return;
+        }
 
         if (!isNetworked())
+        {
             return;
+        }
 
         if (isTitleMode())
         {
             auto* caller = WindowManager::find(WindowType::titleMenu);
             if (caller == nullptr)
+            {
                 return;
+            }
 
             Windows::TitleMenu::beginSendChatMessage(*caller);
         }
@@ -477,7 +569,9 @@ namespace OpenLoco::Input::Shortcuts
         {
             auto* caller = WindowManager::find(WindowType::timeToolbar);
             if (caller == nullptr)
+            {
                 return;
+            }
 
             Windows::TimePanel::beginSendChatMessage(*caller);
         }
@@ -487,63 +581,81 @@ namespace OpenLoco::Input::Shortcuts
     {
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
+        {
             Ui::Windows::Construction::Common::previousTab(window);
+        }
     }
 
     static void constructionNextTab()
     {
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
+        {
             Ui::Windows::Construction::Common::nextTab(window);
+        }
     }
 
     static void constructionPreviousTrackPiece()
     {
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
+        {
             Ui::Windows::Construction::Construction::previousTrackPiece(window);
+        }
     }
 
     static void constructionNextTrackPiece()
     {
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
+        {
             Ui::Windows::Construction::Construction::nextTrackPiece(window);
+        }
     }
 
     static void constructionPreviousSlope()
     {
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
+        {
             Ui::Windows::Construction::Construction::previousSlope(window);
+        }
     }
 
     static void constructionNextSlope()
     {
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
+        {
             Ui::Windows::Construction::Construction::nextSlope(window);
+        }
     }
 
     static void constructionBuildAtCurrentPos()
     {
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
+        {
             Ui::Windows::Construction::Construction::buildAtCurrentPos(window);
+        }
     }
 
     static void constructionRemoveAtCurrentPos()
     {
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
+        {
             Ui::Windows::Construction::Construction::removeAtCurrentPos(window);
+        }
     }
 
     static void constructionSelectPosition()
     {
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
+        {
             Ui::Windows::Construction::Construction::selectPosition(window);
+        }
     }
 
     static void gameSpeedNormal()

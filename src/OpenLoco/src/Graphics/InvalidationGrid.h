@@ -52,7 +52,9 @@ namespace OpenLoco::Gfx
                         while (true)
                         {
                             if (row + numRowsDirty + 1 >= rowCount || blocks[rowEndOffset + column + columnCount] == 0)
+                            {
                                 break;
+                            }
 
                             numRowsDirty++;
                             rowEndOffset += columnCount;

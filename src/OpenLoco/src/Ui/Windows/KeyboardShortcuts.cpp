@@ -57,7 +57,9 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
         window = WindowManager::bringToFront(WindowType::keyboardShortcuts, 0);
         if (window != nullptr)
+        {
             return window;
+        }
 
         // 0x004BF833 (create_options_window)
         window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, WindowFlags::none, getEvents());
@@ -176,9 +178,13 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             if (shortcut.keyCode != 0xFFFFFFFF && shortcut.modifiers != KeyModifier::invalid)
             {
                 if ((shortcut.modifiers & KeyModifier::shift) == KeyModifier::shift)
+                {
                     modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
+                }
                 else if ((shortcut.modifiers & KeyModifier::control) == KeyModifier::control)
+                {
                     modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
+                }
 
                 baseStringId = StringIds::stringptr;
                 getBindingString(shortcut.keyCode, buffer, std::size(buffer));
@@ -239,7 +245,9 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         auto row = y / kRowHeight;
 
         if (row >= self.rowCount)
+        {
             return;
+        }
 
         if (row != self.rowHover)
         {
@@ -254,7 +262,9 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         auto row = y / kRowHeight;
 
         if (row >= self.rowCount)
+        {
             return;
+        }
 
         EditKeyboardShortcut::open(row);
     }

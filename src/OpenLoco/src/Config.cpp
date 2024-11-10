@@ -189,9 +189,13 @@ namespace OpenLoco::Config
         {
             auto node = scNode[def.configName];
             if (node)
+            {
                 shortcuts[def.id] = node.as<KeyboardShortcut>();
+            }
             else
+            {
                 shortcuts[def.id] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
+            }
         }
     }
 
@@ -397,9 +401,13 @@ namespace OpenLoco::Config
         {
             auto it = shortcuts.find(def.id);
             if (it != std::end(shortcuts))
+            {
                 scNode[def.configName] = it->second;
+            }
             else
+            {
                 scNode[def.configName] = "";
+            }
         }
         node["shortcuts"] = scNode;
 

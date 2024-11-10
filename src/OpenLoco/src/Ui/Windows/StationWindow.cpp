@@ -200,7 +200,9 @@ namespace OpenLoco::Ui::Windows::Station
         static void initViewport(Window& self)
         {
             if (self.currentTab != 0)
+            {
                 return;
+            }
 
             self.callPrepareDraw();
 
@@ -222,7 +224,9 @@ namespace OpenLoco::Ui::Windows::Station
             if (self.viewports[0] != nullptr)
             {
                 if (self.savedView == view)
+                {
                     return;
+                }
 
                 flags = self.viewports[0]->flags;
                 self.viewportRemove(0);
@@ -231,7 +235,9 @@ namespace OpenLoco::Ui::Windows::Station
             else
             {
                 if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+                {
                     flags |= ViewportFlags::gridlines_on_landscape;
+                }
             }
             // Remove station names from viewport
             flags |= ViewportFlags::station_names_displayed;
@@ -281,7 +287,9 @@ namespace OpenLoco::Ui::Windows::Station
         if (window != nullptr)
         {
             if (ToolManager::isToolActive(window->type, window->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             window = WindowManager::bringToFront(WindowType::station, enumValue(stationId));
         }
@@ -364,7 +372,9 @@ namespace OpenLoco::Ui::Windows::Station
 
             self.activatedWidgets &= ~(1 << widx::station_catchment);
             if (StationId(self.number) == _lastSelectedStation)
+            {
                 self.activatedWidgets |= (1 << widx::station_catchment);
+            }
         }
 
         // 0x0048E8DE
@@ -386,7 +396,9 @@ namespace OpenLoco::Ui::Windows::Station
                 auto& stats = station->cargoStats[cargoId];
 
                 if (!stats.isAccepted())
+                {
                     continue;
+                }
 
                 *buffer++ = ' ';
                 *buffer++ = ControlCodes::inlineSpriteStr;
@@ -433,7 +445,9 @@ namespace OpenLoco::Ui::Windows::Station
                 {
                     StationId windowNumber = StationId(self.number);
                     if (windowNumber == _lastSelectedStation)
+                    {
                         windowNumber = StationId::null;
+                    }
 
                     showStationCatchment(windowNumber);
                     break;
@@ -460,7 +474,9 @@ namespace OpenLoco::Ui::Windows::Station
                 {
                     *scrollHeight += 12;
                     if (cargoStats.origin != StationId(self.number))
+                    {
                         *scrollHeight += 10;
+                    }
                 }
             }
         }
@@ -513,7 +529,9 @@ namespace OpenLoco::Ui::Windows::Station
                 auto cargoName = cargoObj->unitNameSingular;
 
                 if (cargo.quantity != 1)
+                {
                     cargoName = cargoObj->unitNamePlural;
+                }
 
                 const auto& widget = self.widgets[widx::scrollview];
                 auto xPos = widget.width() - 14;
@@ -525,7 +543,9 @@ namespace OpenLoco::Ui::Windows::Station
 
                     auto cargoStr = StringIds::station_cargo;
                     if (cargo.origin != StationId(self.number))
+                    {
                         cargoStr = StringIds::station_cargo_en_route_start;
+                    }
 
                     auto point = Point(xPos, y);
                     tr.drawStringRight(point, AdvancedColour(Colour::black).outline(), cargoStr, args);
@@ -550,7 +570,9 @@ namespace OpenLoco::Ui::Windows::Station
 
             uint16_t totalUnits = 0;
             for (const auto& stats : station->cargoStats)
+            {
                 totalUnits += stats.quantity;
+            }
 
             if (totalUnits == 0)
             {
@@ -668,7 +690,9 @@ namespace OpenLoco::Ui::Windows::Station
             for (uint8_t i = 0; i < 32; i++)
             {
                 if (station->cargoStats[i].origin != StationId::null)
+                {
                     *scrollHeight += 10;
+                }
             }
         }
 
@@ -787,7 +811,9 @@ namespace OpenLoco::Ui::Windows::Station
     void showStationCatchment(StationId stationId)
     {
         if (stationId == _lastSelectedStation)
+        {
             return;
+        }
 
         const StationId oldStationId = _lastSelectedStation;
         _lastSelectedStation = stationId;
@@ -869,7 +895,9 @@ namespace OpenLoco::Ui::Windows::Station
         static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
+            {
                 return;
+            }
 
             GameCommands::setErrorTitle(StringIds::error_cant_rename_station);
 
@@ -922,7 +950,9 @@ namespace OpenLoco::Ui::Windows::Station
             }
 
             if (ToolManager::isToolActive(self->type, self->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
@@ -977,9 +1007,13 @@ namespace OpenLoco::Ui::Windows::Station
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_cargo - widx::tab_station)
+                {
                     imageId += cargoTabImageIds[(self->frameNo / 8) % std::size(cargoTabImageIds)];
+                }
                 else
+                {
                     imageId += cargoTabImageIds[0];
+                }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_cargo);
             }
@@ -1006,7 +1040,9 @@ namespace OpenLoco::Ui::Windows::Station
                         {
                             ratingColour = Colour::yellow;
                             if (cargo.rating < 50)
+                            {
                                 ratingColour = Colour::red;
+                            }
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
@@ -1015,7 +1051,9 @@ namespace OpenLoco::Ui::Windows::Station
                         yOffset += 3;
                         totalRatingBars++;
                         if (totalRatingBars >= 4)
+                        {
                             break;
+                        }
                     }
                 }
             }

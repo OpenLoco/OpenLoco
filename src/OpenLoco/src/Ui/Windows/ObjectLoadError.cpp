@@ -259,7 +259,9 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
     {
         uint16_t currentTrack = y / kRowHeight;
         if (currentTrack > window.rowCount || currentTrack == window.rowHover)
+        {
             return;
+        }
 
         window.rowHover = currentTrack;
         window.invalidate();

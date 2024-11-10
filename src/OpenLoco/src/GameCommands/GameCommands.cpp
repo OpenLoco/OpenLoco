@@ -266,11 +266,15 @@ namespace OpenLoco::GameCommands
     static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
     {
         if ((flags & (Flags::aiAllocated | Flags::ghost)) != 0)
+        {
             return false;
+        }
 
         auto& gameCommand = kGameCommandDefinitions[static_cast<uint32_t>(command)];
         if (!gameCommand.unpausesGame || isPauseOverrideEnabled())
+        {
             return false;
+        }
 
         return true;
     }
@@ -283,7 +287,9 @@ namespace OpenLoco::GameCommands
 
         _gameCommandFlags = regs.bx;
         if (_gameCommandNestLevel != 0)
+        {
             return loc_4313C6(esi, regs);
+        }
 
         if ((flags & Flags::apply) == 0)
         {
@@ -376,7 +382,9 @@ namespace OpenLoco::GameCommands
         if (ebx != static_cast<int32_t>(GameCommands::FAILURE))
         {
             if (isEditorMode())
+            {
                 ebx = 0;
+            }
 
             if (_gameCommandNestLevel == 1)
             {
@@ -434,10 +442,14 @@ namespace OpenLoco::GameCommands
 
         _gameCommandNestLevel--;
         if (_gameCommandNestLevel != 0)
+        {
             return ebx;
+        }
 
         if ((flagsBackup2 & Flags::noPayment) != 0)
+        {
             return ebx;
+        }
 
         // Apply to company money
         CompanyManager::applyPaymentToCompany(GameCommands::getUpdatingCompanyId(), ebx, getExpenditureType());
@@ -455,13 +467,19 @@ namespace OpenLoco::GameCommands
     {
         _gameCommandNestLevel--;
         if (_gameCommandNestLevel != 0)
+        {
             return GameCommands::FAILURE;
+        }
 
         if (_updatingCompanyId != CompanyManager::getControllingId())
+        {
             return GameCommands::FAILURE;
+        }
 
         if (_gameCommandFlags & Flags::noErrorWindow)
+        {
             return GameCommands::FAILURE;
+        }
 
         if (_gGameCommandErrorText != 0xFFFE)
         {
@@ -482,7 +500,9 @@ namespace OpenLoco::GameCommands
 
                     const TrackObject* pObject = ObjectManager::get<TrackObject>(trackElement.trackObjectId());
                     if (pObject == nullptr)
+                    {
                         break;
+                    }
 
                     auto formatter = FormatArguments::common();
                     formatter.push(pObject->name);
@@ -497,7 +517,9 @@ namespace OpenLoco::GameCommands
 
                     const RoadObject* pObject = ObjectManager::get<RoadObject>(roadElement.roadObjectId());
                     if (pObject == nullptr)
+                    {
                         break;
+                    }
 
                     auto formatter = FormatArguments::common();
                     formatter.push(pObject->name);
@@ -512,7 +534,9 @@ namespace OpenLoco::GameCommands
 
                     const Station* pStation = StationManager::get(stationElement.stationId());
                     if (pStation == nullptr)
+                    {
                         break;
+                    }
 
                     auto formatter = FormatArguments::common();
                     formatter.push(pStation->name);

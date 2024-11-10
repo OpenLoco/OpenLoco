@@ -92,9 +92,13 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == Widx::tab_finances - Widx::tab_finances)
+                {
                     imageId += financesTabImageIds[(self->frameNo / 2) % std::size(financesTabImageIds)];
+                }
                 else
+                {
                     imageId += financesTabImageIds[0];
+                }
 
                 Widget::drawTab(self, drawingCtx, imageId, Widx::tab_finances);
             }
@@ -120,9 +124,13 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == Widx::tab_vehicles - Widx::tab_finances)
+                {
                     imageId += vehiclesTabImageIds[(self->frameNo / 2) % std::size(vehiclesTabImageIds)];
+                }
                 else
+                {
                     imageId += vehiclesTabImageIds[0];
+                }
 
                 auto companyId = CompanyManager::getControllingId();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
@@ -648,13 +656,17 @@ namespace OpenLoco::Ui::Windows::Cheats
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Widx::target_company_dropdown_btn)
+            {
                 Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
+            }
         }
 
         static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
+            {
                 return;
+            }
 
             if (widgetIndex == Widx::target_company_dropdown_btn)
             {
@@ -969,7 +981,9 @@ namespace OpenLoco::Ui::Windows::Cheats
     {
         auto window = WindowManager::bringToFront(WindowType::cheats);
         if (window != nullptr)
+        {
             return window;
+        }
 
         window = WindowManager::createWindow(
             WindowType::cheats,

@@ -158,11 +158,15 @@ namespace OpenLoco::Utility
 
         size_t skipFront = 0;
         while (skipFront < str.size() && skipChar(str[skipFront]))
+        {
             skipFront++;
+        }
         str = str.substr(skipFront);
         size_t skipBack = 0;
         while (skipBack < str.size() && skipChar(str[str.size() - 1 - skipBack]))
+        {
             skipBack++;
+        }
         str = str.substr(0, str.size() - skipBack);
         return str;
     }

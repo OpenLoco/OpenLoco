@@ -131,7 +131,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static bool refreshActiveStation(Window* self)
     {
         if (!isStationFilterActive(self, false))
+        {
             return false;
+        }
 
         auto stationWindow = WindowManager::find(WindowType::station);
         if (stationWindow != nullptr)
@@ -155,11 +157,15 @@ namespace OpenLoco::Ui::Windows::VehicleList
         {
             auto* stationOrder = order.as<Vehicles::OrderStation>();
             if (stationOrder == nullptr)
+            {
                 continue;
+            }
 
             const auto stationId = stationOrder->getStation();
             if (stationId == filterStationId)
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -171,13 +177,19 @@ namespace OpenLoco::Ui::Windows::VehicleList
         {
             Vehicles::OrderCargo* cargoOrder = order.as<Vehicles::OrderUnloadAll>();
             if (cargoOrder == nullptr)
+            {
                 cargoOrder = order.as<Vehicles::OrderWaitFor>();
+            }
             if (cargoOrder == nullptr)
+            {
                 continue;
+            }
 
             const auto cargoId = cargoOrder->getCargo();
             if (cargoId == filterCargoId)
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -190,16 +202,24 @@ namespace OpenLoco::Ui::Windows::VehicleList
         for (auto* vehicle : VehicleManager::VehicleList())
         {
             if (vehicle->vehicleType != static_cast<VehicleType>(self->currentTab))
+            {
                 continue;
+            }
 
             if (vehicle->owner != CompanyId(self->number))
+            {
                 continue;
+            }
 
             if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
+            {
                 continue;
+            }
 
             if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
+            {
                 continue;
+            }
 
             vehicle->vehicleFlags &= ~VehicleFlags::sorted;
         }
@@ -280,19 +300,29 @@ namespace OpenLoco::Ui::Windows::VehicleList
         for (auto* vehicle : VehicleManager::VehicleList())
         {
             if (vehicle->vehicleType != static_cast<VehicleType>(self->currentTab))
+            {
                 continue;
+            }
 
             if (vehicle->owner != CompanyId(self->number))
+            {
                 continue;
+            }
 
             if (vehicle->hasVehicleFlags(VehicleFlags::sorted))
+            {
                 continue;
+            }
 
             if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
+            {
                 continue;
+            }
 
             if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
+            {
                 continue;
+            }
 
             if (insertId == EntityId::null)
             {
@@ -324,17 +354,23 @@ namespace OpenLoco::Ui::Windows::VehicleList
             vehicle->vehicleFlags |= VehicleFlags::sorted;
 
             if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
+            {
                 self->rowInfo[self->rowCount] = enumValue(vehicle->id);
+            }
 
             self->rowCount++;
 
             if (self->rowCount > self->var_83C)
+            {
                 self->var_83C = self->rowCount;
+            }
         }
         else
         {
             if (self->var_83C != self->rowCount)
+            {
                 self->var_83C = self->rowCount;
+            }
 
             refreshVehicleList(self);
         }
@@ -412,7 +448,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
         for (auto [tab, frames] : tabAnimations)
         {
             if (self->isDisabled(tab))
+            {
                 continue;
+            }
 
             auto isActive = tab == self->currentTab + Widx::tab_trains;
             auto imageId = isActive ? frames[self->frameNo / 2 % 8] : frames[0];
@@ -600,9 +638,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         // Disable cargo dropdown if not applicable
         if (self.var_88A != FilterMode::transportingCargo)
+        {
             self.disabledWidgets |= (1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn);
+        }
         else
+        {
             self.disabledWidgets &= ~((1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn));
+        }
 
         // Set appropriate tooltip
         static constexpr std::array<StringId, 3> kFilterTooltipByType = {
@@ -749,7 +791,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
             // Highlight selection.
             if (head->id == EntityId(self.rowHover))
+            {
                 drawingCtx.drawRect(0, yPos, self.width, self.rowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0), Gfx::RectFlags::none);
+            }
 
             auto vehicle = Vehicles::Vehicle(*head);
             // Draw vehicle at the bottom of the row.
@@ -769,7 +813,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 StringId format = StringIds::vehicle_list_status_2pos;
                 if (status.status2 != StringIds::null)
+                {
                     format = StringIds::vehicle_list_status_3pos;
+                }
 
                 // Draw status
                 yPos += 2;
@@ -797,7 +843,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 StringId format = StringIds::vehicle_list_age_years;
                 auto age = (getCurrentDay() - vehicle.veh1->dayCreated) / 365;
                 if (age == 1)
+                {
                     format = StringIds::vehicle_list_age_year;
+                }
 
                 auto args = FormatArguments::common(age);
                 auto point = Point(410, yPos);
@@ -820,7 +868,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void switchTab(Window* self, VehicleType type)
     {
         if (ToolManager::isToolActive(self->type, self->number))
+        {
             ToolManager::toolCancel();
+        }
 
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
@@ -840,7 +890,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->invalidate();
 
         if (self->width < 220)
+        {
             self->width = 220;
+        }
 
         self->rowCount = 0;
         refreshVehicleList(self);
@@ -884,7 +936,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             {
                 auto sortMode = widgetIndex - Widx::sort_name;
                 if (self.sortMode == sortMode)
+                {
                     return;
+                }
 
                 self.sortMode = sortMode;
                 self.invalidate();
@@ -898,7 +952,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex == Widx::company_select)
+        {
             Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
+        }
 
         else if (widgetIndex == Widx::filter_type_btn)
         {
@@ -918,7 +974,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             {
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
                 if (cargoObj == nullptr)
+                {
                     continue;
+                }
 
                 FormatArguments args{};
                 args.push(cargoObj->name);
@@ -927,7 +985,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 Dropdown::add(index, StringIds::carrying_cargoid_sprite, args);
 
                 if (index == self.var_88C)
+                {
                     selectedIndex = index;
+                }
 
                 index++;
             }
@@ -935,7 +995,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             Widget dropdown = self.widgets[Widx::cargo_type];
             Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), index, 0);
             if (selectedIndex != -1)
+            {
                 Dropdown::setItemSelected(selectedIndex);
+            }
         }
     }
 
@@ -943,19 +1005,25 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void onCompanyDropdown(Ui::Window* self, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             return;
+        }
 
         CompanyId companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
         // Try to find an open vehicle list for this company.
         auto companyWindow = WindowManager::bringToFront(WindowType::vehicleList, enumValue(companyId));
         if (companyWindow != nullptr)
+        {
             return;
+        }
 
         // If not, we'll turn this window into a window for the company selected.
         auto company = CompanyManager::get(companyId);
         if (company->name == StringIds::empty)
+        {
             return;
+        }
 
         self->number = enumValue(companyId);
         self->owner = companyId;
@@ -977,7 +1045,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void onDropdown(Ui::Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex == Widx::company_select)
+        {
             return onCompanyDropdown(&self, itemIndex);
+        }
 
         if (widgetIndex == filter_type_btn && itemIndex != -1)
         {
@@ -1043,11 +1113,15 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, CursorId fallback)
     {
         if (widgetIdx != Widx::scrollview)
+        {
             return fallback;
+        }
 
         uint16_t currentIndex = yPos / self.rowHeight;
         if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
+        {
             return CursorId::handPointer;
+        }
 
         return fallback;
     }
@@ -1061,26 +1135,36 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         uint16_t currentRow = y / self.rowHeight;
         if (currentRow < self.var_83C)
+        {
             self.rowHover = self.rowInfo[currentRow];
+        }
         else
+        {
             self.rowHover = -1;
+        }
 
         StringId tooltipId = StringIds::buffer_337;
         if (self.rowHover == -1)
+        {
             tooltipId = StringIds::null;
+        }
 
         char* tooltipBuffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
 
         // Have we already got the right tooltip?
         if (tooltipBuffer[0] != '\0' && self.widgets[Widx::scrollview].tooltip == tooltipId && self.rowHover == self.var_85C)
+        {
             return;
+        }
 
         self.widgets[Widx::scrollview].tooltip = tooltipId;
         self.var_85C = self.rowHover;
         Ui::Windows::ToolTip::closeAndReset();
 
         if (self.rowHover == -1)
+        {
             return;
+        }
 
         // Initialise tooltip buffer.
         char* buffer = StringManager::formatString(tooltipBuffer, StringIds::vehicle_list_tooltip_load);
@@ -1101,11 +1185,15 @@ namespace OpenLoco::Ui::Windows::VehicleList
             // Is this order a station?
             auto* stopOrder = order.as<Vehicles::OrderStopAt>();
             if (stopOrder == nullptr)
+            {
                 continue;
+            }
 
             StringId stopFormat = StringIds::vehicle_list_tooltip_comma_stringid;
             if (isFirstStop)
+            {
                 stopFormat = StringIds::vehicle_list_tooltip_stops_at_stringid;
+            }
 
             // Append station name to the tooltip buffer
             FormatArguments args{};
@@ -1121,11 +1209,15 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         uint16_t currentRow = y / self.rowHeight;
         if (currentRow >= self.var_83C)
+        {
             return;
+        }
 
         EntityId currentVehicleId = EntityId(self.rowInfo[currentRow]);
         if (currentVehicleId == EntityId::null)
+        {
             return;
+        }
 
         auto* head = EntityManager::get<VehicleHead>(currentVehicleId);
         if (head == nullptr)
@@ -1134,9 +1226,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
 
         if (head->isPlaced())
+        {
             Ui::Windows::Vehicle::Main::open(head);
+        }
         else
+        {
             Ui::Windows::Vehicle::Details::open(head);
+        }
     }
 
     // 0x004C2820

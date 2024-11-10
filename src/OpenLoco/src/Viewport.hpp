@@ -110,16 +110,24 @@ namespace OpenLoco::Ui
         constexpr bool intersects(const ViewportRect& vpos)
         {
             if (vpos.right <= viewX)
+            {
                 return false;
+            }
 
             if (vpos.bottom <= viewY)
+            {
                 return false;
+            }
 
             if (vpos.left >= viewX + viewWidth)
+            {
                 return false;
+            }
 
             if (vpos.top >= viewY + viewHeight)
+            {
                 return false;
+            }
 
             return true;
         }

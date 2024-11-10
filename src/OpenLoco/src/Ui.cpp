@@ -378,7 +378,9 @@ namespace OpenLoco::Ui
     void render()
     {
         if (window == nullptr)
+        {
             return;
+        }
 
         auto& drawingEngine = Gfx::getDrawingEngine();
 
@@ -432,7 +434,9 @@ namespace OpenLoco::Ui
             {
                 bool isDown = keyboardState[scanCode] != 0;
                 if (!isDown)
+                {
                     continue;
+                }
 
                 dst[scanCode] = 0x80;
             }
@@ -594,14 +598,22 @@ namespace OpenLoco::Ui
         if (mode == Config::ScreenMode::window)
         {
             if (config.display.windowResolution.isPositive())
+            {
                 return config.display.windowResolution;
+            }
             else
+            {
                 return { 800, 600 };
+            }
         }
         else if (mode == Config::ScreenMode::fullscreen && config.display.fullscreenResolution.isPositive())
+        {
             return config.display.fullscreenResolution;
+        }
         else
+        {
             return getDesktopResolution();
+        }
     }
 
     Config::Resolution getResolution()
@@ -623,9 +635,13 @@ namespace OpenLoco::Ui
         // First, set the appropriate screen mode flags.
         auto flags = 0;
         if (mode == Config::ScreenMode::fullscreen)
+        {
             flags |= SDL_WINDOW_FULLSCREEN;
+        }
         else if (mode == Config::ScreenMode::fullscreenBorderless)
+        {
             flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        }
 
         // *HACK* Set window to non fullscreen before switching resolution.
         // This fixes issues with high dpi and Windows scaling affecting the GUI size.
@@ -666,9 +682,13 @@ namespace OpenLoco::Ui
         config.display.mode = mode;
 
         if (mode == Config::ScreenMode::window)
+        {
             config.display.windowResolution = newResolution;
+        }
         else if (mode == Config::ScreenMode::fullscreen)
+        {
             config.display.fullscreenResolution = newResolution;
+        }
 
         // We're also keeping track the resolution in the legacy config, for now.
         auto& legacyConfig = Config::get().old;
@@ -956,7 +976,9 @@ namespace OpenLoco::Ui
         auto& config = Config::get();
         newScaleFactor = std::clamp(newScaleFactor, ScaleFactor::min, ScaleFactor::max);
         if (config.scaleFactor == newScaleFactor)
+        {
             return;
+        }
 
         config.scaleFactor = newScaleFactor;
 
@@ -970,7 +992,9 @@ namespace OpenLoco::Ui
         auto& config = Config::get();
         float newScaleFactor = std::clamp(config.scaleFactor + adjust_by, ScaleFactor::min, ScaleFactor::max);
         if (config.scaleFactor == newScaleFactor)
+        {
             return;
+        }
 
         setWindowScaling(newScaleFactor);
     }

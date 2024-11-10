@@ -67,7 +67,9 @@ namespace OpenLoco
         buildingPositions = reinterpret_cast<const AirportBuilding*>(remainingData.data());
         auto* ptr = reinterpret_cast<const uint8_t*>(remainingData.data());
         while (*ptr != 0xFF)
+        {
             ptr += 4;
+        }
         ptr++;
         remainingData = remainingData.subspan(ptr - reinterpret_cast<const uint8_t*>(buildingPositions));
 
@@ -132,7 +134,9 @@ namespace OpenLoco
         auto* endBuildingPtr = firstBuildingPtr;
 
         while (endBuildingPtr->index != 0xFF)
+        {
             endBuildingPtr++;
+        }
 
         return std::span<const AirportBuilding>(firstBuildingPtr, endBuildingPtr);
     }
@@ -142,7 +146,9 @@ namespace OpenLoco
         const auto* partsPointer = buildingVariationParts[buildingType];
         auto* end = partsPointer;
         while (*end != 0xFF)
+        {
             end++;
+        }
 
         return std::span<const std::uint8_t>(partsPointer, end);
     }

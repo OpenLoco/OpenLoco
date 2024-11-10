@@ -27,10 +27,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex != 0)
+        {
             return;
+        }
 
         if (MessageManager::getActiveIndex() == MessageId::null)
+        {
             return;
+        }
 
         auto news = MessageManager::get(MessageManager::getActiveIndex());
         news->setActive(true);
@@ -103,23 +107,31 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
                             newsStringChar = ' ';
                             cx--;
                             if (cx < 0)
+                            {
                                 break;
+                            }
                         }
 
                         if (newsStringChar != -1)
                         {
                             cx--;
                             if (cx < 0)
+                            {
                                 break;
+                            }
                             newsString++;
                             if (!newsStringChar)
+                            {
                                 break;
+                            }
                         }
                         else
                         {
                             cx--;
                             if (cx < 0)
+                            {
                                 break;
+                            }
                             newsString += 3;
                         }
                     }
@@ -136,7 +148,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         }
 
         if (MessageManager::getActiveIndex() != MessageId::null)
+        {
             return;
+        }
 
         MessageManager::setActiveIndex(MessageId::null);
 
@@ -147,10 +161,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
         if (self.var_852 != 0)
+        {
             return;
+        }
 
         if (getPauseFlags() & (1 << 2))
+        {
             return;
+        }
 
         auto news = MessageManager::get(MessageManager::getActiveIndex());
 
@@ -163,7 +181,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto clipped = Gfx::clipRenderTarget(rt, { x, y, width, height });
 
         if (!clipped)
+        {
             return;
+        }
 
         drawingCtx.pushRenderTarget(*clipped);
 
@@ -211,7 +231,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             newsString++;
             i++;
             if (!newsStringChar)
+            {
                 break;
+            }
         }
 
         if ((_nState.numCharsToDisplay >> 2) > i)

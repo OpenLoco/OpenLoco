@@ -291,25 +291,33 @@ namespace OpenLoco::World::TileClearance
             {
                 northZ += kSmallZStep;
                 if (slope == (SurfaceSlope::CornerDown::south | SurfaceSlope::doubleHeight))
+                {
                     northZ += kSmallZStep;
+                }
             }
             if (slope & SurfaceSlope::CornerUp::east)
             {
                 eastZ += kSmallZStep;
                 if (slope == (SurfaceSlope::CornerDown::west | SurfaceSlope::doubleHeight))
+                {
                     eastZ += kSmallZStep;
+                }
             }
             if (slope & SurfaceSlope::CornerUp::south)
             {
                 southZ += kSmallZStep;
                 if (slope == (SurfaceSlope::CornerDown::north | SurfaceSlope::doubleHeight))
+                {
                     southZ += kSmallZStep;
+                }
             }
             if (slope & SurfaceSlope::CornerUp::west)
             {
                 westZ += kSmallZStep;
                 if (slope == (SurfaceSlope::CornerDown::east | SurfaceSlope::doubleHeight))
+                {
                     westZ += kSmallZStep;
+                }
             }
             const auto doubleHeight = baseZ + 8;
 

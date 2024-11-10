@@ -289,29 +289,43 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         const ObjectTabFlags tabFlags = tabInfo.flags;
 
         if (filterLevel == FilterLevel::expert)
+        {
             return true;
+        }
 
         if ((tabFlags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
+        {
             return false;
+        }
 
         // Skip all types that don't have any objects
         auto objectType = enumValue(tabInfo.objectType);
         if (_tabObjectCounts[objectType] == 0)
+        {
             return false;
+        }
 
         // Skip certain object types that only have one entry in game
         if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[objectType] == 1)
+        {
             return false;
+        }
 
         // Hide advanced object types in beginner mode
         if (filterLevel == FilterLevel::beginner && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+        {
             return false;
+        }
 
         if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
+        {
             return false;
+        }
 
         if (!isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+        {
             return false;
+        }
 
         return true;
     }
@@ -333,7 +347,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto i = 0U; i < kMainTabInfo.size(); i++)
         {
             if (!shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
+            {
                 continue;
+            }
 
             // Assign tab position
             _tabPositions.emplace_back(i);
@@ -412,7 +428,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             entry.display = containsName || containsFileName ? Visibility::shown : Visibility::hidden;
 
             if (entry.display == Visibility::shown)
+            {
                 _numVisibleObjectsListed++;
+            }
         }
     }
 
@@ -459,7 +477,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto window = WindowManager::bringToFront(WindowType::objectSelection);
 
         if (window != nullptr)
+        {
             return window;
+        }
 
         ObjectManager::prepareSelectionList(true);
 
@@ -528,9 +548,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Update page title
         auto args = FormatArguments(self.widgets[widx::caption].textArgs);
         if (showSecondaryTabs)
+        {
             args.push(subTabs[self.currentSecondaryTab].name);
+        }
         else
+        {
             args.push(kMainTabInfo[self.currentTab].name);
+        }
 
         // Toggle secondary tabs
         for (auto i = 0U; i < kMaxNumSecondaryTabs; i++)
@@ -539,19 +563,31 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             const bool subTabIsVisible = showSecondaryTabs && i < subTabs.size() && shouldShowSubTab(subTabs, i, FilterLevel(self.filterLevel));
             if (!subTabIsVisible)
+            {
                 self.disabledWidgets |= 1ULL << widgetIndex;
+            }
             else
+            {
                 self.disabledWidgets &= ~(1ULL << widgetIndex);
+            }
 
             if (subTabIsVisible)
+            {
                 self.enabledWidgets |= 1ULL << widgetIndex;
+            }
             else
+            {
                 self.enabledWidgets &= ~(1ULL << widgetIndex);
+            }
 
             if (self.currentSecondaryTab == i)
+            {
                 self.activatedWidgets |= 1ULL << widgetIndex;
+            }
             else
+            {
                 self.activatedWidgets &= ~(1ULL << widgetIndex);
+            }
         }
 
         Widget::leftAlignTabs(self, widx::secondaryTab1, widx::secondaryTab8, 30);
@@ -619,7 +655,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widgetIndex = i + widx::secondaryTab1;
             if (self->widgets[widgetIndex].type == WidgetType::none)
+            {
                 continue;
+            }
 
             auto& tabData = subTabs[i];
             auto frame = 0;
@@ -655,7 +693,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         const auto& rt = drawingCtx.currentRenderTarget();
         auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(drawAreaPos.x, drawAreaPos.y, kObjectPreviewSize.width, kObjectPreviewSize.height));
         if (!clipped)
+        {
             return;
+        }
 
         drawingCtx.pushRenderTarget(*clipped);
 
@@ -797,7 +837,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         const auto& rt = drawingCtx.currentRenderTarget();
         auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
         if (!clipped)
+        {
             return;
+        }
 
         drawingCtx.pushRenderTarget(*clipped);
 
@@ -852,7 +894,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         const auto& rt = drawingCtx.currentRenderTarget();
         auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
         if (!clipped)
+        {
             return;
+        }
 
         drawingCtx.pushRenderTarget(*clipped);
 
@@ -881,7 +925,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         const auto& rt = drawingCtx.currentRenderTarget();
         auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget.left + 1 + self.x, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
         if (!clipped)
+        {
             return;
+        }
 
         drawingCtx.pushRenderTarget(*clipped);
 
@@ -962,9 +1008,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         ObjectType type{};
         auto& currentTab = kMainTabInfo[self.currentTab];
         if (!currentTab.subTabs.empty())
+        {
             type = currentTab.subTabs[self.currentSecondaryTab].objectType;
+        }
         else
+        {
             type = currentTab.objectType;
+        }
 
         auto args = FormatArguments();
         args.push(_112C1C5[enumValue(type)]);
@@ -976,12 +1026,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         if (self.rowHover == -1)
+        {
             return;
+        }
 
         auto* temporaryObject = ObjectManager::getTemporaryObject();
 
         if (temporaryObject == nullptr)
+        {
             return;
+        }
 
         {
             auto& objectHeader = ObjectManager::getObjectInIndex(self.rowHover)._header;
@@ -1041,14 +1095,18 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         if (ObjectManager::getNumInstalledObjects() == 0)
+        {
             return;
+        }
 
         const auto selectionFlags = getSelectedObjectFlags();
         int y = 0;
         for (auto& entry : _tabObjectList)
         {
             if (entry.display == Visibility::hidden)
+            {
                 continue;
+            }
 
             if (y + kRowHeight < rt.y)
             {
@@ -1131,12 +1189,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             auto& subTabs = mainTabInfo.subTabs;
             if (subTabs.empty())
+            {
                 continue;
+            }
 
             for (auto j = 0U; j < subTabs.size(); j++)
             {
                 if (!shouldShowTab(subTabs[j], FilterLevel(self.var_858)))
+                {
                     continue;
+                }
 
                 if (objectType == subTabs[j].objectType)
                 {
@@ -1148,7 +1210,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
 
             if (targetSubTab != 0)
+            {
                 break;
+            }
         }
 
         self.currentTab = targetTab;
@@ -1332,7 +1396,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             // Show vanilla objects?
             if ((FilterFlags(self.var_858) & FilterFlags::vanilla) != FilterFlags::none)
+            {
                 Dropdown::setItemSelected(4);
+            }
 
             // Show OpenLoco objects?
             if ((FilterFlags(self.var_858) & FilterFlags::openLoco) != FilterFlags::none)
@@ -1341,13 +1407,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             // Show custom objects?
             if ((FilterFlags(self.var_858) & FilterFlags::custom) != FilterFlags::none)
                 Dropdown::setItemSelected(6);
+            }
         }
     }
 
     static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::filterDropdown)
+        {
             return;
+        }
 
         if (itemIndex < 0)
         {
@@ -1415,7 +1484,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto& entry : _tabObjectList)
         {
             if (entry.display == Visibility::hidden)
+            {
                 continue;
+            }
 
             y -= kRowHeight;
             if (y < 0)
@@ -1433,7 +1504,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto objIndex = getObjectFromSelection(&self, y);
 
         if (objIndex.index == self.rowHover || objIndex.index == ObjectManager::kNullObjectIndex)
+        {
             return;
+        }
 
         self.rowHover = objIndex.index;
         self.object = reinterpret_cast<std::byte*>(&objIndex.object._header);
@@ -1455,7 +1528,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto object = objIndex.object._header;
 
         if (index == ObjectManager::kNullObjectIndex)
+        {
             return;
+        }
 
         self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, Input::getMouseLocation().x);
@@ -1496,7 +1571,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         _112C209 = meta.numImages;
 
         if (success)
+        {
             return;
+        }
 
         auto errorTitle = StringIds::error_unable_to_select_object;
 
@@ -1543,14 +1620,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
         if (!Input::isFocused(w.type, w.number, widx::textInput))
+        {
             return false;
+        }
 
         if (!inputSession.handleInput(charCode, keyCode))
+        {
             return false;
+        }
 
         int containerWidth = widgets[widx::textInput].width() - 2;
         if (inputSession.needsReoffsetting(containerWidth))
+        {
             inputSession.calculateTextOffset(containerWidth);
+        }
 
         inputSession.cursorFrame = 0;
 

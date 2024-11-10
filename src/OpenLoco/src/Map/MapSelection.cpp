@@ -43,7 +43,9 @@ namespace OpenLoco::World
         uint16_t toolSizeA = _adjustToolSize;
 
         if (!toolSizeA)
+        {
             toolSizeA = 1;
+        }
 
         toolSizeA = toolSizeA << 5;
         uint16_t toolSizeB = toolSizeA;
@@ -159,13 +161,17 @@ namespace OpenLoco::World
     void mapInvalidateMapSelectionTiles()
     {
         if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
+        {
             return;
+        }
 
         for (uint16_t index = 0; index < kMapSelectedTilesSize; ++index)
         {
             auto& position = _mapSelectedTiles[index];
             if (position.x == -1)
+            {
                 break;
+            }
             TileManager::mapInvalidateTileFull(position);
         }
     }
@@ -173,7 +179,9 @@ namespace OpenLoco::World
     bool isWithinMapSelectionTiles(const Pos2 pos)
     {
         if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
+        {
             return false;
+        }
 
         for (uint16_t index = 0; index < kMapSelectedTilesSize; ++index)
         {

@@ -230,7 +230,9 @@ namespace OpenLoco::Ui
 
             Gfx::RectInsetFlags flags = Gfx::RectInsetFlags::none;
             if (widgetState.activated)
+            {
                 flags = Gfx::RectInsetFlags::borderInset;
+            }
 
             drawingCtx.drawRectInset(widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), window->getColour(WindowColour::secondary).translucent(), flags);
         }
@@ -1135,10 +1137,14 @@ namespace OpenLoco::Ui
         auto& viewports = window->viewports;
 
         if (viewports[0] != nullptr)
+        {
             viewports[0]->render(drawingCtx);
+        }
 
         if (viewports[1] != nullptr)
+        {
             viewports[1]->render(drawingCtx);
+        }
     }
 
     // 0x004CF194

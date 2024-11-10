@@ -144,7 +144,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
                     auto sortMode = widgetIndex - widx::sort_name;
                     if (self.sortMode == sortMode)
+                    {
                         return;
+                    }
 
                     self.sortMode = sortMode;
                     self.invalidate();
@@ -240,7 +242,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
             for (auto& company : CompanyManager::companies())
             {
                 if ((company.challengeFlags & CompanyFlags::sorted) != CompanyFlags::none)
+                {
                     continue;
+                }
 
                 if (chosenCompany == CompanyId::null)
                 {
@@ -316,10 +320,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void event_09(Window& self)
         {
             if (!self.hasFlags(WindowFlags::notScrollView))
+            {
                 return;
+            }
 
             if (self.rowHover == -1)
+            {
                 return;
+            }
 
             self.rowHover = -1;
             self.invalidate();
@@ -336,11 +344,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             uint16_t currentRow = y / kRowHeight;
             if (currentRow > self.var_83C)
+            {
                 return;
+            }
 
             CompanyId currentCompany = CompanyId(self.rowInfo[currentRow]);
             if (currentCompany == CompanyId::null)
+            {
                 return;
+            }
 
             CompanyWindow::open(currentCompany);
         }
@@ -354,10 +366,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             int16_t currentCompany = -1;
 
             if (currentRow < self.var_83C)
+            {
                 currentCompany = self.rowInfo[currentRow];
+            }
 
             if (self.rowHover == currentCompany)
+            {
                 return;
+            }
 
             self.rowHover = currentCompany;
             self.invalidate();
@@ -375,11 +391,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
+            {
                 return fallback;
+            }
 
             uint16_t currentIndex = yPos / kRowHeight;
             if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
+            {
                 return CursorId::handPointer;
+            }
 
             return fallback;
         }
@@ -421,9 +441,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             FormatArguments args{};
             if (self.var_83C == 1)
+            {
                 args.push(StringIds::company_singular);
+            }
             else
+            {
                 args.push(StringIds::companies_plural);
+            }
 
             args.push(self.var_83C);
 
@@ -445,15 +469,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
             {
                 auto yTop = yBottom + 25;
                 if (yTop <= rt.y)
+                {
                     continue;
+                }
 
                 yTop = rt.y + rt.height;
                 if (yBottom >= yTop)
+                {
                     break;
+                }
 
                 auto rowItem = self.rowInfo[i];
                 if (rowItem == -1)
+                {
                     continue;
+                }
 
                 auto stringId = StringIds::black_stringid;
 
@@ -673,7 +703,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
             for (auto& company : CompanyManager::companies())
             {
                 if (maxHistorySize < company.historySize)
+                {
                     maxHistorySize = company.historySize;
+                }
             }
 
             uint8_t count = 0;
@@ -766,7 +798,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
             for (auto& company : CompanyManager::companies())
             {
                 if (maxHistorySize < company.historySize)
+                {
                     maxHistorySize = company.historySize;
+                }
             }
 
             uint8_t count = 0;
@@ -859,7 +893,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
             for (auto& company : CompanyManager::companies())
             {
                 if (maxHistorySize < company.historySize)
+                {
                     maxHistorySize = company.historySize;
+                }
             }
 
             uint8_t count = 0;
@@ -952,7 +988,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
             for (auto& company : CompanyManager::companies())
             {
                 if (maxHistorySize < company.historySize)
+                {
                     maxHistorySize = company.historySize;
+                }
             }
 
             uint8_t count = 0;
@@ -1071,7 +1109,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
             {
                 auto cargo = ObjectManager::get<CargoObject>(i);
                 if (cargo == nullptr)
+                {
                     continue;
+                }
 
                 auto colour = _cargoLineColour[i];
                 auto palette = Colours::getShade(colour, 6);
@@ -1120,7 +1160,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
             {
                 auto cargo = ObjectManager::get<CargoObject>(i);
                 if (cargo == nullptr)
+                {
                     continue;
+                }
 
                 auto colour = _cargoLineColour[i];
                 auto deliveredCargoPayment = Economy::getDeliveryCargoPaymentsTable(i);
@@ -1161,7 +1203,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 _graphSettings.linesToExclude = 0xFFFFFFFF & ~(1 << i);
 
                 if (_hoverItemTicks & 4)
+                {
                     _graphSettings.lineColour[i] = PaletteIndex::black0;
+                }
 
                 _graphSettings.flags |= GraphFlags::hideAxesAndLabels;
 
@@ -1295,7 +1339,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
             {
                 auto recordSpeed = CompanyManager::getRecords().speed[i];
                 if (recordSpeed == 0_mph)
+                {
                     continue;
+                }
                 {
                     FormatArguments args{};
                     args.push(recordSpeed);
@@ -1487,7 +1533,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (ToolManager::isToolActive(self->type, self->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             self->currentTab = widgetIndex - widx::tab_company_list;
             self->frameNo = 0;
@@ -1564,9 +1612,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_performance - widx::tab_company_list)
+                {
                     imageId += performanceImageIds[(self->frameNo / 4) % std::size(performanceImageIds)];
+                }
                 else
+                {
                     imageId += performanceImageIds[0];
+                }
 
                 imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
@@ -1588,9 +1640,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_cargo_units - widx::tab_company_list)
+                {
                     imageId += cargoUnitsImageIds[(self->frameNo / 4) % std::size(cargoUnitsImageIds)];
+                }
                 else
+                {
                     imageId += cargoUnitsImageIds[0];
+                }
 
                 imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
@@ -1612,9 +1668,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_cargo_distance - widx::tab_company_list)
+                {
                     imageId += cargoDistanceImageIds[(self->frameNo / 4) % std::size(cargoDistanceImageIds)];
+                }
                 else
+                {
                     imageId += cargoDistanceImageIds[0];
+                }
 
                 imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
@@ -1636,9 +1696,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_values - widx::tab_company_list)
+                {
                     imageId += companyValuesImageIds[(self->frameNo / 4) % std::size(companyValuesImageIds)];
+                }
                 else
+                {
                     imageId += companyValuesImageIds[0];
+                }
 
                 imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
@@ -1747,7 +1811,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 _graphSettings.linesToExclude = 0xFFFFFFFF & ~(1 << i);
 
                 if (_hoverItemTicks & (1 << 2))
+                {
                     _graphSettings.lineColour[i] = 10;
+                }
 
                 _graphSettings.flags |= GraphFlags::hideAxesAndLabels;
 

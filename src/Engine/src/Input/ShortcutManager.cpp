@@ -12,7 +12,9 @@ namespace OpenLoco::Input::ShortcutManager
             return a.id < b;
         });
         if (it == std::end(_shortcuts))
+        {
             return std::end(_shortcuts);
+        }
         return it;
     }
 
@@ -36,7 +38,9 @@ namespace OpenLoco::Input::ShortcutManager
     {
         auto it = findShortcut(id);
         if (it == std::end(_shortcuts) || it->id != id)
+        {
             return;
+        }
         _shortcuts.erase(it);
     }
 
@@ -44,7 +48,9 @@ namespace OpenLoco::Input::ShortcutManager
     {
         auto it = findShortcut(id);
         if (it == std::end(_shortcuts) || it->id != id)
+        {
             return;
+        }
         it->action();
     }
 
@@ -52,7 +58,9 @@ namespace OpenLoco::Input::ShortcutManager
     {
         auto it = findShortcut(id);
         if (it == std::end(_shortcuts) || it->id != id)
+        {
             return 0xFFFF; // TODO: String-id null
+        }
 
         return it->displayName;
     }

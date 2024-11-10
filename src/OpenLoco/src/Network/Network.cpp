@@ -125,7 +125,9 @@ namespace OpenLoco::Network
     {
         // TEMP debug code
         if (regs.esi == 73)
+        {
             return;
+        }
 
         if (_mode == NetworkMode::server)
         {

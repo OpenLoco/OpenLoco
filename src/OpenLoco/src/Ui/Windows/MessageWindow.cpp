@@ -123,10 +123,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static void event_09(Window& self)
         {
             if (!self.hasFlags(WindowFlags::notScrollView))
+            {
                 return;
+            }
 
             if (self.rowHover == -1)
+            {
                 return;
+            }
 
             self.rowHover = -1;
             self.invalidate();
@@ -144,7 +148,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             auto messageIndex = y / messageHeight;
 
             if (messageIndex >= MessageManager::getNumMessages())
+            {
                 return;
+            }
 
             if (MessageManager::getActiveIndex() != MessageId::null)
             {
@@ -153,7 +159,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 {
                     // If the current active message was user selected then remove from queue of active messages
                     if (message->isUserSelected())
+                    {
                         message->setActive(false);
+                    }
                 }
             }
 
@@ -179,7 +187,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             auto messageId = 0xFFFF;
 
             if (messageIndex < MessageManager::getNumMessages())
+            {
                 messageId = messageIndex;
+            }
 
             if (self.rowHover != messageId)
             {
@@ -371,7 +381,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         scrollHeight -= window->widgets[Messages::widx::scrollview].height();
 
         if (static_cast<int16_t>(scrollHeight) < 0)
+        {
             scrollHeight = 0;
+        }
 
         window->scrollAreas[0].contentOffsetY = scrollHeight;
 
@@ -495,7 +507,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 case widx::advice_dropdown:
                 {
                     if (itemIndex == -1)
+                    {
                         return;
+                    }
 
                     auto dropdownIndex = (widgetIndex - 7) / 2;
 
@@ -515,9 +529,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             Common::prepareDraw(self);
 
             if (Config::get().audio.playNewsSounds)
+            {
                 self.activatedWidgets |= (1 << widx::playSoundEffects);
+            }
             else
+            {
                 self.activatedWidgets &= ~(1 << widx::playSoundEffects);
+            }
         }
 
         // 0x0042AA02
@@ -629,7 +647,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (ToolManager::isToolActive(self->type, self->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             self->currentTab = widgetIndex - widx::tab_messages;
             self->frameNo = 0;
@@ -649,9 +669,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             self->invalidate();
 
             if (self->currentTab == widx::tab_messages - widx::tab_messages)
+            {
                 Messages::tabReset(self);
+            }
             if (self->currentTab == widx::tab_settings - widx::tab_messages)
+            {
                 Settings::tabReset(self);
+            }
 
             self->callOnResize();
             self->callPrepareDraw();

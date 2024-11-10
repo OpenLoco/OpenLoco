@@ -173,7 +173,9 @@ namespace OpenLoco::Ui::Windows::TextInput
     {
         auto window = WindowManager::find(WindowType::textInput, 0);
         if (window == nullptr)
+        {
             return;
+        }
 
         if (_callingWindowNumber == number && _callingWindowType == type)
         {
@@ -196,7 +198,9 @@ namespace OpenLoco::Ui::Windows::TextInput
     {
         auto window = WindowManager::find(WindowType::textInput);
         if (window == nullptr)
+        {
             return;
+        }
 
         window = WindowManager::find(_callingWindowType, _callingWindowNumber);
         if (window == nullptr)

@@ -278,7 +278,9 @@ void NetworkClient::receiveChatMessagePacket(const ReceiveChatMessage& packet)
 void NetworkClient::receivePingPacket(const PingPacket& packet)
 {
     if (_status != NetworkClientStatus::connected)
+    {
         return;
+    }
 
     // Update the latest knowledge of server state
     _serverTick = std::max(_serverTick, packet.tick);
@@ -358,7 +360,9 @@ void NetworkClient::updateLocalTick()
 bool NetworkClient::shouldProcessTick(uint32_t tick) const
 {
     if (_status != NetworkClientStatus::connected)
+    {
         return true;
+    }
 
     return _localTick >= tick;
 }
@@ -366,7 +370,9 @@ bool NetworkClient::shouldProcessTick(uint32_t tick) const
 void NetworkClient::runGameCommandsForTick(uint32_t tick)
 {
     if (_status != NetworkClientStatus::connected)
+    {
         return;
+    }
 
     // Execute all following commands if previously received
     while (!_receivedGameCommands.empty())

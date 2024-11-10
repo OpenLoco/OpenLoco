@@ -199,7 +199,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 auto tabIndex = widgetIndex - widx::tabOverall;
 
                 if (tabIndex == self.currentTab)
+                {
                     return;
+                }
 
                 self.currentTab = tabIndex;
                 self.frameNo = 0;
@@ -246,7 +248,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
+                        {
                             continue;
+                        }
 
                         if (surfaceEl->water() == 0)
                         {
@@ -275,7 +279,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             auto* trackEl = el.as<TrackElement>();
                             if (trackEl == nullptr)
+                            {
                                 continue;
+                            }
 
                             auto* trackObj = ObjectManager::get<TrackObject>(trackEl->trackObjectId());
                             if (trackObj->hasFlags(TrackObjectFlags::unk_02))
@@ -348,7 +354,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             auto* roadEl = el.as<RoadElement>();
                             if (roadEl == nullptr)
+                            {
                                 continue;
+                            }
 
                             auto* roadObj = ObjectManager::get<RoadObject>(roadEl->roadObjectId());
                             if (roadObj->hasFlags(RoadObjectFlags::unk_01))
@@ -400,7 +408,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         _drawMapRowIndex++;
         if (_drawMapRowIndex > kMapColumns)
+        {
             _drawMapRowIndex = 0;
+        }
     }
 
     // 0x0046C873
@@ -427,7 +437,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
+                        {
                             continue;
+                        }
 
                         if (surfaceEl->water() == 0)
                         {
@@ -484,7 +496,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         _drawMapRowIndex++;
         if (_drawMapRowIndex > kMapColumns)
+        {
             _drawMapRowIndex = 0;
+        }
     }
 
     // 0x004FB464
@@ -525,7 +539,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
+                        {
                             continue;
+                        }
 
                         if (surfaceEl->water() > 0)
                         {
@@ -566,11 +582,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     case ElementType::industry:
                     {
                         if (el.isGhost())
+                        {
                             continue;
+                        }
 
                         auto* industryEl = el.as<IndustryElement>();
                         if (industryEl == nullptr)
+                        {
                             continue;
+                        }
 
                         const auto* industry = IndustryManager::get(industryEl->industryId());
                         const auto colourIndex = _assignedIndustryColours[industry->objectId];
@@ -587,7 +607,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     case ElementType::road:
                     {
                         if (el.isGhost() || el.isAiAllocated())
+                        {
                             continue;
+                        }
 
                         colour0 = colour1 = colourFlash1 = colourFlash0 = PaletteIndex::black2;
                         break;
@@ -610,7 +632,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         _drawMapRowIndex++;
         if (_drawMapRowIndex > kMapColumns)
+        {
             _drawMapRowIndex = 0;
+        }
     }
 
     // 0x0046CB68
@@ -638,7 +662,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
+                        {
                             continue;
+                        }
 
                         uint8_t terrainColour0{}, terrainColour1{};
                         if (surfaceEl->water() == 0)
@@ -677,11 +703,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     case ElementType::track:
                     {
                         if (el.isGhost() || el.isAiAllocated())
+                        {
                             continue;
+                        }
 
                         auto* trackEl = el.as<TrackElement>();
                         if (trackEl == nullptr)
+                        {
                             continue;
+                        }
 
                         auto trackObjectId = trackEl->trackObjectId();
                         colourFlash0 = colour0 = _trackColours[trackObjectId];
@@ -714,11 +744,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     case ElementType::road:
                     {
                         if (el.isGhost() || el.isAiAllocated())
+                        {
                             continue;
+                        }
 
                         auto* roadEl = el.as<RoadElement>();
                         if (roadEl == nullptr)
+                        {
                             continue;
+                        }
 
                         colourFlash0 = colour0 = _roadColours[roadEl->roadObjectId()];
 
@@ -754,7 +788,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         _drawMapRowIndex++;
         if (_drawMapRowIndex > kMapColumns)
+        {
             _drawMapRowIndex = 0;
+        }
     }
 
     // 0x0046CD31
@@ -782,7 +818,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
+                        {
                             continue;
+                        }
 
                         uint8_t terrainColour0{}, terrainColour1{};
                         if (surfaceEl->water() == 0)
@@ -813,7 +851,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     case ElementType::road:
                     {
                         if (el.isGhost() || el.isAiAllocated())
+                        {
                             continue;
+                        }
 
                         auto owner = CompanyId::null;
 
@@ -872,7 +912,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         _drawMapRowIndex++;
         if (_drawMapRowIndex > kMapColumns)
+        {
             _drawMapRowIndex = 0;
+        }
     }
 
     // 0x0046C544
@@ -958,13 +1000,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void setHoverItemTab(Window* self, int16_t legendLeft, int16_t legendBottom)
     {
         if (Input::hasFlag(Input::Flags::rightMousePressed))
+        {
             return;
+        }
 
         auto cursorPos = Input::getMouseLocation2();
         auto window = WindowManager::findAt(cursorPos);
 
         if (window != self)
+        {
             return;
+        }
 
         cursorPos.x -= legendLeft;
         if (cursorPos.x < 0 || cursorPos.x > legendWidth)
@@ -1003,14 +1049,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     auto industryObj = ObjectManager::get<IndustryObject>(i);
 
                     if (industryObj == nullptr)
+                    {
                         continue;
+                    }
                 }
                 else if (self->currentTab == (widx::tabOwnership - widx::tabOverall))
                 {
                     auto company = CompanyManager::get(CompanyId(i));
 
                     if (company->empty())
+                    {
                         continue;
+                    }
                 }
 
                 y -= legendItemHeight;
@@ -1081,7 +1131,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto window = WindowManager::getMainWindow();
 
         if (window == nullptr)
+        {
             return;
+        }
 
         window->viewportCentreOnTile({ static_cast<coord_t>(pos.x), static_cast<coord_t>(pos.y), static_cast<coord_t>(z) });
     }
@@ -1179,9 +1231,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tabVehicles - widx::tabOverall)
+                {
                     imageId += vehicleImageIds[(self->frameNo / 2) % std::size(vehicleImageIds)];
+                }
                 else
+                {
                     imageId += vehicleImageIds[0];
+                }
 
                 auto colour = Colour::black;
 
@@ -1218,9 +1274,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tabRoutes - widx::tabOverall)
+                {
                     imageId += routeImageIds[(self->frameNo / 16) % std::size(routeImageIds)];
+                }
                 else
+                {
                     imageId += routeImageIds[0];
+                }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tabRoutes);
             }
@@ -1346,7 +1406,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto industry = ObjectManager::get<IndustryObject>(i);
 
             if (industry == nullptr)
+            {
                 continue;
+            }
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
@@ -1659,7 +1721,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void drawVehicleOnMap(Gfx::DrawingContext& drawingCtx, Vehicles::VehicleBase* vehicle, uint8_t colour)
     {
         if (vehicle->position.x == Location::null)
+        {
             return;
+        }
 
         auto trainPos = locationToMapWindowPos(vehicle->position);
 
@@ -1733,7 +1797,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto colour = getRouteColour(train);
 
         if (!colour)
+        {
             return;
+        }
 
         Point startPos = { Location::null, 0 };
         Point endPos = { Location::null, 0 };
@@ -1752,7 +1818,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         if (startPos.x == Location::null || endPos.x == Location::null)
+        {
             return;
+        }
 
         drawingCtx.drawLine(startPos, endPos, *colour);
     }
@@ -1802,10 +1870,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
             Vehicles::Vehicle train(*vehicle);
 
             if (train.head->has38Flags(Vehicles::Flags38::isGhost))
+            {
                 continue;
+            }
 
             if (train.head->position.x == Location::null)
+            {
                 continue;
+            }
 
             auto vehicleType = train.head->vehicleType;
             _vehicleTypeCounts[static_cast<uint8_t>(vehicleType)] = _vehicleTypeCounts[static_cast<uint8_t>(vehicleType)] + 1;
@@ -1820,10 +1892,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
             Vehicles::Vehicle train(*vehicle);
 
             if (train.head->has38Flags(Vehicles::Flags38::isGhost))
+            {
                 continue;
+            }
 
             if (train.head->position.x == Location::null)
+            {
                 continue;
+            }
 
             for (auto& car : train.cars)
             {
@@ -1898,12 +1974,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto window = WindowManager::getMainWindow();
 
         if (window == nullptr)
+        {
             return;
+        }
 
         auto viewport = window->viewports[0];
 
         if (viewport == nullptr)
+        {
             return;
+        }
 
         {
             auto left = viewport->viewX;
@@ -1950,10 +2030,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         if (!(mapFrameNumber & (1 << 2)))
+        {
             return;
+        }
 
         if (_flashingItems != 0)
+        {
             return;
+        }
 
         uint8_t cornerSize = 5;
 
@@ -2051,7 +2135,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
         if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        {
             return;
+        }
 
         drawingCtx.clearSingle(PaletteIndex::black0);
 
@@ -2060,7 +2146,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto* offset = _mapPixels;
         if (mapFrameNumber & (1 << 2))
+        {
             offset = _mapAltPixels;
+        }
 
         Gfx::getG1Element(0)->offset = offset;
         Gfx::getG1Element(0)->width = kMapColumns * 2;
@@ -2149,7 +2237,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto landObj = ObjectManager::get<LandObject>(i);
             if (landObj == nullptr)
+            {
                 continue;
+            }
 
             auto landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[0];
             availableColours = checkIndustryColours(landPixel, availableColours);
@@ -2173,7 +2263,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto industryObj = ObjectManager::get<IndustryObject>(i);
             if (industryObj == nullptr)
+            {
                 continue;
+            }
 
             // Preferred colour still available?
             auto preferredColour = enumValue(industryObj->mapColour);
@@ -2189,10 +2281,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto industryObj = ObjectManager::get<IndustryObject>(i);
             if (industryObj == nullptr)
+            {
                 continue;
+            }
 
             if (_assignedIndustryColours[i] != 0xFF)
+            {
                 continue;
+            }
 
             auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
             availableColours &= ~(1U << freeColour);
@@ -2221,7 +2317,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto landObj = ObjectManager::get<LandObject>(i);
             if (landObj == nullptr)
+            {
                 continue;
+            }
 
             auto landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[0];
             availableColours = checkIndustryColours(landPixel, availableColours);
@@ -2290,11 +2388,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto window = WindowManager::bringToFront(WindowType::map, 0);
 
         if (window != nullptr)
+        {
             return;
+        }
 
         auto ptr = malloc(kRenderedMapSize * 2);
         if (ptr == nullptr)
+        {
             return;
+        }
 
         _mapPixels = static_cast<PaletteIndex_t*>(ptr);
         _mapAltPixels = &_mapPixels[kRenderedMapSize];
@@ -2348,17 +2450,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto mainWindow = WindowManager::getMainWindow();
 
         if (mainWindow == nullptr)
+        {
             return;
+        }
 
         auto viewport = mainWindow->viewports[0];
 
         if (viewport == nullptr)
+        {
             return;
+        }
 
         auto window = WindowManager::find(WindowType::map, 0);
 
         if (window == nullptr)
+        {
             return;
+        }
 
         auto x = viewport->viewWidth / 2;
         auto y = viewport->viewHeight / 2;

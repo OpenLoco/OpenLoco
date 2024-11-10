@@ -57,7 +57,9 @@ namespace OpenLoco::Diagnostics::Logging
         void printLevel(Level level, const TFmt& fmt, TArgs&&... args)
         {
             if (!passesLevelFilter(level))
+            {
                 return;
+            }
 
             auto msg = fmt::format(fmt, std::forward<TArgs>(args)...);
             print(level, msg);

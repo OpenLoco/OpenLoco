@@ -36,16 +36,24 @@ namespace OpenLoco::GameCommands
         {
             auto* wallElement = tileElement.as<WallElement>();
             if (wallElement == nullptr)
+            {
                 continue;
+            }
 
             if (wallElement->baseZ() != args.pos.z / 4)
+            {
                 continue;
+            }
 
             if (wallElement->rotation() != args.rotation)
+            {
                 continue;
+            }
 
             if ((flags & Flags::ghost) == 0 && wallElement->isGhost())
+            {
                 continue;
+            }
 
             if ((flags & Flags::apply) == 0)
             {

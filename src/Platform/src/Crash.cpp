@@ -110,7 +110,9 @@ namespace OpenLoco::CrashHandler
     {
 #if !defined(DEBUG) && defined(USE_BREAKPAD)
         if (exHandler == nullptr)
+        {
             return;
+        }
 
         delete static_cast<google_breakpad::ExceptionHandler*>(exHandler);
 #endif

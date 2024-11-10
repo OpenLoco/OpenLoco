@@ -38,7 +38,9 @@ namespace OpenLoco::GameCommands
         // Keep track of the station id over several calls.
         static StationId _stationId{};
         if (args.nameBufferIndex == 1)
+        {
             _stationId = args.stationId;
+        }
 
         static char staticRenameBuffer[37]{};
 
@@ -52,7 +54,9 @@ namespace OpenLoco::GameCommands
 
         // Applying the buffer?
         if (args.nameBufferIndex != 0)
+        {
             return 0;
+        }
 
         char renameStringBuffer[37] = "";
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
@@ -67,7 +71,9 @@ namespace OpenLoco::GameCommands
 
         // Verify the new name actually differs from the old one.
         if (strcmp(currentStationName, renameStringBuffer) == 0)
+        {
             return 0;
+        }
 
         StringId oldStringId = station->name;
 
@@ -76,7 +82,9 @@ namespace OpenLoco::GameCommands
         {
             // Are we bailing out early?
             if ((flags & GameCommands::Flags::apply) == 0)
+            {
                 return 0;
+            }
 
             station->name = StationManager::generateNewStationName(_stationId, station->town, World::Pos3(station->x, station->y, station->z), 0);
         }
@@ -85,7 +93,9 @@ namespace OpenLoco::GameCommands
             // Allocate a string id for the new name.
             StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
             if (allocatedStringId == StringIds::empty)
+            {
                 return GameCommands::FAILURE;
+            }
 
             // Are we bailing out early?
             if ((flags & GameCommands::Flags::apply) == 0)

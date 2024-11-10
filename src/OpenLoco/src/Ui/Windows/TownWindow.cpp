@@ -242,7 +242,9 @@ namespace OpenLoco::Ui::Windows::Town
             {
                 uint16_t newWidth = self.width - 30;
                 if (!isEditorMode() && !isSandboxMode())
+                {
                     newWidth += 22;
+                }
 
                 uint16_t newHeight = self.height - 59;
 
@@ -264,7 +266,9 @@ namespace OpenLoco::Ui::Windows::Town
         static void initViewport(Window& self)
         {
             if (self.currentTab != 0)
+            {
                 return;
+            }
 
             self.callPrepareDraw();
 
@@ -285,7 +289,9 @@ namespace OpenLoco::Ui::Windows::Town
             if (self.viewports[0] != nullptr)
             {
                 if (self.savedView == view)
+                {
                     return;
+                }
 
                 flags = self.viewports[0]->flags;
                 self.viewportRemove(0);
@@ -294,7 +300,9 @@ namespace OpenLoco::Ui::Windows::Town
             else
             {
                 if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+                {
                     flags |= ViewportFlags::gridlines_on_landscape;
+                }
             }
 
             self.savedView = view;
@@ -342,7 +350,9 @@ namespace OpenLoco::Ui::Windows::Town
         if (window != nullptr)
         {
             if (ToolManager::isToolActive(window->type, window->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             window = WindowManager::bringToFront(WindowType::town, townId);
         }
@@ -409,7 +419,9 @@ namespace OpenLoco::Ui::Windows::Town
 
             auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
             if (!clipped)
+            {
                 return;
+            }
 
             drawingCtx.pushRenderTarget(*clipped);
 
@@ -461,7 +473,9 @@ namespace OpenLoco::Ui::Windows::Town
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->historySize - 1)
+                {
                     drawingCtx.drawLine(Ui::Point(xPos, yPos1), Ui::Point(xPos + 1, yPos2), Colours::getShade(self.getColour(WindowColour::secondary).c(), 7));
+                }
 
                 month--;
                 if (month < 0)
@@ -471,7 +485,9 @@ namespace OpenLoco::Ui::Windows::Town
 
                     yearSkip++;
                     if (yearSkip >= 3)
+                    {
                         yearSkip = 0;
+                    }
                 }
             }
 
@@ -552,20 +568,32 @@ namespace OpenLoco::Ui::Windows::Town
             for (uint8_t i = 0; i < std::size(town->companyRatings); i++)
             {
                 if ((town->companiesWithRating & (1 << i)) == 0)
+                {
                     continue;
+                }
 
                 int16_t rating = (std::clamp<int16_t>(town->companyRatings[i], -1000, 1000) + 1000) / 20;
                 StringId rank{};
                 if (rating >= 70)
+                {
                     rank = StringIds::town_rating_excellent;
+                }
                 else if (rating >= 60)
+                {
                     rank = StringIds::town_rating_good;
+                }
                 else if (rating >= 50)
+                {
                     rank = StringIds::town_rating_average;
+                }
                 else if (rating >= 25)
+                {
                     rank = StringIds::town_rating_poor;
+                }
                 else
+                {
                     rank = StringIds::town_rating_appalling;
+                }
 
                 FormatArguments args{};
                 args.push(CompanyManager::get(CompanyId(i))->name);
@@ -669,10 +697,14 @@ namespace OpenLoco::Ui::Windows::Town
         static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
+            {
                 return;
+            }
 
             if (strlen(input) == 0)
+            {
                 return;
+            }
 
             GameCommands::setErrorTitle(StringIds::error_cant_rename_town);
 
@@ -716,7 +748,9 @@ namespace OpenLoco::Ui::Windows::Town
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (ToolManager::isToolActive(self->type, self->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
@@ -772,9 +806,13 @@ namespace OpenLoco::Ui::Windows::Town
 
                 uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
                 if (self->currentTab == widx::tab_population - widx::tab_town)
+                {
                     imageId += populationTabImageIds[(self->frameNo / 4) % std::size(populationTabImageIds)];
+                }
                 else
+                {
                     imageId += populationTabImageIds[0];
+                }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_population);
             }
@@ -802,9 +840,13 @@ namespace OpenLoco::Ui::Windows::Town
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_company_ratings - widx::tab_town)
+                {
                     imageId += ratingsTabImageIds[(self->frameNo / 4) % std::size(ratingsTabImageIds)];
+                }
                 else
+                {
                     imageId += ratingsTabImageIds[0];
+                }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_company_ratings);
             }

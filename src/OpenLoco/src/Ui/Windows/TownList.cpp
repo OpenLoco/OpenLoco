@@ -182,7 +182,9 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
 
                 if (townId == TownId::null)
+                {
                     continue;
+                }
                 auto town = TownManager::get(townId);
 
                 // Town Name
@@ -233,9 +235,13 @@ namespace OpenLoco::Ui::Windows::TownList
 
             FormatArguments args{};
             if (self.var_83C == 1)
+            {
                 args.push(StringIds::status_towns_singular);
+            }
             else
+            {
                 args.push(StringIds::status_towns_plural);
+            }
             args.push(self.var_83C);
 
             auto point = Point(self.x + 4, self.y + self.height - 12);
@@ -265,7 +271,9 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     auto sortMode = widgetIndex - widx::sort_town_name;
                     if (self.sortMode == sortMode)
+                    {
                         return;
+                    }
 
                     self.sortMode = sortMode;
                     self.invalidate();
@@ -283,11 +291,15 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             uint16_t currentRow = y / kRowHeight;
             if (currentRow > self.var_83C)
+            {
                 return;
+            }
 
             int16_t currentTown = self.rowInfo[currentRow];
             if (currentTown == -1)
+            {
                 return;
+            }
 
             Town::open(currentTown);
         }
@@ -301,10 +313,14 @@ namespace OpenLoco::Ui::Windows::TownList
             int16_t currentTown = -1;
 
             if (currentRow < self.var_83C)
+            {
                 currentTown = self.rowInfo[currentRow];
+            }
 
             if (self.rowHover == currentTown)
+            {
                 return;
+            }
 
             self.rowHover = currentTown;
             self.invalidate();
@@ -387,7 +403,9 @@ namespace OpenLoco::Ui::Windows::TownList
             for (auto& town : TownManager::towns())
             {
                 if ((town.flags & TownFlags::sorted) != TownFlags::none)
+                {
                     continue;
+                }
 
                 if (chosenTown == TownId::null)
                 {
@@ -461,10 +479,14 @@ namespace OpenLoco::Ui::Windows::TownList
         static void event_09(Window& self)
         {
             if (!self.hasFlags(WindowFlags::notScrollView))
+            {
                 return;
+            }
 
             if (self.rowHover == -1)
+            {
                 return;
+            }
 
             self.rowHover = -1;
             self.invalidate();
@@ -488,11 +510,15 @@ namespace OpenLoco::Ui::Windows::TownList
         static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
+            {
                 return fallback;
+            }
 
             uint16_t currentIndex = yPos / kRowHeight;
             if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
+            {
                 return CursorId::handPointer;
+            }
 
             return fallback;
         }
@@ -584,9 +610,13 @@ namespace OpenLoco::Ui::Windows::TownList
             window->enabledWidgets = TownList::enabledWidgets;
 
             if (isEditorMode() || isSandboxMode())
+            {
                 window->disabledWidgets = 0;
+            }
             else
+            {
                 window->disabledWidgets |= (1 << Common::widx::tab_build_town) | (1 << Common::widx::tab_build_buildings) | (1 << Common::widx::tab_build_misc_buildings);
+            }
 
             window->activatedWidgets = 0;
             window->holdableWidgets = 0;
@@ -612,12 +642,16 @@ namespace OpenLoco::Ui::Windows::TownList
     {
         auto* window = WindowManager::find(WindowType::townList);
         if (window == nullptr)
+        {
             return;
+        }
 
         for (auto i = 0; i < window->var_83C; i++)
         {
             if (window->rowInfo[i] == enumValue(townId))
+            {
                 window->rowInfo[i] = -1;
+            }
         }
     }
 
@@ -709,7 +743,9 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::select_size)
+            {
                 return;
+            }
             if (itemIndex != -1)
             {
                 itemIndex++;
@@ -776,7 +812,9 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == widx::select_size)
+            {
                 populateTownSizeSelect(&self, &self.widgets[widgetIndex]);
+            }
         }
 
         // 0x0049A844
@@ -789,7 +827,9 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onClose(Window& self)
         {
             if (ToolManager::isToolActive(self.type, self.number))
+            {
                 ToolManager::toolCancel();
+            }
         }
 
         // 0x0049A3BE
@@ -859,7 +899,9 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.rowHover);
                 if (buildingObj->colours != 0)
+                {
                     self.widgets[widx::object_colour].type = WidgetType::buttonWithColour;
+                }
             }
 
             Common::prepareDraw(self);
@@ -876,7 +918,9 @@ namespace OpenLoco::Ui::Windows::TownList
             self.widgets[Common::widx::caption].text = StringIds::title_build_new_buildings;
 
             if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
+            {
                 self.widgets[Common::widx::caption].text = StringIds::title_build_new_misc_buildings;
+            }
 
             Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings);
         }
@@ -896,7 +940,9 @@ namespace OpenLoco::Ui::Windows::TownList
                 buildingId = self.rowHover;
 
                 if (buildingId == 0xFFFF)
+                {
                     return;
+                }
             }
 
             auto buildingObj = ObjectManager::get<BuildingObject>(buildingId);
@@ -925,9 +971,13 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 case widx::rotate_object:
                     if (_buildingRotation < 3)
+                    {
                         _buildingRotation++;
+                    }
                     else
+                    {
                         _buildingRotation = 0;
+                    }
                     self.invalidate();
                     break;
             }
@@ -998,16 +1048,22 @@ namespace OpenLoco::Ui::Windows::TownList
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
             if (!ToolManager::isToolActive(self.type, self.number))
+            {
                 WindowManager::close(&self);
+            }
         }
 
         // 0x0049AB59
         static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
+            {
                 return;
+            }
             if (itemIndex == -1)
+            {
                 return;
+            }
 
             _buildingColour = static_cast<Colour>(Dropdown::getItemArgument(itemIndex, 2));
             self.invalidate();
@@ -1181,11 +1237,15 @@ namespace OpenLoco::Ui::Windows::TownList
             for (; i <= self->var_83C; i++)
             {
                 if (self->rowInfo[i] == self->rowHover)
+                {
                     break;
+                }
             }
 
             if (i >= self->var_83C)
+            {
                 i = 0;
+            }
 
             i = (i / 5) * kRowHeight;
 
@@ -1202,7 +1262,9 @@ namespace OpenLoco::Ui::Windows::TownList
             Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
+            {
                 updateActiveThumb(&self);
+            }
         }
 
         // 0x0049AE83
@@ -1210,7 +1272,9 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             *scrollHeight = (4 + self.var_83C) / 5;
             if (*scrollHeight == 0)
+            {
                 *scrollHeight += 1;
+            }
             *scrollHeight *= kRowHeight;
         }
 
@@ -1324,9 +1388,13 @@ namespace OpenLoco::Ui::Windows::TownList
                     self.rowHover = rowInfo;
 
                     if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
+                    {
                         getGameState().lastMiscBuildingOption = static_cast<uint8_t>(rowInfo);
+                    }
                     else
+                    {
                         getGameState().lastBuildingOption = static_cast<uint8_t>(rowInfo);
+                    }
 
                     updateBuildingColours(&self);
 
@@ -1364,7 +1432,9 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onClose(Window& self)
         {
             if (ToolManager::isToolActive(self.type, self.number))
+            {
                 ToolManager::toolCancel();
+            }
         }
 
         // 0x0049AEA1
@@ -1385,18 +1455,26 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 auto buildingObj = ObjectManager::get<BuildingObject>(i);
                 if (buildingObj == nullptr)
+                {
                     continue;
+                }
                 if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
                 {
                     if (!buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
+                    {
                         continue;
+                    }
                     if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
+                    {
                         continue;
+                    }
                 }
                 else
                 {
                     if (buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
+                    {
                         continue;
+                    }
                 }
                 self->rowInfo[buildingCount] = i;
                 buildingCount++;
@@ -1407,7 +1485,9 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto lastSelectedBuilding = getGameState().lastBuildingOption;
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
+            {
                 lastSelectedBuilding = getGameState().lastMiscBuildingOption;
+            }
 
             if (lastSelectedBuilding != 0xFF)
             {
@@ -1443,7 +1523,9 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto tab = Common::widx::tab_build_buildings;
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
+            {
                 tab = Common::widx::tab_build_misc_buildings;
+            }
 
             ToolManager::toolSet(self, tab, CursorId::placeBuilding);
             Input::setFlag(Input::Flags::flag6);
@@ -1577,9 +1659,13 @@ namespace OpenLoco::Ui::Windows::TownList
                 };
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_build_town - widx::tab_town_list)
+                {
                     imageId += buildNewTownsImageIds[(self->frameNo / 2) % std::size(buildNewTownsImageIds)];
+                }
                 else
+                {
                     imageId += buildNewTownsImageIds[0];
+                }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_build_town);
             }
@@ -1606,9 +1692,13 @@ namespace OpenLoco::Ui::Windows::TownList
                 };
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_build_buildings - widx::tab_town_list)
+                {
                     imageId += buildBuildingsImageIds[(self->frameNo / 2) % std::size(buildBuildingsImageIds)];
+                }
                 else
+                {
                     imageId += buildBuildingsImageIds[0];
+                }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_build_buildings);
             }
@@ -1635,9 +1725,13 @@ namespace OpenLoco::Ui::Windows::TownList
                 };
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_build_misc_buildings - widx::tab_town_list)
+                {
                     imageId += buildMiscBuildingsImageIds[(self->frameNo / 2) % std::size(buildMiscBuildingsImageIds)];
+                }
                 else
+                {
                     imageId += buildMiscBuildingsImageIds[0];
+                }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_build_misc_buildings);
             }
@@ -1647,7 +1741,9 @@ namespace OpenLoco::Ui::Windows::TownList
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (ToolManager::isToolActive(self->type, self->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             self->currentTab = widgetIndex - widx::tab_town_list;
             self->frameNo = 0;
@@ -1664,18 +1760,28 @@ namespace OpenLoco::Ui::Windows::TownList
             self->setWidgets(tabInfo.widgets);
 
             if (isEditorMode() || isSandboxMode())
+            {
                 self->disabledWidgets = 0;
+            }
             else
+            {
                 self->disabledWidgets |= (1 << Common::widx::tab_build_town) | (1 << Common::widx::tab_build_buildings) | (1 << Common::widx::tab_build_misc_buildings);
+            }
 
             self->invalidate();
 
             if (self->currentTab == widx::tab_town_list - widx::tab_town_list)
+            {
                 TownList::tabReset(self);
+            }
             if (self->currentTab == widx::tab_build_town - widx::tab_town_list)
+            {
                 BuildTowns::tabReset(self);
+            }
             if (self->currentTab == widx::tab_build_buildings - widx::tab_town_list || self->currentTab == widx::tab_build_misc_buildings - widx::tab_town_list)
+            {
                 BuildBuildings::tabReset(self);
+            }
 
             self->callOnResize();
             self->callPrepareDraw();

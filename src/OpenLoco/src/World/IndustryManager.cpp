@@ -528,7 +528,9 @@ namespace OpenLoco::IndustryManager
     void createAllMapAnimations()
     {
         if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        {
             return;
+        }
 
         for (auto& industry : industries())
         {
@@ -543,11 +545,15 @@ namespace OpenLoco::IndustryManager
         {
             const auto* industryObj = industry.getObject();
             if (!industryObj->hasFlags(flags))
+            {
                 continue;
+            }
 
             auto manhattanDistance = Math::Vector::manhattanDistance2D(World::Pos2{ industry.x, industry.y }, position);
             if (manhattanDistance / World::kTileSize < 11)
+            {
                 return true;
+            }
         }
 
         return false;

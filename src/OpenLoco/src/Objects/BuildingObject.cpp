@@ -158,7 +158,9 @@ namespace OpenLoco
         const auto* partsPointer = variationParts[variation];
         auto* end = partsPointer;
         while (*end != 0xFF)
+        {
             end++;
+        }
 
         return std::span<const std::uint8_t>(partsPointer, end);
     }

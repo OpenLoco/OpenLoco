@@ -410,7 +410,9 @@ namespace OpenLoco::Gfx
             }
 
             if (spriteWidth != -1)
+            {
                 break;
+            }
 
             for (int32_t j = 0; j < 200; j++)
             {
@@ -422,7 +424,9 @@ namespace OpenLoco::Gfx
             }
 
             if (spriteWidth != -1)
+            {
                 break;
+            }
         }
 
         spriteWidth++;
@@ -440,7 +444,9 @@ namespace OpenLoco::Gfx
             }
 
             if (spriteHeightNegative != -1)
+            {
                 break;
+            }
         }
         spriteHeightNegative++;
 
@@ -458,7 +464,9 @@ namespace OpenLoco::Gfx
             }
 
             if (spriteHeightPositive != -1)
+            {
                 break;
+            }
         }
         spriteHeightPositive++;
 

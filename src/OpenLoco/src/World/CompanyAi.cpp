@@ -1296,7 +1296,9 @@ namespace OpenLoco
 
         // Ensure this is only used for Non-Player controlled companies.
         if (CompanyManager::isPlayerCompany(id))
+        {
             return;
+        }
 
         auto* company = CompanyManager::get(id);
 
@@ -1304,7 +1306,9 @@ namespace OpenLoco
         thinkFunc1(*company);
 
         if (company->empty())
+        {
             return;
+        }
 
         callThinkFunc2(*company);
 
@@ -1318,7 +1322,9 @@ namespace OpenLoco
         while (company->aiThoughts[--index].type == AiThoughtType::null)
         {
             if (index == 0)
+            {
                 return;
+            }
         }
 
         auto& thought = company->aiThoughts[index];
@@ -1351,7 +1357,9 @@ namespace OpenLoco
 
             coord_t z = surface->baseHeight();
             if (surface->slope() != 0)
+            {
                 z += 16;
+            }
 
             const auto rot = (std::rotr<uint32_t>(randPick, 10)) & 0x3;
             const auto buildingType = CompanyManager::getHeadquarterBuildingType();

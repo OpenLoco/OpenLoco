@@ -49,9 +49,13 @@ namespace OpenLoco::Localisation
         utf32_t key = *((utf32_t*)pKey);
         EncodingConvertEntry* entry = (EncodingConvertEntry*)pEntry;
         if (key < entry->unicode)
+        {
             return -1;
+        }
         if (key > entry->unicode)
+        {
             return 1;
+        }
         return 0;
     }
 
@@ -61,7 +65,9 @@ namespace OpenLoco::Localisation
         for (const auto& entry : kUnicodeToLocoTable)
         {
             if (entry.locoCode == locoCode)
+            {
                 return entry.unicode;
+            }
         }
         return locoCode;
     }
@@ -70,11 +76,17 @@ namespace OpenLoco::Localisation
     {
         EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, kUnicodeToLocoTable, Utility::length(kUnicodeToLocoTable), sizeof(EncodingConvertEntry), searchCompare);
         if (entry != nullptr)
+        {
             return entry->locoCode;
+        }
         else if (unicode < 256)
+        {
             return unicode;
+        }
         else
+        {
             return '?';
+        }
     }
 
     std::string convertUnicodeToLoco(const std::string& unicodeString)

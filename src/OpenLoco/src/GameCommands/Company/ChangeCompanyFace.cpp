@@ -25,7 +25,9 @@ namespace OpenLoco::GameCommands
             for (auto& company : CompanyManager::companies())
             {
                 if (company.competitorId != foundCompetitor->id)
+                {
                     continue;
+                }
 
                 if (company.id() != targetCompanyId)
                 {
@@ -42,21 +44,27 @@ namespace OpenLoco::GameCommands
 
         // Stop here if we're just querying
         if ((flags & GameCommands::Flags::apply) == 0)
+        {
             return 0;
+        }
 
         // Do we need to load the competitor, still?
         if (!foundCompetitor)
         {
             // Load the new competitor object
             if (!ObjectManager::load(targetHeader))
+            {
                 return GameCommands::FAILURE;
+            }
 
             ObjectManager::reloadAll();
             Ui::WindowManager::close(Ui::WindowType::dropdown);
 
             foundCompetitor = ObjectManager::findObjectHandle(targetHeader);
             if (!foundCompetitor)
+            {
                 return GameCommands::FAILURE;
+            }
         }
 
         // Any other company also using the same competitor?
@@ -65,7 +73,9 @@ namespace OpenLoco::GameCommands
         for (auto& company : CompanyManager::companies())
         {
             if (company.id() == targetCompanyId)
+            {
                 continue;
+            }
 
             if (company.competitorId == foundCompetitor->id)
             {

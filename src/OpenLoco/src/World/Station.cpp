@@ -508,10 +508,14 @@ namespace OpenLoco
         cargoSearchState.resetTileRegion(0, 0, kMapColumns, kMapRows, catchmentFlag);
 
         if (station == nullptr)
+        {
             return;
+        }
 
         if (station->stationTileSize == 0)
+        {
             return;
+        }
 
         for (uint16_t i = 0; i < station->stationTileSize; i++)
         {
@@ -521,7 +525,9 @@ namespace OpenLoco
             auto stationElement = getStationElement(pos);
 
             if (stationElement == nullptr)
+            {
                 continue;
+            }
 
             switch (stationElement->stationType())
             {
@@ -604,10 +610,14 @@ namespace OpenLoco
             auto& stationCargoStat = cargoStats[cargoId];
 
             if (stationCargoStat.quantity == 0)
+            {
                 continue;
+            }
 
             if (*buffer != '\0')
+            {
                 ptr = StringManager::formatString(ptr, StringIds::waiting_cargo_separator);
+            }
 
             FormatArguments args{};
             args.push<uint32_t>(stationCargoStat.quantity);

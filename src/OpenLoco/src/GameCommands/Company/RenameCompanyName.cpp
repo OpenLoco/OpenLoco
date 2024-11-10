@@ -28,7 +28,9 @@ namespace OpenLoco::GameCommands
         // Keep track of the company id over several calls.
         static CompanyId _companyId{};
         if (args.bufferIndex == 1)
+        {
             _companyId = args.companyId;
+        }
 
         static char renameBuffer[37]{};
 
@@ -42,7 +44,9 @@ namespace OpenLoco::GameCommands
 
         // Applying the buffer?
         if (args.bufferIndex != 0)
+        {
             return 0;
+        }
 
         char renameStringBuffer[37] = "";
         memcpy(renameStringBuffer, renameBuffer, sizeof(renameBuffer));
@@ -50,7 +54,9 @@ namespace OpenLoco::GameCommands
 
         // Ensure the new name isn't empty.
         if (strlen(renameStringBuffer) == 0)
+        {
             return 0;
+        }
 
         // Retrieve the current name for this company.
         char currentCompanyName[256] = "";
@@ -59,13 +65,17 @@ namespace OpenLoco::GameCommands
 
         // Verify the new name actually differs from the old one.
         if (strcmp(currentCompanyName, renameStringBuffer) == 0)
+        {
             return 0;
+        }
 
         // Verify the name isn't in use by any other company
         for (auto& rival : CompanyManager::companies())
         {
             if (rival.id() == _companyId)
+            {
                 continue;
+            }
 
             char rivalCompanyName[256] = "";
             StringManager::formatString(rivalCompanyName, rival.name);
@@ -80,7 +90,9 @@ namespace OpenLoco::GameCommands
         // Allocate a string id for the new name.
         StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
         if (allocatedStringId == StringIds::empty)
+        {
             return GameCommands::FAILURE;
+        }
 
         // Bailing out early?
         if ((flags & GameCommands::Flags::apply) == 0)

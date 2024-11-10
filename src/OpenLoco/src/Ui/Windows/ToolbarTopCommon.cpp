@@ -116,7 +116,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
 
         if (mainWindow->viewports[0]->zoom != 3 && _zoomTicks <= 32)
+        {
             Dropdown::setHighlightedItem(1);
+        }
     }
 
     // 0x0043A5C5
@@ -152,40 +154,64 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         ViewportFlags current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
 
         if ((current_viewport_flags & ViewportFlags::underground_view) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(0);
+        }
 
         if ((current_viewport_flags & ViewportFlags::seeThroughTracks) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(1);
+        }
 
         if ((current_viewport_flags & ViewportFlags::seeThroughRoads) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(2);
+        }
 
         if ((current_viewport_flags & ViewportFlags::seeThroughTrees) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(3);
+        }
 
         if ((current_viewport_flags & ViewportFlags::seeThroughBuildings) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(4);
+        }
 
         if ((current_viewport_flags & ViewportFlags::seeThroughScenery) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(5);
+        }
 
         if ((current_viewport_flags & ViewportFlags::seeThroughBridges) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(6);
+        }
 
         if ((current_viewport_flags & ViewportFlags::height_marks_on_land) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(8);
+        }
 
         if ((current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(9);
+        }
 
         if ((current_viewport_flags & ViewportFlags::one_way_direction_arrows) != ViewportFlags::none)
+        {
             Dropdown::setItemSelected(10);
+        }
 
         if ((current_viewport_flags & ViewportFlags::town_names_displayed) == ViewportFlags::none)
+        {
             Dropdown::setItemSelected(12);
+        }
 
         if ((current_viewport_flags & ViewportFlags::station_names_displayed) == ViewportFlags::none)
+        {
             Dropdown::setItemSelected(13);
+        }
 
         Dropdown::setHighlightedItem(0);
     }
@@ -215,7 +241,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         // Sanity check: any objects available?
         if (availableObjects.empty())
+        {
             return;
+        }
 
         auto companyColour = CompanyManager::getPlayerCompanyColour();
 
@@ -243,7 +271,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
             if (objIndex == getGameState().lastRoadOption)
+            {
                 highlightedItem = i;
+            }
         }
 
         Dropdown::showBelow(window, widgetIndex, std::size(availableObjects), 25, (1 << 6));
@@ -264,7 +294,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void zoomMenuDropdown(Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         window = WindowManager::getMainWindow();
 
@@ -291,7 +323,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void rotateMenuDropdown(Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         auto mouseButtonUsed = Input::getLastKnownButtonState();
         window = WindowManager::getMainWindow();
@@ -316,35 +350,61 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void viewMenuDropdown(Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         window = WindowManager::getMainWindow();
         auto viewport = WindowManager::getMainWindow()->viewports[0];
 
         if (itemIndex == 0)
+        {
             viewport->flags ^= ViewportFlags::underground_view;
+        }
         else if (itemIndex == 1)
+        {
             viewport->flags ^= ViewportFlags::seeThroughTracks;
+        }
         else if (itemIndex == 2)
+        {
             viewport->flags ^= ViewportFlags::seeThroughRoads;
+        }
         else if (itemIndex == 3)
+        {
             viewport->flags ^= ViewportFlags::seeThroughTrees;
+        }
         else if (itemIndex == 4)
+        {
             viewport->flags ^= ViewportFlags::seeThroughBuildings;
+        }
         else if (itemIndex == 5)
+        {
             viewport->flags ^= ViewportFlags::seeThroughScenery;
+        }
         else if (itemIndex == 6)
+        {
             viewport->flags ^= ViewportFlags::seeThroughBridges;
+        }
         else if (itemIndex == 8)
+        {
             viewport->flags ^= ViewportFlags::height_marks_on_land;
+        }
         else if (itemIndex == 9)
+        {
             viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
+        }
         else if (itemIndex == 10)
+        {
             viewport->flags ^= ViewportFlags::one_way_direction_arrows;
+        }
         else if (itemIndex == 12)
+        {
             viewport->flags ^= ViewportFlags::town_names_displayed;
+        }
         else if (itemIndex == 13)
+        {
             viewport->flags ^= ViewportFlags::station_names_displayed;
+        }
 
         window->invalidate();
     }
@@ -353,7 +413,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void terraformMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         switch (itemIndex)
         {
@@ -383,10 +445,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void roadMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         if (itemIndex == -1)
+        {
             return;
+        }
 
         uint8_t objIndex = _availableObjects[itemIndex];
         Construction::openWithFlags(objIndex);
@@ -396,7 +462,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void townsMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         if (itemIndex == 0)
         {
@@ -481,9 +549,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     {
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
+        {
             window.setDisabledWidgetsAndInvalidate(Widx::zoom_menu | Widx::rotate_menu);
+        }
         else
+        {
             window.setDisabledWidgetsAndInvalidate(0);
+        }
     }
 
     void rightAlignTabs(Window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs)

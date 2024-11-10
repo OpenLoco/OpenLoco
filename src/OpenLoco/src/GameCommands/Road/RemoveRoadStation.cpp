@@ -153,7 +153,9 @@ namespace OpenLoco::GameCommands
             }
 
             if (stationEl->isGhost())
+            {
                 updateStationTileRegistration = false;
+            }
 
             foundStationId = stationEl->stationId();
             auto* stationObj = ObjectManager::get<RoadStationObject>(stationEl->objectId());

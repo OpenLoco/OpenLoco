@@ -42,7 +42,9 @@ namespace OpenLoco::Ui::Windows::About
     void open()
     {
         if (WindowManager::bringToFront(WindowType::about) != nullptr)
+        {
             return;
+        }
 
         auto window = WindowManager::createWindowCentred(
             WindowType::about,

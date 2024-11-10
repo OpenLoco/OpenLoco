@@ -108,7 +108,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
     {
         auto window = WindowManager::bringToFront(WindowType::tileInspector);
         if (window != nullptr)
+        {
             return window;
+        }
 
         window = WindowManager::createWindow(
             WindowType::tileInspector,
@@ -135,9 +137,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static void prepareDraw(Window& self)
     {
         if (ToolManager::isToolActive(WindowType::tileInspector))
+        {
             self.activatedWidgets |= (1 << widx::select);
+        }
         else
+        {
             self.activatedWidgets &= ~(1 << widx::select);
+        }
     }
 
     static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
@@ -253,12 +259,18 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
                 const TrainSignalObject* object = nullptr;
                 if (signal.getLeft().hasSignal())
+                {
                     object = ObjectManager::get<TrainSignalObject>(signal.getLeft().signalObjectId());
+                }
                 else if (signal.getRight().hasSignal())
+                {
                     object = ObjectManager::get<TrainSignalObject>(signal.getRight().signalObjectId());
+                }
 
                 if (object != nullptr)
+                {
                     return object->name;
+                }
 
                 break;
             }
@@ -328,7 +340,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static void drawScroll(Ui::Window& self, Gfx::DrawingContext& drawingCtx, const uint32_t)
     {
         if (_currentPosition == TilePos2(0, 0))
+        {
             return;
+        }
 
         const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
@@ -432,7 +446,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
     {
         auto index = y / self.rowHeight;
         if (index >= self.rowCount)
+        {
             return;
+        }
 
         if (self.var_842 != index)
         {
@@ -446,7 +462,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
     {
         auto index = y / self.rowHeight;
         if (index >= self.rowCount)
+        {
             return;
+        }
 
         if (self.rowHover != index)
         {
@@ -509,7 +527,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::panel)
+        {
             return;
+        }
 
         World::mapInvalidateSelectionRect();
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -523,7 +543,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::panel || !World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
+        {
             return;
+        }
 
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
         if (!res)

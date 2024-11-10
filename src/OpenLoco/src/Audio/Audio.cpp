@@ -300,10 +300,14 @@ namespace OpenLoco::Audio
 #else
             const auto& devices = _devices;
             if (devices.empty())
+            {
                 getDevices();
+            }
 
             if (!devices.empty())
+            {
                 return devices[0].c_str();
+            }
 #endif
         }
 
@@ -342,7 +346,9 @@ namespace OpenLoco::Audio
     {
         _audioIsEnabled = !_audioIsEnabled;
         if (_audioIsEnabled)
+        {
             return;
+        }
 
         stopVehicleNoise();
         stopAmbientNoise();
@@ -354,7 +360,9 @@ namespace OpenLoco::Audio
     void pauseSound()
     {
         if (_audioIsPaused)
+        {
             return;
+        }
 
         _audioIsPaused = true;
         stopVehicleNoise();
@@ -638,24 +646,32 @@ namespace OpenLoco::Audio
 
             const auto sig = fs.readValue<uint32_t>();
             if (sig != 0x46464952) // RIFF
+            {
                 throw Exception::RuntimeError("Invalid signature.");
+            }
 
             fs.readValue<uint32_t>(); // size
 
             const auto riffType = fs.readValue<uint32_t>();
             if (riffType != 0x45564157) // WAVE
+            {
                 throw Exception::RuntimeError("Invalid format.");
+            }
 
             const auto fmtMarker = fs.readValue<uint32_t>();
             // This can be 'fmt\0' or 'fmt '
             if (fmtMarker != 0x20746d66 && fmtMarker != 0x00746d66)
+            {
                 throw Exception::RuntimeError("Invalid format marker.");
+            }
 
             fs.readValue<uint32_t>(); // header size
 
             const auto typeFormat = fs.readValue<uint16_t>();
             if (typeFormat != 1)
+            {
                 throw Exception::RuntimeError("Invalid format type, expected PCM.");
+            }
 
             const auto channels = fs.readValue<uint16_t>();
             const auto sampleRate = fs.readValue<uint32_t>();
@@ -667,7 +683,9 @@ namespace OpenLoco::Audio
 
             const auto dataMarker = fs.readValue<uint32_t>();
             if (dataMarker != 0x61746164) // data
+            {
                 throw Exception::RuntimeError("Invalid data marker.");
+            }
 
             const auto pcmLen = fs.readValue<uint32_t>();
 
@@ -701,17 +719,25 @@ namespace OpenLoco::Audio
     static void sub_48A274(Vehicles::Vehicle2or6* v)
     {
         if (v == nullptr)
+        {
             return;
+        }
 
         if (v->drivingSoundId == SoundObjectId::null)
+        {
             return;
+        }
 
         // TODO: left or top?
         if (v->spriteLeft == Location::null)
+        {
             return;
+        }
 
         if (_numActiveVehicleSounds >= Config::get().old.maxVehicleSounds)
+        {
             return;
+        }
 
         auto spritePosition = viewport_pos(v->spriteLeft, v->spriteTop);
 
@@ -740,21 +766,29 @@ namespace OpenLoco::Audio
         }
 
         if (WindowManager::count() == 0)
+        {
             return;
+        }
 
         for (auto i = (int32_t)WindowManager::count() - 1; i >= 0; i--)
         {
             auto w = WindowManager::get(i);
 
             if (w->type == WindowType::main)
+            {
                 continue;
+            }
 
             if (w->type == WindowType::news)
+            {
                 continue;
+            }
 
             auto viewport = w->viewports[0];
             if (viewport == nullptr)
+            {
                 continue;
+            }
 
             if (viewport->contains(spritePosition))
             {
@@ -865,7 +899,9 @@ namespace OpenLoco::Audio
     void updateAmbientNoise()
     {
         if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
+        {
             return;
+        }
 
         auto* mainViewport = WindowManager::getMainViewport();
         std::optional<PathId> newAmbientSound = std::nullopt;
@@ -996,7 +1032,9 @@ namespace OpenLoco::Audio
         const auto& cfg = Config::get().old;
 
         if (_currentSong == kNoSong)
+        {
             return;
+        }
 
         bool trackStillApplies = true;
         switch (cfg.musicPlaylist)
@@ -1006,7 +1044,9 @@ namespace OpenLoco::Audio
                 auto currentYear = getCurrentYear();
                 auto info = kMusicInfo[_currentSong];
                 if (currentYear < info.startYear || currentYear > info.endYear)
+                {
                     trackStillApplies = false;
+                }
                 break;
             }
 
@@ -1015,7 +1055,9 @@ namespace OpenLoco::Audio
 
             case MusicPlaylistType::custom:
                 if (!cfg.enabledMusic[_currentSong])
+                {
                     trackStillApplies = false;
+                }
                 break;
         }
 

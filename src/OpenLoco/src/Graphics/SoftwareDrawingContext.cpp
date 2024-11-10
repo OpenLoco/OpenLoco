@@ -159,7 +159,9 @@ namespace OpenLoco::Gfx
             }
             // If the image no longer has anything to draw
             if (height <= 0)
+            {
                 return std::nullopt;
+            }
 
             dstTop = dstTop >> TZoomLevel;
 
@@ -203,7 +205,9 @@ namespace OpenLoco::Gfx
                 width -= dstRight - rt.width;
                 // If there is no image to draw.
                 if (width <= 0)
+                {
                     return std::nullopt;
+                }
             }
 
             dstLeft = dstLeft >> TZoomLevel;
@@ -323,11 +327,15 @@ namespace OpenLoco::Gfx
         {
             const auto scaledHeight = imageHeight >> TZoomLevel;
             if (scaledHeight == 0)
+            {
                 return;
+            }
 
             const auto scaledWidth = imageWidth >> TZoomLevel;
             if (scaledWidth == 0)
+            {
                 return;
+            }
 
             constexpr auto skip = (1U << TZoomLevel);
 
@@ -359,7 +367,9 @@ namespace OpenLoco::Gfx
                 {
                     const auto masked = *bytesMask & *bytesImage;
                     if (masked)
+                    {
                         *dstBuf = masked;
+                    }
 
                     bytesImage += skip;
                     bytesMask += skip;
@@ -404,12 +414,16 @@ namespace OpenLoco::Gfx
             if constexpr (TZoomLevel > 0)
             {
                 if (g1Image->hasFlags(G1ElementFlags::none))
+                {
                     return;
+                }
 
                 if (g1Image->hasFlags(G1ElementFlags::hasZoomSprites))
                 {
                     if (g1ImageMask->hasFlags(G1ElementFlags::noZoomDraw))
+                    {
                         return;
+                    }
 
                     if (g1ImageMask->hasFlags(G1ElementFlags::hasZoomSprites))
                     {
@@ -839,12 +853,18 @@ namespace OpenLoco::Gfx
 
             // Check to make sure point is in the y range
             if (offset.y < 0)
+            {
                 return;
+            }
             if (offset.y >= rt.height)
+            {
                 return;
+            }
             // Check to make sure we are drawing at least a pixel
             if (length == 0)
+            {
                 length++;
+            }
 
             // If x coord outside range leave
             if (offset.x < 0)
@@ -852,7 +872,9 @@ namespace OpenLoco::Gfx
                 // Unless the number of pixels is enough to be in range
                 length += offset.x;
                 if (length <= 0)
+                {
                     return;
+                }
                 // Resets starting point to 0 as we don't draw outside the range
                 offset.x = 0;
             }
@@ -864,7 +886,9 @@ namespace OpenLoco::Gfx
                 // cut them off. If there are now no pixels return.
                 length -= offset.x + length - rt.width;
                 if (length <= 0)
+                {
                     return;
+                }
             }
 
             // Get the buffer we are drawing to and move to the first coordinate.

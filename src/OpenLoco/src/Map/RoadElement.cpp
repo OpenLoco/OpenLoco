@@ -33,22 +33,34 @@ namespace OpenLoco::World
     bool RoadElement::update(const World::Pos2& loc)
     {
         if (owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(owner()))
+        {
             return true;
+        }
 
         if (!(getGameState().roadObjectIdIsNotTram & (1 << roadObjectId())))
+        {
             return true;
+        }
 
         if (sequenceIndex())
+        {
             return true;
+        }
 
         if (hasUnk7_10() || hasLevelCrossing() || hasUnk7_40() || hasUnk7_80())
+        {
             return true;
+        }
 
         if (isGhost() || isAiAllocated())
+        {
             return true;
+        }
 
         if (hasStationElement())
+        {
             return true;
+        }
 
         // Verify there are no other conflicting tile elements on the current tile either.
         // This probably duplicates the above series of checks as well?
@@ -57,28 +69,44 @@ namespace OpenLoco::World
         {
             auto* roadEl = el.as<RoadElement>();
             if (roadEl == nullptr)
+            {
                 continue;
+            }
 
             if (roadEl->baseZ() != baseZ())
+            {
                 continue;
+            }
 
             if (roadEl->owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(roadEl->owner()))
+            {
                 continue;
+            }
 
             if (!(getGameState().roadObjectIdIsNotTram & (1 << roadEl->roadObjectId())))
+            {
                 continue;
+            }
 
             if (roadEl->sequenceIndex())
+            {
                 return true;
+            }
 
             if (hasUnk7_10() || hasLevelCrossing() || hasUnk7_40() || hasUnk7_80())
+            {
                 return true;
+            }
 
             if (roadEl->isGhost() || roadEl->isAiAllocated())
+            {
                 return true;
+            }
 
             if (roadEl->hasStationElement())
+            {
                 return true;
+            }
         }
 
         CompanyId backup = GameCommands::getUpdatingCompanyId();

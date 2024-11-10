@@ -56,7 +56,9 @@ namespace OpenLoco
                 producedCargoCount++;
 
                 if (producedCargoCount > 1)
+                {
                     ptr = StringManager::formatString(ptr, StringIds::cargo_and);
+                }
 
                 auto cargoObj = ObjectManager::get<CargoObject>(producedCargo);
                 ptr = StringManager::formatString(ptr, cargoObj->name);
@@ -79,9 +81,13 @@ namespace OpenLoco
                 if (requiredCargoCount > 1)
                 {
                     if (hasFlags(IndustryObjectFlags::requiresAllCargo))
+                    {
                         ptr = StringManager::formatString(ptr, StringIds::cargo_and);
+                    }
                     else
+                    {
                         ptr = StringManager::formatString(ptr, StringIds::cargo_or);
+                    }
                 }
 
                 auto cargoObj = ObjectManager::get<CargoObject>(requiredCargo);
@@ -381,7 +387,9 @@ namespace OpenLoco
         const auto* partsPointer = buildingVariationParts[buildingType];
         auto* end = partsPointer;
         while (*end != 0xFF)
+        {
             end++;
+        }
 
         return std::span<const std::uint8_t>(partsPointer, end);
     }
@@ -399,7 +407,9 @@ namespace OpenLoco
         const auto* unkPointer = var_38;
         auto* end = unkPointer;
         while (end->var_00 != 0xFF)
+        {
             end++;
+        }
         return std::span<const IndustryObjectUnk38>(unkPointer, end);
     }
 }

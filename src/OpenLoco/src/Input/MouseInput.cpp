@@ -186,16 +186,24 @@ namespace OpenLoco::Input
     bool isDropdownActive(Ui::WindowType type, Ui::WindowNumber_t number)
     {
         if (state() != State::dropdownActive)
+        {
             return false;
+        }
 
         if (*_pressedWindowType != type)
+        {
             return false;
+        }
 
         if (!hasFlag(Flags::widgetPressed))
+        {
             return false;
+        }
 
         if (_pressedWindowNumber != number)
+        {
             return false;
+        }
 
         return true;
     }
@@ -203,7 +211,9 @@ namespace OpenLoco::Input
     bool isDropdownActive(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index)
     {
         if (!isDropdownActive(type, number))
+        {
             return false;
+        }
 
         return _pressedWidgetIndex == index;
     }
@@ -211,16 +221,24 @@ namespace OpenLoco::Input
     bool isPressed(Ui::WindowType type, Ui::WindowNumber_t number)
     {
         if (state() != State::widgetPressed)
+        {
             return false;
+        }
 
         if (*_pressedWindowType != type)
+        {
             return false;
+        }
 
         if (_pressedWindowNumber != number)
+        {
             return false;
+        }
 
         if (!hasFlag(Flags::widgetPressed))
+        {
             return false;
+        }
 
         return true;
     }
@@ -243,13 +261,19 @@ namespace OpenLoco::Input
     bool isFocused(Ui::WindowType type, Ui::WindowNumber_t number)
     {
         if (!hasFlag(Flags::widgetFocused))
+        {
             return false;
+        }
 
         if (_focusedWindowType != type)
+        {
             return false;
+        }
 
         if (_focusedWindowNumber != number)
+        {
             return false;
+        }
 
         return true;
     }
@@ -444,7 +468,9 @@ namespace OpenLoco::Input
                 // 0x4C73C2
                 Input::state(State::reset);
                 if (window->type != _dragWindowType || window->number != _dragWindowNumber)
+                {
                     return;
+                }
 
                 if (hasFlag(Flags::toolActive))
                 {
@@ -863,7 +889,9 @@ namespace OpenLoco::Input
     {
         auto window = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
         if (window == nullptr)
+        {
             return;
+        }
 
         WindowManager::close(Ui::WindowType::dropdown, 0);
         window = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
@@ -990,7 +1018,9 @@ namespace OpenLoco::Input
             case MouseButton::released: // 0
             {
                 if (window == nullptr)
+                {
                     break;
+                }
 
                 if (window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex)
                 {
@@ -1294,7 +1324,9 @@ namespace OpenLoco::Input
             WindowManager::invalidateWidget(_focusedWindowType, _focusedWindowNumber, _focusedWidgetIndex);
         }
         else
+        {
             resetFocus();
+        }
 
         // Regular widget handling
         switch (widget->type)
@@ -1805,7 +1837,9 @@ namespace OpenLoco::Input
                 {
                     button = loc_4C6FCE(x, y);
                     if (x == 0x80000000)
+                    {
                         return button;
+                    }
                 }
             }
             // 0x004C6F5F
@@ -1813,7 +1847,9 @@ namespace OpenLoco::Input
             {
                 button = loc_4C6FCE(x, y);
                 if (x == 0x80000000)
+                {
                     return button;
+                }
             }
             else if (input)
             {
@@ -1847,17 +1883,23 @@ namespace OpenLoco::Input
             {
                 auto button = MouseButton(Tutorial::nextInput());
                 if (button == MouseButton::released)
+                {
                     return loc_4C70F1(x, y);
+                }
             }
             else if (isRightMouseButtonDown())
+            {
                 return loc_4C70F1(x, y);
+            }
 
             // 0x004C704E
             if (Tutorial::state() == Tutorial::State::playing)
             {
                 auto next = Tutorial::nextInput();
                 if (!(next & 0x80))
+                {
                     return loc_4C70F1(x, y);
+                }
             }
             else if (!(addr<0x01140845, uint8_t>() & 0x80))
             {
@@ -1899,12 +1941,16 @@ namespace OpenLoco::Input
         }
 
         if (Tutorial::state() != Tutorial::State::none)
+        {
             return;
+        }
 
         if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
             if (OpenLoco::isTitleMode())
+            {
                 return;
+            }
 
             auto main = WindowManager::getMainWindow();
             if (main != nullptr && wheel != 0)

@@ -88,9 +88,11 @@ namespace OpenLoco::Ui::Windows::ToolTip
         int maxY = Ui::height() - height;
         y = cursorY + 26; // Normally, we'd display the tooltip 26 lower
         if (y > maxY)
+        {
             // If y is too large, the tooltip could be forced below the cursor if we'd just clamped y,
             // so we'll subtract a bit more
             y -= height + 40;
+        }
         y = std::clamp(y, 22, maxY);
 
         x = width <= Ui::width() ? std::clamp(cursorX - (width / 2), 0, Ui::width() - width) : 0;

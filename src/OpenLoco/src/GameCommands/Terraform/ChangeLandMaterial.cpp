@@ -30,7 +30,9 @@ namespace OpenLoco::GameCommands
         {
             auto surface = World::TileManager::get(tilePos).surface();
             if (surface == nullptr)
+            {
                 continue;
+            }
 
             surface->setTerrain(landType);
             if (!surface->isIndustrial())

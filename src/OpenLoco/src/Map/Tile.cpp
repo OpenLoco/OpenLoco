@@ -97,7 +97,9 @@ namespace OpenLoco::World
         {
             auto* result = tile.as<SurfaceElement>();
             if (result != nullptr)
+            {
                 return result;
+            }
         }
         return nullptr;
     }
@@ -118,16 +120,26 @@ namespace OpenLoco::World
             }
             auto* elTrack = tile.as<TrackElement>();
             if (elTrack == nullptr)
+            {
                 continue;
+            }
             trackFound = false;
             if (elTrack->baseZ() != baseZ)
+            {
                 continue;
+            }
             if (elTrack->rotation() != direction)
+            {
                 continue;
+            }
             if (elTrack->trackId() != trackId)
+            {
                 continue;
+            }
             if (!elTrack->hasStationElement())
+            {
                 continue;
+            }
             trackFound = true;
         }
         return result;
@@ -165,11 +177,17 @@ namespace OpenLoco::World
                 continue;
             }
             if (elRoad->rotation() != direction)
+            {
                 continue;
+            }
             if (elRoad->roadId() != roadId)
+            {
                 continue;
+            }
             if (!elRoad->hasStationElement())
+            {
                 continue;
+            }
             trackFound = true;
         }
         return result;

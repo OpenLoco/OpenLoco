@@ -105,9 +105,13 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
         // Enumerate competitors that are in use if we are applying the selection in-game
         if (_callingWindowType == WindowType::company)
+        {
             _inUseCompetitors = CompanyManager::findAllOtherInUseCompetitors(id);
+        }
         else
+        {
             _inUseCompetitors.clear();
+        }
     }
 
     // 0x004352A4

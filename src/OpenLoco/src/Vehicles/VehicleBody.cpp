@@ -89,11 +89,15 @@ namespace OpenLoco::Vehicles
     void VehicleBody::animationUpdate()
     {
         if (has38Flags(Flags38::isGhost))
+        {
             return;
+        }
 
         VehicleHead* headVeh = _vehicleUpdate_head;
         if ((headVeh->status == Status::crashed) || (headVeh->status == Status::stuck))
+        {
             return;
+        }
 
         const auto* vehicleObject = getObject();
         int32_t var_05 = vehicleObject->carComponents[bodyIndex].var_05;
@@ -146,7 +150,9 @@ namespace OpenLoco::Vehicles
 
         var_44 += eax & 0xFFFF;
         if (objectSpriteType == 0xFF)
+        {
             return;
+        }
 
         const auto* vehicleObj = getObject();
         uint8_t al = 0;
@@ -244,7 +250,9 @@ namespace OpenLoco::Vehicles
         moveTo(midPoint);
 
         if (objectSpriteType == 0xFF)
+        {
             return;
+        }
 
         auto bogieDifference = front_bogie->position - back_bogie->position;
         auto distanceBetweenBogies = Math::Vector::distance2D(front_bogie->position, back_bogie->position);
@@ -867,7 +875,9 @@ namespace OpenLoco::Vehicles
 
         uint8_t var_05 = vehicleObject->carComponents[bodyIndex].var_05;
         if (var_05 == 0)
+        {
             return;
+        }
 
         var_05 -= 0x80;
 
@@ -908,7 +918,9 @@ namespace OpenLoco::Vehicles
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
+        {
             return;
+        }
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         bool soundCode = false;
@@ -933,7 +945,9 @@ namespace OpenLoco::Vehicles
         if (tickCalc && (soundCode == false))
         {
             if (ScenarioManager::getScenarioTicks() & 7)
+            {
                 return;
+            }
         }
         else
         {
@@ -953,7 +967,9 @@ namespace OpenLoco::Vehicles
 
         Exhaust::create(smokeLoc, vehicleObject->animation[num].objectId | (soundCode ? 0 : 0x80));
         if (soundCode == false)
+        {
             return;
+        }
 
         var_55++;
         const SteamObject* steamObj = ObjectManager::get<SteamObject>(vehicleObject->animation[num].objectId);
@@ -981,18 +997,30 @@ namespace OpenLoco::Vehicles
                 }
                 auto* track = el.as<World::TrackElement>();
                 if (track == nullptr)
+                {
                     continue;
+                }
                 if (track->baseZ() != frontBogie->tileBaseZ)
+                {
                     continue;
+                }
                 if (track->trackId() != frontBogie->trackAndDirection.track.id())
+                {
                     continue;
+                }
                 if (track->rotation() != frontBogie->trackAndDirection.track.cardinalDirection())
+                {
                     continue;
+                }
                 if (!track->hasStationElement())
+                {
                     continue;
+                }
 
                 if (!track->isLast())
+                {
                     stationFound = true;
+                }
             }
         }
 
@@ -1001,7 +1029,9 @@ namespace OpenLoco::Vehicles
             auto soundId = steamObj->soundEffects[var_55 + (steamObj->numSoundEffects >> 1)];
 
             if (veh_2->currentSpeed > 15.0_mph)
+            {
                 return;
+            }
 
             int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
@@ -1025,7 +1055,9 @@ namespace OpenLoco::Vehicles
             auto soundId = steamObj->soundEffects[var_55];
 
             if (veh_2->currentSpeed > 15.0_mph)
+            {
                 return;
+            }
 
             int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
@@ -1052,7 +1084,9 @@ namespace OpenLoco::Vehicles
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
+        {
             return;
+        }
 
         VehicleHead* headVeh = _vehicleUpdate_head;
         Vehicle2* veh_2 = _vehicleUpdate_2;
@@ -1061,7 +1095,9 @@ namespace OpenLoco::Vehicles
         if (headVeh->vehicleType == VehicleType::ship)
         {
             if (veh_2->currentSpeed == 0.0_mph)
+            {
                 return;
+            }
 
             if (has38Flags(Flags38::isReversed))
             {
@@ -1069,7 +1105,9 @@ namespace OpenLoco::Vehicles
             }
 
             if (ScenarioManager::getScenarioTicks() & 3)
+            {
                 return;
+            }
 
             auto positionFactor = vehicleObject->bodySprites[0].halfLength * var_05 / 256;
             auto invertedDirection = spriteYaw ^ (1 << 5);
@@ -1081,7 +1119,9 @@ namespace OpenLoco::Vehicles
         else
         {
             if (veh_2->var_5A != 1)
+            {
                 return;
+            }
 
             if (has38Flags(Flags38::isReversed))
             {
@@ -1089,10 +1129,14 @@ namespace OpenLoco::Vehicles
             }
 
             if (ScenarioManager::getScenarioTicks() & 3)
+            {
                 return;
+            }
 
             if (var_5E != 0)
+            {
                 return;
+            }
 
             var_05 += 64;
             auto bogieDifference = backBogie->position - frontBogie->position;
@@ -1110,16 +1154,22 @@ namespace OpenLoco::Vehicles
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
+        {
             return;
+        }
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
         if (veh_2->var_5A != 1)
+        {
             return;
+        }
 
         if (veh_2->currentSpeed > 14.0_mph)
+        {
             return;
+        }
 
         if (has38Flags(Flags38::isReversed))
         {
@@ -1127,7 +1177,9 @@ namespace OpenLoco::Vehicles
         }
 
         if (ScenarioManager::getScenarioTicks() & 7)
+        {
             return;
+        }
 
         var_05 += 64;
 
@@ -1158,13 +1210,17 @@ namespace OpenLoco::Vehicles
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
+        {
             return;
+        }
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
         if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
+        {
             return;
+        }
 
         auto _var_44 = var_44;
         if (has38Flags(Flags38::isReversed))
@@ -1174,12 +1230,16 @@ namespace OpenLoco::Vehicles
         }
 
         if (((uint16_t)_vehicleUpdate_var_1136130) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
+        {
             return;
+        }
 
         var_05 += 64;
 
         if (gPrng1().randNext(std::numeric_limits<uint16_t>::max()) > 819)
+        {
             return;
+        }
 
         auto bogieDifference = backBogie->position - frontBogie->position;
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
@@ -1195,13 +1255,17 @@ namespace OpenLoco::Vehicles
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
+        {
             return;
+        }
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
         if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
+        {
             return;
+        }
 
         auto _var_44 = var_44;
         if (has38Flags(Flags38::isReversed))
@@ -1211,12 +1275,16 @@ namespace OpenLoco::Vehicles
         }
 
         if (((uint16_t)_vehicleUpdate_var_1136130) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
+        {
             return;
+        }
 
         var_05 += 64;
 
         if (gPrng1().randNext(std::numeric_limits<uint16_t>::max()) > 936)
+        {
             return;
+        }
 
         auto bogieDifference = backBogie->position - frontBogie->position;
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
@@ -1251,10 +1319,14 @@ namespace OpenLoco::Vehicles
         const auto* vehicleObject = getObject();
 
         if (veh_2->var_5A == 0)
+        {
             return;
+        }
 
         if (veh_2->currentSpeed < 6.0_mph)
+        {
             return;
+        }
 
         auto frequency = 32;
         if (veh_2->currentSpeed >= 9.0_mph)
@@ -1271,7 +1343,9 @@ namespace OpenLoco::Vehicles
         }
 
         if ((ScenarioManager::getScenarioTicks() % frequency) != 0)
+        {
             return;
+        }
 
         auto positionFactor = vehicleObject->bodySprites[0].halfLength;
         auto invertedDirection = spriteYaw ^ (1 << 5);
@@ -1289,7 +1363,9 @@ namespace OpenLoco::Vehicles
         Exhaust::create(loc, vehicleObject->animation[num].objectId);
 
         if (vehicleObject->var_113 == 0)
+        {
             return;
+        }
 
         // 90 degrees C.C.W.
         yaw = (spriteYaw - 16) & 0x3F;
