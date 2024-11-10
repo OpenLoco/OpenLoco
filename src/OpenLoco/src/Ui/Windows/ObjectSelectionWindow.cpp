@@ -1402,10 +1402,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             // Show OpenLoco objects?
             if ((FilterFlags(self.var_858) & FilterFlags::openLoco) != FilterFlags::none)
-                Dropdown::setItemSelected(5);
+            {
+                Dropdown::setItemSelected(5); 
+            }
 
             // Show custom objects?
             if ((FilterFlags(self.var_858) & FilterFlags::custom) != FilterFlags::none)
+            {
                 Dropdown::setItemSelected(6);
             }
         }
