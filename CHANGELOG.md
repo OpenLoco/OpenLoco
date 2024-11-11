@@ -6,6 +6,7 @@
 - Fix: [#2690] Inability to remove certain track pieces.
 - Fix: [#2691] Scenarios with original procedural terrain generation could crash.
 - Fix: [#2692] Inability to place certain track pieces.
+- Fix: [#2717] Crash when generating a landscape with the river meander rate set to 1.
 
 24.10 (2024-10-20)
 ------------------------------------------------------------------------
