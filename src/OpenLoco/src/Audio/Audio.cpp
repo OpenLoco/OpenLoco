@@ -1091,8 +1091,7 @@ namespace OpenLoco::Audio
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
 
-        static std::vector<uint8_t> playlist;
-        playlist = makeSelectedPlaylist();
+        auto playlist = makeSelectedPlaylist();
 
         const auto& cfg = Config::get().old;
 
