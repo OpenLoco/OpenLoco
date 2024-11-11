@@ -148,14 +148,14 @@ namespace OpenLoco
         std::fill(std::begin(manualPower), std::end(manualPower), nullptr);
     }
 
-    std::vector<TrainStationObject::CargoOffset> TrainStationObject::getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const
+    sfl::static_vector<TrainStationObject::CargoOffset, 16> TrainStationObject::getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const
     {
         assert(rotation < 4 && nibble < 4);
 
         const auto* bytes = cargoOffsetBytes[rotation][nibble];
         uint8_t z = *reinterpret_cast<const uint8_t*>(bytes);
         bytes++;
-        std::vector<CargoOffset> result;
+        sfl::static_vector<CargoOffset, 16> result;
         while (*bytes != static_cast<std::byte>(0xFF))
         {
             result.push_back({
@@ -171,6 +171,12 @@ namespace OpenLoco
                 },
             });
             bytes += 4;
+
+            // The game can't handle anything larger than 16 so we've made the static vector 16 max
+            if (result.size() == result.max_size())
+            {
+                break;
+            }
         }
         return result;
     }

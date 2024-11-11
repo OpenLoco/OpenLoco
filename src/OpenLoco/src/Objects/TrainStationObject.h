@@ -7,8 +7,8 @@
 #include <OpenLoco/Engine/World.hpp>
 #include <array>
 #include <cstddef>
+#include <sfl/static_vector.hpp>
 #include <span>
-#include <vector>
 
 namespace OpenLoco
 {
@@ -59,7 +59,7 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
-        std::vector<CargoOffset> getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const;
+        sfl::static_vector<CargoOffset, 16> getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const;
         constexpr bool hasFlags(TrainStationFlags flagsToTest) const
         {
             return (flags & flagsToTest) != TrainStationFlags::none;
