@@ -1208,10 +1208,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         // tabOverall
         {
-            uint32_t imageId = skin->img;
-            imageId += InterfaceSkin::ImageIds::toolbar_menu_map_north;
+            // TODO: use same list as top toolbar and time panel
+            static constexpr uint32_t kMapSpritesByRotation[] = {
+                InterfaceSkin::ImageIds::toolbar_menu_map_north,
+                InterfaceSkin::ImageIds::toolbar_menu_map_west,
+                InterfaceSkin::ImageIds::toolbar_menu_map_south,
+                InterfaceSkin::ImageIds::toolbar_menu_map_east,
+            };
+            uint32_t mapSprite = skin->img + kMapSpritesByRotation[WindowManager::getCurrentRotation()];
 
-            Widget::drawTab(self, drawingCtx, imageId, widx::tabOverall);
+            Widget::drawTab(self, drawingCtx, mapSprite, widx::tabOverall);
         }
 
         // tabVehicles,

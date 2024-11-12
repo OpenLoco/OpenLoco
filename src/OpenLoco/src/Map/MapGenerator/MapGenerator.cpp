@@ -132,7 +132,7 @@ namespace OpenLoco::World::MapGenerator
                     xStartPos += meanderOffset;
 
                     // Adjust bank width slightly as well
-                    if (options.riverbankWidth > 0)
+                    if (options.riverbankWidth > 0 && halfMeanderRate != 0)
                     {
                         riverbankWidth += meanderOffset / halfMeanderRate;
                         easternBankOffset += meanderOffset / halfMeanderRate;

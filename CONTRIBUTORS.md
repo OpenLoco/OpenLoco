@@ -20,6 +20,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * seifer7
 * Ryan D. (rctdude2)
 * Soham Roy (sohamroy19)
+* LeeSpork
 
 ## Translations
 * Dutch - Michael Steenbeek (Gymnasiast)

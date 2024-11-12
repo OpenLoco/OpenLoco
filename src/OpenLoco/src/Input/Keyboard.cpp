@@ -123,32 +123,32 @@ namespace OpenLoco::Input
     {
         switch (Tutorial::state())
         {
-            case Tutorial::State::none:
-                break;
+        case Tutorial::State::none:
+            break;
 
-            case Tutorial::State::playing:
+        case Tutorial::State::playing:
+        {
+            _keyModifier = static_cast<KeyModifier>(Tutorial::nextInput());
+            if (!hasKeyModifier(KeyModifier::unknown))
             {
-                _keyModifier = static_cast<KeyModifier>(Tutorial::nextInput());
-                if (!hasKeyModifier(KeyModifier::unknown))
-                {
-                    return;
-                }
-
-                Windows::ToolTip::closeAndReset();
-
-                auto tutStringId = Tutorial::nextString();
-                auto main = WindowManager::getMainWindow();
-                auto cursor = getMouseLocation();
-
-                Windows::ToolTip::update(main, 0, tutStringId, cursor.x, cursor.y);
-                break;
+                return;
             }
 
-            case Tutorial::State::recording:
-            {
-                call(0x004BF005);
-                break;
-            }
+            Windows::ToolTip::closeAndReset();
+
+            auto tutStringId = Tutorial::nextString();
+            auto main = WindowManager::getMainWindow();
+            auto cursor = getMouseLocation();
+
+            Windows::ToolTip::update(main, 0, tutStringId, cursor.x, cursor.y);
+            break;
+        }
+
+        case Tutorial::State::recording:
+        {
+            call(0x004BF005);
+            break;
+        }
         }
     }
 
@@ -397,6 +397,11 @@ namespace OpenLoco::Input
             }
 
             if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
+            {
+                continue;
+            }
+
+            if (tryShortcut(Shortcut::showOptionsWindow, nextKey->keyCode, _keyModifier))
             {
                 continue;
             }
