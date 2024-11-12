@@ -13,6 +13,10 @@
 #include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/RemoveTrack.h"
+#include "GameCommands/Vehicles/CreateVehicle.h"
+#include "GameCommands/Vehicles/VehicleOrderInsert.h"
+#include "GameCommands/Vehicles/VehicleOrderSkip.h"
+#include "GameCommands/Vehicles/VehicleRefit.h"
 #include "Industry.h"
 #include "IndustryManager.h"
 #include "Map/RoadElement.h"
@@ -20,12 +24,14 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
+#include "Objects/CargoObject.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
 #include "Random.h"
 #include "Station.h"
 #include "StationManager.h"
 #include "TownManager.h"
+#include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Engine/World.hpp>
@@ -41,6 +47,7 @@ namespace OpenLoco
     static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
     static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
     static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
+    static loco_global<EntityId, 0x0113642A> _lastCreatedVehicleId;
 
     // 0x004FE720
     static constexpr std::array<uint32_t, kAiThoughtCount> kThoughtTypeFlags = {
@@ -78,11 +85,156 @@ namespace OpenLoco
     static uint8_t sub_486ECF(Company& company, AiThought& thought)
     {
         // some sort of purchase vehicle
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00486ECF, regs);
-        return regs.al;
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return 2;
+        }
+
+        if (thought.var_44 >= thought.var_43)
+        {
+            return 1;
+        }
+
+        EntityId trainHeadId = EntityId::null;
+        for (auto i = 0; i < thought.var_45; ++i)
+        {
+            GameCommands::VehicleCreateArgs createArgs{};
+            createArgs.vehicleId = trainHeadId;
+            createArgs.vehicleType = thought.var_46[i];
+            auto res = GameCommands::doCommand(createArgs, GameCommands::Flags::apply);
+            if (res == GameCommands::FAILURE)
+            {
+                // If we can't create a vehicle try create a free vehicle!
+                res = GameCommands::doCommand(createArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+                if (res == GameCommands::FAILURE)
+                {
+                    return 2;
+                }
+            }
+            if (trainHeadId == EntityId::null)
+            {
+                trainHeadId = _lastCreatedVehicleId;
+            }
+            // There was some broken code that would try read the head as a body here
+
+            // auto* veh = EntityManager::get<Vehicles::VehicleBogie>(_lastCreatedVehicleId); lol no this wouldn't work
+            // auto train = Vehicles::Vehicle(veh->head);
+            // auto car = [&train, veh]() {
+            //     for (auto& car : train.cars)
+            //     {
+            //         if (car.front == veh)
+            //         {
+            //             return car;
+            //         }
+            //     }
+            //     return Vehicles::Car{};
+            // }();
+            // if (car.front->secondaryCargo.maxQty != 0)
+            //{
+            //     if (car.front->secondaryCargo.acceptedTypes & (1U << thought.cargoType))
+            //     {
+            //         car.front->secondaryCargo.type = thought.cargoType;
+            //     }
+            // }
+            // if (car.body->primaryCargo.maxQty != 0)
+            //{
+            //     if (car.body->primaryCargo.acceptedTypes & (1U << thought.cargoType))
+            //     {
+            //         car.body->primaryCargo.type = thought.cargoType;
+            //     }
+            // }
+        }
+
+        thought.var_66[thought.var_44] = trainHeadId;
+        thought.var_44++;
+
+        auto train = Vehicles::Vehicle(trainHeadId);
+        train.head->var_60 = company.var_2578;
+
+        auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
+        if (vehicleObj->hasFlags(VehicleObjectFlags::refittable))
+        {
+            auto shouldRefit = [&vehicleObj, &thought]() {
+                for (auto j = 0; j < 2; ++j)
+                {
+                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }();
+            if (shouldRefit)
+            {
+                auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+                if (cargoObj->hasFlags(CargoObjectFlags::refit))
+                {
+                    GameCommands::VehicleRefitArgs refitArgs{};
+                    refitArgs.head = trainHeadId;
+                    refitArgs.cargoType = thought.cargoType;
+                    GameCommands::doCommand(refitArgs, GameCommands::Flags::apply);
+                }
+            }
+        }
+
+        StationId unkStation = StationId::null;
+        uint32_t orderOffset = 0;
+        for (auto i = 0; i < thought.var_03; ++i)
+        {
+            auto& unk = thought.var_06[i];
+            if (unkStation == unk.var_00)
+            {
+                continue;
+            }
+
+            GameCommands::VehicleOrderInsertArgs insertArgs{};
+            insertArgs.head = trainHeadId;
+            insertArgs.orderOffset = orderOffset;
+            Vehicles::OrderStopAt stopAt{ unk.var_00 };
+            insertArgs.rawOrder = stopAt.getRaw();
+            auto insertRes = GameCommands::doCommand(insertArgs, GameCommands::Flags::apply);
+            // Fix vanilla bug
+            if (insertRes != GameCommands::FAILURE)
+            {
+                orderOffset += sizeof(stopAt);
+            }
+            if (i != 0)
+            {
+                continue;
+            }
+            if ((kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 7))
+                && (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
+            {
+                GameCommands::VehicleOrderInsertArgs insertArgs2{};
+                insertArgs2.head = trainHeadId;
+                insertArgs2.orderOffset = orderOffset;
+                Vehicles::OrderWaitFor waitFor{ thought.cargoType };
+                insertArgs2.rawOrder = waitFor.getRaw();
+                auto insert2Res = GameCommands::doCommand(insertArgs2, GameCommands::Flags::apply);
+                // Fix vanilla bug
+                if (insert2Res != GameCommands::FAILURE)
+                {
+                    orderOffset += sizeof(waitFor);
+                }
+            }
+        }
+        if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
+        {
+            return 0;
+        }
+        if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 11)))
+        {
+            return 0;
+        }
+        if (thought.var_43 > 1)
+        {
+            // Why??
+            GameCommands::VehicleOrderSkipArgs skipArgs{};
+            skipArgs.head = trainHeadId;
+            GameCommands::doCommand(skipArgs, GameCommands::Flags::apply);
+            GameCommands::doCommand(skipArgs, GameCommands::Flags::apply);
+        }
+        return 0;
     }
 
     // 0x004876CB
