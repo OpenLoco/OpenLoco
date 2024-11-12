@@ -358,6 +358,11 @@ namespace OpenLoco::Input
 
             if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
                 continue;
+
+            if (tryShortcut(Shortcut::showOptionsWindow, nextKey->keyCode, _keyModifier))
+            {
+                continue;
+            }
         }
     }
 
