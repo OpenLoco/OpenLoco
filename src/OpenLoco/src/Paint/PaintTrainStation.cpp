@@ -8,7 +8,6 @@
 #include "PaintStation.h"
 #include "Ui/ViewportInteraction.h"
 #include "World/CompanyManager.h"
-#include <sfl/small_vector.hpp>
 
 namespace OpenLoco::Paint
 {
