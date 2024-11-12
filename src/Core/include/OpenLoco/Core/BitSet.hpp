@@ -119,7 +119,7 @@ namespace OpenLoco
                 using value_type = typename StorageBlockType<computeBlockSize<TBitSize>()>::value_type;
             };
         } // namespace BitSet
-    }     // namespace Detail
+    } // namespace Detail
 
     template<size_t TBitSize>
     class BitSet
