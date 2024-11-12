@@ -1,5 +1,6 @@
 #include "ObjectImageTable.h"
 #include "Graphics/Gfx.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -11,12 +12,20 @@ namespace OpenLoco::ObjectManager
     // 0x0047221F
     ImageTableResult loadImageTable(std::span<const std::byte> data)
     {
+        if (data.size() < sizeof(Gfx::G1Header))
+        {
+            throw Exception::OutOfRange();
+        }
         auto remainingData = data;
         const auto g1Header = *reinterpret_cast<const Gfx::G1Header*>(remainingData.data());
         remainingData = remainingData.subspan(sizeof(Gfx::G1Header));
 
         const ImageTableResult res = { _totalNumImages, sizeof(Gfx::G1Header) + g1Header.numEntries * sizeof(Gfx::G1Element32) + g1Header.totalSize };
 
+        if (remainingData.size() < sizeof(Gfx::G1Element32) * g1Header.numEntries)
+        {
+            throw Exception::OutOfRange();
+        }
         const auto* g32Ptr = reinterpret_cast<const Gfx::G1Element32*>(remainingData.data());
         remainingData = remainingData.subspan(sizeof(Gfx::G1Element32) * g1Header.numEntries);
         // Urgh messy...
