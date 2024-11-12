@@ -22,8 +22,7 @@ namespace OpenLoco::GameCommands
         // Looks like a variant of Vehicles::VehicleHead::canBeModified?
         registers regs;
         regs.esi = X86Pointer(head);
-        call(0x004B6B0C, regs);
-        return regs.eax != 0;
+        return !(call(0x004B6B0C, regs) & X86_FLAG_CARRY);
     }
 
     static void invalidateWindow(EntityId headId)
@@ -76,7 +75,8 @@ namespace OpenLoco::GameCommands
             train.head->vehicleFlags &= ~VehicleFlags::manualControl;
         }
 
-        if (!(train.head->hasVehicleFlags(VehicleFlags::unk_2) || !CompanyManager::isPlayerCompany(train.head->owner)))
+        if (!train.head->hasVehicleFlags(VehicleFlags::commandStop)
+            && CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
         {
             auto madeProfit = train.veh2->profit[0] | train.veh2->profit[1] | train.veh2->profit[2] | train.veh2->profit[3];
             if (madeProfit != 0)
