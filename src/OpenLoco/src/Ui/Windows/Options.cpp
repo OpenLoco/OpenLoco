@@ -75,7 +75,7 @@ namespace OpenLoco::Ui::Windows::Options
         _availableCurrencies.clear();
         for (auto& object : ObjectManager::getAvailableObjects(ObjectType::currency))
         {
-            _availableCurrencies.push_back(AvailableCurrency(object.object._name, object.object._header, object.index));
+            _availableCurrencies.push_back(AvailableCurrency{ object.object._name, object.object._header, object.index });
         }
     }
 
