@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/Limits.h"
 #include "Map/Track/TrackEnum.h"
 #include "Object.h"
 #include "Types.hpp"
@@ -59,7 +60,7 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
-        sfl::static_vector<CargoOffset, 16> getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const;
+        sfl::static_vector<CargoOffset, Limits::kMaxStationCargoDensity> getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const;
         constexpr bool hasFlags(TrainStationFlags flagsToTest) const
         {
             return (flags & flagsToTest) != TrainStationFlags::none;

@@ -25,4 +25,5 @@ namespace OpenLoco::S5::Limits
     constexpr size_t maxNormalEntities = kMaxEntities - kMaxMoneyEntities;
     // Money is not counted in this limit
     constexpr size_t kMaxMiscEntities = 4000;
+    constexpr size_t kMaxStationCargoDensity = 15;
 }
