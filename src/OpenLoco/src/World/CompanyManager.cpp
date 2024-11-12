@@ -363,7 +363,7 @@ namespace OpenLoco::CompanyManager
     // 0x0042F9CB
     static LoadedObjectId selectNewCompetitor()
     {
-        sfl::static_vector<LoadedObjectId, Limits::kMaxCompanies> loadedUnusedCompetitors;
+        sfl::static_vector<LoadedObjectId, ObjectManager::getMaxObjects(ObjectType::competitor)> loadedUnusedCompetitors;
         for (LoadedObjectId id = 0U; id < ObjectManager::getMaxObjects(ObjectType::competitor); ++id)
         {
             auto* competitorObj = ObjectManager::get<CompetitorObject>(id);
