@@ -87,8 +87,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         const auto& config = Config::get().old;
 
         uint16_t y = 0;
-        for (uint16_t i = 0; i < window.rowCount; i++)
+        for (uint16_t row = 0; row < window.rowCount; row++)
         {
+            auto musicTrack = row; // id of music track on this row
+
             if (y + kRowHeight < rt.y)
             {
                 y += kRowHeight;
@@ -99,20 +101,20 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 break;
             }
 
-            StringId text_colour_id = StringIds::black_stringid;
+            StringId textColour = StringIds::black_stringid;
 
             // Draw hovered track
-            if (i == window.rowHover)
+            if (row == window.rowHover)
             {
                 drawingCtx.drawRect(0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
-                text_colour_id = StringIds::wcolour2_stringid;
+                textColour = StringIds::wcolour2_stringid;
             }
 
             // Draw checkbox.
             drawingCtx.fillRectInset(2, y, 11, y + 10, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::fillDarker | Gfx::RectInsetFlags::borderInset);
 
             // Draw checkmark if track is enabled.
-            if (config.enabledMusic[i])
+            if (config.enabledMusic[musicTrack])
             {
                 auto point = Point(2, y);
 
@@ -125,12 +127,12 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw track name.
             {
                 auto point = Point(15, y);
-                StringId music_title_id = Audio::getMusicInfo(i)->titleId;
+                StringId musicTitle = Audio::getMusicInfo(musicTrack)->titleId;
 
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
-                args.push(music_title_id);
-                tr.drawStringLeft(point, window.getColour(WindowColour::secondary), text_colour_id, args);
+                args.push(musicTitle);
+                tr.drawStringLeft(point, window.getColour(WindowColour::secondary), textColour, args);
             }
 
             y += kRowHeight;
