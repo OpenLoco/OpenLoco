@@ -176,6 +176,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             std::vector<GameCommands::TreeRemovalArgs> ghostTreeRemovalArgs;
             World::Pos2 lastPos;
             uint8_t lastQuadrant = 0;
+            currency32_t totalCost = 0;
         };
 
         // TODO have this stuff be an attribute of a plant trees window/tab object or something instead of static
@@ -588,14 +589,16 @@ namespace OpenLoco::Ui::Windows::Terraform
                     }
 
                     treeClusterGhostData.ghostTreeRemovalArgs.clear();
-
-                    // Place ghosts
+                    treeClusterGhostData.totalCost = 0;
                     for (const auto& ghostArgs : treeClusterGhostData.treePlacementArgs)
                     {
+
                         // Place ghost tree
                         auto result = GameCommands::doCommand(ghostArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
                         if (result != GameCommands::FAILURE)
                         {
+                            treeClusterGhostData.totalCost += result;
+
                             // Remember how to remove the ghost tree for later
                             GameCommands::TreeRemovalArgs removeArgs;
                             removeArgs.pos = World::Pos3(ghostArgs.pos.x, ghostArgs.pos.y, (*_lastPlacedTree)->baseZ() * World::kSmallZStep);
@@ -834,17 +837,26 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto treeObj = ObjectManager::get<TreeObject>(treeId);
 
             uint32_t treeCost = 0x80000000;
-            if (self.var_846 == 0xFFFF)
+
+            // Check if there are currently tree cluster ghosts
+            if (treeClusterGhostData.ghostTreeRemovalArgs.size() > 0)
             {
-                treeCost = _lastTreeCost;
-                if (treeCost == 0x80000000)
-                {
-                    treeCost = Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
-                }
+                treeCost = treeClusterGhostData.totalCost;
             }
             else
             {
-                treeCost = Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
+                if (self.var_846 == 0xFFFF)
+                {
+                    treeCost = _lastTreeCost;
+                    if (treeCost == 0x80000000)
+                    {
+                        treeCost = Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
+                    }
+                }
+                else
+                {
+                    treeCost = Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
+                }
             }
 
             if (!isEditorMode())
