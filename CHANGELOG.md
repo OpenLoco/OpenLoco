@@ -7,6 +7,7 @@
 - Fix: [#2690] Inability to remove certain track pieces.
 - Fix: [#2691] Scenarios with original procedural terrain generation could crash.
 - Fix: [#2692] Inability to place certain track pieces.
+- Fix: [#2705] Scaffolding on large buildings displayed incorrectly.
 - Fix: [#2717] Crash when generating a landscape with the river meander rate set to 1.
 - Fix: [#2718] North arrow image not changing to reflect rotation on the Map window.
 - Fix: [#2725] Currency preference selection shows invalid data.
