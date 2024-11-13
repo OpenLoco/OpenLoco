@@ -77,13 +77,13 @@ namespace OpenLoco
         uint8_t pad_3F;
         uint8_t mods; // 0x40 0x4E8 track or road
         uint8_t pad_41;
-        uint8_t cargoType;   // 0x42 0x4EA
-        uint8_t var_43;      // 0x4EB
-        uint8_t var_44;      // 0x4EC size of var_66
-        uint8_t var_45;      // 0x4ED size of var_46
-        uint16_t var_46[16]; // 0x4EF array of uint16_t object id
-        EntityId var_66[8];  // 0x50E
-        currency32_t var_76; // 0x51E
+        uint8_t cargoType;    // 0x42 0x4EA
+        uint8_t var_43;       // 0x4EB
+        uint8_t numVehicles;  // 0x44 0x4EC size of var_66
+        uint8_t var_45;       // 0x4ED size of var_46
+        uint16_t var_46[16];  // 0x4EF array of uint16_t object id
+        EntityId vehicles[8]; // 0x66 0x50E see also numVehicles for current size
+        currency32_t var_76;  // 0x51E
         uint8_t pad_7A[0x7C - 0x7A];
         currency32_t var_7C; // 0x524
         currency32_t var_80; // 0x528

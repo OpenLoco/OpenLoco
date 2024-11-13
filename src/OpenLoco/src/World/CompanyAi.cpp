@@ -82,15 +82,19 @@ namespace OpenLoco
     }
 
     // 0x00486ECF
-    static uint8_t sub_486ECF(Company& company, AiThought& thought)
+    //
+    // return:
+    // 0 = Success
+    // 1 = failure desired number of vehicles has been created
+    // 2 = failure
+    static uint8_t purchaseVehicle(Company& company, AiThought& thought)
     {
-        // some sort of purchase vehicle
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
             return 2;
         }
 
-        if (thought.var_44 >= thought.var_43)
+        if (thought.numVehicles >= thought.var_43)
         {
             return 1;
         }
@@ -145,8 +149,8 @@ namespace OpenLoco
             // }
         }
 
-        thought.var_66[thought.var_44] = trainHeadId;
-        thought.var_44++;
+        thought.vehicles[thought.numVehicles] = trainHeadId;
+        thought.numVehicles++;
 
         auto train = Vehicles::Vehicle(trainHeadId);
         train.head->var_60 = company.var_2578;
@@ -1001,7 +1005,7 @@ namespace OpenLoco
     // 0x004310C4
     static void sub_4310C4(Company& company, AiThought& thought)
     {
-        const auto res = sub_486ECF(company, thought);
+        const auto res = purchaseVehicle(company, thought);
         if (res == 2)
         {
             company.var_4A4 = AiThinkState::unk6;
@@ -1230,7 +1234,7 @@ namespace OpenLoco
     // 0x00431254
     static void sub_431254(Company& company, AiThought& thought)
     {
-        const auto res = sub_486ECF(company, thought);
+        const auto res = purchaseVehicle(company, thought);
         if (res == 2)
         {
             company.var_4A4 = AiThinkState::unk7;
@@ -1588,18 +1592,18 @@ namespace OpenLoco
 
     void removeEntityFromThought(AiThought& thought, EntityId id)
     {
-        auto iter = std::find(std::begin(thought.var_66), std::end(thought.var_66), id);
-        if (iter == std::end(thought.var_66))
+        auto iter = std::find(std::begin(thought.vehicles), std::end(thought.vehicles), id);
+        if (iter == std::end(thought.vehicles))
         {
             return;
         }
-        // Original would copy the value from var_66 + 2 which
-        // would mean it would copy currency var_76 if var_44 was 7
+        // Original would copy the value from vehicles + 2 which
+        // would mean it would copy currency var_76 if numVehicles was 7
         // I don't think that is possible but lets just add an assert.
-        assert(thought.var_44 < 7);
+        assert(thought.numVehicles < 7);
 
-        *iter = thought.var_66[std::size(thought.var_66) - 1];
-        std::rotate(iter, iter + 1, std::end(thought.var_66));
-        thought.var_44--;
+        *iter = thought.vehicles[std::size(thought.vehicles) - 1];
+        std::rotate(iter, iter + 1, std::end(thought.vehicles));
+        thought.numVehicles--;
     }
 }
