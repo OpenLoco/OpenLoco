@@ -136,6 +136,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         static constexpr uint8_t kRowHeight = 102;
         static constexpr uint8_t kColumnWidth = 66;
 
+        static constexpr int kTreeClusterSelectedRange = 320;
+        static constexpr int kTreeClusterSelectedDensity = 3;
+        static constexpr int kTreeClusterRandomRange = 384;
+        static constexpr int kTreeClusterRandomDensity = 4;
+
         enum widx
         {
             scrollview = 9,
@@ -164,6 +169,17 @@ namespace OpenLoco::Ui::Windows::Terraform
             selected,
             random,
         };
+
+        struct TreeClusterGhostData
+        {
+            std::vector<GameCommands::TreePlacementArgs> treePlacementArgs;
+            std::vector<GameCommands::TreeRemovalArgs> ghostTreeRemovalArgs;
+            World::Pos2 lastPos;
+            uint8_t lastQuadrant = 0;
+        };
+
+        // TODO have this stuff be an attribute of a plant trees window/tab object or something instead of static
+        static TreeClusterGhostData treeClusterGhostData;
 
         // 0x004BB6B2
         static void updateTreeColours(Window* self)
@@ -425,6 +441,19 @@ namespace OpenLoco::Ui::Windows::Terraform
                 self.invalidate();
             }
         }
+
+        static void removeTreeClusterGhosts()
+        {
+            // Iterate through all tree placement args
+            for (const GameCommands::TreeRemovalArgs& removeArgs : treeClusterGhostData.ghostTreeRemovalArgs)
+            {
+                GameCommands::doCommand(removeArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            }
+
+            // Assume they were all successfully removed
+            treeClusterGhostData.ghostTreeRemovalArgs.clear();
+        }
+
         // 0x004BD297 (bits of)
         static void removeTreeGhost()
         {
@@ -437,6 +466,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.elementType = _terraformGhostTreeElementType;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
+
+            removeTreeClusterGhosts();
         }
 
         // 0x004BD237
@@ -515,21 +546,66 @@ namespace OpenLoco::Ui::Windows::Terraform
             World::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
             World::mapInvalidateSelectionRect();
 
-            if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::tree) != Common::GhostPlacedFlags::none)
+            // Tree ghost stuff
+            if (_treeClusterType == treeCluster::none)
             {
-                if (*_terraformGhostPos == placementArgs->pos
-                    && _terraformGhostQuadrant == placementArgs->quadrant
-                    && _terraformGhostType == placementArgs->type
-                    && _terraformGhostTreeRotationFlag == (placementArgs->rotation | (placementArgs->buildImmediately ? 0x8000 : 0)))
+                if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::tree) != Common::GhostPlacedFlags::none)
                 {
-                    return;
+                    if (*_terraformGhostPos == placementArgs->pos
+                        && _terraformGhostQuadrant == placementArgs->quadrant
+                        && _terraformGhostType == placementArgs->type
+                        && _terraformGhostTreeRotationFlag == (placementArgs->rotation | (placementArgs->buildImmediately ? 0x8000 : 0)))
+                    {
+                        return;
+                    }
                 }
-            }
 
             removeTreeGhost();
             _terraformGhostQuadrant = placementArgs->quadrant;
             _terraformGhostTreeRotationFlag = placementArgs->rotation | (placementArgs->buildImmediately ? 0x8000 : 0);
             _lastTreeCost = placeTreeGhost(*placementArgs);
+            }
+            else // tree cluster mode is not none
+            {
+                bool hasMoved = treeClusterGhostData.lastPos != placementArgs->pos && treeClusterGhostData.lastQuadrant != placementArgs->quadrant;
+                treeClusterGhostData.lastPos = placementArgs->pos;
+                treeClusterGhostData.lastQuadrant = placementArgs->quadrant;
+
+                if (hasMoved)
+                {
+                    removeTreeClusterGhosts();
+
+                    // Regenerate vector of tree placement args
+                    switch (_treeClusterType)
+                    {
+                        case treeCluster::selected:
+                            treeClusterGhostData.treePlacementArgs = World::placeTreeClusterPre(World::toTileSpace(placementArgs->pos), kTreeClusterSelectedRange, kTreeClusterSelectedDensity, placementArgs->type);
+                            break;
+
+                        case treeCluster::random:
+                            treeClusterGhostData.treePlacementArgs = World::placeTreeClusterPre(World::toTileSpace(placementArgs->pos), kTreeClusterRandomRange, kTreeClusterRandomDensity, std::nullopt);
+                            break;
+                    }
+
+                    treeClusterGhostData.ghostTreeRemovalArgs.clear();
+
+                    // Place ghosts
+                    for (const auto& ghostArgs : treeClusterGhostData.treePlacementArgs)
+                    {
+                        // Place ghost tree
+                        auto result = GameCommands::doCommand(ghostArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+                        if (result != GameCommands::FAILURE)
+                        {
+                            // Remember how to remove the ghost tree for later
+                            GameCommands::TreeRemovalArgs removeArgs;
+                            removeArgs.pos = World::Pos3(ghostArgs.pos.x, ghostArgs.pos.y, (*_lastPlacedTree)->baseZ() * World::kSmallZStep);
+                            removeArgs.type = ghostArgs.type;
+                            removeArgs.elementType = (*_lastPlacedTree)->rawData()[0];
+                            treeClusterGhostData.ghostTreeRemovalArgs.push_back(removeArgs);
+                        }
+                    }
+                }
+            }
         }
 
         // 0x004BBB20
@@ -556,9 +632,22 @@ namespace OpenLoco::Ui::Windows::Terraform
                     {
                         auto previousId = GameCommands::getUpdatingCompanyId();
                         if (isEditorMode())
+                        {
                             GameCommands::setUpdatingCompanyId(CompanyId::neutral);
+                        }
 
-                        if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 320, 3, placementArgs->type))
+                        bool success = false;
+                        if (treeClusterGhostData.treePlacementArgs.size() != 0)
+                        {
+                            success = World::placeTreeCluster(treeClusterGhostData.treePlacementArgs);
+                            treeClusterGhostData.treePlacementArgs.clear();
+                        }
+                        else
+                        {
+                            success = World::placeTreeCluster(World::toTileSpace(placementArgs->pos), kTreeClusterSelectedRange, kTreeClusterSelectedDensity, placementArgs->type);
+                        }
+
+                        if (success)
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
                             Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
@@ -569,15 +658,30 @@ namespace OpenLoco::Ui::Windows::Terraform
                         }
 
                         if (isEditorMode())
+                        {
                             GameCommands::setUpdatingCompanyId(previousId);
+                        }
                         break;
                     }
                     case treeCluster::random:
                         auto previousId = GameCommands::getUpdatingCompanyId();
                         if (isEditorMode())
+                        {
                             GameCommands::setUpdatingCompanyId(CompanyId::neutral);
+                        }
 
-                        if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 384, 4, std::nullopt))
+                        bool success = false;
+                        if (treeClusterGhostData.treePlacementArgs.size() != 0)
+                        {
+                            success = World::placeTreeCluster(treeClusterGhostData.treePlacementArgs);
+                            treeClusterGhostData.treePlacementArgs.clear();
+                        }
+                        else
+                        {
+                            success = World::placeTreeCluster(World::toTileSpace(placementArgs->pos), kTreeClusterRandomRange, kTreeClusterRandomDensity, std::nullopt);
+                        }
+
+                        if (success)
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
                             Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
@@ -588,7 +692,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                         }
 
                         if (isEditorMode())
+                        {
                             GameCommands::setUpdatingCompanyId(previousId);
+                        }
                         break;
                 }
             }
