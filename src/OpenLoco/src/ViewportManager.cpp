@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::ViewportManager
     {
         for (auto& viewport : _viewports)
         {
-            // TODO: check for invalid viewports
+            // Skip destroyed viewports.
             if (viewport.isValid() == 0)
             {
                 continue;
@@ -265,8 +265,8 @@ namespace OpenLoco::Ui::ViewportManager
     {
         for (auto& viewport : _viewports)
         {
-            // TODO: check for invalid viewports
-            if (viewport.width == 0)
+            // Skip destroyed viewports.
+            if (viewport.isValid() == 0)
             {
                 continue;
             }
