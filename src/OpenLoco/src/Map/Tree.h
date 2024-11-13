@@ -1,9 +1,9 @@
 #pragma once
 
+#include "GameCommands/Terraform/CreateTree.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <optional>
 #include <vector>
-#include "GameCommands/Terraform/CreateTree.h"
 
 namespace OpenLoco::World
 {
