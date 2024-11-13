@@ -81,22 +81,24 @@ namespace OpenLoco
         company.var_85F0 = 0;
     }
 
+    enum class PurchaseVehicleResult
+    {
+        success = 0, // But maybe not all required purchases
+        allVehiclesPurchased = 1,
+        failure = 2
+    };
+
     // 0x00486ECF
-    //
-    // return:
-    // 0 = Success
-    // 1 = failure desired number of vehicles has been created
-    // 2 = failure
-    static uint8_t purchaseVehicle(Company& company, AiThought& thought)
+    static PurchaseVehicleResult purchaseVehicle(Company& company, AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
-            return 2;
+            return PurchaseVehicleResult::failure;
         }
 
         if (thought.numVehicles >= thought.var_43)
         {
-            return 1;
+            return PurchaseVehicleResult::allVehiclesPurchased;
         }
 
         EntityId trainHeadId = EntityId::null;
@@ -112,7 +114,7 @@ namespace OpenLoco
                 res = GameCommands::doCommand(createArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment);
                 if (res == GameCommands::FAILURE)
                 {
-                    return 2;
+                    return PurchaseVehicleResult::failure;
                 }
             }
             if (trainHeadId == EntityId::null)
@@ -153,7 +155,7 @@ namespace OpenLoco
         thought.numVehicles++;
 
         auto train = Vehicles::Vehicle(trainHeadId);
-        train.head->var_60 = company.var_2578;
+        train.head->aiThoughtId = company.activeThoughtId;
 
         auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
         if (vehicleObj->hasFlags(VehicleObjectFlags::refittable))
@@ -224,11 +226,11 @@ namespace OpenLoco
         }
         if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
         {
-            return 0;
+            return PurchaseVehicleResult::success;
         }
         if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 11)))
         {
-            return 0;
+            return PurchaseVehicleResult::success;
         }
         if (thought.var_43 > 1)
         {
@@ -238,7 +240,7 @@ namespace OpenLoco
             GameCommands::doCommand(skipArgs, GameCommands::Flags::apply);
             GameCommands::doCommand(skipArgs, GameCommands::Flags::apply);
         }
-        return 0;
+        return PurchaseVehicleResult::success;
     }
 
     // 0x004876CB
@@ -415,7 +417,7 @@ namespace OpenLoco
 
         company.var_85F6 = 0;
         company.var_4A4 = AiThinkState::unk1;
-        company.var_2578 = 0xFF;
+        company.activeThoughtId = 0xFF;
         tryRemovePortsAndAirports(company);
     }
 
@@ -448,10 +450,10 @@ namespace OpenLoco
     // 0x00430971
     static void aiThinkState1(Company& company)
     {
-        company.var_2578++;
-        if (company.var_2578 < 60)
+        company.activeThoughtId++;
+        if (company.activeThoughtId < 60)
         {
-            const auto& thought = company.aiThoughts[company.var_2578];
+            const auto& thought = company.aiThoughts[company.activeThoughtId];
             if (thought.type == AiThoughtType::null)
             {
                 aiThinkState1(company);
@@ -795,7 +797,7 @@ namespace OpenLoco
     {
         company.var_85F6++;
 
-        _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.var_2578]);
+        _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x0047BA2C
@@ -1006,15 +1008,17 @@ namespace OpenLoco
     static void sub_4310C4(Company& company, AiThought& thought)
     {
         const auto res = purchaseVehicle(company, thought);
-        if (res == 2)
+        if (res == PurchaseVehicleResult::failure)
         {
             company.var_4A4 = AiThinkState::unk6;
             company.var_4A5 = 0;
         }
-        else if (res == 1)
+        else if (res == PurchaseVehicleResult::allVehiclesPurchased)
         {
+            // Move onto the next stage of this AiThinkState
             company.var_4A5 = 3;
         }
+        // else will keep purchasing vehicles until allVehiclesPurchased
     }
 
     // 0x004310E9
@@ -1040,7 +1044,7 @@ namespace OpenLoco
         companyEmotionEvent(company.id(), Emotion::thinking);
         company.var_85F6++;
 
-        _funcs_4F9500[company.var_4A5](company, company.aiThoughts[company.var_2578]);
+        _funcs_4F9500[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     static void nullsub_3([[maybe_unused]] Company& company)
@@ -1119,7 +1123,7 @@ namespace OpenLoco
     // 0x00431193
     static void aiThinkState7(Company& company)
     {
-        _funcs_4F9524[company.var_4A5](company, company.aiThoughts[company.var_2578]);
+        _funcs_4F9524[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x00487C83
@@ -1235,15 +1239,17 @@ namespace OpenLoco
     static void sub_431254(Company& company, AiThought& thought)
     {
         const auto res = purchaseVehicle(company, thought);
-        if (res == 2)
+        if (res == PurchaseVehicleResult::failure)
         {
             company.var_4A4 = AiThinkState::unk7;
             company.var_4A5 = 0;
         }
-        else if (res == 1)
+        else if (res == PurchaseVehicleResult::allVehiclesPurchased)
         {
+            // Move onto the next stage of this AiThinkState
             company.var_4A5 = 5;
         }
+        // else will keep purchasing vehicles until allVehiclesPurchased
     }
 
     // 0x00431279
@@ -1267,7 +1273,7 @@ namespace OpenLoco
     // 0x004311E7
     static void aiThinkState8(Company& company)
     {
-        _funcs_4F9530[company.var_4A5](company, company.aiThoughts[company.var_2578]);
+        _funcs_4F9530[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     static void nullsub_4([[maybe_unused]] Company& company)
@@ -1535,7 +1541,7 @@ namespace OpenLoco
         if (company->var_4A4 == AiThinkState::unk3)
         {
             World::Pos2 pos{};
-            auto& thought = company->aiThoughts[company->var_2578];
+            auto& thought = company->aiThoughts[company->activeThoughtId];
             if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 1))
             {
                 auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));

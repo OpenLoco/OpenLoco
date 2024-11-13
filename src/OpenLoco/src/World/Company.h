@@ -159,7 +159,7 @@ namespace OpenLoco
         uint8_t var_4A6;
         uint8_t var_4A7;
         AiThought aiThoughts[60];    // 0x04A8
-        uint8_t var_2578;            // 0x2578 activeThought?
+        uint8_t activeThoughtId;     // 0x2578
         World::SmallZ headquartersZ; // 0x2579
         coord_t headquartersX;       // 0x257A -1 on no headquarter placed
         coord_t headquartersY;       // 0x257C

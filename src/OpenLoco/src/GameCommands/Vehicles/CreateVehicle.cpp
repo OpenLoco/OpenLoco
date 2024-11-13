@@ -430,7 +430,7 @@ namespace OpenLoco::GameCommands
         newHead->status = Status::unk_0;
         newHead->stationId = StationId::null;
         newHead->breakdownFlags = BreakdownFlags::none;
-        newHead->var_60 = 0xFFU;
+        newHead->aiThoughtId = 0xFFU;
         newHead->var_61 = 0xFFU;
         newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0_mph;
