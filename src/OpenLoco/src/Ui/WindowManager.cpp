@@ -1371,8 +1371,6 @@ namespace OpenLoco::Ui::WindowManager
 
         const auto index = indexOf(*window);
         _windows.erase(_windows.begin() + index);
-
-        ViewportManager::collectGarbage();
     }
 
     void callEvent8OnAllWindows()

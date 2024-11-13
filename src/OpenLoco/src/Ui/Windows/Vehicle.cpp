@@ -353,7 +353,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 flags = self.viewports[0]->flags;
                 self.viewportRemove(0);
-                ViewportManager::collectGarbage();
             }
             else
             {
@@ -4332,12 +4331,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->frameNo = 0;
             self->flags &= ~WindowFlags::flag_16;
             self->var_85C = -1;
-            if (self->viewports[0] != nullptr)
-            {
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
-                ViewportManager::collectGarbage();
-            }
+            self->viewportRemove(0);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tabMain];
 

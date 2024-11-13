@@ -13,13 +13,16 @@
 #include <algorithm>
 #include <cassert>
 #include <memory>
+#include <ranges>
+#include <sfl/static_vector.hpp>
 
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::ViewportManager
 {
-    static std::vector<std::unique_ptr<Viewport>> _viewports;
+    static sfl::static_vector<Viewport, kMaxViewports> _viewports{};
 
     static Viewport* create(registers regs, int index);
 
@@ -28,22 +31,53 @@ namespace OpenLoco::Ui::ViewportManager
         _viewports.clear();
     }
 
-    // 0x004CEC25
-    void collectGarbage()
+    static Viewport* allocate()
     {
-        _viewports.erase(
-            std::remove_if(
-                _viewports.begin(),
-                _viewports.end(),
-                [](std::unique_ptr<Viewport>& viewport) {
-                    return viewport->width == 0;
-                }),
-            _viewports.end());
+        // Find a free viewport, it is considered unused when width is set to 0.
+        auto itFree = std::ranges::find(_viewports, 0, &Viewport::width);
+        if (itFree != std::ranges::end(_viewports))
+        {
+            return &(*itFree);
+        }
+
+        // Allocate a new viewport.
+        if (_viewports.size() < _viewports.capacity())
+        {
+            _viewports.emplace_back();
+            return &_viewports.back();
+        }
+
+        Logging::warn("No free viewports are available, reached max of {}", kMaxViewports);
+        return nullptr;
+    }
+
+    void destroy(Viewport* vp)
+    {
+        assert(vp->isValid());
+
+        vp->width = 0;
+        while (!_viewports.empty() && _viewports.back().width == 0)
+        {
+            _viewports.pop_back();
+        }
+
+        Logging::info("Active viewports: {}", _viewports.size());
     }
 
     static Viewport* initViewport(Ui::Point origin, Ui::Size size, ZoomLevel zoom)
     {
-        auto vp = _viewports.emplace_back(std::make_unique<Viewport>()).get();
+        // Viewports with 0 width are invalid.
+        if (size.width == 0)
+        {
+            assert(size.width != 0);
+            return nullptr;
+        }
+
+        auto* vp = allocate();
+        if (vp == nullptr)
+        {
+            return nullptr;
+        }
 
         vp->x = origin.x;
         vp->y = origin.y;
@@ -150,7 +184,6 @@ namespace OpenLoco::Ui::ViewportManager
         window->viewports[viewportIndex] = viewport;
         focusViewportOn(window, viewportIndex, entityId);
 
-        collectGarbage();
         return viewport;
     }
 
@@ -171,11 +204,6 @@ namespace OpenLoco::Ui::ViewportManager
      */
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, World::Pos3 tile)
     {
-        // Viewports of 0 width are automatically removed
-        if (size.width == 0)
-        {
-            return nullptr;
-        }
         Viewport* viewport = initViewport(origin, size, zoom);
 
         if (viewport == nullptr)
@@ -186,119 +214,102 @@ namespace OpenLoco::Ui::ViewportManager
         window->viewports[viewportIndex] = viewport;
         focusViewportOn(window, viewportIndex, tile);
 
-        collectGarbage();
         return viewport;
     }
 
     static void invalidate(const ViewportRect& rect, ZoomLevel zoom)
     {
-        bool doGarbageCollect = false;
-
         for (auto& viewport : _viewports)
         {
             // TODO: check for invalid viewports
-            if (viewport->width == 0)
+            if (viewport.isValid() == 0)
             {
-                doGarbageCollect = true;
                 continue;
             }
 
             // Skip if zoomed out further than zoom argument
-            if (viewport->zoom > (uint8_t)zoom)
+            if (viewport.zoom > (uint8_t)zoom)
             {
                 continue;
             }
 
-            if (!viewport->intersects(rect))
+            if (!viewport.intersects(rect))
             {
                 continue;
             }
 
-            auto intersection = viewport->getIntersection(rect);
+            auto intersection = viewport.getIntersection(rect);
 
             // offset rect by (negative) viewport origin
-            int16_t left = intersection.left - viewport->viewX;
-            int16_t right = intersection.right - viewport->viewX;
-            int16_t top = intersection.top - viewport->viewY;
-            int16_t bottom = intersection.bottom - viewport->viewY;
+            int16_t left = intersection.left - viewport.viewX;
+            int16_t right = intersection.right - viewport.viewX;
+            int16_t top = intersection.top - viewport.viewY;
+            int16_t bottom = intersection.bottom - viewport.viewY;
 
             // apply zoom
-            left = left >> viewport->zoom;
-            right = right >> viewport->zoom;
-            top = top >> viewport->zoom;
-            bottom = bottom >> viewport->zoom;
+            left = left >> viewport.zoom;
+            right = right >> viewport.zoom;
+            top = top >> viewport.zoom;
+            bottom = bottom >> viewport.zoom;
 
             // offset calculated area by viewport offset
-            left += viewport->x;
-            right += viewport->x;
-            top += viewport->y;
-            bottom += viewport->y;
+            left += viewport.x;
+            right += viewport.x;
+            top += viewport.y;
+            bottom += viewport.y;
 
             Gfx::invalidateRegion(left, top, right, bottom);
-        }
-
-        if (doGarbageCollect)
-        {
-            collectGarbage();
         }
     }
 
     // 0x004CBA2D
     void invalidate(Station* station)
     {
-        bool doGarbageCollect = false;
-
         for (auto& viewport : _viewports)
         {
             // TODO: check for invalid viewports
-            if (viewport->width == 0)
+            if (viewport.width == 0)
             {
-                doGarbageCollect = true;
                 continue;
             }
 
             ViewportRect rect;
-            rect.left = station->labelFrame.left[viewport->zoom];
-            rect.top = station->labelFrame.top[viewport->zoom];
-            rect.right = station->labelFrame.right[viewport->zoom] + 1;
-            rect.bottom = station->labelFrame.bottom[viewport->zoom] + 1;
+            rect.left = station->labelFrame.left[viewport.zoom];
+            rect.top = station->labelFrame.top[viewport.zoom];
+            rect.right = station->labelFrame.right[viewport.zoom] + 1;
+            rect.bottom = station->labelFrame.bottom[viewport.zoom] + 1;
 
-            rect.left <<= viewport->zoom;
-            rect.top <<= viewport->zoom;
-            rect.right <<= viewport->zoom;
-            rect.bottom <<= viewport->zoom;
+            rect.left <<= viewport.zoom;
+            rect.top <<= viewport.zoom;
+            rect.right <<= viewport.zoom;
+            rect.bottom <<= viewport.zoom;
 
-            if (!viewport->intersects(rect))
+            if (!viewport.intersects(rect))
             {
                 continue;
             }
 
-            auto intersection = viewport->getIntersection(rect);
+            auto intersection = viewport.getIntersection(rect);
 
             // offset rect by (negative) viewport origin
-            int16_t left = intersection.left - viewport->viewX;
-            int16_t right = intersection.right - viewport->viewX;
-            int16_t top = intersection.top - viewport->viewY;
-            int16_t bottom = intersection.bottom - viewport->viewY;
+            int16_t left = intersection.left - viewport.viewX;
+            int16_t right = intersection.right - viewport.viewX;
+            int16_t top = intersection.top - viewport.viewY;
+            int16_t bottom = intersection.bottom - viewport.viewY;
 
             // apply zoom
-            left = left >> viewport->zoom;
-            right = right >> viewport->zoom;
-            top = top >> viewport->zoom;
-            bottom = bottom >> viewport->zoom;
+            left = left >> viewport.zoom;
+            right = right >> viewport.zoom;
+            top = top >> viewport.zoom;
+            bottom = bottom >> viewport.zoom;
 
             // offset calculated area by viewport offset
-            left += viewport->x;
-            right += viewport->x;
-            top += viewport->y;
-            bottom += viewport->y;
+            left += viewport.x;
+            right += viewport.x;
+            top += viewport.y;
+            bottom += viewport.y;
 
             Gfx::invalidateRegion(left, top, right, bottom);
-        }
-
-        if (doGarbageCollect)
-        {
-            collectGarbage();
         }
     }
 
@@ -472,7 +483,6 @@ namespace OpenLoco::Ui::ViewportManager
             0x004CEC25,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                collectGarbage();
                 regs = backup;
                 return 0;
             });
@@ -492,4 +502,5 @@ namespace OpenLoco::Ui::ViewportManager
                 return 0;
             });
     }
+
 }

@@ -187,6 +187,11 @@ namespace OpenLoco::Ui
             return (flags & flagsToTest) != ViewportFlags::none;
         }
 
+        constexpr bool isValid() const
+        {
+            return width != 0 && height != 0;
+        }
+
     private:
         void paint(Gfx::DrawingContext& drawingCtx, const Ui::Rect& rect);
     };
