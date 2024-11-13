@@ -560,10 +560,10 @@ namespace OpenLoco::Ui::Windows::Terraform
                     }
                 }
 
-            removeTreeGhost();
-            _terraformGhostQuadrant = placementArgs->quadrant;
-            _terraformGhostTreeRotationFlag = placementArgs->rotation | (placementArgs->buildImmediately ? 0x8000 : 0);
-            _lastTreeCost = placeTreeGhost(*placementArgs);
+                removeTreeGhost();
+                _terraformGhostQuadrant = placementArgs->quadrant;
+                _terraformGhostTreeRotationFlag = placementArgs->rotation | (placementArgs->buildImmediately ? 0x8000 : 0);
+                _lastTreeCost = placeTreeGhost(*placementArgs);
             }
             else // tree cluster mode is not none
             {
