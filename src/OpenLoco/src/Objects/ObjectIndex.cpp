@@ -801,17 +801,17 @@ namespace OpenLoco::ObjectManager
         for (const auto pos : World::getWorldRange())
         {
             const auto tile = World::TileManager::get(pos);
-            for (auto el : tile)
+            for (const auto& el : tile)
             {
-                auto* elSurface = el.as<World::SurfaceElement>();
-                auto* elTrack = el.as<World::TrackElement>();
-                auto* elStation = el.as<World::StationElement>();
-                auto* elSignal = el.as<World::SignalElement>();
-                auto* elBuilding = el.as<World::BuildingElement>();
-                auto* elTree = el.as<World::TreeElement>();
-                auto* elWall = el.as<World::WallElement>();
-                auto* elRoad = el.as<World::RoadElement>();
-                auto* elIndustry = el.as<World::IndustryElement>();
+                const auto* elSurface = el.as<World::SurfaceElement>();
+                const auto* elTrack = el.as<World::TrackElement>();
+                const auto* elStation = el.as<World::StationElement>();
+                const auto* elSignal = el.as<World::SignalElement>();
+                const auto* elBuilding = el.as<World::BuildingElement>();
+                const auto* elTree = el.as<World::TreeElement>();
+                const auto* elWall = el.as<World::WallElement>();
+                const auto* elRoad = el.as<World::RoadElement>();
+                const auto* elIndustry = el.as<World::IndustryElement>();
 
                 if (elSurface != nullptr)
                 {

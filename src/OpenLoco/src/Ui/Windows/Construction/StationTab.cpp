@@ -649,7 +649,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 }
                 const auto tile = TileManager::get(searchPos);
                 bool surfaceFound = false;
-                for (auto el : tile)
+                for (const auto& el : tile)
                 {
                     if (surfaceFound)
                     {
