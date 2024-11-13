@@ -183,12 +183,12 @@ namespace OpenLoco
             }
         }
 
-        StationId unkStation = StationId::null;
+        StationId destStation = StationId::null;
         uint32_t orderOffset = 0;
         for (auto i = 0; i < thought.var_03; ++i)
         {
             auto& unk = thought.var_06[i];
-            if (unkStation == unk.var_00)
+            if (destStation == unk.var_00)
             {
                 continue;
             }
@@ -197,6 +197,7 @@ namespace OpenLoco
             insertArgs.head = trainHeadId;
             insertArgs.orderOffset = orderOffset;
             Vehicles::OrderStopAt stopAt{ unk.var_00 };
+            destStation = unk.var_00;
             insertArgs.rawOrder = stopAt.getRaw();
             auto insertRes = GameCommands::doCommand(insertArgs, GameCommands::Flags::apply);
             // Fix vanilla bug
@@ -208,6 +209,7 @@ namespace OpenLoco
             {
                 continue;
             }
+            // Potential vanilla issue below it checks for 1ULL << 11 here 1ULL << 7
             if ((kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 7))
                 && (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
             {
