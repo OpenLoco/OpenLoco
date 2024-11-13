@@ -606,7 +606,7 @@ namespace OpenLoco
                 numMonthsInTheRed++;
                 if (numMonthsInTheRed == 9)
                 {
-                    const auto message = GameCommands::getUpdatingCompanyId() == id() ? MessageType::bankruptcyDeclared2 : MessageType::bankruptcyDeclared;
+                    const auto message = CompanyManager::getControllingId() == id() ? MessageType::bankruptcyDeclared2 : MessageType::bankruptcyDeclared;
                     MessageManager::post(message, id(), enumValue(id()), 0xFFFFU);
 
                     challengeFlags |= CompanyFlags::bankrupt;
@@ -618,7 +618,7 @@ namespace OpenLoco
                     companyEmotionEvent(id(), Emotion::dejected);
                     stopAllCompanyVehicles(id());
                 }
-                if (id() == GameCommands::getUpdatingCompanyId())
+                if (id() == CompanyManager::getControllingId())
                 {
                     if (numMonthsInTheRed == 3)
                     {
