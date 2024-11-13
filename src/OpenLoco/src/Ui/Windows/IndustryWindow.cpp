@@ -265,7 +265,6 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 flags = self.viewports[0]->flags;
                 self.viewportRemove(0);
-                ViewportManager::collectGarbage();
             }
             else
             {

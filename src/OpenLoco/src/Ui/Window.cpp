@@ -14,6 +14,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -820,9 +821,9 @@ namespace OpenLoco::Ui
 
     void Window::viewportRemove(const uint8_t viewportId)
     {
-        if (viewports[viewportId] != nullptr)
+        if (auto* vp = viewports[viewportId]; vp != nullptr)
         {
-            viewports[viewportId]->width = 0;
+            ViewportManager::destroy(vp);
             viewports[viewportId] = nullptr;
         }
     }

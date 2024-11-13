@@ -474,7 +474,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             auto vpFlags = self->viewports[0]->flags;
             self->viewportRemove(0);
-            ViewportManager::collectGarbage();
             sub_434223(self, view, vpFlags);
         }
 
@@ -1189,7 +1188,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 vpFlags = self.viewports[0]->flags;
                 self.viewportRemove(0);
-                ViewportManager::collectGarbage();
             }
             else
             {

@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             if (self.viewports[0] != nullptr)
             {
-                uint16_t newWidth = self.height - 8;
+                uint16_t newWidth = self.width - 8;
                 uint16_t newHeight = self.height - 59;
 
                 auto& viewport = self.viewports[0];
@@ -230,7 +230,6 @@ namespace OpenLoco::Ui::Windows::Station
 
                 flags = self.viewports[0]->flags;
                 self.viewportRemove(0);
-                ViewportManager::collectGarbage();
             }
             else
             {
