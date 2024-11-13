@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#2697] Add initial OpenGraphics custom assets.
 - Change: [#2708] "Show Options Window" keyboard shortcut now works in the title screen.
+- Change: [#2733] Ghosts are now shown when planting clusters of trees.
 - Fix: [#2676] Cargo labels are misaligned in vehicle window.
 - Fix: [#2678] Incorrect vehicle draw order and general vehicle clipping.
 - Fix: [#2690] Inability to remove certain track pieces.
