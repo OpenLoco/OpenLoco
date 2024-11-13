@@ -80,7 +80,7 @@ namespace OpenLoco::Paint
             }
             ImageId scaffImage = baseScaffImage.withIndexOffset(scaffImages.back);
             auto segmentImageOffset = imageOffset;
-            for (int16_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, segmentImageOffset.z += segmentHeight)
+            for (coord_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, segmentImageOffset.z += segmentHeight)
             {
                 session.addToPlotListAsChild(scaffImage, segmentImageOffset, bbOffset, bbSize);
             }
@@ -145,7 +145,7 @@ namespace OpenLoco::Paint
             }
             auto scaffImage = baseScaffImage.withIndexOffset(scaffImages.front);
             auto segmentImageOffset = imageOffset;
-            for (int16_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, segmentImageOffset.z += segmentHeight)
+            for (coord_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, segmentImageOffset.z += segmentHeight)
             {
                 session.addToPlotListAsChild(scaffImage, segmentImageOffset, bbOffset, bbSize);
             }
