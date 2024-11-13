@@ -786,7 +786,7 @@ namespace OpenLoco
                     newDensity += (1 << cargoObj->var_14) - 1;
                     newDensity >>= cargoObj->var_14;
 
-                    newDensity = std::min(newDensity, 15);
+                    newDensity = std::min<int32_t>(newDensity, Limits::kMaxStationCargoDensity - 1);
                 }
             }
             if (stationCargo.densityPerTile != newDensity)
