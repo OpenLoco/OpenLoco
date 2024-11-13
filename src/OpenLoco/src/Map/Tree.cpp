@@ -97,7 +97,7 @@ namespace OpenLoco::World
         return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
     }
 
-    bool placeRandomTree(const World::Pos2& pos, std::optional<uint8_t> treeType)
+    static std::optional<GameCommands::TreePlacementArgs> placeRandomTreePre(const World::Pos2& pos, std::optional<uint8_t> treeType)
     {
         GameCommands::TreePlacementArgs args;
         args.quadrant = World::getQuadrantFromPos(pos);
@@ -114,7 +114,7 @@ namespace OpenLoco::World
             // It is possible that there are no valid tree types for the surface
             if (!randTreeType.has_value())
             {
-                return false;
+                return {};
             }
         }
         args.type = *randTreeType;
@@ -125,19 +125,30 @@ namespace OpenLoco::World
         auto queryRes = doCommand(args, 0);
         if (queryRes == GameCommands::FAILURE)
         {
+            return {};
+        }
+
+        return { args };
+    }
+
+    bool placeRandomTree(const World::Pos2& pos, std::optional<uint8_t> treeType)
+    {
+        auto argsOptional = placeRandomTreePre(pos, treeType);
+        if (!argsOptional)
+        {
             return false;
         }
+        GameCommands::TreePlacementArgs args = argsOptional.value();
 
         // Actually place the tree
         doCommand(args, GameCommands::Flags::apply);
         return true;
     }
 
-    // 0x004BDC67 (when treeType is nullopt) & 0x004BDDC6 (when treeType is set)
-    bool placeTreeCluster(const World::TilePos2& centreLoc, const uint16_t range, const uint16_t density, const std::optional<uint8_t> treeType)
+    std::vector<GameCommands::TreePlacementArgs> placeTreeClusterPre(const World::TilePos2& centreLoc, const uint16_t range, const uint16_t density, const std::optional<uint8_t> treeType)
     {
+        auto argsVector = std::vector<GameCommands::TreePlacementArgs>();
         const auto numPlacements = (range * range * density) / 8192;
-        uint16_t numErrors = 0;
         for (auto i = 0; i < numPlacements; ++i)
         {
             // Choose a random offset in a circle
@@ -148,13 +159,42 @@ namespace OpenLoco::World
                 Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
                 Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
 
-            if (!placeRandomTree(randomOffset + World::toWorldSpace(centreLoc), treeType))
+            auto argsOptional = placeRandomTreePre(randomOffset + World::toWorldSpace(centreLoc), treeType);
+            if (argsOptional)
+            {
+                argsVector.push_back(argsOptional.value());
+            }
+        }
+
+        return argsVector;
+    }
+
+    bool placeTreeCluster(std::vector<GameCommands::TreePlacementArgs> argsVector)
+    {
+        uint16_t numErrors = 0;
+
+        for (const auto& args : argsVector)
+        {
+            // Make sure we can still place a tree at this location
+            auto queryRes = doCommand(args, 0);
+            if (queryRes == GameCommands::FAILURE)
             {
                 numErrors++;
+            }
+            else
+            {
+                // Actually place the tree
+                doCommand(args, GameCommands::Flags::apply);
             }
         }
 
         // Have we placed any trees?
-        return (numErrors < numPlacements);
+        return (numErrors < argsVector.size());
+    }
+
+    // 0x004BDC67 (when treeType is nullopt) & 0x004BDDC6 (when treeType is set)
+    bool placeTreeCluster(const World::TilePos2& centreLoc, const uint16_t range, const uint16_t density, const std::optional<uint8_t> treeType)
+    {
+        return placeTreeCluster(placeTreeClusterPre(centreLoc, range, density, treeType));
     }
 }
