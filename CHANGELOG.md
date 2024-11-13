@@ -10,6 +10,7 @@
 - Fix: [#2705] Scaffolding on large buildings displayed incorrectly.
 - Fix: [#2717] Crash when generating a landscape with the river meander rate set to 1.
 - Fix: [#2718] North arrow image not changing to reflect rotation on the Map window.
+- Fix: [#2723] Crash when creating a scenario with more than 15 predefined competitor objects.
 - Fix: [#2725] Currency preference selection shows invalid data.
 
 24.10 (2024-10-20)
