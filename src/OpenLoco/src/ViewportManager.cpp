@@ -60,8 +60,6 @@ namespace OpenLoco::Ui::ViewportManager
         {
             _viewports.pop_back();
         }
-
-        Logging::info("Active viewports: {}", _viewports.size());
     }
 
     static Viewport* initViewport(Ui::Point origin, Ui::Size size, ZoomLevel zoom)
