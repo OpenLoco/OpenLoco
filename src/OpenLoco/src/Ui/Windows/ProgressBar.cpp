@@ -75,7 +75,9 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     void setProgress(uint8_t value)
     {
         if (_progressBarValue == value)
+        {
             return;
+        }
 
         _progressBarValue = value;
         WindowManager::invalidate(WindowType::progressBar);
@@ -102,7 +104,9 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
         auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x + 2, self.y + 17, self.width - 5, self.height - 19));
         if (!clipped)
+        {
             return;
+        }
 
         drawingCtx.pushRenderTarget(*clipped);
 

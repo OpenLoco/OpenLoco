@@ -70,6 +70,7 @@ IncludeIsMainRegex: '(Test)?$'
 IndentCaseLabels: true
 IndentWidth:     4
 IndentWrappedFunctionNames: false
+InsertBraces: true
 JavaScriptQuotes: Leave
 JavaScriptWrapImports: true
 KeepEmptyLinesAtTheStartOfBlocks: true

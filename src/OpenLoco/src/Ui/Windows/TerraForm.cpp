@@ -191,11 +191,15 @@ namespace OpenLoco::Ui::Windows::Terraform
             for (; i <= self->var_83C; i++)
             {
                 if (self->rowInfo[i] == self->rowHover)
+                {
                     break;
+                }
             }
 
             if (i >= self->var_83C)
+            {
                 i = 0;
+            }
 
             i = (i / 9) * kRowHeight;
 
@@ -211,7 +215,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto treeObj = ObjectManager::get<TreeObject>(i);
                 if (treeObj == nullptr)
+                {
                     continue;
+                }
                 self->rowInfo[treeCount] = i;
                 treeCount++;
             }
@@ -292,9 +298,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::plant_cluster_selected:
                 {
                     if (_treeClusterType == treeCluster::selected)
+                    {
                         _treeClusterType = treeCluster::none;
+                    }
                     else
+                    {
                         _treeClusterType = treeCluster::selected;
+                    }
                     self.invalidate();
                     break;
                 }
@@ -302,9 +312,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::plant_cluster_random:
                 {
                     if (_treeClusterType == treeCluster::random)
+                    {
                         _treeClusterType = treeCluster::none;
+                    }
                     else
+                    {
                         _treeClusterType = treeCluster::random;
+                    }
                     self.invalidate();
                 }
             }
@@ -318,7 +332,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
+            {
                 updateActiveThumb(&self);
+            }
         }
 
         // 0x004BBAEA
@@ -335,9 +351,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
+            {
                 return;
+            }
             if (itemIndex == -1)
+            {
                 return;
+            }
 
             _treeColour = static_cast<Colour>(Dropdown::getHighlightedItem());
             self.invalidate();
@@ -347,10 +367,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onUpdate(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::toolActive))
+            {
                 WindowManager::close(&self);
+            }
 
             if (ToolManager::getToolWindowType() != WindowType::terraform)
+            {
                 WindowManager::close(&self);
+            }
 
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
@@ -556,7 +580,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                     {
                         auto previousId = GameCommands::getUpdatingCompanyId();
                         if (isEditorMode())
+                        {
                             GameCommands::setUpdatingCompanyId(CompanyId::neutral);
+                        }
 
                         if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 320, 3, placementArgs->type))
                         {
@@ -569,13 +595,17 @@ namespace OpenLoco::Ui::Windows::Terraform
                         }
 
                         if (isEditorMode())
+                        {
                             GameCommands::setUpdatingCompanyId(previousId);
+                        }
                         break;
                     }
                     case treeCluster::random:
                         auto previousId = GameCommands::getUpdatingCompanyId();
                         if (isEditorMode())
+                        {
                             GameCommands::setUpdatingCompanyId(CompanyId::neutral);
+                        }
 
                         if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 384, 4, std::nullopt))
                         {
@@ -588,7 +618,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                         }
 
                         if (isEditorMode())
+                        {
                             GameCommands::setUpdatingCompanyId(previousId);
+                        }
                         break;
                 }
             }
@@ -599,7 +631,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             *scrollHeight = (self.var_83C + 8) / 9;
             if (*scrollHeight == 0)
+            {
                 *scrollHeight += 1;
+            }
             *scrollHeight *= kRowHeight;
         }
 
@@ -669,10 +703,14 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.activatedWidgets &= ~((1ULL << widx::plant_cluster_selected) | (1ULL << widx::plant_cluster_random));
 
             if (_treeClusterType == treeCluster::selected)
+            {
                 self.activatedWidgets |= (1ULL << widx::plant_cluster_selected);
+            }
 
             if (_treeClusterType == treeCluster::random)
+            {
                 self.activatedWidgets |= (1ULL << widx::plant_cluster_random);
+            }
 
             self.widgets[widx::rotate_object].type = WidgetType::none;
             self.widgets[widx::object_colour].type = WidgetType::none;
@@ -683,7 +721,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (treeObj->name != 0xFFFF)
                 {
                     if (treeObj->numRotations != 1)
+                    {
                         self.widgets[widx::rotate_object].type = WidgetType::buttonWithImage;
+                    }
 
                     if (treeObj->colours != 0)
                     {
@@ -722,7 +762,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 treeId = self.rowHover;
                 if (treeId == 0xFFFF)
+                {
                     return;
+                }
             }
 
             auto treeObj = ObjectManager::get<TreeObject>(treeId);
@@ -972,7 +1014,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     _adjustToolSize--;
                     if (_adjustToolSize < 1)
+                    {
                         _adjustToolSize = 1;
+                    }
                     _clearAreaToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -982,7 +1026,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     _adjustToolSize++;
                     if (_adjustToolSize > 64)
+                    {
                         _adjustToolSize = 64;
+                    }
                     _clearAreaToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1041,7 +1087,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
+            {
                 return;
+            }
             clearLand(Flags::apply);
         }
 
@@ -1049,7 +1097,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
+            {
                 return;
+            }
 
             auto window = WindowManager::find(WindowType::error);
             if (window == nullptr)
@@ -1076,9 +1126,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.activatedWidgets |= (1ULL << widx::tool_area);
 
             if (_adjustToolSize <= 10)
+            {
                 self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            }
             else
+            {
                 self.widgets[widx::tool_area].image = Widget::kContentNull;
+            }
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
@@ -1106,10 +1160,14 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             if (_raiseLandCost == 0x80000000)
+            {
                 return;
+            }
 
             if (_raiseLandCost == 0)
+            {
                 return;
+            }
 
             {
                 auto xPos = toolArea.midX() + self.x;
@@ -1181,18 +1239,26 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void tabReset(Window* self)
         {
             if (isPaintMode)
+            {
                 ToolManager::toolSet(self, widx::paint_mode, CursorId::landTool);
+            }
             else if (isMountainMode)
+            {
                 ToolManager::toolSet(self, widx::mountain_mode, CursorId::landTool);
+            }
             else
+            {
                 ToolManager::toolSet(self, Common::widx::panel, CursorId::landTool);
+            }
 
             Input::setFlag(Input::Flags::flag6);
             for (auto i = 0; i < 32; i++)
             {
                 auto landObj = ObjectManager::get<LandObject>(i);
                 if (landObj == nullptr)
+                {
                     continue;
+                }
 
                 _lastSelectedLand = i;
                 _raiseLandCost = 0x80000000;
@@ -1224,7 +1290,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto landObj = ObjectManager::get<LandObject>(i);
                 if (landObj != nullptr)
+                {
                     landCount++;
+                }
             }
 
             auto xPos = self->widgets[widgetIndex].left + self->x;
@@ -1240,10 +1308,14 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto landObj = ObjectManager::get<LandObject>(i);
                 if (landObj == nullptr)
+                {
                     continue;
+                }
 
                 if (i == _lastSelectedLand)
+                {
                     Dropdown::setHighlightedItem(landIndex);
+                }
 
                 auto args = FormatArguments::common();
                 args.push(landObj->mapPixelImage + Land::ImageIds::landscape_generator_tile_icon);
@@ -1270,7 +1342,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     _adjustToolSize--;
                     if (_adjustToolSize < 1)
+                    {
                         _adjustToolSize = 1;
+                    }
                     _adjustLandToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1280,7 +1354,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     _adjustToolSize++;
                     if (_adjustToolSize > 64)
+                    {
                         _adjustToolSize = 64;
+                    }
                     _adjustLandToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1328,9 +1404,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::land_material)
+            {
                 return;
+            }
             if (itemIndex == -1)
+            {
                 return;
+            }
             _lastSelectedLand = Dropdown::getItemArgument(itemIndex, 2);
             self.invalidate();
         }
@@ -1340,7 +1420,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             uint32_t cost;
             if ((flags & 1))
+            {
                 Common::sub_4A69DD();
+            }
 
             auto [pointA, pointB] = World::getMapSelectionArea();
             auto centre = (pointA + pointB) / 2;
@@ -1372,7 +1454,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             uint32_t cost;
             if ((flags & 1))
+            {
                 Common::sub_4A69DD();
+            }
 
             auto [pointA, pointB] = World::getMapSelectionArea();
             auto centre = (pointA + pointB) / 2;
@@ -1404,7 +1488,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (_raiseLandCost == raiseCost)
             {
                 if (_lowerLandCost == lowerCost)
+                {
                     return;
+                }
             }
 
             _raiseLandCost = raiseCost;
@@ -1460,14 +1546,18 @@ namespace OpenLoco::Ui::Windows::Terraform
                         auto count = setMapSelectionSingleTile(res->first, true);
 
                         if (!count)
+                        {
                             return;
+                        }
                     }
                     else
                     {
                         auto count = setMapSelectionTiles(res->first, MapSelectionType::full);
 
                         if (!count)
+                        {
                             return;
+                        }
                     }
                 }
                 else
@@ -1478,7 +1568,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             else
             {
                 if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
+                {
                     return;
+                }
             }
 
             uint32_t raiseCost = 0;
@@ -1545,7 +1637,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case Common::widx::panel:
                 {
                     if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
+                    {
                         return;
+                    }
 
                     ToolManager::setToolCursor(CursorId::upDownArrow);
                     break;
@@ -1579,21 +1673,29 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                     WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
                     if (newWidgetIndex == kWidgetIndexNull)
+                    {
                         break;
+                    }
 
                     auto widget = window->widgets[newWidgetIndex];
                     if (widget.type != WidgetType::viewport)
+                    {
                         break;
+                    }
 
                     auto viewport = window->viewports[0];
                     if (viewport == nullptr)
+                    {
                         break;
+                    }
 
                     auto zoom = viewport->zoom;
 
                     auto dY = -(16 >> zoom);
                     if (dY == 0)
+                    {
                         dY = -1;
+                    }
                     auto deltaY = y - _dragLastY;
                     auto flags = Flags::apply;
 
@@ -1606,7 +1708,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                     {
                         dY = -dY;
                         if (deltaY < dY)
+                        {
                             break;
+                        }
                         _dragLastY = _dragLastY + dY;
                         lowerLand(flags);
                     }
@@ -1642,14 +1746,22 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.activatedWidgets |= (1ULL << widx::tool_area);
 
             if (isMountainMode)
+            {
                 self.activatedWidgets |= (1 << widx::mountain_mode);
+            }
             else
+            {
                 self.activatedWidgets &= ~(1 << widx::mountain_mode);
+            }
 
             if (isPaintMode)
+            {
                 self.activatedWidgets |= (1 << widx::paint_mode);
+            }
             else
+            {
                 self.activatedWidgets &= ~(1 << widx::paint_mode);
+            }
 
             auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
             auto pixelColour = static_cast<Colour>(Gfx::getG1Element(landObj->mapPixelImage)->offset[0]);
@@ -1827,7 +1939,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     _adjustToolSize--;
                     if (_adjustToolSize < 1)
+                    {
                         _adjustToolSize = 1;
+                    }
                     _adjustWaterToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1837,7 +1951,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     _adjustToolSize++;
                     if (_adjustToolSize > 64)
+                    {
                         _adjustToolSize = 64;
+                    }
                     _adjustWaterToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1850,7 +1966,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (_raiseWaterCost == raiseCost)
             {
                 if (_lowerWaterCost == lowerCost)
+                {
                     return;
+                }
             }
 
             _raiseWaterCost = raiseCost;
@@ -1866,7 +1984,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
+            {
                 return;
+            }
             World::mapInvalidateSelectionRect();
 
             if (ToolManager::getToolCursor() != CursorId::upDownArrow)
@@ -1889,7 +2009,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             else
             {
                 if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
+                {
                     return;
+                }
             }
 
             if (isEditorMode())
@@ -1906,9 +2028,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
+            {
                 return;
+            }
             if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
+            {
                 return;
+            }
 
             ToolManager::setToolCursor(CursorId::upDownArrow);
         }
@@ -1947,29 +2073,41 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
+            {
                 return;
+            }
 
             auto window = WindowManager::findAt(x, y);
             if (window == nullptr)
+            {
                 return;
+            }
 
             WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
             if (newWidgetIndex == kWidgetIndexNull)
+            {
                 return;
+            }
 
             auto widget = window->widgets[newWidgetIndex];
             if (widget.type != WidgetType::viewport)
+            {
                 return;
+            }
 
             auto viewport = window->viewports[0];
             if (viewport == nullptr)
+            {
                 return;
+            }
 
             auto zoom = viewport->zoom;
 
             auto dY = -(16 >> zoom);
             if (dY == 0)
+            {
                 dY = -1;
+            }
 
             auto deltaY = y - _dragLastY;
             auto flags = Flags::apply;
@@ -1983,7 +2121,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 dY = -dY;
                 if (deltaY < dY)
+                {
                     return;
+                }
                 _dragLastY = _dragLastY + dY;
                 lowerWater(flags);
             }
@@ -2011,9 +2151,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.activatedWidgets |= (1ULL << widx::tool_area);
 
             if (_adjustToolSize <= 10)
+            {
                 self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            }
             else
+            {
                 self.widgets[widx::tool_area].image = Widget::kContentNull;
+            }
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
@@ -2121,11 +2265,15 @@ namespace OpenLoco::Ui::Windows::Terraform
             for (; i <= self->var_83C; i++)
             {
                 if (self->rowInfo[i] == self->rowHover)
+                {
                     break;
+                }
             }
 
             if (i >= self->var_83C)
+            {
                 i = 0;
+            }
 
             i = (i / 10) * kRowHeight;
 
@@ -2141,7 +2289,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto wallObj = ObjectManager::get<WallObject>(i);
                 if (wallObj == nullptr)
+                {
                     continue;
+                }
                 self->rowInfo[wallCount] = i;
                 wallCount++;
             }
@@ -2199,17 +2349,23 @@ namespace OpenLoco::Ui::Windows::Terraform
             Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
+            {
                 updateActiveThumb(&self);
+            }
         }
 
         // 0x004BC23D
         static void onUpdate(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::toolActive))
+            {
                 WindowManager::close(&self);
+            }
 
             if (ToolManager::getToolWindowType() != WindowType::terraform)
+            {
                 WindowManager::close(&self);
+            }
 
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
@@ -2404,7 +2560,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             *scrollHeight = (self.var_83C + 9) / 10;
             if (*scrollHeight == 0)
+            {
                 *scrollHeight += 1;
+            }
             *scrollHeight *= kRowHeight;
         }
 
@@ -2448,10 +2606,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                 rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
+                {
                     break;
+                }
             }
             if (i >= self.var_83C)
+            {
                 rowInfo = 0xFFFF;
+            }
             self.var_846 = rowInfo;
             self.invalidate();
         }
@@ -2488,7 +2650,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 wallId = self.rowHover;
                 if (wallId == 0xFFFF)
+                {
                     return;
+                }
             }
 
             auto wallObj = ObjectManager::get<WallObject>(wallId);
@@ -2611,10 +2775,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onUpdate(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::toolActive))
+            {
                 WindowManager::close(&self);
+            }
 
             if (ToolManager::getToolWindowType() != WindowType::terraform)
+            {
                 WindowManager::close(&self);
+            }
 
             self.frameNo++;
             self.callPrepareDraw();
@@ -2682,7 +2850,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto waterObj = ObjectManager::get<WaterObject>();
                 uint32_t imageId = waterObj->image + Water::ImageIds::kToolbarTerraformWater;
                 if (self->currentTab == widx::tab_adjust_water - widx::tab_clear_area)
+                {
                     imageId += (self->frameNo / 2) % 16;
+                }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_adjust_water);
             }
@@ -2706,7 +2876,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (ToolManager::isToolActive(self->type, self->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             self->currentTab = widgetIndex - widx::tab_clear_area;
             self->frameNo = 0;

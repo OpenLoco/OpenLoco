@@ -47,9 +47,13 @@ namespace OpenLoco::Ui
                 {
                     std::string fileName;
                     if (_screenshotType == ScreenshotType::giant)
+                    {
                         fileName = saveGiantScreenshot();
+                    }
                     else
+                    {
                         fileName = saveScreenshot();
+                    }
 
                     FormatArguments::common(fileName.c_str());
                     Windows::Error::openQuiet(StringIds::screenshot_saved_as, StringIds::null);
@@ -84,7 +88,9 @@ namespace OpenLoco::Ui
         {
             pngPtr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
             if (pngPtr == nullptr)
+            {
                 throw Exception::RuntimeError("png_create_write_struct failed.");
+            }
 
             png_set_write_fn(pngPtr, &outputStream, pngWriteData, pngFlush);
 
@@ -96,11 +102,15 @@ namespace OpenLoco::Ui
 
             auto infoPtr = png_create_info_struct(pngPtr);
             if (infoPtr == nullptr)
+            {
                 throw Exception::RuntimeError("png_create_info_struct failed.");
+            }
 
             palette = (png_colorp)png_malloc(pngPtr, 246 * sizeof(png_color));
             if (palette == nullptr)
+            {
                 throw Exception::RuntimeError("png_malloc failed.");
+            }
 
             for (size_t i = 0; i < 246; i++)
             {
@@ -142,7 +152,9 @@ namespace OpenLoco::Ui
         std::string scenarioName = S5::getOptions().scenarioName;
 
         if (scenarioName.length() == 0)
+        {
             scenarioName = StringManager::getString(StringIds::screenshot_filename_template);
+        }
 
         std::string fileName = std::string(scenarioName) + ".png";
         fs::path path;

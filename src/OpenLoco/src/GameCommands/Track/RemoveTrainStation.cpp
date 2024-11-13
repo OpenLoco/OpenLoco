@@ -80,15 +80,21 @@ namespace OpenLoco::GameCommands
 
             auto* elTrack = getElTrack(trackLoc, args.rotation, args.type, args.trackId, piece.index);
             if (elTrack == nullptr)
+            {
                 return FAILURE;
+            }
 
             auto* nextEl = elTrack->next();
             auto* stationEl = nextEl->as<World::StationElement>();
             if (stationEl == nullptr)
+            {
                 return FAILURE;
+            }
 
             if (stationEl->isGhost())
+            {
                 updateStationTileRegistration = false;
+            }
 
             foundStationId = stationEl->stationId();
             auto* stationObj = ObjectManager::get<TrainStationObject>(stationEl->objectId());

@@ -481,7 +481,9 @@ namespace OpenLoco
     static void tickLogic()
     {
         if (!Network::shouldProcessTick(ScenarioManager::getScenarioTicks() + 1))
+        {
             return;
+        }
 
         ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() + 1);
         ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() + 1);
@@ -768,9 +770,13 @@ namespace OpenLoco
         _lastUpdate = timeNow;
 
         if (Config::get().uncapFPS)
+        {
             variableUpdate();
+        }
         else
+        {
             fixedUpdate();
+        }
     }
 
     // 0x00406386

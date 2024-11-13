@@ -67,7 +67,9 @@ namespace OpenLoco::Localisation
         {
             utf32_t codepoint = readCodePoint(&ptr);
             if (codepoint == UnicodeChar::superscript_minus || codepoint == UnicodeChar::variation_selector)
+            {
                 continue;
+            }
 
             char readChar = convertUnicodeToLoco(codepoint);
             if (readChar == '{')
@@ -222,7 +224,9 @@ namespace OpenLoco::Localisation
             }
 
             if (readChar == '\0')
+            {
                 break;
+            }
         }
 
         return str;
@@ -256,7 +260,9 @@ namespace OpenLoco::Localisation
             {
                 int id = it->first.as<int>();
                 if (stringIsBuffer(id))
+                {
                     continue;
+                }
 
                 std::string new_string = it->second.as<std::string>();
                 _stringsOwner.emplace_back(readString(new_string.data(), new_string.length()));
@@ -284,17 +290,23 @@ namespace OpenLoco::Localisation
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
         fs::path languageFile = languageDir / "en-GB.yml";
         if (!loadLanguageStringTable(languageFile))
+        {
             throw Exception::RuntimeError("Could not load the en-GB language file!");
+        }
 
         // Determine the language currently selected.
         auto& config = Config::get();
         if (config.language == "en-GB")
+        {
             return;
+        }
 
         // Now, load the language table for the language currently selected.
         languageFile = languageDir / (config.language + ".yml");
         if (!loadLanguageStringTable(languageFile))
+        {
             throw Exception::RuntimeError("Could not load the " + config.language + " language file!");
+        }
     }
 
     void unloadLanguageFile()

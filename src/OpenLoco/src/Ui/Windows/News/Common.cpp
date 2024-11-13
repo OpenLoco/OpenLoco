@@ -164,7 +164,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 // If the current active message was user selected then remove from queue of active messages
                 if (message->isUserSelected())
+                {
                     message->setActive(false);
+                }
             }
         }
 

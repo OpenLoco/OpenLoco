@@ -360,7 +360,9 @@ namespace OpenLoco
         for (auto& thought : aiThoughts)
         {
             if (thought.type == AiThoughtType::null)
+            {
                 continue;
+            }
 
             thought.var_88 = std::min(0xFF, thought.var_88 + 1);
             thought.var_84 = thought.var_80;
@@ -680,11 +682,15 @@ namespace OpenLoco
         for (auto& element : tile)
         {
             if (element.baseZ() != zPos)
+            {
                 continue;
+            }
 
             auto* building = element.as<World::BuildingElement>();
             if (building == nullptr)
+            {
                 continue;
+            }
 
             building->setColour(newColour);
             return;
@@ -695,7 +701,9 @@ namespace OpenLoco
     void Company::updateHeadquartersColour()
     {
         if (headquartersX == -1)
+        {
             return;
+        }
 
         const auto colour = mainColours.primary;
         auto hqPos = World::toTileSpace(World::Pos2(headquartersX, headquartersY));

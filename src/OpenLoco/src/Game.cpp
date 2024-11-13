@@ -63,9 +63,13 @@ namespace OpenLoco::Game
     bool loadSaveGameOpen()
     {
         if (!isNetworked())
+        {
             strncpy(&_savePath[0], &_pathSavesSinglePlayer[0], std::size(_savePath));
+        }
         else
+        {
             strncpy(&_savePath[0], &_pathSavesTwoPlayer[0], std::size(_savePath));
+        }
 
         return openBrowsePrompt(StringIds::title_prompt_load_game, browse_type::load, S5::filterSV5);
     }
@@ -342,7 +346,9 @@ namespace OpenLoco::Game
 
         bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
         if (saveResult)
+        {
             Ui::Windows::Error::open(StringIds::landscape_save_failed);
+        }
 
         return saveResult;
     }

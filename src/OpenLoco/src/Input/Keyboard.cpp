@@ -83,17 +83,25 @@ namespace OpenLoco::Input
             auto w = WindowManager::get(i);
 
             if (w->type != WindowType::vehicle)
+            {
                 continue;
+            }
 
             auto t = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
             if (t == nullptr)
+            {
                 continue;
+            }
 
             if (t->owner != CompanyManager::getControllingId())
+            {
                 continue;
+            }
 
             if (t->getTransportMode() != TransportMode::rail)
+            {
                 continue;
+            }
 
             GameCommands::VehicleApplyShuntCheatArgs args;
             args.head = EntityId(w->number);
@@ -122,7 +130,9 @@ namespace OpenLoco::Input
             {
                 _keyModifier = static_cast<KeyModifier>(Tutorial::nextInput());
                 if (!hasKeyModifier(KeyModifier::unknown))
+                {
                     return;
+                }
 
                 Windows::ToolTip::closeAndReset();
 
@@ -219,12 +229,16 @@ namespace OpenLoco::Input
         }
 
         if (!hasKeyModifier(KeyModifier::cheat))
+        {
             return;
+        }
 
         _keyModifier = _keyModifier & (~KeyModifier::cheat);
 
         if (isTitleMode())
+        {
             return;
+        }
 
         for (const auto& cheat : kCheats)
         {
@@ -239,19 +253,33 @@ namespace OpenLoco::Input
     static void editShortcut(Key* k)
     {
         if (k->keyCode == SDLK_UP)
+        {
             return;
+        }
         if (k->keyCode == SDLK_DOWN)
+        {
             return;
+        }
         if (k->keyCode == SDLK_LEFT)
+        {
             return;
+        }
         if (k->keyCode == SDLK_RIGHT)
+        {
             return;
+        }
         if (k->keyCode == SDLK_NUMLOCKCLEAR)
+        {
             return;
+        }
         if (k->keyCode == SDLK_LGUI)
+        {
             return;
+        }
         if (k->keyCode == SDLK_RGUI)
+        {
             return;
+        }
 
         auto& cfg = Config::get();
 
@@ -288,10 +316,14 @@ namespace OpenLoco::Input
             }
 
             if (nextKey->keyCode == SDLK_LSHIFT || nextKey->keyCode == SDLK_RSHIFT)
+            {
                 continue;
+            }
 
             if (nextKey->keyCode == SDLK_LCTRL || nextKey->keyCode == SDLK_RCTRL)
+            {
                 continue;
+            }
 
             if (hasKeyModifier(KeyModifier::cheat))
             {
@@ -316,10 +348,14 @@ namespace OpenLoco::Input
             }
 
             if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
+            {
                 continue;
+            }
 
             if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
+            {
                 continue;
+            }
 
             if (Tutorial::state() == Tutorial::State::playing)
             {
@@ -337,7 +373,9 @@ namespace OpenLoco::Input
                 for (const auto& shortcut : ShortcutManager::getList())
                 {
                     if (tryShortcut(shortcut.id, nextKey->keyCode, _keyModifier))
+                    {
                         break;
+                    }
                 }
                 continue;
             }
@@ -354,10 +392,14 @@ namespace OpenLoco::Input
             }
 
             if (tryShortcut(Shortcut::sendMessage, nextKey->keyCode, _keyModifier))
+            {
                 continue;
+            }
 
             if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
+            {
                 continue;
+            }
 
             if (tryShortcut(Shortcut::showOptionsWindow, nextKey->keyCode, _keyModifier))
             {
@@ -369,48 +411,74 @@ namespace OpenLoco::Input
     static void edgeScroll()
     {
         if (!Ui::hasInputFocus())
+        {
             return;
+        }
 
         if (Tutorial::state() != Tutorial::State::none)
+        {
             return;
+        }
 
         if (!Config::get().edgeScrolling)
+        {
             return;
+        }
 
         if (Input::state() != State::normal && Input::state() != State::dropdownActive)
+        {
             return;
+        }
 
         if (hasKeyModifier(KeyModifier::shift) || hasKeyModifier(KeyModifier::control))
+        {
             return;
+        }
 
         Ui::Point delta = { 0, 0 };
         auto cursor = getCursorPosScaled();
 
         if (cursor.x == 0)
+        {
             delta.x -= Config::get().edgeScrollingSpeed;
+        }
 
         if (cursor.x >= Ui::width() - 1)
+        {
             delta.x += Config::get().edgeScrollingSpeed;
+        }
 
         if (cursor.y == 0)
+        {
             delta.y -= Config::get().edgeScrollingSpeed;
+        }
 
         if (cursor.y >= Ui::height() - 1)
+        {
             delta.y += Config::get().edgeScrollingSpeed;
+        }
 
         if (delta.x == 0 && delta.y == 0)
+        {
             return;
+        }
 
         auto main = WindowManager::getMainWindow();
         if (main->hasFlags(WindowFlags::viewportNoScrolling))
+        {
             return;
+        }
 
         if (OpenLoco::isTitleMode())
+        {
             return;
+        }
 
         auto viewport = main->viewports[0];
         if (viewport == nullptr)
+        {
             return;
+        }
 
         delta.x *= 1 << viewport->zoom;
         delta.y *= 1 << viewport->zoom;
@@ -422,41 +490,63 @@ namespace OpenLoco::Input
     static void keyScroll()
     {
         if (Tutorial::state() != Tutorial::State::none)
+        {
             return;
+        }
 
         if (WindowManager::getCurrentModalType() != WindowType::undefined)
+        {
             return;
+        }
 
         if (WindowManager::find(WindowType::textInput) != nullptr)
+        {
             return;
+        }
 
         Ui::Point delta = { 0, 0 };
 
         if (_keyboardState[SDL_SCANCODE_LEFT] & 0x80)
+        {
             delta.x -= Config::get().edgeScrollingSpeed;
+        }
 
         if (_keyboardState[SDL_SCANCODE_UP] & 0x80)
+        {
             delta.y -= Config::get().edgeScrollingSpeed;
+        }
 
         if (_keyboardState[SDL_SCANCODE_DOWN] & 0x80)
+        {
             delta.y += Config::get().edgeScrollingSpeed;
+        }
 
         if (_keyboardState[SDL_SCANCODE_RIGHT] & 0x80)
+        {
             delta.x += Config::get().edgeScrollingSpeed;
+        }
 
         if (delta.x == 0 && delta.y == 0)
+        {
             return;
+        }
 
         auto main = WindowManager::getMainWindow();
         if (main->hasFlags(WindowFlags::viewportNoScrolling))
+        {
             return;
+        }
 
         if (OpenLoco::isTitleMode())
+        {
             return;
+        }
 
         auto viewport = main->viewports[0];
         if (viewport == nullptr)
+        {
             return;
+        }
 
         delta.x *= 1 << viewport->zoom;
         delta.y *= 1 << viewport->zoom;
@@ -479,16 +569,24 @@ namespace OpenLoco::Input
         }
 
         if (_keyboardState[SDL_SCANCODE_LSHIFT] & 0x80)
+        {
             _keyModifier |= KeyModifier::shift;
+        }
 
         if (_keyboardState[SDL_SCANCODE_RSHIFT] & 0x80)
+        {
             _keyModifier |= KeyModifier::shift;
+        }
 
         if (_keyboardState[SDL_SCANCODE_LCTRL] & 0x80)
+        {
             _keyModifier |= KeyModifier::control;
+        }
 
         if (_keyboardState[SDL_SCANCODE_RCTRL] & 0x80)
+        {
             _keyModifier |= KeyModifier::control;
+        }
 
         keyScroll();
     }

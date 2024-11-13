@@ -64,9 +64,13 @@ namespace OpenLoco::GameCommands
             else
             {
                 if (waterHeight > lowestBaseZ)
+                {
                     continue;
+                }
                 else
+                {
                     waterHeight += kSmallZStep;
+                }
             }
 
             auto cost = TileManager::adjustWaterHeight(toWorldSpace(tilePos), waterHeight, removedBuildings, flags);

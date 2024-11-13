@@ -255,9 +255,13 @@ namespace OpenLoco::S5
         void setLast(bool value)
         {
             if (value)
+            {
                 flags |= FLAG_LAST;
+            }
             else
+            {
                 flags &= ~FLAG_LAST;
+            }
         }
 
         constexpr bool isGhost() const

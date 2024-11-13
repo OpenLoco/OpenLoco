@@ -65,12 +65,16 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         if (widgetIndex == Common::widx::viewport1Button)
                         {
                             if (!mtd.hasFlag(MessageTypeFlags::hasFirstItem))
+                            {
                                 break;
+                            }
                         }
                         else
                         {
                             if (!mtd.hasFlag(MessageTypeFlags::hasSecondItem))
+                            {
                                 break;
+                            }
                         }
 
                         MessageItemArgumentType itemType;
@@ -239,7 +243,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     }
                     Vehicles::Vehicle train(*head);
                     if (train.head->tileX == -1)
+                    {
                         break;
+                    }
 
                     view.entityId = train.veh2->id;
 

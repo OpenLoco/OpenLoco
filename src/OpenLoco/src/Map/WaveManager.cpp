@@ -47,27 +47,39 @@ namespace OpenLoco::World::WaveManager
         auto vpPoint = gameToScreen(Pos3(pos.x + 16, pos.y + 16, surface.waterHeight()), WindowManager::getCurrentRotation());
         auto w = WindowManager::findWindowShowing(vpPoint);
         if (w == nullptr)
+        {
             return;
+        }
 
         uint16_t dx2 = gPrng2().randNext() & 0xFFFF;
         if (dx2 > 0x1745)
+        {
             return;
+        }
 
         // Check whether surrounding tiles are water
         for (const auto& offset : _offsets)
         {
             auto searchLoc = pos + offset;
             if (!World::validCoords(searchLoc))
+            {
                 return;
+            }
 
             const auto tile = TileManager::get(searchLoc);
             if (tile.isNull())
+            {
                 return;
+            }
             const auto* nearbySurface = tile.surface();
             if (nearbySurface == nullptr)
+            {
                 return;
+            }
             if (nearbySurface->water() == 0)
+            {
                 return;
+            }
         }
 
         wave.loc = pos;

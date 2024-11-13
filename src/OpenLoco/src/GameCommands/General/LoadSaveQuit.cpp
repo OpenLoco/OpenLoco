@@ -19,7 +19,9 @@ namespace OpenLoco::GameCommands
     static uint32_t loadSaveQuit(const LoadSaveQuitGameArgs& args, const uint8_t flags)
     {
         if ((flags & Flags::apply) == 0)
+        {
             return 0;
+        }
 
         if (args.option1 == LoadSaveQuitGameArgs::Options::closeSavePrompt)
         {

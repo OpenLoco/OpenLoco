@@ -226,7 +226,9 @@ namespace OpenLoco::EditorController
             options.landDistributionPatterns[i] = S5::LandDistributionPattern::everywhere;
             auto* landObj = ObjectManager::get<LandObject>(i);
             if (landObj == nullptr)
+            {
                 continue;
+            }
 
             options.landDistributionPatterns[i] = S5::LandDistributionPattern(landObj->distributionPattern);
         }
@@ -378,7 +380,9 @@ namespace OpenLoco::EditorController
                 WindowManager::closeAllFloatingWindows();
 
                 if (!Game::saveScenarioOpen())
+                {
                     break;
+                }
 
                 S5::getOptions().editorStep = Step::null;
                 call(0x0046F910); // Sets up new multiplayer related rands
@@ -425,21 +429,29 @@ namespace OpenLoco::EditorController
 
             case Step::objectSelection:
                 if (WindowManager::find(WindowType::objectSelection) == nullptr)
+                {
                     Windows::ObjectSelectionWindow::open();
+                }
                 break;
 
             case Step::landscapeEditor:
                 // Scenario/landscape loaded?
                 if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
+                {
                     return;
+                }
 
                 if (WindowManager::find(WindowType::landscapeGeneration) == nullptr)
+                {
                     Windows::LandscapeGeneration::open();
+                }
                 break;
 
             case Step::scenarioOptions:
                 if (WindowManager::find(WindowType::scenarioOptions) == nullptr)
+                {
                     Windows::ScenarioOptions::open();
+                }
                 break;
 
             case Step::saveScenario:

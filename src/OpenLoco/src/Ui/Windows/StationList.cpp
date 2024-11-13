@@ -204,17 +204,25 @@ namespace OpenLoco::Ui::Windows::StationList
         for (auto& station : StationManager::stations())
         {
             if (station.owner != CompanyId(window->number))
+            {
                 continue;
+            }
 
             if ((station.flags & StationFlags::flag_5) != StationFlags::none)
+            {
                 continue;
+            }
 
             const StationFlags mask = tabInformationByType[window->currentTab].stationMask;
             if ((station.flags & mask) == StationFlags::none)
+            {
                 continue;
+            }
 
             if ((station.flags & StationFlags::flag_4) != StationFlags::none)
+            {
                 continue;
+            }
 
             if (edi == StationId::null)
             {
@@ -291,7 +299,9 @@ namespace OpenLoco::Ui::Windows::StationList
         if (window != nullptr)
         {
             if (ToolManager::isToolActive(window->type, window->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             // Still active?
             window = WindowManager::bringToFront(WindowType::stationList, enumValue(companyId));
@@ -345,7 +355,9 @@ namespace OpenLoco::Ui::Windows::StationList
     Window* open(CompanyId companyId, uint8_t type)
     {
         if (type > 4)
+        {
             throw Exception::RuntimeError("Unexpected station type");
+        }
 
         Window* stationList = open(companyId);
         widx target = tabInformationByType[type].widgetIndex;
@@ -358,11 +370,15 @@ namespace OpenLoco::Ui::Windows::StationList
     static Ui::CursorId cursor(Window& window, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview)
+        {
             return fallback;
+        }
 
         uint16_t currentIndex = yPos / kRowHeight;
         if (currentIndex < window.var_83C && window.rowInfo[currentIndex] != -1)
+        {
             return CursorId::handPointer;
+        }
 
         return fallback;
     }
@@ -377,10 +393,14 @@ namespace OpenLoco::Ui::Windows::StationList
     static void event_09(Window& window)
     {
         if (!window.hasFlags(WindowFlags::notScrollView))
+        {
             return;
+        }
 
         if (window.rowHover == -1)
+        {
             return;
+        }
 
         window.rowHover = -1;
         window.invalidate();
@@ -506,7 +526,9 @@ namespace OpenLoco::Ui::Windows::StationList
             {
                 uint16_t totalUnits = 0;
                 for (const auto& stats : station->cargoStats)
+                {
                     totalUnits += stats.quantity;
+                }
 
                 auto args = FormatArguments{};
                 args.push(StringIds::num_units);
@@ -525,10 +547,14 @@ namespace OpenLoco::Ui::Windows::StationList
                 auto& stats = station->cargoStats[cargoId];
 
                 if (!stats.isAccepted())
+                {
                     continue;
+                }
 
                 if (*buffer != '\0')
+                {
                     ptr = StringManager::formatString(ptr, StringIds::unit_separator);
+                }
 
                 ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
@@ -578,9 +604,13 @@ namespace OpenLoco::Ui::Windows::StationList
         // TODO: locale-based pluralisation.
         auto args = FormatArguments{};
         if (window.var_83C == 1)
+        {
             args.push(StringIds::status_num_stations_singular);
+        }
         else
+        {
             args.push(StringIds::status_num_stations_plural);
+        }
         args.push<uint16_t>(window.var_83C);
 
         // Draw number of stations.
@@ -592,22 +622,30 @@ namespace OpenLoco::Ui::Windows::StationList
     static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::company_select)
+        {
             return;
+        }
 
         if (itemIndex == -1)
+        {
             return;
+        }
 
         CompanyId companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
         // Try to find an open station list for this company.
         auto companyWindow = WindowManager::bringToFront(WindowType::stationList, enumValue(companyId));
         if (companyWindow != nullptr)
+        {
             return;
+        }
 
         // If not, we'll turn this window into a window for the company selected.
         auto company = CompanyManager::get(companyId);
         if (company->name == StringIds::empty)
+        {
             return;
+        }
 
         window.number = enumValue(companyId);
         window.owner = companyId;
@@ -629,7 +667,9 @@ namespace OpenLoco::Ui::Windows::StationList
     static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex == widx::company_select)
+        {
             Dropdown::populateCompanySelect(&window, &window.widgets[widgetIndex]);
+        }
     }
 
     // 0x00491785
@@ -648,7 +688,9 @@ namespace OpenLoco::Ui::Windows::StationList
             case tab_ship_ports:
             {
                 if (ToolManager::isToolActive(window.type, window.number))
+                {
                     ToolManager::toolCancel();
+                }
 
                 window.currentTab = widgetIndex - widx::tab_all_stations;
                 window.frameNo = 0;
@@ -674,7 +716,9 @@ namespace OpenLoco::Ui::Windows::StationList
             {
                 auto sortMode = widgetIndex - widx::sort_name;
                 if (window.sortMode == sortMode)
+                {
                     return;
+                }
 
                 window.sortMode = sortMode;
                 window.invalidate();
@@ -692,11 +736,15 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         uint16_t currentRow = y / kRowHeight;
         if (currentRow > window.var_83C)
+        {
             return;
+        }
 
         const auto currentStation = StationId(window.rowInfo[currentRow]);
         if (currentStation == StationId::null)
+        {
             return;
+        }
 
         Station::open(currentStation);
     }
@@ -710,10 +758,14 @@ namespace OpenLoco::Ui::Windows::StationList
         int16_t currentStation = -1;
 
         if (currentRow < window.var_83C)
+        {
             currentStation = window.rowInfo[currentRow];
+        }
 
         if (currentStation == window.rowHover)
+        {
             return;
+        }
 
         window.rowHover = currentStation;
         window.invalidate();

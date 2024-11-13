@@ -39,7 +39,9 @@ namespace OpenLoco
         recalculateSize();
 
         if (Config::get().townGrowthDisabled)
+        {
             return;
+        }
 
         static constexpr std::array<uint8_t, 12> kBuildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 };
         auto growthPerTick = kBuildSpeedToGrowthPerTick[this->buildSpeed];
@@ -117,10 +119,14 @@ namespace OpenLoco
         if (historySize == std::size(history))
         {
             for (size_t i = 0; i < std::size(history) - 1; i++)
+            {
                 history[i] = history[i + 1];
+            }
         }
         else
+        {
             historySize++;
+        }
 
         // Compute population growth.
         uint32_t popSteps = std::max<int32_t>(population - historyMinPopulation, 0) / 50;
@@ -151,7 +157,9 @@ namespace OpenLoco
         // Find historical maximum population.
         uint8_t maxPopulation = 0;
         for (int i = 0; i < historySize; i++)
+        {
             maxPopulation = std::max(maxPopulation, history[i]);
+        }
 
         int32_t popOffset = historyMinPopulation;
         while (maxPopulation <= 235 && popOffset > 0)
@@ -168,7 +176,9 @@ namespace OpenLoco
             popOffset /= 50;
 
             for (int i = 0; i < historySize; i++)
+            {
                 history[i] += popOffset;
+            }
         }
 
         // Work towards computing new build speed.

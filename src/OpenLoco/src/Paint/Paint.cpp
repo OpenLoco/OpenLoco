@@ -180,13 +180,21 @@ namespace OpenLoco::Paint
         int32_t top = bottom + g1.height;
 
         if (right <= rt.x)
+        {
             return false;
+        }
         if (top <= rt.y)
+        {
             return false;
+        }
         if (left >= rt.x + rt.width)
+        {
             return false;
+        }
         if (bottom >= rt.y + rt.height)
+        {
             return false;
+        }
         return true;
     }
 
@@ -741,7 +749,9 @@ namespace OpenLoco::Paint
     void PaintSession::generate()
     {
         if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        {
             return;
+        }
 
         currentRotation = Ui::WindowManager::getCurrentRotation();
         switch (currentRotation)
@@ -819,7 +829,9 @@ namespace OpenLoco::Paint
             ps = psNext;
             psNext = psNext->nextQuadrantPS;
             if (psNext == nullptr)
+            {
                 return ps;
+            }
         } while (quadrantIndex > psNext->quadrantIndex);
 
         // We keep track of the first node in the quadrant so the next call with a higher quadrant index
@@ -833,7 +845,9 @@ namespace OpenLoco::Paint
         {
             ps = ps->nextQuadrantPS;
             if (ps == nullptr)
+            {
                 break;
+            }
 
             if (ps->quadrantIndex > quadrantIndex + 1)
             {
@@ -890,11 +904,17 @@ namespace OpenLoco::Paint
                 ps = psNext;
                 psNext = psNext->nextQuadrantPS;
                 if (psNext == nullptr)
+                {
                     break;
+                }
                 if (psNext->hasQuadrantFlags(QuadrantFlags::outsideQuadrant))
+                {
                     break;
+                }
                 if (!psNext->hasQuadrantFlags(QuadrantFlags::neighbour))
+                {
                     continue;
+                }
 
                 const PaintStructBoundBox& currentBBox = psNext->bounds;
 
@@ -1414,7 +1434,9 @@ namespace OpenLoco::Paint
 
         if (spriteType == InteractionItem::noInteraction
             || spriteType == InteractionItem::bridge) // 18 as a type seems to not exist.
+        {
             return false;
+        }
 
         InteractionItemFlags mask = interactionItemToFilter[static_cast<size_t>(spriteType)];
 

@@ -46,10 +46,14 @@ namespace OpenLoco::GameCommands
         {
             auto* elBuilding = el.as<World::BuildingElement>();
             if (elBuilding == nullptr)
+            {
                 continue;
+            }
 
             if (elBuilding->baseZ() != pos.z / World::kSmallZStep)
+            {
                 continue;
+            }
 
             const auto* buildingObj = elBuilding->getObject();
             if (!isEditorMode())
@@ -87,10 +91,14 @@ namespace OpenLoco::GameCommands
                 {
                     auto* subElBuilding = element.as<World::BuildingElement>();
                     if (subElBuilding == nullptr)
+                    {
                         continue;
+                    }
 
                     if (subElBuilding->baseZ() != pos.z / World::kSmallZStep)
+                    {
                         continue;
+                    }
 
                     if (flags & GameCommands::Flags::apply)
                     {

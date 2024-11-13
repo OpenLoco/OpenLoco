@@ -242,7 +242,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         auto index = size_t(y / self.rowHeight);
         if (index >= _files.size())
+        {
             return;
+        }
 
         Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
 
@@ -280,14 +282,20 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void onScrollMouseOver(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scrollIndex)
     {
         if (WindowManager::getCurrentModalType() != WindowType::fileBrowserPrompt)
+        {
             return;
+        }
 
         auto index = y / self.rowHeight;
         if (index >= static_cast<uint16_t>(_files.size()))
+        {
             return;
+        }
 
         if (self.var_85A == index)
+        {
             return;
+        }
 
         self.var_85A = index;
         loadFileDetails(&self);
@@ -341,7 +349,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         self.widgets[widx::scrollview].right = self.width - 259;
         if (*_fileType != BrowseFileType::savedGame)
+        {
             self.widgets[widx::scrollview].right += 122;
+        }
 
         self.widgets[widx::parent_button].left = self.width - 26;
         self.widgets[widx::parent_button].right = self.width - 3;
@@ -367,18 +377,24 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // If the folder already fits, we're done.
         if (folderWidth <= maxWidth)
+        {
             return;
+        }
 
         const char* relativeDirectory = nameBuffer.c_str();
         do
         {
             // If we're omitting part of the folder, prepend ellipses.
             if (relativeDirectory != nameBuffer.c_str())
+            {
                 strncpy(&_displayFolderBuffer[0], "...", 512);
+            }
 
             // Seek the next directory separator token.
             while (*relativeDirectory != '\0' && *relativeDirectory != fs::path::preferred_separator)
+            {
                 relativeDirectory++;
+            }
 
             // Use the truncated directory name in the buffer.
             strncat(&_displayFolderBuffer[0], relativeDirectory, 512);
@@ -757,14 +773,18 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 {
                     // Only list directories and normal files
                     if (!(file.is_regular_file() || file.is_directory()))
+                    {
                         continue;
+                    }
 
                     // Filter files by extension
                     if (file.is_regular_file())
                     {
                         auto extension = file.path().extension().u8string();
                         if (!Utility::iequals(extension, filterExtension))
+                        {
                             continue;
+                        }
                     }
 
                     _files.emplace_back(file.path());
@@ -778,9 +798,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         std::sort(_files.begin(), _files.end(), [](const fs::path& a, const fs::path& b) -> bool {
             if (!fs::is_directory(a) && fs::is_directory(b))
+            {
                 return false;
+            }
             if (fs::is_directory(a) && !fs::is_directory(b))
+            {
                 return true;
+            }
             return a.stem() < b.stem();
         });
     }
@@ -791,7 +815,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 #ifdef _WIN32
         // Showing drive letters?
         if (_currentDirectory.empty())
+        {
             return;
+        }
 
         // The drive letter level is above file system root level.
         if (isRootPath(_currentDirectory))
@@ -818,7 +844,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         for (const char chr : inputSession.buffer)
         {
             if (chr != ' ')
+            {
                 numNonSpacesProcessed++;
+            }
 
             switch (chr)
             {
@@ -887,7 +915,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 // Ask for confirmation to replace the file.
                 auto titleId = self->widgets[widx::caption].text;
                 if (!Windows::PromptOkCancel::open(titleId, StringIds::replace_existing_file_prompt, args, StringIds::replace_existing_file_button))
+                {
                     return;
+                }
             }
         }
 
@@ -898,9 +928,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (_fileType == BrowseFileType::savedGame)
         {
             if (!fs::is_directory(_currentDirectory))
+            {
                 Config::get().lastSavePath = _currentDirectory.parent_path().u8string();
+            }
             else
+            {
                 Config::get().lastSavePath = _currentDirectory.u8string();
+            }
             Config::write();
             Environment::resolvePaths();
         }
@@ -908,9 +942,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         else if (_fileType == BrowseFileType::landscape)
         {
             if (!fs::is_directory(_currentDirectory))
+            {
                 Config::get().lastLandscapePath = _currentDirectory.parent_path().u8string();
+            }
             else
+            {
                 Config::get().lastLandscapePath = _currentDirectory.u8string();
+            }
             Config::write();
             Environment::resolvePaths();
         }
@@ -936,7 +974,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Ask for confirmation to delete the file.
         auto titleId = self->widgets[widx::caption].text;
         if (!Windows::PromptOkCancel::open(titleId, StringIds::delete_file_prompt, args, StringIds::delete_file_button))
+        {
             return;
+        }
 
         // Actually remove the file..!
         fs::remove(path);
@@ -952,11 +992,15 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         freeFileDetails();
 
         if (self->var_85A == -1)
+        {
             return;
+        }
 
         auto& entry = _files[self->var_85A];
         if (fs::is_directory(entry))
+        {
             return;
+        }
 
         // Create full path to target file.
         auto path = _currentDirectory / entry.stem();

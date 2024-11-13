@@ -27,13 +27,21 @@ namespace OpenLoco::Ui
         bool intersects(const Rect& r2) const
         {
             if (origin.x + size.width <= r2.origin.x)
+            {
                 return false;
+            }
             if (origin.y + size.height <= r2.origin.y)
+            {
                 return false;
+            }
             if (origin.x >= r2.origin.x + r2.size.width)
+            {
                 return false;
+            }
             if (origin.y >= r2.origin.y + r2.size.height)
+            {
                 return false;
+            }
             return true;
         }
 

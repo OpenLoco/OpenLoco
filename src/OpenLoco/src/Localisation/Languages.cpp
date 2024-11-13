@@ -25,20 +25,28 @@ namespace OpenLoco::Localisation
         {
             auto filename = entry.path().string();
             if (filename.substr(filename.size() - 4, 4) != ".yml")
+            {
                 continue;
+            }
 
             std::fstream stream(entry.path());
             if (!stream.is_open())
+            {
                 continue;
+            }
 
             // Read only the header of the file to speed up the indexing process.
             std::string headerYaml;
             for (std::string line; line != "strings:" && !stream.eof(); std::getline(stream, line))
+            {
                 headerYaml += line + '\n';
+            }
 
             YAML::Node node = YAML::Load(headerYaml);
             if (!node.IsMap())
+            {
                 continue;
+            }
 
             YAML::Node header = node["header"];
 
@@ -69,7 +77,9 @@ namespace OpenLoco::Localisation
         for (auto& ld : languageDescriptors)
         {
             if (ld.locale == target_locale)
+            {
                 return ld;
+            }
         }
 
         return languageDescriptors[0];

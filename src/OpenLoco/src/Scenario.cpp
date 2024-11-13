@@ -90,7 +90,9 @@ namespace OpenLoco::Scenario
         {
             dayOffset -= climateObj->seasonLength[i];
             if (dayOffset < 0)
+            {
                 break;
+            }
 
             season = nextSeason(season);
         }
@@ -106,7 +108,9 @@ namespace OpenLoco::Scenario
 
         auto* climateObj = ObjectManager::get<ClimateObject>();
         if (climateObj == nullptr)
+        {
             return;
+        }
 
         updateSeason(currentDayOfYear, climateObj);
 
@@ -125,19 +129,25 @@ namespace OpenLoco::Scenario
     {
         auto* climateObj = ObjectManager::get<ClimateObject>();
         if (climateObj == nullptr)
+        {
             return;
+        }
 
         updateSeason(currentDayOfYear, climateObj);
 
         if (getCurrentSeason() == Season::winter)
         {
             if (getCurrentSnowLine() != climateObj->winterSnowLine)
+            {
                 setCurrentSnowLine(getCurrentSnowLine() - 1);
+            }
         }
         else
         {
             if (getCurrentSnowLine() != climateObj->summerSnowLine)
+            {
                 setCurrentSnowLine(getCurrentSnowLine() + 1);
+            }
         }
     }
 
@@ -400,7 +410,9 @@ namespace OpenLoco::Scenario
         auto oldRng = gameState.rng;
 
         if (!load(path))
+        {
             return false;
+        }
 
         gameState.rng = Core::Prng(Platform::getTime() ^ oldRng.srand_0(), oldRng.srand_1());
         std::strncpy(gameState.scenarioFileName, path.u8string().c_str(), std::size(gameState.scenarioFileName) - 1);

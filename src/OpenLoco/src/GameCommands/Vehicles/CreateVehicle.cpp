@@ -62,7 +62,9 @@ namespace OpenLoco::GameCommands
         const auto& companies = CompanyManager::companies();
         auto totalAiVehicles = std::accumulate(companies.begin(), companies.end(), 0, [](const int32_t total, const auto& company) {
             if (CompanyManager::isPlayerCompany(company.id()))
+            {
                 return total;
+            }
             return total + std::accumulate(std::begin(company.transportTypeCount), std::end(company.transportTypeCount), 0);
         });
 
@@ -390,7 +392,9 @@ namespace OpenLoco::GameCommands
         for (; newNum < _unkArr.size(); ++newNum)
         {
             if (!_unkArr[newNum])
+            {
                 break;
+            }
         }
         return newNum + 1;
     }

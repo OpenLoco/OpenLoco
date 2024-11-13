@@ -225,7 +225,9 @@ namespace OpenLoco::Title
     void update()
     {
         if (!isTitleMode())
+        {
             return;
+        }
 
         resetScreenAge();
 
@@ -238,7 +240,9 @@ namespace OpenLoco::Title
         do
         {
             if (_sequenceIterator >= _titleSequence.end())
+            {
                 return;
+            }
 
             auto& command = *_sequenceIterator++;
             std::visit([](auto&& step) { handleStep(step); }, command);

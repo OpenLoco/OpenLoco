@@ -85,7 +85,9 @@ void NetworkBase::onReceivePacket(IUdpSocket&, std::unique_ptr<INetworkEndpoint>
 void NetworkBase::close()
 {
     if (_isClosed)
+    {
         return;
+    }
 
     endReceivePacketLoop();
 

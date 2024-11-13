@@ -36,7 +36,9 @@ namespace OpenLoco::Gfx
         static void setTextColours(PaletteIndex_t pal1, PaletteIndex_t pal2, PaletteIndex_t pal3)
         {
             if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
+            {
                 return;
+            }
 
             _textColours[PaletteIndex::textRemap0] = pal1;
             _textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
@@ -306,16 +308,24 @@ namespace OpenLoco::Gfx
             }
 
             if (origin.x >= rt.x + rt.width)
+            {
                 return origin;
+            }
 
             if (origin.x < rt.x - 1280)
+            {
                 return origin;
+            }
 
             if (origin.y >= rt.y + rt.height)
+            {
                 return origin;
+            }
 
             if (origin.y < rt.y - 90)
+            {
                 return origin;
+            }
 
             if (colour.isFF())
             {
@@ -390,7 +400,9 @@ namespace OpenLoco::Gfx
             {
                 const auto chr = static_cast<uint8_t>(*ptr++);
                 if (chr == 0U)
+                {
                     return ptr;
+                }
 
                 if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
                 {
@@ -415,11 +427,17 @@ namespace OpenLoco::Gfx
         static uint16_t lineHeightFromFont(Font font)
         {
             if (font <= Font::medium_bold)
+            {
                 return 10;
+            }
             else if (font == Font::small)
+            {
                 return 6;
+            }
             else if (font == Font::large)
+            {
                 return 18;
+            }
             return 0;
         }
 
@@ -573,7 +591,9 @@ namespace OpenLoco::Gfx
             // Draw underline
             ctx.drawRect(point.x, point.y + 11, width, 1, _textColours[PaletteIndex::textRemap0], RectFlags::none);
             if (_textColours[PaletteIndex::textRemap1] != 0)
+            {
                 ctx.drawRect(point.x, point.y + 12, width, 1, _textColours[PaletteIndex::textRemap1], RectFlags::none);
+            }
 
             return point;
         }
@@ -604,7 +624,9 @@ namespace OpenLoco::Gfx
             // Draw underline
             ctx.drawRect(origin.x, origin.y + 11, width, 1, _textColours[PaletteIndex::textRemap0], RectFlags::none);
             if (_textColours[PaletteIndex::textRemap1] != 0)
+            {
                 ctx.drawRect(origin.x, origin.y + 12, width, 1, _textColours[PaletteIndex::textRemap1], RectFlags::none);
+            }
 
             return point;
         }
@@ -634,7 +656,9 @@ namespace OpenLoco::Gfx
             point.x = origin.x - (width / 2);
 
             if (point.x < 0)
+            {
                 return origin;
+            }
 
             return drawString(ctx, rt, point, colour, buffer);
         }
@@ -783,17 +807,25 @@ namespace OpenLoco::Gfx
                 return;
             }
             if (loc.x >= rt.x + rt.width)
+            {
                 return;
+            }
 
             if (loc.x < rt.x - 1280)
+            {
                 return;
+            }
 
             if (loc.y >= rt.y + rt.height)
+            {
                 return;
+            }
 
             // Note: 60 not 90 like drawString
             if (loc.y < rt.y - 60)
+            {
                 return;
+            }
 
             _currentFontFlags = TextDrawFlags::none;
 

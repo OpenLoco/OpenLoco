@@ -723,7 +723,9 @@ namespace OpenLoco::Vehicles
             {
                 auto* stopOrder = order.as<OrderStopAt>();
                 if (stopOrder == nullptr)
+                {
                     continue;
+                }
 
                 stopFound = true;
                 auto* station = StationManager::get(stopOrder->getStation());
@@ -1745,10 +1747,14 @@ namespace OpenLoco::Vehicles
         {
             auto* elStation = el.as<World::StationElement>();
             if (elStation == nullptr)
+            {
                 continue;
+            }
 
             if (elStation->baseZ() != loc.z / 4)
+            {
                 continue;
+            }
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
 
@@ -1970,10 +1976,14 @@ namespace OpenLoco::Vehicles
             {
                 auto* elStation = el.as<World::StationElement>();
                 if (elStation == nullptr)
+                {
                     continue;
+                }
 
                 if (elStation->baseZ() != loc.z / 4)
+                {
                     continue;
+                }
 
                 auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
                 Vehicle train(head);
@@ -2201,10 +2211,14 @@ namespace OpenLoco::Vehicles
         {
             auto* elStation = el.as<StationElement>();
             if (elStation == nullptr)
+            {
                 continue;
+            }
 
             if (elStation->baseZ() != loc.z / 4)
+            {
                 continue;
+            }
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
 
@@ -2340,10 +2354,14 @@ namespace OpenLoco::Vehicles
         {
             auto* elStation = el.as<StationElement>();
             if (elStation == nullptr)
+            {
                 continue;
+            }
 
             if (elStation->baseZ() != stationLoc.z / 4)
+            {
                 continue;
+            }
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
 
@@ -2789,10 +2807,14 @@ namespace OpenLoco::Vehicles
                 if (elStation != nullptr)
                 {
                     if (elStation->isAiAllocated() || elStation->isGhost())
+                    {
                         break;
+                    }
 
                     if (elStation->stationId() != stationId)
+                    {
                         break;
+                    }
 
                     loadingModifier = kMinVehiclePastStationPenalty;
                 }
@@ -2808,10 +2830,14 @@ namespace OpenLoco::Vehicles
                 if (elStation != nullptr)
                 {
                     if (elStation->isAiAllocated() || elStation->isGhost())
+                    {
                         break;
+                    }
 
                     if (elStation->stationId() != stationId)
+                    {
                         break;
+                    }
 
                     auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
                     if (!roadStationObj->hasFlags(RoadStationFlags::roadEnd))
@@ -3060,9 +3086,13 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::updateLoadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie)
     {
         if (cargo.maxQty == 0)
+        {
             return false;
+        }
         if (stationId == StationId::null)
+        {
             return false;
+        }
 
         uint8_t loadingModifier = getLoadingModifier(bogie);
 
@@ -3780,17 +3810,25 @@ namespace OpenLoco::Vehicles
             {
                 auto* elRoad = el.as<RoadElement>();
                 if (elRoad == nullptr)
+                {
                     continue;
+                }
 
                 auto heightDiff = std::abs(elRoad->baseZ() - baseZ);
                 if (heightDiff > 4)
+                {
                     continue;
+                }
 
                 if (elRoad->isGhost() || elRoad->isAiAllocated())
+                {
                     continue;
+                }
 
                 if (elRoad->roadId() != veh->trackAndDirection.road.id())
+                {
                     continue;
+                }
 
                 return true;
             }
@@ -3802,20 +3840,30 @@ namespace OpenLoco::Vehicles
             {
                 auto* elTrack = el.as<TrackElement>();
                 if (elTrack == nullptr)
+                {
                     continue;
+                }
 
                 auto heightDiff = std::abs(elTrack->baseZ() - baseZ);
                 if (heightDiff > 4)
+                {
                     continue;
+                }
 
                 if (elTrack->isGhost() || elTrack->isAiAllocated())
+                {
                     continue;
+                }
 
                 if (elTrack->rotation() != veh->trackAndDirection.track.cardinalDirection())
+                {
                     continue;
+                }
 
                 if (elTrack->trackId() != veh->trackAndDirection.track.id())
+                {
                     continue;
+                }
 
                 return true;
             }
@@ -3837,9 +3885,13 @@ namespace OpenLoco::Vehicles
         for (auto i = 0; i < 4; ++i)
         {
             if (cargoTypes[i] != cargoType)
+            {
                 continue;
+            }
             if (cargoDistances[i] != cargoDist)
+            {
                 continue;
+            }
             cargoQtys[i] += cargoQty;
             cargoProfits[i] += profit;
             cargoAges[i] = std::max(cargoAge, cargoAges[i]);
@@ -3849,7 +3901,9 @@ namespace OpenLoco::Vehicles
         for (auto i = 0; i < 4; ++i)
         {
             if (cargoTypes[i] != 0xFF)
+            {
                 continue;
+            }
 
             cargoTypes[i] = cargoType;
             cargoDistances[i] = cargoDist;
@@ -3866,9 +3920,13 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(head);
         if (cargoQty == 0)
+        {
             return;
+        }
         if (cargoType == 0xFF)
+        {
             return;
+        }
 
         auto* veh1 = train.veh1;
         if ((veh1->var_48 & Flags48::flag2) != Flags48::none)

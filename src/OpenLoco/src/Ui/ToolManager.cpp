@@ -30,7 +30,9 @@ namespace OpenLoco::ToolManager
     bool isToolActive(Ui::WindowType type)
     {
         if (!Input::hasFlag(Input::Flags::toolActive))
+        {
             return false;
+        }
 
         return _toolWindowType == type;
     }
@@ -38,7 +40,9 @@ namespace OpenLoco::ToolManager
     bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number)
     {
         if (!isToolActive(type))
+        {
             return false;
+        }
 
         return _toolWindowNumber == number;
     }
@@ -46,7 +50,9 @@ namespace OpenLoco::ToolManager
     bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number, int16_t widgetIndex)
     {
         if (!isToolActive(type, number))
+        {
             return false;
+        }
         return getToolWidgetIndex() == widgetIndex;
     }
 
@@ -98,7 +104,9 @@ namespace OpenLoco::ToolManager
                 // Abort tool event
                 Window* w = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                 if (w != nullptr)
+                {
                     w->callToolAbort(ToolManager::getToolWidgetIndex());
+                }
             }
         }
     }
@@ -106,7 +114,9 @@ namespace OpenLoco::ToolManager
     void toolCancel(Ui::WindowType type, Ui::WindowNumber_t number)
     {
         if (!isToolActive(type, number))
+        {
             return;
+        }
 
         toolCancel();
     }

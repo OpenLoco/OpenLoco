@@ -93,9 +93,13 @@ namespace OpenLoco
     void StringBuffer::nullTerminate()
     {
         if (offset < maxLen)
+        {
             buffer[offset] = '\0';
+        }
         else
+        {
             buffer[maxLen - 1] = '\0';
+        }
     }
 
     void StringBuffer::grow(size_t numChars)

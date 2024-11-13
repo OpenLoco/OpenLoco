@@ -347,7 +347,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (self.viewports[0] != nullptr)
             {
                 if (self.savedView == view)
+                {
                     return;
+                }
 
                 flags = self.viewports[0]->flags;
                 self.viewportRemove(0);
@@ -356,7 +358,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             else
             {
                 if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+                {
                     flags |= ViewportFlags::gridlines_on_landscape;
+                }
             }
 
             self.savedView = view;
@@ -556,10 +560,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             if (!WindowManager::isInFront(&self))
+            {
                 return;
+            }
 
             if (head->owner != CompanyManager::getControllingId())
+            {
                 return;
+            }
 
             if (!ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
@@ -582,7 +590,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 uint16_t newWidth = self.width - 30;
                 if (head->owner != CompanyManager::getControllingId())
+                {
                     newWidth += 22;
+                }
 
                 uint16_t newHeight = self.height - 59;
                 if (head->hasVehicleFlags(VehicleFlags::manualControl) && head->owner == CompanyManager::getControllingId())
@@ -1136,7 +1146,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex)
         {
             if (widgetIndex != widx::buildNew)
+            {
                 return;
+            }
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
@@ -1159,7 +1171,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void onDropdown(Window& self, const WidgetIndex_t widgetIndex, const int16_t itemIndex)
         {
             if (widgetIndex != widx::buildNew)
+            {
                 return;
+            }
 
             if (itemIndex <= 0)
             {
@@ -1208,13 +1222,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             if (vehicle->isPlaced())
+            {
                 return;
+            }
 
             if (!WindowManager::isInFrontAlt(&self))
+            {
                 return;
+            }
 
             if (vehicle->owner != CompanyManager::getControllingId())
+            {
                 return;
+            }
 
             if (!ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
@@ -2032,7 +2052,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::refit:
                 {
                     if (dropdownIndex == -1)
+                    {
                         break;
+                    }
 
                     GameCommands::VehicleRefitArgs args{};
                     args.head = static_cast<EntityId>(self.number);
@@ -2062,10 +2084,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 auto cargoObject = ObjectManager::get<CargoObject>(cargoId);
                 if (cargoObject == nullptr)
+                {
                     continue;
+                }
 
                 if (!cargoObject->hasFlags(CargoObjectFlags::refit))
+                {
                     continue;
+                }
 
                 StringId format = StringIds::dropdown_stringid;
                 if (cargoId == train.cars.firstCar.body->primaryCargo.type)
@@ -2306,7 +2332,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     auto cargoType = veh1->lastIncome.cargoTypes[i];
                     if (cargoType == 0xFF)
+                    {
                         continue;
+                    }
 
                     auto cargoObject = ObjectManager::get<CargoObject>(cargoType);
 
@@ -2540,10 +2568,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // No moveable orders
             if (head->sizeOfOrderTable <= 1)
+            {
                 return false;
+            }
             // Valid orderId should be positive (avoid -1 / null)
             if (orderId < 0)
+            {
                 return false;
+            }
 
             auto* order = getOrderTable(head).atIndex(orderId);
             if (order != nullptr)
@@ -2598,7 +2630,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::localMode:
                 {
                     if (!CompanyManager::isPlayerCompany(head->owner))
+                    {
                         return;
+                    }
 
                     Vehicles::Vehicle train(*head);
                     if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) != Vehicles::Flags48::none)
@@ -2614,7 +2648,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::expressMode:
                 {
                     if (!CompanyManager::isPlayerCompany(head->owner))
+                    {
                         return;
+                    }
 
                     Vehicles::Vehicle train(*head);
                     if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) == Vehicles::Flags48::none)
@@ -2801,14 +2837,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
             WindowManager::invalidateWidget(WindowType::vehicle, self.number, 8);
 
             if (!WindowManager::isInFront(&self))
+            {
                 return;
+            }
             auto* head = Common::getVehicle(&self);
             if (head == nullptr)
             {
                 return;
             }
             if (head->owner != CompanyManager::getControllingId())
+            {
                 return;
+            }
 
             if (!ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
@@ -2871,7 +2911,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto tileElement = static_cast<TileElement*>(args.object);
                     auto trackElement = tileElement->as<TrackElement>();
                     if (trackElement == nullptr)
+                    {
                         break;
+                    }
                     auto height = trackElement->baseHeight();
                     auto trackId = trackElement->trackId();
                     const auto& trackPiece = World::TrackData::getTrackPiece(trackId);
@@ -2917,7 +2959,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto* tileElement = static_cast<TileElement*>(args.object);
                     auto* roadElement = tileElement->as<RoadElement>();
                     if (roadElement == nullptr)
+                    {
                         break;
+                    }
                     auto height = roadElement->baseHeight();
                     auto roadId = roadElement->roadId();
                     const auto& roadPiece = World::TrackData::getRoadPiece(roadId);
@@ -3159,9 +3203,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.activatedWidgets &= ~((1 << widx::expressMode) | (1 << widx::localMode));
             Vehicles::Vehicle train(*head);
             if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) != Vehicles::Flags48::none)
+            {
                 self.activatedWidgets |= (1 << widx::expressMode);
+            }
             else
+            {
                 self.activatedWidgets |= (1 << widx::localMode);
+            }
 
             WidgetType type = head->owner == CompanyManager::getControllingId() ? WidgetType::buttonWithImage : WidgetType::none;
             self.widgets[widx::orderForceUnload].type = type;

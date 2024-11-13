@@ -67,7 +67,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 uint8_t signalCount = 0;
                 while (_cState->signalList[signalCount] != 0xFF)
+                {
                     signalCount++;
+                }
 
                 auto widget = self.widgets[widx::signal];
                 auto xPos = widget.left + self.x;
@@ -81,7 +83,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 {
                     auto signal = _cState->signalList[signalIndex];
                     if (signal == _cState->lastSelectedSignal)
+                    {
                         Dropdown::setHighlightedItem(signalIndex);
+                    }
 
                     auto trainSignalObj = ObjectManager::get<TrainSignalObject>(signal);
 
@@ -112,7 +116,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::signal_dropdown)
+        {
             return;
+        }
 
         if (itemIndex != -1)
         {

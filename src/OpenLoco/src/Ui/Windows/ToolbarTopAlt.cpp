@@ -114,7 +114,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     static void loadsaveMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         switch (itemIndex)
         {
@@ -195,7 +197,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         Dropdown::showBelow(window, widgetIndex, 1, 0);
 
         if (!Audio::isAudioEnabled())
+        {
             Dropdown::setItemSelected(0);
+        }
 
         Dropdown::setHighlightedItem(0);
     }
@@ -204,7 +208,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     static void audioMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         switch (itemIndex)
         {
@@ -226,7 +232,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     static void mapGenerationMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         switch (itemIndex)
         {
@@ -341,9 +349,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window.widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
 
         if (_lastTownOption == 0)
+        {
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
+        }
         else
+        {
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
+        }
     }
 
     static constexpr WindowEventList kEvents = {

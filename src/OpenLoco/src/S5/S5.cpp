@@ -86,9 +86,13 @@ namespace OpenLoco::S5
 
         result.type = S5Type::savedGame;
         if (hasSaveFlags(flags, SaveFlags::landscape))
+        {
             result.type = S5Type::landscape;
+        }
         if (hasSaveFlags(flags, SaveFlags::scenario))
+        {
             result.type = S5Type::scenario;
+        }
 
         result.numPackedObjects = static_cast<uint16_t>(numPackedObjects);
         result.version = kCurrentVersion;
@@ -125,7 +129,9 @@ namespace OpenLoco::S5
                 {
                     auto* surfaceEl = el.as<SurfaceElement>();
                     if (surfaceEl == nullptr)
+                    {
                         continue;
+                    }
 
                     if (surfaceEl->water() == 0)
                     {
@@ -186,7 +192,9 @@ namespace OpenLoco::S5
     {
         auto mainViewport = WindowManager::getMainViewport();
         if (mainViewport == nullptr)
+        {
             return;
+        }
 
         const auto mapPosXY = mainViewport->getCentreMapPosition();
         const auto mapPosXYZ = Pos3(mapPosXY.x, mapPosXY.y, coord_t{ TileManager::getHeight(mapPosXY) });

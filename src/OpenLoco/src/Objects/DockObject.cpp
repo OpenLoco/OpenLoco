@@ -93,7 +93,9 @@ namespace OpenLoco
         const auto* partsPointer = buildingVariationParts[buildingType];
         auto* end = partsPointer;
         while (*end != 0xFF)
+        {
             end++;
+        }
 
         return std::span<const std::uint8_t>(partsPointer, end);
     }

@@ -159,7 +159,9 @@ namespace OpenLoco::Ui
         World::Pos3 getPos() const
         {
             if (isEntityView())
+            {
                 return {};
+            }
 
             return { mapX, static_cast<coord_t>(mapY & 0x3FFF), surfaceZ };
         }

@@ -162,9 +162,13 @@ namespace OpenLoco
             constexpr reference_base& operator=(const bool value) noexcept
             {
                 if (!value)
+                {
                     _storage[_blockIndex] &= ~(kBlockValueOne << _blockOffset);
+                }
                 else
+                {
                     _storage[_blockIndex] |= (kBlockValueOne << _blockOffset);
+                }
                 return *this;
             }
 
@@ -305,9 +309,13 @@ namespace OpenLoco
             const auto blockIndex = computeBlockIndex(index);
             const auto blockOffset = computeBlockOffset(index);
             if (!value)
+            {
                 _data[blockIndex] &= ~(kBlockValueOne << blockOffset);
+            }
             else
+            {
                 _data[blockIndex] |= (kBlockValueOne << blockOffset);
+            }
             return *this;
         }
 
@@ -508,7 +516,9 @@ namespace OpenLoco
             const auto byteIdx = TBitSize / kBlockBitSize;
             const auto bitIdx = TBitSize % kBlockBitSize;
             if constexpr (bitIdx == 0)
+            {
                 return;
+            }
 
             auto trimMask = kBlockValueMask;
             trimMask <<= (kBlockBitSize - bitIdx);

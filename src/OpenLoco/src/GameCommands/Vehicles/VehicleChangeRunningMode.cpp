@@ -161,7 +161,9 @@ namespace OpenLoco::GameCommands
 
             // Switching to manual driving?
             if (args.mode == VehicleChangeRunningModeArgs::Mode::driveManually)
+            {
                 return toggleManualDriving(train, flags);
+            }
 
             bool startVehicle = args.mode == VehicleChangeRunningModeArgs::Mode::startVehicle;
             return startStopVehicle(train, startVehicle, flags);

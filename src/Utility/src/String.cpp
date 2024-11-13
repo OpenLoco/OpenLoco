@@ -31,7 +31,9 @@ namespace OpenLoco::Utility
             if (s[0] != '.' && s[0] != ',')
             {
                 if (!isdigit(s[0]))
+                {
                     break;
+                }
 
                 auto newResult = num * 10;
                 if (newResult / 10 != num)
@@ -55,13 +57,19 @@ namespace OpenLoco::Utility
         for (;;)
         {
             if (s2.empty())
+            {
                 return !s1.empty();
+            }
             else if (s1.empty())
+            {
                 return -1;
+            }
             else if (!(isdigit(s1[0]) && isdigit(s2[0])))
             {
                 if (toupper(s1[0]) != toupper(s2[0]))
+                {
                     return toupper(s1[0]) - toupper(s2[0]);
+                }
                 else
                 {
                     s1 = s1.substr(1);
@@ -74,9 +82,13 @@ namespace OpenLoco::Utility
                 auto [n1, s1n] = parseNextNumber(s1);
                 auto [n2, s2n] = parseNextNumber(s2);
                 if (n1 > n2)
+                {
                     return 1;
+                }
                 else if (n1 < n2)
+                {
                     return -1;
+                }
                 s1 = s1n;
                 s2 = s2n;
             }

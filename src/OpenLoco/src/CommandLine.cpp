@@ -44,14 +44,18 @@ namespace OpenLoco
         static bool isLongOption(std::string_view arg)
         {
             if (arg.size() >= 3 && arg[0] == '-' && arg[1] == '-')
+            {
                 return true;
+            }
             return false;
         }
 
         static bool isShortOption(std::string_view arg)
         {
             if (arg.size() >= 2 && arg[0] == '-' && arg[1] != '-')
+            {
                 return true;
+            }
             return false;
         }
 
@@ -264,7 +268,9 @@ namespace OpenLoco
         {
             const auto* args = getArgs(name);
             if (args == nullptr || index >= args->size())
+            {
                 return {};
+            }
             return (*args)[index];
         }
 
@@ -371,13 +377,19 @@ namespace OpenLoco
         options.bind = parser.getArg("--bind");
         options.port = parser.getArg<int32_t>("--port");
         if (!options.port)
+        {
             options.port = parser.getArg<int32_t>("-p");
+        }
         options.outputPath = parser.getArg("-o");
 
         if (parser.hasOption("--log_levels"))
+        {
             options.logLevels = parser.getArg("--log_levels");
+        }
         else
+        {
             options.logLevels = "info, warning, error";
+        }
 
         return options;
     }

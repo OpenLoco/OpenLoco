@@ -45,7 +45,9 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     void open()
     {
         if (WindowManager::bringToFront(WindowType::aboutMusic) != nullptr)
+        {
             return;
+        }
 
         auto window = WindowManager::createWindowCentred(
             WindowType::aboutMusic,

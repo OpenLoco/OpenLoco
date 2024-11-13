@@ -175,7 +175,9 @@ namespace OpenLoco::Ui
             }
 
             if (quadrantHeight >= gs.canvasHeight)
+            {
                 break;
+            }
         }
 
         // 0x004CFD59 after loop, which is back in drawGraph

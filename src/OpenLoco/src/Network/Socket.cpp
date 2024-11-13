@@ -266,7 +266,9 @@ namespace OpenLoco::Network
                 const sockaddr_in6 *xin6 = (const sockaddr_in6*)x, *yin6 = (const sockaddr_in6*)y;
                 int r = memcmp(xin6->sin6_addr.s6_addr, yin6->sin6_addr.s6_addr, sizeof(xin6->sin6_addr.s6_addr));
                 if (r != 0)
+                {
                     return r;
+                }
                 CMP(ntohs(xin6->sin6_port), ntohs(yin6->sin6_port));
                 CMP(xin6->sin6_flowinfo, yin6->sin6_flowinfo);
                 CMP(xin6->sin6_scope_id, yin6->sin6_scope_id);

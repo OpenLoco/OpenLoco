@@ -14,7 +14,9 @@ namespace OpenLoco::GameCommands
     static uint32_t togglePause(uint8_t flags)
     {
         if ((flags & Flags::apply) == 0)
+        {
             return 0;
+        }
 
         Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
 

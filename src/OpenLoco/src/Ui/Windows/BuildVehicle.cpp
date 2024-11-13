@@ -637,17 +637,25 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto w = WindowManager::get(i);
 
             if (w->type != WindowType::vehicle)
+            {
                 continue;
+            }
 
             if (w->currentTab != 1)
+            {
                 continue;
+            }
 
             auto vehicle = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
             if (vehicle == nullptr)
+            {
                 continue;
+            }
 
             if (vehicle->owner != CompanyManager::getControllingId())
+            {
                 continue;
+            }
 
             return w;
         }
@@ -775,7 +783,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 auto tab = widxToTrackTypeTab(widgetIndex);
                 if (window.currentSecondaryTab == tab)
+                {
                     break;
+                }
 
                 window.currentSecondaryTab = tab;
                 setTopToolbarLastTrack(_trackTypesForTab[tab] & ~(1 << 7), _trackTypesForTab[tab] & (1 << 7));
@@ -828,19 +838,27 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             // Show unpowered vehicles?
             if ((_vehicleFilterFlags & VehicleFilterFlags::unpowered) != VehicleFilterFlags::none)
+            {
                 Dropdown::setItemSelected(3);
+            }
 
             // Show powered vehicles?
             if ((_vehicleFilterFlags & VehicleFilterFlags::powered) != VehicleFilterFlags::none)
+            {
                 Dropdown::setItemSelected(4);
+            }
 
             // Show unlocked vehicles?
             if ((_vehicleFilterFlags & VehicleFilterFlags::unlocked) != VehicleFilterFlags::none)
+            {
                 Dropdown::setItemSelected(5);
+            }
 
             // Show locked vehicles?
             if ((_vehicleFilterFlags & VehicleFilterFlags::locked) != VehicleFilterFlags::none)
+            {
                 Dropdown::setItemSelected(6);
+            }
         }
         else if (widgetIndex == widx::cargoDropdown)
         {
@@ -849,17 +867,23 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             Dropdown::add(index++, StringIds::dropdown_stringid, StringIds::allCargoTypes);
             if (_cargoSupportedFilter == 0xFF)
+            {
                 selectedIndex = 0;
+            }
 
             Dropdown::add(index++, StringIds::dropdown_stringid, StringIds::filterCargoless);
             if (_cargoSupportedFilter == 0xFE)
+            {
                 selectedIndex = 1;
+            }
 
             for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
             {
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
                 if (cargoObj == nullptr)
+                {
                     continue;
+                }
 
                 FormatArguments args{};
                 args.push(cargoObj->name);
@@ -868,7 +892,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 Dropdown::add(index, StringIds::supportsCargoIdSprite, args);
 
                 if (_cargoSupportedFilter == cargoId)
+                {
                     selectedIndex = index;
+                }
 
                 index++;
             }
@@ -877,14 +903,18 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), index, 0x80);
 
             if (selectedIndex != -1)
+            {
                 Dropdown::setItemSelected(selectedIndex);
+            }
         }
     }
 
     static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex < 0)
+        {
             return;
+        }
 
         if (widgetIndex == widx::filterDropdown)
         {
@@ -916,11 +946,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         else if (widgetIndex == widx::cargoDropdown)
         {
             if (itemIndex >= 2)
+            {
                 _cargoSupportedFilter = Dropdown::getItemArgument(itemIndex, 3);
+            }
             else if (itemIndex == 0)
+            {
                 _cargoSupportedFilter = 0xFF;
+            }
             else if (itemIndex == 1)
+            {
                 _cargoSupportedFilter = 0xFE;
+            }
         }
 
         sub_4B92A5(&self);
@@ -1174,11 +1210,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.widgets[widx::cargoDropdown].left = selectionList.right - 12;
 
         if (_cargoSupportedFilter == 0xFF)
+        {
             window.widgets[widx::cargoLabel].text = StringIds::filterCargoSupported;
+        }
         else if (_cargoSupportedFilter == 0xFE)
+        {
             window.widgets[widx::cargoLabel].text = StringIds::filterCargoless;
+        }
         else
+        {
             window.widgets[widx::cargoLabel].text = StringIds::empty;
+        }
 
         window.widgets[widx::filterLabel].right = window.widgets[widx::cargoLabel].left - 1;
         window.widgets[widx::filterDropdown].right = window.widgets[widx::cargoLabel].left - 2;
@@ -1195,7 +1237,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto& widget = _widgets[widx::searchBox];
         auto clipped = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), Ui::Rect(self.x + widget.left, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
         if (!clipped)
+        {
             return;
+        }
 
         drawingCtx.pushRenderTarget(*clipped);
 
@@ -1765,14 +1809,20 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
         if (!Input::isFocused(w.type, w.number, widx::searchBox))
+        {
             return false;
+        }
 
         if (!inputSession.handleInput(charCode, keyCode))
+        {
             return false;
+        }
 
         int containerWidth = _widgets[widx::searchBox].width() - 2;
         if (inputSession.needsReoffsetting(containerWidth))
+        {
             inputSession.calculateTextOffset(containerWidth);
+        }
 
         inputSession.cursorFrame = 0;
 

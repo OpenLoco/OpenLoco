@@ -99,13 +99,19 @@ namespace OpenLoco::Ui::TextInput
         int x = xOffset + cursorX;
 
         if (x < textboxPadding)
+        {
             return true;
+        }
 
         if (x > containerWidth - textboxPadding)
+        {
             return true;
+        }
 
         if (xOffset + stringWidth < containerWidth - textboxPadding)
+        {
             return true;
+        }
 
         return false;
     }

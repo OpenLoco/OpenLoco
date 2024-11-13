@@ -245,7 +245,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void mapDropdown(Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
+        {
             itemIndex = Dropdown::getHighlightedItem();
+        }
 
         if (isNetworked())
         {

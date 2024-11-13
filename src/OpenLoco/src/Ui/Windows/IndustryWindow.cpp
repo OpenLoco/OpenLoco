@@ -190,7 +190,9 @@ namespace OpenLoco::Ui::Windows::Industry
                     bool success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
 
                     if (!success)
+                    {
                         break;
+                    }
 
                     Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
                     break;
@@ -209,7 +211,9 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 uint16_t newWidth = self.width - 30;
                 if (!isEditorMode() && !isSandboxMode())
+                {
                     newWidth += 22;
+                }
 
                 uint16_t newHeight = self.height - 59;
 
@@ -231,7 +235,9 @@ namespace OpenLoco::Ui::Windows::Industry
         static void initViewport(Window& self)
         {
             if (self.currentTab != Common::widx::tab_industry - Common::widx::tab_industry)
+            {
                 return;
+            }
 
             self.callPrepareDraw();
 
@@ -253,7 +259,9 @@ namespace OpenLoco::Ui::Windows::Industry
             if (self.viewports[0] != nullptr)
             {
                 if (self.savedView == view)
+                {
                     return;
+                }
 
                 flags = self.viewports[0]->flags;
                 self.viewportRemove(0);
@@ -262,7 +270,9 @@ namespace OpenLoco::Ui::Windows::Industry
             else
             {
                 if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+                {
                     flags |= ViewportFlags::gridlines_on_landscape;
+                }
             }
 
             self.savedView = view;
@@ -308,7 +318,9 @@ namespace OpenLoco::Ui::Windows::Industry
         if (window != nullptr)
         {
             if (ToolManager::isToolActive(window->type, window->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             window = WindowManager::bringToFront(WindowType::industry, enumValue(industryId));
         }
@@ -573,10 +585,14 @@ namespace OpenLoco::Ui::Windows::Industry
             auto disabledWidgets = 0;
 
             if (industryObj->producedCargoType[0] == kCargoTypeNull)
+            {
                 disabledWidgets |= (1 << Common::widx::tab_production);
+            }
 
             if (industryObj->producedCargoType[1] == kCargoTypeNull)
+            {
                 disabledWidgets |= (1 << Common::widx::tab_production_2);
+            }
 
             self->disabledWidgets = disabledWidgets;
         }
@@ -669,7 +685,9 @@ namespace OpenLoco::Ui::Windows::Industry
 
                     yearSkip++;
                     if (yearSkip >= 3)
+                    {
                         yearSkip = 0;
+                    }
                 }
                 else
                 {
@@ -730,10 +748,14 @@ namespace OpenLoco::Ui::Windows::Industry
         static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
+            {
                 return;
+            }
 
             if (strlen(input) == 0)
+            {
                 return;
+            }
 
             GameCommands::setErrorTitle(StringIds::error_cant_rename_industry);
 
@@ -768,9 +790,13 @@ namespace OpenLoco::Ui::Windows::Industry
             if (!isEditorMode() && !isSandboxMode())
             {
                 if (!industry->hasFlags(IndustryFlags::flag_04))
+                {
                     return;
+                }
                 if (!CompanyManager::isPlayerCompany(industry->owner))
+                {
                     return;
+                }
             }
 
             auto args = FormatArguments::common();
@@ -785,7 +811,9 @@ namespace OpenLoco::Ui::Windows::Industry
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (ToolManager::isToolActive(self->type, self->number))
+            {
                 ToolManager::toolCancel();
+            }
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
@@ -848,9 +876,13 @@ namespace OpenLoco::Ui::Windows::Industry
                 imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
 
                 if (self->currentTab == tab - widx::tab_industry)
+                {
                     imageId += productionTabImageIds[(self->frameNo / 4) % std::size(productionTabImageIds)];
+                }
                 else
+                {
                     imageId += productionTabImageIds[0];
+                }
 
                 auto xPos = widget.left + self->x;
                 auto yPos = widget.top + self->y;
@@ -899,9 +931,13 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_transported - widx::tab_industry)
+                {
                     imageId += transportedTabImageIds[(self->frameNo / 4) % std::size(transportedTabImageIds)];
+                }
                 else
+                {
                     imageId += transportedTabImageIds[0];
+                }
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_transported);
             }
         }

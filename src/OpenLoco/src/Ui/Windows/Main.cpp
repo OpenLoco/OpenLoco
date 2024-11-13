@@ -60,7 +60,9 @@ namespace OpenLoco::Ui::Windows::Main
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr || window->viewports[0]->hasFlags(ViewportFlags::gridlines_on_landscape))
+        {
             return;
+        }
 
         window->viewports[0]->flags |= ViewportFlags::gridlines_on_landscape;
         window->invalidate();
@@ -73,7 +75,9 @@ namespace OpenLoco::Ui::Windows::Main
         {
             auto window = WindowManager::getMainWindow();
             if (window == nullptr || !window->viewports[0]->hasFlags(ViewportFlags::gridlines_on_landscape))
+            {
                 return;
+            }
 
             window->viewports[0]->flags &= ~ViewportFlags::gridlines_on_landscape;
             window->invalidate();
@@ -85,7 +89,9 @@ namespace OpenLoco::Ui::Windows::Main
     {
         auto mainWindow = WindowManager::getMainWindow();
         if (mainWindow == nullptr || mainWindow->viewports[0]->hasFlags(ViewportFlags::one_way_direction_arrows))
+        {
             return;
+        }
 
         mainWindow->viewports[0]->flags |= ViewportFlags::one_way_direction_arrows;
         mainWindow->invalidate();
@@ -96,7 +102,9 @@ namespace OpenLoco::Ui::Windows::Main
     {
         auto mainWindow = WindowManager::getMainWindow();
         if (mainWindow == nullptr || !mainWindow->viewports[0]->hasFlags(ViewportFlags::one_way_direction_arrows))
+        {
             return;
+        }
 
         mainWindow->viewports[0]->flags &= ~ViewportFlags::one_way_direction_arrows;
         mainWindow->invalidate();

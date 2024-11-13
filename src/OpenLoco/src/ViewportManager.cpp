@@ -143,7 +143,9 @@ namespace OpenLoco::Ui::ViewportManager
         Viewport* viewport = initViewport(origin, size, zoom);
 
         if (viewport == nullptr)
+        {
             return nullptr;
+        }
 
         window->viewports[viewportIndex] = viewport;
         focusViewportOn(window, viewportIndex, entityId);
@@ -177,7 +179,9 @@ namespace OpenLoco::Ui::ViewportManager
         Viewport* viewport = initViewport(origin, size, zoom);
 
         if (viewport == nullptr)
+        {
             return nullptr;
+        }
 
         window->viewports[viewportIndex] = viewport;
         focusViewportOn(window, viewportIndex, tile);
@@ -201,10 +205,14 @@ namespace OpenLoco::Ui::ViewportManager
 
             // Skip if zoomed out further than zoom argument
             if (viewport->zoom > (uint8_t)zoom)
+            {
                 continue;
+            }
 
             if (!viewport->intersects(rect))
+            {
                 continue;
+            }
 
             auto intersection = viewport->getIntersection(rect);
 
@@ -261,7 +269,9 @@ namespace OpenLoco::Ui::ViewportManager
             rect.bottom <<= viewport->zoom;
 
             if (!viewport->intersects(rect))
+            {
                 continue;
+            }
 
             auto intersection = viewport->getIntersection(rect);
 
@@ -304,7 +314,9 @@ namespace OpenLoco::Ui::ViewportManager
     void invalidate(EntityBase* t, ZoomLevel zoom)
     {
         if (t->spriteLeft == Location::null)
+        {
             return;
+        }
 
         ViewportRect rect;
         rect.left = t->spriteLeft;

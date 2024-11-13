@@ -26,23 +26,35 @@ namespace OpenLoco::GameCommands
             if (args.setColourMode)
             {
                 if (args.value)
+                {
                     company->customVehicleColoursSet |= (1 << args.colourType);
+                }
                 else
+                {
                     company->customVehicleColoursSet &= ~(1 << args.colourType);
+                }
             }
             // Setting a colour
             else
             {
                 ColourScheme* colours;
                 if (args.colourType == 0)
+                {
                     colours = &company->mainColours;
+                }
                 else
+                {
                     colours = &company->vehicleColours[args.colourType - 1];
+                }
 
                 if (args.isPrimary)
+                {
                     colours->primary = static_cast<Colour>(args.value);
+                }
                 else
+                {
                     colours->secondary = static_cast<Colour>(args.value);
+                }
             }
 
             company->updateVehicleColours();
@@ -54,10 +66,14 @@ namespace OpenLoco::GameCommands
         else
         {
             if (!sub_431E6A(args.companyId, nullptr))
+            {
                 return GameCommands::FAILURE;
+            }
 
             if (args.setColourMode || args.colourType > 0 || !args.isPrimary)
+            {
                 return 0;
+            }
 
             // Check whether the requested colour is available
             uint32_t unavailableColours = CompanyManager::competingColourMask(args.companyId);

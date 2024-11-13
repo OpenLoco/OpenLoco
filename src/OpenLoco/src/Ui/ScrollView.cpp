@@ -310,21 +310,29 @@ namespace OpenLoco::Ui::ScrollView
         {
             int32_t viewWidth = widget.width() - 22;
             if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
+            {
                 viewWidth -= 11;
+            }
 
             int32_t newThumbPos = scrollArea.contentOffsetX * viewWidth;
             if (scrollArea.contentWidth != 0)
+            {
                 newThumbPos /= scrollArea.contentWidth;
+            }
 
             scrollArea.hThumbLeft = newThumbPos + 11;
 
             newThumbPos = widget.width() - 3;
             if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
+            {
                 newThumbPos -= 11;
+            }
 
             newThumbPos += scrollArea.contentOffsetX;
             if (scrollArea.contentWidth != 0)
+            {
                 newThumbPos = (newThumbPos * viewWidth) / scrollArea.contentWidth;
+            }
 
             newThumbPos += 11;
             viewWidth += 10;
@@ -344,21 +352,29 @@ namespace OpenLoco::Ui::ScrollView
         {
             int32_t viewHeight = widget.height() - 22;
             if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
+            {
                 viewHeight -= 11;
+            }
 
             int32_t newThumbPos = scrollArea.contentOffsetY * viewHeight;
             if (scrollArea.contentHeight != 0)
+            {
                 newThumbPos /= scrollArea.contentHeight;
+            }
 
             scrollArea.vThumbTop = newThumbPos + 11;
 
             newThumbPos = widget.height() - 3;
             if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
+            {
                 newThumbPos -= 11;
+            }
 
             newThumbPos += scrollArea.contentOffsetY;
             if (scrollArea.contentHeight != 0)
+            {
                 newThumbPos = (newThumbPos * viewHeight) / scrollArea.contentHeight;
+            }
 
             newThumbPos += 11;
             viewHeight += 10;
@@ -550,7 +566,9 @@ namespace OpenLoco::Ui::ScrollView
     {
         auto window = WindowManager::find(type, number);
         if (window == nullptr)
+        {
             return;
+        }
 
         auto scrollAreaIndex = getCurrentScrollIndex();
 

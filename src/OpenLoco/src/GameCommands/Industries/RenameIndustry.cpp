@@ -38,7 +38,9 @@ namespace OpenLoco::GameCommands
         // Keep track of the industry id over several calls.
         static IndustryId _industryId{};
         if (args.nameBufferIndex == 1)
+        {
             _industryId = args.industryId;
+        }
 
         static char staticRenameBuffer[37]{};
 
@@ -52,7 +54,9 @@ namespace OpenLoco::GameCommands
 
         // Applying the buffer?
         if (args.nameBufferIndex != 0)
+        {
             return 0;
+        }
 
         char renameStringBuffer[37] = "";
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
@@ -60,7 +64,9 @@ namespace OpenLoco::GameCommands
 
         // Ensure the new name isn't empty.
         if (strlen(renameStringBuffer) == 0)
+        {
             return 0;
+        }
 
         // Figure out the current name for this industry.
         char currentIndustryName[256] = "";
@@ -71,12 +77,16 @@ namespace OpenLoco::GameCommands
 
         // Verify the new name actually differs from the old one.
         if (strcmp(currentIndustryName, renameStringBuffer) == 0)
+        {
             return 0;
+        }
 
         // Allocate a string id for the new name.
         StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
         if (allocatedStringId == StringIds::empty)
+        {
             return GameCommands::FAILURE;
+        }
 
         // Bailing out early?
         if ((flags & GameCommands::Flags::apply) == 0)

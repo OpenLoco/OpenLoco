@@ -53,7 +53,9 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
             getEvents());
 
         if (window == nullptr)
+        {
             return false;
+        }
 
         window->setWidgets(_widgets);
         window->widgets[widx::caption].text = captionId;

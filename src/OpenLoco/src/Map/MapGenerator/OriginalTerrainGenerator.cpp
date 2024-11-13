@@ -198,16 +198,24 @@ namespace OpenLoco::World::MapGenerator
             for (auto x = 0; x < heightMap.width - 2; x++)
             {
                 if (seaLevel != heightMap[TilePos2(x + 0, y + 0)])
+                {
                     continue;
+                }
 
                 if (seaLevel != heightMap[TilePos2(x + 1, y + 0)])
+                {
                     continue;
+                }
 
                 if (seaLevel != heightMap[TilePos2(x + 0, y + 1)])
+                {
                     continue;
+                }
 
                 if (seaLevel != heightMap[TilePos2(x + 1, y + 1)])
+                {
                     continue;
+                }
 
                 heightMap[TilePos2(x + 0, y + 0)] += 1;
                 heightMap[TilePos2(x + 1, y + 0)] += 1;

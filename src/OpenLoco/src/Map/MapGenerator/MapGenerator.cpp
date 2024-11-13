@@ -167,13 +167,21 @@ namespace OpenLoco::World::MapGenerator
 
             // First, figure out basic corner style
             if (q00 > baseHeight)
+            {
                 currentSlope |= SurfaceSlope::CornerUp::south;
+            }
             if (q01 > baseHeight)
+            {
                 currentSlope |= SurfaceSlope::CornerUp::east;
+            }
             if (q10 > baseHeight)
+            {
                 currentSlope |= SurfaceSlope::CornerUp::west;
+            }
             if (q11 > baseHeight)
+            {
                 currentSlope |= SurfaceSlope::CornerUp::north;
+            }
 
             // Now, deduce if we should go for double height
             // clang-format off
@@ -212,7 +220,9 @@ namespace OpenLoco::World::MapGenerator
             auto* surface = tile.surface();
 
             if (surface != nullptr && surface->baseZ() < (seaLevel << 2))
+            {
                 surface->setWater(seaLevel);
+            }
         }
     }
 
@@ -275,17 +285,23 @@ namespace OpenLoco::World::MapGenerator
         {
             const bool tileIsMarked = heightMap.isMarkerSet({ pos.x, pos.y });
             if (requireMark != tileIsMarked)
+            {
                 continue;
+            }
 
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
             if (surface == nullptr)
+            {
                 continue;
+            }
 
             surface->setTerrain(surfaceStyle);
             auto res = getRandomTerrainVariation(*surface);
             if (res)
+            {
                 surface->setVariation(*res);
+            }
         }
     }
 
@@ -300,10 +316,14 @@ namespace OpenLoco::World::MapGenerator
         {
             auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height > seaLevel)
+            {
                 continue;
+            }
 
             for (auto lookaheadPos : getClampedRange(pos - TilePos2(25, 25), pos + TilePos2(25, 25)))
+            {
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+            }
         }
 
         // Apply surface style to tiles that have *not* been marked
@@ -321,10 +341,14 @@ namespace OpenLoco::World::MapGenerator
         {
             auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height < seaLevel)
+            {
                 continue;
+            }
 
             for (auto lookaheadPos : getClampedRange(pos - TilePos2(25, 25), pos + TilePos2(25, 25)))
+            {
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+            }
         }
 
         // Apply surface style to tiles that have been marked
@@ -342,10 +366,14 @@ namespace OpenLoco::World::MapGenerator
             // NB: this is an inclusive check to match vanilla
             auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height <= kMountainTerrainHeight)
+            {
                 continue;
+            }
 
             for (auto lookaheadPos : getClampedRange(pos - TilePos2(12, 12), pos + TilePos2(12, 12)))
+            {
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+            }
         }
 
         // Apply surface style to tiles that have been marked
@@ -363,10 +391,14 @@ namespace OpenLoco::World::MapGenerator
             // NB: this is an exclusive check to match vanilla
             auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height < kMountainTerrainHeight)
+            {
                 continue;
+            }
 
             for (auto lookaheadPos : getClampedRange(pos - TilePos2(25, 25), pos + TilePos2(25, 25)))
+            {
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+            }
         }
 
         // Apply surface style to tiles that have *not* been marked
@@ -445,12 +477,16 @@ namespace OpenLoco::World::MapGenerator
 
                 // Find no cliff between C and D?
                 if (std::abs(heightD - heightC) < kCliffTerrainHeightDiff)
+                {
                     continue;
+                }
             }
 
             // Found a cliff around this point, so mark the points around it
             for (auto lookaheadPos : getClampedRange(pos - TilePos2(6, 6), pos + TilePos2(6, 6)))
+            {
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+            }
         }
 
         // Apply surface style to tiles that have been marked
@@ -542,7 +578,9 @@ namespace OpenLoco::World::MapGenerator
             auto* surface = tile.surface();
 
             if (surface == nullptr)
+            {
                 continue;
+            }
 
             if (!surface->isIndustrial())
             {
@@ -554,7 +592,9 @@ namespace OpenLoco::World::MapGenerator
                     {
                         auto waterBaseZ = surface->water() * kMicroToSmallZStep;
                         if (surface->slope())
+                        {
                             waterBaseZ -= 4;
+                        }
 
                         if (waterBaseZ > surface->baseZ())
                         {
@@ -703,7 +743,9 @@ namespace OpenLoco::World::MapGenerator
     {
         auto commonBuildingCargoType = IndustryManager::getMostCommonBuildingCargoType();
         if (commonBuildingCargoType == requiredCargoType)
+        {
             return true;
+        }
 
         for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
         {
@@ -721,7 +763,9 @@ namespace OpenLoco::World::MapGenerator
             for (auto producedCargoType : industryObj->producedCargoType)
             {
                 if (producedCargoType == requiredCargoType)
+                {
                     return true;
+                }
             }
         }
 
@@ -741,7 +785,9 @@ namespace OpenLoco::World::MapGenerator
         }
 
         if (numIndustriesAvailable == 0)
+        {
             return;
+        }
 
         GameCommands::setUpdatingCompanyId(CompanyId::neutral);
 
@@ -773,17 +819,23 @@ namespace OpenLoco::World::MapGenerator
                 for (auto cargoType : industryObj->requiredCargoType)
                 {
                     if (cargoType == 0xFF)
+                    {
                         continue;
+                    }
 
                     numCargoSpecified++;
                     if (isCargoProducedAnywhere(cargoType))
+                    {
                         numCargoAvailable++;
+                    }
                 }
 
                 if (industryObj->hasFlags(IndustryObjectFlags::requiresAllCargo))
                 {
                     if (numCargoSpecified != numCargoAvailable)
+                    {
                         continue;
+                    }
                 }
                 else if (numCargoAvailable == 0)
                 {
@@ -808,7 +860,9 @@ namespace OpenLoco::World::MapGenerator
 
         uint8_t amountToBuild = randomComponent + staticComponent;
         if (amountToBuild == 0)
+        {
             return;
+        }
 
         for (auto i = 0U; i < amountToBuild; i++)
         {
@@ -820,11 +874,15 @@ namespace OpenLoco::World::MapGenerator
 
                 auto tile = TileManager::get(TilePos2(randomX, randomY));
                 if (!predicate(tile))
+                {
                     continue;
+                }
 
                 auto* surface = tile.surface();
                 if (surface == nullptr)
+                {
                     continue;
+                }
 
                 auto baseHeight = TileManager::getSurfaceCornerHeight(*surface) * kSmallZStep;
 
@@ -840,7 +898,9 @@ namespace OpenLoco::World::MapGenerator
                 args.buildImmediately = true;
 
                 if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                {
                     break;
+                }
             }
         }
     }
@@ -906,7 +966,9 @@ namespace OpenLoco::World::MapGenerator
         {
             auto* industryObj = ObjectManager::get<IndustryObject>(industry.objectId);
             if (!industryObj->hasFlags(IndustryObjectFlags::requiresElectricityPylons))
+            {
                 continue;
+            }
 
             auto numTownsLeft = 3;
             for (auto& town : TownManager::towns())
@@ -930,7 +992,9 @@ namespace OpenLoco::World::MapGenerator
 
                 auto manhattanDistance = xDist + yDist; // bp
                 if (manhattanDistance < 800 || manhattanDistance > 2240)
+                {
                     continue;
+                }
 
                 // Order distances such that the longest edge is in xDist
                 if (yDist > xDist)
@@ -946,7 +1010,9 @@ namespace OpenLoco::World::MapGenerator
                 // 0x0042E9FF
                 numTownsLeft--;
                 if (!numTownsLeft)
+                {
                     break;
+                }
             }
         }
     }

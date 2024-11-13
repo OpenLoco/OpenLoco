@@ -176,11 +176,15 @@ namespace OpenLoco::TownManager
             }
 
             if (nameInUse)
+            {
                 continue;
+            }
 
             StringId newNameId = StringManager::userStringAllocate(buffer, 0);
             if (newNameId == StringIds::empty)
+            {
                 continue;
+            }
 
             town->name = newNameId;
             town->updateLabel();
@@ -335,16 +339,24 @@ namespace OpenLoco::TownManager
             {
                 auto* building = element.as<World::BuildingElement>();
                 if (building == nullptr)
+                {
                     continue;
+                }
 
                 if (building->isGhost())
+                {
                     continue;
+                }
 
                 if (building->has_40())
+                {
                     continue;
+                }
 
                 if (building->sequenceIndex() != 0)
+                {
                     continue;
+                }
 
                 auto objectId = building->objectId();
                 auto* buildingObj = ObjectManager::get<BuildingObject>(objectId);

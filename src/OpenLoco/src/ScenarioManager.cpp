@@ -52,10 +52,14 @@ namespace OpenLoco::ScenarioManager
         {
             ScenarioIndexEntry& entry = _scenarioList[i];
             if (!entry.hasFlag(ScenarioIndexFlags::flag_0))
+            {
                 continue;
+            }
 
             if (entry.category == category)
+            {
                 return true;
+            }
         }
 
         return false;
@@ -70,13 +74,19 @@ namespace OpenLoco::ScenarioManager
             if (entry->category != category || !entry->hasFlag(ScenarioIndexFlags::flag_0))
             {
                 if (entry == scenario)
+                {
                     return false;
+                }
                 else
+                {
                     continue;
+                }
             }
 
             if (entry == scenario)
+            {
                 return true;
+            }
         }
 
         return false;
@@ -90,7 +100,9 @@ namespace OpenLoco::ScenarioManager
         {
             ScenarioIndexEntry& entry = _scenarioList[i];
             if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
+            {
                 continue;
+            }
 
             scenarioCountInCategory++;
         }
@@ -105,10 +117,14 @@ namespace OpenLoco::ScenarioManager
         {
             ScenarioIndexEntry& entry = _scenarioList[i];
             if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
+            {
                 continue;
+            }
 
             if (j == index)
+            {
                 return &entry;
+            }
 
             j++;
         }

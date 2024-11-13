@@ -32,7 +32,9 @@ namespace OpenLoco::GameCommands
         if (train.head->tileX != -1)
         {
             if (!(flags & Flags::ghost))
+            {
                 Vehicles::playPickupSound(train.veh2);
+            }
 
             train.applyToComponents([](auto& component) {
                 component.tileX = -1;

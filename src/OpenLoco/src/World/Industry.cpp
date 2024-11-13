@@ -41,7 +41,9 @@ namespace OpenLoco
     const std::span<const Unk4F9274> getBuildingTileOffsets(bool type)
     {
         if (type)
+        {
             return word_4F927C;
+        }
         return word_4F9274;
     }
 
@@ -61,7 +63,9 @@ namespace OpenLoco
         for (const auto& receivedCargo : ObjectManager::get<IndustryObject>(objectId)->requiredCargoType)
         {
             if (receivedCargo != 0xff)
+            {
                 receiveCargoState = true;
+            }
         }
         return receiveCargoState;
     }
@@ -72,7 +76,9 @@ namespace OpenLoco
         for (const auto& producedCargo : ObjectManager::get<IndustryObject>(objectId)->producedCargoType)
         {
             if (producedCargo != 0xff)
+            {
                 produceCargoState = true;
+            }
         }
         return produceCargoState;
     }
@@ -116,7 +122,9 @@ namespace OpenLoco
         if (!canReceiveCargo())
         {
             if (!canProduceCargo())
+            {
                 return;
+            }
 
             ptr = StringManager::formatString(ptr, StringIds::industry_producing);
 
@@ -131,7 +139,9 @@ namespace OpenLoco
         ptr = industryObj->getRequiredCargoString(ptr);
 
         if (!canProduceCargo())
+        {
             return;
+        }
 
         // Production and Received Cargo
         ptr = StringManager::formatString(ptr, StringIds::cargo_to_produce);
@@ -639,10 +649,14 @@ namespace OpenLoco
             {
                 auto* industryEl = el.as<IndustryElement>();
                 if (industryEl == nullptr)
+                {
                     continue;
+                }
 
                 if (industryEl->baseZ() != baseZ)
+                {
                     continue;
+                }
 
                 auto tileIndustry = industryEl->industry();
                 if (tileIndustry != nullptr)

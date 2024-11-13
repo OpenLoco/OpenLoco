@@ -96,7 +96,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto station = _cState->stationList[stationIndex];
             if (station == _cState->lastSelectedStationType)
+            {
                 Dropdown::setHighlightedItem(stationIndex);
+            }
 
             auto obj = ObjectManager::get<obj_type>(station);
             Dropdown::add(stationIndex, obj->name);
@@ -112,7 +114,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 uint8_t stationCount = 0;
                 while (_cState->stationList[stationCount] != 0xFF)
+                {
                     stationCount++;
+                }
 
                 auto widget = self.widgets[widx::station];
                 auto xPos = widget.left + self.x;
@@ -154,7 +158,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         if (widgetIndex == widx::station_dropdown)
         {
             if (itemIndex == -1)
+            {
                 return;
+            }
 
             auto selectedStation = _cState->stationList[itemIndex];
             _cState->lastSelectedStationType = selectedStation;
@@ -1000,7 +1006,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) == GhostVisibilityFlags::none)
+        {
             return;
+        }
 
         FormatArguments args{};
 

@@ -39,16 +39,24 @@ namespace OpenLoco::GameCommands
         GameCommands::setPosition(veh2->position);
 
         if (!GameCommands::sub_431E6A(head->owner))
+        {
             return FAILURE;
+        }
 
         if (!head->canBeModified())
+        {
             return FAILURE;
+        }
 
         if (!(flags & GameCommands::Flags::apply))
+        {
             return 0;
+        }
 
         if (!(flags & GameCommands::Flags::ghost))
+        {
             Vehicles::playPickupSound(veh2);
+        }
 
         head->liftUpVehicle();
 

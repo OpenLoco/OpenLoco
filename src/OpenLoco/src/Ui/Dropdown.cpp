@@ -812,7 +812,9 @@ namespace OpenLoco::Ui::Dropdown
         for (uint8_t i = 0; i < 32; i++)
         {
             if (availableColours & (1 << i))
+            {
                 count++;
+            }
         }
 
         const uint8_t columnCount = getItemsPerRow(count);
@@ -829,11 +831,15 @@ namespace OpenLoco::Ui::Dropdown
         for (uint8_t i = 0; i < 32; i++)
         {
             if (!(availableColours & (1 << i)))
+            {
                 continue;
+            }
 
             const auto colour = static_cast<Colour>(i);
             if (colour == selectedColour)
+            {
                 Dropdown::setHighlightedItem(currentIndex);
+            }
 
             auto args = FormatArguments();
             args.push(Gfx::recolour(ImageIds::colour_swatch_recolourable_raised, colour));
@@ -868,7 +874,9 @@ namespace OpenLoco::Ui::Dropdown
             for (const auto& company : CompanyManager::companies())
             {
                 if (companyOrdered[enumValue(company.id())] & 1)
+                {
                     continue;
+                }
 
                 if (maxPerformanceIndex < company.performanceIndex)
                 {
@@ -878,7 +886,9 @@ namespace OpenLoco::Ui::Dropdown
             }
 
             if (maxPerformanceIndex == -1)
+            {
                 break;
+            }
 
             companyOrdered[enumValue(companyId)] |= 1;
             _dropdownItemFormats[index] = StringIds::dropdown_company_select;
@@ -972,7 +982,9 @@ namespace OpenLoco::Ui::Dropdown
     void Builder::show()
     {
         if (_window == nullptr)
+        {
             throw Exception::InvalidArgument("Window and widget index not set");
+        }
 
         _dropdownIds.clear();
 
@@ -987,7 +999,9 @@ namespace OpenLoco::Ui::Dropdown
                 Dropdown::add(index, text);
 
                 if (id == _highlightedId)
+                {
                     highlightedIndex = index;
+                }
             }
             else
             {

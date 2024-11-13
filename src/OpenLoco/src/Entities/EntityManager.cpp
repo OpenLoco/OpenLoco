@@ -134,13 +134,17 @@ namespace OpenLoco::EntityManager
     constexpr size_t getSpatialIndexOffset(const World::Pos2& loc)
     {
         if (loc.x == Location::null)
+        {
             return kEntitySpatialIndexNull;
+        }
 
         const auto tileX = std::abs(loc.x) / World::kTileSize;
         const auto tileY = std::abs(loc.y) / World::kTileSize;
 
         if (tileX >= World::kMapPitch || tileY >= World::kMapPitch)
+        {
             return kEntitySpatialIndexNull;
+        }
 
         return (World::kMapPitch * tileX) + tileY;
     }

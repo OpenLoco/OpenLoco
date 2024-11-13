@@ -43,9 +43,13 @@ namespace OpenLoco::Gfx
         bottom = std::min(bottom, static_cast<int32_t>(_screenHeight));
 
         if (left >= right)
+        {
             return;
+        }
         if (top >= bottom)
+        {
             return;
+        }
 
         left /= _blockWidth;
         right /= _blockWidth;

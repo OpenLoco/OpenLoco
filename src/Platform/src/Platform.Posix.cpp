@@ -148,10 +148,14 @@ namespace OpenLoco::Platform
     bool enableVT100TerminalMode()
     {
         if (!isStdOutRedirected())
+        {
             return false;
+        }
 
         if (!hasTerminalVT100Support())
+        {
             return false;
+        }
 
         return true;
     }

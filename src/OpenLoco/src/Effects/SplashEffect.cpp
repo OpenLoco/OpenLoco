@@ -18,11 +18,15 @@ namespace OpenLoco
     Splash* Splash::create(const World::Pos3& pos)
     {
         if (!World::validCoords(pos))
+        {
             return nullptr;
+        }
 
         auto* splashEnt = static_cast<Splash*>(EntityManager::createEntityMisc());
         if (splashEnt == nullptr)
+        {
             return nullptr;
+        }
 
         splashEnt->baseType = EntityBaseType::effect;
         splashEnt->spriteWidth = 33;

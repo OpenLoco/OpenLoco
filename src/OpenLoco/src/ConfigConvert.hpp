@@ -62,7 +62,9 @@ namespace YAML
         {
             std::string keyName = "";
             if (rhs.keyCode == 0xFFFFFFFF)
+            {
                 return Node(keyName);
+            }
 
             if ((rhs.modifiers & KeyModifier::shift) != KeyModifier::none)
             {
@@ -109,11 +111,17 @@ namespace YAML
 
                 // Check against known modifiers
                 if (keyCode == SDLK_LSHIFT || keyCode == SDLK_RSHIFT)
+                {
                     rhs.modifiers |= KeyModifier::shift;
+                }
                 else if (keyCode == SDLK_LCTRL || keyCode == SDLK_RCTRL)
+                {
                     rhs.modifiers |= KeyModifier::control;
+                }
                 else if (keyCode == SDLK_LGUI || keyCode == SDLK_RGUI)
+                {
                     rhs.modifiers |= KeyModifier::unknown;
+                }
             }
 
             token = s.substr(current);
