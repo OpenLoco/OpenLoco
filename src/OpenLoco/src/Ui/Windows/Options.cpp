@@ -56,9 +56,27 @@ namespace OpenLoco::Ui::Windows::Options
     // strings or widgets can store dynamically allocated strings.
     static std::string _chosenLanguage;
 
+    struct AvailableCurrency
+    {
+        std::string name;
+        ObjectHeader header;
+        ObjectManager::ObjectIndexId index;
+    };
+    // We need to keep a copy due to lifetimes
+    static sfl::small_vector<AvailableCurrency, 10> _availableCurrencies;
+
     static std::span<ObjectManager::SelectedObjectsFlags> getLoadedSelectedObjectFlags()
     {
         return std::span<ObjectManager::SelectedObjectsFlags>(*__11364A0, ObjectManager::getNumInstalledObjects());
+    }
+
+    static void populateAvailableCurrencies()
+    {
+        _availableCurrencies.clear();
+        for (auto& object : ObjectManager::getAvailableObjects(ObjectType::currency))
+        {
+            _availableCurrencies.push_back(AvailableCurrency{ object.object._name, object.object._header, object.index });
+        }
     }
 
     namespace Common
@@ -1624,10 +1642,10 @@ namespace OpenLoco::Ui::Windows::Options
             Widget dropdown = w->widgets[Widx::currency];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
             int index = -1;
-            for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
+            for (auto& object : _availableCurrencies)
             {
                 index++;
-                Dropdown::add(index, StringIds::dropdown_stringptr, object.object._name.c_str());
+                Dropdown::add(index, StringIds::dropdown_stringptr, object.name.c_str());
 
                 if ((selectedObjectFlags[object.index] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
                 {
@@ -1648,7 +1666,7 @@ namespace OpenLoco::Ui::Windows::Options
             const auto selectedObjectFlags = getLoadedSelectedObjectFlags();
 
             int index = -1;
-            for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::currency))
+            for (const auto& object : _availableCurrencies)
             {
                 index++;
                 if (index == ax)
@@ -1660,7 +1678,7 @@ namespace OpenLoco::Ui::Windows::Options
                         ObjectManager::unload(ebp.object._header);
                     }
 
-                    ObjectManager::load(object.object._header);
+                    ObjectManager::load(object.header);
                     ObjectManager::reloadAll();
                     Gfx::loadCurrency();
                     ObjectManager::markOnlyLoadedObjects(selectedObjectFlags);
@@ -1679,12 +1697,15 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
 
             int index = -1;
-            for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
+            for (auto& object : _availableCurrencies)
             {
                 index++;
-                Dropdown::add(index, StringIds::dropdown_stringptr, object.object._name.c_str());
+                Dropdown::add(index, StringIds::dropdown_stringptr, object.name.c_str());
 
-                // TODO: Mark current value as selected
+                if (OpenLoco::Config::get().preferredCurrency == object.header)
+                {
+                    Dropdown::setItemSelected(index);
+                }
             }
         }
 
@@ -1698,14 +1719,14 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             int index = -1;
-            for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::currency))
+            for (const auto& object : _availableCurrencies)
             {
                 index++;
 
                 if (index == ax)
                 {
                     auto& cfg = OpenLoco::Config::get();
-                    cfg.preferredCurrency = object.object._header;
+                    cfg.preferredCurrency = object.header;
 
                     setPreferredCurrencyNameBuffer();
                     Config::write();
@@ -2801,6 +2822,7 @@ namespace OpenLoco::Ui::Windows::Options
         window->setColour(WindowColour::secondary, interface->colour_10);
 
         sub_4BF8CD();
+        populateAvailableCurrencies();
         setPreferredCurrencyNameBuffer();
 
         window->enabledWidgets = Display::enabledWidgets;
