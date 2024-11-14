@@ -1,9 +1,12 @@
 #pragma once
 
+#include "Engine/Limits.h"
 #include "Map/Track/TrackEnum.h"
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Engine/World.hpp>
+#include <sfl/static_vector.hpp>
 #include <span>
 
 namespace OpenLoco
@@ -32,6 +35,8 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::roadStation;
 
+        using CargoOffset = std::array<World::Pos3, 2>;
+
         StringId name;                           // 0x00
         uint8_t paintStyle;                      // 0x02
         uint8_t height;                          // 0x03 despite being uint8_t this is bigZ not smallZ
@@ -55,6 +60,7 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
+        sfl::static_vector<CargoOffset, Limits::kMaxStationCargoDensity> getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const;
 
         constexpr bool hasFlags(RoadStationFlags flagsToTest) const
         {
@@ -74,6 +80,14 @@ namespace OpenLoco
         // var_10 is the imageIds per sequenceIndex (for start/middle/end of the platform)
         namespace Style0
         {
+            constexpr uint32_t straightBackNE = 0;
+            constexpr uint32_t straightFrontNE = 1;
+            constexpr uint32_t straightCanopyNE = 2;
+            constexpr uint32_t straightCanopyTranslucentNE = 3;
+            constexpr uint32_t straightBackSE = 4;
+            constexpr uint32_t straightFrontSE = 5;
+            constexpr uint32_t straightCanopySE = 6;
+            constexpr uint32_t straightCanopyTranslucentSE = 7;
             constexpr uint32_t totalNumImages = 8;
         }
     }
