@@ -613,6 +613,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintEntity.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintIndustry.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintRoad.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintRoadAdditionsData.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintRoadStation.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintRoadCommonData.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintRoadStyle0Data.h"
