@@ -628,7 +628,7 @@ namespace OpenLoco::World::MapGenerator
         for (auto& pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
-            for (auto el : tile)
+            for (auto& el : tile)
             {
                 auto* treeEl = el.as<TreeElement>();
                 if (treeEl == nullptr)

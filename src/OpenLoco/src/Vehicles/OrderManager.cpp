@@ -524,7 +524,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
                     // Override with our best guess for track element and direction
                     bool fixed = false;
-                    for (auto tileElement : tile)
+                    for (const auto& tileElement : tile)
                     {
                         Logging::info("Considering element...");
                         auto* trackElement = tileElement.as<World::TrackElement>();

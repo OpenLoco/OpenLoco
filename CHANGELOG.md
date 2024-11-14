@@ -13,6 +13,7 @@
 - Fix: [#2723] Crash when creating a scenario with more than 15 predefined competitor objects.
 - Fix: [#2725] Currency preference selection shows invalid data.
 - Fix: [#2727] Bankruptcy warnings do not appear.
+- Fix: [#2735] Map generator does not set the season on trees.
 
 24.10 (2024-10-20)
 ------------------------------------------------------------------------
