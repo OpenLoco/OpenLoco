@@ -47,7 +47,10 @@ namespace OpenLoco
         null = 0xFF
     };
 
-    constexpr auto kAiThoughtCount = 20;
+    constexpr auto kAiThoughtTypeCount = 20U;
+
+    constexpr auto kMaxAiThoughts = 60U;
+    constexpr auto kAiThoughtIdNull = 0xFFU;
 
 #pragma pack(push, 1)
     struct AiThought

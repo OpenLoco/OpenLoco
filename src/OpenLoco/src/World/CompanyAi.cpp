@@ -50,7 +50,7 @@ namespace OpenLoco
     static loco_global<EntityId, 0x0113642A> _lastCreatedVehicleId;
 
     // 0x004FE720
-    static constexpr std::array<uint32_t, kAiThoughtCount> kThoughtTypeFlags = {
+    static constexpr std::array<uint32_t, kAiThoughtTypeCount> kThoughtTypeFlags = {
         0x849,
         0x4011,
         0x4051,
@@ -419,7 +419,7 @@ namespace OpenLoco
 
         company.var_85F6 = 0;
         company.var_4A4 = AiThinkState::unk1;
-        company.activeThoughtId = 0xFF;
+        company.activeThoughtId = kAiThoughtIdNull;
         tryRemovePortsAndAirports(company);
     }
 
@@ -453,7 +453,7 @@ namespace OpenLoco
     static void aiThinkState1(Company& company)
     {
         company.activeThoughtId++;
-        if (company.activeThoughtId < 60)
+        if (company.activeThoughtId < kMaxAiThoughts)
         {
             const auto& thought = company.aiThoughts[company.activeThoughtId];
             if (thought.type == AiThoughtType::null)
