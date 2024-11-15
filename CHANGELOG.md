@@ -16,7 +16,7 @@
 - Fix: [#2727] Bankruptcy warnings do not appear.
 - Fix: [#2735] Map generator does not set the season on trees.
 - Fix: [#2742] Sound effects playing when title screen is paused.
-- Fix [#2743] Title music not playing while scenario is loading.
+- Fix: [#2743] Title music not playing while scenario is loading.
 
 24.10 (2024-10-20)
 ------------------------------------------------------------------------
