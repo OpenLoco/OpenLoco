@@ -155,9 +155,9 @@ namespace OpenLoco::Gfx
         }
 
         // Should interpolation be applied?
-        // It makes the game look better at scales between 1 and 2,
-        // but at 2 or more it is not needed.
-        if (width != scaledWidth && height != scaledHeight && scaleFactor < 2.0f)
+        // It makes the game look better at scales between 1.0 and 2.0,
+        // but at 2.0 or more it is not needed.
+        if ((width != scaledWidth || height != scaledHeight) && scaleFactor < 2.0f)
         {
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
             // We need a texture bigger than the actual screen canvas width & height for there to be interpolation.
