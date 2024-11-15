@@ -154,11 +154,16 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        if (scaleFactor > 1.0f)
+        if (scaleFactor != 1.0f)
         {
-            const auto scale = std::ceil(scaleFactor);
             // We only need this texture when we have a scale above 1x, this texture uses the actual canvas size.
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+            int scale = 1;
+            if (scaleFactor < 2.0f)
+            {
+                // Makes the game appear blurry
+                scale = 2;
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+            }
             _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width * scale, height * scale);
             if (_scaledScreenTexture == nullptr)
             {
