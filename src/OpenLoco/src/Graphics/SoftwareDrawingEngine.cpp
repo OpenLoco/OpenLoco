@@ -156,7 +156,7 @@ namespace OpenLoco::Gfx
 
         // Determine if interpolation should be applied.
         // It makes the game look better at scales between 1.0 and 2.0.
-        
+
         // We don't need interpolation when the scaling is 1:1.
         // True when scaleFactor is close enough to 1.0 for the scaled values to not be different.
         const bool scalingIsNot1 = (width != scaledWidth || height != scaledHeight);
