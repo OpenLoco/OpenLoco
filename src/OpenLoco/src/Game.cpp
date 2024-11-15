@@ -40,10 +40,7 @@ namespace OpenLoco::Game
 
     static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
     {
-        if (!isTitleMode())
-        {
-            Audio::pauseSound();
-        }
+        Audio::pauseSound();
         setPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();

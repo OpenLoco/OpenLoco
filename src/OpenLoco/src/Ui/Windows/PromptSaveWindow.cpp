@@ -71,10 +71,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->flags |= Ui::WindowFlags::transparent;
 
             setPauseFlag(1 << 1);
-            if (!isTitleMode())
-            {
-                Audio::pauseSound();
-            }
+            Audio::pauseSound();
             WindowManager::invalidate(WindowType::timeToolbar);
         }
 
