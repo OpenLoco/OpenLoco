@@ -129,6 +129,13 @@ namespace OpenLoco::Paint
         World::Pos3{ 1, 1, 1 },
     };
 
+    constexpr std::array<std::array<uint8_t, 4>, 4> kFrequencyRotationMap = {
+        std::array<uint8_t, 4>{ 1U << 0, 1U << 2, 1U << 1, 1U << 3 },
+        std::array<uint8_t, 4>{ 1U << 3, 1U << 0, 1U << 2, 1U << 1 },
+        std::array<uint8_t, 4>{ 1U << 1, 1U << 3, 1U << 0, 1U << 2 },
+        std::array<uint8_t, 4>{ 1U << 2, 1U << 1, 1U << 3, 1U << 0 },
+    };
+
     // 0x0046748F
     static void paintSupports(PaintSession& session)
     {
@@ -149,97 +156,48 @@ namespace OpenLoco::Paint
         }
 
         const auto pos = session.getSpritePosition();
-        for (auto i = 0; i < std::size(kSegmentOffsets); ++i)
+        for (auto i = 0U; i < std::size(kSegmentOffsets); ++i)
         {
             const auto seg = kSegmentOffsets[i];
 
             // No support at this location
-            if (supports.segmentImages == 0)
+            if (supports.segmentImages[i] == 0)
             {
                 continue;
             }
             // Support blocked by something at this location
-            if ((supports.occupiedSegments & seg) == SegmentFlags::none)
+            if ((supports.occupiedSegments & seg) != SegmentFlags::none)
             {
                 continue;
             }
 
             const auto frequency = supports.segmentFrequency[i];
-            // TODO: This can probably be simplified with a rotate
-            switch (session.getRotation())
+
+            bool frequenceSkip = [&]() {
+                auto& line = kFrequencyRotationMap[session.getRotation()];
+
+                if ((frequency & line[0]) && !(pos.x & 0b0010'0000))
+                {
+                    return true;
+                }
+                if ((frequency & line[1]) && !(pos.y & 0b0010'0000))
+                {
+                    return true;
+                }
+                if ((frequency & line[2]) && (pos.x & 0b0010'0000))
+                {
+                    return true;
+                }
+                if ((frequency & line[3]) && (pos.y & 0b0010'0000))
+                {
+                    return true;
+                }
+                return false;
+            }();
+
+            if (frequenceSkip)
             {
-                case 0:
-                    if ((frequency & 0b0001) && !(pos.x & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b0100) && !(pos.y & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b0010) && (pos.x & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b1000) && (pos.y & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    break;
-                case 1:
-                    if ((frequency & 0b0001) && !(pos.y & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b0100) && (pos.x & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b0010) && (pos.y & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b1000) && !(pos.x & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    break;
-                case 2:
-                    if ((frequency & 0b0001) && (pos.x & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b0100) && (pos.y & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b0010) && !(pos.x & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b1000) && !(pos.y & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    break;
-                case 3:
-                    if ((frequency & 0b0001) && (pos.y & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b0100) && !(pos.x & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b0010) && !(pos.y & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    if ((frequency & 0b1000) && (pos.x & 0b0010'0000))
-                    {
-                        continue;
-                    }
-                    break;
+                continue;
             }
 
             session.setCurrentItem(supports.segmentInteractionItem[i]);
