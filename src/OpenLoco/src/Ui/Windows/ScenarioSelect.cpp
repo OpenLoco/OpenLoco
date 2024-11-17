@@ -40,6 +40,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             tab2,
             tab3,
             tab4,
+            tab5,
             list,
         };
     }
@@ -49,11 +50,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::select_scenario_for_new_game),
         Widgets::ImageButton({ 595, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 48 }, { 610, 364 }, WidgetType::wt_3, WindowColour::secondary),
-        Widgets::Tab({ 3, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        Widgets::Tab({ 94, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        Widgets::Tab({ 185, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        Widgets::Tab({ 276, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        Widgets::Tab({ 367, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
+        Widgets::Tab({ 3, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab), // Beginner tab
+        Widgets::Tab({ 94, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab), // Easy tab
+        Widgets::Tab({ 185, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab), // Medium tab
+        Widgets::Tab({ 276, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab), // Challenging tab
+        Widgets::Tab({ 367, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab), // Expert tab
+        Widgets::Tab({ 458, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab), // Custom tab
         makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
     );
@@ -121,7 +123,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             getEvents());
 
         self->setWidgets(_widgets);
-        self->enabledWidgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
+        self->enabledWidgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4) | (1 << widx::tab5);
         self->initScrollWidgets();
 
         self->setColour(WindowColour::primary, Colour::black);
@@ -157,7 +159,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443995
     static void prepareDraw(Window& self)
     {
-        self.activatedWidgets &= ~((1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4));
+        self.activatedWidgets &= ~((1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4) | (1 << widx::tab5));
         self.activatedWidgets |= (1ULL << (self.currentTab + static_cast<uint8_t>(widx::tab0)));
     }
 
@@ -177,10 +179,11 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             StringIds::scenario_group_medium,
             StringIds::scenario_group_challenging,
             StringIds::scenario_group_expert,
+            StringIds::objSelectionFilterCustom,
         };
 
         // Draw tab captions.
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 6; i++)
         {
             Widget& widget = self.widgets[widx::tab0 + i];
             if (widget.type == WidgetType::none)
@@ -462,6 +465,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             case widx::tab2:
             case widx::tab3:
             case widx::tab4:
+            case widx::tab5:
             {
                 uint8_t selectedCategory = widgetIndex - widx::tab0;
                 if (self.currentTab == selectedCategory)
