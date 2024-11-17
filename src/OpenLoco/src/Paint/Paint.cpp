@@ -1011,12 +1011,10 @@ namespace OpenLoco::Paint
     // 0x0045E7B5
     void PaintSession::arrangeStructs()
     {
-        // Create a new dummy paint struct that will act as the head
-        // that all others attach to.
-        _paintHead = _nextFreePaintStruct;
-        _nextFreePaintStruct++;
-        PaintStruct* ps = &(*_paintHead)->basic;
-        *ps = PaintStruct{};
+        PaintStruct* psHead = &_paintHead;
+        *psHead = PaintStruct{};
+
+        auto* ps = psHead;
         ps->nextQuadrantPS = nullptr;
 
         uint32_t quadrantIndex = _quadrantBackIndex;
@@ -1041,7 +1039,7 @@ namespace OpenLoco::Paint
         } while (++quadrantIndex <= _quadrantFrontIndex);
 
         PaintStruct* psCache = arrangeStructsHelper(
-            &(*_paintHead)->basic, _quadrantBackIndex & 0xFFFF, QuadrantFlags::neighbour, currentRotation);
+            psHead, _quadrantBackIndex & 0xFFFF, QuadrantFlags::neighbour, currentRotation);
 
         quadrantIndex = _quadrantBackIndex;
         while (++quadrantIndex < _quadrantFrontIndex)
@@ -1247,7 +1245,7 @@ namespace OpenLoco::Paint
     {
         const Gfx::RenderTarget& rt = drawingCtx.currentRenderTarget();
 
-        for (const auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
+        for (const auto* ps = _paintHead.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags);
 
@@ -1510,7 +1508,7 @@ namespace OpenLoco::Paint
     {
         InteractionArg info{};
 
-        for (auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
+        for (auto* ps = _paintHead.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             // Check main paint struct
             if (isSpriteInteractedWith(getRenderTarget(), ps->imageId, ps->vpPos))
