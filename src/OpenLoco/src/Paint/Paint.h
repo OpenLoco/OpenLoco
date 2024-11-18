@@ -429,7 +429,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetY @<0xE3F0A2>
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
-        void addToPlotList4FD200(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
+        PaintStruct* addToPlotList4FD200(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
         /*
          * @param imageId @<ebx>
          * @param offsetX @<ax>
