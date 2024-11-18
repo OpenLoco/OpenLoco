@@ -266,10 +266,10 @@ namespace OpenLoco::Vehicles
             crashedTimeout = Math::Bound::add(crashedTimeout, 1U);
             if (!CompanyManager::isPlayerCompany(owner))
             {
-                if (crashedTimeout >= kAiSellCrashedVehicleTimeout && var_60 != 0xFF)
+                if (crashedTimeout >= kAiSellCrashedVehicleTimeout && aiThoughtId != 0xFF)
                 {
                     auto* aiCompany = CompanyManager::get(owner);
-                    auto& aiThought = aiCompany->aiThoughts[var_60];
+                    auto& aiThought = aiCompany->aiThoughts[aiThoughtId];
                     const auto toBeRemovedId = id;
                     sub_4AD778();
                     status = Status::stopped;
@@ -3058,10 +3058,10 @@ namespace OpenLoco::Vehicles
         var_58 = 0;
         if (cargoProfit != 0)
         {
-            if (var_60 != 0xFF)
+            if (aiThoughtId != 0xFF)
             {
                 auto company = CompanyManager::get(owner);
-                company->aiThoughts[var_60].var_80 += cargoProfit;
+                company->aiThoughts[aiThoughtId].var_80 += cargoProfit;
             }
             Vehicle2* veh2 = _vehicleUpdate_2;
             veh2->curMonthRevenue += cargoProfit;
