@@ -462,8 +462,17 @@ namespace OpenLoco::ObjectManager
         _isTemporaryObject = 0xFF;
 
         DependentObjects dependencies;
-        callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, &dependencies);
-
+        try
+        {
+            callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, &dependencies);
+        }
+        catch (Exception::OutOfRange&) // catches the ImageTable incorrectly sized which can cause bad crashes
+        {
+            freeTemporaryObject();
+            _isTemporaryObject = 0;
+            _isPartialLoaded = false;
+            return std::nullopt;
+        }
         _isTemporaryObject = 0;
         _isPartialLoaded = false;
 
