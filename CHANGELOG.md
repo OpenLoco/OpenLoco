@@ -12,6 +12,7 @@
 - Fix: [#2718] North arrow image not changing to reflect rotation on the Map window.
 - Fix: [#2722] Crash when buses restarted automatically.
 - Fix: [#2723] Crash when creating a scenario with more than 15 predefined competitor objects.
+- Fix: [#2724] Crash on malformed objects with broken image tables.
 - Fix: [#2725] Currency preference selection shows invalid data.
 - Fix: [#2727] Bankruptcy warnings do not appear.
 - Fix: [#2735] Map generator does not set the season on trees.
