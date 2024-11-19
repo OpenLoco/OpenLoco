@@ -443,7 +443,7 @@ namespace OpenLoco::Paint
 
         inline static Interop::loco_global<const Gfx::RenderTarget*, 0x00E0C3E0> _renderTarget;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
-        PaintStruct _paintHead{};
+        PaintStruct* _paintHead{};
         inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
         inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
         inline static Interop::loco_global<coord_t, 0x00E3F090> _spritePositionX;

@@ -1011,11 +1011,9 @@ namespace OpenLoco::Paint
     // 0x0045E7B5
     void PaintSession::arrangeStructs()
     {
-        PaintStruct* psHead = &_paintHead;
-        *psHead = PaintStruct{};
+        PaintStruct psHead{};
 
-        auto* ps = psHead;
-        ps->nextQuadrantPS = nullptr;
+        auto* ps = &psHead;
 
         uint32_t quadrantIndex = _quadrantBackIndex;
         if (quadrantIndex == std::numeric_limits<uint32_t>::max())
@@ -1039,13 +1037,15 @@ namespace OpenLoco::Paint
         } while (++quadrantIndex <= _quadrantFrontIndex);
 
         PaintStruct* psCache = arrangeStructsHelper(
-            psHead, _quadrantBackIndex & 0xFFFF, QuadrantFlags::neighbour, currentRotation);
+            &psHead, _quadrantBackIndex & 0xFFFF, QuadrantFlags::neighbour, currentRotation);
 
         quadrantIndex = _quadrantBackIndex;
         while (++quadrantIndex < _quadrantFrontIndex)
         {
             psCache = arrangeStructsHelper(psCache, quadrantIndex & 0xFFFF, QuadrantFlags::none, currentRotation);
         }
+
+        _paintHead = psHead.nextQuadrantPS;
     }
 
     static bool isTypeCullableBuilding(const Ui::ViewportInteraction::InteractionItem type)
@@ -1245,7 +1245,7 @@ namespace OpenLoco::Paint
     {
         const Gfx::RenderTarget& rt = drawingCtx.currentRenderTarget();
 
-        for (const auto* ps = _paintHead.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
+        for (const auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags);
 
@@ -1508,7 +1508,7 @@ namespace OpenLoco::Paint
     {
         InteractionArg info{};
 
-        for (auto* ps = _paintHead.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
+        for (auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             // Check main paint struct
             if (isSpriteInteractedWith(getRenderTarget(), ps->imageId, ps->vpPos))
