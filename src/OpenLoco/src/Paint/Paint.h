@@ -268,6 +268,9 @@ namespace OpenLoco::Paint
         const SupportHeight& getGeneralSupportHeight() { return _support; }
         const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
         SegmentFlags get525CF8() { return _525CF8; }
+        int16_t getWaterHeight2() { return _waterHeight2; }
+        int16_t getSurfaceHeight() { return _surfaceHeight; }
+        uint8_t getSurfaceSlope() { return _surfaceSlope; }
         SegmentFlags getOccupiedAdditionSupportSegments() { return (*_trackRoadAdditionSupports).occupiedSegments; }
         World::Pos2 getUnkPosition()
         {

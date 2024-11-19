@@ -276,11 +276,52 @@ namespace OpenLoco::Paint
         129,
     };
 
+    // DUPLICTED FROM PAINTSURFACE
+    // 0x004FD97E
+    // Truncates a SurfaceSlope slope into only the representable values
+    // input is SurfaceSlope 0 <-> 31 with some unrepresentable
+    // output is 0 <-> 18
+    // unrepresentable will be displayed at 0 (flat)
+    static constexpr std::array<uint8_t, 32> kSlopeToDisplaySlope = {
+        0,
+        2,
+        1,
+        3,
+        8,
+        10,
+        9,
+        11,
+        4,
+        6,
+        5,
+        7,
+        12,
+        14,
+        13,
+        15,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        17,
+        0,
+        0,
+        0,
+        16,
+        0,
+        18,
+        15,
+        0,
+    };
+
     // 0x0042AC9C
     static bool sub_42AC9C(PaintSession& session)
     {
         uint8_t unkF25340 = 0;
-        [[maybe_unused]] bool unk525D0C = false;
+        bool unk525D0C = false;
 
         session.setItemType(Ui::ViewportInteraction::InteractionItem::bridge);
 
@@ -372,6 +413,38 @@ namespace OpenLoco::Paint
                 World::Pos3 bbOffset2 = { 17, 17, 2 };
                 World::Pos3 bbLength2 = { 2, 2, 24 };
                 session.addToPlotList4FD150(image2, offset2, bbOffset2 + offset2, bbLength2);
+            }
+        }
+
+        if (!(session.getGeneralSupportHeight().slope & (1U << 5)) && supportLength == 0)
+        {
+            // No need to do 0x0042BED2 as unk525D0C never true
+            return true;
+        }
+
+        unkF25340 = 1;
+        unk525D0C = true;
+        // 0x0042B063
+
+        // 0x0042BED2
+        // Paint shadow
+        if (unkF25340 != 0 && session.getRenderTarget()->zoomLevel <= 1)
+        {
+            auto displaySlope = 0;
+            auto height = session.getWaterHeight2();
+            if (height == 0)
+            {
+                height = session.getSurfaceHeight();
+                displaySlope = kSlopeToDisplaySlope[session.getSurfaceSlope()];
+            }
+
+            const auto shadowImage = ImageId(3612 + displaySlope + unkF25340 * 19).withTranslucency(ExtColour::unk32);
+            if (unk525D0C)
+            {
+                World::Pos3 heightOffset = { 0, 0, height };
+                World::Pos3 bbOffset2 = { 15, 15, 1 };
+                World::Pos3 bbLength2 = { 2, 2, 1 };
+                session.addToPlotList4FD150(shadowImage, heightOffset, bbOffset2 + heightOffset, bbLength2);
             }
         }
         return true;
