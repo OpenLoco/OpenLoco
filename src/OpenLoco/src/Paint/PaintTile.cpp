@@ -237,12 +237,50 @@ namespace OpenLoco::Paint
         2,
         0,
     };
+    constexpr std::array<uint32_t, 17> k4F91FE = {
+        0,
+        84,
+        87,
+        90,
+        93,
+        96,
+        99,
+        102,
+        105,
+        108,
+        111,
+        114,
+        117,
+        120,
+        121,
+        122,
+        123,
+    };
+    constexpr std::array<uint16_t, 17> k4F91DC = {
+        0,
+        5,
+        5,
+        9,
+        9,
+        5,
+        5,
+        9,
+        9,
+        5,
+        9,
+        5,
+        9,
+        17,
+        33,
+        65,
+        129,
+    };
 
     // 0x0042AC9C
     static bool sub_42AC9C(PaintSession& session)
     {
-        uint8_t unk525340 = 0;
-        bool unk525D0C = false;
+        uint8_t unkF25340 = 0;
+        [[maybe_unused]] bool unk525D0C = false;
 
         session.setItemType(Ui::ViewportInteraction::InteractionItem::bridge);
 
@@ -262,15 +300,84 @@ namespace OpenLoco::Paint
 
         auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeEntry.objectId);
 
-        if (bridgeEntry.subType & (1U << 0))
+        if (k4F91DC[bridgeEntry.subType] & (1U << 0))
         {
-            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image);
-            unk525340 = bridgeEntry.
-        }
+            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(k4F91FE[bridgeEntry.subType]);
+            unkF25340 = k4F9242[bridgeEntry.subType];
+            World::Pos3 offset = { 0, 0, bridgeEntry.height };
+            World::Pos3 bbOffset = { 2, 2, 0 };
+            World::Pos3 bbLength = { 28, 28, 1 };
+            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
 
-        registers regs;
-        call(0x0042AC9C, regs);
-        return regs.al != 0;
+            if (k4F91DC[bridgeEntry.subType] & (1U << 2))
+            {
+                if (!(bridgeEntry.edgesQuarters & (1U << 7)))
+                {
+                    auto wallImage = image.withIndexOffset(1);
+                    World::Pos3 bbOffset2 = { 2, 0, 8 };
+                    World::Pos3 bbLength2 = { 28, 1, 30 };
+                    session.addToPlotList4FD150(wallImage, offset, bbOffset2 + offset, bbLength2);
+                }
+                if (!(bridgeEntry.edgesQuarters & (1U << 5)))
+                {
+                    auto wallImage = image.withIndexOffset(2);
+                    World::Pos3 bbOffset2 = { 1, 30, 8 };
+                    World::Pos3 bbLength2 = { 29, 1, 30 };
+                    session.addToPlotList4FD150(wallImage, offset, bbOffset2 + offset, bbLength2);
+                }
+            }
+            if (k4F91DC[bridgeEntry.subType] & (1U << 3))
+            {
+                if (!(bridgeEntry.edgesQuarters & (1U << 4)))
+                {
+                    auto wallImage = image.withIndexOffset(1);
+                    World::Pos3 bbOffset2 = { 0, 2, 8 };
+                    World::Pos3 bbLength2 = { 1, 28, 30 };
+                    session.addToPlotList4FD150(wallImage, offset, bbOffset2 + offset, bbLength2);
+                }
+                if (!(bridgeEntry.edgesQuarters & (1U << 6)))
+                {
+                    auto wallImage = image.withIndexOffset(2);
+                    World::Pos3 bbOffset2 = { 30, 1, 8 };
+                    World::Pos3 bbLength2 = { 1, 29, 30 };
+                    session.addToPlotList4FD150(wallImage, offset, bbOffset2 + offset, bbLength2);
+                }
+            }
+
+            auto offset2 = offset + World::Pos3{ 0, 0, 8 };
+            if (k4F91DC[bridgeEntry.subType] & (1U << 4))
+            {
+                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(14);
+                World::Pos3 bbOffset2 = { 22, 24, 0 };
+                World::Pos3 bbLength2 = { 2, 2, 26 };
+                session.addToPlotList4FD150(image2, offset2, bbOffset2 + offset2, bbLength2);
+            }
+            if (k4F91DC[bridgeEntry.subType] & (1U << 5))
+            {
+                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(13);
+                World::Pos3 bbOffset2 = { 7, 7, 0 };
+                World::Pos3 bbLength2 = { 2, 2, 26 };
+                session.addToPlotList4FD150(image2, offset2, bbOffset2 + offset2, bbLength2);
+            }
+            if (k4F91DC[bridgeEntry.subType] & (1U << 6))
+            {
+                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(15);
+                World::Pos3 bbOffset2 = { 24, 22, 0 };
+                World::Pos3 bbLength2 = { 2, 2, 26 };
+                session.addToPlotList4FD150(image2, offset2, bbOffset2 + offset2, bbLength2);
+            }
+            if (k4F91DC[bridgeEntry.subType] & (1U << 7))
+            {
+                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(12);
+                World::Pos3 bbOffset2 = { 17, 17, 2 };
+                World::Pos3 bbLength2 = { 2, 2, 24 };
+                session.addToPlotList4FD150(image2, offset2, bbOffset2 + offset2, bbLength2);
+            }
+        }
+        return true;
+        // registers regs;
+        // call(0x0042AC9C, regs);
+        // return regs.al != 0;
     }
 
     // Returns std::nullopt on no need to paint
