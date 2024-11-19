@@ -217,9 +217,57 @@ namespace OpenLoco::Paint
         }
     }
 
+    constexpr std::array<uint8_t, 18> k4F9242 = {
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        5,
+        3,
+        4,
+        2,
+        0,
+    };
+
     // 0x0042AC9C
-    static bool sub_42AC9C([[maybe_unused]] PaintSession& session)
+    static bool sub_42AC9C(PaintSession& session)
     {
+        uint8_t unk525340 = 0;
+        bool unk525D0C = false;
+
+        session.setItemType(Ui::ViewportInteraction::InteractionItem::bridge);
+
+        auto& bridgeEntry = session.getBridgeEntry();
+        if (bridgeEntry.isEmpty())
+        {
+            return false;
+        }
+        // ceil to 16
+        auto genHeight = session.getGeneralSupportHeight().height + 15;
+        genHeight &= ~(0xF);
+        const auto supportLength = bridgeEntry.height - genHeight;
+        if (supportLength < 0)
+        {
+            return false;
+        }
+
+        auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeEntry.objectId);
+
+        if (bridgeEntry.subType & (1U << 0))
+        {
+            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image);
+            unk525340 = bridgeEntry.
+        }
+
         registers regs;
         call(0x0042AC9C, regs);
         return regs.al != 0;
