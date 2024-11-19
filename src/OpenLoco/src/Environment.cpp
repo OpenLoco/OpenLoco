@@ -82,7 +82,6 @@ namespace OpenLoco::Environment
         {
             if (validateLocoInstallPath(path))
             {
-                Config::write();
                 return path;
             }
             Logging::error("Configured Locomotion game folder is missing Data/g1.DAT.");
