@@ -307,7 +307,8 @@ namespace OpenLoco
                           .registerOption("--version")
                           .registerOption("--intro")
                           .registerOption("--log_levels", 1)
-                          .registerOption("--all", "-a");
+                          .registerOption("--all", "-a")
+                          .registerOption("--locomotion_path", 1);
 
         if (!parser.parse())
         {
@@ -391,6 +392,11 @@ namespace OpenLoco
             options.logLevels = "info, warning, error";
         }
 
+        if (parser.hasOption("--locomotion_path"))
+        {
+            options.locomotionDataPath = parser.getArg("--locomotion_path");
+        }
+
         return options;
     }
 
@@ -410,18 +416,19 @@ namespace OpenLoco
         std::cout << "                compare [options] <path1> <path2>" << std::endl;
         std::cout << std::endl;
         std::cout << "options:" << std::endl;
-        std::cout << "--bind            Address to bind to when hosting a server" << std::endl;
-        std::cout << "--port     -p     Port number for the server" << std::endl;
-        std::cout << "           -o     Output path" << std::endl;
-        std::cout << "--help     -h     Print help" << std::endl;
-        std::cout << "--version         Print version" << std::endl;
-        std::cout << "--intro           Run the game intro" << std::endl;
-        std::cout << "--log_levels      Comma separated list of log levels, applying a minus prefix" << std::endl;
-        std::cout << "                  removes the level from a group such as 'all', valid levels:" << std::endl;
-        std::cout << "                  - info, warning, error, verbose, all" << std::endl;
-        std::cout << "                  Example: --log_levels \"all, -verbose\", logs all but verbose levels" << std::endl;
-        std::cout << "                  Default: \"info, warning, error\"" << std::endl;
-        std::cout << "--all      -a     For compare, print out all divergences" << std::endl;
+        std::cout << "--bind                     Address to bind to when hosting a server" << std::endl;
+        std::cout << "--port               -p     Port number for the server" << std::endl;
+        std::cout << "                     -o     Output path" << std::endl;
+        std::cout << "--help               -h     Print help" << std::endl;
+        std::cout << "--version                   Print version" << std::endl;
+        std::cout << "--intro                     Run the game intro" << std::endl;
+        std::cout << "--log_levels                Comma separated list of log levels, applying a minus prefix" << std::endl;
+        std::cout << "                            removes the level from a group such as 'all', valid levels:" << std::endl;
+        std::cout << "                            - info, warning, error, verbose, all" << std::endl;
+        std::cout << "                              Example: --log_levels \"all, -verbose\", logs all but verbose levels" << std::endl;
+        std::cout << "                              Default: \"info, warning, error\"" << std::endl;
+        std::cout << "--all                -a     For compare, print out all divergences" << std::endl;
+        std::cout << "--locomotion_path           Overrides the path to Locomotion install." << std::endl;
     }
 
     std::optional<int> runCommandLineOnlyCommand(const CommandLineOptions& options)
@@ -534,6 +541,8 @@ namespace OpenLoco
 
     static int simulate(const CommandLineOptions& options)
     {
+        setCommandLineOptions(options);
+
         if (!options.ticks)
         {
             Logging::error("Number of ticks to simulate not specified");
