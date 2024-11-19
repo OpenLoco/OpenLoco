@@ -252,70 +252,72 @@ namespace OpenLoco::Paint
         _lastPS = nullptr;
 
         auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
-        if (ps != nullptr)
+        if (ps == nullptr)
         {
-            const auto rtLeft = getRenderTarget()->x;
-            const auto rtRight = getRenderTarget()->x + getRenderTarget()->width;
-
-            auto newX = ps->bounds.x;
-            auto newY = ps->bounds.y;
-            // The following uses the fact that gameToScreen calculates the
-            // screen x to be y - x of the map coordinate. It is then back
-            // calculating the x and y so that they would within the render
-            // target size when converted.
-            switch (getRotation())
-            {
-                case 0:
-                    if (newY - newX < rtLeft)
-                    {
-                        newY = newX + rtLeft;
-                    }
-
-                    if (newY - newX > rtRight)
-                    {
-                        newX = newY - rtRight;
-                    }
-                    break;
-                case 1:
-                    if (-newY - newX < rtLeft)
-                    {
-                        newX = -newY - rtLeft;
-                    }
-
-                    if (-newY - newX > rtRight)
-                    {
-                        newY = -newX - rtRight;
-                    }
-                    break;
-                case 2:
-                    if (-newY + newX < rtLeft)
-                    {
-                        newY = newX - rtLeft;
-                    }
-
-                    if (-newY + newX > rtRight)
-                    {
-                        newX = newY + rtRight;
-                    }
-                    break;
-                case 3:
-                    if (newY + newX < rtLeft)
-                    {
-                        newX = -newY + rtLeft;
-                    }
-
-                    if (newY + newX > rtRight)
-                    {
-                        newY = -newX + rtRight;
-                    }
-                    break;
-            }
-            ps->bounds.x = newX;
-            ps->bounds.y = newY;
-
-            _lastPS = ps;
-            addPSToQuadrant(*ps);
+            return nullptr;
         }
+
+        const auto rtLeft = getRenderTarget()->x;
+        const auto rtRight = getRenderTarget()->x + getRenderTarget()->width;
+
+        auto newX = ps->bounds.x;
+        auto newY = ps->bounds.y;
+        // The following uses the fact that gameToScreen calculates the
+        // screen x to be y - x of the map coordinate. It is then back
+        // calculating the x and y so that they would within the render
+        // target size when converted.
+        switch (getRotation())
+        {
+            case 0:
+                if (newY - newX < rtLeft)
+                {
+                    newY = newX + rtLeft;
+                }
+
+                if (newY - newX > rtRight)
+                {
+                    newX = newY - rtRight;
+                }
+                break;
+            case 1:
+                if (-newY - newX < rtLeft)
+                {
+                    newX = -newY - rtLeft;
+                }
+
+                if (-newY - newX > rtRight)
+                {
+                    newY = -newX - rtRight;
+                }
+                break;
+            case 2:
+                if (-newY + newX < rtLeft)
+                {
+                    newY = newX - rtLeft;
+                }
+
+                if (-newY + newX > rtRight)
+                {
+                    newX = newY + rtRight;
+                }
+                break;
+            case 3:
+                if (newY + newX < rtLeft)
+                {
+                    newX = -newY + rtLeft;
+                }
+
+                if (newY + newX > rtRight)
+                {
+                    newY = -newX + rtRight;
+                }
+                break;
+        }
+        ps->bounds.x = newX;
+        ps->bounds.y = newY;
+
+        _lastPS = ps;
+        addPSToQuadrant(*ps);
         return ps;
     }
 
