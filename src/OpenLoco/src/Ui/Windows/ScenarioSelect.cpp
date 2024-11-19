@@ -27,6 +27,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
     static constexpr Ui::Size32 kWindowSize = { 610, 412 };
 
+    static constexpr int kNumTabs = 6;
+
     namespace widx
     {
         enum
@@ -67,7 +69,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     static void initTabs(Window* self)
     {
         uint16_t xPos = 3;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < kNumTabs; i++)
         {
             Widget& widget = self->widgets[widx::tab0 + i];
             if (ScenarioManager::hasScenariosForCategory(i))
@@ -139,7 +141,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         if (self->widgets[widx::tab0 + selectedTab].type == WidgetType::none)
         {
             selectedTab = 0;
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < kNumTabs; i++)
             {
                 if (self->widgets[widx::tab0 + i].type == WidgetType::none)
                 {
@@ -183,7 +185,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         };
 
         // Draw tab captions.
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < kNumTabs; i++)
         {
             Widget& widget = self.widgets[widx::tab0 + i];
             if (widget.type == WidgetType::none)
