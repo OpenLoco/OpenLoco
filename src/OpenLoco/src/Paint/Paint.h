@@ -204,7 +204,7 @@ namespace OpenLoco::Paint
             , padImage2(0)
             , edgesQuarters((edges << 4U) | quarters)
             , objectId(_objectId)
-            , imageBase(_imageBase) {};
+            , imageBase(_imageBase){};
 
         bool isEmpty() const { return height == -1; }
     };
@@ -266,8 +266,10 @@ namespace OpenLoco::Paint
         const TrackRoadAdditionSupports& getAdditionSupport() { return (*_trackRoadAdditionSupports); }
         void setAdditionSupport(const TrackRoadAdditionSupports& newValue) { _trackRoadAdditionSupports = newValue; }
         const SupportHeight& getGeneralSupportHeight() { return _support; }
+        const SupportHeight& getSupportHeight(uint8_t segment) { return _supportSegments[segment]; }
         const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
         SegmentFlags get525CF8() { return _525CF8; }
+        int16_t getWaterHeight() { return _waterHeight; }
         int16_t getWaterHeight2() { return _waterHeight2; }
         int16_t getSurfaceHeight() { return _surfaceHeight; }
         uint8_t getSurfaceSlope() { return _surfaceSlope; }

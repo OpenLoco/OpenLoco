@@ -317,7 +317,7 @@ namespace OpenLoco::Paint
         0,
     };
 
-    static uint8_t paintFlatSingleQuarterNoSupport(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, const std::array<uint32_t, 3>& imageIndexs, const World::Pos3& wallBoundingBoxOffset, uint8_t unk)
+    static void paintFlatSingleQuarterNoSupport(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, const std::array<uint32_t, 3>& imageIndexs, const World::Pos3& wallBoundingBoxOffset)
     {
         const auto baseHeightOffset = World::Pos3{ 0, 0, bridgeEntry.height };
 
@@ -340,7 +340,67 @@ namespace OpenLoco::Paint
             World::Pos3 bbLength3 = { 2, 2, 26 };
             session.addToPlotList4FD150(wallImage, baseHeightOffset, wallBoundingBoxOffset + baseHeightOffset, bbLength3);
         }
-        return unk;
+    }
+
+    // SPECIAL needs to do the front supports to ground as well
+    // 0x0042BCD5
+    static void paintFlatSingleQuarterSupportFront(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, const int16_t supportLength, const uint8_t slope)
+    {
+        const auto baseHeightOffset = World::Pos3{ 0, 0, bridgeEntry.height };
+
+        if (bridgeObj.noRoof & (1U << 0))
+        {
+            auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(10);
+            World::Pos3 bbOffset = { 0, 0, 30 };
+            World::Pos3 bbLength = { 32, 32, 0 };
+            session.addToPlotList4FD150(roofImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+        }
+
+        auto unk = [&session, &bridgeObj, &bridgeEntry, supportLength, slope]() {
+            if (session.getSupportHeight(1).height == 0xFFFFU)
+            {
+                return true;
+            }
+            if (session.getSupportHeight(2).height == 0xFFFFU)
+            {
+                return true;
+            }
+            auto unkHeight = supportLength - bridgeObj.var_06;
+            if (unkHeight < 0)
+            {
+                return true;
+            }
+            if (bridgeObj.var_06 == 32)
+            {
+                unkHeight = bridgeEntry.height - 16;
+                if (unkHeight == session.getWaterHeight())
+                {
+                    return true;
+                }
+            }
+
+            const auto unkHeight2 = unkHeight - k4F915C[slope];
+            if (unkHeight2 < 0)
+            {
+                return true;
+            }
+            // 0x00525CFC = unkHeight2
+            unkHeight -= k4F919C[slope];
+            if (unkHeight < 0)
+            {
+                return true;
+            }
+            return false;
+        }();
+        if (unk)
+        {
+            // 0x0042BE22
+        }
+        else
+        {
+            // 0x0042BD9C
+        }
+        // 0x0042BE77
     }
 
     // 0x0042AC9C
@@ -461,23 +521,27 @@ namespace OpenLoco::Paint
             case 1:
             {
                 // 0x0042B9BA
-                unkF25340 = paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 7, 2, 14 }, { 22, 24, 0 }, 5);
+                unkF25340 = 5;
+                paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 7, 2, 14 }, { 22, 24, 0 });
             }
             break;
             case 2:
             {
                 // 0x0042BAC3
-                unkF25340 = paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 8, 3, 13 }, { 7, 7, 0 }, 3);
+                unkF25340 = 3;
+                paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 8, 3, 13 }, { 7, 7, 0 });
             }
             break;
             case 4:
                 // 0x0042BBCC
-                unkF25340 = paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 9, 4, 15 }, { 24, 22, 0 }, 4);
+                unkF25340 = 4;
+                paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 9, 4, 15 }, { 24, 22, 0 });
                 break;
             case 8:
                 // 0x0042BCD5
                 // SPECIAL needs to do the front supports to ground as well
-                // paintFlatSingleQuarterSupport(session, *bridgeObj, bridgeEntry, { 10, 5, 12 }, { 17, 17, 2 }, 2);
+                unkF25340 = 2;
+                paintFlatSingleQuarterSupportFront(session, *bridgeObj, bridgeEntry, supportLength, slope);
                 break;
             default:
                 // 0x0042B08A
