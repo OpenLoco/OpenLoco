@@ -317,6 +317,32 @@ namespace OpenLoco::Paint
         0,
     };
 
+    static uint8_t paintFlatSingleQuarterNoSupport(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, const std::array<uint32_t, 3>& imageIndexs, const World::Pos3& wallBoundingBoxOffset, uint8_t unk)
+    {
+        const auto baseHeightOffset = World::Pos3{ 0, 0, bridgeEntry.height };
+
+        if (bridgeObj.noRoof & (1U << 0))
+        {
+            auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndexs[0]);
+            World::Pos3 bbOffset = { 0, 0, 30 };
+            World::Pos3 bbLength = { 32, 32, 0 };
+            session.addToPlotList4FD150(roofImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+        }
+        const auto offset = baseHeightOffset - World::Pos3{ 0, 0, 16 };
+        auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndexs[1]);
+        World::Pos3 bbOffset2 = { 0, 0, 14 };
+        World::Pos3 bbLength2 = { 32, 32, 1 };
+        session.addToPlotList4FD150(image, offset, bbOffset2 + offset, bbLength2);
+
+        if (bridgeEntry.subType == 0)
+        {
+            auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndexs[2]);
+            World::Pos3 bbLength3 = { 2, 2, 26 };
+            session.addToPlotList4FD150(wallImage, baseHeightOffset, wallBoundingBoxOffset + baseHeightOffset, bbLength3);
+        }
+        return unk;
+    }
+
     // 0x0042AC9C
     static bool sub_42AC9C(PaintSession& session)
     {
@@ -341,14 +367,16 @@ namespace OpenLoco::Paint
 
         auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeEntry.objectId);
 
+        // Height to the base of the bridge platform
+        const auto baseHeightOffset = World::Pos3{ 0, 0, bridgeEntry.height };
+
         if (k4F91DC[bridgeEntry.subType] & (1U << 0))
         {
             auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(k4F91FE[bridgeEntry.subType]);
             unkF25340 = k4F9242[bridgeEntry.subType];
-            World::Pos3 offset = { 0, 0, bridgeEntry.height };
             World::Pos3 bbOffset = { 2, 2, 0 };
             World::Pos3 bbLength = { 28, 28, 1 };
-            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
+            session.addToPlotList4FD150(image, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
 
             if (k4F91DC[bridgeEntry.subType] & (1U << 2))
             {
@@ -357,14 +385,14 @@ namespace OpenLoco::Paint
                     auto wallImage = image.withIndexOffset(1);
                     World::Pos3 bbOffset2 = { 2, 0, 8 };
                     World::Pos3 bbLength2 = { 28, 1, 30 };
-                    session.addToPlotList4FD150(wallImage, offset, bbOffset2 + offset, bbLength2);
+                    session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset2 + baseHeightOffset, bbLength2);
                 }
                 if (!(bridgeEntry.edgesQuarters & (1U << 5)))
                 {
                     auto wallImage = image.withIndexOffset(2);
                     World::Pos3 bbOffset2 = { 1, 30, 8 };
                     World::Pos3 bbLength2 = { 29, 1, 30 };
-                    session.addToPlotList4FD150(wallImage, offset, bbOffset2 + offset, bbLength2);
+                    session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset2 + baseHeightOffset, bbLength2);
                 }
             }
             if (k4F91DC[bridgeEntry.subType] & (1U << 3))
@@ -374,18 +402,18 @@ namespace OpenLoco::Paint
                     auto wallImage = image.withIndexOffset(1);
                     World::Pos3 bbOffset2 = { 0, 2, 8 };
                     World::Pos3 bbLength2 = { 1, 28, 30 };
-                    session.addToPlotList4FD150(wallImage, offset, bbOffset2 + offset, bbLength2);
+                    session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset2 + baseHeightOffset, bbLength2);
                 }
                 if (!(bridgeEntry.edgesQuarters & (1U << 6)))
                 {
                     auto wallImage = image.withIndexOffset(2);
                     World::Pos3 bbOffset2 = { 30, 1, 8 };
                     World::Pos3 bbLength2 = { 1, 29, 30 };
-                    session.addToPlotList4FD150(wallImage, offset, bbOffset2 + offset, bbLength2);
+                    session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset2 + baseHeightOffset, bbLength2);
                 }
             }
 
-            auto offset2 = offset + World::Pos3{ 0, 0, 8 };
+            auto offset2 = baseHeightOffset + World::Pos3{ 0, 0, 8 };
             if (k4F91DC[bridgeEntry.subType] & (1U << 4))
             {
                 auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(14);
@@ -424,6 +452,37 @@ namespace OpenLoco::Paint
 
         unkF25340 = 1;
         unk525D0C = true;
+
+        [[maybe_unused]] const uint8_t slope = session.getGeneralSupportHeight().slope & 0x1FU;
+        const uint8_t quarters = bridgeEntry.edgesQuarters & 0xFU;
+
+        switch (quarters)
+        {
+            case 1:
+            {
+                // 0x0042B9BA
+                unkF25340 = paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 7, 2, 14 }, { 22, 24, 0 }, 5);
+            }
+            break;
+            case 2:
+            {
+                // 0x0042BAC3
+                unkF25340 = paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 8, 3, 13 }, { 7, 7, 0 }, 3);
+            }
+            break;
+            case 4:
+                // 0x0042BBCC
+                unkF25340 = paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 9, 4, 15 }, { 24, 22, 0 }, 4);
+                break;
+            case 8:
+                // 0x0042BCD5
+                // SPECIAL needs to do the front supports to ground as well
+                // paintFlatSingleQuarterSupport(session, *bridgeObj, bridgeEntry, { 10, 5, 12 }, { 17, 17, 2 }, 2);
+                break;
+            default:
+                // 0x0042B08A
+                break;
+        }
         // 0x0042B063
 
         // 0x0042BED2
