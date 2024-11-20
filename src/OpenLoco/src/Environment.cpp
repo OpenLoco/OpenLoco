@@ -304,6 +304,7 @@ namespace OpenLoco::Environment
             case PathId::landscape:
             case PathId::heightmap:
             case PathId::customObjects:
+            case PathId::screenshots:
                 return Platform::getUserDirectory();
             case PathId::languageFiles:
             case PathId::objects:
@@ -319,7 +320,7 @@ namespace OpenLoco::Environment
 
     static fs::path getSubPath(PathId id)
     {
-        static constexpr std::array<const char*, 59> kPaths = {
+        static constexpr std::array<const char*, 60> kPaths = {
             "Data/g1.DAT",
             "plugin.dat",
             "plugin2.dat",
@@ -379,6 +380,7 @@ namespace OpenLoco::Environment
             "heightmap",
             "objects",
             "objects",
+            "screenshots",
         };
 
         size_t index = (size_t)id;
