@@ -10,6 +10,7 @@
 #include <fmt/chrono.h>
 #include <iostream>
 #include <optional>
+#include <stdlib.h>
 #include <string_view>
 #include <vector>
 
@@ -437,10 +438,10 @@ namespace OpenLoco
         {
             case CommandLineAction::help:
                 printHelp();
-                return 1;
+                return EXIT_FAILURE;
             case CommandLineAction::version:
                 printVersion();
-                return 1;
+                return EXIT_FAILURE;
             case CommandLineAction::uncompress:
                 return uncompressFile(options);
             case CommandLineAction::simulate:
@@ -448,7 +449,7 @@ namespace OpenLoco
             case CommandLineAction::compare:
                 return compare(options);
             default:
-                return {};
+                return std::nullopt;
         }
     }
 
@@ -459,7 +460,7 @@ namespace OpenLoco
         if (options.path.empty())
         {
             Logging::error("No file specified.");
-            return 2;
+            return EXIT_FAILURE;
         }
 
         try
@@ -530,12 +531,12 @@ namespace OpenLoco
 
             writer.writeChecksum();
 
-            return 0;
+            return EXIT_SUCCESS;
         }
         catch (const std::exception& e)
         {
             Logging::error("Unable to uncompress S5 file: {}", e.what());
-            return 2;
+            return EXIT_FAILURE;
         }
     }
 
@@ -546,7 +547,7 @@ namespace OpenLoco
         if (!options.ticks)
         {
             Logging::error("Number of ticks to simulate not specified");
-            return 2;
+            return EXIT_FAILURE;
         }
 
         auto inPath = fs::u8path(options.path);
@@ -562,6 +563,7 @@ namespace OpenLoco
         catch (...)
         {
             Logging::error("Unable to load and simulate {}", inPath.u8string());
+            return EXIT_FAILURE;
         }
 
         if (!options.path2.empty())
@@ -593,10 +595,11 @@ namespace OpenLoco
             catch (...)
             {
                 Logging::error("Unable to save game to {}", outPath.u8string());
+                return EXIT_FAILURE;
             }
         }
 
-        return 0;
+        return EXIT_SUCCESS;
     }
 
     static int compare(const CommandLineOptions& options)
@@ -610,7 +613,7 @@ namespace OpenLoco
             Logging::error("Unable to compare gamestates...");
             Logging::error("    The required compare file paths have not been specified.");
             Logging::error("    compare [options] <path1> <path2>");
-            return 1;
+            return EXIT_FAILURE;
         }
 
         try
@@ -624,8 +627,9 @@ namespace OpenLoco
         {
             Logging::error("Unable to compare gamestates: {} to {}", file1, file2);
             Logging::error("Exception reason {}", e.what());
+            return EXIT_FAILURE;
         }
 
-        return 0;
+        return EXIT_SUCCESS;
     }
 }
