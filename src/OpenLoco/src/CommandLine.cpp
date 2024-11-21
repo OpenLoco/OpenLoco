@@ -616,20 +616,26 @@ namespace OpenLoco
             return EXIT_FAILURE;
         }
 
+        auto result = EXIT_SUCCESS;
         try
         {
             if (OpenLoco::GameSaveCompare::compareGameStates(file1, file2, displayAllDivergences))
             {
                 Logging::info("MATCHES", file1, file2);
             }
+            else
+            {
+                Logging::error("DOES NOT MATCH", file1, file2);
+                result = EXIT_FAILURE;
+            }
         }
         catch (std::exception& e)
         {
             Logging::error("Unable to compare gamestates: {} to {}", file1, file2);
             Logging::error("Exception reason {}", e.what());
-            return EXIT_FAILURE;
+            result = EXIT_FAILURE;
         }
 
-        return EXIT_SUCCESS;
+        return result;
     }
 }
