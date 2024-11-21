@@ -276,6 +276,76 @@ namespace OpenLoco::Paint
         129,
     };
 
+    constexpr std::array<int16_t, 32> k4F915C = {
+        0,
+        0,
+        16,
+        16,
+        0,
+        0,
+        16,
+        16,
+        0,
+        0,
+        16,
+        16,
+        0,
+        0,
+        16,
+        16,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        32,
+        0,
+        0,
+        0,
+        16,
+        0,
+        0,
+        16,
+        0
+    };
+
+    constexpr std::array<int16_t, 32> k4F919C = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16,
+        0,
+        32,
+        16,
+        0,
+    };
+
     // DUPLICTED FROM PAINTSURFACE
     // 0x004FD97E
     // Truncates a SurfaceSlope slope into only the representable values
@@ -317,6 +387,12 @@ namespace OpenLoco::Paint
         0,
     };
 
+    struct UnkHeights
+    {
+        int16_t height1; // dx
+        int16_t height2; // 0x00525CFC
+    };
+
     static void paintFlatSingleQuarterNoSupport(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, const std::array<uint32_t, 3>& imageIndexs, const World::Pos3& wallBoundingBoxOffset)
     {
         const auto baseHeightOffset = World::Pos3{ 0, 0, bridgeEntry.height };
@@ -342,6 +418,41 @@ namespace OpenLoco::Paint
         }
     }
 
+    // 0x0042C36D
+    static void paintSupport1(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, int16_t height525CFE, int16_t height525CFC, int16_t height525D04)
+    {
+        auto height525D06 = height525D04;
+        while (height525CFC >= 16)
+        {
+            bool is16section = height525CFC == 16 || ((height525D04 - 16) == session.getWaterHeight());
+            int16_t sectionHeight = is16section ? 16 : 32;
+            const auto bbLength = is16section ? World::Pos3{ 2, 2, 15 } : World::Pos3{ 2, 2, 31 };
+            const auto imageIndex = is16section ? 32 : 34;
+
+            height525D04 -= sectionHeight;
+            height525CFC -= sectionHeight;
+            auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
+            const auto heightOffset = World::Pos3{ 0, 0, height525D04 };
+            World::Pos3 bbOffset = { 30, 0, 0 };
+            session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
+        }
+
+        while (height525CFE >= 16)
+        {
+            bool is16section = height525CFE == 16 || ((height525D06 - 16) == session.getWaterHeight());
+            int16_t sectionHeight = is16section ? 16 : 32;
+            const auto bbLength = is16section ? World::Pos3{ 2, 2, 15 } : World::Pos3{ 2, 2, 31 };
+            const auto imageIndex = is16section ? 33 : 35;
+
+            height525CFE -= sectionHeight;
+            height525D06 -= sectionHeight;
+            auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
+            const auto heightOffset = World::Pos3{ 0, 0, height525D06 };
+            World::Pos3 bbOffset = { 0, 30, 0 };
+            session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
+        }
+    }
+
     // SPECIAL needs to do the front supports to ground as well
     // 0x0042BCD5
     static void paintFlatSingleQuarterSupportFront(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, const int16_t supportLength, const uint8_t slope)
@@ -356,51 +467,75 @@ namespace OpenLoco::Paint
             session.addToPlotList4FD150(roofImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
         }
 
-        auto unk = [&session, &bridgeObj, &bridgeEntry, supportLength, slope]() {
+        auto unks = [&session, &bridgeObj, &bridgeEntry, supportLength, slope]() -> std::optional<UnkHeights> {
             if (session.getSupportHeight(1).height == 0xFFFFU)
             {
-                return true;
+                return std::nullopt;
             }
             if (session.getSupportHeight(2).height == 0xFFFFU)
             {
-                return true;
+                return std::nullopt;
             }
-            auto unkHeight = supportLength - bridgeObj.var_06;
+            int16_t unkHeight = supportLength - bridgeObj.var_06;
             if (unkHeight < 0)
             {
-                return true;
+                return std::nullopt;
             }
             if (bridgeObj.var_06 == 32)
             {
                 unkHeight = bridgeEntry.height - 16;
                 if (unkHeight == session.getWaterHeight())
                 {
-                    return true;
+                    return std::nullopt;
                 }
             }
 
-            const auto unkHeight2 = unkHeight - k4F915C[slope];
+            const int16_t unkHeight2 = unkHeight - k4F915C[slope];
             if (unkHeight2 < 0)
             {
-                return true;
+                return std::nullopt;
             }
-            // 0x00525CFC = unkHeight2
+
             unkHeight -= k4F919C[slope];
             if (unkHeight < 0)
             {
-                return true;
+                return std::nullopt;
             }
-            return false;
+            return UnkHeights{ unkHeight, unkHeight2 };
         }();
-        if (unk)
+        if (unks.has_value())
         {
-            // 0x0042BE22
+            // 0x0042BD9C
+
+            const auto& [unkHeight, unkHeight2] = unks.value();
+            const auto unk525D04 = bridgeEntry.height - bridgeObj.var_06;
+
+            auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(11);
+            auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj.var_06 };
+            World::Pos3 bbOffset = { 0, 0, 14 };
+            World::Pos3 bbLength = { 32, 32, 1 };
+            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
+
+            paintSupport1(session, bridgeObj, bridgeEntry, unkHeight, unkHeight2, unk525D04);
         }
         else
         {
-            // 0x0042BD9C
+            // 0x0042BE22
+            auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(5);
+            auto offset = baseHeightOffset - World::Pos3{ 0, 0, 16 };
+            World::Pos3 bbOffset = { 0, 0, 14 };
+            World::Pos3 bbLength = { 32, 32, 1 };
+            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
         }
         // 0x0042BE77
+
+        if (bridgeEntry.subType == 0)
+        {
+            auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(12);
+            World::Pos3 bbOffset = { 17, 17, 2 };
+            World::Pos3 bbLength3 = { 2, 2, 24 };
+            session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength3);
+        }
     }
 
     // 0x0042AC9C
