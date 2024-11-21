@@ -170,14 +170,6 @@ namespace OpenLoco::Paint
     };
     assert_struct_size(PaintStruct, 0x34);
 
-    union PaintEntry
-    {
-        PaintStruct basic;
-        AttachedPaintStruct attached;
-        PaintStringStruct string;
-    };
-    assert_struct_size(PaintEntry, 0x34);
-
     struct SupportHeight
     {
         uint16_t height;
@@ -441,9 +433,17 @@ namespace OpenLoco::Paint
         void generateTilesAndEntities(GenerationParameters&& p);
         void finaliseOrdering(std::span<PaintStruct*> paintStructs);
 
+        union PaintEntry
+        {
+            PaintStruct basic;
+            AttachedPaintStruct attached;
+            PaintStringStruct string;
+        };
+        assert_struct_size(PaintEntry, 0x34);
+
         inline static Interop::loco_global<const Gfx::RenderTarget*, 0x00E0C3E0> _renderTarget;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
-        inline static Interop::loco_global<PaintEntry*, 0x00E0C408> _paintHead;
+        PaintStruct* _paintHead{};
         inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
         inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
         inline static Interop::loco_global<coord_t, 0x00E3F090> _spritePositionX;
@@ -530,14 +530,18 @@ namespace OpenLoco::Paint
         template<typename T>
         T* allocatePaintStruct()
         {
+            static_assert(std::same_as<T, PaintStruct> || std::same_as<T, AttachedPaintStruct> || std::same_as<T, PaintStringStruct>);
+
             auto* ps = *_nextFreePaintStruct;
             if (ps >= *_endOfPaintStructArray)
             {
                 return nullptr;
             }
-            *_nextFreePaintStruct = reinterpret_cast<PaintEntry*>(reinterpret_cast<uintptr_t>(*_nextFreePaintStruct) + sizeof(T));
+            (*_nextFreePaintStruct)++;
+
             auto* specificPs = reinterpret_cast<T*>(ps);
             *specificPs = {}; // Zero out the struct
+
             return specificPs;
         }
         void attachStringStruct(PaintStringStruct& psString);
