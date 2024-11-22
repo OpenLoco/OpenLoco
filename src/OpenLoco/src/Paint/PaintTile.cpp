@@ -275,7 +275,142 @@ namespace OpenLoco::Paint
         65,
         129,
     };
-
+    constexpr std::array<int16_t, 32> k4F905C = {
+        0,
+        2,
+        1,
+        0,
+        0,
+        2,
+        1,
+        0,
+        0,
+        2,
+        1,
+        0,
+        0,
+        2,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        2,
+        1,
+        0,
+    };
+    constexpr std::array<int16_t, 32> k4F909C = {
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        2,
+        1,
+        0,
+    };
+    constexpr std::array<int16_t, 32> k4F8F5C = {
+        0,
+        16,
+        16,
+        16,
+        0,
+        16,
+        16,
+        16,
+        0,
+        16,
+        16,
+        16,
+        0,
+        16,
+        16,
+        16,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        32,
+        0,
+        0,
+        0,
+        32,
+        0,
+        16,
+        16,
+        0
+    };
+    constexpr std::array<int16_t, 32> k4F8F9C = {
+        0,
+        0,
+        0,
+        0,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16,
+        0,
+        0,
+        0,
+        16,
+        0,
+        32,
+        32,
+        0,
+    };
     constexpr std::array<int16_t, 32> k4F915C = {
         0,
         0,
@@ -717,6 +852,100 @@ namespace OpenLoco::Paint
                         World::Pos3 bbOffset = { 0, 0, 30 };
                         World::Pos3 bbLength = { 32, 32, 0 };
                         session.addToPlotList4FD150(roofImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+                    }
+
+                    auto unks = [&session, &bridgeEntry, &bridgeObj, unk525CF6, supportLength, slope]() -> std::optional<UnkHeights> {
+                        if ((bridgeEntry.edgesQuarters & ((1U << 5) | (1U << 4))) == ((1U << 5) | (1U << 4)))
+                        {
+                            return std::nullopt;
+                        }
+                        if (unk525CF6 & (1U << 1))
+                        {
+                            if (session.getSupportHeight(1).height == -1
+                                || session.getSupportHeight(3).height == -1
+                                || session.getSupportHeight(7).height == -1)
+                            {
+                                return std::nullopt;
+                            }
+                        }
+                        if (unk525CF6 & (1U << 0))
+                        {
+                            if (session.getSupportHeight(0).height == -1
+                                || session.getSupportHeight(2).height == -1
+                                || session.getSupportHeight(6).height == -1)
+                            {
+                                return std::nullopt;
+                            }
+                        }
+
+                        int16_t unkHeight = supportLength - bridgeObj->var_06;
+                        if (unkHeight < 0)
+                        {
+                            return std::nullopt;
+                        }
+                        if (bridgeObj->var_06 == 32)
+                        {
+                            unkHeight = bridgeEntry.height - 16;
+                            if (unkHeight == session.getWaterHeight())
+                            {
+                                return std::nullopt;
+                            }
+                        }
+
+                        const int16_t unkHeight2 = unkHeight - k4F8F5C[slope];
+                        if (unkHeight2 < 0)
+                        {
+                            return std::nullopt;
+                        }
+
+                        unkHeight -= k4F8F9C[slope];
+                        if (unkHeight < 0)
+                        {
+                            return std::nullopt;
+                        }
+                        return UnkHeights{ unkHeight, unkHeight2 };
+                    }();
+
+                    if (unks.has_value())
+                    {
+                        [[maybe_unused]] const auto& [unkHeight, unkHeight2] = unks.value();
+                        [[maybe_unused]] const auto unk525D00 = k4F905C[slope];
+                        [[maybe_unused]] const auto unk525D02 = k4F909C[slope];
+                        [[maybe_unused]] const auto unk525D04 = bridgeEntry.height - bridgeObj->var_06;
+                        [[maybe_unused]] const auto unk525D06 = unk525D04;
+
+                        {
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(36);
+                            auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->var_06 };
+                            World::Pos3 bbOffset = { 0, 0, static_cast<int16_t>(bridgeObj->var_06 - 2) };
+                            World::Pos3 bbLength = { 32, 32, 1 };
+                            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
+                        }
+                        {
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(37);
+                            auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->var_06 };
+                            World::Pos3 bbOffset = { 0, 0, 0 };
+                            World::Pos3 bbLength = { 2, 32, static_cast<int16_t>(bridgeObj->var_06 - 3) };
+                            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
+                        }
+                        {
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(38);
+                            auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->var_06 };
+                            World::Pos3 bbOffset = { 30, 0, 0 };
+                            World::Pos3 bbLength = { 2, 32, static_cast<int16_t>(bridgeObj->var_06 - 3) };
+                            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
+                        }
+
+                        // paintSupport2(session, bridgeObj, bridgeEntry, unkHeight, unkHeight2, unk525D04);
+                    }
+                    else
+                    {
+                        const auto baseImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 1 : 36;
+                        auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(baseImageIdx);
+                        auto offset = baseHeightOffset - World::Pos3{ 0, 0, 16 };
+                        World::Pos3 bbOffset = { 0, 0, 14 };
+                        World::Pos3 bbLength = { 32, 32, 1 };
+                        session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
                     }
                 }
                 else
