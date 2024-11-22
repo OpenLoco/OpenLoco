@@ -56,7 +56,7 @@ namespace OpenLoco::ObjectManager
     static loco_global<ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
     static loco_global<std::array<uint16_t, kMaxObjectTypes>, 0x0112C181> _numObjectsPerType;
 
-    static constexpr uint8_t kCurrentIndexVersion = 4;
+    static constexpr uint8_t kCurrentIndexVersion = 5;
     static constexpr uint32_t kMaxStringLength = 1024;
 
     struct ObjectFolderState
