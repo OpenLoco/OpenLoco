@@ -1019,6 +1019,37 @@ namespace OpenLoco::Paint
                     }
                 }
                 // 0x0042B837
+                if (bridgeEntry.subType == 0)
+                {
+                    if (!(bridgeEntry.edgesQuarters & (1U << 7)))
+                    {
+                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(39 + unk525CE8);
+                        World::Pos3 bbOffset = { 2, 0, 0 };
+                        World::Pos3 bbLength = { 28, 1, 26 };
+                        session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+                    }
+                    if (!(bridgeEntry.edgesQuarters & (1U << 4)))
+                    {
+                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(63 + unk525CEC);
+                        World::Pos3 bbOffset = { 0, 2, 0 };
+                        World::Pos3 bbLength = { 1, 28, 26 };
+                        session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+                    }
+                    if (!(bridgeEntry.edgesQuarters & (1U << 5)))
+                    {
+                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(40 + unk525CE8);
+                        World::Pos3 bbOffset = { 0, 30, 2 };
+                        World::Pos3 bbLength = { 28, 1, 24 };
+                        session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+                    }
+                    if (!(bridgeEntry.edgesQuarters & (1U << 6)))
+                    {
+                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(64 + unk525CEC);
+                        World::Pos3 bbOffset = { 30, 2, 2 };
+                        World::Pos3 bbLength = { 1, 28, 24 };
+                        session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+                    }
+                }
                 break;
             }
         }
