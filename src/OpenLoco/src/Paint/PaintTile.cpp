@@ -679,10 +679,62 @@ namespace OpenLoco::Paint
                 paintFlatSingleQuarterSupportFront(session, *bridgeObj, bridgeEntry, supportLength, slope);
                 break;
             default:
+            {
                 // 0x0042B08A
+                auto unkTile = World::toTileSpace(Math::Vector::rotate(session.getUnkPosition(), session.getRotation()));
+                unkTile.x &= bridgeObj->spanLength - 1;
+                unkTile.y &= bridgeObj->spanLength - 1;
+
+                [[maybe_unused]] const auto unk525CF6 = unkTile.x * 2 / (1U << bridgeObj->pillarSpacing);
+                [[maybe_unused]] const auto unk525CF7 = unkTile.y * 2 / (1U << bridgeObj->pillarSpacing);
+                [[maybe_unused]] const auto unk525CE8 = unkTile.x * 6;
+                [[maybe_unused]] const auto unk525CEC = unkTile.y * 6;
+
+                bool unkSide = [&session, &bridgeEntry]() {
+                    switch (session.getRotation())
+                    {
+                        case 0:
+                        case 2:
+                            return (
+                                !(bridgeEntry.edgesQuarters & (1U << 5))
+                                || !(bridgeEntry.edgesQuarters & (1U << 7)));
+                        case 1:
+                        case 3:
+                            return !(
+                                !(bridgeEntry.edgesQuarters & (1U << 6))
+                                || !(bridgeEntry.edgesQuarters & (1U << 4)));
+                    }
+                    return false;
+                }();
+
+                if (unkSide)
+                {
+                    // 0x0042B4DC
+                    if (bridgeObj->noRoof & (1U << 0))
+                    {
+                        const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 6 : 41;
+                        auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(roofImageIdx);
+                        World::Pos3 bbOffset = { 0, 0, 30 };
+                        World::Pos3 bbLength = { 32, 32, 0 };
+                        session.addToPlotList4FD150(roofImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+                    }
+                }
+                else
+                {
+                    // 0x0042B25D
+                    if (bridgeObj->noRoof & (1U << 0))
+                    {
+                        const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 6 : 65;
+                        auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(roofImageIdx);
+                        World::Pos3 bbOffset = { 0, 0, 30 };
+                        World::Pos3 bbLength = { 32, 32, 0 };
+                        session.addToPlotList4FD150(roofImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+                    }
+                }
+                // 0x0042B837
                 break;
+            }
         }
-        // 0x0042B063
 
         // 0x0042BED2
         // Paint shadow
