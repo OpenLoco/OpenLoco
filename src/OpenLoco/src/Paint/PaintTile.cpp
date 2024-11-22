@@ -1011,12 +1011,65 @@ namespace OpenLoco::Paint
                     // 0x0042B25D
                     if (bridgeObj->noRoof & (1U << 0))
                     {
-                        const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 6 : 65;
+                        const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 6 : 65 + unk525CEC;
                         auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(roofImageIdx);
                         World::Pos3 bbOffset = { 0, 0, 30 };
                         World::Pos3 bbLength = { 32, 32, 0 };
                         session.addToPlotList4FD150(roofImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
                     }
+
+                    auto unks = [&session, &bridgeEntry, &bridgeObj, unk525CF7, supportLength, slope]() -> std::optional<UnkHeights> {
+                        if ((bridgeEntry.edgesQuarters & ((1U << 6) | (1U << 5))) == ((1U << 6) | (1U << 5)))
+                        {
+                            return std::nullopt;
+                        }
+                        if (unk525CF7 & (1U << 0))
+                        {
+                            if (session.getSupportHeight(0).height == -1
+                                || session.getSupportHeight(1).height == -1
+                                || session.getSupportHeight(5).height == -1)
+                            {
+                                return std::nullopt;
+                            }
+                        }
+                        if (unk525CF7 & (1U << 1))
+                        {
+                            if (session.getSupportHeight(2).height == -1
+                                || session.getSupportHeight(3).height == -1
+                                || session.getSupportHeight(8).height == -1)
+                            {
+                                return std::nullopt;
+                            }
+                        }
+
+                        int16_t unkHeight = supportLength - bridgeObj->var_06;
+                        if (unkHeight < 0)
+                        {
+                            return std::nullopt;
+                        }
+                        if (bridgeObj->var_06 == 32)
+                        {
+                            unkHeight = bridgeEntry.height - 16;
+                            if (unkHeight == session.getWaterHeight())
+                            {
+                                return std::nullopt;
+                            }
+                        }
+
+                        const int16_t unkHeight2 = unkHeight - k4F901C[slope];
+                        if (unkHeight2 < 0)
+                        {
+                            return std::nullopt;
+                        }
+
+                        unkHeight -= k4F8FDC[slope];
+                        if (unkHeight < 0)
+                        {
+                            return std::nullopt;
+                        }
+                        return UnkHeights{ unkHeight, unkHeight2 };
+                    }();
+                    // TODO
                 }
                 // 0x0042B837
                 if (bridgeEntry.subType == 0)
