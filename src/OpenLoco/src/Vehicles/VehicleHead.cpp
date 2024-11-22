@@ -570,23 +570,18 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        if (mode != TransportMode::road)
+
+        if (mode == TransportMode::road && trackType == 0xFF)
         {
-            return true;
+            auto curTotalLength = getVehicleTotalLength();
+            auto additionalNewLength = ObjectManager::get<VehicleObject>(vehicleTypeId)->getLength();
+            if (curTotalLength + additionalNewLength > kMaxRoadVehicleLength)
+            {
+                GameCommands::setErrorText(StringIds::vehicle_too_long);
+                return false;
+            }
         }
 
-        if (trackType != 0xFF)
-        {
-            return true;
-        }
-
-        auto curTotalLength = getVehicleTotalLength();
-        auto additionalNewLength = ObjectManager::get<VehicleObject>(vehicleTypeId)->getLength();
-        if (curTotalLength + additionalNewLength > kMaxVehicleLength)
-        {
-            GameCommands::setErrorText(StringIds::vehicle_too_long);
-            return false;
-        }
         return true;
     }
 
