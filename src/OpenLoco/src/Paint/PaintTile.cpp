@@ -411,6 +411,143 @@ namespace OpenLoco::Paint
         32,
         0,
     };
+
+    constexpr std::array<int16_t, 32> k4F8FDC = {
+        0,
+        0,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        0,
+        0,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        32,
+        0,
+        0,
+        0,
+        16,
+        0,
+        16,
+        32,
+        0,
+    };
+
+    constexpr std::array<int16_t, 32> k4F901C = {
+        0,
+        16,
+        0,
+        16,
+        0,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16,
+        0,
+        0,
+        0,
+        32,
+        0,
+        32,
+        16,
+        0,
+    };
+    constexpr std::array<int16_t, 32> k4F90DC = {
+        0,
+        0,
+        2,
+        2,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        2,
+        0,
+        1,
+        1,
+        0,
+    };
+    constexpr std::array<int16_t, 32> k4F911C = {
+        0,
+        2,
+        0,
+        2,
+        0,
+        2,
+        0,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        2,
+        0,
+        1,
+        1,
+        0,
+    };
     constexpr std::array<int16_t, 32> k4F915C = {
         0,
         0,
@@ -642,6 +779,65 @@ namespace OpenLoco::Paint
                 const auto heightOffset = World::Pos3{ 0, 0, height525D04 };
                 World::Pos3 bbOffset = { 30, 0, 0 };
                 World::Pos3 bbLength = { 2, 32, 14 };
+                session.addToPlotList4FD150(image, heightOffset, bbOffset + heightOffset, bbLength);
+            }
+        }
+    }
+
+    // 0x0042C176
+    static void paintSupport3(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, uint8_t unk525CF7, int16_t height525CFE, int16_t height525CFC, int16_t height525D06, uint32_t imageIdx525D02, uint32_t imageIdx525D00)
+    {
+        auto height525D04 = height525D06;
+        if (unk525CF7 & (1U << 0))
+        {
+            while (height525CFE >= 16)
+            {
+                bool is16section = height525CFE == 16 || ((height525D06 - 16) == session.getWaterHeight());
+                int16_t sectionHeight = is16section ? 16 : 32;
+                const auto bbLength = is16section ? World::Pos3{ 32, 2, 15 } : World::Pos3{ 32, 2, 31 };
+                const auto imageIndex = is16section ? 24 : 26;
+
+                height525CFE -= sectionHeight;
+                height525D06 -= sectionHeight;
+                auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
+                const auto heightOffset = World::Pos3{ 0, 0, height525D06 };
+                World::Pos3 bbOffset = { 0, 30, 0 };
+                session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
+            }
+            if (imageIdx525D02 != 0)
+            {
+                height525D06 -= 16;
+                auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(27 + imageIdx525D02);
+                const auto heightOffset = World::Pos3{ 0, 0, height525D06 };
+                World::Pos3 bbOffset = { 0, 0, 0 };
+                World::Pos3 bbLength = { 32, 2, 14 };
+                session.addToPlotList4FD150(image, heightOffset, bbOffset + heightOffset, bbLength);
+            }
+        }
+
+        if (unk525CF7 & (1U << 1))
+        {
+            while (height525CFC >= 16)
+            {
+                bool is16section = height525CFC == 16 || ((height525D04 - 16) == session.getWaterHeight());
+                int16_t sectionHeight = is16section ? 16 : 32;
+                const auto bbLength = is16section ? World::Pos3{ 32, 2, 15 } : World::Pos3{ 32, 2, 31 };
+                const auto imageIndex = is16section ? 25 : 27;
+
+                height525CFC -= sectionHeight;
+                height525D04 -= sectionHeight;
+                auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
+                const auto heightOffset = World::Pos3{ 0, 0, height525D04 };
+                World::Pos3 bbOffset = { 0, 30, 0 };
+                session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
+            }
+            if (imageIdx525D00 != 0)
+            {
+                height525D04 -= 16;
+                auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(29 + imageIdx525D00);
+                const auto heightOffset = World::Pos3{ 0, 0, height525D04 };
+                World::Pos3 bbOffset = { 0, 30, 0 };
+                World::Pos3 bbLength = { 32, 2, 14 };
                 session.addToPlotList4FD150(image, heightOffset, bbOffset + heightOffset, bbLength);
             }
         }
@@ -1069,7 +1265,46 @@ namespace OpenLoco::Paint
                         }
                         return UnkHeights{ unkHeight, unkHeight2 };
                     }();
-                    // TODO
+                    if (unks.has_value())
+                    {
+                        const auto& [unkHeight, unkHeight2] = unks.value();
+                        const auto unk525D00 = k4F911C[slope];
+                        const auto unk525D02 = k4F90DC[slope];
+                        const auto unk525D06 = bridgeEntry.height - bridgeObj->var_06;
+
+                        {
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(60 + unk525CEC);
+                            auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->var_06 };
+                            World::Pos3 bbOffset = { 0, 0, static_cast<int16_t>(bridgeObj->var_06 - 2) };
+                            World::Pos3 bbLength = { 32, 32, 1 };
+                            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
+                        }
+                        {
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(61 + unk525CEC);
+                            auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->var_06 };
+                            World::Pos3 bbOffset = { 0, 0, 0 };
+                            World::Pos3 bbLength = { 32, 2, static_cast<int16_t>(bridgeObj->var_06 - 3) };
+                            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
+                        }
+                        {
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(62 + unk525CEC);
+                            auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->var_06 };
+                            World::Pos3 bbOffset = { 0, 30, 0 };
+                            World::Pos3 bbLength = { 32, 2, static_cast<int16_t>(bridgeObj->var_06 - 3) };
+                            session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
+                        }
+
+                        paintSupport3(session, *bridgeObj, bridgeEntry, unk525CF7, unkHeight, unkHeight2, unk525D06, unk525D02, unk525D00);
+                    }
+                    else
+                    {
+                        const auto baseImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 1 : 60 + unk525CEC;
+                        auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(baseImageIdx);
+                        auto offset = baseHeightOffset - World::Pos3{ 0, 0, 16 };
+                        World::Pos3 bbOffset = { 0, 0, 14 };
+                        World::Pos3 bbLength = { 32, 32, 1 };
+                        session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
+                    }
                 }
                 // 0x0042B837
                 if (bridgeEntry.subType == 0)
