@@ -63,7 +63,15 @@ namespace OpenLoco
 
     namespace Bridge::ImageIds
     {
-        constexpr uint32_t previewImage = 0;
+        // Unlike most objects bridges have a fixed number
+        // of images and this number doesn't change dynamically
+        // with the features of the bridge. If the image is
+        // not required due to the features of the bridge an
+        // empty 1x1 pixel is normal used.
+
+        // Image displayed in the bridge selection dropdown
+        constexpr uint32_t uiDropdown = 0;
+
         constexpr uint32_t deckBaseNoSupport = 1;
         constexpr uint32_t deckBaseNoSupportEdge0 = 2;
         constexpr uint32_t deckBaseNoSupportEdge1 = 3;
@@ -74,9 +82,33 @@ namespace OpenLoco
         constexpr uint32_t roofEdge1 = 8;
         constexpr uint32_t roofEdge2 = 9;
         constexpr uint32_t roofEdge3 = 10;
-        // i.e.
-        constexpr uint32_t deckBaseEdge3 = 11;
 
+        // Front facing edge with any support header
+        constexpr uint32_t deckBaseEdge3 = 11;
+        constexpr uint32_t deckWallEdge3 = 12;
+        constexpr uint32_t deckWallEdge1 = 13;
+        constexpr uint32_t deckWallEdge0 = 14;
+        constexpr uint32_t deckWallEdge2 = 15;
+        constexpr uint32_t supportSegmentLhs16NE = 16;
+        constexpr uint32_t supportSegmentRhs16NE = 17;
+        constexpr uint32_t supportSegmentLhs32NE = 18;
+        constexpr uint32_t supportSegmentRhs32NE = 19;
+        constexpr uint32_t supportSegmentLhsSlope1NE = 20;
+        constexpr uint32_t supportSegmentLhsSlope2NE = 21;
+        constexpr uint32_t supportSegmentRhsSlope1NE = 22;
+        constexpr uint32_t supportSegmentRhsSlope2NE = 23;
+        constexpr uint32_t supportSegmentLhs16SW = 24;
+        constexpr uint32_t supportSegmentRhs16SW = 25;
+        constexpr uint32_t supportSegmentLhs32SW = 26;
+        constexpr uint32_t supportSegmentRhs32SW = 27;
+        constexpr uint32_t supportSegmentLhsSlope1SW = 28;
+        constexpr uint32_t supportSegmentLhsSlope2SW = 29;
+        constexpr uint32_t supportSegmentRhsSlope1SW = 30;
+        constexpr uint32_t supportSegmentRhsSlope2SW = 31;
+        constexpr uint32_t supportSegmentEdge3Lhs16SW = 32;
+        constexpr uint32_t supportSegmentEdge3Rhs16SW = 33;
+        constexpr uint32_t supportSegmentEdge3Lhs32SW = 34;
+        constexpr uint32_t supportSegmentEdge3Rhs32SW = 35;
         constexpr uint32_t deckBaseNEspan0 = 36;
         constexpr uint32_t supportHeaderLhsNEspan0 = 37;
         constexpr uint32_t supportHeaderRhsNEspan0 = 38;
