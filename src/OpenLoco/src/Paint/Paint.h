@@ -204,7 +204,7 @@ namespace OpenLoco::Paint
             , padImage2(0)
             , edgesQuarters((edges << 4U) | quarters)
             , objectId(_objectId)
-            , imageBase(_imageBase){};
+            , imageBase(_imageBase) {};
 
         bool isEmpty() const { return height == -1; }
     };
