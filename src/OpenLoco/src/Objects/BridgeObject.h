@@ -84,7 +84,8 @@ namespace OpenLoco
         constexpr uint32_t roofEdge3 = 10;
 
         // Front facing edge with any support header
-        constexpr uint32_t deckBaseEdge3 = 11;
+        constexpr uint32_t deckBaseWithSupportHeaderEdge3 = 11;
+
         constexpr uint32_t deckWallEdge3 = 12;
         constexpr uint32_t deckWallEdge1 = 13;
         constexpr uint32_t deckWallEdge0 = 14;
@@ -200,9 +201,11 @@ namespace OpenLoco
         constexpr uint32_t deckBaseSteepSlopeNW = 117;
         constexpr uint32_t deckWallLhsSteepSlopeNW = 118;
         constexpr uint32_t deckWallRhsSteepSlopeNW = 119;
-        constexpr uint32_t deckBaseEdge0 = 120;
-        constexpr uint32_t deckBaseEdge1 = 121;
-        constexpr uint32_t deckBaseEdge2 = 122;
-        constexpr uint32_t deckBaseEdge3 = 123;
+        // Even though this is on a sloped curve it is only
+        // ever a flat piece as there isn't an up/down variation
+        constexpr uint32_t deckBaseSlopedCurveEdge0 = 120;
+        constexpr uint32_t deckBaseSlopedCurveEdge1 = 121;
+        constexpr uint32_t deckBaseSlopedCurveEdge2 = 122;
+        constexpr uint32_t deckBaseSlopedCurveEdge3 = 123;
     }
 }

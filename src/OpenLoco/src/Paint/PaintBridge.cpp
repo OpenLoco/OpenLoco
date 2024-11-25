@@ -1017,18 +1017,18 @@ namespace OpenLoco::Paint
                         }
                         if (unk525CF6 & (1U << 1))
                         {
-                            if (session.getSupportHeight(1).height == -1
-                                || session.getSupportHeight(3).height == -1
-                                || session.getSupportHeight(7).height == -1)
+                            if (session.getSupportHeight(1).height == 0xFFFFU
+                                || session.getSupportHeight(3).height == 0xFFFFU
+                                || session.getSupportHeight(7).height == 0xFFFFU)
                             {
                                 return std::nullopt;
                             }
                         }
                         if (unk525CF6 & (1U << 0))
                         {
-                            if (session.getSupportHeight(0).height == -1
-                                || session.getSupportHeight(2).height == -1
-                                || session.getSupportHeight(6).height == -1)
+                            if (session.getSupportHeight(0).height == 0xFFFFU
+                                || session.getSupportHeight(2).height == 0xFFFFU
+                                || session.getSupportHeight(6).height == 0xFFFFU)
                             {
                                 return std::nullopt;
                             }
@@ -1122,18 +1122,18 @@ namespace OpenLoco::Paint
                         }
                         if (unk525CF7 & (1U << 0))
                         {
-                            if (session.getSupportHeight(0).height == -1
-                                || session.getSupportHeight(1).height == -1
-                                || session.getSupportHeight(5).height == -1)
+                            if (session.getSupportHeight(0).height == 0xFFFFU
+                                || session.getSupportHeight(1).height == 0xFFFFU
+                                || session.getSupportHeight(5).height == 0xFFFFU)
                             {
                                 return std::nullopt;
                             }
                         }
                         if (unk525CF7 & (1U << 1))
                         {
-                            if (session.getSupportHeight(2).height == -1
-                                || session.getSupportHeight(3).height == -1
-                                || session.getSupportHeight(8).height == -1)
+                            if (session.getSupportHeight(2).height == 0xFFFFU
+                                || session.getSupportHeight(3).height == 0xFFFFU
+                                || session.getSupportHeight(8).height == 0xFFFFU)
                             {
                                 return std::nullopt;
                             }
@@ -1255,7 +1255,7 @@ namespace OpenLoco::Paint
                 displaySlope = kSlopeToDisplaySlope[session.getSurfaceSlope()];
             }
 
-            const auto shadowImage = ImageId(kSlopeToBridgeShadow[unkF25340][displaySlope]).withTranslucency(ExtColour::unk32);
+            const auto shadowImage = ImageId(kSlopeToBridgeShadow[unkF25340 - 1][displaySlope]).withTranslucency(ExtColour::unk32);
 
             World::Pos3 heightOffset = { 0, 0, height };
             World::Pos3 bbOffset2 = { 15, 15, 1 };
