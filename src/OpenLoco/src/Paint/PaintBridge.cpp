@@ -8,25 +8,170 @@
 
 namespace OpenLoco::Paint
 {
-    constexpr std::array<uint32_t, 17> k4F91FE = {
-        0,
-        84,
-        87,
-        90,
-        93,
-        96,
-        99,
-        102,
-        105,
-        108,
-        111,
-        114,
-        117,
-        120,
-        121,
-        122,
-        123,
+    struct DeckImages
+    {
+        uint32_t deck;
+        uint32_t wallLhs;
+        uint32_t wallRhs;
     };
+
+    // Based on 0x004F91FE
+    constexpr std::array<DeckImages, 16> k4F91FE = {
+        DeckImages{
+            Bridge::ImageIds::deckBaseGentleSlopeNE0,
+            Bridge::ImageIds::deckWallLhsGentleSlopeNE0,
+            Bridge::ImageIds::deckWallRhsGentleSlopeNE0,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseGentleSlopeNE1,
+            Bridge::ImageIds::deckWallLhsGentleSlopeNE1,
+            Bridge::ImageIds::deckWallRhsGentleSlopeNE1,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseGentleSlopeSE0,
+            Bridge::ImageIds::deckWallLhsGentleSlopeSE0,
+            Bridge::ImageIds::deckWallRhsGentleSlopeSE0,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseGentleSlopeSE1,
+            Bridge::ImageIds::deckWallLhsGentleSlopeSE1,
+            Bridge::ImageIds::deckWallRhsGentleSlopeSE1,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseGentleSlopeSW0,
+            Bridge::ImageIds::deckWallLhsGentleSlopeSW0,
+            Bridge::ImageIds::deckWallRhsGentleSlopeSW0,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseGentleSlopeSW1,
+            Bridge::ImageIds::deckWallLhsGentleSlopeSW1,
+            Bridge::ImageIds::deckWallRhsGentleSlopeSW1,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseGentleSlopeNW0,
+            Bridge::ImageIds::deckWallLhsGentleSlopeNW0,
+            Bridge::ImageIds::deckWallRhsGentleSlopeNW0,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseGentleSlopeNW1,
+            Bridge::ImageIds::deckWallLhsGentleSlopeNW1,
+            Bridge::ImageIds::deckWallRhsGentleSlopeNW1,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseSteepSlopeNE,
+            Bridge::ImageIds::deckWallLhsSteepSlopeNE,
+            Bridge::ImageIds::deckWallRhsSteepSlopeNE,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseSteepSlopeSE,
+            Bridge::ImageIds::deckWallLhsSteepSlopeSE,
+            Bridge::ImageIds::deckWallRhsSteepSlopeSE,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseSteepSlopeSW,
+            Bridge::ImageIds::deckWallLhsSteepSlopeSW,
+            Bridge::ImageIds::deckWallRhsSteepSlopeSW,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseSteepSlopeNW,
+            Bridge::ImageIds::deckWallLhsSteepSlopeNW,
+            Bridge::ImageIds::deckWallRhsSteepSlopeNW,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseSlopedCurveEdge0,
+            0,
+            0,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseSlopedCurveEdge1,
+            0,
+            0,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseSlopedCurveEdge2,
+            0,
+            0,
+        },
+        DeckImages{
+            Bridge::ImageIds::deckBaseSlopedCurveEdge3,
+            0,
+            0,
+        },
+    };
+
+    struct SpanImages
+    {
+        uint32_t deck;
+        uint32_t supportHeaderLhs;
+        uint32_t supportHeaderRhs;
+        uint32_t wallLhs;
+        uint32_t wallRhs;
+        uint32_t roof;
+    };
+
+    std::array<std::array<SpanImages, 4>, 2> kSpanImages = {
+        std::array<SpanImages, 4>{
+            SpanImages{
+                Bridge::ImageIds::deckBaseNEspan0,
+                Bridge::ImageIds::supportHeaderLhsNEspan0,
+                Bridge::ImageIds::supportHeaderRhsNEspan0,
+                Bridge::ImageIds::deckWallLhsNEspan0,
+                Bridge::ImageIds::deckWallRhsNEspan0,
+                Bridge::ImageIds::roofNEspan0 },
+            SpanImages{
+                Bridge::ImageIds::deckBaseNEspan1,
+                Bridge::ImageIds::supportHeaderLhsNEspan1,
+                Bridge::ImageIds::supportHeaderRhsNEspan1,
+                Bridge::ImageIds::deckWallLhsNEspan1,
+                Bridge::ImageIds::deckWallRhsNEspan1,
+                Bridge::ImageIds::roofNEspan1 },
+            SpanImages{
+                Bridge::ImageIds::deckBaseNEspan2,
+                Bridge::ImageIds::supportHeaderLhsNEspan2,
+                Bridge::ImageIds::supportHeaderRhsNEspan2,
+                Bridge::ImageIds::deckWallLhsNEspan2,
+                Bridge::ImageIds::deckWallRhsNEspan2,
+                Bridge::ImageIds::roofNEspan2 },
+            SpanImages{
+                Bridge::ImageIds::deckBaseNEspan3,
+                Bridge::ImageIds::supportHeaderLhsNEspan3,
+                Bridge::ImageIds::supportHeaderRhsNEspan3,
+                Bridge::ImageIds::deckWallLhsNEspan3,
+                Bridge::ImageIds::deckWallRhsNEspan3,
+                Bridge::ImageIds::roofNEspan3 },
+        },
+        std::array<SpanImages, 4>{
+            SpanImages{
+                Bridge::ImageIds::deckBaseSWspan0,
+                Bridge::ImageIds::supportHeaderLhsSWspan0,
+                Bridge::ImageIds::supportHeaderRhsSWspan0,
+                Bridge::ImageIds::deckWallLhsSWspan0,
+                Bridge::ImageIds::deckWallRhsSWspan0,
+                Bridge::ImageIds::roofSWspan0 },
+            SpanImages{
+                Bridge::ImageIds::deckBaseSWspan1,
+                Bridge::ImageIds::supportHeaderLhsSWspan1,
+                Bridge::ImageIds::supportHeaderRhsSWspan1,
+                Bridge::ImageIds::deckWallLhsSWspan1,
+                Bridge::ImageIds::deckWallRhsSWspan1,
+                Bridge::ImageIds::roofSWspan1 },
+            SpanImages{
+                Bridge::ImageIds::deckBaseSWspan2,
+                Bridge::ImageIds::supportHeaderLhsSWspan2,
+                Bridge::ImageIds::supportHeaderRhsSWspan2,
+                Bridge::ImageIds::deckWallLhsSWspan2,
+                Bridge::ImageIds::deckWallRhsSWspan2,
+                Bridge::ImageIds::roofSWspan2 },
+            SpanImages{
+                Bridge::ImageIds::deckBaseSWspan3,
+                Bridge::ImageIds::supportHeaderLhsSWspan3,
+                Bridge::ImageIds::supportHeaderRhsSWspan3,
+                Bridge::ImageIds::deckWallLhsSWspan3,
+                Bridge::ImageIds::deckWallRhsSWspan3,
+                Bridge::ImageIds::roofSWspan3 },
+        },
+    };
+
     constexpr std::array<uint16_t, 17> k4F91DC = {
         0,
         5,
@@ -579,7 +724,7 @@ namespace OpenLoco::Paint
                 bool is16section = rhsSupportLength == 16 || ((rhsSupportHeight - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 2, 2, 15 } : World::Pos3{ 2, 2, 31 };
-                const auto imageIndex = is16section ? 32 : 34;
+                const auto imageIndex = is16section ? Bridge::ImageIds::supportSegmentEdge3Lhs16SW : Bridge::ImageIds::supportSegmentEdge3Lhs32SW;
 
                 rhsSupportHeight -= sectionHeight;
                 rhsSupportLength -= sectionHeight;
@@ -597,7 +742,7 @@ namespace OpenLoco::Paint
                 bool is16section = lhsSupportLength == 16 || ((lhsSupportHeight - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 2, 2, 15 } : World::Pos3{ 2, 2, 31 };
-                const auto imageIndex = is16section ? 33 : 35;
+                const auto imageIndex = is16section ? Bridge::ImageIds::supportSegmentEdge3Rhs16SW : Bridge::ImageIds::supportSegmentEdge3Rhs32SW;
 
                 lhsSupportLength -= sectionHeight;
                 lhsSupportHeight -= sectionHeight;
@@ -620,7 +765,7 @@ namespace OpenLoco::Paint
                 bool is16section = lhsSupportLength == 16 || ((lhsSupportHeight - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 2, 32, 15 } : World::Pos3{ 2, 32, 31 };
-                const auto imageIndex = is16section ? 16 : 18;
+                const auto imageIndex = is16section ? Bridge::ImageIds::supportSegmentLhs16NE : Bridge::ImageIds::supportSegmentLhs32NE;
 
                 lhsSupportLength -= sectionHeight;
                 lhsSupportHeight -= sectionHeight;
@@ -648,7 +793,7 @@ namespace OpenLoco::Paint
                 bool is16section = rhsSupportLength == 16 || ((rhsSupportHeight - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 2, 32, 15 } : World::Pos3{ 2, 32, 31 };
-                const auto imageIndex = is16section ? 17 : 19;
+                const auto imageIndex = is16section ? Bridge::ImageIds::supportSegmentRhs16NE : Bridge::ImageIds::supportSegmentRhs32NE;
 
                 rhsSupportLength -= sectionHeight;
                 rhsSupportHeight -= sectionHeight;
@@ -680,7 +825,7 @@ namespace OpenLoco::Paint
                 bool is16section = lhsSupportLength == 16 || ((lhsSupportHeight - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 32, 2, 15 } : World::Pos3{ 32, 2, 31 };
-                const auto imageIndex = is16section ? 24 : 26;
+                const auto imageIndex = is16section ? Bridge::ImageIds::supportSegmentLhs16SW : Bridge::ImageIds::supportSegmentLhs32SW;
 
                 lhsSupportLength -= sectionHeight;
                 lhsSupportHeight -= sectionHeight;
@@ -708,7 +853,7 @@ namespace OpenLoco::Paint
                 bool is16section = rhsSupportLength == 16 || ((rhsSupportHeight - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 32, 2, 15 } : World::Pos3{ 32, 2, 31 };
-                const auto imageIndex = is16section ? 25 : 27;
+                const auto imageIndex = is16section ? Bridge::ImageIds::supportSegmentRhs16SW : Bridge::ImageIds::supportSegmentRhs32SW;
 
                 rhsSupportLength -= sectionHeight;
                 rhsSupportHeight -= sectionHeight;
@@ -737,7 +882,7 @@ namespace OpenLoco::Paint
 
         if ((bridgeObj.flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
         {
-            auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(10);
+            auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(Bridge::ImageIds::roofEdge3);
             World::Pos3 bbOffset = { 0, 0, 30 };
             World::Pos3 bbLength = { 32, 32, 0 };
             session.addToPlotList4FD150(roofImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
@@ -786,7 +931,7 @@ namespace OpenLoco::Paint
             const auto& [lhsSupportLenght, rhsSupportLength] = unks.value();
             const auto supportHeight = bridgeEntry.height - bridgeObj.deckDepth;
 
-            auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(11);
+            auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(Bridge::ImageIds::deckBaseWithSupportHeaderEdge3);
             auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj.deckDepth };
             World::Pos3 bbOffset = { 0, 0, 14 };
             World::Pos3 bbLength = { 32, 32, 1 };
@@ -797,7 +942,7 @@ namespace OpenLoco::Paint
         else
         {
             // 0x0042BE22
-            auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(5);
+            auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(Bridge::ImageIds::deckBaseNoSupportEdge3);
             auto offset = baseHeightOffset - World::Pos3{ 0, 0, 16 };
             World::Pos3 bbOffset = { 0, 0, 14 };
             World::Pos3 bbLength = { 32, 32, 1 };
@@ -807,7 +952,7 @@ namespace OpenLoco::Paint
 
         if (bridgeEntry.subType == 0)
         {
-            auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(12);
+            auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(Bridge::ImageIds::deckWallEdge3);
             World::Pos3 bbOffset = { 17, 17, 2 };
             World::Pos3 bbLength3 = { 2, 2, 24 };
             session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength3);
@@ -840,23 +985,24 @@ namespace OpenLoco::Paint
 
         if (k4F91DC[bridgeEntry.subType] & (1U << 0))
         {
-            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(k4F91FE[bridgeEntry.subType]);
+            const auto& deckImages = k4F91FE[bridgeEntry.subType - 1];
+            const auto deckImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(deckImages.deck);
             World::Pos3 bbOffset = { 2, 2, 0 };
             World::Pos3 bbLength = { 28, 28, 1 };
-            session.addToPlotList4FD150(image, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
+            session.addToPlotList4FD150(deckImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
 
             if (k4F91DC[bridgeEntry.subType] & (1U << 2))
             {
                 if (!(bridgeEntry.edgesQuarters & (1U << 7)))
                 {
-                    auto wallImage = image.withIndexOffset(1);
+                    auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(deckImages.wallLhs);
                     World::Pos3 bbOffset2 = { 2, 0, 8 };
                     World::Pos3 bbLength2 = { 28, 1, 30 };
                     session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset2 + baseHeightOffset, bbLength2);
                 }
                 if (!(bridgeEntry.edgesQuarters & (1U << 5)))
                 {
-                    auto wallImage = image.withIndexOffset(2);
+                    auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(deckImages.wallRhs);
                     World::Pos3 bbOffset2 = { 1, 30, 8 };
                     World::Pos3 bbLength2 = { 29, 1, 30 };
                     session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset2 + baseHeightOffset, bbLength2);
@@ -866,14 +1012,14 @@ namespace OpenLoco::Paint
             {
                 if (!(bridgeEntry.edgesQuarters & (1U << 4)))
                 {
-                    auto wallImage = image.withIndexOffset(1);
+                    auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(deckImages.wallLhs);
                     World::Pos3 bbOffset2 = { 0, 2, 8 };
                     World::Pos3 bbLength2 = { 1, 28, 30 };
                     session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset2 + baseHeightOffset, bbLength2);
                 }
                 if (!(bridgeEntry.edgesQuarters & (1U << 6)))
                 {
-                    auto wallImage = image.withIndexOffset(2);
+                    auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(deckImages.wallRhs);
                     World::Pos3 bbOffset2 = { 30, 1, 8 };
                     World::Pos3 bbLength2 = { 1, 29, 30 };
                     session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset2 + baseHeightOffset, bbLength2);
@@ -883,28 +1029,28 @@ namespace OpenLoco::Paint
             auto offset2 = baseHeightOffset + World::Pos3{ 0, 0, 8 };
             if (k4F91DC[bridgeEntry.subType] & (1U << 4))
             {
-                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(14);
+                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(Bridge::ImageIds::deckWallEdge0);
                 World::Pos3 bbOffset2 = { 22, 24, 0 };
                 World::Pos3 bbLength2 = { 2, 2, 26 };
                 session.addToPlotList4FD150(image2, offset2, bbOffset2 + offset2, bbLength2);
             }
             if (k4F91DC[bridgeEntry.subType] & (1U << 5))
             {
-                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(13);
+                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(Bridge::ImageIds::deckWallEdge1);
                 World::Pos3 bbOffset2 = { 7, 7, 0 };
                 World::Pos3 bbLength2 = { 2, 2, 26 };
                 session.addToPlotList4FD150(image2, offset2, bbOffset2 + offset2, bbLength2);
             }
             if (k4F91DC[bridgeEntry.subType] & (1U << 6))
             {
-                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(15);
+                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(Bridge::ImageIds::deckWallEdge2);
                 World::Pos3 bbOffset2 = { 24, 22, 0 };
                 World::Pos3 bbLength2 = { 2, 2, 26 };
                 session.addToPlotList4FD150(image2, offset2, bbOffset2 + offset2, bbLength2);
             }
             if (k4F91DC[bridgeEntry.subType] & (1U << 7))
             {
-                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(12);
+                auto image2 = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(Bridge::ImageIds::deckWallEdge3);
                 World::Pos3 bbOffset2 = { 17, 17, 2 };
                 World::Pos3 bbLength2 = { 2, 2, 24 };
                 session.addToPlotList4FD150(image2, offset2, bbOffset2 + offset2, bbLength2);
@@ -928,20 +1074,20 @@ namespace OpenLoco::Paint
             {
                 // 0x0042B9BA
                 unkF25340 = 5;
-                paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 7, 2, 14 }, { 22, 24, 0 });
+                paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { Bridge::ImageIds::roofEdge0, Bridge::ImageIds::deckBaseNoSupportEdge0, Bridge::ImageIds::deckWallEdge0 }, { 22, 24, 0 });
             }
             break;
             case 2:
             {
                 // 0x0042BAC3
                 unkF25340 = 3;
-                paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 8, 3, 13 }, { 7, 7, 0 });
+                paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { Bridge::ImageIds::roofEdge1, Bridge::ImageIds::deckBaseNoSupportEdge1, Bridge::ImageIds::deckWallEdge1 }, { 7, 7, 0 });
             }
             break;
             case 4:
                 // 0x0042BBCC
                 unkF25340 = 4;
-                paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { 9, 4, 15 }, { 24, 22, 0 });
+                paintFlatSingleQuarterNoSupport(session, *bridgeObj, bridgeEntry, { Bridge::ImageIds::roofEdge2, Bridge::ImageIds::deckBaseNoSupportEdge2, Bridge::ImageIds::deckWallEdge2 }, { 24, 22, 0 });
                 break;
             case 8:
                 // 0x0042BCD5
@@ -958,8 +1104,8 @@ namespace OpenLoco::Paint
 
                 const auto unk525CF6 = bridgeObj->pillarSpacing / (1U << (unkTile.x * 2));
                 const auto unk525CF7 = bridgeObj->pillarSpacing / (1U << (unkTile.y * 2));
-                const auto unk525CE8 = unkTile.x * 6;
-                const auto unk525CEC = unkTile.y * 6;
+                const auto& xSpanImages = kSpanImages[0][unkTile.x];
+                const auto& ySpanImages = kSpanImages[1][unkTile.y];
 
                 bool unkSide = [&session, &bridgeEntry]() {
                     switch (session.getRotation())
@@ -983,7 +1129,7 @@ namespace OpenLoco::Paint
                     // 0x0042B4DC
                     if ((bridgeObj->flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
                     {
-                        const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 6 : 41 + unk525CE8;
+                        const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? Bridge::ImageIds::roofFullTile : xSpanImages.roof;
                         auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(roofImageIdx);
                         World::Pos3 bbOffset = { 0, 0, 30 };
                         World::Pos3 bbLength = { 32, 32, 0 };
@@ -1050,21 +1196,21 @@ namespace OpenLoco::Paint
                         const auto supportHeight = bridgeEntry.height - bridgeObj->deckDepth;
 
                         {
-                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(36 + unk525CE8);
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(xSpanImages.deck);
                             auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->deckDepth };
                             World::Pos3 bbOffset = { 0, 0, static_cast<int16_t>(bridgeObj->deckDepth - 2) };
                             World::Pos3 bbLength = { 32, 32, 1 };
                             session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
                         }
                         {
-                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(37 + unk525CE8);
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(xSpanImages.supportHeaderLhs);
                             auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->deckDepth };
                             World::Pos3 bbOffset = { 0, 0, 0 };
                             World::Pos3 bbLength = { 2, 32, static_cast<int16_t>(bridgeObj->deckDepth - 3) };
                             session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
                         }
                         {
-                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(38 + unk525CE8);
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(xSpanImages.supportHeaderRhs);
                             auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->deckDepth };
                             World::Pos3 bbOffset = { 30, 0, 0 };
                             World::Pos3 bbLength = { 2, 32, static_cast<int16_t>(bridgeObj->deckDepth - 3) };
@@ -1075,7 +1221,7 @@ namespace OpenLoco::Paint
                     }
                     else
                     {
-                        const auto baseImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 1 : 36 + unk525CE8;
+                        const auto baseImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? Bridge::ImageIds::deckBaseNoSupport : xSpanImages.deck;
                         auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(baseImageIdx);
                         auto offset = baseHeightOffset - World::Pos3{ 0, 0, 16 };
                         World::Pos3 bbOffset = { 0, 0, 14 };
@@ -1088,7 +1234,7 @@ namespace OpenLoco::Paint
                     // 0x0042B25D
                     if ((bridgeObj->flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
                     {
-                        const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 6 : 65 + unk525CEC;
+                        const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? Bridge::ImageIds::roofFullTile : ySpanImages.roof;
                         auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(roofImageIdx);
                         World::Pos3 bbOffset = { 0, 0, 30 };
                         World::Pos3 bbLength = { 32, 32, 0 };
@@ -1154,21 +1300,21 @@ namespace OpenLoco::Paint
                         const auto supportHeight = bridgeEntry.height - bridgeObj->deckDepth;
 
                         {
-                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(60 + unk525CEC);
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(ySpanImages.deck);
                             auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->deckDepth };
                             World::Pos3 bbOffset = { 0, 0, static_cast<int16_t>(bridgeObj->deckDepth - 2) };
                             World::Pos3 bbLength = { 32, 32, 1 };
                             session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
                         }
                         {
-                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(61 + unk525CEC);
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(ySpanImages.supportHeaderLhs);
                             auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->deckDepth };
                             World::Pos3 bbOffset = { 0, 0, 0 };
                             World::Pos3 bbLength = { 32, 2, static_cast<int16_t>(bridgeObj->deckDepth - 3) };
                             session.addToPlotList4FD150(image, offset, bbOffset + offset, bbLength);
                         }
                         {
-                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(62 + unk525CEC);
+                            auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(ySpanImages.supportHeaderRhs);
                             auto offset = baseHeightOffset - World::Pos3{ 0, 0, bridgeObj->deckDepth };
                             World::Pos3 bbOffset = { 0, 30, 0 };
                             World::Pos3 bbLength = { 32, 2, static_cast<int16_t>(bridgeObj->deckDepth - 3) };
@@ -1179,7 +1325,7 @@ namespace OpenLoco::Paint
                     }
                     else
                     {
-                        const auto baseImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 1 : 60 + unk525CEC;
+                        const auto baseImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? Bridge::ImageIds::deckBaseNoSupport : ySpanImages.deck;
                         auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(baseImageIdx);
                         auto offset = baseHeightOffset - World::Pos3{ 0, 0, 16 };
                         World::Pos3 bbOffset = { 0, 0, 14 };
@@ -1192,28 +1338,28 @@ namespace OpenLoco::Paint
                 {
                     if (!(bridgeEntry.edgesQuarters & (1U << 7)))
                     {
-                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(39 + unk525CE8);
+                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(xSpanImages.wallLhs);
                         World::Pos3 bbOffset = { 2, 0, 0 };
                         World::Pos3 bbLength = { 28, 1, 26 };
                         session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
                     }
                     if (!(bridgeEntry.edgesQuarters & (1U << 4)))
                     {
-                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(63 + unk525CEC);
+                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(ySpanImages.wallLhs);
                         World::Pos3 bbOffset = { 0, 2, 0 };
                         World::Pos3 bbLength = { 1, 28, 26 };
                         session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
                     }
                     if (!(bridgeEntry.edgesQuarters & (1U << 5)))
                     {
-                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(40 + unk525CE8);
+                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(xSpanImages.wallRhs);
                         World::Pos3 bbOffset = { 0, 30, 2 };
                         World::Pos3 bbLength = { 28, 1, 24 };
                         session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
                     }
                     if (!(bridgeEntry.edgesQuarters & (1U << 6)))
                     {
-                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(64 + unk525CEC);
+                        auto wallImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(ySpanImages.wallRhs);
                         World::Pos3 bbOffset = { 30, 2, 2 };
                         World::Pos3 bbLength = { 1, 28, 24 };
                         session.addToPlotList4FD150(wallImage, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
