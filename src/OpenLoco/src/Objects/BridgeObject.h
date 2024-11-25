@@ -64,6 +64,18 @@ namespace OpenLoco
     namespace Bridge::ImageIds
     {
         constexpr uint32_t previewImage = 0;
+        constexpr uint32_t deckBaseNoSupport = 1;
+        constexpr uint32_t deckBaseNoSupportEdge0 = 2;
+        constexpr uint32_t deckBaseNoSupportEdge1 = 3;
+        constexpr uint32_t deckBaseNoSupportEdge2 = 4;
+        constexpr uint32_t deckBaseNoSupportEdge3 = 5;
+        constexpr uint32_t roofFullTile = 6;
+        constexpr uint32_t roofEdge0 = 7;
+        constexpr uint32_t roofEdge1 = 8;
+        constexpr uint32_t roofEdge2 = 9;
+        constexpr uint32_t roofEdge3 = 10;
+        // i.e.
+        constexpr uint32_t deckBaseEdge3 = 11;
 
         constexpr uint32_t deckBaseNEspan0 = 36;
         constexpr uint32_t supportHeaderLhsNEspan0 = 37;
@@ -113,5 +125,52 @@ namespace OpenLoco
         constexpr uint32_t deckWallLhsSWspan3 = 81;
         constexpr uint32_t deckWallRhsSWspan3 = 82;
         constexpr uint32_t roofSWspan3 = 83;
+
+        // The following are of the form:
+        // deckBase [slope] [rotation] [index]
+        // deckWall [side] [slope] [rotation] [index]
+        //
+        // Slope is either gentle or steep
+        // Gentle slopes are over 2 tiles so can be index 0 or 1
+        constexpr uint32_t deckBaseGentleSlopeNE0 = 84;
+        constexpr uint32_t deckWallLhsGentleSlopeNE0 = 85;
+        constexpr uint32_t deckWallRhsGentleSlopeNE0 = 86;
+        constexpr uint32_t deckBaseGentleSlopeNE1 = 87;
+        constexpr uint32_t deckWallLhsGentleSlopeNE1 = 88;
+        constexpr uint32_t deckWallRhsGentleSlopeNE1 = 89;
+        constexpr uint32_t deckBaseGentleSlopeSE0 = 90;
+        constexpr uint32_t deckWallLhsGentleSlopeSE0 = 91;
+        constexpr uint32_t deckWallRhsGentleSlopeSE0 = 92;
+        constexpr uint32_t deckBaseGentleSlopeSE1 = 93;
+        constexpr uint32_t deckWallLhsGentleSlopeSE1 = 94;
+        constexpr uint32_t deckWallRhsGentleSlopeSE1 = 95;
+        constexpr uint32_t deckBaseGentleSlopeSW0 = 96;
+        constexpr uint32_t deckWallLhsGentleSlopeSW0 = 97;
+        constexpr uint32_t deckWallRhsGentleSlopeSW0 = 98;
+        constexpr uint32_t deckBaseGentleSlopeSW1 = 99;
+        constexpr uint32_t deckWallLhsGentleSlopeSW1 = 100;
+        constexpr uint32_t deckWallRhsGentleSlopeSW1 = 101;
+        constexpr uint32_t deckBaseGentleSlopeNW0 = 102;
+        constexpr uint32_t deckWallLhsGentleSlopeNW0 = 103;
+        constexpr uint32_t deckWallRhsGentleSlopeNW0 = 104;
+        constexpr uint32_t deckBaseGentleSlopeNW1 = 105;
+        constexpr uint32_t deckWallLhsGentleSlopeNW1 = 106;
+        constexpr uint32_t deckWallRhsGentleSlopeNW1 = 107;
+        constexpr uint32_t deckBaseSteepSlopeNE = 108;
+        constexpr uint32_t deckWallLhsSteepSlopeNE = 109;
+        constexpr uint32_t deckWallRhsSteepSlopeNE = 110;
+        constexpr uint32_t deckBaseSteepSlopeSE = 111;
+        constexpr uint32_t deckWallLhsSteepSlopeSE = 112;
+        constexpr uint32_t deckWallRhsSteepSlopeSE = 113;
+        constexpr uint32_t deckBaseSteepSlopeSW = 114;
+        constexpr uint32_t deckWallLhsSteepSlopeSW = 115;
+        constexpr uint32_t deckWallRhsSteepSlopeSW = 116;
+        constexpr uint32_t deckBaseSteepSlopeNW = 117;
+        constexpr uint32_t deckWallLhsSteepSlopeNW = 118;
+        constexpr uint32_t deckWallRhsSteepSlopeNW = 119;
+        constexpr uint32_t deckBaseEdge0 = 120;
+        constexpr uint32_t deckBaseEdge1 = 121;
+        constexpr uint32_t deckBaseEdge2 = 122;
+        constexpr uint32_t deckBaseEdge3 = 123;
     }
 }
