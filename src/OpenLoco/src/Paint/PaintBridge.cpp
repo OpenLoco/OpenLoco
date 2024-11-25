@@ -1,4 +1,5 @@
 #include "PaintBridge.h"
+#include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/ObjectManager.h"
@@ -449,6 +450,114 @@ namespace OpenLoco::Paint
         0,
     };
 
+    static constexpr std::array<std::array<uint32_t, 19>, 5> kSlopeToBridgeShadow = {
+        std::array<uint32_t, 19>{
+            ImageIds::bridgeShadowFullTileSlope0,
+            ImageIds::bridgeShadowFullTileSlope1,
+            ImageIds::bridgeShadowFullTileSlope2,
+            ImageIds::bridgeShadowFullTileSlope3,
+            ImageIds::bridgeShadowFullTileSlope4,
+            ImageIds::bridgeShadowFullTileSlope5,
+            ImageIds::bridgeShadowFullTileSlope6,
+            ImageIds::bridgeShadowFullTileSlope7,
+            ImageIds::bridgeShadowFullTileSlope8,
+            ImageIds::bridgeShadowFullTileSlope9,
+            ImageIds::bridgeShadowFullTileSlope10,
+            ImageIds::bridgeShadowFullTileSlope11,
+            ImageIds::bridgeShadowFullTileSlope12,
+            ImageIds::bridgeShadowFullTileSlope13,
+            ImageIds::bridgeShadowFullTileSlope14,
+            ImageIds::bridgeShadowFullTileSlope15,
+            ImageIds::bridgeShadowFullTileSlope16,
+            ImageIds::bridgeShadowFullTileSlope17,
+            ImageIds::bridgeShadowFullTileSlope18,
+        },
+        std::array<uint32_t, 19>{
+            ImageIds::bridgeShadowQuarter0Slope0,
+            ImageIds::bridgeShadowQuarter0Slope1,
+            ImageIds::bridgeShadowQuarter0Slope2,
+            ImageIds::bridgeShadowQuarter0Slope3,
+            ImageIds::bridgeShadowQuarter0Slope4,
+            ImageIds::bridgeShadowQuarter0Slope5,
+            ImageIds::bridgeShadowQuarter0Slope6,
+            ImageIds::bridgeShadowQuarter0Slope7,
+            ImageIds::bridgeShadowQuarter0Slope8,
+            ImageIds::bridgeShadowQuarter0Slope9,
+            ImageIds::bridgeShadowQuarter0Slope10,
+            ImageIds::bridgeShadowQuarter0Slope11,
+            ImageIds::bridgeShadowQuarter0Slope12,
+            ImageIds::bridgeShadowQuarter0Slope13,
+            ImageIds::bridgeShadowQuarter0Slope14,
+            ImageIds::bridgeShadowQuarter0Slope15,
+            ImageIds::bridgeShadowQuarter0Slope16,
+            ImageIds::bridgeShadowQuarter0Slope17,
+            ImageIds::bridgeShadowQuarter0Slope18,
+        },
+        std::array<uint32_t, 19>{
+            ImageIds::bridgeShadowQuarter1Slope0,
+            ImageIds::bridgeShadowQuarter1Slope1,
+            ImageIds::bridgeShadowQuarter1Slope2,
+            ImageIds::bridgeShadowQuarter1Slope3,
+            ImageIds::bridgeShadowQuarter1Slope4,
+            ImageIds::bridgeShadowQuarter1Slope5,
+            ImageIds::bridgeShadowQuarter1Slope6,
+            ImageIds::bridgeShadowQuarter1Slope7,
+            ImageIds::bridgeShadowQuarter1Slope8,
+            ImageIds::bridgeShadowQuarter1Slope9,
+            ImageIds::bridgeShadowQuarter1Slope10,
+            ImageIds::bridgeShadowQuarter1Slope11,
+            ImageIds::bridgeShadowQuarter1Slope12,
+            ImageIds::bridgeShadowQuarter1Slope13,
+            ImageIds::bridgeShadowQuarter1Slope14,
+            ImageIds::bridgeShadowQuarter1Slope15,
+            ImageIds::bridgeShadowQuarter1Slope16,
+            ImageIds::bridgeShadowQuarter1Slope17,
+            ImageIds::bridgeShadowQuarter1Slope18,
+        },
+        std::array<uint32_t, 19>{
+            ImageIds::bridgeShadowQuarter2Slope0,
+            ImageIds::bridgeShadowQuarter2Slope1,
+            ImageIds::bridgeShadowQuarter2Slope2,
+            ImageIds::bridgeShadowQuarter2Slope3,
+            ImageIds::bridgeShadowQuarter2Slope4,
+            ImageIds::bridgeShadowQuarter2Slope5,
+            ImageIds::bridgeShadowQuarter2Slope6,
+            ImageIds::bridgeShadowQuarter2Slope7,
+            ImageIds::bridgeShadowQuarter2Slope8,
+            ImageIds::bridgeShadowQuarter2Slope9,
+            ImageIds::bridgeShadowQuarter2Slope10,
+            ImageIds::bridgeShadowQuarter2Slope11,
+            ImageIds::bridgeShadowQuarter2Slope12,
+            ImageIds::bridgeShadowQuarter2Slope13,
+            ImageIds::bridgeShadowQuarter2Slope14,
+            ImageIds::bridgeShadowQuarter2Slope15,
+            ImageIds::bridgeShadowQuarter2Slope16,
+            ImageIds::bridgeShadowQuarter2Slope17,
+            ImageIds::bridgeShadowQuarter2Slope18,
+        },
+        std::array<uint32_t, 19>{
+            ImageIds::bridgeShadowQuarter3Slope0,
+            ImageIds::bridgeShadowQuarter3Slope1,
+            ImageIds::bridgeShadowQuarter3Slope2,
+            ImageIds::bridgeShadowQuarter3Slope3,
+            ImageIds::bridgeShadowQuarter3Slope4,
+            ImageIds::bridgeShadowQuarter3Slope5,
+            ImageIds::bridgeShadowQuarter3Slope6,
+            ImageIds::bridgeShadowQuarter3Slope7,
+            ImageIds::bridgeShadowQuarter3Slope8,
+            ImageIds::bridgeShadowQuarter3Slope9,
+            ImageIds::bridgeShadowQuarter3Slope10,
+            ImageIds::bridgeShadowQuarter3Slope11,
+            ImageIds::bridgeShadowQuarter3Slope12,
+            ImageIds::bridgeShadowQuarter3Slope13,
+            ImageIds::bridgeShadowQuarter3Slope14,
+            ImageIds::bridgeShadowQuarter3Slope15,
+            ImageIds::bridgeShadowQuarter3Slope16,
+            ImageIds::bridgeShadowQuarter3Slope17,
+            ImageIds::bridgeShadowQuarter3Slope18,
+        },
+    };
+
     struct UnkHeights
     {
         int16_t height1; // dx
@@ -459,7 +568,7 @@ namespace OpenLoco::Paint
     {
         const auto baseHeightOffset = World::Pos3{ 0, 0, bridgeEntry.height };
 
-        if (bridgeObj.noRoof & (1U << 0))
+        if ((bridgeObj.flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
         {
             auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndexs[0]);
             World::Pos3 bbOffset = { 0, 0, 30 };
@@ -639,7 +748,7 @@ namespace OpenLoco::Paint
     {
         const auto baseHeightOffset = World::Pos3{ 0, 0, bridgeEntry.height };
 
-        if (bridgeObj.noRoof & (1U << 0))
+        if ((bridgeObj.flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
         {
             auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(10);
             World::Pos3 bbOffset = { 0, 0, 30 };
@@ -719,11 +828,8 @@ namespace OpenLoco::Paint
     }
 
     // 0x0042AC9C
-    bool sub_42AC9C(PaintSession& session)
+    bool paintBridge(PaintSession& session)
     {
-        uint8_t unkF25340 = 0;
-        bool unk525D0C = false;
-
         session.setItemType(Ui::ViewportInteraction::InteractionItem::bridge);
 
         auto& bridgeEntry = session.getBridgeEntry();
@@ -748,7 +854,6 @@ namespace OpenLoco::Paint
         if (k4F91DC[bridgeEntry.subType] & (1U << 0))
         {
             auto image = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(k4F91FE[bridgeEntry.subType]);
-            unkF25340 = k4F9242[bridgeEntry.subType];
             World::Pos3 bbOffset = { 2, 2, 0 };
             World::Pos3 bbLength = { 28, 28, 1 };
             session.addToPlotList4FD150(image, baseHeightOffset, bbOffset + baseHeightOffset, bbLength);
@@ -821,12 +926,11 @@ namespace OpenLoco::Paint
 
         if (!(session.getGeneralSupportHeight().slope & (1U << 5)) && supportLength == 0)
         {
-            // No need to do 0x0042BED2 as unk525D0C never true
+            // No shadows generated for this
             return true;
         }
 
-        unkF25340 = 1;
-        unk525D0C = true;
+        auto unkF25340 = 1;
 
         [[maybe_unused]] const uint8_t slope = session.getGeneralSupportHeight().slope & 0x1FU;
         const uint8_t quarters = bridgeEntry.edgesQuarters & 0xFU;
@@ -890,7 +994,7 @@ namespace OpenLoco::Paint
                 if (unkSide)
                 {
                     // 0x0042B4DC
-                    if (bridgeObj->noRoof & (1U << 0))
+                    if ((bridgeObj->flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
                     {
                         const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 6 : 41 + unk525CE8;
                         auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(roofImageIdx);
@@ -995,7 +1099,7 @@ namespace OpenLoco::Paint
                 else
                 {
                     // 0x0042B25D
-                    if (bridgeObj->noRoof & (1U << 0))
+                    if ((bridgeObj->flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
                     {
                         const auto roofImageIdx = (bridgeEntry.edgesQuarters & 0xF0) == 0xF0 ? 6 : 65 + unk525CEC;
                         auto roofImage = bridgeEntry.imageBase.withIndex(bridgeObj->image).withIndexOffset(roofImageIdx);
@@ -1144,18 +1248,13 @@ namespace OpenLoco::Paint
                 displaySlope = kSlopeToDisplaySlope[session.getSurfaceSlope()];
             }
 
-            const auto shadowImage = ImageId(3612 + displaySlope + unkF25340 * 19).withTranslucency(ExtColour::unk32);
-            if (unk525D0C)
-            {
-                World::Pos3 heightOffset = { 0, 0, height };
-                World::Pos3 bbOffset2 = { 15, 15, 1 };
-                World::Pos3 bbLength2 = { 2, 2, 1 };
-                session.addToPlotList4FD150(shadowImage, heightOffset, bbOffset2 + heightOffset, bbLength2);
-            }
+            const auto shadowImage = ImageId(kSlopeToBridgeShadow[unkF25340][displaySlope]).withTranslucency(ExtColour::unk32);
+
+            World::Pos3 heightOffset = { 0, 0, height };
+            World::Pos3 bbOffset2 = { 15, 15, 1 };
+            World::Pos3 bbLength2 = { 2, 2, 1 };
+            session.addToPlotList4FD150(shadowImage, heightOffset, bbOffset2 + heightOffset, bbLength2);
         }
         return true;
-        // registers regs;
-        // call(0x0042AC9C, regs);
-        // return regs.al != 0;
     }
 }

@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "Speed.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <span>
 
@@ -18,13 +19,20 @@ namespace OpenLoco
         class DrawingContext;
     }
 
+    enum class BridgeObjectFlags : uint8_t
+    {
+        none = 0U,
+        hasRoof = 1U << 0,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(BridgeObjectFlags);
+
 #pragma pack(push, 1)
     struct BridgeObject
     {
         static constexpr auto kObjectType = ObjectType::bridge;
 
         StringId name;
-        uint8_t noRoof; // 0x02
+        BridgeObjectFlags flags; // 0x02
         uint8_t pad_03;
         uint16_t clearHeight;                            // 0x04
         int16_t var_06;                                  // 0x06

@@ -150,7 +150,7 @@ namespace OpenLoco::Paint
         {
             auto* bridgeObj = ObjectManager::get<BridgeObject>(bridge.objectId);
             // Bridge blocks the supports due to the roof
-            if (bridgeObj->noRoof & (1U << 0))
+            if ((bridgeObj->flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
             {
                 return;
             }
@@ -273,7 +273,7 @@ namespace OpenLoco::Paint
             auto& bridgeEntry = session.getBridgeEntry();
             if (!bridgeEntry.isEmpty())
             {
-                if (sub_42AC9C(session))
+                if (paintBridge(session))
                 {
                     session.setSegmentsSupportHeight(SegmentFlags::all, 0xFFFF, 0);
                 }
