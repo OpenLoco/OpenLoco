@@ -36,7 +36,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (var_06 != 16 && var_06 != 32)
+        if (deckDepth != 16 && deckDepth != 32)
         {
             return false;
         }

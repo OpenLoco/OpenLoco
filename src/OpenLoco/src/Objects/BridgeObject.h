@@ -35,7 +35,7 @@ namespace OpenLoco
         BridgeObjectFlags flags; // 0x02
         uint8_t pad_03;
         uint16_t clearHeight;                            // 0x04
-        int16_t var_06;                                  // 0x06
+        int16_t deckDepth;                               // 0x06
         uint8_t spanLength;                              // 0x08
         uint8_t pillarSpacing;                           // 0x09
         Speed16 maxSpeed;                                // 0x0A
