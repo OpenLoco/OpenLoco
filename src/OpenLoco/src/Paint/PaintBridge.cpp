@@ -8,26 +8,6 @@
 
 namespace OpenLoco::Paint
 {
-    constexpr std::array<uint8_t, 18> k4F9242 = {
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        5,
-        3,
-        4,
-        2,
-        0,
-    };
     constexpr std::array<uint32_t, 17> k4F91FE = {
         0,
         84,
