@@ -590,65 +590,70 @@ namespace OpenLoco::Paint
     }
 
     // 0x0042C36D
-    static void paintSupport1(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, int16_t height525CFE, int16_t height525CFC, int16_t height525D04)
+    static void paintSupport1(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, int16_t height525CFE, int16_t height525CFC, const int16_t supportLength)
     {
-        auto height525D06 = height525D04;
-        while (height525CFC >= 16)
         {
-            bool is16section = height525CFC == 16 || ((height525D04 - 16) == session.getWaterHeight());
-            int16_t sectionHeight = is16section ? 16 : 32;
-            const auto bbLength = is16section ? World::Pos3{ 2, 2, 15 } : World::Pos3{ 2, 2, 31 };
-            const auto imageIndex = is16section ? 32 : 34;
+            auto lhsSupportLength = supportLength;
+            while (height525CFC >= 16)
+            {
+                bool is16section = height525CFC == 16 || ((lhsSupportLength - 16) == session.getWaterHeight());
+                int16_t sectionHeight = is16section ? 16 : 32;
+                const auto bbLength = is16section ? World::Pos3{ 2, 2, 15 } : World::Pos3{ 2, 2, 31 };
+                const auto imageIndex = is16section ? 32 : 34;
 
-            height525D04 -= sectionHeight;
-            height525CFC -= sectionHeight;
-            auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
-            const auto heightOffset = World::Pos3{ 0, 0, height525D04 };
-            World::Pos3 bbOffset = { 30, 0, 0 };
-            session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
+                lhsSupportLength -= sectionHeight;
+                height525CFC -= sectionHeight;
+                auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
+                const auto heightOffset = World::Pos3{ 0, 0, lhsSupportLength };
+                World::Pos3 bbOffset = { 30, 0, 0 };
+                session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
+            }
         }
 
-        while (height525CFE >= 16)
         {
-            bool is16section = height525CFE == 16 || ((height525D06 - 16) == session.getWaterHeight());
-            int16_t sectionHeight = is16section ? 16 : 32;
-            const auto bbLength = is16section ? World::Pos3{ 2, 2, 15 } : World::Pos3{ 2, 2, 31 };
-            const auto imageIndex = is16section ? 33 : 35;
+            auto rhsSupportLength = supportLength;
+            while (height525CFE >= 16)
+            {
+                bool is16section = height525CFE == 16 || ((rhsSupportLength - 16) == session.getWaterHeight());
+                int16_t sectionHeight = is16section ? 16 : 32;
+                const auto bbLength = is16section ? World::Pos3{ 2, 2, 15 } : World::Pos3{ 2, 2, 31 };
+                const auto imageIndex = is16section ? 33 : 35;
 
-            height525CFE -= sectionHeight;
-            height525D06 -= sectionHeight;
-            auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
-            const auto heightOffset = World::Pos3{ 0, 0, height525D06 };
-            World::Pos3 bbOffset = { 0, 30, 0 };
-            session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
+                height525CFE -= sectionHeight;
+                rhsSupportLength -= sectionHeight;
+                auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
+                const auto heightOffset = World::Pos3{ 0, 0, rhsSupportLength };
+                World::Pos3 bbOffset = { 0, 30, 0 };
+                session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
+            }
         }
     }
 
     // 0x0042BF7F
-    static void paintSupport2(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, uint8_t unk525CF6, int16_t height525CFE, int16_t height525CFC, int16_t height525D06, uint32_t imageIdx525D02, uint32_t imageIdx525D00)
+    static void paintSupport2(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, uint8_t unk525CF6, int16_t height525CFE, int16_t height525CFC, const int16_t supportLength, uint32_t imageIdx525D02, uint32_t imageIdx525D00)
     {
-        auto height525D04 = height525D06;
         if (unk525CF6 & (1U << 0))
         {
+            auto lhsSupportLength = supportLength;
             while (height525CFE >= 16)
             {
-                bool is16section = height525CFE == 16 || ((height525D06 - 16) == session.getWaterHeight());
+                bool is16section = height525CFE == 16 || ((lhsSupportLength - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 2, 32, 15 } : World::Pos3{ 2, 32, 31 };
                 const auto imageIndex = is16section ? 16 : 18;
 
                 height525CFE -= sectionHeight;
-                height525D06 -= sectionHeight;
+                lhsSupportLength -= sectionHeight;
                 auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
-                const auto heightOffset = World::Pos3{ 0, 0, height525D06 };
+                const auto heightOffset = World::Pos3{ 0, 0, lhsSupportLength };
                 World::Pos3 bbOffset = { 0, 30, 0 };
                 session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
             }
             if (imageIdx525D02 != 0)
             {
-                height525D06 -= 16;
+                lhsSupportLength -= 16;
                 auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(19 + imageIdx525D02);
-                const auto heightOffset = World::Pos3{ 0, 0, height525D06 };
+                const auto heightOffset = World::Pos3{ 0, 0, lhsSupportLength };
                 World::Pos3 bbOffset = { 0, 0, 0 };
                 World::Pos3 bbLength = { 2, 32, 14 };
                 session.addToPlotList4FD150(image, heightOffset, bbOffset + heightOffset, bbLength);
@@ -657,25 +662,26 @@ namespace OpenLoco::Paint
 
         if (unk525CF6 & (1U << 1))
         {
+            auto rhsSupportLength = supportLength;
             while (height525CFC >= 16)
             {
-                bool is16section = height525CFC == 16 || ((height525D04 - 16) == session.getWaterHeight());
+                bool is16section = height525CFC == 16 || ((rhsSupportLength - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 2, 32, 15 } : World::Pos3{ 2, 32, 31 };
                 const auto imageIndex = is16section ? 17 : 19;
 
                 height525CFC -= sectionHeight;
-                height525D04 -= sectionHeight;
+                rhsSupportLength -= sectionHeight;
                 auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
-                const auto heightOffset = World::Pos3{ 0, 0, height525D04 };
+                const auto heightOffset = World::Pos3{ 0, 0, rhsSupportLength };
                 World::Pos3 bbOffset = { 30, 0, 0 };
                 session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
             }
             if (imageIdx525D00 != 0)
             {
-                height525D04 -= 16;
+                rhsSupportLength -= 16;
                 auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(21 + imageIdx525D00);
-                const auto heightOffset = World::Pos3{ 0, 0, height525D04 };
+                const auto heightOffset = World::Pos3{ 0, 0, rhsSupportLength };
                 World::Pos3 bbOffset = { 30, 0, 0 };
                 World::Pos3 bbLength = { 2, 32, 14 };
                 session.addToPlotList4FD150(image, heightOffset, bbOffset + heightOffset, bbLength);
@@ -684,30 +690,30 @@ namespace OpenLoco::Paint
     }
 
     // 0x0042C176
-    static void paintSupport3(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, uint8_t unk525CF7, int16_t height525CFE, int16_t height525CFC, int16_t height525D06, uint32_t imageIdx525D02, uint32_t imageIdx525D00)
+    static void paintSupport3(PaintSession& session, const BridgeObject& bridgeObj, const BridgeEntry& bridgeEntry, uint8_t unk525CF7, int16_t height525CFE, int16_t height525CFC, const int16_t supportLength, uint32_t imageIdx525D02, uint32_t imageIdx525D00)
     {
-        auto height525D04 = height525D06;
         if (unk525CF7 & (1U << 0))
         {
+            auto lhsSupportLength = supportLength;
             while (height525CFE >= 16)
             {
-                bool is16section = height525CFE == 16 || ((height525D06 - 16) == session.getWaterHeight());
+                bool is16section = height525CFE == 16 || ((lhsSupportLength - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 32, 2, 15 } : World::Pos3{ 32, 2, 31 };
                 const auto imageIndex = is16section ? 24 : 26;
 
                 height525CFE -= sectionHeight;
-                height525D06 -= sectionHeight;
+                lhsSupportLength -= sectionHeight;
                 auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
-                const auto heightOffset = World::Pos3{ 0, 0, height525D06 };
+                const auto heightOffset = World::Pos3{ 0, 0, lhsSupportLength };
                 World::Pos3 bbOffset = { 0, 30, 0 };
                 session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
             }
             if (imageIdx525D02 != 0)
             {
-                height525D06 -= 16;
+                lhsSupportLength -= 16;
                 auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(27 + imageIdx525D02);
-                const auto heightOffset = World::Pos3{ 0, 0, height525D06 };
+                const auto heightOffset = World::Pos3{ 0, 0, lhsSupportLength };
                 World::Pos3 bbOffset = { 0, 0, 0 };
                 World::Pos3 bbLength = { 32, 2, 14 };
                 session.addToPlotList4FD150(image, heightOffset, bbOffset + heightOffset, bbLength);
@@ -716,25 +722,26 @@ namespace OpenLoco::Paint
 
         if (unk525CF7 & (1U << 1))
         {
+            auto rhsSupportLength = supportLength;
             while (height525CFC >= 16)
             {
-                bool is16section = height525CFC == 16 || ((height525D04 - 16) == session.getWaterHeight());
+                bool is16section = height525CFC == 16 || ((rhsSupportLength - 16) == session.getWaterHeight());
                 int16_t sectionHeight = is16section ? 16 : 32;
                 const auto bbLength = is16section ? World::Pos3{ 32, 2, 15 } : World::Pos3{ 32, 2, 31 };
                 const auto imageIndex = is16section ? 25 : 27;
 
                 height525CFC -= sectionHeight;
-                height525D04 -= sectionHeight;
+                rhsSupportLength -= sectionHeight;
                 auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
-                const auto heightOffset = World::Pos3{ 0, 0, height525D04 };
+                const auto heightOffset = World::Pos3{ 0, 0, rhsSupportLength };
                 World::Pos3 bbOffset = { 0, 30, 0 };
                 session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
             }
             if (imageIdx525D00 != 0)
             {
-                height525D04 -= 16;
+                rhsSupportLength -= 16;
                 auto image = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(29 + imageIdx525D00);
-                const auto heightOffset = World::Pos3{ 0, 0, height525D04 };
+                const auto heightOffset = World::Pos3{ 0, 0, rhsSupportLength };
                 World::Pos3 bbOffset = { 0, 30, 0 };
                 World::Pos3 bbLength = { 32, 2, 14 };
                 session.addToPlotList4FD150(image, heightOffset, bbOffset + heightOffset, bbLength);
