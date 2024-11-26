@@ -348,7 +348,7 @@ namespace OpenLoco::TownManager
                     continue;
                 }
 
-                if (building->has_40())
+                if (building->isMiscBuilding())
                 {
                     continue;
                 }

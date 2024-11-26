@@ -26,8 +26,9 @@ namespace OpenLoco::World
             _type &= ~0x03;
             _type |= rotation & 0x3;
         }
-        bool has_40() const { return (_type & 0x40) != 0; }
-        void setHas40(bool state)
+        // Saves having to access the building object flags
+        bool isMiscBuilding() const { return (_type & 0x40) != 0; }
+        void setIsMiscBuilding(bool state)
         {
             _type &= ~0x40;
             _type |= state ? 0x40 : 0;

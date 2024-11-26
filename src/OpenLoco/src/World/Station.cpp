@@ -346,7 +346,7 @@ namespace OpenLoco
                             {
                                 auto& buildingEl = el.get<BuildingElement>();
 
-                                if (buildingEl.has_40() || !buildingEl.isConstructed())
+                                if (buildingEl.isMiscBuilding() || !buildingEl.isConstructed())
                                 {
                                     break;
                                 }
