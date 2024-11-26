@@ -126,7 +126,7 @@ namespace OpenLoco::World
             });
         }
 
-        if (has_40())
+        if (isMiscBuilding())
         {
             return true;
         }

@@ -66,7 +66,7 @@ namespace OpenLoco::GameCommands
                     auto* buildingEl = element.as<BuildingElement>();
                     if (buildingEl != nullptr)
                     {
-                        if (buildingEl->has_40())
+                        if (buildingEl->isMiscBuilding())
                         {
                             continue;
                         }
