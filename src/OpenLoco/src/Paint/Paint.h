@@ -451,53 +451,55 @@ namespace OpenLoco::Paint
         };
         assert_struct_size(PaintEntry, 0x34);
 
-        const Gfx::RenderTarget* _renderTarget;
-        PaintEntry* _endOfPaintStructArray;
-        PaintStruct* _paintHead{};
-        PaintEntry* _nextFreePaintStruct;
+        // Do not null-initialize this, its too expensive, this is storage.
         std::array<PaintEntry, 4000> _paintEntries;
-        coord_t _spritePositionX;
-        coord_t _unkPositionX;
-        int16_t _vpPositionX;
-        coord_t _spritePositionY;
-        coord_t _unkPositionY;
-        int16_t _vpPositionY;
-        int16_t _unkVpPositionY;
-        bool _didPassSurface;
-        World::Pos3 _boundingBoxOffset;
-        int16_t _foregroundCullingHeight;
-        Ui::ViewportInteraction::InteractionItem _itemType;
-        uint8_t _trackModId;
+
+        const Gfx::RenderTarget* _renderTarget{};
+        PaintEntry* _endOfPaintStructArray{};
+        PaintStruct* _paintHead{};
+        PaintEntry* _nextFreePaintStruct{};
+        coord_t _spritePositionX{};
+        coord_t _unkPositionX{};
+        int16_t _vpPositionX{};
+        coord_t _spritePositionY{};
+        coord_t _unkPositionY{};
+        int16_t _vpPositionY{};
+        int16_t _unkVpPositionY{};
+        bool _didPassSurface{};
+        World::Pos3 _boundingBoxOffset{};
+        int16_t _foregroundCullingHeight{};
+        Ui::ViewportInteraction::InteractionItem _itemType{};
+        uint8_t _trackModId{};
         // 2 byte align.
-        World::Pos2 _mapPosition;
-        void* _currentItem;
-        uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as separate item
-        Ui::ViewportFlags _viewFlags;
+        World::Pos2 _mapPosition{};
+        void* _currentItem{};
+        uint8_t currentRotation{}; // new field set from 0x00E3F0B8 but split out into this struct as separate item
+        Ui::ViewportFlags _viewFlags{};
         // 2 byte align.
         std::array<PaintStruct*, kMaxPaintQuadrants> _quadrants;
         uint32_t _quadrantBackIndex;
         uint32_t _quadrantFrontIndex;
-        PaintStruct* _savedPSCur;  // Unused.
-        PaintStruct* _savedPSCur2; // Unused.
+        PaintStruct* _savedPSCur{};  // Unused.
+        PaintStruct* _savedPSCur2{}; // Unused.
         std::array<PaintStruct*, 5> _trackRoadPaintStructs;
         std::array<PaintStruct*, 2> _trackRoadAdditionsPaintStructs;
-        int32_t _E400EC;
-        int16_t _E400F0;
-        int16_t _E400F2;
-        int32_t _E400F4;
-        int32_t _E400F8;
-        int32_t _E400FC;
-        int32_t _E40100;
-        int16_t _E40104;
+        int32_t _E400EC{};
+        int16_t _E400F0{};
+        int16_t _E400F2{};
+        int32_t _E400F4{};
+        int32_t _E400F8{};
+        int32_t _E400FC{};
+        int32_t _E40100{};
+        int16_t _E40104{};
         // 2 byte align
-        int32_t _E40108;
-        int32_t _E4010C;
-        int32_t _E40110;
+        int32_t _E40108{};
+        int32_t _E4010C{};
+        int32_t _E40110{};
         // byte_00E40114 _interactionResult
         // 3 byte align
-        PaintStringStruct* _paintStringHead;
-        PaintStringStruct* _lastPaintString;
-        PaintStruct* _lastPS;
+        PaintStringStruct* _paintStringHead{};
+        PaintStringStruct* _lastPaintString{};
+        PaintStruct* _lastPS{};
         // dword_E40124
         // word_E40128
         // word_E4012A
@@ -507,26 +509,26 @@ namespace OpenLoco::Paint
         // byte_E40132
 
         // Different globals that don't really belong to PaintSession.
-        std::array<uint8_t, 4> _tunnelCounts;
-        std::array<TunnelEntry, 33> _tunnels0; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
-        std::array<TunnelEntry, 33> _tunnels1; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
-        std::array<TunnelEntry, 33> _tunnels2; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
-        std::array<TunnelEntry, 33> _tunnels3; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
-        BridgeEntry _bridgeEntry;
-        SegmentFlags _525CF8;
-        const void* _currentlyDrawnItem;
-        int16_t _maxHeight;
-        TrackRoadAdditionSupports _trackRoadAdditionSupports;
-        SupportHeight _supportSegments[9];
-        SupportHeight _support;
-        int16_t _waterHeight;
-        int16_t _waterHeight2;
-        uint8_t _surfaceSlope;
-        int16_t _surfaceHeight;
-        uint32_t _roadMergeBaseImage;
-        uint32_t _roadMergeExits;
-        int16_t _roadMergeHeight;
-        uint16_t _roadMergeStreetlightType;
+        std::array<uint8_t, 4> _tunnelCounts{};
+        std::array<TunnelEntry, 33> _tunnels0{}; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        std::array<TunnelEntry, 33> _tunnels1{}; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        std::array<TunnelEntry, 33> _tunnels2{}; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        std::array<TunnelEntry, 33> _tunnels3{}; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        BridgeEntry _bridgeEntry{};
+        SegmentFlags _525CF8{};
+        const void* _currentlyDrawnItem{};
+        int16_t _maxHeight{};
+        TrackRoadAdditionSupports _trackRoadAdditionSupports{};
+        SupportHeight _supportSegments[9]{};
+        SupportHeight _support{};
+        int16_t _waterHeight{};
+        int16_t _waterHeight2{};
+        uint8_t _surfaceSlope{};
+        int16_t _surfaceHeight{};
+        uint32_t _roadMergeBaseImage{};
+        uint32_t _roadMergeExits{};
+        int16_t _roadMergeHeight{};
+        uint16_t _roadMergeStreetlightType{};
 
         // From OpenRCT2 equivalent fields not found yet or new
         // AttachedPaintStruct* unkF1AD2C;              // no equivalent
