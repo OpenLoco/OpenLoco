@@ -16,6 +16,7 @@
 #include "Objects/BridgeObject.h"
 #include "Objects/ObjectManager.h"
 #include "Paint.h"
+#include "PaintBridge.h"
 #include "PaintBuilding.h"
 #include "PaintIndustry.h"
 #include "PaintRoad.h"
@@ -149,7 +150,7 @@ namespace OpenLoco::Paint
         {
             auto* bridgeObj = ObjectManager::get<BridgeObject>(bridge.objectId);
             // Bridge blocks the supports due to the roof
-            if (bridgeObj->noRoof & (1U << 0))
+            if ((bridgeObj->flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
             {
                 return;
             }
@@ -217,14 +218,6 @@ namespace OpenLoco::Paint
         }
     }
 
-    // 0x0042AC9C
-    static bool sub_42AC9C([[maybe_unused]] PaintSession& session)
-    {
-        registers regs;
-        call(0x0042AC9C, regs);
-        return regs.al != 0;
-    }
-
     // Returns std::nullopt on no need to paint
     static std::optional<Ui::viewport_pos> paintTileElementsSetup(PaintSession& session, const World::Pos2& loc)
     {
@@ -280,7 +273,7 @@ namespace OpenLoco::Paint
             auto& bridgeEntry = session.getBridgeEntry();
             if (!bridgeEntry.isEmpty())
             {
-                if (sub_42AC9C(session))
+                if (paintBridge(session))
                 {
                     session.setSegmentsSupportHeight(SegmentFlags::all, 0xFFFF, 0);
                 }
