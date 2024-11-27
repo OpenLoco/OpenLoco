@@ -1139,12 +1139,80 @@ namespace OpenLoco
     }
 
     // 0x00486224
-    static void sub_486224(const World::Pos2 pos)
+    static void removeAllNonStationRoadTrack(const World::Pos2 pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x00486224, regs);
+        // For some reason it doesn't get any refund money for this
+        // removing. ???
+
+        auto tile = World::TileManager::get(pos);
+        bool recheck = true;
+        while (recheck)
+        {
+            recheck = false;
+            for (auto& el : tile)
+            {
+                if (el.isAiAllocated())
+                {
+                    continue;
+                }
+                auto* elRoad = el.as<RoadElement>();
+                auto* elTrack = el.as<TrackElement>();
+                if (elRoad != nullptr)
+                {
+                    if (elRoad->owner() != GameCommands::getUpdatingCompanyId())
+                    {
+                        continue;
+                    }
+                    if (elRoad->hasStationElement())
+                    {
+                        auto* station = getStationElement(World::Pos3{ pos, elRoad->baseHeight() });
+                        if (station != nullptr && station->isAiAllocated())
+                        {
+                            continue;
+                        }
+                    }
+
+                    GameCommands::RoadRemovalArgs args{};
+                    args.pos = World::Pos3{ pos, elRoad->baseHeight() };
+                    args.objectId = elRoad->roadObjectId();
+                    args.roadId = elRoad->roadId();
+                    args.rotation = elRoad->rotation();
+                    args.sequenceIndex = elRoad->sequenceIndex();
+                    // Why no payment??
+                    auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+                    if (res != GameCommands::FAILURE)
+                    {
+                        recheck = true;
+                        break;
+                    }
+                }
+                else if (elTrack != nullptr)
+                {
+                    if (elTrack->owner() != GameCommands::getUpdatingCompanyId())
+                    {
+                        continue;
+                    }
+                    if (elTrack->hasStationElement())
+                    {
+                        continue;
+                    }
+
+                    GameCommands::TrackRemovalArgs args{};
+                    args.pos = World::Pos3{ pos, elTrack->baseHeight() };
+                    args.trackObjectId = elTrack->trackObjectId();
+                    args.trackId = elTrack->trackId();
+                    args.rotation = elTrack->rotation();
+                    args.index = elTrack->sequenceIndex();
+                    // Why no payment??
+                    auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+                    if (res != GameCommands::FAILURE)
+                    {
+                        recheck = true;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     // 0x004861BF
@@ -1154,7 +1222,7 @@ namespace OpenLoco
         bool fullySearched = false;
         for (auto i = 0U; i < 1500; ++i)
         {
-            sub_486224(pos);
+            removeAllNonStationRoadTrack(pos);
 
             pos.x += 32;
             if (pos.x < World::kMapWidth)
@@ -1197,12 +1265,12 @@ namespace OpenLoco
         }
     }
 
-    // 0x00487BA3
+    // 0x00483602
     static uint8_t sub_483602(AiThought& thought)
     {
         registers regs;
         regs.edi = X86Pointer(&thought);
-        call(0x00487BA3, regs);
+        call(0x00483602, regs);
         return regs.al;
     }
 
