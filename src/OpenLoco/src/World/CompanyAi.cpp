@@ -248,10 +248,43 @@ namespace OpenLoco
     // 0x004876CB
     static void sub_4876CB(AiThought& thought)
     {
-        // Sets unk vehicle vars and then breakdown flag ???
-        registers regs;
-        regs.edi = X86Pointer(&thought);
-        call(0x004876CB, regs);
+        for (auto i = 0U; i < thought.numVehicles; ++i)
+        {
+            auto* head = EntityManager::get<Vehicles::VehicleHead>(thought.vehicles[i]);
+            if (head->tileX != -1)
+            {
+                continue;
+            }
+
+            if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+            {
+                head->var_61 = thought.var_06[0].pos.x;
+                head->var_63 = thought.var_06[0].pos.y;
+                head->var_67 = thought.var_06[0].baseZ;
+                head->var_65 = thought.var_06[0].rotation;
+            }
+            else
+            {
+                head->var_61 = thought.var_06[0].pos.x;
+                head->var_63 = thought.var_06[0].pos.y;
+                head->var_67 = thought.var_06[0].baseZ;
+
+                uint8_t rotation = thought.var_06[0].rotation;
+                if (thought.trackObjId & (1U << 7))
+                {
+                    if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 6))
+                    {
+                        if (i & 0b1)
+                        {
+                            rotation ^= (1U << 2);
+                        }
+                    }
+                }
+                head->var_65 = rotation;
+            }
+            head->breakdownFlags |= Vehicles::BreakdownFlags::breakdownPending;
+            thought.var_88 = 0;
+        }
     }
 
     // 0x00494805

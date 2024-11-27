@@ -431,7 +431,7 @@ namespace OpenLoco::GameCommands
         newHead->stationId = StationId::null;
         newHead->breakdownFlags = BreakdownFlags::none;
         newHead->aiThoughtId = 0xFFU;
-        newHead->var_61 = 0xFFU;
+        newHead->var_61 = -1;
         newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0_mph;
         newHead->restartStoppedCarsTimeout = 0;
