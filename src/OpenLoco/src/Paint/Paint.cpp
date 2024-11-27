@@ -84,15 +84,6 @@ namespace OpenLoco::Paint
         _maxHeight = (maxClearZ * World::kSmallZStep) + 32;
     }
 
-    loco_global<int32_t[4], 0x4FD120> _addToStringPlotList;
-    loco_global<int32_t[4], 0x4FD130> _4FD130;
-    loco_global<int32_t[4], 0x4FD140> _4FD140;
-    loco_global<int32_t[4], 0x4FD150> _4FD150;
-    loco_global<int32_t[4], 0x4FD1E0> _4FD1E0;
-    loco_global<int32_t[4], 0x4FD170> _4FD170;
-    loco_global<int32_t[4], 0x4FD180> _4FD180;
-    loco_global<int32_t[4], 0x4FD200> _4FD200;
-
     /*
      * Flips the X axis so 1 and 3 are swapped 0 and 2 will stay the same.
      * { 0, 3, 2, 1 }
