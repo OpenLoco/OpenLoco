@@ -243,6 +243,8 @@ namespace OpenLoco::Paint
     struct PaintSession
     {
     public:
+        PaintSession() {}
+
         void generate();
         void arrangeStructs();
         void drawStructs(Gfx::DrawingContext& drawingCtx);
@@ -444,14 +446,16 @@ namespace OpenLoco::Paint
             PaintStruct basic;
             AttachedPaintStruct attached;
             PaintStringStruct string;
+
+            PaintEntry() {}
         };
         assert_struct_size(PaintEntry, 0x34);
 
         const Gfx::RenderTarget* _renderTarget;
-        inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
+        PaintEntry* _endOfPaintStructArray;
         PaintStruct* _paintHead{};
-        inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
-        inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
+        PaintEntry* _nextFreePaintStruct;
+        std::array<PaintEntry, 4000> _paintEntries;
         coord_t _spritePositionX;
         coord_t _unkPositionX;
         int16_t _vpPositionX;
@@ -470,13 +474,13 @@ namespace OpenLoco::Paint
         uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as separate item
         Ui::ViewportFlags _viewFlags;
         // 2 byte align.
-        inline static Interop::loco_global<PaintStruct* [kMaxPaintQuadrants], 0x00E3F0C0> _quadrants;
-        inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
-        inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
-        inline static Interop::loco_global<PaintStruct*, 0x00E400C8> _savedPSCur;  // Unused.
-        inline static Interop::loco_global<PaintStruct*, 0x00E400CC> _savedPSCur2; // Unused.
-        inline static Interop::loco_global<PaintStruct* [5], 0x00E400D0> _trackRoadPaintStructs;
-        inline static Interop::loco_global<PaintStruct* [2], 0x00E400E4> _trackRoadAdditionsPaintStructs;
+        std::array<PaintStruct*, kMaxPaintQuadrants> _quadrants;
+        uint32_t _quadrantBackIndex;
+        uint32_t _quadrantFrontIndex;
+        PaintStruct* _savedPSCur;  // Unused.
+        PaintStruct* _savedPSCur2; // Unused.
+        std::array<PaintStruct*, 5> _trackRoadPaintStructs;
+        std::array<PaintStruct*, 2> _trackRoadAdditionsPaintStructs;
         int32_t _E400EC;
         int16_t _E400F0;
         int16_t _E400F2;
@@ -491,9 +495,9 @@ namespace OpenLoco::Paint
         int32_t _E40110;
         // byte_00E40114 _interactionResult
         // 3 byte align
-        inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
-        inline static Interop::loco_global<PaintStringStruct*, 0x00E4011C> _lastPaintString;
-        inline static Interop::loco_global<PaintStruct*, 0x00E40120> _lastPS;
+        PaintStringStruct* _paintStringHead;
+        PaintStringStruct* _lastPaintString;
+        PaintStruct* _lastPS;
         // dword_E40124
         // word_E40128
         // word_E4012A
@@ -538,12 +542,12 @@ namespace OpenLoco::Paint
         {
             static_assert(std::same_as<T, PaintStruct> || std::same_as<T, AttachedPaintStruct> || std::same_as<T, PaintStringStruct>);
 
-            auto* ps = *_nextFreePaintStruct;
-            if (ps >= *_endOfPaintStructArray)
+            auto* ps = _nextFreePaintStruct;
+            if (ps >= _endOfPaintStructArray)
             {
                 return nullptr;
             }
-            (*_nextFreePaintStruct)++;
+            _nextFreePaintStruct++;
 
             auto* specificPs = reinterpret_cast<T*>(ps);
             *specificPs = {}; // Zero out the struct

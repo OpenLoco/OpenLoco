@@ -24,7 +24,7 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
-    PaintSession _session;
+    static PaintSession _session;
 
     void PaintSession::setEntityPosition(const World::Pos2& pos)
     {
@@ -139,8 +139,8 @@ namespace OpenLoco::Paint
         ps.nextQuadrantPS = _quadrants[paintQuadrantIndex];
         _quadrants[paintQuadrantIndex] = &ps;
 
-        _quadrantBackIndex = std::min(*_quadrantBackIndex, paintQuadrantIndex);
-        _quadrantFrontIndex = std::max(*_quadrantFrontIndex, paintQuadrantIndex);
+        _quadrantBackIndex = std::min(_quadrantBackIndex, paintQuadrantIndex);
+        _quadrantFrontIndex = std::max(_quadrantFrontIndex, paintQuadrantIndex);
     }
 
     // 0x004FD120
@@ -324,7 +324,7 @@ namespace OpenLoco::Paint
     // 0x004FD1E0
     PaintStruct* PaintSession::addToPlotListAsChild(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
-        if (*_lastPS == nullptr)
+        if (_lastPS == nullptr)
         {
             return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
         }
@@ -333,7 +333,7 @@ namespace OpenLoco::Paint
         {
             return nullptr;
         }
-        (*_lastPS)->children = ps;
+        _lastPS->children = ps;
         _lastPS = ps;
         return ps;
     }
@@ -386,8 +386,8 @@ namespace OpenLoco::Paint
         }
         attached->imageId = imageId;
         attached->vpPos = offset;
-        attached->next = (*_lastPS)->attachedPS;
-        (*_lastPS)->attachedPS = attached;
+        attached->next = _lastPS->attachedPS;
+        _lastPS->attachedPS = attached;
         return attached;
     }
 
@@ -743,7 +743,7 @@ namespace OpenLoco::Paint
 
     void PaintSession::attachStringStruct(PaintStringStruct& psString)
     {
-        auto* previous = *_lastPaintString;
+        auto* previous = _lastPaintString;
         _lastPaintString = &psString;
         if (previous == nullptr)
         {
