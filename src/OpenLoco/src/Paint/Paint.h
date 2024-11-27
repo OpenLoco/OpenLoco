@@ -6,6 +6,7 @@
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <array>
 #include <span>
 
 namespace OpenLoco::World
@@ -262,8 +263,8 @@ namespace OpenLoco::Paint
         void setMergeRoadHeight(int16_t value) { _roadMergeHeight = value; }
         uint16_t getMergeRoadStreetlight() { return _roadMergeStreetlightType; }
         void setMergeRoadStreetlight(uint16_t value) { _roadMergeStreetlightType = value; }
-        int16_t getAdditionSupportHeight() { return (*_trackRoadAdditionSupports).height; }
-        const TrackRoadAdditionSupports& getAdditionSupport() { return (*_trackRoadAdditionSupports); }
+        int16_t getAdditionSupportHeight() { return _trackRoadAdditionSupports.height; }
+        const TrackRoadAdditionSupports& getAdditionSupport() { return _trackRoadAdditionSupports; }
         void setAdditionSupport(const TrackRoadAdditionSupports& newValue) { _trackRoadAdditionSupports = newValue; }
         const SupportHeight& getGeneralSupportHeight() { return _support; }
         const SupportHeight& getSupportHeight(uint8_t segment) { return _supportSegments[segment]; }
@@ -273,7 +274,7 @@ namespace OpenLoco::Paint
         int16_t getWaterHeight2() { return _waterHeight2; }
         int16_t getSurfaceHeight() { return _surfaceHeight; }
         uint8_t getSurfaceSlope() { return _surfaceSlope; }
-        SegmentFlags getOccupiedAdditionSupportSegments() { return (*_trackRoadAdditionSupports).occupiedSegments; }
+        SegmentFlags getOccupiedAdditionSupportSegments() { return _trackRoadAdditionSupports.occupiedSegments; }
         World::Pos2 getUnkPosition()
         {
             return World::Pos2{ _unkPositionX, _unkPositionY };
@@ -299,7 +300,7 @@ namespace OpenLoco::Paint
         void setGeneralSupportHeight(const uint16_t height, const uint8_t slope);
         void setMaxHeight(const World::Pos2& loc);
         void set525CF8(const SegmentFlags segments) { _525CF8 = segments; }
-        void setOccupiedAdditionSupportSegments(const SegmentFlags newValue) { (*_trackRoadAdditionSupports).occupiedSegments = newValue; }
+        void setOccupiedAdditionSupportSegments(const SegmentFlags newValue) { _trackRoadAdditionSupports.occupiedSegments = newValue; }
         void setBridgeEntry(const BridgeEntry newValue) { _bridgeEntry = newValue; }
         void resetTileColumn(const Ui::Point& pos);
         void resetTunnels();
@@ -446,28 +447,28 @@ namespace OpenLoco::Paint
         };
         assert_struct_size(PaintEntry, 0x34);
 
-        inline static Interop::loco_global<const Gfx::RenderTarget*, 0x00E0C3E0> _renderTarget;
+        const Gfx::RenderTarget* _renderTarget;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
         PaintStruct* _paintHead{};
         inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
         inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
-        inline static Interop::loco_global<coord_t, 0x00E3F090> _spritePositionX;
-        inline static Interop::loco_global<coord_t, 0x00E3F092> _unkPositionX;
-        inline static Interop::loco_global<int16_t, 0x00E3F094> _vpPositionX;
-        inline static Interop::loco_global<coord_t, 0x00E3F096> _spritePositionY;
-        inline static Interop::loco_global<coord_t, 0x00E3F098> _unkPositionY;
-        inline static Interop::loco_global<int16_t, 0x00E3F09A> _vpPositionY;
-        inline static Interop::loco_global<int16_t, 0x00E3F09C> _unkVpPositionY;
-        inline static Interop::loco_global<bool, 0x00E3F09E> _didPassSurface;
-        inline static Interop::loco_global<World::Pos3, 0x00E3F0A0> _boundingBoxOffset;
-        inline static Interop::loco_global<int16_t, 0x00E3F0A6> _foregroundCullingHeight;
-        inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _itemType;
-        inline static Interop::loco_global<uint8_t, 0x00E3F0AD> _trackModId;
+        coord_t _spritePositionX;
+        coord_t _unkPositionX;
+        int16_t _vpPositionX;
+        coord_t _spritePositionY;
+        coord_t _unkPositionY;
+        int16_t _vpPositionY;
+        int16_t _unkVpPositionY;
+        bool _didPassSurface;
+        World::Pos3 _boundingBoxOffset;
+        int16_t _foregroundCullingHeight;
+        Ui::ViewportInteraction::InteractionItem _itemType;
+        uint8_t _trackModId;
         // 2 byte align.
-        inline static Interop::loco_global<World::Pos2, 0x00E3F0B0> _mapPosition;
-        inline static Interop::loco_global<void*, 0x00E3F0B4> _currentItem;
+        World::Pos2 _mapPosition;
+        void* _currentItem;
         uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as separate item
-        inline static Interop::loco_global<Ui::ViewportFlags, 0x00E3F0BC> _viewFlags;
+        Ui::ViewportFlags _viewFlags;
         // 2 byte align.
         inline static Interop::loco_global<PaintStruct* [kMaxPaintQuadrants], 0x00E3F0C0> _quadrants;
         inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
@@ -476,18 +477,18 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<PaintStruct*, 0x00E400CC> _savedPSCur2; // Unused.
         inline static Interop::loco_global<PaintStruct* [5], 0x00E400D0> _trackRoadPaintStructs;
         inline static Interop::loco_global<PaintStruct* [2], 0x00E400E4> _trackRoadAdditionsPaintStructs;
-        inline static Interop::loco_global<int32_t, 0x00E400EC> _E400EC;
-        inline static Interop::loco_global<int16_t, 0x00E400F0> _E400F0;
-        inline static Interop::loco_global<int16_t, 0x00E400F2> _E400F2;
-        inline static Interop::loco_global<int32_t, 0x00E400F4> _E400F4;
-        inline static Interop::loco_global<int32_t, 0x00E400F8> _E400F8;
-        inline static Interop::loco_global<int32_t, 0x00E400FC> _E400FC;
-        inline static Interop::loco_global<int32_t, 0x00E40100> _E40100;
-        inline static Interop::loco_global<int16_t, 0x00E40104> _E40104;
+        int32_t _E400EC;
+        int16_t _E400F0;
+        int16_t _E400F2;
+        int32_t _E400F4;
+        int32_t _E400F8;
+        int32_t _E400FC;
+        int32_t _E40100;
+        int16_t _E40104;
         // 2 byte align
-        inline static Interop::loco_global<int32_t, 0x00E40108> _E40108;
-        inline static Interop::loco_global<int32_t, 0x00E4010C> _E4010C;
-        inline static Interop::loco_global<int32_t, 0x00E40110> _E40110;
+        int32_t _E40108;
+        int32_t _E4010C;
+        int32_t _E40110;
         // byte_00E40114 _interactionResult
         // 3 byte align
         inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
@@ -502,26 +503,26 @@ namespace OpenLoco::Paint
         // byte_E40132
 
         // Different globals that don't really belong to PaintSession.
-        inline static Interop::loco_global<uint8_t[4], 0x0050C185> _tunnelCounts;
-        inline static Interop::loco_global<TunnelEntry[33], 0x0050C077> _tunnels0; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
-        inline static Interop::loco_global<TunnelEntry[33], 0x0050C0BB> _tunnels1; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
-        inline static Interop::loco_global<TunnelEntry[33], 0x0050C0FF> _tunnels2; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
-        inline static Interop::loco_global<TunnelEntry[33], 0x0050C143> _tunnels3; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
-        inline static Interop::loco_global<BridgeEntry, 0x00525CE4> _bridgeEntry;
-        inline static Interop::loco_global<SegmentFlags, 0x00525CF8> _525CF8;
-        inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
-        inline static Interop::loco_global<int16_t, 0x00F00152> _maxHeight;
-        inline static Interop::loco_global<TrackRoadAdditionSupports, 0x00F003F4> _trackRoadAdditionSupports;
-        inline static Interop::loco_global<SupportHeight[9], 0x00F00458> _supportSegments;
-        inline static Interop::loco_global<SupportHeight, 0x00F0047C> _support;
-        inline static Interop::loco_global<int16_t, 0x00F00480> _waterHeight;
-        inline static Interop::loco_global<int16_t, 0x00F25324> _waterHeight2;
-        inline static Interop::loco_global<uint8_t, 0x00F252DC> _surfaceSlope;
-        inline static Interop::loco_global<int16_t, 0x00F25338> _surfaceHeight;
-        inline static Interop::loco_global<uint32_t, 0x0112C2FC> _roadMergeBaseImage;
-        inline static Interop::loco_global<uint32_t, 0x0112C300> _roadMergeExits;
-        inline static Interop::loco_global<int16_t, 0x0112C304> _roadMergeHeight;
-        inline static Interop::loco_global<uint16_t, 0x0112C306> _roadMergeStreetlightType;
+        std::array<uint8_t, 4> _tunnelCounts;
+        std::array<TunnelEntry, 33> _tunnels0; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        std::array<TunnelEntry, 33> _tunnels1; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        std::array<TunnelEntry, 33> _tunnels2; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        std::array<TunnelEntry, 33> _tunnels3; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        BridgeEntry _bridgeEntry;
+        SegmentFlags _525CF8;
+        const void* _currentlyDrawnItem;
+        int16_t _maxHeight;
+        TrackRoadAdditionSupports _trackRoadAdditionSupports;
+        SupportHeight _supportSegments[9];
+        SupportHeight _support;
+        int16_t _waterHeight;
+        int16_t _waterHeight2;
+        uint8_t _surfaceSlope;
+        int16_t _surfaceHeight;
+        uint32_t _roadMergeBaseImage;
+        uint32_t _roadMergeExits;
+        int16_t _roadMergeHeight;
+        uint16_t _roadMergeStreetlightType;
 
         // From OpenRCT2 equivalent fields not found yet or new
         // AttachedPaintStruct* unkF1AD2C;              // no equivalent

@@ -631,9 +631,9 @@ namespace OpenLoco::Paint
 
     void PaintSession::setGeneralSupportHeight(const uint16_t height, const uint8_t slope)
     {
-        _support->height = height;
-        _support->slope = slope;
-        _support->var_03 = 0;
+        _support.height = height;
+        _support.slope = slope;
+        _support.var_03 = 0;
     }
 
     void PaintSession::resetTunnels()
@@ -769,7 +769,7 @@ namespace OpenLoco::Paint
 
         const auto vpPos = World::gameToScreen(swappedRotCoord, currentRotation);
 
-        if (!imageWithinRT(vpPos, *g1, **_renderTarget))
+        if (!imageWithinRT(vpPos, *g1, *_renderTarget))
         {
             return nullptr;
         }
@@ -798,7 +798,7 @@ namespace OpenLoco::Paint
         ps->type = _itemType;
         ps->modId = _trackModId;
         ps->mapPos = _mapPosition;
-        ps->tileElement = reinterpret_cast<World::TileElement*>(*_currentItem);
+        ps->tileElement = reinterpret_cast<World::TileElement*>(_currentItem);
         return ps;
     }
 
@@ -1556,7 +1556,7 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_renderTarget)->getDrawableRect();
+        auto rect = _renderTarget->getDrawableRect();
 
         for (auto& station : StationManager::stations())
         {
@@ -1565,7 +1565,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!station.labelFrame.contains(rect, (*_renderTarget)->zoomLevel))
+            if (!station.labelFrame.contains(rect, _renderTarget->zoomLevel))
             {
                 continue;
             }
@@ -1588,11 +1588,11 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_renderTarget)->getDrawableRect();
+        auto rect = _renderTarget->getDrawableRect();
 
         for (auto& town : TownManager::towns())
         {
-            if (!town.labelFrame.contains(rect, (*_renderTarget)->zoomLevel))
+            if (!town.labelFrame.contains(rect, _renderTarget->zoomLevel))
             {
                 continue;
             }
@@ -1723,13 +1723,13 @@ namespace OpenLoco::Paint
         switch (edge)
         {
             case 0:
-                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels0.size());
+                return _tunnels0;
             case 1:
-                return std::span<TunnelEntry>(&_tunnels1[0], _tunnels1.size());
+                return _tunnels1;
             case 2:
-                return std::span<TunnelEntry>(&_tunnels2[0], _tunnels2.size());
+                return _tunnels2;
             case 3:
-                return std::span<TunnelEntry>(&_tunnels3[0], _tunnels3.size());
+                return _tunnels3;
         }
         return std::span<TunnelEntry>();
     }
