@@ -1086,15 +1086,6 @@ namespace OpenLoco
     {
     }
 
-    // 0x00431104
-    static void aiThinkState6(Company& company)
-    {
-        // try sell a vehicle?
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00431104, regs);
-    }
-
     // 0x00487BA3
     static bool sub_487BA3(AiThought& thought)
     {
@@ -1125,12 +1116,102 @@ namespace OpenLoco
         return call(0x0048715C, regs) & X86_FLAG_CARRY;
     }
 
-    // 0x004311CA
-    static void sub_4311CA(Company& company, AiThought& thought)
+    // 0x0043112D
+    static void sub_43112D(Company& company, AiThought& thought)
+    {
+        // identical to sub_4311B5 but separate so that
+        // we can maybe enforce types for the state machine
+        if (sub_487BA3(thought))
+        {
+            company.var_4A5 = 1;
+            sub_487144(company);
+        }
+    }
+
+    // 0x00431142
+    static void sub_431142(Company& company, AiThought& thought)
     {
         if (sub_48715C(company, thought))
         {
             company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+        }
+    }
+
+    // 0x00486224
+    static void sub_486224(const World::Pos2 pos)
+    {
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x00486224, regs);
+    }
+
+    // 0x004861BF
+    static bool sub_4861BF(Company& company, AiThought& thought)
+    {
+        auto pos = company.var_85C4;
+        bool fullySearched = false;
+        for (auto i = 0U; i < 1500; ++i)
+        {
+            sub_486224(pos);
+
+            pos.x += 32;
+            if (pos.x < World::kMapWidth)
+            {
+                continue;
+            }
+            pos.x = 0;
+            pos.y += 32;
+            if (pos.y < World::kMapHeight)
+            {
+                continue;
+            }
+
+            fullySearched = true;
+            break;
+        }
+        if (fullySearched)
+        {
+            for (auto i = 0U; i < thought.var_03; ++i)
+            {
+                auto& unk = thought.var_06[i];
+                unk.var_B &= ~((1U << 1) | (1U << 3));
+                unk.var_C &= ~((1U << 1) | (1U << 3));
+            }
+            return true;
+        }
+        else
+        {
+            company.var_85C4 = pos;
+            return false;
+        }
+    }
+
+    // 0x00431164
+    static void sub_431164(Company& company, AiThought& thought)
+    {
+        if (sub_4861BF(company, thought))
+        {
+            company.var_4A5 = 3;
+        }
+    }
+
+    // 0x00487BA3
+    static uint8_t sub_483602(AiThought& thought)
+    {
+        registers regs;
+        regs.edi = X86Pointer(&thought);
+        call(0x00487BA3, regs);
+        return regs.al;
+    }
+
+    // 0x00431174
+    static void sub_431174(Company& company, AiThought& thought)
+    {
+        if (sub_483602(thought) != 0)
+        {
+            company.var_4A5 = 4;
         }
     }
 
@@ -1138,6 +1219,40 @@ namespace OpenLoco
     static void clearThought(AiThought& thought)
     {
         thought.type = AiThoughtType::null;
+    }
+
+    // 0x00431186
+    static void sub_431186(Company& company, AiThought& thought)
+    {
+        clearThought(thought);
+        company.var_4A5 = 0;
+    }
+
+    // 0x004F9510
+    static constexpr std::array<AiThinkState4Function, 5> kFuncs4F9510 = {
+        sub_43112D,
+        sub_431142,
+        sub_431164,
+        sub_431174,
+        sub_431186,
+    };
+
+    // 0x00431104
+    static void aiThinkState6(Company& company)
+    {
+        // try sell a vehicle?
+
+        company.var_85F6++;
+        kFuncs4F9510[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+    }
+
+    // 0x004311CA
+    static void sub_4311CA(Company& company, AiThought& thought)
+    {
+        if (sub_48715C(company, thought))
+        {
+            company.var_4A5 = 2;
+        }
     }
 
     // 0x004311DA
