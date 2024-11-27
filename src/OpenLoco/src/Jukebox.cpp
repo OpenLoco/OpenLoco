@@ -15,8 +15,6 @@ namespace OpenLoco::Jukebox
     static loco_global<uint8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _lastSong;
 
-    static constexpr MusicId kNoSong = 0xFF;
-
     // 0x004FE910
     static constexpr MusicInfo kMusicInfo[] = {
         { PathId::music_chuggin_along, StringIds::music_chuggin_along, 1925, 1933 },
