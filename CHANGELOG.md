@@ -3,6 +3,7 @@
 - Feature: [#2697] Add initial OpenGraphics custom assets.
 - Change: [#2708] "Show Options Window" keyboard shortcut now works in the title screen.
 - Change: [#2758] Screenshots are now saved in a dedicated `screenshots` subfolder in OpenLoco's user config folder.
+- Change: [#2770] The Object Selection window no longer shows full paths for filenames.
 - Fix: [#2676] Cargo labels are misaligned in vehicle window.
 - Fix: [#2678] Incorrect vehicle draw order and general vehicle clipping.
 - Fix: [#2690] Inability to remove certain track pieces.
