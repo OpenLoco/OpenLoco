@@ -1,7 +1,13 @@
-24.10+ (???)
+24.11+ (???)
+------------------------------------------------------------------------
+- Fix: [#2739] Game appearing blurry when using a Windows scale factor of 2 with an odd resolution.
+
+24.11 (2024-11-28)
 ------------------------------------------------------------------------
 - Feature: [#2697] Add initial OpenGraphics custom assets.
 - Change: [#2708] "Show Options Window" keyboard shortcut now works in the title screen.
+- Change: [#2758] Screenshots are now saved in a dedicated `screenshots` subfolder in OpenLoco's user config folder.
+- Change: [#2770] The Object Selection window no longer shows full paths for filenames.
 - Fix: [#2676] Cargo labels are misaligned in vehicle window.
 - Fix: [#2678] Incorrect vehicle draw order and general vehicle clipping.
 - Fix: [#2690] Inability to remove certain track pieces.
@@ -12,10 +18,12 @@
 - Fix: [#2718] North arrow image not changing to reflect rotation on the Map window.
 - Fix: [#2722] Crash when buses restarted automatically.
 - Fix: [#2723] Crash when creating a scenario with more than 15 predefined competitor objects.
+- Fix: [#2724] Crash on malformed objects with broken image tables.
 - Fix: [#2725] Currency preference selection shows invalid data.
 - Fix: [#2727] Bankruptcy warnings do not appear.
 - Fix: [#2735] Map generator does not set the season on trees.
-- Fix: [#2739] Game appearing blurry when using a Windows scale factor of 2 with an odd resolution.
+- Fix: [#2742] Sound effects playing when title screen is paused.
+- Fix: [#2743] Title music not playing while scenario is loading.
 
 24.10 (2024-10-20)
 ------------------------------------------------------------------------

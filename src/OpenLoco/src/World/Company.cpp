@@ -368,9 +368,9 @@ namespace OpenLoco
             thought.var_84 = thought.var_80;
             thought.var_80 = 0;
             currency32_t totalRunCost = 0;
-            for (auto i = 0; i < thought.var_44; ++i)
+            for (auto i = 0; i < thought.numVehicles; ++i)
             {
-                auto* vehHead = EntityManager::get<Vehicles::VehicleHead>(thought.var_66[i]);
+                auto* vehHead = EntityManager::get<Vehicles::VehicleHead>(thought.vehicles[i]);
                 if (vehHead != nullptr)
                 {
                     totalRunCost += vehHead->calculateRunningCost();

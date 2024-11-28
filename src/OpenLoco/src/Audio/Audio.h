@@ -134,6 +134,8 @@ namespace OpenLoco::Audio
     void stopMusic();
     void playMusic(Environment::PathId sample, int32_t volume, bool loop);
 
+    std::vector<uint8_t> makeSelectedPlaylist();
+
     void resetSoundObjects();
 
     bool isAudioEnabled();

@@ -7,20 +7,20 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Marijn van der Werf (marijnvdwerf)
 * Aaron van Geffen (AaronVanGeffen)
 * Michał Janiszewski (janisozaur) - CI, Linux management
+* Benjamin Sutas (LeftofZen)
+* Matthias Moninger (ZehMatt)
 
 ## Additional implementation
 * Richard Jenkins (rwjuk)
-* Matthias Moninger (ZehMatt)
 * Hielke Morsink (Broxzier)
 * Peter Gaál (petergaal)
 * Joe Bloomfield (Svelbeard)
-* Benjamin Sutas (LeftofZen)
+* LeeSpork
 
 ## Bugfixes
 * seifer7
 * Ryan D. (rctdude2)
 * Soham Roy (sohamroy19)
-* LeeSpork
 
 ## Translations
 * Dutch - Michael Steenbeek (Gymnasiast)

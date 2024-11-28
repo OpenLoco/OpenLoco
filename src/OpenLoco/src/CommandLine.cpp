@@ -10,6 +10,7 @@
 #include <fmt/chrono.h>
 #include <iostream>
 #include <optional>
+#include <stdlib.h>
 #include <string_view>
 #include <vector>
 
@@ -307,7 +308,8 @@ namespace OpenLoco
                           .registerOption("--version")
                           .registerOption("--intro")
                           .registerOption("--log_levels", 1)
-                          .registerOption("--all", "-a");
+                          .registerOption("--all", "-a")
+                          .registerOption("--locomotion_path", 1);
 
         if (!parser.parse())
         {
@@ -391,6 +393,11 @@ namespace OpenLoco
             options.logLevels = "info, warning, error";
         }
 
+        if (parser.hasOption("--locomotion_path"))
+        {
+            options.locomotionDataPath = parser.getArg("--locomotion_path");
+        }
+
         return options;
     }
 
@@ -410,18 +417,19 @@ namespace OpenLoco
         std::cout << "                compare [options] <path1> <path2>" << std::endl;
         std::cout << std::endl;
         std::cout << "options:" << std::endl;
-        std::cout << "--bind            Address to bind to when hosting a server" << std::endl;
-        std::cout << "--port     -p     Port number for the server" << std::endl;
-        std::cout << "           -o     Output path" << std::endl;
-        std::cout << "--help     -h     Print help" << std::endl;
-        std::cout << "--version         Print version" << std::endl;
-        std::cout << "--intro           Run the game intro" << std::endl;
-        std::cout << "--log_levels      Comma separated list of log levels, applying a minus prefix" << std::endl;
-        std::cout << "                  removes the level from a group such as 'all', valid levels:" << std::endl;
-        std::cout << "                  - info, warning, error, verbose, all" << std::endl;
-        std::cout << "                  Example: --log_levels \"all, -verbose\", logs all but verbose levels" << std::endl;
-        std::cout << "                  Default: \"info, warning, error\"" << std::endl;
-        std::cout << "--all      -a     For compare, print out all divergences" << std::endl;
+        std::cout << "--bind                     Address to bind to when hosting a server" << std::endl;
+        std::cout << "--port               -p     Port number for the server" << std::endl;
+        std::cout << "                     -o     Output path" << std::endl;
+        std::cout << "--help               -h     Print help" << std::endl;
+        std::cout << "--version                   Print version" << std::endl;
+        std::cout << "--intro                     Run the game intro" << std::endl;
+        std::cout << "--log_levels                Comma separated list of log levels, applying a minus prefix" << std::endl;
+        std::cout << "                            removes the level from a group such as 'all', valid levels:" << std::endl;
+        std::cout << "                            - info, warning, error, verbose, all" << std::endl;
+        std::cout << "                              Example: --log_levels \"all, -verbose\", logs all but verbose levels" << std::endl;
+        std::cout << "                              Default: \"info, warning, error\"" << std::endl;
+        std::cout << "--all                -a     For compare, print out all divergences" << std::endl;
+        std::cout << "--locomotion_path           Overrides the path to Locomotion install." << std::endl;
     }
 
     std::optional<int> runCommandLineOnlyCommand(const CommandLineOptions& options)
@@ -430,10 +438,10 @@ namespace OpenLoco
         {
             case CommandLineAction::help:
                 printHelp();
-                return 1;
+                return EXIT_FAILURE;
             case CommandLineAction::version:
                 printVersion();
-                return 1;
+                return EXIT_FAILURE;
             case CommandLineAction::uncompress:
                 return uncompressFile(options);
             case CommandLineAction::simulate:
@@ -441,7 +449,7 @@ namespace OpenLoco
             case CommandLineAction::compare:
                 return compare(options);
             default:
-                return {};
+                return std::nullopt;
         }
     }
 
@@ -452,7 +460,7 @@ namespace OpenLoco
         if (options.path.empty())
         {
             Logging::error("No file specified.");
-            return 2;
+            return EXIT_FAILURE;
         }
 
         try
@@ -523,21 +531,23 @@ namespace OpenLoco
 
             writer.writeChecksum();
 
-            return 0;
+            return EXIT_SUCCESS;
         }
         catch (const std::exception& e)
         {
             Logging::error("Unable to uncompress S5 file: {}", e.what());
-            return 2;
+            return EXIT_FAILURE;
         }
     }
 
     static int simulate(const CommandLineOptions& options)
     {
+        setCommandLineOptions(options);
+
         if (!options.ticks)
         {
             Logging::error("Number of ticks to simulate not specified");
-            return 2;
+            return EXIT_FAILURE;
         }
 
         auto inPath = fs::u8path(options.path);
@@ -553,6 +563,7 @@ namespace OpenLoco
         catch (...)
         {
             Logging::error("Unable to load and simulate {}", inPath.u8string());
+            return EXIT_FAILURE;
         }
 
         if (!options.path2.empty())
@@ -584,10 +595,11 @@ namespace OpenLoco
             catch (...)
             {
                 Logging::error("Unable to save game to {}", outPath.u8string());
+                return EXIT_FAILURE;
             }
         }
 
-        return 0;
+        return EXIT_SUCCESS;
     }
 
     static int compare(const CommandLineOptions& options)
@@ -601,22 +613,29 @@ namespace OpenLoco
             Logging::error("Unable to compare gamestates...");
             Logging::error("    The required compare file paths have not been specified.");
             Logging::error("    compare [options] <path1> <path2>");
-            return 1;
+            return EXIT_FAILURE;
         }
 
+        auto result = EXIT_SUCCESS;
         try
         {
             if (OpenLoco::GameSaveCompare::compareGameStates(file1, file2, displayAllDivergences))
             {
                 Logging::info("MATCHES", file1, file2);
             }
+            else
+            {
+                Logging::error("DOES NOT MATCH", file1, file2);
+                result = EXIT_FAILURE;
+            }
         }
         catch (std::exception& e)
         {
             Logging::error("Unable to compare gamestates: {} to {}", file1, file2);
             Logging::error("Exception reason {}", e.what());
+            result = EXIT_FAILURE;
         }
 
-        return 0;
+        return result;
     }
 }

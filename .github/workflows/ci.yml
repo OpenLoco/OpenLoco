@@ -2,6 +2,7 @@ name: CI
 on: [push, pull_request, workflow_dispatch]
 env:
   OPENLOCO_BUILD_SERVER: GitHub
+  ASSETS_SSH_KEY: ${{ secrets.ASSETS_SSH_KEY }}
 jobs:
   check-code-formatting:
     name: Check code formatting
@@ -47,10 +48,33 @@ jobs:
           name: OpenLoco-${{ runner.os }}-Win32-cmake
           path: artifacts
           if-no-files-found: error
+      - name: Checkout Assets
+        if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }} 
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ env.ASSETS_SSH_KEY }}
+          repository: OpenLoco/LocomotionAssets
+          ref: gog
+          path: LocomotionAssets
+      - name: Checkout Test Data
+        if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }} 
+        uses: actions/checkout@v4
+        with:
+          repository: OpenLoco/TestData
+          ref: 57034171c02e62376c87116abcdc2893dfacfd86
+          path: TestData
+      - name: Run Simulate Test
+        if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }} 
+        shell: bash
+        run: |
+          set -e
+          ./build/windows-msvc/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" simulate "./TestData/Saves/MMTest.SV5" 100000 -o "result.sv5"
+          ./build/windows-msvc/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" compare "./TestData/Saves/MMTest100000_base.SV5" "result.sv5"
       - name: Run Tests
         shell: cmd
         run: |
           ctest --test-dir build\windows-msvc\ --output-on-failure
+
   ubuntu:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest

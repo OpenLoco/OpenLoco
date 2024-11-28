@@ -148,4 +148,37 @@ namespace OpenLoco
         cargoType = 0;
         std::fill(&cargoOffsetBytes[0][0], &cargoOffsetBytes[0][0] + sizeof(cargoOffsetBytes) / sizeof(std::byte*), nullptr);
     }
+
+    sfl::static_vector<RoadStationObject::CargoOffset, Limits::kMaxStationCargoDensity> RoadStationObject::getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const
+    {
+        assert(rotation < 4 && nibble < 4);
+
+        const auto* bytes = cargoOffsetBytes[rotation][nibble];
+        uint8_t z = *reinterpret_cast<const uint8_t*>(bytes);
+        bytes++;
+        sfl::static_vector<CargoOffset, Limits::kMaxStationCargoDensity> result;
+        while (*bytes != static_cast<std::byte>(0xFF))
+        {
+            result.push_back({
+                World::Pos3{
+                    *reinterpret_cast<const int8_t*>(bytes),
+                    *reinterpret_cast<const int8_t*>(bytes + 1),
+                    z,
+                },
+                World::Pos3{
+                    *reinterpret_cast<const int8_t*>(bytes + 2),
+                    *reinterpret_cast<const int8_t*>(bytes + 3),
+                    z,
+                },
+            });
+            bytes += 4;
+
+            // The game can't handle anything larger than 16 so we've made the static vector 16 max
+            if (result.size() == result.max_size())
+            {
+                break;
+            }
+        }
+        return result;
+    }
 }

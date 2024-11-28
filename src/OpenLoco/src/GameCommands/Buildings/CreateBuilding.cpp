@@ -245,10 +245,7 @@ namespace OpenLoco::GameCommands
                 elBuilding->setColour(args.colour);
                 elBuilding->setVariation(args.variation);
                 elBuilding->setAge(0);
-                if (buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
-                {
-                    elBuilding->setHas40(true);
-                }
+                elBuilding->setIsMiscBuilding(buildingObj->hasFlags(BuildingObjectFlags::miscBuilding));
 
                 bool hasFrames = false;
                 for (auto part : buildingObj->getBuildingParts(args.variation))

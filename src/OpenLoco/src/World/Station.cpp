@@ -346,7 +346,7 @@ namespace OpenLoco
                             {
                                 auto& buildingEl = el.get<BuildingElement>();
 
-                                if (buildingEl.has_40() || !buildingEl.isConstructed())
+                                if (buildingEl.isMiscBuilding() || !buildingEl.isConstructed())
                                 {
                                     break;
                                 }
@@ -796,7 +796,7 @@ namespace OpenLoco
                     newDensity += (1 << cargoObj->var_14) - 1;
                     newDensity >>= cargoObj->var_14;
 
-                    newDensity = std::min<int32_t>(newDensity, Limits::kMaxStationCargoDensity - 1);
+                    newDensity = std::min<int32_t>(newDensity, Limits::kMaxStationCargoDensity);
                 }
             }
             if (stationCargo.densityPerTile != newDensity)

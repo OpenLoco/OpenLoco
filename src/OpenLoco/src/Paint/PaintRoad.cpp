@@ -9,6 +9,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/StreetLightObject.h"
 #include "Paint.h"
+#include "PaintRoadAdditionsData.h"
 #include "PaintRoadCommonData.h"
 #include "PaintRoadStyle0Data.h"
 #include "PaintRoadStyle1Data.h"
@@ -242,6 +243,83 @@ namespace OpenLoco::Paint
                 paintRoadStreetlight(session, elRoad.baseHeight(), style, height, r);
             }
             r++;
+        }
+    }
+
+    namespace AdditionStyle1
+    {
+        static void paintSupport(PaintSession& session, const RoadAdditionSupport& tppaSupport, const uint8_t rotation, const ImageId baseImageId, int16_t height)
+        {
+            TrackRoadAdditionSupports support{};
+            support.height = height + tppaSupport.height;
+            support.occupiedSegments = session.getOccupiedAdditionSupportSegments();
+            uint8_t i = 0;
+            auto segments = enumValue(tppaSupport.segments[rotation]);
+            for (auto seg = Numerics::bitScanForward(segments); seg != -1; seg = Numerics::bitScanForward(segments))
+            {
+                segments &= ~(1U << seg);
+                assert(i < 2);
+
+                support.segmentFrequency[seg] = tppaSupport.frequencies[rotation];
+                support.segmentImages[seg] = baseImageId.withIndexOffset(tppaSupport.imageIds[rotation][i * 2]).toUInt32();
+                support.segmentInteractionItem[seg] = session.getCurrentItem();
+                support.segmentInteractionType[seg] = session.getItemType();
+                i++;
+            }
+            session.setAdditionSupport(support);
+        }
+
+        static void paintRoadAdditionPPMergeable(PaintSession& session, const World::RoadElement& elRoad, const uint8_t rotation, const ImageId baseImageId, const RoadPaintAdditionPiece& tppa)
+        {
+            const auto height = elRoad.baseHeight();
+            const auto heightOffset = World::Pos3{ 0,
+                                                   0,
+                                                   height };
+
+            session.addToPlotListTrackRoadAddition(
+                baseImageId.withIndexOffset(tppa.imageIds[rotation]),
+                0,
+                heightOffset,
+                tppa.boundingBoxOffsets[rotation] + heightOffset,
+                tppa.boundingBoxSizes[rotation]);
+            if (tppa.supports.has_value())
+            {
+                paintSupport(session, tppa.supports.value(), rotation, baseImageId, height);
+            }
+        }
+
+        static void paintRoadAdditionPPStandard(PaintSession& session, const World::RoadElement& elRoad, const uint8_t rotation, const ImageId baseImageId, const RoadPaintAdditionPiece& tppa)
+        {
+            const auto height = elRoad.baseHeight();
+            const auto heightOffset = World::Pos3{ 0,
+                                                   0,
+                                                   height };
+
+            session.addToPlotList4FD150(
+                baseImageId.withIndexOffset(tppa.imageIds[rotation]),
+                heightOffset,
+                tppa.boundingBoxOffsets[rotation] + heightOffset,
+                tppa.boundingBoxSizes[rotation]);
+            if (tppa.supports.has_value())
+            {
+                paintSupport(session, tppa.supports.value(), rotation, baseImageId, height);
+            }
+        }
+
+        static void paintRoadAdditionPP(PaintSession& session, const World::RoadElement& elRoad, const uint8_t rotation, const ImageId baseImageId, const RoadPaintAdditionPiece& tppa)
+        {
+            // TODO: Better way to detect kNullTrackPaintAdditionPiece
+            if (tppa.imageIds[3] != 0)
+            {
+                if (tppa.isIsMergeable)
+                {
+                    paintRoadAdditionPPMergeable(session, elRoad, rotation, baseImageId, tppa);
+                }
+                else
+                {
+                    paintRoadAdditionPPStandard(session, elRoad, rotation, baseImageId, tppa);
+                }
+            }
         }
     }
 
@@ -508,18 +586,22 @@ namespace OpenLoco::Paint
                 continue;
             }
 
+            const auto roadExtraBaseImage = ImageId::fromUInt32(_roadExtraImageId);
             session.setTrackModId(mod);
 
             const auto paintStyle = roadExtraObj->paintStyle;
-            assert(paintStyle == 1);
+            if (paintStyle == 1 && elRoad.roadId() < AdditionStyle1::kRoadPaintAdditionParts.size() && elRoad.sequenceIndex() < AdditionStyle1::kRoadPaintAdditionParts[elRoad.roadId()].size())
+            {
+                auto& parts = AdditionStyle1::kRoadPaintAdditionParts[elRoad.roadId()];
+                auto& tppa = parts[elRoad.sequenceIndex()];
 
-            const auto roadPaintFunc = _roadExtraPaintModes[paintStyle][elRoad.roadId()][rotation];
-            Interop::registers regs;
-            regs.esi = Interop::X86Pointer(&elRoad);
-            regs.ebp = elRoad.sequenceIndex();
-            regs.ecx = rotation;
-            regs.dx = height;
-            call(roadPaintFunc, regs);
+                AdditionStyle1::paintRoadAdditionPP(session, elRoad, rotation, roadExtraBaseImage, tppa);
+            }
+            else
+            {
+                assert(false);
+                Logging::error("Tried to draw invalid road id or sequence index: RoadId {} SequenceIndex {}", elRoad.roadId(), elRoad.sequenceIndex());
+            }
         }
     }
 
