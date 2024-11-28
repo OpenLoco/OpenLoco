@@ -24,7 +24,27 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
-    static PaintSession _session;
+    PaintSession::PaintSession(const Gfx::RenderTarget& rt, const SessionOptions& options)
+    {
+        _renderTarget = &rt;
+        _nextFreePaintStruct = &_paintEntries[0];
+        _endOfPaintStructArray = &_paintEntries[3998];
+        _lastPS = nullptr;
+        for (auto& quadrant : _quadrants)
+        {
+            quadrant = nullptr;
+        }
+        _quadrantBackIndex = std::numeric_limits<uint32_t>::max();
+        _quadrantFrontIndex = 0;
+        _lastPaintString = nullptr;
+        _paintStringHead = nullptr;
+
+        _viewFlags = options.viewFlags;
+        currentRotation = options.rotation;
+
+        // TODO: unused
+        _foregroundCullingHeight = options.foregroundCullHeight;
+    }
 
     void PaintSession::setEntityPosition(const World::Pos2& pos)
     {
@@ -380,223 +400,6 @@ namespace OpenLoco::Paint
         attached->next = _lastPS->attachedPS;
         _lastPS->attachedPS = attached;
         return attached;
-    }
-
-    void PaintSession::init(const Gfx::RenderTarget& rt, const SessionOptions& options)
-    {
-        _renderTarget = &rt;
-        _nextFreePaintStruct = &_paintEntries[0];
-        _endOfPaintStructArray = &_paintEntries[3998];
-        _lastPS = nullptr;
-        for (auto& quadrant : _quadrants)
-        {
-            quadrant = nullptr;
-        }
-        _quadrantBackIndex = std::numeric_limits<uint32_t>::max();
-        _quadrantFrontIndex = 0;
-        _lastPaintString = nullptr;
-        _paintStringHead = nullptr;
-
-        _viewFlags = options.viewFlags;
-        currentRotation = options.rotation;
-
-        // TODO: unused
-        _foregroundCullingHeight = options.foregroundCullHeight;
-    }
-
-    // 0x0045A6CA
-    PaintSession* allocateSession(const Gfx::RenderTarget& rt, const SessionOptions& options)
-    {
-        _session.init(rt, options);
-        return &_session;
-    }
-
-    static PaintStruct* addToPlotListTrackRoadHookHelper(registers& regs, uint8_t rotation)
-    {
-        PaintSession session;
-        const auto imageId = ImageId::fromUInt32(regs.ebx);
-        const auto priority = regs.ecx;
-        const auto offset = World::Pos3(0, 0, regs.dx);
-        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-        session.setRotation(rotation);
-        return session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
-    }
-
-    static PaintStruct* addToPlotListTrackRoadAdditionHookHelper(registers& regs, uint8_t rotation)
-    {
-        PaintSession session;
-        const auto imageId = ImageId::fromUInt32(regs.ebx);
-        const auto priority = regs.ecx;
-        const auto offset = World::Pos3(0, 0, regs.dx);
-        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-        session.setRotation(rotation);
-        return session.addToPlotListTrackRoadAddition(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
-    }
-
-    static PaintStruct* addToPlot4FD150HookHelper(registers& regs, uint8_t rotation)
-    {
-        PaintSession session;
-        const auto imageId = ImageId::fromUInt32(regs.ebx);
-        const auto offset = World::Pos3(0, 0, regs.dx);
-        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-        session.setRotation(rotation);
-        return session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x004622A2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                PaintSession session;
-                session.generate();
-
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0045BF9F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadHookHelper(regs, 0);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C0F2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadHookHelper(regs, 1);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C24C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadHookHelper(regs, 2);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C3A7,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadHookHelper(regs, 3);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-
-        registerHook(
-            0x0045C503,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 0);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C656,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 1);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C7B0,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 2);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C90B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 3);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-
-        registerHook(
-            0x0045B405,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlot4FD150HookHelper(regs, 0);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045B58D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlot4FD150HookHelper(regs, 1);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045B721,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlot4FD150HookHelper(regs, 2);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045B8B9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlot4FD150HookHelper(regs, 3);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
     }
 
     void PaintSession::setSegmentsSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
@@ -1724,4 +1527,5 @@ namespace OpenLoco::Paint
         }
         return std::span<TunnelEntry>();
     }
+
 }

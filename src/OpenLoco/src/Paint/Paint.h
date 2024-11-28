@@ -233,13 +233,13 @@ namespace OpenLoco::Paint
     struct PaintSession
     {
     public:
-        PaintSession() {}
+        PaintSession(const Gfx::RenderTarget& rt, const SessionOptions& options);
 
         void generate();
         void arrangeStructs();
         void drawStructs(Gfx::DrawingContext& drawingCtx);
         void drawStringStructs(Gfx::DrawingContext& drawingCtx);
-        void init(const Gfx::RenderTarget& rt, const SessionOptions& options);
+
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
@@ -536,8 +536,4 @@ namespace OpenLoco::Paint
         void addPSToQuadrant(PaintStruct& ps);
         PaintStruct* createNormalPaintStruct(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
     };
-
-    PaintSession* allocateSession(const Gfx::RenderTarget& rt, const SessionOptions& options);
-
-    void registerHooks();
 }
