@@ -52,7 +52,7 @@ namespace OpenLoco::Audio
     [[maybe_unused]] constexpr int32_t kPlayAtLocation = 0x8001;
     [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
-    static constexpr uint8_t kNoSong = 0xFF;
+    static constexpr Jukebox::MusicId kNoSong = 0xFF;
 
     static loco_global<uint32_t, 0x0050D1EC> _audioInitialised;
     static loco_global<uint8_t, 0x0050D434> _currentSong;
