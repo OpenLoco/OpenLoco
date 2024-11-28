@@ -24,5 +24,5 @@ namespace OpenLoco::Jukebox
 
     std::vector<MusicId> makeSelectedPlaylist();
     MusicId chooseNextMusicTrack();
-    const MusicInfo* getMusicInfo(MusicId track);
+    const MusicInfo& getMusicInfo(MusicId track);
 }

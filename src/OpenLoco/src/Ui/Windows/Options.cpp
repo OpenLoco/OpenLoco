@@ -1065,7 +1065,7 @@ namespace OpenLoco::Ui::Windows::Options
                 StringId songName = StringIds::music_none;
                 if (_currentSong != -1)
                 {
-                    songName = Jukebox::getMusicInfo(_currentSong)->titleId;
+                    songName = Jukebox::getMusicInfo(_currentSong).titleId;
                 }
 
                 auto args = FormatArguments(w.widgets[Widx::currently_playing].textArgs);
@@ -1309,7 +1309,7 @@ namespace OpenLoco::Ui::Windows::Options
             for (auto track : tracks)
             {
                 index++;
-                Dropdown::add(index, StringIds::dropdown_stringid, Jukebox::getMusicInfo(track)->titleId);
+                Dropdown::add(index, StringIds::dropdown_stringid, Jukebox::getMusicInfo(track).titleId);
                 if (track == _currentSong)
                 {
                     Dropdown::setItemSelected(index);

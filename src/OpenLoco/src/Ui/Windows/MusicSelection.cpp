@@ -130,7 +130,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw track name.
             {
                 auto point = Point(15, y);
-                StringId musicTitle = Jukebox::getMusicInfo(musicTrack)->titleId;
+                StringId musicTitle = Jukebox::getMusicInfo(musicTrack).titleId;
 
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };

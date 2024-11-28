@@ -139,8 +139,8 @@ namespace OpenLoco::Jukebox
         return track;
     }
 
-    const MusicInfo* getMusicInfo(MusicId track)
+    const MusicInfo& getMusicInfo(MusicId track)
     {
-        return &kMusicInfo[track];
+        return kMusicInfo[track];
     }
 }

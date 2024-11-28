@@ -1012,7 +1012,7 @@ namespace OpenLoco::Audio
             {
                 auto currentYear = getCurrentYear();
                 auto info = Jukebox::getMusicInfo(_currentSong);
-                if (currentYear < info->startYear || currentYear > info->endYear)
+                if (currentYear < info.startYear || currentYear > info.endYear)
                 {
                     trackStillApplies = false;
                 }
@@ -1072,7 +1072,7 @@ namespace OpenLoco::Audio
 
             // Load info on the song to play.
             const auto mi = Jukebox::getMusicInfo(_currentSong);
-            playMusic(mi->pathId, cfg.volume, false);
+            playMusic(mi.pathId, cfg.volume, false);
 
             WindowManager::invalidate(WindowType::options);
         }
