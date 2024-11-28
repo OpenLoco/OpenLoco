@@ -1457,7 +1457,7 @@ namespace OpenLoco
     static void sub_431186(Company& company, AiThought& thought)
     {
         clearThought(thought);
-        company.var_4A5 = 0;
+        company.var_4A4 = AiThinkState::unk0;
     }
 
     // 0x004F9510
