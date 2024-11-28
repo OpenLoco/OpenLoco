@@ -1332,7 +1332,7 @@ namespace OpenLoco
         for (auto i = 0U; i < stationLength; ++i)
         {
             auto nonAiAllocated = 0U;
-            auto tile = World::TileManager::get(pos);
+            auto tile = World::TileManager::get(stationPos);
             for (auto& el : tile)
             {
                 auto* elTrack = el.as<TrackElement>();
@@ -1340,7 +1340,7 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                if (elTrack->baseHeight() != pos.z)
+                if (elTrack->baseHeight() != stationPos.z)
                 {
                     continue;
                 }
@@ -1368,7 +1368,7 @@ namespace OpenLoco
                 {
                     GameCommands::TrackRemovalArgs args{};
                     args.trackObjectId = objectId;
-                    args.pos = pos;
+                    args.pos = stationPos;
                     args.rotation = rotation;
                     args.trackId = 0;
                     args.index = 0;
@@ -1385,7 +1385,7 @@ namespace OpenLoco
             {
                 GameCommands::TrackRemovalArgs args{};
                 args.trackObjectId = objectId;
-                args.pos = pos;
+                args.pos = stationPos;
                 args.rotation = rotation;
                 args.trackId = 0;
                 args.index = 0;
