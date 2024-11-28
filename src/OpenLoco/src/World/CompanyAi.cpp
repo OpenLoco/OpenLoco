@@ -1410,7 +1410,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            const auto pos = World::Pos3{ unk.pos, unk.baseZ * World::kSmallZStep };
+            const auto pos = World::Pos3(unk.pos, unk.baseZ * World::kSmallZStep);
             if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 15))
             {
                 GameCommands::AirportRemovalArgs args{};
