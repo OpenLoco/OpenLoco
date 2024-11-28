@@ -11,8 +11,10 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Road/RemoveRoad.h"
+#include "GameCommands/Road/RemoveRoadStation.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/RemoveTrack.h"
+#include "GameCommands/Track/RemoveTrainStation.h"
 #include "GameCommands/Vehicles/CreateVehicle.h"
 #include "GameCommands/Vehicles/VehicleOrderInsert.h"
 #include "GameCommands/Vehicles/VehicleOrderSkip.h"
@@ -1139,11 +1141,8 @@ namespace OpenLoco
     }
 
     // 0x00486224
-    static void removeAllNonStationRoadTrack(const World::Pos2 pos)
+    static void removeAiAllocatedCompanyTracksRoadsOnTile(const World::Pos2 pos)
     {
-        // For some reason it doesn't get any refund money for this
-        // removing. ???
-
         auto tile = World::TileManager::get(pos);
         bool recheck = true;
         while (recheck)
@@ -1151,7 +1150,7 @@ namespace OpenLoco
             recheck = false;
             for (auto& el : tile)
             {
-                if (el.isAiAllocated())
+                if (!el.isAiAllocated())
                 {
                     continue;
                 }
@@ -1178,7 +1177,6 @@ namespace OpenLoco
                     args.roadId = elRoad->roadId();
                     args.rotation = elRoad->rotation();
                     args.sequenceIndex = elRoad->sequenceIndex();
-                    // Why no payment??
                     auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
                     if (res != GameCommands::FAILURE)
                     {
@@ -1203,7 +1201,6 @@ namespace OpenLoco
                     args.trackId = elTrack->trackId();
                     args.rotation = elTrack->rotation();
                     args.index = elTrack->sequenceIndex();
-                    // Why no payment??
                     auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
                     if (res != GameCommands::FAILURE)
                     {
@@ -1216,13 +1213,14 @@ namespace OpenLoco
     }
 
     // 0x004861BF
-    static bool sub_4861BF(Company& company, AiThought& thought)
+    // returns false until the whole map has been iterated
+    static bool removeAllAiAllocatedCompanyAssetsOnMapByChunk(Company& company, AiThought& thought)
     {
         auto pos = company.var_85C4;
         bool fullySearched = false;
         for (auto i = 0U; i < 1500; ++i)
         {
-            removeAllNonStationRoadTrack(pos);
+            removeAiAllocatedCompanyTracksRoadsOnTile(pos);
 
             pos.x += 32;
             if (pos.x < World::kMapWidth)
@@ -1259,25 +1257,191 @@ namespace OpenLoco
     // 0x00431164
     static void sub_431164(Company& company, AiThought& thought)
     {
-        if (sub_4861BF(company, thought))
+        if (removeAllAiAllocatedCompanyAssetsOnMapByChunk(company, thought))
         {
             company.var_4A5 = 3;
         }
     }
 
-    // 0x00483602
-    static uint8_t sub_483602(AiThought& thought)
+    // 0x0047B107
+    static void removeAiAllocatedRoadStation(World::Pos3 pos, uint8_t rotation, uint8_t objectId)
     {
-        registers regs;
-        regs.edi = X86Pointer(&thought);
-        call(0x00483602, regs);
-        return regs.al;
+        {
+            GameCommands::RoadStationRemovalArgs args{};
+            args.pos = pos;
+            args.rotation = rotation;
+            args.roadObjectId = objectId;
+            args.roadId = 0;
+            args.index = 0;
+
+            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            if (res == GameCommands::FAILURE)
+            {
+                // Try remove facing the opposite rotation
+                args.rotation ^= (1U << 1);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            }
+        }
+
+        auto tile = World::TileManager::get(pos);
+        for (auto& el : tile)
+        {
+            auto* elRoad = el.as<RoadElement>();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+            if (elRoad->baseHeight() != pos.z)
+            {
+                continue;
+            }
+            if (elRoad->rotation() != rotation)
+            {
+                continue;
+            }
+            if (elRoad->roadObjectId() != objectId)
+            {
+                continue;
+            }
+            if (elRoad->roadId() != 0)
+            {
+                continue;
+            }
+            if (elRoad->owner() != GameCommands::getUpdatingCompanyId())
+            {
+                continue;
+            }
+            if (elRoad->isAiAllocated())
+            {
+                GameCommands::RoadRemovalArgs args{};
+                args.objectId = objectId;
+                args.pos = pos;
+                args.rotation = rotation;
+                args.roadId = 0;
+                args.sequenceIndex = 0;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            }
+            break;
+        }
+    }
+
+    // 0x004A7CD2
+    static void removeAiAllocatedTrainStation(const World::Pos3 pos, const uint8_t rotation, const uint8_t objectId, const uint8_t stationLength)
+    {
+        auto stationPos = pos;
+        for (auto i = 0U; i < stationLength; ++i)
+        {
+            auto nonAiAllocated = 0U;
+            auto tile = World::TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                auto* elTrack = el.as<TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elTrack->baseHeight() != pos.z)
+                {
+                    continue;
+                }
+                if (elTrack->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (elTrack->trackObjectId() != objectId)
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != 0)
+                {
+                    continue;
+                }
+                if (elTrack->trackId() != 0)
+                {
+                    continue;
+                }
+                if (elTrack->owner() != GameCommands::getUpdatingCompanyId())
+                {
+                    continue;
+                }
+                if (elTrack->isAiAllocated())
+                {
+                    GameCommands::TrackRemovalArgs args{};
+                    args.trackObjectId = objectId;
+                    args.pos = pos;
+                    args.rotation = rotation;
+                    args.trackId = 0;
+                    args.index = 0;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+                }
+                else
+                {
+                    nonAiAllocated++;
+                }
+                break;
+            }
+            // Really? Seems a bit odd
+            if (nonAiAllocated)
+            {
+                GameCommands::TrackRemovalArgs args{};
+                args.trackObjectId = objectId;
+                args.pos = pos;
+                args.rotation = rotation;
+                args.trackId = 0;
+                args.index = 0;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+            }
+
+            stationPos += World::Pos3{ kRotationOffset[rotation], 0 };
+        }
+    }
+
+    // 0x00483602
+    static uint8_t removeAiAllocatedStations(AiThought& thought)
+    {
+        for (auto i = 0U; i < thought.var_03; ++i)
+        {
+            auto& unk = thought.var_06[i];
+            if (unk.var_02 & (1U << 1))
+            {
+                continue;
+            }
+            if (!(unk.var_02 & (1U << 0)))
+            {
+                continue;
+            }
+            const auto pos = World::Pos3{ unk.pos, unk.baseZ * World::kSmallZStep };
+            if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 15))
+            {
+                GameCommands::AirportRemovalArgs args{};
+                args.pos = pos;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            }
+            else if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 16))
+            {
+                GameCommands::PortRemovalArgs args{};
+                args.pos = pos;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            }
+            else if (thought.trackObjId & (1U << 7))
+            {
+                removeAiAllocatedRoadStation(pos, unk.rotation, thought.trackObjId & ~(1U << 7));
+            }
+            else
+            {
+                removeAiAllocatedTrainStation(pos, unk.rotation, thought.trackObjId, thought.var_04);
+            }
+            // Ai assumes removal was a success!
+            unk.var_02 &= ~(1U << 0);
+            return 0;
+        }
+        return 1;
     }
 
     // 0x00431174
     static void sub_431174(Company& company, AiThought& thought)
     {
-        if (sub_483602(thought) != 0)
+        if (removeAiAllocatedStations(thought) != 0)
         {
             company.var_4A5 = 4;
         }
