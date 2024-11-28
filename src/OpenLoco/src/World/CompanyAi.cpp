@@ -1140,6 +1140,37 @@ namespace OpenLoco
         }
     }
 
+    StationElement* getAiAllocatedStationElement(const Pos3& pos)
+    {
+        auto tile = TileManager::get(pos.x, pos.y);
+        auto baseZ = pos.z / 4;
+
+        for (auto& element : tile)
+        {
+            auto* stationElement = element.as<StationElement>();
+
+            if (stationElement == nullptr)
+            {
+                continue;
+            }
+
+            if (stationElement->baseZ() != baseZ)
+            {
+                continue;
+            }
+
+            if (stationElement->isAiAllocated())
+            {
+                return stationElement;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+        return nullptr;
+    }
+
     // 0x00486224
     static void removeAiAllocatedCompanyTracksRoadsOnTile(const World::Pos2 pos)
     {
@@ -1164,8 +1195,8 @@ namespace OpenLoco
                     }
                     if (elRoad->hasStationElement())
                     {
-                        auto* station = getStationElement(World::Pos3{ pos, elRoad->baseHeight() });
-                        if (station != nullptr && station->isAiAllocated())
+                        auto* station = getAiAllocatedStationElement(World::Pos3{ pos, elRoad->baseHeight() });
+                        if (station != nullptr)
                         {
                             continue;
                         }
