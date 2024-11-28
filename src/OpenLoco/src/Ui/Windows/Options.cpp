@@ -950,6 +950,18 @@ namespace OpenLoco::Ui::Windows::Options
             if (itemIndex != -1)
             {
                 Audio::setDevice(itemIndex);
+
+                // the above function reinitialises the audio channels and samples,
+                // which means the title music needs to be resumed (if it is currently meant to be playing).
+                if (isTitleMode())
+                {
+                    auto& cfg = Config::get();
+                    if (cfg.audio.playTitleMusic)
+                    {
+                        Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
+                    }
+                }
+
                 WindowManager::invalidateWidget(w->type, w->number, Widx::audio_device);
             }
         }
