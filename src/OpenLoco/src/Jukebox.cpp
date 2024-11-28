@@ -109,13 +109,11 @@ namespace OpenLoco::Jukebox
 
     MusicId chooseNextMusicTrack()
     {
-        using MusicPlaylistType = Config::MusicPlaylistType;
-
         auto playlist = makeSelectedPlaylist();
 
         const auto& cfg = Config::get().old;
 
-        if (playlist.empty() && cfg.musicPlaylist != MusicPlaylistType::currentEra)
+        if (playlist.empty() && cfg.musicPlaylist != Config::MusicPlaylistType::currentEra)
         {
             playlist = makeCurrentEraPlaylist();
         }
