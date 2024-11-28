@@ -4,7 +4,6 @@
 #include "Date.h"
 #include "Environment.h"
 #include "Localisation/StringIds.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <numeric>
 
 using namespace OpenLoco::Environment;
@@ -12,9 +11,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Jukebox
 {
-    static loco_global<uint8_t, 0x0050D434> _currentSong;
-    static loco_global<uint8_t, 0x0050D435> _lastSong;
-
     // 0x004FE910
     static constexpr MusicInfo kMusicInfo[] = {
         { PathId::music_chuggin_along, StringIds::music_chuggin_along, 1925, 1933 },
@@ -107,7 +103,7 @@ namespace OpenLoco::Jukebox
         throw Exception::RuntimeError("Invalid MusicPlaylistType");
     }
 
-    MusicId chooseNextMusicTrack()
+    MusicId chooseNextMusicTrack(MusicId lastSong)
     {
         auto playlist = makeSelectedPlaylist();
 
@@ -123,11 +119,11 @@ namespace OpenLoco::Jukebox
             playlist = makeAllMusicPlaylist();
         }
 
-        // Remove _lastSong if it is present and not the only song, so that you do not get the same song twice.
+        // Remove lastSong if it is present and not the only song, so that you do not get the same song twice.
         // Assumes there is no more than one occurence of that song in the playlist.
         if (playlist.size() > 1)
         {
-            auto position = std::find(playlist.begin(), playlist.end(), *_lastSong);
+            auto position = std::find(playlist.begin(), playlist.end(), lastSong);
             if (position != playlist.end())
             {
                 playlist.erase(position);
