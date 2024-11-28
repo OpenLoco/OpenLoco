@@ -192,13 +192,13 @@ namespace OpenLoco::Paint
 
         constexpr BridgeEntry() = default;
         constexpr BridgeEntry(coord_t _height, uint8_t _subType, uint8_t edges, uint8_t quarters, uint8_t _objectId, ImageId _imageBase)
-            : height(_height)
-            , subType(_subType)
+            : imageBase(_imageBase)
             , padImage1(0)
             , padImage2(0)
+            , subType(_subType)
+            , height(_height)
             , edgesQuarters((edges << 4U) | quarters)
-            , objectId(_objectId)
-            , imageBase(_imageBase) {};
+            , objectId(_objectId) {};
 
         bool isEmpty() const { return height == -1; }
     };
