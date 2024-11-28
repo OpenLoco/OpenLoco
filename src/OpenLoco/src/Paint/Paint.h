@@ -222,6 +222,7 @@ namespace OpenLoco::Paint
         uint8_t rotation;
         int16_t foregroundCullHeight;
         Ui::ViewportFlags viewFlags;
+
         constexpr bool hasFlags(Ui::ViewportFlags flagsToTest) const
         {
             return (viewFlags & flagsToTest) != Ui::ViewportFlags::none;

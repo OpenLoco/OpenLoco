@@ -2728,6 +2728,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         Paint::SessionOptions options{};
         options.rotation = WindowManager::getCurrentRotation();
+
         auto session = Paint::PaintSession(drawingCtx.currentRenderTarget(), options);
 
         for (const auto& trackPiece : trackPieces)

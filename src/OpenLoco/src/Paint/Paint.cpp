@@ -604,7 +604,6 @@ namespace OpenLoco::Paint
             return;
         }
 
-        currentRotation = Ui::WindowManager::getCurrentRotation();
         switch (currentRotation)
         {
             case 0:
