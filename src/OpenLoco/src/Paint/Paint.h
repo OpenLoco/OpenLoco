@@ -100,38 +100,33 @@ namespace OpenLoco::Paint
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(PaintStructFlags);
 
-#pragma pack(push, 1)
-    /* size 0x12 */
     struct AttachedPaintStruct
     {
-        ImageId imageId;        // 0x00
-        ImageId maskedImageId;  // 0x04
-        Ui::Point vpPos;        // 0x08
-        PaintStructFlags flags; // 0x0C
-        uint8_t pad_0D;
-        AttachedPaintStruct* next; // 0x0E
+        AttachedPaintStruct* next;
+        ImageId imageId;
+        ImageId maskedImageId;
+        Ui::Point vpPos;
+        PaintStructFlags flags;
     };
-    assert_struct_size(AttachedPaintStruct, 0x12);
 
     struct PaintStringStruct
     {
-        StringId stringId;       // 0x00
-        PaintStringStruct* next; // 0x02
-        Ui::Point vpPos;         // 0x06
-        uint16_t args[8];        // 0x0A
-        const int8_t* yOffsets;  // 0x1A
-        uint16_t colour;         // 0x1E
+        PaintStringStruct* next;
+        const int8_t* yOffsets;
+        uint16_t args[8];
+        Ui::Point vpPos;
+        StringId stringId;
+        uint16_t colour;
     };
-    assert_struct_size(PaintStringStruct, 0x20);
 
     struct PaintStructBoundBox
     {
-        int16_t x;    // 0x08
-        int16_t y;    // 0x0A
-        int16_t z;    // 0x0C
-        int16_t zEnd; // 0x0E NOTE: This order is important!
-        int16_t xEnd; // 0x10
-        int16_t yEnd; // 0x12
+        int16_t x;
+        int16_t y;
+        int16_t z;
+        int16_t xEnd;
+        int16_t yEnd;
+        int16_t zEnd;
     };
 
     enum class QuadrantFlags : uint8_t
@@ -145,31 +140,31 @@ namespace OpenLoco::Paint
 
     struct PaintStruct
     {
-        ImageId imageId;                               // 0x00
-        ImageId maskedImageId;                         // 0x04
-        PaintStructBoundBox bounds;                    // 0x08
-        Ui::Point vpPos;                               // 0x14
-        uint16_t quadrantIndex;                        // 0x18
-        PaintStructFlags flags;                        // 0x1A
-        QuadrantFlags quadrantFlags;                   // 0x1B
-        AttachedPaintStruct* attachedPS;               // 0x1C
-        PaintStruct* children;                         // 0x20
-        PaintStruct* nextQuadrantPS;                   // 0x24
-        Ui::ViewportInteraction::InteractionItem type; // 0x28
-        uint8_t modId;                                 // 0x29 used for track mods and signal sides
-        uint16_t pad_2A;
-        World::Pos2 mapPos; // 0x2C
+        PaintStructBoundBox bounds;
+        AttachedPaintStruct* attachedPS;
+        PaintStruct* nextQuadrantPS;
         union
         {
-            World::TileElement* tileElement; // 0x30 (or entity pointer)
-            EntityBase* entity;              // 0x30
+            World::TileElement* tileElement;
+            EntityBase* entity;
         };
+        ImageId imageId;
+        ImageId maskedImageId;
+        PaintStruct* children;
+        Ui::Point vpPos;
+        World::Pos2 mapPos;
+        uint16_t quadrantIndex;
+        uint16_t pad_2A;
+        uint8_t modId; // used for track mods and signal sides
+        PaintStructFlags flags;
+        QuadrantFlags quadrantFlags;
+        Ui::ViewportInteraction::InteractionItem type;
+
         constexpr bool hasQuadrantFlags(QuadrantFlags flagsToTest) const
         {
             return (quadrantFlags & flagsToTest) != QuadrantFlags::none;
         }
     };
-    assert_struct_size(PaintStruct, 0x34);
 
     struct SupportHeight
     {
@@ -177,7 +172,6 @@ namespace OpenLoco::Paint
         uint8_t slope;
         uint8_t var_03; // Used by general support height only
     };
-    assert_struct_size(SupportHeight, 4);
 
     struct TunnelEntry
     {
@@ -185,17 +179,16 @@ namespace OpenLoco::Paint
         uint8_t type;
         constexpr bool operator==(const TunnelEntry&) const = default;
     };
-    assert_struct_size(TunnelEntry, 2);
 
     struct BridgeEntry
     {
-        int16_t height;        // 0x00525CE4
-        uint16_t subType;      // 0x00525CE6
+        ImageId imageBase;     // 0x00525CF2
         uint32_t padImage1;    // 0x00525CE8 used only in bridge paint here just to keep struct size
         uint32_t padImage2;    // 0x00525CEC used only in bridge paint here just to keep struct size
+        uint16_t subType;      // 0x00525CE6
+        int16_t height;        // 0x00525CE4
         uint8_t edgesQuarters; // 0x00525CF0
         uint8_t objectId;      // 0x00525CF1
-        ImageId imageBase;     // 0x00525CF2
 
         constexpr BridgeEntry() = default;
         constexpr BridgeEntry(coord_t _height, uint8_t _subType, uint8_t edges, uint8_t quarters, uint8_t _objectId, ImageId _imageBase)
@@ -209,7 +202,6 @@ namespace OpenLoco::Paint
 
         bool isEmpty() const { return height == -1; }
     };
-    assert_struct_size(BridgeEntry, 18);
 
     constexpr auto kNullBridgeEntry = BridgeEntry(-1, 0, 0, 0, 0, ImageId(0));
 
@@ -222,9 +214,7 @@ namespace OpenLoco::Paint
         Ui::ViewportInteraction::InteractionItem segmentInteractionType[9]; // 0x00F00425 why isn't mod id set???
         void* segmentInteractionItem[9];                                    // 0x00F0042E
     };
-    assert_struct_size(TrackRoadAdditionSupports, 0x5E);
 
-#pragma pack(pop)
     struct GenerationParameters;
 
     struct SessionOptions
@@ -470,17 +460,13 @@ namespace OpenLoco::Paint
         int16_t _foregroundCullingHeight{};
         Ui::ViewportInteraction::InteractionItem _itemType{};
         uint8_t _trackModId{};
-        // 2 byte align.
         World::Pos2 _mapPosition{};
         void* _currentItem{};
         uint8_t currentRotation{}; // new field set from 0x00E3F0B8 but split out into this struct as separate item
         Ui::ViewportFlags _viewFlags{};
-        // 2 byte align.
         std::array<PaintStruct*, kMaxPaintQuadrants> _quadrants;
         uint32_t _quadrantBackIndex;
         uint32_t _quadrantFrontIndex;
-        PaintStruct* _savedPSCur{};  // Unused.
-        PaintStruct* _savedPSCur2{}; // Unused.
         std::array<PaintStruct*, 5> _trackRoadPaintStructs;
         std::array<PaintStruct*, 2> _trackRoadAdditionsPaintStructs;
         int32_t _E400EC{};
@@ -491,22 +477,12 @@ namespace OpenLoco::Paint
         int32_t _E400FC{};
         int32_t _E40100{};
         int16_t _E40104{};
-        // 2 byte align
         int32_t _E40108{};
         int32_t _E4010C{};
         int32_t _E40110{};
-        // byte_00E40114 _interactionResult
-        // 3 byte align
         PaintStringStruct* _paintStringHead{};
         PaintStringStruct* _lastPaintString{};
         PaintStruct* _lastPS{};
-        // dword_E40124
-        // word_E40128
-        // word_E4012A
-        // 00E4012C dw interactionResult
-        // 00E4012E dw interactionCoordY
-        // 00E40130 dw interactionCoordX
-        // byte_E40132
 
         // Different globals that don't really belong to PaintSession.
         std::array<uint8_t, 4> _tunnelCounts{};
