@@ -247,21 +247,78 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD200
-    void PaintSession::addToPlotList4FD200(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotList4FD200(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
-        registers regs;
-        regs.ebx = imageId.toUInt32();
-        regs.al = offset.x;
-        regs.cl = offset.y;
-        regs.dx = offset.z;
-        regs.di = boundBoxSize.x;
-        regs.si = boundBoxSize.y;
-        regs.ah = boundBoxSize.z;
+        _lastPS = nullptr;
 
-        setBoundingBoxOffset(boundBoxOffset);
+        auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
+        if (ps == nullptr)
+        {
+            return nullptr;
+        }
 
-        // Similar to addToPlotListAsParent but shrinks the bound box based on the rt
-        call(_4FD200[currentRotation], regs);
+        const auto rtLeft = getRenderTarget()->x;
+        const auto rtRight = getRenderTarget()->x + getRenderTarget()->width;
+
+        auto newX = ps->bounds.x;
+        auto newY = ps->bounds.y;
+        // The following uses the fact that gameToScreen calculates the
+        // screen x to be y - x of the map coordinate. It is then back
+        // calculating the x and y so that they would within the render
+        // target size when converted.
+        switch (getRotation())
+        {
+            case 0:
+                if (newY - newX < rtLeft)
+                {
+                    newY = newX + rtLeft;
+                }
+
+                if (newY - newX > rtRight)
+                {
+                    newX = newY - rtRight;
+                }
+                break;
+            case 1:
+                if (-newY - newX < rtLeft)
+                {
+                    newX = -newY - rtLeft;
+                }
+
+                if (-newY - newX > rtRight)
+                {
+                    newY = -newX - rtRight;
+                }
+                break;
+            case 2:
+                if (-newY + newX < rtLeft)
+                {
+                    newY = newX - rtLeft;
+                }
+
+                if (-newY + newX > rtRight)
+                {
+                    newX = newY + rtRight;
+                }
+                break;
+            case 3:
+                if (newY + newX < rtLeft)
+                {
+                    newX = -newY + rtLeft;
+                }
+
+                if (newY + newX > rtRight)
+                {
+                    newY = -newX + rtRight;
+                }
+                break;
+        }
+        ps->bounds.x = newX;
+        ps->bounds.y = newY;
+
+        _lastPS = ps;
+        addPSToQuadrant(*ps);
+        return ps;
     }
 
     // 0x004FD1E0
@@ -954,13 +1011,9 @@ namespace OpenLoco::Paint
     // 0x0045E7B5
     void PaintSession::arrangeStructs()
     {
-        // Create a new dummy paint struct that will act as the head
-        // that all others attach to.
-        _paintHead = _nextFreePaintStruct;
-        _nextFreePaintStruct++;
-        PaintStruct* ps = &(*_paintHead)->basic;
-        *ps = PaintStruct{};
-        ps->nextQuadrantPS = nullptr;
+        PaintStruct psHead{};
+
+        auto* ps = &psHead;
 
         uint32_t quadrantIndex = _quadrantBackIndex;
         if (quadrantIndex == std::numeric_limits<uint32_t>::max())
@@ -984,13 +1037,15 @@ namespace OpenLoco::Paint
         } while (++quadrantIndex <= _quadrantFrontIndex);
 
         PaintStruct* psCache = arrangeStructsHelper(
-            &(*_paintHead)->basic, _quadrantBackIndex & 0xFFFF, QuadrantFlags::neighbour, currentRotation);
+            &psHead, _quadrantBackIndex & 0xFFFF, QuadrantFlags::neighbour, currentRotation);
 
         quadrantIndex = _quadrantBackIndex;
         while (++quadrantIndex < _quadrantFrontIndex)
         {
             psCache = arrangeStructsHelper(psCache, quadrantIndex & 0xFFFF, QuadrantFlags::none, currentRotation);
         }
+
+        _paintHead = psHead.nextQuadrantPS;
     }
 
     static bool isTypeCullableBuilding(const Ui::ViewportInteraction::InteractionItem type)
@@ -1190,7 +1245,7 @@ namespace OpenLoco::Paint
     {
         const Gfx::RenderTarget& rt = drawingCtx.currentRenderTarget();
 
-        for (const auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
+        for (const auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags);
 
@@ -1453,7 +1508,7 @@ namespace OpenLoco::Paint
     {
         InteractionArg info{};
 
-        for (auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
+        for (auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             // Check main paint struct
             if (isSpriteInteractedWith(getRenderTarget(), ps->imageId, ps->vpPos))

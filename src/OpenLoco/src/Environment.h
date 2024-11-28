@@ -65,6 +65,7 @@ namespace OpenLoco::Environment
         heightmap,
         customObjects,
         objects,
+        screenshots,
     };
 
     void autoCreateDirectory(const fs::path& path);

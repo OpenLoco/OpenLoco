@@ -349,7 +349,7 @@ namespace OpenLoco::Vehicles
         Status status;                 // 0x5D
         VehicleType vehicleType;       // 0x5E
         BreakdownFlags breakdownFlags; // 0x5F
-        uint8_t var_60;
+        uint8_t aiThoughtId;           // 0x60 0xFFU for null
         uint16_t var_61;
         uint8_t pad_63[0x68 - 0x63];
         uint8_t airportMovementEdge;       // 0x68

@@ -32,6 +32,7 @@ namespace OpenLoco
         std::optional<uint16_t> port{};
         std::string logLevels;
         std::string all;
+        std::optional<std::string> locomotionDataPath{};
     };
 
     std::optional<CommandLineOptions> parseCommandLine(std::vector<std::string>&& argv);

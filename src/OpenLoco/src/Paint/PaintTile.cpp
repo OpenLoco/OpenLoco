@@ -13,7 +13,10 @@
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
+#include "Objects/BridgeObject.h"
+#include "Objects/ObjectManager.h"
 #include "Paint.h"
+#include "PaintBridge.h"
 #include "PaintBuilding.h"
 #include "PaintIndustry.h"
 #include "PaintRoad.h"
@@ -97,18 +100,122 @@ namespace OpenLoco::Paint
         session.addToPlotListAsParent(imageId, { 0, 0, _constructionArrowLocation->z }, World::Pos3(0, 0, _constructionArrowLocation->z + 10), { 32, 32, -1 });
     }
 
-    // 0x0046748F
-    static void sub_46748F([[maybe_unused]] PaintSession& session)
-    {
-        call(0x0046748F);
-    }
+    constexpr std::array<std::array<World::Pos3, 9>, 2> kSupportBoundingBoxOffsets = {
+        std::array<World::Pos3, 9>{
+            World::Pos3{ 2, 2, 6 },
+            World::Pos3{ 28, 2, 6 },
+            World::Pos3{ 2, 28, 6 },
+            World::Pos3{ 28, 28, 6 },
+            World::Pos3{ 15, 15, 6 },
+            World::Pos3{ 15, 2, 6 },
+            World::Pos3{ 2, 15, 6 },
+            World::Pos3{ 28, 15, 6 },
+            World::Pos3{ 15, 28, 6 },
+        },
+        std::array<World::Pos3, 9>{
+            World::Pos3{ 2, 2, 28 },
+            World::Pos3{ 28, 2, 28 },
+            World::Pos3{ 2, 28, 28 },
+            World::Pos3{ 28, 28, 28 },
+            World::Pos3{ 15, 15, 28 },
+            World::Pos3{ 15, 2, 28 },
+            World::Pos3{ 2, 15, 28 },
+            World::Pos3{ 28, 15, 28 },
+            World::Pos3{ 15, 28, 28 },
+        },
+    };
 
-    // 0x0042AC9C
-    static bool sub_42AC9C([[maybe_unused]] PaintSession& session)
+    constexpr std::array<World::Pos3, 2> kSupportBoundingBoxLengths = {
+        World::Pos3{ 1, 1, 17 },
+        World::Pos3{ 1, 1, 1 },
+    };
+
+    constexpr std::array<std::array<uint8_t, 4>, 4> kFrequencyRotationMap = {
+        std::array<uint8_t, 4>{ 1U << 0, 1U << 2, 1U << 1, 1U << 3 },
+        std::array<uint8_t, 4>{ 1U << 3, 1U << 0, 1U << 2, 1U << 1 },
+        std::array<uint8_t, 4>{ 1U << 1, 1U << 3, 1U << 0, 1U << 2 },
+        std::array<uint8_t, 4>{ 1U << 2, 1U << 1, 1U << 3, 1U << 0 },
+    };
+
+    // 0x0046748F
+    static void paintSupports(PaintSession& session)
     {
-        registers regs;
-        call(0x0042AC9C, regs);
-        return regs.al != 0;
+        // Copy the supports
+        const TrackRoadAdditionSupports supports = session.getAdditionSupport();
+        // Clear the supports as this function will have taken care of their render
+        session.setAdditionSupport(TrackRoadAdditionSupports{});
+
+        auto& bridge = session.getBridgeEntry();
+        if (!bridge.isEmpty())
+        {
+            auto* bridgeObj = ObjectManager::get<BridgeObject>(bridge.objectId);
+            // Bridge blocks the supports due to the roof
+            if ((bridgeObj->flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
+            {
+                return;
+            }
+        }
+
+        const auto pos = session.getSpritePosition();
+        for (auto i = 0U; i < std::size(kSegmentOffsets); ++i)
+        {
+            const auto seg = kSegmentOffsets[i];
+
+            // No support at this location
+            if (supports.segmentImages[i] == 0)
+            {
+                continue;
+            }
+            // Support blocked by something at this location
+            if ((supports.occupiedSegments & seg) != SegmentFlags::none)
+            {
+                continue;
+            }
+
+            const auto frequency = supports.segmentFrequency[i];
+
+            bool frequenceSkip = [&]() {
+                auto& line = kFrequencyRotationMap[session.getRotation()];
+
+                if ((frequency & line[0]) && !(pos.x & 0b0010'0000))
+                {
+                    return true;
+                }
+                if ((frequency & line[1]) && !(pos.y & 0b0010'0000))
+                {
+                    return true;
+                }
+                if ((frequency & line[2]) && (pos.x & 0b0010'0000))
+                {
+                    return true;
+                }
+                if ((frequency & line[3]) && (pos.y & 0b0010'0000))
+                {
+                    return true;
+                }
+                return false;
+            }();
+
+            if (frequenceSkip)
+            {
+                continue;
+            }
+
+            session.setCurrentItem(supports.segmentInteractionItem[i]);
+            session.setItemType(supports.segmentInteractionType[i]);
+
+            const auto heightOffset = World::Pos3{ 0,
+                                                   0,
+                                                   supports.height };
+
+            for (auto j = 0; j < 2; ++j)
+            {
+                const auto bbOffset = kSupportBoundingBoxOffsets[j][i] + heightOffset;
+                const auto& bbLength = kSupportBoundingBoxLengths[j];
+                const auto imageId = ImageId::fromUInt32(supports.segmentImages[i]).withIndexOffset(j);
+                session.addToPlotList4FD150(imageId, heightOffset, bbOffset, bbLength);
+            }
+        }
     }
 
     // Returns std::nullopt on no need to paint
@@ -157,7 +264,7 @@ namespace OpenLoco::Paint
             }
             if (session.getAdditionSupportHeight() != 0)
             {
-                sub_46748F(session);
+                paintSupports(session);
             }
 
             session.finaliseTrackRoadOrdering();
@@ -166,7 +273,7 @@ namespace OpenLoco::Paint
             auto& bridgeEntry = session.getBridgeEntry();
             if (!bridgeEntry.isEmpty())
             {
-                if (sub_42AC9C(session))
+                if (paintBridge(session))
                 {
                     session.setSegmentsSupportHeight(SegmentFlags::all, 0xFFFF, 0);
                 }

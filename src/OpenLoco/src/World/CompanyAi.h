@@ -47,7 +47,10 @@ namespace OpenLoco
         null = 0xFF
     };
 
-    constexpr auto kAiThoughtCount = 20;
+    constexpr auto kAiThoughtTypeCount = 20U;
+
+    constexpr auto kMaxAiThoughts = 60U;
+    constexpr auto kAiThoughtIdNull = 0xFFU;
 
 #pragma pack(push, 1)
     struct AiThought
@@ -72,18 +75,18 @@ namespace OpenLoco
         uint8_t var_03; // 0x4AB size of var_06
         uint8_t var_04; // 0x4AC station length
         uint8_t pad_05;
-        unk4AE var_06[4];   // 0x4AE
+        unk4AE var_06[4];   // 0x4AE ?route? will lists stations created that vehicles will route to
         uint8_t trackObjId; // 0x3E 0x4E6 track or road (with high bit set)
         uint8_t pad_3F;
         uint8_t mods; // 0x40 0x4E8 track or road
         uint8_t pad_41;
-        uint8_t cargoType;           // 0x42 0x4EA
-        uint8_t var_43;              // 0x4EB
-        uint8_t var_44;              // 0x4EC size of var_66
-        uint8_t var_45;              // 0x4ED size of var_46
-        uint8_t pad_46[0x66 - 0x46]; // array of uint16_t object id's unsure of size
-        EntityId var_66[8];          // 0x50E
-        currency32_t var_76;         // 0x51E
+        uint8_t cargoType;    // 0x42 0x4EA
+        uint8_t var_43;       // 0x4EB
+        uint8_t numVehicles;  // 0x44 0x4EC size of var_66
+        uint8_t var_45;       // 0x4ED size of var_46
+        uint16_t var_46[16];  // 0x4EF array of uint16_t object id
+        EntityId vehicles[8]; // 0x66 0x50E see also numVehicles for current size
+        currency32_t var_76;  // 0x51E
         uint8_t pad_7A[0x7C - 0x7A];
         currency32_t var_7C; // 0x524
         currency32_t var_80; // 0x528

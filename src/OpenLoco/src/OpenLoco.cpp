@@ -808,9 +808,16 @@ namespace OpenLoco
         _glpCmdLine = "";
     }
 
-    void simulateGame(const fs::path& path, int32_t ticks)
+    void simulateGame(const fs::path& savePath, int32_t ticks)
     {
         Config::read();
+
+        if (getCommandLineOptions().locomotionDataPath.has_value())
+        {
+            auto& cfg = Config::get();
+            cfg.locoInstallPath = getCommandLineOptions().locomotionDataPath.value();
+        }
+
         Environment::resolvePaths();
         resetCmdline();
         registerHooks();
@@ -818,7 +825,7 @@ namespace OpenLoco
         try
         {
             initialise();
-            loadFile(path);
+            loadFile(savePath);
         }
         catch (const std::exception& e)
         {

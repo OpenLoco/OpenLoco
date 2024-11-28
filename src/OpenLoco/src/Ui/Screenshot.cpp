@@ -1,5 +1,6 @@
 #include "Screenshot.h"
 #include "Entities/EntityManager.h"
+#include "Environment.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
@@ -148,7 +149,8 @@ namespace OpenLoco::Ui
     // 0x00452667
     static std::string prepareSaveScreenshot(const Gfx::RenderTarget& rt)
     {
-        auto basePath = Platform::getUserDirectory();
+        auto screenshotsFolderPath = Environment::getPathNoWarning(Environment::PathId::screenshots);
+        Environment::autoCreateDirectory(screenshotsFolderPath);
         std::string scenarioName = S5::getOptions().scenarioName;
 
         if (scenarioName.length() == 0)
@@ -161,9 +163,9 @@ namespace OpenLoco::Ui
         int16_t suffix;
         for (suffix = 1; suffix < std::numeric_limits<int16_t>().max(); suffix++)
         {
-            if (!fs::exists(basePath / fileName))
+            if (!fs::exists(screenshotsFolderPath / fileName))
             {
-                path = basePath / fileName;
+                path = screenshotsFolderPath / fileName;
                 break;
             }
 

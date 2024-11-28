@@ -13,6 +13,10 @@
 #include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/RemoveTrack.h"
+#include "GameCommands/Vehicles/CreateVehicle.h"
+#include "GameCommands/Vehicles/VehicleOrderInsert.h"
+#include "GameCommands/Vehicles/VehicleOrderSkip.h"
+#include "GameCommands/Vehicles/VehicleRefit.h"
 #include "Industry.h"
 #include "IndustryManager.h"
 #include "Map/RoadElement.h"
@@ -20,12 +24,14 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
+#include "Objects/CargoObject.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
 #include "Random.h"
 #include "Station.h"
 #include "StationManager.h"
 #include "TownManager.h"
+#include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Engine/World.hpp>
@@ -41,9 +47,10 @@ namespace OpenLoco
     static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
     static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
     static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
+    static loco_global<EntityId, 0x0113642A> _lastCreatedVehicleId;
 
     // 0x004FE720
-    static constexpr std::array<uint32_t, kAiThoughtCount> kThoughtTypeFlags = {
+    static constexpr std::array<uint32_t, kAiThoughtTypeCount> kThoughtTypeFlags = {
         0x849,
         0x4011,
         0x4051,
@@ -74,15 +81,168 @@ namespace OpenLoco
         company.var_85F0 = 0;
     }
 
-    // 0x00486ECF
-    static uint8_t sub_486ECF(Company& company, AiThought& thought)
+    enum class PurchaseVehicleResult
     {
-        // some sort of purchase vehicle
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00486ECF, regs);
-        return regs.al;
+        success = 0, // But maybe not all required purchases
+        allVehiclesPurchased = 1,
+        failure = 2
+    };
+
+    // 0x00486ECF
+    static PurchaseVehicleResult purchaseVehicle(Company& company, AiThought& thought)
+    {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return PurchaseVehicleResult::failure;
+        }
+
+        if (thought.numVehicles >= thought.var_43)
+        {
+            return PurchaseVehicleResult::allVehiclesPurchased;
+        }
+
+        EntityId trainHeadId = EntityId::null;
+        for (auto i = 0; i < thought.var_45; ++i)
+        {
+            GameCommands::VehicleCreateArgs createArgs{};
+            createArgs.vehicleId = trainHeadId;
+            createArgs.vehicleType = thought.var_46[i];
+            auto res = GameCommands::doCommand(createArgs, GameCommands::Flags::apply);
+            if (res == GameCommands::FAILURE)
+            {
+                // If we can't create a vehicle try create a free vehicle!
+                res = GameCommands::doCommand(createArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+                if (res == GameCommands::FAILURE)
+                {
+                    return PurchaseVehicleResult::failure;
+                }
+            }
+            if (trainHeadId == EntityId::null)
+            {
+                trainHeadId = _lastCreatedVehicleId;
+            }
+            // There was some broken code that would try read the head as a body here
+
+            // auto* veh = EntityManager::get<Vehicles::VehicleBogie>(_lastCreatedVehicleId); lol no this wouldn't work
+            // auto train = Vehicles::Vehicle(veh->head);
+            // auto car = [&train, veh]() {
+            //     for (auto& car : train.cars)
+            //     {
+            //         if (car.front == veh)
+            //         {
+            //             return car;
+            //         }
+            //     }
+            //     return Vehicles::Car{};
+            // }();
+            // if (car.front->secondaryCargo.maxQty != 0)
+            //{
+            //     if (car.front->secondaryCargo.acceptedTypes & (1U << thought.cargoType))
+            //     {
+            //         car.front->secondaryCargo.type = thought.cargoType;
+            //     }
+            // }
+            // if (car.body->primaryCargo.maxQty != 0)
+            //{
+            //     if (car.body->primaryCargo.acceptedTypes & (1U << thought.cargoType))
+            //     {
+            //         car.body->primaryCargo.type = thought.cargoType;
+            //     }
+            // }
+        }
+
+        thought.vehicles[thought.numVehicles] = trainHeadId;
+        thought.numVehicles++;
+
+        auto train = Vehicles::Vehicle(trainHeadId);
+        train.head->aiThoughtId = company.activeThoughtId;
+
+        auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
+        if (vehicleObj->hasFlags(VehicleObjectFlags::refittable))
+        {
+            auto shouldRefit = [&vehicleObj, &thought]() {
+                for (auto j = 0; j < 2; ++j)
+                {
+                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }();
+            if (shouldRefit)
+            {
+                auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+                if (cargoObj->hasFlags(CargoObjectFlags::refit))
+                {
+                    GameCommands::VehicleRefitArgs refitArgs{};
+                    refitArgs.head = trainHeadId;
+                    refitArgs.cargoType = thought.cargoType;
+                    GameCommands::doCommand(refitArgs, GameCommands::Flags::apply);
+                }
+            }
+        }
+
+        StationId destStation = StationId::null;
+        uint32_t orderOffset = 0;
+        for (auto i = 0; i < thought.var_03; ++i)
+        {
+            auto& unk = thought.var_06[i];
+            if (destStation == unk.var_00)
+            {
+                continue;
+            }
+
+            GameCommands::VehicleOrderInsertArgs insertArgs{};
+            insertArgs.head = trainHeadId;
+            insertArgs.orderOffset = orderOffset;
+            Vehicles::OrderStopAt stopAt{ unk.var_00 };
+            destStation = unk.var_00;
+            insertArgs.rawOrder = stopAt.getRaw();
+            auto insertRes = GameCommands::doCommand(insertArgs, GameCommands::Flags::apply);
+            // Fix vanilla bug
+            if (insertRes != GameCommands::FAILURE)
+            {
+                orderOffset += sizeof(stopAt);
+            }
+            if (i != 0)
+            {
+                continue;
+            }
+            // Potential vanilla issue below it checks for 1ULL << 11 here 1ULL << 7
+            if ((kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 7))
+                && (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
+            {
+                GameCommands::VehicleOrderInsertArgs insertArgs2{};
+                insertArgs2.head = trainHeadId;
+                insertArgs2.orderOffset = orderOffset;
+                Vehicles::OrderWaitFor waitFor{ thought.cargoType };
+                insertArgs2.rawOrder = waitFor.getRaw();
+                auto insert2Res = GameCommands::doCommand(insertArgs2, GameCommands::Flags::apply);
+                // Fix vanilla bug
+                if (insert2Res != GameCommands::FAILURE)
+                {
+                    orderOffset += sizeof(waitFor);
+                }
+            }
+        }
+        if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
+        {
+            return PurchaseVehicleResult::success;
+        }
+        if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 11)))
+        {
+            return PurchaseVehicleResult::success;
+        }
+        if (thought.var_43 > 1)
+        {
+            // Why??
+            GameCommands::VehicleOrderSkipArgs skipArgs{};
+            skipArgs.head = trainHeadId;
+            GameCommands::doCommand(skipArgs, GameCommands::Flags::apply);
+            GameCommands::doCommand(skipArgs, GameCommands::Flags::apply);
+        }
+        return PurchaseVehicleResult::success;
     }
 
     // 0x004876CB
@@ -259,7 +419,7 @@ namespace OpenLoco
 
         company.var_85F6 = 0;
         company.var_4A4 = AiThinkState::unk1;
-        company.var_2578 = 0xFF;
+        company.activeThoughtId = kAiThoughtIdNull;
         tryRemovePortsAndAirports(company);
     }
 
@@ -292,10 +452,10 @@ namespace OpenLoco
     // 0x00430971
     static void aiThinkState1(Company& company)
     {
-        company.var_2578++;
-        if (company.var_2578 < 60)
+        company.activeThoughtId++;
+        if (company.activeThoughtId < kMaxAiThoughts)
         {
-            const auto& thought = company.aiThoughts[company.var_2578];
+            const auto& thought = company.aiThoughts[company.activeThoughtId];
             if (thought.type == AiThoughtType::null)
             {
                 aiThinkState1(company);
@@ -639,7 +799,7 @@ namespace OpenLoco
     {
         company.var_85F6++;
 
-        _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.var_2578]);
+        _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x0047BA2C
@@ -849,16 +1009,18 @@ namespace OpenLoco
     // 0x004310C4
     static void sub_4310C4(Company& company, AiThought& thought)
     {
-        const auto res = sub_486ECF(company, thought);
-        if (res == 2)
+        const auto res = purchaseVehicle(company, thought);
+        if (res == PurchaseVehicleResult::failure)
         {
             company.var_4A4 = AiThinkState::unk6;
             company.var_4A5 = 0;
         }
-        else if (res == 1)
+        else if (res == PurchaseVehicleResult::allVehiclesPurchased)
         {
+            // Move onto the next stage of this AiThinkState
             company.var_4A5 = 3;
         }
+        // else will keep purchasing vehicles until allVehiclesPurchased
     }
 
     // 0x004310E9
@@ -884,7 +1046,7 @@ namespace OpenLoco
         companyEmotionEvent(company.id(), Emotion::thinking);
         company.var_85F6++;
 
-        _funcs_4F9500[company.var_4A5](company, company.aiThoughts[company.var_2578]);
+        _funcs_4F9500[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     static void nullsub_3([[maybe_unused]] Company& company)
@@ -963,7 +1125,7 @@ namespace OpenLoco
     // 0x00431193
     static void aiThinkState7(Company& company)
     {
-        _funcs_4F9524[company.var_4A5](company, company.aiThoughts[company.var_2578]);
+        _funcs_4F9524[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x00487C83
@@ -1078,16 +1240,18 @@ namespace OpenLoco
     // 0x00431254
     static void sub_431254(Company& company, AiThought& thought)
     {
-        const auto res = sub_486ECF(company, thought);
-        if (res == 2)
+        const auto res = purchaseVehicle(company, thought);
+        if (res == PurchaseVehicleResult::failure)
         {
             company.var_4A4 = AiThinkState::unk7;
             company.var_4A5 = 0;
         }
-        else if (res == 1)
+        else if (res == PurchaseVehicleResult::allVehiclesPurchased)
         {
+            // Move onto the next stage of this AiThinkState
             company.var_4A5 = 5;
         }
+        // else will keep purchasing vehicles until allVehiclesPurchased
     }
 
     // 0x00431279
@@ -1111,7 +1275,7 @@ namespace OpenLoco
     // 0x004311E7
     static void aiThinkState8(Company& company)
     {
-        _funcs_4F9530[company.var_4A5](company, company.aiThoughts[company.var_2578]);
+        _funcs_4F9530[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     static void nullsub_4([[maybe_unused]] Company& company)
@@ -1379,7 +1543,7 @@ namespace OpenLoco
         if (company->var_4A4 == AiThinkState::unk3)
         {
             World::Pos2 pos{};
-            auto& thought = company->aiThoughts[company->var_2578];
+            auto& thought = company->aiThoughts[company->activeThoughtId];
             if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 1))
             {
                 auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
@@ -1436,18 +1600,18 @@ namespace OpenLoco
 
     void removeEntityFromThought(AiThought& thought, EntityId id)
     {
-        auto iter = std::find(std::begin(thought.var_66), std::end(thought.var_66), id);
-        if (iter == std::end(thought.var_66))
+        auto iter = std::find(std::begin(thought.vehicles), std::end(thought.vehicles), id);
+        if (iter == std::end(thought.vehicles))
         {
             return;
         }
-        // Original would copy the value from var_66 + 2 which
-        // would mean it would copy currency var_76 if var_44 was 7
+        // Original would copy the value from vehicles + 2 which
+        // would mean it would copy currency var_76 if numVehicles was 7
         // I don't think that is possible but lets just add an assert.
-        assert(thought.var_44 < 7);
+        assert(thought.numVehicles < 7);
 
-        *iter = thought.var_66[std::size(thought.var_66) - 1];
-        std::rotate(iter, iter + 1, std::end(thought.var_66));
-        thought.var_44--;
+        *iter = thought.vehicles[std::size(thought.vehicles) - 1];
+        std::rotate(iter, iter + 1, std::end(thought.vehicles));
+        thought.numVehicles--;
     }
 }
