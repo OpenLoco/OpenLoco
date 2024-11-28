@@ -1,4 +1,4 @@
-24.10+ (???)
+24.11 (2024-11-28)
 ------------------------------------------------------------------------
 - Feature: [#2697] Add initial OpenGraphics custom assets.
 - Change: [#2708] "Show Options Window" keyboard shortcut now works in the title screen.
