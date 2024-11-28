@@ -187,10 +187,10 @@ namespace OpenLoco
 
         StationId destStation = StationId::null;
         uint32_t orderOffset = 0;
-        for (auto i = 0; i < thought.var_03; ++i)
+        for (auto i = 0; i < thought.numStations; ++i)
         {
-            auto& unk = thought.var_06[i];
-            if (destStation == unk.var_00)
+            auto& aiStation = thought.stations[i];
+            if (destStation == aiStation.id)
             {
                 continue;
             }
@@ -198,8 +198,8 @@ namespace OpenLoco
             GameCommands::VehicleOrderInsertArgs insertArgs{};
             insertArgs.head = trainHeadId;
             insertArgs.orderOffset = orderOffset;
-            Vehicles::OrderStopAt stopAt{ unk.var_00 };
-            destStation = unk.var_00;
+            Vehicles::OrderStopAt stopAt{ aiStation.id };
+            destStation = aiStation.id;
             insertArgs.rawOrder = stopAt.getRaw();
             auto insertRes = GameCommands::doCommand(insertArgs, GameCommands::Flags::apply);
             // Fix vanilla bug
@@ -260,18 +260,18 @@ namespace OpenLoco
 
             if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
             {
-                head->var_61 = thought.var_06[0].pos.x;
-                head->var_63 = thought.var_06[0].pos.y;
-                head->var_67 = thought.var_06[0].baseZ;
-                head->var_65 = thought.var_06[0].rotation;
+                head->var_61 = thought.stations[0].pos.x;
+                head->var_63 = thought.stations[0].pos.y;
+                head->var_67 = thought.stations[0].baseZ;
+                head->var_65 = thought.stations[0].rotation;
             }
             else
             {
-                head->var_61 = thought.var_06[0].pos.x;
-                head->var_63 = thought.var_06[0].pos.y;
-                head->var_67 = thought.var_06[0].baseZ;
+                head->var_61 = thought.stations[0].pos.x;
+                head->var_63 = thought.stations[0].pos.y;
+                head->var_67 = thought.stations[0].baseZ;
 
-                uint8_t rotation = thought.var_06[0].rotation;
+                uint8_t rotation = thought.stations[0].rotation;
                 if (thought.trackObjId & (1U << 7))
                 {
                     if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 6))
@@ -301,16 +301,16 @@ namespace OpenLoco
                 continue;
             }
 
-            for (auto i = 0; i < 4 && i < thought.var_03; ++i)
+            for (auto i = 0; i < 4 && i < thought.numStations; ++i)
             {
-                const auto& unk2 = thought.var_06[i];
+                const auto& aiStation = thought.stations[i];
                 if (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 15))
                 {
-                    unkStationFlags[enumValue(unk2.var_00)] |= 1U << 0;
+                    unkStationFlags[enumValue(aiStation.id)] |= 1U << 0;
                 }
                 if (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 16))
                 {
-                    unkStationFlags[enumValue(unk2.var_00)] |= 1U << 1;
+                    unkStationFlags[enumValue(aiStation.id)] |= 1U << 1;
                 }
             }
         }
@@ -604,34 +604,34 @@ namespace OpenLoco
             return true;
         }
 
-        auto findRequiredUnk = [&thought, &company]() -> int8_t {
-            for (auto i = 0U; i < thought.var_03; ++i)
+        auto findRequiredAiStation = [&thought, &company]() -> int8_t {
+            for (auto i = 0U; i < thought.numStations; ++i)
             {
-                const auto& unk4AE = thought.var_06[i];
-                if (unk4AE.var_9 != 0xFFU)
+                const auto& aiStation = thought.stations[i];
+                if (aiStation.var_9 != 0xFFU)
                 {
-                    if (!(unk4AE.var_B & ((1U << 2) | (1U << 1))))
+                    if (!(aiStation.var_B & ((1U << 2) | (1U << 1))))
                     {
                         return i;
                     }
-                    if (unk4AE.var_B & (1U << 0))
+                    if (aiStation.var_B & (1U << 0))
                     {
-                        if (!(unk4AE.var_B & ((1U << 4) | (1U << 3))))
+                        if (!(aiStation.var_B & ((1U << 4) | (1U << 3))))
                         {
                             return i;
                         }
                     }
                 }
-                if (unk4AE.var_A != 0xFFU)
+                if (aiStation.var_A != 0xFFU)
                 {
-                    if (!(unk4AE.var_C & ((1U << 2) | (1U << 1))))
+                    if (!(aiStation.var_C & ((1U << 2) | (1U << 1))))
                     {
                         company.var_85C3 |= 1U << 0;
                         return i;
                     }
-                    if (unk4AE.var_C & (1U << 0))
+                    if (aiStation.var_C & (1U << 0))
                     {
-                        if (!(unk4AE.var_C & ((1U << 4) | (1U << 3))))
+                        if (!(aiStation.var_C & ((1U << 4) | (1U << 3))))
                         {
                             company.var_85C3 |= 1U << 0;
                             return i;
@@ -642,16 +642,16 @@ namespace OpenLoco
             return -1;
         }();
 
-        if (findRequiredUnk == -1)
+        if (findRequiredAiStation == -1)
         {
             return true;
         }
 
         {
-            company.var_85C2 = findRequiredUnk;
-            const auto& unk4AE = thought.var_06[findRequiredUnk];
-            auto pos = unk4AE.pos;
-            auto rotation = unk4AE.rotation;
+            company.var_85C2 = findRequiredAiStation;
+            const auto& aiStation = thought.stations[findRequiredAiStation];
+            auto pos = aiStation.pos;
+            auto rotation = aiStation.rotation;
             if (company.var_85C3 & (1U << 0))
             {
                 if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
@@ -664,21 +664,21 @@ namespace OpenLoco
             rotation ^= (1U << 1);
 
             company.var_85C4 = pos;
-            company.var_85C8 = unk4AE.baseZ;
+            company.var_85C8 = aiStation.baseZ;
             company.var_85CE = rotation;
             company.var_85D0 = pos;
-            company.var_85D4 = unk4AE.baseZ;
+            company.var_85D4 = aiStation.baseZ;
             company.var_85D5 = rotation;
         }
         {
-            const auto unk = (company.var_85C3 & (1U << 0)) ? thought.var_06[findRequiredUnk].var_A : thought.var_06[findRequiredUnk].var_9;
-            const auto& unk4AE = thought.var_06[unk];
-            if (unk4AE.var_9 != company.var_85C2)
+            const auto aiStationIndex = (company.var_85C3 & (1U << 0)) ? thought.stations[findRequiredAiStation].var_A : thought.stations[findRequiredAiStation].var_9;
+            const auto& aiStation = thought.stations[aiStationIndex];
+            if (aiStation.var_9 != company.var_85C2)
             {
                 company.var_85C3 |= (1U << 1);
             }
-            auto pos = unk4AE.pos;
-            auto rotation = unk4AE.rotation;
+            auto pos = aiStation.pos;
+            auto rotation = aiStation.rotation;
             if (company.var_85C3 & (1U << 1))
             {
                 if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
@@ -691,10 +691,10 @@ namespace OpenLoco
             rotation ^= (1U << 1);
 
             company.var_85C9 = pos;
-            company.var_85CD = unk4AE.baseZ;
+            company.var_85CD = aiStation.baseZ;
             company.var_85CF = rotation;
             company.var_85D7 = pos;
-            company.var_85DB = unk4AE.baseZ;
+            company.var_85DB = aiStation.baseZ;
             company.var_85DC = rotation;
         }
         company.var_85F0 = 0;
@@ -862,13 +862,13 @@ namespace OpenLoco
 
         bool found = false;
         auto i = 0U;
-        for (; i < thought.var_03; ++i)
+        for (; i < thought.numStations; ++i)
         {
-            if (!(thought.var_06[i].var_02 & (1U << 0)))
+            if (!thought.stations[i].hasFlags(AiThoughtStationFlags::aiAllocated))
             {
                 continue;
             }
-            if (thought.var_06[i].var_02 & (1U << 1))
+            if (thought.stations[i].hasFlags(AiThoughtStationFlags::operational))
             {
                 continue;
             }
@@ -881,8 +881,8 @@ namespace OpenLoco
             return 1;
         }
 
-        auto& stationUnk = thought.var_06[i];
-        const auto pos = World::Pos3(stationUnk.pos, stationUnk.baseZ * World::kSmallZStep);
+        auto& aiStation = thought.stations[i];
+        const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
         if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 15))
         {
             {
@@ -893,7 +893,7 @@ namespace OpenLoco
 
             GameCommands::AirportPlacementArgs placeArgs{};
             placeArgs.pos = pos;
-            placeArgs.rotation = stationUnk.rotation;
+            placeArgs.rotation = aiStation.rotation;
             placeArgs.type = thought.var_89;
 
             if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
@@ -906,7 +906,7 @@ namespace OpenLoco
 
             if (_lastPlacedAirportStationId != StationId::null)
             {
-                stationUnk.var_00 = _lastPlacedAirportStationId;
+                aiStation.id = _lastPlacedAirportStationId;
             }
         }
         else if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 16))
@@ -919,7 +919,7 @@ namespace OpenLoco
 
             GameCommands::PortPlacementArgs placeArgs{};
             placeArgs.pos = pos;
-            placeArgs.rotation = stationUnk.rotation;
+            placeArgs.rotation = aiStation.rotation;
             placeArgs.type = thought.var_89;
 
             if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
@@ -932,7 +932,7 @@ namespace OpenLoco
 
             if (_lastPlacedPortStationId != StationId::null)
             {
-                stationUnk.var_00 = _lastPlacedPortStationId;
+                aiStation.id = _lastPlacedPortStationId;
             }
         }
         else
@@ -942,21 +942,21 @@ namespace OpenLoco
                 // Road
 
                 // TODO: Vanilla bug passes rotation for flags???
-                if (sub_47BA2C(pos, stationUnk.rotation, thought.trackObjId & ~(1U << 7), 0, stationUnk.rotation) == GameCommands::FAILURE)
+                if (sub_47BA2C(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, aiStation.rotation) == GameCommands::FAILURE)
                 {
                     return 2;
                 }
 
                 if (_lastPlacedTrackStationId != StationId::null)
                 {
-                    stationUnk.var_00 = _lastPlacedTrackStationId;
+                    aiStation.id = _lastPlacedTrackStationId;
                 }
             }
             else
             {
                 // Track
                 GameCommands::Unk52Args placeArgs{};
-                placeArgs.rotation = stationUnk.rotation;
+                placeArgs.rotation = aiStation.rotation;
                 placeArgs.trackObjectId = thought.trackObjId;
                 placeArgs.unk = 0;
                 placeArgs.pos = pos;
@@ -973,14 +973,14 @@ namespace OpenLoco
 
                     if (_lastPlacedTrackStationId != StationId::null)
                     {
-                        stationUnk.var_00 = _lastPlacedTrackStationId;
+                        aiStation.id = _lastPlacedTrackStationId;
                     }
                     placeArgs.pos += World::Pos3{ kRotationOffset[placeArgs.rotation], 0 };
                 }
             }
         }
-        stationUnk.var_02 &= ~(1 << 0);
-        stationUnk.var_02 |= (1 << 1);
+        aiStation.var_02 &= ~AiThoughtStationFlags::aiAllocated;
+        aiStation.var_02 |= AiThoughtStationFlags::operational;
         return 0;
     }
 
@@ -1270,11 +1270,11 @@ namespace OpenLoco
         }
         if (fullySearched)
         {
-            for (auto i = 0U; i < thought.var_03; ++i)
+            for (auto i = 0U; i < thought.numStations; ++i)
             {
-                auto& unk = thought.var_06[i];
-                unk.var_B &= ~((1U << 1) | (1U << 3));
-                unk.var_C &= ~((1U << 1) | (1U << 3));
+                auto& aiStation = thought.stations[i];
+                aiStation.var_B &= ~((1U << 1) | (1U << 3));
+                aiStation.var_C &= ~((1U << 1) | (1U << 3));
             }
             return true;
         }
@@ -1430,18 +1430,18 @@ namespace OpenLoco
     // 0x00483602
     static uint8_t removeAiAllocatedStations(AiThought& thought)
     {
-        for (auto i = 0U; i < thought.var_03; ++i)
+        for (auto i = 0U; i < thought.numStations; ++i)
         {
-            auto& unk = thought.var_06[i];
-            if (unk.var_02 & (1U << 1))
+            auto& aiStation = thought.stations[i];
+            if (aiStation.hasFlags(AiThoughtStationFlags::operational))
             {
                 continue;
             }
-            if (!(unk.var_02 & (1U << 0)))
+            if (!aiStation.hasFlags(AiThoughtStationFlags::aiAllocated))
             {
                 continue;
             }
-            const auto pos = World::Pos3(unk.pos, unk.baseZ * World::kSmallZStep);
+            const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
             if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 15))
             {
                 GameCommands::AirportRemovalArgs args{};
@@ -1456,14 +1456,14 @@ namespace OpenLoco
             }
             else if (thought.trackObjId & (1U << 7))
             {
-                removeAiAllocatedRoadStation(pos, unk.rotation, thought.trackObjId & ~(1U << 7));
+                removeAiAllocatedRoadStation(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7));
             }
             else
             {
-                removeAiAllocatedTrainStation(pos, unk.rotation, thought.trackObjId, thought.var_04);
+                removeAiAllocatedTrainStation(pos, aiStation.rotation, thought.trackObjId, thought.var_04);
             }
             // Ai assumes removal was a success!
-            unk.var_02 &= ~(1U << 0);
+            aiStation.var_02 &= ~AiThoughtStationFlags::aiAllocated;
             return 0;
         }
         return 1;
@@ -1568,8 +1568,8 @@ namespace OpenLoco
         if (thought.trackObjId & (1U << 7))
         {
             GameCommands::RoadModsPlacementArgs args{};
-            args.pos = World::Pos3(thought.var_06[0].pos, thought.var_06[0].baseZ * World::kSmallZStep);
-            args.rotation = thought.var_06[0].rotation;
+            args.pos = World::Pos3(thought.stations[0].pos, thought.stations[0].baseZ * World::kSmallZStep);
+            args.rotation = thought.stations[0].rotation;
             args.roadObjType = thought.trackObjId & ~(1U << 7);
             args.index = 0;
             args.modSection = 2;
@@ -1585,8 +1585,8 @@ namespace OpenLoco
         else
         {
             GameCommands::TrackModsPlacementArgs args{};
-            args.pos = World::Pos3(thought.var_06[0].pos, thought.var_06[0].baseZ * World::kSmallZStep);
-            args.rotation = thought.var_06[0].rotation;
+            args.pos = World::Pos3(thought.stations[0].pos, thought.stations[0].baseZ * World::kSmallZStep);
+            args.rotation = thought.stations[0].rotation;
             args.trackObjType = thought.trackObjId;
             args.index = 0;
             args.modSection = 2;
