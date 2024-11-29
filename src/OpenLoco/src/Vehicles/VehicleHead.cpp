@@ -2097,7 +2097,7 @@ namespace OpenLoco::Vehicles
             vehType2->var_5A = 0;
             return true;
         }
-
+        
         status = Status::travelling;
         status = sub_427BF2();
         advanceToNextRoutableOrder();
