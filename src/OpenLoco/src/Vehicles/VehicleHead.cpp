@@ -2061,19 +2061,6 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (hasVehicleFlags(VehicleFlags::commandStop))
-        {
-            if ((updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination) == WaterMotionFlags::none)
-            {
-                return true;
-            }
-
-            status = Status::stopped;
-            vehType2->currentSpeed = 0.0_mph;
-            vehType2->var_5A = 0;
-            return true;
-        }
-
         if (status == Status::unloading)
         {
             updateUnloadCargo();
@@ -2092,6 +2079,19 @@ namespace OpenLoco::Vehicles
             status = sub_427BF2();
             updateWaterMotion(WaterMotionFlags::isLeavingDock);
             produceLeavingDockSound();
+            return true;
+        }
+
+        if (hasVehicleFlags(VehicleFlags::commandStop))
+        {
+            if ((updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination) == WaterMotionFlags::none)
+            {
+                return true;
+            }
+
+            status = Status::stopped;
+            vehType2->currentSpeed = 0.0_mph;
+            vehType2->var_5A = 0;
             return true;
         }
         else
