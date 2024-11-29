@@ -7,6 +7,7 @@
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
+#include <sfl/static_vector.hpp>
 #include <span>
 
 namespace OpenLoco::World
@@ -229,6 +230,7 @@ namespace OpenLoco::Paint
         }
     };
 
+    static constexpr auto kMaxPaintEntries = 4000U;
     static constexpr auto kMaxPaintQuadrants = 1024;
 
     struct PaintSession
@@ -443,12 +445,10 @@ namespace OpenLoco::Paint
         assert_struct_size(PaintEntry, 0x34);
 
         // Do not null-initialize this, its too expensive, this is storage.
-        std::array<PaintEntry, 4000> _paintEntries;
+        sfl::static_vector<PaintEntry, kMaxPaintEntries> _paintEntries;
 
         const Gfx::RenderTarget* _renderTarget{};
-        PaintEntry* _endOfPaintStructArray{};
         PaintStruct* _paintHead{};
-        PaintEntry* _nextFreePaintStruct{};
         coord_t _spritePositionX{};
         coord_t _unkPositionX{};
         int16_t _vpPositionX{};
@@ -521,14 +521,14 @@ namespace OpenLoco::Paint
         {
             static_assert(std::same_as<T, PaintStruct> || std::same_as<T, AttachedPaintStruct> || std::same_as<T, PaintStringStruct>);
 
-            auto* ps = _nextFreePaintStruct;
-            if (ps >= _endOfPaintStructArray)
+            if (_paintEntries.full())
             {
                 return nullptr;
             }
-            _nextFreePaintStruct++;
 
-            auto* specificPs = reinterpret_cast<T*>(ps);
+            auto& ps = _paintEntries.emplace_back();
+
+            auto* specificPs = reinterpret_cast<T*>(&ps);
             *specificPs = {}; // Zero out the struct
 
             return specificPs;

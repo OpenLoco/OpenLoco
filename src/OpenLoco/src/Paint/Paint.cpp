@@ -7,6 +7,7 @@
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
+#include "Logging.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "PaintEntity.h"
@@ -27,8 +28,6 @@ namespace OpenLoco::Paint
     PaintSession::PaintSession(const Gfx::RenderTarget& rt, const SessionOptions& options)
     {
         _renderTarget = &rt;
-        _nextFreePaintStruct = &_paintEntries[0];
-        _endOfPaintStructArray = &_paintEntries[3998];
         _lastPS = nullptr;
         for (auto& quadrant : _quadrants)
         {
