@@ -2097,31 +2097,29 @@ namespace OpenLoco::Vehicles
             vehType2->var_5A = 0;
             return true;
         }
-        else
+
+        status = Status::travelling;
+        status = sub_427BF2();
+        advanceToNextRoutableOrder();
+        if ((updateWaterMotion(WaterMotionFlags::none) & WaterMotionFlags::hasReachedDock) == WaterMotionFlags::none)
         {
-            status = Status::travelling;
-            status = sub_427BF2();
-            advanceToNextRoutableOrder();
-            if ((updateWaterMotion(WaterMotionFlags::none) & WaterMotionFlags::hasReachedDock) == WaterMotionFlags::none)
-            {
-                return true;
-            }
-
-            if (hasVehicleFlags(VehicleFlags::commandStop))
-            {
-                status = Status::stopped;
-                vehType2->currentSpeed = 0.0_mph;
-                vehType2->var_5A = 0;
-                return true;
-            }
-
-            vehType2->currentSpeed = 0.0_mph;
-            setStationVisitedTypes();
-            checkIfAtOrderStation();
-            updateLastJourneyAverageSpeed();
-            beginUnloading();
             return true;
         }
+
+        if (hasVehicleFlags(VehicleFlags::commandStop))
+        {
+            status = Status::stopped;
+            vehType2->currentSpeed = 0.0_mph;
+            vehType2->var_5A = 0;
+            return true;
+        }
+
+        vehType2->currentSpeed = 0.0_mph;
+        setStationVisitedTypes();
+        checkIfAtOrderStation();
+        updateLastJourneyAverageSpeed();
+        beginUnloading();
+        return true;
     }
 
     /** 0x00427122
