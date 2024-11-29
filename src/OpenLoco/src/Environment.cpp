@@ -57,6 +57,7 @@ namespace OpenLoco::Environment
             "C:/Program Files (x86)/Atari/Locomotion",
             "C:/GOG Games/Chris Sawyer's Locomotion",
             "C:/GOG Games/Locomotion",
+            "."
         };
 
         Logging::info("Searching for Locomotion install path...");
