@@ -70,8 +70,8 @@ namespace OpenLoco
         unk12 = 1U << 12,
         unk13 = 1U << 13,
         unk14 = 1U << 14,
-        unk15 = 1U << 15,
-        unk16 = 1U << 16,
+        airBased = 1U << 15,
+        waterBased = 1U << 16,
         unk17 = 1U << 17,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ThoughtTypeFlags);
@@ -91,11 +91,11 @@ namespace OpenLoco
         ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
         ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
         ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
-        ThoughtTypeFlags::unk15,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk15,
-        ThoughtTypeFlags::unk16,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk16,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk16,
+        ThoughtTypeFlags::airBased,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::airBased,
+        ThoughtTypeFlags::waterBased,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::waterBased,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::waterBased,
         ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11,
         ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
     };
@@ -288,7 +288,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15 | ThoughtTypeFlags::unk16))
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
             {
                 head->var_61 = thought.stations[0].pos.x;
                 head->var_63 = thought.stations[0].pos.y;
@@ -334,11 +334,11 @@ namespace OpenLoco
             for (auto i = 0; i < 4 && i < thought.numStations; ++i)
             {
                 const auto& aiStation = thought.stations[i];
-                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
                 {
                     unkStationFlags[enumValue(aiStation.id)] |= 1U << 0;
                 }
-                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk16))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
                 {
                     unkStationFlags[enumValue(aiStation.id)] |= 1U << 1;
                 }
@@ -629,7 +629,7 @@ namespace OpenLoco
     {
         company.var_85C3 &= ~((1U << 0) | (1U << 1));
 
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15 | ThoughtTypeFlags::unk16))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
         {
             return true;
         }
@@ -755,7 +755,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15 | ThoughtTypeFlags::unk16))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
         {
             return false;
         }
@@ -913,7 +913,7 @@ namespace OpenLoco
 
         auto& aiStation = thought.stations[i];
         const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
             {
                 GameCommands::AirportRemovalArgs removeArgs{};
@@ -939,7 +939,7 @@ namespace OpenLoco
                 aiStation.id = _lastPlacedAirportStationId;
             }
         }
-        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk16))
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
         {
             {
                 GameCommands::PortRemovalArgs removeArgs{};
@@ -1472,13 +1472,13 @@ namespace OpenLoco
                 continue;
             }
             const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
-            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15))
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
             {
                 GameCommands::AirportRemovalArgs args{};
                 args.pos = pos;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
             }
-            else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk16))
+            else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
             {
                 GameCommands::PortRemovalArgs args{};
                 args.pos = pos;
