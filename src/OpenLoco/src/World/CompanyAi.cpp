@@ -25,6 +25,7 @@
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/Track.h"
 #include "Map/TrackElement.h"
 #include "Objects/CargoObject.h"
 #include "Objects/CompetitorObject.h"
@@ -813,14 +814,87 @@ namespace OpenLoco
         }
     }
 
+    // 0x0048635F
+    static bool sub_48635F(Company& company, AiThought& thought)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+
+        if (thought.trackObjId & (1U << 7))
+        {
+            return true;
+        }
+        // 0x0112C519
+        uint8_t trackRoadObjId = thought.trackObjId;
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+        {
+            // 0x0048639B
+            uint8_t signalType = thought.var_8A;
+            if (company.var_85C2 >= thought.numStations)
+            {
+                return true;
+            }
+
+            auto& aiStation = thought.stations[company.var_85C2];
+
+            const auto stationEnd = World::Pos3(
+                aiStation.pos + World::Pos3{ kRotationOffset[aiStation.rotation], 0 } * (thought.var_04 - 1),
+                aiStation.baseZ * World::kSmallZStep);
+
+            uint8_t signalSide = (1U << 0);
+            const auto tad = 0 | aiStation.rotation;
+            company.var_85C2++;
+            // 0x00486498
+        }
+        else if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
+        {
+            return true;
+        }
+        else if (company.var_85C2 >= 2)
+        {
+            return true;
+        }
+
+        // 0x0048640F
+        uint8_t signalType = thought.var_8A;
+        const uint8_t signalSide = company.var_85C2 & (1U << 0) ? (1U << 1) : (1U << 0);
+
+        auto& aiStation = thought.stations[0];
+
+        const auto trackEnd = Track::getTrackConnectionEnd(World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep), aiStation.rotation ^ (1U << 1));
+        const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackRoadObjId, 0, 0);
+
+        if (tc.connections.size() != 2)
+        {
+            return false;
+        }
+        const auto tad = tc.connections[company.var_85C2] & Track::AdditionalTaDFlags::basicTaDMask;
+        company.var_85C2++;
+
+        // 0x00486498
+        return false;
+    }
+
     // 0x00430EB5
     static void sub_430EB5(Company& company, AiThought& thought)
     {
-        // place signals ?
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00430EB5, regs);
+        // place signal aiAllocations
+
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+            return;
+        }
+
+        if (sub_48635F(company, thought))
+        {
+            company.var_4A5 = 3;
+        }
     }
 
     // 0x00430EEF
