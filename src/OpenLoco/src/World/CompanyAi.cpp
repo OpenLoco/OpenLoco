@@ -51,29 +51,59 @@ namespace OpenLoco
     static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
     static loco_global<EntityId, 0x0113642A> _lastCreatedVehicleId;
 
-    // 0x004FE720
-    static constexpr std::array<uint32_t, kAiThoughtTypeCount> kThoughtTypeFlags = {
-        0x849,
-        0x4011,
-        0x4051,
-        0x808,
-        0x20808,
-        0x1421,
-        0x1120,
-        0x98E,
-        0x2098E,
-        0x98A,
-        0x2098A,
-        0x21A6,
-        0x21A2,
-        0x8000,
-        0x8082,
-        0x10000,
-        0x10086,
-        0x10082,
-        0x80A,
-        0x2080A
+    enum class ThoughtTypeFlags : uint32_t
+    {
+        none = 0U,
+
+        unk0 = 1U << 0,
+        unk1 = 1U << 1,
+        unk2 = 1U << 2,
+        unk3 = 1U << 3,
+        unk4 = 1U << 4,
+        unk5 = 1U << 5,
+        unk6 = 1U << 6,
+        unk7 = 1U << 7,
+        unk8 = 1U << 8,
+        unk9 = 1U << 9,
+        unk10 = 1U << 10,
+        unk11 = 1U << 11,
+        unk12 = 1U << 12,
+        unk13 = 1U << 13,
+        unk14 = 1U << 14,
+        unk15 = 1U << 15,
+        unk16 = 1U << 16,
+        unk17 = 1U << 17,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ThoughtTypeFlags);
+
+    // 0x004FE720
+    static constexpr std::array<ThoughtTypeFlags, kAiThoughtTypeCount> kThoughtTypeFlags = {
+        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk14,
+        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk14,
+        ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk10 | ThoughtTypeFlags::unk12,
+        ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk12,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
+        ThoughtTypeFlags::unk15,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk15,
+        ThoughtTypeFlags::unk16,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk16,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk16,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+    };
+
+    static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
+    {
+        return (kThoughtTypeFlags[enumValue(type)] & flags) != ThoughtTypeFlags::none;
+    }
 
     // 0x00487144
     static void sub_487144(Company& company)
@@ -212,8 +242,8 @@ namespace OpenLoco
                 continue;
             }
             // Potential vanilla issue below it checks for 1ULL << 11 here 1ULL << 7
-            if ((kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 7))
-                && (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7)
+                && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
             {
                 GameCommands::VehicleOrderInsertArgs insertArgs2{};
                 insertArgs2.head = trainHeadId;
@@ -228,11 +258,11 @@ namespace OpenLoco
                 }
             }
         }
-        if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
         {
             return PurchaseVehicleResult::success;
         }
-        if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 11)))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
         {
             return PurchaseVehicleResult::success;
         }
@@ -258,7 +288,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15 | ThoughtTypeFlags::unk16))
             {
                 head->var_61 = thought.stations[0].pos.x;
                 head->var_63 = thought.stations[0].pos.y;
@@ -274,7 +304,7 @@ namespace OpenLoco
                 uint8_t rotation = thought.stations[0].rotation;
                 if (thought.trackObjId & (1U << 7))
                 {
-                    if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 6))
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
                     {
                         if (i & 0b1)
                         {
@@ -304,11 +334,11 @@ namespace OpenLoco
             for (auto i = 0; i < 4 && i < thought.numStations; ++i)
             {
                 const auto& aiStation = thought.stations[i];
-                if (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 15))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15))
                 {
                     unkStationFlags[enumValue(aiStation.id)] |= 1U << 0;
                 }
-                if (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 16))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk16))
                 {
                     unkStationFlags[enumValue(aiStation.id)] |= 1U << 1;
                 }
@@ -545,7 +575,7 @@ namespace OpenLoco
     {
         company.var_85C2 = 0xFFU;
         company.var_85C3 = 0;
-        if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 17))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
         {
             company.var_85C3 |= (1U << 3);
         }
@@ -599,7 +629,7 @@ namespace OpenLoco
     {
         company.var_85C3 &= ~((1U << 0) | (1U << 1));
 
-        if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15 | ThoughtTypeFlags::unk16))
         {
             return true;
         }
@@ -654,7 +684,7 @@ namespace OpenLoco
             auto rotation = aiStation.rotation;
             if (company.var_85C3 & (1U << 0))
             {
-                if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
                 {
                     const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
                     pos += stationEndDiff;
@@ -681,7 +711,7 @@ namespace OpenLoco
             auto rotation = aiStation.rotation;
             if (company.var_85C3 & (1U << 1))
             {
-                if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
                 {
                     const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
                     pos += stationEndDiff;
@@ -725,12 +755,12 @@ namespace OpenLoco
             return false;
         }
 
-        if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15 | ThoughtTypeFlags::unk16))
         {
             return false;
         }
 
-        if (!(kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 17) | (1U << 6))))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17 | ThoughtTypeFlags::unk6))
         {
             return false;
         }
@@ -883,7 +913,7 @@ namespace OpenLoco
 
         auto& aiStation = thought.stations[i];
         const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
-        if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 15))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15))
         {
             {
                 GameCommands::AirportRemovalArgs removeArgs{};
@@ -909,7 +939,7 @@ namespace OpenLoco
                 aiStation.id = _lastPlacedAirportStationId;
             }
         }
-        else if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 16))
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk16))
         {
             {
                 GameCommands::PortRemovalArgs removeArgs{};
@@ -1442,13 +1472,13 @@ namespace OpenLoco
                 continue;
             }
             const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
-            if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 15))
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk15))
             {
                 GameCommands::AirportRemovalArgs args{};
                 args.pos = pos;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
             }
-            else if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 16))
+            else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk16))
             {
                 GameCommands::PortRemovalArgs args{};
                 args.pos = pos;
@@ -1905,7 +1935,7 @@ namespace OpenLoco
         auto& thought = company->aiThoughts[index];
 
         World::Pos2 pos;
-        if ((kThoughtTypeFlags[enumValue(thought.type)] & 2) != 0)
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
         {
             auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
             pos = { industry->x, industry->y };
@@ -1955,7 +1985,7 @@ namespace OpenLoco
         {
             World::Pos2 pos{};
             auto& thought = company->aiThoughts[company->activeThoughtId];
-            if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 1))
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
             {
                 auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
                 pos = World::Pos2{ industry->x, industry->y };
