@@ -2043,6 +2043,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         train.cars.firstCar.body->sub_4AAB0B();
 
+        // Behavior if the vehicle is already stationary
         if (status == Status::stopped)
         {
             if (hasVehicleFlags(VehicleFlags::commandStop))
@@ -2061,6 +2062,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
+        // Behavior if the vehicle is unloading or loading
         if (status == Status::unloading)
         {
             updateUnloadCargo();
@@ -2082,6 +2084,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
+        // What to do when stop command is issued
         if (hasVehicleFlags(VehicleFlags::commandStop))
         {
             if ((updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination) == WaterMotionFlags::none)
