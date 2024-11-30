@@ -117,8 +117,8 @@ namespace OpenLoco::Paint
         constexpr auto mapRangeMax = kMaxPaintQuadrants * World::kTileSize;
         constexpr auto mapRangeCenter = mapRangeMax / 2;
 
-        const auto x = ps.bounds.x;
-        const auto y = ps.bounds.y;
+        const auto x = ps.bounds.mins.x;
+        const auto y = ps.bounds.mins.y;
         // NOTE: We are not calling CoordsXY::Rotate on purpose to mix in the additional
         // value without a secondary switch.
         switch (rotation & 3)
@@ -270,8 +270,7 @@ namespace OpenLoco::Paint
         const auto rtLeft = getRenderTarget()->x;
         const auto rtRight = getRenderTarget()->x + getRenderTarget()->width;
 
-        auto newX = ps->bounds.x;
-        auto newY = ps->bounds.y;
+        auto newMins = ps->bounds.mins;
         // The following uses the fact that gameToScreen calculates the
         // screen x to be y - x of the map coordinate. It is then back
         // calculating the x and y so that they would within the render
@@ -279,52 +278,51 @@ namespace OpenLoco::Paint
         switch (getRotation())
         {
             case 0:
-                if (newY - newX < rtLeft)
+                if (newMins.y - newMins.x < rtLeft)
                 {
-                    newY = newX + rtLeft;
+                    newMins.y = newMins.x + rtLeft;
                 }
 
-                if (newY - newX > rtRight)
+                if (newMins.y - newMins.x > rtRight)
                 {
-                    newX = newY - rtRight;
+                    newMins.x = newMins.y - rtRight;
                 }
                 break;
             case 1:
-                if (-newY - newX < rtLeft)
+                if (-newMins.y - newMins.x < rtLeft)
                 {
-                    newX = -newY - rtLeft;
+                    newMins.x = -newMins.y - rtLeft;
                 }
 
-                if (-newY - newX > rtRight)
+                if (-newMins.y - newMins.x > rtRight)
                 {
-                    newY = -newX - rtRight;
+                    newMins.y = -newMins.x - rtRight;
                 }
                 break;
             case 2:
-                if (-newY + newX < rtLeft)
+                if (-newMins.y + newMins.x < rtLeft)
                 {
-                    newY = newX - rtLeft;
+                    newMins.y = newMins.x - rtLeft;
                 }
 
-                if (-newY + newX > rtRight)
+                if (-newMins.y + newMins.x > rtRight)
                 {
-                    newX = newY + rtRight;
+                    newMins.x = newMins.y + rtRight;
                 }
                 break;
             case 3:
-                if (newY + newX < rtLeft)
+                if (newMins.y + newMins.x < rtLeft)
                 {
-                    newX = -newY + rtLeft;
+                    newMins.x = -newMins.y + rtLeft;
                 }
 
-                if (newY + newX > rtRight)
+                if (newMins.y + newMins.x > rtRight)
                 {
-                    newY = -newX + rtRight;
+                    newMins.y = -newMins.x + rtRight;
                 }
                 break;
         }
-        ps->bounds.x = newX;
-        ps->bounds.y = newY;
+        ps->bounds.mins = newMins;
 
         _lastPS = ps;
         addPSToQuadrant(*ps);
@@ -576,15 +574,11 @@ namespace OpenLoco::Paint
             return nullptr;
         }
 
+        const auto spritePos = getSpritePosition();
         ps->imageId = imageId;
-        ps->vpPos.x = vpPos.x;
-        ps->vpPos.y = vpPos.y;
-        ps->bounds.xEnd = rotBoundBoxSize.x + rotBoundBoxOffset.x + getSpritePosition().x;
-        ps->bounds.yEnd = rotBoundBoxSize.y + rotBoundBoxOffset.y + getSpritePosition().y;
-        ps->bounds.zEnd = rotBoundBoxSize.z + rotBoundBoxOffset.z;
-        ps->bounds.x = rotBoundBoxOffset.x + getSpritePosition().x;
-        ps->bounds.y = rotBoundBoxOffset.y + getSpritePosition().y;
-        ps->bounds.z = rotBoundBoxOffset.z;
+        ps->vpPos = { vpPos.x, vpPos.y };
+        ps->bounds.mins = rotBoundBoxOffset + World::Pos3{ spritePos.x, spritePos.y, 0 };
+        ps->bounds.maxs = rotBoundBoxOffset + rotBoundBoxSize + World::Pos3{ spritePos.x, spritePos.y, 0 };
         ps->flags = PaintStructFlags::none;
         ps->attachedPS = nullptr;
         ps->children = nullptr;
@@ -625,32 +619,32 @@ namespace OpenLoco::Paint
     {
         if constexpr (TRotation == 0)
         {
-            if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd >= currentBBox.y && initialBBox.xEnd >= currentBBox.x
-                && !(initialBBox.z < currentBBox.zEnd && initialBBox.y < currentBBox.yEnd && initialBBox.x < currentBBox.xEnd))
+            if (initialBBox.maxs.z >= currentBBox.mins.z && initialBBox.maxs.y >= currentBBox.mins.y && initialBBox.maxs.x >= currentBBox.mins.x
+                && !(initialBBox.mins.z < currentBBox.maxs.z && initialBBox.mins.y < currentBBox.maxs.y && initialBBox.mins.x < currentBBox.maxs.x))
             {
                 return true;
             }
         }
         else if constexpr (TRotation == 1)
         {
-            if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd >= currentBBox.y && initialBBox.xEnd < currentBBox.x
-                && !(initialBBox.z < currentBBox.zEnd && initialBBox.y < currentBBox.yEnd && initialBBox.x >= currentBBox.xEnd))
+            if (initialBBox.maxs.z >= currentBBox.mins.z && initialBBox.maxs.y >= currentBBox.mins.y && initialBBox.maxs.x < currentBBox.mins.x
+                && !(initialBBox.mins.z < currentBBox.maxs.z && initialBBox.mins.y < currentBBox.maxs.y && initialBBox.mins.x >= currentBBox.maxs.x))
             {
                 return true;
             }
         }
         else if constexpr (TRotation == 2)
         {
-            if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd < currentBBox.y && initialBBox.xEnd < currentBBox.x
-                && !(initialBBox.z < currentBBox.zEnd && initialBBox.y >= currentBBox.yEnd && initialBBox.x >= currentBBox.xEnd))
+            if (initialBBox.maxs.z >= currentBBox.mins.z && initialBBox.maxs.y < currentBBox.mins.y && initialBBox.maxs.x < currentBBox.mins.x
+                && !(initialBBox.mins.z < currentBBox.maxs.z && initialBBox.mins.y >= currentBBox.maxs.y && initialBBox.mins.x >= currentBBox.maxs.x))
             {
                 return true;
             }
         }
         else if constexpr (TRotation == 3)
         {
-            if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd < currentBBox.y && initialBBox.xEnd >= currentBBox.x
-                && !(initialBBox.z < currentBBox.zEnd && initialBBox.y >= currentBBox.yEnd && initialBBox.x < currentBBox.xEnd))
+            if (initialBBox.maxs.z >= currentBBox.mins.z && initialBBox.maxs.y < currentBBox.mins.y && initialBBox.maxs.x >= currentBBox.mins.x
+                && !(initialBBox.mins.z < currentBBox.maxs.z && initialBBox.mins.y >= currentBBox.maxs.y && initialBBox.mins.x < currentBBox.maxs.x))
             {
                 return true;
             }
@@ -967,7 +961,8 @@ namespace OpenLoco::Paint
         {
             imageId = ImageId(imageId.getIndex()).withTranslucency(ExtColour::unk30);
         }
-        Ui::Point imagePos = ps.vpPos;
+
+        auto imagePos = ps.vpPos;
         if (ps.type == Ui::ViewportInteraction::InteractionItem::entity)
         {
             switch (rt.zoomLevel)
@@ -988,6 +983,7 @@ namespace OpenLoco::Paint
                     break;
             }
         }
+
         if ((ps.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
         {
             drawingCtx.drawImageMasked(imagePos, imageId, ps.maskedImageId);
@@ -1426,47 +1422,47 @@ namespace OpenLoco::Paint
     // 0x0045CABF, 0x0045CAF4, 0x0045CB29, 0x0045CB5A, 0x0045CC73, 0x0045CCA8, 0x0045CCDD, 0x0045CD0E
     static PaintStructBoundBox getMinMaxXYBounding(PaintStruct& routeEntry, uint8_t rotation)
     {
-        auto minMaxBounds = routeEntry.bounds;
+        auto [mins, maxs] = routeEntry.bounds;
         switch (rotation)
         {
             case 0:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                    mins.x = std::min(mins.x, child->bounds.mins.x);
+                    mins.y = std::min(mins.y, child->bounds.mins.y);
+                    maxs.x = std::max(maxs.x, child->bounds.maxs.x);
+                    maxs.y = std::max(maxs.y, child->bounds.maxs.y);
                 }
                 break;
             case 1:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                    mins.x = std::max(mins.x, child->bounds.mins.x);
+                    mins.y = std::min(mins.y, child->bounds.mins.y);
+                    maxs.x = std::min(maxs.x, child->bounds.maxs.x);
+                    maxs.y = std::max(maxs.y, child->bounds.maxs.y);
                 }
                 break;
             case 2:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                    mins.x = std::max(mins.x, child->bounds.mins.x);
+                    mins.y = std::max(mins.y, child->bounds.mins.y);
+                    maxs.x = std::min(maxs.x, child->bounds.maxs.x);
+                    maxs.y = std::min(maxs.y, child->bounds.maxs.y);
                 }
                 break;
             case 3:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                    mins.x = std::min(mins.x, child->bounds.mins.x);
+                    mins.y = std::max(mins.y, child->bounds.mins.y);
+                    maxs.x = std::max(maxs.x, child->bounds.maxs.x);
+                    maxs.y = std::min(maxs.y, child->bounds.maxs.y);
                 }
                 break;
         }
-        return minMaxBounds;
+        return { mins, maxs };
     }
 
     void PaintSession::finaliseOrdering(std::span<PaintStruct*> paintStructs)
@@ -1478,12 +1474,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        auto minMaxBounds = getMinMaxXYBounding(*routeEntry, getRotation());
-
-        routeEntry->bounds.x = minMaxBounds.x;
-        routeEntry->bounds.y = minMaxBounds.y;
-        routeEntry->bounds.xEnd = minMaxBounds.xEnd;
-        routeEntry->bounds.yEnd = minMaxBounds.yEnd;
+        routeEntry->bounds = getMinMaxXYBounding(*routeEntry, getRotation());
 
         addPSToQuadrant(*routeEntry);
     }

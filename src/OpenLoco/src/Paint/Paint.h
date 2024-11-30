@@ -122,12 +122,8 @@ namespace OpenLoco::Paint
 
     struct PaintStructBoundBox
     {
-        int16_t x;
-        int16_t y;
-        int16_t z;
-        int16_t xEnd;
-        int16_t yEnd;
-        int16_t zEnd;
+        World::Pos3 mins;
+        World::Pos3 maxs;
     };
 
     enum class QuadrantFlags : uint8_t
