@@ -965,23 +965,10 @@ namespace OpenLoco::Paint
         auto imagePos = ps.vpPos;
         if (ps.type == Ui::ViewportInteraction::InteractionItem::entity)
         {
-            switch (rt.zoomLevel)
-            {
-                case 0:
-                    break;
-                case 1:
-                    imagePos.x &= 0xFFFE;
-                    imagePos.y &= 0xFFFE;
-                    break;
-                case 2:
-                    imagePos.x &= 0xFFFC;
-                    imagePos.y &= 0xFFFC;
-                    break;
-                case 3:
-                    imagePos.x &= 0xFFF8;
-                    imagePos.y &= 0xFFF8;
-                    break;
-            }
+            // Align the position to 0, 2, 4, 8 based on the zoom level.
+            const auto mask = static_cast<int16_t>(~(1U << rt.zoomLevel) + 1);
+            imagePos.x &= mask;
+            imagePos.y &= mask;
         }
 
         if ((ps.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
