@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Traits.hpp"
+#include <bit>
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
-#include <limits>
-#include <type_traits>
 
 namespace OpenLoco::Numerics
 {
@@ -28,12 +27,17 @@ namespace OpenLoco::Numerics
         return ((val >> rotation) | (val << (4 - rotation))) & 0xF;
     }
 
+    // Alignment requires to be power of 2.
     template<typename T>
     constexpr T alignDown(T value, size_t alignment)
     {
+        // Ensure alignment is power of two or 0.
+        assert(alignment > 0 && std::has_single_bit(alignment));
+
         return value & ~(alignment - 1);
     }
 
+    // Alignment requires to be power of 2.
     template<typename T>
     constexpr T alignUp(T value, size_t alignment)
     {
