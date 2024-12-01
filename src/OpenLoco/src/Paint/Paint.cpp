@@ -482,13 +482,17 @@ namespace OpenLoco::Paint
         // TODO: Work out what these constants represent
         uint16_t numVerticalQuadrants = (rt->height + (rotation == 0 ? 1040 : 1056)) >> 5;
 
-        auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(rt->x & 0xFFE0), static_cast<int16_t>((rt->y - 16) & 0xFFE0), 0, rotation);
+        auto mapLoc = Ui::viewportCoordToMapCoord(
+            Numerics::alignDown(rt->x, 32),
+            Numerics::alignDown(rt->y - 16, 32),
+            0,
+            rotation);
         if constexpr (rotation & 1)
         {
             mapLoc.y -= 16;
         }
-        mapLoc.x &= 0xFFE0;
-        mapLoc.y &= 0xFFE0;
+        mapLoc.x = Numerics::alignDown(mapLoc.x, 32);
+        mapLoc.y = Numerics::alignDown(mapLoc.y, 32);
 
         constexpr auto direction = directionFlipXAxis(rotation);
         constexpr std::array<World::Pos2, 5> additionalQuadrants = {
@@ -965,10 +969,9 @@ namespace OpenLoco::Paint
         auto imagePos = ps.vpPos;
         if (ps.type == Ui::ViewportInteraction::InteractionItem::entity)
         {
-            // Align the position to 0, 2, 4, 8 based on the zoom level.
-            const auto mask = static_cast<int16_t>(~(1U << rt.zoomLevel) + 1);
-            imagePos.x &= mask;
-            imagePos.y &= mask;
+            const auto zoomAlign = 1U << rt.zoomLevel;
+            imagePos.x = Numerics::alignDown(imagePos.x, zoomAlign);
+            imagePos.y = Numerics::alignDown(imagePos.y, zoomAlign);
         }
 
         if ((ps.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
@@ -992,8 +995,8 @@ namespace OpenLoco::Paint
         Ui::Point imagePos = ps.vpPos + attachPs.vpPos;
         if (rt.zoomLevel != 0)
         {
-            imagePos.x &= 0xFFFE;
-            imagePos.y &= 0xFFFE;
+            imagePos.x = Numerics::alignDown(imagePos.x, 2);
+            imagePos.y = Numerics::alignDown(imagePos.y, 2);
         }
 
         if ((attachPs.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)

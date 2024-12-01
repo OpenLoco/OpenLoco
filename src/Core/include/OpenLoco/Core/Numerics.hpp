@@ -27,4 +27,16 @@ namespace OpenLoco::Numerics
     {
         return ((val >> rotation) | (val << (4 - rotation))) & 0xF;
     }
+
+    template<typename T>
+    constexpr T alignDown(T value, size_t alignment)
+    {
+        return value & ~(alignment - 1);
+    }
+
+    template<typename T>
+    constexpr T alignUp(T value, size_t alignment)
+    {
+        return alignDown(value + alignment - 1, alignment);
+    }
 }
