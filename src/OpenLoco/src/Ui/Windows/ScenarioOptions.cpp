@@ -1127,6 +1127,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             StringIds::scenario_group_medium,
             StringIds::scenario_group_challenging,
             StringIds::scenario_group_expert,
+            StringIds::objSelectionFilterCustom,
         };
 
         // 0x0043F14B
