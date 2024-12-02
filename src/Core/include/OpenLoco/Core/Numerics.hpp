@@ -29,7 +29,7 @@ namespace OpenLoco::Numerics
 
     // Alignment requires to be power of 2.
     template<typename T>
-    constexpr T alignDown(T value, size_t alignment)
+    constexpr T floor2(T value, size_t alignment)
     {
         // Ensure alignment is power of two or 0.
         assert(alignment > 0 && std::has_single_bit(alignment));
@@ -39,8 +39,8 @@ namespace OpenLoco::Numerics
 
     // Alignment requires to be power of 2.
     template<typename T>
-    constexpr T alignUp(T value, size_t alignment)
+    constexpr T ceil2(T value, size_t alignment)
     {
-        return alignDown(value + alignment - 1, alignment);
+        return floor2(value + alignment - 1, alignment);
     }
 }

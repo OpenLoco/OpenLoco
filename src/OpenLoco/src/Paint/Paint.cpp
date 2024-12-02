@@ -483,16 +483,16 @@ namespace OpenLoco::Paint
         uint16_t numVerticalQuadrants = (rt->height + (rotation == 0 ? 1040 : 1056)) >> 5;
 
         auto mapLoc = Ui::viewportCoordToMapCoord(
-            Numerics::alignDown(rt->x, 32),
-            Numerics::alignDown(rt->y - 16, 32),
+            Numerics::floor2(rt->x, 32),
+            Numerics::floor2(rt->y - 16, 32),
             0,
             rotation);
         if constexpr (rotation & 1)
         {
             mapLoc.y -= 16;
         }
-        mapLoc.x = Numerics::alignDown(mapLoc.x, 32);
-        mapLoc.y = Numerics::alignDown(mapLoc.y, 32);
+        mapLoc.x = Numerics::floor2(mapLoc.x, 32);
+        mapLoc.y = Numerics::floor2(mapLoc.y, 32);
 
         constexpr auto direction = directionFlipXAxis(rotation);
         constexpr std::array<World::Pos2, 5> additionalQuadrants = {
@@ -970,8 +970,8 @@ namespace OpenLoco::Paint
         if (ps.type == Ui::ViewportInteraction::InteractionItem::entity)
         {
             const auto zoomAlign = 1U << rt.zoomLevel;
-            imagePos.x = Numerics::alignDown(imagePos.x, zoomAlign);
-            imagePos.y = Numerics::alignDown(imagePos.y, zoomAlign);
+            imagePos.x = Numerics::floor2(imagePos.x, zoomAlign);
+            imagePos.y = Numerics::floor2(imagePos.y, zoomAlign);
         }
 
         if ((ps.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
@@ -995,8 +995,8 @@ namespace OpenLoco::Paint
         Ui::Point imagePos = ps.vpPos + attachPs.vpPos;
         if (rt.zoomLevel != 0)
         {
-            imagePos.x = Numerics::alignDown(imagePos.x, 2);
-            imagePos.y = Numerics::alignDown(imagePos.y, 2);
+            imagePos.x = Numerics::floor2(imagePos.x, 2);
+            imagePos.y = Numerics::floor2(imagePos.y, 2);
         }
 
         if ((attachPs.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
