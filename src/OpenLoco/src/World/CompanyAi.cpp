@@ -12,6 +12,7 @@
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Road/RemoveRoadStation.h"
+#include "GameCommands/Track/CreateSignal.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/RemoveTrack.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
@@ -26,6 +27,7 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
+#include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Objects/CargoObject.h"
 #include "Objects/CompetitorObject.h"
@@ -875,6 +877,62 @@ namespace OpenLoco
         company.var_85C2++;
 
         // 0x00486498
+
+        // These are either trackEnd or stationEnd
+        auto pos2 = trackEnd.nextPos;
+        auto rot2 = trackEnd.nextRotation;
+        auto tad2 = tad;
+        {
+            auto unkLength = 3200;
+
+            const auto trackEnd2 = Track::getTrackConnectionEnd(World::Pos3(pos2, aiStation.baseZ * World::kSmallZStep), tad2);
+            const auto tc2 = Track::getTrackConnectionsAi(trackEnd2.nextPos, trackEnd2.nextRotation, GameCommands::getUpdatingCompanyId(), trackRoadObjId, 0, 0);
+            if (tc2.connections.size() != 1 || tc2.stationId != StationId::null)
+            {
+                return false;
+            }
+
+            tad2 = tc2.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+
+            if (unkLength < thought.var_04 * 32)
+            {
+                // 0x00486598
+                unkLength += TrackData::getTrackMiscData(tad2 >> 3).unkWeighting;
+                continue;
+            }
+
+            if (tad2 & (1U << 2))
+            {
+                auto& trackSize = TrackData::getUnkTrack(tad2);
+                pos2 += trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    pos2 -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                tad2 ^= (1U << 2); // Reverse
+                signalSide = signalSide & (1U << 0) ? (1U << 1) : (1U << 0);
+            }
+
+            GameCommands::SignalPlacementArgs args{};
+            args.pos = pos2;
+            args.pos.z += TrackData::getTrackPiece(tad2 >> 3)[0].z;
+            args.index = 0;
+            args.rotation = rot2;
+            args.trackId = tad2 >> 3;
+            args.trackObjType = trackRoadObjId;
+            args.sides = signalSide;
+            args.type = signalType;
+
+            const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+            if (res == GameCommands::FAILURE)
+            {
+                // 0x00486598
+                unkLength += TrackData::getTrackMiscData(tad2 >> 3).unkWeighting;
+                continue;
+            }
+            unkLength = 0;
+            continue;
+        }
         return false;
     }
 
