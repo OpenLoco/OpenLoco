@@ -1188,7 +1188,7 @@ namespace OpenLoco::Paint
             return false;
         }
 
-        auto genHeight = Numerics::ceil2(session.getGeneralSupportHeight().height, 16);
+        const auto genHeight = Numerics::ceil2(session.getGeneralSupportHeight().height, 16);
         const auto supportLength = bridgeEntry.height - genHeight;
         if (supportLength < 0)
         {
