@@ -41,6 +41,6 @@ namespace OpenLoco::Numerics
     template<typename T>
     constexpr T ceil2(T value, size_t alignment)
     {
-        return floor2(value + alignment - 1, alignment);
+        return floor2(static_cast<T>(value + alignment - 1), alignment);
     }
 }
