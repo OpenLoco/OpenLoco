@@ -5,6 +5,7 @@
 #include "Objects/ObjectManager.h"
 #include "Paint.h"
 #include "Ui/ViewportInteraction.h"
+#include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::Paint
 {
@@ -1186,9 +1187,8 @@ namespace OpenLoco::Paint
         {
             return false;
         }
-        // ceil to 16
-        auto genHeight = session.getGeneralSupportHeight().height + 15;
-        genHeight &= 0xFFF0;
+
+        auto genHeight = Numerics::ceil2(session.getGeneralSupportHeight().height, 16);
         const auto supportLength = bridgeEntry.height - genHeight;
         if (supportLength < 0)
         {
