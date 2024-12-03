@@ -7,6 +7,7 @@
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
+#include "Logging.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "PaintEntity.h"
@@ -24,7 +25,25 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
-    PaintSession _session;
+    PaintSession::PaintSession(const Gfx::RenderTarget& rt, const SessionOptions& options)
+    {
+        _renderTarget = &rt;
+        _lastPS = nullptr;
+        for (auto& quadrant : _quadrants)
+        {
+            quadrant = nullptr;
+        }
+        _quadrantBackIndex = std::numeric_limits<uint32_t>::max();
+        _quadrantFrontIndex = 0;
+        _lastPaintString = nullptr;
+        _paintStringHead = nullptr;
+
+        _viewFlags = options.viewFlags;
+        currentRotation = options.rotation;
+
+        // TODO: unused
+        _foregroundCullingHeight = options.foregroundCullHeight;
+    }
 
     void PaintSession::setEntityPosition(const World::Pos2& pos)
     {
@@ -84,15 +103,6 @@ namespace OpenLoco::Paint
         _maxHeight = (maxClearZ * World::kSmallZStep) + 32;
     }
 
-    loco_global<int32_t[4], 0x4FD120> _addToStringPlotList;
-    loco_global<int32_t[4], 0x4FD130> _4FD130;
-    loco_global<int32_t[4], 0x4FD140> _4FD140;
-    loco_global<int32_t[4], 0x4FD150> _4FD150;
-    loco_global<int32_t[4], 0x4FD1E0> _4FD1E0;
-    loco_global<int32_t[4], 0x4FD170> _4FD170;
-    loco_global<int32_t[4], 0x4FD180> _4FD180;
-    loco_global<int32_t[4], 0x4FD200> _4FD200;
-
     /*
      * Flips the X axis so 1 and 3 are swapped 0 and 2 will stay the same.
      * { 0, 3, 2, 1 }
@@ -107,8 +117,8 @@ namespace OpenLoco::Paint
         constexpr auto mapRangeMax = kMaxPaintQuadrants * World::kTileSize;
         constexpr auto mapRangeCenter = mapRangeMax / 2;
 
-        const auto x = ps.bounds.x;
-        const auto y = ps.bounds.y;
+        const auto x = ps.bounds.mins.x;
+        const auto y = ps.bounds.mins.y;
         // NOTE: We are not calling CoordsXY::Rotate on purpose to mix in the additional
         // value without a secondary switch.
         switch (rotation & 3)
@@ -139,8 +149,8 @@ namespace OpenLoco::Paint
         ps.nextQuadrantPS = _quadrants[paintQuadrantIndex];
         _quadrants[paintQuadrantIndex] = &ps;
 
-        _quadrantBackIndex = std::min(*_quadrantBackIndex, paintQuadrantIndex);
-        _quadrantFrontIndex = std::max(*_quadrantFrontIndex, paintQuadrantIndex);
+        _quadrantBackIndex = std::min(_quadrantBackIndex, paintQuadrantIndex);
+        _quadrantFrontIndex = std::max(_quadrantFrontIndex, paintQuadrantIndex);
     }
 
     // 0x004FD120
@@ -260,8 +270,7 @@ namespace OpenLoco::Paint
         const auto rtLeft = getRenderTarget()->x;
         const auto rtRight = getRenderTarget()->x + getRenderTarget()->width;
 
-        auto newX = ps->bounds.x;
-        auto newY = ps->bounds.y;
+        auto newMins = ps->bounds.mins;
         // The following uses the fact that gameToScreen calculates the
         // screen x to be y - x of the map coordinate. It is then back
         // calculating the x and y so that they would within the render
@@ -269,52 +278,51 @@ namespace OpenLoco::Paint
         switch (getRotation())
         {
             case 0:
-                if (newY - newX < rtLeft)
+                if (newMins.y - newMins.x < rtLeft)
                 {
-                    newY = newX + rtLeft;
+                    newMins.y = newMins.x + rtLeft;
                 }
 
-                if (newY - newX > rtRight)
+                if (newMins.y - newMins.x > rtRight)
                 {
-                    newX = newY - rtRight;
+                    newMins.x = newMins.y - rtRight;
                 }
                 break;
             case 1:
-                if (-newY - newX < rtLeft)
+                if (-newMins.y - newMins.x < rtLeft)
                 {
-                    newX = -newY - rtLeft;
+                    newMins.x = -newMins.y - rtLeft;
                 }
 
-                if (-newY - newX > rtRight)
+                if (-newMins.y - newMins.x > rtRight)
                 {
-                    newY = -newX - rtRight;
+                    newMins.y = -newMins.x - rtRight;
                 }
                 break;
             case 2:
-                if (-newY + newX < rtLeft)
+                if (-newMins.y + newMins.x < rtLeft)
                 {
-                    newY = newX - rtLeft;
+                    newMins.y = newMins.x - rtLeft;
                 }
 
-                if (-newY + newX > rtRight)
+                if (-newMins.y + newMins.x > rtRight)
                 {
-                    newX = newY + rtRight;
+                    newMins.x = newMins.y + rtRight;
                 }
                 break;
             case 3:
-                if (newY + newX < rtLeft)
+                if (newMins.y + newMins.x < rtLeft)
                 {
-                    newX = -newY + rtLeft;
+                    newMins.x = -newMins.y + rtLeft;
                 }
 
-                if (newY + newX > rtRight)
+                if (newMins.y + newMins.x > rtRight)
                 {
-                    newY = -newX + rtRight;
+                    newMins.y = -newMins.x + rtRight;
                 }
                 break;
         }
-        ps->bounds.x = newX;
-        ps->bounds.y = newY;
+        ps->bounds.mins = newMins;
 
         _lastPS = ps;
         addPSToQuadrant(*ps);
@@ -324,7 +332,7 @@ namespace OpenLoco::Paint
     // 0x004FD1E0
     PaintStruct* PaintSession::addToPlotListAsChild(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
-        if (*_lastPS == nullptr)
+        if (_lastPS == nullptr)
         {
             return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
         }
@@ -333,7 +341,7 @@ namespace OpenLoco::Paint
         {
             return nullptr;
         }
-        (*_lastPS)->children = ps;
+        _lastPS->children = ps;
         _lastPS = ps;
         return ps;
     }
@@ -386,226 +394,9 @@ namespace OpenLoco::Paint
         }
         attached->imageId = imageId;
         attached->vpPos = offset;
-        attached->next = (*_lastPS)->attachedPS;
-        (*_lastPS)->attachedPS = attached;
+        attached->next = _lastPS->attachedPS;
+        _lastPS->attachedPS = attached;
         return attached;
-    }
-
-    void PaintSession::init(const Gfx::RenderTarget& rt, const SessionOptions& options)
-    {
-        _renderTarget = &rt;
-        _nextFreePaintStruct = &_paintEntries[0];
-        _endOfPaintStructArray = &_paintEntries[3998];
-        _lastPS = nullptr;
-        for (auto& quadrant : _quadrants)
-        {
-            quadrant = nullptr;
-        }
-        _quadrantBackIndex = std::numeric_limits<uint32_t>::max();
-        _quadrantFrontIndex = 0;
-        _lastPaintString = nullptr;
-        _paintStringHead = nullptr;
-
-        _viewFlags = options.viewFlags;
-        currentRotation = options.rotation;
-
-        // TODO: unused
-        _foregroundCullingHeight = options.foregroundCullHeight;
-    }
-
-    // 0x0045A6CA
-    PaintSession* allocateSession(const Gfx::RenderTarget& rt, const SessionOptions& options)
-    {
-        _session.init(rt, options);
-        return &_session;
-    }
-
-    static PaintStruct* addToPlotListTrackRoadHookHelper(registers& regs, uint8_t rotation)
-    {
-        PaintSession session;
-        const auto imageId = ImageId::fromUInt32(regs.ebx);
-        const auto priority = regs.ecx;
-        const auto offset = World::Pos3(0, 0, regs.dx);
-        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-        session.setRotation(rotation);
-        return session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
-    }
-
-    static PaintStruct* addToPlotListTrackRoadAdditionHookHelper(registers& regs, uint8_t rotation)
-    {
-        PaintSession session;
-        const auto imageId = ImageId::fromUInt32(regs.ebx);
-        const auto priority = regs.ecx;
-        const auto offset = World::Pos3(0, 0, regs.dx);
-        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-        session.setRotation(rotation);
-        return session.addToPlotListTrackRoadAddition(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
-    }
-
-    static PaintStruct* addToPlot4FD150HookHelper(registers& regs, uint8_t rotation)
-    {
-        PaintSession session;
-        const auto imageId = ImageId::fromUInt32(regs.ebx);
-        const auto offset = World::Pos3(0, 0, regs.dx);
-        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-        session.setRotation(rotation);
-        return session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x004622A2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                PaintSession session;
-                session.generate();
-
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0045BF9F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadHookHelper(regs, 0);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C0F2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadHookHelper(regs, 1);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C24C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadHookHelper(regs, 2);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C3A7,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadHookHelper(regs, 3);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-
-        registerHook(
-            0x0045C503,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 0);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C656,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 1);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C7B0,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 2);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045C90B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 3);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-
-        registerHook(
-            0x0045B405,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlot4FD150HookHelper(regs, 0);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045B58D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlot4FD150HookHelper(regs, 1);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045B721,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlot4FD150HookHelper(regs, 2);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
-        registerHook(
-            0x0045B8B9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto* ps = addToPlot4FD150HookHelper(regs, 3);
-                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                regs.ebp = X86Pointer(ps);
-                return res;
-            });
     }
 
     void PaintSession::setSegmentsSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
@@ -631,9 +422,9 @@ namespace OpenLoco::Paint
 
     void PaintSession::setGeneralSupportHeight(const uint16_t height, const uint8_t slope)
     {
-        _support->height = height;
-        _support->slope = slope;
-        _support->var_03 = 0;
+        _support.height = height;
+        _support.slope = slope;
+        _support.var_03 = 0;
     }
 
     void PaintSession::resetTunnels()
@@ -691,13 +482,17 @@ namespace OpenLoco::Paint
         // TODO: Work out what these constants represent
         uint16_t numVerticalQuadrants = (rt->height + (rotation == 0 ? 1040 : 1056)) >> 5;
 
-        auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(rt->x & 0xFFE0), static_cast<int16_t>((rt->y - 16) & 0xFFE0), 0, rotation);
+        auto mapLoc = Ui::viewportCoordToMapCoord(
+            Numerics::floor2(rt->x, 32),
+            Numerics::floor2(rt->y - 16, 32),
+            0,
+            rotation);
         if constexpr (rotation & 1)
         {
             mapLoc.y -= 16;
         }
-        mapLoc.x &= 0xFFE0;
-        mapLoc.y &= 0xFFE0;
+        mapLoc.x = Numerics::floor2(mapLoc.x, 32);
+        mapLoc.y = Numerics::floor2(mapLoc.y, 32);
 
         constexpr auto direction = directionFlipXAxis(rotation);
         constexpr std::array<World::Pos2, 5> additionalQuadrants = {
@@ -743,7 +538,7 @@ namespace OpenLoco::Paint
 
     void PaintSession::attachStringStruct(PaintStringStruct& psString)
     {
-        auto* previous = *_lastPaintString;
+        auto* previous = _lastPaintString;
         _lastPaintString = &psString;
         if (previous == nullptr)
         {
@@ -769,7 +564,7 @@ namespace OpenLoco::Paint
 
         const auto vpPos = World::gameToScreen(swappedRotCoord, currentRotation);
 
-        if (!imageWithinRT(vpPos, *g1, **_renderTarget))
+        if (!imageWithinRT(vpPos, *g1, *_renderTarget))
         {
             return nullptr;
         }
@@ -783,22 +578,18 @@ namespace OpenLoco::Paint
             return nullptr;
         }
 
+        const auto spritePos = getSpritePosition();
         ps->imageId = imageId;
-        ps->vpPos.x = vpPos.x;
-        ps->vpPos.y = vpPos.y;
-        ps->bounds.xEnd = rotBoundBoxSize.x + rotBoundBoxOffset.x + getSpritePosition().x;
-        ps->bounds.yEnd = rotBoundBoxSize.y + rotBoundBoxOffset.y + getSpritePosition().y;
-        ps->bounds.zEnd = rotBoundBoxSize.z + rotBoundBoxOffset.z;
-        ps->bounds.x = rotBoundBoxOffset.x + getSpritePosition().x;
-        ps->bounds.y = rotBoundBoxOffset.y + getSpritePosition().y;
-        ps->bounds.z = rotBoundBoxOffset.z;
+        ps->vpPos = { vpPos.x, vpPos.y };
+        ps->bounds.mins = rotBoundBoxOffset + World::Pos3{ spritePos.x, spritePos.y, 0 };
+        ps->bounds.maxs = rotBoundBoxOffset + rotBoundBoxSize + World::Pos3{ spritePos.x, spritePos.y, 0 };
         ps->flags = PaintStructFlags::none;
         ps->attachedPS = nullptr;
         ps->children = nullptr;
         ps->type = _itemType;
         ps->modId = _trackModId;
         ps->mapPos = _mapPosition;
-        ps->tileElement = reinterpret_cast<World::TileElement*>(*_currentItem);
+        ps->tileElement = reinterpret_cast<World::TileElement*>(_currentItem);
         return ps;
     }
 
@@ -810,7 +601,6 @@ namespace OpenLoco::Paint
             return;
         }
 
-        currentRotation = Ui::WindowManager::getCurrentRotation();
         switch (currentRotation)
         {
             case 0:
@@ -828,49 +618,40 @@ namespace OpenLoco::Paint
         }
     }
 
-    template<uint8_t>
-    static bool checkBoundingBox(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox);
-
-    template<>
-    bool checkBoundingBox<0>(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
+    template<uint8_t TRotation>
+    static bool checkBoundingBox(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
     {
-        if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd >= currentBBox.y && initialBBox.xEnd >= currentBBox.x
-            && !(initialBBox.z < currentBBox.zEnd && initialBBox.y < currentBBox.yEnd && initialBBox.x < currentBBox.xEnd))
+        if constexpr (TRotation == 0)
         {
-            return true;
+            if (initialBBox.maxs.z >= currentBBox.mins.z && initialBBox.maxs.y >= currentBBox.mins.y && initialBBox.maxs.x >= currentBBox.mins.x
+                && !(initialBBox.mins.z < currentBBox.maxs.z && initialBBox.mins.y < currentBBox.maxs.y && initialBBox.mins.x < currentBBox.maxs.x))
+            {
+                return true;
+            }
         }
-        return false;
-    }
-
-    template<>
-    bool checkBoundingBox<1>(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
-    {
-        if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd >= currentBBox.y && initialBBox.xEnd < currentBBox.x
-            && !(initialBBox.z < currentBBox.zEnd && initialBBox.y < currentBBox.yEnd && initialBBox.x >= currentBBox.xEnd))
+        else if constexpr (TRotation == 1)
         {
-            return true;
+            if (initialBBox.maxs.z >= currentBBox.mins.z && initialBBox.maxs.y >= currentBBox.mins.y && initialBBox.maxs.x < currentBBox.mins.x
+                && !(initialBBox.mins.z < currentBBox.maxs.z && initialBBox.mins.y < currentBBox.maxs.y && initialBBox.mins.x >= currentBBox.maxs.x))
+            {
+                return true;
+            }
         }
-        return false;
-    }
-
-    template<>
-    bool checkBoundingBox<2>(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
-    {
-        if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd < currentBBox.y && initialBBox.xEnd < currentBBox.x
-            && !(initialBBox.z < currentBBox.zEnd && initialBBox.y >= currentBBox.yEnd && initialBBox.x >= currentBBox.xEnd))
+        else if constexpr (TRotation == 2)
         {
-            return true;
+            if (initialBBox.maxs.z >= currentBBox.mins.z && initialBBox.maxs.y < currentBBox.mins.y && initialBBox.maxs.x < currentBBox.mins.x
+                && !(initialBBox.mins.z < currentBBox.maxs.z && initialBBox.mins.y >= currentBBox.maxs.y && initialBBox.mins.x >= currentBBox.maxs.x))
+            {
+                return true;
+            }
         }
-        return false;
-    }
-
-    template<>
-    bool checkBoundingBox<3>(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
-    {
-        if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd < currentBBox.y && initialBBox.xEnd >= currentBBox.x
-            && !(initialBBox.z < currentBBox.zEnd && initialBBox.y >= currentBBox.yEnd && initialBBox.x < currentBBox.xEnd))
+        else if constexpr (TRotation == 3)
         {
-            return true;
+            if (initialBBox.maxs.z >= currentBBox.mins.z && initialBBox.maxs.y < currentBBox.mins.y && initialBBox.maxs.x >= currentBBox.mins.x
+                && !(initialBBox.mins.z < currentBBox.maxs.z && initialBBox.mins.y >= currentBBox.maxs.y && initialBBox.mins.x < currentBBox.maxs.x))
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -1184,27 +965,15 @@ namespace OpenLoco::Paint
         {
             imageId = ImageId(imageId.getIndex()).withTranslucency(ExtColour::unk30);
         }
-        Ui::Point imagePos = ps.vpPos;
+
+        auto imagePos = ps.vpPos;
         if (ps.type == Ui::ViewportInteraction::InteractionItem::entity)
         {
-            switch (rt.zoomLevel)
-            {
-                case 0:
-                    break;
-                case 1:
-                    imagePos.x &= 0xFFFE;
-                    imagePos.y &= 0xFFFE;
-                    break;
-                case 2:
-                    imagePos.x &= 0xFFFC;
-                    imagePos.y &= 0xFFFC;
-                    break;
-                case 3:
-                    imagePos.x &= 0xFFF8;
-                    imagePos.y &= 0xFFF8;
-                    break;
-            }
+            const auto zoomAlign = 1U << rt.zoomLevel;
+            imagePos.x = Numerics::floor2(imagePos.x, zoomAlign);
+            imagePos.y = Numerics::floor2(imagePos.y, zoomAlign);
         }
+
         if ((ps.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
         {
             drawingCtx.drawImageMasked(imagePos, imageId, ps.maskedImageId);
@@ -1226,8 +995,8 @@ namespace OpenLoco::Paint
         Ui::Point imagePos = ps.vpPos + attachPs.vpPos;
         if (rt.zoomLevel != 0)
         {
-            imagePos.x &= 0xFFFE;
-            imagePos.y &= 0xFFFE;
+            imagePos.x = Numerics::floor2(imagePos.x, 2);
+            imagePos.y = Numerics::floor2(imagePos.y, 2);
         }
 
         if ((attachPs.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
@@ -1556,7 +1325,7 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_renderTarget)->getDrawableRect();
+        auto rect = _renderTarget->getDrawableRect();
 
         for (auto& station : StationManager::stations())
         {
@@ -1565,7 +1334,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!station.labelFrame.contains(rect, (*_renderTarget)->zoomLevel))
+            if (!station.labelFrame.contains(rect, _renderTarget->zoomLevel))
             {
                 continue;
             }
@@ -1588,11 +1357,11 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_renderTarget)->getDrawableRect();
+        auto rect = _renderTarget->getDrawableRect();
 
         for (auto& town : TownManager::towns())
         {
-            if (!town.labelFrame.contains(rect, (*_renderTarget)->zoomLevel))
+            if (!town.labelFrame.contains(rect, _renderTarget->zoomLevel))
             {
                 continue;
             }
@@ -1643,47 +1412,47 @@ namespace OpenLoco::Paint
     // 0x0045CABF, 0x0045CAF4, 0x0045CB29, 0x0045CB5A, 0x0045CC73, 0x0045CCA8, 0x0045CCDD, 0x0045CD0E
     static PaintStructBoundBox getMinMaxXYBounding(PaintStruct& routeEntry, uint8_t rotation)
     {
-        auto minMaxBounds = routeEntry.bounds;
+        auto [mins, maxs] = routeEntry.bounds;
         switch (rotation)
         {
             case 0:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                    mins.x = std::min(mins.x, child->bounds.mins.x);
+                    mins.y = std::min(mins.y, child->bounds.mins.y);
+                    maxs.x = std::max(maxs.x, child->bounds.maxs.x);
+                    maxs.y = std::max(maxs.y, child->bounds.maxs.y);
                 }
                 break;
             case 1:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                    mins.x = std::max(mins.x, child->bounds.mins.x);
+                    mins.y = std::min(mins.y, child->bounds.mins.y);
+                    maxs.x = std::min(maxs.x, child->bounds.maxs.x);
+                    maxs.y = std::max(maxs.y, child->bounds.maxs.y);
                 }
                 break;
             case 2:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                    mins.x = std::max(mins.x, child->bounds.mins.x);
+                    mins.y = std::max(mins.y, child->bounds.mins.y);
+                    maxs.x = std::min(maxs.x, child->bounds.maxs.x);
+                    maxs.y = std::min(maxs.y, child->bounds.maxs.y);
                 }
                 break;
             case 3:
                 for (auto* child = routeEntry.children; child != nullptr; child = child->children)
                 {
-                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
-                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
-                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
-                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                    mins.x = std::min(mins.x, child->bounds.mins.x);
+                    mins.y = std::max(mins.y, child->bounds.mins.y);
+                    maxs.x = std::max(maxs.x, child->bounds.maxs.x);
+                    maxs.y = std::min(maxs.y, child->bounds.maxs.y);
                 }
                 break;
         }
-        return minMaxBounds;
+        return { mins, maxs };
     }
 
     void PaintSession::finaliseOrdering(std::span<PaintStruct*> paintStructs)
@@ -1695,12 +1464,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        auto minMaxBounds = getMinMaxXYBounding(*routeEntry, getRotation());
-
-        routeEntry->bounds.x = minMaxBounds.x;
-        routeEntry->bounds.y = minMaxBounds.y;
-        routeEntry->bounds.xEnd = minMaxBounds.xEnd;
-        routeEntry->bounds.yEnd = minMaxBounds.yEnd;
+        routeEntry->bounds = getMinMaxXYBounding(*routeEntry, getRotation());
 
         addPSToQuadrant(*routeEntry);
     }
@@ -1708,13 +1472,13 @@ namespace OpenLoco::Paint
     // 0x0045CA67
     void PaintSession::finaliseTrackRoadOrdering()
     {
-        finaliseOrdering(std::span<PaintStruct*>(&_trackRoadPaintStructs[0], &_trackRoadPaintStructs[0] + std::size(_trackRoadPaintStructs)));
+        finaliseOrdering(_trackRoadPaintStructs);
     }
 
     // 0x0045CC1B
     void PaintSession::finaliseTrackRoadAdditionsOrdering()
     {
-        finaliseOrdering(std::span<PaintStruct*>(&_trackRoadAdditionsPaintStructs[0], &_trackRoadAdditionsPaintStructs[0] + std::size(_trackRoadAdditionsPaintStructs)));
+        finaliseOrdering(_trackRoadAdditionsPaintStructs);
     }
 
     // Note: Size includes for 1 extra at end that should never be anything other than 0xFF, 0xFF or 0, 0
@@ -1723,14 +1487,15 @@ namespace OpenLoco::Paint
         switch (edge)
         {
             case 0:
-                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels0.size());
+                return _tunnels0;
             case 1:
-                return std::span<TunnelEntry>(&_tunnels1[0], _tunnels1.size());
+                return _tunnels1;
             case 2:
-                return std::span<TunnelEntry>(&_tunnels2[0], _tunnels2.size());
+                return _tunnels2;
             case 3:
-                return std::span<TunnelEntry>(&_tunnels3[0], _tunnels3.size());
+                return _tunnels3;
         }
         return std::span<TunnelEntry>();
     }
+
 }

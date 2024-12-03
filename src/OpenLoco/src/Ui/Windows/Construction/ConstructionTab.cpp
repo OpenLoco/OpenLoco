@@ -2692,11 +2692,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x004A0AE5
     void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
     {
-        const ViewportFlags backupViewFlags = addr<0x00E3F0BC, ViewportFlags>(); // After all users of 0x00E3F0BC implemented this is not required
-        Paint::SessionOptions options{};
-        options.rotation = WindowManager::getCurrentRotation(); // This shouldn't be needed...
-        auto* session = Paint::allocateSession(drawingCtx.currentRenderTarget(), options);
-
         const auto backupSelectionFlags = World::getMapSelectionFlags();
         const World::Pos3 backupConstructionArrowPos = _constructionArrowPos;
         const uint8_t backupConstructionArrowDir = _constructionArrowDirection;
@@ -2731,6 +2726,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         World::SurfaceElement previewSideSurfaceTileElement{ 255, 255, 0xF, true };
         previewSideSurfaceTileElement.setLastFlag(true);
 
+        Paint::SessionOptions options{};
+        options.rotation = WindowManager::getCurrentRotation();
+
+        auto session = Paint::PaintSession(drawingCtx.currentRenderTarget(), options);
+
         for (const auto& trackPiece : trackPieces)
         {
             const auto pieceOffset = World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, trackDirection), trackPiece.z };
@@ -2764,7 +2764,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             *World::TileManager::get(southTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
 
             // Draw this map tile
-            Paint::paintTileElements(*session, trackPos);
+            Paint::paintTileElements(session, trackPos);
 
             // Restore map elements
             *World::TileManager::get(centreTileCoords)[0] = backupTileElements[0];
@@ -2774,27 +2774,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             *World::TileManager::get(southTileCoords)[0] = backupTileElements[4];
         }
 
-        session->arrangeStructs();
-        session->drawStructs(drawingCtx);
+        session.arrangeStructs();
+        session.drawStructs(drawingCtx);
 
         // setMapSelectionFlags OR's flags so reset them to zero to set the backup
         World::resetMapSelectionFlags();
         World::setMapSelectionFlags(backupSelectionFlags);
         _constructionArrowPos = backupConstructionArrowPos;
         _constructionArrowDirection = backupConstructionArrowDir;
-
-        options.viewFlags = backupViewFlags;
-        Paint::allocateSession(drawingCtx.currentRenderTarget(), options); // After all users of 0x00E3F0BC implemented this is not required
     }
 
     // 0x00478F1F
     void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t roadType, uint8_t roadPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
     {
-        const ViewportFlags backupViewFlags = addr<0x00E3F0BC, ViewportFlags>(); // After all users of 0x00E3F0BC implemented this is not required
-        Paint::SessionOptions options{};
-        options.rotation = WindowManager::getCurrentRotation(); // This shouldn't be needed...
-        auto* session = Paint::allocateSession(drawingCtx.currentRenderTarget(), options);
-
         const auto backupSelectionFlags = World::getMapSelectionFlags();
         const World::Pos3 backupConstructionArrowPos = _constructionArrowPos;
         const uint8_t backupConstructionArrowDir = _constructionArrowDirection;
@@ -2828,6 +2820,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         World::SurfaceElement previewSideSurfaceTileElement{ 255, 255, 0xF, true };
         previewSideSurfaceTileElement.setLastFlag(true);
+
+        Paint::SessionOptions options{};
+        options.rotation = WindowManager::getCurrentRotation();
+
+        auto session = Paint::PaintSession(drawingCtx.currentRenderTarget(), options);
 
         for (const auto& roadPiece : roadPieces)
         {
@@ -2869,7 +2866,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             *World::TileManager::get(southTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
 
             // Draw this map tile
-            Paint::paintTileElements(*session, trackPos);
+            Paint::paintTileElements(session, trackPos);
 
             // Restore map elements
             *World::TileManager::get(centreTileCoords)[0] = backupTileElements[0];
@@ -2879,17 +2876,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             *World::TileManager::get(southTileCoords)[0] = backupTileElements[4];
         }
 
-        session->arrangeStructs();
-        session->drawStructs(drawingCtx);
+        session.arrangeStructs();
+        session.drawStructs(drawingCtx);
 
         // setMapSelectionFlags OR's flags so reset them to zero to set the backup
         World::resetMapSelectionFlags();
         World::setMapSelectionFlags(backupSelectionFlags);
         _constructionArrowPos = backupConstructionArrowPos;
         _constructionArrowDirection = backupConstructionArrowDir;
-
-        options.viewFlags = backupViewFlags;
-        Paint::allocateSession(drawingCtx.currentRenderTarget(), options); // After all users of 0x00E3F0BC implemented this is not required
     }
 
     // 0x0049D38A and 0x0049D16B

@@ -818,7 +818,6 @@ void OpenLoco::Interop::registerHooks()
     S5::registerHooks();
     Title::registerHooks();
     OpenLoco::Tutorial::registerHooks();
-    Paint::registerHooks();
     Config::registerHooks();
     ObjectManager::registerHooks();
     Vehicles::registerHooks();

@@ -1509,19 +1509,21 @@ namespace OpenLoco::Ui::ViewportInteraction
             _rt2->width = 1;
             _rt2->height = 1;
             _rt2->zoomLevel = _rt1->zoomLevel;
+
             Paint::SessionOptions options{};
             options.rotation = vp->getRotation();
             options.viewFlags = vp->flags;
             // Todo: should this pass the cullHeight...
-            auto* session = Paint::allocateSession(_rt2, options);
-            session->generate();
-            session->arrangeStructs();
-            interaction = session->getNormalInteractionInfo(flags);
+
+            auto session = Paint::PaintSession(_rt2, options);
+            session.generate();
+            session.arrangeStructs();
+            interaction = session.getNormalInteractionInfo(flags);
             if (!vp->hasFlags(ViewportFlags::station_names_displayed))
             {
                 if (_rt2->zoomLevel <= Config::get().old.stationNamesMinScale)
                 {
-                    auto stationInteraction = session->getStationNameInteractionInfo(flags);
+                    auto stationInteraction = session.getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)
                     {
                         interaction = stationInteraction;
@@ -1530,7 +1532,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
             if (!vp->hasFlags(ViewportFlags::town_names_displayed))
             {
-                auto townInteraction = session->getTownNameInteractionInfo(flags);
+                auto townInteraction = session.getTownNameInteractionInfo(flags);
                 if (townInteraction.type != InteractionItem::noInteraction)
                 {
                     interaction = townInteraction;
