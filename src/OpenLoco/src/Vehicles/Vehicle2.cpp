@@ -167,7 +167,7 @@ namespace OpenLoco::Vehicles
         });
 
         bool isOnRackRail = true; // Note has been inverted
-        uint8_t dh = 0;
+        bool isWheelSlipping = false;
         int32_t ebp = 0;
         for (auto& car : train.cars)
         {
@@ -181,7 +181,7 @@ namespace OpenLoco::Vehicles
 
             if (frontBogie->wheelSlipping != 0)
             {
-                dh = 1;
+                isWheelSlipping = true;
             }
             if (_500170[enumValue(frontBogie->spritePitch)] <= -19182)
             {
@@ -206,7 +206,7 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        if (isOnRackRail && dh == 0)
+        if (isOnRackRail && !isWheelSlipping)
         {
             // calculating power when it's broken down
             const auto power = has73Flags(Flags73::isBrokenDown) ? totalPower / 4 : totalPower;
