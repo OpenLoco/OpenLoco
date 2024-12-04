@@ -896,12 +896,14 @@ namespace OpenLoco
             return true;
         }
         // 0x0112C519
-        uint8_t trackRoadObjId = thought.trackObjId;
+        const uint8_t trackObjId = thought.trackObjId;
+        const uint8_t signalType = thought.var_8A;
+        // At least the length of the station (which is also the max length of the vehicles)
+        const uint16_t minSignalSpacing = thought.var_04 * 32;
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
         {
             // 0x0048639B
-            uint8_t signalType = thought.var_8A;
             if (company.var_85C2 >= thought.numStations)
             {
                 return true;
@@ -917,7 +919,7 @@ namespace OpenLoco
             const auto tad = 0 | aiStation.rotation;
             company.var_85C2++;
 
-            placeAiAllocatedSignalsEvenlySpaced(stationEnd, tad, trackRoadObjId, thought.var_04 * 32, signalType, signalSide);
+            placeAiAllocatedSignalsEvenlySpaced(stationEnd, tad, trackObjId, minSignalSpacing, signalType, signalSide);
             return false;
         }
         else if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
@@ -930,13 +932,12 @@ namespace OpenLoco
         }
 
         // 0x0048640F
-        uint8_t signalType = thought.var_8A;
         const uint8_t signalSide = company.var_85C2 & (1U << 0) ? (1U << 1) : (1U << 0);
 
         auto& aiStation = thought.stations[0];
 
         const auto trackEnd = Track::getTrackConnectionEnd(World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep), aiStation.rotation ^ (1U << 1));
-        const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackRoadObjId, 0, 0);
+        const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
 
         if (tc.connections.size() != 2)
         {
@@ -945,7 +946,7 @@ namespace OpenLoco
         const auto tad = tc.connections[company.var_85C2] & Track::AdditionalTaDFlags::basicTaDMask;
         company.var_85C2++;
 
-        placeAiAllocatedSignalsEvenlySpaced(trackEnd.nextPos, tad, trackRoadObjId, thought.var_04 * 32, signalType, signalSide);
+        placeAiAllocatedSignalsEvenlySpaced(trackEnd.nextPos, tad, trackObjId, minSignalSpacing, signalType, signalSide);
         return false;
     }
 
