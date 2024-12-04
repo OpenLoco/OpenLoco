@@ -159,7 +159,10 @@ namespace OpenLoco::Vehicles
             if (component.wheelSlipping != 0)
             {
                 component.wheelSlipping++;
-                component.wheelSlipping &= 0x3F;
+                if (component.wheelSlipping > kWheelSlippingDuration)
+                {
+                    component.wheelSlipping = 0;
+                }
             }
         });
 
