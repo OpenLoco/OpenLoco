@@ -115,6 +115,7 @@ namespace OpenLoco::World::Track
         steepSlope = 1U << 3,
 
         turnaround = 1U << 5,
+        junction = 1U << 6,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(RoadTraitFlags);
 }
