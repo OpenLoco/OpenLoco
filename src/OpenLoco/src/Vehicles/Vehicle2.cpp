@@ -37,7 +37,7 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x004A9BA0
-    static bool shouldSetWheelSlipping(const Vehicle& train, VehicleBogie& frontBogie)
+    static bool shouldStartWheelSlipping(const Vehicle& train, VehicleBogie& frontBogie)
     {
         const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie.objectId);
         if (train.head->status != Status::travelling)
@@ -172,7 +172,7 @@ namespace OpenLoco::Vehicles
         for (auto& car : train.cars)
         {
             auto* frontBogie = car.front;
-            if (shouldSetWheelSlipping(train, *frontBogie))
+            if (shouldStartWheelSlipping(train, *frontBogie))
             {
                 car.applyToComponents([](auto& component) {
                     component.wheelSlipping = 1;
