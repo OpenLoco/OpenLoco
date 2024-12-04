@@ -582,7 +582,7 @@ namespace OpenLoco::Vehicles
 
         auto curTotalLength = getVehicleTotalLength();
         auto additionalNewLength = ObjectManager::get<VehicleObject>(vehicleTypeId)->getLength();
-        if (curTotalLength + additionalNewLength > kMaxVehicleLength)
+        if (curTotalLength + additionalNewLength > kMaxRoadVehicleLength)
         {
             GameCommands::setErrorText(StringIds::vehicle_too_long);
             return false;
