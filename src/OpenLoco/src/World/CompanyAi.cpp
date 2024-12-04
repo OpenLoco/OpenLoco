@@ -816,6 +816,73 @@ namespace OpenLoco
         }
     }
 
+    // 0x00486498
+    // Will keep placing signals (one sided) until either:
+    // * Reaches a station
+    // * More than 1 track connection
+    static void placeAiAllocatedSignalsEvenlySpaced(const World::Pos3 startPos, const uint16_t startTad, const uint8_t trackObjId, const uint16_t minSignalDistance, const uint8_t signalType, const uint8_t startSignalSide)
+    {
+        auto getNextTrack = [trackObjId](const World::Pos3 pos, const uint16_t tad) {
+            const auto trackEnd = Track::getTrackConnectionEnd(pos, tad & Track::AdditionalTaDFlags::basicTaDMask);
+            const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
+            return std::make_pair(trackEnd, tc);
+        };
+
+        auto shouldContinue = [](const Track::TrackConnections& tc) {
+            return tc.connections.size() == 1 && tc.stationId == StationId::null;
+        };
+
+        // We start with a large number to force a signal placement as soon as possible from the
+        // start position
+        auto distanceFromSignal = 3200;
+
+        uint8_t signalSide = startSignalSide;
+        for (auto nextTrack = getNextTrack(startPos, startTad); shouldContinue(nextTrack.second); nextTrack = getNextTrack(nextTrack.first.nextPos, nextTrack.second.connections[0]))
+        {
+            // Not const as when reversed need to get to the reverse start
+            auto pos = nextTrack.first.nextPos;
+            const auto rotation = nextTrack.first.nextRotation;
+            // Not const as we might need to toggle the reverse bit
+            auto tad = nextTrack.second.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+            const auto trackId = tad >> 3;
+
+            const auto lengthCopy = distanceFromSignal;
+            distanceFromSignal += TrackData::getTrackMiscData(trackId).unkWeighting;
+            if (lengthCopy < minSignalDistance)
+            {
+                continue;
+            }
+
+            if (tad & (1U << 2))
+            {
+                auto& trackSize = TrackData::getUnkTrack(tad);
+                pos += trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    pos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                tad ^= (1U << 2); // Reverse
+                signalSide = signalSide & (1U << 0) ? (1U << 1) : (1U << 0);
+            }
+
+            GameCommands::SignalPlacementArgs args{};
+            args.pos = pos;
+            args.pos.z += TrackData::getTrackPiece(trackId)[0].z;
+            args.index = 0;
+            args.rotation = rotation;
+            args.trackId = trackId;
+            args.trackObjType = trackObjId;
+            args.sides = signalSide;
+            args.type = signalType;
+
+            const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+            if (res != GameCommands::FAILURE)
+            {
+                distanceFromSignal = 0;
+            }
+        }
+    }
+
     // 0x0048635F
     static bool sub_48635F(Company& company, AiThought& thought)
     {
@@ -849,7 +916,9 @@ namespace OpenLoco
             uint8_t signalSide = (1U << 0);
             const auto tad = 0 | aiStation.rotation;
             company.var_85C2++;
-            // 0x00486498
+
+            placeAiAllocatedSignalsEvenlySpaced(stationEnd, tad, trackRoadObjId, thought.var_04 * 32, signalType, signalSide);
+            return false;
         }
         else if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
         {
@@ -876,63 +945,7 @@ namespace OpenLoco
         const auto tad = tc.connections[company.var_85C2] & Track::AdditionalTaDFlags::basicTaDMask;
         company.var_85C2++;
 
-        // 0x00486498
-
-        // These are either trackEnd or stationEnd
-        auto pos2 = trackEnd.nextPos;
-        auto rot2 = trackEnd.nextRotation;
-        auto tad2 = tad;
-        {
-            auto unkLength = 3200;
-
-            const auto trackEnd2 = Track::getTrackConnectionEnd(World::Pos3(pos2, aiStation.baseZ * World::kSmallZStep), tad2);
-            const auto tc2 = Track::getTrackConnectionsAi(trackEnd2.nextPos, trackEnd2.nextRotation, GameCommands::getUpdatingCompanyId(), trackRoadObjId, 0, 0);
-            if (tc2.connections.size() != 1 || tc2.stationId != StationId::null)
-            {
-                return false;
-            }
-
-            tad2 = tc2.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
-
-            if (unkLength < thought.var_04 * 32)
-            {
-                // 0x00486598
-                unkLength += TrackData::getTrackMiscData(tad2 >> 3).unkWeighting;
-                continue;
-            }
-
-            if (tad2 & (1U << 2))
-            {
-                auto& trackSize = TrackData::getUnkTrack(tad2);
-                pos2 += trackSize.pos;
-                if (trackSize.rotationEnd < 12)
-                {
-                    pos2 -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
-                }
-                tad2 ^= (1U << 2); // Reverse
-                signalSide = signalSide & (1U << 0) ? (1U << 1) : (1U << 0);
-            }
-
-            GameCommands::SignalPlacementArgs args{};
-            args.pos = pos2;
-            args.pos.z += TrackData::getTrackPiece(tad2 >> 3)[0].z;
-            args.index = 0;
-            args.rotation = rot2;
-            args.trackId = tad2 >> 3;
-            args.trackObjType = trackRoadObjId;
-            args.sides = signalSide;
-            args.type = signalType;
-
-            const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-            if (res == GameCommands::FAILURE)
-            {
-                // 0x00486598
-                unkLength += TrackData::getTrackMiscData(tad2 >> 3).unkWeighting;
-                continue;
-            }
-            unkLength = 0;
-            continue;
-        }
+        placeAiAllocatedSignalsEvenlySpaced(trackEnd.nextPos, tad, trackRoadObjId, thought.var_04 * 32, signalType, signalSide);
         return false;
     }
 
