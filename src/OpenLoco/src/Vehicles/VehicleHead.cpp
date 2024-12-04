@@ -857,7 +857,7 @@ namespace OpenLoco::Vehicles
         }
         else if (vehType2_2->var_5A == 1)
         {
-            if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->var_5E == 0)
+            if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0)
             {
                 targetFrequency = snd->var_07 + (vehType2_2->currentSpeed.getRaw() >> snd->speedFreqFactor);
                 targetVolume = snd->var_09;
@@ -963,7 +963,7 @@ namespace OpenLoco::Vehicles
 
         if (var5aEqual1Code == true)
         {
-            if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->var_5E == 0)
+            if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0)
             {
                 auto speed = std::max(vehType2_2->currentSpeed, 7.0_mph);
 

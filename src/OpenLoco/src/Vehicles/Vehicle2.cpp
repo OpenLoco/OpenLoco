@@ -37,7 +37,7 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x004A9BA0
-    static bool shouldSetVar5E(const Vehicle& train, VehicleBogie& frontBogie)
+    static bool shouldSetWheelSlipping(const Vehicle& train, VehicleBogie& frontBogie)
     {
         const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie.objectId);
         if (train.head->status != Status::travelling)
@@ -50,13 +50,14 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        // This code seems dead as no aircraft reach this code so its never a helicopter
+        // In the vanilla vehicle objects, this flag is set exclusively for vehicles that are steam engines (and helicopters, but no aircraft reach this code)
         if (vehObject->power == 0 || !vehObject->hasFlags(VehicleObjectFlags::isHelicopter))
         {
             return false;
         }
 
-        if (frontBogie.var_5E != 0)
+        // Only start wheel slipping if it is not wheel slipping already
+        if (frontBogie.wheelSlipping != 0)
         {
             return false;
         }
@@ -154,10 +155,11 @@ namespace OpenLoco::Vehicles
 
         Vehicle train(head);
         train.cars.applyToComponents([](auto& component) {
-            if (component.var_5E != 0)
+            // If the vehicle is wheel slipping, then its wheel slipping value is incremented.
+            if (component.wheelSlipping != 0)
             {
-                component.var_5E++;
-                component.var_5E &= 0x3F;
+                component.wheelSlipping++;
+                component.wheelSlipping &= 0x3F;
             }
         });
 
@@ -167,14 +169,14 @@ namespace OpenLoco::Vehicles
         for (auto& car : train.cars)
         {
             auto* frontBogie = car.front;
-            if (shouldSetVar5E(train, *frontBogie))
+            if (shouldSetWheelSlipping(train, *frontBogie))
             {
                 car.applyToComponents([](auto& component) {
-                    component.var_5E = 1;
+                    component.wheelSlipping = 1;
                 });
             }
 
-            if (frontBogie->var_5E != 0)
+            if (frontBogie->wheelSlipping != 0)
             {
                 dh = 1;
             }

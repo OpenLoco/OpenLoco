@@ -583,7 +583,7 @@ namespace OpenLoco::Vehicles
         int8_t var_55;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
-        uint8_t var_5E;
+        uint8_t wheelSlipping; // 0x5E
         BreakdownFlags breakdownFlags;
 
         const VehicleObject* getObject() const;
@@ -643,7 +643,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_55;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
-        uint8_t var_5E;
+        uint8_t wheelSlipping; // 0x5E
         BreakdownFlags breakdownFlags;
         uint8_t var_60;
         uint8_t var_61;
