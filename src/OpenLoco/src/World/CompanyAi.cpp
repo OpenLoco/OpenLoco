@@ -840,10 +840,10 @@ namespace OpenLoco
         {
             // Not const as when reversed need to get to the reverse start
             auto pos = nextTrack.first.nextPos;
-            const auto rotation = nextTrack.first.nextRotation;
             // Not const as we might need to toggle the reverse bit
             auto tad = nextTrack.second.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
             const auto trackId = tad >> 3;
+            const auto rotation = tad & 0x3;
 
             const auto lengthCopy = distanceFromSignal;
             distanceFromSignal += TrackData::getTrackMiscData(trackId).unkWeighting;
