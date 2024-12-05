@@ -884,7 +884,10 @@ namespace OpenLoco
     }
 
     // 0x0048635F
-    static bool sub_48635F(Company& company, AiThought& thought)
+    // returns:
+    //   true, all signals placed
+    //   false, further spans between stations to look at
+    static bool tryPlaceAiAllocatedSignalsBetweenStations(Company& company, AiThought& thought)
     {
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
         {
@@ -963,7 +966,7 @@ namespace OpenLoco
             return;
         }
 
-        if (sub_48635F(company, thought))
+        if (tryPlaceAiAllocatedSignalsBetweenStations(company, thought))
         {
             company.var_4A5 = 3;
         }
