@@ -2043,6 +2043,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         train.cars.firstCar.body->sub_4AAB0B();
 
+        // Behavior if the vehicle is already stationary
         if (status == Status::stopped)
         {
             if (hasVehicleFlags(VehicleFlags::commandStop))
@@ -2061,19 +2062,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (hasVehicleFlags(VehicleFlags::commandStop))
-        {
-            if ((updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination) == WaterMotionFlags::none)
-            {
-                return true;
-            }
-
-            status = Status::stopped;
-            vehType2->currentSpeed = 0.0_mph;
-            vehType2->var_5A = 0;
-            return true;
-        }
-
+        // Behavior if the vehicle is unloading or loading
         if (status == Status::unloading)
         {
             updateUnloadCargo();
@@ -2094,31 +2083,43 @@ namespace OpenLoco::Vehicles
             produceLeavingDockSound();
             return true;
         }
-        else
+
+        // What to do when stop command is issued
+        if (hasVehicleFlags(VehicleFlags::commandStop))
         {
-            status = Status::travelling;
-            status = sub_427BF2();
-            advanceToNextRoutableOrder();
-            if ((updateWaterMotion(WaterMotionFlags::none) & WaterMotionFlags::hasReachedDock) == WaterMotionFlags::none)
+            if ((updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination) == WaterMotionFlags::none)
             {
                 return true;
             }
 
-            if (hasVehicleFlags(VehicleFlags::commandStop))
-            {
-                status = Status::stopped;
-                vehType2->currentSpeed = 0.0_mph;
-                vehType2->var_5A = 0;
-                return true;
-            }
-
+            status = Status::stopped;
             vehType2->currentSpeed = 0.0_mph;
-            setStationVisitedTypes();
-            checkIfAtOrderStation();
-            updateLastJourneyAverageSpeed();
-            beginUnloading();
+            vehType2->var_5A = 0;
             return true;
         }
+
+        status = Status::travelling;
+        status = sub_427BF2();
+        advanceToNextRoutableOrder();
+        if ((updateWaterMotion(WaterMotionFlags::none) & WaterMotionFlags::hasReachedDock) == WaterMotionFlags::none)
+        {
+            return true;
+        }
+
+        if (hasVehicleFlags(VehicleFlags::commandStop))
+        {
+            status = Status::stopped;
+            vehType2->currentSpeed = 0.0_mph;
+            vehType2->var_5A = 0;
+            return true;
+        }
+
+        vehType2->currentSpeed = 0.0_mph;
+        setStationVisitedTypes();
+        checkIfAtOrderStation();
+        updateLastJourneyAverageSpeed();
+        beginUnloading();
+        return true;
     }
 
     /** 0x00427122
