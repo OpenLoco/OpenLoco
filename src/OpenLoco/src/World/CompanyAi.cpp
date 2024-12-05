@@ -972,14 +972,119 @@ namespace OpenLoco
         }
     }
 
+    struct NearbyTrackResults
+    {
+        uint32_t numElements;                 // ebx ignores unowned aiallocated
+        uint32_t numOwnedAiAllocatedElements; // edx
+    };
+
+    // 0x004A874D
+    static NearbyTrackResults nearbyTrackElementsStats(World::TilePos2 middlePos)
+    {
+        const auto p1 = middlePos + World::TilePos2(7, 7);
+        const auto p2 = middlePos - World::TilePos2(7, 7);
+
+        NearbyTrackResults res{};
+
+        for (const auto& tilePos : getClampedRange(p1, p2))
+        {
+            auto tile = TileManager::get(tilePos);
+            bool hasPassedSurface = false;
+            for (auto& el : tile)
+            {
+                auto* elSurface = el.as<SurfaceElement>();
+                if (elSurface != nullptr)
+                {
+                    hasPassedSurface = true;
+                    continue;
+                }
+                if (!hasPassedSurface)
+                {
+                    continue;
+                }
+                auto* elTrack = el.as<TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elTrack->isGhost())
+                {
+                    continue;
+                }
+                if (elTrack->hasBridge())
+                {
+                    continue;
+                }
+                if (elTrack->isAiAllocated())
+                {
+                    if (elTrack->owner() != GameCommands::getUpdatingCompanyId())
+                    {
+                        continue;
+                    }
+                    res.numOwnedAiAllocatedElements++;
+                }
+                res.numElements++;
+            }
+        }
+        return res;
+    }
+
+    // 0x004865B4
+    static uint8_t sub_4865B4(AiThought& thought)
+    {
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased | ThoughtTypeFlags::unk6))
+        {
+            const auto stationDist = Math::Vector::distance2D(thought.stations[0].pos, thought.stations[1].pos);
+            if (stationDist < 224)
+            {
+                return 1;
+            }
+        }
+
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
+        {
+            return 2;
+        }
+        for (auto i = 0U; i < 2; ++i)
+        {
+            auto [numElements, numOwnedAiAllocated] = nearbyTrackElementsStats(toTileSpace(thought.stations[i].pos));
+            if (numOwnedAiAllocated > 4 && numElements > 120)
+            {
+                return 1;
+            }
+        }
+
+        const auto mid = (thought.stations[0].pos + thought.stations[1].pos) / 2;
+        auto [numElements, numOwnedAiAllocated] = nearbyTrackElementsStats(toTileSpace(mid));
+        if (numOwnedAiAllocated > 4 && numElements > 120)
+        {
+            return 1;
+        }
+        return 2;
+    }
+
     // 0x00430EEF
     static void sub_430EEF(Company& company, AiThought& thought)
     {
         // Decide if station placement attempt
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00430EEF, regs);
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+            return;
+        }
+        auto res = sub_4865B4(thought);
+        if (res == 1)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+        }
+        else if (res == 2)
+        {
+            company.var_4A5 = 4;
+        }
     }
 
     // 0x00430F50
