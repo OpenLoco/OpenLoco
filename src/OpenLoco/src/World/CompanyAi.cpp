@@ -932,7 +932,7 @@ namespace OpenLoco
         }
 
         // 0x0048640F
-        const uint8_t signalSide = company.var_85C2 & (1U << 0) ? (1U << 1) : (1U << 0);
+        const uint8_t signalSide = company.var_85C2 & 1 ? (1U << 0) : (1U << 1);
 
         auto& aiStation = thought.stations[0];
 
