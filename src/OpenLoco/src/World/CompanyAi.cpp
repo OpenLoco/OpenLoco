@@ -825,7 +825,7 @@ namespace OpenLoco
         auto getNextTrack = [trackObjId](const World::Pos3 pos, const uint16_t tad) {
             const auto trackEnd = Track::getTrackConnectionEnd(pos, tad & Track::AdditionalTaDFlags::basicTaDMask);
             const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
-            return std::make_pair(trackEnd, tc);
+            return std::make_pair(trackEnd.nextPos, tc);
         };
 
         auto shouldContinue = [](const Track::TrackConnections& tc) {
@@ -836,10 +836,10 @@ namespace OpenLoco
         // start position
         auto distanceFromSignal = 3200;
 
-        for (auto nextTrack = getNextTrack(startPos, startTad); shouldContinue(nextTrack.second); nextTrack = getNextTrack(nextTrack.first.nextPos, nextTrack.second.connections[0]))
+        for (auto nextTrack = getNextTrack(startPos, startTad); shouldContinue(nextTrack.second); nextTrack = getNextTrack(nextTrack.first, nextTrack.second.connections[0]))
         {
             // Not const as when reversed need to get to the reverse start
-            auto pos = nextTrack.first.nextPos;
+            auto pos = nextTrack.first;
             // Not const as we might need to toggle the reverse bit
             auto tad = nextTrack.second.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
             const auto trackId = tad >> 3;
@@ -909,13 +909,13 @@ namespace OpenLoco
                 return true;
             }
 
-            auto& aiStation = thought.stations[company.var_85C2];
+            const auto& aiStation = thought.stations[company.var_85C2];
 
             const auto stationEnd = World::Pos3(
                 aiStation.pos + World::Pos3{ kRotationOffset[aiStation.rotation], 0 } * (thought.var_04 - 1),
                 aiStation.baseZ * World::kSmallZStep);
 
-            uint8_t signalSide = (1U << 0);
+            const uint8_t signalSide = (1U << 0);
             const auto tad = 0 | aiStation.rotation;
             company.var_85C2++;
 
@@ -932,7 +932,7 @@ namespace OpenLoco
             // 0x0048640F
             const uint8_t signalSide = company.var_85C2 & 1 ? (1U << 0) : (1U << 1);
 
-            auto& aiStation = thought.stations[0];
+            const auto& aiStation = thought.stations[0];
 
             const auto trackEnd = Track::getTrackConnectionEnd(World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep), aiStation.rotation ^ (1U << 1));
             const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
