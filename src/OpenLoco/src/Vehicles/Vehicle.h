@@ -24,7 +24,7 @@ namespace OpenLoco::Vehicles
     using CargoTotalArray = std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)>;
 
     constexpr auto kMaxRoadVehicleLength = 176;    // TODO: Units?
-    constexpr uint8_t kWheelSlippingDuration = 63; // In ticks
+    constexpr uint8_t kWheelSlippingDuration = 64; // In ticks
 
     enum class Flags38 : uint8_t
     {

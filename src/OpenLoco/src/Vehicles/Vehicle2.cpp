@@ -159,7 +159,7 @@ namespace OpenLoco::Vehicles
             if (component.wheelSlipping != 0)
             {
                 component.wheelSlipping++;
-                if (component.wheelSlipping > kWheelSlippingDuration)
+                if (component.wheelSlipping >= kWheelSlippingDuration)
                 {
                     component.wheelSlipping = 0;
                 }

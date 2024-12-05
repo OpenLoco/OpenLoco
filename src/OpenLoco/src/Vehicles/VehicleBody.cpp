@@ -72,9 +72,9 @@ namespace OpenLoco::Vehicles
         if (wheelSlipping != 0)
         {
             int32_t var_1136130 = wheelSlipping;
-            if (wheelSlipping > 32)
+            if (wheelSlipping > kWheelSlippingDuration / 2)
             {
-                var_1136130 = 64 - var_1136130;
+                var_1136130 = kWheelSlippingDuration - var_1136130;
             }
 
             _vehicleUpdate_var_1136130 += var_1136130 * 320 + 500;
