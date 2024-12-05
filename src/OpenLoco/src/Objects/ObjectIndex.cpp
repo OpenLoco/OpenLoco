@@ -56,16 +56,19 @@ namespace OpenLoco::ObjectManager
     static loco_global<ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
     static loco_global<std::array<uint16_t, kMaxObjectTypes>, 0x0112C181> _numObjectsPerType;
 
-    static constexpr uint8_t kCurrentIndexVersion = 4;
+    static constexpr uint8_t kCurrentIndexVersion = 5;
+    static constexpr uint32_t kMaxStringLength = 1024;
 
     struct ObjectFolderState
     {
         uint32_t numObjects = 0;
         uint32_t totalFileSize = 0;
         uint32_t dateHash = 0;
+        std::string basePath = "";
+
         constexpr bool operator==(const ObjectFolderState& rhs) const
         {
-            return (numObjects == rhs.numObjects) && (totalFileSize == rhs.totalFileSize) && (dateHash == rhs.dateHash);
+            return (numObjects == rhs.numObjects) && (totalFileSize == rhs.totalFileSize) && (dateHash == rhs.dateHash) && (basePath == rhs.basePath);
         }
     };
 
@@ -139,6 +142,8 @@ namespace OpenLoco::ObjectManager
     {
         ObjectFolderState currentState{};
 
+        currentState.basePath = path.u8string();
+
         iterateObjectFolder(path, shouldRecurse, [&currentState](const fs::directory_entry& file) {
             currentState.numObjects++;
             const auto lastWrite = file.last_write_time().time_since_epoch().count();
@@ -198,14 +203,49 @@ namespace OpenLoco::ObjectManager
         }
     }
 
+    static void serialiseFolderState(Stream& stream, const ObjectFolderState& ofs)
+    {
+        stream.writeValue(ofs.numObjects);
+        stream.writeValue(ofs.totalFileSize);
+        stream.writeValue(ofs.dateHash);
+
+        stream.writeValue<uint32_t>(ofs.basePath.size());
+        stream.write(ofs.basePath.data(), ofs.basePath.size());
+    }
+
+    static void serialiseHeader(Stream& stream, const IndexHeader& header)
+    {
+        stream.writeValue(header.version);
+
+        serialiseFolderState(stream, header.state.vanillaInstall);
+        serialiseFolderState(stream, header.state.install);
+        serialiseFolderState(stream, header.state.customObjects);
+
+        stream.writeValue(header.fileSize);
+        stream.writeValue(header.numObjects);
+    }
+
     static void serialiseIndex(Stream& stream, const IndexHeader& header, const std::vector<ObjectIndexEntry>& entries)
     {
-        stream.writeValue(header);
+        serialiseHeader(stream, header);
         stream.writeValue<uint32_t>(entries.size());
         for (auto& entry : entries)
         {
             serialiseEntry(stream, entry);
         }
+    }
+
+    static std::string deserialiseString(Stream& stream)
+    {
+        std::string result;
+        const auto size = stream.readValue<uint32_t>();
+        if (size > kMaxStringLength) // Arbitrary max length to prevent issues of massive allocation on bad data
+        {
+            return result;
+        }
+        result.resize(size);
+        stream.read(result.data(), result.size());
+        return result;
     }
 
     static ObjectIndexEntry deserialiseEntry(Stream& stream)
@@ -215,15 +255,13 @@ namespace OpenLoco::ObjectManager
         entry._header = stream.readValue<ObjectHeader>();
 
         // Filepath
-        entry._filepath.resize(stream.readValue<uint32_t>());
-        stream.read(entry._filepath.data(), entry._filepath.size());
+        entry._filepath = deserialiseString(stream);
 
         // Header2
         entry._header2.decodedFileSize = stream.readValue<uint32_t>();
 
         // Name
-        entry._name.resize(stream.readValue<uint32_t>());
-        stream.read(entry._name.data(), entry._name.size());
+        entry._name = deserialiseString(stream);
 
         // Header3
         entry._displayData = stream.readValue<ObjectHeader3>();
@@ -242,6 +280,31 @@ namespace OpenLoco::ObjectManager
             ro = stream.readValue<ObjectHeader>();
         }
         return entry;
+    }
+
+    static ObjectFolderState deserialiseFolderState(Stream& stream)
+    {
+        ObjectFolderState ofs{};
+        ofs.numObjects = stream.readValue<uint32_t>();
+        ofs.totalFileSize = stream.readValue<uint32_t>();
+        ofs.dateHash = stream.readValue<uint32_t>();
+
+        ofs.basePath = deserialiseString(stream);
+        return ofs;
+    }
+
+    static IndexHeader deserialiseHeader(Stream& stream)
+    {
+        IndexHeader header{};
+        header.version = stream.readValue<uint32_t>();
+
+        header.state.vanillaInstall = deserialiseFolderState(stream);
+        header.state.install = deserialiseFolderState(stream);
+        header.state.customObjects = deserialiseFolderState(stream);
+
+        header.fileSize = stream.readValue<uint32_t>();
+        header.numObjects = stream.readValue<uint32_t>();
+        return header;
     }
 
     static std::vector<ObjectIndexEntry> deserialiseIndex(Stream& stream)
@@ -456,7 +519,7 @@ namespace OpenLoco::ObjectManager
 
         try
         {
-            auto header = stream.readValue<IndexHeader>();
+            auto header = deserialiseHeader(stream);
             if (header.version != kCurrentIndexVersion || header.state != currentState)
             {
                 return false;
