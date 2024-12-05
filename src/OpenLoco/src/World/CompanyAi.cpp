@@ -922,32 +922,32 @@ namespace OpenLoco
             placeAiAllocatedSignalsEvenlySpaced(stationEnd, tad, trackObjId, minSignalSpacing, signalType, signalSide);
             return false;
         }
-        else if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
         {
-            return true;
-        }
-        else if (company.var_85C2 >= 2)
-        {
-            return true;
-        }
+            if (company.var_85C2 >= 2)
+            {
+                return true;
+            }
 
-        // 0x0048640F
-        const uint8_t signalSide = company.var_85C2 & 1 ? (1U << 0) : (1U << 1);
+            // 0x0048640F
+            const uint8_t signalSide = company.var_85C2 & 1 ? (1U << 0) : (1U << 1);
 
-        auto& aiStation = thought.stations[0];
+            auto& aiStation = thought.stations[0];
 
-        const auto trackEnd = Track::getTrackConnectionEnd(World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep), aiStation.rotation ^ (1U << 1));
-        const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
+            const auto trackEnd = Track::getTrackConnectionEnd(World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep), aiStation.rotation ^ (1U << 1));
+            const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
 
-        if (tc.connections.size() != 2)
-        {
+            if (tc.connections.size() != 2)
+            {
+                return false;
+            }
+            const auto tad = tc.connections[company.var_85C2] & Track::AdditionalTaDFlags::basicTaDMask;
+            company.var_85C2++;
+
+            placeAiAllocatedSignalsEvenlySpaced(trackEnd.nextPos, tad, trackObjId, minSignalSpacing, signalType, signalSide);
             return false;
         }
-        const auto tad = tc.connections[company.var_85C2] & Track::AdditionalTaDFlags::basicTaDMask;
-        company.var_85C2++;
-
-        placeAiAllocatedSignalsEvenlySpaced(trackEnd.nextPos, tad, trackObjId, minSignalSpacing, signalType, signalSide);
-        return false;
+        return true;
     }
 
     // 0x00430EB5
