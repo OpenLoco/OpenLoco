@@ -836,7 +836,6 @@ namespace OpenLoco
         // start position
         auto distanceFromSignal = 3200;
 
-        uint8_t signalSide = startSignalSide;
         for (auto nextTrack = getNextTrack(startPos, startTad); shouldContinue(nextTrack.second); nextTrack = getNextTrack(nextTrack.first.nextPos, nextTrack.second.connections[0]))
         {
             // Not const as when reversed need to get to the reverse start
@@ -853,6 +852,7 @@ namespace OpenLoco
                 continue;
             }
 
+            uint8_t signalSide = startSignalSide;
             if (tad & (1U << 2))
             {
                 auto& trackSize = TrackData::getUnkTrack(tad);
@@ -872,7 +872,7 @@ namespace OpenLoco
             args.rotation = rotation;
             args.trackId = trackId;
             args.trackObjType = trackObjId;
-            args.sides = signalSide;
+            args.sides = signalSide << 14;
             args.type = signalType;
 
             const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
