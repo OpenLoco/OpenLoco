@@ -94,6 +94,8 @@ namespace OpenLoco::World
             : _bottomLeft(bottomLeft)
             , _topRight(topRight)
         {
+            assert(bottomLeft.x <= topRight.x);
+            assert(bottomLeft.y <= topRight.y);
         }
 
         Iterator begin() const { return Iterator(_bottomLeft, _topRight); }

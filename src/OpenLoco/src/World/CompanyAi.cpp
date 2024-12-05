@@ -981,8 +981,8 @@ namespace OpenLoco
     // 0x004A874D
     static NearbyTrackResults nearbyTrackElementsStats(World::TilePos2 middlePos)
     {
-        const auto p1 = middlePos + World::TilePos2(7, 7);
-        const auto p2 = middlePos - World::TilePos2(7, 7);
+        const auto p1 = middlePos - World::TilePos2(7, 7);
+        const auto p2 = middlePos + World::TilePos2(7, 7);
 
         NearbyTrackResults res{};
 
