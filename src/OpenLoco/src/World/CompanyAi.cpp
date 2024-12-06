@@ -1232,7 +1232,11 @@ namespace OpenLoco
         company.var_4A5 = 5;
     }
 
-    static uint8_t sub_48667A(Company& company, AiThought& thought)
+    // 0x0048667A
+    // return
+    //   1 == No
+    //   2 == Yes
+    static uint8_t shouldConvertAiAllocated(Company& company, AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -1268,7 +1272,7 @@ namespace OpenLoco
             return;
         }
 
-        const auto res = sub_48667A(company, thought);
+        const auto res = shouldConvertAiAllocated(company, thought);
         if (res == 1)
         {
             company.var_4A4 = AiThinkState::unk6;
@@ -1277,6 +1281,7 @@ namespace OpenLoco
         }
         else if (res == 2)
         {
+            // Go to converting the aiAllocated items into real items
             company.var_4A4 = AiThinkState::unk4;
             company.var_4A5 = 0;
             company.challengeFlags |= CompanyFlags::unk2;
