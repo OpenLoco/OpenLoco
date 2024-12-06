@@ -191,7 +191,7 @@ namespace OpenLoco
         uint8_t var_85EE;
         uint8_t var_85EF;
         uint16_t var_85F0;
-        uint8_t pad_85F2[0x85F6 - 0x85F2];
+        currency32_t var_85F2;
         uint16_t var_85F6;
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
