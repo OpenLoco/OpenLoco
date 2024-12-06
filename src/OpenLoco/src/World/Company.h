@@ -163,7 +163,8 @@ namespace OpenLoco
         World::SmallZ headquartersZ;          // 0x2579
         coord_t headquartersX;                // 0x257A -1 on no headquarter placed
         coord_t headquartersY;                // 0x257C
-        uint8_t pad_257E[0x259E - 0x257E];
+        currency32_t var_257E;
+        uint8_t pad_2582[0x259E - 0x2582];
         uint32_t var_259E;
         uint8_t pad_25A2[0x25BF - 0x25A2];
         CorporateRating currentRating;          // 0x25BF

@@ -30,6 +30,7 @@
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "MessageManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/DockObject.h"
@@ -1231,13 +1232,68 @@ namespace OpenLoco
         company.var_4A5 = 5;
     }
 
+    static uint8_t sub_48667A(Company& company, AiThought& thought)
+    {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return 1;
+        }
+
+        if (company.var_257E * 2 < thought.var_76)
+        {
+            return 1;
+        }
+
+        if (!CompanyManager::ensureCompanyFunding(company.id(), thought.var_76))
+        {
+            return 1;
+        }
+
+        const auto freeStations = StationManager::stations().capacity() - StationManager::stations().size();
+        if (freeStations < 8)
+        {
+            return 1;
+        }
+        return 2;
+    }
+
     // 0x00430F87
     static void sub_430F87(Company& company, AiThought& thought)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00430F87, regs);
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+            return;
+        }
+
+        const auto res = sub_48667A(company, thought);
+        if (res == 1)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+        }
+        else if (res == 2)
+        {
+            company.var_4A4 = AiThinkState::unk4;
+            company.var_4A5 = 0;
+            company.challengeFlags |= CompanyFlags::unk2;
+            if ((company.challengeFlags & CompanyFlags::unk0) != CompanyFlags::none)
+            {
+                return;
+            }
+            company.challengeFlags |= CompanyFlags::unk0;
+
+            auto townId = static_cast<TownId>(thought.var_01);
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+            {
+                townId = IndustryManager::get(static_cast<IndustryId>(thought.var_01))->town;
+            }
+            const auto id = GameCommands::getUpdatingCompanyId();
+            MessageManager::post(MessageType::newCompany, id, enumValue(id), enumValue(townId));
+        }
     }
 
     using AiThinkState3Function = void (*)(Company&, AiThought&);
