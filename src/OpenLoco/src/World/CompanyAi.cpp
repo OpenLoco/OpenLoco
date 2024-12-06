@@ -1120,7 +1120,7 @@ namespace OpenLoco
     }
 
     // 0x00481DE3
-    static currency32_t sub_481DE3(AiThought& thought)
+    static currency32_t getStationCostEstimate(const AiThought& thought)
     {
         currency32_t baseCost = 0;
         uint8_t costMultiplier = kThoughtTypeEstimatedCostMultiplier[enumValue(thought.type)];
@@ -1212,7 +1212,7 @@ namespace OpenLoco
     // 0x00486668
     static void sub_486668(Company& company, AiThought& thought)
     {
-        thought.var_76 += sub_481DE3(thought);
+        thought.var_76 += getStationCostEstimate(thought);
         thought.var_76 += company.var_85F2;
     }
 
