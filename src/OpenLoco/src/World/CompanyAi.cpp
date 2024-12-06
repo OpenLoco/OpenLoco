@@ -283,6 +283,10 @@ namespace OpenLoco
         for (auto i = 0U; i < thought.numVehicles; ++i)
         {
             auto* head = EntityManager::get<Vehicles::VehicleHead>(thought.vehicles[i]);
+            if (head == nullptr)
+            {
+                continue;
+            }
             if (head->tileX != -1)
             {
                 continue;
@@ -1170,7 +1174,7 @@ namespace OpenLoco
         }
     }
 
-    StationElement* getAiAllocatedStationElement(const Pos3& pos)
+    static StationElement* getAiAllocatedStationElement(const Pos3& pos)
     {
         auto tile = TileManager::get(pos.x, pos.y);
         auto baseZ = pos.z / 4;
