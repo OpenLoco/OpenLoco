@@ -23,7 +23,8 @@ namespace OpenLoco::Vehicles
 {
     using CargoTotalArray = std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)>;
 
-    constexpr auto kMaxVehicleLength = 176; // TODO: Units?
+    constexpr auto kMaxRoadVehicleLength = 176;    // TODO: Units?
+    constexpr uint8_t kWheelSlippingDuration = 64; // In ticks
 
     enum class Flags38 : uint8_t
     {
@@ -585,7 +586,7 @@ namespace OpenLoco::Vehicles
         int8_t var_55;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
-        uint8_t var_5E;
+        uint8_t wheelSlipping; // 0x5E timeout that counts up
         BreakdownFlags breakdownFlags;
 
         const VehicleObject* getObject() const;
@@ -645,7 +646,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_55;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
-        uint8_t var_5E;
+        uint8_t wheelSlipping; // 0x5E timeout that counts up
         BreakdownFlags breakdownFlags;
         uint8_t var_60;
         uint8_t var_61;
