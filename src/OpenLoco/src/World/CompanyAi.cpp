@@ -2,6 +2,7 @@
 #include "Company.h"
 #include "CompanyManager.h"
 #include "Date.h"
+#include "Economy/Economy.h"
 #include "GameCommands/Airports/CreateAirport.h"
 #include "GameCommands/Airports/RemoveAirport.h"
 #include "GameCommands/Company/BuildCompanyHeadquarters.h"
@@ -12,6 +13,7 @@
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Road/RemoveRoadStation.h"
+#include "GameCommands/Track/CreateSignal.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/RemoveTrack.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
@@ -25,10 +27,20 @@
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/Track.h"
+#include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "MessageManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/CompetitorObject.h"
+#include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadExtraObject.h"
+#include "Objects/RoadObject.h"
+#include "Objects/RoadStationObject.h"
+#include "Objects/TrackExtraObject.h"
+#include "Objects/TrackObject.h"
+#include "Objects/TrainStationObject.h"
 #include "Random.h"
 #include "Station.h"
 #include "StationManager.h"
@@ -64,7 +76,7 @@ namespace OpenLoco
         unk6 = 1U << 6,
         unk7 = 1U << 7,
         unk8 = 1U << 8,
-        unk9 = 1U << 9,
+        unk9 = 1U << 9, // Tunnel (unused)
         unk10 = 1U << 10,
         unk11 = 1U << 11,
         unk12 = 1U << 12,
@@ -98,6 +110,30 @@ namespace OpenLoco
         ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::waterBased,
         ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11,
         ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+    };
+
+    // 0x004FE770
+    static constexpr std::array<uint8_t, kAiThoughtTypeCount> kThoughtTypeEstimatedCostMultiplier = {
+        4,
+        2,
+        4,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
     };
 
     static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
@@ -813,43 +849,456 @@ namespace OpenLoco
         }
     }
 
+    // 0x00486498
+    // Will keep placing signals (one sided) until either:
+    // * Reaches a station
+    // * More than 1 track connection
+    static void placeAiAllocatedSignalsEvenlySpaced(const World::Pos3 startPos, const uint16_t startTad, const uint8_t trackObjId, const uint16_t minSignalDistance, const uint8_t signalType, const uint8_t startSignalSide)
+    {
+        auto getNextTrack = [trackObjId](const World::Pos3 pos, const uint16_t tad) {
+            const auto trackEnd = Track::getTrackConnectionEnd(pos, tad & Track::AdditionalTaDFlags::basicTaDMask);
+            const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
+            return std::make_pair(trackEnd.nextPos, tc);
+        };
+
+        auto shouldContinue = [](const Track::TrackConnections& tc) {
+            return tc.connections.size() == 1 && tc.stationId == StationId::null;
+        };
+
+        // We start with a large number to force a signal placement as soon as possible from the
+        // start position
+        auto distanceFromSignal = 3200;
+
+        for (auto nextTrack = getNextTrack(startPos, startTad); shouldContinue(nextTrack.second); nextTrack = getNextTrack(nextTrack.first, nextTrack.second.connections[0]))
+        {
+            // Not const as when reversed need to get to the reverse start
+            auto pos = nextTrack.first;
+            // Not const as we might need to toggle the reverse bit
+            auto tad = nextTrack.second.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+            const auto trackId = tad >> 3;
+            const auto rotation = tad & 0x3;
+
+            const auto lengthCopy = distanceFromSignal;
+            distanceFromSignal += TrackData::getTrackMiscData(trackId).unkWeighting;
+            if (lengthCopy < minSignalDistance)
+            {
+                continue;
+            }
+
+            uint8_t signalSide = startSignalSide;
+            if (tad & (1U << 2))
+            {
+                auto& trackSize = TrackData::getUnkTrack(tad);
+                pos += trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    pos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                tad ^= (1U << 2); // Reverse
+                signalSide = signalSide & (1U << 0) ? (1U << 1) : (1U << 0);
+            }
+
+            GameCommands::SignalPlacementArgs args{};
+            args.pos = pos;
+            args.pos.z += TrackData::getTrackPiece(trackId)[0].z;
+            args.index = 0;
+            args.rotation = rotation;
+            args.trackId = trackId;
+            args.trackObjType = trackObjId;
+            args.sides = signalSide << 14;
+            args.type = signalType;
+
+            const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+            if (res != GameCommands::FAILURE)
+            {
+                distanceFromSignal = 0;
+            }
+        }
+    }
+
+    // 0x0048635F
+    // returns:
+    //   true, all signals placed
+    //   false, further spans between stations to look at
+    static bool tryPlaceAiAllocatedSignalsBetweenStations(Company& company, AiThought& thought)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+
+        if (thought.trackObjId & (1U << 7))
+        {
+            return true;
+        }
+        // 0x0112C519
+        const uint8_t trackObjId = thought.trackObjId;
+        const uint8_t signalType = thought.var_8A;
+        // At least the length of the station (which is also the max length of the vehicles)
+        const uint16_t minSignalSpacing = thought.var_04 * 32;
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+        {
+            // 0x0048639B
+            if (company.var_85C2 >= thought.numStations)
+            {
+                return true;
+            }
+
+            const auto& aiStation = thought.stations[company.var_85C2];
+
+            const auto stationEnd = World::Pos3(
+                aiStation.pos + World::Pos3{ kRotationOffset[aiStation.rotation], 0 } * (thought.var_04 - 1),
+                aiStation.baseZ * World::kSmallZStep);
+
+            const uint8_t signalSide = (1U << 0);
+            const auto tad = 0 | aiStation.rotation;
+            company.var_85C2++;
+
+            placeAiAllocatedSignalsEvenlySpaced(stationEnd, tad, trackObjId, minSignalSpacing, signalType, signalSide);
+            return false;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
+        {
+            if (company.var_85C2 >= 2)
+            {
+                return true;
+            }
+
+            // 0x0048640F
+            const uint8_t signalSide = company.var_85C2 & 1 ? (1U << 0) : (1U << 1);
+
+            const auto& aiStation = thought.stations[0];
+
+            const auto trackEnd = Track::getTrackConnectionEnd(World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep), aiStation.rotation ^ (1U << 1));
+            const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
+
+            if (tc.connections.size() != 2)
+            {
+                return false;
+            }
+            const auto tad = tc.connections[company.var_85C2] & Track::AdditionalTaDFlags::basicTaDMask;
+            company.var_85C2++;
+
+            placeAiAllocatedSignalsEvenlySpaced(trackEnd.nextPos, tad, trackObjId, minSignalSpacing, signalType, signalSide);
+            return false;
+        }
+        return true;
+    }
+
     // 0x00430EB5
     static void sub_430EB5(Company& company, AiThought& thought)
     {
-        // place signals ?
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00430EB5, regs);
+        // place signal aiAllocations
+
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+            return;
+        }
+
+        if (tryPlaceAiAllocatedSignalsBetweenStations(company, thought))
+        {
+            company.var_4A5 = 3;
+        }
+    }
+
+    struct NearbyTrackResults
+    {
+        uint32_t numElements;                 // ebx ignores unowned aiallocated
+        uint32_t numOwnedAiAllocatedElements; // edx
+    };
+
+    // 0x004A874D
+    static NearbyTrackResults nearbyTrackElementsStats(World::TilePos2 middlePos)
+    {
+        const auto p1 = middlePos - World::TilePos2(7, 7);
+        const auto p2 = middlePos + World::TilePos2(7, 7);
+
+        NearbyTrackResults res{};
+
+        for (const auto& tilePos : getClampedRange(p1, p2))
+        {
+            auto tile = TileManager::get(tilePos);
+            bool hasPassedSurface = false;
+            for (auto& el : tile)
+            {
+                auto* elSurface = el.as<SurfaceElement>();
+                if (elSurface != nullptr)
+                {
+                    hasPassedSurface = true;
+                    continue;
+                }
+                if (!hasPassedSurface)
+                {
+                    continue;
+                }
+                auto* elTrack = el.as<TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elTrack->isGhost())
+                {
+                    continue;
+                }
+                if (elTrack->hasBridge())
+                {
+                    continue;
+                }
+                if (elTrack->isAiAllocated())
+                {
+                    if (elTrack->owner() != GameCommands::getUpdatingCompanyId())
+                    {
+                        continue;
+                    }
+                    res.numOwnedAiAllocatedElements++;
+                }
+                res.numElements++;
+            }
+        }
+        return res;
+    }
+
+    // 0x004865B4
+    static uint8_t sub_4865B4(AiThought& thought)
+    {
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased | ThoughtTypeFlags::unk6))
+        {
+            const auto stationDist = Math::Vector::distance2D(thought.stations[0].pos, thought.stations[1].pos);
+            if (stationDist < 224)
+            {
+                return 1;
+            }
+        }
+
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
+        {
+            return 2;
+        }
+        for (auto i = 0U; i < 2; ++i)
+        {
+            auto [numElements, numOwnedAiAllocated] = nearbyTrackElementsStats(toTileSpace(thought.stations[i].pos));
+            if (numOwnedAiAllocated > 4 && numElements > 120)
+            {
+                return 1;
+            }
+        }
+
+        const auto mid = (thought.stations[0].pos + thought.stations[1].pos) / 2;
+        auto [numElements, numOwnedAiAllocated] = nearbyTrackElementsStats(toTileSpace(mid));
+        if (numOwnedAiAllocated > 4 && numElements > 120)
+        {
+            return 1;
+        }
+        return 2;
     }
 
     // 0x00430EEF
     static void sub_430EEF(Company& company, AiThought& thought)
     {
         // Decide if station placement attempt
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00430EEF, regs);
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+            return;
+        }
+        auto res = sub_4865B4(thought);
+        if (res == 1)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+        }
+        else if (res == 2)
+        {
+            company.var_4A5 = 4;
+        }
+    }
+
+    // 0x00481DE3
+    static currency32_t getStationCostEstimate(const AiThought& thought)
+    {
+        currency32_t baseCost = 0;
+        uint8_t costMultiplier = kThoughtTypeEstimatedCostMultiplier[enumValue(thought.type)];
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            auto* airportObj = ObjectManager::get<AirportObject>(thought.var_89);
+            baseCost = Economy::getInflationAdjustedCost(airportObj->buildCostFactor, airportObj->costIndex, 6);
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            auto* dockObj = ObjectManager::get<DockObject>(thought.var_89);
+            baseCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 6);
+        }
+        else
+        {
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk6))
+            {
+                costMultiplier *= thought.var_04;
+            }
+
+            if (thought.trackObjId & (1U << 7))
+            {
+                {
+                    const auto roadObjId = thought.trackObjId & ~(1U << 7);
+                    auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+                    const auto trackBaseCost = Economy::getInflationAdjustedCost(roadObj->buildCostFactor, roadObj->costIndex, 10);
+                    const auto cost = (trackBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
+                    baseCost += cost;
+                }
+                {
+                    for (auto i = 0U; i < 32U; ++i)
+                    {
+                        if (thought.mods & (1U << i))
+                        {
+                            auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(i);
+                            const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(roadExtraObj->buildCostFactor, roadExtraObj->costIndex, 10);
+                            const auto cost = (trackExtraBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
+                            baseCost += cost;
+                        }
+                    }
+                }
+                {
+                    auto* stationObj = ObjectManager::get<RoadStationObject>(thought.var_89);
+                    const auto stationBaseCost = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
+                    const auto cost = (stationBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
+                    baseCost += cost;
+                }
+            }
+            else
+            {
+
+                auto* trackObj = ObjectManager::get<TrackObject>(thought.trackObjId);
+                {
+                    const auto trackBaseCost = Economy::getInflationAdjustedCost(trackObj->buildCostFactor, trackObj->costIndex, 10);
+                    const auto cost = (trackBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                    baseCost += cost;
+                }
+                {
+                    for (auto i = 0U; i < 32U; ++i)
+                    {
+                        if (thought.mods & (1U << i))
+                        {
+                            auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(i);
+                            const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->buildCostFactor, trackExtraObj->costIndex, 10);
+                            const auto cost = (trackExtraBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                            baseCost += cost;
+                        }
+                    }
+                }
+                {
+                    auto* stationObj = ObjectManager::get<TrainStationObject>(thought.var_89);
+                    const auto stationBaseCost = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
+                    const auto cost = (stationBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                    baseCost += cost;
+
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk9))
+                    {
+                        const auto tunnelBaseCost = Economy::getInflationAdjustedCost(trackObj->tunnelCostFactor, trackObj->costIndex, 10);
+                        const auto tunnelCost = (tunnelBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                        baseCost += tunnelCost;
+                    }
+                }
+            }
+        }
+        return baseCost * costMultiplier;
+    }
+
+    // 0x00486668
+    static void sub_486668(Company& company, AiThought& thought)
+    {
+        thought.var_76 += getStationCostEstimate(thought);
+        thought.var_76 += company.var_85F2;
     }
 
     // 0x00430F50
     static void sub_430F50(Company& company, AiThought& thought)
     {
         // Calculate station cost?
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00430F50, regs);
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+            return;
+        }
+        sub_486668(company, thought);
+        company.var_4A5 = 5;
+    }
+
+    // 0x0048667A
+    // return
+    //   1 == No
+    //   2 == Yes
+    static uint8_t shouldConvertAiAllocated(Company& company, AiThought& thought)
+    {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return 1;
+        }
+
+        if (company.var_257E * 2 < thought.var_76)
+        {
+            return 1;
+        }
+
+        if (!CompanyManager::ensureCompanyFunding(company.id(), thought.var_76))
+        {
+            return 1;
+        }
+
+        const auto freeStations = StationManager::stations().capacity() - StationManager::stations().size();
+        if (freeStations < 8)
+        {
+            return 1;
+        }
+        return 2;
     }
 
     // 0x00430F87
     static void sub_430F87(Company& company, AiThought& thought)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00430F87, regs);
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+            return;
+        }
+
+        const auto res = shouldConvertAiAllocated(company, thought);
+        if (res == 1)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+        }
+        else if (res == 2)
+        {
+            // Go to converting the aiAllocated items into real items
+            company.var_4A4 = AiThinkState::unk4;
+            company.var_4A5 = 0;
+            company.challengeFlags |= CompanyFlags::unk2;
+            if ((company.challengeFlags & CompanyFlags::unk0) != CompanyFlags::none)
+            {
+                return;
+            }
+            company.challengeFlags |= CompanyFlags::unk0;
+
+            auto townId = static_cast<TownId>(thought.var_01);
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+            {
+                townId = IndustryManager::get(static_cast<IndustryId>(thought.var_01))->town;
+            }
+            const auto id = GameCommands::getUpdatingCompanyId();
+            MessageManager::post(MessageType::newCompany, id, enumValue(id), enumValue(townId));
+        }
     }
 
     using AiThinkState3Function = void (*)(Company&, AiThought&);
