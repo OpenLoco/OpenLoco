@@ -11,8 +11,10 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Road/RemoveRoad.h"
+#include "GameCommands/Road/RemoveRoadStation.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/RemoveTrack.h"
+#include "GameCommands/Track/RemoveTrainStation.h"
 #include "GameCommands/Vehicles/CreateVehicle.h"
 #include "GameCommands/Vehicles/VehicleOrderInsert.h"
 #include "GameCommands/Vehicles/VehicleOrderSkip.h"
@@ -49,29 +51,59 @@ namespace OpenLoco
     static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
     static loco_global<EntityId, 0x0113642A> _lastCreatedVehicleId;
 
-    // 0x004FE720
-    static constexpr std::array<uint32_t, kAiThoughtTypeCount> kThoughtTypeFlags = {
-        0x849,
-        0x4011,
-        0x4051,
-        0x808,
-        0x20808,
-        0x1421,
-        0x1120,
-        0x98E,
-        0x2098E,
-        0x98A,
-        0x2098A,
-        0x21A6,
-        0x21A2,
-        0x8000,
-        0x8082,
-        0x10000,
-        0x10086,
-        0x10082,
-        0x80A,
-        0x2080A
+    enum class ThoughtTypeFlags : uint32_t
+    {
+        none = 0U,
+
+        unk0 = 1U << 0,
+        unk1 = 1U << 1,
+        unk2 = 1U << 2,
+        unk3 = 1U << 3,
+        unk4 = 1U << 4,
+        unk5 = 1U << 5,
+        unk6 = 1U << 6,
+        unk7 = 1U << 7,
+        unk8 = 1U << 8,
+        unk9 = 1U << 9,
+        unk10 = 1U << 10,
+        unk11 = 1U << 11,
+        unk12 = 1U << 12,
+        unk13 = 1U << 13,
+        unk14 = 1U << 14,
+        airBased = 1U << 15,
+        waterBased = 1U << 16,
+        unk17 = 1U << 17,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ThoughtTypeFlags);
+
+    // 0x004FE720
+    static constexpr std::array<ThoughtTypeFlags, kAiThoughtTypeCount> kThoughtTypeFlags = {
+        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk14,
+        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk14,
+        ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk10 | ThoughtTypeFlags::unk12,
+        ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk12,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
+        ThoughtTypeFlags::airBased,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::airBased,
+        ThoughtTypeFlags::waterBased,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::waterBased,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::waterBased,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+    };
+
+    static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
+    {
+        return (kThoughtTypeFlags[enumValue(type)] & flags) != ThoughtTypeFlags::none;
+    }
 
     // 0x00487144
     static void sub_487144(Company& company)
@@ -185,10 +217,10 @@ namespace OpenLoco
 
         StationId destStation = StationId::null;
         uint32_t orderOffset = 0;
-        for (auto i = 0; i < thought.var_03; ++i)
+        for (auto i = 0; i < thought.numStations; ++i)
         {
-            auto& unk = thought.var_06[i];
-            if (destStation == unk.var_00)
+            auto& aiStation = thought.stations[i];
+            if (destStation == aiStation.id)
             {
                 continue;
             }
@@ -196,8 +228,8 @@ namespace OpenLoco
             GameCommands::VehicleOrderInsertArgs insertArgs{};
             insertArgs.head = trainHeadId;
             insertArgs.orderOffset = orderOffset;
-            Vehicles::OrderStopAt stopAt{ unk.var_00 };
-            destStation = unk.var_00;
+            Vehicles::OrderStopAt stopAt{ aiStation.id };
+            destStation = aiStation.id;
             insertArgs.rawOrder = stopAt.getRaw();
             auto insertRes = GameCommands::doCommand(insertArgs, GameCommands::Flags::apply);
             // Fix vanilla bug
@@ -210,8 +242,8 @@ namespace OpenLoco
                 continue;
             }
             // Potential vanilla issue below it checks for 1ULL << 11 here 1ULL << 7
-            if ((kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 7))
-                && (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7)
+                && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
             {
                 GameCommands::VehicleOrderInsertArgs insertArgs2{};
                 insertArgs2.head = trainHeadId;
@@ -226,11 +258,11 @@ namespace OpenLoco
                 }
             }
         }
-        if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 1)))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
         {
             return PurchaseVehicleResult::success;
         }
-        if (!(kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 11)))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
         {
             return PurchaseVehicleResult::success;
         }
@@ -248,10 +280,47 @@ namespace OpenLoco
     // 0x004876CB
     static void sub_4876CB(AiThought& thought)
     {
-        // Sets unk vehicle vars and then breakdown flag ???
-        registers regs;
-        regs.edi = X86Pointer(&thought);
-        call(0x004876CB, regs);
+        for (auto i = 0U; i < thought.numVehicles; ++i)
+        {
+            auto* head = EntityManager::get<Vehicles::VehicleHead>(thought.vehicles[i]);
+            if (head == nullptr)
+            {
+                continue;
+            }
+            if (head->tileX != -1)
+            {
+                continue;
+            }
+
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+            {
+                head->var_61 = thought.stations[0].pos.x;
+                head->var_63 = thought.stations[0].pos.y;
+                head->var_67 = thought.stations[0].baseZ;
+                head->var_65 = thought.stations[0].rotation;
+            }
+            else
+            {
+                head->var_61 = thought.stations[0].pos.x;
+                head->var_63 = thought.stations[0].pos.y;
+                head->var_67 = thought.stations[0].baseZ;
+
+                uint8_t rotation = thought.stations[0].rotation;
+                if (thought.trackObjId & (1U << 7))
+                {
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+                    {
+                        if (i & 0b1)
+                        {
+                            rotation ^= (1U << 2);
+                        }
+                    }
+                }
+                head->var_65 = rotation;
+            }
+            head->breakdownFlags |= Vehicles::BreakdownFlags::breakdownPending;
+            thought.var_88 = 0;
+        }
     }
 
     // 0x00494805
@@ -266,16 +335,16 @@ namespace OpenLoco
                 continue;
             }
 
-            for (auto i = 0; i < 4 && i < thought.var_03; ++i)
+            for (auto i = 0; i < 4 && i < thought.numStations; ++i)
             {
-                const auto& unk2 = thought.var_06[i];
-                if (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 15))
+                const auto& aiStation = thought.stations[i];
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
                 {
-                    unkStationFlags[enumValue(unk2.var_00)] |= 1U << 0;
+                    unkStationFlags[enumValue(aiStation.id)] |= 1U << 0;
                 }
-                if (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 16))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
                 {
-                    unkStationFlags[enumValue(unk2.var_00)] |= 1U << 1;
+                    unkStationFlags[enumValue(aiStation.id)] |= 1U << 1;
                 }
             }
         }
@@ -510,7 +579,7 @@ namespace OpenLoco
     {
         company.var_85C2 = 0xFFU;
         company.var_85C3 = 0;
-        if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 17))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
         {
             company.var_85C3 |= (1U << 3);
         }
@@ -564,39 +633,39 @@ namespace OpenLoco
     {
         company.var_85C3 &= ~((1U << 0) | (1U << 1));
 
-        if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
         {
             return true;
         }
 
-        auto findRequiredUnk = [&thought, &company]() -> int8_t {
-            for (auto i = 0U; i < thought.var_03; ++i)
+        auto findRequiredAiStation = [&thought, &company]() -> int8_t {
+            for (auto i = 0U; i < thought.numStations; ++i)
             {
-                const auto& unk4AE = thought.var_06[i];
-                if (unk4AE.var_9 != 0xFFU)
+                const auto& aiStation = thought.stations[i];
+                if (aiStation.var_9 != 0xFFU)
                 {
-                    if (!(unk4AE.var_B & ((1U << 2) | (1U << 1))))
+                    if (!(aiStation.var_B & ((1U << 2) | (1U << 1))))
                     {
                         return i;
                     }
-                    if (unk4AE.var_B & (1U << 0))
+                    if (aiStation.var_B & (1U << 0))
                     {
-                        if (!(unk4AE.var_B & ((1U << 4) | (1U << 3))))
+                        if (!(aiStation.var_B & ((1U << 4) | (1U << 3))))
                         {
                             return i;
                         }
                     }
                 }
-                if (unk4AE.var_A != 0xFFU)
+                if (aiStation.var_A != 0xFFU)
                 {
-                    if (!(unk4AE.var_C & ((1U << 2) | (1U << 1))))
+                    if (!(aiStation.var_C & ((1U << 2) | (1U << 1))))
                     {
                         company.var_85C3 |= 1U << 0;
                         return i;
                     }
-                    if (unk4AE.var_C & (1U << 0))
+                    if (aiStation.var_C & (1U << 0))
                     {
-                        if (!(unk4AE.var_C & ((1U << 4) | (1U << 3))))
+                        if (!(aiStation.var_C & ((1U << 4) | (1U << 3))))
                         {
                             company.var_85C3 |= 1U << 0;
                             return i;
@@ -607,19 +676,19 @@ namespace OpenLoco
             return -1;
         }();
 
-        if (findRequiredUnk == -1)
+        if (findRequiredAiStation == -1)
         {
             return true;
         }
 
         {
-            company.var_85C2 = findRequiredUnk;
-            const auto& unk4AE = thought.var_06[findRequiredUnk];
-            auto pos = unk4AE.pos;
-            auto rotation = unk4AE.rotation;
+            company.var_85C2 = findRequiredAiStation;
+            const auto& aiStation = thought.stations[findRequiredAiStation];
+            auto pos = aiStation.pos;
+            auto rotation = aiStation.rotation;
             if (company.var_85C3 & (1U << 0))
             {
-                if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
                 {
                     const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
                     pos += stationEndDiff;
@@ -629,24 +698,24 @@ namespace OpenLoco
             rotation ^= (1U << 1);
 
             company.var_85C4 = pos;
-            company.var_85C8 = unk4AE.baseZ;
+            company.var_85C8 = aiStation.baseZ;
             company.var_85CE = rotation;
             company.var_85D0 = pos;
-            company.var_85D4 = unk4AE.baseZ;
+            company.var_85D4 = aiStation.baseZ;
             company.var_85D5 = rotation;
         }
         {
-            const auto unk = (company.var_85C3 & (1U << 0)) ? thought.var_06[findRequiredUnk].var_A : thought.var_06[findRequiredUnk].var_9;
-            const auto& unk4AE = thought.var_06[unk];
-            if (unk4AE.var_9 != company.var_85C2)
+            const auto aiStationIndex = (company.var_85C3 & (1U << 0)) ? thought.stations[findRequiredAiStation].var_A : thought.stations[findRequiredAiStation].var_9;
+            const auto& aiStation = thought.stations[aiStationIndex];
+            if (aiStation.var_9 != company.var_85C2)
             {
                 company.var_85C3 |= (1U << 1);
             }
-            auto pos = unk4AE.pos;
-            auto rotation = unk4AE.rotation;
+            auto pos = aiStation.pos;
+            auto rotation = aiStation.rotation;
             if (company.var_85C3 & (1U << 1))
             {
-                if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
                 {
                     const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
                     pos += stationEndDiff;
@@ -656,10 +725,10 @@ namespace OpenLoco
             rotation ^= (1U << 1);
 
             company.var_85C9 = pos;
-            company.var_85CD = unk4AE.baseZ;
+            company.var_85CD = aiStation.baseZ;
             company.var_85CF = rotation;
             company.var_85D7 = pos;
-            company.var_85DB = unk4AE.baseZ;
+            company.var_85DB = aiStation.baseZ;
             company.var_85DC = rotation;
         }
         company.var_85F0 = 0;
@@ -690,12 +759,12 @@ namespace OpenLoco
             return false;
         }
 
-        if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
         {
             return false;
         }
 
-        if (!(kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 17) | (1U << 6))))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17 | ThoughtTypeFlags::unk6))
         {
             return false;
         }
@@ -827,13 +896,13 @@ namespace OpenLoco
 
         bool found = false;
         auto i = 0U;
-        for (; i < thought.var_03; ++i)
+        for (; i < thought.numStations; ++i)
         {
-            if (!(thought.var_06[i].var_02 & (1U << 0)))
+            if (!thought.stations[i].hasFlags(AiThoughtStationFlags::aiAllocated))
             {
                 continue;
             }
-            if (thought.var_06[i].var_02 & (1U << 1))
+            if (thought.stations[i].hasFlags(AiThoughtStationFlags::operational))
             {
                 continue;
             }
@@ -846,9 +915,9 @@ namespace OpenLoco
             return 1;
         }
 
-        auto& stationUnk = thought.var_06[i];
-        const auto pos = World::Pos3(stationUnk.pos, stationUnk.baseZ * World::kSmallZStep);
-        if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 15))
+        auto& aiStation = thought.stations[i];
+        const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
             {
                 GameCommands::AirportRemovalArgs removeArgs{};
@@ -858,7 +927,7 @@ namespace OpenLoco
 
             GameCommands::AirportPlacementArgs placeArgs{};
             placeArgs.pos = pos;
-            placeArgs.rotation = stationUnk.rotation;
+            placeArgs.rotation = aiStation.rotation;
             placeArgs.type = thought.var_89;
 
             if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
@@ -871,10 +940,10 @@ namespace OpenLoco
 
             if (_lastPlacedAirportStationId != StationId::null)
             {
-                stationUnk.var_00 = _lastPlacedAirportStationId;
+                aiStation.id = _lastPlacedAirportStationId;
             }
         }
-        else if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 16))
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
         {
             {
                 GameCommands::PortRemovalArgs removeArgs{};
@@ -884,7 +953,7 @@ namespace OpenLoco
 
             GameCommands::PortPlacementArgs placeArgs{};
             placeArgs.pos = pos;
-            placeArgs.rotation = stationUnk.rotation;
+            placeArgs.rotation = aiStation.rotation;
             placeArgs.type = thought.var_89;
 
             if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
@@ -897,7 +966,7 @@ namespace OpenLoco
 
             if (_lastPlacedPortStationId != StationId::null)
             {
-                stationUnk.var_00 = _lastPlacedPortStationId;
+                aiStation.id = _lastPlacedPortStationId;
             }
         }
         else
@@ -907,21 +976,21 @@ namespace OpenLoco
                 // Road
 
                 // TODO: Vanilla bug passes rotation for flags???
-                if (sub_47BA2C(pos, stationUnk.rotation, thought.trackObjId & ~(1U << 7), 0, stationUnk.rotation) == GameCommands::FAILURE)
+                if (sub_47BA2C(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, aiStation.rotation) == GameCommands::FAILURE)
                 {
                     return 2;
                 }
 
                 if (_lastPlacedTrackStationId != StationId::null)
                 {
-                    stationUnk.var_00 = _lastPlacedTrackStationId;
+                    aiStation.id = _lastPlacedTrackStationId;
                 }
             }
             else
             {
                 // Track
                 GameCommands::Unk52Args placeArgs{};
-                placeArgs.rotation = stationUnk.rotation;
+                placeArgs.rotation = aiStation.rotation;
                 placeArgs.trackObjectId = thought.trackObjId;
                 placeArgs.unk = 0;
                 placeArgs.pos = pos;
@@ -938,14 +1007,14 @@ namespace OpenLoco
 
                     if (_lastPlacedTrackStationId != StationId::null)
                     {
-                        stationUnk.var_00 = _lastPlacedTrackStationId;
+                        aiStation.id = _lastPlacedTrackStationId;
                     }
                     placeArgs.pos += World::Pos3{ kRotationOffset[placeArgs.rotation], 0 };
                 }
             }
         }
-        stationUnk.var_02 &= ~(1 << 0);
-        stationUnk.var_02 |= (1 << 1);
+        aiStation.var_02 &= ~AiThoughtStationFlags::aiAllocated;
+        aiStation.var_02 |= AiThoughtStationFlags::operational;
         return 0;
     }
 
@@ -1053,15 +1122,6 @@ namespace OpenLoco
     {
     }
 
-    // 0x00431104
-    static void aiThinkState6(Company& company)
-    {
-        // try sell a vehicle?
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00431104, regs);
-    }
-
     // 0x00487BA3
     static bool sub_487BA3(AiThought& thought)
     {
@@ -1092,12 +1152,363 @@ namespace OpenLoco
         return call(0x0048715C, regs) & X86_FLAG_CARRY;
     }
 
-    // 0x004311CA
-    static void sub_4311CA(Company& company, AiThought& thought)
+    // 0x0043112D
+    static void sub_43112D(Company& company, AiThought& thought)
+    {
+        // identical to sub_4311B5 but separate so that
+        // we can maybe enforce types for the state machine
+        if (sub_487BA3(thought))
+        {
+            company.var_4A5 = 1;
+            sub_487144(company);
+        }
+    }
+
+    // 0x00431142
+    static void sub_431142(Company& company, AiThought& thought)
     {
         if (sub_48715C(company, thought))
         {
             company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+        }
+    }
+
+    static StationElement* getAiAllocatedStationElement(const Pos3& pos)
+    {
+        auto tile = TileManager::get(pos.x, pos.y);
+        auto baseZ = pos.z / 4;
+
+        for (auto& element : tile)
+        {
+            auto* stationElement = element.as<StationElement>();
+
+            if (stationElement == nullptr)
+            {
+                continue;
+            }
+
+            if (stationElement->baseZ() != baseZ)
+            {
+                continue;
+            }
+
+            if (stationElement->isAiAllocated())
+            {
+                return stationElement;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+        return nullptr;
+    }
+
+    // 0x00486224
+    static void removeAiAllocatedCompanyTracksRoadsOnTile(const World::Pos2 pos)
+    {
+        auto tile = World::TileManager::get(pos);
+        bool recheck = true;
+        while (recheck)
+        {
+            recheck = false;
+            for (auto& el : tile)
+            {
+                if (!el.isAiAllocated())
+                {
+                    continue;
+                }
+                auto* elRoad = el.as<RoadElement>();
+                auto* elTrack = el.as<TrackElement>();
+                if (elRoad != nullptr)
+                {
+                    if (elRoad->owner() != GameCommands::getUpdatingCompanyId())
+                    {
+                        continue;
+                    }
+                    if (elRoad->hasStationElement())
+                    {
+                        auto* station = getAiAllocatedStationElement(World::Pos3{ pos, elRoad->baseHeight() });
+                        if (station != nullptr)
+                        {
+                            continue;
+                        }
+                    }
+
+                    GameCommands::RoadRemovalArgs args{};
+                    args.pos = World::Pos3{ pos, elRoad->baseHeight() };
+                    args.objectId = elRoad->roadObjectId();
+                    args.roadId = elRoad->roadId();
+                    args.rotation = elRoad->rotation();
+                    args.sequenceIndex = elRoad->sequenceIndex();
+                    auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+                    if (res != GameCommands::FAILURE)
+                    {
+                        recheck = true;
+                        break;
+                    }
+                }
+                else if (elTrack != nullptr)
+                {
+                    if (elTrack->owner() != GameCommands::getUpdatingCompanyId())
+                    {
+                        continue;
+                    }
+                    if (elTrack->hasStationElement())
+                    {
+                        continue;
+                    }
+
+                    GameCommands::TrackRemovalArgs args{};
+                    args.pos = World::Pos3{ pos, elTrack->baseHeight() };
+                    args.trackObjectId = elTrack->trackObjectId();
+                    args.trackId = elTrack->trackId();
+                    args.rotation = elTrack->rotation();
+                    args.index = elTrack->sequenceIndex();
+                    auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+                    if (res != GameCommands::FAILURE)
+                    {
+                        recheck = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // 0x004861BF
+    // returns false until the whole map has been iterated
+    static bool removeAllAiAllocatedCompanyAssetsOnMapByChunk(Company& company, AiThought& thought)
+    {
+        auto pos = company.var_85C4;
+        bool fullySearched = false;
+        for (auto i = 0U; i < 1500; ++i)
+        {
+            removeAiAllocatedCompanyTracksRoadsOnTile(pos);
+
+            pos.x += 32;
+            if (pos.x < World::kMapWidth)
+            {
+                continue;
+            }
+            pos.x = 0;
+            pos.y += 32;
+            if (pos.y < World::kMapHeight)
+            {
+                continue;
+            }
+
+            fullySearched = true;
+            break;
+        }
+        if (fullySearched)
+        {
+            for (auto i = 0U; i < thought.numStations; ++i)
+            {
+                auto& aiStation = thought.stations[i];
+                aiStation.var_B &= ~((1U << 1) | (1U << 3));
+                aiStation.var_C &= ~((1U << 1) | (1U << 3));
+            }
+            return true;
+        }
+        else
+        {
+            company.var_85C4 = pos;
+            return false;
+        }
+    }
+
+    // 0x00431164
+    static void sub_431164(Company& company, AiThought& thought)
+    {
+        if (removeAllAiAllocatedCompanyAssetsOnMapByChunk(company, thought))
+        {
+            company.var_4A5 = 3;
+        }
+    }
+
+    // 0x0047B107
+    static void removeAiAllocatedRoadStation(World::Pos3 pos, uint8_t rotation, uint8_t objectId)
+    {
+        {
+            GameCommands::RoadStationRemovalArgs args{};
+            args.pos = pos;
+            args.rotation = rotation;
+            args.roadObjectId = objectId;
+            args.roadId = 0;
+            args.index = 0;
+
+            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            if (res == GameCommands::FAILURE)
+            {
+                // Try remove facing the opposite rotation
+                args.rotation ^= (1U << 1);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            }
+        }
+
+        auto tile = World::TileManager::get(pos);
+        for (auto& el : tile)
+        {
+            auto* elRoad = el.as<RoadElement>();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+            if (elRoad->baseHeight() != pos.z)
+            {
+                continue;
+            }
+            if (elRoad->rotation() != rotation)
+            {
+                continue;
+            }
+            if (elRoad->roadObjectId() != objectId)
+            {
+                continue;
+            }
+            if (elRoad->roadId() != 0)
+            {
+                continue;
+            }
+            if (elRoad->owner() != GameCommands::getUpdatingCompanyId())
+            {
+                continue;
+            }
+            if (elRoad->isAiAllocated())
+            {
+                GameCommands::RoadRemovalArgs args{};
+                args.objectId = objectId;
+                args.pos = pos;
+                args.rotation = rotation;
+                args.roadId = 0;
+                args.sequenceIndex = 0;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            }
+            break;
+        }
+    }
+
+    // 0x004A7CD2
+    static void removeAiAllocatedTrainStation(const World::Pos3 pos, const uint8_t rotation, const uint8_t objectId, const uint8_t stationLength)
+    {
+        auto stationPos = pos;
+        for (auto i = 0U; i < stationLength; ++i)
+        {
+            auto nonAiAllocated = 0U;
+            auto tile = World::TileManager::get(stationPos);
+            for (auto& el : tile)
+            {
+                auto* elTrack = el.as<TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elTrack->baseHeight() != stationPos.z)
+                {
+                    continue;
+                }
+                if (elTrack->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (elTrack->trackObjectId() != objectId)
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != 0)
+                {
+                    continue;
+                }
+                if (elTrack->trackId() != 0)
+                {
+                    continue;
+                }
+                if (elTrack->owner() != GameCommands::getUpdatingCompanyId())
+                {
+                    continue;
+                }
+                if (elTrack->isAiAllocated())
+                {
+                    GameCommands::TrackRemovalArgs args{};
+                    args.trackObjectId = objectId;
+                    args.pos = stationPos;
+                    args.rotation = rotation;
+                    args.trackId = 0;
+                    args.index = 0;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+                }
+                else
+                {
+                    nonAiAllocated++;
+                }
+                break;
+            }
+            // Really? Seems a bit odd
+            if (nonAiAllocated)
+            {
+                GameCommands::TrackRemovalArgs args{};
+                args.trackObjectId = objectId;
+                args.pos = stationPos;
+                args.rotation = rotation;
+                args.trackId = 0;
+                args.index = 0;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+            }
+
+            stationPos += World::Pos3{ kRotationOffset[rotation], 0 };
+        }
+    }
+
+    // 0x00483602
+    static uint8_t removeAiAllocatedStations(AiThought& thought)
+    {
+        for (auto i = 0U; i < thought.numStations; ++i)
+        {
+            auto& aiStation = thought.stations[i];
+            if (aiStation.hasFlags(AiThoughtStationFlags::operational))
+            {
+                continue;
+            }
+            if (!aiStation.hasFlags(AiThoughtStationFlags::aiAllocated))
+            {
+                continue;
+            }
+            const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+            {
+                GameCommands::AirportRemovalArgs args{};
+                args.pos = pos;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            }
+            else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+            {
+                GameCommands::PortRemovalArgs args{};
+                args.pos = pos;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            }
+            else if (thought.trackObjId & (1U << 7))
+            {
+                removeAiAllocatedRoadStation(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7));
+            }
+            else
+            {
+                removeAiAllocatedTrainStation(pos, aiStation.rotation, thought.trackObjId, thought.var_04);
+            }
+            // Ai assumes removal was a success!
+            aiStation.var_02 &= ~AiThoughtStationFlags::aiAllocated;
+            return 0;
+        }
+        return 1;
+    }
+
+    // 0x00431174
+    static void sub_431174(Company& company, AiThought& thought)
+    {
+        if (removeAiAllocatedStations(thought) != 0)
+        {
+            company.var_4A5 = 4;
         }
     }
 
@@ -1105,6 +1516,40 @@ namespace OpenLoco
     static void clearThought(AiThought& thought)
     {
         thought.type = AiThoughtType::null;
+    }
+
+    // 0x00431186
+    static void sub_431186(Company& company, AiThought& thought)
+    {
+        clearThought(thought);
+        company.var_4A4 = AiThinkState::unk0;
+    }
+
+    // 0x004F9510
+    static constexpr std::array<AiThinkState4Function, 5> kFuncs4F9510 = {
+        sub_43112D,
+        sub_431142,
+        sub_431164,
+        sub_431174,
+        sub_431186,
+    };
+
+    // 0x00431104
+    static void aiThinkState6(Company& company)
+    {
+        // try sell a vehicle?
+
+        company.var_85F6++;
+        kFuncs4F9510[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+    }
+
+    // 0x004311CA
+    static void sub_4311CA(Company& company, AiThought& thought)
+    {
+        if (sub_48715C(company, thought))
+        {
+            company.var_4A5 = 2;
+        }
     }
 
     // 0x004311DA
@@ -1157,8 +1602,8 @@ namespace OpenLoco
         if (thought.trackObjId & (1U << 7))
         {
             GameCommands::RoadModsPlacementArgs args{};
-            args.pos = World::Pos3(thought.var_06[0].pos, thought.var_06[0].baseZ * World::kSmallZStep);
-            args.rotation = thought.var_06[0].rotation;
+            args.pos = World::Pos3(thought.stations[0].pos, thought.stations[0].baseZ * World::kSmallZStep);
+            args.rotation = thought.stations[0].rotation;
             args.roadObjType = thought.trackObjId & ~(1U << 7);
             args.index = 0;
             args.modSection = 2;
@@ -1174,8 +1619,8 @@ namespace OpenLoco
         else
         {
             GameCommands::TrackModsPlacementArgs args{};
-            args.pos = World::Pos3(thought.var_06[0].pos, thought.var_06[0].baseZ * World::kSmallZStep);
-            args.rotation = thought.var_06[0].rotation;
+            args.pos = World::Pos3(thought.stations[0].pos, thought.stations[0].baseZ * World::kSmallZStep);
+            args.rotation = thought.stations[0].rotation;
             args.trackObjType = thought.trackObjId;
             args.index = 0;
             args.modSection = 2;
@@ -1494,7 +1939,7 @@ namespace OpenLoco
         auto& thought = company->aiThoughts[index];
 
         World::Pos2 pos;
-        if ((kThoughtTypeFlags[enumValue(thought.type)] & 2) != 0)
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
         {
             auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
             pos = { industry->x, industry->y };
@@ -1544,7 +1989,7 @@ namespace OpenLoco
         {
             World::Pos2 pos{};
             auto& thought = company->aiThoughts[company->activeThoughtId];
-            if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 1))
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
             {
                 auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
                 pos = World::Pos2{ industry->x, industry->y };

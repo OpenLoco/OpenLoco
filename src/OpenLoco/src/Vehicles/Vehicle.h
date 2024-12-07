@@ -346,12 +346,14 @@ namespace OpenLoco::Vehicles
         uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
         uint8_t var_5C;
-        Status status;                 // 0x5D
-        VehicleType vehicleType;       // 0x5E
-        BreakdownFlags breakdownFlags; // 0x5F
-        uint8_t aiThoughtId;           // 0x60 0xFFU for null
-        uint16_t var_61;
-        uint8_t pad_63[0x68 - 0x63];
+        Status status;                     // 0x5D
+        VehicleType vehicleType;           // 0x5E
+        BreakdownFlags breakdownFlags;     // 0x5F
+        uint8_t aiThoughtId;               // 0x60 0xFFU for null
+        int16_t var_61;                    // 0x61 unkAiX
+        int16_t var_63;                    // 0x61 unkAiY
+        uint16_t var_65;                   // 0x61 unkAiRotation
+        uint8_t var_67;                    // 0x61 unkAiBaseZ
         uint8_t airportMovementEdge;       // 0x68
         uint32_t totalRefundCost;          // 0x69
         uint8_t crashedTimeout;            // 0x6D
