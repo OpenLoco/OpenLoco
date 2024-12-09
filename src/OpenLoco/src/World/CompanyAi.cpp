@@ -31,6 +31,7 @@
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "MessageManager.h"
+#include "Objects/BridgeObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/DockObject.h"
@@ -45,6 +46,7 @@
 #include "Station.h"
 #include "StationManager.h"
 #include "TownManager.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -600,9 +602,107 @@ namespace OpenLoco
         call(0x004309FD, regs);
     }
 
-    // 0x0048259F
-    static uint8_t sub_48259F(const Company& company, const AiThought& thought)
+    // 0x004834C0, 0x0048352E, 0x00493594
+    template<typename Filter>
+    static uint8_t sub_4834C0(const AiThought& thought, Filter&& bridgeFilter)
     {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return 0;
+        }
+
+        std::array<uint8_t, 9> bridges{};
+        if (thought.trackObjId & (1U << 7))
+        {
+            const uint8_t roadObjId = thought.trackObjId & ~(1U << 7);
+            Ui::Windows::Construction::Common::refreshBridgeList(bridges.data(), roadObjId, TransportMode::road);
+        }
+        else
+        {
+            Ui::Windows::Construction::Common::refreshBridgeList(bridges.data(), thought.trackObjId, TransportMode::rail);
+        }
+
+        const auto chosenBridge = [&bridges]() {
+            Speed16 maxSpeed = kSpeedZero;
+            uint8_t bestBridge = 0xFFU;
+            for (auto bridgeObjId : bridges)
+            {
+                auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeObjId);
+                if (!bridgeFilter(*bridgeObj))
+                {
+                    continue;
+                }
+                if (maxSpeed < bridgeObj->maxSpeed)
+                {
+                    maxSpeed = bridgeObj->maxSpeed;
+                    bestBridge = bridgeObjId;
+                }
+            }
+            return bestBridge;
+        }();
+        return chosenBridge;
+    }
+
+    // 0x0048259F
+    static uint8_t sub_48259F(Company& company, const AiThought& thought)
+    {
+        if (company.var_259A == 254)
+        {
+            company.var_259A = sub_4834C0(thought, [](BridgeObject& bridgeObj) {
+                if (bridgeObj.maxHeight < 4)
+                {
+                    return false;
+                }
+                if ((bridgeObj.disabledTrackCfg
+                     & (Track::CommonTraitFlags::slope
+                        | Track::CommonTraitFlags::steepSlope
+                        | Track::CommonTraitFlags::verySmallCurve
+                        | Track::CommonTraitFlags::smallCurve
+                        | Track::CommonTraitFlags::curve
+                        | Track::CommonTraitFlags::largeCurve
+                        | Track::CommonTraitFlags::sBendCurve
+                        | Track::CommonTraitFlags::unk12))
+                    != Track::CommonTraitFlags::none)
+                {
+                    return false;
+                }
+                return true;
+            });
+            return 0;
+        }
+        if (company.var_259B == 254)
+        {
+            company.var_259B = sub_4834C0(thought, [](BridgeObject& bridgeObj) {
+                if (bridgeObj.maxHeight < 8)
+                {
+                    return false;
+                }
+                return true;
+            });
+            return 0;
+        }
+        if (company.var_259C == 254)
+        {
+            company.var_259C = sub_4834C0(thought, [](BridgeObject& bridgeObj) {
+                if (bridgeObj.maxHeight < 8)
+                {
+                    return false;
+                }
+                if ((bridgeObj.disabledTrackCfg
+                     & (Track::CommonTraitFlags::verySmallCurve
+                        | Track::CommonTraitFlags::smallCurve
+                        | Track::CommonTraitFlags::curve
+                        | Track::CommonTraitFlags::largeCurve
+                        | Track::CommonTraitFlags::sBendCurve))
+                    != Track::CommonTraitFlags::none)
+                {
+                    return false;
+                }
+                return true;
+            });
+            return 0;
+        }
+        // 0x004825E4
         registers regs;
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&thought);
