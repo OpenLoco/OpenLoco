@@ -636,9 +636,14 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                if (maxSpeed < bridgeObj->maxSpeed)
+                auto speed = bridgeObj->maxSpeed;
+                if (bridgeObj->maxSpeed == kSpeed16Null)
                 {
-                    maxSpeed = bridgeObj->maxSpeed;
+                    speed = Speed16(0x7FFF);
+                }
+                if (maxSpeed < speed)
+                {
+                    maxSpeed = speed;
                     bestBridge = bridgeObjId;
                 }
             }
