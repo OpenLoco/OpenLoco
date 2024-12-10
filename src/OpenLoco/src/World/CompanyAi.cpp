@@ -622,11 +622,15 @@ namespace OpenLoco
             Ui::Windows::Construction::Common::refreshBridgeList(bridges.data(), thought.trackObjId, TransportMode::rail);
         }
 
-        const auto chosenBridge = [&bridges]() {
+        const auto chosenBridge = [&bridges, &bridgeFilter]() {
             Speed16 maxSpeed = kSpeedZero;
             uint8_t bestBridge = 0xFFU;
             for (auto bridgeObjId : bridges)
             {
+                if (bridgeObjId == 0xFFU)
+                {
+                    break;
+                }
                 auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeObjId);
                 if (!bridgeFilter(*bridgeObj))
                 {
@@ -643,12 +647,23 @@ namespace OpenLoco
         return chosenBridge;
     }
 
+    // 0x00482662
+    static bool sub_482662(Company& company, const AiThought& thought, uint8_t station, uint16_t dx)
+    {
+        registers regs{};
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        regs.ebp = station * sizeof(AiThought::Station);
+        regs.dx = dx;
+        return call(0x00482662, regs) & X86_FLAG_CARRY;
+    }
+
     // 0x0048259F
     static uint8_t sub_48259F(Company& company, const AiThought& thought)
     {
         if (company.var_259A == 254)
         {
-            company.var_259A = sub_4834C0(thought, [](BridgeObject& bridgeObj) {
+            company.var_259A = sub_4834C0(thought, [](const BridgeObject& bridgeObj) {
                 if (bridgeObj.maxHeight < 4)
                 {
                     return false;
@@ -672,7 +687,7 @@ namespace OpenLoco
         }
         if (company.var_259B == 254)
         {
-            company.var_259B = sub_4834C0(thought, [](BridgeObject& bridgeObj) {
+            company.var_259B = sub_4834C0(thought, [](const BridgeObject& bridgeObj) {
                 if (bridgeObj.maxHeight < 8)
                 {
                     return false;
@@ -683,7 +698,7 @@ namespace OpenLoco
         }
         if (company.var_259C == 254)
         {
-            company.var_259C = sub_4834C0(thought, [](BridgeObject& bridgeObj) {
+            company.var_259C = sub_4834C0(thought, [](const BridgeObject& bridgeObj) {
                 if (bridgeObj.maxHeight < 8)
                 {
                     return false;
@@ -702,12 +717,47 @@ namespace OpenLoco
             });
             return 0;
         }
-        // 0x004825E4
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x0048259F, regs);
-        return regs.al;
+
+        const auto chosenStation = [&thought]() {
+            for (auto i = 0U; i < thought.numStations; ++i)
+            {
+                auto& aiStation = thought.stations[i];
+                if (!aiStation.hasFlags(AiThoughtStationFlags::aiAllocated | AiThoughtStationFlags::operational))
+                {
+                    return i;
+                }
+            }
+            return 0xFFU;
+        }();
+
+        if (chosenStation == 0xFFU)
+        {
+            return 2;
+        }
+
+        for (auto i = 0U; i < 3; ++i)
+        {
+            auto dx = 0U;
+            if (company.var_2596 >= 200)
+            {
+                dx = 32;
+            }
+            else if (company.var_2596 >= 100)
+            {
+                dx = 16;
+            }
+            if (!sub_482662(company, thought, chosenStation, dx))
+            {
+                company.var_2596 = 0;
+                return 0;
+            }
+            company.var_2596++;
+            if (company.var_2596 >= 400)
+            {
+                return 1;
+            }
+        }
+        return 0;
     }
 
     // 0x0048377C
