@@ -73,9 +73,9 @@ namespace OpenLoco::Vehicles
         if (wheelSlipping != 0)
         {
             auto unk = wheelSlipping;
-            if (unk > 32)
+            if (unk > kWheelSlippingDuration / 2)
             {
-                unk = 64 - unk;
+                unk = kWheelSlippingDuration - unk;
             }
             _vehicleUpdate_var_1136130 = 500 + unk * 320;
         }
