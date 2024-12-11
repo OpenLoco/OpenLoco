@@ -653,7 +653,7 @@ namespace OpenLoco
     }
 
     // 0x00482D07
-    static bool sub_482D07_air(Company& company, AiThought& thought, uint8_t aiStationIdx, uint16_t dx)
+    static bool sub_482D07_air(Company& company, AiThought& thought, uint8_t aiStationIdx, uint16_t)
     {
         // 0x00112C3C0 = dx
 
@@ -774,7 +774,56 @@ namespace OpenLoco
             return true;
         }
 
-        sub_49239A();
+        const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(minPos, maxPos);
+        const bool shouldCreateAirport = [&thought, aiStationIdx, producedCargo, acceptedCargo]() {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+            {
+                if (aiStationIdx == 0)
+                {
+                    if (producedCargo & (1U << thought.cargoType))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (acceptedCargo & (1U << thought.cargoType))
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                if (producedCargo & (1U << thought.cargoType))
+                {
+                    return false;
+                }
+                if (acceptedCargo & (1U << thought.cargoType))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }();
+        if (!shouldCreateAirport)
+        {
+            return true;
+        }
+
+        GameCommands::AirportPlacementArgs args{};
+        args.pos = Pos3(World::toWorldSpace(newAirportTilePos), maxHeight);
+        args.rotation = aiStation.rotation;
+        args.type = thought.var_89;
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+        if (res == GameCommands::FAILURE)
+        {
+            return true;
+        }
+        aiStation.pos = args.pos;
+        aiStation.baseZ = args.pos.z / World::kSmallZStep;
+        aiStation.var_02 |= AiThoughtStationFlags::aiAllocated;
+        return false;
     }
 
     // 0x00482662
