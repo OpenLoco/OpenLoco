@@ -416,6 +416,27 @@ namespace OpenLoco
         return acceptedCargos;
     }
 
+    // 0x0049239A
+    PotentialCargo calcAcceptedCargoAi(const TilePos2 minPos, const TilePos2 maxPos)
+    {
+        CargoSearchState cargoSearchState;
+        cargoSearchState.filter(0);
+
+        setCatchmentDisplay(nullptr, CatchmentFlags::flag_1);
+
+        for (auto& tilePos : getClampedRange(minPos, maxPos))
+        {
+            const auto pos = World::toWorldSpace(tilePos);
+            sub_491BF5(pos, CatchmentFlags::flag_1);
+        }
+
+        cargoSearchState.resetIndustryMap();
+        PotentialCargo res{};
+        res.accepted = doCalcAcceptedCargo(nullptr, cargoSearchState);
+        res.produced = cargoSearchState.producedCargoTypes();
+        return res;
+    }
+
     // 0x00491FE0
     // THIS FUNCTION ONLY TO BE CALLED ON NORMAL STATIONS
     uint32_t Station::calcAcceptedCargo(CargoSearchState& cargoSearchState) const
