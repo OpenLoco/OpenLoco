@@ -780,14 +780,14 @@ namespace OpenLoco
             {
                 if (aiStationIdx == 0)
                 {
-                    if (producedCargo & (1U << thought.cargoType))
+                    if (!(producedCargo & (1U << thought.cargoType)))
                     {
                         return false;
                     }
                 }
                 else
                 {
-                    if (acceptedCargo & (1U << thought.cargoType))
+                    if (!(acceptedCargo & (1U << thought.cargoType)))
                     {
                         return false;
                     }
@@ -795,11 +795,11 @@ namespace OpenLoco
             }
             else
             {
-                if (producedCargo & (1U << thought.cargoType))
+                if (!(producedCargo & (1U << thought.cargoType)))
                 {
                     return false;
                 }
-                if (acceptedCargo & (1U << thought.cargoType))
+                if (!(acceptedCargo & (1U << thought.cargoType)))
                 {
                     return false;
                 }
