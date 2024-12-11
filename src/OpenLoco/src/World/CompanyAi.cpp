@@ -652,9 +652,138 @@ namespace OpenLoco
         return chosenBridge;
     }
 
-    // 0x00482662
-    static bool sub_482662(Company& company, const AiThought& thought, uint8_t station, uint16_t dx)
+    // 0x00482D07
+    static bool sub_482D07_air(Company& company, AiThought& thought, uint8_t aiStationIdx, uint16_t dx)
     {
+        // 0x00112C3C0 = dx
+
+        StationId foundStation = StationId::null;
+        for (auto& station : StationManager::stations())
+        {
+            if (station.owner != company.id())
+            {
+                continue;
+            }
+            if ((station.flags & StationFlags::transportModeAir) == StationFlags::none)
+            {
+                continue;
+            }
+            auto& aiStation = thought.stations[aiStationIdx];
+            const auto distance = Math::Vector::manhattanDistance2D(aiStation.pos, World::Pos2{ station.x, station.y });
+            if (distance >= 512)
+            {
+                continue;
+            }
+            const auto cargoType = thought.cargoType;
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+            {
+                if (aiStationIdx == 0)
+                {
+                    if (station.cargoStats[cargoType].quantity != 0)
+                    {
+                        // 0x00482DA2
+                        foundStation = station.id();
+                        break;
+                    }
+                }
+                else
+                {
+                    if (station.cargoStats[cargoType].isAccepted())
+                    {
+                        // 0x00482DA2
+                        foundStation = station.id();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (station.cargoStats[cargoType].isAccepted() && station.cargoStats[cargoType].quantity != 0)
+                {
+                    // 0x00482DA2
+                    foundStation = station.id();
+                    break;
+                }
+            }
+        }
+        if (foundStation != StationId::null)
+        {
+            // 0x00482DA2
+            for (auto& otherThought : company.aiThoughts)
+            {
+                if (otherThought.type == AiThoughtType::null)
+                {
+                    continue;
+                }
+                if (!thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::airBased))
+                {
+                    continue;
+                }
+                for (auto i = 0U; i < otherThought.numStations; ++i)
+                {
+                    auto& otherAiStation = otherThought.stations[i];
+                    if (otherAiStation.id != foundStation)
+                    {
+                        continue;
+                    }
+                    if (!otherAiStation.hasFlags(AiThoughtStationFlags::operational))
+                    {
+                        continue;
+                    }
+                    // 0x00482E00
+                    auto& aiStation = thought.stations[aiStationIdx];
+                    aiStation.id = foundStation;
+                    aiStation.pos = otherAiStation.pos;
+                    aiStation.baseZ = otherAiStation.baseZ;
+                    aiStation.rotation = otherAiStation.rotation;
+                    aiStation.var_02 &= ~AiThoughtStationFlags::aiAllocated;
+                    aiStation.var_02 |= AiThoughtStationFlags::operational;
+
+                    return false;
+                }
+            }
+        }
+        // 0x00482E3C
+
+        const auto randVal = gPrng1().randNext();
+        const auto randTileX = (randVal & 0x1F) - 15;
+        const auto randTileY = ((randVal >> 5) & 0x1F) - 15;
+        const auto randTileOffset = World::TilePos2(randTileX, randTileY);
+
+        auto& aiStation = thought.stations[aiStationIdx];
+        const auto newAirportTilePos = World::toTileSpace(aiStation.pos) + randTileOffset;
+        auto* airportObj = ObjectManager::get<AirportObject>(thought.var_89);
+        auto [minPos, maxPos] = airportObj->getAirportExtents(newAirportTilePos, aiStation.rotation);
+        // 0x00482F21
+
+        auto maxHeight = -1;
+        for (auto& tilePos : getClampedRange(minPos, maxPos))
+        {
+            auto tile = TileManager::get(tilePos);
+            auto* elSurface = tile.surface();
+            auto height = elSurface->baseHeight();
+            if (elSurface->water())
+            {
+                height = elSurface->waterHeight();
+            }
+            maxHeight = std::max<int>(maxHeight, height);
+        }
+        // 0x00482FA4
+        if (!World::validCoords(maxPos))
+        {
+            return true;
+        }
+
+        sub_49239A();
+    }
+
+    // 0x00482662
+    static bool sub_482662(Company& company, AiThought& thought, uint8_t station, uint16_t dx)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            return sub_482D07_air(company, thought, station, dx);
+        }
         registers regs{};
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&thought);
@@ -664,7 +793,7 @@ namespace OpenLoco
     }
 
     // 0x0048259F
-    static uint8_t sub_48259F(Company& company, const AiThought& thought)
+    static uint8_t sub_48259F(Company& company, AiThought& thought)
     {
         if (company.var_259A == 254)
         {
