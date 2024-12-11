@@ -4,6 +4,7 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
+#include "Jukebox.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -64,7 +65,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window->setColour(WindowColour::primary, interface->colour_0B);
         window->setColour(WindowColour::secondary, interface->colour_10);
 
-        window->rowCount = Audio::kNumMusicTracks;
+        window->rowCount = Jukebox::kNumMusicTracks;
         window->rowHover = -1;
 
         return window;
@@ -129,7 +130,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw track name.
             {
                 auto point = Point(15, y);
-                StringId musicTitle = Audio::getMusicInfo(musicTrack)->titleId;
+                StringId musicTitle = Jukebox::getMusicInfo(musicTrack).titleId;
 
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
@@ -144,7 +145,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C176C
     static void getScrollSize([[maybe_unused]] Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = kRowHeight * Audio::kNumMusicTracks;
+        *scrollHeight = kRowHeight * Jukebox::kNumMusicTracks;
     }
 
     // 0x004C1757
@@ -174,7 +175,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         // Are any tracks enabled?
         uint8_t anyEnabled = 0;
-        for (uint8_t i = 0; i < Audio::kNumMusicTracks; i++)
+        for (uint8_t i = 0; i < Jukebox::kNumMusicTracks; i++)
         {
             anyEnabled |= config.enabledMusic[i];
         }
