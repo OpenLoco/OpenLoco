@@ -23,6 +23,7 @@
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "Industry.h"
 #include "IndustryManager.h"
+#include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
@@ -653,7 +654,7 @@ namespace OpenLoco
     }
 
     // 0x00482D07
-    static bool sub_482D07_air(Company& company, AiThought& thought, uint8_t aiStationIdx, uint16_t)
+    static bool sub_482D07_air(Company& company, AiThought& thought, uint8_t aiStationIdx)
     {
         // 0x00112C3C0 = dx
 
@@ -826,12 +827,248 @@ namespace OpenLoco
         return false;
     }
 
+    // 0x00483088
+    static bool sub_483088_water(Company& company, AiThought& thought, uint8_t aiStationIdx)
+    {
+        // 0x00112C3C0 = dx
+
+        // Mostly the same as air
+        StationId foundStation = StationId::null;
+        for (auto& station : StationManager::stations())
+        {
+            if (station.owner != company.id())
+            {
+                continue;
+            }
+            // Different flag to air
+            if ((station.flags & StationFlags::transportModeWater) == StationFlags::none)
+            {
+                continue;
+            }
+            auto& aiStation = thought.stations[aiStationIdx];
+            const auto distance = Math::Vector::manhattanDistance2D(aiStation.pos, World::Pos2{ station.x, station.y });
+            // Different constant to air
+            if (distance >= 448)
+            {
+                continue;
+            }
+            // Same as air
+            const auto cargoType = thought.cargoType;
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+            {
+                if (aiStationIdx == 0)
+                {
+                    if (station.cargoStats[cargoType].quantity != 0)
+                    {
+                        // 0x00483123
+                        foundStation = station.id();
+                        break;
+                    }
+                }
+                else
+                {
+                    if (station.cargoStats[cargoType].isAccepted())
+                    {
+                        // 0x00483123
+                        foundStation = station.id();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (station.cargoStats[cargoType].isAccepted() && station.cargoStats[cargoType].quantity != 0)
+                {
+                    // 0x00483123
+                    foundStation = station.id();
+                    break;
+                }
+            }
+        }
+
+        // Mostly the same as air
+        if (foundStation != StationId::null)
+        {
+            // 0x00483123
+            for (auto& otherThought : company.aiThoughts)
+            {
+                if (otherThought.type == AiThoughtType::null)
+                {
+                    continue;
+                }
+                // Different flag to air
+                if (!thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::waterBased))
+                {
+                    continue;
+                }
+                for (auto i = 0U; i < otherThought.numStations; ++i)
+                {
+                    auto& otherAiStation = otherThought.stations[i];
+                    if (otherAiStation.id != foundStation)
+                    {
+                        continue;
+                    }
+                    if (!otherAiStation.hasFlags(AiThoughtStationFlags::operational))
+                    {
+                        continue;
+                    }
+                    // 0x00483181
+                    auto& aiStation = thought.stations[aiStationIdx];
+                    aiStation.id = foundStation;
+                    aiStation.pos = otherAiStation.pos;
+                    aiStation.baseZ = otherAiStation.baseZ;
+                    aiStation.rotation = otherAiStation.rotation;
+                    aiStation.var_02 &= ~AiThoughtStationFlags::aiAllocated;
+                    aiStation.var_02 |= AiThoughtStationFlags::operational;
+
+                    return false;
+                }
+            }
+        }
+        // 0x00482E3C
+
+        const auto randVal = gPrng1().randNext();
+        // Different contants to air
+        const auto randTileX = (randVal & 0xF) - 7;
+        const auto randTileY = ((randVal >> 4) & 0xF) - 7;
+        const auto randTileOffset = World::TilePos2(randTileX, randTileY);
+
+        auto& aiStation = thought.stations[aiStationIdx];
+        const auto newPortTilePos = World::toTileSpace(aiStation.pos) + randTileOffset;
+        // Different to air for a while
+        const auto minPos = newPortTilePos;
+        const auto maxPos = newPortTilePos + TilePos2(1, 1);
+
+        auto directionLand = 0xFFU;
+        auto directionWaterIndustry = 0xFFU;
+        auto height = -1;
+        for (auto& offset : kPortBorderOffsets)
+        {
+            const auto borderPos = offset + newPortTilePos;
+            if (!World::validCoords(borderPos))
+            {
+                continue;
+            }
+
+            auto tile = TileManager::get(borderPos);
+            {
+                auto* elSurface = tile.surface();
+                if (elSurface->water())
+                {
+                    height = elSurface->waterHeight();
+                    if (height - (4 * World::kSmallZStep) != elSurface->baseHeight()
+                        || !elSurface->isSlopeDoubleHeight())
+                    {
+                        const auto diff = borderPos - minPos - World::TilePos2(1, 1);
+                        const auto diffWorld = toWorldSpace(diff);
+                        directionLand = (Vehicles::calculateYaw0FromVector(diffWorld.x, diffWorld.y) >> 4) ^ (1U << 1);
+                    }
+                }
+            }
+            bool passedSurface = false;
+            for (auto& el : tile)
+            {
+                if (el.as<SurfaceElement>())
+                {
+                    passedSurface = true;
+                    continue;
+                }
+                if (!passedSurface)
+                {
+                    continue;
+                }
+                auto* elIndustry = el.as<World::IndustryElement>();
+                if (elIndustry == nullptr)
+                {
+                    continue;
+                }
+                if (elIndustry->isGhost())
+                {
+                    continue;
+                }
+                auto* industry = elIndustry->industry();
+                auto* industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
+                if (industryObj->hasFlags(IndustryObjectFlags::builtOnWater))
+                {
+                    const auto diff = borderPos - minPos - World::TilePos2(1, 1);
+                    const auto diffWorld = toWorldSpace(diff);
+                    directionWaterIndustry = Vehicles::calculateYaw0FromVector(diffWorld.x, diffWorld.y) >> 4;
+                    break;
+                }
+            }
+        }
+
+        if (!World::validCoords(maxPos) || height == -1)
+        {
+            return true;
+        }
+
+        const auto direction = directionWaterIndustry == 0xFFU ? directionLand : directionWaterIndustry;
+
+        // Same as air
+        const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(minPos, maxPos);
+        const bool shouldCreatePort = [&thought, aiStationIdx, producedCargo, acceptedCargo]() {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+            {
+                if (aiStationIdx == 0)
+                {
+                    if (!(producedCargo & (1U << thought.cargoType)))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (!(acceptedCargo & (1U << thought.cargoType)))
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                if (!(producedCargo & (1U << thought.cargoType)))
+                {
+                    return false;
+                }
+                if (!(acceptedCargo & (1U << thought.cargoType)))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }();
+        if (!shouldCreatePort)
+        {
+            return true;
+        }
+
+        GameCommands::PortPlacementArgs args{};
+        args.pos = Pos3(World::toWorldSpace(newPortTilePos), height);
+        args.rotation = direction;
+        args.type = thought.var_89;
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+        if (res == GameCommands::FAILURE)
+        {
+            return true;
+        }
+        aiStation.pos = args.pos;
+        aiStation.baseZ = args.pos.z / World::kSmallZStep;
+        aiStation.var_02 |= AiThoughtStationFlags::aiAllocated;
+        aiStation.rotation = direction;
+        return false;
+    }
+
     // 0x00482662
     static bool sub_482662(Company& company, AiThought& thought, uint8_t station, uint16_t dx)
     {
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
-            return sub_482D07_air(company, thought, station, dx);
+            return sub_482D07_air(company, thought, station);
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            return sub_483088_water(company, thought, station);
         }
         registers regs{};
         regs.esi = X86Pointer(&company);

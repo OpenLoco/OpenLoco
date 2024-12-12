@@ -148,31 +148,11 @@ namespace OpenLoco::GameCommands
         return std::make_pair(NearbyStationValidation::okay, nearbyStation.id);
     }
 
-    // 0x004FEBD0
-    // Where:
-    // - P is the port
-    // - X represents the border offsets
-    //
-    //    X X
-    //  X P P X
-    //  X P P X
-    //    X X
-    static constexpr std::array<World::Pos2, 8> kPortBorderOffsets = {
-        World::Pos2{ -32, 0 },
-        World::Pos2{ -32, 32 },
-        World::Pos2{ 0, 64 },
-        World::Pos2{ 32, 64 },
-        World::Pos2{ 64, 32 },
-        World::Pos2{ 64, 0 },
-        World::Pos2{ 32, -32 },
-        World::Pos2{ 0, -32 },
-    };
-
     static bool isValidWaterIndustryPort(World::Pos2 pos)
     {
         for (auto& offset : kPortBorderOffsets)
         {
-            const auto testPos = pos + offset;
+            const auto testPos = pos + World::toWorldSpace(offset);
             if (!World::validCoords(testPos))
             {
                 continue;

@@ -101,6 +101,27 @@ namespace OpenLoco
         flag_1 = 1U,
     };
 
+    // 0x004FEBD0
+    // Where:
+    // - Q is the port origin
+    // - P is the port
+    // - X represents the border offsets
+    //
+    //    X X
+    //  X Q P X
+    //  X P P X
+    //    X X
+    constexpr std::array<World::TilePos2, 8> kPortBorderOffsets = {
+        World::TilePos2{ -1, 0 },
+        World::TilePos2{ -1, 1 },
+        World::TilePos2{ 0, 2 },
+        World::TilePos2{ 1, 2 },
+        World::TilePos2{ 2, 1 },
+        World::TilePos2{ 2, 0 },
+        World::TilePos2{ 1, -1 },
+        World::TilePos2{ 0, -1 },
+    };
+
     struct Station
     {
         StringId name = StringIds::null;              // 0x00
