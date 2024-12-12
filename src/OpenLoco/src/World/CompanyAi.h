@@ -83,10 +83,10 @@ namespace OpenLoco
         AiThoughtType type; // 0x00 0x4A8
         uint8_t var_01;     // 0x4A9
         uint8_t pad_02;
-        uint8_t numStations; // 0x4AB size of stations
+        uint8_t numStations; // 0x03 0x4AB size of stations
         uint8_t var_04;      // 0x4AC station length
         uint8_t pad_05;
-        Station stations[4]; // 0x4AE Will lists stations created that vehicles will route to
+        Station stations[4]; // 0x06 0x4AE Will lists stations created that vehicles will route to
         uint8_t trackObjId;  // 0x3E 0x4E6 track or road (with high bit set)
         uint8_t pad_3F;
         uint8_t mods; // 0x40 0x4E8 track or road
