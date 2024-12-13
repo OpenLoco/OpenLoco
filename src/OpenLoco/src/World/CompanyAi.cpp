@@ -656,7 +656,7 @@ namespace OpenLoco
     // 0x00482D07
     static bool sub_482D07_air(Company& company, AiThought& thought, uint8_t aiStationIdx)
     {
-        // 0x00112C3C0 = dx
+        // 0x00112C3C0 = bridgeHeight
 
         StationId foundStation = StationId::null;
         for (auto& station : StationManager::stations())
@@ -857,7 +857,7 @@ namespace OpenLoco
     // 0x00483088
     static bool sub_483088_water(Company& company, AiThought& thought, uint8_t aiStationIdx)
     {
-        // 0x00112C3C0 = dx
+        // 0x00112C3C0 = bridgeHeight
 
         // Mostly the same as air
         StationId foundStation = StationId::null;
@@ -1089,8 +1089,60 @@ namespace OpenLoco
         return false;
     }
 
+    // 0x00482691
+    static bool sub_482691_trackAndRoad(Company& company, AiThought& thought, uint8_t aiStationIdx, uint16_t bridgeHeight)
+    {
+        const auto randVal = gPrng1().randNext();
+        // Different constants to air
+        const auto randTileX = (randVal & 0x7) - 3;
+        const auto randTileY = ((randVal >> 3) & 0x7) - 3;
+        const auto randTileOffset = World::TilePos2(randTileX, randTileY);
+
+        auto& aiStation = thought.stations[aiStationIdx];
+        const auto randStationTilePos = World::toTileSpace(aiStation.pos) + randTileOffset;
+
+        const auto length = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3) ? thought.var_04 : 1;
+        const auto newStationTilePos = randStationTilePos - toTileSpace(kRotationOffset[aiStation.rotation]) * (length / 2);
+
+        auto checkLength = length;
+        auto minPos = newStationTilePos;
+        if (!(thought.trackObjId & (1U << 7)))
+        {
+            if (aiStation.var_9 != 0xFFU)
+            {
+                minPos -= toTileSpace(kRotationOffset[aiStation.rotation]) * 2;
+                checkLength += 2;
+            }
+            if (aiStation.var_A != 0xFFU)
+            {
+                minPos += toTileSpace(kRotationOffset[aiStation.rotation]) * 2;
+                checkLength += 2;
+            }
+        }
+        const auto maxPos = minPos + toTileSpace(kRotationOffset[aiStation.rotation]) * checkLength;
+        auto maxBaseZ = -1;
+        auto tunnelBaseZ = -1;
+        for (auto& tilePos : getClampedRange(minPos, maxPos))
+        {
+            auto tile = TileManager::get(tilePos);
+            auto* elSurface = tile.surface();
+            tunnelBaseZ = std::max<int32_t>(tunnelBaseZ, elSurface->baseZ());
+            auto baseZ = World::TileManager::getSurfaceCornerHeight(*elSurface);
+            auto waterBaseZ = (elSurface->water() + 1) * kMicroToSmallZStep;
+            maxBaseZ = std::max<int32_t>(maxBaseZ, baseZ);
+            maxBaseZ = std::max(maxBaseZ, waterBaseZ);
+        }
+
+        auto maxHeight = maxBaseZ * kSmallZStep + bridgeHeight;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk9))
+        {
+            maxHeight = tunnelBaseZ * kSmallZStep - 32 - bridgeHeight;
+        }
+        // 0x0048282E
+    }
+
     // 0x00482662
-    static bool sub_482662(Company& company, AiThought& thought, uint8_t station, uint16_t dx)
+    static bool sub_482662(Company& company, AiThought& thought, uint8_t station, uint16_t bridgeHeight)
     {
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
@@ -1100,12 +1152,8 @@ namespace OpenLoco
         {
             return sub_483088_water(company, thought, station);
         }
-        registers regs{};
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        regs.ebp = station * sizeof(AiThought::Station);
-        regs.dx = dx;
-        return call(0x00482662, regs) & X86_FLAG_CARRY;
+
+        return sub_482691_trackAndRoad(company, thought, station, bridgeHeight);
     }
 
     // 0x0048259F
@@ -1187,16 +1235,16 @@ namespace OpenLoco
 
         for (auto i = 0U; i < 3; ++i)
         {
-            auto dx = 0U;
+            auto bridgeHeight = 0U;
             if (company.var_2596 >= 200)
             {
-                dx = 32;
+                bridgeHeight = 32;
             }
             else if (company.var_2596 >= 100)
             {
-                dx = 16;
+                bridgeHeight = 16;
             }
-            if (!sub_482662(company, thought, chosenStation, dx))
+            if (!sub_482662(company, thought, chosenStation, bridgeHeight))
             {
                 company.var_2596 = 0;
                 return 0;
