@@ -1253,9 +1253,8 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
+            // By stopping the music, the next time OpenLoco::tick() calls Audio::playBackgroundMusic(), it will detect that the channel is not playing anything and it will play the next music track.
             Audio::stopMusic();
-
-            _currentSong = -1;
 
             w->invalidate();
         }
