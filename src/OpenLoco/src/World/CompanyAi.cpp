@@ -12,6 +12,7 @@
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Road/RemoveRoadStation.h"
+#include "GameCommands/Track/CreateSignal.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/RemoveTrack.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
@@ -25,6 +26,8 @@
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/Track.h"
+#include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Objects/CargoObject.h"
 #include "Objects/CompetitorObject.h"
@@ -813,14 +816,160 @@ namespace OpenLoco
         }
     }
 
+    // 0x00486498
+    // Will keep placing signals (one sided) until either:
+    // * Reaches a station
+    // * More than 1 track connection
+    static void placeAiAllocatedSignalsEvenlySpaced(const World::Pos3 startPos, const uint16_t startTad, const uint8_t trackObjId, const uint16_t minSignalDistance, const uint8_t signalType, const uint8_t startSignalSide)
+    {
+        auto getNextTrack = [trackObjId](const World::Pos3 pos, const uint16_t tad) {
+            const auto trackEnd = Track::getTrackConnectionEnd(pos, tad & Track::AdditionalTaDFlags::basicTaDMask);
+            const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
+            return std::make_pair(trackEnd.nextPos, tc);
+        };
+
+        auto shouldContinue = [](const Track::TrackConnections& tc) {
+            return tc.connections.size() == 1 && tc.stationId == StationId::null;
+        };
+
+        // We start with a large number to force a signal placement as soon as possible from the
+        // start position
+        auto distanceFromSignal = 3200;
+
+        for (auto nextTrack = getNextTrack(startPos, startTad); shouldContinue(nextTrack.second); nextTrack = getNextTrack(nextTrack.first, nextTrack.second.connections[0]))
+        {
+            // Not const as when reversed need to get to the reverse start
+            auto pos = nextTrack.first;
+            // Not const as we might need to toggle the reverse bit
+            auto tad = nextTrack.second.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+            const auto trackId = tad >> 3;
+            const auto rotation = tad & 0x3;
+
+            const auto lengthCopy = distanceFromSignal;
+            distanceFromSignal += TrackData::getTrackMiscData(trackId).unkWeighting;
+            if (lengthCopy < minSignalDistance)
+            {
+                continue;
+            }
+
+            uint8_t signalSide = startSignalSide;
+            if (tad & (1U << 2))
+            {
+                auto& trackSize = TrackData::getUnkTrack(tad);
+                pos += trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    pos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                tad ^= (1U << 2); // Reverse
+                signalSide = signalSide & (1U << 0) ? (1U << 1) : (1U << 0);
+            }
+
+            GameCommands::SignalPlacementArgs args{};
+            args.pos = pos;
+            args.pos.z += TrackData::getTrackPiece(trackId)[0].z;
+            args.index = 0;
+            args.rotation = rotation;
+            args.trackId = trackId;
+            args.trackObjType = trackObjId;
+            args.sides = signalSide << 14;
+            args.type = signalType;
+
+            const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+            if (res != GameCommands::FAILURE)
+            {
+                distanceFromSignal = 0;
+            }
+        }
+    }
+
+    // 0x0048635F
+    // returns:
+    //   true, all signals placed
+    //   false, further spans between stations to look at
+    static bool tryPlaceAiAllocatedSignalsBetweenStations(Company& company, AiThought& thought)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+
+        if (thought.trackObjId & (1U << 7))
+        {
+            return true;
+        }
+        // 0x0112C519
+        const uint8_t trackObjId = thought.trackObjId;
+        const uint8_t signalType = thought.var_8A;
+        // At least the length of the station (which is also the max length of the vehicles)
+        const uint16_t minSignalSpacing = thought.var_04 * 32;
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+        {
+            // 0x0048639B
+            if (company.var_85C2 >= thought.numStations)
+            {
+                return true;
+            }
+
+            const auto& aiStation = thought.stations[company.var_85C2];
+
+            const auto stationEnd = World::Pos3(
+                aiStation.pos + World::Pos3{ kRotationOffset[aiStation.rotation], 0 } * (thought.var_04 - 1),
+                aiStation.baseZ * World::kSmallZStep);
+
+            const uint8_t signalSide = (1U << 0);
+            const auto tad = 0 | aiStation.rotation;
+            company.var_85C2++;
+
+            placeAiAllocatedSignalsEvenlySpaced(stationEnd, tad, trackObjId, minSignalSpacing, signalType, signalSide);
+            return false;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
+        {
+            if (company.var_85C2 >= 2)
+            {
+                return true;
+            }
+
+            // 0x0048640F
+            const uint8_t signalSide = company.var_85C2 & 1 ? (1U << 0) : (1U << 1);
+
+            const auto& aiStation = thought.stations[0];
+
+            const auto trackEnd = Track::getTrackConnectionEnd(World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep), aiStation.rotation ^ (1U << 1));
+            const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
+
+            if (tc.connections.size() != 2)
+            {
+                return false;
+            }
+            const auto tad = tc.connections[company.var_85C2] & Track::AdditionalTaDFlags::basicTaDMask;
+            company.var_85C2++;
+
+            placeAiAllocatedSignalsEvenlySpaced(trackEnd.nextPos, tad, trackObjId, minSignalSpacing, signalType, signalSide);
+            return false;
+        }
+        return true;
+    }
+
     // 0x00430EB5
     static void sub_430EB5(Company& company, AiThought& thought)
     {
-        // place signals ?
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00430EB5, regs);
+        // place signal aiAllocations
+
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2{ 0, 0 };
+            return;
+        }
+
+        if (tryPlaceAiAllocatedSignalsBetweenStations(company, thought))
+        {
+            company.var_4A5 = 3;
+        }
     }
 
     // 0x00430EEF
