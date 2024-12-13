@@ -86,7 +86,7 @@ namespace OpenLoco::Jukebox
 
     std::vector<MusicId> makeSelectedPlaylist()
     {
-        using MusicPlaylistType = Config::MusicPlaylistType;
+        using Config::MusicPlaylistType;
 
         switch (Config::get().old.musicPlaylist)
         {

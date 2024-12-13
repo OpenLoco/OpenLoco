@@ -1011,7 +1011,7 @@ namespace OpenLoco::Audio
             case MusicPlaylistType::currentEra:
             {
                 auto currentYear = getCurrentYear();
-                auto info = Jukebox::getMusicInfo(_currentSong);
+                const auto& info = Jukebox::getMusicInfo(_currentSong);
                 if (currentYear < info.startYear || currentYear > info.endYear)
                 {
                     trackStillApplies = false;
