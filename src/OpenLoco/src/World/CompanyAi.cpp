@@ -1134,7 +1134,7 @@ namespace OpenLoco
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
         {
             auto* dockObj = ObjectManager::get<DockObject>(thought.var_89);
-            baseCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 6);
+            baseCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 7);
         }
         else
         {
