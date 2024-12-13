@@ -827,6 +827,33 @@ namespace OpenLoco
         return false;
     }
 
+    // TODO: Don't do this. Original logic isn't great
+    // Where:
+    // - Q is the port origin
+    // - P is the port
+    // - X represents the border offsets
+    // - Y represents the border offsets that shouldn't be checked but are (see TODO)
+    //
+    //  Y X X Y
+    //  X Q P X
+    //  X P P X
+    //  Y X X Y
+    // Note: Order important!
+    constexpr std::array<World::TilePos2, 12> kPortBorderOffsetsAi = {
+        World::TilePos2{ -1, -1 },
+        World::TilePos2{ 0, -1 },
+        World::TilePos2{ 1, -1 },
+        World::TilePos2{ 2, -1 },
+        World::TilePos2{ -1, 0 },
+        World::TilePos2{ 2, 0 },
+        World::TilePos2{ -1, 1 },
+        World::TilePos2{ 2, 1 },
+        World::TilePos2{ -1, 2 },
+        World::TilePos2{ 0, 2 },
+        World::TilePos2{ 1, 2 },
+        World::TilePos2{ 2, 2 },
+    };
+
     // 0x00483088
     static bool sub_483088_water(Company& company, AiThought& thought, uint8_t aiStationIdx)
     {
@@ -925,7 +952,7 @@ namespace OpenLoco
                 }
             }
         }
-        // 0x00482E3C
+        // 0x004831BD
 
         const auto randVal = gPrng1().randNext();
         // Different contants to air
@@ -942,7 +969,7 @@ namespace OpenLoco
         auto directionLand = 0xFFU;
         auto directionWaterIndustry = 0xFFU;
         auto height = -1;
-        for (auto& offset : kPortBorderOffsets)
+        for (auto& offset : kPortBorderOffsetsAi)
         {
             const auto borderPos = offset + newPortTilePos;
             if (!World::validCoords(borderPos))
@@ -959,8 +986,11 @@ namespace OpenLoco
                     if (height - (4 * World::kSmallZStep) != elSurface->baseHeight()
                         || !elSurface->isSlopeDoubleHeight())
                     {
-                        const auto diff = borderPos - minPos - World::TilePos2(1, 1);
-                        const auto diffWorld = toWorldSpace(diff);
+                        // TODO: Use kRotationToBuildingFront instead of this broken logic
+                        // (then we don't even need calculateYaw0FromVector)
+                        const auto diffWorld = toWorldSpace(offset) - World::Pos2(16, 16);
+                        // This gets the direction of this water from a point not at the origin which is
+                        // not a good idea. The -16, -16 should really be removed. Only here to match vanilla
                         directionLand = (Vehicles::calculateYaw0FromVector(diffWorld.x, diffWorld.y) >> 4) ^ (1U << 1);
                     }
                 }
