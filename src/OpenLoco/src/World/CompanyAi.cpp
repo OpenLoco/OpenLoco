@@ -1044,7 +1044,7 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                if (elTrack->hasBridge())
+                if (!elTrack->hasBridge())
                 {
                     continue;
                 }
