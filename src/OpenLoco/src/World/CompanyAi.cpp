@@ -1090,7 +1090,7 @@ namespace OpenLoco
     }
 
     // 0x00482A00
-    static bool sub_482A00_road(Company& company, AiThought& thought, uint8_t aiStationIdx, const World::Pos3 newStationPos) { return true; }
+    static bool sub_482A00_road(Company& , AiThought& , uint8_t , const World::Pos3 ) { return true; }
 
     // 0x00482914
     static bool sub_482914_rail(Company& company, AiThought& thought, uint8_t aiStationIdx, const World::Pos3 newStationPos)
@@ -1165,7 +1165,13 @@ namespace OpenLoco
                 checkLength += 2;
             }
         }
-        const auto maxPos = minPos + toTileSpace(kRotationOffset[aiStation.rotation]) * checkLength;
+        auto maxPos = minPos + toTileSpace(kRotationOffset[aiStation.rotation]) * checkLength;
+
+        minPos.x = std::min(minPos.x, maxPos.x);
+        minPos.y = std::min(minPos.y, maxPos.y);
+        maxPos.x = std::max(minPos.x, maxPos.x);
+        maxPos.y = std::max(minPos.y, maxPos.y);
+
         auto maxBaseZ = -1;
         auto tunnelBaseZ = std::numeric_limits<int32_t>::max();
         for (auto& tilePos : getClampedRange(minPos, maxPos))
