@@ -1089,6 +1089,52 @@ namespace OpenLoco
         return false;
     }
 
+    // 0x00482A00
+    static bool sub_482A00_road(Company& company, AiThought& thought, uint8_t aiStationIdx, const World::Pos3 newStationPos) { return true; }
+
+    // 0x00482914
+    static bool sub_482914_rail(Company& company, AiThought& thought, uint8_t aiStationIdx, const World::Pos3 newStationPos)
+    {
+        auto& aiStation = thought.stations[aiStationIdx];
+
+        GameCommands::Unk51Args args{};
+        args.pos = newStationPos;
+        args.rotation = aiStation.rotation;
+        args.trackObjectId = thought.trackObjId;
+        args.stationObjectId = thought.var_89;
+        args.stationLength = thought.var_04;
+        if (aiStation.var_9 != 0xFFU)
+        {
+            args.unk1 |= (1U << 1);
+        }
+        if (aiStation.var_A != 0xFFU)
+        {
+            args.unk1 |= (1U << 1);
+        }
+        args.unk2 = company.var_259A;
+
+        auto* trackObj = ObjectManager::get<TrackObject>(thought.trackObjId);
+        for (auto i = 0U; i < 4; ++i)
+        {
+            if (trackObj->mods[i] != 0xFFU
+                && (thought.mods & (1U << i)))
+            {
+                args.mods |= (1U << i);
+            }
+        }
+
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+
+        if (res == GameCommands::FAILURE)
+        {
+            return true;
+        }
+        aiStation.pos = args.pos;
+        aiStation.baseZ = args.pos.z / World::kSmallZStep;
+        aiStation.var_02 |= AiThoughtStationFlags::aiAllocated;
+        return false;
+    }
+
     // 0x00482691
     static bool sub_482691_trackAndRoad(Company& company, AiThought& thought, uint8_t aiStationIdx, uint16_t bridgeHeight)
     {
@@ -1121,12 +1167,14 @@ namespace OpenLoco
         }
         const auto maxPos = minPos + toTileSpace(kRotationOffset[aiStation.rotation]) * checkLength;
         auto maxBaseZ = -1;
-        auto tunnelBaseZ = -1;
+        auto tunnelBaseZ = std::numeric_limits<int32_t>::max();
         for (auto& tilePos : getClampedRange(minPos, maxPos))
         {
             auto tile = TileManager::get(tilePos);
             auto* elSurface = tile.surface();
-            tunnelBaseZ = std::max<int32_t>(tunnelBaseZ, elSurface->baseZ());
+
+            tunnelBaseZ = std::min<int32_t>(tunnelBaseZ, elSurface->baseZ());
+
             auto baseZ = World::TileManager::getSurfaceCornerHeight(*elSurface);
             auto waterBaseZ = (elSurface->water() + 1) * kMicroToSmallZStep;
             maxBaseZ = std::max<int32_t>(maxBaseZ, baseZ);
@@ -1139,6 +1187,78 @@ namespace OpenLoco
             maxHeight = tunnelBaseZ * kSmallZStep - 32 - bridgeHeight;
         }
         // 0x0048282E
+
+        auto stationMin = newStationTilePos;
+        auto stationMax = stationMin;
+        if (length != 1)
+        {
+            stationMax += toTileSpace(kRotationOffset[aiStation.rotation]) * (length - 1);
+        }
+
+        stationMin.x = std::min(stationMin.x, stationMax.x);
+        stationMin.y = std::min(stationMin.y, stationMax.y);
+        stationMax.x = std::max(stationMin.x, stationMax.x);
+        stationMax.y = std::max(stationMin.y, stationMax.y);
+
+        if (!World::validCoords(stationMax))
+        {
+            return true;
+        }
+
+        const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(stationMin, stationMax);
+        const bool shouldCreateStation = [&thought, aiStationIdx, producedCargo, acceptedCargo]() {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6) || aiStationIdx >= 2)
+            {
+                if (!(producedCargo & (1U << thought.cargoType)))
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+            {
+                if (aiStationIdx == 0)
+                {
+                    if (!(producedCargo & (1U << thought.cargoType)))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (!(acceptedCargo & (1U << thought.cargoType)))
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                if (!(producedCargo & (1U << thought.cargoType)))
+                {
+                    return false;
+                }
+                if (!(acceptedCargo & (1U << thought.cargoType)))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }();
+        if (!shouldCreateStation)
+        {
+            return true;
+        }
+
+        if (thought.trackObjId & (1U << 7))
+        {
+            return sub_482A00_road(company, thought, aiStationIdx, Pos3(World::toWorldSpace(newStationTilePos), maxHeight));
+        }
+        else
+        {
+            return sub_482914_rail(company, thought, aiStationIdx, Pos3(World::toWorldSpace(newStationTilePos), maxHeight));
+        }
     }
 
     // 0x00482662
