@@ -755,7 +755,7 @@ namespace OpenLoco
         auto& aiStation = thought.stations[aiStationIdx];
         const auto newAirportTilePos = World::toTileSpace(aiStation.pos) + randTileOffset;
         auto* airportObj = ObjectManager::get<AirportObject>(thought.var_89);
-        auto [minPos, maxPos] = airportObj->getAirportExtents(newAirportTilePos, aiStation.rotation);
+        const auto [minPos, maxPos] = airportObj->getAirportExtents(newAirportTilePos, aiStation.rotation);
         // 0x00482F21
 
         auto maxHeight = -1;
@@ -776,8 +776,8 @@ namespace OpenLoco
             return true;
         }
 
-        const bool shouldCreateAirport = [&thought, aiStationIdx, minPos, maxPos]() {
-            const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(minPos, maxPos);
+        const bool shouldCreateAirport = [&thought, aiStationIdx, minLoc = minPos, maxLoc = maxPos]() {
+            const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(minLoc, maxLoc);
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
             {
                 if (aiStationIdx == 0)
