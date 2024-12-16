@@ -4,10 +4,10 @@
 #include "Date.h"
 #include "Environment.h"
 #include "Localisation/StringIds.h"
-#include <vector>
-#include <queue>
 #include <algorithm>
 #include <numeric>
+#include <queue>
+#include <vector>
 
 using namespace OpenLoco::Environment;
 using namespace OpenLoco::Interop;
@@ -46,7 +46,7 @@ namespace OpenLoco::Jukebox
         { PathId::music_get_me_to_gladstone_bay, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
         { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 }
     };
-    
+
     // Queue that stores all the songs in the current playlist
     static std::queue<MusicID> playlist;
 
@@ -93,7 +93,7 @@ namespace OpenLoco::Jukebox
     static void generatePlaylist()
     {
         using Config::MusicPlaylistType;
-        
+
         // Find selected songs
         std::vector<MusicID> selectedSongs;
         switch (Config::get().old.musicPlaylist)
@@ -113,14 +113,16 @@ namespace OpenLoco::Jukebox
 
         // Scramble selected songs and populate playlist
         std::random_shuffle(selectedSongs.begin(), selectedSongs.end());
-        for (MusicID song : selectedSongs) {
+        for (MusicID song : selectedSongs)
+        {
             playlist.push(song);
         }
     }
 
     static MusicId chooseNextMusicTrack(MusicId lastSong)
     {
-        if (playlist.empty()) {
+        if (playlist.empty())
+        {
             generatePlaylist();
         }
         MusicID track = playlist.pop();
