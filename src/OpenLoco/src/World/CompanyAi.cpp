@@ -11,6 +11,7 @@
 #include "GameCommands/Docks/RemovePort.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadMod.h"
+#include "GameCommands/Road/CreateRoadStation.h"
 #include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Road/RemoveRoadStation.h"
 #include "GameCommands/Track/CreateSignal.h"
@@ -1090,7 +1091,160 @@ namespace OpenLoco
     }
 
     // 0x00482A00
-    static bool sub_482A00_road(Company& , AiThought& , uint8_t , const World::Pos3 ) { return true; }
+    static bool sub_482A00_road(Company& company, AiThought& thought, uint8_t aiStationIdx, const World::Pos3 newStationPos)
+    {
+        auto& aiStation = thought.stations[aiStationIdx];
+
+        GameCommands::Unk53Args args{};
+        args.pos = newStationPos;
+        args.rotation = aiStation.rotation;
+        args.roadObjectId = thought.trackObjId & ~(1U << 7);
+        args.stationObjectId = thought.var_89;
+        args.stationLength = thought.var_04;
+        if (aiStation.var_9 != 0xFFU)
+        {
+            args.unk1 |= (1U << 1);
+        }
+        if (aiStation.var_A != 0xFFU)
+        {
+            args.unk1 |= (1U << 1);
+        }
+        args.unk2 = company.var_259A;
+
+        auto* roadObj = ObjectManager::get<RoadObject>(args.roadObjectId);
+        for (auto i = 0U; i < 2; ++i)
+        {
+            if (roadObj->mods[i] != 0xFFU
+                && (thought.mods & (1U << i)))
+            {
+                args.mods |= (1U << i);
+            }
+        }
+
+        auto* stationObj = ObjectManager::get<RoadStationObject>(args.stationObjectId);
+        bool doBasicPlacement = false;
+        if (stationObj->hasFlags(RoadStationFlags::roadEnd))
+        {
+            doBasicPlacement = true;
+        }
+
+        bool _112C5A2 = false;
+        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        {
+            _112C5A2 = true;
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+            {
+                doBasicPlacement = true;
+            }
+        }
+        if (doBasicPlacement)
+        {
+            const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+            if (res == GameCommands::FAILURE)
+            {
+                return true;
+            }
+
+            aiStation.pos = args.pos;
+            aiStation.baseZ = args.pos.z / World::kSmallZStep;
+            aiStation.var_02 |= AiThoughtStationFlags::aiAllocated;
+            return false;
+        }
+
+        bool hasPlaced = false;
+        auto tile = TileManager::get(newStationPos);
+        for (auto& el : tile)
+        {
+            auto* elRoad = el.as<RoadElement>();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+            if (elRoad->isGhost() || elRoad->isAiAllocated())
+            {
+                continue;
+            }
+            if (elRoad->roadId() != 0)
+            {
+                continue;
+            }
+            if (_112C5A2)
+            {
+                args.rotation = elRoad->rotation();
+                const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+                if (res == GameCommands::FAILURE)
+                {
+                    continue;
+                }
+                hasPlaced = true;
+                break;
+            }
+            else
+            {
+                // We are doing this as its used outside of this loop
+                args.pos.z = elRoad->baseHeight();
+                args.rotation = elRoad->rotation();
+
+                GameCommands::RoadStationPlacementArgs args2{};
+                args2.index = 0;
+                args2.pos = args.pos;
+                args2.roadId = 0;
+                args2.roadObjectId = elRoad->roadObjectId();
+                args2.rotation = args.rotation;
+                args2.type = args.stationObjectId;
+                const auto res = GameCommands::doCommand(args2, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+                if (res == GameCommands::FAILURE)
+                {
+                    continue;
+                }
+                hasPlaced = true;
+                break;
+            }
+        }
+        if (!hasPlaced)
+        {
+            return true;
+        }
+
+        // 0x00482BA3
+
+        aiStation.pos = args.pos;
+        aiStation.baseZ = args.pos.z / World::kSmallZStep;
+        aiStation.rotation = args.rotation;
+        aiStation.var_02 |= AiThoughtStationFlags::aiAllocated;
+
+        bool _112C5A3 = false;
+        if (aiStationIdx != 0)
+        {
+            _112C5A3 = true;
+        }
+        if (aiStationIdx > 1)
+        {
+            return false;
+        }
+        auto otherAiStationIdx = aiStationIdx == 0 ? 1 : 0;
+
+        auto& otherAiStation = thought.stations[otherAiStationIdx];
+        const auto dx = Math::Vector::manhattanDistance2D(aiStation.pos + kRotationOffset[aiStation.rotation], otherAiStation.pos);
+        const auto ax = Math::Vector::manhattanDistance2D(aiStation.pos - kRotationOffset[aiStation.rotation], otherAiStation.pos);
+        if (ax < dx)
+        {
+            if (aiStation.var_9 == 0xFFU || aiStation.var_9 == aiStationIdx)
+            {
+                std::swap(aiStation.var_9, aiStation.var_A);
+                std::swap(aiStation.var_B, aiStation.var_C);
+            }
+        }
+        else
+        {
+            if (aiStation.var_A == 0xFFU || aiStation.var_A == aiStationIdx)
+            {
+                std::swap(aiStation.var_9, aiStation.var_A);
+                std::swap(aiStation.var_B, aiStation.var_C);
+            }
+        }
+        return false;
+    }
 
     // 0x00482914
     static bool sub_482914_rail(Company& company, AiThought& thought, uint8_t aiStationIdx, const World::Pos3 newStationPos)
