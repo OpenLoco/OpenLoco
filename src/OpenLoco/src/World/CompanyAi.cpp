@@ -1107,7 +1107,7 @@ namespace OpenLoco
         }
         if (aiStation.var_A != 0xFFU)
         {
-            args.unk1 |= (1U << 1);
+            args.unk1 |= (1U << 0);
         }
         args.unk2 = company.var_259A;
 
@@ -1115,7 +1115,7 @@ namespace OpenLoco
         for (auto i = 0U; i < 2; ++i)
         {
             if (roadObj->mods[i] != 0xFFU
-                && (thought.mods & (1U << i)))
+                && (thought.mods & (1U << roadObj->mods[i])))
             {
                 args.mods |= (1U << i);
             }
@@ -1263,7 +1263,7 @@ namespace OpenLoco
         }
         if (aiStation.var_A != 0xFFU)
         {
-            args.unk1 |= (1U << 1);
+            args.unk1 |= (1U << 0);
         }
         args.unk2 = company.var_259A;
 
@@ -1271,7 +1271,7 @@ namespace OpenLoco
         for (auto i = 0U; i < 4; ++i)
         {
             if (trackObj->mods[i] != 0xFFU
-                && (thought.mods & (1U << i)))
+                && (thought.mods & (1U << trackObj->mods[i])))
             {
                 args.mods |= (1U << i);
             }
