@@ -776,8 +776,8 @@ namespace OpenLoco
             return true;
         }
 
-        const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(minPos, maxPos);
-        const bool shouldCreateAirport = [&thought, aiStationIdx, producedCargo, acceptedCargo]() {
+        const bool shouldCreateAirport = [&thought, aiStationIdx, minPos, maxPos]() {
+            const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(minPos, maxPos);
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
             {
                 if (aiStationIdx == 0)
@@ -1037,8 +1037,8 @@ namespace OpenLoco
         const auto direction = directionWaterIndustry == 0xFFU ? directionLand : directionWaterIndustry;
 
         // Same as air
-        const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(minPos, maxPos);
-        const bool shouldCreatePort = [&thought, aiStationIdx, producedCargo, acceptedCargo]() {
+        const bool shouldCreatePort = [&thought, aiStationIdx, minPos, maxPos]() {
+            const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(minPos, maxPos);
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
             {
                 if (aiStationIdx == 0)
@@ -1128,10 +1128,10 @@ namespace OpenLoco
             doBasicPlacement = true;
         }
 
-        bool _112C5A2 = false;
+        bool isTram = false;
         if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
         {
-            _112C5A2 = true;
+            isTram = true;
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
             {
                 doBasicPlacement = true;
@@ -1168,7 +1168,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (_112C5A2)
+            if (isTram)
             {
                 args.rotation = elRoad->rotation();
                 const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
@@ -1213,11 +1213,6 @@ namespace OpenLoco
         aiStation.rotation = args.rotation;
         aiStation.var_02 |= AiThoughtStationFlags::aiAllocated;
 
-        bool _112C5A3 = false;
-        if (aiStationIdx != 0)
-        {
-            _112C5A3 = true;
-        }
         if (aiStationIdx > 1)
         {
             return false;
@@ -1373,8 +1368,8 @@ namespace OpenLoco
             return true;
         }
 
-        const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(stationMin, stationMax);
-        const bool shouldCreateStation = [&thought, aiStationIdx, producedCargo, acceptedCargo]() {
+        const bool shouldCreateStation = [&thought, aiStationIdx, stationMin, stationMax]() {
+            const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(stationMin, stationMax);
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6) || aiStationIdx >= 2)
             {
                 if (!(producedCargo & (1U << thought.cargoType)))
