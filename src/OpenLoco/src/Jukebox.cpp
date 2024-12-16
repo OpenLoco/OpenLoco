@@ -48,7 +48,7 @@ namespace OpenLoco::Jukebox
     };
 
     // Queue that stores all the songs in the current playlist
-    static std::queue<MusicID> playlist;
+    static std::queue<MusicId> playlist;
 
     static std::vector<MusicId> findAllSongs()
     {
@@ -95,7 +95,7 @@ namespace OpenLoco::Jukebox
         using Config::MusicPlaylistType;
 
         // Find selected songs
-        std::vector<MusicID> selectedSongs;
+        std::vector<MusicId> selectedSongs;
         switch (Config::get().old.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
@@ -113,7 +113,7 @@ namespace OpenLoco::Jukebox
 
         // Scramble selected songs and populate playlist
         std::random_shuffle(selectedSongs.begin(), selectedSongs.end());
-        for (MusicID song : selectedSongs)
+        for (MusicId song : selectedSongs)
         {
             playlist.push(song);
         }
@@ -125,7 +125,7 @@ namespace OpenLoco::Jukebox
         {
             generatePlaylist();
         }
-        MusicID track = playlist.pop();
+        MusicId track = playlist.pop();
         playlist.push(track);
         return track;
     }
