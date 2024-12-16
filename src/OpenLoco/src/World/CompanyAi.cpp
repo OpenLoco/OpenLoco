@@ -1321,10 +1321,14 @@ namespace OpenLoco
         }
         auto maxPos = minPos + toTileSpace(kRotationOffset[aiStation.rotation]) * (checkLength - 1);
 
-        minPos.x = std::min(minPos.x, maxPos.x);
-        minPos.y = std::min(minPos.y, maxPos.y);
-        maxPos.x = std::max(minPos.x, maxPos.x);
-        maxPos.y = std::max(minPos.y, maxPos.y);
+        if (minPos.x > maxPos.x)
+        {
+            std::swap(minPos.x, maxPos.x);
+        }
+        if (minPos.y > maxPos.y)
+        {
+            std::swap(minPos.y, maxPos.y);
+        }
 
         auto maxBaseZ = -1;
         auto tunnelBaseZ = std::numeric_limits<int32_t>::max();
@@ -1355,10 +1359,14 @@ namespace OpenLoco
             stationMax += toTileSpace(kRotationOffset[aiStation.rotation]) * (length - 1);
         }
 
-        stationMin.x = std::min(stationMin.x, stationMax.x);
-        stationMin.y = std::min(stationMin.y, stationMax.y);
-        stationMax.x = std::max(stationMin.x, stationMax.x);
-        stationMax.y = std::max(stationMin.y, stationMax.y);
+        if (stationMin.x > stationMax.x)
+        {
+            std::swap(stationMin.x, stationMax.x);
+        }
+        if (stationMin.y > stationMax.y)
+        {
+            std::swap(stationMin.y, stationMax.y);
+        }
 
         if (!World::validCoords(stationMax))
         {
