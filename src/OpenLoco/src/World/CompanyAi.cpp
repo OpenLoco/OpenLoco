@@ -1319,7 +1319,7 @@ namespace OpenLoco
                 checkLength += 2;
             }
         }
-        auto maxPos = minPos + toTileSpace(kRotationOffset[aiStation.rotation]) * checkLength;
+        auto maxPos = minPos + toTileSpace(kRotationOffset[aiStation.rotation]) * (checkLength - 1);
 
         minPos.x = std::min(minPos.x, maxPos.x);
         minPos.y = std::min(minPos.y, maxPos.y);
