@@ -86,6 +86,7 @@ namespace OpenLoco::World::Track
         oneSided = 1U << 9,
         startsAtHalfHeight = 1U << 10, // Not used. From RCT2
         junction = 1U << 11,
+        unk12 = 1U << 12,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(CommonTraitFlags);
 
