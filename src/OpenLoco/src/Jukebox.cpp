@@ -119,7 +119,7 @@ namespace OpenLoco::Jukebox
         }
     }
 
-    static MusicId chooseNextMusicTrack(MusicId lastSong)
+    MusicId chooseNextMusicTrack()
     {
         if (playlist.empty())
         {
@@ -130,8 +130,13 @@ namespace OpenLoco::Jukebox
         return track;
     }
 
-    static const MusicInfo& getMusicInfo(MusicId track)
+    const MusicInfo& getMusicInfo(MusicId track)
     {
         return kMusicInfo[track];
+    }
+
+    const std::queue<MusicId> getEntirePlaylist()
+    {
+        return playlist;
     }
 }
