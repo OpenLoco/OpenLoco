@@ -1066,7 +1066,7 @@ namespace OpenLoco::Audio
             if (_currentSong == kNoSong || !requestedSong)
             {
                 _lastSong = _currentSong;
-                _currentSong = Jukebox::chooseNextMusicTrack(_lastSong);
+                _currentSong = Jukebox::chooseNextMusicTrack();
             }
             else
             {
