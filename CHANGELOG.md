@@ -1,6 +1,7 @@
 24.11+ (???)
 ------------------------------------------------------------------------
 - Fix: [#2776, #2777] Bridge support image ordering incorrect and invisible bridge platforms over buildings.
+- Fix: [#2785] Unique names for industries incorrectly generated.
 
 24.11 (2024-11-28)
 ------------------------------------------------------------------------

@@ -77,7 +77,7 @@ namespace OpenLoco::GameCommands
         StringId allocatedStringId = StringIds::empty;
         if (strlen(renameStringBuffer) != 0)
         {
-            allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
+            allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, true);
             if (allocatedStringId == StringIds::empty)
             {
                 return FAILURE;

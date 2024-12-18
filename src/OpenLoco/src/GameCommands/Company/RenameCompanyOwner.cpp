@@ -93,7 +93,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Allocate a string id for the new name.
-        StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
+        StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, false);
         if (allocatedStringId == StringIds::empty)
         {
             return GameCommands::FAILURE;
