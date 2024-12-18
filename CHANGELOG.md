@@ -1,6 +1,7 @@
 24.11+ (???)
 ------------------------------------------------------------------------
 - Fix: [#2776, #2777] Bridge support image ordering incorrect and invisible bridge platforms over buildings.
+- Fix: [#2778] News has celebration sound for player company going bankrupt.
 - Fix: [#2785] Unique names for industries incorrectly generated.
 - Fix: [#2791] Station cargo image incorrect for high quantities of cargo.
 
