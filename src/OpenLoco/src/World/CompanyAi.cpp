@@ -699,20 +699,76 @@ namespace OpenLoco
         call(0x00430D54, regs);
     }
 
+    // 0x00430B31
+    static void state2ClearActiveThought(Company& company)
+    {
+        if (company.activeThoughtId != 0xFFU)
+        {
+            auto& thought = company.aiThoughts[company.activeThoughtId];
+            clearThought(thought);
+        }
+        company.var_4A5 = 13;
+    }
+
+    static constexpr std::array<uint8_t, 12> kIntelligenceToMoneyFactor = {
+        1,
+        9,
+        8,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2,
+        1,
+        0,
+        0,
+    };
+
+    static bool sub_482533(Company& company, AiThought& thought)
+    {
+        auto unk = company.var_257E - thought.var_76 * 24;
+        if (unk <= 0)
+        {
+            return true;
+        }
+
+        auto* competitorObj = ObjectManager::get<CompetitorObject>(company.competitorId);
+        unk = unk * kIntelligenceToMoneyFactor[competitorObj->intelligence] / 2;
+
+        if (unk < thought.var_76)
+        {
+            return true;
+        }
+
+        return !CompanyManager::ensureCompanyFunding(company.id(), thought.var_76);
+    }
+
     // 0x00430D7B
     static void sub_430D7B(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430D7B, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        if (sub_482533(company, thought))
+        {
+            state2ClearActiveThought(company);
+        }
+        else
+        {
+            company.var_4A4 = AiThinkState::unk3;
+            company.var_4A5 = 0;
+            // 0x00482578
+            company.var_259A = 0xFE;
+            company.var_259B = 0xFE;
+            company.var_259C = 0xFE;
+            company.var_2596 = 0;
+            thought.var_76 = 0;
+        }
     }
 
     // 0x00430DAE
     static void sub_430DAE(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430DAE, regs);
+        company.var_4A4 = AiThinkState::unk0;
     }
 
     using AiThinkState2Function = void (*)(Company&);
