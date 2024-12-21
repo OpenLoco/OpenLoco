@@ -730,7 +730,7 @@ namespace OpenLoco
         const auto speedFactor = ((minSpeed.getRaw() / 2) * 180) / 256;
 
         // 0x0112C3AA
-        const auto distanceFactor = std::clamp(averageTrackTileDistance / (speedFactor == 0 ? 1 : speedFactor), 1U, 256U);
+        const auto distanceFactor = std::clamp(averageTrackTileDistance * 2 / (speedFactor == 0 ? 1 : speedFactor), 1U, 256U);
 
         // 0x0112C3AC
         auto distanceFactor2 = distanceFactor * 4;
@@ -771,7 +771,7 @@ namespace OpenLoco
             }
         }
 
-        const auto transferTimeFactor = (std::min(cargoObj->cargoTransferTime / 256, 65535) / 192) * 4;
+        const auto transferTimeFactor = (std::min<int32_t>((cargoObj->cargoTransferTime * estimatedNumUnits) / 256, 65535) / 192) * 4;
 
         const auto estimatedNumDays = distanceFactor + transferTimeFactor / 8;
         const auto estimatedPayment = CompanyManager::calculateDeliveredCargoPayment(thought.cargoType, estimatedNumUnits, averageTrackTileDistance, estimatedNumDays);
@@ -783,6 +783,7 @@ namespace OpenLoco
     // 0x00430D26
     static void sub_430D26(Company& company)
     {
+        company.var_25BE = 0xFFU;
         auto& thought = company.aiThoughts[company.activeThoughtId];
         company.activeThoughtRevenueEstimate = estimateThoughtRevenue(thought);
         company.var_4A5 = 11;
@@ -823,7 +824,7 @@ namespace OpenLoco
 
     static bool sub_482533(Company& company, AiThought& thought)
     {
-        auto unk = company.activeThoughtRevenueEstimate - thought.var_76 * 24;
+        auto unk = company.activeThoughtRevenueEstimate - thought.var_7C * 24;
         if (unk <= 0)
         {
             return true;

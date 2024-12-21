@@ -172,7 +172,8 @@ namespace OpenLoco
         uint8_t var_259C;
         uint8_t pad_259D;
         uint32_t var_259E;
-        uint8_t pad_25A2[0x25BF - 0x25A2];
+        uint8_t pad_25A2[0x25BE - 0x25A2];
+        uint8_t var_25BE;
         CorporateRating currentRating;          // 0x25BF
         Unk25C0HashTableEntry var_25C0[0x1000]; // 0x25C0 Hash table entries
         uint16_t var_25C0_length;               // 0x85C0 Hash table length
