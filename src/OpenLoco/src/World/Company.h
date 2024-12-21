@@ -158,13 +158,14 @@ namespace OpenLoco
         uint8_t var_4A5;
         uint8_t var_4A6;
         uint8_t var_4A7;
-        AiThought aiThoughts[kMaxAiThoughts]; // 0x04A8
-        uint8_t activeThoughtId;              // 0x2578
-        World::SmallZ headquartersZ;          // 0x2579
-        coord_t headquartersX;                // 0x257A -1 on no headquarter placed
-        coord_t headquartersY;                // 0x257C
-        currency32_t var_257E;
-        uint8_t pad_2582[0x2596 - 0x2582];
+        AiThought aiThoughts[kMaxAiThoughts];      // 0x04A8
+        uint8_t activeThoughtId;                   // 0x2578
+        World::SmallZ headquartersZ;               // 0x2579
+        coord_t headquartersX;                     // 0x257A -1 on no headquarter placed
+        coord_t headquartersY;                     // 0x257C
+        currency32_t activeThoughtRevenueEstimate; // 0x257E
+        uint32_t var_2582;
+        uint8_t pad_2586[0x2596 - 0x2586];
         uint32_t var_2596;
         uint8_t var_259A;
         uint8_t var_259B;

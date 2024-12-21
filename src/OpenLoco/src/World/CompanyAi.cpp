@@ -64,6 +64,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco
 {
@@ -84,7 +85,7 @@ namespace OpenLoco
         unk3 = 1U << 3,
         unk4 = 1U << 4,
         unk5 = 1U << 5,
-        unk6 = 1U << 6,
+        unk6 = 1U << 6, // Circular track - 4 stations
         unk7 = 1U << 7,
         unk8 = 1U << 8,
         unk9 = 1U << 9, // Tunnel (unused)
@@ -150,6 +151,12 @@ namespace OpenLoco
     static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
     {
         return (kThoughtTypeFlags[enumValue(type)] & flags) != ThoughtTypeFlags::none;
+    }
+
+    // 0x00483778
+    static void clearThought(AiThought& thought)
+    {
+        thought.type = AiThoughtType::null;
     }
 
     // 0x00487144
@@ -683,20 +690,109 @@ namespace OpenLoco
         call(0x00430CEC, regs);
     }
 
+    // 0x004824F8
+    static uint32_t aiStationsTileDistance(const AiThought& thought, uint8_t aiStationIdx0, uint8_t aiStationIdx1)
+    {
+        auto& aiStation0 = thought.stations[aiStationIdx0];
+        auto& aiStation1 = thought.stations[aiStationIdx1];
+
+        const auto tilePos0 = toTileSpace(aiStation0.pos);
+        const auto tilePos1 = toTileSpace(aiStation1.pos);
+
+        return Math::Vector::distance2D(tilePos0, tilePos1);
+    }
+
+    // 0x004822E8
+    static currency32_t estimateThoughtRevenue(const AiThought& thought)
+    {
+        uint32_t averageTrackTileDistance = 0;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+        {
+            uint32_t totalTrackTileDistance = aiStationsTileDistance(thought, 0, 1);
+            totalTrackTileDistance += aiStationsTileDistance(thought, 1, 2);
+            totalTrackTileDistance += aiStationsTileDistance(thought, 2, 3);
+            totalTrackTileDistance += aiStationsTileDistance(thought, 3, 0);
+
+            averageTrackTileDistance = totalTrackTileDistance / 4;
+        }
+        else
+        {
+            averageTrackTileDistance += aiStationsTileDistance(thought, 0, 1);
+        }
+
+        Speed16 minSpeed = kSpeed16Max;
+        for (auto i = 0U; i < thought.var_45; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
+            minSpeed = std::min(vehicleObj->speed, minSpeed);
+        }
+
+        const auto speedFactor = ((minSpeed.getRaw() / 2) * 180) / 256;
+
+        // 0x0112C3AA
+        const auto distanceFactor = std::clamp(averageTrackTileDistance / (speedFactor == 0 ? 1 : speedFactor), 1U, 256U);
+
+        // 0x0112C3AC
+        auto distanceFactor2 = distanceFactor * 4;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+        {
+            distanceFactor2 *= 2;
+        }
+
+        distanceFactor2 /= thought.var_43;
+
+        uint32_t estimatedNumUnits = 0;
+        const auto cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+        for (auto i = 0U; i < thought.var_45; ++i)
+        {
+            bool cargoFound = false;
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
+            for (auto j = 0U; j < 2; ++j)
+            {
+                if (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType))
+                {
+                    estimatedNumUnits += vehicleObj->maxCargo[j];
+                    cargoFound = true;
+                    break;
+                }
+            }
+            if (cargoFound)
+            {
+                continue;
+            }
+
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk14))
+            {
+                if (cargoObj->hasFlags(CargoObjectFlags::refit))
+                {
+                    const auto sourceCargoType = Numerics::bitScanForward(vehicleObj->compatibleCargoCategories[0]);
+                    estimatedNumUnits += Vehicles::getNumUnitsForCargo(vehicleObj->maxCargo[0], sourceCargoType, thought.cargoType);
+                }
+            }
+        }
+
+        const auto transferTimeFactor = (std::min(cargoObj->cargoTransferTime / 256, 65535) / 192) * 4;
+
+        const auto estimatedNumDays = distanceFactor + transferTimeFactor / 8;
+        const auto estimatedPayment = CompanyManager::calculateDeliveredCargoPayment(thought.cargoType, estimatedNumUnits, averageTrackTileDistance, estimatedNumDays);
+
+        const auto unkTimeFactor = 2920 / std::max<int32_t>(transferTimeFactor + distanceFactor2, 1);
+        return estimatedPayment * unkTimeFactor;
+    }
+
     // 0x00430D26
     static void sub_430D26(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430D26, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        company.activeThoughtRevenueEstimate = estimateThoughtRevenue(thought);
+        company.var_4A5 = 11;
     }
 
     // 0x00430D54
     static void sub_430D54(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430D54, regs);
+        company.var_2582 = 0;
+        company.var_4A5 = 12;
     }
 
     // 0x00430B31
@@ -727,7 +823,7 @@ namespace OpenLoco
 
     static bool sub_482533(Company& company, AiThought& thought)
     {
-        auto unk = company.var_257E - thought.var_76 * 24;
+        auto unk = company.activeThoughtRevenueEstimate - thought.var_76 * 24;
         if (unk <= 0)
         {
             return true;
@@ -2367,7 +2463,7 @@ namespace OpenLoco
             return 1;
         }
 
-        if (company.var_257E * 2 < thought.var_76)
+        if (company.activeThoughtRevenueEstimate * 2 < thought.var_76)
         {
             return 1;
         }
@@ -3145,12 +3241,6 @@ namespace OpenLoco
         {
             company.var_4A5 = 4;
         }
-    }
-
-    // 0x00483778
-    static void clearThought(AiThought& thought)
-    {
-        thought.type = AiThoughtType::null;
     }
 
     // 0x00431186
