@@ -603,12 +603,142 @@ namespace OpenLoco
         CompanyManager::aiDestroy(company.id());
     }
 
-    // 0x004309FD
-    static void aiThinkState2(Company& company)
+    // 0x00430A12
+    static void sub_430A12(Company& company)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
-        call(0x004309FD, regs);
+        call(0x00430A12, regs);
+    }
+
+    // 0x00430B5D
+    static void sub_430B5D(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430B5D, regs);
+    }
+
+    // 0x00430BAB
+    static void sub_430BAB(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430BAB, regs);
+    }
+
+    // 0x00430BDA
+    static void sub_430BDA(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430BDA, regs);
+    }
+
+    // 0x00430C06
+    static void sub_430C06(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430C06, regs);
+    }
+
+    // 0x00430C2D
+    static void sub_430C2D(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430C2D, regs);
+    }
+
+    // 0x00430C73
+    static void sub_430C73(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430C73, regs);
+    }
+
+    // 0x00430C9A
+    static void sub_430C9A(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430C9A, regs);
+    }
+
+    // 0x00430CBE
+    static void sub_430CBE(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430CBE, regs);
+    }
+
+    // 0x00430CEC
+    static void sub_430CEC(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430CEC, regs);
+    }
+
+    // 0x00430D26
+    static void sub_430D26(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430D26, regs);
+    }
+
+    // 0x00430D54
+    static void sub_430D54(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430D54, regs);
+    }
+
+    // 0x00430D7B
+    static void sub_430D7B(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430D7B, regs);
+    }
+
+    // 0x00430DAE
+    static void sub_430DAE(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430DAE, regs);
+    }
+
+    using AiThinkState2Function = void (*)(Company&);
+
+    static constexpr std::array<AiThinkState2Function, 14> _funcs_4F94B0 = {
+        sub_430A12,
+        sub_430B5D,
+        sub_430BAB,
+        sub_430BDA,
+        sub_430C06,
+        sub_430C2D,
+        sub_430C73,
+        sub_430C9A,
+        sub_430CBE,
+        sub_430CEC,
+        sub_430D26,
+        sub_430D54,
+        sub_430D7B,
+        sub_430DAE,
+    };
+
+    // 0x004309FD
+    static void aiThinkState2(Company& company)
+    {
+        company.var_85F6++;
+        _funcs_4F94B0[company.var_4A5](company);
     }
 
     // 0x004834C0, 0x0048352E, 0x00493594
