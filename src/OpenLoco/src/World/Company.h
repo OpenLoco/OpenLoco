@@ -163,7 +163,7 @@ namespace OpenLoco
         World::SmallZ headquartersZ;               // 0x2579
         coord_t headquartersX;                     // 0x257A -1 on no headquarter placed
         coord_t headquartersY;                     // 0x257C
-        currency32_t activeThoughtRevenueEstimate; // 0x257E
+        currency32_t activeThoughtRevenueEstimate; // 0x257E Also used for aiStationIdx in sub_430CEC TODO: Don't do this
         uint32_t var_2582;
         uint8_t pad_2586[0x2596 - 0x2586];
         uint32_t var_2596;

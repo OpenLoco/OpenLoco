@@ -29,6 +29,7 @@
 #include "GameCommands/Vehicles/VehicleSell.h"
 #include "Industry.h"
 #include "IndustryManager.h"
+#include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
@@ -37,8 +38,10 @@
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Map/TreeElement.h"
 #include "MessageManager.h"
 #include "Objects/BridgeObject.h"
+#include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/DockObject.h"
@@ -49,6 +52,7 @@
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Objects/TrainStationObject.h"
+#include "Objects/TreeObject.h"
 #include "Random.h"
 #include "Station.h"
 #include "StationManager.h"
@@ -682,12 +686,62 @@ namespace OpenLoco
         call(0x00430CBE, regs);
     }
 
+    // 0x004821EF
+    static currency32_t estimateStationClearageCosts(const AiThought& thought, uint8_t aiStationIdx)
+    {
+        if (aiStationIdx >= thought.numStations)
+        {
+            return 0;
+        }
+        auto& aiStation = thought.stations[aiStationIdx];
+        if (aiStation.hasFlags(AiThoughtStationFlags::operational))
+        {
+            return 0;
+        }
+
+        currency32_t totalCost = 0;
+        const auto minPos = aiStation.pos - World::Pos2{ 64, 64 };
+        const auto maxPos = aiStation.pos + World::Pos2{ 64, 64 };
+        for (const auto& pos : getClampedRange(minPos, maxPos))
+        {
+            auto tile = TileManager::get(pos);
+            for (const auto& el : tile)
+            {
+                auto* elTree = el.as<TreeElement>();
+                auto* elBuilding = el.as<BuildingElement>();
+                if (elBuilding != nullptr)
+                {
+                    if (elBuilding->sequenceIndex() == 0)
+                    {
+                        auto* buildingObj = ObjectManager::get<BuildingObject>(elBuilding->objectId());
+                        if (!buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters | BuildingObjectFlags::indestructible))
+                        {
+                            totalCost += Economy::getInflationAdjustedCost(buildingObj->clearCostFactor, buildingObj->clearCostIndex, 8);
+                        }
+                    }
+                }
+                else if (elTree != nullptr)
+                {
+                    auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
+                    totalCost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
+                }
+            }
+        }
+        return totalCost;
+    }
+
     // 0x00430CEC
     static void sub_430CEC(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430CEC, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        // TODO: activeThoughtRevenueEstimate is being used as a activeThoughtAiStationIdx varaible
+        // in the future we should use a new offset.
+        thought.var_76 += estimateStationClearageCosts(thought, company.activeThoughtRevenueEstimate);
+        company.activeThoughtRevenueEstimate++;
+        if (company.activeThoughtRevenueEstimate >= 4)
+        {
+            company.var_4A5 = 10;
+        }
     }
 
     // 0x004824F8
