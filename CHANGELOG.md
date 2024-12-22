@@ -4,6 +4,7 @@
 - Fix: [#2778] News has celebration sound for player company going bankrupt.
 - Fix: [#2785] Unique names for industries incorrectly generated.
 - Fix: [#2791] Station cargo image incorrect for high quantities of cargo.
+- Fix: [#2806] Objects with zeroed base sound frequency do not play.
 
 24.11 (2024-11-28)
 ------------------------------------------------------------------------
