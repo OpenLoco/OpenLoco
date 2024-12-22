@@ -670,12 +670,103 @@ namespace OpenLoco
         call(0x00430C73, regs);
     }
 
+    // 0x00481DE3
+    static currency32_t estimateStationCost(const AiThought& thought)
+    {
+        currency32_t baseCost = 0;
+        uint8_t costMultiplier = kThoughtTypeEstimatedCostMultiplier[enumValue(thought.type)];
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            auto* airportObj = ObjectManager::get<AirportObject>(thought.var_89);
+            baseCost = Economy::getInflationAdjustedCost(airportObj->buildCostFactor, airportObj->costIndex, 6);
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            auto* dockObj = ObjectManager::get<DockObject>(thought.var_89);
+            baseCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 7);
+        }
+        else
+        {
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk6))
+            {
+                costMultiplier *= thought.var_04;
+            }
+
+            if (thought.trackObjId & (1U << 7))
+            {
+                {
+                    const auto roadObjId = thought.trackObjId & ~(1U << 7);
+                    auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+                    const auto trackBaseCost = Economy::getInflationAdjustedCost(roadObj->buildCostFactor, roadObj->costIndex, 10);
+                    const auto cost = (trackBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
+                    baseCost += cost;
+                }
+                {
+                    for (auto i = 0U; i < 32U; ++i)
+                    {
+                        if (thought.mods & (1U << i))
+                        {
+                            auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(i);
+                            const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(roadExtraObj->buildCostFactor, roadExtraObj->costIndex, 10);
+                            const auto cost = (trackExtraBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
+                            baseCost += cost;
+                        }
+                    }
+                }
+                {
+                    auto* stationObj = ObjectManager::get<RoadStationObject>(thought.var_89);
+                    const auto stationBaseCost = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
+                    const auto cost = (stationBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
+                    baseCost += cost;
+                }
+            }
+            else
+            {
+
+                auto* trackObj = ObjectManager::get<TrackObject>(thought.trackObjId);
+                {
+                    const auto trackBaseCost = Economy::getInflationAdjustedCost(trackObj->buildCostFactor, trackObj->costIndex, 10);
+                    const auto cost = (trackBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                    baseCost += cost;
+                }
+                {
+                    for (auto i = 0U; i < 32U; ++i)
+                    {
+                        if (thought.mods & (1U << i))
+                        {
+                            auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(i);
+                            const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->buildCostFactor, trackExtraObj->costIndex, 10);
+                            const auto cost = (trackExtraBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                            baseCost += cost;
+                        }
+                    }
+                }
+                {
+                    auto* stationObj = ObjectManager::get<TrainStationObject>(thought.var_89);
+                    const auto stationBaseCost = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
+                    const auto cost = (stationBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                    baseCost += cost;
+
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk9))
+                    {
+                        const auto tunnelBaseCost = Economy::getInflationAdjustedCost(trackObj->tunnelCostFactor, trackObj->costIndex, 10);
+                        const auto tunnelCost = (tunnelBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                        baseCost += tunnelCost;
+                    }
+                }
+            }
+        }
+        return baseCost * costMultiplier;
+    }
+
     // 0x00430C9A
     static void sub_430C9A(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430C9A, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        thought.var_76 += estimateStationCost(thought);
+
+        company.var_4A5 = 8;
     }
 
     // 0x004821C5
@@ -2497,100 +2588,10 @@ namespace OpenLoco
         }
     }
 
-    // 0x00481DE3
-    static currency32_t getStationCostEstimate(const AiThought& thought)
-    {
-        currency32_t baseCost = 0;
-        uint8_t costMultiplier = kThoughtTypeEstimatedCostMultiplier[enumValue(thought.type)];
-
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
-        {
-            auto* airportObj = ObjectManager::get<AirportObject>(thought.var_89);
-            baseCost = Economy::getInflationAdjustedCost(airportObj->buildCostFactor, airportObj->costIndex, 6);
-        }
-        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
-        {
-            auto* dockObj = ObjectManager::get<DockObject>(thought.var_89);
-            baseCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 7);
-        }
-        else
-        {
-            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk6))
-            {
-                costMultiplier *= thought.var_04;
-            }
-
-            if (thought.trackObjId & (1U << 7))
-            {
-                {
-                    const auto roadObjId = thought.trackObjId & ~(1U << 7);
-                    auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-                    const auto trackBaseCost = Economy::getInflationAdjustedCost(roadObj->buildCostFactor, roadObj->costIndex, 10);
-                    const auto cost = (trackBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
-                    baseCost += cost;
-                }
-                {
-                    for (auto i = 0U; i < 32U; ++i)
-                    {
-                        if (thought.mods & (1U << i))
-                        {
-                            auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(i);
-                            const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(roadExtraObj->buildCostFactor, roadExtraObj->costIndex, 10);
-                            const auto cost = (trackExtraBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
-                            baseCost += cost;
-                        }
-                    }
-                }
-                {
-                    auto* stationObj = ObjectManager::get<RoadStationObject>(thought.var_89);
-                    const auto stationBaseCost = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
-                    const auto cost = (stationBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
-                    baseCost += cost;
-                }
-            }
-            else
-            {
-
-                auto* trackObj = ObjectManager::get<TrackObject>(thought.trackObjId);
-                {
-                    const auto trackBaseCost = Economy::getInflationAdjustedCost(trackObj->buildCostFactor, trackObj->costIndex, 10);
-                    const auto cost = (trackBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
-                    baseCost += cost;
-                }
-                {
-                    for (auto i = 0U; i < 32U; ++i)
-                    {
-                        if (thought.mods & (1U << i))
-                        {
-                            auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(i);
-                            const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->buildCostFactor, trackExtraObj->costIndex, 10);
-                            const auto cost = (trackExtraBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
-                            baseCost += cost;
-                        }
-                    }
-                }
-                {
-                    auto* stationObj = ObjectManager::get<TrainStationObject>(thought.var_89);
-                    const auto stationBaseCost = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
-                    const auto cost = (stationBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
-                    baseCost += cost;
-
-                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk9))
-                    {
-                        const auto tunnelBaseCost = Economy::getInflationAdjustedCost(trackObj->tunnelCostFactor, trackObj->costIndex, 10);
-                        const auto tunnelCost = (tunnelBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
-                        baseCost += tunnelCost;
-                    }
-                }
-            }
-        }
-        return baseCost * costMultiplier;
-    }
-
     // 0x00486668
     static void sub_486668(Company& company, AiThought& thought)
     {
-        thought.var_76 += getStationCostEstimate(thought);
+        thought.var_76 += estimateStationCost(thought);
         thought.var_76 += company.var_85F2;
     }
 
