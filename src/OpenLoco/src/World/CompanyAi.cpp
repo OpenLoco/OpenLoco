@@ -754,7 +754,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk14))
+            if (vehicleObj->hasFlags(VehicleObjectFlags::refittable))
             {
                 if (cargoObj->hasFlags(CargoObjectFlags::refit))
                 {
