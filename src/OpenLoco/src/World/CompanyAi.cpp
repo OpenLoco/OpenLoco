@@ -614,6 +614,17 @@ namespace OpenLoco
         CompanyManager::aiDestroy(company.id());
     }
 
+    // 0x00430B31
+    static void state2ClearActiveThought(Company& company)
+    {
+        if (company.activeThoughtId != 0xFFU)
+        {
+            auto& thought = company.aiThoughts[company.activeThoughtId];
+            clearThought(thought);
+        }
+        company.var_4A5 = 13;
+    }
+
     // 0x00430A12
     static void sub_430A12(Company& company)
     {
@@ -662,12 +673,64 @@ namespace OpenLoco
         call(0x00430C2D, regs);
     }
 
+    static bool sub_480096(AiThought& thought)
+    {
+        uint16_t mods = 0;
+        uint8_t rackRail = 0xFFU;
+        for (auto i = 0U; i < thought.var_45; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
+            for (auto j = 0U; j < vehicleObj->numTrackExtras; ++j)
+            {
+                mods |= (1U << vehicleObj->requiredTrackExtras[j]);
+            }
+
+            if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+            {
+                if (thought.var_8B & (1U << 0))
+                {
+                    rackRail = vehicleObj->rackRailType;
+                }
+            }
+        }
+        thought.mods = mods;
+        thought.rackRailType = rackRail;
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            std::array<uint8_t, 17> airports{};
+            Ui::Windows::Construction::Common::refreshAirportList(airports.data());
+            uint16_t chosenAirportObj = 0xFFU;
+            for (auto& airportObjId : airports)
+            {
+                if (airportObjId == 0xFFU)
+                {
+                    break;
+                }
+                auto* airportObj = ObjectManager::get<AirportObject>(airportObjId);
+                if (airportObj->hasFlags(AirportObjectFlags::))
+            }
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+        }
+        else
+        {
+        }
+    }
+
     // 0x00430C73
     static void sub_430C73(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430C73, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        if (sub_480096(thought))
+        {
+            state2ClearActiveThought(company);
+        }
+        else
+        {
+            company.var_4A5 = 7;
+        }
     }
 
     // 0x00481DE3
@@ -833,9 +896,9 @@ namespace OpenLoco
                 }
             }
 
-            if (thought.var_3F != 0xFFU)
+            if (thought.rackRailType != 0xFFU)
             {
-                auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(thought.var_3F);
+                auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(thought.rackRailType);
                 const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->buildCostFactor, trackExtraObj->costIndex, 10);
                 const auto cost = (trackExtraBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
                 tileCost += cost;
@@ -1041,17 +1104,6 @@ namespace OpenLoco
     {
         company.var_2582 = 0;
         company.var_4A5 = 12;
-    }
-
-    // 0x00430B31
-    static void state2ClearActiveThought(Company& company)
-    {
-        if (company.activeThoughtId != 0xFFU)
-        {
-            auto& thought = company.aiThoughts[company.activeThoughtId];
-            clearThought(thought);
-        }
-        company.var_4A5 = 13;
     }
 
     static constexpr std::array<uint8_t, 12> kIntelligenceToMoneyFactor = {

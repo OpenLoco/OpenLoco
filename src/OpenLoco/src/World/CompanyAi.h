@@ -86,9 +86,9 @@ namespace OpenLoco
         uint8_t numStations; // 0x03 0x4AB size of stations
         uint8_t var_04;      // 0x4AC station length
         uint8_t pad_05;
-        Station stations[4]; // 0x06 0x4AE Will lists stations created that vehicles will route to
-        uint8_t trackObjId;  // 0x3E 0x4E6 track or road (with high bit set)
-        uint8_t var_3F;
+        Station stations[4];  // 0x06 0x4AE Will lists stations created that vehicles will route to
+        uint8_t trackObjId;   // 0x3E 0x4E6 track or road (with high bit set)
+        uint8_t rackRailType; // 0x3F 0x4E7 Is 0xFFU for no rack rail
         uint16_t mods;        // 0x40 0x4E8 track or road
         uint8_t cargoType;    // 0x42 0x4EA
         uint8_t var_43;       // 0x4EB
