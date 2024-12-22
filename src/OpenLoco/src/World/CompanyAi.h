@@ -88,7 +88,7 @@ namespace OpenLoco
         uint8_t pad_05;
         Station stations[4]; // 0x06 0x4AE Will lists stations created that vehicles will route to
         uint8_t trackObjId;  // 0x3E 0x4E6 track or road (with high bit set)
-        uint8_t pad_3F;
+        uint8_t var_3F;
         uint16_t mods;        // 0x40 0x4E8 track or road
         uint8_t cargoType;    // 0x42 0x4EA
         uint8_t var_43;       // 0x4EB

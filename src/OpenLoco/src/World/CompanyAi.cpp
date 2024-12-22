@@ -678,12 +678,114 @@ namespace OpenLoco
         call(0x00430C9A, regs);
     }
 
+    // 0x004821C5
+    static uint32_t aiStationsManhattenTileDistance(const AiThought& thought, uint8_t aiStationIdx0, uint8_t aiStationIdx1)
+    {
+        auto& aiStation0 = thought.stations[aiStationIdx0];
+        auto& aiStation1 = thought.stations[aiStationIdx1];
+
+        const auto tilePos0 = toTileSpace(aiStation0.pos);
+        const auto tilePos1 = toTileSpace(aiStation1.pos);
+
+        return Math::Vector::manhattanDistance2D(tilePos0, tilePos1);
+    }
+
+    // 0x00481FF0
+    static currency32_t estimateTrackPlacementCosts(const AiThought& thought)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return 0;
+        }
+
+        currency32_t tileCost = 0;
+        if (thought.trackObjId & (1U << 7))
+        {
+            {
+                const auto roadObjId = thought.trackObjId & ~(1U << 7);
+                auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+                const auto trackBaseCost = Economy::getInflationAdjustedCost(roadObj->buildCostFactor, roadObj->costIndex, 10);
+                const auto cost = (trackBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
+                tileCost += cost;
+            }
+            {
+                for (auto i = 0U; i < 32U; ++i)
+                {
+                    if (thought.mods & (1U << i))
+                    {
+                        auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(i);
+                        const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(roadExtraObj->buildCostFactor, roadExtraObj->costIndex, 10);
+                        const auto cost = (trackExtraBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
+                        tileCost += cost;
+                    }
+                }
+            }
+        }
+        else
+        {
+            auto* trackObj = ObjectManager::get<TrackObject>(thought.trackObjId);
+            {
+                const auto trackBaseCost = Economy::getInflationAdjustedCost(trackObj->buildCostFactor, trackObj->costIndex, 10);
+                const auto cost = (trackBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                tileCost += cost;
+            }
+            {
+                for (auto i = 0U; i < 32U; ++i)
+                {
+                    if (thought.mods & (1U << i))
+                    {
+                        auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(i);
+                        const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->buildCostFactor, trackExtraObj->costIndex, 10);
+                        const auto cost = (trackExtraBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                        tileCost += cost;
+                    }
+                }
+            }
+
+            if (thought.var_3F != 0xFFU)
+            {
+                auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(thought.var_3F);
+                const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->buildCostFactor, trackExtraObj->costIndex, 10);
+                const auto cost = (trackExtraBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                tileCost += cost;
+            }
+
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk9))
+            {
+                const auto trackBaseCost = Economy::getInflationAdjustedCost(trackObj->tunnelCostFactor, trackObj->costIndex, 10);
+                const auto cost = (trackBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
+                tileCost += cost;
+            }
+        }
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk10))
+        {
+            return 0;
+        }
+
+        uint32_t totalTileDistance = 0;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+        {
+            totalTileDistance += aiStationsManhattenTileDistance(thought, 0, 1);
+            totalTileDistance += aiStationsManhattenTileDistance(thought, 1, 2);
+            totalTileDistance += aiStationsManhattenTileDistance(thought, 2, 3);
+            totalTileDistance += aiStationsManhattenTileDistance(thought, 3, 0);
+        }
+        else
+        {
+            totalTileDistance += aiStationsManhattenTileDistance(thought, 0, 1);
+        }
+        return totalTileDistance * tileCost;
+    }
+
     // 0x00430CBE
     static void sub_430CBE(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430CBE, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        thought.var_76 += estimateTrackPlacementCosts(thought);
+
+        company.var_4A5 = 9;
+        company.activeThoughtRevenueEstimate = 0;
     }
 
     // 0x004821EF
