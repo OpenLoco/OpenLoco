@@ -44,7 +44,15 @@ namespace OpenLoco::Audio
     void Channel::setFrequency(int32_t freq)
     {
         _attributes.freq = freq;
-        _source.setPitch(OpenAL::freqFromLoco(freq));
+        // If frequency is zero don't adjust the frequency at all
+        if (freq == 0)
+        {
+            _source.setPitch(1.0f);
+        }
+        else
+        {
+            _source.setPitch(OpenAL::freqFromLoco(freq));
+        }
     }
 
     bool Channel::isPlaying() const
