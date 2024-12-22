@@ -606,7 +606,7 @@ namespace OpenLoco
                 numMonthsInTheRed++;
                 if (numMonthsInTheRed == 9)
                 {
-                    const auto message = CompanyManager::getControllingId() == id() ? MessageType::bankruptcyDeclared2 : MessageType::bankruptcyDeclared;
+                    const auto message = CompanyManager::getControllingId() == id() ? MessageType::bankruptcyDeclared : MessageType::bankruptcyDeclaredCompetitor;
                     MessageManager::post(message, id(), enumValue(id()), 0xFFFFU);
 
                     challengeFlags |= CompanyFlags::bankrupt;

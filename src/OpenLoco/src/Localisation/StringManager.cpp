@@ -52,7 +52,7 @@ namespace OpenLoco::StringManager
     }
 
     // 0x00496522
-    StringId userStringAllocate(char* str /* edi */, uint8_t cl)
+    StringId userStringAllocate(char* str, bool mustBeUnique)
     {
         auto bestSlot = -1;
         for (auto i = 0u; i < Limits::kMaxUserStrings; ++i)
@@ -62,7 +62,7 @@ namespace OpenLoco::StringManager
             {
                 bestSlot = i;
             }
-            else if (cl > 0)
+            else if (mustBeUnique)
             {
                 if (strcmp(str, userStr) == 0)
                 {

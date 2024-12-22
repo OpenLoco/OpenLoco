@@ -39,7 +39,7 @@ namespace OpenLoco
         bankruptcyWarning6Months,
         bankruptcyWarning3Months,
         bankruptcyDeclared,
-        bankruptcyDeclared2,
+        bankruptcyDeclaredCompetitor,
         vehicleCrashed,
         companyCheated,
         newSpeedRecord,

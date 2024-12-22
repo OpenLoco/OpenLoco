@@ -34,7 +34,7 @@ namespace OpenLoco::StringManager
     const char* swapString(StringId id, const char* src);
     const char* getString(StringId id);
 
-    StringId userStringAllocate(char* str, uint8_t cl);
+    StringId userStringAllocate(char* str, bool mustBeUnique);
     const char* getUserString(StringId id);
     void emptyUserString(StringId stringId);
     bool isUserString(StringId id);
