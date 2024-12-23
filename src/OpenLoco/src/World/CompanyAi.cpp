@@ -51,6 +51,7 @@
 #include "Objects/RoadStationObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
+#include "Objects/TrainSignalObject.h"
 #include "Objects/TrainStationObject.h"
 #include "Objects/TreeObject.h"
 #include "Random.h"
@@ -673,7 +674,8 @@ namespace OpenLoco
         call(0x00430C2D, regs);
     }
 
-    static bool sub_480096(AiThought& thought)
+    // 0x00480096
+    static bool determineStationAndTrackModTypes(AiThought& thought)
     {
         uint16_t mods = 0;
         uint8_t rackRail = 0xFFU;
@@ -696,26 +698,194 @@ namespace OpenLoco
         thought.mods = mods;
         thought.rackRailType = rackRail;
 
+        uint8_t chosenStationObject = 0xFFU;
+
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
             std::array<uint8_t, 17> airports{};
             Ui::Windows::Construction::Common::refreshAirportList(airports.data());
-            uint16_t chosenAirportObj = 0xFFU;
-            for (auto& airportObjId : airports)
+            int16_t bestDesignYear = -1;
+
+            for (const auto airportObjId : airports)
             {
                 if (airportObjId == 0xFFU)
                 {
                     break;
                 }
                 auto* airportObj = ObjectManager::get<AirportObject>(airportObjId);
-                if (airportObj->hasFlags(AirportObjectFlags::))
+                if (airportObj->hasFlags(AirportObjectFlags::acceptsHeavyPlanes | AirportObjectFlags::acceptsLightPlanes))
+                {
+                    if (bestDesignYear < airportObj->designedYear)
+                    {
+                        bestDesignYear = airportObj->designedYear;
+                        chosenStationObject = airportObjId;
+                    }
+                }
             }
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+            thought.signalObjId = 0xFFU;
+            return false;
         }
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
         {
+            std::array<uint8_t, 17> docks{};
+            Ui::Windows::Construction::Common::refreshDockList(docks.data());
+            int16_t bestDesignYear = -1;
+
+            for (const auto dockObjId : docks)
+            {
+                if (dockObjId == 0xFFU)
+                {
+                    break;
+                }
+                auto* dockObj = ObjectManager::get<DockObject>(dockObjId);
+
+                if (bestDesignYear < dockObj->designedYear)
+                {
+                    bestDesignYear = dockObj->designedYear;
+                    chosenStationObject = dockObjId;
+                }
+            }
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+            thought.signalObjId = 0xFFU;
+            return false;
+        }
+        else if (thought.trackObjId & (1U << 7))
+        {
+            std::array<uint8_t, 17> roadStations{};
+            Ui::Windows::Construction::Common::refreshStationList(roadStations.data(), thought.trackObjId & ~(1U << 7), TransportMode::road);
+            int16_t bestDesignYear = -1;
+            bool unk = false;
+            for (const auto roadStationObjId : roadStations)
+            {
+                if (roadStationObjId == 0xFFU)
+                {
+                    break;
+                }
+                auto* roadStationObj = ObjectManager::get<RoadStationObject>(roadStationObjId);
+                if (roadStationObj->hasFlags(RoadStationFlags::passenger)
+                    && roadStationObj->cargoType != thought.cargoType)
+                {
+                    continue;
+                }
+                if (roadStationObj->hasFlags(RoadStationFlags::freight)
+                    && roadStationObj->cargoType == thought.cargoType) // Why??
+                {
+                    continue;
+                }
+
+                bool alwaysSelect = false;
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk8))
+                {
+                    if (roadStationObj->hasFlags(RoadStationFlags::roadEnd))
+                    {
+                        if (!unk)
+                        {
+                            alwaysSelect = true;
+                        }
+                        unk = true;
+                    }
+                    else
+                    {
+                        if (unk)
+                        {
+                            continue;
+                        }
+                    }
+                }
+                else
+                {
+                    if (roadStationObj->hasFlags(RoadStationFlags::roadEnd))
+                    {
+                        if (unk)
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        if (!unk)
+                        {
+                            alwaysSelect = true;
+                        }
+                        unk = true;
+                    }
+                }
+                if (!alwaysSelect)
+                {
+                    if (bestDesignYear >= roadStationObj->designedYear)
+                    {
+                        continue;
+                    }
+                }
+                bestDesignYear = roadStationObj->designedYear;
+                chosenStationObject = roadStationObjId;
+            }
+
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+            thought.signalObjId = 0xFFU;
+            return false;
         }
         else
         {
+            std::array<uint8_t, 17> trainStations{};
+            Ui::Windows::Construction::Common::refreshStationList(trainStations.data(), thought.trackObjId, TransportMode::rail);
+            int16_t bestDesignYear = -1;
+            for (const auto trainStationObjId : trainStations)
+            {
+                if (trainStationObjId == 0xFFU)
+                {
+                    break;
+                }
+                auto* trainStationObj = ObjectManager::get<TrainStationObject>(trainStationObjId);
+
+                if (bestDesignYear < trainStationObj->designedYear)
+                {
+                    bestDesignYear = trainStationObj->designedYear;
+                    chosenStationObject = trainStationObjId;
+                }
+            }
+
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+
+            std::array<uint8_t, 17> signals{};
+            Ui::Windows::Construction::Common::refreshSignalList(signals.data(), thought.trackObjId);
+            bestDesignYear = -1;
+            uint8_t chosenSignal = 0xFFU;
+
+            for (const auto signalObjId : signals)
+            {
+                if (signalObjId == 0xFFU)
+                {
+                    break;
+                }
+                auto* signalObj = ObjectManager::get<TrainSignalObject>(signalObjId);
+
+                if (bestDesignYear < signalObj->designedYear)
+                {
+                    bestDesignYear = signalObj->designedYear;
+                    chosenSignal = signalObjId;
+                }
+            }
+
+            thought.signalObjId = chosenSignal;
+            return false;
         }
     }
 
@@ -723,7 +893,7 @@ namespace OpenLoco
     static void sub_430C73(Company& company)
     {
         auto& thought = company.aiThoughts[company.activeThoughtId];
-        if (sub_480096(thought))
+        if (determineStationAndTrackModTypes(thought))
         {
             state2ClearActiveThought(company);
         }
@@ -741,12 +911,12 @@ namespace OpenLoco
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
-            auto* airportObj = ObjectManager::get<AirportObject>(thought.var_89);
+            auto* airportObj = ObjectManager::get<AirportObject>(thought.stationObjId);
             baseCost = Economy::getInflationAdjustedCost(airportObj->buildCostFactor, airportObj->costIndex, 6);
         }
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
         {
-            auto* dockObj = ObjectManager::get<DockObject>(thought.var_89);
+            auto* dockObj = ObjectManager::get<DockObject>(thought.stationObjId);
             baseCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 7);
         }
         else
@@ -778,7 +948,7 @@ namespace OpenLoco
                     }
                 }
                 {
-                    auto* stationObj = ObjectManager::get<RoadStationObject>(thought.var_89);
+                    auto* stationObj = ObjectManager::get<RoadStationObject>(thought.stationObjId);
                     const auto stationBaseCost = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
                     const auto cost = (stationBaseCost * World::TrackData::getRoadMiscData(0).costFactor) / 256;
                     baseCost += cost;
@@ -806,7 +976,7 @@ namespace OpenLoco
                     }
                 }
                 {
-                    auto* stationObj = ObjectManager::get<TrainStationObject>(thought.var_89);
+                    auto* stationObj = ObjectManager::get<TrainStationObject>(thought.stationObjId);
                     const auto stationBaseCost = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
                     const auto cost = (stationBaseCost * World::TrackData::getTrackMiscData(0).costFactor) / 256;
                     baseCost += cost;
@@ -1343,7 +1513,7 @@ namespace OpenLoco
 
         auto& aiStation = thought.stations[aiStationIdx];
         const auto newAirportTilePos = World::toTileSpace(aiStation.pos) + randTileOffset;
-        auto* airportObj = ObjectManager::get<AirportObject>(thought.var_89);
+        auto* airportObj = ObjectManager::get<AirportObject>(thought.stationObjId);
         const auto [minPos, maxPos] = airportObj->getAirportExtents(newAirportTilePos, aiStation.rotation);
         // 0x00482F21
 
@@ -1405,7 +1575,7 @@ namespace OpenLoco
         GameCommands::AirportPlacementArgs args{};
         args.pos = Pos3(World::toWorldSpace(newAirportTilePos), maxHeight);
         args.rotation = aiStation.rotation;
-        args.type = thought.var_89;
+        args.type = thought.stationObjId;
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
         if (res == GameCommands::FAILURE)
         {
@@ -1666,7 +1836,7 @@ namespace OpenLoco
         GameCommands::PortPlacementArgs args{};
         args.pos = Pos3(World::toWorldSpace(newPortTilePos), height);
         args.rotation = direction;
-        args.type = thought.var_89;
+        args.type = thought.stationObjId;
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
         if (res == GameCommands::FAILURE)
         {
@@ -1688,7 +1858,7 @@ namespace OpenLoco
         args.pos = newStationPos;
         args.rotation = aiStation.rotation;
         args.roadObjectId = thought.trackObjId & ~(1U << 7);
-        args.stationObjectId = thought.var_89;
+        args.stationObjectId = thought.stationObjId;
         args.stationLength = thought.var_04;
         if (aiStation.var_9 != 0xFFU)
         {
@@ -1839,7 +2009,7 @@ namespace OpenLoco
         args.pos = newStationPos;
         args.rotation = aiStation.rotation;
         args.trackObjectId = thought.trackObjId;
-        args.stationObjectId = thought.var_89;
+        args.stationObjectId = thought.stationObjId;
         args.stationLength = thought.var_04;
         if (aiStation.var_9 != 0xFFU)
         {
@@ -2325,7 +2495,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (thought.var_8A == 0xFFU)
+        if (thought.signalObjId == 0xFFU)
         {
             return true;
         }
@@ -2453,7 +2623,7 @@ namespace OpenLoco
         }
         // 0x0112C519
         const uint8_t trackObjId = thought.trackObjId;
-        const uint8_t signalType = thought.var_8A;
+        const uint8_t signalType = thought.signalObjId;
         // At least the length of the station (which is also the max length of the vehicles)
         const uint16_t minSignalSpacing = thought.var_04 * 32;
 
@@ -2807,7 +2977,7 @@ namespace OpenLoco
             GameCommands::AirportPlacementArgs placeArgs{};
             placeArgs.pos = pos;
             placeArgs.rotation = aiStation.rotation;
-            placeArgs.type = thought.var_89;
+            placeArgs.type = thought.stationObjId;
 
             if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
             {
@@ -2833,7 +3003,7 @@ namespace OpenLoco
             GameCommands::PortPlacementArgs placeArgs{};
             placeArgs.pos = pos;
             placeArgs.rotation = aiStation.rotation;
-            placeArgs.type = thought.var_89;
+            placeArgs.type = thought.stationObjId;
 
             if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
             {
