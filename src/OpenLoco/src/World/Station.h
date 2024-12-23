@@ -101,6 +101,27 @@ namespace OpenLoco
         flag_1 = 1U,
     };
 
+    // 0x004FEBD0
+    // Where:
+    // - Q is the port origin
+    // - P is the port
+    // - X represents the border offsets
+    //
+    //    X X
+    //  X Q P X
+    //  X P P X
+    //    X X
+    constexpr std::array<World::TilePos2, 8> kPortBorderOffsets = {
+        World::TilePos2{ -1, 0 },
+        World::TilePos2{ -1, 1 },
+        World::TilePos2{ 0, 2 },
+        World::TilePos2{ 1, 2 },
+        World::TilePos2{ 2, 1 },
+        World::TilePos2{ 2, 0 },
+        World::TilePos2{ 1, -1 },
+        World::TilePos2{ 0, -1 },
+    };
+
     struct Station
     {
         StringId name = StringIds::null;              // 0x00
@@ -155,6 +176,7 @@ namespace OpenLoco
     PotentialCargo calcAcceptedCargoTrainStationGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
     PotentialCargo calcAcceptedCargoAirportGhost(const Station* ghostStation, const uint8_t type, const World::Pos2& location, const uint8_t rotation, const uint32_t filter);
     PotentialCargo calcAcceptedCargoDockGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
+    PotentialCargo calcAcceptedCargoAi(const World::TilePos2 minPos, const World::TilePos2 maxPos);
     void sub_491C6F(const uint8_t type, const World::Pos2& pos, const uint8_t rotation, const CatchmentFlags flag);
     void sub_491D20(const World::Pos2& pos, const CatchmentFlags flag);
     void sub_491BF5(const World::Pos2& pos, const CatchmentFlags flag);

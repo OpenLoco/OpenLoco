@@ -158,14 +158,22 @@ namespace OpenLoco
         uint8_t var_4A5;
         uint8_t var_4A6;
         uint8_t var_4A7;
-        AiThought aiThoughts[kMaxAiThoughts]; // 0x04A8
-        uint8_t activeThoughtId;              // 0x2578
-        World::SmallZ headquartersZ;          // 0x2579
-        coord_t headquartersX;                // 0x257A -1 on no headquarter placed
-        coord_t headquartersY;                // 0x257C
-        uint8_t pad_257E[0x259E - 0x257E];
+        AiThought aiThoughts[kMaxAiThoughts];      // 0x04A8
+        uint8_t activeThoughtId;                   // 0x2578
+        World::SmallZ headquartersZ;               // 0x2579
+        coord_t headquartersX;                     // 0x257A -1 on no headquarter placed
+        coord_t headquartersY;                     // 0x257C
+        currency32_t activeThoughtRevenueEstimate; // 0x257E Also used for aiStationIdx in sub_430CEC TODO: Don't do this
+        uint32_t var_2582;
+        uint8_t pad_2586[0x2596 - 0x2586];
+        uint32_t var_2596;
+        uint8_t var_259A;
+        uint8_t var_259B;
+        uint8_t var_259C;
+        uint8_t pad_259D;
         uint32_t var_259E;
-        uint8_t pad_25A2[0x25BF - 0x25A2];
+        uint8_t pad_25A2[0x25BE - 0x25A2];
+        uint8_t var_25BE;
         CorporateRating currentRating;          // 0x25BF
         Unk25C0HashTableEntry var_25C0[0x1000]; // 0x25C0 Hash table entries
         uint16_t var_25C0_length;               // 0x85C0 Hash table length
@@ -191,7 +199,7 @@ namespace OpenLoco
         uint8_t var_85EE;
         uint8_t var_85EF;
         uint16_t var_85F0;
-        uint8_t pad_85F2[0x85F6 - 0x85F2];
+        currency32_t var_85F2;
         uint16_t var_85F6;
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
