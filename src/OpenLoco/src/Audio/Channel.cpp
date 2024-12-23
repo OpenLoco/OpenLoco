@@ -45,7 +45,7 @@ namespace OpenLoco::Audio
     {
         _attributes.freq = freq;
         // If frequency is around zero don't adjust the frequency at all
-        // this matches dsounds DSBFREQUENCY_MIN == 100Hz that vanilla used
+        // this matches dsound's DSBFREQUENCY_MIN == 100Hz that vanilla used
         if (std::abs(freq) < 100)
         {
             _source.setPitch(1.0f);
