@@ -125,7 +125,8 @@ namespace OpenLoco::Jukebox
         {
             generatePlaylist();
         }
-        MusicId track = playlist.pop();
+        MusicId track = playlist.front();
+        playlist.pop();
         playlist.push(track);
         return track;
     }
