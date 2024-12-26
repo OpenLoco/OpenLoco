@@ -1300,7 +1300,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0875
         static void currentlyPlayingMouseDown(Window* w)
         {
-            auto tracks = Jukebox::makeSelectedPlaylist();
+            auto tracks = Jukebox::getEntirePlaylist();
 
             Widget dropdown = w->widgets[Widx::currently_playing];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), tracks.size(), 0x80);
@@ -1325,7 +1325,7 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            auto tracks = Jukebox::makeSelectedPlaylist();
+            auto tracks = Jukebox::getEntirePlaylist();
             int track = tracks.at(ax);
             if (track == _currentSong)
             {

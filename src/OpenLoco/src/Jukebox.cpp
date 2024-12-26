@@ -4,7 +4,10 @@
 #include "Date.h"
 #include "Environment.h"
 #include "Localisation/StringIds.h"
+#include <algorithm>
 #include <numeric>
+#include <queue>
+#include <vector>
 
 using namespace OpenLoco::Environment;
 using namespace OpenLoco::Interop;
@@ -44,16 +47,19 @@ namespace OpenLoco::Jukebox
         { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 }
     };
 
-    static std::vector<MusicId> makeAllMusicPlaylist()
+    // Queue that stores all the songs in the current playlist
+    static std::queue<MusicId> playlist;
+
+    static std::vector<MusicId> findAllSongs()
     {
-        std::vector<MusicId> playlist(kNumMusicTracks);
-        std::iota(playlist.begin(), playlist.end(), 0);
-        return playlist;
+        std::vector<MusicId> songs(kNumMusicTracks);
+        std::iota(songs.begin(), songs.end(), 0);
+        return songs;
     }
 
-    static std::vector<MusicId> makeCurrentEraPlaylist()
+    static std::vector<MusicId> findCurrentEraSongs()
     {
-        auto playlist = std::vector<MusicId>();
+        std::vector<MusicId> songs;
         auto currentYear = getCurrentYear();
 
         for (auto i = 0; i < kNumMusicTracks; i++)
@@ -61,82 +67,77 @@ namespace OpenLoco::Jukebox
             const auto& mi = kMusicInfo[i];
             if (currentYear >= mi.startYear && currentYear <= mi.endYear)
             {
-                playlist.push_back(i);
+                songs.push_back(i);
             }
         }
 
-        return playlist;
+        return songs;
     }
 
-    static std::vector<MusicId> makeCustomSelectionPlaylist()
+    static std::vector<MusicId> findCustomSelectionSongs()
     {
-        auto playlist = std::vector<MusicId>();
+        std::vector<MusicId> songs;
 
         const auto& cfg = Config::get().old;
         for (auto i = 0; i < kNumMusicTracks; i++)
         {
             if (cfg.enabledMusic[i] & 1)
             {
-                playlist.push_back(i);
+                songs.push_back(i);
             }
         }
 
-        return playlist;
+        return songs;
     }
 
-    std::vector<MusicId> makeSelectedPlaylist()
+    static void generatePlaylist()
     {
         using Config::MusicPlaylistType;
 
+        // Find selected songs
+        std::vector<MusicId> selectedSongs;
         switch (Config::get().old.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
-                return makeCurrentEraPlaylist();
-
+                selectedSongs = findCurrentEraSongs();
+                break;
             case MusicPlaylistType::all:
-                return makeAllMusicPlaylist();
-
+                selectedSongs = findAllSongs();
+                break;
             case MusicPlaylistType::custom:
-                return makeCustomSelectionPlaylist();
+                selectedSongs = findCustomSelectionSongs();
+                break;
+            default:
+                throw Exception::RuntimeError("Invalid MusicPlaylistType");
         }
 
-        throw Exception::RuntimeError("Invalid MusicPlaylistType");
+        // Scramble selected songs and populate playlist
+        std::random_shuffle(selectedSongs.begin(), selectedSongs.end());
+        for (MusicId song : selectedSongs)
+        {
+            playlist.push(song);
+        }
     }
 
-    MusicId chooseNextMusicTrack(MusicId lastSong)
+    MusicId chooseNextMusicTrack()
     {
-        auto playlist = makeSelectedPlaylist();
-
-        const auto& cfg = Config::get().old;
-
-        if (playlist.empty() && cfg.musicPlaylist != Config::MusicPlaylistType::currentEra)
-        {
-            playlist = makeCurrentEraPlaylist();
-        }
-
         if (playlist.empty())
         {
-            playlist = makeAllMusicPlaylist();
+            generatePlaylist();
         }
-
-        // Remove lastSong if it is present and not the only song, so that you do not get the same song twice.
-        // Assumes there is no more than one occurence of that song in the playlist.
-        if (playlist.size() > 1)
-        {
-            auto position = std::find(playlist.begin(), playlist.end(), lastSong);
-            if (position != playlist.end())
-            {
-                playlist.erase(position);
-            }
-        }
-
-        auto r = std::rand() % playlist.size();
-        auto track = playlist[r];
+        MusicId track = playlist.front();
+        playlist.pop();
+        playlist.push(track);
         return track;
     }
 
     const MusicInfo& getMusicInfo(MusicId track)
     {
         return kMusicInfo[track];
+    }
+
+    const std::queue<MusicId> getEntirePlaylist()
+    {
+        return playlist;
     }
 }

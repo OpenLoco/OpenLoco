@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.hpp"
+#include <queue>
 #include <vector>
 
 namespace OpenLoco::Environment
@@ -22,7 +23,7 @@ namespace OpenLoco::Jukebox
         uint16_t endYear;
     };
 
-    std::vector<MusicId> makeSelectedPlaylist();
-    MusicId chooseNextMusicTrack(MusicId lastSong);
+    MusicId chooseNextMusicTrack();
     const MusicInfo& getMusicInfo(MusicId track);
+    const std::queue<MusicId> getEntirePlaylist();
 }
