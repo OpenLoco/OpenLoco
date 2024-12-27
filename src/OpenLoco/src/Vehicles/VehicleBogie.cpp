@@ -70,12 +70,12 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_frontBogieHasMoved = hasMoved;
 
         const int32_t stash1136130 = _vehicleUpdate_var_1136130;
-        if (var_5E != 0)
+        if (wheelSlipping != 0)
         {
-            auto unk = var_5E;
-            if (unk > 32)
+            auto unk = wheelSlipping;
+            if (unk > kWheelSlippingDuration / 2)
             {
-                unk = 64 - unk;
+                unk = kWheelSlippingDuration - unk;
             }
             _vehicleUpdate_var_1136130 = 500 + unk * 320;
         }

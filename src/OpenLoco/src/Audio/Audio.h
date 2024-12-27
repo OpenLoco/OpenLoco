@@ -69,16 +69,6 @@ namespace OpenLoco::Audio
     };
     constexpr int32_t kNumReservedChannels = 4 + 10;
 
-    using MusicId = uint8_t;
-
-    struct MusicInfo
-    {
-        Environment::PathId pathId;
-        StringId titleId;
-        uint16_t startYear;
-        uint16_t endYear;
-    };
-
 #pragma pack(push, 1)
     struct WAVEFORMATEX
     {
@@ -134,14 +124,9 @@ namespace OpenLoco::Audio
     void stopMusic();
     void playMusic(Environment::PathId sample, int32_t volume, bool loop);
 
-    std::vector<uint8_t> makeSelectedPlaylist();
-
     void resetSoundObjects();
 
     bool isAudioEnabled();
-
-    const MusicInfo* getMusicInfo(MusicId track);
-    constexpr int32_t kNumMusicTracks = 29;
 
     constexpr bool isObjectSoundId(SoundId id)
     {

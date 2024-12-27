@@ -2,6 +2,7 @@
 
 #include "Economy/Currency.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/World.hpp>
 
 namespace OpenLoco
@@ -46,8 +47,16 @@ namespace OpenLoco
 
         null = 0xFF
     };
-
     constexpr auto kAiThoughtTypeCount = 20U;
+
+    enum class AiThoughtStationFlags : uint8_t
+    {
+        none = 0U,
+
+        aiAllocated = 1U << 0,
+        operational = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(AiThoughtStationFlags);
 
     constexpr auto kMaxAiThoughts = 60U;
     constexpr auto kAiThoughtIdNull = 0xFFU;
@@ -55,28 +64,30 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct AiThought
     {
-        struct unk4AE
+        struct Station
         {
-            StationId var_00; // 0x0
-            uint8_t var_02;   // 0x2 flags?
-            uint8_t rotation; // 0x3
-            World::Pos2 pos;  // 0x4
-            uint8_t baseZ;    // 0x8
-            uint8_t var_9;    // 0x9
-            uint8_t var_A;    // 0xA
-            uint8_t var_B;    // 0xB
-            uint8_t var_C;    // 0xC
+            StationId id;                 // 0x0
+            AiThoughtStationFlags var_02; // 0x2 flags?
+            uint8_t rotation;             // 0x3
+            World::Pos2 pos;              // 0x4
+            uint8_t baseZ;                // 0x8
+            uint8_t var_9;                // 0x9 aiStationIndex
+            uint8_t var_A;                // 0xA aiStationIndex
+            uint8_t var_B;                // 0xB
+            uint8_t var_C;                // 0xC
             uint8_t pad_D[0xE - 0xD];
+
+            constexpr bool hasFlags(AiThoughtStationFlags flags) const { return (var_02 & flags) != AiThoughtStationFlags::none; }
         };
-        static_assert(sizeof(unk4AE) == 0xE);
+        static_assert(sizeof(Station) == 0xE);
         AiThoughtType type; // 0x00 0x4A8
         uint8_t var_01;     // 0x4A9
         uint8_t pad_02;
-        uint8_t var_03; // 0x4AB size of var_06
-        uint8_t var_04; // 0x4AC station length
+        uint8_t numStations; // 0x03 0x4AB size of stations
+        uint8_t var_04;      // 0x4AC station length
         uint8_t pad_05;
-        unk4AE var_06[4];   // 0x4AE ?route? will lists stations created that vehicles will route to
-        uint8_t trackObjId; // 0x3E 0x4E6 track or road (with high bit set)
+        Station stations[4]; // 0x06 0x4AE Will lists stations created that vehicles will route to
+        uint8_t trackObjId;  // 0x3E 0x4E6 track or road (with high bit set)
         uint8_t pad_3F;
         uint8_t mods; // 0x40 0x4E8 track or road
         uint8_t pad_41;

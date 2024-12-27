@@ -8,6 +8,7 @@
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
+#include "Jukebox.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
@@ -1064,7 +1065,7 @@ namespace OpenLoco::Ui::Windows::Options
                 StringId songName = StringIds::music_none;
                 if (_currentSong != -1)
                 {
-                    songName = Audio::getMusicInfo(_currentSong)->titleId;
+                    songName = Jukebox::getMusicInfo(_currentSong).titleId;
                 }
 
                 auto args = FormatArguments(w.widgets[Widx::currently_playing].textArgs);
@@ -1299,7 +1300,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0875
         static void currentlyPlayingMouseDown(Window* w)
         {
-            auto tracks = Audio::makeSelectedPlaylist();
+            auto tracks = Jukebox::makeSelectedPlaylist();
 
             Widget dropdown = w->widgets[Widx::currently_playing];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), tracks.size(), 0x80);
@@ -1308,7 +1309,7 @@ namespace OpenLoco::Ui::Windows::Options
             for (auto track : tracks)
             {
                 index++;
-                Dropdown::add(index, StringIds::dropdown_stringid, Audio::getMusicInfo(track)->titleId);
+                Dropdown::add(index, StringIds::dropdown_stringid, Jukebox::getMusicInfo(track).titleId);
                 if (track == _currentSong)
                 {
                     Dropdown::setItemSelected(index);
@@ -1324,7 +1325,7 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            auto tracks = Audio::makeSelectedPlaylist();
+            auto tracks = Jukebox::makeSelectedPlaylist();
             int track = tracks.at(ax);
             if (track == _currentSong)
             {

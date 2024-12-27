@@ -180,7 +180,7 @@ namespace OpenLoco::TownManager
                 continue;
             }
 
-            StringId newNameId = StringManager::userStringAllocate(buffer, 0);
+            StringId newNameId = StringManager::userStringAllocate(buffer, true);
             if (newNameId == StringIds::empty)
             {
                 continue;

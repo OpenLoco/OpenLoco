@@ -445,7 +445,7 @@ namespace OpenLoco::StationManager
         FormatArguments args{};
         args.push(stationId);
         StringManager::formatString(stationName, StringIds::station_name_ordinal, args);
-        return StringManager::userStringAllocate(stationName, 0);
+        return StringManager::userStringAllocate(stationName, true);
     }
 
     // 0x0049088B
