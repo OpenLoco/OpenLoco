@@ -1,4 +1,4 @@
-24.11+ (???)
+24.12 (2024-12-27)
 ------------------------------------------------------------------------
 - Fix: [#2667] Music stops working when only one track is selected or available.
 - Fix: [#2761] Potential crash when the Locomotion game folder is changed.
