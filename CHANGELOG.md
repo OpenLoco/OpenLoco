@@ -1,5 +1,6 @@
 24.11+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2761] Potential crash when the Locomotion game folder is changed.
 - Fix: [#2776, #2777] Bridge support image ordering incorrect and invisible bridge platforms over buildings.
 - Fix: [#2778] News has celebration sound for player company going bankrupt.
 - Fix: [#2785] Unique names for industries incorrectly generated.
