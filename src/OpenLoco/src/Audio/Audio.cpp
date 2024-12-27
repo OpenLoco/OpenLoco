@@ -1082,8 +1082,6 @@ namespace OpenLoco::Audio
         }
     }
 
-    static PathId currentTrackPathId;
-
     // 0x0048AC66
     // previously called void playTitleScreenMusic()
     void playMusic(PathId sample, int32_t volume, bool loop)
@@ -1094,12 +1092,6 @@ namespace OpenLoco::Audio
             return;
         }
 
-        if (currentTrackPathId == sample)
-        {
-            return;
-        }
-
-        currentTrackPathId = sample;
         channel->stop();
 
         auto musicSample = loadMusicSample(sample);
@@ -1130,7 +1122,6 @@ namespace OpenLoco::Audio
         if (_audioInitialised && channel != nullptr && channel->isPlaying())
         {
             channel->stop();
-            currentTrackPathId = PathId::g1; // there is no 'null' or 'none' so just set it to something that isn't a music track
         }
     }
 
