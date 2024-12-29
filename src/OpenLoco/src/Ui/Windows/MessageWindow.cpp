@@ -21,6 +21,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -421,7 +422,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             makeDropdownWidgets({ 236, 92 }, { 124, 12 }, WindowColour::secondary),
             makeDropdownWidgets({ 236, 107 }, { 124, 12 }, WindowColour::secondary),
             makeDropdownWidgets({ 236, 122 }, { 124, 12 }, WindowColour::secondary),
-            makeWidget({ 4, 137 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
+            Widgets::Checkbox({ 4, 137 }, { 346, 12 }, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
 
         );
 

@@ -19,6 +19,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
@@ -195,9 +196,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             makeDropdownWidgets({ 10, 52 }, { 346, 12 }, WindowColour::secondary),
             makeStepperWidgets({ 10, 67 }, { 163, 12 }, WindowColour::secondary),
             makeDropdownWidgets({ 193, 67 }, { 163, 12 }, WindowColour::secondary),
-            makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::and_be_the_top_company),
-            makeWidget({ 10, 98 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::and_be_within_the_top_companies),
-            makeWidget({ 10, 113 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::with_a_time_limit),
+            Widgets::Checkbox({ 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_the_top_company),
+            Widgets::Checkbox({ 10, 98 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_within_the_top_companies),
+            Widgets::Checkbox({ 10, 113 }, { 346, 12 }, WindowColour::secondary, StringIds::with_a_time_limit),
             makeStepperWidgets({ 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::time_limit_years_value)
 
         );
@@ -624,19 +625,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             makeDropdownWidgets({ 246, 117 - 4 }, { 110, 12 }, WindowColour::secondary),
             makeDropdownWidgets({ 246, 132 - 4 }, { 110, 12 }, WindowColour::secondary),
             Widgets::GroupBox({ 5, 150 }, { 356, 50 }, WindowColour::secondary, StringIds::forbid_competing_companies_from_using),
-            makeWidget({ 15, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
-            makeWidget({ 15, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
-            makeWidget({ 130, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
-            makeWidget({ 130, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
-            makeWidget({ 260, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
-            makeWidget({ 260, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
+            Widgets::Checkbox({ 15, 166 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trains),
+            Widgets::Checkbox({ 15, 180 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trams),
+            Widgets::Checkbox({ 130, 166 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_buses),
+            Widgets::Checkbox({ 130, 180 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
+            Widgets::Checkbox({ 260, 166 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
+            Widgets::Checkbox({ 260, 180 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_ships),
             Widgets::GroupBox({ 5, 202 }, { 356, 50 }, WindowColour::secondary, StringIds::forbid_player_companies_from_using),
-            makeWidget({ 15, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
-            makeWidget({ 15, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
-            makeWidget({ 130, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
-            makeWidget({ 130, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
-            makeWidget({ 260, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
-            makeWidget({ 260, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships)
+            Widgets::Checkbox({ 15, 219 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trains),
+            Widgets::Checkbox({ 15, 233 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trams),
+            Widgets::Checkbox({ 130, 219 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_buses),
+            Widgets::Checkbox({ 130, 233 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
+            Widgets::Checkbox({ 260, 219 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
+            Widgets::Checkbox({ 260, 233 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_ships)
 
         );
 

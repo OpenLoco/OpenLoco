@@ -23,6 +23,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "World/CompanyManager.h"
 
 using namespace OpenLoco::Interop;
@@ -33,10 +34,10 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 192, StringIds::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 3, 57 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 3, 69 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 3, 81 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        Widgets::Checkbox({ 3, 45 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        Widgets::Checkbox({ 3, 57 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        Widgets::Checkbox({ 3, 69 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        Widgets::Checkbox({ 3, 81 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         makeWidget({ 35, 110 }, { 66, 66 }, WidgetType::wt_3, WindowColour::secondary),
         makeDropdownWidgets({ 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
 
