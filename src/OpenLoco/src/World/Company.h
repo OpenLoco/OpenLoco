@@ -163,7 +163,8 @@ namespace OpenLoco
         World::SmallZ headquartersZ;          // 0x2579
         coord_t headquartersX;                // 0x257A -1 on no headquarter placed
         coord_t headquartersY;                // 0x257C
-        uint8_t pad_257E[0x259E - 0x257E];
+        currency32_t var_257E;
+        uint8_t pad_2582[0x259E - 0x2582];
         uint32_t var_259E;
         uint8_t pad_25A2[0x25BF - 0x25A2];
         CorporateRating currentRating;          // 0x25BF
@@ -191,7 +192,7 @@ namespace OpenLoco
         uint8_t var_85EE;
         uint8_t var_85EF;
         uint16_t var_85F0;
-        uint8_t pad_85F2[0x85F6 - 0x85F2];
+        currency32_t var_85F2;
         uint16_t var_85F6;
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
