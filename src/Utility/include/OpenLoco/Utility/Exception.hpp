@@ -1,8 +1,8 @@
 #pragma once
 
-#include <stdexcept>
-#include <source_location>
 #include <iostream>
+#include <source_location>
+#include <stdexcept>
 
 namespace OpenLoco
 {
