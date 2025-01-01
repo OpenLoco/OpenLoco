@@ -817,10 +817,6 @@ namespace OpenLoco::S5
             }
             Audio::resetSoundObjects();
 
-            // Fix saves affected by https://github.com/OpenLoco/OpenLoco/issues/2095
-            // TODO: remove this at some point in 2024 or so
-            Vehicles::OrderManager::fixCorruptWaypointOrders();
-
             if (hasLoadFlags(flags, LoadFlags::scenario))
             {
                 _gameState->var_014A = 0;
