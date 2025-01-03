@@ -1,5 +1,4 @@
 set(public_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Utility/Collection.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Utility/String.hpp"
 )
 
