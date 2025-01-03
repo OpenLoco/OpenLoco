@@ -23,7 +23,8 @@ namespace OpenLoco::Vehicles
 {
     using CargoTotalArray = std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)>;
 
-    constexpr auto kMaxVehicleLength = 176; // TODO: Units?
+    constexpr auto kMaxRoadVehicleLength = 176;    // TODO: Units?
+    constexpr uint8_t kWheelSlippingDuration = 64; // In ticks
 
     enum class Flags38 : uint8_t
     {
@@ -346,12 +347,14 @@ namespace OpenLoco::Vehicles
         uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
         uint8_t var_5C;
-        Status status;                 // 0x5D
-        VehicleType vehicleType;       // 0x5E
-        BreakdownFlags breakdownFlags; // 0x5F
-        uint8_t aiThoughtId;           // 0x60 0xFFU for null
-        uint16_t var_61;
-        uint8_t pad_63[0x68 - 0x63];
+        Status status;                     // 0x5D
+        VehicleType vehicleType;           // 0x5E
+        BreakdownFlags breakdownFlags;     // 0x5F
+        uint8_t aiThoughtId;               // 0x60 0xFFU for null
+        int16_t var_61;                    // 0x61 unkAiX
+        int16_t var_63;                    // 0x61 unkAiY
+        uint16_t var_65;                   // 0x61 unkAiRotation
+        uint8_t var_67;                    // 0x61 unkAiBaseZ
         uint8_t airportMovementEdge;       // 0x68
         uint32_t totalRefundCost;          // 0x69
         uint8_t crashedTimeout;            // 0x6D
@@ -583,7 +586,7 @@ namespace OpenLoco::Vehicles
         int8_t var_55;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
-        uint8_t var_5E;
+        uint8_t wheelSlipping; // 0x5E timeout that counts up
         BreakdownFlags breakdownFlags;
 
         const VehicleObject* getObject() const;
@@ -643,7 +646,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_55;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
-        uint8_t var_5E;
+        uint8_t wheelSlipping; // 0x5E timeout that counts up
         BreakdownFlags breakdownFlags;
         uint8_t var_60;
         uint8_t var_61;

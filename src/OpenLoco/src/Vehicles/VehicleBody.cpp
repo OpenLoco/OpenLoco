@@ -69,12 +69,12 @@ namespace OpenLoco::Vehicles
             invalidateSprite();
         }
         uint32_t backup1136130 = _vehicleUpdate_var_1136130;
-        if (var_5E != 0)
+        if (wheelSlipping != 0)
         {
-            int32_t var_1136130 = var_5E;
-            if (var_5E > 32)
+            int32_t var_1136130 = wheelSlipping;
+            if (wheelSlipping > kWheelSlippingDuration / 2)
             {
-                var_1136130 = 64 - var_1136130;
+                var_1136130 = kWheelSlippingDuration - var_1136130;
             }
 
             _vehicleUpdate_var_1136130 += var_1136130 * 320 + 500;
@@ -1133,7 +1133,7 @@ namespace OpenLoco::Vehicles
                 return;
             }
 
-            if (var_5E != 0)
+            if (wheelSlipping != 0)
             {
                 return;
             }

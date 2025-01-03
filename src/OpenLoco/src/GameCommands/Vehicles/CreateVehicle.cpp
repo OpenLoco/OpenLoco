@@ -128,7 +128,7 @@ namespace OpenLoco::GameCommands
         newBogie->secondaryCargo.acceptedTypes = 0;
         newBogie->secondaryCargo.type = 0xFF;
         newBogie->secondaryCargo.qty = 0;
-        newBogie->var_5E = 0;
+        newBogie->wheelSlipping = 0;
         newBogie->breakdownFlags = BreakdownFlags::none;
         newBogie->var_60 = 0; // different to createbody
         newBogie->var_61 = 0; // different to createbody
@@ -249,7 +249,7 @@ namespace OpenLoco::GameCommands
         newBody->primaryCargo.type = 0xFF;
         newBody->primaryCargo.qty = 0;
         newBody->var_55 = 0; // different to create bogie
-        newBody->var_5E = 0;
+        newBody->wheelSlipping = 0;
         newBody->breakdownFlags = BreakdownFlags::none;
 
         // different to create bogie
@@ -431,7 +431,7 @@ namespace OpenLoco::GameCommands
         newHead->stationId = StationId::null;
         newHead->breakdownFlags = BreakdownFlags::none;
         newHead->aiThoughtId = 0xFFU;
-        newHead->var_61 = 0xFFU;
+        newHead->var_61 = -1;
         newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0_mph;
         newHead->restartStoppedCarsTimeout = 0;

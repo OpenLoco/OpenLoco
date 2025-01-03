@@ -5,6 +5,7 @@
 #include "Objects/ObjectManager.h"
 #include "Paint.h"
 #include "Ui/ViewportInteraction.h"
+#include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::Paint
 {
@@ -775,7 +776,7 @@ namespace OpenLoco::Paint
                 lhsSupportHeight -= sectionHeight;
                 const auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
                 const auto heightOffset = World::Pos3{ 0, 0, lhsSupportHeight };
-                constexpr World::Pos3 bbOffset = { 0, 30, 0 };
+                constexpr World::Pos3 bbOffset = { 0, 0, 0 };
                 session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
             }
             if (supportEdgeLhsImage != 0)
@@ -835,7 +836,7 @@ namespace OpenLoco::Paint
                 lhsSupportHeight -= sectionHeight;
                 const auto supportSectionImage = bridgeEntry.imageBase.withIndex(bridgeObj.image).withIndexOffset(imageIndex);
                 const auto heightOffset = World::Pos3{ 0, 0, lhsSupportHeight };
-                constexpr World::Pos3 bbOffset = { 0, 30, 0 };
+                constexpr World::Pos3 bbOffset = { 0, 0, 0 };
                 session.addToPlotList4FD150(supportSectionImage, heightOffset, bbOffset + heightOffset, bbLength);
             }
             if (supportEdgeLhsImage != 0)
@@ -1186,9 +1187,8 @@ namespace OpenLoco::Paint
         {
             return false;
         }
-        // ceil to 16
-        auto genHeight = session.getGeneralSupportHeight().height + 15;
-        genHeight &= ~(0xF);
+
+        const auto genHeight = Numerics::ceil2(session.getGeneralSupportHeight().height, 16);
         const auto supportLength = bridgeEntry.height - genHeight;
         if (supportLength < 0)
         {

@@ -59,10 +59,13 @@ namespace OpenLoco::Paint
             variation &= unkPosHash;
             for (uint32_t i = 0; i < cargoStat.densityPerTile; ++i)
             {
-                if (variation > cargoObj->numPlatformVariations)
+                if (variation >= cargoObj->numPlatformVariations)
                 {
                     variation = 0;
                 }
+                const auto curVariation = variation;
+                variation++;
+
                 // TODO: Investigate if updateCargoDistribution should cap to prevent this ever being hit
                 if (i >= cargoOffsets.size())
                 {
@@ -108,7 +111,7 @@ namespace OpenLoco::Paint
                         continue;
                     }
                 }
-                const auto imageId = ImageId{ cargoObj->unitInlineSprite + Cargo::ImageIds::kStationPlatformBegin + variation };
+                const auto imageId = ImageId{ cargoObj->unitInlineSprite + Cargo::ImageIds::kStationPlatformBegin + curVariation };
                 session.addToPlotListAsChild(imageId, offset + World::Pos3{ 0, 0, offsetZ }, boundBoxOffset, boundBoxSize);
             }
         }

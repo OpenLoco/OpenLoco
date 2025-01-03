@@ -1,6 +1,4 @@
-24.11+ (???)
-------------------------------------------------------------------------
-- Fix: [#2739] Game appearing blurry when using a Windows scale factor of 2 with an odd resolution.
+- Fix: [#2739] Game appearing blurry at odd resolutions when using a window scale factor of 2.0.
 
 24.11 (2024-11-28)
 ------------------------------------------------------------------------

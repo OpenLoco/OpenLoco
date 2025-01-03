@@ -233,10 +233,10 @@ namespace OpenLoco::Ui
 
             {
                 drawingCtx.clearSingle(fillColour);
-                auto* sess = Paint::allocateSession(columnRt, options);
-                sess->generate();
-                sess->arrangeStructs();
-                sess->drawStructs(drawingCtx);
+                auto sess = Paint::PaintSession(columnRt, options);
+                sess.generate();
+                sess.arrangeStructs();
+                sess.drawStructs(drawingCtx);
                 // Climate code used to draw here.
 
                 if (!isTitleMode())
@@ -254,7 +254,7 @@ namespace OpenLoco::Ui
                     }
                 }
 
-                sess->drawStringStructs(drawingCtx);
+                sess.drawStringStructs(drawingCtx);
                 drawRoutingNumbers(drawingCtx);
             }
 
