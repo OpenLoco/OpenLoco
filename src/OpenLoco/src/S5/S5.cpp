@@ -37,7 +37,6 @@
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Exception.hpp>
 #include <fstream>
 #include <iomanip>
 

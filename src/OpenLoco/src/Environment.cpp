@@ -5,7 +5,6 @@
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
-#include <OpenLoco/Utility/Collection.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <cstring>
 #include <fstream>
