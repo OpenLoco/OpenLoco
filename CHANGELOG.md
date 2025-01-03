@@ -1,3 +1,5 @@
+- Fix: [#2689] Title screen music not playing after switching audio device.
+
 24.12 (2024-12-27)
 ------------------------------------------------------------------------
 - Fix: [#2667] Music stops working when only one track is selected or available.
