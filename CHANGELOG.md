@@ -1,3 +1,5 @@
+- Fix: [#2739] Game appearing blurry at odd resolutions when using a window scale factor of 2.0.
+
 24.12 (2024-12-27)
 ------------------------------------------------------------------------
 - Fix: [#2667] Music stops working when only one track is selected or available.
