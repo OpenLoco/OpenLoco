@@ -46,9 +46,7 @@ namespace OpenLoco::Localisation
     });
 
     // Ensure that the table is sorted by Unicode point.
-    static_assert(std::is_sorted(kUnicodeToLocoTable.begin(), kUnicodeToLocoTable.end(), [](const auto& a, const auto& b) {
-        return a.unicode < b.unicode;
-    }));
+    static_assert(std::ranges::is_sorted(kUnicodeToLocoTable, {}, &EncodingConvertEntry::unicode));
 
     utf32_t convertLocoToUnicode(uint8_t locoCode)
     {
