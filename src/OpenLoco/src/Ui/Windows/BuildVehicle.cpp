@@ -27,10 +27,12 @@
 #include "Ui/TextInput.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleDraw.h"
@@ -246,8 +248,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         // Filter options
         // NB: deliberately defined after scrollview definitions to keep enums the same as original
         // TODO: can be moved after drawVehicleOverview has been implemented
-        makeWidget({ 4, 72 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
-        makeWidget({ 50, 72 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
+        Widgets::TextBox({ 4, 72 }, { 246, 14 }, WindowColour::secondary),
+        Widgets::Button({ 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
         makeDropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
         makeDropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported)
 

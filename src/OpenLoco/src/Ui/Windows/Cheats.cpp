@@ -18,11 +18,13 @@
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Math/Bound.hpp>
@@ -188,7 +190,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::Button({ 180, 62 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_add),
             // loan
             Widgets::GroupBox({ 4, 86 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_clear_loan),
-            makeWidget({ 80, 100 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary),
+            Widgets::TextBox({ 80, 100 }, { 95, 12 }, WindowColour::secondary),
             Widgets::Button({ 180, 100 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_clear),
             // date/time
             Widgets::GroupBox({ 4, 124 }, { kWindowSize.width - 8, 80 }, WindowColour::secondary, StringIds::cheat_date_change_apply),
@@ -720,8 +722,8 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::Button({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_zero),
             Widgets::Button({ 10, 78 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_hundred),
             Widgets::GroupBox({ 4, 102 }, { kWindowSize.width - 8, 45 }, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
-            makeWidget({ 10, 116 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
-            makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles)
+            Widgets::Checkbox({ 10, 116 }, { 200, 12 }, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
+            Widgets::Checkbox({ 25, 130 }, { 200, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles)
 
         );
 

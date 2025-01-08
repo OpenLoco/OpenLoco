@@ -21,6 +21,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -63,7 +64,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Widgets::ImageButton({ 485, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 500, 365 }, WindowColour::secondary),
         Widgets::ImageButton({ 473, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
-        makeWidget({ 88, 348 }, { 408, 14 }, WidgetType::textbox, WindowColour::secondary),
+        Widgets::TextBox({ 88, 348 }, { 408, 14 }, WindowColour::secondary),
         Widgets::Button({ 426, 364 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok),
         makeWidget({ 3, 45 }, { 494, 323 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 

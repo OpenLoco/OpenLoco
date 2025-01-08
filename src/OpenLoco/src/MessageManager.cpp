@@ -355,7 +355,7 @@ namespace OpenLoco::MessageManager
                 StringManager::formatString(tempBuffer, StringIds::message_bankrupt, args);
             }
             break;
-            case MessageType::bankruptcyDeclared2:
+            case MessageType::bankruptcyDeclaredCompetitor:
             {
                 // 0x00428C6F
                 FormatArguments args{};

@@ -1,6 +1,12 @@
-24.11+ (???)
+24.12 (2024-12-27)
 ------------------------------------------------------------------------
+- Fix: [#2667] Music stops working when only one track is selected or available.
+- Fix: [#2761] Potential crash when the Locomotion game folder is changed.
 - Fix: [#2776, #2777] Bridge support image ordering incorrect and invisible bridge platforms over buildings.
+- Fix: [#2778] News has celebration sound for player company going bankrupt.
+- Fix: [#2785] Unique names for industries incorrectly generated.
+- Fix: [#2791] Station cargo image incorrect for high quantities of cargo.
+- Fix: [#2806] Vehicle objects with zeroed base sound frequency are inaudible.
 
 24.11 (2024-11-28)
 ------------------------------------------------------------------------

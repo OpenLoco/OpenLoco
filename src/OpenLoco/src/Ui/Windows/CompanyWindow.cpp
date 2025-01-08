@@ -33,6 +33,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
@@ -1321,16 +1322,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 252, StringIds::title_company_colour_scheme),
-            makeWidget({ 15, 81 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 98 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 115 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_electric_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 132 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_multiple_units, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 149 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_passenger_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 166 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_freight_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 183 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_buses, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 200 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_trucks, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 217 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_aircraft, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 234 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_ships, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 81 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 98 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 115 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_electric_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 132 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_multiple_units, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 149 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_passenger_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 166 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_freight_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 183 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_buses, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 200 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_trucks, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 217 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_aircraft, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox({ 15, 234 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_ships, StringIds::tooltip_toggle_vehicle_colour_scheme),
             makeWidget({ 221, 48 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
             makeWidget({ 221, 78 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
             makeWidget({ 221, 95 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
@@ -1732,7 +1733,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::makeCommonWidgets(636, 319, StringIds::title_company_finances),
             makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
             makeStepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
-            makeWidget({ 320, 264 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
+            Widgets::Checkbox({ 320, 264 }, { 204, 12 }, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
 
         );
 

@@ -21,6 +21,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
@@ -293,7 +294,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Widgets::GroupBox({ 4, 105 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
             Widgets::Button({ 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
             makeStepperWidgets({ 256, 120 }, { 100, 12 }, WindowColour::secondary),
-            makeWidget({ 10, 136 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+            Widgets::Checkbox({ 10, 136 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
             // PNG browser
             Widgets::Button({ 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::button_browse)
@@ -640,7 +641,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
             makeStepperWidgets({ 256, 68 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
             makeStepperWidgets({ 256, 84 }, { 100, 12 }, WindowColour::secondary, StringIds::hill_density_percent),
-            makeWidget({ 10, 100 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
+            Widgets::Checkbox({ 10, 100 }, { 346, 12 }, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
             makeWidget({ 4, 116 }, { 358, 112 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
         );
@@ -1635,8 +1636,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_industries),
             makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
-            makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
-            makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game)
+            Widgets::Checkbox({ 10, 68 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
+            Widgets::Checkbox({ 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game)
 
         );
 
