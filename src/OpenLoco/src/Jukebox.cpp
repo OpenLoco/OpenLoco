@@ -48,18 +48,19 @@ namespace OpenLoco::Jukebox
     };
 
     // Queue that stores all the songs in the current playlist
-    static std::queue<MusicId> playlist;
+    static std::vector<MusicId> playlist;
 
-    static std::vector<MusicId> findAllSongs()
+    // Current position in playlist
+    static int currentSong;
+
+
+    static void findAllSongs()
     {
-        std::vector<MusicId> songs(kNumMusicTracks);
-        std::iota(songs.begin(), songs.end(), 0);
-        return songs;
+        std::iota(playlist.begin(), playlist.end(), 0);
     }
 
-    static std::vector<MusicId> findCurrentEraSongs()
+    static void findCurrentEraSongs()
     {
-        std::vector<MusicId> songs;
         auto currentYear = getCurrentYear();
 
         for (auto i = 0; i < kNumMusicTracks; i++)
@@ -67,27 +68,21 @@ namespace OpenLoco::Jukebox
             const auto& mi = kMusicInfo[i];
             if (currentYear >= mi.startYear && currentYear <= mi.endYear)
             {
-                songs.push_back(i);
+                playlist.push_back(i);
             }
         }
-
-        return songs;
     }
 
-    static std::vector<MusicId> findCustomSelectionSongs()
+    static void findCustomSelectionSongs()
     {
-        std::vector<MusicId> songs;
-
         const auto& cfg = Config::get().old;
         for (auto i = 0; i < kNumMusicTracks; i++)
         {
             if (cfg.enabledMusic[i] & 1)
             {
-                songs.push_back(i);
+                playlist.push_back(i);
             }
         }
-
-        return songs;
     }
 
     static void generatePlaylist()
@@ -99,36 +94,37 @@ namespace OpenLoco::Jukebox
         switch (Config::get().old.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
-                selectedSongs = findCurrentEraSongs();
+                findCurrentEraSongs();
                 break;
             case MusicPlaylistType::all:
-                selectedSongs = findAllSongs();
+                findAllSongs();
                 break;
             case MusicPlaylistType::custom:
-                selectedSongs = findCustomSelectionSongs();
+                findCustomSelectionSongs();
                 break;
             default:
                 throw Exception::RuntimeError("Invalid MusicPlaylistType");
         }
 
-        // Scramble selected songs and populate playlist
-        std::random_shuffle(selectedSongs.begin(), selectedSongs.end());
-        for (MusicId song : selectedSongs)
-        {
-            playlist.push(song);
-        }
+        scramble();
+        currentSong = 0;
+    }
+
+    void scramble() {
+        std::random_shuffle(playlist.begin(), playlist.end());
     }
 
     MusicId chooseNextMusicTrack()
     {
+        // Logic that generates and begins playing the playlist 
         if (playlist.empty())
         {
             generatePlaylist();
+            return playlist[0]
         }
-        MusicId track = playlist.front();
-        playlist.pop();
-        playlist.push(track);
-        return track;
+        
+        currentSong = (currentSong++) % (playlist.size() - 1);
+        return playlist[currentSong];
     }
 
     const MusicInfo& getMusicInfo(MusicId track)
@@ -136,7 +132,7 @@ namespace OpenLoco::Jukebox
         return kMusicInfo[track];
     }
 
-    const std::queue<MusicId> getEntirePlaylist()
+    const std::vector<MusicId> getEntirePlaylist()
     {
         return playlist;
     }
