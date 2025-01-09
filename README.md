@@ -109,23 +109,8 @@ Alternatively using CMake use the following commands.
 2. Run `cmake --build --preset windows-msvc-release`
 
 ### Linux:
-
-The standard CMake build procedure is to install the required libraries, then:
-```
-cmake --preset linux
-cmake --build --preset linux-release
-```
-
-Installing some packages can be problematic on desktop AMD64 distributions. To work around this, you can use [our Docker images](https://github.com/OpenLoco/openloco-docker-build) for compilation.
-    
-Note: Due to issues with distro yaml-cpp packages, its source release is downloaded during CMake generation.
-
-Running the game will need the data directory from the root of the source code next to the binary. Assuming you're in `$SRC/build`, 
-```
-ln -s ../data
-OR
-cp -r ../data ./data 
-```
+- [Building on Arch](https://github.com/OpenLoco/OpenLoco/wiki/Building-on-Arch)
+- [Building on Ubuntu](https://github.com/OpenLoco/OpenLoco/wiki/Building-on-Ubuntu)
 
 ### MacOS
 
