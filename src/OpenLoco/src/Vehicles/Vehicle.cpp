@@ -279,21 +279,21 @@ namespace OpenLoco::Vehicles
         World::TilePos2{ -1, 1 },
     };
 
-    // If candidate within 7 vehicle components of src we ignore a self collision
+    // If candidate within 8 vehicle components of src we ignore a self collision
     // TODO: If we stored the car index this could be simplified
     static bool ignoreSelfCollision(VehicleBase& sourceVehicleId, const VehicleBase& candidateVehicleId)
     {
         auto* src = &sourceVehicleId;
-        for (uint32_t i = 0; i < 7; ++i)
+        for (uint32_t i = 0; i < 8; ++i)
         {
-            if (src == &candidateVehicleId)
-            {
-                return true;
-            }
             src = src->nextVehicleComponent();
             if (src == nullptr)
             {
                 return false;
+            }
+            if (src == &candidateVehicleId)
+            {
+                return true;
             }
         }
         return false;
@@ -315,7 +315,7 @@ namespace OpenLoco::Vehicles
             for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
             {
                 auto* vehicleBase = entity->asBase<VehicleBase>();
-                if (vehicleBase == nullptr)
+                if (vehicleBase == nullptr || vehicleBase == &bogie)
                 {
                     continue;
                 }
