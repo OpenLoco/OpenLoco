@@ -279,10 +279,9 @@ namespace OpenLoco::Vehicles
         World::TilePos2{ -1, 1 },
     };
 
-    static bool checkTrainForSelfCollision(const EntityId sourceVehicleId, const VehicleBase& candidateVehicle)
+    static bool checkTrainForSelfCollision(const Vehicle& collideTrain, const EntityId sourceVehicleId, const EntityId& candidateVehicleId)
     {
         bool noSelfCollision = false;
-        Vehicle collideTrain(candidateVehicle.getHead());
         bool carFound = false;
         uint32_t numCarsToCheck = 0;
         for (auto& car : collideTrain.cars)
@@ -292,7 +291,7 @@ namespace OpenLoco::Vehicles
 
                 if (!carFound)
                 {
-                    carComponent.applyToComponents([&carFound, &numCarsToCheck, targetId = candidateVehicle.id](auto& c) {
+                    carComponent.applyToComponents([&carFound, &numCarsToCheck, targetId = candidateVehicleId](auto& c) {
                         if (c.id == targetId)
                         {
                             carFound = true;
@@ -382,11 +381,11 @@ namespace OpenLoco::Vehicles
                     return vehicleBase->id;
                 }
 
-                if (checkTrainForSelfCollision(bogie.id, *vehicleBase))
+                if (checkTrainForSelfCollision(srcTrain, bogie.id, vehicleBase->id))
                 {
                     continue;
                 }
-                if (checkTrainForSelfCollision(vehicleBase->id, bogie))
+                if (checkTrainForSelfCollision(srcTrain, vehicleBase->id, bogie.id))
                 {
                     continue;
                 }
