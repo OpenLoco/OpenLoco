@@ -1,3 +1,8 @@
+25.01 (???)
+------------------------------------------------------------------------
+- Fix: [#2810] Large performance regression when there are a lot of vehicles.
+
+
 24.12 (2024-12-27)
 ------------------------------------------------------------------------
 - Fix: [#2667] Music stops working when only one track is selected or available.

@@ -279,48 +279,21 @@ namespace OpenLoco::Vehicles
         World::TilePos2{ -1, 1 },
     };
 
-    static bool checkTrainForSelfCollision(const EntityId sourceVehicleId, const VehicleBase& candidateVehicle)
+    // If candidate within 8 vehicle components of src we ignore a self collision
+    // TODO: If we stored the car index this could be simplified
+    static bool ignoreSelfCollision(VehicleBase& sourceVehicleId, const VehicleBase& candidateVehicleId)
     {
-        bool noSelfCollision = false;
-        Vehicle collideTrain(candidateVehicle.getHead());
-        bool carFound = false;
-        uint32_t numCarsToCheck = 0;
-        for (auto& car : collideTrain.cars)
+        auto* src = &sourceVehicleId;
+        for (uint32_t i = 0; i < 8; ++i)
         {
-            for (auto& carComponent : car)
+            src = src->nextVehicleComponent();
+            if (src == nullptr)
             {
-
-                if (!carFound)
-                {
-                    carComponent.applyToComponents([&carFound, &numCarsToCheck, targetId = candidateVehicle.id](auto& c) {
-                        if (c.id == targetId)
-                        {
-                            carFound = true;
-                            numCarsToCheck = 3;
-                        }
-                    });
-                }
-                if (carFound)
-                {
-                    carComponent.applyToComponents([&noSelfCollision, targetId = sourceVehicleId](auto& c) {
-                        if (c.id == targetId)
-                        {
-                            noSelfCollision = true;
-                        }
-                    });
-                }
+                return false;
             }
-            if (noSelfCollision)
+            if (src == &candidateVehicleId)
             {
                 return true;
-            }
-            if (carFound)
-            {
-                numCarsToCheck--;
-                if (numCarsToCheck == 0)
-                {
-                    break;
-                }
             }
         }
         return false;
@@ -342,7 +315,7 @@ namespace OpenLoco::Vehicles
             for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
             {
                 auto* vehicleBase = entity->asBase<VehicleBase>();
-                if (vehicleBase == nullptr)
+                if (vehicleBase == nullptr || vehicleBase == &bogie)
                 {
                     continue;
                 }
@@ -382,11 +355,11 @@ namespace OpenLoco::Vehicles
                     return vehicleBase->id;
                 }
 
-                if (checkTrainForSelfCollision(bogie.id, *vehicleBase))
+                if (ignoreSelfCollision(bogie, *vehicleBase))
                 {
                     continue;
                 }
-                if (checkTrainForSelfCollision(vehicleBase->id, bogie))
+                if (ignoreSelfCollision(*vehicleBase, bogie))
                 {
                     continue;
                 }
