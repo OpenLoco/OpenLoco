@@ -42,6 +42,9 @@ namespace OpenLoco::Gfx
 
         static uint16_t getStringWidth(Font base, const char* buffer);
 
+        uint16_t getStringWidthNewLined(const char* buffer);
+        std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
+
         Ui::Point drawString(
             Ui::Point origin,
             AdvancedColour colour,
@@ -113,7 +116,5 @@ namespace OpenLoco::Gfx
 
         void drawStringYOffsets(Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets);
         void drawStringTicker(Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width);
-        uint16_t getStringWidthNewLined(const char* buffer);
-        std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
     };
 }
