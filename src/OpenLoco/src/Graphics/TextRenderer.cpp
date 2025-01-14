@@ -1994,6 +1994,11 @@ namespace OpenLoco::Gfx
         return Impl::clipString(_currentFontSpriteBase, width, string);
     }
 
+    int16_t TextRenderer::clipString(Font font, int16_t width, char* string)
+    {
+        return Impl::clipString(font, width, string);
+    }
+
     uint16_t TextRenderer::getStringWidth(const char* buffer)
     {
         return Impl::getStringWidth(_currentFontSpriteBase, buffer);
@@ -2007,6 +2012,11 @@ namespace OpenLoco::Gfx
     uint16_t TextRenderer::getMaxStringWidth(const char* buffer)
     {
         return Impl::getMaxStringWidth(_currentFontSpriteBase, buffer);
+    }
+
+    uint16_t TextRenderer::getMaxStringWidth(Font font, const char* buffer)
+    {
+        return Impl::getMaxStringWidth(font, buffer);
     }
 
     Ui::Point TextRenderer::drawString(Ui::Point origin, AdvancedColour colour, const char* str)
@@ -2092,9 +2102,19 @@ namespace OpenLoco::Gfx
         return Impl::getStringWidthNewLined(_currentFontSpriteBase, buffer);
     }
 
+    uint16_t TextRenderer::getStringWidthNewLined(Font font, const char* buffer)
+    {
+        return Impl::getStringWidthNewLined(font, buffer);
+    }
+
     std::pair<uint16_t, uint16_t> TextRenderer::wrapString(char* buffer, uint16_t stringWidth)
     {
         return Impl::wrapString(_currentFontSpriteBase, buffer, stringWidth);
+    }
+
+    std::pair<uint16_t, uint16_t> TextRenderer::wrapString(Font font, char* buffer, uint16_t stringWidth)
+    {
+        return Impl::wrapString(font, buffer, stringWidth);
     }
 
 }

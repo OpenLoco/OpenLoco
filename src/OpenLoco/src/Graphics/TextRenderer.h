@@ -37,13 +37,19 @@ namespace OpenLoco::Gfx
         void setCurrentFont(Font base);
 
         int16_t clipString(int16_t width, char* string);
-        uint16_t getStringWidth(const char* buffer);
-        uint16_t getMaxStringWidth(const char* buffer);
+        static int16_t clipString(Font font, int16_t width, char* string);
 
+        uint16_t getStringWidth(const char* buffer);
         static uint16_t getStringWidth(Font base, const char* buffer);
 
+        uint16_t getMaxStringWidth(const char* buffer);
+        static uint16_t getMaxStringWidth(Font font, const char* buffer);
+
         uint16_t getStringWidthNewLined(const char* buffer);
+        static uint16_t getStringWidthNewLined(Font font, const char* buffer);
+
         std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
+        static std::pair<uint16_t, uint16_t> wrapString(Font font, char* buffer, uint16_t stringWidth);
 
         Ui::Point drawString(
             Ui::Point origin,
