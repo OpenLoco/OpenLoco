@@ -23,6 +23,40 @@ namespace OpenLoco::Gfx
         static uint16_t wrapStringTicker(Font font, char* buffer, uint16_t stringWidth, uint16_t numCharacters);
         static int16_t clipString(Font font, int16_t width, char* string);
 
+        static uint16_t getLineHeight(Font font)
+        {
+            if (font == Font::medium_normal || font == Font::medium_bold)
+            {
+                return 10;
+            }
+            else if (font == Font::small)
+            {
+                return 6;
+            }
+            else if (font == Font::large)
+            {
+                return 18;
+            }
+            return 0;
+        }
+
+        static uint16_t getSmallerLineHeight(Font font)
+        {
+            if (font == Font::medium_normal || font == Font::medium_bold)
+            {
+                return 5;
+            }
+            else if (font == Font::small)
+            {
+                return 3;
+            }
+            else if (font == Font::large)
+            {
+                return 9;
+            }
+            return 0;
+        }
+
         static void setTextColours(TextDrawingState& drawState, PaletteIndex_t pal1, PaletteIndex_t pal2, PaletteIndex_t pal3)
         {
             if ((drawState.fontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
@@ -79,34 +113,12 @@ namespace OpenLoco::Gfx
 
                     case ControlCodes::newlineSmaller:
                         pos.x = origin.x;
-                        if (drawState.font == Font::medium_normal || drawState.font == Font::medium_bold)
-                        {
-                            pos.y += 5;
-                        }
-                        else if (drawState.font == Font::small)
-                        {
-                            pos.y += 3;
-                        }
-                        else if (drawState.font == Font::large)
-                        {
-                            pos.y += 9;
-                        }
+                        pos.y += getSmallerLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::newline:
                         pos.x = origin.x;
-                        if (drawState.font == Font::medium_normal || drawState.font == Font::medium_bold)
-                        {
-                            pos.y += 10;
-                        }
-                        else if (drawState.font == Font::small)
-                        {
-                            pos.y += 6;
-                        }
-                        else if (drawState.font == Font::large)
-                        {
-                            pos.y += 18;
-                        }
+                        pos.y += getLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::moveX:
@@ -414,23 +426,6 @@ namespace OpenLoco::Gfx
             return nullptr;
         }
 
-        static uint16_t lineHeightFromFont(Font font)
-        {
-            if (font <= Font::medium_bold)
-            {
-                return 10;
-            }
-            else if (font == Font::small)
-            {
-                return 6;
-            }
-            else if (font == Font::large)
-            {
-                return 18;
-            }
-            return 0;
-        }
-
         // 0x00495224
         // al: colour
         // bp: width
@@ -462,7 +457,7 @@ namespace OpenLoco::Gfx
             auto breakCount = wrapResult.second + 1;
 
             // wrapString might change the font due to formatting codes
-            uint16_t lineHeight = lineHeightFromFont(drawState.font); // _112D404
+            uint16_t lineHeight = getLineHeight(drawState.font); // _112D404
 
             drawState.fontFlags = TextDrawFlags::none;
             auto point = origin;
@@ -722,7 +717,7 @@ namespace OpenLoco::Gfx
             auto breakCount = wrapResult.second + 1;
 
             // wrapString might change the font due to formatting codes
-            uint16_t lineHeight = lineHeightFromFont(drawState.font); // _112D404
+            uint16_t lineHeight = getLineHeight(drawState.font); // _112D404
 
             drawState.fontFlags = TextDrawFlags::none;
 
@@ -786,7 +781,7 @@ namespace OpenLoco::Gfx
                 drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
 
                 ptr = advanceToNextLineWrapped(ptr);
-                basePoint.y += lineHeightFromFont(drawState.font);
+                basePoint.y += getLineHeight(drawState.font);
             }
 
             return basePoint;
@@ -863,34 +858,12 @@ namespace OpenLoco::Gfx
 
                     case ControlCodes::newlineSmaller:
                         pos.x = loc.x;
-                        if (drawState.font == Font::medium_normal || drawState.font == Font::medium_bold)
-                        {
-                            pos.y += 5;
-                        }
-                        else if (drawState.font == Font::small)
-                        {
-                            pos.y += 3;
-                        }
-                        else if (drawState.font == Font::large)
-                        {
-                            pos.y += 9;
-                        }
+                        pos.y += getSmallerLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::newline:
                         pos.x = loc.x;
-                        if (drawState.font == Font::medium_normal || drawState.font == Font::medium_bold)
-                        {
-                            pos.y += 10;
-                        }
-                        else if (drawState.font == Font::small)
-                        {
-                            pos.y += 6;
-                        }
-                        else if (drawState.font == Font::large)
-                        {
-                            pos.y += 18;
-                        }
+                        pos.y += getLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::moveX:
@@ -1106,34 +1079,12 @@ namespace OpenLoco::Gfx
 
                     case ControlCodes::newlineSmaller:
                         pos.x = origin.x;
-                        if (drawState.font == Font::medium_normal || drawState.font == Font::medium_bold)
-                        {
-                            pos.y += 5;
-                        }
-                        else if (drawState.font == Font::small)
-                        {
-                            pos.y += 3;
-                        }
-                        else if (drawState.font == Font::large)
-                        {
-                            pos.y += 9;
-                        }
+                        pos.y += getSmallerLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::newline:
                         pos.x = origin.x;
-                        if (drawState.font == Font::medium_normal || drawState.font == Font::medium_bold)
-                        {
-                            pos.y += 10;
-                        }
-                        else if (drawState.font == Font::small)
-                        {
-                            pos.y += 6;
-                        }
-                        else if (drawState.font == Font::large)
-                        {
-                            pos.y += 18;
-                        }
+                        pos.y += getLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::moveX:
@@ -1324,7 +1275,7 @@ namespace OpenLoco::Gfx
             const auto lineToDisplayFrom = numLinesToDisplayAllChars - numLinesToDisplay;
 
             // wrapString might change the font due to formatting codes
-            uint16_t lineHeight = lineHeightFromFont(drawState.font); // _112D404
+            uint16_t lineHeight = getLineHeight(drawState.font); // _112D404
 
             drawState.fontFlags = TextDrawFlags::none;
             Ui::Point point = origin;
