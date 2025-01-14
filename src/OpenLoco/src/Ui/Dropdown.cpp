@@ -353,9 +353,6 @@ namespace OpenLoco::Ui::Dropdown
         // 0x004CCAB2
         static void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, AdvancedColour colour, size_t count, uint8_t flags)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             _dropdownColumnCount = 1;
             _dropdownItemWidth = 0;
             _dropdownItemHeight = 10;
@@ -376,9 +373,7 @@ namespace OpenLoco::Ui::Dropdown
 
                 StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], args);
 
-                tr.setCurrentFont(Gfx::Font::medium_bold);
-
-                auto stringWidth = tr.getMaxStringWidth(_byte_112CC04);
+                auto stringWidth = Gfx::TextRenderer::getMaxStringWidth(Gfx::Font::medium_bold, _byte_112CC04);
 
                 maxStringWidth = std::max(maxStringWidth, stringWidth);
             }

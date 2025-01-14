@@ -926,9 +926,6 @@ namespace OpenLoco
         const auto remainingLength = strEnd - buffer;
         StringManager::formatString(strEnd, remainingLength, getTransportIconsFromStationFlags(flags));
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
         for (auto zoom = 0U; zoom < 4; ++zoom)
         {
             Ui::Viewport virtualVp{};
@@ -937,8 +934,8 @@ namespace OpenLoco
             const auto labelCenter = World::Pos3{ x, y, z };
             const auto vpPos = World::gameToScreen(labelCenter, WindowManager::getCurrentRotation());
 
-            tr.setCurrentFont(kZoomToStationFonts[zoom]);
-            const auto width = tr.getStringWidth(buffer) + kZoomToStationBorder[zoom].width * 2;
+            const auto font = kZoomToStationFonts[zoom];
+            const auto width = Gfx::TextRenderer::getStringWidth(font, buffer) + kZoomToStationBorder[zoom].width * 2;
             const auto height = kZoomToStationBorder[zoom].height;
 
             const auto [zoomWidth, zoomHeight] = ScreenToViewport::scaleTransform(Ui::Point(width, height), virtualVp);

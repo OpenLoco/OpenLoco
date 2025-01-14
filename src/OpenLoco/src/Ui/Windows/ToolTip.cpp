@@ -67,18 +67,13 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
         StringManager::formatString(_text, stringId, args);
 
-        tr.setCurrentFont(Gfx::Font::medium_bold);
-        int16_t strWidth = tr.getStringWidthNewLined(_text);
+        const auto font = Gfx::Font::medium_bold;
+        int16_t strWidth = Gfx::TextRenderer::getStringWidthNewLined(font, _text);
         strWidth = std::min<int16_t>(strWidth, 196);
 
-        tr.setCurrentFont(Gfx::Font::medium_bold);
-
-        auto [wrappedWidth, breakCount] = tr.wrapString(_text, strWidth + 1);
+        auto [wrappedWidth, breakCount] = Gfx::TextRenderer::wrapString(font, _text, strWidth + 1);
         _lineBreakCount = breakCount;
 
         int width = wrappedWidth + 3;
