@@ -26,6 +26,8 @@ namespace OpenLoco::Gfx
     class TextRenderer
     {
         DrawingContext& _ctx;
+        TextDrawFlags _currentFontFlags{};
+        Font _currentFontSpriteBase{};
 
     public:
         TextRenderer(DrawingContext& ctx);
