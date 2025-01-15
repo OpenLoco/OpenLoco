@@ -101,19 +101,14 @@ namespace OpenLoco::Ui::Windows::Error
 
         if (buffer != &_errorText[0])
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             // How wide is the error string?
-            tr.setCurrentFont(Gfx::Font::medium_bold);
-            uint16_t strWidth = tr.getStringWidthNewLined(&_errorText[0]);
+            uint16_t strWidth = Gfx::TextRenderer::getStringWidthNewLined(Gfx::Font::medium_bold, &_errorText[0]);
             strWidth = std::clamp<uint16_t>(strWidth, kMinWidth, kMaxWidth);
 
             // How many linebreaks?
             {
-                tr.setCurrentFont(Gfx::Font::medium_bold);
                 uint16_t breakLineCount = 0;
-                std::tie(strWidth, breakLineCount) = tr.wrapString(&_errorText[0], strWidth + kPadding);
+                std::tie(strWidth, breakLineCount) = Gfx::TextRenderer::wrapString(Gfx::Font::medium_bold, &_errorText[0], strWidth + kPadding);
                 _linebreakCount = breakLineCount;
             }
 

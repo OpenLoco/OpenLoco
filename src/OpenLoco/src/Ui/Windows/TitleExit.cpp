@@ -55,12 +55,8 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
     static void prepareDraw(Ui::Window& self)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
         auto exitString = StringManager::getString(StringIds::title_exit_game);
-        tr.setCurrentFont(Gfx::Font::medium_bold);
-        self.width = tr.getStringWidthNewLined(exitString) + 10;
+        self.width = Gfx::TextRenderer::getStringWidthNewLined(Gfx::Font::medium_bold, exitString) + 10;
 
         self.x = Ui::width() - self.width;
         self.widgets[Widx::exit_button].right = self.width;

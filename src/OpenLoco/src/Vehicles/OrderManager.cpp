@@ -385,8 +385,6 @@ namespace OpenLoco::Vehicles::OrderManager
         }
 
         i = 1;
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
         for (auto& unk : _displayFrames)
         {
             auto order = Vehicles::OrderRingView(unk.orderOffset, 0).begin();
@@ -397,7 +395,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
             auto [loc, str] = generateOrderUiStringAndLoc(order->getOffset(), i);
             const auto pos = World::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
-            auto stringWidth = tr.getStringWidth(str.c_str());
+            auto stringWidth = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, str.c_str());
             for (auto zoom = 0; zoom < 4; ++zoom)
             {
                 // The first line of the label will always be at the centre

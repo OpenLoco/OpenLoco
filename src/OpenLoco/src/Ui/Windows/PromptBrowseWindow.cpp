@@ -363,18 +363,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         args.push(StringIds::empty);
         StringManager::formatString(folderBuffer, StringIds::window_browse_folder, args);
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
-        tr.setCurrentFont(Gfx::Font::medium_bold);
-        const auto folderLabelWidth = tr.getStringWidth(folderBuffer);
+        const auto folderLabelWidth = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, folderBuffer);
 
         // We'll ensure the folder width does not reach the parent button.
         const uint16_t maxWidth = self.widgets[widx::parent_button].left - folderLabelWidth - 10;
         auto nameBuffer = _currentDirectory.u8string();
         nameBuffer = Localisation::convertUnicodeToLoco(nameBuffer);
         strncpy(&_displayFolderBuffer[0], nameBuffer.c_str(), 512);
-        uint16_t folderWidth = tr.getStringWidth(_displayFolderBuffer);
+        uint16_t folderWidth = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, _displayFolderBuffer);
 
         // If the folder already fits, we're done.
         if (folderWidth <= maxWidth)
@@ -402,7 +398,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
             // Prepare for the next pass, if needed.
             relativeDirectory++;
-        } while (tr.getStringWidth(_displayFolderBuffer) > maxWidth);
+        } while (Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, _displayFolderBuffer) > maxWidth);
     }
 
     static FormatArguments getStringPtrFormatArgs(const char* buffer)
