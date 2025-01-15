@@ -157,6 +157,9 @@ namespace OpenLoco::Gfx
     void render(Ui::Rect rect);
     void render(int16_t left, int16_t top, int16_t right, int16_t bottom);
 
+    // Moves the pixels on screen.
+    void movePixelsOnScreen(int16_t dstX, int16_t dstY, int16_t width, int16_t height, int16_t srcX, int16_t srcY);
+
     // Renders all invalidated regions and processes new messages.
     void renderAndUpdate();
 
