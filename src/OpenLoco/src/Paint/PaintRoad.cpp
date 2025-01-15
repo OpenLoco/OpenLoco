@@ -24,15 +24,8 @@
 using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Paint
 {
-    static Interop::loco_global<uint32_t, 0x0112C280> _roadBaseImageId;
-    static Interop::loco_global<uint32_t, 0x0112C28C> _roadExtraImageId;
-    static Interop::loco_global<uint32_t, 0x01135F32> _roadImageId1;
-    static Interop::loco_global<uint32_t, 0x01135F36> _roadImageId2;
-    static Interop::loco_global<uint8_t, 0x00113605E> _roadTunnel;
     static Interop::loco_global<uint8_t, 0x00522095> _byte_522095;
     static Interop::loco_global<uint8_t, 0x0050BF68> _byte_50BF68;
-    static Interop::loco_global<uint32_t** [3], 0x004FE43C> _roadPaintModes;
-    static Interop::loco_global<uint32_t** [2], 0x004FE448> _roadExtraPaintModes;
 
     struct RoadPaintCommon
     {
@@ -114,7 +107,7 @@ namespace OpenLoco::Paint
     };
 
     // 0x00475DDF
-    static void paintLevelCrossing(PaintSession& session, const World::RoadElement& elRoad, const uint8_t rotation)
+    static void paintLevelCrossing(PaintSession& session, const ImageId baseRoadImageColour, const World::RoadElement& elRoad, const uint8_t rotation)
     {
         auto* crossingObj = ObjectManager::get<LevelCrossingObject>(elRoad.levelCrossingObjectId());
 
@@ -137,23 +130,23 @@ namespace OpenLoco::Paint
         {
             const auto bbOffset = World::Pos3{ 2, 2, 1 } + heightOffset;
             const auto bbSize = World::Pos3{ 1, 1, 8 };
-            const auto image0 = ImageId::fromUInt32(_roadImageId1).withIndex(imageIndex0);
+            const auto image0 = baseRoadImageColour.withIndex(imageIndex0);
             session.addToPlotList4FD150(image0, heightOffset, bbOffset, bbSize);
         }
         {
             const auto bbOffset = World::Pos3{ 2, 30, 1 } + heightOffset;
             const auto bbSize = World::Pos3{ 1, 1, 8 };
-            const auto image1 = ImageId::fromUInt32(_roadImageId1).withIndex(imageIndex0 + 1);
+            const auto image1 = baseRoadImageColour.withIndex(imageIndex0 + 1);
             session.addToPlotList4FD150(image1, heightOffset, bbOffset, bbSize);
         }
         {
             const auto bbOffset = World::Pos3{ 30, 2, 1 } + heightOffset;
             const auto bbSize = World::Pos3{ 1, 1, 8 };
-            const auto image2 = ImageId::fromUInt32(_roadImageId1).withIndex(imageIndex0 + 2);
+            const auto image2 = baseRoadImageColour.withIndex(imageIndex0 + 2);
             session.addToPlotList4FD150(image2, heightOffset, bbOffset, bbSize);
         }
 
-        const auto image3 = ImageId::fromUInt32(_roadImageId1).withIndex(imageIndex0 + 3);
+        const auto image3 = baseRoadImageColour.withIndex(imageIndex0 + 3);
         if (elRoad.unk6l() != 15)
         {
             const auto bbOffset = World::Pos3{ 30, 30, 1 } + heightOffset;
@@ -501,21 +494,17 @@ namespace OpenLoco::Paint
         }
 
         session.setItemType(Ui::ViewportInteraction::InteractionItem::road);
-        _roadBaseImageId = roadObj->image;
-        _roadTunnel = roadObj->tunnel;
 
-        _roadImageId1 = Gfx::recolour(0, CompanyManager::getCompanyColour(elRoad.owner()));
-        _roadImageId2 = _roadImageId1;
+        // This is an ImageId but it has no image index set!
+        auto baseRoadImageColour = ImageId(0, CompanyManager::getCompanyColour(elRoad.owner()));
 
         if (elRoad.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            _roadImageId1 = Gfx::applyGhostToImage(_roadImageId1).toUInt32();
-            _roadImageId2 = Gfx::applyGhostToImage(_roadImageId2).toUInt32();
+            baseRoadImageColour = Gfx::applyGhostToImage(0);
         }
 
-        _roadBaseImageId |= _roadImageId1;
-        RoadPaintCommon roadSession{ ImageId::fromUInt32(_roadBaseImageId), ImageId::fromUInt32(_roadImageId2), _roadTunnel };
+        RoadPaintCommon roadSession{ baseRoadImageColour.withIndex(roadObj->image), baseRoadImageColour, roadObj->tunnel };
 
         if (!(*_byte_522095 & (1 << 0)))
         {
@@ -561,7 +550,7 @@ namespace OpenLoco::Paint
 
         if (elRoad.hasLevelCrossing())
         {
-            paintLevelCrossing(session, elRoad, rotation);
+            paintLevelCrossing(session, baseRoadImageColour, elRoad, rotation);
         }
 
         if (session.getRenderTarget()->zoomLevel > 0 || roadObj->hasFlags(RoadObjectFlags::unk_03))
@@ -573,20 +562,20 @@ namespace OpenLoco::Paint
         for (auto mod = 0; mod < 2; ++mod)
         {
             const auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[mod]);
+            ImageId roadExtraBaseImage{};
             if (elRoad.hasMod(mod))
             {
-                _roadExtraImageId = _roadImageId1 + roadExtraObj->image;
+                roadExtraBaseImage = baseRoadImageColour.withIndex(roadExtraObj->image);
             }
             else if (elRoad.hasGhostMods() && (ghostMods & (1U << mod)))
             {
-                _roadExtraImageId = Gfx::applyGhostToImage(roadExtraObj->image).toUInt32();
+                roadExtraBaseImage = Gfx::applyGhostToImage(roadExtraObj->image);
             }
             else
             {
                 continue;
             }
 
-            const auto roadExtraBaseImage = ImageId::fromUInt32(_roadExtraImageId);
             session.setTrackModId(mod);
 
             const auto paintStyle = roadExtraObj->paintStyle;
