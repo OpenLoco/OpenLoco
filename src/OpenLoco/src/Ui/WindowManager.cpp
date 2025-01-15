@@ -192,8 +192,8 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 const char* buffer = (const char*)regs.esi;
-                // NOTE: Font was previously from the global, assume its always medium_bold for the time being.
-                uint16_t width = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, buffer);
+                const auto font = *loco_global<Gfx::Font, 0x0112C876>();
+                uint16_t width = Gfx::TextRenderer::getStringWidth(font, buffer);
                 regs = backup;
                 regs.cx = width;
 
