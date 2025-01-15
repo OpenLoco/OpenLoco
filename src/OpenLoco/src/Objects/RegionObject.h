@@ -15,6 +15,16 @@ namespace OpenLoco
         class DrawingContext;
     }
 
+    // Towns growth can be influenced by the region objects cargo influence
+    // the cargo influence can be further filtered so it only effects
+    // certain types of town
+    enum class CargoInfluenceTownFilterType : uint8_t
+    {
+        allTowns,
+        maySnow,  // Towns above (or equal to) the summer snow line
+        inDesert, // Towns located in a desert (>=100 desert surface tiles)
+    };
+
 #pragma pack(push, 1)
     struct RegionObject
     {
@@ -23,9 +33,10 @@ namespace OpenLoco
         StringId name;
         uint32_t image; // 0x02
         uint8_t pad_06[0x8 - 0x6];
-        uint8_t var_08;
-        uint8_t var_09[4];
-        uint8_t pad_0D[0x12 - 0xD];
+        uint8_t numCargoInflunceObjects;                          // 0x08 length of cargoInfluenceObjectIds and cargoInfluenceTownFilter
+        uint8_t cargoInfluenceObjectIds[4];                       // 0x09
+        CargoInfluenceTownFilterType cargoInfluenceTownFilter[4]; // 0x0D valid values 0, 1, 2
+        uint8_t pad_11;
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         // 0x0043CB89

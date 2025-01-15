@@ -8,10 +8,13 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
+#include "Objects/ClimateObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RegionObject.h"
 #include "Objects/TownNamesObject.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
@@ -30,10 +33,55 @@ namespace OpenLoco::TownManager
     // 0x0049B45F
     static uint32_t calcCargoInfluenceFlags(Town* town)
     {
+        uint32_t flags = 0;
+        auto* regionObj = ObjectManager::get<RegionObject>();
+        for (auto i = 0U; i < regionObj->numCargoInflunceObjects; ++i)
+        {
+            bool hasInfluence = false;
+            switch (regionObj->cargoInfluenceTownFilter[i])
+            {
+                using enum CargoInfluenceTownFilterType;
+                case allTowns:
+                {
+
+                    hasInfluence = true;
+                }
+                break;
+
+                case maySnow:
+                {
+                    auto tile = TileManager::get(town->x, town->y);
+                    const auto* climageObj = ObjectManager::get<ClimateObject>();
+                    const auto* surface = tile.surface();
+                    hasInfluence = surface->baseZ() >= climageObj->summerSnowLine;
+                }
+                break;
+
+                case inDesert:
+                {
+                    hasInfluence = TileManager::countSurroundingDesertTiles({ town->x, town->y }) >= 100;
+                }
+                break;
+
+                default:
+                    assert(false);
+                    break;
+            }
+
+            if (hasInfluence)
+            {
+                flags |= (1U << regionObj->cargoInfluenceObjectIds[i]);
+            }
+        }
+
         registers regs;
+
         regs.esi = X86Pointer(town);
         call(0x0049B45F, regs);
-        return regs.eax;
+        regs.eax;
+
+        assert(static_cast<uint32_t>(regs.eax) == flags);
+        return flags;
     }
 
     enum class LocationFlags : uint8_t
