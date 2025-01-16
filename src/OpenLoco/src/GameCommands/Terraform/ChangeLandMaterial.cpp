@@ -1,12 +1,12 @@
 #include "ChangeLandMaterial.h"
 #include "GameCommands/GameCommands.h"
+#include "LandscapeOptions.h"
 #include "Map/MapGenerator/MapGenerator.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "LandscapeOptions.h"
 
 using namespace OpenLoco::Interop;
 

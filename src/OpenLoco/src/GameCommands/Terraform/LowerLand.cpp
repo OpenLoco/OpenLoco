@@ -2,6 +2,7 @@
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
+#include "LandscapeOptions.h"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceData.h"
@@ -11,7 +12,6 @@
 #include "Map/TrackElement.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "LandscapeOptions.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;

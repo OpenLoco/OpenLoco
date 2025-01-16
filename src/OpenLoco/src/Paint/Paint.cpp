@@ -1378,7 +1378,9 @@ namespace OpenLoco::Paint
     {
         auto* lastChild = &ps;
         for (; lastChild->children != nullptr; lastChild = lastChild->children)
+        {
             ;
+        }
         return lastChild;
     }
 

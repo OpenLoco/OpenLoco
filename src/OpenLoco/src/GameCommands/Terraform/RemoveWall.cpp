@@ -1,9 +1,9 @@
 #include "RemoveWall.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
+#include "LandscapeOptions.h"
 #include "Map/TileManager.h"
 #include "Map/WallElement.h"
-#include "LandscapeOptions.h"
 #include "ViewportManager.h"
 
 using namespace OpenLoco::Interop;

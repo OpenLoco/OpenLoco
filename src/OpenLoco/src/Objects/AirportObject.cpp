@@ -60,7 +60,9 @@ namespace OpenLoco
             buildingVariationParts[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
             auto* ptr = buildingVariationParts[i];
             while (*ptr++ != 0xFF)
+            {
                 ;
+            }
             remainingData = remainingData.subspan(ptr - buildingVariationParts[i]);
         }
 
