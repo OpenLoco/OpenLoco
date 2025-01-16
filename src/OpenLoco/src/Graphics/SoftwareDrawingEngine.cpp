@@ -315,6 +315,8 @@ namespace OpenLoco::Gfx
             SDL_UnlockSurface(_screenSurface);
         }
 
+        // If scale factor is greater than 1 we need to copy the surface to a texture and then render that texture to the screen which
+        // is a bit slower. If scale factor is 1 it can directly blit the surface to the window.
         if (Config::get().scaleFactor > 1.0f)
         {
             // Convert colours via palette mapping onto the RGBA surface.
