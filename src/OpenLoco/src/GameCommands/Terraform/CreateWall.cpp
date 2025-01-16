@@ -13,7 +13,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/WallObject.h"
 #include "OpenLoco.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "Scenario.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
@@ -280,7 +280,7 @@ namespace OpenLoco::GameCommands
 
         Ui::ViewportManager::invalidate(args.pos, wall->baseHeight(), wall->baseHeight() + 72, ZoomLevel::half);
 
-        S5::getOptions().madeAnyChanges = 1;
+        getOptions().madeAnyChanges = 1;
 
         return 0;
     }

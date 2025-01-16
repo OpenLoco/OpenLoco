@@ -8,6 +8,7 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
+#include "LandscapeOptions.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -57,14 +58,14 @@ namespace OpenLoco::EditorController
         setScreenFlag(ScreenFlags::editor);
         setGameSpeed(GameSpeed::Normal);
 
-        auto& options = S5::getOptions();
+        auto& options = getOptions();
         auto& gameState = getGameState();
 
         options.editorStep = Step::objectSelection;
         options.difficulty = 2;
         options.madeAnyChanges = 0;
         addr<0x00F25374, uint8_t>() = 0; // ?? backup for madeAnyChanges?
-        options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
+        options.scenarioFlags = ScenarioFlags::landscapeGenerationDone;
         gameState.lastLandOption = 0xFF;
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
 
@@ -83,7 +84,7 @@ namespace OpenLoco::EditorController
         options.scenarioStartYear = 1900;
         gameState.seaLevel = 4;
         options.minLandHeight = 2;
-        options.topographyStyle = S5::TopographyStyle::mountains;
+        options.topographyStyle = TopographyStyle::mountains;
         options.hillDensity = 50;
         options.numberOfForests = 100;
         options.minForestRadius = 4;
@@ -132,7 +133,7 @@ namespace OpenLoco::EditorController
         Gfx::invalidateScreen();
 
         // New in OpenLoco
-        options.generator = S5::LandGeneratorType::Original;
+        options.generator = LandGeneratorType::Original;
         options.numTerrainSmoothingPasses = 2;
         options.numRiverbeds = 0;
         options.minRiverWidth = 10;
@@ -160,7 +161,7 @@ namespace OpenLoco::EditorController
 
     Step getCurrentStep()
     {
-        return S5::getOptions().editorStep;
+        return getOptions().editorStep;
     }
 
     Step getPreviousStep()
@@ -181,7 +182,7 @@ namespace OpenLoco::EditorController
     // 0x00440165
     static void setDefaultScenarioOptions()
     {
-        S5::Options& options = S5::getOptions();
+        Options& options = getOptions();
         auto& gameState = getGameState();
         // Sets the type of the scenario text to an invalid type
         options.scenarioText.flags = 0xFF | options.scenarioText.flags;
@@ -202,10 +203,10 @@ namespace OpenLoco::EditorController
             StringManager::formatString(options.scenarioName, StringIds::unnamed);
         }
 
-        options.scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
+        options.scenarioFlags &= ~ScenarioFlags::landscapeGenerationDone;
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
-            options.scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
+            options.scenarioFlags |= ScenarioFlags::landscapeGenerationDone;
             S5::drawScenarioPreviewImage();
         }
 
@@ -220,17 +221,17 @@ namespace OpenLoco::EditorController
     // 0x00440297
     static void resetLandDistributionPatterns()
     {
-        auto& options = S5::getOptions();
+        auto& options = getOptions();
         for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
         {
-            options.landDistributionPatterns[i] = S5::LandDistributionPattern::everywhere;
+            options.landDistributionPatterns[i] = LandDistributionPattern::everywhere;
             auto* landObj = ObjectManager::get<LandObject>(i);
             if (landObj == nullptr)
             {
                 continue;
             }
 
-            options.landDistributionPatterns[i] = S5::LandDistributionPattern(landObj->distributionPattern);
+            options.landDistributionPatterns[i] = LandDistributionPattern(landObj->distributionPattern);
         }
     }
 
@@ -263,14 +264,14 @@ namespace OpenLoco::EditorController
             case Step::landscapeEditor:
                 // 0x0043D119
                 WindowManager::closeAllFloatingWindows();
-                S5::getOptions().editorStep = Step::objectSelection;
+                getOptions().editorStep = Step::objectSelection;
                 break;
 
             case Step::scenarioOptions:
                 // 0x0043D12C
                 WindowManager::closeAllFloatingWindows();
                 S5::sub_4BAEC4();
-                S5::getOptions().editorStep = Step::landscapeEditor;
+                getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 break;
 
@@ -332,9 +333,9 @@ namespace OpenLoco::EditorController
                 Scenario::sub_4748D4();
                 Scenario::initialiseSnowLine();
                 S5::sub_4BAEC4();
-                S5::getOptions().editorStep = Step::landscapeEditor;
+                getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
-                if ((S5::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
+                if ((getOptions().scenarioFlags & ScenarioFlags::landscapeGenerationDone) != ScenarioFlags::none)
                 {
                     if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
                     {
@@ -351,24 +352,24 @@ namespace OpenLoco::EditorController
                     break;
                 }
 
-                const auto cargoId = S5::getOptions().objective.deliveredCargoType;
+                const auto cargoId = getOptions().objective.deliveredCargoType;
                 if (ObjectManager::get<CargoObject>(cargoId) == nullptr)
                 {
                     for (size_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
                     {
                         if (ObjectManager::get<CargoObject>(i) != nullptr)
                         {
-                            S5::getOptions().objective.deliveredCargoType = static_cast<uint8_t>(i);
+                            getOptions().objective.deliveredCargoType = static_cast<uint8_t>(i);
                             break;
                         }
                     }
                 }
 
                 WindowManager::closeAllFloatingWindows();
-                Scenario::initialiseDate(S5::getOptions().scenarioStartYear);
+                Scenario::initialiseDate(getOptions().scenarioStartYear);
                 Scenario::initialiseSnowLine();
                 Windows::ScenarioOptions::open();
-                S5::getOptions().editorStep = Step::scenarioOptions;
+                getOptions().editorStep = Step::scenarioOptions;
                 break;
             }
 
@@ -384,7 +385,7 @@ namespace OpenLoco::EditorController
                     break;
                 }
 
-                S5::getOptions().editorStep = Step::null;
+                getOptions().editorStep = Step::null;
                 call(0x0046F910); // Sets up new multiplayer related rands
 
                 auto path = fs::u8path(_scenarioFilename.get());
@@ -401,7 +402,7 @@ namespace OpenLoco::EditorController
                 if (!success)
                 {
                     Windows::Error::open(StringIds::scenario_save_failed);
-                    S5::getOptions().editorStep = Step::scenarioOptions;
+                    getOptions().editorStep = Step::scenarioOptions;
                     break;
                 }
 

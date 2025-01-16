@@ -4,11 +4,11 @@
 #include "MapGenerator.h"
 #include "Objects/HillShapesObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 
 namespace OpenLoco::World::MapGenerator
 {
-    void OriginalTerrainGenerator::blitHill(const S5::Options& options, HeightMap& heightMap)
+    void OriginalTerrainGenerator::blitHill(const Options& options, HeightMap& heightMap)
     {
         const uint32_t randomVal = getGameState().rng.randNext();
         const bool flipHillImageLateral = randomVal & 0x100;
@@ -56,7 +56,7 @@ namespace OpenLoco::World::MapGenerator
 
         // 0x0046276D
 
-        if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) == Scenario::ScenarioFlags::none)
+        if ((options.scenarioFlags & ScenarioFlags::hillsEdgeOfMap) == ScenarioFlags::none)
         {
             if ((randX + featureWidth >= heightMap.width - 2U) || (randY + featureHeight >= heightMap.height - 2U))
             {
@@ -159,7 +159,7 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x00462518
-    void OriginalTerrainGenerator::generateHills(const S5::Options& options, HeightMap& heightMap)
+    void OriginalTerrainGenerator::generateHills(const Options& options, HeightMap& heightMap)
     {
         uint8_t baseCount = getGameState().rng.randNext() & 7;
         uint16_t numHills = baseCount + (options.hillDensity * 5) + 1;
@@ -225,7 +225,7 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
-    void OriginalTerrainGenerator::generate(const S5::Options& options, HeightMap& heightMap)
+    void OriginalTerrainGenerator::generate(const Options& options, HeightMap& heightMap)
     {
         std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
 

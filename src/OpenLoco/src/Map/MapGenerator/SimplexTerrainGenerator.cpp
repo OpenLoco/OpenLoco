@@ -1,13 +1,11 @@
 #include "SimplexTerrainGenerator.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "Ui/ProgressBar.h"
 #include <algorithm>
 
-using namespace OpenLoco::S5;
-
 namespace OpenLoco::World::MapGenerator
 {
-    void SimplexTerrainGenerator::generate(const S5::Options& options, HeightMapRange heightMap, uint32_t seed)
+    void SimplexTerrainGenerator::generate(const Options& options, HeightMapRange heightMap, uint32_t seed)
     {
         initialiseRng(seed);
 

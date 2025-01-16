@@ -3,7 +3,7 @@
 #include "HeightMap.h"
 #include <OpenLoco/Core/FileSystem.hpp>
 
-namespace OpenLoco::S5
+namespace OpenLoco
 {
     struct Options;
 }
@@ -13,6 +13,6 @@ namespace OpenLoco::World::MapGenerator
     class PngTerrainGenerator
     {
     public:
-        void generate(const S5::Options& options, const fs::path& path, HeightMap& heightMap);
+        void generate(const Options& options, const fs::path& path, HeightMap& heightMap);
     };
 }

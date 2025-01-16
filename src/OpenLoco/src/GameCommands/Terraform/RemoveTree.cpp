@@ -9,7 +9,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
 #include "Random.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "ViewportManager.h"
 #include "World/TownManager.h"
 
@@ -71,7 +71,7 @@ namespace OpenLoco::GameCommands
                 World::TileManager::removeTree(*treeElement, flags, pos);
             }
 
-            auto& options = S5::getOptions();
+            auto& options = getOptions();
             options.madeAnyChanges = 1;
 
             return removalCost;

@@ -1,5 +1,6 @@
 #include "CreateAirport.h"
 #include "Economy/Economy.h"
+#include "LandscapeOptions.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/BuildingElement.h"
@@ -12,7 +13,6 @@
 #include "Objects/AirportObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
 #include "World/StationManager.h"
@@ -236,7 +236,7 @@ namespace OpenLoco::GameCommands
                     World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                 }
 
-                S5::getOptions().madeAnyChanges = 1;
+                getOptions().madeAnyChanges = 1;
             }
         }
         return totalCost;

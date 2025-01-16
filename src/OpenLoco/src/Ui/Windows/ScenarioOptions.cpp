@@ -11,7 +11,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "Scenario.h"
 #include "ScenarioObjective.h"
 #include "SceneManager.h"
@@ -1065,7 +1065,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             {
                 // Prepare scenario name text.
                 char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-                strncpy(buffer, S5::getOptions().scenarioName, 512);
+                strncpy(buffer, getOptions().scenarioName, 512);
 
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
@@ -1104,7 +1104,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             {
                 // Prepare scenario details text.
                 char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-                strncpy(buffer, S5::getOptions().scenarioDetails, 512);
+                strncpy(buffer, getOptions().scenarioDetails, 512);
 
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
@@ -1135,7 +1135,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             if (widgetIndex == widx::scenario_group_btn && itemIndex != -1)
             {
-                S5::getOptions().difficulty = itemIndex;
+                getOptions().difficulty = itemIndex;
                 self.invalidate();
             }
         }
@@ -1153,7 +1153,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     Dropdown::add(i, StringIds::dropdown_stringid, scenarioGroupLabelIds[i]);
                 }
 
-                Dropdown::setItemSelected(S5::getOptions().difficulty);
+                Dropdown::setItemSelected(getOptions().difficulty);
             }
         }
 
@@ -1176,8 +1176,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::change_name_btn:
                 {
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-                    strncpy(buffer, S5::getOptions().scenarioName, 512);
-                    auto inputSize = std::size(S5::getOptions().scenarioName) - 1;
+                    strncpy(buffer, getOptions().scenarioName, 512);
+                    auto inputSize = std::size(getOptions().scenarioName) - 1;
 
                     TextInput::openTextInput(&self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr, inputSize);
                     break;
@@ -1186,8 +1186,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::change_details_btn:
                 {
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-                    strncpy(buffer, S5::getOptions().scenarioDetails, 512);
-                    auto inputSize = std::size(S5::getOptions().scenarioDetails) - 1;
+                    strncpy(buffer, getOptions().scenarioDetails, 512);
+                    auto inputSize = std::size(getOptions().scenarioDetails) - 1;
 
                     TextInput::openTextInput(&self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr, inputSize);
                     break;
@@ -1200,7 +1200,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            self.widgets[widx::scenario_group].text = scenarioGroupLabelIds[S5::getOptions().difficulty];
+            self.widgets[widx::scenario_group].text = scenarioGroupLabelIds[getOptions().difficulty];
         }
 
         static void unloadScenarioTextObjects()
@@ -1222,8 +1222,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             {
                 case widx::change_name_btn:
                 {
-                    strncpy(S5::getOptions().scenarioName, input, sizeof(S5::Options::scenarioName) - 1);
-                    S5::getOptions().scenarioName[sizeof(S5::Options::scenarioName) - 1] = '\0';
+                    strncpy(getOptions().scenarioName, input, sizeof(OpenLoco::Options::scenarioName) - 1);
+                    getOptions().scenarioName[sizeof(OpenLoco::Options::scenarioName) - 1] = '\0';
                     unloadScenarioTextObjects();
                     self.invalidate();
                     break;
@@ -1231,8 +1231,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::change_details_btn:
                 {
-                    strncpy(S5::getOptions().scenarioDetails, input, sizeof(S5::Options::scenarioDetails) - 1);
-                    S5::getOptions().scenarioDetails[sizeof(S5::Options::scenarioDetails) - 1] = '\0';
+                    strncpy(getOptions().scenarioDetails, input, sizeof(OpenLoco::Options::scenarioDetails) - 1);
+                    getOptions().scenarioDetails[sizeof(OpenLoco::Options::scenarioDetails) - 1] = '\0';
                     unloadScenarioTextObjects();
                     self.invalidate();
                     break;

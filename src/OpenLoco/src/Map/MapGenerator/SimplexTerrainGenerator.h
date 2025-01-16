@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <random>
 
-namespace OpenLoco::S5
+namespace OpenLoco
 {
     struct Options;
 }
@@ -14,7 +14,7 @@ namespace OpenLoco::World::MapGenerator
     class SimplexTerrainGenerator
     {
     public:
-        void generate(const S5::Options& options, HeightMapRange heightMap, uint32_t seed);
+        void generate(const Options& options, HeightMapRange heightMap, uint32_t seed);
 
     private:
         struct SimplexSettings

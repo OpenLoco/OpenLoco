@@ -9,6 +9,7 @@
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Jukebox.h"
+#include "LandscapeOptions.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
@@ -18,7 +19,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "Scenario.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui.h"
@@ -2826,7 +2827,7 @@ namespace OpenLoco::Ui::Windows::Options
             w->disabledWidgets |= 1 << Common::Widx::tab_music;
         }
 
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && getOptions().editorStep == EditorController::Step::objectSelection)
         {
             w->disabledWidgets |= 1 << Common::Widx::tab_regional;
         }

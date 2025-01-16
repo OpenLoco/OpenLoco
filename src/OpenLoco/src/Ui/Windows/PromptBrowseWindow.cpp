@@ -6,6 +6,7 @@
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
+#include "LandscapeOptions.h"
 #include "Localisation/Conversion.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -79,7 +80,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x0050AEA8
     static std::unique_ptr<S5::SaveDetails> _previewSaveDetails;
     // 0x009CCA54
-    static std::unique_ptr<S5::Options> _previewScenarioOptions;
+    static std::unique_ptr<OpenLoco::Options> _previewScenarioOptions;
 
     static Ui::TextInput::InputSession inputSession;
 
@@ -561,7 +562,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         drawingCtx.fillRectInset(x, y, x + width, y + height, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
-        if ((_previewScenarioOptions->scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
+        if ((_previewScenarioOptions->scenarioFlags & ScenarioFlags::landscapeGenerationDone) != ScenarioFlags::none)
         {
             // Height map
             auto imageId = 0;

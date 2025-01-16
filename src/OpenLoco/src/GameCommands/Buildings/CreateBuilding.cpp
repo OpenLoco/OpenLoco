@@ -16,7 +16,7 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "ViewportManager.h"
 #include "World/Industry.h"
 #include "World/Station.h"
@@ -262,7 +262,7 @@ namespace OpenLoco::GameCommands
 
                 elBuilding->setGhost(flags & Flags::ghost);
                 Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elBuilding->baseHeight(), elBuilding->clearHeight());
-                S5::getOptions().madeAnyChanges = 1;
+                getOptions().madeAnyChanges = 1;
             }
         }
 

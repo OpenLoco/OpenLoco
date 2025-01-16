@@ -14,7 +14,7 @@
 #include "Map/TileManager.h"
 #include "MessageManager.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
@@ -160,7 +160,7 @@ namespace OpenLoco::GameCommands
 
         TownManager::resetBuildingsInfluence();
 
-        auto& options = S5::getOptions();
+        auto& options = getOptions();
         options.madeAnyChanges = 1;
 
         return 0;

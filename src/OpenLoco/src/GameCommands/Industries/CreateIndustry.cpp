@@ -22,7 +22,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "Objects/TreeObject.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
@@ -543,7 +543,7 @@ namespace OpenLoco::GameCommands
                     {
                         continue;
                     }
-                    S5::getOptions().madeAnyChanges = 1;
+                    getOptions().madeAnyChanges = 1;
                     // Why are we incrementing this even on test?
                     newIndustry->numTiles--;
                 }

@@ -14,7 +14,7 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
@@ -390,7 +390,7 @@ namespace OpenLoco::GameCommands
                     World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                 }
 
-                S5::getOptions().madeAnyChanges = 1;
+                getOptions().madeAnyChanges = 1;
             }
         }
         return totalCost;

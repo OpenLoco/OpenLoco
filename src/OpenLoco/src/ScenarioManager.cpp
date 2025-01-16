@@ -2,6 +2,7 @@
 #include "EditorController.h"
 #include "Environment.h"
 #include "GameState.h"
+#include "LandscapeOptions.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -214,7 +215,7 @@ namespace OpenLoco::ScenarioManager
         return true;
     }
 
-    static bool loadScenarioDetails(ScenarioIndexEntry& entry, S5::Options& options)
+    static bool loadScenarioDetails(ScenarioIndexEntry& entry, Options& options)
     {
         if ((options.scenarioText.flags & 0xFF) == 0xFF)
         {
@@ -237,7 +238,7 @@ namespace OpenLoco::ScenarioManager
     }
 
     // 0x00444C4E
-    static void loadScenarioProgress(ScenarioIndexEntry& entry, S5::Options& options)
+    static void loadScenarioProgress(ScenarioIndexEntry& entry, Options& options)
     {
         const auto deliveredCargoObjTempLoaded = ObjectManager::loadTemporaryObject(options.objectiveDeliveredCargo);
         Scenario::Objective objective = options.objective;
@@ -387,7 +388,7 @@ namespace OpenLoco::ScenarioManager
             entry.flags |= ScenarioIndexFlags::flag_0;
             entry.category = options->difficulty;
             entry.flags &= ~ScenarioIndexFlags::hasPreviewImage;
-            if ((options->scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
+            if ((options->scenarioFlags & ScenarioFlags::landscapeGenerationDone) != ScenarioFlags::none)
             {
                 entry.flags |= ScenarioIndexFlags::hasPreviewImage;
                 std::copy(&options->preview[0][0], &options->preview[0][0] + sizeof(options->preview), &entry.preview[0][0]);

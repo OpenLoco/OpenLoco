@@ -12,7 +12,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
 #include "OpenLoco.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "Scenario.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
@@ -112,7 +112,7 @@ namespace OpenLoco::GameCommands
             elTree->setSeason(treeObj->var_3E);
             elTree->setUnk7l(7);
             elTree->setClearZ(treeObj->initialHeight / World::kSmallZStep + elTree->baseZ());
-            S5::getOptions().madeAnyChanges = 1;
+            getOptions().madeAnyChanges = 1;
             if (args.buildImmediately)
             {
                 elTree->setUnk5l(treeObj->growth - 1);

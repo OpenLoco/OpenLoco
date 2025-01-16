@@ -9,7 +9,7 @@
 #include "MessageManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "LandscapeOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/Industry.h"
@@ -144,7 +144,7 @@ namespace OpenLoco::GameCommands
                 removeIndustryElement(tile);
             }
 
-            S5::getOptions().madeAnyChanges = 1;
+            getOptions().madeAnyChanges = 1;
             Ui::WindowManager::close(Ui::WindowType::industry, enumValue(id));
             StringManager::emptyUserString(industry->name);
             industry->name = StringIds::null;
