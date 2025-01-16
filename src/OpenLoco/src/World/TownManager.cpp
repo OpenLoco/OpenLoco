@@ -74,13 +74,6 @@ namespace OpenLoco::TownManager
             }
         }
 
-        registers regs;
-
-        regs.esi = X86Pointer(&town);
-        call(0x0049B45F, regs);
-        regs.eax;
-
-        assert(static_cast<uint32_t>(regs.eax) == flags);
         return flags;
     }
 
