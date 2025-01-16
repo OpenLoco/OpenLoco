@@ -31,10 +31,10 @@ namespace OpenLoco::TownManager
     static loco_global<Town*, 0x01135C38> _dword_1135C38;
 
     // 0x0049B45F
-    static uint32_t calcCargoInfluenceFlags(Town* town)
+    static uint32_t calcCargoInfluenceFlags(const Town& town)
     {
         uint32_t flags = 0;
-        auto* regionObj = ObjectManager::get<RegionObject>();
+        const auto* regionObj = ObjectManager::get<RegionObject>();
         for (auto i = 0U; i < regionObj->numCargoInflunceObjects; ++i)
         {
             bool hasInfluence = false;
@@ -50,7 +50,7 @@ namespace OpenLoco::TownManager
 
                 case maySnow:
                 {
-                    auto tile = TileManager::get(town->x, town->y);
+                    auto tile = TileManager::get(town.x, town.y);
                     const auto* climageObj = ObjectManager::get<ClimateObject>();
                     const auto* surface = tile.surface();
                     hasInfluence = surface->baseZ() >= climageObj->summerSnowLine;
@@ -59,7 +59,7 @@ namespace OpenLoco::TownManager
 
                 case inDesert:
                 {
-                    hasInfluence = TileManager::countSurroundingDesertTiles({ town->x, town->y }) >= 100;
+                    hasInfluence = TileManager::countSurroundingDesertTiles({ town.x, town.y }) >= 100;
                 }
                 break;
 
@@ -76,7 +76,7 @@ namespace OpenLoco::TownManager
 
         registers regs;
 
-        regs.esi = X86Pointer(town);
+        regs.esi = X86Pointer(&town);
         call(0x0049B45F, regs);
         regs.eax;
 
@@ -293,7 +293,7 @@ namespace OpenLoco::TownManager
 
         std::fill_n(&town->monthlyCargoDelivered[0], std::size(town->monthlyCargoDelivered), 0);
 
-        town->cargoInfluenceFlags = calcCargoInfluenceFlags(town);
+        town->cargoInfluenceFlags = calcCargoInfluenceFlags(*town);
         town->buildSpeed = 1;
 
         // Figure out a name for this town?
