@@ -3,6 +3,7 @@
 #include "Objects/Object.h"
 #include "ScenarioObjective.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <cstddef>
 
 namespace OpenLoco
 {
