@@ -94,7 +94,7 @@ namespace OpenLoco::Ui
 
     int32_t width();
     int32_t height();
-    bool dirtyBlocksInitialised();
+    bool isInitialized();
 
     void createWindow(const Config::Display& cfg);
     void initialise();

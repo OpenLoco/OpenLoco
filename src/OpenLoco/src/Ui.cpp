@@ -112,10 +112,9 @@ namespace OpenLoco::Ui
         return _screenInfo->height;
     }
 
-    // TODO: Rename misleading name.
-    bool dirtyBlocksInitialised()
+    bool isInitialized()
     {
-        return Gfx::getDrawingEngine().isInitialized();
+        return _window != nullptr;
     }
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
@@ -384,7 +383,7 @@ namespace OpenLoco::Ui
 
         auto& drawingEngine = Gfx::getDrawingEngine();
 
-        if (!Ui::dirtyBlocksInitialised())
+        if (!Ui::isInitialized())
         {
             return;
         }
@@ -891,7 +890,7 @@ namespace OpenLoco::Ui
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
-        if (Ui::dirtyBlocksInitialised())
+        if (Ui::isInitialized())
         {
             WindowManager::callEvent8OnAllWindows();
 
