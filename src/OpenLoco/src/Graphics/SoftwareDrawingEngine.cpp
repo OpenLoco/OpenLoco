@@ -369,4 +369,52 @@ namespace OpenLoco::Gfx
         return _screenRT;
     }
 
+    void SoftwareDrawingEngine::movePixels(
+        const RenderTarget& rt,
+        int16_t dstX,
+        int16_t dstY,
+        int16_t width,
+        int16_t height,
+        int16_t srcX,
+        int16_t srcY)
+    {
+        if (dstX == 0 && dstY == 0)
+        {
+            return;
+        }
+
+        // Adjust for move off canvas.
+        // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the
+        // canvas; hence the checks. This code should ultimately not be called when
+        // zooming because this function is specific to updating the screen on move
+        int32_t lmargin = std::min(dstX - srcX, 0);
+        int32_t rmargin = std::min((int32_t)rt.width - (dstX - srcX + width), 0);
+        int32_t tmargin = std::min(dstY - srcY, 0);
+        int32_t bmargin = std::min((int32_t)rt.height - (dstY - srcY + height), 0);
+
+        dstX -= lmargin;
+        dstY -= tmargin;
+        width += lmargin + rmargin;
+        height += tmargin + bmargin;
+
+        int32_t stride = rt.width + rt.pitch;
+        uint8_t* to = rt.bits + dstY * stride + dstX;
+        uint8_t* from = rt.bits + (dstY - srcY) * stride + dstX - srcX;
+
+        if (srcY > 0)
+        {
+            // If positive dy, reverse directions
+            to += (height - 1) * stride;
+            from += (height - 1) * stride;
+            stride = -stride;
+        }
+
+        // Move bytes
+        for (int32_t i = 0; i < height; i++)
+        {
+            std::memmove(to, from, width);
+            to += stride;
+            from += stride;
+        }
+    }
 }

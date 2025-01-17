@@ -1938,52 +1938,6 @@ namespace OpenLoco::Ui::WindowManager
         viewportRedrawAfterShift(window, viewport, dX, dY);
     }
 
-    // 0x00451DCB
-    static void copyRect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t dx, int16_t dy)
-    {
-        if (dx == 0 && dy == 0)
-        {
-            return;
-        }
-
-        auto _width = Ui::width();
-        auto _height = Ui::height();
-        Gfx::RenderTarget& rt = _screenRT;
-
-        // Adjust for move off screen
-        // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the
-        // screen; hence the checks. This code should ultimately not be called when
-        // zooming because this function is specific to updating the screen on move
-        int32_t lmargin = std::min(x - dx, 0);
-        int32_t rmargin = std::min((int32_t)_width - (x - dx + width), 0);
-        int32_t tmargin = std::min(y - dy, 0);
-        int32_t bmargin = std::min((int32_t)_height - (y - dy + height), 0);
-        x -= lmargin;
-        y -= tmargin;
-        width += lmargin + rmargin;
-        height += tmargin + bmargin;
-
-        int32_t stride = rt.width + rt.pitch;
-        uint8_t* to = rt.bits + y * stride + x;
-        uint8_t* from = rt.bits + (y - dy) * stride + x - dx;
-
-        if (dy > 0)
-        {
-            // If positive dy, reverse directions
-            to += (height - 1) * stride;
-            from += (height - 1) * stride;
-            stride = -stride;
-        }
-
-        // Move bytes
-        for (int32_t i = 0; i < height; i++)
-        {
-            memmove(to, from, width);
-            to += stride;
-            from += stride;
-        }
-    }
-
     /**
      * 0x004C6B09
      *
@@ -2076,7 +2030,7 @@ namespace OpenLoco::Ui::WindowManager
             else
             {
                 // update whole block ?
-                copyRect(left, top, viewport->width, viewport->height, x, y);
+                Gfx::movePixelsOnScreen(left, top, viewport->width, viewport->height, x, y);
 
                 if (x > 0)
                 {
