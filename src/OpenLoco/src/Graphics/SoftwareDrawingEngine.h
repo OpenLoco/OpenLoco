@@ -17,6 +17,8 @@ struct SDL_PixelFormat;
 
 namespace OpenLoco::Gfx
 {
+    struct RenderTarget;
+
 #pragma pack(push, 1)
     struct PaletteEntry
     {

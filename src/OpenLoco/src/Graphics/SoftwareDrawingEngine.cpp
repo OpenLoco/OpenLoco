@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Graphics/FPSCounter.h"
 #include "Logging.h"
+#include "RenderTarget.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>

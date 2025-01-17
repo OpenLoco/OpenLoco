@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics/RenderTarget.h"
+#include <OpenLoco/Engine/Ui/Point.hpp>
 #include <string>
 #include <vector>
 

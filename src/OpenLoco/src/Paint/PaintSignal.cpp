@@ -1,6 +1,7 @@
 #include "PaintSignal.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Map/SignalElement.h"
 #include "Map/TileElement.h"
 #include "Map/Track/TrackData.h"

@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"

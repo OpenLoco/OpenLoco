@@ -1,4 +1,5 @@
 #include "Graphics/DrawingContext.h"
+#include "Graphics/RenderTarget.h"
 #include "Input.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"

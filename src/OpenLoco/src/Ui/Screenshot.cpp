@@ -2,6 +2,7 @@
 #include "Entities/EntityManager.h"
 #include "Environment.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"

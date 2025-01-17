@@ -4,6 +4,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Localisation/Formatting.h"
+#include "RenderTarget.h"
 #include "TextRenderer.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
