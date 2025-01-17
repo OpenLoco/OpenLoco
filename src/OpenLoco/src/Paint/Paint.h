@@ -1,5 +1,6 @@
 #pragma once
 #include "Graphics/ImageId.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Types.hpp"
 #include "Viewport.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -114,7 +115,7 @@ namespace OpenLoco::Paint
     {
         PaintStringStruct* next;
         const int8_t* yOffsets;
-        uint16_t args[8];
+        FormatArgumentsBuffer argsBuf;
         Ui::Point vpPos;
         StringId stringId;
         uint16_t colour;

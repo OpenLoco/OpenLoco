@@ -163,9 +163,11 @@ namespace OpenLoco::Paint
         }
         psString->stringId = stringId;
         psString->next = nullptr;
-        std::memcpy(&psString->args[0], &amount, sizeof(amount));
         psString->yOffsets = yOffsets;
         psString->colour = colour;
+
+        FormatArguments fmtArgs{ psString->argsBuf };
+        fmtArgs.push(amount);
 
         const auto& vpPos = World::gameToScreen(World::Pos3(getSpritePosition(), z), currentRotation);
         psString->vpPos.x = vpPos.x + xOffset;
@@ -1088,11 +1090,8 @@ namespace OpenLoco::Paint
 
         for (; psString != nullptr; psString = psString->next)
         {
-            // FIXME: Modify psString->args to be a buffer.
-            FormatArguments args{ reinterpret_cast<std::byte*>(psString->args), sizeof(psString->args) };
-
             Ui::Point loc(psString->vpPos.x >> zoom, psString->vpPos.y >> zoom);
-            StringManager::formatString(buffer, psString->stringId, args);
+            StringManager::formatString(buffer, psString->stringId, psString->argsBuf);
 
             Ui::WindowManager::setWindowColours(Ui::WindowColour::primary, AdvancedColour(static_cast<Colour>(psString->colour)));
             Ui::WindowManager::setWindowColours(Ui::WindowColour::secondary, AdvancedColour(static_cast<Colour>(psString->colour)));
