@@ -1011,6 +1011,22 @@ namespace OpenLoco::Paint
         }
     }
 
+    static void drawAllAttachedStructs(const Gfx::RenderTarget& rt, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const Ui::ViewportFlags viewFlags)
+    {
+        for (const auto* attachPs = ps.attachedPS; attachPs != nullptr; attachPs = attachPs->next)
+        {
+            const bool shouldCullAttach = shouldTryCullPaintStruct(ps, viewFlags);
+            if (shouldCullAttach)
+            {
+                if (cullPaintStructImage(attachPs->imageId, viewFlags))
+                {
+                    continue;
+                }
+            }
+            drawAttachStruct(rt, drawingCtx, ps, *attachPs, shouldCullAttach);
+        }
+    }
+
     // 0x0045EA23
     void PaintSession::drawStructs(Gfx::DrawingContext& drawingCtx)
     {
@@ -1033,7 +1049,6 @@ namespace OpenLoco::Paint
             // Draw any children this might have
             for (const auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
             {
-                // assert(childPs->attachedPS == nullptr); Children can have attachments but we are skipping them to be investigated!
                 const bool shouldCullChild = shouldTryCullPaintStruct(*childPs, _viewFlags);
 
                 if (shouldCullChild)
@@ -1045,21 +1060,12 @@ namespace OpenLoco::Paint
                 }
 
                 drawStruct(rt, drawingCtx, *childPs, shouldCullChild);
+
+                drawAllAttachedStructs(rt, drawingCtx, *childPs, _viewFlags);
             }
 
             // Draw any attachments to the struct
-            for (const auto* attachPs = ps->attachedPS; attachPs != nullptr; attachPs = attachPs->next)
-            {
-                const bool shouldCullAttach = shouldTryCullPaintStruct(*ps, _viewFlags);
-                if (shouldCullAttach)
-                {
-                    if (cullPaintStructImage(attachPs->imageId, _viewFlags))
-                    {
-                        continue;
-                    }
-                }
-                drawAttachStruct(rt, drawingCtx, *ps, *attachPs, shouldCullAttach);
-            }
+            drawAllAttachedStructs(rt, drawingCtx, *ps, _viewFlags);
         }
     }
 
@@ -1271,6 +1277,22 @@ namespace OpenLoco::Paint
         return true;
     }
 
+    static std::optional<InteractionArg> getAttachedInteractionInfo(const Gfx::RenderTarget& rt, const InteractionItemFlags flags, const PaintStruct& ps)
+    {
+        std::optional<InteractionArg> info = std::nullopt;
+        for (auto* attachedPS = ps.attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
+        {
+            if (isSpriteInteractedWith(&rt, attachedPS->imageId, attachedPS->vpPos + ps.vpPos))
+            {
+                if (isPSSpriteTypeInFilter(ps.type, flags))
+                {
+                    info = { ps };
+                }
+            }
+        }
+        return info;
+    }
+
     // 0x0045ED91
     [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const InteractionItemFlags flags)
     {
@@ -1297,18 +1319,19 @@ namespace OpenLoco::Paint
                         info = { *childPs };
                     }
                 }
+
+                auto attachedInfo = getAttachedInteractionInfo(*getRenderTarget(), flags, *childPs);
+                if (attachedInfo.has_value())
+                {
+                    info = attachedInfo.value();
+                }
             }
 
             // Check attached to main paint struct
-            for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
+            auto attachedInfo = getAttachedInteractionInfo(*getRenderTarget(), flags, *ps);
+            if (attachedInfo.has_value())
             {
-                if (isSpriteInteractedWith(getRenderTarget(), attachedPS->imageId, attachedPS->vpPos + ps->vpPos))
-                {
-                    if (isPSSpriteTypeInFilter(ps->type, flags))
-                    {
-                        info = { *ps };
-                    }
-                }
+                info = attachedInfo.value();
             }
         }
         return info;
