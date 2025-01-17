@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#2810] Large performance regression when there are a lot of vehicles.
 - Fix: [#2829] Large performance regression when using a window scale factor of 1.0.
+- Fix: [#2836] Stations with glass draw incorrectly when there are cantenary wires.
 
 24.12 (2024-12-27)
 ------------------------------------------------------------------------
