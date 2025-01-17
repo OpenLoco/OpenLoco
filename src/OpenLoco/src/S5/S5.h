@@ -359,7 +359,7 @@ namespace OpenLoco::S5
     struct S5File
     {
         Header header;
-        std::unique_ptr<Options> landscapeOptions;
+        std::unique_ptr<Options> scenarioOptions;
         std::unique_ptr<SaveDetails> saveDetails;
         ObjectHeader requiredObjects[859];
         GameState gameState;

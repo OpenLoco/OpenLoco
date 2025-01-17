@@ -283,7 +283,7 @@ namespace OpenLoco::S5
         file->header = prepareHeader(flags, packedObjects.size());
         if (file->header.type == S5Type::scenario || file->header.type == S5Type::landscape)
         {
-            file->landscapeOptions = std::make_unique<Options>(_activeOptions);
+            file->scenarioOptions = std::make_unique<Options>(_activeOptions);
         }
         if (file->header.hasFlags(HeaderFlags::hasSaveDetails))
         {
@@ -401,7 +401,7 @@ namespace OpenLoco::S5
             fs.writeChunk(SawyerEncoding::rotate, file.header);
             if (file.header.type == S5Type::scenario || file.header.type == S5Type::landscape)
             {
-                fs.writeChunk(SawyerEncoding::rotate, *file.landscapeOptions);
+                fs.writeChunk(SawyerEncoding::rotate, *file.scenarioOptions);
             }
             if (file.header.hasFlags(HeaderFlags::hasSaveDetails))
             {
@@ -504,8 +504,8 @@ namespace OpenLoco::S5
         }
         if (file->header.type == S5Type::scenario)
         {
-            file->landscapeOptions = std::make_unique<S5::Options>();
-            fs.readChunk(&*file->landscapeOptions, sizeof(S5::Options));
+            file->scenarioOptions = std::make_unique<S5::Options>();
+            fs.readChunk(&*file->scenarioOptions, sizeof(S5::Options));
         }
         // Read packed objects
         if (file->header.numPackedObjects > 0)
@@ -666,9 +666,9 @@ namespace OpenLoco::S5
                     Ui::ProgressBar::end();
                     return false;
                 }
-                if (static_cast<EditorController::Step>(file->landscapeOptions->editorStep) == EditorController::Step::null)
+                if (static_cast<EditorController::Step>(file->scenarioOptions->editorStep) == EditorController::Step::null)
                 {
-                    file->landscapeOptions->editorStep = enumValue(EditorController::Step::landscapeEditor);
+                    file->scenarioOptions->editorStep = enumValue(EditorController::Step::landscapeEditor);
                 }
             }
 
@@ -765,7 +765,7 @@ namespace OpenLoco::S5
             _gameState = file->gameState;
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
-                _activeOptions = *file->landscapeOptions;
+                _activeOptions = *file->scenarioOptions;
             }
             if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
