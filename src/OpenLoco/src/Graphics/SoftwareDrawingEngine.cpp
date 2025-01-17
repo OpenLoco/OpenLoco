@@ -315,22 +315,20 @@ namespace OpenLoco::Gfx
             SDL_UnlockSurface(_screenSurface);
         }
 
-        // Convert colours via palette mapping onto the RGBA surface.
-        if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
-        {
-            Logging::error("SDL_BlitSurface {}", SDL_GetError());
-            return;
-        }
-
-        // Stream the RGBA pixels into screen texture.
-        void* pixels;
-        int pitch;
-        SDL_LockTexture(_screenTexture, NULL, &pixels, &pitch);
-        SDL_ConvertPixels(_screenRGBASurface->w, _screenRGBASurface->h, _screenRGBASurface->format->format, _screenRGBASurface->pixels, _screenRGBASurface->pitch, _screenTextureFormat->format, pixels, pitch);
-        SDL_UnlockTexture(_screenTexture);
-
+        // If scale factor is greater than 1 we need to copy the surface to a texture and then render that texture to the screen which
+        // is a bit slower. If scale factor is 1 it can directly blit the surface to the window.
         if (Config::get().scaleFactor > 1.0f)
         {
+            // Convert colours via palette mapping onto the RGBA surface.
+            if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
+            {
+                Logging::error("SDL_BlitSurface {}", SDL_GetError());
+                return;
+            }
+
+            // Stream the RGBA pixels into screen texture.
+            SDL_UpdateTexture(_screenTexture, nullptr, _screenRGBASurface->pixels, _screenRGBASurface->pitch);
+
             // Copy screen texture to the scaled texture.
             SDL_SetRenderTarget(_renderer, _scaledScreenTexture);
             SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
@@ -338,14 +336,22 @@ namespace OpenLoco::Gfx
             // Copy scaled texture to primary render target.
             SDL_SetRenderTarget(_renderer, nullptr);
             SDL_RenderCopy(_renderer, _scaledScreenTexture, nullptr, nullptr);
+
+            // Display buffers.
+            SDL_RenderPresent(_renderer);
         }
         else
         {
-            SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
-        }
+            // Directly blit the surface to the window.
+            if (SDL_BlitSurface(_screenSurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
+            {
+                Logging::error("SDL_BlitSurface {}", SDL_GetError());
+                exit(1);
+            }
 
-        // Display buffers.
-        SDL_RenderPresent(_renderer);
+            // Update the window surface.
+            SDL_UpdateWindowSurface(_window);
+        }
     }
 
     DrawingContext& SoftwareDrawingEngine::getDrawingContext()
