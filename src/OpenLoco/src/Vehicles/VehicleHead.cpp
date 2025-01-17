@@ -22,6 +22,7 @@
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/CargoObject.h"
+#include "Objects/DockObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
@@ -3401,9 +3402,150 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    struct NearbyVehicles
+    {
+        std::array<std::array<bool, 16>, 16> searchResult; // 0x00525BEC
+        World::TilePos2 startTile;                         // 0x00525BE8
+    };
+
+    // 0x00427F1C
+    static NearbyVehicles findNearbyTilesWithVehicles(const World::Pos2 pos)
+    {
+        const auto tilePosA = World::toTileSpace(pos) - World::TilePos2(7, 7);
+        const auto tilePosB = World::toTileSpace(pos) + World::TilePos2(7, 7);
+
+        NearbyVehicles res{};
+        res.startTile = tilePosA;
+
+        for (const auto& tileLoc : getClampedRange(tilePosA, tilePosB))
+        {
+            for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(tileLoc)))
+            {
+                auto* vehicleEntity = entity->asBase<VehicleBase>();
+                if (vehicleEntity == nullptr)
+                {
+                    continue;
+                }
+                if (vehicleEntity->getTransportMode() == TransportMode::air
+                    || vehicleEntity->getTransportMode() == TransportMode::water)
+                {
+                    continue;
+                }
+                res.searchResult[tileLoc.x][tileLoc.y] = true;
+            }
+        }
+        return res;
+    }
+
+    struct DockTarget
+    {
+        StationId stationId;
+        World::Pos3 stationPos;
+        World::Pos2 boatPos;
+    };
+
+    static std::optional<DockTarget> sub_428379(StationId stationId)
+    {
+        auto* station = StationManager::get(stationId);
+        for (auto i = 0U; i < station->stationTileSize; ++i)
+        {
+            // Remember z needs floored
+            const auto& pos = station->stationTiles[i];
+
+            StationElement* elStation = [&pos]() -> World::StationElement* {
+                auto tile = TileManager::get(pos);
+                for (auto& el : tile)
+                {
+                    auto* elStation = el.as<StationElement>();
+                    if (elStation == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elStation->isGhost() || elStation->isAiAllocated())
+                    {
+                        continue;
+                    }
+                    if (elStation->baseZ() != pos.z / World::kSmallZStep)
+                    {
+                        continue;
+                    }
+                    return elStation;
+                }
+                return nullptr;
+            }();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+            if (elStation->stationType() != StationType::docks)
+            {
+                continue;
+            }
+            if (elStation->isFlag6())
+            {
+                continue;
+            }
+
+            const auto* dockObj = ObjectManager::get<DockObject>(elStation->objectId());
+            const auto boatPos = Math::Vector::rotate(dockObj->boatPosition, elStation->rotation()) + pos;
+            DockTarget dockTarget{};
+            dockTarget.stationId = stationId;
+            dockTarget.stationPos = World::Pos3{ pos.x, pos.y, pos.z & 0xFFFC };
+            dockTarget.boatPos = boatPos + World::Pos2{ 32, 32 };
+            return dockTarget;
+        }
+        return std::nullopt;
+    }
+
     // 0x00427FC9
     std::tuple<StationId, World::Pos2, World::Pos3> VehicleHead::sub_427FC9()
     {
+        const auto nearbyVehicles = findNearbyTilesWithVehicles(position);
+
+        auto orders = getCurrentOrders();
+        auto curOrder = orders.begin();
+        auto* stationOrder = curOrder->as<OrderStation>();
+        auto* routeOrder = curOrder->as<OrderRouteWaypoint>();
+
+        std::optional<DockTarget> res = std::nullopt;
+        // 0x00525BC6
+        World::TilePos2 targetOrderPos{};
+        if (routeOrder != nullptr)
+        {
+            targetOrderPos = toTileSpace(routeOrder->getWaypoint());
+        }
+        else if (stationOrder != nullptr)
+        {
+            const auto stationId = stationOrder->getStation();
+            res = sub_428379(stationId);
+            if (res.has_value())
+            {
+                targetOrderPos = toTileSpace(res->stationPos);
+            }
+            else
+            {
+                auto* station = StationManager::get(stationId);
+                targetOrderPos = toTileSpace(Pos2{ station->x, station->y });
+            }
+        }
+        else
+        {
+            targetOrderPos = toTileSpace(position);
+        }
+
+        // 0x004280E9
+        // ...
+
+        // 0x004281D2
+        if (res.has_value())
+        {
+            return std::make_tuple(res->stationId, res->boatPos, res->stationPos);
+        }
+        else
+        {
+            // TODO
+        }
+
         registers regs;
         regs.esi = X86Pointer(this);
         call(0x00427FC9, regs);
