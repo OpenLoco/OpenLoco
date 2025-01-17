@@ -6,7 +6,7 @@
 #include "Map/SurfaceData.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "Types.hpp"
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -230,7 +230,7 @@ namespace OpenLoco::GameCommands
 
         if (flags & Flags::apply)
         {
-            S5::getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
         }
 
         _mtnToolCost = 0;

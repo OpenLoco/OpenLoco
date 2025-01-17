@@ -18,8 +18,9 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "Scenario.h"
 #include "ScenarioManager.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
@@ -2826,7 +2827,7 @@ namespace OpenLoco::Ui::Windows::Options
             w->disabledWidgets |= 1 << Common::Widx::tab_music;
         }
 
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             w->disabledWidgets |= 1 << Common::Widx::tab_regional;
         }

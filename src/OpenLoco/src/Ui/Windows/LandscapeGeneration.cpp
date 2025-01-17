@@ -15,8 +15,8 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/WaterObject.h"
-#include "S5/S5.h"
 #include "Scenario.h"
+#include "ScenarioOptions.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static void confirmResetLandscape(int32_t promptType)
         {
-            if (S5::getOptions().madeAnyChanges)
+            if (Scenario::getOptions().madeAnyChanges)
             {
                 LandscapeGenerationConfirm::open(promptType);
             }
@@ -157,14 +157,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             // Land tab
             {
                 auto land = ObjectManager::get<LandObject>(getGameState().lastLandOption);
-                const uint32_t imageId = land->mapPixelImage + Land::ImageIds::toolbar_terraform_land;
+                const uint32_t imageId = land->mapPixelImage + OpenLoco::Land::ImageIds::toolbar_terraform_land;
                 Widget::drawTab(window, drawingCtx, imageId, widx::tab_land);
             }
 
             // Water tab
             {
                 const auto waterObj = ObjectManager::get<WaterObject>();
-                uint32_t imageId = waterObj->image + Water::ImageIds::kToolbarTerraformWater;
+                uint32_t imageId = waterObj->image + OpenLoco::Water::ImageIds::kToolbarTerraformWater;
                 if (window->currentTab == widx::tab_water - widx::tab_options)
                 {
                     imageId += (window->frameNo / 2) % 16;
@@ -213,8 +213,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window.widgets[widx::close_button].left = window.width - 15;
             window.widgets[widx::close_button].right = window.width - 3;
 
-            auto& options = S5::getOptions();
-            if (options.generator == S5::LandGeneratorType::PngHeightMap)
+            auto& options = Scenario::getOptions();
+            if (options.generator == Scenario::LandGeneratorType::PngHeightMap)
             {
                 if (World::MapGenerator::getPngHeightmapPath().empty())
                 {
@@ -320,10 +320,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Colour::black,
                 StringIds::height_map_source);
 
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
             switch (options.generator)
             {
-                case S5::LandGeneratorType::Original:
+                case Scenario::LandGeneratorType::Original:
                 {
                     auto* obj = ObjectManager::get<HillShapesObject>();
                     FormatArguments args{};
@@ -334,7 +334,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
                 }
 
-                case S5::LandGeneratorType::Simplex:
+                case Scenario::LandGeneratorType::Simplex:
                 {
                     // Draw label
                     auto& widget = window.widgets[widx::terrainSmoothingNum];
@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
                 }
 
-                case S5::LandGeneratorType::PngHeightMap:
+                case Scenario::LandGeneratorType::PngHeightMap:
                 {
                     FormatArguments args{};
                     auto path = World::MapGenerator::getPngHeightmapPath();
@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(self);
 
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
 
             auto args = FormatArguments(self.widgets[widx::start_year].textArgs);
             args.push<uint16_t>(options.scenarioStartYear);
@@ -394,7 +394,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             switch (options.generator)
             {
-                case S5::LandGeneratorType::Original:
+                case Scenario::LandGeneratorType::Original:
                 {
                     self.enabledWidgets |= (1 << widx::change_heightmap_btn);
                     self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
@@ -408,7 +408,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
                 }
 
-                case S5::LandGeneratorType::Simplex:
+                case Scenario::LandGeneratorType::Simplex:
                 {
                     self.enabledWidgets &= ~(1 << widx::change_heightmap_btn);
                     self.enabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
@@ -422,7 +422,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
                 }
 
-                case S5::LandGeneratorType::PngHeightMap:
+                case Scenario::LandGeneratorType::PngHeightMap:
                 {
                     self.enabledWidgets &= ~(1 << widx::change_heightmap_btn);
                     self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
@@ -437,7 +437,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 }
             }
 
-            if (options.generator == S5::LandGeneratorType::PngHeightMap)
+            if (options.generator == Scenario::LandGeneratorType::PngHeightMap)
             {
                 self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
                 self.disabledWidgets |= (1 << widx::generate_when_game_starts);
@@ -461,7 +461,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::heightMapDropdown:
                     if (itemIndex != -1)
                     {
-                        S5::getOptions().generator = static_cast<S5::LandGeneratorType>(itemIndex);
+                        Scenario::getOptions().generator = static_cast<Scenario::LandGeneratorType>(itemIndex);
                         window.invalidate();
                     }
                     break;
@@ -471,7 +471,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DC83
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
 
             switch (widgetIndex)
             {
@@ -523,9 +523,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             switch (widgetIndex)
             {
                 case widx::generate_when_game_starts:
-                    if ((S5::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
+                    if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
                     {
-                        S5::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
+                        Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
                         Scenario::generateLandscape();
                     }
                     else
@@ -727,7 +727,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 // Draw current distribution setting.
                 {
                     FormatArguments args{};
-                    const StringId distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
+                    const StringId distributionId = landDistributionLabelIds[enumValue(Scenario::getOptions().landDistributionPatterns[i])];
                     args.push(distributionId);
                     auto point = Point(151, yPos + 5);
                     tr.drawStringLeftClipped(point, 177, Colour::black, StringIds::black_stringid, args);
@@ -780,7 +780,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::topography_style_btn:
                     if (itemIndex != -1)
                     {
-                        S5::getOptions().topographyStyle = static_cast<S5::TopographyStyle>(itemIndex);
+                        Scenario::getOptions().topographyStyle = static_cast<Scenario::TopographyStyle>(itemIndex);
                         window.invalidate();
                     }
                     break;
@@ -788,7 +788,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::scrollview:
                     if (itemIndex != -1 && window.rowHover != -1)
                     {
-                        S5::getOptions().landDistributionPatterns[window.rowHover] = static_cast<S5::LandDistributionPattern>(itemIndex);
+                        Scenario::getOptions().landDistributionPatterns[window.rowHover] = static_cast<Scenario::LandDistributionPattern>(itemIndex);
                         window.invalidate();
                     }
                     break;
@@ -798,7 +798,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E173
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
 
             switch (widgetIndex)
             {
@@ -847,7 +847,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             switch (widgetIndex)
             {
                 case widx::hillsEdgeOfMap:
-                    S5::getOptions().scenarioFlags ^= Scenario::ScenarioFlags::hillsEdgeOfMap;
+                    Scenario::getOptions().scenarioFlags ^= Scenario::ScenarioFlags::hillsEdgeOfMap;
                     window.invalidate();
                     break;
 
@@ -905,7 +905,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
             }
 
-            Dropdown::setItemSelected(enumValue(S5::getOptions().landDistributionPatterns[landIndex]));
+            Dropdown::setItemSelected(enumValue(Scenario::getOptions().landDistributionPatterns[landIndex]));
         }
 
         // 0x0043DEBF
@@ -913,7 +913,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
 
             {
                 auto args = FormatArguments(window.widgets[widx::hill_density].textArgs);
@@ -1082,7 +1082,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
             auto& gameState = getGameState();
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
 
             switch (widgetIndex)
             {
@@ -1149,7 +1149,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Common::prepareDraw(window);
 
             auto& gameState = getGameState();
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
 
             {
                 auto args = FormatArguments(window.widgets[widx::sea_level].textArgs);
@@ -1296,7 +1296,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E670
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
 
             switch (widgetIndex)
             {
@@ -1418,7 +1418,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
             {
                 auto args = FormatArguments(window.widgets[widx::number_of_forests].textArgs);
                 args.push<uint16_t>(options.numberOfForests);
@@ -1544,14 +1544,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 return;
             }
 
-            S5::getOptions().maxTownSize = itemIndex + 1;
+            Scenario::getOptions().maxTownSize = itemIndex + 1;
             window.invalidate();
         }
 
         // 0x0043EA0D
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
 
             switch (widgetIndex)
             {
@@ -1600,9 +1600,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Common::prepareDraw(window);
 
             auto args = FormatArguments(window.widgets[widx::number_of_towns].textArgs);
-            args.push<uint16_t>(S5::getOptions().numberOfTowns);
+            args.push<uint16_t>(Scenario::getOptions().numberOfTowns);
 
-            window.widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize - 1];
+            window.widgets[widx::max_town_size].text = townSizeLabels[Scenario::getOptions().maxTownSize - 1];
         }
 
         static constexpr WindowEventList kEvents = {
@@ -1669,7 +1669,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 return;
             }
 
-            S5::getOptions().numberOfIndustries = itemIndex;
+            Scenario::getOptions().numberOfIndustries = itemIndex;
             window.invalidate();
         }
 
@@ -1688,7 +1688,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                         Dropdown::add(i, numIndustriesLabels[i]);
                     }
 
-                    Dropdown::setHighlightedItem(S5::getOptions().numberOfIndustries);
+                    Dropdown::setHighlightedItem(Scenario::getOptions().numberOfIndustries);
                     break;
                 }
 
@@ -1709,7 +1709,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            window.widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
+            window.widgets[widx::num_industries].text = numIndustriesLabels[Scenario::getOptions().numberOfIndustries];
             window.activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
             if (!IndustryManager::hasFlags(IndustryManager::Flags::disallowIndustriesCloseDown))
             {

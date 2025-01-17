@@ -61,6 +61,7 @@
 #include "Random.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Title.h"
 #include "Tutorial.h"
@@ -491,7 +492,7 @@ namespace OpenLoco
 
         recordTickStartPrng();
         World::TileManager::defragmentTilePeriodic();
-        addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
+        addr<0x00F25374, uint8_t>() = Scenario::getOptions().madeAnyChanges;
         dateTick();
         World::TileManager::update();
         World::WaveManager::update();
@@ -506,7 +507,7 @@ namespace OpenLoco
         Audio::updateAmbientNoise();
         Title::update();
 
-        S5::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
+        Scenario::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
         if (_loadErrorCode != 0)
         {
             if (_loadErrorCode == -2)

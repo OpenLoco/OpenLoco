@@ -11,6 +11,7 @@
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
@@ -214,7 +215,7 @@ namespace OpenLoco::ScenarioManager
         return true;
     }
 
-    static bool loadScenarioDetails(ScenarioIndexEntry& entry, S5::Options& options)
+    static bool loadScenarioDetails(ScenarioIndexEntry& entry, Scenario::Options& options)
     {
         if ((options.scenarioText.flags & 0xFF) == 0xFF)
         {
@@ -237,7 +238,7 @@ namespace OpenLoco::ScenarioManager
     }
 
     // 0x00444C4E
-    static void loadScenarioProgress(ScenarioIndexEntry& entry, S5::Options& options)
+    static void loadScenarioProgress(ScenarioIndexEntry& entry, Scenario::Options& options)
     {
         const auto deliveredCargoObjTempLoaded = ObjectManager::loadTemporaryObject(options.objectiveDeliveredCargo);
         Scenario::Objective objective = options.objective;

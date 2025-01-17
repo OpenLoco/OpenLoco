@@ -5,7 +5,7 @@
 #include "GameState.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Ui/Screenshot.h"
 #include "Ui/TextInput.h"
@@ -292,7 +292,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF1C6
     static void adjustLand()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -303,7 +303,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF1E1
     static void adjustWater()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -314,7 +314,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF1FC
     static void plantTrees()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -325,7 +325,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF217
     static void bulldozeArea()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -352,7 +352,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF24F
     static void buildRoads()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -438,7 +438,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF308
     static void showTownsList()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -449,7 +449,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF323
     static void showIndustriesList()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -460,7 +460,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF33E
     static void showMap()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }

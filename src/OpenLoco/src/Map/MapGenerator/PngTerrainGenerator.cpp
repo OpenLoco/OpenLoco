@@ -1,7 +1,7 @@
 #include "PngTerrainGenerator.h"
 #include "Logging.h"
 #include "MapGenerator.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Gfx/PngImage.h>
 #include <OpenLoco/Platform/Platform.h>
@@ -12,7 +12,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::MapGenerator
 {
-    void PngTerrainGenerator::generate(const S5::Options& options, const fs::path& path, HeightMap& heightMap)
+    void PngTerrainGenerator::generate(const Scenario::Options& options, const fs::path& path, HeightMap& heightMap)
     {
         if (!fs::is_regular_file(path))
         {

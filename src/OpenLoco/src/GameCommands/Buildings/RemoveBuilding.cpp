@@ -6,7 +6,7 @@
 #include "Map/BuildingElement.h"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
@@ -103,7 +103,7 @@ namespace OpenLoco::GameCommands
                     if (flags & GameCommands::Flags::apply)
                     {
                         World::TileManager::removeBuildingElement(subElBuilding->get<World::BuildingElement>(), subTilePos);
-                        auto& options = S5::getOptions();
+                        auto& options = Scenario::getOptions();
                         options.madeAnyChanges = 1;
                     }
                 }

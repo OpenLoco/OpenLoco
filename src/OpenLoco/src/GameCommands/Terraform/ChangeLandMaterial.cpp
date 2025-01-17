@@ -6,7 +6,7 @@
 #include "Map/TileManager.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 
 using namespace OpenLoco::Interop;
 
@@ -56,7 +56,7 @@ namespace OpenLoco::GameCommands
                 }
             }
             World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
             options.madeAnyChanges = 1;
         }
         return 0;

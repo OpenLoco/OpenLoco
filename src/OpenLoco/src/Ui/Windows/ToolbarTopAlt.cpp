@@ -17,7 +17,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Screenshot.h"
@@ -132,7 +132,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
             case 1:
             {
-                if (S5::getOptions().editorStep == EditorController::Step::objectSelection)
+                if (Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
                 {
                     if (!ObjectSelectionWindow::tryCloseWindow())
                     {

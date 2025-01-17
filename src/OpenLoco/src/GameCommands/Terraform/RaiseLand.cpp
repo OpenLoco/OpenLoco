@@ -11,7 +11,7 @@
 #include "Map/TrackElement.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
     {
         if (flags & Flags::apply)
         {
-            S5::getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
 
             if (getCommandNestLevel() == 1 && getUpdatingCompanyId() != CompanyId::neutral)
             {

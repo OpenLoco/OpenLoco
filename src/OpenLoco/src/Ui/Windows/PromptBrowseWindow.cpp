@@ -14,6 +14,7 @@
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "Scenario.h"
+#include "ScenarioOptions.h"
 #include "Ui.h"
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
@@ -79,7 +80,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x0050AEA8
     static std::unique_ptr<S5::SaveDetails> _previewSaveDetails;
     // 0x009CCA54
-    static std::unique_ptr<S5::Options> _previewScenarioOptions;
+    static std::unique_ptr<Scenario::Options> _previewScenarioOptions;
 
     static Ui::TextInput::InputSession inputSession;
 

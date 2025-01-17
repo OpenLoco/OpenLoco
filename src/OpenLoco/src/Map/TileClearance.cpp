@@ -13,7 +13,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TreeObject.h"
 #include "RoadElement.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "SignalElement.h"
 #include "StationElement.h"
 #include "SurfaceElement.h"
@@ -580,7 +580,7 @@ namespace OpenLoco::World::TileClearance
         }
         if (flags & GameCommands::Flags::apply)
         {
-            S5::getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
         }
         cost += buildingCost;
 
@@ -607,7 +607,7 @@ namespace OpenLoco::World::TileClearance
 
         World::TileManager::setRemoveElementPointerChecker(reinterpret_cast<TileElement&>(elTree));
         World::TileManager::removeTree(elTree, GameCommands::Flags::apply, pos);
-        S5::getOptions().madeAnyChanges = 1;
+        Scenario::getOptions().madeAnyChanges = 1;
         if (World::TileManager::wasRemoveOnLastElement())
         {
             return ClearFuncResult::allCollisionsRemoved;

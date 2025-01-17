@@ -11,7 +11,7 @@
 #include "Map/TileManager.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
@@ -176,7 +176,7 @@ namespace OpenLoco::GameCommands
         auto tileHeight = World::TileManager::getHeight(Pos2(newTown->x, newTown->y));
         setPosition(World::Pos3(newTown->x + World::kTileSize / 2, newTown->y + World::kTileSize / 2, tileHeight.landHeight));
 
-        auto& options = S5::getOptions();
+        auto& options = Scenario::getOptions();
         options.madeAnyChanges = 1;
 
         return 0;

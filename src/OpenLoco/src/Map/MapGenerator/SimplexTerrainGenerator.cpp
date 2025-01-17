@@ -1,13 +1,11 @@
 #include "SimplexTerrainGenerator.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "Ui/ProgressBar.h"
 #include <algorithm>
 
-using namespace OpenLoco::S5;
-
 namespace OpenLoco::World::MapGenerator
 {
-    void SimplexTerrainGenerator::generate(const S5::Options& options, HeightMapRange heightMap, uint32_t seed)
+    void SimplexTerrainGenerator::generate(const Scenario::Options& options, HeightMapRange heightMap, uint32_t seed)
     {
         initialiseRng(seed);
 
@@ -20,31 +18,31 @@ namespace OpenLoco::World::MapGenerator
 
         switch (options.topographyStyle)
         {
-            case TopographyStyle::flatLand:
+            case Scenario::TopographyStyle::flatLand:
                 settings.high = options.minLandHeight + 8;
                 settings.baseFreq = 4.0f * hillDensity;
                 settings.octaves = 5;
                 generate(settings, heightMap);
                 break;
-            case TopographyStyle::smallHills:
+            case Scenario::TopographyStyle::smallHills:
                 settings.high = options.minLandHeight + 14;
                 settings.baseFreq = 6.0f * hillDensity;
                 settings.octaves = 6;
                 generate(settings, heightMap);
                 break;
-            case TopographyStyle::mountains:
+            case Scenario::TopographyStyle::mountains:
                 settings.high = 32;
                 settings.baseFreq = 4.0f * hillDensity;
                 settings.octaves = 6;
                 generate(settings, heightMap);
                 break;
-            case TopographyStyle::halfMountainsHills:
+            case Scenario::TopographyStyle::halfMountainsHills:
                 settings.high = 32;
                 settings.baseFreq = 8.0f * hillDensity;
                 settings.octaves = 6;
                 generate(settings, heightMap);
                 break;
-            case TopographyStyle::halfMountainsFlat:
+            case Scenario::TopographyStyle::halfMountainsFlat:
                 settings.high = 32;
                 settings.baseFreq = 6.0f * hillDensity;
                 settings.octaves = 5;
