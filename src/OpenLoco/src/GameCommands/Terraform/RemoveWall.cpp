@@ -1,7 +1,7 @@
 #include "RemoveWall.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Map/TileManager.h"
 #include "Map/WallElement.h"
 #include "ViewportManager.h"
@@ -64,7 +64,7 @@ namespace OpenLoco::GameCommands
 
             TileManager::removeElement(tileElement);
 
-            auto& options = getOptions();
+            auto& options = Scenario::getOptions();
             options.madeAnyChanges = 1;
 
             return 0;

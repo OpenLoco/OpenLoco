@@ -2,7 +2,7 @@
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Map/QuarterTile.h"
 #include "Map/SurfaceElement.h"
@@ -112,7 +112,7 @@ namespace OpenLoco::GameCommands
             elTree->setSeason(treeObj->var_3E);
             elTree->setUnk7l(7);
             elTree->setClearZ(treeObj->initialHeight / World::kSmallZStep + elTree->baseZ());
-            getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
             if (args.buildImmediately)
             {
                 elTree->setUnk5l(treeObj->growth - 1);

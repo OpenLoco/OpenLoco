@@ -1,7 +1,7 @@
 #include "CreatePort.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/BuildingElement.h"
@@ -390,7 +390,7 @@ namespace OpenLoco::GameCommands
                     World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                 }
 
-                getOptions().madeAnyChanges = 1;
+                Scenario::getOptions().madeAnyChanges = 1;
             }
         }
         return totalCost;

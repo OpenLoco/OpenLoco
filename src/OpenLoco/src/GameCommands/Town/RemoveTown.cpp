@@ -5,7 +5,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/RemoveIndustry.h"
 #include "GameCommands/Road/RemoveRoad.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
@@ -160,7 +160,7 @@ namespace OpenLoco::GameCommands
 
         TownManager::resetBuildingsInfluence();
 
-        auto& options = getOptions();
+        auto& options = Scenario::getOptions();
         options.madeAnyChanges = 1;
 
         return 0;

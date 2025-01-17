@@ -2,7 +2,7 @@
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Map/QuarterTile.h"
 #include "Map/SurfaceElement.h"
@@ -280,7 +280,7 @@ namespace OpenLoco::GameCommands
 
         Ui::ViewportManager::invalidate(args.pos, wall->baseHeight(), wall->baseHeight() + 72, ZoomLevel::half);
 
-        getOptions().madeAnyChanges = 1;
+        Scenario::getOptions().madeAnyChanges = 1;
 
         return 0;
     }

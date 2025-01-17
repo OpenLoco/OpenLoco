@@ -4,7 +4,7 @@
 #include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "IndustryElement.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
@@ -580,7 +580,7 @@ namespace OpenLoco::World::TileClearance
         }
         if (flags & GameCommands::Flags::apply)
         {
-            getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
         }
         cost += buildingCost;
 
@@ -607,7 +607,7 @@ namespace OpenLoco::World::TileClearance
 
         World::TileManager::setRemoveElementPointerChecker(reinterpret_cast<TileElement&>(elTree));
         World::TileManager::removeTree(elTree, GameCommands::Flags::apply, pos);
-        getOptions().madeAnyChanges = 1;
+        Scenario::getOptions().madeAnyChanges = 1;
         if (World::TileManager::wasRemoveOnLastElement())
         {
             return ClearFuncResult::allCollisionsRemoved;

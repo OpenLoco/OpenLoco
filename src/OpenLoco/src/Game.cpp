@@ -8,7 +8,7 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Input.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
 #include "Objects/ObjectIndex.h"
@@ -101,7 +101,7 @@ namespace OpenLoco::Game
     // 0x004418DB
     bool saveScenarioOpen()
     {
-        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / getOptions().scenarioName;
+        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / Scenario::getOptions().scenarioName;
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
@@ -111,14 +111,14 @@ namespace OpenLoco::Game
     // 0x00441993
     bool saveLandscapeOpen()
     {
-        getOptions().scenarioFlags &= ~ScenarioFlags::landscapeGenerationDone;
+        Scenario::getOptions().scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
         if (hasFlags(GameStateFlags::tileManagerLoaded))
         {
-            getOptions().scenarioFlags |= ScenarioFlags::landscapeGenerationDone;
+            Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
             S5::drawScenarioPreviewImage();
         }
 
-        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / getOptions().scenarioName;
+        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / Scenario::getOptions().scenarioName;
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 

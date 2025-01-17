@@ -15,6 +15,10 @@ namespace OpenLoco
 {
     enum class GameStateFlags : uint32_t;
     class Stream;
+}
+
+namespace OpenLoco::Scenario
+{
     struct Options;
 }
 
@@ -404,7 +408,7 @@ namespace OpenLoco::S5
     bool importSaveToGameState(const fs::path& path, LoadFlags flags);
     bool importSaveToGameState(Stream& stream, LoadFlags flags);
     std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path);
-    std::unique_ptr<OpenLoco::Options> readScenarioOptions(const fs::path& path);
+    std::unique_ptr<Scenario::Options> readScenarioOptions(const fs::path& path);
 
     void sub_4BAEC4();
 }

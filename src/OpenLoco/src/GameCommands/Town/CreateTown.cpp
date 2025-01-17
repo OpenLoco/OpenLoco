@@ -4,7 +4,7 @@
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Map/SurfaceElement.h"
@@ -176,7 +176,7 @@ namespace OpenLoco::GameCommands
         auto tileHeight = World::TileManager::getHeight(Pos2(newTown->x, newTown->y));
         setPosition(World::Pos3(newTown->x + World::kTileSize / 2, newTown->y + World::kTileSize / 2, tileHeight.landHeight));
 
-        auto& options = getOptions();
+        auto& options = Scenario::getOptions();
         options.madeAnyChanges = 1;
 
         return 0;

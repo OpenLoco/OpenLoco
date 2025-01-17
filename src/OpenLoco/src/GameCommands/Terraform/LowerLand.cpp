@@ -2,7 +2,7 @@
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceData.h"
@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
     {
         if (flags & Flags::apply)
         {
-            getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
 
             if (getCommandNestLevel() == 1 && getUpdatingCompanyId() != CompanyId::neutral)
             {

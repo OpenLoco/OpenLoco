@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <optional>
 
-namespace OpenLoco
+namespace OpenLoco::Scenario
 {
     struct Options;
 }
@@ -40,7 +40,7 @@ namespace OpenLoco::World::MapGenerator
         TopographyFlags::hasMountains | TopographyFlags::hasHills,
     };
 
-    void generate(const Options& options);
+    void generate(const Scenario::Options& options);
     std::optional<uint8_t> getRandomTerrainVariation(const SurfaceElement& surface);
 
     void setPngHeightmapPath(const fs::path& path);

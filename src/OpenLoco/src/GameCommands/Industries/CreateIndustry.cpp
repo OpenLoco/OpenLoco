@@ -4,7 +4,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Terraform/CreateWall.h"
 #include "Graphics/Colour.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
@@ -543,7 +543,7 @@ namespace OpenLoco::GameCommands
                     {
                         continue;
                     }
-                    getOptions().madeAnyChanges = 1;
+                    Scenario::getOptions().madeAnyChanges = 1;
                     // Why are we incrementing this even on test?
                     newIndustry->numTiles--;
                 }

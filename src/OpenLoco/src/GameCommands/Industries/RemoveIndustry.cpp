@@ -2,7 +2,7 @@
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringManager.h"
 #include "Map/IndustryElement.h"
 #include "Map/SurfaceElement.h"
@@ -144,7 +144,7 @@ namespace OpenLoco::GameCommands
                 removeIndustryElement(tile);
             }
 
-            getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
             Ui::WindowManager::close(Ui::WindowType::industry, enumValue(id));
             StringManager::emptyUserString(industry->name);
             industry->name = StringIds::null;

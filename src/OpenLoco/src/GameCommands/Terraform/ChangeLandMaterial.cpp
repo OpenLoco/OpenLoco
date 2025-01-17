@@ -1,6 +1,6 @@
 #include "ChangeLandMaterial.h"
 #include "GameCommands/GameCommands.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Map/MapGenerator/MapGenerator.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
@@ -56,7 +56,7 @@ namespace OpenLoco::GameCommands
                 }
             }
             World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
-            auto& options = getOptions();
+            auto& options = Scenario::getOptions();
             options.madeAnyChanges = 1;
         }
         return 0;

@@ -2,7 +2,7 @@
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
@@ -25,7 +25,7 @@ namespace OpenLoco::GameCommands
 
         if (flags & Flags::apply)
         {
-            getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
         }
 
         const auto tileLoop = getClampedRange(args.pointA, args.pointB);

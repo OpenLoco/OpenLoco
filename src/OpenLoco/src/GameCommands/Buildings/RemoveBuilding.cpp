@@ -1,7 +1,7 @@
 #include "RemoveBuilding.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
@@ -103,7 +103,7 @@ namespace OpenLoco::GameCommands
                     if (flags & GameCommands::Flags::apply)
                     {
                         World::TileManager::removeBuildingElement(subElBuilding->get<World::BuildingElement>(), subTilePos);
-                        auto& options = getOptions();
+                        auto& options = Scenario::getOptions();
                         options.madeAnyChanges = 1;
                     }
                 }

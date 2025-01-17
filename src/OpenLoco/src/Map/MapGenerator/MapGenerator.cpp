@@ -10,7 +10,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/CreateTown.h"
 #include "GameState.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
@@ -49,14 +49,14 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x004624F0
-    static void generateHeightMap(const Options& options, HeightMap& heightMap)
+    static void generateHeightMap(const Scenario::Options& options, HeightMap& heightMap)
     {
-        if (options.generator == LandGeneratorType::Original)
+        if (options.generator == Scenario::LandGeneratorType::Original)
         {
             OriginalTerrainGenerator generator;
             generator.generate(options, heightMap);
         }
-        else if (options.generator == LandGeneratorType::Simplex)
+        else if (options.generator == Scenario::LandGeneratorType::Simplex)
         {
             SimplexTerrainGenerator generator;
             generator.generate(options, heightMap, std::random_device{}());
@@ -68,7 +68,7 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
-    static void generateRivers(const Options& options, HeightMap& heightMap)
+    static void generateRivers(const Scenario::Options& options, HeightMap& heightMap)
     {
         for (auto i = 0; i < options.numRiverbeds; i++)
         {
@@ -235,7 +235,7 @@ namespace OpenLoco::World::MapGenerator
             {
                 continue;
             }
-            if (getOptions().landDistributionPatterns[landObjectIdx] == LandDistributionPattern::everywhere)
+            if (Scenario::getOptions().landDistributionPatterns[landObjectIdx] == Scenario::LandDistributionPattern::everywhere)
             {
                 return landObjectIdx;
             }
@@ -536,13 +536,13 @@ namespace OpenLoco::World::MapGenerator
         }
 
         constexpr std::array landDistributionPatterns = {
-            LandDistributionPattern::farFromWater,
-            LandDistributionPattern::nearWater,
-            LandDistributionPattern::onMountains,
-            LandDistributionPattern::farFromMountains,
-            LandDistributionPattern::inSmallRandomAreas,
-            LandDistributionPattern::inLargeRandomAreas,
-            LandDistributionPattern::aroundCliffs,
+            Scenario::LandDistributionPattern::farFromWater,
+            Scenario::LandDistributionPattern::nearWater,
+            Scenario::LandDistributionPattern::onMountains,
+            Scenario::LandDistributionPattern::farFromMountains,
+            Scenario::LandDistributionPattern::inSmallRandomAreas,
+            Scenario::LandDistributionPattern::inLargeRandomAreas,
+            Scenario::LandDistributionPattern::aroundCliffs,
         };
 
         for (auto i = 0U; i < landDistributionPatterns.size(); i++)
@@ -557,7 +557,7 @@ namespace OpenLoco::World::MapGenerator
                     continue;
                 }
 
-                const auto typePattern = getOptions().landDistributionPatterns[landObjectIdx];
+                const auto typePattern = Scenario::getOptions().landDistributionPatterns[landObjectIdx];
                 const auto distPattern = landDistributionPatterns[i];
                 if (typePattern != distPattern)
                 {
@@ -649,7 +649,7 @@ namespace OpenLoco::World::MapGenerator
     // 0x004BDA49
     static void generateTrees()
     {
-        const auto& options = getOptions();
+        const auto& options = Scenario::getOptions();
 
         // Place forests
         for (auto i = 0; i < options.numberOfForests; ++i)
@@ -726,12 +726,12 @@ namespace OpenLoco::World::MapGenerator
     // 0x00496BBC
     static void generateTowns()
     {
-        for (auto i = 0; i < getOptions().numberOfTowns; i++)
+        for (auto i = 0; i < Scenario::getOptions().numberOfTowns; i++)
         {
             // NB: vanilla was calling the game command directly; we're using the runner.
             GameCommands::TownPlacementArgs args{};
             args.pos = { -1, -1 };
-            const auto maxTownSize = getOptions().maxTownSize;
+            const auto maxTownSize = Scenario::getOptions().maxTownSize;
 
             args.size = maxTownSize > 1 ? getGameState().rng.randNext(1, maxTownSize) : 1;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -843,7 +843,7 @@ namespace OpenLoco::World::MapGenerator
                 }
             }
 
-            const uint8_t numIndustriesFactor = getOptions().numberOfIndustries;
+            const uint8_t numIndustriesFactor = Scenario::getOptions().numberOfIndustries;
             const auto numIndustriesToCreate = IndustryManager::capOfTypeOfIndustry(indObjId, numIndustriesFactor);
             for (auto i = 0; i < numIndustriesToCreate; i++)
             {
@@ -1072,7 +1072,7 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x0043C90C
-    void generate(const Options& options)
+    void generate(const Scenario::Options& options)
     {
         Ui::processMessagesMini();
 

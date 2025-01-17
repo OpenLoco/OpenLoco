@@ -13,7 +13,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Gui.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -232,10 +232,10 @@ namespace OpenLoco::Scenario
     // 0x0043EDAD
     void eraseLandscape()
     {
-        getOptions().scenarioFlags &= ~(ScenarioFlags::landscapeGenerationDone);
+        Scenario::getOptions().scenarioFlags &= ~(ScenarioFlags::landscapeGenerationDone);
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         reset();
-        getOptions().madeAnyChanges = 0;
+        Scenario::getOptions().madeAnyChanges = 0;
         addr<0x00F25374, uint8_t>() = 0;
         Gfx::invalidateScreen();
     }
@@ -243,7 +243,7 @@ namespace OpenLoco::Scenario
     // 0x0043C90C
     void generateLandscape()
     {
-        auto& options = getOptions();
+        auto& options = Scenario::getOptions();
         MapGenerator::generate(options);
         options.madeAnyChanges = 0;
         addr<0x00F25374, uint8_t>() = 0;
@@ -363,8 +363,8 @@ namespace OpenLoco::Scenario
         Ui::Windows::Terraform::resetLastSelections();
         MessageManager::reset();
 
-        std::memcpy(gameState.scenarioDetails, getOptions().scenarioDetails, sizeof(gameState.scenarioDetails));
-        std::memcpy(gameState.scenarioName, getOptions().scenarioName, sizeof(gameState.scenarioName));
+        std::memcpy(gameState.scenarioDetails, Scenario::getOptions().scenarioDetails, sizeof(gameState.scenarioDetails));
+        std::memcpy(gameState.scenarioName, Scenario::getOptions().scenarioName, sizeof(gameState.scenarioName));
 
         const auto* stexObj = ObjectManager::get<ScenarioTextObject>();
         if (stexObj != nullptr)
@@ -375,14 +375,14 @@ namespace OpenLoco::Scenario
         }
 
         auto savePath = Environment::getPath(Environment::PathId::save);
-        savePath /= std::string(getOptions().scenarioName) + S5::extensionSV5;
+        savePath /= std::string(Scenario::getOptions().scenarioName) + S5::extensionSV5;
         std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
 
         loadPreferredCurrencyNewGame();
         Gfx::loadCurrency();
         CompanyManager::reset();
         CompanyManager::createPlayerCompany();
-        initialiseDate(getOptions().scenarioStartYear);
+        initialiseDate(Scenario::getOptions().scenarioStartYear);
         initialiseSnowLine();
         sub_4748D4();
 

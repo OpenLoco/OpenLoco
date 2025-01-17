@@ -3,7 +3,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Terraform/LowerLand.h"
 #include "GameCommands/Terraform/RaiseLand.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Map/SurfaceData.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
@@ -230,7 +230,7 @@ namespace OpenLoco::GameCommands
 
         if (flags & Flags::apply)
         {
-            getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
         }
 
         _mtnToolCost = 0;

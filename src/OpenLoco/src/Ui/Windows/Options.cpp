@@ -9,7 +9,7 @@
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Jukebox.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
@@ -2827,7 +2827,7 @@ namespace OpenLoco::Ui::Windows::Options
             w->disabledWidgets |= 1 << Common::Widx::tab_music;
         }
 
-        if (isEditorMode() && getOptions().editorStep == EditorController::Step::objectSelection)
+        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             w->disabledWidgets |= 1 << Common::Widx::tab_regional;
         }

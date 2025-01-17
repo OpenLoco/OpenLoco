@@ -3,7 +3,7 @@
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Map/TileElement.h"
 #include "Map/TileManager.h"
 #include "Map/TreeElement.h"
@@ -71,7 +71,7 @@ namespace OpenLoco::GameCommands
                 World::TileManager::removeTree(*treeElement, flags, pos);
             }
 
-            auto& options = getOptions();
+            auto& options = Scenario::getOptions();
             options.madeAnyChanges = 1;
 
             return removalCost;

@@ -44,7 +44,7 @@
 #include "Input/Shortcuts.h"
 #include "Interop/Hooks.h"
 #include "Intro.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
@@ -492,7 +492,7 @@ namespace OpenLoco
 
         recordTickStartPrng();
         World::TileManager::defragmentTilePeriodic();
-        addr<0x00F25374, uint8_t>() = getOptions().madeAnyChanges;
+        addr<0x00F25374, uint8_t>() = Scenario::getOptions().madeAnyChanges;
         dateTick();
         World::TileManager::update();
         World::WaveManager::update();
@@ -507,7 +507,7 @@ namespace OpenLoco
         Audio::updateAmbientNoise();
         Title::update();
 
-        getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
+        Scenario::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
         if (_loadErrorCode != 0)
         {
             if (_loadErrorCode == -2)

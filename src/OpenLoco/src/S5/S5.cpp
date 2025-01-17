@@ -12,7 +12,7 @@
 #include "Graphics/DrawingContext.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -933,7 +933,7 @@ namespace OpenLoco::S5
     }
 
     // 0x00442AFC
-    std::unique_ptr<OpenLoco::Options> readScenarioOptions(const fs::path& path)
+    std::unique_ptr<Scenario::Options> readScenarioOptions(const fs::path& path)
     {
         FileStream stream(path, StreamMode::read);
         SawyerStreamReader fs(stream);
@@ -960,7 +960,7 @@ namespace OpenLoco::S5
             // TODO: For now OpenLoco::Options and S5::Options are identical in the future
             // there should be an import and validation step that converts from one to the
             // other
-            auto ret = std::make_unique<OpenLoco::Options>();
+            auto ret = std::make_unique<Scenario::Options>();
             fs.readChunk(ret.get(), sizeof(*ret));
             return ret;
         }

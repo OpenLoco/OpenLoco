@@ -10,7 +10,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/LandObject.h"
@@ -132,7 +132,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
             case 1:
             {
-                if (getOptions().editorStep == EditorController::Step::objectSelection)
+                if (Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
                 {
                     if (!ObjectSelectionWindow::tryCloseWindow())
                     {

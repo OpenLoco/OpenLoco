@@ -3,7 +3,7 @@
 #include "Environment.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
-#include "LandscapeOptions.h"
+#include "ScenarioOptions.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
@@ -151,7 +151,7 @@ namespace OpenLoco::Ui
     {
         auto screenshotsFolderPath = Environment::getPathNoWarning(Environment::PathId::screenshots);
         Environment::autoCreateDirectory(screenshotsFolderPath);
-        std::string scenarioName = getOptions().scenarioName;
+        std::string scenarioName = Scenario::getOptions().scenarioName;
 
         if (scenarioName.length() == 0)
         {

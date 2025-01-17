@@ -5,7 +5,7 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstddef>
 
-namespace OpenLoco
+namespace OpenLoco::Scenario
 {
     enum class ScenarioFlags : uint16_t
     {
