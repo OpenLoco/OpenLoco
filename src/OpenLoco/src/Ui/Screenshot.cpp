@@ -3,10 +3,10 @@
 #include "Environment.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
-#include "ScenarioOptions.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
+#include "ScenarioOptions.h"
 #include "Ui.h"
 #include "WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>

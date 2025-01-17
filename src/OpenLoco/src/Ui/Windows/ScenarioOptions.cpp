@@ -1,3 +1,4 @@
+#include "ScenarioOptions.h"
 #include "Economy/Economy.h"
 #include "GameState.h"
 #include "Graphics/Colour.h"
@@ -5,7 +6,6 @@
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
-#include "ScenarioOptions.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/CargoObject.h"

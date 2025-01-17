@@ -3,10 +3,10 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Terraform/LowerLand.h"
 #include "GameCommands/Terraform/RaiseLand.h"
-#include "ScenarioOptions.h"
 #include "Map/SurfaceData.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "ScenarioOptions.h"
 #include "Types.hpp"
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>

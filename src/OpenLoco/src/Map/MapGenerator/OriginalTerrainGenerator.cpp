@@ -1,10 +1,10 @@
 #include "OriginalTerrainGenerator.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
-#include "ScenarioOptions.h"
 #include "MapGenerator.h"
 #include "Objects/HillShapesObject.h"
 #include "Objects/ObjectManager.h"
+#include "ScenarioOptions.h"
 
 namespace OpenLoco::World::MapGenerator
 {

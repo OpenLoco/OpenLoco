@@ -2,12 +2,12 @@
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
-#include "ScenarioOptions.h"
 #include "Localisation/StringIds.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/ObjectManager.h"
+#include "ScenarioOptions.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
