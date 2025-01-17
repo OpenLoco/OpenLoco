@@ -3402,19 +3402,19 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    struct NearbyVehicles
+    struct NearbyBoats
     {
         std::array<std::array<bool, 16>, 16> searchResult; // 0x00525BEC
         World::TilePos2 startTile;                         // 0x00525BE8
     };
 
     // 0x00427F1C
-    static NearbyVehicles findNearbyTilesWithVehicles(const World::Pos2 pos)
+    static NearbyBoats findNearbyTilesWithBoats(const World::Pos2 pos)
     {
         const auto tilePosA = World::toTileSpace(pos) - World::TilePos2(7, 7);
         const auto tilePosB = World::toTileSpace(pos) + World::TilePos2(7, 7);
 
-        NearbyVehicles res{};
+        NearbyBoats res{};
         res.startTile = tilePosA;
 
         for (const auto& tileLoc : getClampedRange(tilePosA, tilePosB))
@@ -3426,8 +3426,11 @@ namespace OpenLoco::Vehicles
                 {
                     continue;
                 }
-                if (vehicleEntity->getTransportMode() == TransportMode::air
-                    || vehicleEntity->getTransportMode() == TransportMode::water)
+                if (vehicleEntity->getTransportMode() != TransportMode::water)
+                {
+                    continue;
+                }
+                if (vehicleEntity->getSubType() != VehicleEntityType::body_start)
                 {
                     continue;
                 }
@@ -3497,10 +3500,88 @@ namespace OpenLoco::Vehicles
         return std::nullopt;
     }
 
+    struct PathFindingResult
+    {
+        uint16_t bestScore;
+        uint8_t bestJunction;
+    };
+
+    static void sub_428237(const World::TilePos2 tilePos, const MicroZ waterMicroZ, const World::TilePos2 targetOrderPos, const NearbyBoats& nearbyVehicles, uint16_t bp)
+    {
+        if (!validCoords(tilePos))
+        {
+            return;
+        }
+        auto tile = TileManager::get(tilePos);
+        auto* elSurface = tile.surface();
+        if (elSurface->water() != waterMicroZ)
+        {
+            return;
+        }
+        if (!elSurface->isIndustrial())
+        {
+            auto* elObsticle = elSurface->next();
+            if (elObsticle != nullptr && !elObsticle->isGhost() && !elObsticle->isAiAllocated())
+            {
+                if (elObsticle->baseZ() / kMicroToSmallZStep - waterMicroZ < 1)
+                {
+                    return;
+                }
+            }
+        }
+
+        const auto nearbyIndex = tilePos - nearbyVehicles.startTile;
+        assert(nearbyIndex.x >= 0 && nearbyIndex.x < 16);
+        assert(nearbyIndex.y >= 0 && nearbyIndex.y < 16);
+        if (nearbyVehicles.searchResult[nearbyIndex.x][nearbyIndex.y])
+        {
+            return;
+        }
+
+        auto distToTarget = toWorldSpace(tilePos - targetOrderPos);
+        distToTarget.x = std::abs(distToTarget.x);
+        distToTarget.y = std::abs(distToTarget.y);
+        // Lower is better
+        const auto score = std::max(distToTarget.x, distToTarget.y) + std::min(distToTarget.x, distToTarget.y) / 16;
+        if (score == 0)
+        {
+            if (_525BCE > 0)
+            {
+                _525BCE = 0;
+                _525BD0 = bp;
+            }
+            else
+            {
+                _525BD0 = std::min(_525BD0, bp);
+            }
+        }
+        else
+        {
+            if (score <= _525BCE)
+            {
+                if (score != _525BCE || bp < _525BD0)
+                {
+                    _525BCE = score;
+                    _525BD0 = bp;
+                }
+            }
+
+            if (bp >= 7)
+            {
+                return;
+            }
+            bp++;
+            for (auto i = 0U; i < 4; ++i)
+            {
+                sub_428237(tilePos + toTileSpace(kRotationOffset[i]), waterMicroZ, targetOrderPos, nearbyVehicles, bp);
+            }
+        }
+    }
+
     // 0x00427FC9
     std::tuple<StationId, World::Pos2, World::Pos3> VehicleHead::sub_427FC9()
     {
-        const auto nearbyVehicles = findNearbyTilesWithVehicles(position);
+        const auto nearbyVehicles = findNearbyTilesWithBoats(position);
 
         auto orders = getCurrentOrders();
         auto curOrder = orders.begin();
@@ -3516,8 +3597,7 @@ namespace OpenLoco::Vehicles
         }
         else if (stationOrder != nullptr)
         {
-            const auto stationId = stationOrder->getStation();
-            res = sub_428379(stationId);
+            res = sub_428379(stationOrder->getStation());
             if (res.has_value())
             {
                 targetOrderPos = toTileSpace(res->stationPos);
@@ -3533,6 +3613,18 @@ namespace OpenLoco::Vehicles
             targetOrderPos = toTileSpace(position);
         }
 
+        Vehicle train(head);
+        const auto& veh2 = *train.veh2;
+        // 0x00525BE3
+        const auto rotation = ((veh2.spriteYaw + 7) >> 4) & 3;
+
+        const auto initialTile = toTileSpace(veh2.position);
+        const auto waterMicroZ = veh2.position.z / World::kMicroZStep;
+
+        for (auto i = 0U; i < 4; ++i)
+        {
+            const auto tilePos = initialTile + toTileSpace(kRotationOffset[i]);
+        }
         // 0x004280E9
         // ...
 
