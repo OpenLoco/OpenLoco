@@ -37,8 +37,6 @@ namespace OpenLoco::Gfx
 
         void initialize(SDL_Window* window);
 
-        bool isInitialized() const;
-
         void resize(int32_t width, int32_t height);
 
         // Renders all invalidated regions.

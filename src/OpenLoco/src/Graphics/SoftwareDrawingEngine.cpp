@@ -360,11 +360,6 @@ namespace OpenLoco::Gfx
         return _ctx;
     }
 
-    bool SoftwareDrawingEngine::isInitialized() const
-    {
-        return _screenSurface != nullptr;
-    }
-
     const RenderTarget& SoftwareDrawingEngine::getScreenRT()
     {
         return _screenRT;
