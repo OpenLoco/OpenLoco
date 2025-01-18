@@ -1,6 +1,7 @@
 #include "PaintTile.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Input.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"

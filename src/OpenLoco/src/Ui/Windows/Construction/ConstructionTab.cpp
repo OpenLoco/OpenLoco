@@ -7,6 +7,7 @@
 #include "GameCommands/Track/RemoveTrack.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"

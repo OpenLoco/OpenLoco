@@ -1,4 +1,5 @@
 #include "PaintIndustry.h"
+#include "Graphics/RenderTarget.h"
 #include "Map/IndustryElement.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"

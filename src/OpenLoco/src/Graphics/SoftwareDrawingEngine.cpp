@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Graphics/FPSCounter.h"
 #include "Logging.h"
+#include "RenderTarget.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -357,11 +358,6 @@ namespace OpenLoco::Gfx
     DrawingContext& SoftwareDrawingEngine::getDrawingContext()
     {
         return _ctx;
-    }
-
-    bool SoftwareDrawingEngine::isInitialized() const
-    {
-        return _screenSurface != nullptr;
     }
 
     const RenderTarget& SoftwareDrawingEngine::getScreenRT()

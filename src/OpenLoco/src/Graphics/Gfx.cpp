@@ -4,6 +4,7 @@
 #include "Environment.h"
 #include "Font.h"
 #include "Graphics/DrawSprite.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
 #include "Input.h"
@@ -256,7 +257,7 @@ namespace OpenLoco::Gfx
     // TODO: Split this into two functions, one for rendering and one for processing messages.
     void renderAndUpdate()
     {
-        if (Ui::dirtyBlocksInitialised())
+        if (Ui::isInitialized())
         {
             auto& drawingEngine = Gfx::getDrawingEngine();
             drawingEngine.render();

@@ -13,6 +13,7 @@
 #include "GameCommands/Track/RemoveSignal.h"
 #include "GameCommands/Track/RemoveTrackMod.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
+#include "Graphics/RenderTarget.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"

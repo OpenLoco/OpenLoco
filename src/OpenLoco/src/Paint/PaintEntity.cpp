@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Effects/Effect.h"
 #include "Entities/EntityManager.h"
+#include "Graphics/RenderTarget.h"
 #include "Map/Tile.h"
 #include "Paint.h"
 #include "PaintEffectEntity.h"

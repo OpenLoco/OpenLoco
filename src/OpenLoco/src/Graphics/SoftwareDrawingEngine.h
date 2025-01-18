@@ -17,6 +17,8 @@ struct SDL_PixelFormat;
 
 namespace OpenLoco::Gfx
 {
+    struct RenderTarget;
+
 #pragma pack(push, 1)
     struct PaletteEntry
     {
@@ -34,8 +36,6 @@ namespace OpenLoco::Gfx
         ~SoftwareDrawingEngine();
 
         void initialize(SDL_Window* window);
-
-        bool isInitialized() const;
 
         void resize(int32_t width, int32_t height);
 

@@ -10,6 +10,7 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Graphics/DrawingContext.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
 #include "Localisation/Formatting.h"

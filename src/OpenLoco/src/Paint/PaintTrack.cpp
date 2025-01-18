@@ -1,5 +1,6 @@
 #include "PaintTrack.h"
 #include "Graphics/Colour.h"
+#include "Graphics/RenderTarget.h"
 #include "Logging.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"

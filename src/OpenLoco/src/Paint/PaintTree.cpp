@@ -1,6 +1,7 @@
 #include "PaintTree.h"
 #include "Config.h"
 #include "Graphics/Colour.h"
+#include "Graphics/RenderTarget.h"
 #include "Map/TreeElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
