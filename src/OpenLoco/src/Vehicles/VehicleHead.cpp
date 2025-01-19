@@ -3503,20 +3503,23 @@ namespace OpenLoco::Vehicles
     struct PathFindingResult
     {
         uint16_t bestScore;
-        uint8_t bestJunction;
+        uint8_t cost;
+
+        constexpr auto operator<=>(const PathFindingResult& rhs) const = default;
     };
 
-    static void sub_428237(const World::TilePos2 tilePos, const MicroZ waterMicroZ, const World::TilePos2 targetOrderPos, const NearbyBoats& nearbyVehicles, uint16_t bp)
+    static PathFindingResult sub_428237(const World::TilePos2 tilePos, const MicroZ waterMicroZ, const World::TilePos2 targetOrderPos, const NearbyBoats& nearbyVehicles, uint8_t cost, const PathFindingResult& bestResult)
     {
+        PathFindingResult result = bestResult;
         if (!validCoords(tilePos))
         {
-            return;
+            return result;
         }
         auto tile = TileManager::get(tilePos);
         auto* elSurface = tile.surface();
         if (elSurface->water() != waterMicroZ)
         {
-            return;
+            return result;
         }
         if (!elSurface->isIndustrial())
         {
@@ -3525,7 +3528,7 @@ namespace OpenLoco::Vehicles
             {
                 if (elObsticle->baseZ() / kMicroToSmallZStep - waterMicroZ < 1)
                 {
-                    return;
+                    return result;
                 }
             }
         }
@@ -3535,47 +3538,29 @@ namespace OpenLoco::Vehicles
         assert(nearbyIndex.y >= 0 && nearbyIndex.y < 16);
         if (nearbyVehicles.searchResult[nearbyIndex.x][nearbyIndex.y])
         {
-            return;
+            return result;
         }
 
         auto distToTarget = toWorldSpace(tilePos - targetOrderPos);
         distToTarget.x = std::abs(distToTarget.x);
         distToTarget.y = std::abs(distToTarget.y);
         // Lower is better
-        const auto score = std::max(distToTarget.x, distToTarget.y) + std::min(distToTarget.x, distToTarget.y) / 16;
-        if (score == 0)
+        const uint16_t score = std::max(distToTarget.x, distToTarget.y) + std::min(distToTarget.x, distToTarget.y) / 16;
+        auto newResult = PathFindingResult{ score, cost };
+        result = std::min(result, newResult);
+        if (score != 0)
         {
-            if (_525BCE > 0)
+            if (cost >= 7)
             {
-                _525BCE = 0;
-                _525BD0 = bp;
+                return result;
             }
-            else
-            {
-                _525BD0 = std::min(_525BD0, bp);
-            }
-        }
-        else
-        {
-            if (score <= _525BCE)
-            {
-                if (score != _525BCE || bp < _525BD0)
-                {
-                    _525BCE = score;
-                    _525BD0 = bp;
-                }
-            }
-
-            if (bp >= 7)
-            {
-                return;
-            }
-            bp++;
+            cost++;
             for (auto i = 0U; i < 4; ++i)
             {
-                sub_428237(tilePos + toTileSpace(kRotationOffset[i]), waterMicroZ, targetOrderPos, nearbyVehicles, bp);
+                result = sub_428237(tilePos + toTileSpace(kRotationOffset[i]), waterMicroZ, targetOrderPos, nearbyVehicles, cost, result);
             }
         }
+        return result;
     }
 
     // 0x00427FC9
@@ -3621,29 +3606,34 @@ namespace OpenLoco::Vehicles
         const auto initialTile = toTileSpace(veh2.position);
         const auto waterMicroZ = veh2.position.z / World::kMicroZStep;
 
+        PathFindingResult bestResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
+        uint8_t bestResultDirection = 0xFFU;
         for (auto i = 0U; i < 4; ++i)
         {
             const auto tilePos = initialTile + toTileSpace(kRotationOffset[i]);
+            PathFindingResult initResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
+            const auto pathResult = sub_428237(tilePos, waterMicroZ, targetOrderPos, nearbyVehicles, 0, initResult);
+            if (pathResult < bestResult || (pathResult == bestResult && i == rotation))
+            {
+                bestResult = pathResult;
+                bestResultDirection = i;
+            }
         }
-        // 0x004280E9
-        // ...
 
-        // 0x004281D2
-        if (res.has_value())
+        if (bestResultDirection == 0xFF)
+        {
+            return std::make_tuple(StationId::null, World::Pos2(veh2.position), World::Pos3{});
+        }
+
+        if (res.has_value() && bestResult == PathFindingResult{ 0, 0 })
         {
             return std::make_tuple(res->stationId, res->boatPos, res->stationPos);
         }
         else
         {
-            // TODO
+            const auto targetPos = World::Pos2(veh2.position) + kRotationOffset[bestResultDirection];
+            return std::make_tuple(StationId::null, targetPos, World::Pos3{});
         }
-
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x00427FC9, regs);
-        World::Pos2 headTarget = { regs.ax, regs.cx };
-        World::Pos3 stationTarget = { regs.di, regs.bp, regs.dx };
-        return std::make_tuple(StationId(regs.bx), headTarget, stationTarget);
     }
 
     // 0x0042750E
