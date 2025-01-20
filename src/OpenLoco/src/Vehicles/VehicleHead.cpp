@@ -3535,13 +3535,17 @@ namespace OpenLoco::Vehicles
         }
 
         const auto nearbyIndex = tilePos - nearbyVehicles.startTile;
-        assert(nearbyIndex.x >= 0 && nearbyIndex.x < 16);
-        assert(nearbyIndex.y >= 0 && nearbyIndex.y < 16);
-        if (nearbyVehicles.searchResult[nearbyIndex.x][nearbyIndex.y])
+        // Vanilla made a mistake here so we only check nearby tiles if in range
+        // TODO: When we diverge just change the cost check to >= 6 or increase the search result to 18x18
+        if (nearbyIndex.x >= 0 && nearbyIndex.x < 16 && nearbyIndex.y >= 0 && nearbyIndex.y < 16)
         {
-            return result;
+            // assert(nearbyIndex.x >= 0 && nearbyIndex.x < 16);
+            // assert(nearbyIndex.y >= 0 && nearbyIndex.y < 16);
+            if (nearbyVehicles.searchResult[nearbyIndex.x][nearbyIndex.y])
+            {
+                return result;
+            }
         }
-
         auto distToTarget = toWorldSpace(tilePos - targetOrderPos);
         distToTarget.x = std::abs(distToTarget.x);
         distToTarget.y = std::abs(distToTarget.y);
