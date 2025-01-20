@@ -2712,7 +2712,7 @@ namespace OpenLoco::Vehicles
                     }
                 }
             }
-            auto [newStationId, headTarget, stationTarget] = sub_427FC9();
+            auto [newStationId, headTarget, stationTarget] = waterPathfind();
             moveTo({ headTarget.x, headTarget.y, 32 });
 
             if (newStationId != StationId::null)
@@ -3448,7 +3448,8 @@ namespace OpenLoco::Vehicles
         World::Pos2 boatPos;
     };
 
-    static std::optional<DockTarget> sub_428379(StationId stationId)
+    // 0x00428379
+    static std::optional<DockTarget> getDockTargetFromStation(StationId stationId)
     {
         auto* station = StationManager::get(stationId);
         for (auto i = 0U; i < station->stationTileSize; ++i)
@@ -3509,7 +3510,8 @@ namespace OpenLoco::Vehicles
         constexpr auto operator<=>(const PathFindingResult& rhs) const = default;
     };
 
-    static PathFindingResult sub_428237(const World::TilePos2 tilePos, const MicroZ waterMicroZ, const World::TilePos2 targetOrderPos, const NearbyBoats& nearbyVehicles, uint8_t cost, const PathFindingResult& bestResult)
+    // 0x00428237
+    static PathFindingResult waterPathfindToTarget(const World::TilePos2 tilePos, const MicroZ waterMicroZ, const World::TilePos2 targetOrderPos, const NearbyBoats& nearbyVehicles, uint8_t cost, const PathFindingResult& bestResult)
     {
         PathFindingResult result = bestResult;
         if (!validCoords(tilePos))
@@ -3562,14 +3564,14 @@ namespace OpenLoco::Vehicles
             cost++;
             for (auto i = 0U; i < 4; ++i)
             {
-                result = sub_428237(tilePos + toTileSpace(kRotationOffset[i]), waterMicroZ, targetOrderPos, nearbyVehicles, cost, result);
+                result = waterPathfindToTarget(tilePos + toTileSpace(kRotationOffset[i]), waterMicroZ, targetOrderPos, nearbyVehicles, cost, result);
             }
         }
         return result;
     }
 
     // 0x00427FC9
-    std::tuple<StationId, World::Pos2, World::Pos3> VehicleHead::sub_427FC9()
+    std::tuple<StationId, World::Pos2, World::Pos3> VehicleHead::waterPathfind()
     {
         const auto nearbyVehicles = findNearbyTilesWithBoats(position);
 
@@ -3587,10 +3589,10 @@ namespace OpenLoco::Vehicles
         }
         else if (stationOrder != nullptr)
         {
-            res = sub_428379(stationOrder->getStation());
+            res = getDockTargetFromStation(stationOrder->getStation());
             if (res.has_value())
             {
-                targetOrderPos = toTileSpace(res->stationPos);
+                targetOrderPos = toTileSpace(res->boatPos);
             }
             else
             {
@@ -3617,7 +3619,7 @@ namespace OpenLoco::Vehicles
         {
             const auto tilePos = initialTile + toTileSpace(kRotationOffset[i]);
             PathFindingResult initResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
-            const auto pathResult = sub_428237(tilePos, waterMicroZ, targetOrderPos, nearbyVehicles, 0, initResult);
+            const auto pathResult = waterPathfindToTarget(tilePos, waterMicroZ, targetOrderPos, nearbyVehicles, 0, initResult);
             if (pathResult != initResult && (pathResult < bestResult || (pathResult == bestResult && i == curRotation)))
             {
                 bestResult = pathResult;

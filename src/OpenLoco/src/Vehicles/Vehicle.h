@@ -439,7 +439,7 @@ namespace OpenLoco::Vehicles
         void advanceToNextRoutableOrder();
         Status sub_427BF2();
         void produceLeavingDockSound();
-        std::tuple<StationId, World::Pos2, World::Pos3> sub_427FC9();
+        std::tuple<StationId, World::Pos2, World::Pos3> waterPathfind();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
         void sub_4AA625();
