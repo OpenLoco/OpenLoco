@@ -3589,14 +3589,15 @@ namespace OpenLoco::Vehicles
         }
         else if (stationOrder != nullptr)
         {
-            res = getDockTargetFromStation(stationOrder->getStation());
+            auto targetStationId = stationOrder->getStation();
+            res = getDockTargetFromStation(targetStationId);
             if (res.has_value())
             {
                 targetOrderPos = toTileSpace(res->boatPos);
             }
             else
             {
-                auto* station = StationManager::get(stationId);
+                auto* station = StationManager::get(targetStationId);
                 targetOrderPos = toTileSpace(Pos2{ station->x, station->y });
             }
         }
