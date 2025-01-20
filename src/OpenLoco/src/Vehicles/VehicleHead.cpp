@@ -3434,7 +3434,8 @@ namespace OpenLoco::Vehicles
                 {
                     continue;
                 }
-                res.searchResult[tileLoc.x][tileLoc.y] = true;
+                const auto resultLoc = tileLoc - res.startTile;
+                res.searchResult[resultLoc.x][resultLoc.y] = true;
             }
         }
         return res;
@@ -3521,7 +3522,7 @@ namespace OpenLoco::Vehicles
         {
             return result;
         }
-        if (!elSurface->isIndustrial())
+        if (!elSurface->isLast())
         {
             auto* elObsticle = elSurface->next();
             if (elObsticle != nullptr && !elObsticle->isGhost() && !elObsticle->isAiAllocated())
@@ -3601,9 +3602,9 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         const auto& veh2 = *train.veh2;
         // 0x00525BE3
-        const auto rotation = ((veh2.spriteYaw + 7) >> 4) & 3;
+        const uint8_t curRotation = ((veh2.spriteYaw + 7) >> 4) & 3;
 
-        const auto initialTile = toTileSpace(veh2.position);
+        const auto initialTile = toTileSpace(position);
         const auto waterMicroZ = veh2.position.z / World::kMicroZStep;
 
         PathFindingResult bestResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
@@ -3613,7 +3614,7 @@ namespace OpenLoco::Vehicles
             const auto tilePos = initialTile + toTileSpace(kRotationOffset[i]);
             PathFindingResult initResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
             const auto pathResult = sub_428237(tilePos, waterMicroZ, targetOrderPos, nearbyVehicles, 0, initResult);
-            if (pathResult < bestResult || (pathResult == bestResult && i == rotation))
+            if (pathResult != initResult && (pathResult < bestResult || (pathResult == bestResult && i == curRotation)))
             {
                 bestResult = pathResult;
                 bestResultDirection = i;
@@ -3622,7 +3623,7 @@ namespace OpenLoco::Vehicles
 
         if (bestResultDirection == 0xFF)
         {
-            return std::make_tuple(StationId::null, World::Pos2(veh2.position), World::Pos3{});
+            return std::make_tuple(StationId::null, toWorldSpace(initialTile) + World::Pos2(16, 16), World::Pos3{});
         }
 
         if (res.has_value() && bestResult == PathFindingResult{ 0, 0 })
@@ -3631,7 +3632,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            const auto targetPos = World::Pos2(veh2.position) + kRotationOffset[bestResultDirection];
+            const auto targetPos = toWorldSpace(initialTile) + kRotationOffset[bestResultDirection] + World::Pos2(16, 16);
             return std::make_tuple(StationId::null, targetPos, World::Pos3{});
         }
     }
