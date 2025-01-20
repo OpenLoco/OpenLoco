@@ -3495,7 +3495,7 @@ namespace OpenLoco::Vehicles
             const auto boatPos = Math::Vector::rotate(dockObj->boatPosition, elStation->rotation()) + pos;
             DockTarget dockTarget{};
             dockTarget.stationId = stationId;
-            dockTarget.stationPos = World::Pos3{ pos.x, pos.y, pos.z & 0xFFFC };
+            dockTarget.stationPos = World::Pos3{ pos.x, pos.y, Numerics::floor2(pos.z, 4) };
             dockTarget.boatPos = boatPos + World::Pos2{ 32, 32 };
             return dockTarget;
         }
