@@ -2253,8 +2253,6 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             w.draw(drawingCtx);
             Common::drawTabs(&w, drawingCtx);
         }
@@ -2409,8 +2407,10 @@ namespace OpenLoco::Ui::Windows::Options
                 trainsReverseAtSignals,
 
                 groupSaveOptions,
+                autosave_frequency_label,
                 autosave_frequency,
                 autosave_frequency_btn,
+                autosave_amount_label,
                 autosave_amount,
                 autosave_amount_down_btn,
                 autosave_amount_up_btn,
@@ -2450,8 +2450,13 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Save options group
             Widgets::GroupBox({ 4, 196 }, { 412, 65 }, WindowColour::secondary, StringIds::autosave_preferences),
+
+            Widgets::Label({ 10, 211 }, { 200, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::autosave_frequency),
             makeDropdownWidgets({ 250, 211 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
+
+            Widgets::Label({ 10, 226 }, { 200, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::autosave_amount),
             makeStepperWidgets({ 250, 226 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
+
             Widgets::Checkbox({ 10, 241 }, { 400, 12 }, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip)
 
         );
@@ -2580,10 +2585,6 @@ namespace OpenLoco::Ui::Windows::Options
             w.draw(drawingCtx);
             Common::drawTabs(&w, drawingCtx);
 
-            // Label for autosave frequency
-            auto point = Point(w.x + 10, w.y + w.widgets[Widx::autosave_frequency].top);
-            tr.drawStringLeft(point, Colour::black, StringIds::autosave_frequency);
-
             // Value for autosave frequency
             auto freq = Config::get().autosaveFrequency;
             StringId stringId;
@@ -2600,10 +2601,6 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
             }
             drawDropdownContent(&w, drawingCtx, Widx::autosave_frequency, stringId, freq);
-
-            // Label for autosave amount
-            point = Point(w.x + 10, w.y + w.widgets[Widx::autosave_amount].top);
-            tr.drawStringLeft(point, Colour::black, StringIds::autosave_amount);
 
             // Value for autosave amount
             auto scale = Config::get().autosaveAmount;
