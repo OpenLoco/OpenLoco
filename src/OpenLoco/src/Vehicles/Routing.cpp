@@ -16,6 +16,7 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <sfl/static_vector.hpp>
 
 namespace OpenLoco::Vehicles
 {
@@ -109,7 +110,7 @@ namespace OpenLoco::Vehicles
         };
 
     public:
-        std::vector<LocationOfInterest> locs;
+        sfl::static_vector<LocationOfInterest, 4096> locs;
         size_t count;
         uint16_t mapSize;
         uint16_t mapSizeMask;
@@ -121,6 +122,7 @@ namespace OpenLoco::Vehicles
             , mapSizeMask(_maxSize - 1)
             , maxEntries(_maxSize - kMinFreeSlots)
         {
+            assert(_maxSize <= locs.static_capacity);
             assert((mapSize & (mapSizeMask)) == 0); // Only works with powers of 2
             locs.resize(mapSize);
             std::fill(std::begin(locs), std::end(locs), LocationOfInterest{ World::Pos3{ -1, -1, 0 }, 0, CompanyId::null, 0 });
