@@ -688,6 +688,14 @@ namespace OpenLoco::Paint
         },
     };
 
+    constexpr auto kTwosToOnesCompliment = std::to_array<TilePos2>(
+        {
+            { 0, 0 },
+            { 0, -1 },
+            { -1, -1 },
+            { -1, 0 },
+        });
+
     struct SupportLengths
     {
         int16_t lhsSupportLength; // dx
@@ -1316,7 +1324,7 @@ namespace OpenLoco::Paint
             default:
             {
                 // 0x0042B08A
-                auto unkTile = World::toTileSpace(Math::Vector::rotate(session.getUnkPosition(), session.getRotation()));
+                auto unkTile = World::toTileSpace(Math::Vector::rotate(session.getUnkPosition(), session.getRotation())) + kTwosToOnesCompliment[session.getRotation()];
                 unkTile.x &= bridgeObj->spanLength - 1;
                 unkTile.y &= bridgeObj->spanLength - 1;
 
