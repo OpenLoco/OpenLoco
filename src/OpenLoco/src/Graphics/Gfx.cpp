@@ -262,7 +262,10 @@ namespace OpenLoco::Gfx
         {
             auto& drawingEngine = Gfx::getDrawingEngine();
 
-            if (SceneManager::isSceneInitialised())
+            // Clear the screen if the scene hasn't been initialised yet, since the game doesn't clear
+            // the screen each frame it relies on overdrawing but with no tile elements or entities loaded
+            // there is nothing to draw.
+            if (!SceneManager::isSceneInitialised())
             {
                 auto& ctx = drawingEngine.getDrawingContext();
                 ctx.clearSingle(PaletteIndex::black0);
