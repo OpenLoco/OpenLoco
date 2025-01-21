@@ -2110,9 +2110,11 @@ namespace OpenLoco::Ui::Windows::Options
 
                 usePreferredOwnerFace,
                 changeOwnerFaceBtn,
+                labelOwnerFace,
 
                 usePreferredOwnerName,
                 changeOwnerNameBtn,
+                labelPreferredOwnerName,
 
                 ownerFacePreview,
             };
@@ -2136,13 +2138,15 @@ namespace OpenLoco::Ui::Windows::Options
             // Preferred owner face
             Widgets::Checkbox({ 10, 64 }, { 400, 12 }, WindowColour::secondary, StringIds::usePreferredCompanyFace, StringIds::usePreferredCompanyFaceTip),
             Widgets::Button({ 265, 79 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
+            Widgets::Label({ 24, 79 }, { 240, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::currentPreferredFace),
 
             // Preferred owner name
             Widgets::Checkbox({ 10, 97 }, { 400, 12 }, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
             Widgets::Button({ 265, 112 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
+            Widgets::Label({ 24, 112 }, { 240, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::wcolour2_preferred_owner_name),
 
             // Preferred owner preview
-            Widgets::Button({ 345, 59 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull)
+            Widgets::ImageButton({ 345, 59 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull)
 
         );
 
@@ -2218,6 +2222,36 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.activatedWidgets &= ~(1ULL << Widx::usePreferredOwnerFace);
                 w.disabledWidgets |= ((1ULL << Widx::changeOwnerFaceBtn) | (1ULL << Widx::ownerFacePreview));
+
+                w.widgets[Widx::labelOwnerFace].text = StringIds::empty;
+                w.widgets[Widx::ownerFacePreview].content = Widget::kContentNull;
+
+                w.object = nullptr;
+            }
+
+            // Set preferred owner name.
+            {
+                // TODO: Do not share this buffer, also unsafe, we should change the localisation to use a string pointer.
+                auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
+                const char* playerName = Config::get().preferredOwnerName.c_str();
+                strcpy(buffer, playerName);
+                buffer[strlen(playerName)] = '\0';
+
+                FormatArguments args{ w.widgets[Widx::labelPreferredOwnerName].textArgs };
+                args.push(StringIds::buffer_2039);
+            }
+
+            // Set preffered owner face.
+            if (w.object != nullptr)
+            {
+                const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(w.object);
+
+                w.widgets[Widx::labelOwnerFace].text = StringIds::currentPreferredFace;
+
+                FormatArguments args{ w.widgets[Widx::labelOwnerFace].textArgs };
+                args.push(competitor->name);
+
+                w.widgets[Widx::ownerFacePreview].image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black).toUInt32();
             }
 
             sub_4C13BE(&w);
@@ -2230,39 +2264,6 @@ namespace OpenLoco::Ui::Windows::Options
 
             w.draw(drawingCtx);
             Common::drawTabs(&w, drawingCtx);
-
-            // Draw preferred owner name
-            {
-                auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-                const char* playerName = Config::get().preferredOwnerName.c_str();
-                strcpy(buffer, playerName);
-                buffer[strlen(playerName)] = '\0';
-
-                FormatArguments args = {};
-                args.push(StringIds::buffer_2039);
-
-                auto width = w.widgets[Widx::changeOwnerNameBtn].left - 24;
-                auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1);
-                tr.drawStringLeftClipped(point, width, Colour::black, StringIds::wcolour2_preferred_owner_name, args);
-            }
-
-            // Draw competitor name and face
-            if (w.object != nullptr)
-            {
-                const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(w.object);
-
-                FormatArguments args = {};
-                args.push(competitor->name);
-                const auto width = w.widgets[Widx::changeOwnerFaceBtn].left - 24;
-                auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1);
-                tr.drawStringLeftClipped(point, width, Colour::black, StringIds::currentPreferredFace, args);
-
-                const auto& widget = w.widgets[Widx::ownerFacePreview];
-                auto placeForImage = Ui::Point(w.x + widget.left + 1, w.y + widget.top + 1);
-
-                auto image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black);
-                drawingCtx.drawImage(placeForImage.x, placeForImage.y, image.toUInt32());
-            }
         }
 
         // 0x004C1319
@@ -2921,6 +2922,7 @@ namespace OpenLoco::Ui::Windows::Options
         window->currentTab = 0;
         window->frameNo = 0;
         window->rowHover = -1;
+        window->object = nullptr;
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         window->setColour(WindowColour::primary, interface->colour_0B);
