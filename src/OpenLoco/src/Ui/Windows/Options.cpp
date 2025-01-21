@@ -1043,11 +1043,13 @@ namespace OpenLoco::Ui::Windows::Options
         {
             enum
             {
-                currently_playing = Common::Widx::tab_miscellaneous + 1,
+                currently_playing_label = Common::Widx::tab_miscellaneous + 1,
+                currently_playing,
                 currently_playing_btn,
                 music_controls_stop,
                 music_controls_play,
                 music_controls_next,
+                volume_label,
                 volume,
                 music_playlist,
                 music_playlist_btn,
@@ -1068,10 +1070,12 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
+            Widgets::Label({ 10, 49 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::currently_playing),
             makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
             Widgets::ImageButton({ 10, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
             Widgets::ImageButton({ 34, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
             Widgets::ImageButton({ 58, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
+            Widgets::Label({ 183, 70 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::volume),
             Widgets::Slider({ 256, 64 }, { 109, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
             makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
             Widgets::Button({ 183, 108 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
@@ -1149,23 +1153,12 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C05F9
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             // Draw widgets.
             w.draw(drawingCtx);
 
             Common::drawTabs(&w, drawingCtx);
 
-            {
-                auto point = Point(w.x + 10, w.y + w.widgets[Widx::currently_playing_btn].top);
-                tr.drawStringLeft(point, Colour::black, StringIds::currently_playing);
-            }
-
-            {
-                auto point = Point(w.x + 183, w.y + w.widgets[Widx::volume].top + 7);
-                tr.drawStringLeft(point, Colour::black, StringIds::volume);
-            }
-
+            // TODO: Move this in Slider widget.
             drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
 
             int16_t x = 90 + (Config::get().old.volume / 32);
