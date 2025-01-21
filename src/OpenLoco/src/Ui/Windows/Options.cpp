@@ -1414,14 +1414,19 @@ namespace OpenLoco::Ui::Windows::Options
         {
             enum
             {
-                language = Common::Widx::tab_miscellaneous + 1,
+                language_label = Common::Widx::tab_miscellaneous + 1,
+                language,
                 language_btn,
+                distance_label,
                 distance_speed,
                 distance_speed_btn,
+                heights_label,
                 heights,
                 heights_btn,
+                currency_label,
                 currency,
                 currency_btn,
+                preferred_currency_label,
                 preferred_currency,
                 preferred_currency_btn,
                 preferred_currency_for_new_games,
@@ -1445,11 +1450,22 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_regional),
+
+            Widgets::Label({ 10, 49 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::options_language),
             makeDropdownWidgets({ 183, 49 }, { 173, 12 }, WindowColour::secondary, StringIds::stringptr),
+
+            Widgets::Label({ 10, 69 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::distance_and_speed),
             makeDropdownWidgets({ 183, 69 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
+
+            Widgets::Label({ 10, 84 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::heights),
             makeDropdownWidgets({ 183, 84 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
+
+            Widgets::Label({ 10, 104 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::current_game_currency),
             makeDropdownWidgets({ 183, 104 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid, StringIds::current_game_currency_tip),
+
+            Widgets::Label({ 10, 119 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::new_game_currency),
             makeDropdownWidgets({ 183, 119 }, { 173, 12 }, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
+
             Widgets::Checkbox({ 10, 134 }, { 346, 12 }, WindowColour::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
             Widgets::Checkbox({ 10, 148 }, { 346, 12 }, WindowColour::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip)
 
@@ -1556,26 +1572,10 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0B5B
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             // Draw widgets.
             w.draw(drawingCtx);
+
             Common::drawTabs(&w, drawingCtx);
-
-            auto point = Point(w.x + 10, w.y + w.widgets[Widx::language].top + 1);
-            tr.drawStringLeft(point, Colour::black, StringIds::options_language);
-
-            point.y = w.y + w.widgets[Widx::distance_speed].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::distance_and_speed);
-
-            point.y = w.y + w.widgets[Widx::heights].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::heights);
-
-            point.y = w.y + w.widgets[Widx::currency].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::current_game_currency);
-
-            point.y = w.y + w.widgets[Widx::preferred_currency].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::new_game_currency);
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi)
