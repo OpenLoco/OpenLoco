@@ -99,7 +99,6 @@ namespace OpenLoco::GameCommands
 {
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
     static loco_global<uint8_t, 0x00508F08> _gameCommandNestLevel;
-    static loco_global<uint8_t, 0x00508F17> _pausedState;
 
     static uint16_t _gameCommandFlags;
 
@@ -323,7 +322,7 @@ namespace OpenLoco::GameCommands
         {
             if (SceneManager::getPauseFlags() & 1)
             {
-                _pausedState = _pausedState ^ 1;
+                SceneManager::unsetPauseFlag(1);
                 WindowManager::invalidate(WindowType::timeToolbar);
                 Audio::unpauseSound();
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
