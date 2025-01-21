@@ -76,7 +76,7 @@ namespace OpenLoco::SceneManager
         return hasSceneFlags(Flags::progressBarActive);
     }
 
-    bool isInitialised()
+    bool isSceneInitialised()
     {
         return hasSceneFlags(Flags::initialised);
     }

@@ -39,10 +39,11 @@ namespace OpenLoco
         void removeSceneFlags(Flags value);
         bool isEditorMode();
         bool isTitleMode();
+        bool isPlayMode();
         bool isNetworked();
         bool isNetworkHost();
         bool isProgressBarActive();
-        bool isInitialised();
+        bool isSceneInitialised();
         bool isDriverCheatEnabled();
         bool isSandboxMode();
         bool isPauseOverrideEnabled();

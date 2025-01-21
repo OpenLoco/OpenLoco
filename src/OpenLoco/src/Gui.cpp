@@ -32,7 +32,7 @@ namespace OpenLoco::Gui
             Ui::Windows::TitleVersion::open();
             Ui::Windows::TitleOptions::open();
         }
-        else if (SceneManager::isInitialised())
+        else if (SceneManager::isSceneInitialised())
         {
             Windows::ToolbarTop::Game::open();
 
