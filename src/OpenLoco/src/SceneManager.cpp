@@ -61,6 +61,11 @@ namespace OpenLoco::SceneManager
         return hasSceneFlags(Flags::title);
     }
 
+    bool isPlayMode()
+    {
+        return isSceneInitialised() && !isEditorMode() && !isTitleMode();
+    }
+
     bool isNetworked()
     {
         return hasSceneFlags(Flags::networked);
