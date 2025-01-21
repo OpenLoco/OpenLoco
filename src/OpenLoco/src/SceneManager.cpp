@@ -46,49 +46,54 @@ namespace OpenLoco::SceneManager
         *_screenFlags &= ~value;
     }
 
+    static inline bool hasSceneFlags(Flags value)
+    {
+        return (getSceneFlags() & value) != Flags::none;
+    }
+
     bool isEditorMode()
     {
-        return (getSceneFlags() & Flags::editor) != Flags::none;
+        return hasSceneFlags(Flags::editor);
     }
 
     bool isTitleMode()
     {
-        return (getSceneFlags() & Flags::title) != Flags::none;
+        return hasSceneFlags(Flags::title);
     }
 
     bool isNetworked()
     {
-        return (getSceneFlags() & Flags::networked) != Flags::none;
+        return hasSceneFlags(Flags::networked);
     }
 
     bool isNetworkHost()
     {
-        return (getSceneFlags() & Flags::networkHost) != Flags::none;
+        return hasSceneFlags(Flags::networkHost);
     }
 
     bool isProgressBarActive()
     {
-        return (getSceneFlags() & Flags::progressBarActive) != Flags::none;
+        return hasSceneFlags(Flags::progressBarActive);
     }
 
     bool isInitialised()
     {
-        return (getSceneFlags() & Flags::initialised) != Flags::none;
+        return hasSceneFlags(Flags::initialised);
     }
 
     bool isDriverCheatEnabled()
     {
-        return (getSceneFlags() & Flags::driverCheatEnabled) != Flags::none;
+        return hasSceneFlags(Flags::driverCheatEnabled);
     }
 
     bool isSandboxMode()
     {
-        return (getSceneFlags() & Flags::sandboxMode) != Flags::none;
+        return hasSceneFlags(Flags::sandboxMode);
     }
 
     bool isPauseOverrideEnabled()
     {
-        return (getSceneFlags() & Flags::pauseOverrideEnabled) != Flags::none;
+        return hasSceneFlags(Flags::pauseOverrideEnabled);
     }
 
     bool isPaused()
