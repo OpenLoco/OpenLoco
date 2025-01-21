@@ -227,8 +227,6 @@ namespace OpenLoco
         MessageManager::reset();
         Scenario::reset();
 
-        setScreenFlag(ScreenFlags::initialised);
-
         ObjectManager::loadIndex();
         ScenarioManager::loadIndex();
 

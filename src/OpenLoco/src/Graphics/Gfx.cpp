@@ -15,6 +15,7 @@
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
 #include "PaletteMap.h"
+#include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
@@ -260,6 +261,13 @@ namespace OpenLoco::Gfx
         if (Ui::isInitialized())
         {
             auto& drawingEngine = Gfx::getDrawingEngine();
+
+            if ((getScreenFlags() & ScreenFlags::initialised) == ScreenFlags::none)
+            {
+                auto& ctx = drawingEngine.getDrawingContext();
+                ctx.clearSingle(PaletteIndex::black0);
+            }
+
             drawingEngine.render();
             drawingEngine.present();
         }

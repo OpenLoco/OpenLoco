@@ -169,6 +169,8 @@ namespace OpenLoco::Title
         {
             Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
         }
+
+        setScreenFlag(ScreenFlags::initialised);
     }
 
     void stop()
