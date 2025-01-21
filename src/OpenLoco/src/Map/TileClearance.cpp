@@ -500,7 +500,7 @@ namespace OpenLoco::World::TileClearance
     }
 
     // 0x00469E07, 0x00468949, 0x004C4DAD, 0x0042D5E5, 0x0049434F
-    static ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost, bool defaultCollision)
+    static ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost, bool defaultCollision)
     {
         switch (el.type())
         {
@@ -529,17 +529,17 @@ namespace OpenLoco::World::TileClearance
         }
     };
 
-    ClearFuncResult clearWithDefaultCollision(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost)
+    ClearFuncResult clearWithDefaultCollision(World::TileElement& el, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost)
     {
         return tileClearFunction(el, pos, removedBuildings, flags, cost, true);
     }
 
-    ClearFuncResult clearWithoutDefaultCollision(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost)
+    ClearFuncResult clearWithoutDefaultCollision(World::TileElement& el, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost)
     {
         return tileClearFunction(el, pos, removedBuildings, flags, cost, false);
     }
 
-    ClearFuncResult clearBuildingCollision(World::BuildingElement& elBuilding, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost)
+    ClearFuncResult clearBuildingCollision(World::BuildingElement& elBuilding, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost)
     {
         auto* buildingObj = elBuilding.getObject();
         if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))

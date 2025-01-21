@@ -22,7 +22,7 @@ namespace OpenLoco::GameCommands
     static loco_global<uint8_t, 0x00F00155> _mtnToolHeightDiff;
     static loco_global<int8_t, 0x00F00156> _mtnToolOuterLoopIndex;
 
-    static void adjustSurfaceSlope(Pos2 pos, int8_t targetBaseZ, uint8_t targetCorner, uint8_t referenceCornerFlag, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void adjustSurfaceSlope(Pos2 pos, int8_t targetBaseZ, uint8_t targetCorner, uint8_t referenceCornerFlag, World::TileClearance::RemovedBuildings& removedBuildings)
     {
         if (!validCoords(pos))
         {
@@ -80,30 +80,30 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004633F6
-    static void adjustSurfaceSlopeSouth(Pos2 pos, int8_t targetBaseZ, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void adjustSurfaceSlopeSouth(Pos2 pos, int8_t targetBaseZ, World::TileClearance::RemovedBuildings& removedBuildings)
     {
         adjustSurfaceSlope(pos, targetBaseZ, 2, SurfaceSlope::CornerUp::south, removedBuildings);
     }
 
     // 0x004634B9
-    static void adjustSurfaceSlopeWest(Pos2 pos, int8_t targetBaseZ, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void adjustSurfaceSlopeWest(Pos2 pos, int8_t targetBaseZ, World::TileClearance::RemovedBuildings& removedBuildings)
     {
         adjustSurfaceSlope(pos, targetBaseZ, 3, SurfaceSlope::CornerUp::west, removedBuildings);
     }
 
     // 0x0046357C
-    static void adjustSurfaceSlopeNorth(Pos2 pos, int8_t targetBaseZ, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void adjustSurfaceSlopeNorth(Pos2 pos, int8_t targetBaseZ, World::TileClearance::RemovedBuildings& removedBuildings)
     {
         adjustSurfaceSlope(pos, targetBaseZ, 0, SurfaceSlope::CornerUp::north, removedBuildings);
     }
 
     // 0x0046363F
-    static void adjustSurfaceSlopeEast(Pos2 pos, int8_t targetBaseZ, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void adjustSurfaceSlopeEast(Pos2 pos, int8_t targetBaseZ, World::TileClearance::RemovedBuildings& removedBuildings)
     {
         adjustSurfaceSlope(pos, targetBaseZ, 1, SurfaceSlope::CornerUp::east, removedBuildings);
     }
 
-    static uint32_t adjustMountainCentre(const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings, const uint8_t flags)
+    static uint32_t adjustMountainCentre(const LowerRaiseLandMountainArgs& args, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
     {
         // Prepare parameters for raise/lower land tool
         uint32_t result = FAILURE;
@@ -131,7 +131,7 @@ namespace OpenLoco::GameCommands
         return result;
     }
 
-    static void smoothenSurfaceNorth(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void smoothenSurfaceNorth(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, World::TileClearance::RemovedBuildings& removedBuildings)
     {
         auto tile = TileManager::get(refPos);
         auto surface = tile.surface();
@@ -154,7 +154,7 @@ namespace OpenLoco::GameCommands
         adjustSurfaceSlopeNorth(targetPos, height, removedBuildings);
     }
 
-    static void smoothenSurfaceEast(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void smoothenSurfaceEast(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, World::TileClearance::RemovedBuildings& removedBuildings)
     {
         auto tile = TileManager::get(refPos);
         auto surface = tile.surface();
@@ -177,7 +177,7 @@ namespace OpenLoco::GameCommands
         adjustSurfaceSlopeEast(targetPos, height, removedBuildings);
     }
 
-    static void smoothenSurfaceSouth(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void smoothenSurfaceSouth(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, World::TileClearance::RemovedBuildings& removedBuildings)
     {
         auto tile = TileManager::get(refPos);
         auto surface = tile.surface();
@@ -200,7 +200,7 @@ namespace OpenLoco::GameCommands
         adjustSurfaceSlopeSouth(targetPos, height, removedBuildings);
     }
 
-    static void smoothenSurfaceWest(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void smoothenSurfaceWest(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, World::TileClearance::RemovedBuildings& removedBuildings)
     {
         auto tile = TileManager::get(refPos);
         auto surface = tile.surface();
@@ -238,7 +238,7 @@ namespace OpenLoco::GameCommands
         // We keep track of removed buildings for each tile visited
         // this prevents accidentally double counting their removal
         // cost if they span across multiple tiles.
-        std::set<World::Pos3, LessThanPos3> removedBuildings{};
+        World::TileClearance::RemovedBuildings removedBuildings{};
 
         // Play sound if this is a company action
         if ((flags & Flags::apply) && getCommandNestLevel() == 1 && getUpdatingCompanyId() != CompanyId::neutral)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Tile.h"
+#include "TileClearance.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstdint>
 #include <set>
@@ -98,6 +99,6 @@ namespace OpenLoco::World::TileManager
     void removeAllWallsOnTileBelow(const World::TilePos2& pos, SmallZ baseZ);
     void setTerrainStyleAsCleared(const Pos2& pos);
     void setTerrainStyleAsClearedAtHeight(const Pos3& pos);
-    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags);
-    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags);
+    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
+    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
 }

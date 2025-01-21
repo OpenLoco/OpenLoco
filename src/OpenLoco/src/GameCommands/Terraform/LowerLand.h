@@ -3,7 +3,7 @@
 #include "GameCommands/GameCommands.h"
 #include "Map/MapSelection.h"
 #include "Map/Tile.h"
-#include <set>
+#include "Map/TileClearance.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -36,6 +36,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    uint32_t lowerLand(const LowerLandArgs& args, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const uint8_t flags);
+    uint32_t lowerLand(const LowerLandArgs& args, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags);
     void lowerLand(registers& regs);
 }
