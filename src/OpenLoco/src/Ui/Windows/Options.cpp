@@ -31,6 +31,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/SliderWidget.h"
 #include "Ui/Widgets/TabWidget.h"
@@ -242,20 +243,26 @@ namespace OpenLoco::Ui::Windows::Options
             enum
             {
                 frame_hardware = Common::Widx::tab_miscellaneous + 1,
+                screen_mode_label,
                 screen_mode,
                 screen_mode_btn,
+                display_resolution_label,
                 display_resolution,
                 display_resolution_btn,
+                display_scale_label,
                 display_scale,
                 display_scale_down_btn,
                 display_scale_up_btn,
                 uncap_fps,
                 show_fps,
                 frame_map_rendering,
+                vehicles_min_scale_label,
                 vehicles_min_scale,
                 vehicles_min_scale_btn,
+                station_names_min_scale_label,
                 station_names_min_scale,
                 station_names_min_scale_btn,
+                construction_marker_label,
                 construction_marker,
                 construction_marker_btn,
                 landscape_smoothing,
@@ -267,23 +274,51 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_display),
             Widgets::GroupBox({ 4, 49 }, { 392, 97 }, WindowColour::secondary, StringIds::frame_hardware),
+
+            Widgets::Label({ 10, 63 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::options_screen_mode),
             makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+
+            Widgets::Label({ 10, 79 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::display_resolution),
             makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
-            makeStepperWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+
+            Widgets::Label({ 10, 95 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::window_scale_factor),
+            makeStepperWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::scale_formatted),
+
             Widgets::Checkbox({ 10, 111 }, { 174, 12 }, WindowColour::secondary, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
             Widgets::Checkbox({ 10, 127 }, { 174, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
 
             Widgets::GroupBox({ 4, 150 }, { 392, 112 }, WindowColour::secondary, StringIds::frame_map_rendering),
+
+            Widgets::Label({ 10, 164 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::vehicles_min_scale),
             makeDropdownWidgets({ 235, 164 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
+
+            Widgets::Label({ 10, 180 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::station_names_min_scale),
             makeDropdownWidgets({ 235, 180 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
+
+            Widgets::Label({ 10, 196 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::construction_marker),
             makeDropdownWidgets({ 235, 196 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+
             Widgets::Checkbox({ 10, 211 }, { 346, 12 }, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
             Widgets::Checkbox({ 10, 227 }, { 346, 12 }, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
             Widgets::Checkbox({ 10, 243 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering)
 
         );
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::show_fps) | (1 << Widx::uncap_fps) | (1 << Widx::cash_popup_rendering) | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
+            | (1ULL << Widx::show_fps)
+            | (1ULL << Widx::uncap_fps)
+            | (1ULL << Widx::screen_mode_label)
+            | (1ULL << Widx::cash_popup_rendering)
+            | (1ULL << Display::Widx::landscape_smoothing)
+            | (1ULL << Display::Widx::gridlines_on_landscape)
+            | (1ULL << Display::Widx::vehicles_min_scale)
+            | (1ULL << Display::Widx::vehicles_min_scale_btn)
+            | (1ULL << Display::Widx::station_names_min_scale)
+            | (1ULL << Display::Widx::station_names_min_scale_btn)
+            | (1ULL << Display::Widx::construction_marker)
+            | (1ULL << Display::Widx::construction_marker_btn)
+            | (1ULL << Display::Widx::display_scale_up_btn)
+            | (1ULL << Display::Widx::display_scale_down_btn);
 
         // 0x004BFB8C
         static void onMouseUp(Window& w, WidgetIndex_t wi)
@@ -653,10 +688,19 @@ namespace OpenLoco::Ui::Windows::Options
             }
             w.widgets[Widx::screen_mode].text = screenModeStringId;
 
-            auto args = FormatArguments(w.widgets[Widx::display_resolution].textArgs);
-            auto& resolution = Config::get().display.fullscreenResolution;
-            args.push<uint16_t>(resolution.width);
-            args.push<uint16_t>(resolution.height);
+            // Resolution.
+            {
+                auto args = FormatArguments(w.widgets[Widx::display_resolution].textArgs);
+                auto& resolution = Config::get().display.fullscreenResolution;
+                args.push<uint16_t>(resolution.width);
+                args.push<uint16_t>(resolution.height);
+            }
+
+            // Scale.
+            {
+                auto args = FormatArguments(w.widgets[Widx::display_scale].textArgs);
+                args.push<int32_t>(Config::get().scaleFactor * 100);
+            }
 
             if (Config::get().old.constructionMarker)
             {
@@ -677,56 +721,56 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().old.vehiclesMinScale];
             w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().old.stationNamesMinScale];
 
-            w.activatedWidgets &= ~(1 << Widx::show_fps);
+            w.activatedWidgets &= ~(1ULL << Widx::show_fps);
             if (Config::get().showFPS)
             {
-                w.activatedWidgets |= (1 << Widx::show_fps);
+                w.activatedWidgets |= (1ULL << Widx::show_fps);
             }
 
-            w.activatedWidgets &= ~(1 << Widx::uncap_fps);
+            w.activatedWidgets &= ~(1ULL << Widx::uncap_fps);
             if (Config::get().uncapFPS)
             {
-                w.activatedWidgets |= (1 << Widx::uncap_fps);
+                w.activatedWidgets |= (1ULL << Widx::uncap_fps);
             }
 
-            w.activatedWidgets &= ~(1 << Widx::landscape_smoothing);
+            w.activatedWidgets &= ~(1ULL << Widx::landscape_smoothing);
             if (!Config::get().hasFlags(Config::Flags::landscapeSmoothing))
             {
-                w.activatedWidgets |= (1 << Widx::landscape_smoothing);
+                w.activatedWidgets |= (1ULL << Widx::landscape_smoothing);
             }
 
-            w.activatedWidgets &= ~(1 << Widx::gridlines_on_landscape);
+            w.activatedWidgets &= ~(1ULL << Widx::gridlines_on_landscape);
             if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
             {
-                w.activatedWidgets |= (1 << Widx::gridlines_on_landscape);
+                w.activatedWidgets |= (1ULL << Widx::gridlines_on_landscape);
             }
 
-            w.activatedWidgets &= ~(1 << Widx::cash_popup_rendering);
+            w.activatedWidgets &= ~(1ULL << Widx::cash_popup_rendering);
             if (Config::get().cashPopupRendering)
             {
-                w.activatedWidgets |= (1 << Widx::cash_popup_rendering);
+                w.activatedWidgets |= (1ULL << Widx::cash_popup_rendering);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::cash_popup_rendering);
+                w.activatedWidgets &= ~(1ULL << Widx::cash_popup_rendering);
             }
 
             if (Config::get().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)
             {
-                w.disabledWidgets |= (1 << Widx::display_scale_down_btn);
+                w.disabledWidgets |= (1ULL << Widx::display_scale_down_btn);
             }
             else
             {
-                w.disabledWidgets &= ~(1 << Widx::display_scale_down_btn);
+                w.disabledWidgets &= ~(1ULL << Widx::display_scale_down_btn);
             }
 
             if (Config::get().scaleFactor >= OpenLoco::Ui::ScaleFactor::max)
             {
-                w.disabledWidgets |= (1 << Widx::display_scale_up_btn);
+                w.disabledWidgets |= (1ULL << Widx::display_scale_up_btn);
             }
             else
             {
-                w.disabledWidgets &= ~(1 << Widx::display_scale_up_btn);
+                w.disabledWidgets &= ~(1ULL << Widx::display_scale_up_btn);
             }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -739,37 +783,10 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFAF9
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             // Draw widgets.
             w.draw(drawingCtx);
 
             Common::drawTabs(&w, drawingCtx);
-
-            auto point = Point(w.x + 10, w.y + Display::_widgets[Display::Widx::screen_mode].top + 1);
-            tr.drawStringLeft(point, Colour::black, StringIds::options_screen_mode);
-
-            point.y = w.y + Display::_widgets[Display::Widx::display_resolution].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::display_resolution);
-
-            point.y = w.y + Display::_widgets[Display::Widx::construction_marker].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::construction_marker);
-
-            point.y = w.y + Display::_widgets[Display::Widx::vehicles_min_scale].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::vehicles_min_scale);
-
-            point.y = w.y + Display::_widgets[Display::Widx::station_names_min_scale].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::station_names_min_scale);
-
-            point.y = w.y + Display::_widgets[Display::Widx::display_scale].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::window_scale_factor);
-
-            FormatArguments args{};
-            args.push<int32_t>(Config::get().scaleFactor * 100);
-
-            auto& scaleWidget = w.widgets[Widx::display_scale];
-            point = Point(w.x + scaleWidget.left + 1, w.y + scaleWidget.top + 1);
-            tr.drawStringLeft(point, Colour::black, StringIds::scale_formatted, args);
         }
 
         static void applyScreenModeRestrictions(Window* w)
