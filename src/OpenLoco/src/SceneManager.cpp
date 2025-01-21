@@ -31,9 +31,9 @@ namespace OpenLoco::SceneManager
         return _screenFlags;
     }
 
-    void setSceneFlags(Flags newScreenFlags)
+    void setSceneFlags(Flags value)
     {
-        _screenFlags = newScreenFlags;
+        _screenFlags = value;
     }
 
     void addSceneFlags(Flags value)

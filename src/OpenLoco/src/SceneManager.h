@@ -34,7 +34,7 @@ namespace OpenLoco
         uint16_t getSceneAge();
         void setSceneAge(uint16_t newAge);
         Flags getSceneFlags();
-        void setSceneFlags(Flags newScreenFlags);
+        void setSceneFlags(Flags value);
         void addSceneFlags(Flags value);
         void removeSceneFlags(Flags value);
         bool isEditorMode();
