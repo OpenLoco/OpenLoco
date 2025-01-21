@@ -65,7 +65,7 @@ namespace OpenLoco::Input
 
     static void loc_4BECDE()
     {
-        SceneManager::setScreenFlag(SceneManager::ScreenFlags::driverCheatEnabled);
+        SceneManager::setScreenFlag(SceneManager::Flags::driverCheatEnabled);
 
         Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
     }

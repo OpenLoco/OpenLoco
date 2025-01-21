@@ -188,7 +188,7 @@ namespace OpenLoco::Game
         // Path for networked games; untested.
         if (SceneManager::isNetworked())
         {
-            SceneManager::clearScreenFlag(SceneManager::ScreenFlags::networked);
+            SceneManager::clearScreenFlag(SceneManager::Flags::networked);
             auto playerCompanyId = CompanyManager::getControllingId();
             auto previousUpdatingId = GameCommands::getUpdatingCompanyId();
             GameCommands::setUpdatingCompanyId(playerCompanyId);
@@ -196,15 +196,15 @@ namespace OpenLoco::Game
             Ui::WindowManager::closeAllFloatingWindows();
 
             GameCommands::setUpdatingCompanyId(previousUpdatingId);
-            SceneManager::setScreenFlag(SceneManager::ScreenFlags::networked);
+            SceneManager::setScreenFlag(SceneManager::Flags::networked);
 
             // If the other party is leaving the game, go back to the title screen.
             if (playerCompanyId != previousUpdatingId)
             {
                 // 0x0043C1CD
                 addr<0x00F25428, uint32_t>() = 0;
-                SceneManager::clearScreenFlag(SceneManager::ScreenFlags::networked);
-                SceneManager::clearScreenFlag(SceneManager::ScreenFlags::networkHost);
+                SceneManager::clearScreenFlag(SceneManager::Flags::networked);
+                SceneManager::clearScreenFlag(SceneManager::Flags::networkHost);
                 addr<0x00508F0C, uint32_t>() = 0;
                 CompanyManager::setControllingId(CompanyId(0));
                 CompanyManager::setSecondaryPlayerId(CompanyId::null);
@@ -216,7 +216,7 @@ namespace OpenLoco::Game
                 Ui::WindowManager::close(Ui::WindowType::companyFaceSelection);
                 Ui::WindowManager::close(Ui::WindowType::objectSelection);
 
-                SceneManager::clearScreenFlag(SceneManager::ScreenFlags::editor);
+                SceneManager::clearScreenFlag(SceneManager::Flags::editor);
                 Audio::pauseSound();
                 Audio::unpauseSound();
 
@@ -251,7 +251,7 @@ namespace OpenLoco::Game
         Ui::WindowManager::close(Ui::WindowType::objectSelection);
         Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
 
-        SceneManager::clearScreenFlag(SceneManager::ScreenFlags::editor);
+        SceneManager::clearScreenFlag(SceneManager::Flags::editor);
         Audio::pauseSound();
         Audio::unpauseSound();
 

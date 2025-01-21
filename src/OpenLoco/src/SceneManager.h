@@ -15,7 +15,7 @@ namespace OpenLoco
 
     namespace SceneManager
     {
-        enum class ScreenFlags : uint16_t
+        enum class Flags : uint16_t
         {
             none = 0U,
             title = 1U << 0,
@@ -28,15 +28,15 @@ namespace OpenLoco
             sandboxMode = 1U << 7,          // new in OpenLoco
             pauseOverrideEnabled = 1U << 8, // new in OpenLoco
         };
-        OPENLOCO_ENABLE_ENUM_OPERATORS(ScreenFlags);
+        OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
         void resetScreenAge();
         uint16_t getScreenAge();
         void setScreenAge(uint16_t newAge);
-        ScreenFlags getScreenFlags();
-        void setAllScreenFlags(ScreenFlags newScreenFlags);
-        void setScreenFlag(ScreenFlags value);
-        void clearScreenFlag(ScreenFlags value);
+        Flags getScreenFlags();
+        void setAllScreenFlags(Flags newScreenFlags);
+        void setScreenFlag(Flags value);
+        void clearScreenFlag(Flags value);
         bool isEditorMode();
         bool isTitleMode();
         bool isNetworked();

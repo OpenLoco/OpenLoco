@@ -422,7 +422,7 @@ namespace OpenLoco::ScenarioManager
     void loadIndex(const bool forceReload)
     {
         const auto oldFlags = SceneManager::getScreenFlags();
-        SceneManager::setAllScreenFlags(SceneManager::ScreenFlags::title | oldFlags);
+        SceneManager::setAllScreenFlags(SceneManager::Flags::title | oldFlags);
 
         if (_scenarioList != reinterpret_cast<ScenarioIndexEntry*>(-1) && _scenarioList != nullptr)
         {

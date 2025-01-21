@@ -54,8 +54,8 @@ namespace OpenLoco::Network
             _server->listen(bind, port);
 
             _mode = NetworkMode::server;
-            SceneManager::setScreenFlag(SceneManager::ScreenFlags::networked);
-            SceneManager::setScreenFlag(SceneManager::ScreenFlags::networkHost);
+            SceneManager::setScreenFlag(SceneManager::Flags::networked);
+            SceneManager::setScreenFlag(SceneManager::Flags::networkHost);
             Gfx::invalidateScreen();
         }
         catch (...)

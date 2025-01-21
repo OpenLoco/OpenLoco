@@ -7,7 +7,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::SceneManager
 {
     loco_global<uint16_t, 0x00508F12> _screenAge;
-    loco_global<ScreenFlags, 0x00508F14> _screenFlags;
+    loco_global<Flags, 0x00508F14> _screenFlags;
     loco_global<uint8_t, 0x00508F17> _pausedState;
     loco_global<GameSpeed, 0x00508F1A> _gameSpeed;
 
@@ -26,69 +26,69 @@ namespace OpenLoco::SceneManager
         _screenAge = newAge;
     }
 
-    ScreenFlags getScreenFlags()
+    Flags getScreenFlags()
     {
         return _screenFlags;
     }
 
-    void setAllScreenFlags(ScreenFlags newScreenFlags)
+    void setAllScreenFlags(Flags newScreenFlags)
     {
         _screenFlags = newScreenFlags;
     }
 
-    void setScreenFlag(ScreenFlags value)
+    void setScreenFlag(Flags value)
     {
         *_screenFlags |= value;
     }
 
-    void clearScreenFlag(ScreenFlags value)
+    void clearScreenFlag(Flags value)
     {
         *_screenFlags &= ~value;
     }
 
     bool isEditorMode()
     {
-        return (getScreenFlags() & ScreenFlags::editor) != ScreenFlags::none;
+        return (getScreenFlags() & Flags::editor) != Flags::none;
     }
 
     bool isTitleMode()
     {
-        return (getScreenFlags() & ScreenFlags::title) != ScreenFlags::none;
+        return (getScreenFlags() & Flags::title) != Flags::none;
     }
 
     bool isNetworked()
     {
-        return (getScreenFlags() & ScreenFlags::networked) != ScreenFlags::none;
+        return (getScreenFlags() & Flags::networked) != Flags::none;
     }
 
     bool isNetworkHost()
     {
-        return (getScreenFlags() & ScreenFlags::networkHost) != ScreenFlags::none;
+        return (getScreenFlags() & Flags::networkHost) != Flags::none;
     }
 
     bool isProgressBarActive()
     {
-        return (getScreenFlags() & ScreenFlags::progressBarActive) != ScreenFlags::none;
+        return (getScreenFlags() & Flags::progressBarActive) != Flags::none;
     }
 
     bool isInitialised()
     {
-        return (getScreenFlags() & ScreenFlags::initialised) != ScreenFlags::none;
+        return (getScreenFlags() & Flags::initialised) != Flags::none;
     }
 
     bool isDriverCheatEnabled()
     {
-        return (getScreenFlags() & ScreenFlags::driverCheatEnabled) != ScreenFlags::none;
+        return (getScreenFlags() & Flags::driverCheatEnabled) != Flags::none;
     }
 
     bool isSandboxMode()
     {
-        return (getScreenFlags() & ScreenFlags::sandboxMode) != ScreenFlags::none;
+        return (getScreenFlags() & Flags::sandboxMode) != Flags::none;
     }
 
     bool isPauseOverrideEnabled()
     {
-        return (getScreenFlags() & ScreenFlags::pauseOverrideEnabled) != ScreenFlags::none;
+        return (getScreenFlags() & Flags::pauseOverrideEnabled) != Flags::none;
     }
 
     bool isPaused()

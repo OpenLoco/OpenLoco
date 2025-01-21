@@ -332,7 +332,7 @@ namespace OpenLoco::Scenario
         WindowManager::closeConstructionWindows();
         WindowManager::closeAllFloatingWindows();
 
-        SceneManager::clearScreenFlag(SceneManager::ScreenFlags::title);
+        SceneManager::clearScreenFlag(SceneManager::Flags::title);
         initialiseViewports();
         Gui::init();
         Audio::resetMusic();

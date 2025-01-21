@@ -56,7 +56,7 @@ void NetworkClient::onClose()
     if (_status != NetworkClientStatus::none && _status != NetworkClientStatus::connecting)
     {
         _status = NetworkClientStatus::closed;
-        SceneManager::clearScreenFlag(SceneManager::ScreenFlags::networked);
+        SceneManager::clearScreenFlag(SceneManager::Flags::networked);
         Logging::info("Disconnected from server");
     }
     else if (_status == NetworkClientStatus::connecting)
@@ -204,7 +204,7 @@ void NetworkClient::receiveConnectionResponsePacket(const ConnectResponsePacket&
     {
         _status = NetworkClientStatus::connectedSuccessfully;
         setStatus("Connected to server successfully");
-        SceneManager::setScreenFlag(SceneManager::ScreenFlags::networked);
+        SceneManager::setScreenFlag(SceneManager::Flags::networked);
     }
     else
     {

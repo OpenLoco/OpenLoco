@@ -822,12 +822,12 @@ namespace OpenLoco::S5
             }
             if (!hasLoadFlags(flags, LoadFlags::titleSequence))
             {
-                SceneManager::clearScreenFlag(SceneManager::ScreenFlags::title);
+                SceneManager::clearScreenFlag(SceneManager::Flags::title);
                 initialiseViewports();
                 Audio::resetMusic();
                 if (hasLoadFlags(flags, LoadFlags::landscape))
                 {
-                    SceneManager::setScreenFlag(SceneManager::ScreenFlags::editor);
+                    SceneManager::setScreenFlag(SceneManager::Flags::editor);
                     EditorController::showEditor();
                 }
                 else
