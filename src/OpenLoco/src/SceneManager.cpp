@@ -6,44 +6,44 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::SceneManager
 {
-    loco_global<uint16_t, 0x00508F12> _screenAge;
-    loco_global<Flags, 0x00508F14> _screenFlags;
+    loco_global<uint16_t, 0x00508F12> _sceneAge;
+    loco_global<Flags, 0x00508F14> _sceneFlags;
     loco_global<uint8_t, 0x00508F17> _pausedState;
     loco_global<GameSpeed, 0x00508F1A> _gameSpeed;
 
     void resetSceneAge()
     {
-        _screenAge = 0;
+        _sceneAge = 0;
     }
 
     uint16_t getSceneAge()
     {
-        return _screenAge;
+        return _sceneAge;
     }
 
     void setSceneAge(uint16_t newAge)
     {
-        _screenAge = newAge;
+        _sceneAge = newAge;
     }
 
     Flags getSceneFlags()
     {
-        return _screenFlags;
+        return _sceneFlags;
     }
 
     void setSceneFlags(Flags value)
     {
-        _screenFlags = value;
+        _sceneFlags = value;
     }
 
     void addSceneFlags(Flags value)
     {
-        *_screenFlags |= value;
+        *_sceneFlags |= value;
     }
 
     void removeSceneFlags(Flags value)
     {
-        *_screenFlags &= ~value;
+        *_sceneFlags &= ~value;
     }
 
     static inline bool hasSceneFlags(Flags value)
