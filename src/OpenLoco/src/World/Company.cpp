@@ -147,7 +147,7 @@ namespace OpenLoco
     // 0x004387D0
     void Company::updateDailyPlayer()
     {
-        if (isEditorMode() || isTitleMode())
+        if (SceneManager::isEditorMode() || SceneManager::isTitleMode())
         {
             return;
         }

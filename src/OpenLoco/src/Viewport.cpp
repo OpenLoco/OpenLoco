@@ -240,7 +240,7 @@ namespace OpenLoco::Ui
                 sess.drawStructs(drawingCtx);
                 // Climate code used to draw here.
 
-                if (!isTitleMode())
+                if (!SceneManager::isTitleMode())
                 {
                     if (!options.hasFlags(ViewportFlags::station_names_displayed))
                     {

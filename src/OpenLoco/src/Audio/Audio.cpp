@@ -337,7 +337,7 @@ namespace OpenLoco::Audio
         stopVehicleNoise();
         stopAmbientNoise();
         // Do not stop title screen music
-        if (!isTitleMode())
+        if (!SceneManager::isTitleMode())
         {
             stopMusic();
         }
@@ -1046,7 +1046,7 @@ namespace OpenLoco::Audio
     void playBackgroundMusic()
     {
         auto& cfg = Config::get().old;
-        if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode() || isPaused())
+        if (cfg.musicPlaying == 0 || SceneManager::isTitleMode() || SceneManager::isEditorMode() || SceneManager::isPaused())
         {
             return;
         }

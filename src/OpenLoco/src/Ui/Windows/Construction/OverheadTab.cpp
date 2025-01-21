@@ -467,7 +467,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             self.widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
 
-            if (isNetworkHost())
+            if (SceneManager::isNetworkHost())
             {
                 if (ToolManager::getToolWindowType() == WindowType::construction)
                 {

@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         auto& config = Config::get();
         window.widgets[Widx::multiplayer_toggle_btn].type = config.network.enabled ? WidgetType::buttonWithImage : WidgetType::none;
 
-        if (OpenLoco::isNetworked())
+        if (SceneManager::isNetworked())
         {
             window.widgets[Widx::tutorial_btn].type = Ui::WidgetType::none;
             window.widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::none;
@@ -277,7 +277,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             StringId string = StringIds::single_player_mode;
             FormatArguments args{};
 
-            if (OpenLoco::isNetworked())
+            if (SceneManager::isNetworked())
             {
                 // char[512+1]
                 auto buffer = StringManager::getString(StringIds::buffer_2039);

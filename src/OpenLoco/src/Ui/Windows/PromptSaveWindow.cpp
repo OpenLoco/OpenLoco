@@ -70,14 +70,14 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedDarkRed).translucent());
             window->flags |= Ui::WindowFlags::transparent;
 
-            setPauseFlag(1 << 1);
+            SceneManager::setPauseFlag(1 << 1);
             Audio::pauseSound();
             WindowManager::invalidate(WindowType::timeToolbar);
         }
 
         _savePromptType = savePromptType;
 
-        if (!isEditorMode())
+        if (!SceneManager::isEditorMode())
         {
             static constexpr std::array<const StringId, 3> kTypeToType = {
                 StringIds::title_load_game,
@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     // 0x0043C577
     static void onClose([[maybe_unused]] Window& self)
     {
-        unsetPauseFlag(2);
+        SceneManager::unsetPauseFlag(2);
         Audio::unpauseSound();
         WindowManager::invalidate(WindowType::timeToolbar);
     }

@@ -535,7 +535,7 @@ namespace OpenLoco::MessageManager
     // 0x00428E47
     void sub_428E47()
     {
-        if (isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return;
         }
@@ -592,7 +592,7 @@ namespace OpenLoco::MessageManager
                     break;
             }
             uint16_t time2 = std::numeric_limits<uint16_t>::max();
-            if (getGameSpeed() != GameSpeed::Normal)
+            if (SceneManager::getGameSpeed() != GameSpeed::Normal)
             {
                 if (numWaitingMessages > 0)
                 {

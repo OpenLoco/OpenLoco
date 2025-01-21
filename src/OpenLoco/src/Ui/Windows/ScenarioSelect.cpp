@@ -515,7 +515,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Mouse click sound
         Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
 
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             GameCommands::do_67(scenarioInfo->filename);
         }

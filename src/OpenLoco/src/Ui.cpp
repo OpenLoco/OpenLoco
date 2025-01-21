@@ -836,7 +836,7 @@ namespace OpenLoco::Ui
 
         if (Game::hasFlags(GameStateFlags::preferredOwnerName))
         {
-            if (!isTitleMode() && !isEditorMode())
+            if (!SceneManager::isTitleMode() && !SceneManager::isEditorMode())
             {
                 if (Tutorial::state() == Tutorial::State::none)
                 {
@@ -902,7 +902,7 @@ namespace OpenLoco::Ui
             Input::MouseButton state;
             while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
             {
-                if (isTitleMode() && Intro::isActive() && state == Input::MouseButton::leftPressed)
+                if (SceneManager::isTitleMode() && Intro::isActive() && state == Input::MouseButton::leftPressed)
                 {
                     if (Intro::state() == Intro::State::displayNotice)
                     {

@@ -1191,7 +1191,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto disabledWidgets = 0;
 
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             disabledWidgets |= (1 << widx::tabVehicles) | (1 << widx::tabRoutes) | (1 << widx::tabOwnership);
         }
@@ -1247,7 +1247,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 auto colour = Colour::black;
 
-                if (!isEditorMode() && !isSandboxMode())
+                if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
                 {
                     auto company = CompanyManager::getPlayerCompany();
                     colour = company->mainColours.primary;

@@ -806,7 +806,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                         state.forbiddenVehiclesCompetitors = newForbiddenVehicles;
                         self.invalidate();
                     }
-                    if (!isEditorMode())
+                    if (!SceneManager::isEditorMode())
                     {
                         CompanyManager::determineAvailableVehicles();
                         WindowManager::invalidate(WindowType::vehicleList);
@@ -829,7 +829,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                         state.forbiddenVehiclesPlayers = newForbiddenVehicles;
                         self.invalidate();
                     }
-                    if (!isEditorMode())
+                    if (!SceneManager::isEditorMode())
                     {
                         CompanyManager::determineAvailableVehicles();
                         WindowManager::invalidate(WindowType::buildVehicle);
@@ -1283,7 +1283,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
             self.activatedWidgets |= (1ULL << widgetIndex);
 
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 // Disable close button in the scenario editor.
                 self.widgets[Common::widx::close_button].type = WidgetType::none;

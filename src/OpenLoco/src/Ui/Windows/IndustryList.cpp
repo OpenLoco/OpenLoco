@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.widgets[widx::sort_industry_production_transported].text = self.sortMode == SortMode::ProductionTransported ? StringIds::industry_table_header_production_desc : StringIds::industry_table_header_production;
             self.widgets[widx::sort_industry_production_last_month].text = self.sortMode == SortMode::ProductionLastMonth ? StringIds::industry_table_header_production_last_month_desc : StringIds::industry_table_header_production_last_month;
 
-            if (isEditorMode() || isSandboxMode())
+            if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
                 self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
             }
@@ -733,7 +733,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
 
-            if (isEditorMode() || isSandboxMode())
+            if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
                 self.widgets[Common::widx::caption].text = StringIds::title_build_new_industries;
                 self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
@@ -788,7 +788,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             auto widthOffset = 0;
 
-            if (!isEditorMode() && !isSandboxMode())
+            if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
             {
                 FormatArguments args{};
                 args.push(industryCost);
@@ -1150,7 +1150,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             args.type = industryListWnd->rowHover; // dl
             args.srand0 = _placementPrng.srand_0();
             args.srand1 = _placementPrng.srand_1();
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 args.buildImmediately = true; // bh
             }
@@ -1267,7 +1267,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     continue;
                 }
 
-                if (!isEditorMode() && !isSandboxMode())
+                if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
                 {
                     if (!industryObj->hasFlags(IndustryObjectFlags::canBeFoundedByPlayer))
                     {

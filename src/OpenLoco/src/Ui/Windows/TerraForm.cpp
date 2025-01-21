@@ -511,7 +511,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             args.quadrant = World::getQuadrantFromPos(res->first) ^ (1 << 1);
             args.colour = *_treeColour;
             args.rotation = (_treeRotation - WindowManager::getCurrentRotation()) & 0x3;
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 args.buildImmediately = true;
             }
@@ -580,7 +580,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     case treeCluster::selected:
                     {
                         auto previousId = GameCommands::getUpdatingCompanyId();
-                        if (isEditorMode())
+                        if (SceneManager::isEditorMode())
                         {
                             GameCommands::setUpdatingCompanyId(CompanyId::neutral);
                         }
@@ -595,7 +595,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                             Error::open(StringIds::cant_plant_this_here, StringIds::empty);
                         }
 
-                        if (isEditorMode())
+                        if (SceneManager::isEditorMode())
                         {
                             GameCommands::setUpdatingCompanyId(previousId);
                         }
@@ -603,7 +603,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     }
                     case treeCluster::random:
                         auto previousId = GameCommands::getUpdatingCompanyId();
-                        if (isEditorMode())
+                        if (SceneManager::isEditorMode())
                         {
                             GameCommands::setUpdatingCompanyId(CompanyId::neutral);
                         }
@@ -618,7 +618,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                             Error::open(StringIds::cant_plant_this_here, StringIds::empty);
                         }
 
-                        if (isEditorMode())
+                        if (SceneManager::isEditorMode())
                         {
                             GameCommands::setUpdatingCompanyId(previousId);
                         }
@@ -784,7 +784,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 treeCost = Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
             }
 
-            if (!isEditorMode())
+            if (!SceneManager::isEditorMode())
             {
                 FormatArguments args{};
                 args.push<uint32_t>(treeCost);
@@ -1272,7 +1272,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCBF8
         static void onResize(Window& self)
         {
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 Common::onResize(self, 115);
             }
@@ -1577,7 +1577,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             uint32_t raiseCost = 0;
             uint32_t lowerCost = 0;
 
-            if (isEditorMode() || xPos == 0x8000)
+            if (SceneManager::isEditorMode() || xPos == 0x8000)
             {
                 raiseCost = 0x80000000;
                 lowerCost = 0x80000000;
@@ -2015,7 +2015,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 setAdjustCost(0x80000000, 0x80000000);
             }

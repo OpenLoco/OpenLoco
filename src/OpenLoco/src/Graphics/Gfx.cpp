@@ -15,6 +15,7 @@
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
 #include "PaletteMap.h"
+#include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
@@ -260,6 +261,16 @@ namespace OpenLoco::Gfx
         if (Ui::isInitialized())
         {
             auto& drawingEngine = Gfx::getDrawingEngine();
+
+            // Clear the screen if the scene hasn't been initialised yet, since the game doesn't clear
+            // the screen each frame it relies on overdrawing but with no tile elements or entities loaded
+            // there is nothing to draw.
+            if (!SceneManager::isSceneInitialised())
+            {
+                auto& ctx = drawingEngine.getDrawingContext();
+                ctx.clearSingle(PaletteIndex::black0);
+            }
+
             drawingEngine.render();
             drawingEngine.present();
         }

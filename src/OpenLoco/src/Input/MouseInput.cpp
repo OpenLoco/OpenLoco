@@ -1436,7 +1436,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return;
         }
@@ -1947,7 +1947,7 @@ namespace OpenLoco::Input
 
         if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
-            if (OpenLoco::isTitleMode())
+            if (SceneManager::isTitleMode())
             {
                 return;
             }

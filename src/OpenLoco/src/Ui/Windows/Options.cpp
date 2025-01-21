@@ -967,7 +967,7 @@ namespace OpenLoco::Ui::Windows::Options
             Config::write();
             w->invalidate();
 
-            if (!isTitleMode())
+            if (!SceneManager::isTitleMode())
             {
                 return;
             }
@@ -2822,12 +2822,12 @@ namespace OpenLoco::Ui::Windows::Options
     static void sub_4C13BE(Window* w)
     {
         w->disabledWidgets &= ~((1 << Common::Widx::tab_music) | (1 << Common::Widx::tab_regional));
-        if (isEditorMode() || isTitleMode())
+        if (SceneManager::isEditorMode() || SceneManager::isTitleMode())
         {
             w->disabledWidgets |= 1 << Common::Widx::tab_music;
         }
 
-        if (isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             w->disabledWidgets |= 1 << Common::Widx::tab_regional;
         }

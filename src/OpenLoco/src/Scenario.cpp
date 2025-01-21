@@ -332,7 +332,7 @@ namespace OpenLoco::Scenario
         WindowManager::closeConstructionWindows();
         WindowManager::closeAllFloatingWindows();
 
-        clearScreenFlag(ScreenFlags::title);
+        SceneManager::removeSceneFlags(SceneManager::Flags::title);
         initialiseViewports();
         Gui::init();
         Audio::resetMusic();
@@ -396,7 +396,7 @@ namespace OpenLoco::Scenario
         StationManager::updateLabels();
         Gfx::loadDefaultPalette();
         Gfx::invalidateScreen();
-        resetScreenAge();
+        SceneManager::resetSceneAge();
         _50C19A = 62000;
         MultiPlayer::setFlag(MultiPlayer::flags::flag_10);
         throw GameException::Interrupt;
@@ -478,7 +478,7 @@ namespace OpenLoco::Scenario
         }
         if ((objective.flags & ObjectiveFlags::withinTimeLimit) != ObjectiveFlags::none)
         {
-            if (isTitleMode() || isEditorMode())
+            if (SceneManager::isTitleMode() || SceneManager::isEditorMode())
             {
                 args.push(StringIds::within_years);
                 args.push<uint16_t>(objective.timeLimitYears);

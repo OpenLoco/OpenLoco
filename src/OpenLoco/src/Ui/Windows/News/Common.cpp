@@ -19,7 +19,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         int16_t y = Ui::height() - _nState.slideInHeight;
 
-        if (getGameSpeed() != GameSpeed::Normal || isOld)
+        if (SceneManager::getGameSpeed() != GameSpeed::Normal || isOld)
         {
             y = Ui::height() - kWindowSize.height;
             _nState.slideInHeight = kWindowSize.height;
@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             return;
         }
 
-        if ((news->timeActive != 0) && (getScreenAge() >= 10))
+        if ((news->timeActive != 0) && (SceneManager::getSceneAge() >= 10))
         {
             isOld = true;
         }

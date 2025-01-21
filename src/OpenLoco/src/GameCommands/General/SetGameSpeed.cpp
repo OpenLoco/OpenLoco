@@ -14,7 +14,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        OpenLoco::setGameSpeed(speed);
+        SceneManager::setGameSpeed(speed);
         return 0;
     }
 

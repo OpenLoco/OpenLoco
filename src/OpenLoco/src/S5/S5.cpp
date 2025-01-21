@@ -57,7 +57,6 @@ namespace OpenLoco::S5
     static loco_global<Options, 0x009C8714> _activeOptions;
     static loco_global<Header, 0x009CCA34> _header;
     static loco_global<char[512], 0x0112CE04> _savePath;
-    static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
     static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
     static loco_global<StringId, 0x0050C198> _loadErrorMessage;
 
@@ -310,7 +309,7 @@ namespace OpenLoco::S5
         return (flags & SaveFlags::raw) == SaveFlags::none
             && (flags & SaveFlags::dump) == SaveFlags::none
             && (flags & SaveFlags::packCustomObjects) != SaveFlags::none
-            && !isNetworked();
+            && !SceneManager::isNetworked();
     }
 
     // 0x00441C26
@@ -385,7 +384,7 @@ namespace OpenLoco::S5
             Gfx::invalidateScreen();
             if ((flags & SaveFlags::raw) == SaveFlags::none)
             {
-                resetScreenAge();
+                SceneManager::resetSceneAge();
             }
 
             return true;
@@ -620,7 +619,7 @@ namespace OpenLoco::S5
 
     bool importSaveToGameState(Stream& stream, LoadFlags flags)
     {
-        _gameSpeed = 0;
+        SceneManager::setGameSpeed(GameSpeed::Normal);
         if ((flags & LoadFlags::titleSequence) == LoadFlags::none
             && (flags & LoadFlags::twoPlayer) == LoadFlags::none)
         {
@@ -822,12 +821,12 @@ namespace OpenLoco::S5
             }
             if (!hasLoadFlags(flags, LoadFlags::titleSequence))
             {
-                clearScreenFlag(ScreenFlags::title);
+                SceneManager::removeSceneFlags(SceneManager::Flags::title);
                 initialiseViewports();
                 Audio::resetMusic();
                 if (hasLoadFlags(flags, LoadFlags::landscape))
                 {
-                    setScreenFlag(ScreenFlags::editor);
+                    SceneManager::addSceneFlags(SceneManager::Flags::editor);
                     EditorController::showEditor();
                 }
                 else
@@ -874,7 +873,7 @@ namespace OpenLoco::S5
 
             if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
-                resetScreenAge();
+                SceneManager::resetSceneAge();
                 throw GameException::Interrupt;
             }
 

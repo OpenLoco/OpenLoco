@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         if (self.var_852 != 0)
         {
-            if (!isPaused())
+            if (!SceneManager::isPaused())
             {
                 self.var_852--;
             }
@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         self.invalidate();
 
-        if (self.var_852 == 0 && !isPaused())
+        if (self.var_852 == 0 && !SceneManager::isPaused())
         {
             _nState.numCharsToDisplay = _nState.numCharsToDisplay + 2;
 
@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             return;
         }
 
-        if (getPauseFlags() & (1 << 2))
+        if (SceneManager::getPauseFlags() & (1 << 2))
         {
             return;
         }

@@ -319,12 +319,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return false;
         }
 
-        if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
+        if (SceneManager::isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
         {
             return false;
         }
 
-        if (!isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+        if (!SceneManager::isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
         {
             return false;
         }
@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
-        window->filterLevel = enumValue(isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced);
+        window->filterLevel = enumValue(SceneManager::isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced);
         window->var_858 = enumValue(FilterFlags::vanilla | FilterFlags::openLoco | FilterFlags::custom);
         window->currentSecondaryTab = 0;
         window->object = nullptr;
@@ -538,7 +538,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.activatedWidgets |= (1 << widx::objectImage);
         self.widgets[widx::closeButton].type = WidgetType::buttonWithImage;
 
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             self.widgets[widx::closeButton].type = WidgetType::none;
         }
@@ -1600,7 +1600,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         ObjectManager::reloadAll();
         ObjectManager::freeTemporaryObject();
 
-        if (!isEditorMode())
+        if (!SceneManager::isEditorMode())
         {
             // Make new selection available in-game.
             ObjectManager::updateYearly2();

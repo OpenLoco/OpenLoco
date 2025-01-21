@@ -387,7 +387,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (car.front->hasBreakdownFlags(BreakdownFlags::breakdownPending) && !isTitleMode())
+            if (car.front->hasBreakdownFlags(BreakdownFlags::breakdownPending) && !SceneManager::isTitleMode())
             {
                 auto newConfig = Config::get();
                 if (!newConfig.breakdownsDisabled)

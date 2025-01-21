@@ -99,7 +99,7 @@ namespace OpenLoco
     // amount : ebx
     MoneyEffect* MoneyEffect::create(const World::Pos3& loc, const CompanyId company, const currency32_t amount)
     {
-        if (isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return nullptr;
         }

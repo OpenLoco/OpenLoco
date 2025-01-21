@@ -1276,7 +1276,7 @@ namespace OpenLoco::World::TileManager
         {
             removeSurfaceIndustry(pos);
 
-            if (!isEditorMode())
+            if (!SceneManager::isEditorMode())
             {
                 setTerrainStyleAsCleared(pos);
             }
@@ -1400,7 +1400,7 @@ namespace OpenLoco::World::TileManager
         }
 
         surface = tileIt.surface();
-        if (!isEditorMode())
+        if (!SceneManager::isEditorMode())
         {
             // Reset terrain growth when not in editor
             surface->setTerrain(surface->terrain());
@@ -1411,7 +1411,7 @@ namespace OpenLoco::World::TileManager
         surface->setSlope(slopeFlags);
 
         landObj = ObjectManager::get<LandObject>(surface->terrain());
-        if (landObj->hasFlags(LandObjectFlags::unk1) && !isEditorMode())
+        if (landObj->hasFlags(LandObjectFlags::unk1) && !SceneManager::isEditorMode())
         {
             surface->setTerrain(landObj->cliffEdgeHeader2);
         }
@@ -1449,7 +1449,7 @@ namespace OpenLoco::World::TileManager
         {
             removeSurfaceIndustry(pos);
 
-            if (!isEditorMode())
+            if (!SceneManager::isEditorMode())
             {
                 setTerrainStyleAsCleared(pos);
             }
