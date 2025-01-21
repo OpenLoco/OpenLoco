@@ -33,10 +33,10 @@ namespace OpenLoco
         void resetScreenAge();
         uint16_t getScreenAge();
         void setScreenAge(uint16_t newAge);
-        Flags getScreenFlags();
-        void setAllScreenFlags(Flags newScreenFlags);
-        void setScreenFlag(Flags value);
-        void clearScreenFlag(Flags value);
+        Flags getSceneFlags();
+        void setSceneFlags(Flags newScreenFlags);
+        void addSceneFlags(Flags value);
+        void removeSceneFlags(Flags value);
         bool isEditorMode();
         bool isTitleMode();
         bool isNetworked();

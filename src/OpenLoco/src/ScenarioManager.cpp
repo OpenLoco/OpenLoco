@@ -421,8 +421,8 @@ namespace OpenLoco::ScenarioManager
     // 0x0044452F
     void loadIndex(const bool forceReload)
     {
-        const auto oldFlags = SceneManager::getScreenFlags();
-        SceneManager::setAllScreenFlags(SceneManager::Flags::title | oldFlags);
+        const auto oldFlags = SceneManager::getSceneFlags();
+        SceneManager::setSceneFlags(SceneManager::Flags::title | oldFlags);
 
         if (_scenarioList != reinterpret_cast<ScenarioIndexEntry*>(-1) && _scenarioList != nullptr)
         {
@@ -436,7 +436,7 @@ namespace OpenLoco::ScenarioManager
             createIndex(currentState);
         }
 
-        setAllScreenFlags(oldFlags);
+        setSceneFlags(oldFlags);
     }
 
     // 0x00438959

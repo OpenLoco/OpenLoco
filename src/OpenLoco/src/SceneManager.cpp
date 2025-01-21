@@ -26,69 +26,69 @@ namespace OpenLoco::SceneManager
         _screenAge = newAge;
     }
 
-    Flags getScreenFlags()
+    Flags getSceneFlags()
     {
         return _screenFlags;
     }
 
-    void setAllScreenFlags(Flags newScreenFlags)
+    void setSceneFlags(Flags newScreenFlags)
     {
         _screenFlags = newScreenFlags;
     }
 
-    void setScreenFlag(Flags value)
+    void addSceneFlags(Flags value)
     {
         *_screenFlags |= value;
     }
 
-    void clearScreenFlag(Flags value)
+    void removeSceneFlags(Flags value)
     {
         *_screenFlags &= ~value;
     }
 
     bool isEditorMode()
     {
-        return (getScreenFlags() & Flags::editor) != Flags::none;
+        return (getSceneFlags() & Flags::editor) != Flags::none;
     }
 
     bool isTitleMode()
     {
-        return (getScreenFlags() & Flags::title) != Flags::none;
+        return (getSceneFlags() & Flags::title) != Flags::none;
     }
 
     bool isNetworked()
     {
-        return (getScreenFlags() & Flags::networked) != Flags::none;
+        return (getSceneFlags() & Flags::networked) != Flags::none;
     }
 
     bool isNetworkHost()
     {
-        return (getScreenFlags() & Flags::networkHost) != Flags::none;
+        return (getSceneFlags() & Flags::networkHost) != Flags::none;
     }
 
     bool isProgressBarActive()
     {
-        return (getScreenFlags() & Flags::progressBarActive) != Flags::none;
+        return (getSceneFlags() & Flags::progressBarActive) != Flags::none;
     }
 
     bool isInitialised()
     {
-        return (getScreenFlags() & Flags::initialised) != Flags::none;
+        return (getSceneFlags() & Flags::initialised) != Flags::none;
     }
 
     bool isDriverCheatEnabled()
     {
-        return (getScreenFlags() & Flags::driverCheatEnabled) != Flags::none;
+        return (getSceneFlags() & Flags::driverCheatEnabled) != Flags::none;
     }
 
     bool isSandboxMode()
     {
-        return (getScreenFlags() & Flags::sandboxMode) != Flags::none;
+        return (getSceneFlags() & Flags::sandboxMode) != Flags::none;
     }
 
     bool isPauseOverrideEnabled()
     {
-        return (getScreenFlags() & Flags::pauseOverrideEnabled) != Flags::none;
+        return (getSceneFlags() & Flags::pauseOverrideEnabled) != Flags::none;
     }
 
     bool isPaused()

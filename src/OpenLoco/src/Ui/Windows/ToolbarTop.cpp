@@ -394,33 +394,33 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             case 5:
                 if (!SceneManager::isSandboxMode())
                 {
-                    SceneManager::setScreenFlag(SceneManager::Flags::sandboxMode);
+                    SceneManager::addSceneFlags(SceneManager::Flags::sandboxMode);
                 }
                 else
                 {
-                    SceneManager::clearScreenFlag(SceneManager::Flags::sandboxMode);
+                    SceneManager::removeSceneFlags(SceneManager::Flags::sandboxMode);
                 }
                 break;
 
             case 6:
                 if (!SceneManager::isPauseOverrideEnabled())
                 {
-                    SceneManager::setScreenFlag(SceneManager::Flags::pauseOverrideEnabled);
+                    SceneManager::addSceneFlags(SceneManager::Flags::pauseOverrideEnabled);
                 }
                 else
                 {
-                    SceneManager::clearScreenFlag(SceneManager::Flags::pauseOverrideEnabled);
+                    SceneManager::removeSceneFlags(SceneManager::Flags::pauseOverrideEnabled);
                 }
                 break;
 
             case 7:
                 if (!SceneManager::isDriverCheatEnabled())
                 {
-                    SceneManager::setScreenFlag(SceneManager::Flags::driverCheatEnabled);
+                    SceneManager::addSceneFlags(SceneManager::Flags::driverCheatEnabled);
                 }
                 else
                 {
-                    SceneManager::clearScreenFlag(SceneManager::Flags::driverCheatEnabled);
+                    SceneManager::removeSceneFlags(SceneManager::Flags::driverCheatEnabled);
                 }
                 break;
         }
