@@ -493,13 +493,16 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
+    // The hash map can have a maximum of 4096 entries so the queue can't be larger than that.
+    using LocationOfInterestQueue = sfl::static_vector<LocationOfInterest, 4096>;
+
     template<typename FilterFunction>
-    static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
+    static void findAllUsableTrackInNetwork(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
 
     // 0x004A313B & 0x004A35B7
     // Iterates all individual tiles of a track piece to find tracks that need inspection
     template<typename FilterFunction>
-    static void findAllUsableTrackPieces(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableTrackPieces(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
         if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
         {
@@ -595,7 +598,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004A2FE6 & 0x004A3462
     template<typename FilterFunction>
-    static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableTrackInNetwork(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
         const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(initialInterest.loc, initialInterest.tad()._data);
         auto tc = World::Track::getTrackConnections(trackEndLoc, trackEndRotation, initialInterest.company, initialInterest.trackType, 0, 0);
@@ -666,7 +669,7 @@ namespace OpenLoco::Vehicles
 
         // Note: This function and its call chain findAllUsableTrackInNetwork and findAllUsableTrackPieces have been modified
         // to not be recursive anymore.
-        std::vector<LocationOfInterest> trackToCheck{ LocationOfInterest{ loc, trackAndDirection._data, company, trackType } };
+        LocationOfInterestQueue trackToCheck{ LocationOfInterest{ loc, trackAndDirection._data, company, trackType } };
         while (!trackToCheck.empty())
         {
             const auto interest = trackToCheck.back();
