@@ -2580,8 +2580,6 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C1282
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             w.draw(drawingCtx);
             Common::drawTabs(&w, drawingCtx);
 
