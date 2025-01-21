@@ -229,9 +229,15 @@ namespace OpenLoco::Ui::Windows::Options
                 Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_miscellaneous_options));
         }
 
-        static constexpr int tabWidgets = (1 << Widx::tab_display) | (1 << Widx::tab_sound) | (1 << Widx::tab_music) | (1 << Widx::tab_regional) | (1 << Widx::tab_controls) | (1 << Widx::tab_company) | (1 << Widx::tab_miscellaneous);
+        static constexpr int tabWidgets = (1ULL << Widx::tab_display)
+            | (1ULL << Widx::tab_sound)
+            | (1ULL << Widx::tab_music)
+            | (1ULL << Widx::tab_regional)
+            | (1ULL << Widx::tab_controls)
+            | (1ULL << Widx::tab_company)
+            | (1ULL << Widx::tab_miscellaneous);
 
-        static constexpr int enabledWidgets = (1 << Widx::close_button) | tabWidgets;
+        static constexpr int enabledWidgets = (1ULL << Widx::close_button) | tabWidgets;
     }
 
     namespace Display
@@ -516,13 +522,13 @@ namespace OpenLoco::Ui::Windows::Options
         {
             if (Config::get().display.mode == Config::ScreenMode::fullscreen)
             {
-                w->enabledWidgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
-                w->disabledWidgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
+                w->enabledWidgets |= (1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
+                w->disabledWidgets &= ~((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
             }
             else
             {
-                w->enabledWidgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
-                w->disabledWidgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
+                w->enabledWidgets &= ~((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
+                w->disabledWidgets |= (1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
             }
         }
 #endif
@@ -793,14 +799,17 @@ namespace OpenLoco::Ui::Windows::Options
         {
             if (Config::get().display.mode != Config::ScreenMode::fullscreen)
             {
-                w->disabledWidgets = (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);
+                w->disabledWidgets = (1ULL << Display::Widx::display_resolution) | (1ULL << Display::Widx::display_resolution_btn);
             }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            w->enabledWidgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn);
+            w->enabledWidgets |= (1ULL << Display::Widx::screen_mode) | (1ULL << Display::Widx::screen_mode_btn);
             Display::screenModeToggleEnabled(w);
 #else
-            w->disabledWidgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn) | (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);
+            w->disabledWidgets |= (1ULL << Display::Widx::screen_mode)
+                | (1ULL << Display::Widx::screen_mode_btn)
+                | (1ULL << Display::Widx::display_resolution)
+                | (1ULL << Display::Widx::display_resolution_btn);
 #endif
         }
 
@@ -834,7 +843,10 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Sound::Widx::audio_device) | (1 << Sound::Widx::audio_device_btn) | (1 << Sound::Widx::play_title_music);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
+            | (1ULL << Sound::Widx::audio_device)
+            | (1ULL << Sound::Widx::audio_device_btn)
+            | (1ULL << Sound::Widx::play_title_music);
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_sound),
@@ -878,11 +890,11 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().audio.playTitleMusic)
             {
-                w.activatedWidgets |= (1 << Widx::play_title_music);
+                w.activatedWidgets |= (1ULL << Widx::play_title_music);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::play_title_music);
+                w.activatedWidgets &= ~(1ULL << Widx::play_title_music);
             }
 
             sub_4C13BE(&w);
@@ -1043,7 +1055,16 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Music::Widx::currently_playing) | (1 << Music::Widx::currently_playing_btn) | (1 << Music::Widx::music_controls_stop) | (1 << Music::Widx::music_controls_play) | (1 << Music::Widx::music_controls_next) | (1 << Music::Widx::volume) | (1 << Music::Widx::music_playlist) | (1 << Music::Widx::music_playlist_btn) | (1 << Music::Widx::edit_selection);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
+            | (1ULL << Music::Widx::currently_playing)
+            | (1ULL << Music::Widx::currently_playing_btn)
+            | (1ULL << Music::Widx::music_controls_stop)
+            | (1ULL << Music::Widx::music_controls_play)
+            | (1ULL << Music::Widx::music_controls_next)
+            | (1ULL << Music::Widx::volume)
+            | (1ULL << Music::Widx::music_playlist)
+            | (1ULL << Music::Widx::music_playlist_btn)
+            | (1ULL << Music::Widx::edit_selection);
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
@@ -1105,21 +1126,21 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push(currentSongStringId);
             }
 
-            w.activatedWidgets &= ~((1 << Widx::music_controls_stop) | (1 << Widx::music_controls_play));
-            w.activatedWidgets |= (1 << Widx::music_controls_stop);
+            w.activatedWidgets &= ~((1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_play));
+            w.activatedWidgets |= (1ULL << Widx::music_controls_stop);
             if (_currentSong != -1)
             {
                 if (Config::get().old.musicPlaying)
                 {
-                    w.activatedWidgets &= ~((1 << Widx::music_controls_stop) | (1 << Widx::music_controls_play));
-                    w.activatedWidgets |= (1 << Widx::music_controls_play);
+                    w.activatedWidgets &= ~((1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_play));
+                    w.activatedWidgets |= (1ULL << Widx::music_controls_play);
                 }
             }
 
-            w.disabledWidgets |= (1 << Widx::edit_selection);
+            w.disabledWidgets |= (1ULL << Widx::edit_selection);
             if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::custom)
             {
-                w.disabledWidgets &= ~(1 << Widx::edit_selection);
+                w.disabledWidgets &= ~(1ULL << Widx::edit_selection);
             }
 
             sub_4C13BE(&w);
@@ -1408,7 +1429,19 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Regional::Widx::language) | (1 << Regional::Widx::language_btn) | (1 << Regional::Widx::distance_speed) | (1 << Regional::Widx::distance_speed_btn) | (1 << Regional::Widx::heights) | (1 << Regional::Widx::heights_btn) | (1 << Regional::Widx::currency) | (1 << Regional::Widx::currency_btn) | (1 << Regional::Widx::preferred_currency) | (1 << Regional::Widx::preferred_currency_btn) | (1 << Regional::Widx::preferred_currency_for_new_games) | (1 << Regional::Widx::preferred_currency_always);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
+            | (1ULL << Regional::Widx::language)
+            | (1ULL << Regional::Widx::language_btn)
+            | (1ULL << Regional::Widx::distance_speed)
+            | (1ULL << Regional::Widx::distance_speed_btn)
+            | (1ULL << Regional::Widx::heights)
+            | (1ULL << Regional::Widx::heights_btn)
+            | (1ULL << Regional::Widx::currency)
+            | (1ULL << Regional::Widx::currency_btn)
+            | (1ULL << Regional::Widx::preferred_currency)
+            | (1ULL << Regional::Widx::preferred_currency_btn)
+            | (1ULL << Regional::Widx::preferred_currency_for_new_games)
+            | (1ULL << Regional::Widx::preferred_currency_always);
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_regional),
@@ -1490,31 +1523,31 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().usePreferredCurrencyForNewGames)
             {
-                w.activatedWidgets |= (1 << Widx::preferred_currency_for_new_games);
+                w.activatedWidgets |= (1ULL << Widx::preferred_currency_for_new_games);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::preferred_currency_for_new_games);
+                w.activatedWidgets &= ~(1ULL << Widx::preferred_currency_for_new_games);
             }
 
             if (Config::get().usePreferredCurrencyAlways)
             {
-                w.activatedWidgets |= (1 << Widx::preferred_currency_always);
+                w.activatedWidgets |= (1ULL << Widx::preferred_currency_always);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::preferred_currency_always);
+                w.activatedWidgets &= ~(1ULL << Widx::preferred_currency_always);
             }
 
             if (Config::get().usePreferredCurrencyAlways)
             {
-                w.disabledWidgets |= (1 << Widx::currency);
-                w.disabledWidgets |= (1 << Widx::currency_btn);
+                w.disabledWidgets |= (1ULL << Widx::currency);
+                w.disabledWidgets |= (1ULL << Widx::currency_btn);
             }
             else
             {
-                w.disabledWidgets &= ~(1 << Widx::currency);
-                w.disabledWidgets &= ~(1 << Widx::currency_btn);
+                w.disabledWidgets &= ~(1ULL << Widx::currency);
+                w.disabledWidgets &= ~(1ULL << Widx::currency_btn);
             }
 
             sub_4C13BE(&w);
@@ -1911,7 +1944,11 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Controls::Widx::edge_scrolling) | (1 << Controls::Widx::customize_keys) | (1 << Controls::Widx::zoom_to_cursor) | (1 << Controls::Widx::invertRightMouseViewPan);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
+            | (1ULL << Controls::Widx::edge_scrolling)
+            | (1ULL << Controls::Widx::customize_keys)
+            | (1ULL << Controls::Widx::zoom_to_cursor)
+            | (1ULL << Controls::Widx::invertRightMouseViewPan);
 
         static constexpr Ui::Size32 kWindowSize = { 366, 114 };
 
@@ -1944,18 +1981,18 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            w.activatedWidgets &= ~(1 << Widx::edge_scrolling | 1 << Widx::zoom_to_cursor | 1 << Widx::invertRightMouseViewPan);
+            w.activatedWidgets &= ~(1ULL << Widx::edge_scrolling | 1ULL << Widx::zoom_to_cursor | 1ULL << Widx::invertRightMouseViewPan);
             if (Config::get().edgeScrolling)
             {
-                w.activatedWidgets |= (1 << Widx::edge_scrolling);
+                w.activatedWidgets |= (1ULL << Widx::edge_scrolling);
             }
             if (Config::get().zoomToCursor)
             {
-                w.activatedWidgets |= (1 << Widx::zoom_to_cursor);
+                w.activatedWidgets |= (1ULL << Widx::zoom_to_cursor);
             }
             if (Config::get().invertRightMouseViewPan)
             {
-                w.activatedWidgets |= (1 << Widx::invertRightMouseViewPan);
+                w.activatedWidgets |= (1ULL << Widx::invertRightMouseViewPan);
             }
 
             sub_4C13BE(&w);
@@ -2083,11 +2120,11 @@ namespace OpenLoco::Ui::Windows::Options
 
         // clang-format off
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets |
-            (1 << Widx::usePreferredOwnerFace) |
-            (1 << Widx::changeOwnerFaceBtn) |
-            (1 << Widx::usePreferredOwnerName) |
-            (1 << Widx::changeOwnerNameBtn) |
-            (1 << Widx::ownerFacePreview);
+            (1ULL << Widx::usePreferredOwnerFace) |
+            (1ULL << Widx::changeOwnerFaceBtn) |
+            (1ULL << Widx::usePreferredOwnerName) |
+            (1ULL << Widx::changeOwnerNameBtn) |
+            (1ULL << Widx::ownerFacePreview);
         // clang-format on
 
         static constexpr auto _widgets = makeWidgets(
@@ -2163,24 +2200,24 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().usePreferredOwnerName)
             {
-                w.activatedWidgets |= (1 << Widx::usePreferredOwnerName);
-                w.disabledWidgets &= ~(1 << Widx::changeOwnerNameBtn);
+                w.activatedWidgets |= (1ULL << Widx::usePreferredOwnerName);
+                w.disabledWidgets &= ~(1ULL << Widx::changeOwnerNameBtn);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::usePreferredOwnerName);
-                w.disabledWidgets |= (1 << Widx::changeOwnerNameBtn);
+                w.activatedWidgets &= ~(1ULL << Widx::usePreferredOwnerName);
+                w.disabledWidgets |= (1ULL << Widx::changeOwnerNameBtn);
             }
 
             if (Config::get().usePreferredOwnerFace)
             {
-                w.activatedWidgets |= (1 << Widx::usePreferredOwnerFace);
-                w.disabledWidgets &= ~((1 << Widx::changeOwnerFaceBtn) | (1 << Widx::ownerFacePreview));
+                w.activatedWidgets |= (1ULL << Widx::usePreferredOwnerFace);
+                w.disabledWidgets &= ~((1ULL << Widx::changeOwnerFaceBtn) | (1ULL << Widx::ownerFacePreview));
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::usePreferredOwnerFace);
-                w.disabledWidgets |= ((1 << Widx::changeOwnerFaceBtn) | (1 << Widx::ownerFacePreview));
+                w.activatedWidgets &= ~(1ULL << Widx::usePreferredOwnerFace);
+                w.disabledWidgets |= ((1ULL << Widx::changeOwnerFaceBtn) | (1ULL << Widx::ownerFacePreview));
             }
 
             sub_4C13BE(&w);
@@ -2387,21 +2424,19 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        // clang-format off
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets |
-            (1 << Widx::enableCheatsToolbarButton) |
-            (1 << Widx::disableAICompanies) |
-            (1 << Widx::disableTownExpansion) |
-            (1 << Widx::disable_vehicle_breakdowns) |
-            (1 << Widx::disable_vehicle_load_penalty) |
-            (1 << Widx::disableStationSizeLimit) |
-            (1 << Widx::trainsReverseAtSignals) |
-            (1 << Widx::autosave_amount) |
-            (1 << Widx::autosave_amount_down_btn) |
-            (1 << Widx::autosave_amount_up_btn) |
-            (1 << Widx::autosave_frequency_btn) |
-            (1 << Widx::export_plugin_objects);
-        // clang-format on
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
+            | (1ULL << Widx::enableCheatsToolbarButton)
+            | (1ULL << Widx::disableAICompanies)
+            | (1ULL << Widx::disableTownExpansion)
+            | (1ULL << Widx::disable_vehicle_breakdowns)
+            | (1ULL << Widx::disable_vehicle_load_penalty)
+            | (1ULL << Widx::disableStationSizeLimit)
+            | (1ULL << Widx::trainsReverseAtSignals)
+            | (1ULL << Widx::autosave_amount)
+            | (1ULL << Widx::autosave_amount_down_btn)
+            | (1ULL << Widx::autosave_amount_up_btn)
+            | (1ULL << Widx::autosave_frequency_btn)
+            | (1ULL << Widx::export_plugin_objects);
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_miscellaneous),
@@ -2454,71 +2489,71 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().cheatsMenuEnabled)
             {
-                w.activatedWidgets |= (1 << Widx::enableCheatsToolbarButton);
+                w.activatedWidgets |= (1ULL << Widx::enableCheatsToolbarButton);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::enableCheatsToolbarButton);
+                w.activatedWidgets &= ~(1ULL << Widx::enableCheatsToolbarButton);
             }
 
             if (Config::get().breakdownsDisabled)
             {
-                w.activatedWidgets |= (1 << Widx::disable_vehicle_breakdowns);
+                w.activatedWidgets |= (1ULL << Widx::disable_vehicle_breakdowns);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::disable_vehicle_breakdowns);
+                w.activatedWidgets &= ~(1ULL << Widx::disable_vehicle_breakdowns);
             }
 
             if (Config::get().trainsReverseAtSignals)
             {
-                w.activatedWidgets |= (1 << Widx::trainsReverseAtSignals);
+                w.activatedWidgets |= (1ULL << Widx::trainsReverseAtSignals);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::trainsReverseAtSignals);
+                w.activatedWidgets &= ~(1ULL << Widx::trainsReverseAtSignals);
             }
 
             if (Config::get().disableVehicleLoadPenaltyCheat)
             {
-                w.activatedWidgets |= (1 << Widx::disable_vehicle_load_penalty);
+                w.activatedWidgets |= (1ULL << Widx::disable_vehicle_load_penalty);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::disable_vehicle_load_penalty);
+                w.activatedWidgets &= ~(1ULL << Widx::disable_vehicle_load_penalty);
             }
 
             if (Config::get().disableStationSizeLimit)
             {
-                w.activatedWidgets |= (1 << Widx::disableStationSizeLimit);
+                w.activatedWidgets |= (1ULL << Widx::disableStationSizeLimit);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::disableStationSizeLimit);
+                w.activatedWidgets &= ~(1ULL << Widx::disableStationSizeLimit);
             }
 
             if (Config::get().companyAIDisabled)
             {
-                w.activatedWidgets |= (1 << Widx::disableAICompanies);
+                w.activatedWidgets |= (1ULL << Widx::disableAICompanies);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::disableAICompanies);
+                w.activatedWidgets &= ~(1ULL << Widx::disableAICompanies);
             }
 
             if (Config::get().townGrowthDisabled)
             {
-                w.activatedWidgets |= (1 << Widx::disableTownExpansion);
+                w.activatedWidgets |= (1ULL << Widx::disableTownExpansion);
             }
             else
             {
-                w.activatedWidgets &= ~(1 << Widx::disableTownExpansion);
+                w.activatedWidgets &= ~(1ULL << Widx::disableTownExpansion);
             }
 
-            w.activatedWidgets &= ~(1 << Widx::export_plugin_objects);
+            w.activatedWidgets &= ~(1ULL << Widx::export_plugin_objects);
             if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
             {
-                w.activatedWidgets |= (1 << Widx::export_plugin_objects);
+                w.activatedWidgets |= (1ULL << Widx::export_plugin_objects);
             }
 
             w.widgets[Widx::export_plugin_objects].type = WidgetType::none;
@@ -2838,15 +2873,15 @@ namespace OpenLoco::Ui::Windows::Options
 
     static void sub_4C13BE(Window* w)
     {
-        w->disabledWidgets &= ~((1 << Common::Widx::tab_music) | (1 << Common::Widx::tab_regional));
+        w->disabledWidgets &= ~((1ULL << Common::Widx::tab_music) | (1ULL << Common::Widx::tab_regional));
         if (SceneManager::isEditorMode() || SceneManager::isTitleMode())
         {
-            w->disabledWidgets |= 1 << Common::Widx::tab_music;
+            w->disabledWidgets |= 1ULL << Common::Widx::tab_music;
         }
 
         if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
-            w->disabledWidgets |= 1 << Common::Widx::tab_regional;
+            w->disabledWidgets |= 1ULL << Common::Widx::tab_regional;
         }
 
         Widget::leftAlignTabs(*w, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
@@ -2968,7 +3003,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         else if ((Common::tab)w->currentTab == Common::tab::music)
         {
-            w->holdableWidgets = (1 << Music::Widx::volume);
+            w->holdableWidgets = (1ULL << Music::Widx::volume);
         }
 
         w->callOnResize();
