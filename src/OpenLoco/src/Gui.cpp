@@ -24,7 +24,7 @@ namespace OpenLoco::Gui
         Windows::Terraform::setAdjustWaterToolSize(1);
         Windows::Terraform::setClearAreaToolSize(2);
 
-        if (isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             Ui::Windows::TitleMenu::open();
             Ui::Windows::TitleExit::open();
@@ -32,7 +32,7 @@ namespace OpenLoco::Gui
             Ui::Windows::TitleVersion::open();
             Ui::Windows::TitleOptions::open();
         }
-        else if (isInitialised())
+        else if (SceneManager::isInitialised())
         {
             Windows::ToolbarTop::Game::open();
 

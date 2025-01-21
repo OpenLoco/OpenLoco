@@ -440,7 +440,7 @@ namespace OpenLoco::GameCommands
         {
             newIndustry->flags |= IndustryFlags::isGhost;
         }
-        if (!isEditorMode() && getUpdatingCompanyId() != CompanyId::neutral)
+        if (!SceneManager::isEditorMode() && getUpdatingCompanyId() != CompanyId::neutral)
         {
             newIndustry->flags |= IndustryFlags::flag_04;
             newIndustry->owner = getUpdatingCompanyId();
@@ -463,7 +463,7 @@ namespace OpenLoco::GameCommands
             const auto& initalRate = indObj->initialProductionRate[i];
             newIndustry->productionRate[i] = (((initalRate.max - initalRate.min) * prodRateRand) / 256) + initalRate.min;
 
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 newIndustry->var_17D[i] = newIndustry->productionRate[i];
                 newIndustry->producedCargoQuantityPreviousMonth[i] = newIndustry->var_17D[i] * 30;

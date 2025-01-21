@@ -54,9 +54,9 @@ namespace OpenLoco::EditorController
     // 0x0043D7DC
     void init()
     {
-        clearScreenFlag(ScreenFlags::title);
-        setScreenFlag(ScreenFlags::editor);
-        setGameSpeed(GameSpeed::Normal);
+        SceneManager::clearScreenFlag(SceneManager::ScreenFlags::title);
+        SceneManager::setScreenFlag(SceneManager::ScreenFlags::editor);
+        SceneManager::setGameSpeed(GameSpeed::Normal);
 
         auto& options = Scenario::getOptions();
         auto& gameState = getGameState();
@@ -141,7 +141,7 @@ namespace OpenLoco::EditorController
         options.riverbankWidth = 5;
         options.riverMeanderRate = 10;
 
-        resetScreenAge();
+        SceneManager::resetScreenAge();
         throw GameException::Interrupt;
     }
 

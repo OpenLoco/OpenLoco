@@ -262,7 +262,7 @@ namespace OpenLoco::Gfx
         {
             auto& drawingEngine = Gfx::getDrawingEngine();
 
-            if ((getScreenFlags() & ScreenFlags::initialised) == ScreenFlags::none)
+            if ((SceneManager::getScreenFlags() & SceneManager::ScreenFlags::initialised) == SceneManager::ScreenFlags::none)
             {
                 auto& ctx = drawingEngine.getDrawingContext();
                 ctx.clearSingle(PaletteIndex::black0);

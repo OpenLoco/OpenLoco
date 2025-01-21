@@ -4,7 +4,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco
+namespace OpenLoco::SceneManager
 {
     loco_global<uint16_t, 0x00508F12> _screenAge;
     loco_global<ScreenFlags, 0x00508F14> _screenFlags;

@@ -85,7 +85,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453234
     void update()
     {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             GameCommands::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())

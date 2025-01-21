@@ -781,7 +781,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9984
     void invalidateAllWindowsAfterInput()
     {
-        if (isPaused())
+        if (SceneManager::isPaused())
         {
             _523508++;
         }
@@ -1300,7 +1300,7 @@ namespace OpenLoco::Ui::WindowManager
             }
         }
 
-        if (isProgressBarActive() && w->type != WindowType::progressBar)
+        if (SceneManager::isProgressBarActive() && w->type != WindowType::progressBar)
         {
             return;
         }
@@ -1727,7 +1727,7 @@ namespace OpenLoco::Ui::WindowManager
         {
             if (window->type == WindowType::main)
             {
-                if (OpenLoco::isTitleMode())
+                if (SceneManager::isTitleMode())
                 {
                     return;
                 }

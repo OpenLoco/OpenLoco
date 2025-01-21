@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::Windows::TownList
             window->setWidgets(TownList::widgets);
             window->enabledWidgets = TownList::enabledWidgets;
 
-            if (isEditorMode() || isSandboxMode())
+            if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
                 window->disabledWidgets = 0;
             }
@@ -1147,7 +1147,7 @@ namespace OpenLoco::Ui::Windows::TownList
             args.pos = World::Pos3(pos->x, pos->y, z);
             args.type = townListWnd->rowHover;   // dl
             args.variation = _buildingVariation; // dh
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 args.buildImmediately = true; // bh
             }
@@ -1760,7 +1760,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->activatedWidgets = 0;
             self->setWidgets(tabInfo.widgets);
 
-            if (isEditorMode() || isSandboxMode())
+            if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
                 self->disabledWidgets = 0;
             }

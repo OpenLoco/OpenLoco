@@ -34,7 +34,7 @@ namespace OpenLoco::GameCommands
 
         if (flags & GameCommands::Flags::apply)
         {
-            if (!isEditorMode())
+            if (!SceneManager::isEditorMode())
             {
                 TileManager::setTerrainStyleAsCleared(pos);
             }

@@ -135,9 +135,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (newConfig.network.enabled)
         {
             d.separator();
-            if (isNetworked())
+            if (SceneManager::isNetworked())
             {
-                if (isNetworkHost())
+                if (SceneManager::isNetworkHost())
                 {
                     d.item(LoadSaveDropdownId::server, StringIds::closeServer);
                 }
@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         ToolManager::toolCancel();
 
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             if (GameCommands::getUpdatingCompanyId() == CompanyManager::getControllingId())
             {
@@ -202,7 +202,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static void startOrCloseServer()
     {
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             Network::close();
         }
@@ -350,17 +350,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::add(7, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_manual_driving);
         Dropdown::showBelow(window, widgetIndex, 8, 0);
 
-        if (isSandboxMode())
+        if (SceneManager::isSandboxMode())
         {
             Dropdown::setItemSelected(5);
         }
 
-        if (isPauseOverrideEnabled())
+        if (SceneManager::isPauseOverrideEnabled())
         {
             Dropdown::setItemSelected(6);
         }
 
-        if (isDriverCheatEnabled())
+        if (SceneManager::isDriverCheatEnabled())
         {
             Dropdown::setItemSelected(7);
         }
@@ -392,35 +392,35 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 break;
 
             case 5:
-                if (!isSandboxMode())
+                if (!SceneManager::isSandboxMode())
                 {
-                    setScreenFlag(ScreenFlags::sandboxMode);
+                    SceneManager::setScreenFlag(SceneManager::ScreenFlags::sandboxMode);
                 }
                 else
                 {
-                    clearScreenFlag(ScreenFlags::sandboxMode);
+                    SceneManager::clearScreenFlag(SceneManager::ScreenFlags::sandboxMode);
                 }
                 break;
 
             case 6:
-                if (!isPauseOverrideEnabled())
+                if (!SceneManager::isPauseOverrideEnabled())
                 {
-                    setScreenFlag(ScreenFlags::pauseOverrideEnabled);
+                    SceneManager::setScreenFlag(SceneManager::ScreenFlags::pauseOverrideEnabled);
                 }
                 else
                 {
-                    clearScreenFlag(ScreenFlags::pauseOverrideEnabled);
+                    SceneManager::clearScreenFlag(SceneManager::ScreenFlags::pauseOverrideEnabled);
                 }
                 break;
 
             case 7:
-                if (!isDriverCheatEnabled())
+                if (!SceneManager::isDriverCheatEnabled())
                 {
-                    setScreenFlag(ScreenFlags::driverCheatEnabled);
+                    SceneManager::setScreenFlag(SceneManager::ScreenFlags::driverCheatEnabled);
                 }
                 else
                 {
-                    clearScreenFlag(ScreenFlags::driverCheatEnabled);
+                    SceneManager::clearScreenFlag(SceneManager::ScreenFlags::driverCheatEnabled);
                 }
                 break;
         }

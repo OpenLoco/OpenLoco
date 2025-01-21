@@ -305,7 +305,7 @@ namespace OpenLoco::TownManager
             auto companyId = GameCommands::getUpdatingCompanyId();
             if (companyId != CompanyId::neutral)
             {
-                if (!isEditorMode())
+                if (!SceneManager::isEditorMode())
                 {
                     town->adjustCompanyRating(companyId, rating);
                     Ui::WindowManager::invalidate(Ui::WindowType::town, enumValue(town->id()));
@@ -410,7 +410,7 @@ namespace OpenLoco::TownManager
     // 0x00496B6D
     void update()
     {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             auto ticks = ScenarioManager::getScenarioTicks();
             if (ticks % 8 == 0)

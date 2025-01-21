@@ -96,24 +96,24 @@ namespace OpenLoco::Ui::Windows::TimePanel
         window.widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
         window.widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward);
 
-        if (isPaused())
+        if (SceneManager::isPaused())
         {
             window.widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
         }
-        else if (getGameSpeed() == GameSpeed::Normal)
+        else if (SceneManager::getGameSpeed() == GameSpeed::Normal)
         {
             window.widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
         }
-        else if (getGameSpeed() == GameSpeed::FastForward)
+        else if (SceneManager::getGameSpeed() == GameSpeed::FastForward)
         {
             window.widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
         }
-        else if (getGameSpeed() == GameSpeed::ExtraFastForward)
+        else if (SceneManager::getGameSpeed() == GameSpeed::ExtraFastForward)
         {
             window.widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
         }
 
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             window.widgets[Widx::fast_forward_btn].type = WidgetType::none;
             window.widgets[Widx::extra_fast_forward_btn].type = WidgetType::none;
@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         args.push<uint32_t>(getCurrentDay());
 
         StringId format = StringIds::date_daymonthyear;
-        if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
         {
             if (self.numTicksVisible >= 30)
             {
@@ -216,7 +216,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
 
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             Dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + InterfaceSkin::ImageIds::phone, StringIds::chat_send_message });
             Dropdown::add(1, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()], StringIds::menu_map });
@@ -249,7 +249,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             itemIndex = Dropdown::getHighlightedItem();
         }
 
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             switch (itemIndex)
             {
@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
 
-        if (isPaused())
+        if (SceneManager::isPaused())
         {
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }

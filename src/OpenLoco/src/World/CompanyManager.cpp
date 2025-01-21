@@ -73,12 +73,12 @@ namespace OpenLoco::CompanyManager
         getGameState().produceAICompanyTimeout = 0;
 
         // Reset player companies depending on network mode.
-        if (isNetworkHost())
+        if (SceneManager::isNetworkHost())
         {
             rawPlayerCompanies()[0] = CompanyId(1);
             rawPlayerCompanies()[1] = CompanyId(0);
         }
-        else if (isNetworked())
+        else if (SceneManager::isNetworked())
         {
             rawPlayerCompanies()[0] = CompanyId(0);
             rawPlayerCompanies()[1] = CompanyId(1);
@@ -222,7 +222,7 @@ namespace OpenLoco::CompanyManager
     // 0x00430319
     void update()
     {
-        if (!isEditorMode() && !Config::get().companyAIDisabled)
+        if (!SceneManager::isEditorMode() && !Config::get().companyAIDisabled)
         {
             CompanyId id = CompanyId(ScenarioManager::getScenarioTicks() & 0x0F);
             auto company = get(id);
@@ -230,7 +230,7 @@ namespace OpenLoco::CompanyManager
             {
                 // Only the host should update AI, AI will run game commands
                 // which will be sent to all the clients
-                if (!isNetworked() || isNetworkHost())
+                if (!SceneManager::isNetworked() || SceneManager::isNetworkHost())
                 {
                     GameCommands::setUpdatingCompanyId(id);
                     aiThink(id);
@@ -644,7 +644,7 @@ namespace OpenLoco::CompanyManager
     // 0x004383ED
     void updateOwnerStatus()
     {
-        if (OpenLoco::isTitleMode() || OpenLoco::isEditorMode())
+        if (SceneManager::isTitleMode() || SceneManager::isEditorMode())
         {
             return;
         }
@@ -733,7 +733,7 @@ namespace OpenLoco::CompanyManager
     // amount : ebx
     void spendMoneyEffect(const World::Pos3& loc, const CompanyId company, const currency32_t amount)
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -766,7 +766,7 @@ namespace OpenLoco::CompanyManager
     void applyPaymentToCompany(const CompanyId id, const currency32_t payment, const ExpenditureType type)
     {
         auto* company = get(id);
-        if (company == nullptr || OpenLoco::isEditorMode())
+        if (company == nullptr || SceneManager::isEditorMode())
         {
             return;
         }
@@ -795,7 +795,7 @@ namespace OpenLoco::CompanyManager
         {
             return true;
         }
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return true;
         }

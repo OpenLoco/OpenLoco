@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00431E9B
         static void enableRenameByCaption(Window* self)
         {
-            if (isEditorMode() || CompanyId(self->number) == CompanyManager::getControllingId())
+            if (SceneManager::isEditorMode() || CompanyId(self->number) == CompanyManager::getControllingId())
             {
                 self->enabledWidgets |= (1 << caption);
             }
@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             // No changing other player's faces, unless we're editing a scenario.
-            if (CompanyId(self.number) != CompanyManager::getControllingId() && !isEditorMode())
+            if (CompanyId(self.number) != CompanyManager::getControllingId() && !SceneManager::isEditorMode())
             {
                 self.disabledWidgets |= (1 << widx::face);
             }
@@ -1032,7 +1032,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 z += 16;
             }
             args.pos = World::Pos3(pos->x, pos->y, z);
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 args.buildImmediately = true; // bh
             }

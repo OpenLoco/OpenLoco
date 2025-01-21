@@ -271,7 +271,7 @@ namespace OpenLoco::GameCommands
         }
 
         auto& gameCommand = kGameCommandDefinitions[static_cast<uint32_t>(command)];
-        if (!gameCommand.unpausesGame || isPauseOverrideEnabled())
+        if (!gameCommand.unpausesGame || SceneManager::isPauseOverrideEnabled())
         {
             return false;
         }
@@ -321,7 +321,7 @@ namespace OpenLoco::GameCommands
 
         if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == CompanyManager::getControllingId())
         {
-            if (getPauseFlags() & 1)
+            if (SceneManager::getPauseFlags() & 1)
             {
                 _pausedState = _pausedState ^ 1;
                 WindowManager::invalidate(WindowType::timeToolbar);
@@ -329,20 +329,20 @@ namespace OpenLoco::GameCommands
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
             }
 
-            if (getGameSpeed() != GameSpeed::Normal)
+            if (SceneManager::getGameSpeed() != GameSpeed::Normal)
             {
                 // calling the command setGameSpeed will cause infinite recursion here, so just call the real function
-                OpenLoco::setGameSpeed(GameSpeed::Normal);
+                SceneManager::setGameSpeed(GameSpeed::Normal);
             }
 
-            if (isPaused())
+            if (SceneManager::isPaused())
             {
                 _gGameCommandErrorText = StringIds::empty;
                 return GameCommands::FAILURE;
             }
         }
 
-        if (_updatingCompanyId == CompanyManager::getControllingId() && isNetworked())
+        if (_updatingCompanyId == CompanyManager::getControllingId() && SceneManager::isNetworked())
         {
             // assert(false);
             // registers fnRegs = regs;
@@ -381,7 +381,7 @@ namespace OpenLoco::GameCommands
 
         if (ebx != static_cast<int32_t>(GameCommands::FAILURE))
         {
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 ebx = 0;
             }
@@ -430,7 +430,7 @@ namespace OpenLoco::GameCommands
             return loc_4314EA();
         }
 
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             ebx = 0;
         }

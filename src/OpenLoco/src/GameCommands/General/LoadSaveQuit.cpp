@@ -35,7 +35,7 @@ namespace OpenLoco::GameCommands
             Ui::Windows::TextInput::cancel();
             Ui::Windows::PromptSaveWindow::open(args.option2);
 
-            if (!isTitleMode())
+            if (!SceneManager::isTitleMode())
             {
                 // 0x0043C369
                 // NB: tutorial recording has been omitted.
@@ -43,9 +43,9 @@ namespace OpenLoco::GameCommands
                 {
                     Tutorial::stop();
                 }
-                else if (!isNetworked() || _savePromptType != LoadOrQuitMode::quitGamePrompt)
+                else if (!SceneManager::isNetworked() || _savePromptType != LoadOrQuitMode::quitGamePrompt)
                 {
-                    if (getScreenAge() >= 0xF00)
+                    if (SceneManager::getScreenAge() >= 0xF00)
                     {
                         auto window = Ui::WindowManager::bringToFront(Ui::WindowType::saveGamePrompt);
                         Audio::playSound(Audio::SoundId::openWindow, window->x + (window->width / 2));

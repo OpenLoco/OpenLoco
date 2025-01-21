@@ -627,7 +627,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            if (head->mode == TransportMode::rail && isDriverCheatEnabled())
+            if (head->mode == TransportMode::rail && SceneManager::isDriverCheatEnabled())
             {
                 dropdownCount = 3;
             }

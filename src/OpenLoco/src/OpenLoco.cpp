@@ -321,7 +321,7 @@ namespace OpenLoco
             _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
             _last_tick_time = time;
 
-            if (!isPaused())
+            if (!SceneManager::isPaused())
             {
                 addr<0x0050C1A2, uint32_t>() += _time_since_last_tick;
             }
@@ -368,7 +368,7 @@ namespace OpenLoco
                     {
                         numUpdates = 1;
                     }
-                    if (isNetworked())
+                    if (SceneManager::isNetworked())
                     {
                         numUpdates = 1;
                     }
@@ -402,16 +402,16 @@ namespace OpenLoco
 
                     Ui::WindowManager::setVehiclePreviewRotationFrame(Ui::WindowManager::getVehiclePreviewRotationFrame() + numUpdates);
 
-                    if (isPaused())
+                    if (SceneManager::isPaused())
                     {
                         numUpdates = 0;
                     }
                     uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
-                    setScreenAge(std::min(0xFFFF, (int32_t)getScreenAge() + var_F253A0));
-                    if (getGameSpeed() != GameSpeed::Normal)
+                    SceneManager::setScreenAge(std::min(0xFFFF, (int32_t)SceneManager::getScreenAge() + var_F253A0));
+                    if (SceneManager::getGameSpeed() != GameSpeed::Normal)
                     {
                         numUpdates *= 3;
-                        if (getGameSpeed() != GameSpeed::FastForward)
+                        if (SceneManager::getGameSpeed() != GameSpeed::FastForward)
                         {
                             numUpdates *= 3;
                         }
@@ -427,7 +427,7 @@ namespace OpenLoco
                     tickLogic(numUpdates);
 
                     getGameState().var_014A++;
-                    if (isEditorMode())
+                    if (SceneManager::isEditorMode())
                     {
                         EditorController::tick();
                     }
@@ -613,7 +613,7 @@ namespace OpenLoco
     {
         _monthsSinceLastAutosave++;
 
-        if (!isTitleMode())
+        if (!SceneManager::isTitleMode())
         {
             auto freq = Config::get().autosaveFrequency;
             if (freq > 0 && _monthsSinceLastAutosave >= freq)
@@ -628,7 +628,7 @@ namespace OpenLoco
     // 0x004968C7
     static void dateTick()
     {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             if (updateDayCounter())
             {

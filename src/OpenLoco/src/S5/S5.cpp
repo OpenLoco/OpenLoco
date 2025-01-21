@@ -310,7 +310,7 @@ namespace OpenLoco::S5
         return (flags & SaveFlags::raw) == SaveFlags::none
             && (flags & SaveFlags::dump) == SaveFlags::none
             && (flags & SaveFlags::packCustomObjects) != SaveFlags::none
-            && !isNetworked();
+            && !SceneManager::isNetworked();
     }
 
     // 0x00441C26
@@ -385,7 +385,7 @@ namespace OpenLoco::S5
             Gfx::invalidateScreen();
             if ((flags & SaveFlags::raw) == SaveFlags::none)
             {
-                resetScreenAge();
+                SceneManager::resetScreenAge();
             }
 
             return true;
@@ -822,12 +822,12 @@ namespace OpenLoco::S5
             }
             if (!hasLoadFlags(flags, LoadFlags::titleSequence))
             {
-                clearScreenFlag(ScreenFlags::title);
+                SceneManager::clearScreenFlag(SceneManager::ScreenFlags::title);
                 initialiseViewports();
                 Audio::resetMusic();
                 if (hasLoadFlags(flags, LoadFlags::landscape))
                 {
-                    setScreenFlag(ScreenFlags::editor);
+                    SceneManager::setScreenFlag(SceneManager::ScreenFlags::editor);
                     EditorController::showEditor();
                 }
                 else
@@ -874,7 +874,7 @@ namespace OpenLoco::S5
 
             if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
-                resetScreenAge();
+                SceneManager::resetScreenAge();
                 throw GameException::Interrupt;
             }
 

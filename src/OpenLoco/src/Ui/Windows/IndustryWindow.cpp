@@ -118,7 +118,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self.widgets[widx::demolish_industry].right = self.width - 2;
             self.widgets[widx::demolish_industry].left = self.width - 25;
 
-            if (isEditorMode() || isSandboxMode())
+            if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
                 self.widgets[widx::demolish_industry].type = WidgetType::buttonWithImage;
             }
@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::Industry
             if (self.viewports[0] != nullptr)
             {
                 uint16_t newWidth = self.width - 30;
-                if (!isEditorMode() && !isSandboxMode())
+                if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
                 {
                     newWidth += 22;
                 }
@@ -786,7 +786,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto industry = IndustryManager::get(IndustryId(self->number));
-            if (!isEditorMode() && !isSandboxMode())
+            if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
             {
                 if (!industry->hasFlags(IndustryFlags::flag_04))
                 {

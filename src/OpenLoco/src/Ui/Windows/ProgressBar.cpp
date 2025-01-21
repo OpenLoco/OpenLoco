@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     Window* open(std::string_view captionString)
     {
         _captionString = captionString;
-        setScreenFlag(ScreenFlags::progressBarActive);
+        SceneManager::setScreenFlag(SceneManager::ScreenFlags::progressBarActive);
         _progressBarValue = 0xFF;
 
         auto window = WindowManager::createWindowCentred(
@@ -66,7 +66,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     // 0x004CF74E
     void close()
     {
-        clearScreenFlag(ScreenFlags::progressBarActive);
+        SceneManager::clearScreenFlag(SceneManager::ScreenFlags::progressBarActive);
         WindowManager::close(WindowType::progressBar);
         Gfx::invalidateScreen();
         _progressBarStyle ^= 1;

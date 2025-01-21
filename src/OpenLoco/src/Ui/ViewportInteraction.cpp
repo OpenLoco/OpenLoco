@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD658
     InteractionArg getItemLeft(int16_t tempX, int16_t tempY)
     {
-        if (OpenLoco::isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return InteractionArg{};
         }
@@ -786,7 +786,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        if (!isEditorMode())
+        if (!SceneManager::isEditorMode())
         {
             return false;
         }
@@ -808,7 +808,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         const auto* buildingObj = building->getObject();
         auto args = FormatArguments::mapToolTip();
-        if (isEditorMode() || isSandboxMode() || !buildingObj->hasFlags(BuildingObjectFlags::indestructible))
+        if (SceneManager::isEditorMode() || SceneManager::isSandboxMode() || !buildingObj->hasFlags(BuildingObjectFlags::indestructible))
         {
             args.push(StringIds::stringid_right_click_to_remove);
         }
@@ -940,7 +940,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
-        if (OpenLoco::isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return InteractionArg{};
         }

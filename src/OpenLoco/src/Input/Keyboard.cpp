@@ -65,14 +65,14 @@ namespace OpenLoco::Input
 
     static void loc_4BECDE()
     {
-        setScreenFlag(ScreenFlags::driverCheatEnabled);
+        SceneManager::setScreenFlag(SceneManager::ScreenFlags::driverCheatEnabled);
 
         Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
     }
 
     static void loc_4BED04()
     {
-        if (!isDriverCheatEnabled())
+        if (!SceneManager::isDriverCheatEnabled())
         {
             return;
             // Only works when DRIVER mode is active
@@ -235,7 +235,7 @@ namespace OpenLoco::Input
 
         _keyModifier = _keyModifier & (~KeyModifier::cheat);
 
-        if (isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return;
         }
@@ -368,7 +368,7 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (!isTitleMode())
+            if (!SceneManager::isTitleMode())
             {
                 for (const auto& shortcut : ShortcutManager::getList())
                 {
@@ -469,7 +469,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (OpenLoco::isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return;
         }
@@ -537,7 +537,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (OpenLoco::isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return;
         }

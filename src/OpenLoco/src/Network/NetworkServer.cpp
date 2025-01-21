@@ -54,8 +54,8 @@ void NetworkServer::listen(const std::string& bind, port_t port)
 
     beginReceivePacketLoop();
 
-    setScreenFlag(ScreenFlags::networked);
-    setScreenFlag(ScreenFlags::networkHost);
+    SceneManager::setScreenFlag(SceneManager::ScreenFlags::networked);
+    SceneManager::setScreenFlag(SceneManager::ScreenFlags::networkHost);
 
     Logging::info("Server opened");
     for (const auto& socket : _sockets)
@@ -71,8 +71,8 @@ void NetworkServer::listen(const std::string& bind, port_t port)
 
 void NetworkServer::onClose()
 {
-    clearScreenFlag(ScreenFlags::networked);
-    clearScreenFlag(ScreenFlags::networkHost);
+    SceneManager::clearScreenFlag(SceneManager::ScreenFlags::networked);
+    SceneManager::clearScreenFlag(SceneManager::ScreenFlags::networkHost);
     Logging::info("Server closed");
 }
 
