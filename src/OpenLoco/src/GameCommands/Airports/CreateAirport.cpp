@@ -27,17 +27,92 @@ namespace OpenLoco::GameCommands
     // 0x00490372
     static StationManager::NearbyStation sub_490372(World::Pos3 pos, uint8_t airportObjectId, uint8_t rotation)
     {
-        registers regs;
-        regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.bl = airportObjectId;
-        regs.bh = rotation;
-        call(0x00490372, regs);
-        StationManager::NearbyStation result{};
-        result.id = static_cast<StationId>(regs.bx);
-        result.isPhysicallyAttached = regs.eax & (1U << 31);
-        return result;
+        const auto companyId = getUpdatingCompanyId();
+        // Change from StationManager::findNearbyStation
+        auto* airportObj = ObjectManager::get<AirportObject>(airportObjectId);
+        const auto [minExtent, maxExtent] = airportObj->getAirportExtents(World::toTileSpace(pos), rotation);
+
+        // Check area including a 2 tile border around the airport
+        const auto tilePosA = minExtent - World::TilePos2(2, 2);
+        const auto tilePosB = maxExtent + World::TilePos2(2, 2);
+
+        auto minDistanceStation = StationId::null;
+        auto minDistance = std::numeric_limits<int16_t>::max();
+        bool isPhysicallyAttached = false;
+        for (const auto tilePos : World::getClampedRange(tilePosA, tilePosB))
+        {
+            const auto tile = World::TileManager::get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elStation = el.as<World::StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+                if (elStation->isGhost())
+                {
+                    continue;
+                }
+                auto* station = StationManager::get(elStation->stationId());
+                if (station->owner != companyId)
+                {
+                    continue;
+                }
+
+                const auto distance = Math::Vector::chebyshevDistance2D(World::toWorldSpace(tilePos), pos);
+                if (distance < minDistance)
+                {
+                    auto distDiffZ = std::abs(elStation->baseHeight() - pos.z);
+                    if (distDiffZ > 64)
+                    {
+                        continue;
+                    }
+                    // Change from StationManager::findNearbyStation
+                    auto* station = StationManager::get(elStation->stationId());
+                    if ((station->flags & StationFlags::flag_6) != StationFlags::none)
+                    {
+                        continue;
+                    }
+
+                    minDistance = distance + distDiffZ / 2;
+                    if (minDistance <= 64)
+                    {
+                        isPhysicallyAttached = true;
+                    }
+                    minDistanceStation = elStation->stationId();
+                }
+            }
+        }
+
+        // Matches StationManager::findNearbyStation from here
+        for (auto& station : StationManager::stations())
+        {
+            if (station.stationTileSize != 0)
+            {
+                continue;
+            }
+            if (station.owner != companyId)
+            {
+                continue;
+            }
+            const auto distance = Math::Vector::chebyshevDistance2D(World::Pos2{ station.x, station.y }, pos);
+
+            auto distDiffZ = std::abs(station.z - pos.z);
+            if (distDiffZ > 64)
+            {
+                continue;
+            }
+            if (distance > 64)
+            {
+                continue;
+            }
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                minDistanceStation = station.id();
+            }
+        }
+        return StationManager::NearbyStation{ minDistanceStation, isPhysicallyAttached };
     }
 
     enum class NearbyStationValidation
