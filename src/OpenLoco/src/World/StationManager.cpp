@@ -761,6 +761,10 @@ namespace OpenLoco::StationManager
 
         for (auto& station : StationManager::stations())
         {
+            if (station.stationTileSize != 0)
+            {
+                continue;
+            }
             if (station.owner != companyId)
             {
                 continue;
