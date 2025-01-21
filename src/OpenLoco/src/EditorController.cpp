@@ -141,7 +141,7 @@ namespace OpenLoco::EditorController
         options.riverbankWidth = 5;
         options.riverMeanderRate = 10;
 
-        SceneManager::resetScreenAge();
+        SceneManager::resetSceneAge();
         throw GameException::Interrupt;
     }
 

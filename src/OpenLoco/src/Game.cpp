@@ -146,7 +146,7 @@ namespace OpenLoco::Game
                 // 0x004424CE
                 if (S5::importSaveToGameState(path, S5::LoadFlags::landscape))
                 {
-                    SceneManager::resetScreenAge();
+                    SceneManager::resetSceneAge();
                     throw GameException::Interrupt;
                 }
             }
@@ -161,7 +161,7 @@ namespace OpenLoco::Game
 
                 if (S5::importSaveToGameState(path, S5::LoadFlags::none))
                 {
-                    SceneManager::resetScreenAge();
+                    SceneManager::resetSceneAge();
                     throw GameException::Interrupt;
                 }
             }

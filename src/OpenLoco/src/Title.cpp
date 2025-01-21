@@ -121,7 +121,7 @@ namespace OpenLoco::Title
     static void reload()
     {
         loadTitle();
-        SceneManager::resetScreenAge();
+        SceneManager::resetSceneAge();
         _50C19A = 55000;
         update();
     }
@@ -163,7 +163,7 @@ namespace OpenLoco::Title
         Gui::init();
         reset();
         Gfx::invalidateScreen();
-        SceneManager::resetScreenAge();
+        SceneManager::resetSceneAge();
 
         if (Config::get().audio.playTitleMusic)
         {
@@ -231,7 +231,7 @@ namespace OpenLoco::Title
             return;
         }
 
-        SceneManager::resetScreenAge();
+        SceneManager::resetSceneAge();
 
         if (_waitCounter > 0)
         {

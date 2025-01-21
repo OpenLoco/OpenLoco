@@ -385,7 +385,7 @@ namespace OpenLoco::S5
             Gfx::invalidateScreen();
             if ((flags & SaveFlags::raw) == SaveFlags::none)
             {
-                SceneManager::resetScreenAge();
+                SceneManager::resetSceneAge();
             }
 
             return true;
@@ -874,7 +874,7 @@ namespace OpenLoco::S5
 
             if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
-                SceneManager::resetScreenAge();
+                SceneManager::resetSceneAge();
                 throw GameException::Interrupt;
             }
 

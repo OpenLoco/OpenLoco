@@ -407,7 +407,7 @@ namespace OpenLoco
                         numUpdates = 0;
                     }
                     uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
-                    SceneManager::setScreenAge(std::min(0xFFFF, (int32_t)SceneManager::getScreenAge() + var_F253A0));
+                    SceneManager::setSceneAge(std::min(0xFFFF, (int32_t)SceneManager::getSceneAge() + var_F253A0));
                     if (SceneManager::getGameSpeed() != GameSpeed::Normal)
                     {
                         numUpdates *= 3;

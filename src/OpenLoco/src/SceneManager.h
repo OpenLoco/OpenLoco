@@ -30,9 +30,9 @@ namespace OpenLoco
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
-        void resetScreenAge();
-        uint16_t getScreenAge();
-        void setScreenAge(uint16_t newAge);
+        void resetSceneAge();
+        uint16_t getSceneAge();
+        void setSceneAge(uint16_t newAge);
         Flags getSceneFlags();
         void setSceneFlags(Flags newScreenFlags);
         void addSceneFlags(Flags value);

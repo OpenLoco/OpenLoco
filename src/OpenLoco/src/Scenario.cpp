@@ -396,7 +396,7 @@ namespace OpenLoco::Scenario
         StationManager::updateLabels();
         Gfx::loadDefaultPalette();
         Gfx::invalidateScreen();
-        SceneManager::resetScreenAge();
+        SceneManager::resetSceneAge();
         _50C19A = 62000;
         MultiPlayer::setFlag(MultiPlayer::flags::flag_10);
         throw GameException::Interrupt;

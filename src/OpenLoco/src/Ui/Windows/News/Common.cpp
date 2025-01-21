@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             return;
         }
 
-        if ((news->timeActive != 0) && (SceneManager::getScreenAge() >= 10))
+        if ((news->timeActive != 0) && (SceneManager::getSceneAge() >= 10))
         {
             isOld = true;
         }

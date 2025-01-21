@@ -11,17 +11,17 @@ namespace OpenLoco::SceneManager
     loco_global<uint8_t, 0x00508F17> _pausedState;
     loco_global<GameSpeed, 0x00508F1A> _gameSpeed;
 
-    void resetScreenAge()
+    void resetSceneAge()
     {
         _screenAge = 0;
     }
 
-    uint16_t getScreenAge()
+    uint16_t getSceneAge()
     {
         return _screenAge;
     }
 
-    void setScreenAge(uint16_t newAge)
+    void setSceneAge(uint16_t newAge)
     {
         _screenAge = newAge;
     }
