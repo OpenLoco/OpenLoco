@@ -7,10 +7,6 @@ jobs:
     container: ghcr.io/openloco/openloco:8-noble32
     steps:
     - uses: actions/checkout@v4
-    - name: Get clang-tidy
-      run: |
-        apt-get update
-        apt-get install -y clang-tidy
     - uses: ZehMatt/clang-tidy-annotations@v1
       with:
         build_dir: 'build'
