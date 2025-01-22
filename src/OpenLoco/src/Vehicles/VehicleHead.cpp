@@ -3450,13 +3450,6 @@ namespace OpenLoco::Vehicles
         return res;
     }
 
-    struct DockTarget
-    {
-        StationId stationId;
-        World::Pos3 stationPos;
-        World::Pos2 boatPos;
-    };
-
     // 0x00428379
     static std::optional<WaterPathingResult> getDockTargetFromStation(StationId stationId)
     {
