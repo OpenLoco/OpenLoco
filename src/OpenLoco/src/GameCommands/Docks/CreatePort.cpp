@@ -202,7 +202,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00493F0E
-    static uint32_t createBuilding(const PortPlacementArgs& args, const uint8_t flags, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const uint8_t buildingType)
+    static uint32_t createBuilding(const PortPlacementArgs& args, const uint8_t flags, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t buildingType)
     {
         // 0x00112C80B
         bool isWaterIndustryPort = false;
@@ -522,7 +522,7 @@ namespace OpenLoco::GameCommands
         auto* dockObj = ObjectManager::get<DockObject>(args.type);
         currency32_t totalCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 7);
 
-        std::set<World::Pos3, World::LessThanPos3> removedBuildings{};
+        World::TileClearance::RemovedBuildings removedBuildings{};
         const auto buildingCost = createBuilding(args, flags, removedBuildings, 0);
         if (buildingCost == FAILURE)
         {

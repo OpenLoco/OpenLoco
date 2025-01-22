@@ -69,7 +69,7 @@ namespace OpenLoco::GameCommands
         clearHeight += 3;
         clearHeight &= ~3;
 
-        std::set<World::Pos3, World::LessThanPos3> removedBuildings;
+        World::TileClearance::RemovedBuildings removedBuildings;
 
         const auto buildingFootprint = getBuildingTileOffsets(buildingObj->hasFlags(BuildingObjectFlags::largeTile));
 

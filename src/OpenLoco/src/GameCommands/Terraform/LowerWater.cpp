@@ -20,7 +20,7 @@ namespace OpenLoco::GameCommands
         // We keep track of removed buildings for each tile visited
         // this prevents accidentally double counting their removal
         // cost if they span across multiple tiles.
-        std::set<World::Pos3, LessThanPos3> removedBuildings{};
+        World::TileClearance::RemovedBuildings removedBuildings{};
         auto totalCost = 0;
 
         if (flags & Flags::apply)

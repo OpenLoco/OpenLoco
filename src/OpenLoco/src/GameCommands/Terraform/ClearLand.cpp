@@ -15,7 +15,6 @@
 #include "Objects/TreeObject.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
-#include <set>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -23,7 +22,7 @@ using namespace OpenLoco::World;
 namespace OpenLoco::GameCommands
 {
     // 0x00469D76
-    static uint32_t clearTile(World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags)
+    static uint32_t clearTile(World::Pos2 pos, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
     {
         // This shouldn't happen due to using TilePosRangeView
         if (!World::validCoords(pos))
@@ -71,7 +70,7 @@ namespace OpenLoco::GameCommands
         // We keep track of removed buildings for each tile visited
         // this prevents accidentally double counting their removal
         // cost if they span across multiple tiles.
-        std::set<World::Pos3, LessThanPos3> removedBuildings{};
+        World::TileClearance::RemovedBuildings removedBuildings{};
 
         for (const auto& tilePos : tileLoop)
         {

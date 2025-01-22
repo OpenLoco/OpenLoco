@@ -269,7 +269,12 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0049C275
-    static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const ClearFunctionArgs& args)
+    static World::TileClearance::ClearFuncResult clearFunction(
+        World::TileElement& el,
+        currency32_t& totalCost,
+        bool& hasLevelCrossing,
+        World::TileClearance::RemovedBuildings& removedBuildings,
+        const ClearFunctionArgs& args)
     {
         switch (el.type())
         {
@@ -401,7 +406,7 @@ namespace OpenLoco::GameCommands
         }
 
         auto& trackPieces = World::TrackData::getTrackPiece(args.trackId);
-        std::set<World::Pos3, World::LessThanPos3> removedBuildings;
+        World::TileClearance::RemovedBuildings removedBuildings;
 
         for (auto& piece : trackPieces)
         {

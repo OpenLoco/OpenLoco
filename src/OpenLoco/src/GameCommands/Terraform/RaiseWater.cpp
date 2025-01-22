@@ -4,6 +4,7 @@
 #include "GameCommands/GameCommands.h"
 #include "Localisation/StringIds.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileClearance.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/ObjectManager.h"
@@ -20,7 +21,7 @@ namespace OpenLoco::GameCommands
         // We keep track of removed buildings for each tile visited
         // this prevents accidentally double counting their removal
         // cost if they span across multiple tiles.
-        std::set<World::Pos3, LessThanPos3> removedBuildings{};
+        World::TileClearance::RemovedBuildings removedBuildings{};
         auto totalCost = 0;
 
         if (flags & Flags::apply)
