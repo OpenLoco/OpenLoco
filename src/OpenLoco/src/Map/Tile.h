@@ -8,7 +8,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
-#include <tuple>
 
 namespace OpenLoco::Ui
 {

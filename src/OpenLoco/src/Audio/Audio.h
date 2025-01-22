@@ -5,7 +5,6 @@
 #include <OpenLoco/Engine/World.hpp>
 #include <optional>
 #include <string>
-#include <tuple>
 #include <vector>
 
 namespace OpenLoco::Vehicles

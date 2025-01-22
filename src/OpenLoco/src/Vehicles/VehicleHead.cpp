@@ -80,6 +80,15 @@ namespace OpenLoco::Vehicles
     static constexpr uint16_t kReliabilityLossPerDay = 4;
     static constexpr uint16_t kReliabilityLossPerDayObsolete = 10;
 
+    struct WaterPathingResult
+    {
+        World::Pos2 headTarget;
+
+        StationId stationId; // If stationId is null, stationPosition is invalid
+        World::Pos3 stationPos;
+    };
+    static WaterPathingResult waterPathfind(const VehicleHead& head);
+
     void VehicleHead::updateVehicle()
     {
         // TODO: Refactor to use the Vehicle super class
@@ -2712,15 +2721,15 @@ namespace OpenLoco::Vehicles
                     }
                 }
             }
-            auto [newStationId, headTarget, stationTarget] = waterPathfind();
-            moveTo({ headTarget.x, headTarget.y, 32 });
+            auto pathingResult = waterPathfind(*this);
+            moveTo({ pathingResult.headTarget, 32 });
 
-            if (newStationId != StationId::null)
+            if (pathingResult.stationId != StationId::null)
             {
-                stationId = newStationId;
-                tileX = stationTarget.x;
-                tileY = stationTarget.y;
-                tileBaseZ = stationTarget.z / 4;
+                stationId = pathingResult.stationId;
+                tileX = pathingResult.stationPos.x;
+                tileY = pathingResult.stationPos.y;
+                tileBaseZ = pathingResult.stationPos.z / 4;
 
                 auto targetTile = TileManager::get(World::Pos2{ tileX, tileY });
                 StationElement* station = nullptr;
@@ -3449,7 +3458,7 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x00428379
-    static std::optional<DockTarget> getDockTargetFromStation(StationId stationId)
+    static std::optional<WaterPathingResult> getDockTargetFromStation(StationId stationId)
     {
         auto* station = StationManager::get(stationId);
         for (auto i = 0U; i < station->stationTileSize; ++i)
@@ -3493,10 +3502,10 @@ namespace OpenLoco::Vehicles
 
             const auto* dockObj = ObjectManager::get<DockObject>(elStation->objectId());
             const auto boatPos = Math::Vector::rotate(dockObj->boatPosition, elStation->rotation()) + pos;
-            DockTarget dockTarget{};
+            WaterPathingResult dockTarget{};
             dockTarget.stationId = stationId;
             dockTarget.stationPos = World::Pos3{ pos.x, pos.y, Numerics::floor2(pos.z, 4) };
-            dockTarget.boatPos = boatPos + World::Pos2{ 32, 32 };
+            dockTarget.headTarget = boatPos + World::Pos2{ 32, 32 };
             return dockTarget;
         }
         return std::nullopt;
@@ -3571,16 +3580,16 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00427FC9
-    std::tuple<StationId, World::Pos2, World::Pos3> VehicleHead::waterPathfind()
+    static WaterPathingResult waterPathfind(const VehicleHead& head)
     {
-        const auto nearbyVehicles = findNearbyTilesWithBoats(position);
+        const auto nearbyVehicles = findNearbyTilesWithBoats(head.position);
 
-        auto orders = getCurrentOrders();
+        auto orders = head.getCurrentOrders();
         auto curOrder = orders.begin();
         auto* stationOrder = curOrder->as<OrderStation>();
         auto* routeOrder = curOrder->as<OrderRouteWaypoint>();
 
-        std::optional<DockTarget> res = std::nullopt;
+        std::optional<WaterPathingResult> dockRes = std::nullopt;
         // 0x00525BC6
         World::TilePos2 targetOrderPos{};
         if (routeOrder != nullptr)
@@ -3590,10 +3599,10 @@ namespace OpenLoco::Vehicles
         else if (stationOrder != nullptr)
         {
             auto targetStationId = stationOrder->getStation();
-            res = getDockTargetFromStation(targetStationId);
-            if (res.has_value())
+            dockRes = getDockTargetFromStation(targetStationId);
+            if (dockRes.has_value())
             {
-                targetOrderPos = toTileSpace(res->boatPos);
+                targetOrderPos = toTileSpace(dockRes->headTarget);
             }
             else
             {
@@ -3603,7 +3612,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            targetOrderPos = toTileSpace(position);
+            targetOrderPos = toTileSpace(head.position);
         }
 
         Vehicle train(head);
@@ -3611,7 +3620,7 @@ namespace OpenLoco::Vehicles
         // 0x00525BE3
         const uint8_t curRotation = ((veh2.spriteYaw + 7) >> 4) & 3;
 
-        const auto initialTile = toTileSpace(position);
+        const auto initialTile = toTileSpace(head.position);
         const auto waterMicroZ = veh2.position.z / World::kMicroZStep;
 
         PathFindingResult bestResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
@@ -3630,17 +3639,17 @@ namespace OpenLoco::Vehicles
 
         if (bestResultDirection == 0xFF)
         {
-            return std::make_tuple(StationId::null, toWorldSpace(initialTile) + World::Pos2(16, 16), World::Pos3{});
+            return WaterPathingResult(toWorldSpace(initialTile) + World::Pos2(16, 16), StationId::null, World::Pos3{});
         }
 
-        if (res.has_value() && bestResult == PathFindingResult{ 0, 0 })
+        if (dockRes.has_value() && bestResult == PathFindingResult{ 0, 0 })
         {
-            return std::make_tuple(res->stationId, res->boatPos, res->stationPos);
+            return dockRes.value();
         }
         else
         {
             const auto targetPos = toWorldSpace(initialTile) + kRotationOffset[bestResultDirection] + World::Pos2(16, 16);
-            return std::make_tuple(StationId::null, targetPos, World::Pos3{});
+            return WaterPathingResult(targetPos, StationId::null, World::Pos3{});
         }
     }
 
