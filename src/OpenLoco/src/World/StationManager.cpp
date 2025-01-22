@@ -712,6 +712,43 @@ namespace OpenLoco::StationManager
         station->name = StringIds::null;
     }
 
+    StationId findNearbyEmptyStation(const World::Pos3 pos, const CompanyId companyId, const int16_t currentMinDistanceStation)
+    {
+        // After removing a station the station is still available for a time but left empty
+        // this function will find these empty stations so that a new station can reuse the
+        // empty station and its name.
+        auto minDistanceStation = StationId::null;
+        auto minDistance = currentMinDistanceStation;
+        for (auto& station : StationManager::stations())
+        {
+            if (station.stationTileSize != 0)
+            {
+                continue;
+            }
+            if (station.owner != companyId)
+            {
+                continue;
+            }
+            const auto distance = Math::Vector::chebyshevDistance2D(World::Pos2{ station.x, station.y }, pos);
+
+            auto distDiffZ = std::abs(station.z - pos.z);
+            if (distDiffZ > 64)
+            {
+                continue;
+            }
+            if (distance > 64)
+            {
+                continue;
+            }
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                minDistanceStation = station.id();
+            }
+        }
+        return minDistanceStation;
+    }
+
     // 0x004901B0
     NearbyStation findNearbyStation(World::Pos3 pos, CompanyId companyId)
     {
@@ -759,34 +796,15 @@ namespace OpenLoco::StationManager
             }
         }
 
-        for (auto& station : StationManager::stations())
+        const auto nearbyEmptyStation = findNearbyEmptyStation(pos, companyId, minDistance);
+        if (nearbyEmptyStation != StationId::null)
         {
-            if (station.stationTileSize != 0)
-            {
-                continue;
-            }
-            if (station.owner != companyId)
-            {
-                continue;
-            }
-            const auto distance = Math::Vector::chebyshevDistance2D(World::Pos2{ station.x, station.y }, pos);
-
-            auto distDiffZ = std::abs(station.z - pos.z);
-            if (distDiffZ > 64)
-            {
-                continue;
-            }
-            if (distance > 64)
-            {
-                continue;
-            }
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                minDistanceStation = station.id();
-            }
+            return NearbyStation{ nearbyEmptyStation, isPhysicallyAttached };
         }
-        return NearbyStation{ minDistanceStation, isPhysicallyAttached };
+        else
+        {
+            return NearbyStation{ minDistanceStation, isPhysicallyAttached };
+        }
     }
 
     void registerHooks()

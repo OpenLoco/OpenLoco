@@ -31,4 +31,6 @@ namespace OpenLoco::StationManager
     };
 
     NearbyStation findNearbyStation(World::Pos3 pos, CompanyId companyId);
+    // Subfunction of findNearbyStation (For create airport)
+    StationId findNearbyEmptyStation(const World::Pos3 pos, const CompanyId companyId, const int16_t currentMinDistanceStation);
 }
