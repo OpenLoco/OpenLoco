@@ -86,6 +86,19 @@ namespace OpenLoco::Vehicles
 
         StationId stationId; // If stationId is null, stationPosition is invalid
         World::Pos3 stationPos;
+
+        constexpr WaterPathingResult(const World::Pos2 headTarget, const StationId stationId, const World::Pos3 stationPos)
+            : headTarget(headTarget)
+            , stationId(stationId)
+            , stationPos(stationPos)
+        {
+        }
+        explicit constexpr WaterPathingResult(const World::Pos2 headTarget)
+            : headTarget(headTarget)
+            , stationId(StationId::null)
+            , stationPos({})
+        {
+        }
     };
     static WaterPathingResult waterPathfind(const VehicleHead& head);
 
@@ -3495,10 +3508,10 @@ namespace OpenLoco::Vehicles
 
             const auto* dockObj = ObjectManager::get<DockObject>(elStation->objectId());
             const auto boatPos = Math::Vector::rotate(dockObj->boatPosition, elStation->rotation()) + pos;
-            WaterPathingResult dockTarget{};
-            dockTarget.stationId = stationId;
-            dockTarget.stationPos = World::Pos3{ pos.x, pos.y, Numerics::floor2(pos.z, 4) };
-            dockTarget.headTarget = boatPos + World::Pos2{ 32, 32 };
+            auto dockTarget = WaterPathingResult(
+                boatPos + World::Pos2{ 32, 32 },
+                stationId,
+                World::Pos3{ pos.x, pos.y, Numerics::floor2(pos.z, 4) });
             return dockTarget;
         }
         return std::nullopt;
@@ -3632,7 +3645,7 @@ namespace OpenLoco::Vehicles
 
         if (bestResultDirection == 0xFF)
         {
-            return WaterPathingResult(toWorldSpace(initialTile) + World::Pos2(16, 16), StationId::null, World::Pos3{});
+            return WaterPathingResult(toWorldSpace(initialTile) + World::Pos2(16, 16));
         }
 
         if (dockRes.has_value() && bestResult == PathFindingResult{ 0, 0 })
@@ -3642,7 +3655,7 @@ namespace OpenLoco::Vehicles
         else
         {
             const auto targetPos = toWorldSpace(initialTile) + kRotationOffset[bestResultDirection] + World::Pos2(16, 16);
-            return WaterPathingResult(targetPos, StationId::null, World::Pos3{});
+            return WaterPathingResult(targetPos);
         }
     }
 
