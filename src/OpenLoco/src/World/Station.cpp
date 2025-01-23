@@ -1381,8 +1381,10 @@ namespace OpenLoco
         return { nodeLoc };
     }
 
+    // 0x0048DBC2
+    // Iterates over all station elements of a track piece apply function `func` to each station element
     template<typename Func>
-    static void sub_48DBC2(const World::Pos3 pos, const uint8_t rotation, World::StationElement* firstElStation, Func&& func)
+    static void forEachStationElement(const World::Pos3 pos, const uint8_t rotation, World::StationElement* firstElStation, Func&& func)
     {
         auto* firstElTrack = firstElStation->prev()->as<TrackElement>();
         assert(firstElTrack != nullptr);
@@ -1430,6 +1432,65 @@ namespace OpenLoco
                 func(elStation, trackLoc, hasPassedSurface);
             }
         }
+    }
+
+    static bool isStationTrackConnected(const World::Pos3 connectTrackPos, const uint8_t connectRotation, const CompanyId owner, const StationId stationId)
+    {
+        auto tile = TileManager::get(connectTrackPos);
+        for (auto& el : tile)
+        {
+            auto* elTrack = el.as<TrackElement>();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+            if (!elTrack->hasStationElement())
+            {
+                continue;
+            }
+            if (elTrack->owner() != owner)
+            {
+                continue;
+            }
+            auto* nextElStation = elTrack->next()->as<StationElement>();
+            if (nextElStation == nullptr)
+            {
+                continue;
+            }
+            if (nextElStation->isAiAllocated() || nextElStation->isGhost())
+            {
+                continue;
+            }
+            if (nextElStation->stationId() != stationId)
+            {
+                continue;
+            }
+
+            uint16_t nextTad = (elTrack->trackId() << 3) | elTrack->rotation();
+
+            if (elTrack->sequenceIndex() == 0 && connectRotation == TrackData::getUnkTrack(nextTad).rotationBegin)
+            {
+                const auto& nextTrackPiece = TrackData::getTrackPiece(elTrack->trackId())[0];
+                if (elTrack->baseZ() - nextTrackPiece.z / 4 == connectTrackPos.z)
+                {
+                    return true;
+                }
+            }
+            if (elTrack->isFlag6())
+            {
+                nextTad |= (1U << 2);
+                if (connectRotation == TrackData::getUnkTrack(nextTad).rotationBegin)
+                {
+                    const auto& nextTrackPiece = TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];
+                    const auto startBaseZ = elTrack->baseZ() - (nextTrackPiece.z + TrackData::getUnkTrack(nextTad).pos.z) / 4;
+                    if (startBaseZ == connectTrackPos.z)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     // 0x0048D794
@@ -1481,8 +1542,8 @@ namespace OpenLoco
             auto* stationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
             const auto unk112C7AC = stationObj->var_0B;
 
-            auto func48DB32 = [&isCovered](World::StationElement* elStation, const World::Pos3 pos, bool hasPassedSurface) {
-                isCovered = [hasPassedSurface, elStation, pos]() {
+            auto isStationElementCovered = [&isCovered](World::StationElement* elStation, const World::Pos3 pos, bool hasPassedSurface) {
+                isCovered |= [hasPassedSurface, elStation, pos]() {
                     if (!hasPassedSurface)
                     {
                         return true;
@@ -1524,7 +1585,7 @@ namespace OpenLoco
                 Ui::ViewportManager::invalidate(pos, elStation->baseHeight(), elStation->clearHeight());
             };
 
-            sub_48DBC2(pos, rotation, elStation, func48DB32);
+            forEachStationElement(pos, rotation, elStation, isStationElementCovered);
             if (isCovered || stationObj->var_0B == 0)
             {
                 continue;
@@ -1537,38 +1598,33 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                const uint16_t tad = elTrack->trackId() << 3 | elTrack->rotation();
+                const uint16_t tad = (elTrack->trackId() << 3) | elTrack->rotation();
                 const auto& trackSize = World::TrackData::getUnkTrack(tad);
-                const auto nextTrackPos = pos + trackSize.pos;
-                const auto rotationEnd = trackSize.rotationEnd;
+                const auto forwardTrackPos = pos + trackSize.pos;
+                const auto forwardRotation = trackSize.rotationEnd;
 
-                auto tile = TileManager::get(nextTrackPos);
-                for (auto& el : tile)
+                const auto forwardConnection = isStationTrackConnected(forwardTrackPos, forwardRotation, elTrack->owner(), elStation->stationId());
+                if (!forwardConnection)
                 {
-                    auto* elTrack = el.as<TrackElement>();
-                    if (elTrack == nullptr)
-                    {
-                        continue;
-                    }
-                    if (!elTrack->hasStationElement())
-                    {
-                        continue;
-                    }
-                    if (elTrack->owner() != station.owner)
-                    {
-                        continue;
-                    }
-                    auto* nextElStation = elTrack->next()->as<StationElement>();
-                    if (nextElStation == nullptr)
-                    {
-                        continue;
-                    }
-                    if (nextElStation->stationId() != station.id())
-                    {
-                        continue;
-                    }
-                    // 0x0048D92E
+                    continue;
                 }
+                auto backwardTrackPos = pos;
+                const auto backwardRotation = trackSize.rotationBegin;
+                if (backwardRotation < 12)
+                {
+                    backwardTrackPos += World::Pos3{ World::kRotationOffset[backwardRotation], 0 };
+                }
+                const auto backwardConnection = isStationTrackConnected(backwardTrackPos, backwardRotation, elTrack->owner(), elStation->stationId());
+                if (!backwardConnection)
+                {
+                    continue;
+                }
+
+                auto setStationSequenceIndex = [](World::StationElement* elStation, const World::Pos3 pos, bool) {
+                    elStation->setSequenceIndex(1);
+                    Ui::ViewportManager::invalidate(pos, elStation->baseHeight(), elStation->clearHeight());
+                };
+                forEachStationElement(pos, rotation, elStation, setStationSequenceIndex);
             }
         }
     }
