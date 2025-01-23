@@ -14,6 +14,7 @@
 #include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
@@ -1540,7 +1541,6 @@ namespace OpenLoco
             bool isCovered = false;
 
             auto* stationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
-            const auto unk112C7AC = stationObj->var_0B;
 
             auto isStationElementCovered = [&isCovered](World::StationElement* elStation, const World::Pos3 pos, bool hasPassedSurface) {
                 isCovered |= [hasPassedSurface, elStation, pos]() {
