@@ -1546,7 +1546,7 @@ namespace OpenLoco
             auto isStationElementCovered = [&isCovered](World::StationElement* elStation, const World::Pos3 pos, bool hasPassedSurface) {
                 elStation->setSequenceIndex(0);
 
-                isCovered |= [hasPassedSurface, elStation, pos]() {
+                isCovered |= [hasPassedSurface, elStation]() {
                     if (!hasPassedSurface)
                     {
                         return true;
