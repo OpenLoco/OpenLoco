@@ -1472,7 +1472,7 @@ namespace OpenLoco
             if (elTrack->sequenceIndex() == 0 && connectRotation == TrackData::getUnkTrack(nextTad).rotationBegin)
             {
                 const auto& nextTrackPiece = TrackData::getTrackPiece(elTrack->trackId())[0];
-                if (elTrack->baseZ() - nextTrackPiece.z / 4 == connectTrackPos.z)
+                if (elTrack->baseHeight() - nextTrackPiece.z == connectTrackPos.z)
                 {
                     return true;
                 }
@@ -1483,8 +1483,8 @@ namespace OpenLoco
                 if (connectRotation == TrackData::getUnkTrack(nextTad).rotationBegin)
                 {
                     const auto& nextTrackPiece = TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];
-                    const auto startBaseZ = elTrack->baseZ() - (nextTrackPiece.z + TrackData::getUnkTrack(nextTad).pos.z) / 4;
-                    if (startBaseZ == connectTrackPos.z)
+                    const auto startBaseHeight = elTrack->baseHeight() - (nextTrackPiece.z + TrackData::getUnkTrack(nextTad).pos.z);
+                    if (startBaseHeight == connectTrackPos.z)
                     {
                         return true;
                     }
@@ -1542,7 +1542,10 @@ namespace OpenLoco
 
             auto* stationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
 
+            // Also resets the station sequence index to 0
             auto isStationElementCovered = [&isCovered](World::StationElement* elStation, const World::Pos3 pos, bool hasPassedSurface) {
+                elStation->setSequenceIndex(0);
+
                 isCovered |= [hasPassedSurface, elStation, pos]() {
                     if (!hasPassedSurface)
                     {
@@ -1609,7 +1612,7 @@ namespace OpenLoco
                     continue;
                 }
                 auto backwardTrackPos = pos;
-                const auto backwardRotation = trackSize.rotationBegin;
+                const auto backwardRotation = kReverseRotation[trackSize.rotationBegin];
                 if (backwardRotation < 12)
                 {
                     backwardTrackPos += World::Pos3{ World::kRotationOffset[backwardRotation], 0 };
