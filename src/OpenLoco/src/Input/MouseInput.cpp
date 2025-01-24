@@ -66,7 +66,7 @@ namespace OpenLoco::Input
 
     static Ui::Point _cursorPressed;
 
-    static loco_global<int8_t, 0x0052336C> _52336C;
+    static Ui::CursorId _52336C;
 
     static loco_global<Ui::Point32, 0x0113E72C> _cursor;
 
@@ -1681,9 +1681,9 @@ namespace OpenLoco::Input
             cursorId = Ui::CursorId::diagonalArrows;
         }
 
-        if (cursorId != (Ui::CursorId)*_52336C)
+        if (cursorId != _52336C)
         {
-            _52336C = (int8_t)cursorId;
+            _52336C = cursorId;
             Ui::setCursor(cursorId);
         }
     }
@@ -1791,7 +1791,7 @@ namespace OpenLoco::Input
     {
         sub_407231();
         resetFlag(Flags::rightMousePressed);
-        Ui::setCursor(CursorId(*_52336C));
+        Ui::setCursor(_52336C);
 
         if (Tutorial::state() == Tutorial::State::playing)
         {
