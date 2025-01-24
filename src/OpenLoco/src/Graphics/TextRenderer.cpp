@@ -2125,4 +2125,14 @@ namespace OpenLoco::Gfx
         return Impl::wrapString(font, buffer, stringWidth);
     }
 
+    uint16_t TextRenderer::getLineHeight(Font font)
+    {
+        return Impl::getLineHeight(font);
+    }
+
+    uint16_t TextRenderer::getSmallerLineHeight(Font font)
+    {
+        return Impl::getSmallerLineHeight(font);
+    }
+
 }

@@ -27,7 +27,7 @@ namespace OpenLoco::Gfx
     {
         DrawingContext& _ctx;
         TextDrawFlags _currentFontFlags{};
-        Font _currentFontSpriteBase{};
+        Font _currentFontSpriteBase{ Font::medium_bold };
 
     public:
         TextRenderer(DrawingContext& ctx);
@@ -50,6 +50,9 @@ namespace OpenLoco::Gfx
 
         std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) const;
         static std::pair<uint16_t, uint16_t> wrapString(Font font, char* buffer, uint16_t stringWidth);
+
+        static uint16_t getLineHeight(Font font);
+        static uint16_t getSmallerLineHeight(Font font);
 
         Ui::Point drawString(
             Ui::Point origin,
