@@ -64,7 +64,7 @@ namespace OpenLoco::Input
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
-    static loco_global<Ui::Point, 0x0052334A> _cursorPressed;
+    static Ui::Point _cursorPressed;
 
     static loco_global<int8_t, 0x0052336C> _52336C;
 
