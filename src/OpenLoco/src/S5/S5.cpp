@@ -677,8 +677,10 @@ namespace OpenLoco::S5
             // Any packed objects to install?
             if (!file->packedObjects.empty())
             {
-                const auto progressStep = 50 / file->packedObjects.size();
-                auto currentProgress = 100;
+                // For now installing objects can't be done with a progress bar
+                // revert this when objects do not change the current game state
+                Ui::ProgressBar::end();
+
                 bool objectInstalled = false;
 
                 for (auto [object, data] : file->packedObjects)
@@ -687,15 +689,15 @@ namespace OpenLoco::S5
                     {
                         objectInstalled = true;
                     }
-
-                    currentProgress += progressStep;
-                    Ui::ProgressBar::setProgress(currentProgress);
                 }
 
                 if (objectInstalled)
                 {
                     ObjectManager::loadIndex();
                 }
+
+                // See above. restart progress bar
+                Ui::ProgressBar::begin(StringIds::loading);
             }
 
             Ui::ProgressBar::setProgress(150);
