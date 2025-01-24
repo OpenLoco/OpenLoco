@@ -58,7 +58,7 @@ namespace OpenLoco::Input
 
 #pragma mark - Input
 
-    static loco_global<MouseButton, 0x001136FA0> _lastKnownButtonState;
+    static MouseButton _lastKnownButtonState;
 
     static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
 
