@@ -751,7 +751,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004CB966
-    void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widgetIndex)
+    void invalidateWidget(WindowType type, WindowNumber_t number, WidgetIndex_t widgetIndex)
     {
         for (auto&& w : _windows)
         {
@@ -871,7 +871,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004CD3A9
-    Window* bringToFront(WindowType type, uint16_t id)
+    Window* bringToFront(WindowType type, WindowNumber_t id)
     {
         auto window = find(type, id);
         if (window == nullptr)

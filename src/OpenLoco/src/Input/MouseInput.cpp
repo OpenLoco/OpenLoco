@@ -58,20 +58,20 @@ namespace OpenLoco::Input
 
 #pragma mark - Input
 
-    static loco_global<MouseButton, 0x001136FA0> _lastKnownButtonState;
+    static MouseButton _lastKnownButtonState;
 
     static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
-    static loco_global<Ui::Point, 0x0052334A> _cursorPressed;
+    static Ui::Point _cursorPressed;
 
-    static loco_global<int8_t, 0x0052336C> _52336C;
+    static Ui::CursorId _52336C;
 
-    static loco_global<Ui::Point32, 0x0113E72C> _cursor;
+    static Ui::Point32 _cursor;
 
     // TODO: name?
-    static loco_global<Ui::Point32, 0x00523338> _cursor2;
+    static Ui::Point32 _cursor2;
 
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
@@ -102,7 +102,7 @@ namespace OpenLoco::Input
     static Ui::WindowNumber_t _focusedWindowNumber;
     static Ui::WidgetIndex_t _focusedWidgetIndex;
 
-    static loco_global<uint32_t, 0x005251C8> _rightMouseButtonStatus;
+    static uint32_t _rightMouseButtonStatus;
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
@@ -120,7 +120,7 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
-    static loco_global<int32_t, 0x00525330> _cursorWheel;
+    static int32_t _cursorWheel;
 
     static const std::map<Ui::ScrollPart, StringId> kScrollWidgetTooltips = {
         { Ui::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
@@ -311,9 +311,9 @@ namespace OpenLoco::Input
 
             case Tutorial::State::playing:
             {
-                _cursor2->x = Tutorial::nextInput();
-                _cursor2->y = Tutorial::nextInput();
-                Ui::setCursorPosScaled(_cursor2->x, _cursor2->y);
+                _cursor2.x = Tutorial::nextInput();
+                _cursor2.y = Tutorial::nextInput();
+                Ui::setCursorPosScaled(_cursor2.x, _cursor2.y);
                 break;
             }
 
@@ -1681,21 +1681,21 @@ namespace OpenLoco::Input
             cursorId = Ui::CursorId::diagonalArrows;
         }
 
-        if (cursorId != (Ui::CursorId)*_52336C)
+        if (cursorId != _52336C)
         {
-            _52336C = (int8_t)cursorId;
+            _52336C = cursorId;
             Ui::setCursor(cursorId);
         }
     }
 
     Ui::Point getMouseLocation()
     {
-        return Ui::Point(static_cast<int16_t>(_cursor->x), static_cast<int16_t>(_cursor->y));
+        return Ui::Point(static_cast<int16_t>(_cursor.x), static_cast<int16_t>(_cursor.y));
     }
 
     Ui::Point getMouseLocation2()
     {
-        return Ui::Point(static_cast<int16_t>(_cursor2->x), static_cast<int16_t>(_cursor2->y));
+        return Ui::Point(static_cast<int16_t>(_cursor2.x), static_cast<int16_t>(_cursor2.y));
     }
 
     Ui::Point getTooltipMouseLocation()
@@ -1781,8 +1781,8 @@ namespace OpenLoco::Input
     // 0x004C6FCE
     static MouseButton loc_4C6FCE(uint32_t& x, int16_t& y)
     {
-        x = _cursor2->x;
-        y = _cursor2->y;
+        x = _cursor2.x;
+        y = _cursor2.y;
         return MouseButton::released;
     }
 
@@ -1791,7 +1791,7 @@ namespace OpenLoco::Input
     {
         sub_407231();
         resetFlag(Flags::rightMousePressed);
-        Ui::setCursor(CursorId(*_52336C));
+        Ui::setCursor(_52336C);
 
         if (Tutorial::state() == Tutorial::State::playing)
         {
@@ -1805,7 +1805,7 @@ namespace OpenLoco::Input
         }
 
         // 0x004C7136, 0x004C7165
-        _cursor2->x = 0x80000000;
+        _cursor2.x = 0x80000000;
         return MouseButton::rightReleased;
     }
 
