@@ -94,7 +94,7 @@ namespace OpenLoco::Input
     static loco_global<Ui::WindowType, 0x005233A8> _hoverWindowType;
     static uint8_t _5233A9;
     static loco_global<Ui::WindowNumber_t, 0x005233AA> _hoverWindowNumber;
-    static loco_global<uint16_t, 0x005233AC> _hoverWidgetIdx;
+    static loco_global<Ui::WidgetIndex_t, 0x005233AC> _hoverWidgetIdx;
     static loco_global<uint32_t, 0x005233AE> _5233AE;
     static loco_global<uint32_t, 0x005233B2> _5233B2;
 
@@ -1541,8 +1541,8 @@ namespace OpenLoco::Input
     static void widgetOverFlatbuttonInvalidate()
     {
         Ui::WindowType windowType = _hoverWindowType;
-        uint16_t widgetIdx = _hoverWidgetIdx;
-        uint16_t windowNumber = _hoverWindowNumber;
+        Ui::WidgetIndex_t widgetIdx = _hoverWidgetIdx;
+        Ui::WindowNumber_t windowNumber = _hoverWindowNumber;
 
         if (windowType == Ui::WindowType::undefined)
         {
@@ -1556,8 +1556,9 @@ namespace OpenLoco::Input
         {
             oldWindow->callPrepareDraw();
 
-            Ui::Widget* oldWidget = &oldWindow->widgets[widgetIdx];
-            if (oldWidget->type == Ui::WidgetType::buttonWithColour || oldWidget->type == Ui::WidgetType::buttonWithImage)
+            Ui::Widget* oldWidget = widgetIdx != kWidgetIndexNull ? &oldWindow->widgets[widgetIdx] : nullptr;
+            if (oldWidget != nullptr
+                && (oldWidget->type == Ui::WidgetType::buttonWithColour || oldWidget->type == Ui::WidgetType::buttonWithImage))
             {
                 WindowManager::invalidateWidget(windowType, windowNumber, widgetIdx);
             }
