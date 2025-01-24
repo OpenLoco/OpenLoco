@@ -149,6 +149,7 @@ namespace OpenLoco::Ui
         ContentAlign contentAlign{ ContentAlign::Left };
         FormatArgumentsBuffer textArgs;
         WidgetEventsList events;
+        Gfx::Font font{ Gfx::Font::medium_bold };
 
         int16_t midX() const;
         int16_t midY() const;

@@ -27,7 +27,9 @@ namespace OpenLoco::Ui::Widgets
         auto* window = widgetState.window;
 
         auto formatArgs = FormatArguments(widget.textArgs);
+
         auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.setCurrentFont(widget.font);
 
         const int16_t x = [&]() {
             if (widget.contentAlign == ContentAlign::Left)
