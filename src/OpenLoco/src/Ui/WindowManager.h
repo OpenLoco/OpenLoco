@@ -62,13 +62,13 @@ namespace OpenLoco::Ui::WindowManager
     Window* findAt(Ui::Point point);
     Window* findAtAlt(int16_t x, int16_t y);
     Window* bringToFront(Window& window);
-    Window* bringToFront(WindowType type, uint16_t id = 0);
+    Window* bringToFront(WindowType type, WindowNumber_t id = 0);
     void invalidate(WindowType type);
     void invalidate(WindowType type, WindowNumber_t number);
-    void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widgetIndex);
+    void invalidateWidget(WindowType type, WindowNumber_t number, WidgetIndex_t widgetIndex);
     void invalidateAllWindowsAfterInput();
     void close(WindowType type);
-    void close(WindowType type, uint16_t id);
+    void close(WindowType type, WindowNumber_t id);
     void close(Window* window);
     Window* createWindow(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
     Window* createWindow(WindowType type, Ui::Point32 origin, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
