@@ -71,7 +71,7 @@ namespace OpenLoco::Input
     static Ui::Point32 _cursor;
 
     // TODO: name?
-    static loco_global<Ui::Point32, 0x00523338> _cursor2;
+    static Ui::Point32 _cursor2;
 
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
@@ -102,7 +102,7 @@ namespace OpenLoco::Input
     static Ui::WindowNumber_t _focusedWindowNumber;
     static Ui::WidgetIndex_t _focusedWidgetIndex;
 
-    static loco_global<uint32_t, 0x005251C8> _rightMouseButtonStatus;
+    static uint32_t _rightMouseButtonStatus;
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
@@ -311,9 +311,9 @@ namespace OpenLoco::Input
 
             case Tutorial::State::playing:
             {
-                _cursor2->x = Tutorial::nextInput();
-                _cursor2->y = Tutorial::nextInput();
-                Ui::setCursorPosScaled(_cursor2->x, _cursor2->y);
+                _cursor2.x = Tutorial::nextInput();
+                _cursor2.y = Tutorial::nextInput();
+                Ui::setCursorPosScaled(_cursor2.x, _cursor2.y);
                 break;
             }
 
@@ -1690,12 +1690,12 @@ namespace OpenLoco::Input
 
     Ui::Point getMouseLocation()
     {
-        return Ui::Point(static_cast<int16_t>(_cursor->x), static_cast<int16_t>(_cursor->y));
+        return Ui::Point(static_cast<int16_t>(_cursor.x), static_cast<int16_t>(_cursor.y));
     }
 
     Ui::Point getMouseLocation2()
     {
-        return Ui::Point(static_cast<int16_t>(_cursor2->x), static_cast<int16_t>(_cursor2->y));
+        return Ui::Point(static_cast<int16_t>(_cursor2.x), static_cast<int16_t>(_cursor2.y));
     }
 
     Ui::Point getTooltipMouseLocation()
@@ -1781,8 +1781,8 @@ namespace OpenLoco::Input
     // 0x004C6FCE
     static MouseButton loc_4C6FCE(uint32_t& x, int16_t& y)
     {
-        x = _cursor2->x;
-        y = _cursor2->y;
+        x = _cursor2.x;
+        y = _cursor2.y;
         return MouseButton::released;
     }
 
@@ -1805,7 +1805,7 @@ namespace OpenLoco::Input
         }
 
         // 0x004C7136, 0x004C7165
-        _cursor2->x = 0x80000000;
+        _cursor2.x = 0x80000000;
         return MouseButton::rightReleased;
     }
 
