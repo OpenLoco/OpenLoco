@@ -68,7 +68,7 @@ namespace OpenLoco::Input
 
     static Ui::CursorId _52336C;
 
-    static loco_global<Ui::Point32, 0x0113E72C> _cursor;
+    static Ui::Point32 _cursor;
 
     // TODO: name?
     static loco_global<Ui::Point32, 0x00523338> _cursor2;
