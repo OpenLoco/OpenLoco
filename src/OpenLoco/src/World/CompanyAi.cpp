@@ -2515,8 +2515,13 @@ namespace OpenLoco
         bool hasTriedToSell = false;
         for (auto i = 0U; i < thought.numVehicles; ++i)
         {
-            auto* head = EntityManager::get<Vehicles::VehicleHead>(thought.vehicles[i]);
             hasTriedToSell = true;
+            auto* head = EntityManager::get<Vehicles::VehicleHead>(thought.vehicles[i]);
+            if (head == nullptr)
+            {
+                // Hmm should we cleanup this entry?
+                continue;
+            }
             head->breakdownFlags &= ~Vehicles::BreakdownFlags::breakdownPending;
             if (!head->hasVehicleFlags(VehicleFlags::commandStop))
             {
