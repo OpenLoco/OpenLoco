@@ -120,7 +120,7 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
-    static loco_global<int32_t, 0x00525330> _cursorWheel;
+    static int32_t _cursorWheel;
 
     static const std::map<Ui::ScrollPart, StringId> kScrollWidgetTooltips = {
         { Ui::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
