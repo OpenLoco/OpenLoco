@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Widgets
             auto point = Point(window->x + widget.left, window->y + widget.top);
 
             auto color = widgetState.colour;
-            tr.setCurrentFont(Gfx::Font::medium_bold);
+            tr.setCurrentFont(widget.font);
             tr.drawString(point, color.opaque(), strCheckmark);
         }
     }
@@ -59,6 +59,8 @@ namespace OpenLoco::Ui::Widgets
         auto* window = widgetState.window;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.setCurrentFont(widget.font);
+
         auto point = Point(window->x + widget.left + 14, window->y + widget.top);
         tr.drawStringLeft(point, colour, widget.text, formatArgs);
     }

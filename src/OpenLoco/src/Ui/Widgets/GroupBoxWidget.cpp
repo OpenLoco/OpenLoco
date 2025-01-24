@@ -22,6 +22,7 @@ namespace OpenLoco::Ui::Widgets
         if (widget.text != StringIds::null)
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
+            tr.setCurrentFont(widget.font);
 
             char buffer[512] = { 0 };
             StringManager::formatString(buffer, sizeof(buffer), widget.text);
