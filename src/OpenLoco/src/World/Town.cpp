@@ -7,11 +7,13 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
+#include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
+#include "Objects/RoadStationObject.h"
 #include "Random.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -511,7 +513,15 @@ namespace OpenLoco
 
     static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
 
-    static void sub_47AC3E(const World::Pos3& loc, Vehicles::TrackAndDirection::_RoadAndDirection tad)
+    struct NextRoadResult
+    {
+        CompanyId owner;                              // bl
+        uint8_t roadObjId;                            // bh
+        bool isStationRoadEnd;                        // ebx >> 23
+        std::optional<uint8_t> levelCrossingObjectId; // ebx >> 16 && ebx >> 24
+    };
+
+    static NextRoadResult sub_47AC3E(const World::Pos3& loc, Vehicles::TrackAndDirection::_RoadAndDirection tad)
     {
         const auto roadStart = [tad, &loc]() {
             if (tad.isReversed())
@@ -531,6 +541,94 @@ namespace OpenLoco
         }();
         const auto startDirection = tad.cardinalDirection();
         const auto& roadPieceZero = World::TrackData::getRoadPiece(tad.id())[0];
-        const auto roadStart2 = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPieceZero.x, roadPieceZero.y }, startDirection), roadPieceZero.z };
+        const auto nextRoadStart = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPieceZero.x, roadPieceZero.y }, startDirection), roadPieceZero.z };
+        auto* nextElRoad = [nextRoadStart, startDirection, tad]() -> World::RoadElement* {
+            auto tile = World::TileManager::get(nextRoadStart);
+            for (auto& el : tile)
+            {
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+
+                if (elRoad->baseHeight() != nextRoadStart.z)
+                {
+                    continue;
+                }
+
+                if (elRoad->rotation() != startDirection)
+                {
+                    continue;
+                }
+
+                if (elRoad->sequenceIndex() != 0)
+                {
+                    continue;
+                }
+
+                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                {
+                    continue;
+                }
+                if (elRoad->roadId() != tad.id())
+                {
+                    continue;
+                }
+                return elRoad;
+            }
+            return nullptr;
+        }();
+
+        if (nextElRoad == nullptr)
+        {
+            // TODO
+            return NextRoadResult{ CompanyId::null, 0, false, std::nullopt };
+        }
+
+        NextRoadResult result{};
+        result.owner = nextElRoad->owner();
+        result.roadObjId = nextElRoad->roadObjectId();
+        result.levelCrossingObjectId = std::nullopt;
+        result.isStationRoadEnd = false;
+        const bool hasLevelCrossing = nextElRoad->hasLevelCrossing();
+        if (hasLevelCrossing)
+        {
+            result.levelCrossingObjectId = nextElRoad->levelCrossingObjectId();
+        }
+
+        if (nextElRoad->hasStationElement())
+        {
+            auto* elStation = World::TileManager::get(nextRoadStart).roadStation(tad.id(), startDirection, nextRoadStart.z / World::kSmallZStep);
+            if (elStation != nullptr)
+            {
+                auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
+                if (roadStationObj->hasFlags(RoadStationFlags::roadEnd))
+                {
+                    result.isStationRoadEnd = true;
+                }
+            }
+        }
+        return result;
+    }
+
+    void townRegisterHooks()
+    {
+        registerHook(
+            0x0047AC3E,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto loc = World::Pos3(regs.ax, regs.cx, regs.dx);
+                Vehicles::TrackAndDirection::_RoadAndDirection tad(0, 0);
+                tad._data = regs.ebp;
+                const auto res = sub_47AC3E(loc, tad);
+                const auto levelCrossingObjectId = res.levelCrossingObjectId.value_or(0);
+                const uint32_t ebx = enumValue(res.owner) | (res.roadObjId << 8) | (levelCrossingObjectId << 16) | ((res.isStationRoadEnd ? 1 : 0) << 23) | ((res.levelCrossingObjectId.has_value() ? 1 : 0) << 24);
+                regs = backup;
+                regs.ebx = ebx;
+                return 0;
+            });
     }
 }
