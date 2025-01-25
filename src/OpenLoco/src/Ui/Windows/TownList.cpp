@@ -26,6 +26,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ColourButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -887,7 +888,7 @@ namespace OpenLoco::Ui::Windows::TownList
             Common::makeCommonWidgets(640, 172, StringIds::title_build_new_buildings),
             makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, WindowColour::secondary, 2),
             Widgets::ImageButton({ 575, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
-            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
+            Widgets::ColourButton({ 579, 91 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
 
         );
 

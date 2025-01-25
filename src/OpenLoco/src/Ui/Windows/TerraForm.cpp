@@ -39,6 +39,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ColourButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -153,7 +154,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Common::makeCommonWidgets(634, 162, StringIds::title_plant_trees),
             makeWidget({ 3, 45 }, { 605, 101 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             Widgets::ImageButton({ 609, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
-            makeWidget({ 609, 70 }, { 24, 24 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
+            Widgets::ColourButton({ 609, 70 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
             Widgets::ImageButton({ 609, 94 }, { 24, 24 }, WindowColour::secondary, ImageIds::plant_cluster_selected_tree, StringIds::plant_cluster_selected_tree),
             Widgets::ImageButton({ 609, 118 }, { 24, 24 }, WindowColour::secondary, ImageIds::plant_cluster_random_tree, StringIds::plant_cluster_random_tree)
 
