@@ -50,6 +50,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
@@ -269,14 +270,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 
         // Secondary tabs
-        makeWidget({ 3, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 34, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 65, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 96, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 127, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 158, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 189, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 220, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 3, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 34, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 65, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 96, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 127, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 158, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 189, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 220, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
