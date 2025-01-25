@@ -1612,6 +1612,11 @@ namespace OpenLoco::Ui::WindowManager
             return false;
         }
 
+        if (static_cast<size_t>(index + 2) >= widgets.size())
+        {
+            return false;
+        }
+
         if (widgets[index + 1].type != buttonType)
         {
             return false;
