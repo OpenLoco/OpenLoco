@@ -20,6 +20,7 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
@@ -103,10 +104,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(640, 272, StringIds::title_company_list),
-            makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
-            makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
-            makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
-            makeWidget({ 534, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
+            Widgets::TableHeader({ 4, 43 }, { 175, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
+            Widgets::TableHeader({ 179, 43 }, { 210, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
+            Widgets::TableHeader({ 389, 43 }, { 145, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
+            Widgets::TableHeader({ 534, 43 }, { 100, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
             makeWidget({ 3, 56 }, { 634, 201 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
         );

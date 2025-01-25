@@ -13,6 +13,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include <fmt/format.h>
 
@@ -41,9 +42,9 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::objectErrorWindowTitle),
         Widgets::ImageButton({ 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 360, 223 }, WindowColour::secondary),
-        makeWidget({ 4, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectId),
-        makeWidget({ 104, 43 }, { 152, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectType),
-        makeWidget({ 256, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
+        Widgets::TableHeader({ 4, 43 }, { 100, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectId),
+        Widgets::TableHeader({ 104, 43 }, { 152, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectType),
+        Widgets::TableHeader({ 256, 43 }, { 100, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
         makeWidget({ 4, 57 }, { 352, 176 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
     );

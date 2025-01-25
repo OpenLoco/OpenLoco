@@ -31,6 +31,7 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
@@ -98,10 +99,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(600, 197, StringIds::title_industries),
-            makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_name),
-            makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_status),
-            makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
-            makeWidget({ 603, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_last_month),
+            Widgets::TableHeader({ 4, 44 }, { 199, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_name),
+            Widgets::TableHeader({ 204, 44 }, { 204, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_status),
+            Widgets::TableHeader({ 444, 44 }, { 159, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
+            Widgets::TableHeader({ 603, 44 }, { 159, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_last_month),
             makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
         );
