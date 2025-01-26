@@ -22,6 +22,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
@@ -68,7 +69,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { 366, frame_height }, WindowColour::primary),
-                makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, window_caption_id),
+                Widgets::Caption({ 1, 1 }, { 364, 13 }, CaptionVariant::whiteText, WindowColour::primary, window_caption_id),
                 Widgets::ImageButton({ 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_options),

@@ -8,6 +8,7 @@
 #include "Objects/ObjectManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
@@ -52,7 +53,7 @@ namespace OpenLoco::Ui::Windows::Debug
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        makeWidget({ 1, 1 }, { kWindowSize.width - 2, kTitlebarHeight }, WidgetType::caption_25, WindowColour::primary, StringIds::openloco),
+        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, kTitlebarHeight }, CaptionVariant::whiteText, WindowColour::primary, StringIds::openloco),
         Widgets::ImageButton({ kWindowSize.width - 15, kMargin }, { 13, kTitlebarHeight }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
 
         Widgets::Panel({ 0, kTitlebarHeight + kMargin }, { kWindowSize.width, 245 }, WindowColour::secondary),

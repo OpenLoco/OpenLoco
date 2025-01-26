@@ -20,6 +20,7 @@
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -62,7 +63,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 500, 380 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 498, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::empty),
+        Widgets::Caption({ 1, 1 }, { 498, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::empty),
         Widgets::ImageButton({ 485, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 500, 365 }, WindowColour::secondary),
         Widgets::ImageButton({ 473, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),

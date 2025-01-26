@@ -29,6 +29,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -220,7 +221,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x5231D0
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 380, 233 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 378, 13 }, WidgetType::caption_24, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 378, 13 }, CaptionVariant::colourText, WindowColour::primary),
         Widgets::ImageButton({ 365, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
 

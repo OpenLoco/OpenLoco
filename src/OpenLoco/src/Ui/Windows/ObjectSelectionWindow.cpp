@@ -47,9 +47,11 @@
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
@@ -256,7 +258,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_object_selection),
+        Widgets::Caption({ 1, 1 }, { 598, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::title_object_selection),
         Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 42 }, { 600, 356 }, WindowColour::secondary),
 
@@ -269,14 +271,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 
         // Secondary tabs
-        makeWidget({ 3, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 34, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 65, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 96, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 127, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 158, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 189, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 220, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 3, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 34, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 65, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 96, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 127, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 158, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 189, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 220, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
