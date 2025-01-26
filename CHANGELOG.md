@@ -1,5 +1,6 @@
 24.12 (2024-12-27)
 ------------------------------------------------------------------------
+- Feature: [#2816] Add Swedish localisation.
 - Fix: [#2667] Music stops working when only one track is selected or available.
 - Fix: [#2761] Potential crash when the Locomotion game folder is changed.
 - Fix: [#2776, #2777] Bridge support image ordering incorrect and invisible bridge platforms over buildings.
