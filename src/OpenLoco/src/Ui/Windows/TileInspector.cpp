@@ -41,6 +41,7 @@
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
@@ -88,11 +89,11 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeStepperWidgets({ 19, 24 }, { 55, 12 }, WindowColour::secondary),
         makeStepperWidgets({ 92, 24 }, { 55, 12 }, WindowColour::secondary),
         Widgets::ImageButton({ kWindowSize.width - 26, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
-        makeWidget({ 4, 46 }, { kWindowSize.width - 98, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderNameType, StringIds::tileInspectorHeaderNameTypeTip), // name
-        makeWidget({ kWindowSize.width - 109, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderBaseHeight, StringIds::tileInspectorHeaderBaseHeightTip),
-        makeWidget({ kWindowSize.width - 79, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderClearHeight, StringIds::tileInspectorHeaderClearHeightTip),
-        makeWidget({ kWindowSize.width - 49, 46 }, { 15, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderDirection, StringIds::tileInspectorHeaderDirectionTip),
-        makeWidget({ kWindowSize.width - 34, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderGhost, StringIds::tileInspectorHeaderGhostTip),
+        Widgets::TableHeader({ 4, 46 }, { kWindowSize.width - 98, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderNameType, StringIds::tileInspectorHeaderNameTypeTip), // name
+        Widgets::TableHeader({ kWindowSize.width - 109, 46 }, { 30, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderBaseHeight, StringIds::tileInspectorHeaderBaseHeightTip),
+        Widgets::TableHeader({ kWindowSize.width - 79, 46 }, { 30, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderClearHeight, StringIds::tileInspectorHeaderClearHeightTip),
+        Widgets::TableHeader({ kWindowSize.width - 49, 46 }, { 15, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderDirection, StringIds::tileInspectorHeaderDirectionTip),
+        Widgets::TableHeader({ kWindowSize.width - 34, 46 }, { 30, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderGhost, StringIds::tileInspectorHeaderGhostTip),
         makeWidget({ 4, 60 }, { kWindowSize.width - 8, 103 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
         Widgets::GroupBox({ 4, 165 }, { kWindowSize.width - 8, 30 }, WindowColour::secondary, StringIds::tile_element_data)
 

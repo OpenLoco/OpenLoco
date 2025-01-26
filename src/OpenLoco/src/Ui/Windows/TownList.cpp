@@ -109,10 +109,10 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(600, 197, StringIds::title_towns),
-            makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-            makeWidget({ 204, 43 }, { 80, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
-            makeWidget({ 284, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
-            makeWidget({ 354, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
+            Widgets::TableHeader({ 4, 43 }, { 200, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+            Widgets::TableHeader({ 204, 43 }, { 80, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
+            Widgets::TableHeader({ 284, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
+            Widgets::TableHeader({ 354, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
             makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2)
 
         );

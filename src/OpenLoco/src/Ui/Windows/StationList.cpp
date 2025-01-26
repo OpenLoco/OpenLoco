@@ -66,10 +66,10 @@ namespace OpenLoco::Ui::Windows::StationList
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_airports),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ship_ports),
         Widgets::ImageButton({ 0, 14 }, { 26, 26 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_select_company),
-        makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-        makeWidget({ 204, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_station_status),
-        makeWidget({ 404, 43 }, { 90, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
-        makeWidget({ 494, 43 }, { 120, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
+        Widgets::TableHeader({ 4, 43 }, { 200, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+        Widgets::TableHeader({ 204, 43 }, { 200, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_station_status),
+        Widgets::TableHeader({ 404, 43 }, { 90, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
+        Widgets::TableHeader({ 494, 43 }, { 120, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
         makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
     );
