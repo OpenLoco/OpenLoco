@@ -1,0 +1,2364 @@
+header:
+  locale: sv-SE
+  english_name: Swedish
+  native_name: Svenska
+  loco_original_id: 0
+strings:
+  0: ''
+  1: '{POP16}'
+  2: 'Nytt företag{POP16}'
+  3: 'Namnlös{POP16}'
+  4: 'Tåg {INT16}'
+  5: 'Buss {INT16}'
+  6: 'Lastbil {INT16}'
+  7: 'Spårvagn {INT16}'
+  8: 'Flygplan {INT16}'
+  9: 'Fartyg {INT16}'
+  10: '1:a'
+  11: '2:a'
+  12: '3:e'
+  13: '4:e'
+  14: '5:e'
+  15: '6:e'
+  16: '7:e'
+  17: '8:e'
+  18: '9:e'
+  19: '10:e'
+  20: '11:e'
+  21: '12:e'
+  22: '13:e'
+  23: '14:e'
+  24: '15:e'
+  25: '16:e'
+  26: '17:e'
+  27: '18:e'
+  28: '19:e'
+  29: '20:e'
+  30: '21:a'
+  31: '22:a'
+  32: '23:e'
+  33: '24:e'
+  34: '25:e'
+  35: '26:e'
+  36: '27:e'
+  37: '28:e'
+  38: '29:e'
+  39: '30:e'
+  40: '31:a'
+  41: Jan
+  42: Feb
+  43: Mar
+  44: Apr
+  45: Maj
+  46: Jun
+  47: Jul
+  48: Aug
+  49: Sep
+  50: Okt
+  51: Nov
+  52: Dec
+  53: Kunde inte läsa in grafikfil
+  54: Saknad eller otillgänglig datafil
+  55: Kunde inte allokera tillräckligt med minne
+  56: '{COLOUR BLACK}❌'
+  57: Det valda namnet används redan
+  58: För många namn definierade
+  59: 'Inte tillräckligt med kontanter - kräver {CURRENCY32}'
+  60: '{SMALLFONT}{COLOUR BLACK}Stäng fönster'
+  61: Initiering av spelet misslyckades
+  62: Kunde inte starta spelet i minimerat läge
+  63: Kunde inte initiera grafiksystem
+  64: CD-nyckelkod {INT32 RAW} är inte giltig för din Locomotion-CD!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Var god avinstallera Chris Sawyer's Locomotion och installera om med korrekt CD-nyckelkod
+  65: '{UINT16 RAW} x {UINT16 RAW}'
+  66: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}'
+  67: Om "Chris Sawyer's Locomotion"
+  68: Chris Sawyer's Locomotion
+  69: '{COLOUR WINDOW_2}Version 4.02.176 (UK English)'
+  70: '{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, Alla rättigheter förbehållna'
+  71: '{COLOUR WINDOW_2}Design & programmering av Chris Sawyer'
+  72: '{COLOUR WINDOW_2}Grafik av Simon Foster'
+  73: '{COLOUR WINDOW_2}Ljud & musik av Allister Brimble'
+  74: '{COLOUR WINDOW_2}Titelmusik av John Broomhall'
+  75: '{COLOUR WINDOW_2}Representation av Jacqui Lyons på Marjacq Ltd.'
+  76: '{COLOUR WINDOW_2}Tack till:-'
+  77: '{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin, Jim Wills'
+  78: ''
+  79: ''
+  80: ''
+  81: ''
+  82: ''
+  83: ''
+  84: ''
+  85: '{STRINGID}'
+  86: '{POP16}{STRINGID}'
+  87: '{POP16}{POP16}{STRINGID}'
+  88: '{POP16}{POP16}{POP16}{STRINGID}'
+  89: '{POP16}{POP16}{POP16}{POP16}{STRINGID}'
+  90: '{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}'
+  91: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}'
+  92: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}'
+  93: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}'
+  94: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}'
+  95: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}'
+  96: '{COLOUR BLACK}▼'
+  97: '{SMALLFONT}{COLOUR BLACK}{STRINGID}'
+  98: För lågt!
+  99: För högt!
+  100: Kan inte sänka marken här...
+  101: Kan inte höja marken här...
+  102: Objekt i vägen
+  103: Ladda spel
+  104: Spara spel
+  105: Avsluta scenarioskapare
+  106: Avsluta spel
+  107: Skärmdump
+  108: Skärmdump
+  109: 'Skärmdump sparad på disk som ''{STRING}'''
+  110: Skärmdump misslyckades!
+  111: Landskapsdata full!
+  112: Kan inte bygga delvis ovanför och delvis under marken
+  113: '{STRINGID}'
+  114: '{SMALLFONT}{COLOUR BLACK}Vänstersväng'
+  115: '{SMALLFONT}{COLOUR BLACK}Högersväng'
+  116: '{SMALLFONT}{COLOUR BLACK}Vänstersväng (liten radie)'
+  117: '{SMALLFONT}{COLOUR BLACK}Högersväng (liten radie)'
+  118: '{SMALLFONT}{COLOUR BLACK}Vänstersväng (mycket liten radie)'
+  119: '{SMALLFONT}{COLOUR BLACK}Högersväng (mycket liten radie)'
+  120: '{SMALLFONT}{COLOUR BLACK}Vänstersväng (stor radie)'
+  121: '{SMALLFONT}{COLOUR BLACK}Högersväng (stor radie)'
+  122: '{SMALLFONT}{COLOUR BLACK}Rakt'
+  123: '{SMALLFONT}{COLOUR BLACK}''S''-sväng vänster'
+  124: '{SMALLFONT}{COLOUR BLACK}''S''-sväng höger'
+  125: '{SMALLFONT}{COLOUR BLACK}''S''-sväng till vänstersida av dubbelspår'
+  126: '{SMALLFONT}{COLOUR BLACK}''S''-sväng till högersida av dubbelspår'
+  127: '{SMALLFONT}{COLOUR BLACK}''S''-sväng till enkelspår'
+  128: '{SMALLFONT}{COLOUR BLACK}Vändspår'
+  129: '{SMALLFONT}{COLOUR BLACK}(Klicka på landskapet för att börja bygga)'
+  130: '{SMALLFONT}{COLOUR BLACK}Bygg denna spårdel'
+  131: '{SMALLFONT}{COLOUR BLACK}Ta bort föregående spårdel'
+  132: '{SMALLFONT}{COLOUR BLACK}Brant lutning nedåt'
+  133: '{SMALLFONT}{COLOUR BLACK}Lutning nedåt'
+  134: '{SMALLFONT}{COLOUR BLACK}Vågrätt'
+  135: '{SMALLFONT}{COLOUR BLACK}Lutning uppåt'
+  136: '{SMALLFONT}{COLOUR BLACK}Brant lutning uppåt'
+  137: '{COLOUR WINDOW_2}Bygg detta...'
+  138: '{COLOUR WINDOW_2}Kostnad: {COLOUR BLACK}{CURRENCY32}'
+  139: Kan inte bygga signal här...
+  140: Kan inte bygga signaler här...
+  141: Kan inte ta bort signal...
+  142: 'Kan inte ta bort {POP16}{POP16}{POP16}{STRINGID}...'
+  143: 'Kan inte bygga {POP16}{POP16}{POP16}{STRINGID}...'
+  144: Höj eller sänk marken först
+  145: Underjordsvy
+  146: Dölj spår och vägar i förgrunden
+  147: Stationstyp kan endast byggas i slutet av vägen
+  148: 'Fel typ av station för {STRINGID}'
+  149: 'Stationen är inte kompatibel med {STRINGID}'
+  150: Järnvägskorsning i vägen
+  151: Järnvägskorsning är endast möjlig med rak väg och spår på samma nivå
+  152: Vägkorsning ej möjlig
+  153: Korsning måste vara helt plan
+  154: '{STRINGID} i vägen / fel höjd för korsning'
+  155: Redan byggt här
+  156: 'Kan inte korsa eller skapa korsning med {STRINGID}'
+  157: Korsningar inte möjliga
+  158: Signal
+  159: Station
+  160: Flygplats
+  161: Skeppshamn
+  162: Station i vägen
+  163: Signal i vägen
+  164: Kan inte ta bort flygplats...
+  165: Kan inte ta bort skeppshamn...
+  166: Kan inte ta bort station...
+  167: Fel typ av spår/väg!
+  168: Brotyper måste matcha
+  169: Bron lämpar sig inte för korsning
+  170: Spårkombination ej möjlig
+  171: För många objekt i spelet
+  172: Rotera medsols
+  173: Rotera motsols
+  174: Startar för första gången...
+  175: Kontrollerar objektfiler...
+  176: Ladda spel
+  177: Avsluta spel
+  178: Avsluta spel
+  179: Avsluta scenarioskapare
+  180: Ladda landskap
+  181: Vill du spara innan du laddar?
+  182: Vill du spara innan du avslutar?
+  183: Vill du spara innan du avslutar?
+  184: Spara
+  185: Spara inte
+  186: Avbryt
+  187: OK
+  188: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} vänster'
+  189: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} höger'
+  190: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} snabbt åt vänster'
+  191: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} snabbt åt höger'
+  192: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} vänster/höger'
+  193: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} upp'
+  194: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} ned'
+  195: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} snabbt upp'
+  196: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} snabbt ned'
+  197: '{SMALLFONT}{COLOUR BLACK}Skrolla {STRINGID} upp/ned'
+  198: karta
+  199: fordonslista
+  200: ny fordonslista
+  201: lista
+  202: trädslista
+  203: orderslista
+  204: stationslista
+  205: stadslista
+  206: industrilista
+  207: ny industrilista
+  208: byggnadslista
+  209: murar-lista
+  210: betygslista
+  211: lastlista
+  212: meddelandelista
+  213: företagslista
+  214: scenarioslista
+  215: kreditslista
+  216: '{COLOUR WINDOW_2}▲{COLOUR BLACK}  {CURRENCY32}'
+  217: '{COLOUR WINDOW_2}▼{COLOUR BLACK}  {CURRENCY32}'
+  218: Kunde inte växla till valt läge
+  219: '{COLOUR WINDOW_2}Kostnad: {COLOUR BLACK}{CURRENCY32}'
+  220: (spelare 1)
+  221: (spelare 2)
+  222: Kan inte ändra färgschema...
+  223: Zooma in
+  224: Zooma ut
+  225: Städer
+  226: Industrier
+  227: Flygplats
+  228: Skeppshamn
+  229: Alternativ för landskapsgenerering
+  230: ''
+  231: "\U0001F6E4"
+  232: "\U0001F6E3️"
+  233: "\U0001F6E4\U0001F6E3️"
+  234: ☁️
+  235: "\U0001F6E4☁️"
+  236: "\U0001F6E3️☁️"
+  237: "\U0001F6E4\U0001F6E3️☁️"
+  238: "\U0001F30A"
+  239: "\U0001F6E4\U0001F30A"
+  240: "\U0001F6E3️\U0001F30A"
+  241: "\U0001F6E4\U0001F6E3️\U0001F30A"
+  242: "☁️\U0001F30A"
+  243: "\U0001F6E4☁️\U0001F30A"
+  244: "\U0001F6E3️☁️\U0001F30A"
+  245: "\U0001F6E4\U0001F6E3️☁️\U0001F30A"
+  246: '{STRINGID}'
+  247: '{STRINGID} - Detaljer'
+  248: '{STRINGID} - Ekonomi'
+  249: '{STRINGID} - Levererad last'
+  250: '{STRINGID} - Färgschema'
+  251: '{STRINGID} - Utmaning'
+  252: '{SMALLFONT}{COLOUR BLACK}Byt riktning'
+  253: '{SMALLFONT}{COLOUR BLACK}Kör förbi signal i stopp'
+  254: '{SMALLFONT}{COLOUR BLACK}Ta bort {POP16}{STRINGID} från spår/väg'
+  255: '{SMALLFONT}{COLOUR BLACK}Placera {POP16}{STRINGID} på spår/väg'
+  256: '{SMALLFONT}{COLOUR BLACK}Ta bort {POP16}{STRINGID} från flygplats'
+  257: '{SMALLFONT}{COLOUR BLACK}Placera {POP16}{STRINGID} på flygplats'
+  258: '{SMALLFONT}{COLOUR BLACK}Ta bort {POP16}{STRINGID} från vattnet'
+  259: '{SMALLFONT}{COLOUR BLACK}Placera {POP16}{STRINGID} vid kaj'
+  260: 'Kan inte starta {POP16}{POP16}{POP16}{STRINGID}...'
+  261: 'Kan inte välja manuellt läge för {POP16}{POP16}{POP16}{STRINGID}...'
+  262: 'Kan inte stoppa {POP16}{POP16}{POP16}{STRINGID}...'
+  263: '{VELOCITY}'
+  264: 'Obegränsat{POP16}'
+  265: Stopp
+  266: Start
+  267: Manuellt
+  268: '{SMALLFONT}{COLOUR BLACK}Välj hur mycket spår/väg som ska uppgraderas'
+  269: '{SMALLFONT}{COLOUR BLACK}Stoppa/Starta {POP16}{STRINGID}'
+  270: '{COLOUR BLACK}{STRINGID}'
+  271: '{SMALLFONT}{COLOUR BLACK}Spår-/vägbygge'
+  272: '{SMALLFONT}{COLOUR BLACK}Stationsbygge'
+  273: '{SMALLFONT}{COLOUR BLACK}Signalbygge'
+  274: '{SMALLFONT}{COLOUR BLACK}Elektrifiering och andra förbättringar'
+  275: '{SMALLFONT}{COLOUR BLACK}Välj signaltyp'
+  276: '{SMALLFONT}{COLOUR BLACK}Bygg signaler i båda riktningarna'
+  277: '{SMALLFONT}{COLOUR BLACK}Bygg signal i en riktning (tåg får inte köra i motsatt riktning)'
+  278: '{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}Max. hastighet: {STRINGID}{NEWLINE}Max. höjd över marken:  {HEIGHT}'
+  279: '{SMALLFONT}{COLOUR BLACK}Välj stationstyp'
+  280: 'Station {INT16}'
+  281: '{STRINGID}'
+  282: '{STRINGID} Norra'
+  283: '{STRINGID} Södra'
+  284: '{STRINGID} Östra'
+  285: '{STRINGID} Västra'
+  286: '{STRINGID} Central'
+  287: '{STRINGID} Transfer'
+  288: '{STRINGID} Hållplats'
+  289: '{STRINGID} Dal'
+  290: '{STRINGID} Höjder'
+  291: '{STRINGID} Skog'
+  292: '{STRINGID} Sjöstrand'
+  293: '{STRINGID} Omstigning'
+  294: '{STRINGID} Flygplats'
+  295: '{STRINGID} Oljefält'
+  296: '{STRINGID} Gruvor'
+  297: '{STRINGID} Hamn'
+  298: '{STRINGID} Anläggning'
+  299: '{STRINGID} Sidospår'
+  300: '{STRINGID} Gren'
+  301: 'Övre {STRINGID}'
+  302: 'Nedre {STRINGID}'
+  303: '{STRINGID} Helikopterplatta'
+  304: '{STRINGID} Skog'
+  305: '{STRINGID} Växel'
+  306: '{STRINGID} Kors'
+  307: '{STRINGID} Utsikter'
+  308: '{STRINGID} 1'
+  309: '{STRINGID} 2'
+  310: '{STRINGID} 3'
+  311: '{STRINGID} 4'
+  312: '{STRINGID} 5'
+  313: '{STRINGID} 6'
+  314: '{STRINGID} 7'
+  315: '{STRINGID} 8'
+  316: '{STRINGID} 9'
+  317: '{STRINGID} 10'
+  318: '{STRINGID} 11'
+  319: '{STRINGID} 12'
+  320: '{STRINGID} 13'
+  321: '{STRINGID} 14'
+  322: '{STRINGID} 15'
+  323: '{STRINGID} 16'
+  324: '{STRINGID} 17'
+  325: '{STRINGID} 18'
+  326: '{STRINGID} 19'
+  327: '{STRINGID} 20'
+  328: '{COLOUR WINDOW_2}{POP16}Vikt: {COLOUR BLACK}{INT32}t'
+  329: '{COLOUR WINDOW_2}Total effekt: {COLOUR BLACK}{POWER}{COLOUR WINDOW_2} Vikt: {COLOUR BLACK}{INT32}t'
+  330: '{COLOUR WINDOW_2}Max. hastighet: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} Tillförlitlighet: {COLOUR BLACK}{INT16}%'
+  331: '{COLOUR WINDOW_2}Max. hastighet: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} Tillförlitlighet: {COLOUR BLACK}{INT16}%'
+  332: '{SMALLFONT}{COLOUR BLACK}Sälj {POP16}{STRINGID}{NEWLINE}(Eller dra enskilda fordon hit för att sälja)'
+  333: '{SMALLFONT}{COLOUR BLACK}Bygg nytt fordon för denna {POP16}{STRINGID}'
+  334: '{COLOUR BLACK}(klicka på vy för att ställa in {STRINGID} startposition)'
+  335: Fordonen är inte kompatibla
+  336: För många fordon i spelet
+  337: ''
+  338: ''
+  339: '{SMALLFONT}{COLOUR BLACK}{STRINGID}'
+  340: '{NEWLINE}Byggd:  {DATE MY}'
+  341: '{NEWLINE}Värde:  {CURRENCY32}'
+  342: '{NEWLINE}Effekt:  {POWER}'
+  343: '{NEWLINE}Vikt:  {INT16}t'
+  344: '{NEWLINE}Max. Hastighet:  {VELOCITY}'
+  345: ' ({VELOCITY} på {STRINGID})'
+  346: '{NEWLINE}Tillförlitlighet:  {INT16}%'
+  347: '{STRINGID} {STRINGID}'
+  348: Enkel sektion
+  349: Blocksektion
+  350: Hela anslutna spåret
+  351: 'Varning: För mycket spår!{NEWLINE}En del av valt spår har kanske inte uppgraderats'
+  352: '{SMALLFONT}{COLOUR BLACK}Uppgradera spår med dessa förbättringar'
+  353: '{SMALLFONT}{COLOUR BLACK}(Klicka på valt spår för att lägga till detta)'
+  354: '{SMALLFONT}{COLOUR BLACK}Välj vad som ska läggas till spåret'
+  355: '{SMALLFONT}{COLOUR BLACK}Flytta huvudvyn för att visa detta'
+  356: Utanför kartkanten!
+  357: Kan inte bygga delvis ovanför och delvis under vatten!
+  358: För nära vattenytan!
+  359: Kan inte bygga detta under vattnet!
+  360: Kan endast byggas ovanför marken!
+  361: Måste byggas på plan mark
+  362: Ladda spel
+  363: Ladda landskap
+  364: Spara landskap
+  365: Spara spel
+  366: Spara scenario
+  367: OpenLoco-spelfil
+  368: OpenLoco-scenariofil
+  369: OpenLoco-landskapsfil
+  370: Misslyckades med att spara spelet!
+  371: Misslyckades med att läsa in sparfil...{NEWLINE}Filen innehåller ogiltig data!
+  372: Dölj förgrundslandskap & byggnader
+  373: Kan endast byggas på vatten!
+  374: Kan endast byggas på vatten om det ligger intill en vattenbaserad industri!
+  375: 'Namn {STRINGID}'
+  376: 'Ange nytt namn för denna {STRINGID}:'
+  377: Kan inte byta namn på detta fordon...
+  378: Bro behövs
+  379: För högt över marken för denna brotyp
+  380: Bron är redan på sin maximala höjd över marken
+  381: '{STRINGID} kräver en bro'
+  382: Brotyp ej lämplig för denna konfiguration
+  383: Stationsnamn
+  384: 'Ange nytt namn för stationen {STRINGID}:'
+  385: Kan inte byta namn på stationen...
+  386: Ogiltigt stationsnamn
+  387: Kan inte flytta fordonet...
+  388: Kan inte vända tåget...
+  389: Kan inte sälja fordonet...
+  390: 'Kan inte sälja {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...'
+  391: '{STRINGID}'
+  392: '{STRINGID}'
+  393: '{STRINGID} stationsplattform'
+  394: '{STRINGID} stationsbyggnad / busshållplats'
+  395: '{SMALLFONT}{COLOUR BLACK}Markera stations räckvidd'
+  396: Stäng av ljud
+  397: Spela musik
+  398: '{COLOUR RED}Bankrutt!'
+  399: '{STRINGID} får inte vänta på full last i {STRINGID}'
+  400: '{STRINGID} har glidit till stopp i en backe'
+  401: '{STRINGID} accepterar nu {STRINGID}'
+  402: '{STRINGID} accepterar inte längre {STRINGID}'
+  403: 'Nytt transportföretag!{NEWLINE}{STRINGID} startar byggnation nära {STRINGID}!'
+  404: '{STRINGID} kan inte landa på {STRINGID} eftersom flygplatsen är olämplig'
+  405: 'Invånarna firar!{NEWLINE}Första {STRINGID} anländer till {STRINGID}!'
+  406: 'Invånarna firar!{NEWLINE}Första leveransen av {STRINGID} anländer till {STRINGID}!'
+  407: 'Arbetarna firar!{NEWLINE}Första {STRINGID} levereras till {STRINGID}!'
+  408: 'Nytt fordon uppfunnet -{NEWLINE}“{STRINGID}”!'
+  409: '{STRINGID} befordras från “{STRINGID}” till “{STRINGID}”!'
+  410: 'Ny {STRINGID} under uppbyggnad nära {STRINGID}!'
+  411: 'Grattis!{NEWLINE}Du har slutfört din utmaning!'
+  412: 'Misslyckande!{NEWLINE}Du misslyckades med din utmaning!'
+  413: 'Överträffad!{NEWLINE}{STRINGID} har klarat utmaningen!'
+  414: 'Varning för konkurs!{NEWLINE}{STRINGID} kommer att läggas ner om 6 månader om resultatet inte förbättras!'
+  415: 'Sista varningen!{NEWLINE}{STRINGID} kommer att läggas ner om 3 månader om resultatet inte förbättras!'
+  416: 'Konkurs!{NEWLINE}{STRINGID} har förklarats i konkurs och lagts ner!'
+  417: 'Konkurs!{NEWLINE}{STRINGID} har förklarats i konkurs och lagts ner!'
+  418: '{STRINGID} har kraschat!'
+  419: 'Företagsskandal!{NEWLINE}{STRINGID} fängslad för rånförsök!'
+  420: 'Nytt hastighetsrekord för {STRINGID}!{NEWLINE}{STRINGID} uppnår en genomsnittshastighet på {VELOCITY} mellan stoppen!'
+  421: '{MOVE_X 10}{STRINGID}'
+  422: '»{MOVE_X 10}{STRINGID}'
+  423: '{NEWLINE 1 2}{SPRITE}{NEWLINE 26 8}{STRINGID}'
+  424: '{MOVE_X 10}{STRING}'
+  425: '»{MOVE_X 10}{STRING}'
+  426: Höjdmarkeringar på spår & vägar
+  427: Höjdmarkeringar på land
+  428: Enkelriktade riktningspilar
+  429: Stadsnamn visas
+  430: Stationsnamn visas
+  431: '{NEWLINE}{COLOUR WINDOW_3}Accepts'
+  432: '1/8'
+  433: '1/4'
+  434: '3/8'
+  435: '1/2'
+  436: '5/8'
+  437: '3/4'
+  438: '7/8'
+  439: ','
+  440: '{NEWLINE}{COLOUR WINDOW_3}Producerar'
+  441: '{NEWLINE}{COLOUR WINDOW_3}Under uppbyggnad'
+  442: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Ägs av {STRINGID}'
+  443: '{MOVE_X 10}{STRINGID}'
+  444: '✓{MOVE_X 10}{STRINGID}'
+  445: Kan inte ta bort detta...
+  446: Murar & Stängsel
+  447: Plantera träd
+  448: Kan inte placera detta här...
+  449: Kan inte plantera detta här...
+  450: '{OUTLINE}{COLOUR WINDOW_2}{STRINGID}'
+  451: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Högerklicka för att ändra'
+  452: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Högerklicka för att ta bort'
+  453: '{TINYFONT}{COLOUR BLACK}{STRINGID}'
+  454: '{COLOUR RED}{STRINGID}'
+  455: '{COLOUR BLACK}{STRINGID}'
+  456: '{COLOUR BLACK}{STRINGID} {STRINGID}'
+  457: '{COLOUR WINDOW_2}{STRINGID}'
+  458: '{COLOUR WHITE}{STRINGID}'
+  459: 'Stoppar{POP16}{POP16}'
+  460: '/ Väntar vid signal{POP16}{POP16}'
+  461: 'vid {VELOCITY}{POP16}'
+  462: '{COLOUR RED}Kraschat!{POP16}{POP16}'
+  463: '{COLOUR RED}Fastnat!{POP16}{POP16}'
+  464: '{COLOUR RED}Gått sönder{POP16}{POP16}'
+  465: 'Stoppad{POP16}{POP16}'
+  466: 'Laddar vid {STRINGID}'
+  467: 'Lastar av vid {STRINGID}'
+  468: 'Närmar sig {STRINGID}'
+  469: 'Landar vid {STRINGID}'
+  470: 'Taxar vid {STRINGID}'
+  471: 'Lyfter från {STRINGID}'
+  472: 'På väg mot {STRINGID}'
+  473: 'Ingen position{POP16}{POP16}'
+  474: 'Reser{POP16}{POP16}'
+  475: '{STRINGID} - {STRINGID}'
+  476: '{POP16}{POP16}{STRINGID}'
+  477: Kan inte sänka vattennivån här...
+  478: Kan inte höja vattennivån här...
+  479: (Ingen)
+  480: '{STRING}'
+  481: '{COLOUR RED}Closed - -'
+  482: '{COLOUR YELLOW}{STRINGID} - -'
+  483: Marklutning ej lämplig
+  484: Kan inte bygga detta under vattnet!
+  485: Marktyp ej lämplig
+  486: '{COLOUR BLACK}▴'
+  487: '{COLOUR BLACK}▾'
+  488: tåg
+  489: tåg
+  490: Tåg
+  491: Tåg
+  492: '{INT16} tåg'
+  493: '{INT16} tåg'
+  494: 'Tåg {INT16}'
+  495: båt
+  496: båtar
+  497: Båt
+  498: Båtar
+  499: '{INT16} båt'
+  500: '{INT16} båtar'
+  501: 'Båt {INT16}'
+  502: spår
+  503: spår
+  504: Spår
+  505: Spår
+  506: '{INT16} spår'
+  507: '{INT16} spår'
+  508: 'Spår {INT16}'
+  509: kajplattform
+  510: kajplattformar
+  511: Kajplattform
+  512: Kajplattformar
+  513: '{INT16} kajplattform'
+  514: '{INT16} kajplattformar'
+  515: 'Kajplattform {INT16}'
+  516: station
+  517: stationer
+  518: Station
+  519: Stationer
+  520: '{INT16} station'
+  521: '{INT16} stationer'
+  522: 'Station {INT16}'
+  523: fordon
+  524: fordon
+  525: Fordon
+  526: Fordon
+  527: '{INT16} fordon'
+  528: '{INT16} fordon'
+  529: 'Fordon {INT16}'
+  530: byggnad
+  531: byggnader
+  532: Byggnad
+  533: Byggnader
+  534: '{INT16} byggnad'
+  535: '{INT16} byggnader'
+  536: 'Byggnad {INT16}'
+  537: struktur
+  538: strukturer
+  539: Struktur
+  540: Strukturer
+  541: '{INT16} struktur'
+  542: '{INT16} strukturer'
+  543: 'Struktur {INT16}'
+  544: fartyg
+  545: fartyg
+  546: Fartyg
+  547: Fartyg
+  548: '{INT16} fartyg'
+  549: '{INT16} fartyg'
+  550: 'Fartyg {INT16}'
+  551: stad
+  552: städer
+  553: Stad
+  554: Städer
+  555: '{INT16} stad'
+  556: '{INT16} städer'
+  557: 'Stad {INT16}'
+  558: industri
+  559: industrier
+  560: Industri
+  561: Industrier
+  562: '{INT16} industri'
+  563: '{INT16} industrier'
+  564: 'Industri {INT16}'
+  565: '{SMALLFONT}{COLOUR BLACK}Rotera objekt 90°'
+  566: Plan mark krävs
+  567: Kan inte ändra marktyp...
+  568: '{OUTLINE}{COLOUR GREEN}+ {CURRENCY32}'
+  569: '{OUTLINE}{COLOUR RED}- {CURRENCY32}'
+  570: '{OUTLINE}{COLOUR WINDOW_1}+ {CURRENCY32}'
+  571: '{OUTLINE}{COLOUR WINDOW_1}- {CURRENCY32}'
+  572: '{CURRENCY48}'
+  573: '{COLOUR RED}{CURRENCY48}'
+  574: '{SMALLFONT}{COLOUR BLACK}Visa vy av {POP16}{STRINGID}'
+  575: '{SMALLFONT}{COLOUR BLACK}Visa design och alternativ för {POP16}{STRINGID}'
+  576: '{SMALLFONT}{COLOUR BLACK}Visa last/passagerare i {POP16}{STRINGID}'
+  577: '{SMALLFONT}{COLOUR BLACK}Visa ruttdetaljer för {POP16}{STRINGID}'
+  578: '{SMALLFONT}{COLOUR BLACK}Visa driftskostnader och inkomster för {POP16}{STRINGID}'
+  579: '{SMALLFONT}{COLOUR BLACK}Välj ny startposition för byggande'
+  580: '{SMALLFONT}{COLOUR BLACK}Rotera 90°'
+  581: '{STRINGID} i vägen'
+  582: '{CURRENCY32}'
+  583: Kan inte bygga detta här...
+  584: '{DATE MY}'
+  585: OpenLoco
+  586: 'Var god sätt in din Locomotion-CD i följande enhet:-'
+  587: '{COLOUR WINDOW_2}Utgifter/Intäkter'
+  588: Tågintäkter
+  589: Tågens driftkostnader
+  590: Bussintäkter
+  591: Bussars driftkostnader
+  592: Lastbilsintäkter
+  593: Lastbilars driftkostnader
+  594: Spårvagnsintäkter
+  595: Spårvagnars driftkostnader
+  596: Flygintäkter
+  597: Flygplans driftkostnader
+  598: Fartygsintäkter
+  599: Fartygs driftkostnader
+  600: Byggkostnader
+  601: Fordonsinköp
+  602: Fordonsavyttringar
+  603: Ränteutgifter på lån
+  604: Övrigt
+  605: '{UINT16 RAW}'
+  606: '+{CURRENCY48}'
+  607: '{CURRENCY48}'
+  608: '{COLOUR WINDOW_2}Lån:'
+  609: '{CURRENCY32}'
+  610: Kan inte låna mer pengar!
+  611: Inte tillräckligt med pengar tillgängligt!
+  612: Kan inte betala tillbaka lånet!
+  613: '{SMALLFONT}{COLOUR BLACK}Starta nytt spel'
+  614: '{SMALLFONT}{COLOUR BLACK}Ladda sparat spel'
+  615: '{SMALLFONT}{COLOUR BLACK}Visa handledning'
+  616: '{SMALLFONT}{COLOUR BLACK}Avsluta spelet'
+  617: Småort
+  618: By
+  619: Stad
+  620: Storstad
+  621: Metropol
+  622: Spår/väg är olämpligt
+  623: Spår/väg olämpligt för station
+  624: Station kan inte byggas på en korsning
+  625: Signaler kan inte byggas på en korsning
+  626: Signaler kan inte byggas i stationer
+  627: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}'
+  628: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}'
+  629: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}'
+  630: '{COLOUR WINDOW_2}Kontanter:  {MOVE_X 81}{COLOUR RED}Bankrutt!'
+  631: '{COLOUR WINDOW_2}Kontanter:  {MOVE_X 81}{COLOUR BLACK}{CURRENCY48}'
+  632: '{COLOUR WINDOW_2}Kontanter:  {MOVE_X 81}{COLOUR RED}{CURRENCY48}'
+  633: '{COLOUR WINDOW_2}Företagsvärde: {COLOUR BLACK}{CURRENCY48}'
+  634: '{COLOUR WINDOW_2}Fordonens vinst: {COLOUR BLACK}{CURRENCY48} per månad'
+  635: Januari
+  636: Februari
+  637: Mars
+  638: April
+  639: Maj
+  640: Juni
+  641: Juli
+  642: Augusti
+  643: September
+  644: Oktober
+  645: November
+  646: December
+  647: '{SMALLFONT}{COLOUR BLACK}{DATE DMY}{STRINGID}'
+  648: Välj scenario för nytt spel
+  649: ''
+  650: '{COLOUR WINDOW_2}Ljudkvalitet:'
+  651: Låg
+  652: Medel
+  653: Hög
+  654: Alternativ
+  655: '{COLOUR WINDOW_2}Valuta:'
+  656: '{COLOUR WINDOW_2}Distans och hastighet:'
+  657: '{COLOUR WINDOW_2}Höjder:'
+  658: Imperial
+  659: Metrisk
+  660: Enheter
+  661: Reella värden
+  662: '{COLOUR WINDOW_2}Skärmupplösning:'
+  663: Landskapssläta
+  664: '{SMALLFONT}{COLOUR BLACK}Växla utjämning av landskapskanter av/på'
+  665: Rutnät på landskapet
+  666: '{SMALLFONT}{COLOUR BLACK}Växla rutnät i landskapet av/på'
+  667: Banken vägrar öka ditt lån!
+  668: '{SMALLFONT}{COLOUR BLACK}Klicka på landskapet för att ta bort träd och byggnader'
+  669: '{SMALLFONT}{COLOUR BLACK}Rensa mindre markområde'
+  670: '{SMALLFONT}{COLOUR BLACK}Rensa större markområde'
+  671: '{SMALLFONT}{COLOUR BLACK}Justera mindre markområde'
+  672: '{SMALLFONT}{COLOUR BLACK}Justera större markområde'
+  673: '{SMALLFONT}{COLOUR BLACK}Justera mindre vattenområde'
+  674: '{SMALLFONT}{COLOUR BLACK}Justera större vattenområde'
+  675: Justera mark
+  676: Justera vatten
+  677: '{SMALLFONT}{COLOUR BLACK}Klicka på landskapet och dra upp/ner för att höja/sänka vattennivån'
+  678: '{SMALLFONT}{COLOUR BLACK}Klicka på landskapet och dra upp/ner för att höja/sänka marken'
+  679: Rensa område
+  680: Rensa område
+  681: Justera mark
+  682: Justera vatten
+  683: Plantera träd
+  684: Bygg murar
+  685: '{STRINGID} - Fordonsdetaljer'
+  686: '{STRINGID} - Last'
+  687: '{STRINGID} - Rutt'
+  688: '{STRINGID} - Ekonomi'
+  689: '{COLOUR WINDOW_2}Tåg: {COLOUR BLACK}{INT16}'
+  690: '{COLOUR WINDOW_2}Bussar: {COLOUR BLACK}{INT16}'
+  691: '{COLOUR WINDOW_2}Lastbilar: {COLOUR BLACK}{INT16}'
+  692: '{COLOUR WINDOW_2}Spårvagnar: {COLOUR BLACK}{INT16}'
+  693: '{COLOUR WINDOW_2}Flygplan: {COLOUR BLACK}{INT16}'
+  694: '{COLOUR WINDOW_2}Fartyg: {COLOUR BLACK}{INT16}'
+  695: '{NEWLINE}Utmaning misslyckades!'
+  696: '{NEWLINE}Utmaning slutförd!'
+  697: '{SMALLFONT}{COLOUR BLACK}Prestationsindex: {INT16_1DP}% “{STRINGID}”'
+  698: '{SMALLFONT}{COLOUR BLACK}Företagsvärde: {CURRENCY48}{NEWLINE}Vinst från fordon: {CURRENCY48}/månad'
+  699: '{NEWLINE}Utmaningens utveckling: {INT16}%{STRINGID}'
+  700: '{NEWLINE}Tid kvar: {COLOUR BLACK}{INT16} år {INT16} månader'
+  701: Anpassa tangenter...
+  702: Tangentbordsgenvägar
+  703: Återställ tangenter
+  704: '{SMALLFONT}{COLOUR BLACK}Återställ alla tangentbordsgenvägar till standard'
+  705: Stäng översta fönstret
+  706: Stäng alla flytande fönster
+  707: Avbryt byggläge
+  708: Pausa/Återuppta spelet
+  709: Zooma vy ut
+  710: Zooma vy in
+  711: Rotera vy
+  712: Rotera byggobjekt
+  713: Växla underjordsvy
+  714: Växla dölja spår & vägar i förgrunden
+  715: Växla dölja förgrundslandskap
+  716: Växla höjdmarkeringar på land
+  717: Växla höjdmarkeringar på spår & vägar
+  718: Växla riktningspilar på spår & vägar
+  719: Justera mark
+  720: Justera vatten
+  721: Plantera träd
+  722: Riv område
+  723: Bygg spår
+  724: Bygg vägar
+  725: Bygg flygplatser
+  726: Bygg skeppshamnar
+  727: Bygg nya fordon
+  728: Visa fordonslista
+  729: Visa stationslista
+  730: Visa stadslista
+  731: Visa industrilista
+  732: Visa karta
+  733: Visa företagslista
+  734: Visa företagsinformation
+  735: Visa ekonomi
+  736: Visa meddelandelista
+  737: Skärmdump
+  738: Avbryt eller visa senaste meddelandet
+  739: Skicka meddelande (2-spelarläge)
+  740: '???'
+  741: '???'
+  742: '???'
+  743: '???'
+  744: '???'
+  745: '???'
+  746: '???'
+  747: '???'
+  748: Backsteg
+  749: Tab
+  750: '???'
+  751: '???'
+  752: Rensa
+  753: Retur
+  754: '???'
+  755: '???'
+  756: '???'
+  757: '???'
+  758: Alt/Meny
+  759: Paus
+  760: Caps
+  761: '???'
+  762: '???'
+  763: '???'
+  764: '???'
+  765: '???'
+  766: '???'
+  767: Escape
+  768: '???'
+  769: '???'
+  770: '???'
+  771: '???'
+  772: Mellanslag
+  773: Sida upp
+  774: Sida ned
+  775: Slut
+  776: Början
+  777: Vänster
+  778: Upp
+  779: Höger
+  780: Ned
+  781: Välj
+  782: Skriv ut
+  783: Utför
+  784: Skärmdump
+  785: Insert
+  786: Delete
+  787: Hjälp
+  788: '0'
+  789: '1'
+  790: '2'
+  791: '3'
+  792: '4'
+  793: '5'
+  794: '6'
+  795: '7'
+  796: '8'
+  797: '9'
+  798: '???'
+  799: '???'
+  800: '???'
+  801: '???'
+  802: '???'
+  803: '???'
+  804: '???'
+  805: A
+  806: B
+  807: C
+  808: D
+  809: E
+  810: F
+  811: G
+  812: H
+  813: I
+  814: J
+  815: K
+  816: L
+  817: M
+  818: 'N'
+  819: O
+  820: P
+  821: Q
+  822: R
+  823: S
+  824: T
+  825: U
+  826: V
+  827: W
+  828: X
+  829: 'Y'
+  830: Z
+  831: '???'
+  832: '???'
+  833: Meny
+  834: '???'
+  835: '???'
+  836: NumPad 0
+  837: NumPad 1
+  838: NumPad 2
+  839: NumPad 3
+  840: NumPad 4
+  841: NumPad 5
+  842: NumPad 6
+  843: NumPad 7
+  844: NumPad 8
+  845: NumPad 9
+  846: NumPad *
+  847: NumPad +
+  848: NumPad Enter
+  849: NumPad -
+  850: NumPad .
+  851: NumPad /
+  852: F1
+  853: F2
+  854: F3
+  855: F4
+  856: F5
+  857: F6
+  858: F7
+  859: F8
+  860: F9
+  861: F10
+  862: F11
+  863: F12
+  864: F13
+  865: F14
+  866: F15
+  867: F16
+  868: F17
+  869: F18
+  870: F19
+  871: F20
+  872: F21
+  873: F22
+  874: F23
+  875: F24
+  876: '???'
+  877: '???'
+  878: '???'
+  879: '???'
+  880: '???'
+  881: '???'
+  882: '???'
+  883: '???'
+  884: NumLock
+  885: Scroll
+  886: '???'
+  887: '???'
+  888: '???'
+  889: '???'
+  890: '???'
+  891: '???'
+  892: '???'
+  893: '???'
+  894: '???'
+  895: '???'
+  896: '???'
+  897: '???'
+  898: '???'
+  899: '???'
+  900: '???'
+  901: '???'
+  902: '???'
+  903: '???'
+  904: '???'
+  905: '???'
+  906: '???'
+  907: '???'
+  908: '???'
+  909: '???'
+  910: '???'
+  911: '???'
+  912: '???'
+  913: '???'
+  914: '???'
+  915: '???'
+  916: '???'
+  917: '???'
+  918: '???'
+  919: '???'
+  920: '???'
+  921: '???'
+  922: '???'
+  923: '???'
+  924: '???'
+  925: '???'
+  926: ;
+  927: =
+  928: ','
+  929: '-'
+  930: .
+  931: /
+  932: ''''
+  933: '???'
+  934: '???'
+  935: '???'
+  936: '???'
+  937: '???'
+  938: '???'
+  939: '???'
+  940: '???'
+  941: '???'
+  942: '???'
+  943: '???'
+  944: '???'
+  945: '???'
+  946: '???'
+  947: '???'
+  948: '???'
+  949: '???'
+  950: '???'
+  951: '???'
+  952: '???'
+  953: '???'
+  954: '???'
+  955: '???'
+  956: '???'
+  957: '???'
+  958: '???'
+  959: '['
+  960: \
+  961: ']'
+  962: '#'
+  963: Bar
+  964: '???'
+  965: '???'
+  966: '???'
+  967: '???'
+  968: '???'
+  969: '???'
+  970: '???'
+  971: '???'
+  972: '???'
+  973: '???'
+  974: '???'
+  975: '???'
+  976: '???'
+  977: '???'
+  978: '???'
+  979: '???'
+  980: '???'
+  981: '???'
+  982: '???'
+  983: '???'
+  984: '???'
+  985: '???'
+  986: '???'
+  987: '???'
+  988: '???'
+  989: '???'
+  990: '???'
+  991: '???'
+  992: '???'
+  993: '???'
+  994: '???'
+  995: '???'
+  996: '{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}'
+  997: 'SHIFT +'
+  998: 'CTRL +'
+  999: Ändra tangentbordsgenväg
+  1000: '{COLOUR WINDOW_2}Tryck in ny genvägstangent för:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”'
+  1001: '{SMALLFONT}{COLOUR BLACK}Klicka på genvägsbeskrivningen för att välja ny tangent'
+  1002: Skrolla vyn när pekaren är vid skärmkanten
+  1003: '{SMALLFONT}{COLOUR BLACK}Välj om vyn ska skrollas när muspekaren är vid skärmkanten'
+  1004: '{SMALLFONT}{COLOUR BLACK}Visa eller ändra kontroller för tangenter'
+  1005: Karta
+  1006: Karta - Fordon
+  1007: Karta - Industrier
+  1008: Karta - Transportrutter
+  1009: Karta - Företag
+  1010: Tvingad mjukvarubuffermixning
+  1011: '{SMALLFONT}{COLOUR BLACK}Välj detta alternativ för att förbättra prestanda om spelet hackar lite när ljud startar eller störningar uppstår'
+  1012: Scenariot installerades framgångsrikt
+  1013: Scenariot är redan installerat
+  1014: '{OUTLINE}{COLOUR WINDOW_1}{STRINGID}'
+  1015: '{OUTLINE}{COLOUR WINDOW_2}(Tryck på en tangent eller musknapp för att ta kontroll)'
+  1016: Ett annat exemplar av Chris Sawyer's Locomotion körs redan
+  1017: Musikacknowledgement...
+  1018: Musikacknowledgement
+  1019: '{COLOUR BLACK}Copyright © Chris Sawyer'
+  1020: '{COLOUR WINDOW_2}Locomotion Title'
+  1021: '{COLOUR BLACK}John Broomhall (Gitarr spelad av Keith Thompson)'
+  1022: '{COLOUR WINDOW_2}Long Dusty Road'
+  1023: '{COLOUR BLACK}Allister Brimble (Trumpet spelad av Brian Moore)'
+  1024: '{COLOUR WINDOW_2}Flying High'
+  1025: '{COLOUR BLACK}Allister Brimble'
+  1026: '{COLOUR WINDOW_2}Gettin'' On The Gas'
+  1027: '{COLOUR BLACK}Allister Brimble'
+  1028: '{COLOUR WINDOW_2}Jumpin'' The Rails'
+  1029: '{COLOUR BLACK}Allister Brimble'
+  1030: '{COLOUR WINDOW_2}Smooth Running'
+  1031: '{COLOUR BLACK}Allister Brimble'
+  1032: '{COLOUR WINDOW_2}Traffic Jam'
+  1033: '{COLOUR BLACK}Allister Brimble'
+  1034: '{COLOUR WINDOW_2}Never Stop ''til You Get There'
+  1035: '{COLOUR BLACK}Allister Brimble'
+  1036: '{COLOUR WINDOW_2}Soaring Away'
+  1037: '{COLOUR BLACK}Allister Brimble'
+  1038: '{COLOUR WINDOW_2}Techno Torture'
+  1039: '{COLOUR BLACK}Allister Brimble'
+  1040: '{COLOUR WINDOW_2}Everlasting High-Rise'
+  1041: '{COLOUR BLACK}Allister Brimble'
+  1042: '{COLOUR WINDOW_2}Solace'
+  1043: '{COLOUR BLACK}Scott Joplin (Framförd av Peter James Adcock)'
+  1044: '{COLOUR WINDOW_2}Chrysanthemum'
+  1045: '{COLOUR BLACK}Scott Joplin (Framförd av Peter James Adcock)'
+  1046: '{COLOUR WINDOW_2}Eugenia'
+  1047: '{COLOUR BLACK}Scott Joplin (Framförd av Peter James Adcock)'
+  1048: '{COLOUR WINDOW_2}The Ragtime Dance'
+  1049: '{COLOUR BLACK}Scott Joplin (Framförd av Peter James Adcock)'
+  1050: '{COLOUR WINDOW_2}Easy Winners'
+  1051: '{COLOUR BLACK}Scott Joplin (Framförd av Peter James Adcock)'
+  1052: '{COLOUR WINDOW_2}Setting Off'
+  1053: '{COLOUR BLACK}Allister Brimble (Trumpet spelad av Brian Moore, Klarinett spelad av John Glanfield)'
+  1054: '{COLOUR WINDOW_2}A Traveller''s Seranade'
+  1055: '{COLOUR BLACK}David Punshon'
+  1056: '{COLOUR WINDOW_2}Latino Trip'
+  1057: '{COLOUR BLACK}David Punshon'
+  1058: '{COLOUR WINDOW_2}A Good Head Of Steam'
+  1059: '{COLOUR BLACK}Allister Brimble'
+  1060: '{COLOUR WINDOW_2}Hop To The Bop'
+  1061: '{COLOUR BLACK}David Punshon'
+  1062: '{COLOUR WINDOW_2}The City Lights'
+  1063: '{COLOUR BLACK}Allister Brimble'
+  1064: '{COLOUR WINDOW_2}Steamin'' Down Town'
+  1065: '{COLOUR BLACK}David Punshon'
+  1066: '{COLOUR WINDOW_2}Bright Expectations'
+  1067: '{COLOUR BLACK}Allister Brimble'
+  1068: '{COLOUR WINDOW_2}Mo'' Station'
+  1069: '{COLOUR BLACK}John Broomhall'
+  1070: '{COLOUR WINDOW_2}Far Out'
+  1071: '{COLOUR BLACK}John Broomhall'
+  1072: '{COLOUR WINDOW_2}Running On Time'
+  1073: '{COLOUR BLACK}Allister Brimble'
+  1074: '{COLOUR WINDOW_2}Get Me To Gladstone Bay'
+  1075: '{COLOUR BLACK}Allister Brimble'
+  1076: '{COLOUR WINDOW_2}Chuggin'' Along'
+  1077: '{COLOUR BLACK}Allister Brimble (Trumpet spelad av Brian Moore)'
+  1078: '{COLOUR WINDOW_2}Don''t Lose Your Rag'
+  1079: '{COLOUR BLACK}Allister Brimble'
+  1080: '{COLOUR WINDOW_2}Sandy Track Blues'
+  1081: '{COLOUR BLACK}Allister Brimble'
+  1082: Kunde inte läsa in sparfil...
+  1083: Filen innehåller ogiltig data
+  1084: Filen är inte ett enspelarsparat spel
+  1085: Filen är inte ett tvåspelarsparat spel
+  1086: Vänta...
+  1087: Initierar...
+  1088: Läser in...
+  1089: 'Installerar ny data:'
+  1090: Vit
+  1091: Translucent
+  1092: '{COLOUR WINDOW_2}Byggmarkering:'
+  1093: '{COLOUR WINDOW_2}Minsta visningsskala för fordon:'
+  1094: '{COLOUR WINDOW_2}Minsta visningsskala för stationsnamn:'
+  1095: Full skala
+  1096: Halv skala
+  1097: Kvartsskala
+  1098: Åttondelsskala
+  1099: '{SMALLFONT}{COLOUR BLACK}Välj minsta vy-skala för att visa fordon'
+  1100: '{SMALLFONT}{COLOUR BLACK}Välj minsta vy-skala för att visa stationsnamn'
+  1101: '{COLOUR WINDOW_2}Huvudsakligt färgschema:'
+  1102: '{COLOUR BLACK}Ånglok:'
+  1103: '{COLOUR BLACK}Diesellok:'
+  1104: '{COLOUR BLACK}Ellok:'
+  1105: '{COLOUR BLACK}Motorvagnar:'
+  1106: '{COLOUR BLACK}Passagerarfordon:'
+  1107: '{COLOUR BLACK}Godsfordon:'
+  1108: '{COLOUR BLACK}Bussar:'
+  1109: '{COLOUR BLACK}Lastbilar:'
+  1110: '{COLOUR BLACK}Flygplan:'
+  1111: '{COLOUR BLACK}Fartyg:'
+  1112: '{SMALLFONT}{COLOUR BLACK}Företagets huvudkontor och detaljer'
+  1113: '{SMALLFONT}{COLOUR BLACK}Företagsägare och status'
+  1114: '{SMALLFONT}{COLOUR BLACK}Företagets ekonomi'
+  1115: '{SMALLFONT}{COLOUR BLACK}Levererad last'
+  1116: '{SMALLFONT}{COLOUR BLACK}Företagets färgschema'
+  1117: '{SMALLFONT}{COLOUR BLACK}Företagets utmaning för detta spel'
+  1118: '{COLOUR WINDOW_2}Särskilda färgscheman för:'
+  1119: '{SMALLFONT}{COLOUR BLACK}Välj huvudfärg'
+  1120: '{SMALLFONT}{COLOUR BLACK}Välj sekundärfärg (används bara av vissa fordonstyper)'
+  1121: '{SMALLFONT}{COLOUR BLACK}Välj om ett annat färgschema ska användas för denna fordonstyp'
+  1122: '{STRINGID} - Tåg'
+  1123: '{STRINGID} - Bussar'
+  1124: '{STRINGID} - Lastbilar'
+  1125: '{STRINGID} - Spårvagnar'
+  1126: '{STRINGID} - Flygplan'
+  1127: '{STRINGID} - Fartyg'
+  1128: '{STRINGID} - Alla stationer'
+  1129: '{STRINGID} - Järnvägsstationer'
+  1130: '{STRINGID} - Vägstationer'
+  1131: '{STRINGID} - Flygplatser'
+  1132: '{STRINGID} - Skeppshamnar'
+  1133: Alla stationer
+  1134: Järnvägsstationer
+  1135: Vägstationer
+  1136: Flygplatser
+  1137: Skeppshamnar
+  1138: '{COLOUR WINDOW_2}{STRINGID} - {STRINGID}'
+  1139: '{COLOUR WINDOW_2}{STRINGID} - {STRINGID} {STRINGID}'
+  1140: '{COLOUR WINDOW_2}{CURRENCY32}'
+  1141: '{COLOUR RED}-{CURRENCY32}'
+  1142: '{COLOUR WINDOW_2}{INT16} år'
+  1143: '{COLOUR WINDOW_2}{INT16} år'
+  1144: '{COLOUR WINDOW_2}{INT16}%'
+  1145: '{COLOUR BLACK}Namn'
+  1146: '{COLOUR BLACK}Namn ▼'
+  1147: '{COLOUR BLACK}Månadsvis vinst'
+  1148: '{COLOUR BLACK}Månadsvis vinst ▼'
+  1149: '{COLOUR BLACK}Ålder'
+  1150: '{COLOUR BLACK}Ålder ▼'
+  1151: '{COLOUR BLACK}Tillförlitlighet'
+  1152: '{COLOUR BLACK}Tillförlitlighet ▼'
+  1153: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter namn'
+  1154: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter vinst'
+  1155: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter ålder'
+  1156: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter tillförlitlighet'
+  1157: Fordonet måste stoppas först!
+  1158: Fordonet har kraschat!
+  1159: Fordonet har gått sönder!
+  1160: Fordonet har fastnat!
+  1161: Inte tillräckligt med utrymme eller fordon i vägen
+  1162: Fordon närmar sig eller är i vägen
+  1163: 'Kan inte placera {POP16}{POP16}{POP16}{STRINGID} här...'
+  1164: 'Kan inte ta bort {POP16}{POP16}{POP16}{STRINGID}...'
+  1165: Kan inte passera signal i stopp...
+  1166: 'Detta fordon kräver {STRINGID}'
+  1167: Tåget har inga vagnar!
+  1168: Tåget har ingen förarhytt
+  1169: Tåget behöver lok eller motorvagn
+  1170: '{STRINGID} från {STRINGID}'
+  1171: Tom
+  1172: '{SMALLFONT}{COLOUR BLACK}{STRINGID}'
+  1173: '{NEWLINE}Kapacitet:  {STRINGID}'
+  1174: '{NEWLINE}+ {STRINGID}'
+  1175: För många stationer i spelet!
+  1176: Station för stor!
+  1177: Stad måste byggas först!
+  1178: '{SMALLFONT}{COLOUR BLACK}Visa översiktskarta'
+  1179: '{SMALLFONT}{COLOUR BLACK}Visa fordonstyper på kartan'
+  1180: '{SMALLFONT}{COLOUR BLACK}Visa industrier på kartan'
+  1181: '{SMALLFONT}{COLOUR BLACK}Visa fordonens rutter på kartan'
+  1182: '{SMALLFONT}{COLOUR BLACK}Visa företagsägande på kartan'
+  1183: Stationen är för utspridd!
+  1184: Kan inte lägga till {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} till {STRINGID}...
+  1185: 'Kan inte bygga {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...'
+  1186: '{COLOUR BLACK}Välj nytt fordon'
+  1187: '{COLOUR BLACK}Välj fordon för att lägga till {STRINGID}'
+  1188: '{SMALLFONT}{COLOUR BLACK}Bygg nya tågfordon'
+  1189: '{SMALLFONT}{COLOUR BLACK}Bygg nya bussar'
+  1190: '{SMALLFONT}{COLOUR BLACK}Bygg nya lastbilar'
+  1191: '{SMALLFONT}{COLOUR BLACK}Bygg nya spårvagnar'
+  1192: '{SMALLFONT}{COLOUR BLACK}Bygg nya flygplan'
+  1193: '{SMALLFONT}{COLOUR BLACK}Bygg nya fartyg'
+  1194: '{SMALLFONT}{COLOUR BLACK}Tåg'
+  1195: '{SMALLFONT}{COLOUR BLACK}Bussar'
+  1196: '{SMALLFONT}{COLOUR BLACK}Lastbilar'
+  1197: '{SMALLFONT}{COLOUR BLACK}Spårvagnar'
+  1198: '{SMALLFONT}{COLOUR BLACK}Flygplan'
+  1199: '{SMALLFONT}{COLOUR BLACK}Fartyg'
+  1200: '{SMALLFONT}{COLOUR BLACK}Alla stationer'
+  1201: '{SMALLFONT}{COLOUR BLACK}Järnvägsstationer'
+  1202: '{SMALLFONT}{COLOUR BLACK}Vägstationer'
+  1203: '{SMALLFONT}{COLOUR BLACK}Flygplatser'
+  1204: '{SMALLFONT}{COLOUR BLACK}Skeppshamnar'
+  1205: '{SMALLFONT}{COLOUR BLACK}Rensa ett markområde'
+  1206: '{SMALLFONT}{COLOUR BLACK}Träd'
+  1207: '{SMALLFONT}{COLOUR BLACK}Justera eller skapa land'
+  1208: '{SMALLFONT}{COLOUR BLACK}Justera eller skapa vatten'
+  1209: '{SMALLFONT}{COLOUR BLACK}Murar och stängsel'
+  1210: '{SMALLFONT}{COLOUR BLACK}Välj objektfärg'
+  1211: '{COLOUR WINDOW_2}{STRINGID}'
+  1212: '{COLOUR WINDOW_2}{STRINGID} (på väg från'
+  1213: '{COLOUR WINDOW_2}{STRINGID})'
+  1214: Inget utrymme för fler fordonsorder!
+  1215: För många order för detta fordon!
+  1216: Lokal
+  1217: Snabb
+  1218: '{COLOUR BLACK}- - Ingen rutt definierad - -'
+  1219: '{COLOUR BLACK}- - Slut på rutlista - -'
+  1220: 'Stanna vid {STRINGID}'
+  1221: 'Passera genom {STRINGID}'
+  1222: Rutt via vägpunkt
+  1223: 'Lasta av allt {STRINGID} {SPRITE}'
+  1224: 'Vänta på full last av {STRINGID} {SPRITE}'
+  1225: 'Lasta av allt {STRINGID} {SPRITE}'
+  1226: 'Vänta på full last av {STRINGID} {SPRITE}'
+  1227: '{COLOUR WINDOW_2}▶'
+  1228: Kan inte infoga order...
+  1229: '{COLOUR WINDOW_3}Klicka för att infoga en ny order att{NEWLINE}rutta via vägpunkt här'
+  1230: '{COLOUR WINDOW_3}Klicka för att infoga en ny order att{NEWLINE}stanna vid {STRINGID}'
+  1231: '{COLOUR WINDOW_3}Klicka igen för att ändra senaste order till{NEWLINE}rutta genom {STRINGID}'
+  1232: '{SMALLFONT}{COLOUR BLACK}Infoga en order att vänta på full last av last'
+  1233: '{SMALLFONT}{COLOUR BLACK}Infoga en order att tvinga avlastning, även om lasten inte accepteras av stationen'
+  1234: '{SMALLFONT}{COLOUR BLACK}Hoppa till nästa order i listan'
+  1235: '{SMALLFONT}{COLOUR BLACK}Ta bort senaste eller vald order'
+  1236: '{COLOUR BLACK}Klicka på station eller vägpunkt för att ställa in rutt'
+  1237: '{SMALLFONT}{COLOUR BLACK}Klicka på order för att välja den, klicka två gånger för att flytta vyn och visa station/vägpunkt'
+  1238: '{SMALLFONT}{COLOUR BLACK}Klicka på order för att kopiera den till valt fordon'
+  1239: '{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}'
+  1240: Bygg tåg
+  1241: Bygg bussar
+  1242: Bygg lastbilar
+  1243: Bygg spårvagnar
+  1244: Bygg flygplan
+  1245: Bygg fartyg
+  1246: 'Kan bara placeras på {STRINGID}...'
+  1247: Väg
+  1248: '{COLOUR BLACK}Inga fordon tillgängliga'
+  1249: '{COLOUR BLACK}Inga kompatibla fordon tillgängliga att lägga till {STRINGID}'
+  1250: ''
+  1251: '{COLOUR WINDOW_2} Kostnad: {COLOUR BLACK}{CURRENCY32}'
+  1252: '{NEWLINE}{COLOUR WINDOW_2} Kräver: {COLOUR BLACK}'
+  1253: '{NEWLINE}{COLOUR WINDOW_2} Effekt: {COLOUR BLACK}{POWER}'
+  1254: '{NEWLINE}{COLOUR WINDOW_2} Vikt: {COLOUR BLACK}{INT16}t'
+  1255: '{NEWLINE}{COLOUR WINDOW_2} Max. hastighet: {COLOUR BLACK}{VELOCITY}'
+  1256: '{NEWLINE}{COLOUR WINDOW_2} Konstruktion: {COLOUR BLACK}{UINT16 RAW}'
+  1257: '{NEWLINE}{COLOUR WINDOW_2} Kapacitet: {COLOUR BLACK}{STRINGID}'
+  1258: ' + {STRINGID}'
+  1259: ' ( + {STRINGID} för branta sluttningar)'
+  1260: ' ({VELOCITY} på {STRINGID})'
+  1261: ' eller {STRINGID}'
+  1262: '{NEWLINE}{COLOUR WINDOW_2} Driftkostnad: {COLOUR BLACK}{CURRENCY32}/månad'
+  1263: ' (möjligt att omutrusta)'
+  1264: '{INT16} tåg'
+  1265: '{INT16} buss'
+  1266: '{INT16} lastbil'
+  1267: '{INT16} spårvagn'
+  1268: '{INT16} flygplan'
+  1269: '{INT16} fartyg'
+  1270: '{INT16} tåg'
+  1271: '{INT16} bussar'
+  1272: '{INT16} lastbilar'
+  1273: '{INT16} spårvagnar'
+  1274: '{INT16} flygplan'
+  1275: '{INT16} fartyg'
+  1276: tåg
+  1277: buss
+  1278: lastbil
+  1279: spårvagn
+  1280: flygplan
+  1281: fartyg
+  1282: '{COLOUR WINDOW_2}Totalt: {COLOUR BLACK}{STRINGID}'
+  1283: Tom
+  1284: '{SMALLFONT}{COLOUR BLACK}Last:'
+  1285: 'Kräver en extra {STRINGID}'
+  1286: '{SMALLFONT}{COLOUR BLACK}Fordon för {STRINGID}'
+  1287: '{SPRITE}{NEWLINE 31 8} {STRINGID}'
+  1288: '{POP16}{POP16}{NEWLINE 31 8} {STRINGID}'
+  1289: '{SPRITE}{NEWLINE 31 8} {STRINGID} Byggläge'
+  1290: '{STRINGID} lokal myndighet vägrar tillstånd!'
+  1291: Städer
+  1292: Bygg nya städer
+  1293: Bygg enskilda stadsbyggnader
+  1294: Bygg diverse byggnader
+  1295: '{COLOUR BLACK}Befolkning'
+  1296: '{COLOUR BLACK}Befolkning ▼'
+  1297: '{SMALLFONT}{COLOUR BLACK}Sortera efter befolkning'
+  1298: '{INT32}'
+  1299: '{COLOUR BLACK}Stationer'
+  1300: '{COLOUR BLACK}Stationer ▼'
+  1301: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter antal stationer'
+  1302: '{COLOUR BLACK}Stad'
+  1303: '{COLOUR BLACK}Stad ▼'
+  1304: '{STRINGID} befolkning {INT32}'
+  1305: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter stadstyp'
+  1306: '{COLOUR BLACK}Typ'
+  1307: '{COLOUR BLACK}Typ ▼'
+  1308: Stadsnamn
+  1309: 'Ange nytt namn för {STRINGID}:'
+  1310: '{COLOUR BLACK}{STRINGID} befolkning {INT32}'
+  1311: Kan inte byta namn på stad...
+  1312: Ny Station
+  1313: '{COLOUR BLACK}({STRINGID})'
+  1314: '{COLOUR WINDOW_2}Stationens infångningsområde{NEWLINE}  Accepterar:'
+  1315: '{COLOUR WINDOW_2}  Producerar:'
+  1316: '{COLOUR BLACK}Ingenting'
+  1317: För många industrier
+  1318: Industrier
+  1319: Finansiera nya industrier
+  1320: Bygg industrier
+  1321: '{SMALLFONT}{COLOUR BLACK}Lista över städer'
+  1322: '{SMALLFONT}{COLOUR BLACK}Bygg städer'
+  1323: '{SMALLFONT}{COLOUR BLACK}Bygg enskilda stadsbyggnader'
+  1324: '{SMALLFONT}{COLOUR BLACK}Bygg diverse byggnader'
+  1325: '{SMALLFONT}{COLOUR BLACK}Lista över industrier'
+  1326: '{SMALLFONT}{COLOUR BLACK}Finansiera nya industrier'
+  1327: '{SMALLFONT}{COLOUR BLACK}Bygg industrier'
+  1328: Ebony
+  1329: Silver
+  1330: Ivory
+  1331: Indigo
+  1332: Sapphire
+  1333: Emerald
+  1334: Golden
+  1335: Amber
+  1336: Bronze
+  1337: Burgundy
+  1338: Skarlagen
+  1339: '{STRINGID}'
+  1340: '{POP16}{STRINGID}'
+  1341: '{STRINGID} Transport'
+  1342: '{STRINGID} Express'
+  1343: '{STRINGID} Lines'
+  1344: '{STRINGID} Spår'
+  1345: '{STRINGID} Bussar'
+  1346: '{STRINGID} Air'
+  1347: '{STRINGID} Rail'
+  1348: '{STRINGID} Vagnar'
+  1349: '{STRINGID} Tåg'
+  1350: '{STRINGID} Transporter'
+  1351: '{STRINGID} Rederi'
+  1352: '{STRINGID} Gods'
+  1353: '{STRINGID} Lastbilar'
+  1354: '{COLOUR WINDOW_2}Huvudkontor'
+  1355: '{COLOUR WINDOW_2}Ägare'
+  1356: '{COLOUR BLACK}@ {INT16}% ränta per år'
+  1357: '{COLOUR BLACK}{SMALLFONT}{INT32}'
+  1358: '{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}'
+  1359: '{STRINGID}'
+  1360: '{STRINGID} - Befolkning'
+  1361: '{STRINGID} Lokal myndighet'
+  1362: '{STRINGID} - Månadsproduktion'
+  1363: '{STRINGID} - Statistik'
+  1364: '{STRINGID} {STRINGID}'
+  1365: '{SMALLFONT}{COLOUR BLACK}Riv denna industri'
+  1366: Under uppbyggnad
+  1367: 'Producerar'
+  1368: 'Producerar'
+  1369: 'Producerar'
+  1370: ' för att producera'
+  1371: 'Kräver'
+  1372: 'Kräver'
+  1373: ' och'
+  1374: ' eller'
+  1375: ','
+  1376: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter industristatus'
+  1377: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter procent produktion transporterad'
+  1378: '{COLOUR BLACK}Status'
+  1379: '{COLOUR BLACK}Status ▼'
+  1380: '{COLOUR BLACK}Transporterad produktion'
+  1381: '{COLOUR BLACK}Transporterad produktion ▼'
+  1382: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter industrins namn'
+  1383: '{COLOUR BLACK}Industri'
+  1384: '{COLOUR BLACK}Industri ▼'
+  1385: '{COLOUR BLACK}Inga industrier tillgängliga'
+  1386: '{SMALLFONT}{COLOUR BLACK}Stad'
+  1387: '{SMALLFONT}{COLOUR BLACK}Befolkningskurva'
+  1388: '{SMALLFONT}{COLOUR BLACK}Stadens betyg för varje företag'
+  1389: '{SMALLFONT}{COLOUR BLACK}Industri'
+  1390: '{SMALLFONT}{COLOUR BLACK}Produktionskurva'
+  1391: '{COLOUR BLACK}{SMALLFONT}({STRINGID})'
+  1392: '{SMALLFONT}{COLOUR BLACK}Riv hela denna stad (och eventuella industrier i närheten)'
+  1393: Kan inte ta bort stad...
+  1394: Alla stationer i närheten av denna stad måste tas bort först
+  1395: För nära en annan stad
+  1396: För många städer
+  1397: För nära en annan stad eller olämplig position
+  1398: '{SMALLFONT}{COLOUR BLACK}Välj storlek för ny stad'
+  1399: 1 (liten)
+  1400: '2'
+  1401: 3 (medel)
+  1402: '4'
+  1403: '5'
+  1404: 6 (stor)
+  1405: '7'
+  1406: 8 (enorm)
+  1407: '{COLOUR BLACK}Stadens storlek:'
+  1408: '{COLOUR BLACK}(Klicka på landskapet för att bygga ny stad)'
+  1409: '{SMALLFONT}{COLOUR BLACK}Utöka denna stad'
+  1410: För nära en annan industri
+  1411: Måste bygga en stad i närheten först
+  1412: '{SMALLFONT}{COLOUR BLACK}Plantera en grupp av vald trädtyp'
+  1413: '{SMALLFONT}{COLOUR BLACK}Plantera ett slumpmässigt kluster av träd'
+  1414: '{SMALLFONT}{COLOUR BLACK}Statistik'
+  1415: '{COLOUR WINDOW_2}Mottaget förra månaden:'
+  1416: '{COLOUR WINDOW_2}Producerat förra månaden:'
+  1417: '{COLOUR BLACK}{STRINGID} ({INT16}% transporterad)'
+  1418: '{COLOUR BLACK}{INT16}%'
+  1419: Avvecklas
+  1420: 'Tillhör {STRINGID}'
+  1421: '{STRINGID} tillhör {STRINGID}'
+  1422: 'Signal tillhör {STRINGID}'
+  1423: '{COLOUR BLACK}{INT16}%'
+  1424: '{COLOUR BLACK}{TINYFONT}{DATE DMY}'
+  1425: Meddelanden
+  1426: '{SMALLFONT}{COLOUR BLACK}Visa senaste meddelanden'
+  1427: '{SMALLFONT}{COLOUR BLACK}Meddelandeinställningar'
+  1428: Meddelandealternativ
+  1429: '{TINYFONT}{DATE DMY}'
+  1430: ' +'
+  1431: ' väntar'
+  1432: Inget väntar
+  1433: '{COLOUR BLACK}Status'
+  1434: '{COLOUR BLACK}Status ▼'
+  1435: '{COLOUR BLACK}Totalt väntande'
+  1436: '{COLOUR BLACK}Totalt väntande ▼'
+  1437: '{COLOUR BLACK}Accepterar'
+  1438: '{COLOUR BLACK}Accepterar ▼'
+  1439: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter stationsstatus'
+  1440: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter total väntande last'
+  1441: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter vad stationen accepterar'
+  1442: '{INT32} enheter'
+  1443: ','
+  1444: '{NEWLINE}Accepterar'
+  1445: '{COLOUR BLACK}Accepterar:'
+  1446: Inget
+  1447: '{SMALLFONT}{COLOUR BLACK}Station'
+  1448: '{SMALLFONT}{COLOUR BLACK}Väntande och accepterad last'
+  1449: '{SMALLFONT}{COLOUR BLACK}Lastbetyg'
+  1450: Rivning ej tillåten
+  1451: Ett annat företag är på väg att bygga här
+  1452: För långt!
+  1453: '{SMALLFONT}{COLOUR BLACK}Bygg eller flytta huvudkontor'
+  1454: '{SMALLFONT}{COLOUR BLACK}Ändra ägarens namn'
+  1455: '{COLOUR BLACK}(ej ännu byggt)'
+  1456: Namnge företag
+  1457: 'Ange nytt namn för företaget:'
+  1458: Kan inte byta namn på detta företag...
+  1459: Namnge ägare
+  1460: 'Ange nytt namn för ägaren:'
+  1461: Kan inte ändra ägarens namn...
+  1462: Huvudkontor
+  1463: '{STRINGID} Huvudkontor'
+  1464: '{STRINGID} lokal myndighet tillåter inte att ta bort vägar som används'
+  1465: '{SMALLFONT}{COLOUR BLACK}Välj företag'
+  1466: Tvåspelarläge
+  1467: Tvåspelarläge - Alternativ
+  1468: '{COLOUR BLACK}För att starta ett tvåspelarläge behöver en dator vara värd, och den andra ansluter till den.{NEWLINE}{NEWLINE}Välj:'
+  1469: ''
+  1470: '{COLOUR BLACK}Konfigurerar denna dator som värd...'
+  1471: '{COLOUR BLACK}Fel: kunde inte konfigurera datorn som värd'
+  1472: '{COLOUR BLACK}Värdkonfiguration klar - Väntar på att den andra datorn ansluter...'
+  1473: ''
+  1474: ''
+  1475: ''
+  1476: '{COLOUR BLACK}Försöker ansluta...'
+  1477: '{COLOUR BLACK}Fel: kunde inte hitta eller ansluta till värd'
+  1478: '{COLOUR BLACK}Lyckades!{NEWLINE}Du är nu ansluten till: {STRINGID}'
+  1479: '{COLOUR BLACK}För närvarande ansluten till: {STRINGID}{NEWLINE}{NEWLINE}Klicka nedan för att koppla från och återgå till enspelarläge'
+  1480: '{COLOUR WINDOW_2}Gör denna dator till värd'
+  1481: '{COLOUR WINDOW_2}Anslut till värd'
+  1482: '{COLOUR WINDOW_2}Koppla från'
+  1483: Skriv värdens adress
+  1484: 'Ange IP-adress eller datornamn för den värd du vill ansluta till, eller lämna tomt för att söka i lokalt nätverk:'
+  1485: "{COLOUR RED}Varning: Du är ansluten till en annan version av Chris Sawyer's Locomotion och tvåspelarläget kan vara instabilt"
+  1486: '{SMALLFONT}{COLOUR BLACK}Bildskärmsalternativ'
+  1487: '{SMALLFONT}{COLOUR BLACK}Ljudalternativ'
+  1488: '{SMALLFONT}{COLOUR BLACK}Musikalternativ'
+  1489: '{SMALLFONT}{COLOUR BLACK}Regionella alternativ'
+  1490: '{SMALLFONT}{COLOUR BLACK}Kontrollalternativ'
+  1491: '{SMALLFONT}{COLOUR BLACK}Diverse alternativ'
+  1492: Alternativ - Bildskärm
+  1493: Alternativ - Ljud
+  1494: Alternativ - Musik
+  1495: Alternativ - Regionalt
+  1496: Alternativ - Kontroller
+  1497: Alternativ - Diverse
+  1498: Använd alltid föredragen valuta
+  1499: '{SMALLFONT}{COLOUR BLACK}Använd alltid den föredragna valutan'
+  1500: Använd föredragen valuta när du startar nytt spel
+  1501: '{SMALLFONT}{COLOUR BLACK}Välj detta alternativ för att åsidosätta standardvalutan i scenariot'
+  1502: '{SMALLFONT}{COLOUR BLACK}Välj valutan för nuvarande spel'
+  1503: '{SMALLFONT}{COLOUR BLACK}Välj standardvaluta för att skapa nya scenarion'
+  1504: '{COLOUR WINDOW_2}Nuvarande valuta:'
+  1505: '{COLOUR WINDOW_2}Föredragen valuta:'
+  1506: ''
+  1507: 'Stora nyheter (eget företag):'
+  1508: 'Stora nyheter (andra företag):'
+  1509: 'Små nyheter (eget företag):'
+  1510: 'Små nyheter (andra företag):'
+  1511: 'Allmänna nyheter:'
+  1512: 'Råd:'
+  1513: Av
+  1514: Tickermeddelande
+  1515: Nyhetsfönster
+  1516: '{COLOUR WINDOW_2}Månadsvis driftkostnad: {COLOUR BLACK}{CURRENCY32}'
+  1517: '{COLOUR WINDOW_2}Månadsvis vinst: {COLOUR BLACK}{CURRENCY32}'
+  1518: Tåg
+  1519: Bussar
+  1520: Lastbilar
+  1521: Spårvagnar
+  1522: Flygplan
+  1523: Fartyg
+  1524: Flygplats
+  1525: Skeppshamn
+  1526: Ordertypen gäller inte flygplan
+  1527: Ordertypen gäller inte fartyg
+  1528: Station ägs av annat företag
+  1529: Ingen vattenväg!
+  1530: Vattenkanal krävs för närvarande av fartyg
+  1531: För närvarande i bruk av minst ett fordon
+  1532: '{SMALLFONT}{COLOUR BLACK}Byt utrustning på fordonet för att frakta annan typ av last'
+  1533: Kan inte byta utrustning för detta fordon
+  1534: Kräver vatten framför kajen
+  1535: '{COLOUR WINDOW_2}Spelar nu:'
+  1536: '{SMALLFONT}{COLOUR BLACK}Stoppa musiken'
+  1537: '{SMALLFONT}{COLOUR BLACK}Spela musik'
+  1538: '{SMALLFONT}{COLOUR BLACK}Nästa musikspår'
+  1539: Spela endast musik för nuvarande era
+  1540: Spela all musik
+  1541: Spela anpassat urval av musik
+  1542: Redigera urval...
+  1543: '{SMALLFONT}{COLOUR BLACK}Redigera musikspårslistan'
+  1544: Redigera musikurval
+  1545: '{SMALLFONT}{COLOUR BLACK}Klicka på ett musikspår för att växla mellan valt/ej valt'
+  1546: ✓
+  1547: '{COLOUR WINDOW_2}Volym:'
+  1548: '{SMALLFONT}{COLOUR BLACK}Ställ in musikvolym'
+  1549: Musikalternativ
+  1550: 'Välj ägarens ansikte för {STRINGID}'
+  1551: '{SMALLFONT}{COLOUR BLACK}Klicka för att välja företags-/ägaransikte'
+  1552: Redan valt av annat företag
+  1553: Kan inte välja ansikte...
+  1554: flygplatser
+  1555: hamnar
+  1556: '{COLOUR WINDOW_2}Företaget grundat: {COLOUR BLACK}{DATE MY}'
+  1557: '{COLOUR WINDOW_2}Prestationsindex: {COLOUR BLACK}{INT16_1DP}% {NEWLINE} “{STRINGID}”'
+  1558: '{COLOUR WINDOW_2}Prestationsindex: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2325}{NEWLINE}  “{STRINGID}”'
+  1559: '{COLOUR WINDOW_2}Prestationsindex: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2324}{NEWLINE}  “{STRINGID}”'
+  1560: '{COLOUR WINDOW_2}Ägare: {COLOUR BLACK}{STRINGID}'
+  1561: låg
+  1562: medel
+  1563: hög
+  1564: '{COLOUR WINDOW_2}Intelligens: {COLOUR BLACK}{INT16} ({STRINGID})'
+  1565: '{COLOUR WINDOW_2}Aggressivitet: {COLOUR BLACK}{INT16} ({STRINGID})'
+  1566: '{COLOUR WINDOW_2}Konkurrenskraft: {COLOUR BLACK}{INT16} ({STRINGID})'
+  1567: '{SMALLFONT}{COLOUR BLACK}Växla mellan enspelarläge och tvåspelarläge'
+  1568: '{OUTLINE}{COLOUR WINDOW_2}Enspelarläge'
+  1569: '{OUTLINE}{COLOUR WINDOW_2}Tvåspelarläge: Ansluten till {STRINGID}'
+  1570: Nybörjare
+  1571: Lätt
+  1572: Medel
+  1573: Svår
+  1574: Expert
+  1575: Region / Objektval
+  1576: Landskapseditor
+  1577: Scenarioalternativ
+  1578: Spara scenario
+  1579: 'Till föregående steg:'
+  1580: 'Till nästa steg:'
+  1581: Ladda landskap
+  1582: Spara landskap
+  1583: Skapar landskap...
+  1584: Kan inte rensa hela området...
+  1585: Landskapsgenerering - Alternativ
+  1586: Landskapsgenerering - Land
+  1587: Landskapsgenerering - Skogar
+  1588: Landskapsgenerering - Städer
+  1589: Landskapsgenerering - Industrier
+  1590: '{SMALLFONT}{COLOUR BLACK}Allmänna alternativ för landskapsgenerering'
+  1591: '{SMALLFONT}{COLOUR BLACK}Landgenereringsalternativ'
+  1592: '{SMALLFONT}{COLOUR BLACK}Skogsgenereringsalternativ'
+  1593: '{SMALLFONT}{COLOUR BLACK}Stadsgenereringsalternativ'
+  1594: '{SMALLFONT}{COLOUR BLACK}Industrigenereringsalternativ'
+  1595: '[None]'
+  1596: Chuggin' Along
+  1597: Long Dusty Road
+  1598: Flying High
+  1599: Gettin' On The Gas
+  1600: Jumpin' The Rails
+  1601: Smooth Running
+  1602: Traffic Jam
+  1603: Never Stop 'til You Get There
+  1604: Soaring Away
+  1605: Techno Torture
+  1606: Everlasting High-Rise
+  1607: Solace
+  1608: Chrysanthemum
+  1609: Eugenia
+  1610: The Ragtime Dance
+  1611: Easy Winners
+  1612: Setting Off
+  1613: A Traveller's Seranade
+  1614: Latino Trip
+  1615: A Good Head Of Steam
+  1616: Hop To The Bop
+  1617: The City Lights
+  1618: Steamin' Down Town
+  1619: Bright Expectations
+  1620: Mo' Station
+  1621: Far Out
+  1622: Running On Time
+  1623: Get Me To Gladstone Bay
+  1624: Sandy Track Blues
+  1625: '{UINT16 RAW}'
+  1626: '{COLOUR WINDOW_2}Startår:'
+  1627: Generera slumpmässigt landskap när spelet startar
+  1628: '{SMALLFONT}{COLOUR BLACK}Generera slumpmässigt landskap varje gång ett nytt spel startas'
+  1629: Generera nytt landskap
+  1630: '{SMALLFONT}{COLOUR BLACK}Generera ett nytt slumpmässigt landskap (nuvarande landskap förloras)'
+  1631: OK
+  1632: Generera nytt landskap
+  1633: Slumpmässigt landskapsalternativ
+  1634: Är du säker på att du vill generera ett nytt landskap och förlora det nuvarande?
+  1635: Är du säker på att du vill generera ett nytt landskap varje gång spelet startas?{NEWLINE}Om du väljer detta alternativ förlorar du nuvarande landskap
+  1636: '{COLOUR WINDOW_2}Havsnivå:'
+  1637: '+{INT16} enheter'
+  1638: '{COLOUR WINDOW_2}Antal skogar:'
+  1639: '{INT16}'
+  1640: '{COLOUR WINDOW_2}Minsta radie för skog:'
+  1641: '{INT16} rutor'
+  1642: '{COLOUR WINDOW_2}Största radie för skog:'
+  1643: '{INT16} rutor'
+  1644: '{COLOUR WINDOW_2}Minsta trädens täthet:'
+  1645: '{INT16}%'
+  1646: '{COLOUR WINDOW_2}Största trädens täthet:'
+  1647: '{INT16}%'
+  1648: '{COLOUR WINDOW_2}Antal slumpmässiga ensamma träd:'
+  1649: '{INT16}'
+  1650: '{COLOUR WINDOW_2}Lägsta höjd för träd:'
+  1651: '{HEIGHT}'
+  1652: '{COLOUR WINDOW_2}Högsta höjd för träd:'
+  1653: '{HEIGHT}'
+  1654: '{COLOUR WINDOW_2}Lägsta markhöjd:'
+  1655: '{INT16} enheter'
+  1656: '{COLOUR WINDOW_2}Topografistil:'
+  1657: Platt land
+  1658: Små kullar
+  1659: Berg
+  1660: 'Halvt berg, halv kullar'
+  1661: 'Halvt berg, helt platt'
+  1662: '{COLOUR WINDOW_2}Kulltäthet:'
+  1663: '{INT16}%'
+  1664: '{COLOUR WINDOW_2}Antal städer:'
+  1665: '{INT16}'
+  1666: '{COLOUR WINDOW_2}Maximal stadsstorlek:'
+  1667: Låg
+  1668: Medel
+  1669: Hög
+  1670: '{COLOUR WINDOW_2}Antal industrier:'
+  1671: Minst en stad måste byggas
+  1672: Kan inte gå vidare till nästa redigeringssteg...
+  1673: Kan inte spara scenariot ännu...
+  1674: '{SMALLFONT}{COLOUR BLACK}Scenarioalternativ'
+  1675: '{SMALLFONT}{COLOUR BLACK}Scenarioutmaning'
+  1676: '{SMALLFONT}{COLOUR BLACK}Företagsalternativ'
+  1677: '{SMALLFONT}{COLOUR BLACK}Finansiella alternativ'
+  1678: Scenarioalternativ
+  1679: Scenarioutmaning
+  1680: Företagsalternativ
+  1681: Finansiella alternativ
+  1682: '{COLOUR WINDOW_2}Maximalt antal rivalföretag:'
+  1683: '{INT16}'
+  1684: '{COLOUR WINDOW_2}Fördröjning innan rivaler startar:'
+  1685: '{INT16} månader'
+  1686: '{COLOUR WINDOW_2}Val av rivalföretag'
+  1687: '{COLOUR WINDOW_2}Föredragen intelligens:'
+  1688: '{COLOUR WINDOW_2}Föredragen aggressivitet:'
+  1689: '{COLOUR WINDOW_2}Föredragen konkurrenskraft:'
+  1690: Vilken som helst
+  1691: Låg
+  1692: Medel
+  1693: Hög
+  1694: '{COLOUR WINDOW_2}Startlån:'
+  1695: '{CURRENCY32}'
+  1696: '{COLOUR WINDOW_2}Maximalt lånebelopp:'
+  1697: '{CURRENCY32}'
+  1698: '{COLOUR WINDOW_2}Ränta på lån:'
+  1699: '{INT16}%'
+  1700: Ändra...
+  1701: '{COLOUR WINDOW_2}Scenariotitel: {COLOUR BLACK}{STRINGID}'
+  1702: '{COLOUR WINDOW_2}Scenariogrupp:'
+  1703: '{COLOUR WINDOW_2}Scenariodetaljer:'
+  1704: Scenariotitel
+  1705: 'Ange namn för scenariot:'
+  1706: Scenariodetaljer
+  1707: 'Ange beskrivning av detta scenario:'
+  1708: Inga detaljer ännu
+  1709: Namnlös
+  1710: Misslyckades att spara landskap!
+  1711: Misslyckades att spara scenario!
+  1712: Skickar data till den andra spelaren...
+  1713: Tar emot data från den andra spelaren...
+  1714: Vänligen vänta - Spelet sparas av den andra spelaren...
+  1715: Vänligen vänta - Spelet laddas av den andra spelaren...
+  1716: Skicka meddelande
+  1717: Skicka meddelande
+  1718: 'Ange meddelande att skicka till {STRINGID}:'
+  1719: ''
+  1720: '{COLOUR WINDOW_2}Tidsgräns för anslutning:'
+  1721: '{INT16} sek.'
+  1722: Tvåspelaranslutningen misslyckades!
+  1723: '{COLOUR WINDOW_2} Konstruerad år: {COLOUR BLACK}{UINT16 RAW}'
+  1724: '{COLOUR WINDOW_2} Föråldrad från: {COLOUR BLACK}{UINT16 RAW}'
+  1725: '{COLOUR WINDOW_2} Effekt: {COLOUR BLACK}{POWER}'
+  1726: '{COLOUR WINDOW_2} Vikt: {COLOUR BLACK}{INT16}t'
+  1727: '{COLOUR WINDOW_2} Max. Hastighet: {COLOUR BLACK}{VELOCITY}'
+  1728: '{COLOUR WINDOW_2} Kapacitet: {COLOUR BLACK}{STRINGID}'
+  1729: Upprättar anslutning...
+  1730: Överallt
+  1731: Ingenstans
+  1732: Långt från vatten
+  1733: Nära vatten
+  1734: På berg
+  1735: Långt från berg
+  1736: I små slumpområden
+  1737: I stora slumpområden
+  1738: Runt klippavsatser
+  1739: Skapa kullar ända till kartkanten
+  1740: '{SMALLFONT}{COLOUR BLACK}Scenarioredigerare'
+  1741: '{STRINGID} Transport'
+  1742: Karta
+  1743: '{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}Företagslista'
+  1744: '{NEWLINE 0 8}{STRINGID}{NEWLINE 25 2}{SPRITE}{NEWLINE 51 2}{STRINGID}{NEWLINE 51 12}{COLOUR WINDOW_1}{INT16_1DP}% “{STRINGID}”'
+  1745: Företag
+  1746: Företagens prestationsindex
+  1747: Enheter last levererade per månad
+  1748: Företagens värden
+  1749: Lastbetalningssatser
+  1750: '{SMALLFONT}{COLOUR BLACK}Jämför företag'
+  1751: '{SMALLFONT}{COLOUR BLACK}Företagens prestationsindexgrafer'
+  1752: '{SMALLFONT}{COLOUR BLACK}Grafer över levererad last för varje företag'
+  1753: '{SMALLFONT}{COLOUR BLACK}Företagens värdegrafer'
+  1754: '{SMALLFONT}{COLOUR BLACK}Lastbetalningssatser'
+  1755: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter företagsnamn'
+  1756: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter företagsstatus'
+  1757: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter prestationsindex'
+  1758: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter företagsvärde'
+  1759: '{COLOUR BLACK}Företag'
+  1760: '{COLOUR BLACK}Företag ▼'
+  1761: '{COLOUR BLACK}Status'
+  1762: '{COLOUR BLACK}Status ▼'
+  1763: '{COLOUR BLACK}Prestationsindex'
+  1764: '{COLOUR BLACK}Prestationsindex ▼'
+  1765: '{COLOUR BLACK}Företagsvärde'
+  1766: '{COLOUR BLACK}Företagsvärde ▼'
+  1767: '{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}'
+  1768: '{NEWLINE 0 3}{INT16_1DP}%{NEWLINE 0 13}“{STRINGID}”'
+  1769: '{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2325}{NEWLINE 0 13}“{STRINGID}”'
+  1770: '{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2324}{NEWLINE 0 13}“{STRINGID}”'
+  1771: '{NEWLINE 0 8}{CURRENCY48}'
+  1772: Banförman
+  1773: Ingenjör
+  1774: Trafikchef
+  1775: Transportkoordinator
+  1776: Ruttövervakare
+  1777: Direktör
+  1778: Verkställande direktör
+  1779: Ordförande
+  1780: President
+  1781: Magnat
+  1782: '{INT16} företag'
+  1783: '{INT16} företag'
+  1784: '{RAWDATE MY SHORT}'
+  1785: '{INT16_1DP}%'
+  1786: '{SMALLFONT}{COLOUR BLACK}{STRINGID}'
+  1787: '{INT32}'
+  1788: '{INT16_1DP}%'
+  1789: '{INT16_1DP}% {SPRITE 2325}'
+  1790: '{INT16_1DP}% {SPRITE 2324}'
+  1791: '{SMALLFONT}{COLOUR BLACK}{CURRENCY48}'
+  1792: '{SMALLFONT}{COLOUR BLACK}{STRINGID}'
+  1793: '{SMALLFONT}{COLOUR WHITE}{STRINGID}'
+  1794: Flygplatstypen passar inte detta flygplan
+  1795: '{COLOUR BLACK}£'
+  1796: '{INT16} dagar'
+  1797: '{CURRENCY32}'
+  1798: '{SMALLFONT}{COLOUR BLACK}Betalning för transport av {INT16} enheter last en sträcka på {INT16} rutor'
+  1799: '{SMALLFONT}{COLOUR BLACK}Transporttid'
+  1800: '*  Pausat  *'
+  1801: Stadsmyndigheten tillåter inte att ännu en flygplats byggs här
+  1802: Städer
+  1803: Industrier
+  1804: Vägar
+  1805: Järnvägar
+  1806: Stationer
+  1807: Vegetation
+  1808: Flygplansrutter
+  1809: Skeppsrutter
+  1810: ''
+  1811: 'Bygger {STRINGID} nära {STRINGID}'
+  1812: 'Bygger {STRINGID} nära {STRINGID}'
+  1813: 'Bygger {STRINGID} nära {STRINGID}'
+  1814: 'Kontrollerar tjänster nära {STRINGID}'
+  1815: 'Undersöker landskap nära {STRINGID}'
+  1816: '{COLOUR RED}Bankrutt!'
+  1817: '{SMALLFONT}{COLOUR BLACK}Pausa spelet'
+  1818: '{SMALLFONT}{COLOUR BLACK}Normal hastighet'
+  1819: '{SMALLFONT}{COLOUR BLACK}Snabbspola'
+  1820: '{SMALLFONT}{COLOUR BLACK}Extra snabbspola'
+  1821: '{COLOUR BLACK}Slumpmässigt genererat landskap'
+  1822: '{COLOUR WINDOW_2}Startdatum: {COLOUR BLACK}{UINT16 RAW}'
+  1823: '{COLOUR WINDOW_2}Konkurrerande företag: {COLOUR BLACK}Inga'
+  1824: '{COLOUR WINDOW_2}Konkurrerande företag: {COLOUR BLACK}Upp till {INT16}'
+  1825: '{COLOUR BLACK}{MOVE_X 10}(startar inte förrän om {INT16} månad)'
+  1826: '{COLOUR BLACK}{MOVE_X 10}(startar inte förrän om {INT16} månader)'
+  1827: '{COLOUR WINDOW_2}Försäljningsvärde av fordon: {COLOUR BLACK}{CURRENCY32}'
+  1828: '{COLOUR WINDOW_2}Senaste inkomst: {COLOUR BLACK}N/A'
+  1829: '{COLOUR WINDOW_2}Senaste inkomst: {COLOUR BLACK}{DATE DMY}'
+  1830: '{COLOUR BLACK}{STRINGID} transporterade {INT16} rutor på {INT16} dagar = {CURRENCY32}'
+  1831: '{COLOUR WINDOW_2} Tidigaste byggnadsår: {COLOUR BLACK}{UINT16 RAW}'
+  1832: '{COLOUR WINDOW_2} Senaste byggnadsår: {COLOUR BLACK}{UINT16 RAW}'
+  1833: '{COLOUR WINDOW_2}Den lokala myndighetens betyg av transportföretag:'
+  1834: Uruselt
+  1835: Dåligt
+  1836: Medel
+  1837: Bra
+  1838: Utmärkt
+  1839: '{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})'
+  1840: 'Uppnå ett företagsvärde på {CURRENCY32}{STRINGID}{STRINGID}'
+  1841: 'Uppnå en månadsvis vinst från fordon på {CURRENCY32}{STRINGID}{STRINGID}'
+  1842: Uppnå ett prestationsindex på {INT16_1DP}% (“{STRINGID}”){STRINGID}{STRINGID}
+  1843: 'Leverera {STRINGID}{STRINGID}{STRINGID}'
+  1844: ' och vara det högst rankade företaget'
+  1845: ' och vara ett av de 3 bästa företagen'
+  1846: ' inom {INT16} år'
+  1847: ' före slutet av {UINT16 RAW}'
+  1848: ...och vara det bästa företaget
+  1849: ...och vara bland de 3 bästa företagen
+  1850: '...med en tidsgräns på:'
+  1851: '{COLOUR WINDOW_2}Utmaning:'
+  1852: '{COLOUR BLACK}  {STRINGID}'
+  1853: Uppnå ett visst företagsvärde
+  1854: Uppnå en viss månadsvis vinst från fordon
+  1855: Uppnå ett visst prestationsindex
+  1856: Leverera en viss mängd last
+  1857: '{CURRENCY32}'
+  1858: '{INT16_1DP}%'
+  1859: '{INT32}'
+  1860: '{INT16} år'
+  1861: '{SMALLFONT}(Slutfört av {STRINGID} på {INT16} år {INT16} månader)'
+  1862: '{COLOUR WINDOW_2}Lyckat!{NEWLINE}{COLOUR BLACK}  Du klarade utmaningen på {INT16} år {INT16} månader'
+  1863: '{COLOUR WINDOW_2}Misslyckat!{NEWLINE}{COLOUR BLACK}  Du misslyckades med utmaningen'
+  1864: '{COLOUR WINDOW_2}Du har blivit besegrad av den andra spelaren!{NEWLINE}{COLOUR BLACK}  Utmaningen klarades av {STRINGID} på {INT16} år {INT16} månader'
+  1865: '{COLOUR WINDOW_2}Framsteg mot att klara utmaningen: {COLOUR BLACK}{INT16}%'
+  1866: '{COLOUR WINDOW_2}Återstående tid: {COLOUR BLACK}{INT16} år {INT16} månader'
+  1867: '{COLOUR WINDOW_2}Levererad last:'
+  1868: '{COLOUR BLACK}Ingen'
+  1869: '{OUTLINE}{COLOUR WINDOW_2}Avsluta{NEWLINE}Spelet'
+  1870: Företaget är bankrutt!
+  1871: Tillåt att industrier stänger under spelets gång
+  1872: Tillåt att nya industrier dyker upp under spelets gång
+  1873: Dela ytterligare företag/ägare
+  1874: '{SMALLFONT}{COLOUR BLACK}Välj detta alternativ för att skicka eventuella anpassade företags-/ägarfilsdata till den andra datorn vid anslutning'
+  1875: '{COLOUR WINDOW_2}Förbjud rivalföretag att använda'
+  1876: '{COLOUR WINDOW_2}Förbjud spelarägda företag att använda'
+  1877: '{NEWLINE}Stannar vid: {STRINGID}'
+  1878: ', {STRINGID}'
+  1879: 'Handledning 1: Starta en busstrafik inom en stad'
+  1880: 'Handledning 2: Bygga en busstrafik mellan två städer'
+  1881: 'Handledning 3: Bygga en järnvägstrafik mellan två städer'
+  1882: '{SMALLFONT}{COLOUR BLACK}Vi ska bygga en busstrafik för passagerare inom en stad, så första steget är att välja en stad...'
+  1883: '{SMALLFONT}{COLOUR BLACK}För musen med höger musknapp nedtryckt för att skrolla vyn och titta runt på städerna...'
+  1884: '{SMALLFONT}{COLOUR BLACK}Boulders Bay är den största staden och kommer därmed ge flest passagerare. Zooma in med mushjulet eller zoomikonen...'
+  1885: '{SMALLFONT}{COLOUR BLACK}All vägbyggnation görs i vägbyggfönstret...'
+  1886: '{SMALLFONT}{COLOUR BLACK}Vi behöver inga nya vägar för denna busstrafik, bara busshållplatser...'
+  1887: '{SMALLFONT}{COLOUR BLACK}Vår busstrafik ska gå från den ena sidan av staden till den andra...'
+  1888: '{SMALLFONT}{COLOUR BLACK}Det blå markerade området är stationens infångningsområde. Ju fler byggnader i området, desto fler passagerare...'
+  1889: '{SMALLFONT}{COLOUR BLACK}Kolla att stationen accepterar passagerare – annars kan du inte lasta av dem och får ingen betalning. Titta efter texten “Catchment Area” längst ned...'
+  1890: '{SMALLFONT}{COLOUR BLACK}När du är nöjd med placeringen, klicka med vänster musknapp för att bygga stationen...'
+  1891: '{SMALLFONT}{COLOUR BLACK}Vi bygger den andra hållplatsen på andra sidan av staden...'
+  1892: '{SMALLFONT}{COLOUR BLACK}Nu behöver vi köpa en buss...'
+  1893: '{SMALLFONT}{COLOUR BLACK}Vi har två busstyper att välja mellan. Vi tar den nyare, som rymmer fler passagerare...'
+  1894: '{SMALLFONT}{COLOUR BLACK}Placera musen över en väg och klicka med vänster musknapp för att sätta ut bussen...'
+  1895: '{SMALLFONT}{COLOUR BLACK}Innan vi startar bussen behöver den veta vart den ska. Välj ruttfliken i fordonsfönstret...'
+  1896: '{SMALLFONT}{COLOUR BLACK}För att ställa in rutten, klicka bara på stationerna i vyn...'
+  1897: '{SMALLFONT}{COLOUR BLACK}Nu kan vi starta bussen...'
+  1898: '{SMALLFONT}{COLOUR BLACK}Vi kan titta på när den plockar upp sina första passagerare...'
+  1899: '{SMALLFONT}{COLOUR BLACK}Vi ska bygga en busstrafik för passagerare mellan Boulder Bay och Breakers Bridge. Det finns inga vägar som länkar städerna, så vi behöver bygga en...'
+  1900: '{SMALLFONT}{COLOUR BLACK}Välj riktningen på den nya vägsträckan och klicka i vyn för att börja bygga...'
+  1901: '{SMALLFONT}{COLOUR BLACK}Om du klickar på “bygg detta”-ikonen läggs fler vägsektioner till i samma riktning...'
+  1902: '{SMALLFONT}{COLOUR BLACK}Innan vi fortsätter – här är ett snabbare sätt att starta vägbyggandet...'
+  1903: '{SMALLFONT}{COLOUR BLACK}Klicka bara med höger musknapp på slutet av vägen du vill förlänga...'
+  1904: '{SMALLFONT}{COLOUR BLACK}Här behöver vi svänga vänster, så välj en vänstersväng...'
+  1905: '{SMALLFONT}{COLOUR BLACK}Och sedan tillbaka till rak väg...'
+  1906: '{SMALLFONT}{COLOUR BLACK}Klart med vägen, nu bygger vi stationerna...'
+  1907: '{SMALLFONT}{COLOUR BLACK}Och till sist köper vi en buss och sätter igång...'
+  1908: '{SMALLFONT}{COLOUR BLACK}Denna rutt kan bli ganska trafikerad, så vi köper en till buss...'
+  1909: "{SMALLFONT}{COLOUR BLACK}För att snabbt kopiera Buss 1:s hela rutt till Buss 2, klicka på texten 'slut på rutlista' för Buss 1..."
+  1910: '{SMALLFONT}{COLOUR BLACK}Vi börjar med att bygga en järnvägs passagerartrafik mellan de två största städerna...'
+  1911: '{SMALLFONT}{COLOUR BLACK}Järnvägsstationer kan bara byggas på rakt spår och måste vara tillräckligt långa för vårt tåg – Vi bygger en station här om en stund...'
+  1912: '{SMALLFONT}{COLOUR BLACK}Nu bygger vi stationerna...'
+  1913: '{SMALLFONT}{COLOUR BLACK}Därefter bygger vi tåget. Vi behöver ett lok för att dra tåget och vagnar för passagerarna...'
+  1914: '{SMALLFONT}{COLOUR BLACK}Eftersom spåret bara är en enkel linje behövs ingen rutt – Starta tåget...'
+  1915: '{SMALLFONT}{COLOUR BLACK}Nu förlänger vi spåret med en korsning och en avstickare till en tredje stad. Högerklicka på spåret för att öppna byggfönstret...'
+  1916: '{SMALLFONT}{COLOUR BLACK}Nu är banan inte längre enkel, så vi måste ge tåget en rutt...'
+  1917: '{SMALLFONT}{COLOUR BLACK}Vi skulle kunna lägga till ett andra tåg, men först måste vi bygga signaler så att de inte krockar...'
+  1918: "{SMALLFONT}{COLOUR BLACK}Signalerna delar spåret i 3 'blocksektioner' och bara ett tåg i taget kan gå in i varje sektion..."
+  1919: Använd föredraget ägarnamn när nytt spel startas
+  1920: '{SMALLFONT}{COLOUR BLACK}Välj detta alternativ för att använda samma ägarnamn varje gång du startar nytt spel'
+  1921: '{COLOUR WINDOW_2}Föredraget ägarnamn: {COLOUR BLACK}{STRINGID}'
+  1922: Föredraget ägarnamn
+  1923: 'Skriv in önskat ägarnamn:'
+  1924: '{COLOUR BLACK}{TINYFONT}Kraft'
+  1925: '{COLOUR BLACK}{TINYFONT}Broms'
+  1926: '{SMALLFONT}{COLOUR BLACK}Flytta vald order uppåt i listan'
+  1927: '{SMALLFONT}{COLOUR BLACK}Flytta vald order nedåt i listan'
+  1928: Kan inte köra spelet direkt från skrivskyddat medium
+  1929: Atari Inc. Credits...
+  1930: '{COLOUR WINDOW_2}Licensierad till Atari Inc.'
+  1931: Atari Inc. Credits
+  1932: Spelversionerna är inkompatibla – Kunde inte ansluta!
+  1933: '{SMALLFONT}{COLOUR BLACK}Skicka kort textmeddelande till andra spelaren'
+  1934: den andra spelaren
+  1935: 'Den andra spelaren har avslutat spelet: Tvåspelarläget har kopplats från'
+  1936: '{COLOUR YELLOW}Användning av denna produkt är föremål för villkoren i licensavtalet{NEWLINE}som finns i produktens “ReadMe”-fil och i manualen'
+  1937: '{COLOUR YELLOW}ESRB-anmärkning: Spelupplevelsen kan ändras under onlinespel'
+  1938: '{COLOUR TOPAZ}Vissa transportmedel i detta spel har namn som kan likna verkliga fordon.'
+  1939: '{COLOUR TOPAZ}Detta används för att hjälpa spelare koppla till spelets fiktiva universum.'
+  1940: '{COLOUR TOPAZ}De attribut (som hastighet, kapacitet, tillförlitlighet och kostnad) som tilldelats olika'
+  1941: '{COLOUR TOPAZ}fordon är endast för spelets skull och är inte avsedda att motsvara verkliga'
+  1942: '{COLOUR TOPAZ}maskiner (oavsett om de bär liknande namn eller inte).'
+  1943: '{COLOUR WINDOW_2}Senior Producer:  Thomas J. Zahorik'
+  1944: '{COLOUR WINDOW_2}Senior Brand Manager:  Jeff Foley'
+  1945: '{COLOUR WINDOW_2}Executive Producer:  Bob Welch'
+  1946: '{COLOUR WINDOW_2}Director of Technology:  Paul Hellier'
+  1947: '{COLOUR WINDOW_2}Director of Marketing:  Peter Matiss'
+  1948: '{COLOUR WINDOW_2}Director of Creative Services:  Steve Martin'
+  1949: '{COLOUR WINDOW_2}Graphic Designer:  Rod Tilley'
+  1950: '{COLOUR WINDOW_2}Director of Editorial & Documentation Services:  Elizabeth Mackney'
+  1951: '{COLOUR WINDOW_2}Documentation Specialist:  Kurt Carlson'
+  1952: '{COLOUR WINDOW_2}Copywriter:  Paul Collin'
+  1953: '{COLOUR WINDOW_2}Manual Writer:  David Ellis'
+  1954: '{COLOUR WINDOW_2}Director of Publishing Support:  Michael Gilmartin'
+  1955: '{COLOUR WINDOW_2}Q.A. Managers:  Bill Carroll, Dave Strang'
+  1956: '{COLOUR WINDOW_2}Q.A. Supervisor:  Jason Cordero'
+  1957: '{COLOUR WINDOW_2}I.T. Manager/Western Region:  Ken Ford'
+  1958: '{COLOUR WINDOW_2}Manager of Technical Support:  Michael Vetsch'
+  1959: '{COLOUR WINDOW_2}Lead Tester:  Marshall Clevesy'
+  1960: '{COLOUR WINDOW_2}Assistant Lead Tester:  Sean McLaren'
+  1961: '{COLOUR WINDOW_2}Testare:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria'
+  1962: '{COLOUR WINDOW_2}Chef för kompatibilitetslabb:  Dave Strang'
+  1963: '{COLOUR WINDOW_2}Ansvarig för kompatibilitetstester:  Cuong Vu'
+  1964: '{COLOUR WINDOW_2}Kompatibilitetsanalytiker:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody'
+  1965: '{COLOUR WINDOW_2}Engineering Services Specialist:  Ken Edwards'
+  1966: '{COLOUR WINDOW_2}Engineering Services Technicians:  Eugene Lai, Dan Burkhead'
+  1967: '{COLOUR WINDOW_2}Speciellt tack till:  John Billington, Cecelia Hernandez'
+  1968: '{COLOUR WINDOW_2}'
+  1969: '{COLOUR WINDOW_2}'
+  1970: '{COLOUR WINDOW_2}'
+  1971: '{COLOUR WINDOW_2}'
+  1972: '{COLOUR WINDOW_2}'
+  1973: '{COLOUR WINDOW_2}'
+  1974: '{COLOUR WINDOW_2}'
+  1975: '{COLOUR WINDOW_2}'
+  1976: '{COLOUR WINDOW_2}'
+  1977: '{COLOUR WINDOW_2}'
+  1978: '{COLOUR WINDOW_2}'
+  1979: '{COLOUR WINDOW_2}'
+  1980: '{COLOUR WINDOW_2}'
+  1981: '{COLOUR WINDOW_2}'
+  1982: '{COLOUR WINDOW_2}'
+  1983: Distans x Enheter av last levererade per månad
+  1984: '{SMALLFONT}{COLOUR BLACK}Grafer över levererad lastdistans för varje företag'
+  1985: '{COLOUR WINDOW_2}Senaste resans medelhastighet: {COLOUR BLACK}{VELOCITY}'
+  1986: land
+  1987: luft
+  1988: vatten
+  1989: Tåg
+  1990: Buss
+  1991: Lastbil
+  1992: Spårvagn
+  1993: Flygplan
+  1994: Fartyg
+  1995: '{SMALLFONT}{COLOUR BLACK}Hastighetsrekord'
+  1996: Hastighetsrekord
+  1997: '{COLOUR WINDOW_2}Hastighetsrekord på land: {COLOUR BLACK}{VELOCITY}'
+  1998: '{COLOUR WINDOW_2}Hastighetsrekord i luften: {COLOUR BLACK}{VELOCITY}'
+  1999: '{COLOUR WINDOW_2}Hastighetsrekord på vatten: {COLOUR BLACK}{VELOCITY}'
+  2000: '{COLOUR BLACK}Uppnått av {STRINGID} den {DATE DMY}'
+  2001: Bekräfta ändring av bildskärmsläge
+  2002: '{COLOUR WINDOW_2}Bildskärmsupplösning ändrad till {UINT16 RAW} x {UINT16 RAW}'
+  2003: '{COLOUR WINDOW_2}_'
+  2004: '{COLOUR WINDOW_2}Filnamn:'
+  2005: '{COLOUR WINDOW_2}Mapp: {COLOUR BLACK}{STRINGID}'
+  2006: '{SMALLFONT}{COLOUR BLACK}Upp en nivå till förälder-mapp'
+  2007: '{COLOUR WINDOW_2}Företag: {COLOUR BLACK}{STRINGID}'
+  2008: '{COLOUR WINDOW_2}Datum: {COLOUR BLACK}{DATE DMY}'
+  2009: '{COLOUR WINDOW_2}Utmaningsframsteg: {COLOUR BLACK}{INT16}%'
+  2010: '{COLOUR WINDOW_2}Utmaning: {COLOUR BLACK}Slutförd'
+  2011: '{COLOUR WINDOW_2}Utmaning: {COLOUR BLACK}Misslyckad'
+  2012: 'Ersätta befintlig fil: “{STRINGID}”?'
+  2013: Ersätt
+  2014: 'Radera fil: “{STRINGID}”?'
+  2015: Radera
+  2016: 'Fel: Ogiltigt filnamn'
+  2017: Industrinamn
+  2018: 'Ange nytt namn för {STRINGID}:'
+  2019: Kan inte byta industrins namn...
+  2020: '{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Max. hastighet: {STRINGID}{NEWLINE 45 11}Höjdgräns: {HEIGHT}'
+  2021: Dubbletter av CD-nycklar upptäckta – Kunde inte ansluta!
+  2022: '{COLOUR BLACK}{SMALLFONT}(Datornamn = {STRINGID})'
+  2023: '1:a'
+  2024: '2:a'
+  2025: '3:e'
+  2026: '4:e'
+  2027: '5:e'
+  2028: '6:e'
+  2029: '7:e'
+  2030: '8:e'
+  2031: '9:e'
+  2032: '10:e'
+  2033: '11:e'
+  2034: '12:e'
+  2035: '13:e'
+  2036: '14:e'
+  2037: '15:e'
+  2038: '{COLOUR BLACK}{INT16} valda (max {INT16})'
+  2039: ''
+  2040: ''
+  2041: '{COLOUR BLACK}(ID:'
+  2042: 'Data för följande objekt saknas:'
+  2043: Inte tillräckligt utrymme för grafik
+  2044: För många objekt av denna typ vald
+  2045: 'Följande objekt måste väljas först:'
+  2046: Detta objekt används just nu
+  2047: Detta objekt krävs av ett annat objekt
+  2048: Detta objekt krävs alltid
+  2049: Kunde inte välja detta objekt
+  2050: Kunde inte avmarkera detta objekt
+  2051: Ogiltigt urval av objekt
+  2052: 'Objekturval - {STRINGID}'
+  2053: Gränssnittsstilar
+  2054: Ljud
+  2055: Valuta
+  2056: Animationseffekter
+  2057: Lodräta markytor
+  2058: Vatten
+  2059: Mark
+  2060: Stadsnamn
+  2061: Last
+  2062: Murar
+  2063: Signaler
+  2064: Järnvägskorsningar
+  2065: Gatubelysning
+  2066: Tunnlar
+  2067: Broar
+  2068: Spårstationer
+  2069: Spårextra
+  2070: Spår
+  2071: Vägstationer
+  2072: Vägextra
+  2073: Vägar
+  2074: Flygplatser
+  2075: Skeppshamnar
+  2076: Fordon
+  2077: Träd
+  2078: Snö
+  2079: Klimat
+  2080: Data för kartgenerering
+  2081: Byggnader
+  2082: Ställningar
+  2083: Industrier
+  2084: Region
+  2085: Företagsägare
+  2086: Scenariobeskrivningar
+  2087: lista över objekt
+  2088: 'Saknad objektdata, ID:'
+  2089: Exportera plug-in-objekt med sparade spel
+  2090: '{SMALLFONT}{COLOUR BLACK}Välj om tilläggsdata (objekt som inte ingår i huvudprodukten) ska sparas i sparfilen eller scenariot, så andra kan ladda dem även om de saknar objektdata'
+  2091: Minst en generell vägtyp med dubbelriktning måste väljas
+  2092: En ställnings-/scaffolding-typ måste väljas
+  2093: Avancerat
+  2094: '{SMALLFONT}{COLOUR BLACK}Tillåt mer avancerat urval av enskilda objekt'
+  2095: '{COLOUR WHITE}{BIGFONT}£'
+  2096: Nya objekt installerades lyckat
+  2097: Minst en industri måste väljas
+  2098: Minst en stadsbyggnad måste väljas
+  2099: En typ av företags huvudkontor måste väljas
+  2100: Endast en typ av företags huvudkontor får väljas
+  2101: En gränssnittstyp måste väljas
+  2102: Minst en fordonstyp måste väljas
+  2103: Minst en marktyp måste väljas
+  2104: En valutatyp måste väljas
+  2105: En vattentyp måste väljas
+  2106: En stadsnamnstyp måste väljas
+  2107: Minst en typ av järnvägskorsning måste väljas
+  2108: En typ av gatubelysning måste väljas
+  2109: En snötyp måste väljas (även om den inte behövs)
+  2110: En klimattyp måste väljas
+  2111: En datatyp för kartgenerering måste väljas
+  2112: En regiontyp måste väljas
+  2113: mph
+  2114: kmh⁻¹
+  2115: 'timme:'
+  2116: 'timmar:'
+  2117: min
+  2118: 'min:'
+  2119: sek
+  2120: ' enheter'
+  2121: fot
+  2122: m
+  2123: hk
+  2124: kW
+  2125: '{COLOUR WINDOW_2}Språk:'
+  2126: '{COLOUR WINDOW_2}Inaktivera fordonsfel'
+  2127: '{COLOUR WINDOW_2}Skärmläge:'
+  2128: Fönster
+  2129: Helskärm
+  2130: Helskärm (kantlöst fönster)
+  2131: Standardsljudenhet
+  2132: '{COLOUR WINDOW_2}Fönsterskalningsfaktor:'
+  2133: '{COLOUR BLACK}+'
+  2134: '{COLOUR BLACK}-'
+  2135: '{COLOUR BLACK}{INT32_2DP}'
+  2136: '{COLOUR WINDOW_2}Zooma till pekarens position'
+  2137: '{SMALLFONT}{COLOUR BLACK}När aktiverat zoomar inzoomning kring pekaren istället för skärmens mitt'
+  2138: '{COLOUR WINDOW_2}Spela musik på titelskärmen'
+  2139: Avsluta till menyn
+  2140: Avsluta OpenLoco
+  2141: '{COLOUR WINDOW_2}Inaktivera AI-företag'
+  2142: '{SMALLFONT}{COLOUR BLACK}Detta gör att AI inte ”tänker” och därmed blir overksamma.{NEWLINE}I nya spel förhindrar det även nya AI-företag att bildas.'
+  2143: '{COLOUR WINDOW_2}Autosave-antal:'
+  2144: '{COLOUR WINDOW_2}Autosave-frekvens:'
+  2145: Aldrig
+  2146: Varje månad
+  2147: 'Var {INT32} månader'
+  2148: '{COLOUR WINDOW_2}Höjdkällkod:'
+  2149: Originalgenerator
+  2150: Simplexgenerator
+  2151: Modifiera fordon
+  2152: Klona fordon
+  2153: Kan inte klona fordon...
+  2154: Leta upp fordon i huvudvy
+  2155: Följ fordon i huvudvy
+  2156: Aktivera fusk-/debug-menyrad
+  2157: '{SMALLFONT}{COLOUR BLACK}Detta lägger till en extraknapp i spelets verktygsrad för enkel åtkomst till vissa fusk och debug-alternativ'
+  2158: Aktivera sandlådeläge
+  2159: Tillåt manuell körning
+  2160: Tillåt byggande medan spelet är pausat
+  2161: Visa FPS-räknare
+  2162: '{SMALLFONT}{COLOUR BLACK}Visar en räknare högst upp på skärmen med antalet renderade bilder per sekund'
+  2163: Ta bort bildbegränsning
+  2164: '{SMALLFONT}{COLOUR BLACK}Tar bort begränsningen att rita i 40 Hz'
+  2165: Hårdvara
+  2166: Kart-rendering
+  2167: Tile-inspektör
+  2168: '{SMALLFONT}{COLOUR BLACK}Aktivera för att välja en tile på kartan att inspektera.'
+  2169: Markyta
+  2170: Spår
+  2171: Station
+  2172: Signal
+  2173: Byggnad
+  2174: Träd
+  2175: Mur
+  2176: Väg
+  2177: Industri
+  2178: '{COLOUR WINDOW_2} {STRINGID} ({STRINGID})'
+  2179: '{COLOUR WINDOW_2} {STRINGID} - {STRINGID} ({STRINGID})'
+  2180: 'X:'
+  2181: 'Y:'
+  2182: '{COLOUR WINDOW_2}{INT16}'
+  2183: Tile-elementdata
+  2184: Fusk
+  2185: Ekonomiska fusk
+  2186: Företagsfusk
+  2187: Fordonsfusk
+  2188: Stadsfusk
+  2189: Rensa lån
+  2190: Rensa
+  2191: '{COLOUR BLACK}{CURRENCY32}'
+  2192: Välj målföretag
+  2193: Välj fusk att använda
+  2194: Växla kontroll till detta företag
+  2195: Förvärva alla företagstillgångar
+  2196: Växla konkursstatus
+  2197: Växla fängelsestatus
+  2198: Öka tillgångar
+  2199: '{COLOUR WINDOW_2}Belopp:'
+  2200: Lägg till
+  2201: Fordonstillförlitlighet
+  2202: Sätt alla till noll (obegränsat)
+  2203: Sätt alla till hundra (full förnyelse)
+  2204: Sätt företagsbetyg
+  2205: '-10% överallt'
+  2206: +10% överallt
+  2207: Min överallt
+  2208: Max överallt
+  2209: Alla fordon
+  2210: Stoppar vid station
+  2211: Transporterar last
+  2212: '{MOVE_X 10}Har {STRINGID} {SPRITE}'
+  2213: '»{MOVE_X 10}Har {STRINGID} {SPRITE}'
+  2214: Ingen station vald
+  2215: Ingen lasttyp vald
+  2216: '{SMALLFONT}{COLOUR BLACK}Öppna ett stationsfönster för att filtrera efter station'
+  2217: '{SMALLFONT}{COLOUR BLACK}Välj en lasttyp från listan med tillgänglig last'
+  2218: 'Byggläge: Föregående flik'
+  2219: 'Byggläge: Nästa flik'
+  2220: 'Byggläge: Föregående spårdel'
+  2221: 'Byggläge: Nästa spårdel'
+  2222: 'Byggläge: Föregående lutning'
+  2223: 'Byggläge: Nästa lutning'
+  2224: 'Byggläge: Bygg på nuvarande position'
+  2225: 'Byggläge: Ta bort på nuvarande position'
+  2226: 'Byggläge: Välj position'
+  2227: Tåg vänder vid signaler
+  2228: Autobetalning
+  2229: '{SMALLFONT}{COLOUR BLACK}En gång per dag används dina nuvarande tillgångar för att betala av på lånet om du har ett.'
+  2230: '{COLOUR WINDOW_2}År:'
+  2231: '{COLOUR WINDOW_2}Månad:'
+  2232: '{COLOUR WINDOW_2}Dag:'
+  2233: Sätt datum
+  2234: '{COLOUR BLACK}{UINT16 RAW}'
+  2235: '{COLOUR BLACK}{INT32}'
+  2236: '{COLOUR BLACK}{INT32}'
+  2237: '{DATE DMY}'
+  2238: 'Spelhastighet: Normal'
+  2239: 'Spelhastighet: Snabbspola'
+  2240: 'Spelhastighet: Extra snabbspola'
+  2241: '{COLOUR WINDOW_2}Kapacitet: {COLOUR BLACK}{STRINGID}'
+  2242: '{NEWLINE}{COLOUR WINDOW_2} Föråldrad: {COLOUR BLACK}{UINT16 RAW}'
+  2243: Fordonet är låst!
+  2244: Visa låsta fordon
+  2245: '{SMALLFONT}{COLOUR BLACK}När aktiverat, visar även föråldrade och kommande fordon'
+  2246: '{NEWLINE}{COLOUR WINDOW_2} Kommande: {COLOUR BLACK}{UINT16 RAW}'
+  2247: Tillåt byggande av låsta fordon
+  2248: '{SMALLFONT}{COLOUR BLACK}När aktiverat, kan även föråldrade och kommande fordon byggas'
+  2249: Fönster för fordonsbygge
+  2250: '{SMALLFONT}{COLOUR BLACK}Aktivera för att ändra terrängtyp istället för höjd'
+  2251: Invertera höger-mus-dragning
+  2252: '{SMALLFONT}{COLOUR BLACK}När aktiverat, panorerar huvudvyn i omvänd riktning när du drar med höger musknapp'
+  2253: Visa penganotiser
+  2254: '{SMALLFONT}{COLOUR BLACK}Växla synlighet av penganotiser (bygg och fordon) av/på'
+  2255: Starta Server
+  2256: Stäng Server
+  2257: Koppla från
+  2258: '{COLOUR WINDOW_2}Längd: {COLOUR BLACK}{INT32_2DP} ruta(or), {INT32} vagnar'
+  2259: '{COLOUR WINDOW_2}Längd: {COLOUR BLACK}{INT32_2DP} ruta(or)'
+  2260: '{COLOUR WINDOW_2} Längd: {COLOUR BLACK}{INT32_2DP} ruta(or)'
+  2261: '{NEWLINE}{COLOUR WINDOW_2} Längd: {COLOUR BLACK}{INT32_2DP} ruta(or)'
+  2262: '{NEWLINE}Längd:  {INT32_2DP} ruta(or)'
+  2263: '{COLOUR WINDOW_2}{UINT16}/{UINT16}'
+  2264: Jätteskärmdump
+  2265: '{COLOUR WINDOW_2} Filnamn: {COLOUR BLACK}{STRINGID}'
+  2266: Scenarioalternativ
+  2267: Objekturval
+  2268: Speljusteringar
+  2269: Föredragen ägare
+  2270: Autosave-inställningar
+  2271: Inaktivera stadsutveckling
+  2272: '{SMALLFONT}{COLOUR BLACK}När aktiverat, gör att städer inte förnyar eller växer över tid'
+  2273: Slutför scenarioutmaning
+  2274: Rensa
+  2275: Fel vid inläsning av objekt
+  2276: '{COLOUR BLACK}Filen kunde inte läsas in eftersom några av de objekt den refererar till saknas eller är korrupta. Nedan listas dessa objekt.'
+  2277: '{COLOUR BLACK}Objekt-ID'
+  2278: '{COLOUR BLACK}Typ'
+  2279: '{COLOUR BLACK}Checksum'
+  2280: Spela ljudeffekter för nya meddelanden
+  2281: '{SMALLFONT}{COLOUR BLACK}När aktiverat spelas ett ljud av en passande jublande folkmassa för nya meddelanden.'
+  2282: '{SMALLFONT}{COLOUR BLACK}Vänd ordningslistan'
+  2283: Namn och typ
+  2284: BH
+  2285: CH
+  2286: D
+  2287: G
+  2288: '{SMALLFONT}{COLOUR BLACK}Objektnamn och typ för tile-elementet'
+  2289: '{SMALLFONT}{COLOUR BLACK}Tile-elementets basnivå'
+  2290: '{SMALLFONT}{COLOUR BLACK}Tile-elementets fria höjd'
+  2291: '{SMALLFONT}{COLOUR BLACK}Tile-elementets riktning'
+  2292: '{SMALLFONT}{COLOUR BLACK}Tile-elementets spökstatus'
+  2293: Nybörjare
+  2294: Avancerad
+  2295: Expert
+  2296: Vanilj
+  2297: Anpassad
+  2298: Komponenter
+  2299: Sortera efter designår
+  2300: Sortera efter namn
+  2301: Ej motordriven
+  2302: Motordriven
+  2303: Oläst
+  2304: Låst
+  2305: Last
+  2306: All last
+  2307: '{MOVE_X 10}{STRINGID} {SPRITE}'
+  2308: '»{MOVE_X 10}{STRINGID} {SPRITE}'
+  2309: '{COLOUR BLACK}{STRINGID} {SPRITE}'
+  2310: Lastlös
+  2311: Inaktivera lastningsstraff för fordon
+  2312: '{SMALLFONT}{COLOUR BLACK}När aktiverat tas straffet för fordon som är längre än stationens längd bort'
+  2313: Gör byggnader genomskinliga
+  2314: Gör vägar genomskinliga
+  2315: Gör landskap genomskinligt
+  2316: Gör spår genomskinliga
+  2317: Gör träd genomskinliga
+  2318: Växla genomskinliga byggnader
+  2319: Växla genomskinliga vägar
+  2320: Växla genomskinlig scenery
+  2321: Växla genomskinliga spår
+  2322: Växla genomskinliga träd
+  2323: '{SMALLFONT}{COLOUR BLACK}Aktivera för att mjuka upp ytterkanterna när mark höjs. Nyttigt för att skapa berg.'
+  2324: Fordon/spår-beteende
+  2325: '{SMALLFONT}{COLOUR BLACK}Företagsalternativ'
+  2326: Alternativ - Företag
+  2327: Föredraget företagsansikte
+  2328: Använd föredraget företagsansikte när du startar ett nytt spel
+  2329: '{SMALLFONT}{COLOUR BLACK}När valt, används det föredragna ansiktet varje gång du startar ett nytt scenario'
+  2330: '{COLOUR WINDOW_2}Föredraget ägaransikte: {COLOUR BLACK}{STRINGID}'
+  2331: Välj föredraget företagsägaransikte
+  2332: '{COLOUR WINDOW_2}Inaktivera stationsstorleksbegränsningar'
+  2333: '{SMALLFONT}{COLOUR BLACK}När aktiverat, tas maxlängden på järnvägsstationer bort (tidigare 16 rutor). Notera att stationer fortfarande inte kan omfatta mer än 80 rutor totalt.'
+  2334: Landskapsgenerering - Vatten
+  2335: '{SMALLFONT}{COLOUR BLACK}Vattenalternativ för landskapsgenerering'
+  2336: Allmänt
+  2337: Generator
+  2338: '{COLOUR WINDOW_2}Aktuellt kulle-objekt: {COLOUR BLACK}{STRINGID}'
+  2339: '{COLOUR WINDOW_2}Antal utjämningspass för terrängen:'
+  2340: PNG-höjdkarta
+  2341: Läs in PNG-höjdkarta
+  2342: Bläddra...
+  2343: '{COLOUR WINDOW_2}Aktuell höjdkartfil: {COLOUR BLACK}{STRING}'
+  2344: (ingen vald)
+  2345: Kontrollerar scenariofiler...
+  2346: '{COLOUR BLACK}Produktion förra månaden'
+  2347: '{COLOUR BLACK}Produktion förra månaden ▼'
+  2348: '{SMALLFONT}{COLOUR BLACK}Sortera lista efter produktion föregående månad'
+  2349: Visa alternativfönstret
+  2350: Gör broar genomskinliga
+  2351: Växla genomskinliga broar
+  2352: '{COLOUR WINDOW_2}Antal flodbäddar:'
+  2353: '{COLOUR WINDOW_2}Minsta flodbredd:'
+  2354: '{COLOUR WINDOW_2}Största flodbredd:'
+  2355: '{COLOUR WINDOW_2}Flodbankens bredd:'
+  2356: '{COLOUR WINDOW_2}Meanderfrekvens:'
+  2357: OpenLoco
