@@ -10,6 +10,7 @@
 #include "Ui.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 
@@ -32,7 +33,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Panel({ 0, 0 }, { 280, 92 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 278, 13 }, CaptionVariant::boxed, WindowColour::primary),
         Widgets::Button({ 267, 2 }, { 11, 11 }, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
         Widgets::Button({ 20, 77 }, { 100, 12 }, WindowColour::primary, StringIds::label_ok),
         Widgets::Button({ 160, 77 }, { 100, 12 }, WindowColour::primary, StringIds::label_button_cancel)

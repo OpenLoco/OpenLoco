@@ -18,6 +18,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -67,7 +68,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 550, 213 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 548, 13 }, WidgetType::caption_24, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 548, 13 }, CaptionVariant::colourText, WindowColour::primary),
         Widgets::ImageButton({ 535, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 550, 172 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trains),

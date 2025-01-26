@@ -17,6 +17,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -53,7 +54,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x509680
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 398, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::company_face_selection_title),
+        Widgets::Caption({ 1, 1 }, { 398, 13 }, CaptionVariant::colourText, WindowColour::primary, StringIds::company_face_selection_title),
         Widgets::ImageButton({ 385, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 400, 257 }, WindowColour::secondary),
         makeWidget({ 4, 19 }, { 188, 248 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),

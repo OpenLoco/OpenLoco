@@ -57,6 +57,7 @@
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
@@ -102,7 +103,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { (frameWidth), (frameHeight) }, WindowColour::primary),
-                makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { (frameWidth)-2, 13 }, CaptionVariant::colourText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ (frameWidth)-15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { 265, 136 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_main),

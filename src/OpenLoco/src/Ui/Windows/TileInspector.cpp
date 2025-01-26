@@ -36,6 +36,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
@@ -81,7 +82,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
+        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::tile_inspector),
         Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
         makeStepperWidgets({ 19, 24 }, { 55, 12 }, WindowColour::secondary),
