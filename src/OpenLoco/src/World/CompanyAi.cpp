@@ -19,9 +19,14 @@
 #include "GameCommands/Track/RemoveTrack.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
 #include "GameCommands/Vehicles/CreateVehicle.h"
+#include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
 #include "GameCommands/Vehicles/VehicleOrderInsert.h"
 #include "GameCommands/Vehicles/VehicleOrderSkip.h"
+#include "GameCommands/Vehicles/VehiclePickup.h"
+#include "GameCommands/Vehicles/VehiclePickupAir.h"
+#include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
+#include "GameCommands/Vehicles/VehicleSell.h"
 #include "Industry.h"
 #include "IndustryManager.h"
 #include "Map/IndustryElement.h"
@@ -62,6 +67,8 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco
 {
+    static void removeEntityFromThought(AiThought& thought, size_t index);
+
     static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
     static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
     static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
@@ -2503,18 +2510,80 @@ namespace OpenLoco
     }
 
     // 0x00487BA3
-    static bool sub_487BA3(AiThought& thought)
+    // Sells one at a time
+    // returns true when there are no vehicles left to sell
+    static bool sellAiThoughtVehicle(AiThought& thought)
     {
-        // sell a vehicle ??
-        registers regs;
-        regs.edi = X86Pointer(&thought);
-        return call(0x00487BA3, regs) & X86_FLAG_CARRY;
+        bool hasTriedToSell = false;
+        for (auto i = 0U; i < thought.numVehicles; ++i)
+        {
+            hasTriedToSell = true;
+            auto* head = EntityManager::get<Vehicles::VehicleHead>(thought.vehicles[i]);
+            if (head == nullptr)
+            {
+                // Hmm should we cleanup this entry?
+                continue;
+            }
+            head->breakdownFlags &= ~Vehicles::BreakdownFlags::breakdownPending;
+            if (!head->hasVehicleFlags(VehicleFlags::commandStop))
+            {
+                GameCommands::VehicleChangeRunningModeArgs args{};
+                args.head = head->head;
+                args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::stopVehicle;
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
+            }
+
+            if (head->tileX != -1)
+            {
+                switch (head->mode)
+                {
+                    case TransportMode::rail:
+                    case TransportMode::road:
+                    {
+                        GameCommands::VehiclePickupArgs args{};
+                        args.head = head->id;
+                        GameCommands::doCommand(args, GameCommands::Flags::apply);
+                        break;
+                    }
+                    case TransportMode::air:
+                    {
+                        GameCommands::VehiclePickupAirArgs gcArgs{};
+                        gcArgs.head = head->id;
+                        GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
+                        break;
+                    }
+                    case TransportMode::water:
+                    {
+                        GameCommands::VehiclePickupWaterArgs gcArgs{};
+                        gcArgs.head = head->id;
+                        GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
+                        break;
+                    }
+                }
+            }
+
+            if (head->tileX != -1)
+            {
+                continue;
+            }
+
+            GameCommands::VehicleSellArgs args{};
+            args.car = head->id;
+            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
+            if (res == GameCommands::FAILURE)
+            {
+                continue;
+            }
+            removeEntityFromThought(thought, i);
+            break;
+        }
+        return !hasTriedToSell;
     }
 
     // 0x004311B5
     static void sub_4311B5(Company& company, AiThought& thought)
     {
-        if (sub_487BA3(thought))
+        if (sellAiThoughtVehicle(thought))
         {
             company.var_4A5 = 1;
             sub_487144(company);
@@ -2537,7 +2606,7 @@ namespace OpenLoco
     {
         // identical to sub_4311B5 but separate so that
         // we can maybe enforce types for the state machine
-        if (sub_487BA3(thought))
+        if (sellAiThoughtVehicle(thought))
         {
             company.var_4A5 = 1;
             sub_487144(company);
@@ -3045,18 +3114,22 @@ namespace OpenLoco
     }
 
     // 0x00487EA0
-    static bool sub_487EA0(AiThought& thought)
+    // Sells one at a time
+    // returns true when there are no vehicles left to sell
+    static bool sellAiThoughtVehicleIfRequired(AiThought& thought)
     {
-        // some sort of sell of vehicle
-        registers regs;
-        regs.edi = X86Pointer(&thought);
-        return call(0x00487EA0, regs) & X86_FLAG_CARRY;
+        if (!(thought.var_8B & (1U << 2)))
+        {
+            return true;
+        }
+
+        return sellAiThoughtVehicle(thought);
     }
 
     // 0x00431244
     static void sub_431244(Company& company, AiThought& thought)
     {
-        if (sub_487EA0(thought))
+        if (sellAiThoughtVehicleIfRequired(thought))
         {
             company.var_4A5 = 4;
         }
@@ -3423,6 +3496,25 @@ namespace OpenLoco
         }
     }
 
+    static void removeEntityFromThought(AiThought& thought, size_t index)
+    {
+        auto* end = std::end(thought.vehicles);
+        auto* iter = std::begin(thought.vehicles) + index;
+        while (iter != end)
+        {
+            if (iter + 1 == end)
+            {
+                // TODO: This is purely so we match vanilla but its just copying some rubbish into our array
+                // change this when we diverge to EntityId::null
+                *iter = static_cast<EntityId>(thought.var_76 & 0xFFFFU);
+                break;
+            }
+            *iter = *(iter + 1);
+            iter++;
+        }
+        thought.numVehicles--;
+    }
+
     void removeEntityFromThought(AiThought& thought, EntityId id)
     {
         auto iter = std::find(std::begin(thought.vehicles), std::end(thought.vehicles), id);
@@ -3430,13 +3522,7 @@ namespace OpenLoco
         {
             return;
         }
-        // Original would copy the value from vehicles + 2 which
-        // would mean it would copy currency var_76 if numVehicles was 7
-        // I don't think that is possible but lets just add an assert.
-        assert(thought.numVehicles < 7);
 
-        *iter = thought.vehicles[std::size(thought.vehicles) - 1];
-        std::rotate(iter, iter + 1, std::end(thought.vehicles));
-        thought.numVehicles--;
+        removeEntityFromThought(thought, std::distance(std::begin(thought.vehicles), iter));
     }
 }
