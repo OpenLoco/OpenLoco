@@ -262,6 +262,8 @@ namespace OpenLoco::Environment
         setDirectory(_pathLandscapes, landscapeDirectory / "*.SC5");
         setDirectory(_pathScenarios, basePath / "Scenarios/*.SC5");
         setDirectory(_pathObjects, basePath / "ObjData/*.DAT");
+
+        autoCreateDirectory(getPath(PathId::customObjects));
     }
 
     class ThousandsSepFacet : public std::numpunct<char>
