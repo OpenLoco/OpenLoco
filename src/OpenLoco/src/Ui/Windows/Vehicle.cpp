@@ -64,6 +64,7 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/SliderWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -277,7 +278,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 177, StringIds::stringid),
-            makeWidget({ 3, 44 }, { 237, 120 }, WidgetType::viewport, WindowColour::secondary),
+            Widgets::Viewport({ 3, 44 }, { 237, 120 }, WindowColour::secondary),
             Widgets::Label({ 3, 155 }, { 237, 21 }, WindowColour::secondary, ContentAlign::Center),
             Widgets::Slider({ 240, 46 }, { 24, 115 }, WindowColour::secondary),
             Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),

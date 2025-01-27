@@ -26,6 +26,7 @@
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
@@ -87,7 +88,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(223, 161, StringIds::title_town),
-            makeWidget({ 3, 44 }, { 195, 104 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
+            Widgets::Viewport({ 3, 44 }, { 195, 104 }, WindowColour::secondary, Widget::kContentUnk),
             Widgets::Label({ 3, 139 }, { 195, 21 }, WindowColour::secondary, ContentAlign::Center),
             makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
             Widgets::ImageButton({ 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::town_expand, StringIds::expand_this_town),
