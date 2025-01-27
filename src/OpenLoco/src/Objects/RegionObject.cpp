@@ -25,7 +25,7 @@ namespace OpenLoco
         remainingData = remainingData.subspan(strRes.tableLength);
 
         // Load cargo? maybe default production?
-        for (auto i = 0U; i < var_08; ++i)
+        for (auto i = 0U; i < numCargoInflunceObjects; ++i)
         {
             ObjectHeader cargoHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)
@@ -35,7 +35,7 @@ namespace OpenLoco
             auto res = ObjectManager::findObjectHandle(cargoHeader);
             if (res.has_value())
             {
-                var_09[i] = res->id;
+                cargoInfluenceObjectIds[i] = res->id;
             }
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
@@ -65,6 +65,6 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        std::fill(std::begin(var_09), std::end(var_09), 0);
+        std::fill(std::begin(cargoInfluenceObjectIds), std::end(cargoInfluenceObjectIds), 0);
     }
 }
