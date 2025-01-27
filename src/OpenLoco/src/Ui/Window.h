@@ -324,8 +324,8 @@ namespace OpenLoco::Ui
             return this->hasFlags(WindowFlags::transparent);
         }
 
-        bool isEnabled(int8_t widgetIndex);
-        bool isDisabled(int8_t widgetIndex);
+        bool isEnabled(WidgetIndex_t widgetIndex);
+        bool isDisabled(WidgetIndex_t widgetIndex);
         bool isActivated(WidgetIndex_t index);
         bool isHoldable(WidgetIndex_t index);
         bool canResize();
