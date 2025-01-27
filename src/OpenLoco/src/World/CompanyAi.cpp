@@ -67,6 +67,8 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco
 {
+    static void removeEntityFromThought(AiThought& thought, size_t index);
+
     static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
     static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
     static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
@@ -2572,10 +2574,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            auto* iter = std::begin(thought.vehicles) + i;
-            *iter = thought.vehicles[std::size(thought.vehicles) - 1];
-            std::rotate(iter, iter + 1, std::end(thought.vehicles));
-            thought.numVehicles--;
+            removeEntityFromThought(thought, i);
             break;
         }
         return !hasTriedToSell;
@@ -3497,6 +3496,25 @@ namespace OpenLoco
         }
     }
 
+    static void removeEntityFromThought(AiThought& thought, size_t index)
+    {
+        auto* end = std::end(thought.vehicles);
+        auto* iter = std::begin(thought.vehicles) + index;
+        while (iter != end)
+        {
+            if (iter + 1 == end)
+            {
+                // TODO: This is purely so we match vanilla but its just copying some rubbish into our array
+                // change this when we diverge to EntityId::null
+                *iter = static_cast<EntityId>(thought.var_76 & 0xFFFFU);
+                break;
+            }
+            *iter = *(iter + 1);
+            iter++;
+        }
+        thought.numVehicles--;
+    }
+
     void removeEntityFromThought(AiThought& thought, EntityId id)
     {
         auto iter = std::find(std::begin(thought.vehicles), std::end(thought.vehicles), id);
@@ -3504,13 +3522,7 @@ namespace OpenLoco
         {
             return;
         }
-        // Original would copy the value from vehicles + 2 which
-        // would mean it would copy currency var_76 if numVehicles was 7
-        // I don't think that is possible but lets just add an assert.
-        assert(thought.numVehicles < 7);
 
-        *iter = thought.vehicles[std::size(thought.vehicles) - 1];
-        std::rotate(iter, iter + 1, std::end(thought.vehicles));
-        thought.numVehicles--;
+        removeEntityFromThought(thought, std::distance(std::begin(thought.vehicles), iter));
     }
 }
