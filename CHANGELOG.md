@@ -1,5 +1,6 @@
 25.01 (???)
 ------------------------------------------------------------------------
+- Fix: [#2805] Inflation calculation potentially going wrong with large values.
 - Fix: [#2810] Large performance regression when there are a lot of vehicles.
 - Fix: [#2818] Incorrect bridge segment shown on some rotations.
 - Fix: [#2829] Large performance regression when using a window scale factor of 1.0.

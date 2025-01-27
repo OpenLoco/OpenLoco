@@ -129,6 +129,10 @@ namespace OpenLoco::Economy
 
     currency32_t getInflationAdjustedCost(int16_t costFactor, uint8_t costIndex, uint8_t divisor)
     {
-        return costFactor * static_cast<int32_t>(currencyMultiplicationFactors()[costIndex]) / (1 << divisor);
+        const auto val = costFactor * static_cast<int64_t>(currencyMultiplicationFactors()[costIndex]);
+        assert(divisor < 63);
+        const auto result = val / (1LL << divisor);
+        assert(result <= static_cast<int64_t>(std::numeric_limits<int32_t>::max()) && result >= static_cast<int64_t>(std::numeric_limits<int32_t>::min()));
+        return result;
     }
 }
