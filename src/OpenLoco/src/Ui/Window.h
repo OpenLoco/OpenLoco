@@ -30,7 +30,6 @@ namespace OpenLoco::Ui
     struct Window;
     struct Viewport;
 
-#pragma pack(push, 1)
     enum class WindowColour : uint8_t
     {
         primary,
@@ -395,5 +394,5 @@ namespace OpenLoco::Ui
 
     World::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
     std::optional<World::Pos2> screenGetMapXyWithZ(const Point& mouse, const int16_t z);
-#pragma pack(pop)
+
 }
