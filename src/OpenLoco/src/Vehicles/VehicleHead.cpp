@@ -3556,8 +3556,6 @@ namespace OpenLoco::Vehicles
         // TODO: When we diverge just change the cost check to >= 6 or increase the search result to 18x18
         if (nearbyIndex.x >= 0 && nearbyIndex.x < 16 && nearbyIndex.y >= 0 && nearbyIndex.y < 16)
         {
-            // assert(nearbyIndex.x >= 0 && nearbyIndex.x < 16);
-            // assert(nearbyIndex.y >= 0 && nearbyIndex.y < 16);
             if (nearbyVehicles.searchResult[nearbyIndex.x][nearbyIndex.y])
             {
                 return result;
