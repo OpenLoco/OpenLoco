@@ -182,41 +182,12 @@ namespace OpenLoco::Ui
     {
         static constexpr size_t kMaxScrollAreas = 2;
 
+        sfl::small_vector<Widget, 16> widgets;
         const WindowEventList* eventHandlers;
-        Ui::Viewport* viewports[2] = { nullptr, nullptr };
         uint64_t enabledWidgets = 0;
         uint64_t disabledWidgets = 0;
         uint64_t activatedWidgets = 0;
         uint64_t holdableWidgets = 0;
-        int16_t x;
-        int16_t y;
-        uint16_t width;
-        uint16_t height;
-        uint16_t minWidth;
-        uint16_t maxWidth;
-        uint16_t minHeight;
-        uint16_t maxHeight;
-        WindowNumber_t number = 0;
-        WindowFlags flags;
-        ScrollArea scrollAreas[kMaxScrollAreas];
-        int16_t rowInfo[1000];
-        uint16_t rowCount;
-        uint16_t var_83C;
-        uint16_t rowHeight;
-        int16_t rowHover = -1;
-        int16_t var_842;
-        uint16_t sortMode;
-        uint16_t var_846 = 0;
-        SavedView savedView;
-        uint16_t var_850 = 0;
-        uint16_t var_852 = 0;
-        uint16_t var_854 = 0; // used to limit updates
-        union
-        {
-            uint16_t filterLevel;     // ObjectSelectionWindow
-            uint16_t numTicksVisible; // TimePanel
-        };
-        uint16_t var_858 = 0;
         union
         {
             std::byte* object;
@@ -227,19 +198,46 @@ namespace OpenLoco::Ui
             };
             uintptr_t info;
         };
-        uint8_t pad_85E[0x870 - 0x85E];
+        Ui::Viewport* viewports[2] = { nullptr, nullptr };
+        SavedView savedView;
+        WindowFlags flags;
+        WindowNumber_t number = 0;
+        int16_t x;
+        int16_t y;
+        uint16_t width;
+        uint16_t height;
+        uint16_t minWidth;
+        uint16_t maxWidth;
+        uint16_t minHeight;
+        uint16_t maxHeight;
+        ScrollArea scrollAreas[kMaxScrollAreas];
+        int16_t rowInfo[1000];
+        uint16_t rowCount;
+        uint16_t var_83C;
+        uint16_t rowHeight;
+        int16_t rowHover = -1;
+        int16_t var_842;
+        uint16_t sortMode;
+        uint16_t var_846 = 0;
+        uint16_t var_850 = 0;
+        uint16_t var_852 = 0;
+        uint16_t var_854 = 0; // used to limit updates
+        union
+        {
+            uint16_t filterLevel;     // ObjectSelectionWindow
+            uint16_t numTicksVisible; // TimePanel
+        };
+        uint16_t var_858 = 0;
         uint16_t currentTab = 0;
         uint16_t frameNo = 0;
         uint16_t currentSecondaryTab = 0;
+        int16_t var_88A;
+        int16_t var_88C;
         ViewportConfig viewportConfigurations[2];
         WindowType type;
-        uint8_t pad_883[1];
         CompanyId owner = CompanyId::null;
         uint8_t var_885 = 0xFF;
         AdvancedColour colours[enumValue(WindowColour::count)];
-        int16_t var_88A;
-        int16_t var_88C;
-        sfl::small_vector<Widget, 16> widgets;
 
         Window(Ui::Point32 position, Ui::Size32 size);
 
