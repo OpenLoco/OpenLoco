@@ -1477,7 +1477,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         if (&bridgeList[k] == &bridgeList[bridgeCount])
                         {
-                            _cState->bridgeList[bridgeCount] = i;
+                            bridgeList[bridgeCount] = i;
                             bridgeCount++;
                             break;
                         }
@@ -1489,9 +1489,9 @@ namespace OpenLoco::Ui::Windows::Construction
                 }
             }
 
-            _cState->bridgeList[bridgeCount] = 0xFF;
+            bridgeList[bridgeCount] = 0xFF;
 
-            sortList(_cState->bridgeList);
+            sortList(bridgeList);
         }
 
         // 0x004781C5, 0x004A693D

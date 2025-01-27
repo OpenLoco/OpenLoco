@@ -164,7 +164,12 @@ namespace OpenLoco
         coord_t headquartersX;                // 0x257A -1 on no headquarter placed
         coord_t headquartersY;                // 0x257C
         currency32_t var_257E;
-        uint8_t pad_2582[0x259E - 0x2582];
+        uint8_t pad_2582[0x2596 - 0x2582];
+        uint32_t var_2596;
+        uint8_t var_259A;
+        uint8_t var_259B;
+        uint8_t var_259C;
+        uint8_t pad_259D;
         uint32_t var_259E;
         uint8_t pad_25A2[0x25BF - 0x25A2];
         CorporateRating currentRating;          // 0x25BF
