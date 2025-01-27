@@ -285,7 +285,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),
             Widgets::ImageButton({ 240, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
             Widgets::ImageButton({ 240, 116 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this)
+            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
 

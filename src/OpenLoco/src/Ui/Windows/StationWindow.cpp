@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::Station
             Common::makeCommonWidgets(223, 136),
             Widgets::Viewport({ 3, 44 }, { 195, 80 }, WindowColour::secondary, Widget::kContentUnk),
             Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::Center),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this)
+            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
 
