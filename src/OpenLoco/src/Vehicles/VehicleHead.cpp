@@ -22,6 +22,7 @@
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/CargoObject.h"
+#include "Objects/DockObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
@@ -78,6 +79,28 @@ namespace OpenLoco::Vehicles
     static constexpr uint8_t kRestartStoppedRoadVehiclesTimeout = 20; // Number of days before stopped road vehicle (bus and tram) is restarted
     static constexpr uint16_t kReliabilityLossPerDay = 4;
     static constexpr uint16_t kReliabilityLossPerDayObsolete = 10;
+
+    struct WaterPathingResult
+    {
+        World::Pos2 headTarget;
+
+        StationId stationId; // If stationId is null, stationPosition is invalid
+        World::Pos3 stationPos;
+
+        constexpr WaterPathingResult(const World::Pos2 headTarget, const StationId stationId, const World::Pos3 stationPos)
+            : headTarget(headTarget)
+            , stationId(stationId)
+            , stationPos(stationPos)
+        {
+        }
+        explicit constexpr WaterPathingResult(const World::Pos2 headTarget)
+            : headTarget(headTarget)
+            , stationId(StationId::null)
+            , stationPos({})
+        {
+        }
+    };
+    static WaterPathingResult waterPathfind(const VehicleHead& head);
 
     void VehicleHead::updateVehicle()
     {
@@ -2711,15 +2734,15 @@ namespace OpenLoco::Vehicles
                     }
                 }
             }
-            auto [newStationId, headTarget, stationTarget] = sub_427FC9();
-            moveTo({ headTarget.x, headTarget.y, 32 });
+            auto pathingResult = waterPathfind(*this);
+            moveTo({ pathingResult.headTarget, 32 });
 
-            if (newStationId != StationId::null)
+            if (pathingResult.stationId != StationId::null)
             {
-                stationId = newStationId;
-                tileX = stationTarget.x;
-                tileY = stationTarget.y;
-                tileBaseZ = stationTarget.z / 4;
+                stationId = pathingResult.stationId;
+                tileX = pathingResult.stationPos.x;
+                tileY = pathingResult.stationPos.y;
+                tileBaseZ = pathingResult.stationPos.z / 4;
 
                 auto targetTile = TileManager::get(World::Pos2{ tileX, tileY });
                 StationElement* station = nullptr;
@@ -3401,15 +3424,237 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x00427FC9
-    std::tuple<StationId, World::Pos2, World::Pos3> VehicleHead::sub_427FC9()
+    struct NearbyBoats
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x00427FC9, regs);
-        World::Pos2 headTarget = { regs.ax, regs.cx };
-        World::Pos3 stationTarget = { regs.di, regs.bp, regs.dx };
-        return std::make_tuple(StationId(regs.bx), headTarget, stationTarget);
+        std::array<std::array<bool, 16>, 16> searchResult; // 0x00525BEC
+        World::TilePos2 startTile;                         // 0x00525BE8
+    };
+
+    // 0x00427F1C
+    static NearbyBoats findNearbyTilesWithBoats(const World::Pos2 pos)
+    {
+        const auto tilePosA = World::toTileSpace(pos) - World::TilePos2(7, 7);
+        const auto tilePosB = World::toTileSpace(pos) + World::TilePos2(7, 7);
+
+        NearbyBoats res{};
+        res.startTile = tilePosA;
+
+        for (const auto& tileLoc : getClampedRange(tilePosA, tilePosB))
+        {
+            for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(tileLoc)))
+            {
+                auto* vehicleEntity = entity->asBase<VehicleBase>();
+                if (vehicleEntity == nullptr)
+                {
+                    continue;
+                }
+                if (vehicleEntity->getTransportMode() != TransportMode::water)
+                {
+                    continue;
+                }
+                if (vehicleEntity->getSubType() != VehicleEntityType::body_start)
+                {
+                    continue;
+                }
+                const auto resultLoc = tileLoc - res.startTile;
+                res.searchResult[resultLoc.x][resultLoc.y] = true;
+            }
+        }
+        return res;
+    }
+
+    // 0x00428379
+    static std::optional<WaterPathingResult> getDockTargetFromStation(StationId stationId)
+    {
+        auto* station = StationManager::get(stationId);
+        for (auto i = 0U; i < station->stationTileSize; ++i)
+        {
+            // Remember z needs floored
+            const auto& pos = station->stationTiles[i];
+
+            StationElement* elStation = [&pos]() -> World::StationElement* {
+                auto tile = TileManager::get(pos);
+                for (auto& el : tile)
+                {
+                    auto* elStation = el.as<StationElement>();
+                    if (elStation == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elStation->isGhost() || elStation->isAiAllocated())
+                    {
+                        continue;
+                    }
+                    if (elStation->baseZ() != pos.z / World::kSmallZStep)
+                    {
+                        continue;
+                    }
+                    return elStation;
+                }
+                return nullptr;
+            }();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+            if (elStation->stationType() != StationType::docks)
+            {
+                continue;
+            }
+            if (elStation->isFlag6())
+            {
+                continue;
+            }
+
+            const auto* dockObj = ObjectManager::get<DockObject>(elStation->objectId());
+            const auto boatPos = Math::Vector::rotate(dockObj->boatPosition, elStation->rotation()) + pos;
+            auto dockTarget = WaterPathingResult(
+                boatPos + World::Pos2{ 32, 32 },
+                stationId,
+                World::Pos3{ pos.x, pos.y, Numerics::floor2(pos.z, 4) });
+            return dockTarget;
+        }
+        return std::nullopt;
+    }
+
+    struct PathFindingResult
+    {
+        uint16_t bestScore;
+        uint8_t cost;
+
+        constexpr auto operator<=>(const PathFindingResult& rhs) const = default;
+    };
+
+    // 0x00428237
+    static PathFindingResult waterPathfindToTarget(const World::TilePos2 tilePos, const MicroZ waterMicroZ, const World::TilePos2 targetOrderPos, const NearbyBoats& nearbyVehicles, uint8_t cost, const PathFindingResult& bestResult)
+    {
+        PathFindingResult result = bestResult;
+        if (!validCoords(tilePos))
+        {
+            return result;
+        }
+        auto tile = TileManager::get(tilePos);
+        auto* elSurface = tile.surface();
+        if (elSurface->water() != waterMicroZ)
+        {
+            return result;
+        }
+        if (!elSurface->isLast())
+        {
+            auto* elObsticle = elSurface->next();
+            if (elObsticle != nullptr && !elObsticle->isGhost() && !elObsticle->isAiAllocated())
+            {
+                if (elObsticle->baseZ() / kMicroToSmallZStep - waterMicroZ < 1)
+                {
+                    return result;
+                }
+            }
+        }
+
+        const auto nearbyIndex = tilePos - nearbyVehicles.startTile;
+        // Vanilla made a mistake here so we only check nearby tiles if in range
+        // TODO: When we diverge just change the cost check to >= 6 or increase the search result to 18x18
+        if (nearbyIndex.x >= 0 && nearbyIndex.x < 16 && nearbyIndex.y >= 0 && nearbyIndex.y < 16)
+        {
+            if (nearbyVehicles.searchResult[nearbyIndex.x][nearbyIndex.y])
+            {
+                return result;
+            }
+        }
+        auto distToTarget = toWorldSpace(tilePos - targetOrderPos);
+        distToTarget.x = std::abs(distToTarget.x);
+        distToTarget.y = std::abs(distToTarget.y);
+        // Lower is better
+        const uint16_t score = std::max(distToTarget.x, distToTarget.y) + std::min(distToTarget.x, distToTarget.y) / 16;
+        auto newResult = PathFindingResult{ score, cost };
+        result = std::min(result, newResult);
+        if (score != 0)
+        {
+            if (cost >= 7)
+            {
+                return result;
+            }
+            cost++;
+            for (auto i = 0U; i < 4; ++i)
+            {
+                result = waterPathfindToTarget(tilePos + toTileSpace(kRotationOffset[i]), waterMicroZ, targetOrderPos, nearbyVehicles, cost, result);
+            }
+        }
+        return result;
+    }
+
+    // 0x00427FC9
+    static WaterPathingResult waterPathfind(const VehicleHead& head)
+    {
+        const auto nearbyVehicles = findNearbyTilesWithBoats(head.position);
+
+        auto orders = head.getCurrentOrders();
+        auto curOrder = orders.begin();
+        auto* stationOrder = curOrder->as<OrderStation>();
+        auto* routeOrder = curOrder->as<OrderRouteWaypoint>();
+
+        std::optional<WaterPathingResult> dockRes = std::nullopt;
+        // 0x00525BC6
+        World::TilePos2 targetOrderPos{};
+        if (routeOrder != nullptr)
+        {
+            targetOrderPos = toTileSpace(routeOrder->getWaypoint());
+        }
+        else if (stationOrder != nullptr)
+        {
+            auto targetStationId = stationOrder->getStation();
+            dockRes = getDockTargetFromStation(targetStationId);
+            if (dockRes.has_value())
+            {
+                targetOrderPos = toTileSpace(dockRes->headTarget);
+            }
+            else
+            {
+                auto* station = StationManager::get(targetStationId);
+                targetOrderPos = toTileSpace(Pos2{ station->x, station->y });
+            }
+        }
+        else
+        {
+            targetOrderPos = toTileSpace(head.position);
+        }
+
+        Vehicle train(head);
+        const auto& veh2 = *train.veh2;
+        // 0x00525BE3
+        const uint8_t curRotation = ((veh2.spriteYaw + 7) >> 4) & 3;
+
+        const auto initialTile = toTileSpace(head.position);
+        const auto waterMicroZ = veh2.position.z / World::kMicroZStep;
+
+        PathFindingResult bestResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
+        uint8_t bestResultDirection = 0xFFU;
+        for (auto i = 0U; i < 4; ++i)
+        {
+            const auto tilePos = initialTile + toTileSpace(kRotationOffset[i]);
+            PathFindingResult initResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
+            const auto pathResult = waterPathfindToTarget(tilePos, waterMicroZ, targetOrderPos, nearbyVehicles, 0, initResult);
+            if (pathResult != initResult && (pathResult < bestResult || (pathResult == bestResult && i == curRotation)))
+            {
+                bestResult = pathResult;
+                bestResultDirection = i;
+            }
+        }
+
+        if (bestResultDirection == 0xFF)
+        {
+            return WaterPathingResult(toWorldSpace(initialTile) + World::Pos2(16, 16));
+        }
+
+        if (dockRes.has_value() && bestResult == PathFindingResult{ 0, 0 })
+        {
+            return dockRes.value();
+        }
+        else
+        {
+            const auto targetPos = toWorldSpace(initialTile) + kRotationOffset[bestResultDirection] + World::Pos2(16, 16);
+            return WaterPathingResult(targetPos);
+        }
     }
 
     // 0x0042750E
