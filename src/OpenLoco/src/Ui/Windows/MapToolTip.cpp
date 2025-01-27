@@ -8,6 +8,7 @@
 #include "Objects/ObjectManager.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 
@@ -23,7 +24,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
     // 0x005234F4
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 200, 30 }, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, { 200, 30 }, WindowColour::primary)
 
     );
 

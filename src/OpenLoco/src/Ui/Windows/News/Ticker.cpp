@@ -11,11 +11,12 @@
 #include "News.h"
 #include "SceneManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {
     static constexpr auto widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 111, 26 }, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, { 111, 26 }, WindowColour::primary)
 
     );
 

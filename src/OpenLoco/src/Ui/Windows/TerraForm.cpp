@@ -44,6 +44,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
@@ -981,7 +982,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(130, 105, StringIds::clear_area),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_clear_area),
+            Widgets::Wt3Widget({ 33 + 16, 45 }, { 64, 44 }, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_clear_area),
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area)
 
@@ -1223,7 +1224,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(130, 105, StringIds::title_adjust_land),
-            makeWidget({ 49, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_adjust_land_tool),
+            Widgets::Wt3Widget({ 49, 45 }, { 64, 44 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_adjust_land_tool),
             makeWidget({ 50, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
             makeWidget({ 96, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
             Widgets::ImageButton({ 57, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::mountainModeTooltip),
@@ -1905,7 +1906,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(130, 105, StringIds::title_adjust_water),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
+            Widgets::Wt3Widget({ 33 + 16, 45 }, { 64, 44 }, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area)
 

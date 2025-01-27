@@ -21,6 +21,7 @@
 #include "Vehicles/VehicleDraw.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
@@ -36,7 +37,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     namespace News1
     {
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets(360, 117, WidgetType::wt_3)
+            Common::makeCommonWidgets<Widgets::Wt3Widget>(360, 117)
 
         );
 

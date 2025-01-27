@@ -21,6 +21,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -50,8 +51,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void sendChatMessage(const char* str);
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
+        Widgets::Wt3Widget({ 0, 0 }, { 140, 29 }, WindowColour::primary),
+        Widgets::Wt3Widget({ 2, 2 }, { 136, 25 }, WindowColour::primary),
         Widgets::ImageButton({ 113, 1 }, { 26, 26 }, WindowColour::primary),
         Widgets::ImageButton({ 2, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
         Widgets::ImageButton({ 18, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
