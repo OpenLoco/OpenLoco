@@ -182,33 +182,32 @@ namespace OpenLoco::Ui
     {
         static constexpr size_t kMaxScrollAreas = 2;
 
-        const WindowEventList* eventHandlers;              // 0x00
-        Ui::Viewport* viewports[2] = { nullptr, nullptr }; // 0x04
-        uint64_t enabledWidgets = 0;                       // 0x0C
-        uint64_t disabledWidgets = 0;                      // 0x14
-        uint64_t activatedWidgets = 0;                     // 0x1C
-        uint64_t holdableWidgets = 0;                      // 0x24
-        Widget* _widgets;                                  // 0x2C
-        int16_t x;                                         // 0x30
-        int16_t y;                                         // 0x32
-        uint16_t width;                                    // 0x34
-        uint16_t height;                                   // 0x36
-        uint16_t minWidth;                                 // 0x38
-        uint16_t maxWidth;                                 // 0x3a
-        uint16_t minHeight;                                // 0x3c
-        uint16_t maxHeight;                                // 0x3e
-        WindowNumber_t number = 0;                         // 0x40
-        WindowFlags flags;                                 // 0x42
-        ScrollArea scrollAreas[kMaxScrollAreas];           // 0x46
-        int16_t rowInfo[1000];                             // 0x6A
-        uint16_t rowCount;                                 // 0x83A
+        const WindowEventList* eventHandlers;
+        Ui::Viewport* viewports[2] = { nullptr, nullptr };
+        uint64_t enabledWidgets = 0;
+        uint64_t disabledWidgets = 0;
+        uint64_t activatedWidgets = 0;
+        uint64_t holdableWidgets = 0;
+        int16_t x;
+        int16_t y;
+        uint16_t width;
+        uint16_t height;
+        uint16_t minWidth;
+        uint16_t maxWidth;
+        uint16_t minHeight;
+        uint16_t maxHeight;
+        WindowNumber_t number = 0;
+        WindowFlags flags;
+        ScrollArea scrollAreas[kMaxScrollAreas];
+        int16_t rowInfo[1000];
+        uint16_t rowCount;
         uint16_t var_83C;
-        uint16_t rowHeight;    // 0x83E
-        int16_t rowHover = -1; // 0x840
-        int16_t var_842;       // 0x842
-        uint16_t sortMode;     // 0x844;
+        uint16_t rowHeight;
+        int16_t rowHover = -1;
+        int16_t var_842;
+        uint16_t sortMode;
         uint16_t var_846 = 0;
-        SavedView savedView; // 0x848
+        SavedView savedView;
         uint16_t var_850 = 0;
         uint16_t var_852 = 0;
         uint16_t var_854 = 0; // used to limit updates
@@ -220,7 +219,7 @@ namespace OpenLoco::Ui
         uint16_t var_858 = 0;
         union
         {
-            std::byte* object; // 0x85A union
+            std::byte* object;
             struct
             {
                 int16_t var_85A;
@@ -229,15 +228,15 @@ namespace OpenLoco::Ui
             uintptr_t info;
         };
         uint8_t pad_85E[0x870 - 0x85E];
-        uint16_t currentTab = 0;                  // 0x870
-        uint16_t frameNo = 0;                     // 0x872
-        uint16_t currentSecondaryTab = 0;         // 0x874
-        ViewportConfig viewportConfigurations[2]; // 0x876
-        WindowType type;                          // 0x882
+        uint16_t currentTab = 0;
+        uint16_t frameNo = 0;
+        uint16_t currentSecondaryTab = 0;
+        ViewportConfig viewportConfigurations[2];
+        WindowType type;
         uint8_t pad_883[1];
-        CompanyId owner = CompanyId::null; // 0x884
+        CompanyId owner = CompanyId::null;
         uint8_t var_885 = 0xFF;
-        AdvancedColour colours[enumValue(WindowColour::count)]; // 0x886
+        AdvancedColour colours[enumValue(WindowColour::count)];
         int16_t var_88A;
         int16_t var_88C;
         sfl::small_vector<Widget, 16> widgets;
