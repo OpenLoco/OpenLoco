@@ -94,38 +94,38 @@ namespace OpenLoco::Ui
         static constexpr uint32_t kContentUnk = 0xFFFFFFFEU;
 
         constexpr Widget(Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-            : type{ widgetType }
-            , windowColour{ colour }
+            : content{ content }
             , left{ static_cast<int16_t>(origin.x) }
             , right{ static_cast<int16_t>(origin.x + size.width - 1) }
             , top{ static_cast<int16_t>(origin.y) }
             , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
-            , content{ content }
             , tooltip{ tooltip }
+            , type{ widgetType }
+            , windowColour{ colour }
         {
         }
 
         constexpr Widget(Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
-            : type{ widgetType }
-            , windowColour{ colour }
+            : text{ content }
             , left{ static_cast<int16_t>(origin.x) }
             , right{ static_cast<int16_t>(origin.x + size.width - 1) }
             , top{ static_cast<int16_t>(origin.y) }
             , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
-            , text{ content }
             , tooltip{ tooltip }
+            , type{ widgetType }
+            , windowColour{ colour }
         {
         }
 
         constexpr Widget(WidgetType widgetType)
-            : type{ widgetType }
-            , windowColour{}
+            : content{ kContentNull }
             , left{}
             , right{}
             , top{}
             , bottom{}
-            , content{ kContentNull }
             , tooltip{ StringIds::null }
+            , type{ widgetType }
+            , windowColour{}
         {
         }
 
