@@ -1086,7 +1086,9 @@ namespace OpenLoco
         thought.var_76 += estimateTrackPlacementCosts(thought);
 
         company.var_4A5 = 9;
-        company.activeThoughtRevenueEstimate = 0;
+        // TODO: activeThoughtRevenueEstimate has same address as the thoughtState2AiStationIdx variable
+        // in the future we should use a new offset.
+        company.thoughtState2AiStationIdx = 0;
     }
 
     // 0x004821EF
@@ -1137,11 +1139,11 @@ namespace OpenLoco
     static void sub_430CEC(Company& company)
     {
         auto& thought = company.aiThoughts[company.activeThoughtId];
-        // TODO: activeThoughtRevenueEstimate is being used as a activeThoughtAiStationIdx varaible
+        // TODO: activeThoughtRevenueEstimate has same address as the thoughtState2AiStationIdx variable
         // in the future we should use a new offset.
-        thought.var_76 += estimateStationClearageCosts(thought, company.activeThoughtRevenueEstimate);
-        company.activeThoughtRevenueEstimate++;
-        if (company.activeThoughtRevenueEstimate >= 4)
+        thought.var_76 += estimateStationClearageCosts(thought, company.thoughtState2AiStationIdx);
+        company.thoughtState2AiStationIdx++;
+        if (company.thoughtState2AiStationIdx >= 4)
         {
             company.var_4A5 = 10;
         }
