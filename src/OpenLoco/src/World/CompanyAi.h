@@ -86,9 +86,9 @@ namespace OpenLoco
         uint8_t numStations; // 0x03 0x4AB size of stations
         uint8_t var_04;      // 0x4AC station length
         uint8_t pad_05;
-        Station stations[4]; // 0x06 0x4AE Will lists stations created that vehicles will route to
-        uint8_t trackObjId;  // 0x3E 0x4E6 track or road (with high bit set)
-        uint8_t pad_3F;
+        Station stations[4];  // 0x06 0x4AE Will lists stations created that vehicles will route to
+        uint8_t trackObjId;   // 0x3E 0x4E6 track or road (with high bit set)
+        uint8_t rackRailType; // 0x3F 0x4E7 Is 0xFFU for no rack rail
         uint16_t mods;        // 0x40 0x4E8 track or road
         uint8_t cargoType;    // 0x42 0x4EA
         uint8_t var_43;       // 0x4EB
@@ -98,13 +98,13 @@ namespace OpenLoco
         EntityId vehicles[8]; // 0x66 0x50E see also numVehicles for current size
         currency32_t var_76;  // 0x51E
         uint8_t pad_7A[0x7C - 0x7A];
-        currency32_t var_7C; // 0x524
-        currency32_t var_80; // 0x528
-        currency32_t var_84; // 0x52C
-        uint8_t var_88;      // 0x530
-        uint8_t var_89;      // 0x531 station obj type?
-        uint8_t var_8A;      // 0x532
-        uint8_t var_8B;      // 0x533
+        currency32_t var_7C;  // 0x524
+        currency32_t var_80;  // 0x528
+        currency32_t var_84;  // 0x52C
+        uint8_t var_88;       // 0x530
+        uint8_t stationObjId; // 0x531 Could be either Airport/Dock/TrainStation/RoadStation
+        uint8_t signalObjId;  // 0x532 Can be 0xFFU for n
+        uint8_t var_8B;       // 0x533
     };
 #pragma pack(pop)
     static_assert(sizeof(AiThought) == 0x8C);
