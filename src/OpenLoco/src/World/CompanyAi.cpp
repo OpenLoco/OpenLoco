@@ -64,6 +64,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco
 {
@@ -84,7 +85,7 @@ namespace OpenLoco
         unk3 = 1U << 3,
         unk4 = 1U << 4,
         unk5 = 1U << 5,
-        unk6 = 1U << 6,
+        unk6 = 1U << 6, // Circular track - 4 stations
         unk7 = 1U << 7,
         unk8 = 1U << 8,
         unk9 = 1U << 9, // Tunnel (unused)
@@ -150,6 +151,12 @@ namespace OpenLoco
     static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
     {
         return (kThoughtTypeFlags[enumValue(type)] & flags) != ThoughtTypeFlags::none;
+    }
+
+    // 0x00483778
+    static void clearThought(AiThought& thought)
+    {
+        thought.type = AiThoughtType::null;
     }
 
     // 0x00487144
@@ -603,12 +610,288 @@ namespace OpenLoco
         CompanyManager::aiDestroy(company.id());
     }
 
-    // 0x004309FD
-    static void aiThinkState2(Company& company)
+    // 0x00430A12
+    static void sub_430A12(Company& company)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
-        call(0x004309FD, regs);
+        call(0x00430A12, regs);
+    }
+
+    // 0x00430B5D
+    static void sub_430B5D(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430B5D, regs);
+    }
+
+    // 0x00430BAB
+    static void sub_430BAB(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430BAB, regs);
+    }
+
+    // 0x00430BDA
+    static void sub_430BDA(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430BDA, regs);
+    }
+
+    // 0x00430C06
+    static void sub_430C06(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430C06, regs);
+    }
+
+    // 0x00430C2D
+    static void sub_430C2D(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430C2D, regs);
+    }
+
+    // 0x00430C73
+    static void sub_430C73(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430C73, regs);
+    }
+
+    // 0x00430C9A
+    static void sub_430C9A(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430C9A, regs);
+    }
+
+    // 0x00430CBE
+    static void sub_430CBE(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430CBE, regs);
+    }
+
+    // 0x00430CEC
+    static void sub_430CEC(Company& company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        call(0x00430CEC, regs);
+    }
+
+    // 0x004824F8
+    static uint32_t aiStationsTileDistance(const AiThought& thought, uint8_t aiStationIdx0, uint8_t aiStationIdx1)
+    {
+        auto& aiStation0 = thought.stations[aiStationIdx0];
+        auto& aiStation1 = thought.stations[aiStationIdx1];
+
+        const auto tilePos0 = toTileSpace(aiStation0.pos);
+        const auto tilePos1 = toTileSpace(aiStation1.pos);
+
+        return Math::Vector::distance2D(tilePos0, tilePos1);
+    }
+
+    // 0x004822E8
+    static currency32_t estimateThoughtRevenue(const AiThought& thought)
+    {
+        uint32_t averageTrackTileDistance = 0;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+        {
+            uint32_t totalTrackTileDistance = aiStationsTileDistance(thought, 0, 1);
+            totalTrackTileDistance += aiStationsTileDistance(thought, 1, 2);
+            totalTrackTileDistance += aiStationsTileDistance(thought, 2, 3);
+            totalTrackTileDistance += aiStationsTileDistance(thought, 3, 0);
+
+            averageTrackTileDistance = totalTrackTileDistance / 4;
+        }
+        else
+        {
+            averageTrackTileDistance += aiStationsTileDistance(thought, 0, 1);
+        }
+
+        Speed16 minSpeed = kSpeed16Max;
+        for (auto i = 0U; i < thought.var_45; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
+            minSpeed = std::min(vehicleObj->speed, minSpeed);
+        }
+
+        const auto speedFactor = ((minSpeed.getRaw() / 2) * 180) / 256;
+
+        // 0x0112C3AA
+        const auto distanceFactor = std::clamp(averageTrackTileDistance * 2 / (speedFactor == 0 ? 1 : speedFactor), 1U, 256U);
+
+        // 0x0112C3AC
+        auto distanceFactor2 = distanceFactor * 4;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+        {
+            distanceFactor2 *= 2;
+        }
+
+        distanceFactor2 /= thought.var_43;
+
+        uint32_t estimatedNumUnits = 0;
+        const auto cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+        for (auto i = 0U; i < thought.var_45; ++i)
+        {
+            bool cargoFound = false;
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
+            for (auto j = 0U; j < 2; ++j)
+            {
+                if (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType))
+                {
+                    estimatedNumUnits += vehicleObj->maxCargo[j];
+                    cargoFound = true;
+                    break;
+                }
+            }
+            if (cargoFound)
+            {
+                continue;
+            }
+
+            if (vehicleObj->hasFlags(VehicleObjectFlags::refittable))
+            {
+                if (cargoObj->hasFlags(CargoObjectFlags::refit))
+                {
+                    const auto sourceCargoType = Numerics::bitScanForward(vehicleObj->compatibleCargoCategories[0]);
+                    estimatedNumUnits += Vehicles::getNumUnitsForCargo(vehicleObj->maxCargo[0], sourceCargoType, thought.cargoType);
+                }
+            }
+        }
+
+        const auto transferTimeFactor = (std::min<int32_t>((cargoObj->cargoTransferTime * estimatedNumUnits) / 256, 65535) / 192) * 4;
+
+        const auto estimatedNumDays = distanceFactor + transferTimeFactor / 8;
+        const auto estimatedPayment = CompanyManager::calculateDeliveredCargoPayment(thought.cargoType, estimatedNumUnits, averageTrackTileDistance, estimatedNumDays);
+
+        const auto unkTimeFactor = 2920 / std::max<int32_t>(transferTimeFactor + distanceFactor2, 1);
+        return estimatedPayment * unkTimeFactor;
+    }
+
+    // 0x00430D26
+    static void sub_430D26(Company& company)
+    {
+        company.var_25BE = 0xFFU;
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        company.activeThoughtRevenueEstimate = estimateThoughtRevenue(thought);
+        company.var_4A5 = 11;
+    }
+
+    // 0x00430D54
+    static void sub_430D54(Company& company)
+    {
+        company.var_2582 = 0;
+        company.var_4A5 = 12;
+    }
+
+    // 0x00430B31
+    static void state2ClearActiveThought(Company& company)
+    {
+        if (company.activeThoughtId != 0xFFU)
+        {
+            auto& thought = company.aiThoughts[company.activeThoughtId];
+            clearThought(thought);
+        }
+        company.var_4A5 = 13;
+    }
+
+    static constexpr std::array<uint8_t, 12> kIntelligenceToMoneyFactor = {
+        1,
+        9,
+        8,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2,
+        1,
+        0,
+        0,
+    };
+
+    static bool sub_482533(Company& company, AiThought& thought)
+    {
+        auto unk = company.activeThoughtRevenueEstimate - thought.var_7C * 24;
+        if (unk <= 0)
+        {
+            return true;
+        }
+
+        auto* competitorObj = ObjectManager::get<CompetitorObject>(company.competitorId);
+        unk = unk * kIntelligenceToMoneyFactor[competitorObj->intelligence] / 2;
+
+        if (unk < thought.var_76)
+        {
+            return true;
+        }
+
+        return !CompanyManager::ensureCompanyFunding(company.id(), thought.var_76);
+    }
+
+    // 0x00430D7B
+    static void sub_430D7B(Company& company)
+    {
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        if (sub_482533(company, thought))
+        {
+            state2ClearActiveThought(company);
+        }
+        else
+        {
+            company.var_4A4 = AiThinkState::unk3;
+            company.var_4A5 = 0;
+            // 0x00482578
+            company.var_259A = 0xFE;
+            company.var_259B = 0xFE;
+            company.var_259C = 0xFE;
+            company.var_2596 = 0;
+            thought.var_76 = 0;
+        }
+    }
+
+    // 0x00430DAE
+    static void sub_430DAE(Company& company)
+    {
+        company.var_4A4 = AiThinkState::unk0;
+    }
+
+    using AiThinkState2Function = void (*)(Company&);
+
+    static constexpr std::array<AiThinkState2Function, 14> _funcs_4F94B0 = {
+        sub_430A12,
+        sub_430B5D,
+        sub_430BAB,
+        sub_430BDA,
+        sub_430C06,
+        sub_430C2D,
+        sub_430C73,
+        sub_430C9A,
+        sub_430CBE,
+        sub_430CEC,
+        sub_430D26,
+        sub_430D54,
+        sub_430D7B,
+        sub_430DAE,
+    };
+
+    // 0x004309FD
+    static void aiThinkState2(Company& company)
+    {
+        company.var_85F6++;
+        _funcs_4F94B0[company.var_4A5](company);
     }
 
     // 0x004834C0, 0x0048352E, 0x00493594
@@ -2181,7 +2464,7 @@ namespace OpenLoco
             return 1;
         }
 
-        if (company.var_257E * 2 < thought.var_76)
+        if (company.activeThoughtRevenueEstimate * 2 < thought.var_76)
         {
             return 1;
         }
@@ -2959,12 +3242,6 @@ namespace OpenLoco
         {
             company.var_4A5 = 4;
         }
-    }
-
-    // 0x00483778
-    static void clearThought(AiThought& thought)
-    {
-        thought.type = AiThoughtType::null;
     }
 
     // 0x00431186
