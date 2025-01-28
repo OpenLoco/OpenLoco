@@ -763,7 +763,7 @@ namespace OpenLoco
             std::array<uint8_t, 17> roadStations{};
             Ui::Windows::Construction::Common::refreshStationList(roadStations.data(), thought.trackObjId & ~(1U << 7), TransportMode::road);
             int16_t bestDesignYear = -1;
-            bool unk = false;
+            bool hadIdealSelection = false;
             for (const auto roadStationObjId : roadStations)
             {
                 if (roadStationObjId == 0xFFU)
@@ -782,43 +782,20 @@ namespace OpenLoco
                     continue;
                 }
 
-                bool alwaysSelect = false;
-                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk8))
+                bool hasRequiredRoadEnd = roadStationObj->hasFlags(RoadStationFlags::roadEnd) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk8);
+
+                // If we have previously used a fallback we want to remove the fallback and use
+                // the ideal selection
+                bool alwaysSelect = hasRequiredRoadEnd && !hadIdealSelection;
+
+                // We have now entered ideal selection mode so can remove non-ideal stations
+                // from potential selection
+                if (hadIdealSelection && !hasRequiredRoadEnd)
                 {
-                    if (roadStationObj->hasFlags(RoadStationFlags::roadEnd))
-                    {
-                        if (!unk)
-                        {
-                            alwaysSelect = true;
-                        }
-                        unk = true;
-                    }
-                    else
-                    {
-                        if (unk)
-                        {
-                            continue;
-                        }
-                    }
+                    continue;
                 }
-                else
-                {
-                    if (roadStationObj->hasFlags(RoadStationFlags::roadEnd))
-                    {
-                        if (unk)
-                        {
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        if (!unk)
-                        {
-                            alwaysSelect = true;
-                        }
-                        unk = true;
-                    }
-                }
+                hadIdealSelection |= hasRequiredRoadEnd;
+
                 if (!alwaysSelect)
                 {
                     if (bestDesignYear >= roadStationObj->designedYear)
@@ -936,7 +913,7 @@ namespace OpenLoco
                     baseCost += cost;
                 }
                 {
-                    for (auto i = 0U; i < 32U; ++i)
+                    for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::roadExtra); ++i)
                     {
                         if (thought.mods & (1U << i))
                         {
@@ -964,7 +941,7 @@ namespace OpenLoco
                     baseCost += cost;
                 }
                 {
-                    for (auto i = 0U; i < 32U; ++i)
+                    for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::trackExtra); ++i)
                     {
                         if (thought.mods & (1U << i))
                         {
@@ -1033,7 +1010,7 @@ namespace OpenLoco
                 tileCost += cost;
             }
             {
-                for (auto i = 0U; i < 32U; ++i)
+                for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::roadExtra); ++i)
                 {
                     if (thought.mods & (1U << i))
                     {
@@ -1054,7 +1031,7 @@ namespace OpenLoco
                 tileCost += cost;
             }
             {
-                for (auto i = 0U; i < 32U; ++i)
+                for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::trackExtra); ++i)
                 {
                     if (thought.mods & (1U << i))
                     {
