@@ -1,5 +1,6 @@
 25.01 (???)
 ------------------------------------------------------------------------
+- Feature: [#2859] Add Class 656 OpenGraphics vehicle.
 - Fix: [#2613] Crash when unpacking objects from a save file.
 - Fix: [#2805] Inflation calculation potentially going wrong with large values.
 - Fix: [#2810] Large performance regression when there are a lot of vehicles.

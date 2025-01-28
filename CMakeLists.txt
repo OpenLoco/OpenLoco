@@ -147,8 +147,8 @@ if (UNIX)
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.0/objects.zip
-            URL_HASH SHA256=3fd5b10681d8f2f9842213d8fca98222485f509193894af15c290abd29a28126)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.1/objects.zip
+            URL_HASH SHA256=e75ad13a8e8d58458e0c54e5ce62902a073d7bb025ef8fb97cb56108ff7c57c3)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
