@@ -9,21 +9,13 @@
 namespace OpenLoco::Ui::Widgets
 {
     // 0x004CADE8
-    static void sub_4CADE8(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    static void drawImage(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
 
         Ui::Point placeForImage(widget.left + window->x, widget.top + window->y);
         const bool isColourSet = widget.image & Widget::kImageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
-        if (widget.type == WidgetType::wt_6 || widget.type == WidgetType::toolbarTab || widget.type == WidgetType::tab || widget.type == WidgetType::wt_4)
-        {
-            if (widgetState.activated)
-            {
-                // TODO: remove image addition
-                imageId = imageId.withIndexOffset(1);
-            }
-        }
 
         auto colour = widgetState.colour;
         if (widgetState.disabled)
@@ -65,6 +57,11 @@ namespace OpenLoco::Ui::Widgets
             imageId = imageId.withPrimary(colour.c());
         }
 
+        if (!isColourSet)
+        {
+            imageId = ImageId::fromUInt32(Gfx::recolour(imageId.getIndex(), colour.c()));
+        }
+
         drawingCtx.drawImage(placeForImage, imageId);
     }
 
@@ -96,14 +93,15 @@ namespace OpenLoco::Ui::Widgets
             drawingCtx.fillRect(l, t, r, b, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
-        drawingCtx.fillRectInset(l, t, r, b, widgetState.colour, flags);
+        // TODO: Add a setting to decide if it should be translucent or not, for now it seems all ImageButton's require this.
+        drawingCtx.fillRectInset(l, t, r, b, widgetState.colour.translucent(), flags);
 
         if (widget.content == Widget::kContentNull)
         {
             return;
         }
 
-        sub_4CADE8(drawingCtx, widget, widgetState);
+        drawImage(drawingCtx, widget, widgetState);
     }
 
     // 0x004CB164
@@ -144,6 +142,6 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        sub_4CADE8(drawingCtx, widget, widgetState);
+        drawImage(drawingCtx, widget, widgetState);
     }
 }

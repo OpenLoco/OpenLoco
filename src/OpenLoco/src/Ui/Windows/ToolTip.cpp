@@ -10,6 +10,7 @@
 #include "Objects/ObjectManager.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
@@ -39,7 +40,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     // 0x005234CC
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 200, 32 }, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, { 200, 32 }, WindowColour::primary)
 
     );
 

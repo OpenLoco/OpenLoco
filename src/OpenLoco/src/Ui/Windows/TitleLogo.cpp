@@ -3,6 +3,7 @@
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::Ui::Windows::TitleLogo
@@ -18,7 +19,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, kWindowSize, WindowColour::primary)
 
     );
 

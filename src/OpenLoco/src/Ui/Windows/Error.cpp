@@ -13,6 +13,7 @@
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -59,7 +60,7 @@ namespace OpenLoco::Ui::Windows::Error
 
         static constexpr auto widgets = makeWidgets(
             Widgets::Panel({ 0, 0 }, { 250, 70 }, WindowColour::primary),
-            makeWidget({ 3, 3 }, { 64, 64 }, WidgetType::wt_3, WindowColour::secondary)
+            Widgets::Wt3Widget({ 3, 3 }, { 64, 64 }, WindowColour::secondary)
 
         );
     }

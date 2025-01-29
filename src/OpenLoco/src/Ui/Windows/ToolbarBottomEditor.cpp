@@ -7,6 +7,7 @@
 #include "Localisation/StringIds.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include <map>
 
 namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
@@ -22,9 +23,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     static constexpr uint16_t kWindowHeight = 32;
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
+        Widgets::Wt3Widget({ 0, 0 }, { 200, 34 }, WindowColour::primary),
         Widgets::ImageButton({ 2, 2 }, { 196, 30 }, WindowColour::primary),
-        makeWidget({ 440, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
+        Widgets::Wt3Widget({ 440, 0 }, { 200, 34 }, WindowColour::primary),
         Widgets::ImageButton({ 442, 2 }, { 196, 30 }, WindowColour::primary)
 
     );

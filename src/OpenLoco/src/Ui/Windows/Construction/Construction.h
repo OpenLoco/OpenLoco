@@ -7,6 +7,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -151,7 +152,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
                 Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, CaptionVariant::colourText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, WidgetType::wt_3, WindowColour::secondary),
+                Widgets::Wt3Widget({ 0, 41 }, { frameWidth, frameHeight - 41 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_track_road_construction),
                 Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_station_construction),
                 Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_signal_construction),

@@ -10,6 +10,7 @@
 #include "Logging.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Widget.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
@@ -165,7 +166,7 @@ namespace OpenLoco::Ui::Dropdown
         };
 
         static auto widgets = makeWidgets(
-            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::wt_3, WindowColour::primary)
+            Widgets::Wt3Widget({ 0, 0 }, { 1, 1 }, WindowColour::primary)
 
         );
 

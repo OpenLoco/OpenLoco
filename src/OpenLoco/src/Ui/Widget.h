@@ -24,7 +24,7 @@ namespace OpenLoco::Ui
     struct Window;
     enum class WindowColour : uint8_t;
 
-    enum class ContentAlign
+    enum class ContentAlign : uint8_t
     {
         Left = 0,
         Center,
@@ -63,7 +63,6 @@ namespace OpenLoco::Ui
         checkbox = 27,
         wt_28,
         wt_29,
-        viewportCentreButton, // TODO: Make a better generic button so we get the same result.
     };
 
     struct WidgetState
@@ -78,7 +77,6 @@ namespace OpenLoco::Ui
         int scrollviewIndex;
     };
 
-#pragma pack(push, 1)
     struct Widget;
 
     struct WidgetEventsList
@@ -96,60 +94,60 @@ namespace OpenLoco::Ui
         static constexpr uint32_t kContentUnk = 0xFFFFFFFEU;
 
         constexpr Widget(Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-            : type{ widgetType }
-            , windowColour{ colour }
+            : content{ content }
             , left{ static_cast<int16_t>(origin.x) }
             , right{ static_cast<int16_t>(origin.x + size.width - 1) }
             , top{ static_cast<int16_t>(origin.y) }
             , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
-            , content{ content }
             , tooltip{ tooltip }
+            , type{ widgetType }
+            , windowColour{ colour }
         {
         }
 
         constexpr Widget(Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
-            : type{ widgetType }
-            , windowColour{ colour }
+            : text{ content }
             , left{ static_cast<int16_t>(origin.x) }
             , right{ static_cast<int16_t>(origin.x + size.width - 1) }
             , top{ static_cast<int16_t>(origin.y) }
             , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
-            , text{ content }
             , tooltip{ tooltip }
+            , type{ widgetType }
+            , windowColour{ colour }
         {
         }
 
         constexpr Widget(WidgetType widgetType)
-            : type{ widgetType }
-            , windowColour{}
+            : content{ kContentNull }
             , left{}
             , right{}
             , top{}
             , bottom{}
-            , content{ kContentNull }
             , tooltip{ StringIds::null }
+            , type{ widgetType }
+            , windowColour{}
         {
         }
 
         constexpr Widget() = default;
 
-        WidgetType type{};           // 0x00
-        WindowColour windowColour{}; // 0x01
-        int16_t left{};              // 0x02
-        int16_t right{};             // 0x04
-        int16_t top{};               // 0x06
-        int16_t bottom{};            // 0x08
+        FormatArgumentsBuffer textArgs;
+        WidgetEventsList events;
         union
         {
             uint32_t image{ ImageIds::null };
             StringId text;
             uint32_t content;
         };
-        StringId tooltip{ StringIds::null }; // 0x0E
-        ContentAlign contentAlign{ ContentAlign::Left };
-        FormatArgumentsBuffer textArgs;
-        WidgetEventsList events;
+        int16_t left{};
+        int16_t right{};
+        int16_t top{};
+        int16_t bottom{};
         Gfx::Font font{ Gfx::Font::medium_bold };
+        StringId tooltip{ StringIds::null };
+        WidgetType type{};
+        ContentAlign contentAlign{ ContentAlign::Left };
+        WindowColour windowColour{};
 
         int16_t midX() const;
         int16_t midY() const;
@@ -165,8 +163,6 @@ namespace OpenLoco::Ui
 
         void draw(Gfx::DrawingContext& drawingCtx, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
     };
-#pragma pack(pop)
-    // static_assert(sizeof(Widget) == 0x10);
 
     constexpr Widget makeWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {

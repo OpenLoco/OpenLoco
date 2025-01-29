@@ -39,7 +39,6 @@ namespace OpenLoco::Ui
     static void draw_29(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
     static void drawGroupbox(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
     static void drawViewports(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
-    static void drawViewportCentreButton(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
 
     int16_t Widget::midX() const
     {
@@ -213,32 +212,7 @@ namespace OpenLoco::Ui
                 assert(false); // Unused
                 draw_29(drawingCtx, *this, widgetState);
                 break;
-            case WidgetType::viewportCentreButton:
-                drawViewportCentreButton(drawingCtx, *this, widgetState);
-                break;
         }
-    }
-
-    // 0x004CF487
-    static void drawViewportCentreButton(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
-    {
-        auto* window = widgetState.window;
-
-        if (widgetState.hovered)
-        {
-            drawingCtx.drawRect(widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), enumValue(ExtColour::translucentGrey2), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
-
-            Gfx::RectInsetFlags flags = Gfx::RectInsetFlags::none;
-            if (widgetState.activated)
-            {
-                flags = Gfx::RectInsetFlags::borderInset;
-            }
-
-            drawingCtx.drawRectInset(widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), window->getColour(WindowColour::secondary).translucent(), flags);
-        }
-
-        drawingCtx.drawImage(widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, window->getColour(WindowColour::secondary).c()));
     }
 
     // 0x004CAB8E
