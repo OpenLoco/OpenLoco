@@ -1,5 +1,6 @@
 #include "Town.h"
 #include "Config.h"
+#include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
 #include "Graphics/RenderTarget.h"
@@ -14,6 +15,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
+#include "Objects/StreetLightObject.h"
 #include "Random.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -521,6 +523,33 @@ namespace OpenLoco
         std::optional<uint8_t> levelCrossingObjectId; // ebx >> 16 && ebx >> 24
     };
 
+    // 0x00498C6B
+    // roadObjId : bh
+    // townDensity : 0x01135C5F
+    // return : edi
+    static uint32_t getStreetLightStyle(uint8_t roadObjId, uint8_t townDensity)
+    {
+        auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+        if (!roadObj->hasFlags(RoadObjectFlags::unk_08) || townDensity == 0)
+        {
+            return 0;
+        }
+
+        return []() {
+            auto* streetLightObj = ObjectManager::get<StreetLightObject>();
+            const auto curYear = getCurrentYear();
+            for (auto i = 0U; i < std::size(streetLightObj->designedYear); ++i)
+            {
+                if (curYear < streetLightObj->designedYear[i])
+                {
+                    return i;
+                }
+            }
+            return std::size(streetLightObj->designedYear);
+        }();
+    }
+
+    // 0x0047AC3E
     static NextRoadResult sub_47AC3E(const World::Pos3& loc, Vehicles::TrackAndDirection::_RoadAndDirection tad)
     {
         const auto roadStart = [tad, &loc]() {
