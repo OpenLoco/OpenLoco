@@ -1774,6 +1774,11 @@ namespace OpenLoco
 
         const auto direction = directionWaterIndustry == 0xFFU ? directionLand : directionWaterIndustry;
 
+        if (direction == 0xFFU)
+        {
+            return true;
+        }
+
         // Same as air
         const bool shouldCreatePort = [&thought, aiStationIdx, minPos, maxPos]() {
             const auto [acceptedCargo, producedCargo] = calcAcceptedCargoAi(minPos, maxPos);
