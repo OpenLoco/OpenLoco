@@ -3,6 +3,7 @@
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
+#include "GameState.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
@@ -523,6 +524,50 @@ namespace OpenLoco
         bool isStationRoadEnd;                        // ebx >> 23
         std::optional<uint8_t> levelCrossingObjectId; // ebx >> 16 && ebx >> 24
     };
+
+    // 0x00498D21
+    // pos : ax, cx, dx
+    // rotation : bl
+    // return : flags Carry == found road
+    static bool sub_498D21(const World::Pos3 pos, const uint8_t rotation)
+    {
+        if (!World::validCoords(pos))
+        {
+            return false;
+        }
+
+        auto tile = World::TileManager::get(pos);
+        for (auto& el : tile)
+        {
+            auto* elRoad = el.as<World::RoadElement>();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+            if (elRoad->baseHeight() != pos.z)
+            {
+                continue;
+            }
+            if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+            {
+                continue;
+            }
+            if (elRoad->roadId() != 0)
+            {
+                continue;
+            }
+            if (elRoad->isGhost() || elRoad->isAiAllocated())
+            {
+                continue;
+            }
+
+            if (rotation == elRoad->rotation() || (rotation ^ (1U << 1)) == elRoad->rotation())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // 0x00498CB7
     // Searches a 3x3 square around the centerPos for any buildings
