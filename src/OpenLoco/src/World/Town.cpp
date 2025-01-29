@@ -10,6 +10,7 @@
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Objects/ObjectManager.h"
@@ -522,6 +523,30 @@ namespace OpenLoco
         bool isStationRoadEnd;                        // ebx >> 23
         std::optional<uint8_t> levelCrossingObjectId; // ebx >> 16 && ebx >> 24
     };
+
+    // 0x00498CB7
+    // Searches a 3x3 square around the centerPos for any buildings
+    // centerPos : ax, cx (Actually in World::Pos2 format)
+    // return : flags Carry == building found
+    static bool hasNearbyBuildings(World::TilePos2 centerPos)
+    {
+        const auto tileA = centerPos - World::TilePos2{ 2, 2 };
+        const auto tileB = centerPos + World::TilePos2{ 2, 2 };
+        for (const auto& tilePos : World::getClampedRange(tileA, tileB))
+        {
+            auto tile = World::TileManager::get(tilePos);
+            for (const auto& el : tile)
+            {
+                auto* elBuilding = el.as<World::BuildingElement>();
+                if (elBuilding == nullptr)
+                {
+                    continue;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
     // 0x00498C6B
     // roadObjId : bh
