@@ -1,4 +1,4 @@
-25.01 (???)
+25.01 (2025-01-30)
 ------------------------------------------------------------------------
 - Feature: [#2859] Add Class 656 OpenGraphics vehicle.
 - Fix: [#2613] Crash when unpacking objects from a save file.
