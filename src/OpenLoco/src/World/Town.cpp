@@ -569,6 +569,134 @@ namespace OpenLoco
         return false;
     }
 
+    // 0x004F6CCC
+    // index with tad
+    constexpr std::array<uint8_t, 80> kUnkRoadData = {
+        0b0101,
+        0b1010,
+        0b0101,
+        0b1010,
+        0b0101,
+        0b1010,
+        0b0101,
+        0b1010,
+        0b1100,
+        0b1001,
+        0b0011,
+        0b0110,
+        0b1100,
+        0b1001,
+        0b0011,
+        0b0010,
+        0b0010,
+        0b0010,
+        0b0010,
+        0b0010,
+        0b0010,
+        0b1100,
+        0b1001,
+        0b0011,
+        0b0110,
+        0b1100,
+        0b1001,
+        0b0011,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    };
+
+    // 0x00498D9A
+    // pos : ax, cx, dx
+    // bl : ebx (must be below 32)
+    // return : flags Carry == found road
+    static bool sub_498D9A(const World::Pos3 pos, uint8_t bl)
+    {
+        if (!World::validCoords(pos))
+        {
+            return false;
+        }
+
+        assert(bl < 32);
+
+        auto tile = World::TileManager::get(pos);
+        for (auto& el : tile)
+        {
+            auto* elRoad = el.as<World::RoadElement>();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+            if (elRoad->baseHeight() != pos.z)
+            {
+                continue;
+            }
+            if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+            {
+                continue;
+            }
+            if (elRoad->isGhost() || elRoad->isAiAllocated())
+            {
+                continue;
+            }
+
+            const uint16_t tad = (elRoad->roadId() << 3) | elRoad->rotation();
+            if (kUnkRoadData[tad] & (1U << bl))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // 0x00498CB7
     // Searches a 3x3 square around the centerPos for any buildings
     // centerPos : ax, cx (Actually in World::Pos2 format)
