@@ -8,12 +8,14 @@
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/BuildingElement.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
+#include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
@@ -569,34 +571,91 @@ namespace OpenLoco
         return false;
     }
 
+    // 0x0042CEBF
+    // year : ax
+    // dx : dx
+    // largeTile : bl
+    // unk1 : 525D24
+    // targetHeight : esi
+    // return : ebp
+    static sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::building)> sub_42CEBF(uint16_t year, uint16_t dx, bool largeTile, uint32_t unk1, uint16_t targetHeight)
+    {
+        sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::building)> potentialBuildings;
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::building); ++i)
+        {
+            auto* buildingObj = ObjectManager::get<BuildingObject>(i);
+            if (buildingObj == nullptr)
+            {
+                continue;
+            }
+            if (buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
+            {
+                continue;
+            }
+            if (!(buildingObj->generatorFunction & (1U << dx)))
+            {
+                continue;
+            }
+            if (year < buildingObj->designedYear || year > buildingObj->obsoleteYear)
+            {
+                continue;
+            }
+            if (largeTile != buildingObj->hasFlags(BuildingObjectFlags::largeTile))
+            {
+                continue;
+            }
+            if (buildingObj->var_AC != 0xFFU)
+            {
+                if (!(unk1 & (1U << buildingObj->var_AC)))
+                {
+                    continue;
+                }
+            }
+
+            for (auto j = 0U; j < buildingObj->numVariations; ++j)
+            {
+                uint16_t height = 0;
+                auto parts = buildingObj->getBuildingParts(j);
+                for (const auto part : parts)
+                {
+                    height += buildingObj->partHeights[part];
+                }
+
+                if (height <= targetHeight)
+                {
+                    potentialBuildings.push_back(i);
+                    break;
+                }
+            }
+        }
+        return potentialBuildings;
+    }
+
     // 0x004F6CCC
-    // index with tad
-    constexpr std::array<uint8_t, 80> kUnkRoadData = {
-        0b0101,
-        0b1010,
-        0b0101,
-        0b1010,
-        0b0101,
-        0b1010,
-        0b0101,
-        0b1010,
-        0b1100,
+    // index with tad side doesn't matter
+    // Note: only valid for straight and very small curves
+    constexpr std::array<uint8_t, 80> kRoadTadConnectionEdge = {
+        0b0101, // straight rotation 0 side 0
+        0b1010, // straight rotation 1 side 0
+        0b0101, // straight rotation 2 side 0
+        0b1010, // straight rotation 3 side 0
+        0b0101, // straight rotation 0 side 1
+        0b1010, // straight rotation 1 side 1
+        0b0101, // straight rotation 2 side 1
+        0b1010, // straight rotation 3 side 1
+        0b1100, // left curve very small rotation 0 side 0
         0b1001,
         0b0011,
         0b0110,
-        0b1100,
-        0b1001,
-        0b0011,
-        0b0010,
-        0b0010,
-        0b0010,
-        0b0010,
-        0b0010,
-        0b0010,
-        0b1100,
+        0b1100, // left curve very small rotation 0 side 1
         0b1001,
         0b0011,
         0b0110,
+        0b0110, // right curve very small rotation 0 side 0
+        0b1100,
+        0b1001,
+        0b0011,
+        0b0110, // right curve very small rotation 0 side 1
         0b1100,
         0b1001,
         0b0011,
@@ -689,7 +748,7 @@ namespace OpenLoco
             }
 
             const uint16_t tad = (elRoad->roadId() << 3) | elRoad->rotation();
-            if (kUnkRoadData[tad] & (1U << bl))
+            if (kRoadTadConnectionEdge[tad] & (1U << bl))
             {
                 return true;
             }
