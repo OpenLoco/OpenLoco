@@ -359,7 +359,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::prepareDraw(self);
 
-            self.widgets[widx::scrollview].right = self.width - 24;
+            self.widgets[widx::scrollview].right = self.width - 26;
             self.widgets[widx::scrollview].bottom = self.height - 14;
 
             self.widgets[widx::status_bar].top = self.height - 12;
