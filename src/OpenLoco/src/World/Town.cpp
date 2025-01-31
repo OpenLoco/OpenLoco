@@ -1,6 +1,7 @@
 #include "Town.h"
 #include "Config.h"
 #include "Date.h"
+#include "GameCommands/Buildings/CreateBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
 #include "GameState.h"
@@ -754,6 +755,119 @@ namespace OpenLoco
             }
         }
         return false;
+    }
+
+    static constexpr std::array<uint8_t, 8> k4F92A6 = {
+        1,
+        1,
+        2,
+        2,
+        1,
+        3,
+        1,
+        1,
+    };
+
+    // 0x0042CF7C
+    // pos : (ax, cx, di)
+    // isLargeTile : bh bit 0
+    // buildImmediately : bh bit 1
+    // rotation : bl
+    // targetHeight : ebp
+    // return std::nullopt : Carry flag set
+    //        See also BuildingPlacementArgs
+    //
+    // TODO: Pass in targetTownId when not hooking return nullopt
+    // if nearby town is not targetTownId and remove the loco_global
+    static std::optional<GameCommands::BuildingPlacementArgs> sub_42CF7C(const World::Pos3 pos, int16_t targetHeight, uint8_t rotation, bool isLargeTile, bool buildImmediately)
+    {
+        const auto res = TownManager::getClosestTownAndDensity(pos);
+        if (!res.has_value())
+        {
+            return std::nullopt;
+        }
+
+        const auto& [townId, townDensity] = res.value();
+        // See TODO
+        // if (targetTownId != townId)
+        // {
+        //     return std::nullopt;
+        // }
+
+        auto* town = TownManager::get(townId);
+        // See TODO
+        loco_global<Town*, 0x00525D20> _525D20;
+        _525D20 = town;
+
+        uint32_t unk525D24 = 0;
+        const auto buildingsFactor = (town->numBuildings + 64) / 128;
+        for (auto i = 0U; i < std::size(k4F92A6); ++i)
+        {
+            if (k4F92A6[i] * buildingsFactor > town->var_150[i])
+            {
+                unk525D24 |= (1U << i);
+            }
+        }
+
+        const auto curYear = getCurrentYear();
+        auto potentialBuildings = sub_42CEBF(curYear, townDensity, isLargeTile, unk525D24, targetHeight);
+        if (potentialBuildings.empty())
+        {
+            if (townDensity == 0)
+            {
+                return std::nullopt;
+            }
+            auto potentialBuildings = sub_42CEBF(curYear, townDensity - 1, isLargeTile, unk525D24, targetHeight);
+            if (potentialBuildings.empty())
+            {
+                return std::nullopt;
+            }
+        }
+
+        const auto randBuilding = ((town->prng.randNext() & 0xFFFFU) * potentialBuildings.size()) / 65536;
+        const auto buildingObjId = potentialBuildings[randBuilding];
+        auto* buildingObj = ObjectManager::get<BuildingObject>(buildingObjId);
+        sfl::static_vector<uint8_t, 32> potentialVariations;
+        for (auto j = 0U; j < buildingObj->numVariations; ++j)
+        {
+            uint16_t height = 0;
+            auto parts = buildingObj->getBuildingParts(j);
+            for (const auto part : parts)
+            {
+                height += buildingObj->partHeights[part];
+            }
+
+            if (height <= targetHeight)
+            {
+                potentialVariations.push_back(j);
+            }
+        }
+        const auto randVariationIndex = ((town->prng.randNext() & 0xFFFFU) * potentialVariations.size()) / 65536;
+        const auto variation = potentialVariations[randVariationIndex];
+
+        sfl::static_vector<Colour, 32> potentialColours;
+        for (auto j = 0U; j < enumValue(Colour::max); ++j)
+        {
+            if (buildingObj->colours & (1U << j))
+            {
+                potentialColours.push_back(static_cast<Colour>(j));
+            }
+        }
+        auto colour = Colour::black;
+        if (!potentialColours.empty())
+        {
+            const auto randColourIndex = ((town->prng.randNext() & 0xFFFFU) * potentialColours.size()) / 65536;
+            colour = potentialColours[randColourIndex];
+        }
+
+        GameCommands::BuildingPlacementArgs args{};
+        args.buildImmediately = buildImmediately;
+        args.pos = pos;
+        args.colour = colour;
+        args.rotation = rotation;
+        args.type = buildingObjId;
+        args.variation = variation;
+        return args;
     }
 
     // 0x00498CB7
