@@ -768,6 +768,49 @@ namespace OpenLoco
         1,
     };
 
+    // 0x0042D9FA
+    // pos : (ax, cx, dx)
+    // isLargeTile : bh bit 0
+    // unkFlag : bh bit 2
+    static void sub_42D9FA(const World::Pos3 pos, bool isLargeTile, bool unkFlag)
+    {
+        auto offsets = getBuildingTileOffsets(isLargeTile);
+        int32_t maxHeightDiff = 0;
+        for (auto& offset : offsets)
+        {
+            const auto loc = World::Pos2{ pos } + offset.pos;
+            if (!World::validCoords(loc))
+            {
+                continue;
+            }
+            const auto elSurface = World::TileManager::get(loc).surface();
+            const auto heightDiff = std::abs(elSurface->baseHeight() - pos.z);
+            maxHeightDiff = std::max(heightDiff, maxHeightDiff);
+        }
+        const auto smallMaxHeightDiff = maxHeightDiff / World::kSmallZStep;
+        if (smallMaxHeightDiff > 8)
+        {
+            return;
+        }
+        uint8_t minClear = 0xFFU;
+        for (auto& offset : offsets)
+        {
+            const auto loc = World::Pos2{ pos } + offset.pos;
+            if (!World::validCoords(loc))
+            {
+                return;
+            }
+            const auto elSurface = World::TileManager::get(loc).surface();
+            const auto minZ = std::min(elSurface->baseHeight(), pos.z) / World::kSmallZStep;
+            World::QuarterTile qt(0xF, 0xF);
+            auto clearFunc = [](TileElement& el) -> World::TileClearance::ClearFuncResult { sub_42DB35(); };
+            if (!World::TileClearance::applyClearAtStandardHeight(pos, minZ, 255, qt, clearFunc))
+            {
+                return;
+            }
+        }
+    }
+
     // 0x0042CF7C
     // pos : (ax, cx, di)
     // isLargeTile : bh bit 0
