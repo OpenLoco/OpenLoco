@@ -33,7 +33,7 @@ namespace OpenLoco::Vehicles
         coasting = 2,
         braking = 3,
         stoppedOnRackRail = 4,
-        airplaneAtTargetSpeed = 5,
+        airplaneAtTaxiSpeed = 5,
     };
 
     enum class Flags38 : uint8_t

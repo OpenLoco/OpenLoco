@@ -1557,7 +1557,7 @@ namespace OpenLoco::Vehicles
 
         if (type2speed == type1speed)
         {
-            vehType2->engineStatus = EngineStatus::airplaneAtTargetSpeed;
+            vehType2->engineStatus = EngineStatus::airplaneAtTaxiSpeed;
 
             if (type2speed != 20.0_mph)
             {
