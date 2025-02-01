@@ -490,7 +490,7 @@ namespace OpenLoco::GameCommands
         newVeh2->spriteHeightPositive = 0;
         newVeh2->var_38 = Flags38::none;
         newVeh2->currentSpeed = 0.0_mph;
-        newVeh2->var_5A = 0;
+        newVeh2->var_5A = Var5A::unk_0;
         newVeh2->var_5B = 0;
         newVeh2->drivingSoundId = SoundObjectId::null;
         newVeh2->objectId = 0xFFFFU;
