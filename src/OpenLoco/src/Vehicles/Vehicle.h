@@ -32,7 +32,7 @@ namespace OpenLoco::Vehicles
         accelerating = 1,
         coasting = 2,
         braking = 3,
-        stoppedOnRackRail = 4,
+        stoppedOnIncline = 4,
         airplaneAtTaxiSpeed = 5,
     };
 

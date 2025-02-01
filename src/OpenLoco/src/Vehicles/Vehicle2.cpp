@@ -199,7 +199,7 @@ namespace OpenLoco::Vehicles
             ebp /= 2;
             if (!train.head->hasVehicleFlags(VehicleFlags::unk_0))
             {
-                engineStatus = EngineStatus::stoppedOnRackRail;
+                engineStatus = EngineStatus::stoppedOnIncline;
                 if (currentSpeed <= 3.0_mph && train.head->owner == CompanyManager::getControllingId())
                 {
                     MessageManager::post(MessageType::vehicleSlipped, train.head->owner, enumValue(train.head->id), 0xFFFF);
@@ -309,7 +309,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (engineStatus == EngineStatus::stoppedOnRackRail)
+        if (engineStatus == EngineStatus::stoppedOnIncline)
         {
             _vehicleUpdate_var_1136130 = _vehicleUpdate_var_113612C + 0x1388;
         }

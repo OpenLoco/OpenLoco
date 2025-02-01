@@ -923,7 +923,7 @@ namespace OpenLoco::Vehicles
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         bool soundCode = false;
-        if (veh_2->engineStatus == EngineStatus::accelerating || veh_2->engineStatus == EngineStatus::stoppedOnRackRail)
+        if (veh_2->engineStatus == EngineStatus::accelerating || veh_2->engineStatus == EngineStatus::stoppedOnIncline)
         {
             soundCode = true;
         }
