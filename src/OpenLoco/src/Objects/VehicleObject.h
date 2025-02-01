@@ -57,24 +57,23 @@ namespace OpenLoco
     };
     static_assert(sizeof(VehicleObjectFrictionSound) == 0xB);
 
-    struct VehicleObjectEngine1Sound
+    struct VehicleSimpleMotorSound
     {
         uint8_t soundObjectId;     // 0x0
         uint16_t defaultFrequency; // 0x1
         uint8_t defaultVolume;     // 0x3
-        uint16_t var_04;
-        uint8_t var_06;
-        uint16_t var_07;
-        uint8_t var_09;
+        uint8_t pad_04[3];
+        uint16_t accelerationFreqFactor;
+        uint8_t acclerationVolume;
         uint16_t freqIncreaseStep;  // 0xA
         uint16_t freqDecreaseStep;  // 0xC
         uint8_t volumeIncreaseStep; // 0xE
         uint8_t volumeDecreaseStep; // 0xF
         uint8_t speedFreqFactor;    // 0x10
     };
-    static_assert(sizeof(VehicleObjectEngine1Sound) == 0x11);
+    static_assert(sizeof(VehicleSimpleMotorSound) == 0x11);
 
-    struct VehicleObjectEngine2Sound
+    struct VehicleGearboxMotorSound
     {
         uint8_t soundObjectId;         // 0x0
         uint16_t defaultFrequency;     // 0x1
@@ -86,15 +85,15 @@ namespace OpenLoco
         uint16_t thirdGearFreqFactor;  // 0xC
         Speed16 thirdGearSpeed;        // 0xE
         uint16_t fourthGearFreqFactor; // 0x10
-        uint8_t var_12;
-        uint8_t var_13;
+        uint8_t coastingVolume;
+        uint8_t acceleratingVolume;
         uint16_t freqIncreaseStep;  // 0x14
         uint16_t freqDecreaseStep;  // 0x16
         uint8_t volumeIncreaseStep; // 0x18
         uint8_t volumeDecreaseStep; // 0x19
         uint8_t speedFreqFactor;    // 0x1A
     };
-    static_assert(sizeof(VehicleObjectEngine2Sound) == 0x1B);
+    static_assert(sizeof(VehicleGearboxMotorSound) == 0x1B);
 
     struct VehicleObjectSimpleAnimation
     {
@@ -206,8 +205,8 @@ namespace OpenLoco
     {
         none,
         friction,
-        engine1,
-        engine2
+        simpleMotor,
+        gearboxMotor
     };
 
     namespace NumStartSounds
@@ -257,8 +256,8 @@ namespace OpenLoco
         union
         {
             VehicleObjectFrictionSound friction;
-            VehicleObjectEngine1Sound engine1;
-            VehicleObjectEngine2Sound engine2;
+            VehicleSimpleMotorSound engine1;
+            VehicleGearboxMotorSound engine2;
         } sound;
         uint8_t pad_135[0x15A - 0x135];
         uint8_t numStartSounds;         // 0x15A use mask when accessing kHasCrossingWhistle stuffed in (1 << 7)

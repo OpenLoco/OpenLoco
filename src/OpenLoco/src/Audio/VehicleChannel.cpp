@@ -65,7 +65,7 @@ namespace OpenLoco::Audio
     }
 
     // 0x0048A590
-    static std::pair<SoundId, Channel::Attributes> getChannelAttributesFromVehicle(const Vehicles::Vehicle2or6* v)
+    static std::pair<SoundId, Channel::Attributes> getChannelAttributesFromVehicle(const Vehicles::VehicleSoundPlayer* v)
     {
         auto* w = Ui::WindowManager::find(v->soundWindowType, v->soundWindowNumber);
         auto* viewport = w->viewports[0];
@@ -98,7 +98,7 @@ namespace OpenLoco::Audio
         {
             return;
         }
-        auto* veh26 = v->asVehicle2Or6();
+        auto* veh26 = v->getSoundPlayer();
         if (veh26 == nullptr)
         {
             return;
@@ -139,7 +139,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto* veh26 = v->asVehicle2Or6();
+        auto* veh26 = v->getSoundPlayer();
         if (veh26 == nullptr || ((veh26->soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none))
         {
             stop();
