@@ -923,7 +923,7 @@ namespace OpenLoco::Vehicles
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         bool soundCode = false;
-        if (veh_2->var_5A == Var5A::braking || veh_2->var_5A == Var5A::unk_4)
+        if (veh_2->var_5A == Var5A::accelerating || veh_2->var_5A == Var5A::stoppedOnRackRail)
         {
             soundCode = true;
         }
@@ -1117,7 +1117,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (veh_2->var_5A != Var5A::braking)
+            if (veh_2->var_5A != Var5A::accelerating)
             {
                 return;
             }
@@ -1160,7 +1160,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != Var5A::braking)
+        if (veh_2->var_5A != Var5A::accelerating)
         {
             return;
         }
@@ -1216,7 +1216,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != Var5A::coasting && veh_2->var_5A != Var5A::braking)
+        if (veh_2->var_5A != Var5A::coasting && veh_2->var_5A != Var5A::accelerating)
         {
             return;
         }
@@ -1261,7 +1261,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != Var5A::coasting && veh_2->var_5A != Var5A::braking)
+        if (veh_2->var_5A != Var5A::coasting && veh_2->var_5A != Var5A::accelerating)
         {
             return;
         }

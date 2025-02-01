@@ -131,11 +131,11 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        var_5A = Var5A::braking;
+        var_5A = Var5A::accelerating;
         const auto speedDiff = currentSpeed - *_vehicleUpdate_var_1136134;
         if (speedDiff > 0.0_mph)
         {
-            var_5A = Var5A::accelerating;
+            var_5A = Var5A::braking;
             const auto newSpeed = currentSpeed - (currentSpeed / 64 + 0.18311_mph);
             currentSpeed = std::max(newSpeed, std::max(*_vehicleUpdate_var_1136134, 5.0_mph));
             return sub_4A9F20();
@@ -199,7 +199,7 @@ namespace OpenLoco::Vehicles
             ebp /= 2;
             if (!train.head->hasVehicleFlags(VehicleFlags::unk_0))
             {
-                var_5A = Var5A::unk_4;
+                var_5A = Var5A::stoppedOnRackRail;
                 if (currentSpeed <= 3.0_mph && train.head->owner == CompanyManager::getControllingId())
                 {
                     MessageManager::post(MessageType::vehicleSlipped, train.head->owner, enumValue(train.head->id), 0xFFFF);
@@ -218,7 +218,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (manualSpeed <= -10)
                     {
-                        var_5A = Var5A::accelerating;
+                        var_5A = Var5A::braking;
                     }
                     else
                     {
@@ -229,7 +229,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (manualSpeed >= 10)
                     {
-                        var_5A = Var5A::braking;
+                        var_5A = Var5A::accelerating;
                     }
                     else
                     {
@@ -309,7 +309,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (var_5A == Var5A::unk_4)
+        if (var_5A == Var5A::stoppedOnRackRail)
         {
             _vehicleUpdate_var_1136130 = _vehicleUpdate_var_113612C + 0x1388;
         }
@@ -317,7 +317,7 @@ namespace OpenLoco::Vehicles
         train.head->var_3C -= _vehicleUpdate_var_113612C;
         train.veh1->var_3C -= _vehicleUpdate_var_113612C;
 
-        if (var_5A == Var5A::accelerating)
+        if (var_5A == Var5A::braking)
         {
             if (var_5B == 0)
             {

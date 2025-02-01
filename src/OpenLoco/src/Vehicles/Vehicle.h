@@ -29,11 +29,11 @@ namespace OpenLoco::Vehicles
     enum class Var5A : uint8_t
     {
         stopped = 0,
-        braking = 1,
+        accelerating = 1,
         coasting = 2,
-        accelerating = 3,
-        unk_4 = 4, // ?
-        unk_5 = 5, // ?
+        braking = 3,
+        stoppedOnRackRail = 4,
+        airplaneAtTargetSpeed = 5,
     };
 
     enum class Flags38 : uint8_t

@@ -878,7 +878,7 @@ namespace OpenLoco::Vehicles
                 targetVolume = snd->var_06;
             }
         }
-        else if (vehType2_2->var_5A == Var5A::braking)
+        else if (vehType2_2->var_5A == Var5A::accelerating)
         {
             if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0)
             {
@@ -960,7 +960,7 @@ namespace OpenLoco::Vehicles
         uint8_t targetVolume = 0;
         bool var5aEqual1Code = false;
 
-        if (vehType2_2->var_5A == Var5A::coasting || vehType2_2->var_5A == Var5A::accelerating)
+        if (vehType2_2->var_5A == Var5A::coasting || vehType2_2->var_5A == Var5A::braking)
         {
             if (vehType2_2->currentSpeed < 12.0_mph)
             {
@@ -973,7 +973,7 @@ namespace OpenLoco::Vehicles
                 var5aEqual1Code = true;
             }
         }
-        else if (vehType2_2->var_5A == Var5A::braking)
+        else if (vehType2_2->var_5A == Var5A::accelerating)
         {
             targetVolume = snd->var_13;
             var5aEqual1Code = true;
@@ -1557,7 +1557,7 @@ namespace OpenLoco::Vehicles
 
         if (type2speed == type1speed)
         {
-            vehType2->var_5A = Var5A::unk_5;
+            vehType2->var_5A = Var5A::airplaneAtTargetSpeed;
 
             if (type2speed != 20.0_mph)
             {
@@ -1583,7 +1583,7 @@ namespace OpenLoco::Vehicles
 
             if (type1speed == 20.0_mph)
             {
-                vehType2->var_5A = Var5A::accelerating;
+                vehType2->var_5A = Var5A::braking;
             }
 
             type2speed = std::max<Speed32>(0.0_mph, type2speed - decelerationAmount);
@@ -1592,7 +1592,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            vehType2->var_5A = Var5A::braking;
+            vehType2->var_5A = Var5A::accelerating;
             type2speed += 2.0_mph;
             type2speed = std::min<Speed32>(type2speed, type1speed);
             vehType2->currentSpeed = type2speed;
@@ -1608,7 +1608,7 @@ namespace OpenLoco::Vehicles
         {
             _vehicleUpdate_helicopterTargetYaw = targetYaw;
             targetYaw = spriteYaw;
-            vehType2->var_5A = Var5A::braking;
+            vehType2->var_5A = Var5A::accelerating;
             if (targetZ < position.z)
             {
                 vehType2->var_5A = Var5A::coasting;
@@ -2659,13 +2659,13 @@ namespace OpenLoco::Vehicles
             {
                 decelerationRate = 3.0_mph;
             }
-            veh2->var_5A = Var5A::accelerating;
+            veh2->var_5A = Var5A::braking;
             auto newSpeed = std::max(veh2->currentSpeed - decelerationRate, 0.0_mph);
             veh2->currentSpeed = std::max<Speed32>(targetSpeed, newSpeed);
         }
         else
         {
-            veh2->var_5A = Var5A::braking;
+            veh2->var_5A = Var5A::accelerating;
             veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.333333_mph);
         }
 
