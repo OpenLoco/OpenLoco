@@ -45,7 +45,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        if (train.veh2->var_5A == Var5A::unk_2 || train.veh2->currentSpeed > 10.0_mph)
+        if (train.veh2->var_5A == Var5A::coasting || train.veh2->currentSpeed > 10.0_mph)
         {
             return false;
         }
@@ -131,11 +131,11 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        var_5A = Var5A::unk_1;
+        var_5A = Var5A::braking;
         const auto speedDiff = currentSpeed - *_vehicleUpdate_var_1136134;
         if (speedDiff > 0.0_mph)
         {
-            var_5A = Var5A::unk_3;
+            var_5A = Var5A::accelerating;
             const auto newSpeed = currentSpeed - (currentSpeed / 64 + 0.18311_mph);
             currentSpeed = std::max(newSpeed, std::max(*_vehicleUpdate_var_1136134, 5.0_mph));
             return sub_4A9F20();
@@ -145,11 +145,11 @@ namespace OpenLoco::Vehicles
         {
             if (speedDiff >= -1.5_mph)
             {
-                var_5A = Var5A::unk_2;
+                var_5A = Var5A::coasting;
             }
             if (currentSpeed == 0.0_mph)
             {
-                var_5A = Var5A::unk_0;
+                var_5A = Var5A::stopped;
             }
         }
 
@@ -218,22 +218,22 @@ namespace OpenLoco::Vehicles
                 {
                     if (manualSpeed <= -10)
                     {
-                        var_5A = Var5A::unk_3;
+                        var_5A = Var5A::accelerating;
                     }
                     else
                     {
-                        var_5A = Var5A::unk_2;
+                        var_5A = Var5A::coasting;
                     }
                 }
                 else
                 {
                     if (manualSpeed >= 10)
                     {
-                        var_5A = Var5A::unk_1;
+                        var_5A = Var5A::braking;
                     }
                     else
                     {
-                        var_5A = Var5A::unk_2;
+                        var_5A = Var5A::coasting;
                     }
                 }
                 ebp += ((power * 2048) * manualSpeed) / (totalWeight * 40);
@@ -305,7 +305,7 @@ namespace OpenLoco::Vehicles
             if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {
                 currentSpeed = 0.0_mph;
-                var_5A = Var5A::unk_0;
+                var_5A = Var5A::stopped;
             }
         }
 
@@ -317,7 +317,7 @@ namespace OpenLoco::Vehicles
         train.head->var_3C -= _vehicleUpdate_var_113612C;
         train.veh1->var_3C -= _vehicleUpdate_var_113612C;
 
-        if (var_5A == Var5A::unk_3)
+        if (var_5A == Var5A::accelerating)
         {
             if (var_5B == 0)
             {

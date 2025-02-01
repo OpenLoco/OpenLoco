@@ -923,12 +923,12 @@ namespace OpenLoco::Vehicles
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         bool soundCode = false;
-        if (veh_2->var_5A == Var5A::unk_1 || veh_2->var_5A == Var5A::unk_4)
+        if (veh_2->var_5A == Var5A::braking || veh_2->var_5A == Var5A::unk_4)
         {
             soundCode = true;
         }
         bool tickCalc = true;
-        if (veh_2->var_5A != Var5A::unk_0 && veh_2->currentSpeed >= 1.0_mph)
+        if (veh_2->var_5A != Var5A::stopped && veh_2->currentSpeed >= 1.0_mph)
         {
             tickCalc = false;
         }
@@ -1117,7 +1117,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (veh_2->var_5A != Var5A::unk_1)
+            if (veh_2->var_5A != Var5A::braking)
             {
                 return;
             }
@@ -1160,7 +1160,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != Var5A::unk_1)
+        if (veh_2->var_5A != Var5A::braking)
         {
             return;
         }
@@ -1216,7 +1216,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != Var5A::unk_2 && veh_2->var_5A != Var5A::unk_1)
+        if (veh_2->var_5A != Var5A::coasting && veh_2->var_5A != Var5A::braking)
         {
             return;
         }
@@ -1261,7 +1261,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != Var5A::unk_2 && veh_2->var_5A != Var5A::unk_1)
+        if (veh_2->var_5A != Var5A::coasting && veh_2->var_5A != Var5A::braking)
         {
             return;
         }
@@ -1317,7 +1317,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A == Var5A::unk_0)
+        if (veh_2->var_5A == Var5A::stopped)
         {
             return;
         }

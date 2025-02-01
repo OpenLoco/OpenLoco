@@ -28,10 +28,10 @@ namespace OpenLoco::Vehicles
 
     enum class Var5A : uint8_t
     {
-        unk_0 = 0, // stopped?
-        unk_1 = 1, // braking?
-        unk_2 = 2, // coasting?
-        unk_3 = 3, // accelerating?
+        stopped = 0,
+        braking = 1,
+        coasting = 2,
+        accelerating = 3,
         unk_4 = 4, // ?
         unk_5 = 5, // ?
     };
