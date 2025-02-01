@@ -612,7 +612,7 @@ static void registerAudioHooks()
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            Audio::playSound(X86Pointer<Vehicles::Vehicle2or6>(regs.esi));
+            Audio::playSound(X86Pointer<Vehicles::VehicleSoundPlayer>(regs.esi));
             regs = backup;
             return 0;
         });
