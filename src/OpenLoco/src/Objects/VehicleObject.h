@@ -187,20 +187,22 @@ namespace OpenLoco
 
     enum class VehicleObjectFlags : uint16_t
     {
+        // See github issue https://github.com/OpenLoco/OpenLoco/issues/2877 for discussion on unnamed flags
         none = 0U,
-        flag_00 = 1U << 0, // All diesel and electric standalone locomotives except Deh 4/6, APT driving carriage, Eurostar power car
-        flag_01 = 1U << 1, // TGV power car, Class 508 EMU, APT Driving carriage, EMU1, Eurostar power car, EW-IV Driving Carriage
-        flag_02 = 1U << 2, // APT Passenger, TGV carriage, Eurostar carriage
-        flag_03 = 1U << 3, // APT Driving carriage, TGV carriage, Eurostar carriage
-        flag_04 = 1U << 4, // TGV power car, Eurostar power car
-        flag_05 = 1U << 5, // APT power car
+        flag_00 = 1U << 0,
+        flag_01 = 1U << 1,
+        flag_02 = 1U << 2,
+        flag_03 = 1U << 3,
+        flag_04 = 1U << 4,
+        flag_05 = 1U << 5,
         rackRail = 1U << 6,
+        flag_07 = 1U << 7,
         aircraftIsTaildragger = 1U << 8,
         anyRoadType = 1U << 9, // set on all road vehicles except trams
         speedControl = 1U << 10,
         cannotCoupleToSelf = 1U << 11,
         aircraftFlaresLanding = 1U << 11, // set only on Concorde
-        unk_12 = 1U << 12,                // Requires one on both ends? HST, Eurostar power car, TGV power car
+        mustBePaired = 1U << 12,          // this vehicle required on both ends of the train. Automatically places vehicle at both ends when two are present.
         canWheelslip = 1U << 13,          // set on all steam locomotives
         aircraftIsHelicopter = 1U << 13,
         refittable = 1U << 14,
