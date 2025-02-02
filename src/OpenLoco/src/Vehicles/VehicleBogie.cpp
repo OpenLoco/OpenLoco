@@ -68,7 +68,7 @@ namespace OpenLoco::Vehicles
 
         updateRoll();
         _vehicleUpdate_var_1136130 = stash1136130;
-        if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m01)
+        if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::noRouteFound)
         {
             destroyTrain();
             return false;
