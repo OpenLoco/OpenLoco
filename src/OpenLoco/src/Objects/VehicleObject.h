@@ -188,18 +188,20 @@ namespace OpenLoco
     enum class VehicleObjectFlags : uint16_t
     {
         none = 0U,
-        flag_01 = 1U << 1, // TGV power car
-        flag_02 = 1U << 2, // tilting? APT Passenger carriage and TGV carriage
-        flag_03 = 1U << 3, // tilting? APT Driving carriage and TGV carriage
-        flag_04 = 1U << 4, // TGV power car
+        flag_00 = 1U << 0, // All standard gauge diesel and electric locomotives, Crocodile, APT driving carriage, Eurostar power car, Ge 4/4 II, Ge 4/4 III, Ge 6/6, HGe 4/4 II, RBe 2/4 Railcar, Re 4/4 I, Re 4/4 II
+        flag_01 = 1U << 1, // TGV power car, Class 508 EMU, APT Driving carriage, EMU1, Eurostar power car, EW-IV DVT
+        flag_02 = 1U << 2, // APT Passenger,TGV carriage, Eurostar carriage
+        flag_03 = 1U << 3, // APT Driving carriage,TGV carriage, Eurostar carriage
+        flag_04 = 1U << 4, // TGV power car, Eurostar power car
+        flag_05 = 1U << 5, // APT power car
         rackRail = 1U << 6,
         aircraftTaildragger = 1U << 8,
         anyRoadType = 1U << 9, // set on all road vehicles except trams
         speedControl = 1U << 10,
         cannotCoupleToSelf = 1U << 11,
         aircraftFlaredLanding = 1U << 11, // set only on Concorde
-        unk_12 = 1U << 12,                // dualhead??
-        isHelicopter = 1U << 13,
+        unk_12 = 1U << 12,                // Requires one on both ends? HST, Eurostar power car, TGV power car
+        aircraftHelicopter = 1U << 13,
         refittable = 1U << 14,
         unk_15 = 1U << 15, // noannounce??
     };

@@ -51,7 +51,7 @@ namespace OpenLoco::Vehicles
         }
 
         // In the vanilla vehicle objects, this flag is set exclusively for vehicles that are steam engines (and helicopters, but no aircraft reach this code)
-        if (vehObject->power == 0 || !vehObject->hasFlags(VehicleObjectFlags::isHelicopter))
+        if (vehObject->power == 0 || !vehObject->hasFlags(VehicleObjectFlags::aircraftHelicopter))
         {
             return false;
         }

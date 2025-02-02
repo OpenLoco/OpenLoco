@@ -2276,7 +2276,7 @@ namespace OpenLoco::Vehicles
                 // 0x4272A5
                 Vehicle train(head);
                 auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-                if (vehObject->hasFlags(VehicleObjectFlags::isHelicopter))
+                if (vehObject->hasFlags(VehicleObjectFlags::aircraftHelicopter))
                 {
                     for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                     {
