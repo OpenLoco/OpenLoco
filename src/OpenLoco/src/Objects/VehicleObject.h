@@ -98,9 +98,9 @@ namespace OpenLoco
 
     struct VehicleObjectSimpleAnimation
     {
-        uint8_t objectId;         // 0x00 (object loader fills this in)
-        uint8_t emitterVerticalPos;           // 0x01
-        SimpleAnimationType type; // 0x02
+        uint8_t objectId;           // 0x00 (object loader fills this in)
+        uint8_t emitterVerticalPos; // 0x01
+        SimpleAnimationType type;   // 0x02
     };
     static_assert(sizeof(VehicleObjectSimpleAnimation) == 0x3);
 
