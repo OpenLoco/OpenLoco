@@ -9,9 +9,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Colours
 {
-
-    loco_global<uint8_t[32][8], 0x01136BA0> _colourMapA;
-    loco_global<uint8_t[32][8], 0x01136C98> _colourMapB;
+    static std::array<std::array<uint8_t, 8>, 31> _colourMapA;
+    static std::array<std::array<uint8_t, 8>, 31> _colourMapB;
 
     // 0x005045FA
     static constexpr std::array<std::array<ExtColour, 3>, 31> _translucentColourMap = {
@@ -230,8 +229,8 @@ namespace OpenLoco::Colours
             _colourMapA[i][6] = map[PaletteIndex::primaryRemap8];
             _colourMapA[i][7] = map[PaletteIndex::primaryRemap9];
 
-            _colourMapB[i][8 - 8] = map[PaletteIndex::primaryRemapA];
-            _colourMapB[i][9 - 8] = map[PaletteIndex::primaryRemapB];
+            _colourMapB[i][0] = map[PaletteIndex::primaryRemapA];
+            _colourMapB[i][1] = map[PaletteIndex::primaryRemapB];
         }
     }
 
