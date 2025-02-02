@@ -911,7 +911,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB688, 0x004AACA5
-    void VehicleBody::steamPuffsAnimationUpdate(uint8_t num, int32_t emitterPosition)
+    void VehicleBody::steamPuffsAnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         const auto* vehicleObject = getObject();
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
@@ -937,7 +937,7 @@ namespace OpenLoco::Vehicles
         // Reversing
         if (has38Flags(Flags38::isReversed))
         {
-            emitterPosition = -emitterPosition;
+            emitterHorizontalPos = -emitterHorizontalPos;
             _var_44 = -_var_44;
         }
 
@@ -956,13 +956,13 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        emitterPosition += 64;
+        emitterHorizontalPos += 64;
 
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
         auto bogieDifference = backBogie->position - frontBogie->position;
 
-        auto smokeLoc = bogieDifference * emitterPosition / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
+        auto smokeLoc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
         Exhaust::create(smokeLoc, vehicleObject->animation[num].objectId | (soundCode ? 0 : 0x80));
         if (soundCode == false)
