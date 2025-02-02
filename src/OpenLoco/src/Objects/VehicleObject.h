@@ -201,6 +201,7 @@ namespace OpenLoco
         cannotCoupleToSelf = 1U << 11,
         aircraftFlaredLanding = 1U << 11, // set only on Concorde
         unk_12 = 1U << 12,                // Requires one on both ends? HST, Eurostar power car, TGV power car
+        canWheelslip = 1U << 13, // set on all steam locomotives
         aircraftHelicopter = 1U << 13,
         refittable = 1U << 14,
         unk_15 = 1U << 15, // noannounce??
