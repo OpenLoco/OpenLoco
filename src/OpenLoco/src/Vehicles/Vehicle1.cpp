@@ -229,7 +229,7 @@ namespace OpenLoco::Vehicles
 
         if (!(_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::noRouteFound))
         {
-            if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::gradeCrossingSound)
+            if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::approachingGradeCrossing)
             {
                 railProduceCrossingWhistle(*train.veh2);
             }
