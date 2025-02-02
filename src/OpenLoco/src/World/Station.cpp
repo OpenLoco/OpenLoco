@@ -14,10 +14,13 @@
 #include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
+#include "Objects/BridgeObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
@@ -25,6 +28,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
 #include "Objects/TrackObject.h"
+#include "Objects/TrainStationObject.h"
 #include "Random.h"
 #include "StationManager.h"
 #include "TownManager.h"
@@ -1378,12 +1382,253 @@ namespace OpenLoco
         return { nodeLoc };
     }
 
+    // 0x0048DBC2
+    // Iterates over all station elements of a track piece apply function `func` to each station element
+    template<typename Func>
+    static void forEachStationElement(const World::Pos3 pos, const uint8_t rotation, World::StationElement* firstElStation, Func&& func)
+    {
+        auto* firstElTrack = firstElStation->prev()->as<TrackElement>();
+        assert(firstElTrack != nullptr);
+        if (firstElTrack == nullptr)
+        {
+            return;
+        }
+
+        auto& trackPieces = TrackData::getTrackPiece(firstElTrack->trackId());
+        for (auto& piece : trackPieces)
+        {
+            const auto trackLoc = pos + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            auto tile = TileManager::get(trackLoc);
+            bool hasPassedSurface = false;
+            for (auto& el : tile)
+            {
+                auto* elSurface = el.as<World::SurfaceElement>();
+                if (elSurface != nullptr)
+                {
+                    hasPassedSurface = true;
+                    continue;
+                }
+                auto* elStation = el.as<StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+                if (elStation->baseHeight() != trackLoc.z)
+                {
+                    continue;
+                }
+                auto* elTrack = elStation->prev()->as<TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != piece.index)
+                {
+                    continue;
+                }
+                if (elTrack->rotation() != rotation)
+                {
+                    continue;
+                }
+                func(elStation, trackLoc, hasPassedSurface);
+            }
+        }
+    }
+
+    static bool isStationTrackConnected(const World::Pos3 connectTrackPos, const uint8_t connectRotation, const CompanyId owner, const StationId stationId)
+    {
+        auto tile = TileManager::get(connectTrackPos);
+        for (auto& el : tile)
+        {
+            auto* elTrack = el.as<TrackElement>();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+            if (!elTrack->hasStationElement())
+            {
+                continue;
+            }
+            if (elTrack->owner() != owner)
+            {
+                continue;
+            }
+            auto* nextElStation = elTrack->next()->as<StationElement>();
+            if (nextElStation == nullptr)
+            {
+                continue;
+            }
+            if (nextElStation->isAiAllocated() || nextElStation->isGhost())
+            {
+                continue;
+            }
+            if (nextElStation->stationId() != stationId)
+            {
+                continue;
+            }
+
+            uint16_t nextTad = (elTrack->trackId() << 3) | elTrack->rotation();
+
+            if (elTrack->sequenceIndex() == 0 && connectRotation == TrackData::getUnkTrack(nextTad).rotationBegin)
+            {
+                const auto& nextTrackPiece = TrackData::getTrackPiece(elTrack->trackId())[0];
+                if (elTrack->baseHeight() - nextTrackPiece.z == connectTrackPos.z)
+                {
+                    return true;
+                }
+            }
+            if (elTrack->isFlag6())
+            {
+                nextTad |= (1U << 2);
+                if (connectRotation == TrackData::getUnkTrack(nextTad).rotationBegin)
+                {
+                    const auto& nextTrackPiece = TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];
+                    const auto startBaseHeight = elTrack->baseHeight() - (nextTrackPiece.z + TrackData::getUnkTrack(nextTad).pos.z);
+                    if (startBaseHeight == connectTrackPos.z)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     // 0x0048D794
     void sub_48D794(const Station& station)
     {
-        // ?? Probably work out station multi tile indexes
-        registers regs;
-        regs.esi = X86Pointer(&station);
-        call(0x0048D794, regs);
+        for (auto i = 0U; i < station.stationTileSize; ++i)
+        {
+            auto pos = station.stationTiles[i];
+            const uint8_t rotation = pos.z & 0x3;
+            pos.z = Numerics::floor2(pos.z, 4);
+            auto* elStation = [&pos]() -> World::StationElement* {
+                auto tile = TileManager::get(pos);
+                for (auto& el : tile)
+                {
+                    auto* elStation = el.as<StationElement>();
+                    if (elStation == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elStation->baseHeight() != pos.z)
+                    {
+                        continue;
+                    }
+                    if (elStation->stationType() != StationType::trainStation)
+                    {
+                        break;
+                    }
+                    auto* elTrack = elStation->prev()->as<TrackElement>();
+                    if (elTrack == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elTrack->sequenceIndex() != 0)
+                    {
+                        continue;
+                    }
+                    return elStation;
+                }
+                return nullptr;
+            }();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+
+            // 0x0112C7AB
+            bool isCovered = false;
+
+            auto* stationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
+
+            // Also resets the station sequence index to 0
+            auto isStationElementCovered = [&isCovered](World::StationElement* elStation, const World::Pos3 pos, bool hasPassedSurface) {
+                elStation->setSequenceIndex(0);
+
+                isCovered |= [hasPassedSurface, elStation]() {
+                    if (!hasPassedSurface)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        auto* elTrack = elStation->prev()->as<TrackElement>();
+                        if (elTrack == nullptr)
+                        {
+                            return false;
+                        }
+                        if (elTrack->hasBridge())
+                        {
+                            auto* bridgeObj = ObjectManager::get<BridgeObject>(elTrack->bridge());
+                            if ((bridgeObj->flags & BridgeObjectFlags::hasRoof) != BridgeObjectFlags::none)
+                            {
+                                return true;
+                            }
+                        }
+                        if (elStation->isLast())
+                        {
+                            return false;
+                        }
+                        auto* el = elStation->next();
+                        do
+                        {
+                            if (el->baseZ() != elStation->baseZ())
+                            {
+                                if (el->baseZ() - 4 < elStation->clearZ())
+                                {
+                                    return true;
+                                }
+                            }
+                            el = el->next();
+                        } while (!el->isLast());
+                        return false;
+                    }
+                }();
+                Ui::ViewportManager::invalidate(pos, elStation->baseHeight(), elStation->clearHeight());
+            };
+
+            forEachStationElement(pos, rotation, elStation, isStationElementCovered);
+            if (isCovered || stationObj->var_0B == 0)
+            {
+                continue;
+            }
+
+            if (stationObj->var_0B != 1)
+            {
+                auto* elTrack = elStation->prev()->as<TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                const uint16_t tad = (elTrack->trackId() << 3) | elTrack->rotation();
+                const auto& trackSize = World::TrackData::getUnkTrack(tad);
+                const auto forwardTrackPos = pos + trackSize.pos;
+                const auto forwardRotation = trackSize.rotationEnd;
+
+                const auto forwardConnection = isStationTrackConnected(forwardTrackPos, forwardRotation, elTrack->owner(), elStation->stationId());
+                if (!forwardConnection)
+                {
+                    continue;
+                }
+                auto backwardTrackPos = pos;
+                const auto backwardRotation = kReverseRotation[trackSize.rotationBegin];
+                if (backwardRotation < 12)
+                {
+                    backwardTrackPos += World::Pos3{ World::kRotationOffset[backwardRotation], 0 };
+                }
+                const auto backwardConnection = isStationTrackConnected(backwardTrackPos, backwardRotation, elTrack->owner(), elStation->stationId());
+                if (!backwardConnection)
+                {
+                    continue;
+                }
+
+                auto setStationSequenceIndex = [](World::StationElement* elStation, const World::Pos3 pos, bool) {
+                    elStation->setSequenceIndex(1);
+                    Ui::ViewportManager::invalidate(pos, elStation->baseHeight(), elStation->clearHeight());
+                };
+                forEachStationElement(pos, rotation, elStation, setStationSequenceIndex);
+            }
+        }
     }
 }
