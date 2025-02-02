@@ -407,11 +407,11 @@ namespace OpenLoco::Vehicles
 
     private:
         void updateDrivingSounds();
-        void updateDrivingSound(VehicleSoundPlayer* vehType2or6);
-        void updateDrivingSoundNone(VehicleSoundPlayer* vehType2or6);
-        void updateDrivingSoundFriction(VehicleSoundPlayer* vehType2or6, const VehicleObjectFrictionSound* snd);
-        void updateSimpleMotorSound(VehicleSoundPlayer* vehType2or6, const VehicleSimpleMotorSound* snd);
-        void updateGearboxMotorSound(VehicleSoundPlayer* vehType2or6, const VehicleGearboxMotorSound* snd);
+        void updateDrivingSound(VehicleSoundPlayer* soundPlayer);
+        void updateDrivingSoundNone(VehicleSoundPlayer* soundPlayer);
+        void updateDrivingSoundFriction(VehicleSoundPlayer* soundPlayer, const VehicleObjectFrictionSound* snd);
+        void updateSimpleMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleSimpleMotorSound* snd);
+        void updateGearboxMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleGearboxMotorSound* snd);
         bool updateLand();
         bool sub_4A8DB7();
         bool sub_4A8F22();
