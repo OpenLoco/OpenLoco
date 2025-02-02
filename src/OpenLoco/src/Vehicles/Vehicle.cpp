@@ -163,7 +163,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m01;
+                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::noRouteFound;
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -220,7 +220,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m01;
+                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::noRouteFound;
                 return false;
             }
             component.routingHandle = newRoutingHandle;
