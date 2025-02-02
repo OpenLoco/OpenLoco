@@ -194,11 +194,12 @@ namespace OpenLoco
         topAndTailPosition = 1U << 2,   // vehicle is forced to the rear of the train
         jacobsBogieFront = 1U << 3,
         jacobsBogieRear = 1U << 4,
-        centerPosition = 1U << 5,       // vehicle is forced to the middle of train
+        centerPosition = 1U << 5, // vehicle is forced to the middle of train
         rackRail = 1U << 6,
         // Alternates between sprite 0 and sprite 1 for each carriage of this type in a train
         // NOTE: This is for carriages and not carriage components (which can also do similar)
         alternateCarriageSprite = 1U << 7,
+        flag_08 = 1U << 8,
         aircraftIsTaildragger = 1U << 8,
         anyRoadType = 1U << 9, // set on all road vehicles except trams
         speedControl = 1U << 10,
