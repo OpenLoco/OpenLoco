@@ -329,7 +329,7 @@ namespace OpenLoco::Vehicles
             const auto tc = World::Track::getTrackConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
             if (tc.hasLevelCrossing)
             {
-                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::gradeCrossingSound;
+                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::approachingGradeCrossing;
             }
             bool routingFound = false;
             for (auto& connection : tc.connections)

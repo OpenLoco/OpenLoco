@@ -90,7 +90,7 @@ namespace OpenLoco::Vehicles
         noRouteFound = (1 << 1), // no route found??
         crashed = (1 << 2),      // crashed??
         unk_m03 = (1 << 3),
-        gradeCrossingSound = (1 << 4),
+        approachingGradeCrossing = (1 << 4),
         unk_m15 = (1 << 15),
     };
 
