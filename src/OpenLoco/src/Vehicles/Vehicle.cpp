@@ -139,11 +139,11 @@ namespace OpenLoco::Vehicles
         if (routing != RoutingManager::kAllocatedButFreeRoutingStation)
         {
             Vehicle train(component.head);
-            if (_vehicleUpdate_var_1136114 & (1U << 15))
+            if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m15)
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    _vehicleUpdate_var_1136114 |= (1U << 3);
+                    _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m03;
                     return false;
                 }
             }
@@ -163,7 +163,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                _vehicleUpdate_var_1136114 |= (1U << 1);
+                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m01;
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -193,11 +193,11 @@ namespace OpenLoco::Vehicles
         if (routing != RoutingManager::kAllocatedButFreeRoutingStation)
         {
             Vehicle train(component.head);
-            if (_vehicleUpdate_var_1136114 & (1U << 15))
+            if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m15)
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    _vehicleUpdate_var_1136114 |= (1U << 3);
+                    _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m03;
                     return false;
                 }
             }
@@ -207,7 +207,7 @@ namespace OpenLoco::Vehicles
             const auto tc = World::Track::getTrackConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
             if (tc.hasLevelCrossing)
             {
-                _vehicleUpdate_var_1136114 |= (1U << 4);
+                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m04;
             }
             bool routingFound = false;
             for (auto& connection : tc.connections)
@@ -220,7 +220,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                _vehicleUpdate_var_1136114 |= (1U << 1);
+                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m01;
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -388,7 +388,7 @@ namespace OpenLoco::Vehicles
                 {
                     returnValue = component.remainingDistance - 0x3689;
                     component.remainingDistance = 0x3689;
-                    _vehicleUpdate_var_1136114 |= (1U << 0);
+                    _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m00;
                     break;
                 }
                 else
@@ -410,7 +410,7 @@ namespace OpenLoco::Vehicles
                 auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                 if (collideResult.has_value())
                 {
-                    _vehicleUpdate_var_1136114 |= (1U << 2);
+                    _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m02;
                     _vehicleUpdate_collisionCarComponent = collideResult.value();
                 }
             }
@@ -448,7 +448,7 @@ namespace OpenLoco::Vehicles
                     {
                         returnValue = component.remainingDistance - 0x3689;
                         component.remainingDistance = 0x3689;
-                        _vehicleUpdate_var_1136114 |= (1U << 0);
+                        _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m00;
                         break;
                     }
                     else
@@ -470,7 +470,7 @@ namespace OpenLoco::Vehicles
                     auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                     if (collideResult.has_value())
                     {
-                        _vehicleUpdate_var_1136114 |= (1U << 2);
+                        _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m02;
                         _vehicleUpdate_collisionCarComponent = collideResult.value();
                     }
                 }

@@ -116,7 +116,7 @@ namespace OpenLoco::Vehicles
         distance1 = std::min(distance1, unk2);
         var_3C += distance1 - updateRoadMotion(distance1);
 
-        if (!(_vehicleUpdate_var_1136114 & (1 << 1)))
+        if (!(_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m01))
         {
             return true;
         }
@@ -227,9 +227,9 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_var_1136114 = 0;
         var_3C += distance1 - updateTrackMotion(distance1);
 
-        if (!(_vehicleUpdate_var_1136114 & (1U << 1)))
+        if (!(_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m01))
         {
-            if (_vehicleUpdate_var_1136114 & (1U << 4))
+            if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m04)
             {
                 railProduceCrossingWhistle(*train.veh2);
             }
