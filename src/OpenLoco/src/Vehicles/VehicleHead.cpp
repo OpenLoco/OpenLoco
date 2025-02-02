@@ -1632,7 +1632,7 @@ namespace OpenLoco::Vehicles
 
         auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
 
-        if (vehType2->currentSpeed < 50.0_mph && vehObject->hasFlags(VehicleObjectFlags::aircraftTaildragger))
+        if (vehType2->currentSpeed < 50.0_mph && vehObject->hasFlags(VehicleObjectFlags::aircraftIsTaildragger))
         {
             targetPitch = Pitch::up12deg;
         }
@@ -1647,7 +1647,7 @@ namespace OpenLoco::Vehicles
 
         if (targetZ < position.z)
         {
-            if (vehType2->currentSpeed <= 180.0_mph && vehObject->hasFlags(VehicleObjectFlags::aircraftFlaredLanding))
+            if (vehType2->currentSpeed <= 180.0_mph && vehObject->hasFlags(VehicleObjectFlags::aircraftFlaresLanding))
             {
                 targetPitch = Pitch::up12deg;
             }
