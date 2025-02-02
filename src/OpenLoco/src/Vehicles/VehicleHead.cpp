@@ -806,10 +806,10 @@ namespace OpenLoco::Vehicles
                 updateDrivingSoundFriction(soundPlayer, &vehicleObject->sound.friction);
                 break;
             case DrivingSoundType::simpleMotor:
-                updateSimpleMotorSound(soundPlayer, &vehicleObject->sound.engine1);
+                updateSimpleMotorSound(soundPlayer, &vehicleObject->sound.simpleMotor);
                 break;
             case DrivingSoundType::gearboxMotor:
-                updateGearboxMotorSound(soundPlayer, &vehicleObject->sound.engine2);
+                updateGearboxMotorSound(soundPlayer, &vehicleObject->sound.gearboxMotor);
                 break;
             default:
                 break;

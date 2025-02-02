@@ -62,14 +62,15 @@ namespace OpenLoco
         uint8_t soundObjectId;  // 0x0
         uint16_t idleFrequency; // 0x1
         uint8_t idleVolume;     // 0x3
-        uint8_t pad_04[3];
+        uint16_t var_04;        // maybe unused
+        uint8_t var_06;         // maybe unused
         uint16_t accelerationBaseFreq;
         uint8_t acclerationVolume;
         uint16_t freqIncreaseStep;  // 0xA
         uint16_t freqDecreaseStep;  // 0xC
         uint8_t volumeIncreaseStep; // 0xE
         uint8_t volumeDecreaseStep; // 0xF
-        uint8_t speedFreqFactor;    // 0x10
+        uint8_t speedFreqFactor;    // bit-shift right of vehicle speed, added to calculated base frequency
     };
     static_assert(sizeof(VehicleSimpleMotorSound) == 0x11);
 
@@ -91,7 +92,7 @@ namespace OpenLoco
         uint16_t freqDecreaseStep;  // 0x16
         uint8_t volumeIncreaseStep; // 0x18
         uint8_t volumeDecreaseStep; // 0x19
-        uint8_t speedFreqFactor;    // 0x1A
+        uint8_t speedFreqFactor;    // bit-shift right of vehicle speed, added to calculated base frequency
     };
     static_assert(sizeof(VehicleGearboxMotorSound) == 0x1B);
 
@@ -256,8 +257,8 @@ namespace OpenLoco
         union
         {
             VehicleObjectFrictionSound friction;
-            VehicleSimpleMotorSound engine1;
-            VehicleGearboxMotorSound engine2;
+            VehicleSimpleMotorSound simpleMotor;
+            VehicleGearboxMotorSound gearboxMotor;
         } sound;
         uint8_t pad_135[0x15A - 0x135];
         uint8_t numStartSounds;         // 0x15A use mask when accessing kHasCrossingWhistle stuffed in (1 << 7)
