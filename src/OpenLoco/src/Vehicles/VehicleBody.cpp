@@ -923,12 +923,12 @@ namespace OpenLoco::Vehicles
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         bool soundCode = false;
-        if (veh_2->engineStatus == EngineStatus::accelerating || veh_2->engineStatus == EngineStatus::stoppedOnIncline)
+        if (veh_2->motorState == MotorState::accelerating || veh_2->motorState == MotorState::stoppedOnIncline)
         {
             soundCode = true;
         }
         bool tickCalc = true;
-        if (veh_2->engineStatus != EngineStatus::stopped && veh_2->currentSpeed >= 1.0_mph)
+        if (veh_2->motorState != MotorState::stopped && veh_2->currentSpeed >= 1.0_mph)
         {
             tickCalc = false;
         }
@@ -1117,7 +1117,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (veh_2->engineStatus != EngineStatus::accelerating)
+            if (veh_2->motorState != MotorState::accelerating)
             {
                 return;
             }
@@ -1160,7 +1160,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->engineStatus != EngineStatus::accelerating)
+        if (veh_2->motorState != MotorState::accelerating)
         {
             return;
         }
@@ -1216,7 +1216,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->engineStatus != EngineStatus::coasting && veh_2->engineStatus != EngineStatus::accelerating)
+        if (veh_2->motorState != MotorState::coasting && veh_2->motorState != MotorState::accelerating)
         {
             return;
         }
@@ -1261,7 +1261,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->engineStatus != EngineStatus::coasting && veh_2->engineStatus != EngineStatus::accelerating)
+        if (veh_2->motorState != MotorState::coasting && veh_2->motorState != MotorState::accelerating)
         {
             return;
         }
@@ -1317,7 +1317,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->engineStatus == EngineStatus::stopped)
+        if (veh_2->motorState == MotorState::stopped)
         {
             return;
         }
