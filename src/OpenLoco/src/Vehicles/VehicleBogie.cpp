@@ -68,12 +68,12 @@ namespace OpenLoco::Vehicles
 
         updateRoll();
         _vehicleUpdate_var_1136130 = stash1136130;
-        if (_vehicleUpdate_var_1136114 & (1 << 1))
+        if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m01)
         {
             destroyTrain();
             return false;
         }
-        else if (!(_vehicleUpdate_var_1136114 & (1 << 2)))
+        else if (!(_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m02))
         {
             return true;
         }

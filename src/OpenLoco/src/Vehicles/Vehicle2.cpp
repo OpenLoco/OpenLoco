@@ -291,17 +291,17 @@ namespace OpenLoco::Vehicles
     bool Vehicle2::sub_4A9F20()
     {
         Vehicle train(head);
-        _vehicleUpdate_var_1136114 = (1 << 15);
+        _vehicleUpdate_var_1136114 = UpdateVar1136114Flags::unk_m15;
         auto res = updateTrackMotion(_vehicleUpdate_var_113612C);
         _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res;
         _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res;
-        if (_vehicleUpdate_var_1136114 & (1 << 1))
+        if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m01)
         {
             destroyTrain();
             return false;
         }
 
-        if (_vehicleUpdate_var_1136114 & (1 << 0))
+        if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m00)
         {
             if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {

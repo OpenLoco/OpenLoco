@@ -79,7 +79,7 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_var_1136114 = 0;
         updateTrackMotion(*_vehicleUpdate_var_113612C);
 
-        if (*_vehicleUpdate_var_1136114 & (1 << 1))
+        if (*_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m01)
         {
             destroyTrain();
             return false;
