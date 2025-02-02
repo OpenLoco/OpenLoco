@@ -59,11 +59,11 @@ namespace OpenLoco
 
     struct VehicleSimpleMotorSound
     {
-        uint8_t soundObjectId;     // 0x0
-        uint16_t defaultFrequency; // 0x1
-        uint8_t defaultVolume;     // 0x3
+        uint8_t soundObjectId;  // 0x0
+        uint16_t idleFrequency; // 0x1
+        uint8_t idleVolume;     // 0x3
         uint8_t pad_04[3];
-        uint16_t accelerationFreqFactor;
+        uint16_t accelerationBaseFreq;
         uint8_t acclerationVolume;
         uint16_t freqIncreaseStep;  // 0xA
         uint16_t freqDecreaseStep;  // 0xC
@@ -76,15 +76,15 @@ namespace OpenLoco
     struct VehicleGearboxMotorSound
     {
         uint8_t soundObjectId;         // 0x0
-        uint16_t defaultFrequency;     // 0x1
-        uint8_t defaultVolume;         // 0x2
+        uint16_t idleFrequency;        // 0x1
+        uint8_t idleVolume;            // 0x2
         uint16_t firstGearFrequency;   // 0x4 All subsequent gears are based on this frequency
         Speed16 firstGearSpeed;        // 0x6
-        uint16_t secondGearFreqFactor; // 0x8
+        uint16_t secondGearFreqOffset; // 0x8
         Speed16 secondGearSpeed;       // 0xA
-        uint16_t thirdGearFreqFactor;  // 0xC
+        uint16_t thirdGearFreqOffset;  // 0xC
         Speed16 thirdGearSpeed;        // 0xE
-        uint16_t fourthGearFreqFactor; // 0x10
+        uint16_t fourthGearFreqOffset; // 0x10
         uint8_t coastingVolume;
         uint8_t acceleratingVolume;
         uint16_t freqIncreaseStep;  // 0x14

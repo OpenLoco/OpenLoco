@@ -870,7 +870,7 @@ namespace OpenLoco::Vehicles
             case 1:
                 if (!(soundPlayer->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0)
                 {
-                    targetFrequency = snd->accelerationFreqFactor + (vehType2_2->currentSpeed.getRaw() >> snd->speedFreqFactor);
+                    targetFrequency = snd->accelerationBaseFreq + (vehType2_2->currentSpeed.getRaw() >> snd->speedFreqFactor);
                     targetVolume = snd->acclerationVolume;
                     break;
                 }
@@ -881,8 +881,8 @@ namespace OpenLoco::Vehicles
             case 2:
                 if (vehType2_2->currentSpeed >= 12.0_mph)
                 {
-                    targetFrequency = snd->defaultFrequency;
-                    targetVolume = snd->defaultVolume;
+                    targetFrequency = snd->idleFrequency;
+                    targetVolume = snd->idleVolume;
                     break;
                 }
                 else
@@ -890,16 +890,16 @@ namespace OpenLoco::Vehicles
                     [[fallthrough]];
                 }
             default:
-                targetFrequency = snd->defaultFrequency;
-                targetVolume = snd->defaultVolume;
+                targetFrequency = snd->idleFrequency;
+                targetVolume = snd->idleVolume;
         }
 
         if (soundPlayer->drivingSoundId == 0xFF)
         {
             // Half
-            soundPlayer->drivingSoundVolume = snd->defaultVolume >> 1;
+            soundPlayer->drivingSoundVolume = snd->idleVolume >> 1;
             // Quarter
-            soundPlayer->drivingSoundFrequency = snd->defaultFrequency >> 2;
+            soundPlayer->drivingSoundFrequency = snd->idleFrequency >> 2;
             soundPlayer->drivingSoundId = snd->soundObjectId;
             return;
         }
@@ -962,7 +962,7 @@ namespace OpenLoco::Vehicles
             targetVolume = snd->coastingVolume;
             if (vehType2_2->currentSpeed < 12.0_mph)
             {
-                targetFrequency = snd->defaultFrequency;
+                targetFrequency = snd->idleFrequency;
             }
             else
             {
@@ -975,8 +975,8 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            targetFrequency = snd->defaultFrequency;
-            targetVolume = snd->defaultVolume;
+            targetFrequency = snd->idleFrequency;
+            targetVolume = snd->idleVolume;
         }
 
         if (transmissionInGear == true)
@@ -989,13 +989,13 @@ namespace OpenLoco::Vehicles
 
                 if (speed >= snd->firstGearSpeed)
                 {
-                    frequency -= snd->secondGearFreqFactor;
+                    frequency -= snd->secondGearFreqOffset;
                     if (speed >= snd->secondGearSpeed)
                     {
-                        frequency -= snd->thirdGearFreqFactor;
+                        frequency -= snd->thirdGearFreqOffset;
                         if (speed >= snd->thirdGearSpeed)
                         {
-                            frequency -= snd->fourthGearFreqFactor;
+                            frequency -= snd->fourthGearFreqOffset;
                         }
                     }
                 }
@@ -1003,17 +1003,17 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                targetFrequency = snd->defaultFrequency;
-                targetVolume = snd->defaultVolume;
+                targetFrequency = snd->idleFrequency;
+                targetVolume = snd->idleVolume;
             }
         }
 
         if (soundPlayer->drivingSoundId == 0xFF)
         {
             // Half
-            soundPlayer->drivingSoundVolume = snd->defaultVolume >> 1;
+            soundPlayer->drivingSoundVolume = snd->idleVolume >> 1;
             // Quarter
-            soundPlayer->drivingSoundFrequency = snd->defaultFrequency >> 2;
+            soundPlayer->drivingSoundFrequency = snd->idleFrequency >> 2;
             soundPlayer->drivingSoundId = snd->soundObjectId;
             return;
         }
