@@ -188,7 +188,7 @@ namespace OpenLoco
     enum class VehicleObjectFlags : uint16_t
     {
         none = 0U,
-        flag_00 = 1U << 0, // All standard gauge diesel and electric locomotives, Crocodile, APT driving carriage, Eurostar power car, Ge 4/4 II, Ge 4/4 III, Ge 6/6, HGe 4/4 II, RBe 2/4 Railcar, Re 4/4 I, Re 4/4 II
+        flag_00 = 1U << 0, // All diesel and electric standalone locomotives, APT driving carriage, Eurostar power car. NOT set on Deh 4/6
         flag_01 = 1U << 1, // TGV power car, Class 508 EMU, APT Driving carriage, EMU1, Eurostar power car, EW-IV DVT
         flag_02 = 1U << 2, // APT Passenger, TGV carriage, Eurostar carriage
         flag_03 = 1U << 3, // APT Driving carriage, TGV carriage, Eurostar carriage
