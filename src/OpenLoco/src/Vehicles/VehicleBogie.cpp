@@ -73,7 +73,7 @@ namespace OpenLoco::Vehicles
             destroyTrain();
             return false;
         }
-        else if (!(_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::unk_m02))
+        else if (!(_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::crashed))
         {
             return true;
         }
