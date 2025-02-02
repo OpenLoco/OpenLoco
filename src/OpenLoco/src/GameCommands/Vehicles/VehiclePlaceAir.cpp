@@ -169,7 +169,7 @@ namespace OpenLoco::GameCommands
             train.veh1->var_48 |= Vehicles::Flags48::flag2;
 
             train.veh2->currentSpeed = 0.0_mph;
-            train.veh2->engineStatus = Vehicles::EngineStatus::stopped;
+            train.veh2->motorState = Vehicles::MotorState::stopped;
 
             if (flags & Flags::ghost)
             {
