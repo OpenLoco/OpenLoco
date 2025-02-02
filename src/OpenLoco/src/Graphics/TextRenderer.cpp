@@ -447,19 +447,18 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            drawState.font = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
+            const auto curDrawState = drawState;
             char empty[1] = "";
             drawString(drawState, ctx, rt, origin, colour, empty);
+            drawState = curDrawState;
 
-            drawState.font = Font::medium_bold;
             auto wrapResult = wrapString(drawState.font, buffer, width);
             auto breakCount = wrapResult.second + 1;
 
             // wrapString might change the font due to formatting codes
             uint16_t lineHeight = getLineHeight(drawState.font); // _112D404
 
-            drawState.fontFlags = TextDrawFlags::none;
             auto point = origin;
 
             const char* ptr = buffer;
@@ -493,7 +492,6 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            drawState.font = Font::medium_bold;
             return drawString(drawState, ctx, rt, origin, colour, buffer);
         }
 
@@ -518,7 +516,6 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            drawState.font = Font::medium_bold;
             clipString(drawState.font, width, buffer);
 
             return drawString(drawState, ctx, rt, origin, colour, buffer);
@@ -543,7 +540,6 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            drawState.font = Font::medium_bold;
             uint16_t width = getStringWidth(drawState.font, buffer);
 
             auto point = origin;
@@ -571,7 +567,6 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            drawState.font = Font::medium_bold;
             uint16_t width = getStringWidth(drawState.font, buffer);
             auto point = origin;
             point.x -= width;
@@ -607,7 +602,6 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            drawState.font = Font::medium_bold;
             uint16_t width = getStringWidth(drawState.font, buffer);
 
             auto point = drawString(drawState, ctx, rt, origin, colour, buffer);
@@ -641,7 +635,6 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            drawState.font = Font::medium_bold;
             uint16_t width = getStringWidth(drawState.font, buffer);
 
             auto point = origin;
@@ -676,7 +669,6 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            drawState.font = Font::medium_bold;
             width = clipString(drawState.font, width, buffer);
 
             auto point = Ui::Point(origin.x - (width / 2), origin.y);
@@ -704,22 +696,20 @@ namespace OpenLoco::Gfx
             StringId stringId,
             FormatArgumentsView args)
         {
-            drawState.font = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
+            auto curDrawState = drawState;
             char empty[1] = "";
             drawString(drawState, ctx, rt, origin, colour, empty);
+            drawState = curDrawState;
 
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            drawState.font = Font::medium_bold;
             auto wrapResult = wrapString(drawState.font, buffer, width);
             auto breakCount = wrapResult.second + 1;
 
             // wrapString might change the font due to formatting codes
             uint16_t lineHeight = getLineHeight(drawState.font); // _112D404
-
-            drawState.fontFlags = TextDrawFlags::none;
 
             Ui::Point basePoint = origin;
             basePoint.y -= (lineHeight / 2) * (breakCount - 1);
@@ -760,13 +750,9 @@ namespace OpenLoco::Gfx
             AdvancedColour colour,
             const char* wrappedStr)
         {
-            drawState.font = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
             char empty[1] = "";
             drawString(drawState, ctx, rt, origin, colour, empty);
-
-            drawState.font = Font::medium_bold;
-            drawState.fontFlags = TextDrawFlags::none;
 
             const char* ptr = wrappedStr;
             auto basePoint = origin;
@@ -1262,22 +1248,21 @@ namespace OpenLoco::Gfx
             uint16_t numCharactersToDisplay,
             uint16_t width)
         {
-            drawState.font = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
+            const auto curDrawState = drawState;
             char empty[1] = "";
             drawString(drawState, ctx, rt, origin, colour, empty);
+            drawState = curDrawState;
 
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId);
 
-            drawState.font = Font::medium_bold;
             const auto numLinesToDisplayAllChars = wrapStringTicker(drawState.font, buffer, width, numCharactersToDisplay);
             const auto lineToDisplayFrom = numLinesToDisplayAllChars - numLinesToDisplay;
 
             // wrapString might change the font due to formatting codes
             uint16_t lineHeight = getLineHeight(drawState.font); // _112D404
 
-            drawState.fontFlags = TextDrawFlags::none;
             Ui::Point point = origin;
             if (lineToDisplayFrom > 0)
             {
