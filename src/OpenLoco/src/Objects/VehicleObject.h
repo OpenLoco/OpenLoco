@@ -209,7 +209,7 @@ namespace OpenLoco
         canWheelslip = 1U << 13,          // set on all steam locomotives
         aircraftIsHelicopter = 1U << 13,
         refittable = 1U << 14,
-        unk_15 = 1U << 15, // noannounce??
+        doNotAnnounce = 1U << 15, // no newspaper announcement
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleObjectFlags);
 
