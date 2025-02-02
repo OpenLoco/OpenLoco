@@ -198,7 +198,7 @@ namespace OpenLoco
         rackRail = 1U << 6,
         // Alternates between sprite 0 and sprite 1 for each vehicle of this type in a train
         // NOTE: This is for vehicles and not vehicle components (which can also do similar)
-        alternateCarSprite = 1U << 7,
+        alternatingCarSprite = 1U << 7,
         flag_08 = 1U << 8,
         aircraftIsTaildragger = 1U << 8,
         anyRoadType = 1U << 9, // set on all road vehicles except trams
