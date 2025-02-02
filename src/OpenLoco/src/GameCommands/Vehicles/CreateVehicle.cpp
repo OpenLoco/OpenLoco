@@ -300,7 +300,7 @@ namespace OpenLoco::GameCommands
             newBody->var_38 |= Flags38::unk_3;
         }
 
-        if (bodyNumber + 1 == vehObject.var_04 && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieFront))
+        if (bodyNumber + 1 == vehObject.var_04 && vehObject.hasFlags(VehicleObjectFlags::flag_03))
         {
             newBody->var_38 |= Flags38::unk_3;
         }

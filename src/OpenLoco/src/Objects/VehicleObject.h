@@ -192,9 +192,9 @@ namespace OpenLoco
         flag_00 = 1U << 0,
         alternatingDirection = 1U << 0, // sequential vehicles face alternating directions
         topAndTailPosition = 1U << 2,   // vehicle is forced to the rear of the train
-        flag_03 = 1U << 3, // jacob's bogie front??
-        flag_04 = 1U << 4, // jacob's bogie rear??
-        centerPosition = 1U << 5, // vehicle is forced to the middle of train
+        flag_03 = 1U << 3,              // jacob's bogie front??
+        flag_04 = 1U << 4,              // jacob's bogie rear??
+        centerPosition = 1U << 5,       // vehicle is forced to the middle of train
         rackRail = 1U << 6,
         // Alternates between sprite 0 and sprite 1 for each carriage of this type in a train
         // NOTE: This is for carriages and not carriage components (which can also do similar)
