@@ -110,7 +110,7 @@ namespace OpenLoco::StringManager
     static void formatIntWithTwoDecimals(int32_t value, StringBuffer& buffer)
     {
         fmt::format_to(std::back_inserter(buffer), std::locale(), "{:L}", value / 100);
-        fmt::format_to(std::back_inserter(buffer), ".{}", value % 100);
+        fmt::format_to(std::back_inserter(buffer), ".{:02}", value % 100);
     }
 
     // 0x00495D09
