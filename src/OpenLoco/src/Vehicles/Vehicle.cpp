@@ -207,7 +207,7 @@ namespace OpenLoco::Vehicles
             const auto tc = World::Track::getTrackConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
             if (tc.hasLevelCrossing)
             {
-                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m04;
+                _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::gradeCrossingSound;
             }
             bool routingFound = false;
             for (auto& connection : tc.connections)
@@ -410,7 +410,7 @@ namespace OpenLoco::Vehicles
                 auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                 if (collideResult != EntityId::null)
                 {
-                    _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m02;
+                    _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::crashed;
                     _vehicleUpdate_collisionCarComponent = collideResult;
                 }
             }
@@ -470,7 +470,7 @@ namespace OpenLoco::Vehicles
                     auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                     if (collideResult != EntityId::null)
                     {
-                        _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::unk_m02;
+                        _vehicleUpdate_var_1136114 |= UpdateVar1136114Flags::crashed;
                         _vehicleUpdate_collisionCarComponent = collideResult;
                     }
                 }
