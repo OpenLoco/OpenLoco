@@ -262,7 +262,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (vehObject.hasFlags(VehicleObjectFlags::flag_03) && i + 1 == vehObject.var_04)
+            if (vehObject.hasFlags(VehicleObjectFlags::jacobsBogieFront) && i + 1 == vehObject.var_04)
             {
                 continue;
             }
