@@ -188,14 +188,17 @@ namespace OpenLoco
     enum class VehicleObjectFlags : uint16_t
     {
         none = 0U,
-        flag_02 = 1U << 2, // rollable? APT Passenger carriage
-        flag_03 = 1U << 3, // rollable? APT Driving carriage
+        flag_01 = 1U << 1, // TGV power car
+        flag_02 = 1U << 2, // tilting? APT Passenger carriage and TGV carriage
+        flag_03 = 1U << 3, // tilting? APT Driving carriage and TGV carriage
+        flag_04 = 1U << 4, // TGV power car
         rackRail = 1U << 6,
-        unk_08 = 1U << 8,
-        unk_09 = 1U << 9, // anytrack??
+        aircraftTaildragger = 1U << 8,
+        anyRoadType = 1U << 9, // set on all road vehicles except trams
         speedControl = 1U << 10,
-        canCouple = 1U << 11,
-        unk_12 = 1U << 12, // dualhead??
+        cannotCoupleToSelf = 1U << 11,
+        aircraftFlaredLanding = 1U << 11, // set only on Concorde
+        unk_12 = 1U << 12,                // dualhead??
         isHelicopter = 1U << 13,
         refittable = 1U << 14,
         unk_15 = 1U << 15, // noannounce??

@@ -156,7 +156,7 @@ namespace OpenLoco::GameCommands
             auto reverseYaw = yaw ^ (1U << 5);
 
             auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-            const auto pitch = vehicleObj->hasFlags(VehicleObjectFlags::unk_08) ? Pitch::up12deg : Pitch::flat;
+            const auto pitch = vehicleObj->hasFlags(VehicleObjectFlags::aircraftTaildragger) ? Pitch::up12deg : Pitch::flat;
 
             head->movePlaneTo(*placePos, reverseYaw, pitch);
             head->status = Vehicles::Status::stopped;

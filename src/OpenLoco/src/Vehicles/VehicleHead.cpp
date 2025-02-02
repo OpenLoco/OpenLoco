@@ -484,12 +484,12 @@ namespace OpenLoco::Vehicles
     // 0x004B90F0
     // eax : newVehicleTypeId
     // ebx : sourceVehicleTypeId;
-    static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
+    static bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
     {
         auto newObject = ObjectManager::get<VehicleObject>(newVehicleTypeId);       // edi
         auto sourceObject = ObjectManager::get<VehicleObject>(sourceVehicleTypeId); // esi
 
-        if (newObject->hasFlags(VehicleObjectFlags::canCouple) && sourceObject->hasFlags(VehicleObjectFlags::canCouple))
+        if (newObject->hasFlags(VehicleObjectFlags::cannotCoupleToSelf) && sourceObject->hasFlags(VehicleObjectFlags::cannotCoupleToSelf))
         {
             GameCommands::setErrorText(StringIds::incompatible_vehicle);
             return false;
@@ -587,7 +587,7 @@ namespace OpenLoco::Vehicles
             for (const auto& car : train.cars)
             {
                 // The objectId is the same for all vehicle components and car components of a car
-                if (!sub_4B90F0(vehicleTypeId, car.front->objectId))
+                if (!canVehiclesCouple(vehicleTypeId, car.front->objectId))
                 {
                     return false;
                 }
@@ -1629,15 +1629,12 @@ namespace OpenLoco::Vehicles
         }
 
         Pitch targetPitch = Pitch::flat;
-        if (vehType2->currentSpeed < 50.0_mph)
+
+        auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
+
+        if (vehType2->currentSpeed < 50.0_mph && vehObject->hasFlags(VehicleObjectFlags::aircraftTaildragger))
         {
-            auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             targetPitch = Pitch::up12deg;
-            // Slope sprites for taxiing planes??
-            if (!vehObject->hasFlags(VehicleObjectFlags::unk_08))
-            {
-                targetPitch = Pitch::flat;
-            }
         }
 
         if (targetZ > position.z)
@@ -1650,15 +1647,9 @@ namespace OpenLoco::Vehicles
 
         if (targetZ < position.z)
         {
-            if (vehType2->currentSpeed <= 180.0_mph)
+            if (vehType2->currentSpeed <= 180.0_mph && vehObject->hasFlags(VehicleObjectFlags::aircraftFlaredLanding))
             {
-                auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-
-                // looks wrong??
-                if (vehObject->hasFlags(VehicleObjectFlags::canCouple))
-                {
-                    targetPitch = Pitch::up12deg;
-                }
+                targetPitch = Pitch::up12deg;
             }
         }
 
