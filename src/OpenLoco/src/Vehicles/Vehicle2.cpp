@@ -45,7 +45,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        if (train.veh2->var_5A == 2 || train.veh2->currentSpeed > 10.0_mph)
+        if (train.veh2->motorState == MotorState::coasting || train.veh2->currentSpeed > 10.0_mph)
         {
             return false;
         }
@@ -131,11 +131,11 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        var_5A = 1;
+        motorState = MotorState::accelerating;
         const auto speedDiff = currentSpeed - *_vehicleUpdate_var_1136134;
         if (speedDiff > 0.0_mph)
         {
-            var_5A = 3;
+            motorState = MotorState::braking;
             const auto newSpeed = currentSpeed - (currentSpeed / 64 + 0.18311_mph);
             currentSpeed = std::max(newSpeed, std::max(*_vehicleUpdate_var_1136134, 5.0_mph));
             return sub_4A9F20();
@@ -145,11 +145,11 @@ namespace OpenLoco::Vehicles
         {
             if (speedDiff >= -1.5_mph)
             {
-                var_5A = 2;
+                motorState = MotorState::coasting;
             }
             if (currentSpeed == 0.0_mph)
             {
-                var_5A = 0;
+                motorState = MotorState::stopped;
             }
         }
 
@@ -199,7 +199,7 @@ namespace OpenLoco::Vehicles
             ebp /= 2;
             if (!train.head->hasVehicleFlags(VehicleFlags::unk_0))
             {
-                var_5A = 4;
+                motorState = MotorState::stoppedOnIncline;
                 if (currentSpeed <= 3.0_mph && train.head->owner == CompanyManager::getControllingId())
                 {
                     MessageManager::post(MessageType::vehicleSlipped, train.head->owner, enumValue(train.head->id), 0xFFFF);
@@ -218,22 +218,22 @@ namespace OpenLoco::Vehicles
                 {
                     if (manualSpeed <= -10)
                     {
-                        var_5A = 3;
+                        motorState = MotorState::braking;
                     }
                     else
                     {
-                        var_5A = 2;
+                        motorState = MotorState::coasting;
                     }
                 }
                 else
                 {
                     if (manualSpeed >= 10)
                     {
-                        var_5A = 1;
+                        motorState = MotorState::accelerating;
                     }
                     else
                     {
-                        var_5A = 2;
+                        motorState = MotorState::coasting;
                     }
                 }
                 ebp += ((power * 2048) * manualSpeed) / (totalWeight * 40);
@@ -305,11 +305,11 @@ namespace OpenLoco::Vehicles
             if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {
                 currentSpeed = 0.0_mph;
-                var_5A = 0;
+                motorState = MotorState::stopped;
             }
         }
 
-        if (var_5A == 4)
+        if (motorState == MotorState::stoppedOnIncline)
         {
             _vehicleUpdate_var_1136130 = _vehicleUpdate_var_113612C + 0x1388;
         }
@@ -317,7 +317,7 @@ namespace OpenLoco::Vehicles
         train.head->var_3C -= _vehicleUpdate_var_113612C;
         train.veh1->var_3C -= _vehicleUpdate_var_113612C;
 
-        if (var_5A == 3)
+        if (motorState == MotorState::braking)
         {
             if (var_5B == 0)
             {

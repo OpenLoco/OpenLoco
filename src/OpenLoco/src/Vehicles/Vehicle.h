@@ -26,6 +26,16 @@ namespace OpenLoco::Vehicles
     constexpr auto kMaxRoadVehicleLength = 176;    // TODO: Units?
     constexpr uint8_t kWheelSlippingDuration = 64; // In ticks
 
+    enum class MotorState : uint8_t
+    {
+        stopped = 0,
+        accelerating = 1,
+        coasting = 2,
+        braking = 3,
+        stoppedOnIncline = 4,
+        airplaneAtTaxiSpeed = 5,
+    };
+
     enum class Flags38 : uint8_t
     {
         none = 0U,
@@ -537,7 +547,7 @@ namespace OpenLoco::Vehicles
         uint16_t totalWeight; // 0x52
         Speed16 maxSpeed;     // 0x54
         Speed32 currentSpeed; // 0x56
-        uint8_t var_5A;
+        MotorState motorState;
         uint8_t var_5B;
         Speed16 rackRailMaxSpeed;     // 0x5C
         currency32_t curMonthRevenue; // 0x5E monthly revenue
