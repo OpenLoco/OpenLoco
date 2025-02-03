@@ -77,7 +77,7 @@ namespace OpenLoco::Vehicles
             newTargetSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), newTargetSpeed);
             newTargetSpeed = std::max(newTargetSpeed, 12_mph);
 
-            if (train.head->has38Flags(Flags38::unk_5))
+            if (train.head->has38Flags(Flags38::fasterAroundCurves))
             {
                 newTargetSpeed += newTargetSpeed / 4;
                 newTargetSpeed = std::min(roadObj->maxSpeed, newTargetSpeed);
@@ -182,7 +182,7 @@ namespace OpenLoco::Vehicles
         const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * trackObj->curveSpeed.getRaw());
         newTargetSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), newTargetSpeed);
 
-        if (train.head->has38Flags(Flags38::unk_5))
+        if (train.head->has38Flags(Flags38::fasterAroundCurves))
         {
             newTargetSpeed += newTargetSpeed / 4;
             newTargetSpeed = std::min(trackObj->curveSpeed, newTargetSpeed);

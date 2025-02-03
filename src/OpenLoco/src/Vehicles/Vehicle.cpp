@@ -675,7 +675,7 @@ namespace OpenLoco::Vehicles
     AirportObjectFlags VehicleBogie::getCompatibleAirportType()
     {
         auto* vehObj = ObjectManager::get<VehicleObject>(objectId);
-        if (vehObj->hasFlags(VehicleObjectFlags::isHelicopter))
+        if (vehObj->hasFlags(VehicleObjectFlags::aircraftIsHelicopter))
         {
             return AirportObjectFlags::acceptsHelicopter;
         }
