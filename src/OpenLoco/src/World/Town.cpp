@@ -768,11 +768,57 @@ namespace OpenLoco
         1,
     };
 
+    // 0x0042DB35
+    // A collision in this function means that the building will not be removed
+    // Finds buildings that are old and not headquarters for removal
+    static World::TileClearance::ClearFuncResult sub_42DB35(World::TileElement& el, uint8_t baseZ, uint8_t& minZDiff, bool unkFlag)
+    {
+        auto* elTree = el.as<World::TreeElement>();
+        auto* elBuilding = el.as<World::BuildingElement>();
+        if (elTree != nullptr)
+        {
+            return World::TileClearance::ClearFuncResult::noCollision;
+        }
+        else if (elBuilding != nullptr)
+        {
+            if (!unkFlag)
+            {
+                return World::TileClearance::ClearFuncResult::collision;
+            }
+
+            if (!elBuilding->isConstructed())
+            {
+                return World::TileClearance::ClearFuncResult::collision;
+            }
+            auto* buildingObj = ObjectManager::get<BuildingObject>(elBuilding->objectId());
+            if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
+            {
+                return World::TileClearance::ClearFuncResult::collision;
+            }
+            if (elBuilding->age() > 30)
+            {
+                return World::TileClearance::ClearFuncResult::noCollision;
+            }
+            return World::TileClearance::ClearFuncResult::collision;
+        }
+        else
+        {
+            const auto diff = el.baseZ() - baseZ;
+            if (diff <= 0)
+            {
+                return World::TileClearance::ClearFuncResult::noCollision;
+            }
+            minZDiff = std::min<uint8_t>(minZDiff, diff);
+        }
+    }
+
     // 0x0042D9FA
+    // If 0 then no new building can be created here
     // pos : (ax, cx, dx)
     // isLargeTile : bh bit 0
     // unkFlag : bh bit 2
-    static void sub_42D9FA(const World::Pos3 pos, bool isLargeTile, bool unkFlag)
+    // return maxHeightOfBuilding: ebp
+    static int16_t getMaxHeightOfNewBuilding(const World::Pos3 pos, bool isLargeTile, bool unkFlag)
     {
         auto offsets = getBuildingTileOffsets(isLargeTile);
         int32_t maxHeightDiff = 0;
@@ -790,7 +836,7 @@ namespace OpenLoco
         const auto smallMaxHeightDiff = maxHeightDiff / World::kSmallZStep;
         if (smallMaxHeightDiff > 8)
         {
-            return;
+            return 0;
         }
         uint8_t minClear = 0xFFU;
         for (auto& offset : offsets)
@@ -798,17 +844,20 @@ namespace OpenLoco
             const auto loc = World::Pos2{ pos } + offset.pos;
             if (!World::validCoords(loc))
             {
-                return;
+                return 0;
             }
             const auto elSurface = World::TileManager::get(loc).surface();
             const auto minZ = std::min(elSurface->baseHeight(), pos.z) / World::kSmallZStep;
             World::QuarterTile qt(0xF, 0xF);
-            auto clearFunc = [](TileElement& el) -> World::TileClearance::ClearFuncResult { sub_42DB35(); };
+            auto clearFunc = [baseZ = pos.z / World::kSmallZStep, &minClear, unkFlag](TileElement& el) {
+                return sub_42DB35(el, baseZ, minClear, unkFlag);
+            };
             if (!World::TileClearance::applyClearAtStandardHeight(pos, minZ, 255, qt, clearFunc))
             {
-                return;
+                return 0;
             }
         }
+        return minClear * World::kSmallZStep;
     }
 
     // 0x0042CF7C
@@ -822,7 +871,7 @@ namespace OpenLoco
     //
     // TODO: Pass in targetTownId when not hooking return nullopt
     // if nearby town is not targetTownId and remove the loco_global
-    static std::optional<GameCommands::BuildingPlacementArgs> sub_42CF7C(const World::Pos3 pos, int16_t targetHeight, uint8_t rotation, bool isLargeTile, bool buildImmediately)
+    static std::optional<GameCommands::BuildingPlacementArgs> generateNewBuildingArgs(const World::Pos3 pos, int16_t targetHeight, uint8_t rotation, bool isLargeTile, bool buildImmediately)
     {
         const auto res = TownManager::getClosestTownAndDensity(pos);
         if (!res.has_value())
