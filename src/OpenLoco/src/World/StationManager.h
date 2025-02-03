@@ -9,6 +9,9 @@
 
 namespace OpenLoco::StationManager
 {
+    // If it exceeds this distance, it will not be considered a nearby station
+    constexpr int16_t kMaxStationNearbyDistance = 64;
+
     void reset();
     FixedVector<Station, Limits::kMaxStations> stations();
     Station* get(StationId id);
@@ -31,4 +34,6 @@ namespace OpenLoco::StationManager
     };
 
     NearbyStation findNearbyStation(World::Pos3 pos, CompanyId companyId);
+    // Subfunction of findNearbyStation (For create airport)
+    StationId findNearbyEmptyStation(const World::Pos3 pos, const CompanyId companyId, const int16_t currentMinDistanceStation);
 }
