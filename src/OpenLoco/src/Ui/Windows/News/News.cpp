@@ -641,8 +641,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (!mtd.hasFlag(MessageTypeFlags::unk5))
             {
-                *buffer = ControlCodes::Font::large;
-                buffer++;
+                tr.setCurrentFont(Gfx::Font::large);
             }
 
             *buffer = ControlCodes::Colour::black;
@@ -725,8 +724,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (!mtd.hasFlag(MessageTypeFlags::unk5))
             {
-                *buffer = ControlCodes::Font::large;
-                buffer++;
+                tr.setCurrentFont(Gfx::Font::large);
             }
 
             *buffer = ControlCodes::Colour::black;
