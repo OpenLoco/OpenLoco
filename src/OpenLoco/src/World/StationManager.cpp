@@ -719,7 +719,7 @@ namespace OpenLoco::StationManager
         // empty station and its name.
         auto minDistanceStation = StationId::null;
         auto minDistance = currentMinDistanceStation;
-        for (auto& station : StationManager::stations())
+        for (const auto& station : StationManager::stations())
         {
             if (station.stationTileSize != 0)
             {
@@ -732,11 +732,11 @@ namespace OpenLoco::StationManager
             const auto distance = Math::Vector::chebyshevDistance2D(World::Pos2{ station.x, station.y }, pos);
 
             auto distDiffZ = std::abs(station.z - pos.z);
-            if (distDiffZ > 64)
+            if (distDiffZ > kMaxStationNearbyDistance)
             {
                 continue;
             }
-            if (distance > 64)
+            if (distance > kMaxStationNearbyDistance)
             {
                 continue;
             }
@@ -758,10 +758,10 @@ namespace OpenLoco::StationManager
         auto minDistanceStation = StationId::null;
         auto minDistance = std::numeric_limits<int16_t>::max();
         bool isPhysicallyAttached = false;
-        for (const auto tilePos : World::getClampedRange(tilePosA, tilePosB))
+        for (const auto& tilePos : World::getClampedRange(tilePosA, tilePosB))
         {
             const auto tile = World::TileManager::get(tilePos);
-            for (auto& el : tile)
+            for (const auto& el : tile)
             {
                 auto* elStation = el.as<World::StationElement>();
                 if (elStation == nullptr)
@@ -782,12 +782,12 @@ namespace OpenLoco::StationManager
                 if (distance < minDistance)
                 {
                     auto distDiffZ = std::abs(elStation->baseHeight() - pos.z);
-                    if (distDiffZ > 64)
+                    if (distDiffZ > kMaxStationNearbyDistance)
                     {
                         continue;
                     }
                     minDistance = distance + distDiffZ / 2;
-                    if (minDistance <= 64)
+                    if (minDistance <= kMaxStationNearbyDistance)
                     {
                         isPhysicallyAttached = true;
                     }

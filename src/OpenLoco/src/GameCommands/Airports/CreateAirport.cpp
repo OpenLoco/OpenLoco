@@ -41,10 +41,10 @@ namespace OpenLoco::GameCommands
         auto minDistanceStation = StationId::null;
         auto minDistance = std::numeric_limits<int16_t>::max();
         bool isPhysicallyAttached = false;
-        for (const auto tilePos : World::getClampedRange(tilePosA, tilePosB))
+        for (const auto& tilePos : World::getClampedRange(tilePosA, tilePosB))
         {
             const auto tile = World::TileManager::get(tilePos);
-            for (auto& el : tile)
+            for (const auto& el : tile)
             {
                 auto* elStation = el.as<World::StationElement>();
                 if (elStation == nullptr)
@@ -65,7 +65,7 @@ namespace OpenLoco::GameCommands
                 if (distance < minDistance)
                 {
                     auto distDiffZ = std::abs(elStation->baseHeight() - pos.z);
-                    if (distDiffZ > 64)
+                    if (distDiffZ > StationManager::kMaxStationNearbyDistance)
                     {
                         continue;
                     }
@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
                     }
 
                     minDistance = distance + distDiffZ / 2;
-                    if (minDistance <= 64)
+                    if (minDistance <= StationManager::kMaxStationNearbyDistance)
                     {
                         isPhysicallyAttached = true;
                     }
