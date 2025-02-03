@@ -87,8 +87,8 @@ namespace OpenLoco::Vehicles
     enum UpdateVar1136114Flags : uint32_t
     {
         unk_m00 = (1 << 0),
-        noRouteFound = (1 << 1), // no route found??
-        crashed = (1 << 2),      // crashed??
+        noRouteFound = (1 << 1),
+        crashed = (1 << 2),
         unk_m03 = (1 << 3),
         approachingGradeCrossing = (1 << 4),
         unk_m15 = (1 << 15),
