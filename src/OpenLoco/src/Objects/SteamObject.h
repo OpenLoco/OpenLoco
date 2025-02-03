@@ -17,7 +17,7 @@ namespace OpenLoco
         none = 0U,
         applyWind = 1U << 0,
         disperseOnCollision = 1U << 1,
-        unk2 = 1U << 2,
+        hasTunnelSounds = 1U << 2,
         unk3 = 1U << 3,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SteamObjectFlags);

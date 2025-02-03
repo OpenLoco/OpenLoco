@@ -98,9 +98,9 @@ namespace OpenLoco
 
     struct VehicleObjectSimpleAnimation
     {
-        uint8_t objectId;         // 0x00 (object loader fills this in)
-        uint8_t height;           // 0x01
-        SimpleAnimationType type; // 0x02
+        uint8_t objectId;           // 0x00 (object loader fills this in)
+        uint8_t emitterVerticalPos; // 0x01
+        SimpleAnimationType type;   // 0x02
     };
     static_assert(sizeof(VehicleObjectSimpleAnimation) == 0x3);
 
@@ -111,7 +111,7 @@ namespace OpenLoco
         uint8_t frontBogieSpriteInd; // 0x02 index of bogieSprites struct
         uint8_t backBogieSpriteInd;  // 0x03 index of bogieSprites struct
         uint8_t bodySpriteInd;       // 0x04 index of a bodySprites struct
-        uint8_t var_05;
+        uint8_t emitterHorizontalPos;
     };
     static_assert(sizeof(VehicleObjectCar) == 0x6);
 
