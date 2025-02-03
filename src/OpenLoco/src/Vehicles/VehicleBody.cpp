@@ -1073,7 +1073,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB9DD & 0x004AAFFA
-    void VehicleBody::dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::dieselExhaust1AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
@@ -1095,7 +1095,7 @@ namespace OpenLoco::Vehicles
 
             if (has38Flags(Flags38::isReversed))
             {
-                var_05 = -var_05;
+                emitterHorizontalPos = -emitterHorizontalPos;
             }
 
             if (ScenarioManager::getScenarioTicks() & 3)
@@ -1103,7 +1103,7 @@ namespace OpenLoco::Vehicles
                 return;
             }
 
-            auto positionFactor = vehicleObject->bodySprites[0].halfLength * var_05 / 256;
+            auto positionFactor = vehicleObject->bodySprites[0].halfLength * emitterHorizontalPos / 256;
             auto invertedDirection = spriteYaw ^ (1 << 5);
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
@@ -1119,7 +1119,7 @@ namespace OpenLoco::Vehicles
 
             if (has38Flags(Flags38::isReversed))
             {
-                var_05 = -var_05;
+                emitterHorizontalPos = -emitterHorizontalPos;
             }
 
             if (ScenarioManager::getScenarioTicks() & 3)
@@ -1132,18 +1132,18 @@ namespace OpenLoco::Vehicles
                 return;
             }
 
-            var_05 += 64;
+            emitterHorizontalPos += 64;
             auto bogieDifference = backBogie->position - frontBogie->position;
             auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
-            auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
+            auto loc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
             Exhaust::create(loc, vehicleObject->animation[num].objectId);
         }
     }
 
     // 0x004ABB5A & 0x004AB177
-    void VehicleBody::dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::dieselExhaust2AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
@@ -1167,7 +1167,7 @@ namespace OpenLoco::Vehicles
 
         if (has38Flags(Flags38::isReversed))
         {
-            var_05 = -var_05;
+            emitterHorizontalPos = -emitterHorizontalPos;
         }
 
         if (ScenarioManager::getScenarioTicks() & 7)
@@ -1175,12 +1175,12 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        var_05 += 64;
+        emitterHorizontalPos += 64;
 
         auto bogieDifference = backBogie->position - frontBogie->position;
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
-        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
+        auto loc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;
@@ -1199,7 +1199,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABDAD & 0x004AB3CA
-    void VehicleBody::electricSpark1AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::electricSpark1AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
@@ -1219,7 +1219,7 @@ namespace OpenLoco::Vehicles
         auto _var_44 = var_44;
         if (has38Flags(Flags38::isReversed))
         {
-            var_05 = -var_05;
+            emitterHorizontalPos = -emitterHorizontalPos;
             _var_44 = -var_44;
         }
 
@@ -1228,7 +1228,7 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        var_05 += 64;
+        emitterHorizontalPos += 64;
 
         if (gPrng1().randNext(std::numeric_limits<uint16_t>::max()) > 819)
         {
@@ -1238,13 +1238,13 @@ namespace OpenLoco::Vehicles
         auto bogieDifference = backBogie->position - frontBogie->position;
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
-        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
+        auto loc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
         Exhaust::create(loc, vehicleObject->animation[num].objectId);
     }
 
     // 0x004ABEC3 & 0x004AB4E0
-    void VehicleBody::electricSpark2AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::electricSpark2AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
@@ -1264,7 +1264,7 @@ namespace OpenLoco::Vehicles
         auto _var_44 = var_44;
         if (has38Flags(Flags38::isReversed))
         {
-            var_05 = -var_05;
+            emitterHorizontalPos = -emitterHorizontalPos;
             _var_44 = -var_44;
         }
 
@@ -1273,7 +1273,7 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        var_05 += 64;
+        emitterHorizontalPos += 64;
 
         if (gPrng1().randNext(std::numeric_limits<uint16_t>::max()) > 936)
         {
@@ -1283,7 +1283,7 @@ namespace OpenLoco::Vehicles
         auto bogieDifference = backBogie->position - frontBogie->position;
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
-        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
+        auto loc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;
