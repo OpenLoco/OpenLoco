@@ -25,6 +25,7 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
@@ -984,6 +985,74 @@ namespace OpenLoco
             }
         }
         return false;
+    }
+
+    // 0x0047AD83
+    // pos : ax, cx, dx
+    // tad : ebp
+    // newRoadObjId : bh
+    // newOwner : bl
+    // newStreetLightStyle : ebx >> 16
+    static void updateAndTakeoverRoad(const World::Pos3 pos, const Vehicles::TrackAndDirection::_RoadAndDirection tad, const uint8_t newRoadObjId, const CompanyId newOwner, const uint8_t newStreetLightStyle)
+    {
+        auto* roadObj = ObjectManager::get<RoadObject>(newRoadObjId);
+        const auto roadPiecesFlags = World::TrackData::getRoadMiscData(tad.id()).compatibleFlags;
+        if ((roadPiecesFlags & roadObj->roadPieces) != roadObj->roadPieces)
+        {
+            return;
+        }
+
+        const auto roadStart = [tad, &pos]() {
+            if (tad.isReversed())
+            {
+                auto& roadSize = World::TrackData::getUnkRoad(tad._data);
+                auto roadStart = pos + roadSize.pos;
+                if (roadSize.rotationEnd < 12)
+                {
+                    roadStart -= World::Pos3{ _503C6C[roadSize.rotationEnd], 0 };
+                }
+                return roadStart;
+            }
+            else
+            {
+                return pos;
+            };
+        }();
+        const auto pieces = World::TrackData::getRoadPiece(tad.id());
+        for (auto& piece : pieces)
+        {
+            const auto roadPos = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, tad.cardinalDirection()), piece.z };
+
+            auto tile = World::TileManager::get(roadPos);
+            for (auto& el : tile)
+            {
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->baseHeight() != roadPos.z)
+                {
+                    continue;
+                }
+                if (elRoad->isGhost() || elRoad->isAiAllocated())
+                {
+                    continue;
+                }
+                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                {
+                    continue;
+                }
+                elRoad->setOwner(newOwner);
+                elRoad->setRoadObjectId(newRoadObjId);
+                if (!elRoad->hasLevelCrossing())
+                {
+                    elRoad->setStreetLightStyle(newStreetLightStyle);
+                }
+                Ui::ViewportManager::invalidate(roadPos, elRoad->baseHeight(), elRoad->clearHeight(), ZoomLevel::half);
+            }
+        }
     }
 
     // 0x00498C6B
