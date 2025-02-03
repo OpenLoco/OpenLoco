@@ -73,6 +73,16 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SoundFlags);
 
+    enum UpdateVar1136114Flags : uint32_t
+    {
+        unk_m00 = (1 << 0),
+        noRouteFound = (1 << 1),
+        crashed = (1 << 2),
+        unk_m03 = (1 << 3),
+        approachingGradeCrossing = (1 << 4),
+        unk_m15 = (1 << 15),
+    };
+
     enum class Status : uint8_t
     {
         unk_0 = 0, // no position (not placed)
