@@ -40,9 +40,8 @@ namespace OpenLoco
         LandObjectFlags flags;    // 0x05
         uint8_t cliffEdgeHeader1; // 0x06
         uint8_t cliffEdgeHeader2; // 0x07
-        int8_t costFactor;        // 0x08
-        uint8_t pad_09;
-        uint32_t image; // 0x0A
+        int16_t costFactor;       // 0x08
+        uint32_t image;           // 0x0A
         uint32_t var_0E;
         uint32_t cliffEdgeImage;     // 0x12
         uint32_t mapPixelImage;      // 0x16
