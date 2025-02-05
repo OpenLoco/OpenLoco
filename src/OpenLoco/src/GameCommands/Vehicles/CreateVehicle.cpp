@@ -248,7 +248,7 @@ namespace OpenLoco::GameCommands
         newBody->primaryCargo.acceptedTypes = 0;
         newBody->primaryCargo.type = 0xFF;
         newBody->primaryCargo.qty = 0;
-        newBody->var_55 = 0; // different to create bogie
+        newBody->chuffSoundIndex = 0; // different to create bogie
         newBody->wheelSlipping = 0;
         newBody->breakdownFlags = BreakdownFlags::none;
 
@@ -490,7 +490,7 @@ namespace OpenLoco::GameCommands
         newVeh2->spriteHeightPositive = 0;
         newVeh2->var_38 = Flags38::none;
         newVeh2->currentSpeed = 0.0_mph;
-        newVeh2->var_5A = 0;
+        newVeh2->motorState = MotorState::stopped;
         newVeh2->var_5B = 0;
         newVeh2->drivingSoundId = SoundObjectId::null;
         newVeh2->objectId = 0xFFFFU;
