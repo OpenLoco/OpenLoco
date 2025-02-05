@@ -582,7 +582,7 @@ namespace OpenLoco::Vehicles
         VehicleCargo primaryCargo; // 0x48
         uint8_t pad_52[0x54 - 0x52];
         uint8_t bodyIndex; // 0x54
-        int8_t var_55;
+        int8_t chuffSoundIndex;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
         uint8_t wheelSlipping; // 0x5E timeout that counts up
