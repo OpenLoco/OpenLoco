@@ -863,35 +863,18 @@ namespace OpenLoco::Vehicles
         }
 
         Vehicle2* vehType2_2 = _vehicleUpdate_2;
-        uint16_t targetFrequency = 0;
-        uint8_t targetVolume = 0;
-        switch (vehType2_2->var_5A)
+        uint16_t targetFrequency = snd->idleFrequency;
+        uint8_t targetVolume = snd->idleVolume;
+
+        if (vehType2_2->var_5A == 1 && (!(soundPlayer->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0))
         {
-            case 1:
-                if (!(soundPlayer->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0)
-                {
-                    targetFrequency = snd->accelerationBaseFreq + (vehType2_2->currentSpeed.getRaw() >> snd->speedFreqFactor);
-                    targetVolume = snd->acclerationVolume;
-                    break;
-                }
-                else
-                {
-                    [[fallthrough]]; // does this work as expected?
-                }
-            case 2:
-                if (vehType2_2->currentSpeed >= 12.0_mph)
-                {
-                    targetFrequency = snd->idleFrequency;
-                    targetVolume = snd->idleVolume;
-                    break;
-                }
-                else
-                {
-                    [[fallthrough]];
-                }
-            default:
-                targetFrequency = snd->idleFrequency;
-                targetVolume = snd->idleVolume;
+            targetFrequency = snd->accelerationBaseFreq + (vehType2_2->currentSpeed.getRaw() >> snd->speedFreqFactor);
+            targetVolume = snd->acclerationVolume;
+        }
+        else if (vehType2_2->var_5A == 2 && vehType2_2->currentSpeed >= 12.0_mph)
+        {
+            targetFrequency = snd->coastingFrequency;
+            targetVolume = snd->coastingVolume;
         }
 
         if (soundPlayer->drivingSoundId == 0xFF)

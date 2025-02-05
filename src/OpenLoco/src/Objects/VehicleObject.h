@@ -59,11 +59,11 @@ namespace OpenLoco
 
     struct VehicleSimpleMotorSound
     {
-        uint8_t soundObjectId;  // 0x0
-        uint16_t idleFrequency; // 0x1
-        uint8_t idleVolume;     // 0x3
-        uint16_t var_04;        // maybe unused
-        uint8_t var_06;         // maybe unused
+        uint8_t soundObjectId;      // 0x0
+        uint16_t idleFrequency;     // 0x1
+        uint8_t idleVolume;         // 0x3
+        uint16_t coastingFrequency; // 0x4
+        uint8_t coastingVolume;     // 0x6
         uint16_t accelerationBaseFreq;
         uint8_t acclerationVolume;
         uint16_t freqIncreaseStep;  // 0xA
