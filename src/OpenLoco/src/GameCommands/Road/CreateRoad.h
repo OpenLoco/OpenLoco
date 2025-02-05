@@ -13,9 +13,10 @@ namespace OpenLoco::GameCommands
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , roadId(regs.dh & 0xF)
-            , mods(regs.di >> 16)
-            , bridge(regs.edx >> 24)
+            , mods(regs.edi >> 16)
+            , bridge((regs.edx >> 24) & 0xFF)
             , roadObjectId(regs.dl)
+            , unkFlags((regs.edx >> 16) & 0xFF)
         {
         }
 
@@ -25,6 +26,7 @@ namespace OpenLoco::GameCommands
         uint8_t mods;
         uint8_t bridge;
         uint8_t roadObjectId;
+        uint8_t unkFlags;
 
         explicit operator registers() const
         {
@@ -33,8 +35,10 @@ namespace OpenLoco::GameCommands
             regs.cx = pos.y;
             regs.edi = (0xFFFFU & pos.z) | (mods << 16);
             regs.bh = rotation;
-            regs.edx = roadObjectId | (roadId << 8) | (bridge << 24);
+            regs.edx = roadObjectId | (roadId << 8) | (unkFlags << 16) | (bridge << 24);
             return regs;
         }
     };
+
+    void createRoad(registers& regs);
 }

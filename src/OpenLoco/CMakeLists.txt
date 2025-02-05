@@ -98,6 +98,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Industries/CreateIndustry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Industries/RemoveIndustry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Industries/RenameIndustry.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoad.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoadStation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/RemoveRoadStation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/ChangeLandMaterial.cpp"
