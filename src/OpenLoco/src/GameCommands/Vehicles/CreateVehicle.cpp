@@ -330,9 +330,9 @@ namespace OpenLoco::GameCommands
         const auto company = CompanyManager::get(getUpdatingCompanyId());
 
         auto colourScheme = company->mainColours;
-        if (company->customVehicleColoursSet & (1 << vehObject->colourType))
+        if (company->customVehicleColoursSet & (1 << enumValue(vehObject->companyColourType)))
         {
-            colourScheme = company->vehicleColours[vehObject->colourType - 1];
+            colourScheme = company->vehicleColours[enumValue(vehObject->companyColourType) - 1];
         }
 
         VehicleBogie* newCarStart = nullptr;

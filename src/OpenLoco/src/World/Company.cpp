@@ -796,9 +796,9 @@ namespace OpenLoco
             {
                 const auto* vehObject = car.body->getObject();
                 auto colour = mainColours;
-                if (customVehicleColoursSet & (1 << vehObject->colourType))
+                if (customVehicleColoursSet & (1 << enumValue(vehObject->companyColourType)))
                 {
-                    colour = vehicleColours[vehObject->colourType - 1];
+                    colour = vehicleColours[enumValue(vehObject->companyColourType) - 1];
                 }
                 car.applyToComponents([colour](auto& component) { component.colourScheme = colour; });
             }
