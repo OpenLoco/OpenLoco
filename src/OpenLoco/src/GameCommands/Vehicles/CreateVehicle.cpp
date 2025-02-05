@@ -340,10 +340,10 @@ namespace OpenLoco::GameCommands
         const auto company = CompanyManager::get(getUpdatingCompanyId());
         _1136140 = company->mainColours; // Copy to global variable. Can be removed when all global uses confirmed
         auto colourScheme = company->mainColours;
-        if (company->customVehicleColoursSet & (1 << vehObject->colourType))
+        if (company->customVehicleColoursSet & (1 << enumValue(vehObject->companyColourType)))
         {
-            _1136140 = company->vehicleColours[vehObject->colourType - 1]; // Copy to global variable. Can be removed when all global uses confirmed
-            colourScheme = company->vehicleColours[vehObject->colourType - 1];
+            _1136140 = company->vehicleColours[enumValue(vehObject->companyColourType) - 1]; // Copy to global variable. Can be removed when all global uses confirmed
+            colourScheme = company->vehicleColours[enumValue(vehObject->companyColourType) - 1];
         }
 
         VehicleBogie* newCarStart = nullptr;
