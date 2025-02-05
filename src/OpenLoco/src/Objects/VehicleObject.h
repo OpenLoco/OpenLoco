@@ -158,6 +158,22 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BodySpriteFlags);
 
+    enum class CompanyColourType : uint8_t
+    {
+        none = 0,
+        steamLoco = 1,
+        dieselLoco = 2,
+        electricLoco = 3,
+        multipleUnit = 4,
+        passengerRailcar = 5,
+        freightRailcar = 6,
+        busAndTram = 7,
+        freightTruck = 8,
+        airplane = 9,
+        ship = 10,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(CompanyColourType);
+
     struct VehicleObjectBodySprite
     {
         uint8_t numFlatRotationFrames;   // 0x00 4, 8, 16, 32, 64?
@@ -245,7 +261,7 @@ namespace OpenLoco
         uint8_t reliability;                                  // 0x0A
         uint8_t runCostIndex;                                 // 0x0B
         int16_t runCostFactor;                                // 0x0C
-        uint8_t colourType;                                   // 0x0E
+        CompanyColourType companyColourType;                  // 0x0E
         uint8_t numCompatibleVehicles;                        // 0x0F
         uint16_t compatibleVehicles[8];                       // 0x10 array of compatible vehicle_types
         uint8_t requiredTrackExtras[4];                       // 0x20
