@@ -295,12 +295,12 @@ namespace OpenLoco::GameCommands
 
         newBody->colourScheme = colourScheme; // same as create bogie
 
-        if (bodyNumber == 0 && vehObject.hasFlags(VehicleObjectFlags::topAndTailPosition))
+        if (bodyNumber == 0 && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieFront))
         {
             newBody->var_38 |= Flags38::unk_3;
         }
 
-        if (bodyNumber + 1 == vehObject.var_04 && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieFront))
+        if (bodyNumber + 1 == vehObject.var_04 && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieRear))
         {
             newBody->var_38 |= Flags38::unk_3;
         }
