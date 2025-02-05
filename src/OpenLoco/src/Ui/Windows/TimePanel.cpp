@@ -81,8 +81,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->colour_17).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->colour_17).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->timeToolbarColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->timeToolbarColour).translucent());
         }
 
         return window;

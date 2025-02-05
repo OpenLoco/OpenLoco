@@ -359,7 +359,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             window->owner = CompanyManager::getControllingId();
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, skin->colour_0A);
+            window->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
             window->width = Messages::kMinWindowSize.width;
             window->height = Messages::kMinWindowSize.height;

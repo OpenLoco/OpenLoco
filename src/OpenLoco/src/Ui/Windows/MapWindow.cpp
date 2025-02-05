@@ -2432,8 +2432,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, skin->colour_0B);
-        window->setColour(WindowColour::secondary, skin->colour_0F);
+        window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, skin->windowMapColour);
 
         window->var_846 = getCurrentRotation();
 

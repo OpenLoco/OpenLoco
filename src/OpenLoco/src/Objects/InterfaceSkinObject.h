@@ -22,24 +22,24 @@ namespace OpenLoco
 
         StringId name; // 0x00
         uint32_t img;  // 0x02
-        Colour colour_06;
-        Colour colour_07;
+        Colour mapTooltipObjectColour; // 0x06
+        Colour mapTooltipCargoColour; // 0x07
         Colour tooltipColour; // 0x08
         Colour errorColour;   // 0x09
-        Colour colour_0A;
-        Colour colour_0B;
-        Colour colour_0C;
-        Colour colour_0D;
-        Colour colour_0E;
-        Colour colour_0F;
-        Colour colour_10;
+        Colour windowPlayerColor; // 0x0A
+        Colour windowTitlebarColour; // 0x0B
+        Colour windowColour; // 0x0C
+        Colour windowConstructionColour; // 0x0D
+        Colour windowTerraFormColour; // 0x0E
+        Colour windowMapColour; // 0x0F
+        Colour windowOptionsColour; // 0x10
         Colour colour_11;
-        Colour colour_12;
-        Colour colour_13;
-        Colour colour_14;
-        Colour colour_15;
-        Colour colour_16;
-        Colour colour_17;
+        Colour topToolbarPrimaryColour; // 0x12
+        Colour topToolbarSecondaryColour; // 0x13
+        Colour topToolbarTertiaryColour; // 0x14
+        Colour topToolbarQuaternaryColour; // 0x15
+        Colour playerInfoToolbarColour; // 0x16
+        Colour timeToolbarColour; // 0x17
 
         // 0x0043C888
         bool validate() const { return true; }

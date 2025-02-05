@@ -513,8 +513,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, skin->colour_0B);
-        window->setColour(WindowColour::secondary, skin->colour_0C);
+        window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, skin->windowColour);
 
         inputSession = Ui::TextInput::InputSession();
         inputSession.calculateTextOffset(widgets[widx::textInput].width());
