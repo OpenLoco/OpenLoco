@@ -923,12 +923,12 @@ namespace OpenLoco::Vehicles
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         bool soundCode = false;
-        if (veh_2->var_5A == 1 || veh_2->var_5A == 4)
+        if (veh_2->motorState == MotorState::accelerating || veh_2->motorState == MotorState::stoppedOnIncline)
         {
             soundCode = true;
         }
         bool tickCalc = true;
-        if (veh_2->var_5A != 0 && veh_2->currentSpeed >= 1.0_mph)
+        if (veh_2->motorState != MotorState::stopped && veh_2->currentSpeed >= 1.0_mph)
         {
             tickCalc = false;
         }
@@ -1112,7 +1112,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (veh_2->var_5A != 1)
+            if (veh_2->motorState != MotorState::accelerating)
             {
                 return;
             }
@@ -1155,7 +1155,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != 1)
+        if (veh_2->motorState != MotorState::accelerating)
         {
             return;
         }
@@ -1211,7 +1211,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
+        if (veh_2->motorState != MotorState::coasting && veh_2->motorState != MotorState::accelerating)
         {
             return;
         }
@@ -1256,7 +1256,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
+        if (veh_2->motorState != MotorState::coasting && veh_2->motorState != MotorState::accelerating)
         {
             return;
         }
@@ -1312,7 +1312,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A == 0)
+        if (veh_2->motorState == MotorState::stopped)
         {
             return;
         }
