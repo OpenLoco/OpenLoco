@@ -160,7 +160,7 @@ namespace OpenLoco
 
     enum class CompanyColourType : uint8_t
     {
-        none = 0,
+        company = 0,
         steamLoco = 1,
         dieselLoco = 2,
         electricLoco = 3,
@@ -172,7 +172,6 @@ namespace OpenLoco
         airplane = 9,
         ship = 10,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(CompanyColourType);
 
     struct VehicleObjectBodySprite
     {
