@@ -1145,6 +1145,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case widx::paintBrush:
                     paintModeTarget = enumValue(paintModeTarget) == self.number ? EntityId::null : EntityId(self.number);
+                    colourPrimary = Gfx::getPrimaryColour(self.widgets[widx::paintColourPrimary].image);
+                    colourSecondary = Gfx::getPrimaryColour(self.widgets[widx::paintColourSecondary].image);
                     self.invalidate();
                     break;
             }
@@ -1215,16 +1217,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     return;
                 }
-
                 Colour selectedColour = static_cast<Colour>(Dropdown::getItemArgument(itemIndex, 2));
-                if (widgetIndex == widx::paintColourPrimary)
-                {
-                    self.widgets[widx::paintColourPrimary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, selectedColour);
-                }
-                else
-                {
-                    self.widgets[widx::paintColourSecondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, selectedColour);
-                }
+                self.widgets[widgetIndex].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, selectedColour);
                 self.invalidate();
                 return;
             }
@@ -1296,7 +1290,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     Common::pickupToolUpdate(self, x, y);
                     return;
                 case widx::paintBrush:
-                    ToolManager::toolCancel(WindowType::vehicle, self.number);
                     return;
                 default:
                     return;
@@ -1327,6 +1320,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     Common::pickupToolAbort(self);
                     return;
                 case widx::paintBrush:
+                    paintModeTarget = EntityId::null;
+                    ToolManager::toolCancel(WindowType::vehicle, self.number);
                     return;
                 default:
                     return;
@@ -1563,7 +1558,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[Common::widx::closeButton].right = self.width - 3;
             Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
 
-            self.widgets[widx::carList].right = self.width - 29;
+            self.widgets[widx::carList].right = self.width - 26;
             self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight3Lines;
             alignToRightBar(self, widx::buildNew);
             alignToRightBar(self, widx::pickup);
@@ -4710,8 +4705,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->moveInsideScreenEdges();
             if (widgetIndex == Common::tabDetails)
             {
-                auto* head = EntityManager::get<Vehicles::VehicleHead>(EntityId(self->number));
-                auto company = CompanyManager::get(head->owner);
+                auto company = CompanyManager::get(self->owner);
+                auto colour = CompanyManager::getCompanyColour(self->owner);
                 self->widgets[Details::widx::paintColourPrimary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
                 self->widgets[Details::widx::paintColourSecondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
             }
