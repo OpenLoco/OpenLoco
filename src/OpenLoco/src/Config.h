@@ -198,7 +198,6 @@ namespace OpenLoco::Config
         bool townGrowthDisabled = false;
         bool trainsReverseAtSignals = true;
         bool disableStationSizeLimit = false;
-        bool paintVehiclesIndividually = false;
 
         bool usePreferredOwnerName = false;
         std::string preferredOwnerName;
