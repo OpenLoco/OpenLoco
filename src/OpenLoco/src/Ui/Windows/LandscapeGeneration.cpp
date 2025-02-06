@@ -599,8 +599,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->rowHover = -1;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::primary, interface->colour_0B);
-            window->setColour(WindowColour::secondary, interface->colour_0E);
+            window->setColour(WindowColour::primary, interface->windowTitlebarColour);
+            window->setColour(WindowColour::secondary, interface->windowTerraFormColour);
         }
         // End of 0x0043DAEA
 

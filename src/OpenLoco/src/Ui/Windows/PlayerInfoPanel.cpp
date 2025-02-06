@@ -171,8 +171,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->colour_16).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->colour_16).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->playerInfoToolbarColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->playerInfoToolbarColour).translucent());
         }
 
         return window;

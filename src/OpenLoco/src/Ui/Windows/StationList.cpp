@@ -336,7 +336,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window->flags |= WindowFlags::resizable;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, interface->colour_0A);
+            window->setColour(WindowColour::secondary, interface->windowPlayerColor);
         }
 
         window->currentTab = 0;

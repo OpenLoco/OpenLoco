@@ -311,7 +311,7 @@ namespace OpenLoco::Ui::Windows::Station
             window->savedView.clear();
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, skin->colour_0A);
+            window->setColour(WindowColour::secondary, skin->windowPlayerColor);
             // 0x0048F29F end
         }
 

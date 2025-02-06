@@ -1171,7 +1171,7 @@ namespace OpenLoco::Ui::Windows::Construction
             window->owner = CompanyManager::getControllingId();
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, skin->colour_0D);
+            window->setColour(WindowColour::secondary, skin->windowConstructionColour);
 
             WindowManager::sub_4CEE0B(*window);
             Windows::Main::showDirectionArrows();

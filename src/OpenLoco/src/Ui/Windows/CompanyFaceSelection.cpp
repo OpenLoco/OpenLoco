@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             self->owner = id;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
-            self->setColour(WindowColour::secondary, skin->colour_0A);
+            self->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
             self->rowCount = static_cast<uint16_t>(_competitorList.size());
             self->rowHover = -1;

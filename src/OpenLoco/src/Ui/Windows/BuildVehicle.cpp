@@ -319,7 +319,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::secondary, skin->colour_0A);
+            window->setColour(WindowColour::secondary, skin->windowPlayerColor);
         }
         setDisabledTransportTabs(window);
         return window;

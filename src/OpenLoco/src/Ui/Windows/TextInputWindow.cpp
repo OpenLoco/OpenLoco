@@ -143,15 +143,15 @@ namespace OpenLoco::Ui::Windows::TextInput
         if (caller->type == WindowType::titleMenu)
         {
             const InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::primary, interface->colour_0B);
-            window->setColour(WindowColour::secondary, interface->colour_0C);
+            window->setColour(WindowColour::primary, interface->windowTitlebarColour);
+            window->setColour(WindowColour::secondary, interface->windowColour);
             window->owner = CompanyId::null;
         }
 
         if (caller->type == WindowType::timeToolbar)
         {
             const InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, interface->colour_0A);
+            window->setColour(WindowColour::secondary, interface->windowPlayerColor);
             window->owner = CompanyManager::getControllingId();
         }
 

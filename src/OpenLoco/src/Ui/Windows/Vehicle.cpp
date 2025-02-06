@@ -424,7 +424,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             _dragVehicleHead = EntityId::null;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
-            self->setColour(WindowColour::secondary, skin->colour_0A);
+            self->setColour(WindowColour::secondary, skin->windowPlayerColor);
             return self;
         }
 

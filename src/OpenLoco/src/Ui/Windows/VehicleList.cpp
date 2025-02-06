@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->frameNo = 0;
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        self->setColour(WindowColour::secondary, skin->colour_0A);
+        self->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
         disableUnavailableVehicleTypes(self);
 

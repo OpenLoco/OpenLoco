@@ -111,10 +111,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, skin->colour_12);
-            window->setColour(WindowColour::secondary, skin->colour_13);
-            window->setColour(WindowColour::tertiary, skin->colour_14);
-            window->setColour(WindowColour::quaternary, skin->colour_15);
+            window->setColour(WindowColour::primary, skin->topToolbarPrimaryColour);
+            window->setColour(WindowColour::secondary, skin->topToolbarSecondaryColour);
+            window->setColour(WindowColour::tertiary, skin->topToolbarTertiaryColour);
+            window->setColour(WindowColour::quaternary, skin->topToolbarQuaternaryColour);
         }
     }
 

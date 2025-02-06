@@ -45,8 +45,8 @@ namespace OpenLoco::Ui::Windows::Tutorial
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->colour_06).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->colour_07).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->mapTooltipObjectColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->mapTooltipCargoColour).translucent());
         }
 
         return window;

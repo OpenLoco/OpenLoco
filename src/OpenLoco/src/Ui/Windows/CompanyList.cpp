@@ -622,8 +622,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Common::refreshCompanyList(window);
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::primary, skin->colour_0B);
-            window->setColour(WindowColour::secondary, skin->colour_0C);
+            window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+            window->setColour(WindowColour::secondary, skin->windowColour);
 
             window->var_854 = 0;
         }

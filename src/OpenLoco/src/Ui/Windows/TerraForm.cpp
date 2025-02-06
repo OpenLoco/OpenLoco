@@ -936,7 +936,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->maxHeight = PlantTrees::kWindowSize.height;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, skin->colour_0E);
+            window->setColour(WindowColour::secondary, skin->windowTerraFormColour);
 
             // End of 0x004BB586
 
