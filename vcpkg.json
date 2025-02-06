@@ -7,6 +7,6 @@
         "gtest",
         "libpng",
         "openal-soft",
-        "sdl2"
+        "sdl3"
     ]
 }

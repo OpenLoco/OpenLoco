@@ -1,6 +1,6 @@
 #include "Object.h"
 #include <OpenLoco/Utility/String.hpp>
-#include <fmt/format.h>
+#include <fmt/format-inl.h>
 #include <string_view>
 #include <tuple>
 #include <unordered_set>
