@@ -267,7 +267,7 @@ namespace OpenLoco::Vehicles
 
             return as<VehicleBody, VehicleEntityType::body_continued>();
         }
-        bool isVehicle2Or6() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
+        bool hasSoundPlayer() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
         VehicleSoundPlayer* getSoundPlayer() const
         {
             if (is<VehicleEntityType::vehicle_2>())
