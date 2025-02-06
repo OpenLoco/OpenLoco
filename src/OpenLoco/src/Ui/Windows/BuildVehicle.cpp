@@ -90,6 +90,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         vehicle_preview
     };
 
+#pragma region TabSprites
+
     static constexpr uint32_t kTrainTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_train_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_train_frame_1,
@@ -219,6 +221,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         { VehicleType::aircraft, tab_build_new_aircraft, kAircraftTabImages },
         { VehicleType::ship, tab_build_new_ships, kShipTabImages }
     };
+
+#pragma endregion
 
     // 0x5231D0
     static constexpr auto _widgets = makeWidgets(
