@@ -65,7 +65,7 @@ namespace OpenLoco::Audio
     }
 
     // 0x0048A590
-    static std::pair<SoundId, Channel::Attributes> getChannelAttributesFromVehicle(const Vehicles::Vehicle2or6* v)
+    static std::pair<SoundId, Channel::Attributes> getChannelAttributesFromVehicle(const Vehicles::VehicleSoundPlayer* v)
     {
         auto* w = Ui::WindowManager::find(v->soundWindowType, v->soundWindowNumber);
         auto* viewport = w->viewports[0];
@@ -98,13 +98,13 @@ namespace OpenLoco::Audio
         {
             return;
         }
-        auto* veh26 = v->asVehicle2Or6();
-        if (veh26 == nullptr)
+        auto* vSoundPlayer = v->getSoundPlayer();
+        if (vSoundPlayer == nullptr)
         {
             return;
         }
 
-        auto [sid, sa] = getChannelAttributesFromVehicle(veh26);
+        auto [sid, sa] = getChannelAttributesFromVehicle(vSoundPlayer);
         auto loop = Audio::shouldSoundLoop(sid);
         auto sample = Audio::getSoundSample(sid);
         if (sample)
@@ -133,27 +133,27 @@ namespace OpenLoco::Audio
             return;
         }
 
-        if (!v->isVehicle2Or6())
+        if (!v->hasSoundPlayer())
         {
             stop();
             return;
         }
 
-        auto* veh26 = v->asVehicle2Or6();
-        if (veh26 == nullptr || ((veh26->soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none))
+        auto* vSoundPlayer = v->getSoundPlayer();
+        if (vSoundPlayer == nullptr || ((vSoundPlayer->soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none))
         {
             stop();
             return;
         }
 
-        auto [sid, sa] = getChannelAttributesFromVehicle(veh26);
+        auto [sid, sa] = getChannelAttributesFromVehicle(vSoundPlayer);
         if (_soundId != sid)
         {
             stop();
             return;
         }
 
-        veh26->soundFlags &= ~Vehicles::SoundFlags::flag0;
+        vSoundPlayer->soundFlags &= ~Vehicles::SoundFlags::flag0;
         const auto& attributes = _channel.getAttributes();
         if (attributes.volume != sa.volume)
         {
