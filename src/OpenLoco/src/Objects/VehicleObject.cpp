@@ -196,7 +196,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (hasFlags(VehicleObjectFlags::unk_09))
+        if (hasFlags(VehicleObjectFlags::anyRoadType))
         {
             if (numTrackExtras != 0)
             {
@@ -339,7 +339,7 @@ namespace OpenLoco
         remainingData = remainingData.subspan(strRes.tableLength);
 
         trackType = 0xFF;
-        if (!hasFlags(VehicleObjectFlags::unk_09) && (mode == TransportMode::rail || mode == TransportMode::road))
+        if (!hasFlags(VehicleObjectFlags::anyRoadType) && (mode == TransportMode::rail || mode == TransportMode::road))
         {
             ObjectHeader trackHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)

@@ -258,11 +258,11 @@ namespace OpenLoco
         const auto unk11360E8 = kUnk500264[roll & 0x7];
         for (auto i = 0; i < vehObject.var_04; ++i)
         {
-            if (vehObject.hasFlags(VehicleObjectFlags::flag_02) && i == 0)
+            if (vehObject.hasFlags(VehicleObjectFlags::jacobsBogieFront) && i == 0)
             {
                 continue;
             }
-            if (vehObject.hasFlags(VehicleObjectFlags::flag_03) && i + 1 == vehObject.var_04)
+            if (vehObject.hasFlags(VehicleObjectFlags::jacobsBogieRear) && i + 1 == vehObject.var_04)
             {
                 continue;
             }
