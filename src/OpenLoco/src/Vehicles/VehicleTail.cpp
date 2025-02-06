@@ -76,10 +76,10 @@ namespace OpenLoco::Vehicles
         const auto _oldRoutingHandle = routingHandle;
         const World::Pos3 _oldTilePos = World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep);
 
-        _vehicleUpdate_var_1136114 = 0;
+        _vehicleUpdate_var_1136114 = enumValue(UpdateVar1136114Flags::none);
         updateTrackMotion(*_vehicleUpdate_var_113612C);
 
-        if (*_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::noRouteFound)
+        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
             return false;
