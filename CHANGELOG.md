@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#2864] News messages are drawn incorrectly.
 - Fix: [#2866] Vehicles lengths with 0 in the tenths place being displayed incorrectly.
+- Fix: [#2876] Screen freezes when lowering scale back to 1.0.
 
 25.01 (2025-01-30)
 ------------------------------------------------------------------------
