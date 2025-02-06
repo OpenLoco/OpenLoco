@@ -938,7 +938,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* vehType2_2 = _vehicleUpdate_2;
         uint16_t targetFrequency = 0;
         uint8_t targetVolume = 0;
-        bool transmissionInGear = vehType2_2->var_5A == 1;
+        bool transmissionInGear = vehType2_2->motorState == MotorState::accelerating;
 
         if (vehType2_2->motorState == MotorState::coasting || vehType2_2->motorState == MotorState::braking)
         {
