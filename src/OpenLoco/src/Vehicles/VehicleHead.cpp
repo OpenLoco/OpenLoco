@@ -866,12 +866,12 @@ namespace OpenLoco::Vehicles
         uint16_t targetFrequency = snd->idleFrequency;
         uint8_t targetVolume = snd->idleVolume;
 
-        if (vehType2_2->var_5A == 1 && (!(soundPlayer->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0))
+        if (vehType2_2->motorState == MotorState::accelerating && (!(soundPlayer->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0))
         {
             targetFrequency = snd->accelerationBaseFreq + (vehType2_2->currentSpeed.getRaw() >> snd->speedFreqFactor);
             targetVolume = snd->acclerationVolume;
         }
-        else if (vehType2_2->var_5A == 2 && vehType2_2->currentSpeed >= 12.0_mph)
+        else if (vehType2_2->motorState == MotorState::coasting && vehType2_2->currentSpeed >= 12.0_mph)
         {
             targetFrequency = snd->coastingFrequency;
             targetVolume = snd->coastingVolume;
