@@ -141,6 +141,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y);
         static void pickupToolDown(Window& self, const int16_t x, const int16_t y);
         static void pickupToolAbort(Window& self);
+        static void paintToolDown(Window& self, const int16_t x, const int16_t y);
         static size_t getNumCars(Ui::Window* const self);
         static std::optional<Vehicles::Car> getCarFromScrollView(Window* const self, const int16_t y);
         static std::pair<uint32_t, StringId> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);
@@ -156,7 +157,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             buildNew = Common::widx::tabRoute + 1,
             pickup,
             remove,
-            carList
+            paintTool,
+            carList,
         };
 
         constexpr uint64_t enabledWidgets = (1 << widx::buildNew) | (1 << widx::pickup) | (1 << widx::remove) | (1 << widx::carList) | Common::enabledWidgets;
@@ -167,6 +169,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_new_vehicle_for),
             Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
             Widgets::ImageButton({ 240, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
+            Widgets::ImageButton({ 240, 122 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_paint_landscape_tool),
             makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
 
         );
@@ -1147,26 +1150,25 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex)
         {
-            if (widgetIndex != widx::buildNew)
+            if (widgetIndex == widx::buildNew)
             {
+                Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
+                Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
+
+                Widget* widget = &self.widgets[widx::buildNew];
+                Dropdown::showText(
+                    self.x + widget->left,
+                    self.y + widget->top,
+                    widget->width(),
+                    widget->height(),
+                    self.getColour(WindowColour::secondary),
+                    2,
+                    0);
+
+                Dropdown::setItemSelected(0);
+                Dropdown::setHighlightedItem(0);
                 return;
             }
-
-            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
-
-            Widget* widget = &self.widgets[widx::buildNew];
-            Dropdown::showText(
-                self.x + widget->left,
-                self.y + widget->top,
-                widget->width(),
-                widget->height(),
-                self.getColour(WindowColour::secondary),
-                2,
-                0);
-
-            Dropdown::setItemSelected(0);
-            Dropdown::setHighlightedItem(0);
         }
 
         // 0x004B253A
@@ -1247,31 +1249,42 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B385F
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != widx::pickup)
+            switch (widgetIndex)
             {
-                return;
+                case widx::pickup:
+                    Common::pickupToolUpdate(self, x, y);
+                    return;
+                default:
+                    return;
             }
-            Common::pickupToolUpdate(self, x, y);
         }
 
         // 0x004B386A
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != widx::pickup)
+            switch (widgetIndex)
             {
-                return;
+                case widx::pickup:
+                    Common::pickupToolDown(self, x, y);
+                    return;
+                default:
+                    return;
             }
-            Common::pickupToolDown(self, x, y);
         }
 
         // 0x004B3875
         static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
         {
-            if (widgetIndex != widx::pickup)
+            switch (widgetIndex)
             {
-                return;
+                case widx::pickup:
+                    Common::pickupToolAbort(self);
+                    return;
+                case widx::paintTool:
+                    return;
+                default:
+                    return;
             }
-            Common::pickupToolAbort(self);
         }
 
         // 0x4B38FA
@@ -1542,6 +1555,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto [pickupImage, pickupTooltip] = Common::getPickupImageIdandTooltip(*head, head->isPlaced());
             self.widgets[widx::pickup].image = Gfx::recolour(pickupImage);
             self.widgets[widx::pickup].tooltip = pickupTooltip;
+            if (true) // Config::get().paintVehiclesIndividually)
+            {
+                self.widgets[widx::paintTool].type = WidgetType::buttonWithImage;
+                self.widgets[widx::paintTool].content = ImageIds::paintbrush;
+            }
+            else
+            {
+                self.widgets[widx::paintTool].type = WidgetType::none;
+                self.widgets[widx::paintTool].content = Widget::kContentNull;
+            }
         }
 
         // 0x004B3542
