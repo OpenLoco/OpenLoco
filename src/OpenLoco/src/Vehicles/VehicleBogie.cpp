@@ -62,7 +62,7 @@ namespace OpenLoco::Vehicles
         }
 
         const auto oldPos = position;
-        _vehicleUpdate_var_1136114 = 0;
+        _vehicleUpdate_var_1136114 = enumValue(UpdateVar1136114Flags::none);
         updateTrackMotion(_vehicleUpdate_var_113612C);
 
         const auto hasMoved = oldPos != position;
@@ -82,12 +82,12 @@ namespace OpenLoco::Vehicles
 
         updateRoll();
         _vehicleUpdate_var_1136130 = stash1136130;
-        if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::noRouteFound)
+        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
         {
             sub_4AA464();
             return false;
         }
-        else if (!(_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::crashed))
+        else if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::crashed))
         {
             return true;
         }

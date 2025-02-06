@@ -116,7 +116,7 @@ namespace OpenLoco::Vehicles
         distance1 = std::min(distance1, unk2);
         var_3C += distance1 - updateRoadMotion(distance1);
 
-        if (!(_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::noRouteFound))
+        if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
         {
             return true;
         }
@@ -224,12 +224,12 @@ namespace OpenLoco::Vehicles
         const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
-        _vehicleUpdate_var_1136114 = 0;
+        _vehicleUpdate_var_1136114 = enumValue(UpdateVar1136114Flags::none);
         var_3C += distance1 - updateTrackMotion(distance1);
 
-        if (!(_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::noRouteFound))
+        if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
         {
-            if (_vehicleUpdate_var_1136114 & UpdateVar1136114Flags::approachingGradeCrossing)
+            if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::approachingGradeCrossing))
             {
                 railProduceCrossingWhistle(*train.veh2);
             }
