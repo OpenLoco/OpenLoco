@@ -510,7 +510,7 @@ namespace OpenLoco::Vehicles
                 {
                     returnValue = component.remainingDistance - 0x3689;
                     component.remainingDistance = 0x3689;
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed, true);
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00, true);
                     break;
                 }
                 else
