@@ -372,18 +372,22 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00473154
     static void assignTabPositions(Window* self)
     {
+        auto xPos = 3;
         for (auto i = 0U; i < kMainTabInfo.size(); i++)
         {
             auto widgetIndex = widx::primaryTab1 + i;
             if (shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
             {
-                self->widgets[widgetIndex].type = WidgetType::tab;
                 self->enabledWidgets |= 1ULL << widgetIndex;
+                self->widgets[widgetIndex].type = WidgetType::tab;
+                self->widgets[widgetIndex].left = xPos;
+                self->widgets[widgetIndex].right = xPos + 31;
+                xPos = self->widgets[widgetIndex].right;
             }
             else
             {
-                self->widgets[widgetIndex].type = WidgetType::none;
                 self->enabledWidgets &= ~(1ULL << widgetIndex);
+                self->widgets[widgetIndex].type = WidgetType::none;
             }
         }
     }
@@ -565,14 +569,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004733AC
     static void prepareDraw(Ui::Window& self)
     {
-        self.activatedWidgets |= (1 << widx::objectImage);
-        self.widgets[widx::closeButton].type = WidgetType::buttonWithImage;
+        self.activatedWidgets = (1 << widx::objectImage);
 
+        self.widgets[widx::closeButton].type = WidgetType::buttonWithImage;
         if (SceneManager::isEditorMode())
         {
             self.widgets[widx::closeButton].type = WidgetType::none;
         }
 
+        self.activatedWidgets |= 1ULL << (widx::primaryTab1 + self.currentTab);
         const auto& currentTab = kMainTabInfo[self.currentTab];
         const auto& subTabs = currentTab.subTabs;
         const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
