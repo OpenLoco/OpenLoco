@@ -660,7 +660,7 @@ namespace OpenLoco
         }
 
         rackRailType = 0;
-        sound.engine1.soundObjectId = 0;
+        sound.simpleMotor.soundObjectId = 0;
 
         std::fill(std::begin(startSounds), std::end(startSounds), 0);
     }

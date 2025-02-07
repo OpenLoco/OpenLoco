@@ -110,7 +110,7 @@ namespace OpenLoco::Vehicles
     struct VehicleBody;
     struct VehicleTail;
 
-    struct Vehicle2or6;
+    struct VehicleSoundPlayer;
 
     enum class BreakdownFlags : uint8_t
     {
@@ -267,15 +267,15 @@ namespace OpenLoco::Vehicles
 
             return as<VehicleBody, VehicleEntityType::body_continued>();
         }
-        bool isVehicle2Or6() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
-        Vehicle2or6* asVehicle2Or6() const
+        bool hasSoundPlayer() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
+        VehicleSoundPlayer* getSoundPlayer() const
         {
             if (is<VehicleEntityType::vehicle_2>())
             {
-                return as<Vehicle2or6, VehicleEntityType::vehicle_2>();
+                return as<VehicleSoundPlayer, VehicleEntityType::vehicle_2>();
             }
 
-            return as<Vehicle2or6, VehicleEntityType::tail>();
+            return as<VehicleSoundPlayer, VehicleEntityType::tail>();
         }
         bool isVehicleTail() const { return is<VehicleEntityType::tail>(); }
         VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
@@ -298,7 +298,7 @@ namespace OpenLoco::Vehicles
         int32_t updateTrackMotion(int32_t unk1);
     };
 
-    struct Vehicle2or6 : VehicleBase
+    struct VehicleSoundPlayer : VehicleBase
     {
         uint8_t pad_24[0x44 - 0x24];
         SoundObjectId_t drivingSoundId;       // 0x44
@@ -313,7 +313,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_5A[0x73 - 0x5A];
         uint8_t var_73;
     };
-    static_assert(sizeof(Vehicle2or6) == 0x74); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleSoundPlayer) == 0x74); // Can't use offset_of change this to last field if more found
 
     struct VehicleCargo
     {
@@ -407,11 +407,11 @@ namespace OpenLoco::Vehicles
 
     private:
         void updateDrivingSounds();
-        void updateDrivingSound(Vehicle2or6* vehType2or6);
-        void updateDrivingSoundNone(Vehicle2or6* vehType2or6);
-        void updateDrivingSoundFriction(Vehicle2or6* vehType2or6, const VehicleObjectFrictionSound* snd);
-        void updateDrivingSoundEngine1(Vehicle2or6* vehType2or6, const VehicleObjectEngine1Sound* snd);
-        void updateDrivingSoundEngine2(Vehicle2or6* vehType2or6, const VehicleObjectEngine2Sound* snd);
+        void updateDrivingSound(VehicleSoundPlayer* soundPlayer);
+        void updateDrivingSoundNone(VehicleSoundPlayer* soundPlayer);
+        void updateDrivingSoundFriction(VehicleSoundPlayer* soundPlayer, const VehicleObjectFrictionSound* snd);
+        void updateSimpleMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleSimpleMotorSound* snd);
+        void updateGearboxMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleGearboxMotorSound* snd);
         bool updateLand();
         bool sub_4A8DB7();
         bool sub_4A8F22();
