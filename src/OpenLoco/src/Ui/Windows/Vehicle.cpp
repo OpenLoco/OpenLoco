@@ -20,6 +20,7 @@
 #include "GameCommands/Vehicles/VehiclePlaceWater.h"
 #include "GameCommands/Vehicles/VehicleRearrange.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
+#include "GameCommands/Vehicles/VehicleRepaint.h"
 #include "GameCommands/Vehicles/VehicleReverse.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
 #include "GameCommands/Vehicles/VehicleSpeedControl.h"
@@ -1644,21 +1645,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     return;
                 }
-                // make this a game action
-                ColourScheme colour = getPaintToolColour(self);
-                Vehicles::Vehicle sourceTrain(veh->getHead());
-                [&train = sourceTrain, &targetEntity = *veh, &colour = colour]() {
-                    for (auto& car : train.cars)
-                    {
-                        for (auto& carComponent : car)
-                        {
-                            if (carComponent.front == &targetEntity || carComponent.back == &targetEntity || carComponent.body == &targetEntity)
-                            {
-                                carComponent.applyToComponents([colour](auto& component) { component.colourScheme = colour; component.invalidateSprite(); });
-                            }
-                        }
-                    }
-                }();
+
+                GameCommands::VehicleRepaintArgs args{};
+                args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi;
+                args.setColours(getPaintToolColour(self), args.paintFlags);
+                args.head = veh->id;
+
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
                 self.invalidate();
             }
         }

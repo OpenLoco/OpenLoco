@@ -84,6 +84,7 @@
 #include "Vehicles/VehiclePlaceWater.h"
 #include "Vehicles/VehicleRearrange.h"
 #include "Vehicles/VehicleRefit.h"
+#include "Vehicles/VehicleRepaint.h"
 #include "Vehicles/VehicleReverse.h"
 #include "Vehicles/VehicleSell.h"
 #include "Vehicles/VehicleSpeedControl.h"
@@ -121,7 +122,7 @@ namespace OpenLoco::GameCommands
     };
 
     // clang-format off
-    static constexpr GameCommandInfo kGameCommandDefinitions[84] = {
+    static constexpr GameCommandInfo kGameCommandDefinitions[85] = {
         { GameCommand::vehicleRearrange,             vehicleRearrange,          0x004AF1DF, true  },
         { GameCommand::vehiclePlace,                 vehiclePlace,              0x004B01B6, true  },
         { GameCommand::vehiclePickup,                vehiclePickup,             0x004B0826, true  },
@@ -206,6 +207,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::cheat,                        cheat,                     0,          true  },
         { GameCommand::setGameSpeed,                 setGameSpeed,              0,          true  },
         { GameCommand::vehicleOrderReverse,          vehicleOrderReverse,       0,          false },
+        { GameCommand::vehicleRepaint,               vehicleRepaint,            0,          false },
     };
     // clang-format on
 
