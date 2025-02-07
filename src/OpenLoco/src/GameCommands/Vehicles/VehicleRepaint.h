@@ -47,7 +47,7 @@ namespace OpenLoco::GameCommands
             regs.ebp = enumValue(head);
             regs.ecx = convert(colours[0]) | (convert(colours[1]) << 16);
             regs.edx = convert(colours[2]) | (convert(colours[3]) << 16);
-            regs.ax = enumValue(paintFlags);
+            regs.ax = paintFlags;
             return regs;
         }
     };
