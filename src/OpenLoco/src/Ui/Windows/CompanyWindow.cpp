@@ -628,7 +628,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->savedView.clear();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::secondary, skin->colour_0A);
+        window->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
         window->flags |= WindowFlags::resizable;
 

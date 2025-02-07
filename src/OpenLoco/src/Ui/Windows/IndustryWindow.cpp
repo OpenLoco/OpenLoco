@@ -340,8 +340,8 @@ namespace OpenLoco::Ui::Windows::Industry
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
             {
-                window->setColour(WindowColour::primary, skin->colour_0B);
-                window->setColour(WindowColour::secondary, skin->colour_0C);
+                window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+                window->setColour(WindowColour::secondary, skin->windowColour);
             }
             // 0x00456DBC end
 

@@ -71,8 +71,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, skin->colour_0B);
-        window->setColour(WindowColour::secondary, skin->colour_10);
+        window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, skin->windowOptionsColour);
 
         window->rowCount = static_cast<uint16_t>(ShortcutManager::getList().size());
         window->rowHover = -1;

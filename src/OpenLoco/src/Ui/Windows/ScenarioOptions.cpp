@@ -559,8 +559,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
             {
-                window->setColour(WindowColour::primary, skin->colour_0B);
-                window->setColour(WindowColour::secondary, skin->colour_0E);
+                window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+                window->setColour(WindowColour::secondary, skin->windowTerraFormColour);
             }
             // 0x0043EEFF end
 
