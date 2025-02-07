@@ -141,6 +141,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePlaceAir.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePlaceWater.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleRearrange.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleRepaint.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleRefit.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleReverse.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleSell.cpp"
