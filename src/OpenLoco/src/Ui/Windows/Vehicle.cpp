@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void paintToolDown(Window& self, const int16_t x, const int16_t y);
         static void paintToolAbort(Window& self);
         static constexpr bool isPaintToolActive(Window& self);
-        static constexpr ColourScheme getPaintToolColour(Window& self);
+        static ColourScheme getPaintToolColour(Window& self);
     }
 
     namespace Cargo
@@ -1683,7 +1683,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.invalidate();
         }
 
-        static constexpr ColourScheme getPaintToolColour(Window& self)
+        static ColourScheme getPaintToolColour(Window& self)
         {
             return { Gfx::getPrimaryColour(self.widgets[widx::paintColourPrimary].image), Gfx::getPrimaryColour(self.widgets[widx::paintColourSecondary].image) };
         }
