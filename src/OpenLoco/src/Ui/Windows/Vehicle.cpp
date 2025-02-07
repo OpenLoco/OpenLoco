@@ -1147,15 +1147,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 }
                 case widx::paintBrush:
-                    if (isPaintToolActive(self))
-                    {
-                        paintToolAbort(self);
-                    }
-                    else
-                    {
-                        paintToolBegin(self);
-                    }
-                    self.invalidate();
+                    paintToolBegin(self);
                     break;
             }
         }
@@ -1312,6 +1304,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 case widx::paintBrush:
                     paintToolDown(self, x, y);
+                    break;
                 default:
                     break;
             }
@@ -1692,7 +1685,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static constexpr ColourScheme getPaintToolColour(Window& self)
         {
-            return { Gfx::getPrimaryColour(self.widgets[widx::paintColourPrimary].image), Gfx::getSecondaryColour(self.widgets[widx::paintColourSecondary].image) };
+            return { Gfx::getPrimaryColour(self.widgets[widx::paintColourPrimary].image), Gfx::getPrimaryColour(self.widgets[widx::paintColourSecondary].image) };
         }
 
         // 0x004B3542
