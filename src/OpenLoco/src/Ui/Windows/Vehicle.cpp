@@ -197,6 +197,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         );
 
+        static void paintEntireTrain(Window& self);
         static void paintToolBegin(Window& self);
         static void paintToolDown(Window& self, const int16_t x, const int16_t y);
         static void paintToolAbort(Window& self);
@@ -1165,6 +1166,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 }
                 case widx::paintBrush:
+                    if (Input::hasKeyModifier(Input::KeyModifier::shift))
+                    {
+                        paintEntireTrain(self);
+                        if (isPaintToolActive(self))
+                        {
+                            break;
+                        }
+                    }
                     paintToolBegin(self);
                     break;
             }
@@ -1237,7 +1246,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 Colour selectedColour = static_cast<Colour>(Dropdown::getItemArgument(itemIndex, 2));
                 self.widgets[widgetIndex].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, selectedColour);
-                self.invalidate();
+                if (Input::hasKeyModifier(Input::KeyModifier::shift))
+                {
+                    paintEntireTrain(self);
+                }
+                else
+                {
+                    self.invalidate();
+                }
                 return;
             }
         }
@@ -1370,7 +1386,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             OpenLoco::Vehicles::Vehicle train{ *head };
-
             for (auto c : train.cars)
             {
                 if (c.front == car->front)
@@ -1662,6 +1677,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::pickup].tooltip = pickupTooltip;
         }
 
+        static void paintEntireTrain(Window& self)
+        {
+            GameCommands::VehicleRepaintArgs args{};
+            args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi | GameCommands::VehicleRepaintFlags::applyToEntireTrain;
+            args.head = EntityId(self.number);
+            args.setColours(getPaintToolColour(self), args.paintFlags);
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            self.invalidate();
+        }
+
         static void paintToolDown(Window& self, const int16_t x, const int16_t y)
         {
             auto* head = Common::getVehicle(&self);
@@ -1682,6 +1707,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 GameCommands::VehicleRepaintArgs args{};
                 args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi;
+
+                if (Input::hasKeyModifier(Input::KeyModifier::shift))
+                {
+                    args.paintFlags |= GameCommands::VehicleRepaintFlags::applyToEntireCar;
+                }
+
                 args.setColours(getPaintToolColour(self), args.paintFlags);
                 args.head = veh->id;
 
@@ -1695,35 +1726,32 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             GameCommands::VehicleRepaintArgs args{};
             args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi | GameCommands::VehicleRepaintFlags::applyToEntireCar;
-
             args.setColours(getPaintToolColour(self), args.paintFlags);
-            args.head = car.front->getHead();
+            args.head = car.front->id;
 
-            // determine which car the user has clicked on. There may be a better way to do this, I just need to find which source file the vehicle previews are drawn in.
-            auto obj = ObjectManager::get<VehicleObject>(car.front->objectId);
-
-            if (obj == nullptr)
+            if (!Input::hasKeyModifier(Input::KeyModifier::shift))
             {
-                return;
-            }
+                auto obj = ObjectManager::get<VehicleObject>(car.front->objectId);
 
-            // Look at this juicy function isPixelPresentRLE
-            // wouldn't it be tons of fun to check every sprite?
-            // The only problem is it requires a g1Element, and I don't know how to go from spriteIndex to g1Element
-
-            constexpr const uint8_t drawYaw = 40;
-
-            BodyItems items = getBodyItemsForVehicle(*obj, drawYaw, car);
-            auto cursorPosX = x - self.widgets[widx::carList].left;
-            for (BodyItem& body : items.items)
-            {
-                auto g1Elem = Gfx::getG1Element(body.image);
-                auto spriteRight = body.dist + g1Elem->xOffset + g1Elem->width;
-                if (cursorPosX <= spriteRight)
+                if (obj == nullptr)
                 {
-                    args.head = body.body;
-                    args.paintFlags &= ~GameCommands::VehicleRepaintFlags::applyToEntireCar;
-                    break;
+                    return;
+                }
+
+                constexpr const uint8_t drawYaw = 40;
+
+                BodyItems items = getBodyItemsForVehicle(*obj, drawYaw, car);
+                auto cursorPosX = x - self.widgets[widx::carList].left;
+                for (BodyItem& body : items.items)
+                {
+                    auto g1Elem = Gfx::getG1Element(body.image);
+                    auto spriteRight = body.dist + g1Elem->xOffset + g1Elem->width;
+                    if (cursorPosX <= spriteRight)
+                    {
+                        args.head = body.body;
+                        args.paintFlags ^= GameCommands::VehicleRepaintFlags::applyToEntireCar;
+                        break;
+                    }
                 }
             }
 
@@ -1951,10 +1979,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            if (isPaintToolActive(*vehicleWindow))
-            {
-                return;
-            }
             auto targetWidget = vehicleWindow->findWidgetAt(pos.x, pos.y);
             switch (targetWidget)
             {
@@ -2066,15 +2090,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto unkDist = isCarReversed ? componentObject.backBogiePosition : componentObject.frontBogiePosition;
 
                 auto carComponentLength = 0;
-                auto backBogieDist = bodyItems.totalDistance;
                 if (componentObject.bodySpriteInd != SpriteIndex::null)
                 {
                     auto& bodySprites = vehObject.bodySprites[componentObject.bodySpriteInd & ~(1U << 7)];
                     carComponentLength = bodySprites.halfLength * 2;
-                    backBogieDist += carComponentLength;
                 }
                 auto unk1136174 = isCarReversed ? componentObject.frontBogiePosition : componentObject.backBogiePosition;
-                backBogieDist -= unk1136174;
 
                 auto bodyDist = bodyItems.totalDistance + (unkDist + carComponentLength - unk1136174) / 2;
                 if (carComponent.body->objectSpriteType != SpriteIndex::null)
