@@ -219,8 +219,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // _tabObjectCounts can be integrated after implementing sub_473A95
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
 
-    // 0x0112C21C
-    static std::vector<TabPosition> _tabPositions;
     static std::vector<TabObjectEntry> _tabObjectList;
     static uint16_t _numVisibleObjectsListed;
     static bool _filterByVehicleType = false;
@@ -290,7 +288,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Tab({ 251, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
         Widgets::Tab({ 282, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
         Widgets::Tab({ 313, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 344, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Filter options
         makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
@@ -1194,13 +1192,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         auto targetTab = 0;
         auto targetSubTab = 0;
-        auto targetType = kMainTabInfo[_tabPositions[0]].objectType;
+        auto targetType = ObjectType::region;
 
-        for (auto i = 0U; i < std::size(_tabPositions); i++)
+        for (auto i = 0U; i < kMaxNumPrimaryTabs; i++)
         {
-            auto mainIndex = _tabPositions[i];
-            auto& mainTabInfo = kMainTabInfo[mainIndex];
+            if (!shouldShowPrimaryTab(i, FilterLevel(self.filterLevel)))
+            {
+                continue;
+            }
 
+            auto& mainTabInfo = kMainTabInfo[i];
             if (objectType == mainTabInfo.objectType)
             {
                 targetTab = i;
