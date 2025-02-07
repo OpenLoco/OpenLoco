@@ -78,6 +78,7 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Trigonometry.hpp>
 #include <map>
 #include <sfl/static_vector.hpp>
 #include <sstream>
@@ -1710,7 +1711,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // wouldn't it be tons of fun to check every sprite?
             // The only problem is it requires a g1Element, and I don't know how to go from spriteIndex to g1Element
 
-            BodyItems items = getBodyItemsForVehicle(*obj, 40, car);
+            constexpr const uint8_t drawYaw = 40;
+
+            BodyItems items = getBodyItemsForVehicle(*obj, drawYaw, car);
             auto cursorPosX = x - self.widgets[widx::carList].left;
             for (BodyItem& body : items.items)
             {
@@ -2042,6 +2045,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // copied and modified from VehicleDraw::getDrawItemsForVehicle
         static BodyItems getBodyItemsForVehicle(const VehicleObject& vehObject, const uint8_t yaw, const Vehicles::Car& car)
         {
+            const auto getScreenDistance = [](int32_t gameDist, uint8_t yaw) {
+                const auto unk1 = Math::Trigonometry::computeXYVector(gameDist, yaw);
+
+                const auto p1 = World::gameToScreen(World::Pos3(unk1.x, unk1.y, 0), 0);
+                // This /4 is meant to be after the compute but we need to carry it to here
+                // to keep precision high
+                return -p1.x / 4;
+            };
+
             Vehicles::Vehicle train(car.front->head);
             BodyItems bodyItems{};
             const auto isCarReversed = car.body->has38Flags(Vehicles::Flags38::isReversed);
@@ -2053,26 +2065,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // 0x01136172
                 auto unkDist = isCarReversed ? componentObject.backBogiePosition : componentObject.frontBogiePosition;
 
-                if (carComponent.front->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
-                {
-                    auto unk = yaw;
-                    if (carComponent.front->has38Flags(Vehicles::Flags38::isReversed))
-                    {
-                        unk ^= 1U << 5;
-                    }
-                    unk /= 2;
-
-                    auto& bogieSprites = vehObject.bogieSprites[carComponent.front->objectSpriteType];
-                    if (bogieSprites.hasFlags(BogieSpriteFlags::rotationalSymmetry))
-                    {
-                        unk &= 0xFU;
-                    }
-
-                    //const auto animationIndex = 0;
-                    //auto spriteIndex = bogieSprites.numFramesPerRotation * unk + animationIndex + bogieSprites.flatImageIds;
-                    // bodyItems.items.push_back(BodyItem{ ImageId(spriteIndex, carComponent.front->colourScheme), bodyItems.totalDistance + unkDist, false });
-                }
-
                 auto carComponentLength = 0;
                 auto backBogieDist = bodyItems.totalDistance;
                 if (componentObject.bodySpriteInd != SpriteIndex::null)
@@ -2083,26 +2075,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 auto unk1136174 = isCarReversed ? componentObject.frontBogiePosition : componentObject.backBogiePosition;
                 backBogieDist -= unk1136174;
-
-                if (carComponent.back->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
-                {
-                    auto unk = yaw;
-                    if (carComponent.back->has38Flags(Vehicles::Flags38::isReversed))
-                    {
-                        unk ^= 1U << 5;
-                    }
-                    unk /= 2;
-
-                    auto& bogieSprites = vehObject.bogieSprites[carComponent.back->objectSpriteType];
-                    if (bogieSprites.hasFlags(BogieSpriteFlags::rotationalSymmetry))
-                    {
-                        unk &= 0xFU;
-                    }
-
-                    //const auto animationIndex = isAnimated ? carComponent.back->animationIndex : 0;
-                    //auto spriteIndex = bogieSprites.numFramesPerRotation * unk + animationIndex + bogieSprites.flatImageIds;
-                    // bodyItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.back->colourScheme), backBogieDist, false });
-                }
 
                 auto bodyDist = bodyItems.totalDistance + (unkDist + carComponentLength - unk1136174) / 2;
                 if (carComponent.body->objectSpriteType != SpriteIndex::null)
@@ -2119,7 +2091,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     rollIndex += carComponent.body->var_47;
 
                     auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, 0);
-                    bodyItems.items.push_back(BodyItem{ spriteIndex, bodyDist, carComponent.body->id });
+                    bodyItems.items.push_back(BodyItem{ spriteIndex, getScreenDistance(bodyDist, yaw), carComponent.body->id });
                 }
                 bodyItems.totalDistance += carComponentLength;
                 if (isCarReversed)
