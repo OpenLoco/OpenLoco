@@ -70,6 +70,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
+#include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleDraw.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
@@ -166,9 +167,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         constexpr uint64_t holdableWidgets = 0;
-        static EntityId paintModeTarget = EntityId::null;
-        static Colour colourPrimary = Colour::black;
-        static Colour colourSecondary = Colour::black;
+        constexpr CursorId paintToolCursor = CursorId::handPointer;
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 177, StringIds::title_vehicle_details),
@@ -182,7 +181,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         );
 
+        static void paintToolBegin(Window& self);
+        static void paintToolUpdate(Window& self, const int16_t x, const int16_t y);
         static void paintToolDown(Window& self, const int16_t x, const int16_t y);
+        static void paintToolAbort(Window& self);
+        static constexpr bool isPaintToolActive(Window& self);
+        static constexpr ColourScheme getPaintToolColour(Window& self);
     }
 
     namespace Cargo
@@ -1144,9 +1148,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 }
                 case widx::paintBrush:
-                    paintModeTarget = enumValue(paintModeTarget) == self.number ? EntityId::null : EntityId(self.number);
-                    colourPrimary = Gfx::getPrimaryColour(self.widgets[widx::paintColourPrimary].image);
-                    colourSecondary = Gfx::getPrimaryColour(self.widgets[widx::paintColourSecondary].image);
+                    if (isPaintToolActive(self))
+                    {
+                        paintToolAbort(self);
+                    }
+                    else
+                    {
+                        paintToolBegin(self);
+                    }
                     self.invalidate();
                     break;
             }
@@ -1156,7 +1165,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void onResize(Window& self)
         {
             Common::setCaptionEnableState(&self);
-            if (true) // Config::get().paintVehiclesIndividually)
+            if (CompanyManager::getControllingId() == self.owner)
             {
                 self.setSize(kMinWindowSizeWithPaintEnabled, kMaxWindowSize);
             }
@@ -1290,6 +1299,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     Common::pickupToolUpdate(self, x, y);
                     return;
                 case widx::paintBrush:
+                    paintToolUpdate(self, x, y);
                     return;
                 default:
                     return;
@@ -1320,8 +1330,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     Common::pickupToolAbort(self);
                     return;
                 case widx::paintBrush:
-                    paintModeTarget = EntityId::null;
-                    ToolManager::toolCancel(WindowType::vehicle, self.number);
+                    paintToolAbort(self);
                     return;
                 default:
                     return;
@@ -1503,6 +1512,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return fallback;
             }
+            if (isPaintToolActive(self))
+            {
+                return paintToolCursor;
+            }
             return CursorId::openHand;
         }
 
@@ -1584,15 +1597,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::paintColourSecondary].bottom = self.height - 17;
             self.widgets[widx::paintColourSecondary].top = self.height - 33;
 
-            if (self.number == enumValue(paintModeTarget))
-            {
-                self.activatedWidgets |= (1U << widx::paintBrush);
-            }
-            else
-            {
-                self.activatedWidgets &= ~(1U << widx::paintBrush);
-            }
-
             // Differs to main tab! Unsure why.
             if (head->isPlaced())
             {
@@ -1641,25 +1645,70 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            auto a = x + y;
-            a += a;
-            /*
-            switch (head->mode)
+            auto interaction = ViewportInteraction::getItemLeft(x, y);
+            if (interaction.type == ViewportInteraction::InteractionItem::entity)
             {
-                case TransportMode::rail:
-                    pickupToolDownLand(self, *head, x, y, getVehicleRailPlacementArgsFromCursor);
-                    break;
-                case TransportMode::road:
-                    pickupToolDownLand(self, *head, x, y, getVehicleRoadPlacementArgsFromCursor);
-                    break;
-                case TransportMode::air:
-                    pickupToolDownAir(self, *head, x, y);
-                    break;
-                case TransportMode::water:
-                    pickupToolDownWater(self, *head, x, y);
-                    break;
+                auto _entity = reinterpret_cast<EntityBase*>(interaction.object);
+                auto veh = _entity->asBase<Vehicles::VehicleBase>();
+
+                if (veh->getHead() != EntityId(self.number))
+                {
+                    return;
+                }
+                // make this a game action
+                ColourScheme colour = getPaintToolColour(self);
+                Vehicles::Vehicle sourceTrain(veh->getHead());
+                [&train = sourceTrain, &targetEntity = *veh, &colour = colour]() {
+                    for (auto& car : train.cars)
+                    {
+                        for (auto& carComponent : car)
+                        {
+                            if (carComponent.front == &targetEntity || carComponent.back == &targetEntity || carComponent.body == &targetEntity)
+                            {
+                                carComponent.applyToComponents([colour](auto& component) { component.colourScheme = colour; component.invalidateSprite(); });
+                            }
+                        }
+                    }
+                }();
+                self.invalidate();
             }
-            */
+        }
+
+        static void paintToolUpdate(Window& self, const int16_t x, const int16_t y)
+        {
+            auto* head = Common::getVehicle(&self);
+            if (head == nullptr)
+            {
+                return;
+            }
+            // Change this to a game action
+            auto a = x + y;
+            a++;
+        }
+
+        static constexpr bool isPaintToolActive(Window& self)
+        {
+            return self.activatedWidgets & (1U << widx::paintBrush);
+        }
+
+        static void paintToolBegin(Window& self)
+        {
+            bool active = ToolManager::toolSet(&self, widx::paintBrush, paintToolCursor);
+            self.activatedWidgets &= ~(1U << widx::paintBrush);
+            self.activatedWidgets |= (1U << widx::paintBrush) * active;
+            self.invalidate();
+        }
+
+        static void paintToolAbort(Window& self)
+        {
+            ToolManager::toolCancel(self.type, self.number);
+            self.activatedWidgets &= ~(1U << widx::paintBrush);
+            self.invalidate();
+        }
+
+        static constexpr ColourScheme getPaintToolColour(Window& self)
+        {
+            return { Gfx::getPrimaryColour(self.widgets[widx::paintColourPrimary].image), Gfx::getSecondaryColour(self.widgets[widx::paintColourSecondary].image) };
         }
 
         // 0x004B3542
@@ -1680,7 +1729,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
             }
             bool paintIsEnabled = CompanyManager::getControllingId() == CompanyId(self.owner);
-            uint16_t textRightEdge = paintIsEnabled ? self.width - 32 : self.width;
+            uint16_t textRightEdge = paintIsEnabled ? self.width - 39 : self.width;
 
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -1858,7 +1907,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-
+            if (isPaintToolActive(*vehicleWindow))
+            {
+                return;
+            }
             auto targetWidget = vehicleWindow->findWidgetAt(pos.x, pos.y);
             switch (targetWidget)
             {
@@ -4706,7 +4758,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (widgetIndex == Common::tabDetails)
             {
                 auto company = CompanyManager::get(self->owner);
-                auto colour = CompanyManager::getCompanyColour(self->owner);
                 self->widgets[Details::widx::paintColourPrimary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
                 self->widgets[Details::widx::paintColourSecondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
             }
