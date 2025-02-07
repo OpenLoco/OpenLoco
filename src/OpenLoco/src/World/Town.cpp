@@ -806,10 +806,13 @@ namespace OpenLoco
         else
         {
             const auto diff = el.baseZ() - baseZ;
-            if (diff > 0)
+            if (diff <= 0)
             {
-                minZDiff = std::min<uint8_t>(minZDiff, diff);
+                return World::TileClearance::ClearFuncResult::collision;
             }
+
+            minZDiff = std::min<uint8_t>(minZDiff, diff);
+
             return World::TileClearance::ClearFuncResult::noCollision;
         }
     }
