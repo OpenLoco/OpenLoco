@@ -51,6 +51,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/Window.h"
@@ -307,7 +308,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
-        makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::ScrollView({ 4, 85 }, { 288, 300 }, WindowColour::secondary, Scrollbars::vertical),
         Widgets::ImageButton({ 391, 45 }, { 114, 114 }, WindowColour::secondary)
 
     );

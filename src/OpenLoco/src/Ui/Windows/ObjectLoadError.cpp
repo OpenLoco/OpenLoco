@@ -14,6 +14,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include <fmt/format.h>
@@ -46,7 +47,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         Widgets::TableHeader({ 4, 43 }, { 100, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectId),
         Widgets::TableHeader({ 104, 43 }, { 152, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectType),
         Widgets::TableHeader({ 256, 43 }, { 100, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
-        makeWidget({ 4, 57 }, { 352, 176 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::ScrollView({ 4, 57 }, { 352, 176 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
 

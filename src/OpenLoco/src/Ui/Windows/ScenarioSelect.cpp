@@ -20,6 +20,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
@@ -57,7 +58,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         Widgets::Tab({ 185, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
         Widgets::Tab({ 276, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
         Widgets::Tab({ 367, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::ScrollView({ 3, 52 }, { 431, 356 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
 

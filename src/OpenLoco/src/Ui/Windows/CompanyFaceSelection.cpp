@@ -21,6 +21,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -57,7 +58,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         Widgets::Caption({ 1, 1 }, { 398, 13 }, CaptionVariant::colourText, WindowColour::primary, StringIds::company_face_selection_title),
         Widgets::ImageButton({ 385, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 400, 257 }, WindowColour::secondary),
-        makeWidget({ 4, 19 }, { 188, 248 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
+        Widgets::ScrollView({ 4, 19 }, { 188, 248 }, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
         makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_6, WindowColour::secondary)
 
     );

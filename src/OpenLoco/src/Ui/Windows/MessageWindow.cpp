@@ -27,6 +27,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -79,7 +80,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 217, StringIds::title_messages),
-            makeWidget({ 3, 45 }, { 360, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 3, 45 }, { 360, 146 }, WindowColour::secondary, Scrollbars::vertical)
 
         );
 

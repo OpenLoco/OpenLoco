@@ -24,6 +24,7 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
@@ -346,7 +347,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(223, 136),
-            makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
+            Widgets::ScrollView({ 3, 44 }, { 217, 80 }, WindowColour::secondary, 2),
             Widgets::Label({ 3, 125 }, { 195, 10 }, WindowColour::secondary, ContentAlign::Center),
             Widgets::ImageButton({ 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment)
 
@@ -627,7 +628,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(249, 136),
-            makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
+            Widgets::ScrollView({ 3, 44 }, { 244, 80 }, WindowColour::secondary, 2),
             Widgets::Label({ 3, 125 }, { 221, 11 }, WindowColour::secondary, ContentAlign::Center)
 
         );
