@@ -18,6 +18,7 @@ namespace OpenLoco::GameCommands
         constexpr uint8_t backBogieColour = (1U << 2);
         constexpr uint8_t applyToEntireCar = (1U << 3);
         constexpr uint8_t applyToEntireTrain = (1U << 4);
+        constexpr uint8_t paintFromVehicleUi = bodyColour | frontBogieColour | backBogieColour;
     };
 
     struct VehicleRepaintArgs
@@ -30,6 +31,22 @@ namespace OpenLoco::GameCommands
             , colours{ ColourScheme(regs.cx), ColourScheme(regs.ecx >> 16), ColourScheme(regs.dx), ColourScheme(regs.edx >> 16) }
             , paintFlags(regs.bl)
         {
+        }
+
+        void setColours(ColourScheme colour, uint8_t flags)
+        {
+            if (flags & VehicleRepaintFlags::bodyColour)
+            {
+                colours[kBodyColour] = colour;
+            }
+            if (flags & VehicleRepaintFlags::frontBogieColour)
+            {
+                colours[kFrontBogieColour] = colour;
+            }
+            if (flags & VehicleRepaintFlags::backBogieColour)
+            {
+                colours[kBackBogieColour] = colour;
+            }
         }
 
         EntityId head;

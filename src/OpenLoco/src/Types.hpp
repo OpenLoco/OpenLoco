@@ -59,7 +59,7 @@ namespace OpenLoco
         }
         ColourScheme(uint16_t val)
             : primary(Colour(val & 0x1F))
-            , secondary(Colour((val >> 5) & 0x1F))
+            , secondary(Colour((val >> 8) & 0x1F))
         {
         }
 
