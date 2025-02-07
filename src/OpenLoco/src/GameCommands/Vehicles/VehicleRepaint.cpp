@@ -31,7 +31,7 @@ namespace OpenLoco::GameCommands
 
     static void PaintEntireCar(Vehicles::Car& car, QuadraColour colours, uint8_t paintFlags)
     {
-        for (Vehicles::CarComponent component : car)
+        for (Vehicles::CarComponent& component : car)
         {
             PaintComponent(component, colours, paintFlags);
         }
