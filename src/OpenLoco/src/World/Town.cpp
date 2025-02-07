@@ -262,6 +262,63 @@ namespace OpenLoco
      */
     void Town::grow(int32_t growFlags)
     {
+        // growFlags : 0x01135C40
+
+        const auto oldUpatingCompany = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral);
+
+        const auto extent = findRoadExtent();
+        if (!extent.has_value())
+        {
+            if (growFlags & 0x01)
+            {
+                buildInitialRoad();
+            }
+            GameCommands::setUpdatingCompanyId(oldUpatingCompany);
+            return;
+        }
+
+        auto roadStart = extent->roadStart;
+        Vehicles::TrackAndDirection::_RoadAndDirection tad(0, 0);
+        tad._data = extent->tad;
+        if (prng.randBool())
+        {
+            auto& roadSize = World::TrackData::getUnkRoad(tad._data);
+            roadStart += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                roadStart -= World::Pos3{ _503C6C[roadSize.rotationEnd], 0 };
+            }
+            tad.setReversed(!tad.isReversed());
+        }
+
+        const auto idealRoadId = getIdealTownRoadId(*this);
+        if (!idealRoadId.has_value())
+        {
+            GameCommands::setUpdatingCompanyId(oldUpatingCompany);
+            return;
+        }
+
+        for (auto i = 0U; i < 75; ++i)
+        {
+            auto res = TownManager::getClosestTownAndDensity(roadStart);
+            if (!res.has_value() || res->first != id())
+            {
+                break;
+            }
+            const auto nextRoadRes = sub_47AC3E(roadStart, tad);
+            if (nextRoadRes.owner != CompanyId::neutral)
+            {
+                // 0x004982D7
+            }
+            else
+            {
+                // 0x0049821D
+            }
+        }
+
+        GameCommands::setUpdatingCompanyId(oldUpatingCompany);
+        return;
         registers regs;
         regs.eax = growFlags;
         regs.esi = X86Pointer(this);
