@@ -74,12 +74,15 @@ namespace OpenLoco::GameCommands
                     {
                         if (carComponent.front == &targetEntity || carComponent.back == &targetEntity || carComponent.body == &targetEntity)
                         {
-                            if (paintFlags && VehicleRepaintFlags::applyToEntireCar)
+                            if (paintFlags & VehicleRepaintFlags::applyToEntireCar)
                             {
                                 PaintEntireCar(car, colours, paintFlags);
-                                break;
                             }
-                            PaintComponent(carComponent, colours, paintFlags);
+                            else
+                            {
+                                PaintComponent(carComponent, colours, paintFlags);
+                            }
+                            return;
                         }
                     }
                 }
