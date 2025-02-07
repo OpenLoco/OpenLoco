@@ -1001,7 +1001,7 @@ namespace OpenLoco
     {
         auto* newRoadObj = ObjectManager::get<RoadObject>(newRoadObjId);
         const auto roadPiecesFlags = World::TrackData::getRoadMiscData(tad.id()).compatibleFlags;
-        if ((roadPiecesFlags & newRoadObj->roadPieces) != newRoadObj->roadPieces)
+        if ((roadPiecesFlags & newRoadObj->roadPieces) != roadPiecesFlags)
         {
             return;
         }
@@ -1229,55 +1229,55 @@ namespace OpenLoco
                 regs.ebp = height;
                 return 0;
             });
-        // registerHook(
-        //     0x0042CF7C,
-        //     [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //         registers backup = regs;
-        //         const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
-        //         const auto rotation = regs.bl;
-        //         const auto isLarge = regs.bh & (1U << 0);
-        //         const auto buildImmediate = regs.bh & (1U << 1);
-        //         const auto targetHeight = regs.ebp;
-        //         const auto args = generateNewBuildingArgs(pos, targetHeight, rotation, isLarge, buildImmediate);
-        //         regs = backup;
-        //         if (args.has_value())
-        //         {
-        //             const registers argRegs = static_cast<registers>(args.value());
-        //             regs.ax = argRegs.ax;
-        //             regs.cx = argRegs.cx;
-        //             regs.edi = argRegs.edi;
-        //             regs.dl = argRegs.dl;
-        //             regs.dh = argRegs.dh;
-        //             regs.bh = argRegs.bh;
-        //         }
-        //         return args.has_value() ? 0 : X86_FLAG_CARRY;
-        //     });
-        // registerHook(0x00498CB7, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //     registers backup = regs;
-        //     const auto found = hasNearbyBuildings(World::toTileSpace(World::Pos2(regs.ax, regs.cx)));
-        //     regs = backup;
-        //     return found ? X86_FLAG_CARRY : 0;
-        // });
-        // registerHook(0x0047AD83, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //     registers backup = regs;
-        //     const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
-        //     auto tad = Vehicles::TrackAndDirection::_RoadAndDirection(0, 0);
-        //     tad._data = regs.ebp;
-        //     const auto newRoadObjId = regs.bh;
-        //     const auto newOwner = static_cast<CompanyId>(regs.bl);
-        //     const auto newStreetLightStyle = (regs.ebx >> 16) & 0xFF;
-        //     updateAndTakeoverRoad(pos, tad, newRoadObjId, newOwner, newStreetLightStyle);
-        //     regs = backup;
-        //     return 0;
-        // });
-        // registerHook(0x00498C6B, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //     registers backup = regs;
-        //     const auto roadObjId = regs.bh;
-        //     const auto townDensity = *loco_global<uint8_t, 0x01135C5F>();
-        //     const auto style = getStreetLightStyle(roadObjId, townDensity);
-        //     regs = backup;
-        //     regs.edi = style;
-        //     return 0;
-        // });
+        registerHook(
+            0x0042CF7C,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const auto rotation = regs.bl;
+                const auto isLarge = regs.bh & (1U << 0);
+                const auto buildImmediate = regs.bh & (1U << 1);
+                const auto targetHeight = regs.ebp;
+                const auto args = generateNewBuildingArgs(pos, targetHeight, rotation, isLarge, buildImmediate);
+                regs = backup;
+                if (args.has_value())
+                {
+                    const registers argRegs = static_cast<registers>(args.value());
+                    regs.ax = argRegs.ax;
+                    regs.cx = argRegs.cx;
+                    regs.edi = argRegs.edi;
+                    regs.dl = argRegs.dl;
+                    regs.dh = argRegs.dh;
+                    regs.bh = argRegs.bh;
+                }
+                return args.has_value() ? 0 : X86_FLAG_CARRY;
+            });
+        registerHook(0x00498CB7, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            const auto found = hasNearbyBuildings(World::toTileSpace(World::Pos2(regs.ax, regs.cx)));
+            regs = backup;
+            return found ? X86_FLAG_CARRY : 0;
+        });
+        registerHook(0x0047AD83, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+            auto tad = Vehicles::TrackAndDirection::_RoadAndDirection(0, 0);
+            tad._data = regs.ebp;
+            const auto newRoadObjId = regs.bh;
+            const auto newOwner = static_cast<CompanyId>(regs.bl);
+            const auto newStreetLightStyle = (regs.ebx >> 16) & 0xFF;
+            updateAndTakeoverRoad(pos, tad, newRoadObjId, newOwner, newStreetLightStyle);
+            regs = backup;
+            return 0;
+        });
+        registerHook(0x00498C6B, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            const auto roadObjId = regs.bh;
+            const auto townDensity = *loco_global<uint8_t, 0x01135C5F>();
+            const auto style = getStreetLightStyle(roadObjId, townDensity);
+            regs = backup;
+            regs.edi = style;
+            return 0;
+        });
     }
 }
