@@ -37,7 +37,6 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    // 0x004B0B50
     static uint32_t vehicleRepaint(EntityId headId, const QuadraColour colours, const uint8_t paintFlags, const uint8_t flags)
     {
 
