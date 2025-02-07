@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Details
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 192, 148 };
+        static constexpr Ui::Size32 kMinWindowSize = { 192, 166 };
         static constexpr Ui::Size32 kMinWindowSizeWithPaintEnabled = { 192, 182 };
         static constexpr Ui::Size32 kMaxWindowSize = { 400, 440 };
 
@@ -1562,7 +1562,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
 
             self.widgets[widx::carList].right = self.width - 26;
-            self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight3Lines;
+            self.widgets[widx::carList].bottom = self.height - getVehicleDetailsHeight(head->getTransportMode());
             alignToRightBar(self, widx::buildNew);
             alignToRightBar(self, widx::pickup);
             alignToRightBar(self, widx::remove);
@@ -1574,18 +1574,30 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self.widgets[widx::paintBrush].hidden = false;
             self.widgets[widx::paintBrush].content = ImageIds::paintbrush;
+
+            self.widgets[widx::paintBrush].bottom = self.height - kVehicleDetailsTextHeight3Lines;
+            self.widgets[widx::paintBrush].top = self.height - kVehicleDetailsTextHeight3Lines - 24;
+
             self.widgets[widx::paintColourPrimary].hidden = false;
             self.widgets[widx::paintColourSecondary].hidden = false;
 
-            self.widgets[widx::paintColourPrimary].right = self.width - 23;
-            self.widgets[widx::paintColourPrimary].left = self.width - 39;
-            self.widgets[widx::paintColourPrimary].bottom = self.height - 17;
-            self.widgets[widx::paintColourPrimary].top = self.height - 33;
+            if (isPaintToolActive(self))
+            {
+                self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight3Lines;
 
-            self.widgets[widx::paintColourSecondary].right = self.width - 5;
-            self.widgets[widx::paintColourSecondary].left = self.width - 21;
-            self.widgets[widx::paintColourSecondary].bottom = self.height - 17;
-            self.widgets[widx::paintColourSecondary].top = self.height - 33;
+                self.widgets[widx::paintColourPrimary].type = WidgetType::buttonWithColour;
+                self.widgets[widx::paintColourSecondary].type = WidgetType::buttonWithColour;
+
+                self.widgets[widx::paintColourPrimary].right = self.width - 23;
+                self.widgets[widx::paintColourPrimary].left = self.width - 39;
+                self.widgets[widx::paintColourPrimary].bottom = self.height - 17;
+                self.widgets[widx::paintColourPrimary].top = self.height - 33;
+
+                self.widgets[widx::paintColourSecondary].right = self.width - 5;
+                self.widgets[widx::paintColourSecondary].left = self.width - 21;
+                self.widgets[widx::paintColourSecondary].bottom = self.height - 17;
+                self.widgets[widx::paintColourSecondary].top = self.height - 33;
+            }
 
             // Differs to main tab! Unsure why.
             if (head->isPlaced())
@@ -1594,14 +1606,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             if (head->owner != CompanyManager::getControllingId())
             {
+                self.widgets[widx::carList].bottom = self.height - getVehicleDetailsHeight(head->getTransportMode());
+                self.widgets[Details::widx::paintColourPrimary].hidden = true;
+                self.widgets[Details::widx::paintColourSecondary].hidden = true;
 
                 self.widgets[widx::buildNew].hidden = true;
                 self.widgets[widx::pickup].hidden = true;
                 self.widgets[widx::remove].hidden = true;
-
-                self.widgets[widx::carList].bottom = self.height - getVehicleDetailsHeight(head->getTransportMode());
-                self.widgets[Details::widx::paintColourPrimary].hidden = true;
-                self.widgets[Details::widx::paintColourSecondary].hidden = true;
 
                 self.widgets[widx::carList].right = self.width - 4;
                 self.widgets[widx::paintBrush].hidden = true;
@@ -1698,8 +1709,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     drawingCtx.drawImage(self.widgets[widx::pickup].left + self.x, self.widgets[widx::pickup].top + self.y, image);
                 }
             }
-            bool paintIsEnabled = CompanyManager::getControllingId() == CompanyId(self.owner);
-            uint16_t textRightEdge = paintIsEnabled ? self.width - 39 : self.width;
+            uint16_t textRightEdge = isPaintToolActive(self) ? self.width - 39 : self.width;
 
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
