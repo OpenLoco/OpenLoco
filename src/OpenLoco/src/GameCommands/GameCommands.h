@@ -121,7 +121,7 @@ namespace OpenLoco::GameCommands
         cheat = 81,
         setGameSpeed = 82,
         vehicleOrderReverse = 83,
-        vehiclePaint = 84,
+        vehicleRepaint = 84,
     };
 
     constexpr uint32_t FAILURE = 0x80000000;

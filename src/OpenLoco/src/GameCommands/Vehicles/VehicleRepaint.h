@@ -3,9 +3,6 @@
 #include "GameCommands/GameCommands.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 
-struct ColourScheme;
-using Colour = uint8_t;
-
 namespace OpenLoco::GameCommands
 {
     using QuadraColour = std::array<ColourScheme, 4>;
@@ -25,7 +22,7 @@ namespace OpenLoco::GameCommands
 
     struct VehicleRepaintArgs
     {
-        static constexpr auto command = GameCommand::vehiclePaint;
+        static constexpr auto command = GameCommand::vehicleRepaint;
 
         VehicleRepaintArgs() = default;
         explicit VehicleRepaintArgs(const registers& regs)
@@ -39,12 +36,17 @@ namespace OpenLoco::GameCommands
         QuadraColour colours;
         uint8_t paintFlags;
 
+        constexpr uint16_t convert(ColourScheme colour) const
+        {
+            return enumValue(colour.primary) | (enumValue(colour.secondary) << 8);
+        }
+
         explicit operator registers() const
         {
             registers regs;
             regs.ebp = enumValue(head);
-            regs.ecx = enumValue(colours[0]) | (enumValue(colours[1]) << 8);
-            regs.edx = enumValue(colours[2]) | (enumValue(colours[3]) << 8);
+            regs.ecx = convert(colours[0]) | (convert(colours[1]) << 16);
+            regs.edx = convert(colours[2]) | (convert(colours[3]) << 16);
             regs.ax = enumValue(paintFlags);
             return regs;
         }

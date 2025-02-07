@@ -95,6 +95,6 @@ namespace OpenLoco::GameCommands
 
     void vehicleRepaint(registers& regs)
     {
-        regs.ebx = vehicleRepaint(EntityId(regs.ebp), { regs.cx, regs.ecx >> 8, regs.dx, regs.edx >> 8 }, regs.ax, regs.bl);
+        regs.ebx = vehicleRepaint(EntityId(regs.ebp), { (regs.cx), (regs.ecx >> 8), (regs.dx), (regs.edx >> 8) }, regs.ax, regs.bl);
     }
 }

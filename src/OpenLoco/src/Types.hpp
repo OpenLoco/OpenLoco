@@ -51,9 +51,6 @@ namespace OpenLoco
 
     struct ColourScheme
     {
-        Colour primary;
-        Colour secondary;
-
         ColourScheme() = default;
         ColourScheme(Colour primary, Colour secondary)
             : primary(primary)
@@ -65,6 +62,9 @@ namespace OpenLoco
             , secondary(Colour((val >> 5) & 0x1F))
         {
         }
+
+        Colour primary;
+        Colour secondary;
     };
 
     constexpr uint8_t vehicleTypeCount = 6;
