@@ -154,11 +154,6 @@ namespace OpenLoco::Gfx
         return static_cast<Colour>((image >> 24) & 0x1F);
     }
 
-    constexpr ColourScheme getColourScheme(uint32_t image)
-    {
-        return { getPrimaryColour(image), getSecondaryColour(image) };
-    }
-
     // Invalidates the entire screen.
     void invalidateScreen();
 

@@ -81,7 +81,7 @@ namespace OpenLoco::Vehicles
         none = 0U,
         flag0 = 1U << 0,
         flag1 = 1U << 1,
-    };a
+    };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SoundFlags);
 
     enum class Status : uint8_t
