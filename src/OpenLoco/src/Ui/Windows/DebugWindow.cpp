@@ -46,6 +46,7 @@ namespace OpenLoco::Ui::Windows::Debug
             tab_1,
             tab_2,
             tab_3,
+            tab_4,
         };
     }
 
@@ -67,7 +68,9 @@ namespace OpenLoco::Ui::Windows::Debug
 
         Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
         Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
-        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
+        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company),
+
+        makeWidget({ kMargin + ((kTabWidth + kMargin) * 3), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes)
 
     );
 
@@ -87,7 +90,7 @@ namespace OpenLoco::Ui::Windows::Debug
 
         window->setWidgets(_widgets);
         window->enabledWidgets = ~0ULL;
-        window->disabledWidgets = 1U << widx::tab_3;
+        // window->disabledWidgets = 1U << widx::tab_3;
         window->initScrollWidgets();
 
         const auto interface = ObjectManager::get<InterfaceSkinObject>();
