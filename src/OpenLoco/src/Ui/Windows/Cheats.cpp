@@ -24,6 +24,7 @@
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
@@ -187,7 +188,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::financial_cheats),
             // money
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_increase_funds),
-            makeStepperWidgets({ 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::stepperWidgets({ 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
             Widgets::Button({ 180, 62 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_add),
             // loan
             Widgets::GroupBox({ 4, 86 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_clear_loan),
@@ -195,9 +196,9 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::Button({ 180, 100 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_clear),
             // date/time
             Widgets::GroupBox({ 4, 124 }, { kWindowSize.width - 8, 80 }, WindowColour::secondary, StringIds::cheat_date_change_apply),
-            makeStepperWidgets({ 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::stepperWidgets({ 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::stepperWidgets({ 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::stepperWidgets({ 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
             Widgets::Button({ 10, 186 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_date_change_apply)
 
         );

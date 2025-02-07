@@ -180,26 +180,6 @@ namespace OpenLoco::Ui
         return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::dropdown, tooltip);
     }
 
-    constexpr Widget makeStepperDecreaseWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
-    {
-        const int16_t xPos = origin.x + size.width - 26;
-        const int16_t yPos = origin.y + 1;
-        const uint16_t width = 13;
-        const uint16_t height = size.height - 2;
-
-        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::stepper_minus, tooltip);
-    }
-
-    constexpr Widget makeStepperIncreaseWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
-    {
-        const int16_t xPos = origin.x + size.width - 13;
-        const int16_t yPos = origin.y + 1;
-        const uint16_t width = 12;
-        const uint16_t height = size.height - 2;
-
-        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::stepper_plus, tooltip);
-    }
-
     namespace Detail
     {
         template<typename T, typename Enable = void>
@@ -262,15 +242,6 @@ namespace OpenLoco::Ui
         ((append(args)), ...);
 
         return res;
-    }
-
-    constexpr auto makeStepperWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-    {
-        // TODO: Make this a single widget.
-        return makeWidgets(
-            makeWidget(origin, size, WidgetType::textbox, colour, content, tooltip),
-            makeStepperDecreaseWidget(origin, size, colour),
-            makeStepperIncreaseWidget(origin, size, colour));
     }
 
     constexpr auto makeDropdownWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)

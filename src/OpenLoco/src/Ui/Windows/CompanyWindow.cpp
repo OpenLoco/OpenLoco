@@ -41,6 +41,7 @@
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
@@ -1736,7 +1737,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(636, 319, StringIds::title_company_finances),
             Widgets::ScrollView({ 133, 45 }, { 499, 215 }, WindowColour::secondary, Scrollbars::horizontal),
-            makeStepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
+            Widgets::stepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
             Widgets::Checkbox({ 320, 264 }, { 204, 12 }, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
 
         );

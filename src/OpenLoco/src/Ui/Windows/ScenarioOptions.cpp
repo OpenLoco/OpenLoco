@@ -25,6 +25,7 @@
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -195,12 +196,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(197, StringIds::title_scenario_challenge),
             makeDropdownWidgets({ 10, 52 }, { 346, 12 }, WindowColour::secondary),
-            makeStepperWidgets({ 10, 67 }, { 163, 12 }, WindowColour::secondary),
+            Widgets::stepperWidgets({ 10, 67 }, { 163, 12 }, WindowColour::secondary),
             makeDropdownWidgets({ 193, 67 }, { 163, 12 }, WindowColour::secondary),
             Widgets::Checkbox({ 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_the_top_company),
             Widgets::Checkbox({ 10, 98 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_within_the_top_companies),
             Widgets::Checkbox({ 10, 113 }, { 346, 12 }, WindowColour::secondary, StringIds::with_a_time_limit),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::time_limit_years_value)
+            Widgets::stepperWidgets({ 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::time_limit_years_value)
 
         );
 
@@ -619,8 +620,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(327, StringIds::title_company_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::max_competing_companies_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
+            Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::max_competing_companies_value),
+            Widgets::stepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
             Widgets::GroupBox({ 5, 102 - 14 - 5 }, { 356, 63 }, WindowColour::secondary, StringIds::selection_of_competing_companies),
             makeDropdownWidgets({ 246, 102 - 4 }, { 110, 12 }, WindowColour::secondary),
             makeDropdownWidgets({ 246, 117 - 4 }, { 110, 12 }, WindowColour::secondary),
@@ -901,9 +902,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_financial_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::starting_loan_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::max_loan_size_value),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::loan_interest_rate_value)
+            Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::starting_loan_value),
+            Widgets::stepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::max_loan_size_value),
+            Widgets::stepperWidgets({ 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::loan_interest_rate_value)
 
         );
 

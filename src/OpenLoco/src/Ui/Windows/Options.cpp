@@ -35,6 +35,7 @@
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/SliderWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -289,7 +290,7 @@ namespace OpenLoco::Ui::Windows::Options
             makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
 
             Widgets::Label({ 10, 95 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::window_scale_factor),
-            makeStepperWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::scale_formatted),
+            Widgets::stepperWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::scale_formatted),
 
             Widgets::Checkbox({ 10, 111 }, { 174, 12 }, WindowColour::secondary, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
             Widgets::Checkbox({ 10, 127 }, { 174, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
@@ -2456,7 +2457,7 @@ namespace OpenLoco::Ui::Windows::Options
             makeDropdownWidgets({ 250, 211 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
 
             Widgets::Label({ 10, 226 }, { 200, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::autosave_amount),
-            makeStepperWidgets({ 250, 226 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::stepperWidgets({ 250, 226 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
 
             Widgets::Checkbox({ 10, 241 }, { 400, 12 }, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip)
 

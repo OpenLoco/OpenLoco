@@ -42,6 +42,7 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -87,8 +88,8 @@ namespace OpenLoco::Ui::Windows::TileInspector
         Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::tile_inspector),
         Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
-        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WindowColour::secondary),
-        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WindowColour::secondary),
+        Widgets::stepperWidgets({ 19, 24 }, { 55, 12 }, WindowColour::secondary),
+        Widgets::stepperWidgets({ 92, 24 }, { 55, 12 }, WindowColour::secondary),
         Widgets::ImageButton({ kWindowSize.width - 26, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
         Widgets::TableHeader({ 4, 46 }, { kWindowSize.width - 98, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderNameType, StringIds::tileInspectorHeaderNameTypeTip), // name
         Widgets::TableHeader({ kWindowSize.width - 109, 46 }, { 30, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderBaseHeight, StringIds::tileInspectorHeaderBaseHeightTip),
