@@ -180,7 +180,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical));
 
         static void paintToolBegin(Window& self);
-        static void paintToolUpdate(Window& self, const int16_t x, const int16_t y);
         static void paintToolDown(Window& self, const int16_t x, const int16_t y);
         static void paintToolAbort(Window& self);
         static constexpr bool isPaintToolActive(Window& self);
@@ -1300,12 +1299,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case widx::pickup:
                     Common::pickupToolUpdate(self, x, y);
-                    return;
-                case widx::paintBrush:
-                    paintToolUpdate(self, x, y);
-                    return;
+                    break;
                 default:
-                    return;
+                    break;
             }
         }
 
@@ -1316,11 +1312,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case widx::pickup:
                     Common::pickupToolDown(self, x, y);
-                    return;
+                    break;
                 case widx::paintBrush:
                     paintToolDown(self, x, y);
                 default:
-                    return;
+                    break;
             }
         }
 
@@ -1331,12 +1327,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case widx::pickup:
                     Common::pickupToolAbort(self);
-                    return;
+                    break;
                 case widx::paintBrush:
                     paintToolAbort(self);
-                    return;
+                    break;
                 default:
-                    return;
+                    break;
             }
         }
 
@@ -1672,18 +1668,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }();
                 self.invalidate();
             }
-        }
-
-        static void paintToolUpdate(Window& self, const int16_t x, const int16_t y)
-        {
-            auto* head = Common::getVehicle(&self);
-            if (head == nullptr)
-            {
-                return;
-            }
-            // Change this to a game action
-            auto a = x + y;
-            a++;
         }
 
         static constexpr bool isPaintToolActive(Window& self)
