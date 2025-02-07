@@ -79,6 +79,7 @@
 #include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <map>
+#include <sfl/static_vector.hpp>
 #include <sstream>
 
 using namespace OpenLoco::Interop;
@@ -167,6 +168,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             carList,
         };
 
+        struct BodyItem
+        {
+            uint32_t image;
+            int32_t dist;
+            EntityId body;
+        };
+
+        struct BodyItems
+        {
+            sfl::static_vector<BodyItem, VehicleObject::kMaxBodySprites * (2 + 1)> items;
+            int32_t totalDistance;
+        };
+
         constexpr uint64_t holdableWidgets = 0;
         constexpr CursorId paintToolCursor = CursorId::handPointer;
 
@@ -185,8 +199,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void paintToolBegin(Window& self);
         static void paintToolDown(Window& self, const int16_t x, const int16_t y);
         static void paintToolAbort(Window& self);
+        static void paintToolDownScroll(Window& self, Vehicles::Car car, const int16_t x);
         static constexpr bool isPaintToolActive(Window& self);
         static ColourScheme getPaintToolColour(Window& self);
+        static BodyItems getBodyItemsForVehicle(const VehicleObject& vehObject, const uint8_t yaw, const Vehicles::Car& car);
     }
 
     namespace Cargo
@@ -1353,10 +1369,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             OpenLoco::Vehicles::Vehicle train{ *head };
+
             for (auto c : train.cars)
             {
                 if (c.front == car->front)
                 {
+                    if (isPaintToolActive(self))
+                    {
+                        paintToolDownScroll(self, c, x);
+                        return;
+                    }
                     DragVehiclePart::open(c);
                     break;
                 }
@@ -1665,6 +1687,45 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 self.invalidate();
             }
+        }
+
+        static void paintToolDownScroll(Window& self, Vehicles::Car car, const int16_t x)
+        {
+
+            GameCommands::VehicleRepaintArgs args{};
+            args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi | GameCommands::VehicleRepaintFlags::applyToEntireCar;
+
+            args.setColours(getPaintToolColour(self), args.paintFlags);
+            args.head = car.front->getHead();
+
+            // determine which car the user has clicked on. There may be a better way to do this, I just need to find which source file the vehicle previews are drawn in.
+            auto obj = ObjectManager::get<VehicleObject>(car.front->objectId);
+
+            if (obj == nullptr)
+            {
+                return;
+            }
+
+            // Look at this juicy function isPixelPresentRLE
+            // wouldn't it be tons of fun to check every sprite?
+            // The only problem is it requires a g1Element, and I don't know how to go from spriteIndex to g1Element
+
+            BodyItems items = getBodyItemsForVehicle(*obj, 40, car);
+            auto cursorPosX = x - self.widgets[widx::carList].left;
+            for (BodyItem& body : items.items)
+            {
+                auto g1Elem = Gfx::getG1Element(body.image);
+                auto spriteRight = body.dist + g1Elem->xOffset + g1Elem->width;
+                if (cursorPosX <= spriteRight)
+                {
+                    args.head = body.body;
+                    args.paintFlags &= ~GameCommands::VehicleRepaintFlags::applyToEntireCar;
+                    break;
+                }
+            }
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            self.invalidate();
         }
 
         static constexpr bool isPaintToolActive(Window& self)
@@ -1976,6 +2037,101 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 }
             }
+        }
+
+        // copied and modified from VehicleDraw::getDrawItemsForVehicle
+        static BodyItems getBodyItemsForVehicle(const VehicleObject& vehObject, const uint8_t yaw, const Vehicles::Car& car)
+        {
+            Vehicles::Vehicle train(car.front->head);
+            BodyItems bodyItems{};
+            const auto isCarReversed = car.body->has38Flags(Vehicles::Flags38::isReversed);
+            const auto isAnimated = false;
+            uint8_t componentIndex = isCarReversed ? vehObject.var_04 - 1 : 0;
+            for (auto& carComponent : car)
+            {
+                auto& componentObject = vehObject.carComponents[componentIndex];
+                // 0x01136172
+                auto unkDist = isCarReversed ? componentObject.backBogiePosition : componentObject.frontBogiePosition;
+
+                if (carComponent.front->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
+                {
+                    auto unk = yaw;
+                    if (carComponent.front->has38Flags(Vehicles::Flags38::isReversed))
+                    {
+                        unk ^= 1U << 5;
+                    }
+                    unk /= 2;
+
+                    auto& bogieSprites = vehObject.bogieSprites[carComponent.front->objectSpriteType];
+                    if (bogieSprites.hasFlags(BogieSpriteFlags::rotationalSymmetry))
+                    {
+                        unk &= 0xFU;
+                    }
+
+                    //const auto animationIndex = 0;
+                    //auto spriteIndex = bogieSprites.numFramesPerRotation * unk + animationIndex + bogieSprites.flatImageIds;
+                    // bodyItems.items.push_back(BodyItem{ ImageId(spriteIndex, carComponent.front->colourScheme), bodyItems.totalDistance + unkDist, false });
+                }
+
+                auto carComponentLength = 0;
+                auto backBogieDist = bodyItems.totalDistance;
+                if (componentObject.bodySpriteInd != SpriteIndex::null)
+                {
+                    auto& bodySprites = vehObject.bodySprites[componentObject.bodySpriteInd & ~(1U << 7)];
+                    carComponentLength = bodySprites.halfLength * 2;
+                    backBogieDist += carComponentLength;
+                }
+                auto unk1136174 = isCarReversed ? componentObject.frontBogiePosition : componentObject.backBogiePosition;
+                backBogieDist -= unk1136174;
+
+                if (carComponent.back->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
+                {
+                    auto unk = yaw;
+                    if (carComponent.back->has38Flags(Vehicles::Flags38::isReversed))
+                    {
+                        unk ^= 1U << 5;
+                    }
+                    unk /= 2;
+
+                    auto& bogieSprites = vehObject.bogieSprites[carComponent.back->objectSpriteType];
+                    if (bogieSprites.hasFlags(BogieSpriteFlags::rotationalSymmetry))
+                    {
+                        unk &= 0xFU;
+                    }
+
+                    //const auto animationIndex = isAnimated ? carComponent.back->animationIndex : 0;
+                    //auto spriteIndex = bogieSprites.numFramesPerRotation * unk + animationIndex + bogieSprites.flatImageIds;
+                    // bodyItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.back->colourScheme), backBogieDist, false });
+                }
+
+                auto bodyDist = bodyItems.totalDistance + (unkDist + carComponentLength - unk1136174) / 2;
+                if (carComponent.body->objectSpriteType != SpriteIndex::null)
+                {
+                    auto& bodySprites = vehObject.bodySprites[carComponent.body->objectSpriteType];
+
+                    auto unk = yaw;
+                    if (carComponent.body->has38Flags(Vehicles::Flags38::isReversed))
+                    {
+                        unk ^= 1U << 5;
+                    }
+
+                    auto rollIndex = isAnimated ? carComponent.body->var_46 : 0;
+                    rollIndex += carComponent.body->var_47;
+
+                    auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, 0);
+                    bodyItems.items.push_back(BodyItem{ spriteIndex, bodyDist, carComponent.body->id });
+                }
+                bodyItems.totalDistance += carComponentLength;
+                if (isCarReversed)
+                {
+                    componentIndex--;
+                }
+                else
+                {
+                    componentIndex++;
+                }
+            }
+            return bodyItems;
         }
     }
 

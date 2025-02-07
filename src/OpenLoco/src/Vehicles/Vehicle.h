@@ -236,6 +236,7 @@ namespace OpenLoco::Vehicles
             // This can not use reinterpret_cast due to being a const member without considerable more code
             if (!is<TClass>())
             {
+
                 throw Exception::RuntimeError("Malformed vehicle. Incorrect subType!");
             }
             return (TType*)this;
