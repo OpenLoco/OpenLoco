@@ -18,7 +18,7 @@ namespace OpenLoco::GameCommands
         constexpr uint8_t backBogieColour = (1U << 2);
         constexpr uint8_t applyToEntireCar = (1U << 3);
         constexpr uint8_t applyToEntireTrain = (1U << 4);
-        constexpr uint8_t paintFromVehicleUi = bodyColour | frontBogieColour | backBogieColour;
+        constexpr uint8_t paintFromVehicleUi = bodyColour | frontBogieColour | backBogieColour | applyToEntireCar;
     };
 
     struct VehicleRepaintArgs
