@@ -27,6 +27,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
@@ -72,7 +73,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Widgets::Frame({ 0, 0 }, { 366, frame_height }, WindowColour::primary),
                 Widgets::Caption({ 1, 1 }, { 364, 13 }, CaptionVariant::whiteText, WindowColour::primary, window_caption_id),
                 Widgets::ImageButton({ 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),
+                Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_options),
                 Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_land),
                 Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_water),
