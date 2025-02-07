@@ -40,18 +40,17 @@ namespace OpenLoco::Vehicles
     static bool shouldStartWheelSlipping(const Vehicle& train, VehicleBogie& frontBogie)
     {
         const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie.objectId);
+        if (!vehObject->hasFlags(VehicleObjectFlags::canWheelslip) || vehObject->power == 0)
+        {
+            return false;
+        }
+
         if (train.head->status != Status::travelling)
         {
             return false;
         }
 
         if (train.veh2->motorState == MotorState::coasting || train.veh2->currentSpeed > 10.0_mph)
-        {
-            return false;
-        }
-
-        // In the vanilla vehicle objects, this flag is set exclusively for vehicles that are steam engines (and helicopters, but no aircraft reach this code)
-        if (vehObject->power == 0 || !vehObject->hasFlags(VehicleObjectFlags::isHelicopter))
         {
             return false;
         }

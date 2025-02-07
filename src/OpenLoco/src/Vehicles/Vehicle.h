@@ -44,7 +44,7 @@ namespace OpenLoco::Vehicles
         unk_2 = 1U << 2,
         unk_3 = 1U << 3,
         isGhost = 1U << 4,
-        unk_5 = 1U << 5,
+        fasterAroundCurves = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags38);
 
