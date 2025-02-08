@@ -26,6 +26,7 @@
 #include "Ui/Screenshot.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -56,23 +57,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
-        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
-        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
+        Widgets::ImageButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ImageButton({ 30, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ImageButton({ 60, 0 }, { 30, 28 }, WindowColour::primary),
 
-        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::secondary),
-        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::secondary),
-        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::secondary),
+        Widgets::ImageButton({ 104, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ImageButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ImageButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary),
 
-        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
-        makeWidget({ 387, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
-        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
+        Widgets::ImageButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButton({ 387, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
 
-        makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
-        makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary)
+        Widgets::ImageButton({ 490, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ImageButton({ 520, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ImageButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary)
 
     );
 

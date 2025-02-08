@@ -23,6 +23,7 @@
 #include "Ui/Screenshot.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
@@ -45,23 +46,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),  // 0
-        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary), // 1
-        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary), // 2
+        Widgets::ImageButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),  // 0
+        Widgets::ImageButton({ 30, 0 }, { 30, 28 }, WindowColour::primary), // 1
+        Widgets::ImageButton({ 60, 0 }, { 30, 28 }, WindowColour::primary), // 2
 
-        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::secondary), // 3
-        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::secondary), // 4
-        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::secondary), // 5
+        Widgets::ImageButton({ 104, 0 }, { 30, 28 }, WindowColour::secondary), // 3
+        Widgets::ImageButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary), // 4
+        Widgets::ImageButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary), // 5
 
-        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary), // 6
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),            // 7
-        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary), // 8
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),            // 9
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),            // 10
+        Widgets::ImageButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary),    // 6
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 7
+        Widgets::ImageButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary),    // 8
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 9
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 10
 
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),             // 11
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),             // 12
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary) // 13
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 11
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 12
+        Widgets::ImageButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary)   // 13
     );
 
     static const WindowEventList& getEvents();
