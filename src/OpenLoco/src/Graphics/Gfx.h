@@ -106,7 +106,12 @@ namespace OpenLoco::Gfx
         constexpr uint32_t remap = 1U << 29;
         constexpr uint32_t translucent = 1U << 30;
         constexpr uint32_t remap2 = 1U << 31;
+        constexpr uint32_t indexMask = 0x7FFFF;
     }
+
+    constexpr uint32_t kColour1Offset = 19;
+    constexpr uint32_t kColour2Offset = 24;
+    constexpr uint32_t kColourMask = 0x1F;
 
     void loadG1();
     void initialise();
@@ -119,7 +124,7 @@ namespace OpenLoco::Gfx
 
     [[nodiscard]] constexpr uint32_t recolour(uint32_t image, ExtColour colour)
     {
-        return ImageIdFlags::remap | (enumValue(colour) << 19) | image;
+        return ImageIdFlags::remap | (enumValue(colour) << kColour1Offset) | image;
     }
     [[nodiscard]] constexpr uint32_t recolour(uint32_t image, Colour colour)
     {
@@ -128,7 +133,7 @@ namespace OpenLoco::Gfx
 
     [[nodiscard]] constexpr uint32_t recolour2(uint32_t image, Colour colour1, Colour colour2)
     {
-        return ImageIdFlags::remap | ImageIdFlags::remap2 | (enumValue(colour1) << 19) | (enumValue(colour2) << 24) | image;
+        return ImageIdFlags::remap | ImageIdFlags::remap2 | (enumValue(colour1) << kColour1Offset) | (enumValue(colour2) << kColour2Offset) | image;
     }
 
     [[nodiscard]] constexpr uint32_t recolour2(uint32_t image, ColourScheme colourScheme)
@@ -138,11 +143,11 @@ namespace OpenLoco::Gfx
 
     [[nodiscard]] constexpr uint32_t recolourTranslucent(uint32_t image, ExtColour colour)
     {
-        return ImageIdFlags::translucent | (enumValue(colour) << 19) | image;
+        return ImageIdFlags::translucent | (enumValue(colour) << kColour1Offset) | image;
     }
 
     [[nodiscard]] ImageId applyGhostToImage(uint32_t imageIndex);
-    [[nodiscard]] constexpr uint32_t getImageIndex(uint32_t imageId) { return imageId & 0x7FFFF; }
+    [[nodiscard]] constexpr uint32_t getImageIndex(uint32_t imageId) { return imageId & ImageIdFlags::indexMask; }
 
     // Invalidates the entire screen.
     void invalidateScreen();
