@@ -1710,6 +1710,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     args.paintFlags ^= GameCommands::VehicleRepaintFlags::applyToEntireCar;
                 }
+                if (Input::hasKeyModifier(Input::KeyModifier::shift))
+                {
+                    args.paintFlags |= GameCommands::VehicleRepaintFlags::applyToEntireTrain;
+                }
 
                 args.setColours(getPaintToolColour(self), args.paintFlags);
                 args.head = veh->id;
@@ -1727,7 +1731,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.setColours(getPaintToolColour(self), args.paintFlags);
             args.head = car.front->id;
 
-            if (Input::hasKeyModifier(Input::KeyModifier::control))
+            if (Input::hasKeyModifier(Input::KeyModifier::shift))
+            {
+                args.paintFlags |= GameCommands::VehicleRepaintFlags::applyToEntireTrain;
+            }
+
+            if (Input::hasKeyModifier(Input::KeyModifier::control) && !(args.paintFlags && GameCommands::VehicleRepaintFlags::applyToEntireTrain))
             {
                 auto obj = ObjectManager::get<VehicleObject>(car.front->objectId);
 
