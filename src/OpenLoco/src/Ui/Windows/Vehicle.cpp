@@ -164,6 +164,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             pickup,
             remove,
             paintBrush,
+            paintBrushProxy, // hack until a better solution presents itself
             paintColourPrimary,
             paintColourSecondary,
             carList,
@@ -190,6 +191,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
             Widgets::ImageButton({ 240, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
             Widgets::ImageButton({ 240, 122 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::vehicleRepaintTooltip),
+            Widgets::Frame({ 0, 0 }, { 0, 0 }, WindowColour::secondary, Widget::kContentNull, StringIds::null),
             Widgets::ColourButton({ 240, 150 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
             Widgets::ColourButton({ 258, 150 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
             Widgets::ScrollView({ 3, 44 }, { 237, 110 }, WindowColour::secondary, Scrollbars::vertical)
@@ -1164,17 +1166,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
                     break;
                 }
-                case widx::paintBrush:
-                    if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                    {
-                        paintEntireTrain(self);
-                        if (isPaintToolActive(self))
-                        {
-                            break;
-                        }
-                    }
-                    paintToolBegin(self);
-                    break;
             }
         }
 
@@ -1225,7 +1216,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 Dropdown::add(0, StringIds::dropdown_stringid, StringIds::vehicleRepaintTool);
                 Dropdown::add(1, StringIds::dropdown_stringid, StringIds::vehicleRepaintEntireVehicle);
 
-                Widget* widget = &self.widgets[widx::buildNew];
+                Widget* widget = &self.widgets[widx::paintBrush];
                 Dropdown::showText(
                     self.x + widget->left,
                     self.y + widget->top,
@@ -1276,13 +1267,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             if (widgetIndex == widx::paintBrush)
             {
-                if (itemIndex <= 0)
-                {
-                    paintToolBegin(self);
-                }
-                else if (itemIndex == 1)
+                if (itemIndex == 1 || Input::hasKeyModifier(Input::KeyModifier::shift))
                 {
                     paintEntireTrain(self);
+                }
+                else if (itemIndex <= 0)
+                {
+                    paintToolBegin(self);
                 }
                 return;
             }
@@ -1649,8 +1640,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::paintColourPrimary].hidden = false;
             self.widgets[widx::paintColourSecondary].hidden = false;
 
+            // self.activatedWidgets &= ~(1U << widx::paintBrush);
+
             if (isPaintToolActive(self))
             {
+                // self.activatedWidgets |= (1U << widx::paintBrush);
                 self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight3Lines;
 
                 self.widgets[widx::paintColourPrimary].type = WidgetType::buttonWithColour;
@@ -1800,14 +1794,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static constexpr bool isPaintToolActive(Window& self)
         {
-            return self.activatedWidgets & (1U << widx::paintBrush);
+            return self.activatedWidgets & (1U << widx::paintBrushProxy);
         }
 
         static void paintToolBegin(Window& self)
         {
             bool active = ToolManager::toolSet(&self, widx::paintBrush, CursorId::brush);
-            self.activatedWidgets &= ~(1U << widx::paintBrush);
-            self.activatedWidgets |= (1U << widx::paintBrush) * active;
+            self.activatedWidgets &= ~(1U << widx::paintBrushProxy);
+            self.activatedWidgets |= (1U << widx::paintBrushProxy) * active;
             self.invalidate();
         }
 

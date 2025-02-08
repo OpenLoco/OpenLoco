@@ -2411,5 +2411,5 @@ strings:
   2356: "{COLOUR WINDOW_2}Meander rate:"
   2357: "OpenLoco"
   2358: "Toggle paint tool"
-  2359: "Repaint vehicles. shift+click to paint all. ctrl+click to paint sub-vehicles."
+  2359: "{SMALLFONT}{COLOUR BLACK}Repaint {POP16}{STRINGID} vehicles{NEWLINE}shift+click to paint all{NEWLINE}ctrl+click to paint sub-vehicles"
   2360: "Paint all connected"
