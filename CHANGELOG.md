@@ -1,5 +1,6 @@
 25.01+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2897] Paint vehicles individually from the Vehicle Details tab.
 - Fix: [#2864] News messages are drawn incorrectly.
 - Fix: [#2866] Vehicles lengths with 0 in the tenths place being displayed incorrectly.
 
