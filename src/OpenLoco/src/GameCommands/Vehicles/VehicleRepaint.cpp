@@ -9,7 +9,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-
     static void PaintComponent(Vehicles::CarComponent component, QuadraColour colours, VehicleRepaintFlags paintFlags)
     {
         if (paintFlags && VehicleRepaintFlags::bodyColour && component.body != nullptr)
