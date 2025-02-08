@@ -295,6 +295,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
         VehicleBase* previousVehicleComponent();
+        ColourScheme getColourScheme();
         bool updateComponent();
         void explodeComponent();
         void sub_4AA464();
