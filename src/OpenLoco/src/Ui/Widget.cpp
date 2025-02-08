@@ -76,6 +76,11 @@ namespace OpenLoco::Ui
             }
         }
 
+        if (hidden)
+        {
+            return;
+        }
+
         Gfx::RectInsetFlags widgetFlags = Gfx::RectInsetFlags::none;
         if (windowColour == WindowColour::primary && window->hasFlags(WindowFlags::flag_11))
         {
@@ -96,7 +101,7 @@ namespace OpenLoco::Ui
         widgetState.hovered = (hoveredWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.scrollviewIndex = scrollviewIndex;
 
-        if (events.draw != nullptr && type != WidgetType::none && !hidden)
+        if (events.draw != nullptr && type != WidgetType::none)
         {
             events.draw(drawingCtx, *this, widgetState);
             return;
