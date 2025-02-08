@@ -10,26 +10,26 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
 
-    static void PaintComponent(Vehicles::CarComponent component, QuadraColour colours, uint8_t paintFlags)
+    static void PaintComponent(Vehicles::CarComponent component, QuadraColour colours, VehicleRepaintFlags paintFlags)
     {
-        if ((paintFlags & VehicleRepaintFlags::bodyColour) && component.body != nullptr)
+        if (paintFlags && VehicleRepaintFlags::bodyColour && component.body != nullptr)
         {
             component.body->colourScheme = colours[kBodyColour];
             component.body->invalidateSprite();
         }
-        if ((paintFlags & VehicleRepaintFlags::frontBogieColour) && component.front != nullptr)
+        if (paintFlags && VehicleRepaintFlags::frontBogieColour && component.front != nullptr)
         {
             component.front->colourScheme = colours[kFrontBogieColour];
             component.front->invalidateSprite();
         }
-        if ((paintFlags & VehicleRepaintFlags::backBogieColour) && component.back != nullptr)
+        if (paintFlags && VehicleRepaintFlags::backBogieColour && component.back != nullptr)
         {
             component.back->colourScheme = colours[kBackBogieColour];
             component.back->invalidateSprite();
         }
     }
 
-    static void PaintEntireCar(Vehicles::Car& car, QuadraColour colours, uint8_t paintFlags)
+    static void PaintEntireCar(Vehicles::Car& car, QuadraColour colours, VehicleRepaintFlags paintFlags)
     {
         for (Vehicles::CarComponent& component : car)
         {
@@ -37,7 +37,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t vehicleRepaint(EntityId headId, const QuadraColour colours, const uint8_t paintFlags, const uint8_t flags)
+    static uint32_t vehicleRepaint(EntityId headId, const QuadraColour colours, const VehicleRepaintFlags paintFlags, const uint8_t flags)
     {
 
         try
@@ -64,7 +64,7 @@ namespace OpenLoco::GameCommands
             [&train = train, &targetEntity = *veh, &colours = colours, &paintFlags = paintFlags]() {
                 for (auto& car : train.cars)
                 {
-                    if (paintFlags & VehicleRepaintFlags::applyToEntireTrain)
+                    if (paintFlags && VehicleRepaintFlags::applyToEntireTrain)
                     {
                         PaintEntireCar(car, colours, paintFlags);
                         continue;
@@ -73,7 +73,7 @@ namespace OpenLoco::GameCommands
                     {
                         if (carComponent.front == &targetEntity || carComponent.back == &targetEntity || carComponent.body == &targetEntity)
                         {
-                            if (paintFlags & VehicleRepaintFlags::applyToEntireCar)
+                            if (paintFlags && VehicleRepaintFlags::applyToEntireCar)
                             {
                                 PaintEntireCar(car, colours, paintFlags);
                             }
@@ -97,6 +97,6 @@ namespace OpenLoco::GameCommands
 
     void vehicleRepaint(registers& regs)
     {
-        regs.ebx = vehicleRepaint(EntityId(regs.ebp), { ColourScheme(regs.cx), ColourScheme(regs.ecx >> 16), ColourScheme(regs.dx), ColourScheme(regs.edx >> 16) }, regs.ax, regs.bl);
+        regs.ebx = vehicleRepaint(EntityId(regs.ebp), { ColourScheme(regs.cx), ColourScheme(regs.ecx >> 16), ColourScheme(regs.dx), ColourScheme(regs.edx >> 16) }, VehicleRepaintFlags(regs.ax), regs.bl);
     }
 }

@@ -11,15 +11,17 @@ namespace OpenLoco::GameCommands
     constexpr uint8_t kFrontBogieColour = 1;
     constexpr uint8_t kBackBogieColour = 2;
 
-    namespace VehicleRepaintFlags
+    enum class VehicleRepaintFlags : uint8_t
     {
-        constexpr uint8_t bodyColour = (1U << 0);
-        constexpr uint8_t frontBogieColour = (1U << 1);
-        constexpr uint8_t backBogieColour = (1U << 2);
-        constexpr uint8_t applyToEntireCar = (1U << 3);
-        constexpr uint8_t applyToEntireTrain = (1U << 4);
-        constexpr uint8_t paintFromVehicleUi = bodyColour | frontBogieColour | backBogieColour | applyToEntireCar;
+        none = 0,
+        bodyColour = (1U << 0),
+        frontBogieColour = (1U << 1),
+        backBogieColour = (1U << 2),
+        applyToEntireCar = (1U << 3),
+        applyToEntireTrain = (1U << 4),
+        paintFromVehicleUi = bodyColour | frontBogieColour | backBogieColour | applyToEntireCar,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleRepaintFlags);
 
     struct VehicleRepaintArgs
     {
@@ -29,21 +31,21 @@ namespace OpenLoco::GameCommands
         explicit VehicleRepaintArgs(const registers& regs)
             : head(EntityId(regs.di))
             , colours{ ColourScheme(regs.cx), ColourScheme(regs.ecx >> 16), ColourScheme(regs.dx), ColourScheme(regs.edx >> 16) }
-            , paintFlags(regs.bl)
+            , paintFlags(VehicleRepaintFlags(regs.bl))
         {
         }
 
-        void setColours(ColourScheme colour, uint8_t flags)
+        void setColours(ColourScheme colour, VehicleRepaintFlags flags)
         {
-            if (flags & VehicleRepaintFlags::bodyColour)
+            if (flags && VehicleRepaintFlags::bodyColour)
             {
                 colours[kBodyColour] = colour;
             }
-            if (flags & VehicleRepaintFlags::frontBogieColour)
+            if (flags && VehicleRepaintFlags::frontBogieColour)
             {
                 colours[kFrontBogieColour] = colour;
             }
-            if (flags & VehicleRepaintFlags::backBogieColour)
+            if (flags && VehicleRepaintFlags::backBogieColour)
             {
                 colours[kBackBogieColour] = colour;
             }
@@ -51,7 +53,7 @@ namespace OpenLoco::GameCommands
 
         EntityId head;
         QuadraColour colours;
-        uint8_t paintFlags;
+        VehicleRepaintFlags paintFlags;
 
         constexpr uint16_t convert(ColourScheme colour) const
         {
@@ -64,7 +66,7 @@ namespace OpenLoco::GameCommands
             regs.ebp = enumValue(head);
             regs.ecx = convert(colours[0]) | (convert(colours[1]) << 16);
             regs.edx = convert(colours[2]) | (convert(colours[3]) << 16);
-            regs.ax = paintFlags;
+            regs.ax = enumValue(paintFlags);
             return regs;
         }
     };

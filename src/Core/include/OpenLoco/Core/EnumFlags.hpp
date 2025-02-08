@@ -40,5 +40,9 @@ namespace OpenLoco::Core
     inline constexpr ENM operator~(const ENM a) noexcept                                                                    \
     {                                                                                                                       \
         return static_cast<ENM>(~static_cast<std::underlying_type_t<ENM>>(a));                                              \
+    }                                                                                                                       \
+    inline constexpr bool operator&&(const ENM a, const ENM b) noexcept                                                     \
+    {                                                                                                                       \
+        return static_cast<std::underlying_type_t<ENM>>(a) & static_cast<std::underlying_type_t<ENM>>(b);                   \
     }
 }
