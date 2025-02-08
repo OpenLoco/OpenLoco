@@ -1,5 +1,6 @@
 25.04+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2897] Individual vehicle components can now be repainted from the Vehicle Details tab.
 - Feature: [#3087] Allow replacing existing station elements directly in the station construction tool.
 - Change: [#3095] The Tile Inspector can now be accessed in the Scenario Editor when the cheats menu is enabled.
 - Fix: [#3092] Drag selection area is not correctly removed after dragging station elements.
