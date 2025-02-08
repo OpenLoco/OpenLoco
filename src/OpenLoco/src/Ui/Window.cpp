@@ -1387,7 +1387,7 @@ namespace OpenLoco::Ui
 
         for (WidgetIndex_t i = activeIndex; i >= minIndex; i--)
         {
-            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none)
+            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none || this->widgets[i].hidden)
             {
                 // Wrap around (while compensating for next iteration)
                 if (i == minIndex)
