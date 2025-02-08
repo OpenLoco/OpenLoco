@@ -293,6 +293,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
         ColourScheme getColourScheme();
+        void setColourScheme(ColourScheme colourScheme);
         bool updateComponent();
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
