@@ -784,11 +784,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::remove].hidden = false;
         window->widgets[widx::rotate_90].hidden = true;
 
-        // FIXME: There is an invariant of wt_6 and wt_3, figure out the difference and make it a
-        // new property in Widget.
         if (_cState->constructionHover == 1)
         {
-            window->widgets[widx::construct].type = WidgetType::wt_6;
+            // Previously turned to wt_6 which is same as Tab, when pressed increments image index and no background.
+            window->widgets[widx::construct].hidden = false;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
             window->widgets[widx::remove].hidden = true;
             window->widgets[widx::rotate_90].hidden = false;
@@ -797,7 +796,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         else if (_cState->constructionHover == 0)
         {
-            window->widgets[widx::construct].type = WidgetType::wt_3;
+            // Previously turned to wt_3, draws background and image, no behavior when clicked.
+            window->widgets[widx::construct].hidden = false;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
             window->widgets[widx::rotate_90].hidden = false;
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
@@ -995,7 +995,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_cState->constructionHover == 1)
         {
-            window->widgets[widx::construct].type = WidgetType::wt_6;
+            window->widgets[widx::construct].hidden = false;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
             window->widgets[widx::remove].hidden = true;
             window->widgets[widx::rotate_90].hidden = false;
@@ -1004,7 +1004,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         else if (_cState->constructionHover == 0)
         {
-            window->widgets[widx::construct].type = WidgetType::wt_3;
+            window->widgets[widx::construct].hidden = false;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
             window->widgets[widx::rotate_90].hidden = false;
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
