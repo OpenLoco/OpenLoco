@@ -21,14 +21,7 @@ namespace OpenLoco::GameCommands
         auto* targetHead = target;
         while (sourceHead != nullptr && targetHead != nullptr)
         {
-            if (sourceHead->isBase<Vehicles::VehicleBody>())
-            {
-                targetHead->asBase<Vehicles::VehicleBody>()->colourScheme = sourceHead->asBase<Vehicles::VehicleBody>()->colourScheme;
-            }
-            if (sourceHead->isBase<Vehicles::VehicleBogie>())
-            {
-                targetHead->asBase<Vehicles::VehicleBogie>()->colourScheme = sourceHead->asBase<Vehicles::VehicleBogie>()->colourScheme;
-            }
+            targetHead->setColourScheme(sourceHead->getColourScheme());
             sourceHead = sourceHead->nextVehicleComponent();
             targetHead = targetHead->nextVehicleComponent();
         }
