@@ -1255,14 +1255,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 Colour selectedColour = static_cast<Colour>(Dropdown::getItemArgument(itemIndex, 2));
                 self.widgets[widgetIndex].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, selectedColour);
-                if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                {
-                    paintEntireTrain(self);
-                }
-                else
-                {
-                    self.invalidate();
-                }
+                self.invalidate();
                 return;
             }
             if (widgetIndex == widx::paintBrush)
