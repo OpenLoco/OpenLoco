@@ -25,6 +25,7 @@
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "World/CompanyManager.h"
 
@@ -41,7 +42,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         Widgets::Checkbox({ 3, 69 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         Widgets::Checkbox({ 3, 81 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         Widgets::Wt3Widget({ 35, 110 }, { 66, 66 }, WindowColour::secondary),
-        makeDropdownWidgets({ 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
+        Widgets::dropdownWidgets({ 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
 
     std::span<const Widget> getWidgets()
     {

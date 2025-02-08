@@ -28,6 +28,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/ColourButtonWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -674,7 +675,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(220, 87, StringIds::title_build_new_towns),
-            makeDropdownWidgets({ 100, 45 }, { 117, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size)
+            Widgets::dropdownWidgets({ 100, 45 }, { 117, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size)
 
         );
 

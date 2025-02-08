@@ -16,7 +16,7 @@ namespace OpenLoco::Ui::Widgets
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
     };
 
-    constexpr auto makeDropdownWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    constexpr auto dropdownWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
         const auto makeDropdownButtonWidget = [](Ui::Point32 origin, Ui::Size32 size, WindowColour colour) {
             const int16_t xPos = origin.x + size.width - 12;

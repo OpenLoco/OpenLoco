@@ -48,6 +48,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/CaptionWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -292,7 +293,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Tab({ 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Filter options
-        makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
+        Widgets::dropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
         Widgets::TextBox({ 4, 45 }, { 246, 14 }, WindowColour::secondary),
         Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 

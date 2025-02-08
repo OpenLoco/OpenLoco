@@ -24,6 +24,7 @@
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
@@ -293,7 +294,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             // General options
             Widgets::GroupBox({ 4, 50 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGeneral),
             Widgets::stepperWidgets({ 256, 65 }, { 100, 12 }, WindowColour::secondary, StringIds::start_year_value),
-            makeDropdownWidgets({ 176, 81 }, { 180, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 176, 81 }, { 180, 12 }, WindowColour::secondary),
 
             // Generator options
             Widgets::GroupBox({ 4, 105 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
@@ -643,7 +644,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(252, StringIds::title_landscape_generation_land),
-            makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
             Widgets::stepperWidgets({ 256, 68 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
             Widgets::stepperWidgets({ 256, 84 }, { 100, 12 }, WindowColour::secondary, StringIds::hill_density_percent),
             Widgets::Checkbox({ 10, 100 }, { 346, 12 }, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
@@ -1506,7 +1507,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_towns),
             Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::number_of_towns_value),
-            makeDropdownWidgets({ 176, 67 }, { 180, 12 }, WindowColour::secondary)
+            Widgets::dropdownWidgets({ 176, 67 }, { 180, 12 }, WindowColour::secondary)
 
         );
 
@@ -1640,7 +1641,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_industries),
-            makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
             Widgets::Checkbox({ 10, 68 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
             Widgets::Checkbox({ 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game)
 

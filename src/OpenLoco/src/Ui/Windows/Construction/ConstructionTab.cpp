@@ -31,6 +31,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
@@ -112,7 +113,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         Widgets::ImageButton({ 57, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_level, StringIds::tooltip_level),
         Widgets::ImageButton({ 81, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::tooltip_slope_up),
         Widgets::ImageButton({ 105, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
-        makeDropdownWidgets({ 40, 123 }, { 58, 20 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
+        Widgets::dropdownWidgets({ 40, 123 }, { 58, 20 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
         Widgets::Tab({ 3, 145 }, { 132, 100 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_construct),
         Widgets::ImageButton({ 6, 248 }, { 46, 24 }, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
         Widgets::ImageButton({ 57, 248 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90));

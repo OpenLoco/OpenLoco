@@ -20,6 +20,7 @@
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
@@ -524,7 +525,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::company_cheats),
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_select_target_company),
-            makeDropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary),
             Widgets::GroupBox({ 4, 86 }, { kWindowSize.width - 8, 96 }, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
             Widgets::Button({ 10, 100 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_switch_to_company),
             Widgets::Button({ 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_acquire_company_assets),

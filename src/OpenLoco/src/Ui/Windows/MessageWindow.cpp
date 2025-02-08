@@ -24,6 +24,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -419,12 +420,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 155, StringIds::title_messages),
-            makeDropdownWidgets({ 236, 47 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 62 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 77 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 92 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 107 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 122 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 47 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 62 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 77 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 92 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 107 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 122 }, { 124, 12 }, WindowColour::secondary),
             Widgets::Checkbox({ 4, 137 }, { 346, 12 }, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
 
         );

@@ -29,6 +29,7 @@
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
@@ -284,10 +285,10 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::GroupBox({ 4, 49 }, { 392, 97 }, WindowColour::secondary, StringIds::frame_hardware),
 
             Widgets::Label({ 10, 63 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::options_screen_mode),
-            makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::dropdownWidgets({ 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
 
             Widgets::Label({ 10, 79 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::display_resolution),
-            makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
+            Widgets::dropdownWidgets({ 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
 
             Widgets::Label({ 10, 95 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::window_scale_factor),
             Widgets::stepperWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::scale_formatted),
@@ -298,13 +299,13 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::GroupBox({ 4, 150 }, { 392, 112 }, WindowColour::secondary, StringIds::frame_map_rendering),
 
             Widgets::Label({ 10, 164 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::vehicles_min_scale),
-            makeDropdownWidgets({ 235, 164 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
+            Widgets::dropdownWidgets({ 235, 164 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
 
             Widgets::Label({ 10, 180 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::station_names_min_scale),
-            makeDropdownWidgets({ 235, 180 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
+            Widgets::dropdownWidgets({ 235, 180 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
 
             Widgets::Label({ 10, 196 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::construction_marker),
-            makeDropdownWidgets({ 235, 196 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::dropdownWidgets({ 235, 196 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
 
             Widgets::Checkbox({ 10, 211 }, { 346, 12 }, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
             Widgets::Checkbox({ 10, 227 }, { 346, 12 }, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
@@ -852,7 +853,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_sound),
-            makeDropdownWidgets({ 10, 49 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::dropdownWidgets({ 10, 49 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
             Widgets::Checkbox({ 10, 65 }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music)
 
         );
@@ -1073,13 +1074,13 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
             Widgets::Label({ 10, 49 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::currently_playing),
-            makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::dropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
             Widgets::ImageButton({ 10, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
             Widgets::ImageButton({ 34, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
             Widgets::ImageButton({ 58, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
             Widgets::Label({ 183, 70 }, { 215, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::volume),
             Widgets::Slider({ 256, 64 }, { 109, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
-            makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::dropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
             Widgets::Button({ 183, 108 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
 
         );
@@ -1447,19 +1448,19 @@ namespace OpenLoco::Ui::Windows::Options
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_regional),
 
             Widgets::Label({ 10, 49 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::options_language),
-            makeDropdownWidgets({ 183, 49 }, { 173, 12 }, WindowColour::secondary, StringIds::stringptr),
+            Widgets::dropdownWidgets({ 183, 49 }, { 173, 12 }, WindowColour::secondary, StringIds::stringptr),
 
             Widgets::Label({ 10, 69 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::distance_and_speed),
-            makeDropdownWidgets({ 183, 69 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::dropdownWidgets({ 183, 69 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
 
             Widgets::Label({ 10, 84 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::heights),
-            makeDropdownWidgets({ 183, 84 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::dropdownWidgets({ 183, 84 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
 
             Widgets::Label({ 10, 104 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::current_game_currency),
-            makeDropdownWidgets({ 183, 104 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid, StringIds::current_game_currency_tip),
+            Widgets::dropdownWidgets({ 183, 104 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid, StringIds::current_game_currency_tip),
 
             Widgets::Label({ 10, 119 }, { 173, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::new_game_currency),
-            makeDropdownWidgets({ 183, 119 }, { 173, 12 }, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
+            Widgets::dropdownWidgets({ 183, 119 }, { 173, 12 }, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
 
             Widgets::Checkbox({ 10, 134 }, { 346, 12 }, WindowColour::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
             Widgets::Checkbox({ 10, 148 }, { 346, 12 }, WindowColour::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip)
@@ -2454,7 +2455,7 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::GroupBox({ 4, 196 }, { 412, 65 }, WindowColour::secondary, StringIds::autosave_preferences),
 
             Widgets::Label({ 10, 211 }, { 200, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::autosave_frequency),
-            makeDropdownWidgets({ 250, 211 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::dropdownWidgets({ 250, 211 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
 
             Widgets::Label({ 10, 226 }, { 200, 12 }, WindowColour::secondary, ContentAlign::Left, StringIds::autosave_amount),
             Widgets::stepperWidgets({ 250, 226 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
