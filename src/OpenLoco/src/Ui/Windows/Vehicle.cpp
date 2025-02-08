@@ -177,7 +177,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         struct BodyItems
         {
-
             sfl::static_vector<BodyItem, VehicleObject::kMaxBodySprites * (2 + 1)> items;
             int32_t totalDistance;
         };
