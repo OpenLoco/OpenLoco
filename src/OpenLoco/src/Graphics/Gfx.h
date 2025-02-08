@@ -148,6 +148,14 @@ namespace OpenLoco::Gfx
 
     [[nodiscard]] ImageId applyGhostToImage(uint32_t imageIndex);
     [[nodiscard]] constexpr uint32_t getImageIndex(uint32_t imageId) { return imageId & ImageIdFlags::indexMask; }
+    [[nodiscard]] constexpr Colour getPrimaryColour(uint32_t recolouredImage)
+    {
+        return Colour((recolouredImage >> kColour1Offset) & kColourMask);
+    }
+    [[nodiscard]] constexpr Colour getSecondaryColour(uint32_t recolouredImage)
+    {
+        return Colour((recolouredImage >> kColour2Offset) & kColourMask);
+    }
 
     // Invalidates the entire screen.
     void invalidateScreen();
