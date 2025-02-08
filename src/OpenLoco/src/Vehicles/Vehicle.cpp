@@ -53,6 +53,12 @@ namespace OpenLoco::Vehicles
         return veh->colourScheme;
     }
 
+    void VehicleBase::setColourScheme(ColourScheme colourScheme)
+    {
+        auto* veh = reinterpret_cast<VehicleCommon*>(this);
+        veh->colourScheme = colourScheme;
+    }
+
     VehicleBase* VehicleBase::nextVehicle()
     {
         return EntityManager::get<VehicleBase>(nextEntityId);
