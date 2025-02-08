@@ -16,6 +16,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/Window.h"
 #include "Vehicles/Vehicle.h"
@@ -890,7 +891,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     namespace News2
     {
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets(360, 159, WidgetType::panel)
+            Common::makeCommonWidgets<Widgets::Panel>(360, 159)
 
         );
 
