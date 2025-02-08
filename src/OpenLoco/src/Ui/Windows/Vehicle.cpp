@@ -1220,6 +1220,25 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 Dropdown::showColour(&self, &self.widgets[widgetIndex], availableColours, selectedColour, self.getColour(WindowColour::secondary));
                 return;
             }
+            if (widgetIndex == widx::paintBrush)
+            {
+                Dropdown::add(0, StringIds::dropdown_stringid, StringIds::vehicleRepaintTool);
+                Dropdown::add(1, StringIds::dropdown_stringid, StringIds::vehicleRepaintEntireVehicle);
+
+                Widget* widget = &self.widgets[widx::buildNew];
+                Dropdown::showText(
+                    self.x + widget->left,
+                    self.y + widget->top,
+                    widget->width(),
+                    widget->height(),
+                    self.getColour(WindowColour::secondary),
+                    2,
+                    0);
+
+                Dropdown::setItemSelected(0);
+                Dropdown::setHighlightedItem(0);
+                return;
+            }
         }
 
         // 0x004B253A
@@ -1252,6 +1271,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 else
                 {
                     self.invalidate();
+                }
+                return;
+            }
+            if (widgetIndex == widx::paintBrush)
+            {
+                if (itemIndex <= 0)
+                {
+                    paintToolBegin(self);
+                }
+                else if (itemIndex == 1)
+                {
+                    paintEntireTrain(self);
                 }
                 return;
             }
