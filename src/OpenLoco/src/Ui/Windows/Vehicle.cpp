@@ -1263,6 +1263,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (itemIndex == 1 || Input::hasKeyModifier(Input::KeyModifier::shift))
                 {
                     paintEntireTrain(self);
+                    if (!isPaintToolActive(self))
+                    {
+                        paintToolBegin(self);
+                    }
                 }
                 else if (itemIndex <= 0)
                 {
