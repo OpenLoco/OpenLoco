@@ -154,6 +154,9 @@ namespace OpenLoco::Ui
         uint16_t width() const;
         uint16_t height() const;
 
+        // Widget state.
+        bool hidden : 1 {};
+
         // TODO: Make tabs actual widgets.
         static void drawTab(Window* w, Gfx::DrawingContext& drawingCtx, uint32_t imageId, WidgetIndex_t index);
 

@@ -969,7 +969,13 @@ namespace OpenLoco::Ui
         {
             widgetIndex++;
 
+            // FIXME: Remove when type is immutable.
             if (widget.type == WidgetType::none)
+            {
+                continue;
+            }
+
+            if (widget.hidden)
             {
                 continue;
             }
@@ -1414,7 +1420,8 @@ namespace OpenLoco::Ui
 
         for (WidgetIndex_t i = activeIndex; i <= maxIndex; i++)
         {
-            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none)
+            // FIXME: Change when type is immutable.
+            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none || this->widgets[i].hidden)
             {
                 // Wrap around (while compensating for next iteration)
                 if (i == maxIndex)
