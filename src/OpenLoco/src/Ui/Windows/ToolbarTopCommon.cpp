@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         auto lastRoadOption = getGameState().lastRoadOption;
 
-        if (self.widgets[Widx::road_menu].type != WidgetType::none && lastRoadOption != 0xFF)
+        if (!self.widgets[Widx::road_menu].hidden && lastRoadOption != 0xFF)
         {
             uint32_t x = self.widgets[Widx::road_menu].left + self.x;
             uint32_t y = self.widgets[Widx::road_menu].top + self.y;

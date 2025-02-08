@@ -899,14 +899,14 @@ namespace OpenLoco::Ui::Windows::TownList
         static void prepareDraw(Ui::Window& self)
         {
             self.widgets[widx::object_colour].image = Widget::kImageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_buildingColour);
-            self.widgets[widx::object_colour].type = WidgetType::none;
+            self.widgets[widx::object_colour].hidden = true;
 
             if (self.rowHover != -1)
             {
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.rowHover);
                 if (buildingObj->colours != 0)
                 {
-                    self.widgets[widx::object_colour].type = WidgetType::buttonWithColour;
+                    self.widgets[widx::object_colour].hidden = false;
                 }
             }
 
@@ -1582,7 +1582,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             if (!self.isDisabled(BuildBuildings::widx::rotate_object))
             {
-                if (self.widgets[BuildBuildings::widx::rotate_object].type != WidgetType::none)
+                if (!self.widgets[BuildBuildings::widx::rotate_object].hidden)
                 {
                     self.callOnMouseUp(BuildBuildings::widx::rotate_object);
                     return true;

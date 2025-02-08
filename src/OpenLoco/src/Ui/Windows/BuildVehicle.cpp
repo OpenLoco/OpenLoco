@@ -1615,10 +1615,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 // Reset the tabs
                 _trackTypesForTab[0] = 0xFF;
                 _numTrackTypeTabs = 1;
-                window->widgets[tab_track_type_0].type = WidgetType::tab;
+                window->widgets[tab_track_type_0].hidden = false;
                 for (WidgetIndex_t j = tab_track_type_1; j <= tab_track_type_7; ++j)
                 {
-                    window->widgets[j].type = WidgetType::none;
+                    window->widgets[j].hidden = true;
                 }
                 return;
             }
@@ -1629,7 +1629,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         for (trackType = Numerics::bitScanForward(railTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Numerics::bitScanForward(railTrackTypes))
         {
             railTrackTypes &= ~(1 << trackType);
-            window->widgets[trackTypeTab].type = WidgetType::tab;
+            window->widgets[trackTypeTab].hidden = false;
             _trackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType;
             trackTypeTab++;
         }
@@ -1639,7 +1639,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             for (trackType = Numerics::bitScanForward(roadTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Numerics::bitScanForward(roadTrackTypes))
             {
                 roadTrackTypes &= ~(1 << trackType);
-                window->widgets[trackTypeTab].type = WidgetType::tab;
+                window->widgets[trackTypeTab].hidden = false;
                 _trackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType | (1 << 7);
                 trackTypeTab++;
             }
@@ -1649,7 +1649,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         for (; trackTypeTab <= tab_track_type_7; ++trackTypeTab)
         {
-            window->widgets[trackTypeTab].type = WidgetType::none;
+            window->widgets[trackTypeTab].hidden = true;
         }
     }
 

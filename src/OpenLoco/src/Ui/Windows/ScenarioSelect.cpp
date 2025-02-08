@@ -74,14 +74,14 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             Widget& widget = self->widgets[widx::tab0 + i];
             if (ScenarioManager::hasScenariosForCategory(i))
             {
-                widget.type = WidgetType::tab;
+                widget.hidden = false;
                 widget.left = xPos;
                 widget.right = xPos + 90;
                 xPos += 91;
             }
             else
             {
-                widget.type = WidgetType::none;
+                widget.hidden = true;
             }
         }
     }
@@ -138,12 +138,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         // Select the last tab used, or the first available one.
         uint8_t selectedTab = Config::get().old.scenarioSelectedTab;
-        if (self->widgets[widx::tab0 + selectedTab].type == WidgetType::none)
+        if (self->widgets[widx::tab0 + selectedTab].hidden)
         {
             selectedTab = 0;
             for (int i = 0; i < 5; i++)
             {
-                if (self->widgets[widx::tab0 + i].type == WidgetType::none)
+                if (self->widgets[widx::tab0 + i].hidden)
                 {
                     selectedTab = i;
                     break;
@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         for (int i = 0; i < 5; i++)
         {
             Widget& widget = self.widgets[widx::tab0 + i];
-            if (widget.type == WidgetType::none)
+            if (widget.hidden)
             {
                 continue;
             }

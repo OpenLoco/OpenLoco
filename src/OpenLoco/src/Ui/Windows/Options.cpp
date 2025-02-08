@@ -2558,10 +2558,10 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets |= (1ULL << Widx::export_plugin_objects);
             }
 
-            w.widgets[Widx::export_plugin_objects].type = WidgetType::none;
+            w.widgets[Widx::export_plugin_objects].hidden = true;
             if (_customObjectsInIndex)
             {
-                w.widgets[Widx::export_plugin_objects].type = WidgetType::checkbox;
+                w.widgets[Widx::export_plugin_objects].hidden = false;
             }
 
             sub_4C13BE(&w);

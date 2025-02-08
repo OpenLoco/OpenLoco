@@ -54,15 +54,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         Widgets::ImageButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary), // 4
         Widgets::ImageButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary), // 5
 
-        Widgets::ImageButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary),    // 6
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 7
-        Widgets::ImageButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary),    // 8
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 9
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 10
+        Widgets::ImageButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary), // 6
+        Widgets::ImageButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),      // 7
+        Widgets::ImageButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary), // 8
+        Widgets::ImageButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),      // 9
+        Widgets::ImageButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),      // 10
 
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 11
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary), // 12
-        Widgets::ImageButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary)   // 13
+        Widgets::ImageButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),       // 11
+        Widgets::ImageButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),       // 12
+        Widgets::ImageButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary) // 13
     );
 
     static const WindowEventList& getEvents();
@@ -302,30 +302,30 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
         if (EditorController::getCurrentStep() == EditorController::Step::landscapeEditor)
         {
-            window.widgets[Common::Widx::zoom_menu].type = WidgetType::toolbarTab;
-            window.widgets[Common::Widx::rotate_menu].type = WidgetType::toolbarTab;
-            window.widgets[Common::Widx::view_menu].type = WidgetType::toolbarTab;
-            window.widgets[Common::Widx::terraform_menu].type = WidgetType::toolbarTab;
-            window.widgets[Widx::map_generation_menu].type = WidgetType::toolbarTab;
-            window.widgets[Common::Widx::towns_menu].type = WidgetType::toolbarTab;
+            window.widgets[Common::Widx::zoom_menu].hidden = false;
+            window.widgets[Common::Widx::rotate_menu].hidden = false;
+            window.widgets[Common::Widx::view_menu].hidden = false;
+            window.widgets[Common::Widx::terraform_menu].hidden = false;
+            window.widgets[Widx::map_generation_menu].hidden = false;
+            window.widgets[Common::Widx::towns_menu].hidden = false;
             if (getGameState().lastRoadOption != 0xFF)
             {
-                window.widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
+                window.widgets[Common::Widx::road_menu].hidden = false;
             }
             else
             {
-                window.widgets[Common::Widx::road_menu].type = WidgetType::none;
+                window.widgets[Common::Widx::road_menu].hidden = true;
             }
         }
         else
         {
-            window.widgets[Common::Widx::zoom_menu].type = WidgetType::none;
-            window.widgets[Common::Widx::rotate_menu].type = WidgetType::none;
-            window.widgets[Common::Widx::view_menu].type = WidgetType::none;
-            window.widgets[Common::Widx::terraform_menu].type = WidgetType::none;
-            window.widgets[Widx::map_generation_menu].type = WidgetType::none;
-            window.widgets[Common::Widx::road_menu].type = WidgetType::none;
-            window.widgets[Common::Widx::towns_menu].type = WidgetType::none;
+            window.widgets[Common::Widx::zoom_menu].hidden = true;
+            window.widgets[Common::Widx::rotate_menu].hidden = true;
+            window.widgets[Common::Widx::view_menu].hidden = true;
+            window.widgets[Common::Widx::terraform_menu].hidden = true;
+            window.widgets[Widx::map_generation_menu].hidden = true;
+            window.widgets[Common::Widx::road_menu].hidden = true;
+            window.widgets[Common::Widx::towns_menu].hidden = true;
         }
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();

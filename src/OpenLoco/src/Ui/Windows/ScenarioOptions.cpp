@@ -154,7 +154,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             // Scenario details tab
-            if (window->widgets[widx::tab_scenario].type != WidgetType::none)
+            if (!window->widgets[widx::tab_scenario].hidden)
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
                 Widget::drawTab(window, drawingCtx, imageId, widx::tab_scenario);
@@ -459,11 +459,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             Common::prepareDraw(self);
 
             self.widgets[widx::objective_type].text = objectiveTypeLabelIds[enumValue(Scenario::getObjective().type)];
-            self.widgets[widx::objective_cargo].type = WidgetType::none;
-            self.widgets[widx::objective_cargo_btn].type = WidgetType::none;
-            self.widgets[widx::time_limit_value].type = WidgetType::none;
-            self.widgets[widx::time_limit_value_down].type = WidgetType::none;
-            self.widgets[widx::time_limit_value_up].type = WidgetType::none;
+            self.widgets[widx::objective_cargo].hidden = true;
+            self.widgets[widx::objective_cargo_btn].hidden = true;
+            self.widgets[widx::time_limit_value].hidden = true;
+            self.widgets[widx::time_limit_value_down].hidden = true;
+            self.widgets[widx::time_limit_value_up].hidden = true;
 
             auto args = FormatArguments(self.widgets[widx::objective_value].textArgs);
 
@@ -490,8 +490,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                     auto cargo = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
                     self.widgets[widx::objective_cargo].text = cargo->name;
-                    self.widgets[widx::objective_cargo].type = WidgetType::combobox;
-                    self.widgets[widx::objective_cargo_btn].type = WidgetType::button;
+                    self.widgets[widx::objective_cargo].hidden = false;
+                    self.widgets[widx::objective_cargo_btn].hidden = false;
                     break;
             }
 
@@ -510,9 +510,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
             {
                 self.activatedWidgets |= 1 << widx::check_time_limit;
-                self.widgets[widx::time_limit_value].type = WidgetType::textbox;
-                self.widgets[widx::time_limit_value_down].type = WidgetType::button;
-                self.widgets[widx::time_limit_value_up].type = WidgetType::button;
+                self.widgets[widx::time_limit_value].hidden = false;
+                self.widgets[widx::time_limit_value_down].hidden = false;
+                self.widgets[widx::time_limit_value_up].hidden = false;
 
                 auto args2 = FormatArguments(self.widgets[widx::time_limit_value].textArgs);
                 args2.push<uint16_t>(Scenario::getObjective().timeLimitYears);
@@ -1289,14 +1289,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             if (SceneManager::isEditorMode())
             {
                 // Disable close button in the scenario editor.
-                self.widgets[Common::widx::close_button].type = WidgetType::none;
-                self.widgets[widx::tab_scenario].type = WidgetType::tab;
+                self.widgets[Common::widx::close_button].hidden = true;
+                self.widgets[widx::tab_scenario].hidden = false;
             }
             else
             {
                 // Disable scenario details tab in-game.
-                self.widgets[Common::widx::close_button].type = WidgetType::buttonWithImage;
-                self.widgets[widx::tab_scenario].type = WidgetType::none;
+                self.widgets[Common::widx::close_button].hidden = false;
+                self.widgets[widx::tab_scenario].hidden = true;
             }
 
             // Resize common widgets.

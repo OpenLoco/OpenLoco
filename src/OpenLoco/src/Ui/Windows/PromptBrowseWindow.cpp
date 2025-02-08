@@ -335,19 +335,19 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             self.widgets[widx::ok_button].right = self.width - 16;
             self.widgets[widx::ok_button].top = self.height - 15;
             self.widgets[widx::ok_button].bottom = self.height - 4;
-            self.widgets[widx::ok_button].type = WidgetType::button;
+            self.widgets[widx::ok_button].hidden = false;
 
             self.widgets[widx::text_filename].right = self.width - 4;
             self.widgets[widx::text_filename].top = self.height - 31;
             self.widgets[widx::text_filename].bottom = self.height - 18;
-            self.widgets[widx::text_filename].type = WidgetType::textbox;
+            self.widgets[widx::text_filename].hidden = false;
 
             self.widgets[widx::scrollview].bottom = self.height - 34;
         }
         else
         {
-            self.widgets[widx::ok_button].type = WidgetType::none;
-            self.widgets[widx::text_filename].type = WidgetType::none;
+            self.widgets[widx::ok_button].hidden = true;
+            self.widgets[widx::text_filename].hidden = true;
 
             self.widgets[widx::scrollview].bottom = self.height - 4;
         }
@@ -471,7 +471,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         const auto& filenameBox = window.widgets[widx::text_filename];
-        if (filenameBox.type != WidgetType::none)
+        if (!filenameBox.hidden)
         {
             // Draw filename label
             auto point = Point(window.x + 3, window.y + filenameBox.top + 2);

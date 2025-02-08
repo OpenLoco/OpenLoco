@@ -695,16 +695,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto trackType = _cState->trackType & ~(1 << 7);
         auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
-        window->widgets[widx::s_bend_left].type = WidgetType::none;
-        window->widgets[widx::s_bend_right].type = WidgetType::none;
-        window->widgets[widx::left_hand_curve_large].type = WidgetType::none;
-        window->widgets[widx::right_hand_curve_large].type = WidgetType::none;
-        window->widgets[widx::left_hand_curve].type = WidgetType::none;
-        window->widgets[widx::right_hand_curve].type = WidgetType::none;
-        window->widgets[widx::left_hand_curve_small].type = WidgetType::none;
-        window->widgets[widx::right_hand_curve_small].type = WidgetType::none;
-        window->widgets[widx::left_hand_curve_very_small].type = WidgetType::none;
-        window->widgets[widx::right_hand_curve_very_small].type = WidgetType::none;
+        window->widgets[widx::s_bend_left].hidden = true;
+        window->widgets[widx::s_bend_right].hidden = true;
+        window->widgets[widx::left_hand_curve_large].hidden = true;
+        window->widgets[widx::right_hand_curve_large].hidden = true;
+        window->widgets[widx::left_hand_curve].hidden = true;
+        window->widgets[widx::right_hand_curve].hidden = true;
+        window->widgets[widx::left_hand_curve_small].hidden = true;
+        window->widgets[widx::right_hand_curve_small].hidden = true;
+        window->widgets[widx::left_hand_curve_very_small].hidden = true;
+        window->widgets[widx::right_hand_curve_very_small].hidden = true;
 
         window->widgets[widx::left_hand_curve_small].left = 3;
         window->widgets[widx::left_hand_curve_small].right = 24;
@@ -726,22 +726,22 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve].left = 69;
             window->widgets[widx::right_hand_curve].right = 90;
 
-            window->widgets[widx::left_hand_curve_very_small].type = WidgetType::buttonWithImage;
-            window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
+            window->widgets[widx::left_hand_curve_very_small].hidden = false;
+            window->widgets[widx::right_hand_curve_very_small].hidden = false;
         }
 
         if (roadObj->hasTraitFlags(World::Track::RoadTraitFlags::smallCurve))
         {
-            window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
-            window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
+            window->widgets[widx::left_hand_curve_small].hidden = false;
+            window->widgets[widx::right_hand_curve_small].hidden = false;
         }
 
-        window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
-        window->widgets[widx::s_bend_dual_track_right].type = WidgetType::none;
+        window->widgets[widx::s_bend_dual_track_left].hidden = true;
+        window->widgets[widx::s_bend_dual_track_right].hidden = true;
 
         if (roadObj->hasTraitFlags(World::Track::RoadTraitFlags::turnaround))
         {
-            window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
+            window->widgets[widx::s_bend_dual_track_left].hidden = false;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
 
@@ -751,45 +751,47 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
         }
 
-        window->widgets[widx::steep_slope_down].type = WidgetType::none;
-        window->widgets[widx::slope_down].type = WidgetType::none;
-        window->widgets[widx::slope_up].type = WidgetType::none;
-        window->widgets[widx::steep_slope_up].type = WidgetType::none;
+        window->widgets[widx::steep_slope_down].hidden = true;
+        window->widgets[widx::slope_down].hidden = true;
+        window->widgets[widx::slope_up].hidden = true;
+        window->widgets[widx::steep_slope_up].hidden = true;
 
         if (roadObj->hasTraitFlags(World::Track::RoadTraitFlags::slope))
         {
-            window->widgets[widx::slope_down].type = WidgetType::buttonWithImage;
-            window->widgets[widx::slope_up].type = WidgetType::buttonWithImage;
+            window->widgets[widx::slope_down].hidden = false;
+            window->widgets[widx::slope_up].hidden = false;
         }
 
         if (roadObj->hasTraitFlags(World::Track::RoadTraitFlags::steepSlope))
         {
-            window->widgets[widx::steep_slope_down].type = WidgetType::buttonWithImage;
-            window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
+            window->widgets[widx::steep_slope_down].hidden = false;
+            window->widgets[widx::steep_slope_up].hidden = false;
         }
 
-        window->widgets[widx::bridge].type = WidgetType::combobox;
-        window->widgets[widx::bridge_dropdown].type = WidgetType::button;
+        window->widgets[widx::bridge].hidden = false;
+        window->widgets[widx::bridge_dropdown].hidden = false;
 
         if (_cState->lastSelectedBridge == 0xFF || (_cState->constructionHover != 1 && !(_cState->byte_1136076 & 1)))
         {
-            window->widgets[widx::bridge].type = WidgetType::none;
-            window->widgets[widx::bridge_dropdown].type = WidgetType::none;
+            window->widgets[widx::bridge].hidden = true;
+            window->widgets[widx::bridge_dropdown].hidden = true;
         }
 
         auto activatedWidgets = window->activatedWidgets;
         activatedWidgets &= ~(Construction::allTrack);
 
-        window->widgets[widx::construct].type = WidgetType::none;
-        window->widgets[widx::remove].type = WidgetType::buttonWithImage;
-        window->widgets[widx::rotate_90].type = WidgetType::none;
+        window->widgets[widx::construct].hidden = true;
+        window->widgets[widx::remove].hidden = false;
+        window->widgets[widx::rotate_90].hidden = true;
 
+        // FIXME: There is an invariant of wt_6 and wt_3, figure out the difference and make it a
+        // new property in Widget.
         if (_cState->constructionHover == 1)
         {
             window->widgets[widx::construct].type = WidgetType::wt_6;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
-            window->widgets[widx::remove].type = WidgetType::none;
-            window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
+            window->widgets[widx::remove].hidden = true;
+            window->widgets[widx::rotate_90].hidden = false;
             window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
             window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
@@ -797,7 +799,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             window->widgets[widx::construct].type = WidgetType::wt_3;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
-            window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
+            window->widgets[widx::rotate_90].hidden = false;
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
             window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }
@@ -871,16 +873,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         auto trackObj = ObjectManager::get<TrackObject>(_cState->trackType);
 
-        window->widgets[widx::s_bend_left].type = WidgetType::buttonWithImage;
-        window->widgets[widx::s_bend_right].type = WidgetType::buttonWithImage;
-        window->widgets[widx::left_hand_curve_large].type = WidgetType::none;
-        window->widgets[widx::right_hand_curve_large].type = WidgetType::none;
-        window->widgets[widx::left_hand_curve].type = WidgetType::none;
-        window->widgets[widx::right_hand_curve].type = WidgetType::none;
-        window->widgets[widx::left_hand_curve_small].type = WidgetType::none;
-        window->widgets[widx::right_hand_curve_small].type = WidgetType::none;
-        window->widgets[widx::left_hand_curve_very_small].type = WidgetType::none;
-        window->widgets[widx::right_hand_curve_very_small].type = WidgetType::none;
+        window->widgets[widx::s_bend_left].hidden = false;
+        window->widgets[widx::s_bend_right].hidden = false;
+        window->widgets[widx::left_hand_curve_large].hidden = true;
+        window->widgets[widx::right_hand_curve_large].hidden = true;
+        window->widgets[widx::left_hand_curve].hidden = true;
+        window->widgets[widx::right_hand_curve].hidden = true;
+        window->widgets[widx::left_hand_curve_small].hidden = true;
+        window->widgets[widx::right_hand_curve_small].hidden = true;
+        window->widgets[widx::left_hand_curve_very_small].hidden = true;
+        window->widgets[widx::right_hand_curve_very_small].hidden = true;
 
         window->widgets[widx::left_hand_curve_small].left = 3;
         window->widgets[widx::left_hand_curve_small].right = 24;
@@ -902,35 +904,35 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve].left = 69;
             window->widgets[widx::right_hand_curve].right = 90;
 
-            window->widgets[widx::left_hand_curve_very_small].type = WidgetType::buttonWithImage;
-            window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
+            window->widgets[widx::left_hand_curve_very_small].hidden = false;
+            window->widgets[widx::right_hand_curve_very_small].hidden = false;
         }
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::largeCurve))
         {
-            window->widgets[widx::left_hand_curve_large].type = WidgetType::buttonWithImage;
-            window->widgets[widx::right_hand_curve_large].type = WidgetType::buttonWithImage;
+            window->widgets[widx::left_hand_curve_large].hidden = false;
+            window->widgets[widx::right_hand_curve_large].hidden = false;
         }
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::normalCurve))
         {
-            window->widgets[widx::left_hand_curve].type = WidgetType::buttonWithImage;
-            window->widgets[widx::right_hand_curve].type = WidgetType::buttonWithImage;
+            window->widgets[widx::left_hand_curve].hidden = false;
+            window->widgets[widx::right_hand_curve].hidden = false;
         }
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::smallCurve))
         {
-            window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
-            window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
+            window->widgets[widx::left_hand_curve_small].hidden = false;
+            window->widgets[widx::right_hand_curve_small].hidden = false;
         }
 
-        window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
-        window->widgets[widx::s_bend_dual_track_right].type = WidgetType::none;
+        window->widgets[widx::s_bend_dual_track_left].hidden = true;
+        window->widgets[widx::s_bend_dual_track_right].hidden = true;
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::oneSided))
         {
-            window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
-            window->widgets[widx::s_bend_dual_track_right].type = WidgetType::buttonWithImage;
+            window->widgets[widx::s_bend_dual_track_left].hidden = false;
+            window->widgets[widx::s_bend_dual_track_right].hidden = false;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_dual_track_left;
             window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_dual_track_right;
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_left_dual_track;
@@ -958,45 +960,45 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
             }
         }
-        window->widgets[widx::steep_slope_down].type = WidgetType::none;
-        window->widgets[widx::slope_down].type = WidgetType::none;
-        window->widgets[widx::slope_up].type = WidgetType::none;
-        window->widgets[widx::steep_slope_up].type = WidgetType::none;
+        window->widgets[widx::steep_slope_down].hidden = true;
+        window->widgets[widx::slope_down].hidden = true;
+        window->widgets[widx::slope_up].hidden = true;
+        window->widgets[widx::steep_slope_up].hidden = true;
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::slope))
         {
-            window->widgets[widx::slope_down].type = WidgetType::buttonWithImage;
-            window->widgets[widx::slope_up].type = WidgetType::buttonWithImage;
+            window->widgets[widx::slope_down].hidden = false;
+            window->widgets[widx::slope_up].hidden = false;
         }
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::steepSlope))
         {
-            window->widgets[widx::steep_slope_down].type = WidgetType::buttonWithImage;
-            window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
+            window->widgets[widx::steep_slope_down].hidden = false;
+            window->widgets[widx::steep_slope_up].hidden = false;
         }
 
-        window->widgets[widx::bridge].type = WidgetType::combobox;
-        window->widgets[widx::bridge_dropdown].type = WidgetType::button;
+        window->widgets[widx::bridge].hidden = false;
+        window->widgets[widx::bridge_dropdown].hidden = false;
 
         if (_cState->lastSelectedBridge == 0xFF || (_cState->constructionHover != 1 && !(_cState->byte_1136076 & 1)))
         {
-            window->widgets[widx::bridge].type = WidgetType::none;
-            window->widgets[widx::bridge_dropdown].type = WidgetType::none;
+            window->widgets[widx::bridge].hidden = true;
+            window->widgets[widx::bridge_dropdown].hidden = true;
         }
 
         auto activatedWidgets = window->activatedWidgets;
         activatedWidgets &= ~(Construction::allTrack);
 
-        window->widgets[widx::construct].type = WidgetType::none;
-        window->widgets[widx::remove].type = WidgetType::buttonWithImage;
-        window->widgets[widx::rotate_90].type = WidgetType::none;
+        window->widgets[widx::construct].hidden = true;
+        window->widgets[widx::remove].hidden = false;
+        window->widgets[widx::rotate_90].hidden = true;
 
         if (_cState->constructionHover == 1)
         {
             window->widgets[widx::construct].type = WidgetType::wt_6;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
-            window->widgets[widx::remove].type = WidgetType::none;
-            window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
+            window->widgets[widx::remove].hidden = true;
+            window->widgets[widx::rotate_90].hidden = false;
             window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
             window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
@@ -1004,7 +1006,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             window->widgets[widx::construct].type = WidgetType::wt_3;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
-            window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
+            window->widgets[widx::rotate_90].hidden = false;
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
             window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }
@@ -2981,7 +2983,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         self.draw(drawingCtx);
         Common::drawTabs(&self, drawingCtx);
 
-        if (self.widgets[widx::bridge].type != WidgetType::none)
+        if (!self.widgets[widx::bridge].hidden)
         {
             if (_cState->lastSelectedBridge != 0xFF)
             {
@@ -2998,7 +3000,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
         }
 
-        if (self.widgets[widx::construct].type == WidgetType::none)
+        if (self.widgets[widx::construct].hidden)
         {
             return;
         }

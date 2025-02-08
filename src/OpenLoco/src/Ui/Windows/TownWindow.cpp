@@ -118,13 +118,13 @@ namespace OpenLoco::Ui::Windows::Town
 
             if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
-                self.widgets[widx::expand_town].type = WidgetType::buttonWithImage;
-                self.widgets[widx::demolish_town].type = WidgetType::buttonWithImage;
+                self.widgets[widx::expand_town].hidden = false;
+                self.widgets[widx::demolish_town].hidden = false;
             }
             else
             {
-                self.widgets[widx::expand_town].type = WidgetType::none;
-                self.widgets[widx::demolish_town].type = WidgetType::none;
+                self.widgets[widx::expand_town].hidden = true;
+                self.widgets[widx::demolish_town].hidden = true;
                 self.widgets[widx::viewport].right += 22;
             }
 

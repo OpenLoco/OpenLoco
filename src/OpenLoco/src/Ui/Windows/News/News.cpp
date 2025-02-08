@@ -324,17 +324,17 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            self.widgets[Common::widx::viewport1].type = WidgetType::none;
-            self.widgets[Common::widx::viewport1Button].type = WidgetType::none;
+            self.widgets[Common::widx::viewport1].hidden = true;
+            self.widgets[Common::widx::viewport1Button].hidden = true;
 
             if (!view.isEmpty())
             {
-                self.widgets[Common::widx::viewport1].type = WidgetType::viewport;
+                self.widgets[Common::widx::viewport1].hidden = false;
             }
 
             if (selectable)
             {
-                self.widgets[Common::widx::viewport1Button].type = WidgetType::buttonWithImage;
+                self.widgets[Common::widx::viewport1Button].hidden = false;
             }
 
             if (_nState.savedView[0] != view)
@@ -419,17 +419,17 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            self.widgets[Common::widx::viewport2].type = WidgetType::none;
-            self.widgets[Common::widx::viewport2Button].type = WidgetType::none;
+            self.widgets[Common::widx::viewport2].hidden = true;
+            self.widgets[Common::widx::viewport2Button].hidden = true;
 
             if (!view.isEmpty())
             {
-                self.widgets[Common::widx::viewport2].type = WidgetType::viewport;
+                self.widgets[Common::widx::viewport2].hidden = false;
             }
 
             if (selectable)
             {
-                self.widgets[Common::widx::viewport2Button].type = WidgetType::buttonWithImage;
+                self.widgets[Common::widx::viewport2Button].hidden = false;
             }
 
             if (_nState.savedView[1] != view)

@@ -819,19 +819,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             Vehicles::Vehicle train(*head);
 
-            self.widgets[widx::stopStart].type = WidgetType::buttonWithImage;
-            self.widgets[widx::pickup].type = WidgetType::buttonWithImage;
-            self.widgets[widx::passSignal].type = WidgetType::buttonWithImage;
-            self.widgets[widx::changeDirection].type = WidgetType::buttonWithImage;
+            self.widgets[widx::stopStart].hidden = false;
+            self.widgets[widx::pickup].hidden = false;
+            self.widgets[widx::passSignal].hidden = false;
+            self.widgets[widx::changeDirection].hidden = false;
 
             if (head->mode != TransportMode::rail)
             {
-                self.widgets[widx::passSignal].type = WidgetType::none;
+                self.widgets[widx::passSignal].hidden = true;
             }
 
             if (head->mode == TransportMode::air || head->mode == TransportMode::water)
             {
-                self.widgets[widx::changeDirection].type = WidgetType::none;
+                self.widgets[widx::changeDirection].hidden = true;
             }
 
             self.disabledWidgets &= ~interactiveWidgets;
@@ -905,7 +905,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::pickup].image = Gfx::recolour(pickupImage);
             self.widgets[widx::pickup].tooltip = pickupTooltip;
 
-            self.widgets[widx::speedControl].type = WidgetType::none;
+            self.widgets[widx::speedControl].hidden = true;
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -947,10 +947,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (!CompanyManager::isPlayerCompany(head->owner))
             {
-                self.widgets[widx::stopStart].type = WidgetType::none;
-                self.widgets[widx::pickup].type = WidgetType::none;
-                self.widgets[widx::passSignal].type = WidgetType::none;
-                self.widgets[widx::changeDirection].type = WidgetType::none;
+                self.widgets[widx::stopStart].hidden = true;
+                self.widgets[widx::pickup].hidden = true;
+                self.widgets[widx::passSignal].hidden = true;
+                self.widgets[widx::changeDirection].hidden = true;
                 self.widgets[widx::viewport].right += 22;
             }
 
@@ -970,7 +970,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::drawTabs(&self, drawingCtx);
 
             Widget& pickupButton = self.widgets[widx::pickup];
-            if (pickupButton.type != WidgetType::none)
+            if (!pickupButton.hidden)
             {
                 if ((pickupButton.image & 0x20000000) != 0 && !self.isDisabled(widx::pickup))
                 {
@@ -1006,7 +1006,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             Widget& speedWidget = self.widgets[widx::speedControl];
-            if (speedWidget.type != WidgetType::none)
+            if (!speedWidget.hidden)
             {
                 drawingCtx.drawImage(
                     self.x + speedWidget.left,
@@ -1509,19 +1509,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::remove].right = self.width - 2;
             self.widgets[widx::remove].left = self.width - 25;
 
-            self.widgets[widx::buildNew].type = WidgetType::buttonWithImage;
-            self.widgets[widx::pickup].type = WidgetType::buttonWithImage;
-            self.widgets[widx::remove].type = WidgetType::buttonWithImage;
+            self.widgets[widx::buildNew].hidden = false;
+            self.widgets[widx::pickup].hidden = false;
+            self.widgets[widx::remove].hidden = false;
             // Differs to main tab! Unsure why.
             if (head->isPlaced())
             {
-                self.widgets[widx::pickup].type = WidgetType::none;
+                self.widgets[widx::pickup].hidden = true;
             }
             if (head->owner != CompanyManager::getControllingId())
             {
-                self.widgets[widx::buildNew].type = WidgetType::none;
-                self.widgets[widx::pickup].type = WidgetType::none;
-                self.widgets[widx::remove].type = WidgetType::none;
+                self.widgets[widx::buildNew].hidden = true;
+                self.widgets[widx::pickup].hidden = true;
+                self.widgets[widx::remove].hidden = true;
                 self.widgets[widx::carList].right = self.width - 4;
             }
 
@@ -1554,7 +1554,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::drawTabs(&self, drawingCtx);
 
             // TODO: identical to main tab (doesn't appear to do anything useful)
-            if (self.widgets[widx::pickup].type != WidgetType::none)
+            if (!self.widgets[widx::pickup].hidden)
             {
                 if ((self.widgets[widx::pickup].image & (1 << 29)) && !self.isDisabled(widx::pickup))
                 {
@@ -1879,10 +1879,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::cargoList].bottom = self.height - 27;
             self.widgets[widx::refit].right = self.width - 2;
             self.widgets[widx::refit].left = self.width - 25;
-            self.widgets[widx::refit].type = WidgetType::buttonWithImage;
+            self.widgets[widx::refit].hidden = false;
             if (!canRefit(headVehicle))
             {
-                self.widgets[widx::refit].type = WidgetType::none;
+                self.widgets[widx::refit].hidden = true;
                 self.widgets[widx::cargoList].right = self.width - 26 + 22;
             }
 
@@ -3214,16 +3214,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.activatedWidgets |= (1 << widx::localMode);
             }
 
-            WidgetType type = head->owner == CompanyManager::getControllingId() ? WidgetType::buttonWithImage : WidgetType::none;
-            self.widgets[widx::orderForceUnload].type = type;
-            self.widgets[widx::orderWait].type = type;
-            self.widgets[widx::orderSkip].type = type;
-            self.widgets[widx::orderDelete].type = type;
-            self.widgets[widx::orderUp].type = type;
-            self.widgets[widx::orderDown].type = type;
-            self.widgets[widx::orderReverse].type = type;
+            const bool isControllingCompany = head->owner == CompanyManager::getControllingId() ? false : true;
+            self.widgets[widx::orderForceUnload].hidden = isControllingCompany;
+            self.widgets[widx::orderWait].hidden = isControllingCompany;
+            self.widgets[widx::orderSkip].hidden = isControllingCompany;
+            self.widgets[widx::orderDelete].hidden = isControllingCompany;
+            self.widgets[widx::orderUp].hidden = isControllingCompany;
+            self.widgets[widx::orderDown].hidden = isControllingCompany;
+            self.widgets[widx::orderReverse].hidden = isControllingCompany;
 
-            if (type == WidgetType::none)
+            if (isControllingCompany)
             {
                 self.widgets[widx::routeList].right += 22;
                 self.enabledWidgets &= ~(1 << widx::expressMode | 1 << widx::localMode);

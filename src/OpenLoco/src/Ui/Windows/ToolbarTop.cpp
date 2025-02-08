@@ -826,7 +826,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
-        if (window.widgets[Common::Widx::railroad_menu].type != WidgetType::none)
+        if (!window.widgets[Common::Widx::railroad_menu].hidden)
         {
             uint32_t x = window.widgets[Common::Widx::railroad_menu].left + window.x;
             uint32_t y = window.widgets[Common::Widx::railroad_menu].top + window.y;
@@ -936,7 +936,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (Config::get().cheatsMenuEnabled)
         {
-            window.widgets[Widx::cheats_menu].type = WidgetType::toolbarTab;
+            window.widgets[Widx::cheats_menu].hidden = false;
             auto& baseWidget = window.widgets[Widx::cheats_menu];
             window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
             window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
@@ -944,7 +944,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
         else
         {
-            window.widgets[Widx::cheats_menu].type = WidgetType::none;
+            window.widgets[Widx::cheats_menu].hidden = true;
             auto& baseWidget = window.widgets[Common::Widx::audio_menu];
             window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
             window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
@@ -993,29 +993,29 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (getGameState().lastRoadOption != 0xFF)
         {
-            window.widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
+            window.widgets[Common::Widx::road_menu].hidden = false;
         }
         else
         {
-            window.widgets[Common::Widx::road_menu].type = WidgetType::none;
+            window.widgets[Common::Widx::road_menu].hidden = true;
         }
 
         if (getGameState().lastRailroadOption != 0xFF)
         {
-            window.widgets[Common::Widx::railroad_menu].type = WidgetType::toolbarTab;
+            window.widgets[Common::Widx::railroad_menu].hidden = false;
         }
         else
         {
-            window.widgets[Common::Widx::railroad_menu].type = WidgetType::none;
+            window.widgets[Common::Widx::railroad_menu].hidden = true;
         }
 
         if (getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF)
         {
-            window.widgets[Common::Widx::port_menu].type = WidgetType::toolbarTab;
+            window.widgets[Common::Widx::port_menu].hidden = false;
         }
         else
         {
-            window.widgets[Common::Widx::port_menu].type = WidgetType::none;
+            window.widgets[Common::Widx::port_menu].hidden = true;
         }
 
         uint32_t x = std::max(640, Ui::width()) - 1;
@@ -1023,17 +1023,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         x -= 11;
         Common::rightAlignTabs(&window, x, { Common::Widx::build_vehicles_menu });
 
-        if (window.widgets[Common::Widx::port_menu].type != WidgetType::none)
+        if (!window.widgets[Common::Widx::port_menu].hidden)
         {
             Common::rightAlignTabs(&window, x, { Common::Widx::port_menu });
         }
 
-        if (window.widgets[Common::Widx::road_menu].type != WidgetType::none)
+        if (!window.widgets[Common::Widx::road_menu].hidden)
         {
             Common::rightAlignTabs(&window, x, { Common::Widx::road_menu });
         }
 
-        if (window.widgets[Common::Widx::railroad_menu].type != WidgetType::none)
+        if (!window.widgets[Common::Widx::railroad_menu].hidden)
         {
             Common::rightAlignTabs(&window, x, { Common::Widx::railroad_menu });
         }

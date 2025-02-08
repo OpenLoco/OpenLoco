@@ -406,11 +406,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
                     self.enabledWidgets &= ~(1 << widx::browseHeightmapFile);
 
-                    self.widgets[widx::change_heightmap_btn].type = WidgetType::button;
-                    self.widgets[widx::terrainSmoothingNum].type = WidgetType::none;
-                    self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::none;
-                    self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::none;
-                    self.widgets[widx::browseHeightmapFile].type = WidgetType::none;
+                    self.widgets[widx::change_heightmap_btn].hidden = false;
+                    self.widgets[widx::terrainSmoothingNum].hidden = true;
+                    self.widgets[widx::terrainSmoothingNumUp].hidden = true;
+                    self.widgets[widx::terrainSmoothingNumDown].hidden = true;
+                    self.widgets[widx::browseHeightmapFile].hidden = true;
                     break;
                 }
 
@@ -420,11 +420,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     self.enabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
                     self.enabledWidgets &= ~(1 << widx::browseHeightmapFile);
 
-                    self.widgets[widx::change_heightmap_btn].type = WidgetType::none;
-                    self.widgets[widx::terrainSmoothingNum].type = WidgetType::textbox;
-                    self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::button;
-                    self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::button;
-                    self.widgets[widx::browseHeightmapFile].type = WidgetType::none;
+                    self.widgets[widx::change_heightmap_btn].hidden = true;
+                    self.widgets[widx::terrainSmoothingNum].hidden = false;
+                    self.widgets[widx::terrainSmoothingNumUp].hidden = false;
+                    self.widgets[widx::terrainSmoothingNumDown].hidden = false;
+                    self.widgets[widx::browseHeightmapFile].hidden = true;
                     break;
                 }
 
@@ -434,11 +434,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
                     self.enabledWidgets |= (1 << widx::browseHeightmapFile);
 
-                    self.widgets[widx::change_heightmap_btn].type = WidgetType::none;
-                    self.widgets[widx::terrainSmoothingNum].type = WidgetType::none;
-                    self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::none;
-                    self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::none;
-                    self.widgets[widx::browseHeightmapFile].type = WidgetType::button;
+                    self.widgets[widx::change_heightmap_btn].hidden = true;
+                    self.widgets[widx::terrainSmoothingNum].hidden = true;
+                    self.widgets[widx::terrainSmoothingNumUp].hidden = true;
+                    self.widgets[widx::terrainSmoothingNumDown].hidden = true;
+                    self.widgets[widx::browseHeightmapFile].hidden = false;
                     break;
                 }
             }

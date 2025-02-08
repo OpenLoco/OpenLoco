@@ -167,8 +167,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void prepareDraw(Ui::Window& window)
     {
         window.disabledWidgets = 0;
-        window.widgets[Widx::tutorial_btn].type = Ui::WidgetType::buttonWithImage;
-        window.widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::buttonWithImage;
+        window.widgets[Widx::tutorial_btn].hidden = false;
+        window.widgets[Widx::scenario_editor_btn].hidden = false;
 
         // TODO: add widget::set_origin()
         window.widgets[Widx::scenario_list_btn].left = 0;
@@ -179,22 +179,22 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         window.widgets[Widx::tutorial_btn].right = kBtnMainSize * 3 - 1;
         window.widgets[Widx::scenario_editor_btn].left = kBtnMainSize * 3;
         window.widgets[Widx::scenario_editor_btn].right = kBtnMainSize * 4 - 1;
-        window.widgets[Widx::chat_btn].type = Ui::WidgetType::none;
+        window.widgets[Widx::chat_btn].hidden = true;
 
         auto& config = Config::get();
-        window.widgets[Widx::multiplayer_toggle_btn].type = config.network.enabled ? WidgetType::buttonWithImage : WidgetType::none;
+        window.widgets[Widx::multiplayer_toggle_btn].hidden = config.network.enabled ? false : true;
 
         if (SceneManager::isNetworked())
         {
-            window.widgets[Widx::tutorial_btn].type = Ui::WidgetType::none;
-            window.widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::none;
+            window.widgets[Widx::tutorial_btn].hidden = true;
+            window.widgets[Widx::scenario_editor_btn].hidden = true;
 
             window.widgets[Widx::scenario_list_btn].left = kBtnMainSize;
             window.widgets[Widx::scenario_list_btn].right = kBtnMainSize * 2 - 1;
             window.widgets[Widx::load_game_btn].left = kBtnMainSize * 2;
             window.widgets[Widx::load_game_btn].right = kBtnMainSize * 3 - 1;
 
-            window.widgets[Widx::chat_btn].type = Ui::WidgetType::buttonWithImage;
+            window.widgets[Widx::chat_btn].hidden = false;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window.widgets[Widx::chat_btn].image = skin->img + InterfaceSkin::ImageIds::phone;
         }
@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         // Draw widgets.
         window.draw(drawingCtx);
 
-        if (window.widgets[Widx::scenario_list_btn].type != Ui::WidgetType::none)
+        if (!window.widgets[Widx::scenario_list_btn].hidden)
         {
             int16_t x = window.widgets[Widx::scenario_list_btn].left + window.x;
             int16_t y = window.widgets[Widx::scenario_list_btn].top + window.y;
@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             drawingCtx.drawImage(x, y, ImageIds::title_menu_sparkle);
         }
 
-        if (window.widgets[Widx::load_game_btn].type != Ui::WidgetType::none)
+        if (!window.widgets[Widx::load_game_btn].hidden)
         {
             int16_t x = window.widgets[Widx::load_game_btn].left + window.x;
             int16_t y = window.widgets[Widx::load_game_btn].top + window.y;
@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             drawingCtx.drawImage(x, y, ImageIds::title_menu_save);
         }
 
-        if (window.widgets[Widx::tutorial_btn].type != Ui::WidgetType::none)
+        if (!window.widgets[Widx::tutorial_btn].hidden)
         {
             int16_t x = window.widgets[Widx::tutorial_btn].left + window.x;
             int16_t y = window.widgets[Widx::tutorial_btn].top + window.y;
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             drawingCtx.drawImage(x, y, ImageIds::title_menu_lesson_l);
         }
 
-        if (window.widgets[Widx::scenario_editor_btn].type != Ui::WidgetType::none)
+        if (!window.widgets[Widx::scenario_editor_btn].hidden)
         {
             int16_t x = window.widgets[Widx::scenario_editor_btn].left + window.x;
             int16_t y = window.widgets[Widx::scenario_editor_btn].top + window.y;
@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             drawingCtx.drawImage(x, y, image_id);
         }
 
-        if (window.widgets[Widx::multiplayer_toggle_btn].type != Ui::WidgetType::none)
+        if (!window.widgets[Widx::multiplayer_toggle_btn].hidden)
         {
             auto& widget = window.widgets[Widx::multiplayer_toggle_btn];
             auto point = Point(widget.top + 3 + window.y, window.width / 2 + window.x);

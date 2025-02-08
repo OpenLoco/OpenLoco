@@ -122,11 +122,11 @@ namespace OpenLoco::Ui::Windows::Industry
 
             if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
-                self.widgets[widx::demolish_industry].type = WidgetType::buttonWithImage;
+                self.widgets[widx::demolish_industry].hidden = false;
             }
             else
             {
-                self.widgets[widx::demolish_industry].type = WidgetType::none;
+                self.widgets[widx::demolish_industry].hidden = true;
                 self.widgets[widx::viewport].right += 22;
             }
 

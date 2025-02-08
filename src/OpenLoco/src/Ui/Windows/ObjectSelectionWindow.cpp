@@ -381,7 +381,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
             {
                 self->enabledWidgets |= 1ULL << widgetIndex;
-                self->widgets[widgetIndex].type = WidgetType::tab;
+                self->widgets[widgetIndex].hidden = false;
                 self->widgets[widgetIndex].left = xPos;
                 self->widgets[widgetIndex].right = xPos + 31;
                 xPos = self->widgets[widgetIndex].right;
@@ -389,7 +389,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             else
             {
                 self->enabledWidgets &= ~(1ULL << widgetIndex);
-                self->widgets[widgetIndex].type = WidgetType::none;
+                self->widgets[widgetIndex].hidden = true;
             }
         }
     }
@@ -573,10 +573,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         self.activatedWidgets = (1 << widx::objectImage);
 
-        self.widgets[widx::closeButton].type = WidgetType::buttonWithImage;
+        self.widgets[widx::closeButton].hidden = false;
         if (SceneManager::isEditorMode())
         {
-            self.widgets[widx::closeButton].type = WidgetType::none;
+            self.widgets[widx::closeButton].hidden = true;
         }
 
         self.activatedWidgets |= 1ULL << (widx::primaryTab1 + self.currentTab);
@@ -634,13 +634,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (showSecondaryTabs)
         {
             self.widgets[widx::scrollview].top = 62 + 28;
-            self.widgets[widx::scrollviewFrame].type = WidgetType::panel;
+            self.widgets[widx::scrollviewFrame].hidden = false;
             self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
         }
         else
         {
             self.widgets[widx::scrollview].top = 62;
-            self.widgets[widx::scrollviewFrame].type = WidgetType::none;
+            self.widgets[widx::scrollviewFrame].hidden = true;
         }
     }
 
@@ -653,7 +653,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto i = 0U; i < kMaxNumPrimaryTabs; i++)
         {
             auto widgetIndex = i + widx::primaryTab1;
-            if (self->widgets[widgetIndex].type == WidgetType::none)
+            if (self->widgets[widgetIndex].hidden)
             {
                 continue;
             }
@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto i = 0U; i < subTabs.size(); i++)
         {
             auto widgetIndex = i + widx::secondaryTab1;
-            if (self->widgets[widgetIndex].type == WidgetType::none)
+            if (self->widgets[widgetIndex].hidden)
             {
                 continue;
             }

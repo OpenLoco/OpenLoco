@@ -202,11 +202,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if (CompanyId(self.number) == CompanyManager::getControllingId())
             {
-                self.widgets[widx::change_owner_name].type = WidgetType::buttonWithImage;
+                self.widgets[widx::change_owner_name].hidden = false;
             }
             else
             {
-                self.widgets[widx::change_owner_name].type = WidgetType::none;
+                self.widgets[widx::change_owner_name].hidden = true;
             }
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
@@ -757,11 +757,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if (CompanyId(self.number) == CompanyManager::getControllingId())
             {
-                self.widgets[widx::build_hq].type = WidgetType::buttonWithImage;
+                self.widgets[widx::build_hq].hidden = false;
             }
             else
             {
-                self.widgets[widx::build_hq].type = WidgetType::none;
+                self.widgets[widx::build_hq].hidden = true;
             }
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
@@ -1429,15 +1429,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     self.widgets[tuples[i].primary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].primary);
                     self.widgets[tuples[i].secondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].secondary);
 
-                    self.widgets[tuples[i].primary].type = WidgetType::buttonWithColour;
-                    self.widgets[tuples[i].secondary].type = WidgetType::buttonWithColour;
+                    self.widgets[tuples[i].primary].hidden = false;
+                    self.widgets[tuples[i].secondary].hidden = false;
                 }
                 else
                 {
                     self.activatedWidgets &= ~(1ULL << tuples[i].checkbox);
 
-                    self.widgets[tuples[i].primary].type = WidgetType::none;
-                    self.widgets[tuples[i].secondary].type = WidgetType::none;
+                    self.widgets[tuples[i].primary].hidden = true;
+                    self.widgets[tuples[i].secondary].hidden = true;
                 }
             }
 
@@ -1781,10 +1781,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if (company->id() == CompanyManager::getControllingId())
             {
-                self.widgets[widx::currentLoan].type = WidgetType::textbox;
-                self.widgets[widx::loan_decrease].type = WidgetType::button;
-                self.widgets[widx::loan_increase].type = WidgetType::button;
-                self.widgets[widx::loan_autopay].type = WidgetType::checkbox;
+                self.widgets[widx::currentLoan].hidden = false;
+                self.widgets[widx::loan_decrease].hidden = false;
+                self.widgets[widx::loan_increase].hidden = false;
+                self.widgets[widx::loan_autopay].hidden = false;
 
                 if ((company->challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none)
                 {
@@ -1797,10 +1797,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
             else
             {
-                self.widgets[widx::currentLoan].type = WidgetType::none;
-                self.widgets[widx::loan_decrease].type = WidgetType::none;
-                self.widgets[widx::loan_increase].type = WidgetType::none;
-                self.widgets[widx::loan_autopay].type = WidgetType::none;
+                self.widgets[widx::currentLoan].hidden = true;
+                self.widgets[widx::loan_decrease].hidden = true;
+                self.widgets[widx::loan_increase].hidden = true;
+                self.widgets[widx::loan_autopay].hidden = true;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
@@ -2487,7 +2487,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
-            self.widgets[Common::widx::company_select].type = WidgetType::none;
+            self.widgets[Common::widx::company_select].hidden = true;
 
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
         }

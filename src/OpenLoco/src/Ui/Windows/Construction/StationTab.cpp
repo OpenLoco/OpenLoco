@@ -885,13 +885,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     {
         Common::prepareDraw(&self);
 
-        self.widgets[widx::rotate].type = WidgetType::none;
+        self.widgets[widx::rotate].hidden = true;
 
         auto captionArgs = FormatArguments(self.widgets[Common::widx::caption].textArgs);
 
         if (_cState->byte_1136063 & (1 << 7))
         {
-            self.widgets[widx::rotate].type = WidgetType::buttonWithImage;
+            self.widgets[widx::rotate].hidden = false;
 
             auto airportObj = ObjectManager::get<AirportObject>(_cState->lastSelectedStationType);
 

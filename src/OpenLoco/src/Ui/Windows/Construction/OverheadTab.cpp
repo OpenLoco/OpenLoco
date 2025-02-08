@@ -414,10 +414,10 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         self.activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 
-        self.widgets[widx::checkbox_1].type = WidgetType::none;
-        self.widgets[widx::checkbox_2].type = WidgetType::none;
-        self.widgets[widx::checkbox_3].type = WidgetType::none;
-        self.widgets[widx::checkbox_4].type = WidgetType::none;
+        self.widgets[widx::checkbox_1].hidden = true;
+        self.widgets[widx::checkbox_2].hidden = true;
+        self.widgets[widx::checkbox_3].hidden = true;
+        self.widgets[widx::checkbox_4].hidden = true;
 
         if (_cState->trackType & (1 << 7))
         {
@@ -455,17 +455,17 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         // self->activatedWidgets = activatedWidgets;
 
-        self.widgets[widx::image].type = WidgetType::none;
-        self.widgets[widx::track].type = WidgetType::none;
-        self.widgets[widx::track_dropdown].type = WidgetType::none;
+        self.widgets[widx::image].hidden = true;
+        self.widgets[widx::track].hidden = true;
+        self.widgets[widx::track_dropdown].hidden = true;
 
         self.widgets[widx::image].tooltip = StringIds::null;
 
         if (_cState->lastSelectedMods & 0xF)
         {
-            self.widgets[widx::image].type = WidgetType::wt_3;
-            self.widgets[widx::track].type = WidgetType::combobox;
-            self.widgets[widx::track_dropdown].type = WidgetType::button;
+            self.widgets[widx::image].hidden = false;
+            self.widgets[widx::track].hidden = false;
+            self.widgets[widx::track_dropdown].hidden = false;
 
             self.widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
 

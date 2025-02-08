@@ -718,8 +718,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 self.activatedWidgets |= (1ULL << widx::plant_cluster_random);
             }
 
-            self.widgets[widx::rotate_object].type = WidgetType::none;
-            self.widgets[widx::object_colour].type = WidgetType::none;
+            self.widgets[widx::rotate_object].hidden = true;
+            self.widgets[widx::object_colour].hidden = true;
 
             if (self.rowHover != -1)
             {
@@ -728,13 +728,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (treeObj->numRotations != 1)
                     {
-                        self.widgets[widx::rotate_object].type = WidgetType::buttonWithImage;
+                        self.widgets[widx::rotate_object].hidden = false;
                     }
 
                     if (treeObj->colours != 0)
                     {
                         self.widgets[widx::object_colour].image = Widget::kImageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_treeColour);
-                        self.widgets[widx::object_colour].type = WidgetType::buttonWithColour;
+                        self.widgets[widx::object_colour].hidden = false;
                     }
                 }
             }
@@ -1775,12 +1775,12 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (isPaintMode)
             {
-                self.widgets[widx::land_material].type = WidgetType::wt_6;
+                self.widgets[widx::land_material].hidden = false;
                 self.widgets[widx::land_material].image = landObj->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
             else
             {
-                self.widgets[widx::land_material].type = WidgetType::none;
+                self.widgets[widx::land_material].hidden = true;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
