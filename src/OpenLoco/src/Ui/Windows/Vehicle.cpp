@@ -183,7 +183,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         constexpr uint64_t holdableWidgets = 0;
-        constexpr CursorId paintToolCursor = CursorId::handPointer;
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 177, StringIds::title_vehicle_details),
@@ -1542,7 +1541,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             if (isPaintToolActive(self))
             {
-                return paintToolCursor;
+                return CursorId::brush;
             }
             return CursorId::openHand;
         }
@@ -1766,7 +1765,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void paintToolBegin(Window& self)
         {
-            bool active = ToolManager::toolSet(&self, widx::paintBrush, paintToolCursor);
+            bool active = ToolManager::toolSet(&self, widx::paintBrush, CursorId::brush);
             self.activatedWidgets &= ~(1U << widx::paintBrush);
             self.activatedWidgets |= (1U << widx::paintBrush) * active;
             self.invalidate();
