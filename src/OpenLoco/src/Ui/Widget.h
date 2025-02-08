@@ -170,16 +170,6 @@ namespace OpenLoco::Ui
         return out;
     }
 
-    constexpr Widget makeDropdownButtonWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
-    {
-        const int16_t xPos = origin.x + size.width - 12;
-        const int16_t yPos = origin.y + 1;
-        const uint16_t width = 11;
-        const uint16_t height = 10;
-
-        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::dropdown, tooltip);
-    }
-
     namespace Detail
     {
         template<typename T, typename Enable = void>
@@ -244,11 +234,4 @@ namespace OpenLoco::Ui
         return res;
     }
 
-    constexpr auto makeDropdownWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-    {
-        // TODO: Make this a single widget.
-        return makeWidgets(
-            makeWidget(origin, size, WidgetType::combobox, colour, content, tooltip),
-            makeDropdownButtonWidget(origin, size, colour));
-    }
 }
