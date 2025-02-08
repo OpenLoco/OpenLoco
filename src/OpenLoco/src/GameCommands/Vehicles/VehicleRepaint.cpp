@@ -39,60 +39,49 @@ namespace OpenLoco::GameCommands
 
     static uint32_t vehicleRepaint(EntityId headId, const QuadraColour colours, const VehicleRepaintFlags paintFlags, const uint8_t flags)
     {
-
-        try
-        {
-            auto entity = EntityManager::get<EntityBase>(headId);
-            auto veh = entity->asBase<Vehicles::VehicleBase>();
-            if (veh == nullptr)
-            {
-                return FAILURE;
-            }
-
-            if (!sub_431E6A(veh->owner))
-            {
-                return FAILURE;
-            }
-
-            if (!(flags & Flags::apply))
-            {
-                return 0;
-            }
-
-            Vehicles::Vehicle train(veh->getHead());
-
-            [&train = train, &targetEntity = *veh, &colours = colours, &paintFlags = paintFlags]() {
-                for (auto& car : train.cars)
-                {
-                    if (paintFlags && VehicleRepaintFlags::applyToEntireTrain)
-                    {
-                        PaintEntireCar(car, colours, paintFlags);
-                        continue;
-                    }
-                    for (auto& carComponent : car)
-                    {
-                        if (carComponent.front == &targetEntity || carComponent.back == &targetEntity || carComponent.body == &targetEntity)
-                        {
-                            if (paintFlags && VehicleRepaintFlags::applyToEntireCar)
-                            {
-                                PaintEntireCar(car, colours, paintFlags);
-                            }
-                            else
-                            {
-                                PaintComponent(carComponent, colours, paintFlags);
-                            }
-                            return;
-                        }
-                    }
-                }
-            }();
-
-            return 0;
-        }
-        catch (std::runtime_error&)
+        auto entity = EntityManager::get<EntityBase>(headId);
+        auto veh = entity->asBase<Vehicles::VehicleBase>();
+        if (veh == nullptr)
         {
             return FAILURE;
         }
+
+        if (!sub_431E6A(veh->owner))
+        {
+            return FAILURE;
+        }
+
+        if (!(flags & Flags::apply))
+        {
+            return 0;
+        }
+
+        Vehicles::Vehicle train(veh->getHead());
+
+        for (auto& car : train.cars)
+        {
+            if (paintFlags && VehicleRepaintFlags::applyToEntireTrain)
+            {
+                PaintEntireCar(car, colours, paintFlags);
+                continue;
+            }
+            for (auto& carComponent : car)
+            {
+                if (carComponent.front == veh || carComponent.back == veh || carComponent.body == veh)
+                {
+                    if (paintFlags && VehicleRepaintFlags::applyToEntireCar)
+                    {
+                        PaintEntireCar(car, colours, paintFlags);
+                    }
+                    else
+                    {
+                        PaintComponent(carComponent, colours, paintFlags);
+                    }
+                    return 0;
+                }
+            }
+        }
+        return 0;
     }
 
     void vehicleRepaint(registers& regs)
