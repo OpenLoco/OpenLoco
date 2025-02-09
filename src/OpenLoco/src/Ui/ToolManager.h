@@ -21,7 +21,8 @@ namespace OpenLoco::ToolManager
         onScrollNoModifier,
         onScrollShiftModifier,
         onScrollControlModifier,
-        getCursor
+        getCursor,
+        count
     };
 
     struct ToolState
@@ -34,8 +35,8 @@ namespace OpenLoco::ToolManager
         CursorId cursor;
     };
 
-    using ToolCallback_t = auto (*)(Window&, const ToolState) -> void;
-    using ToolCursor_t = auto (*)(Window&, const ToolState, bool&) -> CursorId;
+    using ToolCallback_t = auto (*)(Window&, const ToolState&) -> void;
+    using ToolCursor_t = auto (*)(Window&, const ToolState&, bool&) -> CursorId;
 
     struct ToolEventList
     {
@@ -51,7 +52,7 @@ namespace OpenLoco::ToolManager
         ToolCallback_t onScrollControlModifier = nullptr;
         ToolCursor_t getCursor = nullptr;
 
-        ToolCallback_t getToolEvent(ToolEventType event);
+        constexpr ToolCallback_t getToolEvent(ToolEventType event) const;
     };
 
     struct ToolConfiguration
@@ -67,9 +68,30 @@ namespace OpenLoco::ToolManager
 
     bool isToolActive(Ui::WindowType, Ui::WindowNumber_t);
     bool isToolActive(Ui::WindowType, Ui::WindowNumber_t, int16_t);
+    bool isToolActive(Ui::WindowNumber_t number, const ToolConfiguration& config);
     bool toolSet(Ui::Window* w, int16_t widgetIndex, Ui::CursorId cursorId);
+    bool toolSet(Ui::Window* w, ToolConfiguration config);
     void toolCancel();
     void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
+
+    // I'm sure there's a more cpp way to do this but I don't know it
+    constexpr bool operator==(const ToolEventList& a, const ToolEventList& b) noexcept
+    {
+        for (int i = 0; i < enumValue(ToolEventType::count); i++)
+        {
+            if (a.getToolEvent(ToolEventType(i)) != b.getToolEvent(ToolEventType(i)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // I'm sure there's a more cpp way to do this but I don't know it
+    constexpr bool operator==(const ToolConfiguration& a, const ToolConfiguration& b) noexcept
+    {
+        return a.events == b.events && a.cursor == b.cursor && a.type == b.type;
+    }
 
     //  0x00523390
     Ui::WindowNumber_t getToolWindowNumber();

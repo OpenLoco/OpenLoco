@@ -58,6 +58,11 @@ namespace OpenLoco::ToolManager
         return getToolWidgetIndex() == widgetIndex;
     }
 
+    bool isToolActive(Ui::WindowNumber_t number, const ToolConfiguration& config)
+    {
+        return number == currentTool.windowNumber && config == currentTool;
+    }
+
     // 0x004CE367
     // tool (al)
     // widgetIndex (dx)
@@ -76,6 +81,9 @@ namespace OpenLoco::ToolManager
                 toolCancel();
             }
         }
+        currentTool = ToolConfiguration{};
+        currentTool.type = w->type;
+        currentTool.windowNumber = w->number;
         Input::setFlag(Input::Flags::toolActive);
         Input::resetFlag(Input::Flags::flag6);
         ToolManager::setToolCursor(cursorId);
@@ -195,9 +203,9 @@ namespace OpenLoco::ToolManager
         _toolWidgetIndex = toolWidgetIndex;
     }
 
-    ToolCallback_t ToolEventList::getToolEvent(ToolEventType event)
+    // I'm sure there's a more cpp way to do this but I don't know it.
+    constexpr ToolCallback_t ToolEventList::getToolEvent(ToolEventType event) const
     {
-        // I'm sure there's a more cpp way to do this but I don't know it.
         switch (event)
         {
             case ToolEventType::onMouseMove:
