@@ -17,6 +17,8 @@ namespace OpenLoco::ToolManager
     static loco_global<Ui::CursorId, 0x00523393> _toolWindowCursor;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIndex;
 
+    static ToolConfiguration currentTool;
+
     Window* toolGetActiveWindow()
     {
         if (!Input::hasFlag(Input::Flags::toolActive))
@@ -159,5 +161,106 @@ namespace OpenLoco::ToolManager
     void setToolWidgetIndex(uint16_t toolWidgetIndex)
     {
         _toolWidgetIndex = toolWidgetIndex;
+    }
+
+    template<ToolEventType event>
+    ToolCallback_t ToolEventList::getToolEvent()
+    {
+        // I'm sure there's a more cpp way to do this but I don't know it.
+        switch (event)
+        {
+            case ToolEventType::onUpdate:
+                return onMouseMove;
+            case ToolEventType::onMouseDown:
+                return onMouseDown;
+            case ToolEventType::onMouseDrag:
+                return onMouseDrag;
+            case ToolEventType::onMouseDragEnd:
+                return onMouseDragEnd;
+            case ToolEventType::onToolAbort:
+                return onAbort;
+            case ToolEventType::onShiftChanged:
+                return onShiftChanged;
+            case ToolEventType::onControlChanged:
+                return onControlChanged;
+            case ToolEventType::onScrollNoModifier:
+                return onScrollNoModifier;
+            case ToolEventType::onScrollShiftModifier:
+                return onScrollShiftModifier;
+            case ToolEventType::onScrollControlModifier:
+                return onScrollControlModifier;
+        }
+        return nullptr;
+    }
+
+    template<ToolEventType event>
+    static ToolState getToolState(int16_t x, int16_t y, int16_t z = 0)
+    {
+        return {
+            event,
+            { x, y },
+            z,
+            Input::hasKeyModifier(Input::KeyModifier::shift),
+            Input::hasKeyModifier(Input::KeyModifier::control),
+            false,
+            false,
+            currentTool.cursor,
+        };
+    }
+
+    CursorId callToolCursor(int16_t x, int16_t y, bool& out)
+    {
+        auto toolEvent = currentTool.events.getCursor;
+        if (toolEvent == nullptr)
+        {
+            return currentTool.cursor;
+        }
+
+        auto window = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
+        if (window == nullptr)
+        {
+            return currentTool.cursor;
+        }
+
+        return toolEvent(*window, getToolState<ToolEventType::getCursor>(x, y), out);
+    }
+
+    template<ToolEventType event>
+    bool fireEvent(int16_t x, int16_t y, int16_t z)
+    {
+        auto window = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
+        if (window == nullptr)
+        {
+            return false;
+        }
+        auto toolEvent = currentTool.events.getToolEvent<event>();
+        if (toolEvent == nullptr)
+        {
+            return false;
+        }
+        auto state = getToolState<event>(x, y, z);
+        switch (event)
+        {
+            case ToolEventType::onShiftPressedChanged:
+                state.shiftPressedChanged = true;
+                break;
+            case ToolEventType ::onControlPressedChanged:
+                state.controlPressedChanged = true;
+                break;
+        }
+        toolEvent(*window, state);
+        return true;
+    }
+
+    template<ToolEventType event>
+    bool fireEvent(int16_t z)
+    {
+        return fireEvent<event>(0, 0, z);
+    }
+
+    template<ToolEventType event>
+    bool fireEvent()
+    {
+        return fireEvent<event>(0, 0, 0);
     }
 }
