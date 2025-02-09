@@ -6,8 +6,10 @@ namespace OpenLoco::Ui::Widgets
 {
     struct TextBox : public Widget
     {
+        static constexpr auto kWidgetType = WidgetType::textbox;
+
         constexpr TextBox(WidgetId id, Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-            : Widget(id, origin, size, WidgetType::textbox, colour, content, tooltip)
+            : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
         {
             events.draw = &draw;
         }

@@ -6,6 +6,8 @@ namespace OpenLoco::Ui::Widgets
 {
     struct Caption : public Widget
     {
+        static constexpr auto kWidgetType = WidgetType::caption;
+
         enum class Style : uint32_t
         {
             boxed,      // 22
@@ -15,7 +17,7 @@ namespace OpenLoco::Ui::Widgets
         };
 
         constexpr Caption(WidgetId id, Point32 origin, Size32 size, Style captionStyle, WindowColour colour, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
-            : Widget(id, origin, size, WidgetType::caption, colour, content, tooltip)
+            : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
         {
             events.draw = &draw;
             styleData = enumValue(captionStyle);

@@ -6,8 +6,10 @@ namespace OpenLoco::Ui::Widgets
 {
     struct GroupBox : public Widget
     {
+        static constexpr auto kWidgetType = WidgetType::groupbox;
+
         constexpr GroupBox(WidgetId id, Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-            : Widget(id, origin, size, WidgetType::groupbox, colour, content, tooltip)
+            : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
         {
             events.draw = &draw;
         }

@@ -4,11 +4,12 @@
 
 namespace OpenLoco::Ui::Widgets
 {
-
     struct Viewport : public Widget
     {
+        static constexpr auto kWidgetType = WidgetType::viewport;
+
         constexpr Viewport(WidgetId id, Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-            : Widget(id, origin, size, WidgetType::viewport, colour, content, tooltip)
+            : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
         {
             events.draw = &draw;
         }
