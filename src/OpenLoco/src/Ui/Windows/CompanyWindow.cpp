@@ -717,6 +717,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         class ToolBuildHQ : public ToolManager::ToolBase
         {
+            virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event);
+            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event);
+            virtual void onStop(Window& self, const ToolManager::ToolEventType event);
+
+        public:
             ToolBuildHQ()
             {
                 flags = ToolManager::ToolFlags::keepFlag6;
@@ -725,9 +730,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop) };
                 widget = widx::build_hq;
             };
-            virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event);
-            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event);
-            virtual void onStop(Window& self, const ToolManager::ToolEventType event);
         };
 
         static ToolBuildHQ kToolBuildHQ{};
