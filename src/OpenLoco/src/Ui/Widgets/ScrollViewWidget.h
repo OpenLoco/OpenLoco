@@ -6,10 +6,15 @@ namespace OpenLoco::Ui::Widgets
 {
     struct ScrollView : public Widget
     {
-        constexpr ScrollView(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-            : Widget(origin, size, WidgetType::scrollview, colour, content, tooltip)
+        constexpr ScrollView(WidgetId id, Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+            : Widget(id, origin, size, WidgetType::scrollview, colour, content, tooltip)
         {
             events.draw = &draw;
+        }
+
+        constexpr ScrollView(Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+            : ScrollView(WidgetId::none, origin, size, colour, content, tooltip)
+        {
         }
 
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);

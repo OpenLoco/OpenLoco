@@ -7,8 +7,14 @@ namespace OpenLoco::Ui::Widgets
 {
     struct ComboBox : public Widget
     {
+        constexpr ComboBox(WidgetId id, Point32 origin, Size32 size, WindowColour colour, StringId content = StringIds::null, StringId tooltip = StringIds::null)
+            : Widget(id, origin, size, WidgetType::combobox, colour, content, tooltip)
+        {
+            events.draw = &draw;
+        }
+
         constexpr ComboBox(Point32 origin, Size32 size, WindowColour colour, StringId content = StringIds::null, StringId tooltip = StringIds::null)
-            : Widget(origin, size, WidgetType::combobox, colour, content, tooltip)
+            : ComboBox(WidgetId::none, origin, size, colour, content, tooltip)
         {
             events.draw = &draw;
         }

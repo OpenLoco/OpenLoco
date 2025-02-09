@@ -34,10 +34,15 @@ namespace OpenLoco::Ui::Widgets
 
     struct Caption : public Widget
     {
-        constexpr Caption(Ui::Point32 origin, Ui::Size32 size, CaptionVariant variant, WindowColour colour, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
-            : Widget(origin, size, getCaptionWidgetType(variant), colour, content, tooltip)
+        constexpr Caption(WidgetId id, Point32 origin, Size32 size, CaptionVariant variant, WindowColour colour, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
+            : Widget(id, origin, size, getCaptionWidgetType(variant), colour, content, tooltip)
         {
             events.draw = &draw;
+        }
+
+        constexpr Caption(Point32 origin, Size32 size, CaptionVariant variant, WindowColour colour, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
+            : Caption(WidgetId::none, origin, size, variant, colour, content, tooltip)
+        {
         }
 
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
