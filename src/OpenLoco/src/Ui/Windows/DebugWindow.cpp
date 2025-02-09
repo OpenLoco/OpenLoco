@@ -32,47 +32,47 @@ namespace OpenLoco::Ui::Windows::Debug
 
     namespace widx
     {
-        enum
-        {
-            frame,
-            title,
-            close,
-            panel,
-            button_1,
-            button_2,
-            label_1,
-            label_2,
-            label_3,
-            tab_1,
-            tab_2,
-            tab_3,
-            tab_4,
-        };
+        constexpr auto frame = WidgetId("frame");
+        constexpr auto title = WidgetId("title");
+        constexpr auto close = WidgetId("close");
+        constexpr auto panel = WidgetId("panel");
+        constexpr auto button_1 = WidgetId("button_1");
+        constexpr auto button_2 = WidgetId("button_2");
+        constexpr auto label_1 = WidgetId("label_1");
+        constexpr auto label_2 = WidgetId("label_2");
+        constexpr auto label_3 = WidgetId("label_3");
+        constexpr auto tab_1 = WidgetId("tab_1");
+        constexpr auto tab_2 = WidgetId("tab_2");
+        constexpr auto tab_3 = WidgetId("tab_3");
+        constexpr auto tab_4 = WidgetId("tab_4");
     }
 
     static const WindowEventList& getEvents();
 
-    static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, kTitlebarHeight }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::openloco),
-        Widgets::ImageButton({ kWindowSize.width - 15, kMargin }, { 13, kTitlebarHeight }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+    namespace
+    {
+        using namespace Widgets;
 
-        Widgets::Panel({ 0, kTitlebarHeight + kMargin }, { kWindowSize.width, 245 }, WindowColour::secondary),
+        static constexpr auto _widgets = makeWidgets(
+            Frame(widx::frame, { 0, 0 }, kWindowSize, WindowColour::primary),
+            Caption(widx::title, { 1, 1 }, { kWindowSize.width - 2, kTitlebarHeight }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::openloco),
+            ImageButton(widx::close, { kWindowSize.width - 15, kMargin }, { 13, kTitlebarHeight }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
 
-        Widgets::Button({ kMargin, kTitlebarHeight + kMargin + (0 * (kRowSize + kMargin)) }, { kWindowSize.width / 2, kButtonHeight }, WindowColour::secondary, StringIds::openloco),
-        Widgets::ImageButton({ kMargin, kTitlebarHeight + kMargin + (1 * (kRowSize + kMargin)) }, { 24, 24 }, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
+            Panel(widx::panel, { 0, kTitlebarHeight + kMargin }, { kWindowSize.width, 245 }, WindowColour::secondary),
 
-        Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (2 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::left, StringIds::openloco),
-        Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (3 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::center, StringIds::openloco),
-        Widgets::Label({ kMargin, kTitlebarHeight + kMargin + (4 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::right, StringIds::openloco),
+            Button(widx::button_1, { kMargin, kTitlebarHeight + kMargin + (0 * (kRowSize + kMargin)) }, { kWindowSize.width / 2, kButtonHeight }, WindowColour::secondary, StringIds::openloco),
+            ImageButton(widx::button_2, { kMargin, kTitlebarHeight + kMargin + (1 * (kRowSize + kMargin)) }, { 24, 24 }, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
 
-        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
-        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
-        Widgets::Tab({ kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company),
+            Label(widx::label_1, { kMargin, kTitlebarHeight + kMargin + (2 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::left, StringIds::openloco),
+            Label(widx::label_2, { kMargin, kTitlebarHeight + kMargin + (3 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::center, StringIds::openloco),
+            Label(widx::label_3, { kMargin, kTitlebarHeight + kMargin + (4 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::right, StringIds::openloco),
 
-        makeWidget({ kMargin + ((kTabWidth + kMargin) * 3), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes)
-
-    );
+            Tab(widx::tab_1, { kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
+            Tab(widx::tab_2, { kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
+            Tab(widx::tab_3, { kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
+            //
+        );
+    }
 
     // 0x0043B26C
     Window* open()
@@ -103,7 +103,8 @@ namespace OpenLoco::Ui::Windows::Debug
     // 0x0043B4AF
     static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex)
     {
-        switch (widgetIndex)
+        const auto& widget = window.widgets[widgetIndex];
+        switch (widget.id)
         {
             case widx::close:
                 WindowManager::close(window.type);

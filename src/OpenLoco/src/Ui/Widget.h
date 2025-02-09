@@ -20,26 +20,66 @@ namespace OpenLoco::Ui
     using WidgetIndex_t = int16_t;
     constexpr WidgetIndex_t kWidgetIndexNull = -1;
 
-    enum class WidgetId : uint64_t
+    namespace Detail
     {
-        none = 0,
-    };
-
-    constexpr WidgetId operator"" _wtId(const char* s, size_t)
-    {
-        // FNV-1a hash
-        constexpr auto kPrime = 0x00000100000001B3ULL;
-        constexpr auto kOffsetBasis = 0xCBF29CE484222325ULL;
-
-        auto res = kOffsetBasis;
-        for (size_t i = 0; s[i] != '\0'; i++)
+        // TODO: Move this to a more appropriate location.
+        static constexpr uint64_t getHashFNV1a(const char* s, size_t)
         {
-            res ^= s[i];
-            res *= kPrime;
+            // FNV-1a hash
+            constexpr auto kPrime = 0x00000100000001B3ULL;
+            constexpr auto kOffsetBasis = 0xCBF29CE484222325ULL;
+
+            auto res = kOffsetBasis;
+            for (size_t i = 0; s[i] != '\0'; i++)
+            {
+                res ^= s[i];
+                res *= kPrime;
+            }
+
+            return res;
+        }
+    }
+
+    class WidgetId
+    {
+    public:
+        enum class ValueType : uint64_t
+        {
+            none = 0,
+        };
+
+    private:
+        ValueType _value{};
+
+    public:
+        static constexpr auto none = ValueType::none;
+
+        constexpr WidgetId() = default;
+
+        constexpr WidgetId(ValueType value)
+            : _value{ value }
+        {
         }
 
-        return static_cast<WidgetId>(res);
-    }
+        template<size_t TSize>
+        constexpr WidgetId(const char (&str)[TSize])
+            : _value{ static_cast<ValueType>(Detail::getHashFNV1a(str, TSize)) }
+        {
+        }
+
+        constexpr WidgetId(const char* str)
+            : _value{ static_cast<ValueType>(Detail::getHashFNV1a(str, 0)) }
+        {
+        }
+
+        constexpr auto operator<=>(const WidgetId&) const = default;
+
+        // This makes switch statements work.
+        constexpr operator uint64_t() const
+        {
+            return static_cast<uint64_t>(_value);
+        }
+    };
 
     struct Window;
     enum class WindowColour : uint8_t;
@@ -240,5 +280,4 @@ namespace OpenLoco::Ui
 
         return res;
     }
-
 }
