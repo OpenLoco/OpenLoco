@@ -228,8 +228,9 @@ namespace OpenLoco::ToolManager
                 return onScrollShiftModifier;
             case ToolEventType::onScrollControlModifier:
                 return onScrollControlModifier;
+            default:
+                return nullptr;
         }
-        return nullptr;
     }
 
     static ToolState getToolState(ToolEventType event, int16_t x, int16_t y, int16_t z = 0)
