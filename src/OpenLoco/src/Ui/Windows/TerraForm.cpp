@@ -1231,7 +1231,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Widgets::ImageButton({ 96, 72 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
             Widgets::ImageButton({ 57, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::mountainModeTooltip),
             Widgets::ImageButton({ 83, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
-            makeWidget({ 112, 94 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary)
+            Widgets::ImageButton({ 112, 94 }, { 20, 20 }, WindowColour::primary)
 
         );
 
