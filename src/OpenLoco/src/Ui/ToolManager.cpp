@@ -26,7 +26,7 @@ namespace OpenLoco::ToolManager
             return nullptr;
         }
 
-        return WindowManager::find(_toolWindowType, _toolWindowNumber);
+        return WindowManager::find(currentTool.type, currentTool.windowNumber);
     }
 
     bool isToolActive(Ui::WindowType type)
@@ -36,7 +36,7 @@ namespace OpenLoco::ToolManager
             return false;
         }
 
-        return _toolWindowType == type;
+        return currentTool.type == type;
     }
 
     bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number)
@@ -46,7 +46,7 @@ namespace OpenLoco::ToolManager
             return false;
         }
 
-        return _toolWindowNumber == number;
+        return currentTool.windowNumber == number;
     }
 
     bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number, int16_t widgetIndex)
@@ -110,7 +110,6 @@ namespace OpenLoco::ToolManager
         Input::setFlag(Input::Flags::toolActive);
         Input::resetFlag(Input::Flags::flag6);
         currentTool = config;
-        currentTool.type = w->type;
         currentTool.windowNumber = w->number;
 
         ToolManager::setToolCursor(currentTool.cursor);
@@ -269,7 +268,7 @@ namespace OpenLoco::ToolManager
 
     bool fireEvent(ToolEventType event, int16_t x, int16_t y, int16_t z)
     {
-        if (!Input::hasFlag(Input::Flags::toolActive))
+        if (!Input::hasFlag(Input::Flags::toolActive) && event != ToolEventType::onAbort)
         {
             return false;
         }

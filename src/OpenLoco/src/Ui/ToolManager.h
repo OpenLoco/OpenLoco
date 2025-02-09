@@ -60,7 +60,7 @@ namespace OpenLoco::ToolManager
         ToolEventList events;
         CursorId cursor;
         WindowNumber_t windowNumber;
-        WindowType type;
+        WindowType type = WindowType::undefined;
     };
 
     Ui::Window* toolGetActiveWindow();

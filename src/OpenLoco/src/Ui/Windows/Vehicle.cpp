@@ -248,6 +248,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widgets::ImageButton({ 240, 164 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip)
 
         );
+
+        static void onToolDown(Window& self, const ToolManager::ToolState& state);
+        static void toolCancel(Window& self, const ToolManager::ToolState& state);
+        static Ui::CursorId toolCursor(Window& self, const ToolManager::ToolState& state, bool& out);
+
+        static constexpr const ToolManager::ToolConfiguration kRouteToolConfig = {
+            .events = {
+                .onMouseDown = onToolDown,
+                .onAbort = toolCancel,
+                .getCursor = toolCursor,
+            },
+            .cursor = CursorId::crosshair,
+            .type = WindowType::vehicle,
+        };
     }
 
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
@@ -2852,9 +2866,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (!ToolManager::isToolActive(WindowType::vehicle, self.number))
+            if (!ToolManager::isToolActive(self.number, kRouteToolConfig))
             {
-                if (ToolManager::toolSet(&self, widx::tool, CursorId::crosshair))
+                if (ToolManager::toolSet(&self, kRouteToolConfig))
                 {
                     self.invalidate();
                     Vehicles::OrderManager::generateNumDisplayFrames(head);
@@ -2895,16 +2909,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5088
-        static void toolCancel(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIdx)
+        static void toolCancel(Window& self, [[maybe_unused]] const ToolManager::ToolState& state)
         {
             self.invalidate();
             World::resetMapSelectionFlag(World::MapSelectionFlags::unk_04);
             Gfx::invalidateScreen();
         }
 
-        static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(Window& self, [[maybe_unused]] const ToolManager::ToolState& state)
         {
-            auto [type, args] = sub_4B5A1A(self, x, y);
+            auto [type, args] = sub_4B5A1A(self, state.pos.x, state.pos.y);
             switch (type)
             {
                 case Ui::ViewportInteraction::InteractionItem::track:
@@ -2986,15 +3000,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B50CE
-        static Ui::CursorId toolCursor(Window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
+        static Ui::CursorId toolCursor(Window& self, const ToolManager::ToolState& state, bool& out)
         {
-            auto typeP = sub_4B5A1A(self, x, y);
+            auto typeP = sub_4B5A1A(self, state.pos.x, state.pos.y);
             out = typeP.first != Ui::ViewportInteraction::InteractionItem::noInteraction;
             if (out)
             {
                 return CursorId::inwardArrows;
             }
-            return fallback;
+            return state.cursor;
         }
 
         // 0x004B4D9B
@@ -3463,9 +3477,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             .onUpdate = onUpdate,
             .event_08 = Common::event8,
             .event_09 = Common::event9,
-            .onToolDown = onToolDown,
-            .onToolAbort = toolCancel,
-            .toolCursor = toolCursor,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = scrollMouseDown,
             .scrollMouseOver = scrollMouseOver,
