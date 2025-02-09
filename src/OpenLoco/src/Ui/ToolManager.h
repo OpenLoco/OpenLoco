@@ -11,56 +11,86 @@ namespace OpenLoco::ToolManager
 
     enum class ToolEventType : uint8_t
     {
+        onStart,
+        onStop,
         onMouseMove,
         onMouseDown,
         onMouseDrag,
         onMouseDragEnd,
-        onAbort,
         onShiftChanged,
         onControlChanged,
         onScrollNoModifier,
         onScrollShiftModifier,
         onScrollControlModifier,
-        getCursor,
+        onScrollControlShiftModifier,
         count
     };
 
-    struct ToolState
+    enum class ToolFlags : uint16_t
     {
-        ToolEventType event;
-        Point pos;
-        int16_t scrollWheelChanged;
-        bool shiftPressed;
-        bool controlPressed;
-        CursorId cursor;
+        none = 0,
+        keepFlag6 = 1,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ToolFlags);
 
-    using ToolCallback_t = auto (*)(Window&, const ToolState&) -> void;
-    using ToolCursor_t = auto (*)(Window&, const ToolState&, bool&) -> CursorId;
-
-    struct ToolEventList
+    class ToolBase
     {
-        ToolCallback_t onMouseMove = nullptr;
-        ToolCallback_t onMouseDown = nullptr;
-        ToolCallback_t onMouseDrag = nullptr;
-        ToolCallback_t onMouseDragEnd = nullptr;
-        ToolCallback_t onAbort = nullptr;
-        ToolCallback_t onShiftChanged = nullptr;
-        ToolCallback_t onControlChanged = nullptr;
-        ToolCallback_t onScrollNoModifier = nullptr;
-        ToolCallback_t onScrollShiftModifier = nullptr;
-        ToolCallback_t onScrollControlModifier = nullptr;
-        ToolCursor_t getCursor = nullptr;
-
-        constexpr ToolCallback_t getToolEvent(ToolEventType event) const;
-    };
-
-    struct ToolConfiguration
-    {
-        ToolEventList events;
+    public:
+        ToolFlags flags;
         CursorId cursor;
-        WindowNumber_t windowNumber;
+        WindowNumber_t window;
         WindowType type = WindowType::undefined;
+        StringId toolTip;
+        BitSet<enumValue(ToolEventType::count)> events;
+        // widget is necessary for vanilla interop. Might not be necessary afterwards
+        WidgetIndex_t widget;
+        struct
+        {
+            Point pos;
+            int16_t mouseWheel;
+            void set(int16_t x, int16_t y, int16_t mouseWheel)
+            {
+                if (x != std::numeric_limits<int16_t>::min() && y != std::numeric_limits<int16_t>::min())
+                {
+                    pos = { x, y };
+                }
+                if (mouseWheel != std::numeric_limits<int16_t>::min())
+                {
+                    mouseWheel = mouseWheel;
+                }
+                else
+                {
+                    mouseWheel = 0;
+                }
+            }
+        } input;
+
+        bool hasEvent(ToolEventType event)
+        {
+            if (event >= ToolEventType::count)
+            {
+                return false;
+            }
+            return events.get(enumValue(event));
+        };
+
+        bool fireEvent(ToolEventType event, int16_t x, int16_t y, int16_t mouseWheel);
+
+        CursorId getCursor(Window& self, int16_t x, int16_t y, int16_t mouseWheel, bool& out);
+        bool activate(Window& w, bool force = false);
+        void cancel();
+
+    private:
+        virtual void onStart(Window& self, ToolEventType event) {};
+        virtual void onStop(Window& self, ToolEventType event) {};
+        virtual void onMouseMove(Window& self, ToolEventType event) {};
+        virtual void onMouseDown(Window& self, ToolEventType event) {};
+        virtual void onMouseDrag(Window& self, ToolEventType event) {};
+        virtual void onMouseDragEnd(Window& self, ToolEventType event) {};
+        virtual void onModifierChanged(Window& self, ToolEventType event) {};
+        virtual void onControlChanged(Window& self, ToolEventType event) {};
+        virtual void onScroll(Window& self, ToolEventType event) {};
+        virtual CursorId getCursorCallback(Window& self, bool& out) { return {}; };
     };
 
     Ui::Window* toolGetActiveWindow();
@@ -68,30 +98,10 @@ namespace OpenLoco::ToolManager
 
     bool isToolActive(Ui::WindowType, Ui::WindowNumber_t);
     bool isToolActive(Ui::WindowType, Ui::WindowNumber_t, int16_t);
-    bool isToolActive(Ui::WindowNumber_t number, const ToolConfiguration& config);
+    bool isToolActive(Ui::WindowNumber_t number, ToolBase& tool);
     bool toolSet(Ui::Window* w, int16_t widgetIndex, Ui::CursorId cursorId);
-    bool toolSet(Ui::Window* w, ToolConfiguration config);
     void toolCancel();
     void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
-
-    // I'm sure there's a more cpp way to do this but I don't know it
-    constexpr bool operator==(const ToolEventList& a, const ToolEventList& b) noexcept
-    {
-        for (int i = 0; i < enumValue(ToolEventType::count); i++)
-        {
-            if (a.getToolEvent(ToolEventType(i)) != b.getToolEvent(ToolEventType(i)))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // I'm sure there's a more cpp way to do this but I don't know it
-    constexpr bool operator==(const ToolConfiguration& a, const ToolConfiguration& b) noexcept
-    {
-        return a.events == b.events && a.cursor == b.cursor && a.type == b.type;
-    }
 
     //  0x00523390
     Ui::WindowNumber_t getToolWindowNumber();
@@ -107,7 +117,6 @@ namespace OpenLoco::ToolManager
 
     // 0x00523394
     int16_t getToolWidgetIndex();
-    void setToolWidgetIndex(uint16_t toolWidgetIndex);
 
     /*
      * gets the current cursor for the active tool
@@ -115,7 +124,7 @@ namespace OpenLoco::ToolManager
     CursorId getCursor(int16_t x, int16_t y, bool& out);
 
     /*
-     * fires the selected type and returns if the input was sunk. x, y: mouse position, z: scroll wheel input
+     * fires the selected type and returns if the input was sunk. x, y: mouse position, mouseWheel: mouse wheel input
      */
-    bool fireEvent(ToolEventType event, int16_t x, int16_t y, int16_t z);
+    bool fireEvent(ToolEventType event, int16_t x = std::numeric_limits<int16_t>::min(), int16_t y = std::numeric_limits<int16_t>::min(), int16_t mouseWheel = std::numeric_limits<int16_t>::min());
 }

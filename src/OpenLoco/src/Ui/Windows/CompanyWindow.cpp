@@ -715,19 +715,22 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
 
-        static void onToolUpdate([[maybe_unused]] Window& self, const ToolManager::ToolState& state);
-        static void onToolDown([[maybe_unused]] Window& self, const ToolManager::ToolState& state);
-        static void onToolAbort([[maybe_unused]] Window& self, const ToolManager::ToolState&);
-
-        constexpr static ToolManager::ToolConfiguration kPlaceHQToolConfig = {
-            .events = {
-                .onMouseMove = onToolUpdate,
-                .onMouseDown = onToolDown,
-                .onAbort = onToolAbort,
-            },
-            .cursor = CursorId::placeHQ,
-            .type = WindowType::company,
+        class ToolBuildHQ : public ToolManager::ToolBase
+        {
+            ToolBuildHQ()
+            {
+                flags = ToolManager::ToolFlags::keepFlag6;
+                cursor = CursorId::crosshair;
+                type = WindowType::company;
+                events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop) };
+                widget = widx::build_hq;
+            };
+            virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event);
+            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event);
+            virtual void onStop(Window& self, const ToolManager::ToolEventType event);
         };
+
+        static ToolBuildHQ kToolBuildHQ{};
 
         // 0x004327CF
         static void prepareDraw(Window& self)
@@ -953,7 +956,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
 
                 case widx::build_hq:
-                    ToolManager::toolSet(&self, kPlaceHQToolConfig);
+                    kToolBuildHQ.activate(self);
                     Input::setFlag(Input::Flags::flag6);
                     break;
             }
@@ -1057,11 +1060,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432CA1
-        static void onToolUpdate([[maybe_unused]] Window& self, const ToolManager::ToolState& state)
+        void ToolBuildHQ::onMouseMove([[maybe_unused]] Window& self, const ToolManager::ToolEventType event)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
-            auto placementArgs = getHeadquarterPlacementArgsFromCursor(state.pos);
+            auto placementArgs = getHeadquarterPlacementArgsFromCursor(input.pos);
             if (!placementArgs)
             {
                 removeHeadquarterGhost();
@@ -1096,16 +1099,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.dx = widgetIndex;
         // regs.ax = mouseX;
         // regs.bx = mouseY;
-        static void onToolDown([[maybe_unused]] Window& self, const ToolManager::ToolState& state)
+        void ToolBuildHQ::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
         {
             removeHeadquarterGhost();
 
-            auto placementArgs = getHeadquarterPlacementArgsFromCursor(state.pos);
+            auto placementArgs = getHeadquarterPlacementArgsFromCursor(input.pos);
             if (!placementArgs)
             {
                 return;
             }
-            placementArgs->buildImmediately = state.controlPressed;
+            if (SceneManager::isSandboxMode())
+            {
+                placementArgs->buildImmediately = Input::hasKeyModifier(Input::KeyModifier::control);
+            }
 
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
             uint8_t flags = GameCommands::Flags::apply | GameCommands::Flags::flag_1;
@@ -1117,7 +1123,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432D7A
-        static void onToolAbort([[maybe_unused]] Window& self, const ToolManager::ToolState&)
+        void ToolBuildHQ::onStop([[maybe_unused]] Window& self, [[maybe_unused]] ToolManager::ToolEventType event)
         {
             removeHeadquarterGhost();
             Ui::Windows::Main::hideGridlines();
@@ -1125,7 +1131,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void onClose(Window& self)
         {
-            if (ToolManager::isToolActive(self.number, kPlaceHQToolConfig))
+            if (ToolManager::isToolActive(self.number, kToolBuildHQ))
             {
                 ToolManager::toolCancel();
             }
