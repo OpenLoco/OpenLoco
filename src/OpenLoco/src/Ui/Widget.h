@@ -18,8 +18,28 @@ namespace OpenLoco::Gfx
 namespace OpenLoco::Ui
 {
     using WidgetIndex_t = int16_t;
-
     constexpr WidgetIndex_t kWidgetIndexNull = -1;
+
+    enum class WidgetId : uint64_t
+    {
+        none = 0,
+    };
+
+    constexpr WidgetId operator"" _wtId(const char* s, size_t)
+    {
+        // FNV-1a hash
+        constexpr auto kPrime = 0x00000100000001B3ULL;
+        constexpr auto kOffsetBasis = 0xCBF29CE484222325ULL;
+
+        auto res = kOffsetBasis;
+        for (size_t i = 0; s[i] != '\0'; i++)
+        {
+            res ^= s[i];
+            res *= kPrime;
+        }
+
+        return static_cast<WidgetId>(res);
+    }
 
     struct Window;
     enum class WindowColour : uint8_t;
@@ -117,6 +137,32 @@ namespace OpenLoco::Ui
         {
         }
 
+        constexpr Widget(WidgetId widgetId, Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+            : id{ widgetId }
+            , content{ content }
+            , left{ static_cast<int16_t>(origin.x) }
+            , right{ static_cast<int16_t>(origin.x + size.width - 1) }
+            , top{ static_cast<int16_t>(origin.y) }
+            , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
+            , tooltip{ tooltip }
+            , type{ widgetType }
+            , windowColour{ colour }
+        {
+        }
+
+        constexpr Widget(WidgetId widgetId, Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
+            : id{ widgetId }
+            , text{ content }
+            , left{ static_cast<int16_t>(origin.x) }
+            , right{ static_cast<int16_t>(origin.x + size.width - 1) }
+            , top{ static_cast<int16_t>(origin.y) }
+            , bottom{ static_cast<int16_t>(origin.y + size.height - 1) }
+            , tooltip{ tooltip }
+            , type{ widgetType }
+            , windowColour{ colour }
+        {
+        }
+
         constexpr Widget(WidgetType widgetType)
             : content{ kContentNull }
             , left{}
@@ -131,6 +177,7 @@ namespace OpenLoco::Ui
 
         constexpr Widget() = default;
 
+        WidgetId id{ WidgetId::none };
         FormatArgumentsBuffer textArgs;
         WidgetEventsList events;
         union
