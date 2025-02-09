@@ -64,7 +64,7 @@ namespace OpenLoco::Ui
         buttonWithImage,
         buttonWithColour,
         button,
-        wt_13,
+        label,
         buttonTableHeader,
         groupbox,
         textbox,

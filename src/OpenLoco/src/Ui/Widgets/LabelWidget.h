@@ -8,7 +8,7 @@ namespace OpenLoco::Ui::Widgets
     struct Label : public Widget
     {
         constexpr Label(WidgetId id, Point32 origin, Size32 size, WindowColour colour, ContentAlign align, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
-            : Widget(id, origin, size, WidgetType::wt_13, colour, content, tooltip)
+            : Widget(id, origin, size, WidgetType::label, colour, content, tooltip)
         {
             events.draw = &draw;
             contentAlign = align;
