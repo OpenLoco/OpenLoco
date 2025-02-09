@@ -453,6 +453,10 @@ namespace OpenLoco::Input
 
                     if (Input::hasFlag(Flags::toolActive))
                     {
+                        if (ToolManager::fireEvent<ToolManager::ToolEventType::onMouseDrag>(x, y, 0))
+                        {
+                            break;
+                        }
                         auto tool = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                         if (tool != nullptr)
                         {
@@ -474,6 +478,10 @@ namespace OpenLoco::Input
 
                 if (hasFlag(Flags::toolActive))
                 {
+                    if (ToolManager::fireEvent<ToolManager::ToolEventType::onMouseDragEnd>(x, y, 0))
+                    {
+                        break;
+                    }
                     auto tool = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                     if (tool != nullptr)
                     {
