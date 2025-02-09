@@ -31,8 +31,6 @@ namespace OpenLoco::ToolManager
         int16_t scrollWheelChanged;
         bool shiftPressed;
         bool controlPressed;
-        bool shiftPressedChanged;
-        bool controlPressedChanged;
         CursorId cursor;
     };
 
@@ -53,16 +51,15 @@ namespace OpenLoco::ToolManager
         ToolCallback_t onScrollControlModifier = nullptr;
         ToolCursor_t getCursor = nullptr;
 
-        template<ToolEventType event>
-        ToolCallback_t getToolEvent();
+        ToolCallback_t getToolEvent(ToolEventType event);
     };
 
     struct ToolConfiguration
     {
         ToolEventList events;
         CursorId cursor;
-        bool showTerrainGridlines;
-        Point terrainHighlightSize;
+        WindowNumber_t windowNumber;
+        WindowType type;
     };
 
     Ui::Window* toolGetActiveWindow();
@@ -93,21 +90,10 @@ namespace OpenLoco::ToolManager
     /*
      * gets the current cursor for the active tool
      */
-    CursorId callToolCursor(int16_t x, int16_t y, bool& out);
+    CursorId getCursor(int16_t x, int16_t y, bool& out);
 
     /*
      * fires the selected type and returns if the input was sunk. x, y: mouse position, z: scroll wheel input
      */
-    template<ToolEventType event>
-    bool fireEvent(int16_t x, int16_t y, int16_t z = 0);
-    /*
-     * fires the selected type and returns if the input was sunk. z: scroll wheel
-     */
-    template<ToolEventType event>
-    bool fireEvent(int16_t z);
-    /*
-     * fires the selected type and returns if the input was sunk.
-     */
-    template<ToolEventType event>
-    bool fireEvent();
+    bool fireEvent(ToolEventType event, int16_t x, int16_t y, int16_t z);
 }

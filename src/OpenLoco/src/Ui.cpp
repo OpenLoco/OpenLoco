@@ -814,7 +814,10 @@ namespace OpenLoco::Ui
         {
             return;
         }
-
+        if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseMove, x, y, 0))
+        {
+            return;
+        }
         auto toolWindow = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
         if (toolWindow != nullptr)
         {
@@ -822,6 +825,7 @@ namespace OpenLoco::Ui
         }
         else
         {
+            // TODO: think about how to handle this
             ToolManager::toolCancel();
         }
     }

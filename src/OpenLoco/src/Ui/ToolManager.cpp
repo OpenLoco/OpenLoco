@@ -76,13 +76,40 @@ namespace OpenLoco::ToolManager
                 toolCancel();
             }
         }
-
         Input::setFlag(Input::Flags::toolActive);
         Input::resetFlag(Input::Flags::flag6);
         ToolManager::setToolCursor(cursorId);
         ToolManager::setToolWindowType(w->type);
         ToolManager::setToolWindowNumber(w->number);
         ToolManager::setToolWidgetIndex(widgetIndex);
+        return true;
+    }
+
+    bool toolSet(Ui::Window* w, ToolConfiguration config)
+    {
+        if (Input::hasFlag(Input::Flags::toolActive))
+        {
+            if (w->type == _toolWindowType && w->number == _toolWindowNumber && w->number == _toolWidgetIndex)
+            {
+                toolCancel();
+                return false;
+            }
+            else
+            {
+                toolCancel();
+            }
+        }
+        Input::setFlag(Input::Flags::toolActive);
+        Input::resetFlag(Input::Flags::flag6);
+        currentTool = config;
+        currentTool.type = w->type;
+        currentTool.windowNumber = w->number;
+
+        ToolManager::setToolCursor(currentTool.cursor);
+        ToolManager::setToolWindowType(currentTool.type);
+        ToolManager::setToolWindowNumber(currentTool.windowNumber);
+        // Remove this setter when possible.
+        ToolManager::setToolWidgetIndex(currentTool.windowNumber);
         return true;
     }
 
@@ -102,13 +129,18 @@ namespace OpenLoco::ToolManager
             {
                 // Invalidate tool widget
                 Ui::WindowManager::invalidateWidget(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber(), ToolManager::getToolWidgetIndex());
-
+                if (fireEvent(ToolEventType::onAbort, 0, 0, 0))
+                {
+                    currentTool = ToolConfiguration{};
+                    return;
+                }
                 // Abort tool event
                 Window* w = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                 if (w != nullptr)
                 {
                     w->callToolAbort(ToolManager::getToolWidgetIndex());
                 }
+                currentTool = ToolConfiguration{};
             }
         }
     }
@@ -163,13 +195,12 @@ namespace OpenLoco::ToolManager
         _toolWidgetIndex = toolWidgetIndex;
     }
 
-    template<ToolEventType event>
-    ToolCallback_t ToolEventList::getToolEvent()
+    ToolCallback_t ToolEventList::getToolEvent(ToolEventType event)
     {
         // I'm sure there's a more cpp way to do this but I don't know it.
         switch (event)
         {
-            case ToolEventType::onUpdate:
+            case ToolEventType::onMouseMove:
                 return onMouseMove;
             case ToolEventType::onMouseDown:
                 return onMouseDown;
@@ -177,7 +208,7 @@ namespace OpenLoco::ToolManager
                 return onMouseDrag;
             case ToolEventType::onMouseDragEnd:
                 return onMouseDragEnd;
-            case ToolEventType::onToolAbort:
+            case ToolEventType::onAbort:
                 return onAbort;
             case ToolEventType::onShiftChanged:
                 return onShiftChanged;
@@ -193,8 +224,7 @@ namespace OpenLoco::ToolManager
         return nullptr;
     }
 
-    template<ToolEventType event>
-    static ToolState getToolState(int16_t x, int16_t y, int16_t z = 0)
+    static ToolState getToolState(ToolEventType event, int16_t x, int16_t y, int16_t z = 0)
     {
         return {
             event,
@@ -202,15 +232,18 @@ namespace OpenLoco::ToolManager
             z,
             Input::hasKeyModifier(Input::KeyModifier::shift),
             Input::hasKeyModifier(Input::KeyModifier::control),
-            false,
-            false,
             currentTool.cursor,
         };
     }
 
-    CursorId callToolCursor(int16_t x, int16_t y, bool& out)
+    CursorId getCursor(int16_t x, int16_t y, bool& out)
     {
-        auto toolEvent = currentTool.events.getCursor;
+        if (!Input::hasFlag(Input::Flags::toolActive))
+        {
+            return currentTool.cursor;
+        }
+
+        ToolCursor_t toolEvent = currentTool.events.getCursor;
         if (toolEvent == nullptr)
         {
             return currentTool.cursor;
@@ -222,45 +255,27 @@ namespace OpenLoco::ToolManager
             return currentTool.cursor;
         }
 
-        return toolEvent(*window, getToolState<ToolEventType::getCursor>(x, y), out);
+        return toolEvent(*window, getToolState(ToolEventType::getCursor, x, y), out);
     }
 
-    template<ToolEventType event>
-    bool fireEvent(int16_t x, int16_t y, int16_t z)
+    bool fireEvent(ToolEventType event, int16_t x, int16_t y, int16_t z)
     {
+        if (!Input::hasFlag(Input::Flags::toolActive))
+        {
+            return false;
+        }
+
         auto window = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
         if (window == nullptr)
         {
             return false;
         }
-        auto toolEvent = currentTool.events.getToolEvent<event>();
+        auto toolEvent = currentTool.events.getToolEvent(event);
         if (toolEvent == nullptr)
         {
             return false;
         }
-        auto state = getToolState<event>(x, y, z);
-        switch (event)
-        {
-            case ToolEventType::onShiftPressedChanged:
-                state.shiftPressedChanged = true;
-                break;
-            case ToolEventType ::onControlPressedChanged:
-                state.controlPressedChanged = true;
-                break;
-        }
-        toolEvent(*window, state);
+        toolEvent(*window, getToolState(event, x, y, z));
         return true;
-    }
-
-    template<ToolEventType event>
-    bool fireEvent(int16_t z)
-    {
-        return fireEvent<event>(0, 0, z);
-    }
-
-    template<ToolEventType event>
-    bool fireEvent()
-    {
-        return fireEvent<event>(0, 0, 0);
     }
 }

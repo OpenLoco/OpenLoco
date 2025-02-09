@@ -453,7 +453,7 @@ namespace OpenLoco::Input
 
                     if (Input::hasFlag(Flags::toolActive))
                     {
-                        if (ToolManager::fireEvent<ToolManager::ToolEventType::onMouseDrag>(x, y, 0))
+                        if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDrag, x, y, 0))
                         {
                             break;
                         }
@@ -478,7 +478,7 @@ namespace OpenLoco::Input
 
                 if (hasFlag(Flags::toolActive))
                 {
-                    if (ToolManager::fireEvent<ToolManager::ToolEventType::onMouseDragEnd>(x, y, 0))
+                    if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDragEnd, x, y, 0))
                     {
                         break;
                     }
@@ -1366,6 +1366,10 @@ namespace OpenLoco::Input
                 _dragWindowNumber = window->number;
                 if (hasFlag(Flags::toolActive))
                 {
+                    if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDown, x, y, 0))
+                    {
+                        return;
+                    }
                     auto w = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                     if (w != nullptr)
                     {
@@ -1644,12 +1648,19 @@ namespace OpenLoco::Input
                     case Ui::WidgetType::viewport:
                         if (Input::hasFlag(Flags::toolActive))
                         {
+                            bool out = false;
+                            auto newCursor = ToolManager::getCursor(x, y, out);
+                            if (out || cursorId != newCursor)
+                            {
+                                cursorId = newCursor;
+                                skipItem = true;
+                                break;
+                            }
                             // 3
                             cursorId = ToolManager::getToolCursor();
                             auto wnd = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                             if (wnd)
                             {
-                                bool out = false;
                                 cursorId = wnd->callToolCursor(x, y, cursorId, &out);
                                 if (out)
                                 {
@@ -1949,7 +1960,25 @@ namespace OpenLoco::Input
             wheel += 17;
         }
 
+        if (wheel == 0)
+        {
+            return;
+        }
+
         if (Tutorial::state() != Tutorial::State::none)
+        {
+            return;
+        }
+
+        if (Input::hasKeyModifier(KeyModifier::control) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollControlModifier, 0, 0, wheel))
+        {
+            return;
+        }
+        else if (Input::hasKeyModifier(KeyModifier::shift) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollShiftModifier, 0, 0, wheel))
+        {
+            return;
+        }
+        else if (ToolManager::fireEvent(ToolManager::ToolEventType::onScrollNoModifier, 0, 0, wheel))
         {
             return;
         }
@@ -1962,7 +1991,7 @@ namespace OpenLoco::Input
             }
 
             auto main = WindowManager::getMainWindow();
-            if (main != nullptr && wheel != 0)
+            if (main != nullptr)
             {
                 if (wheel > 0)
                 {
@@ -1977,11 +2006,6 @@ namespace OpenLoco::Input
                 Windows::MapWindow::centerOnViewPoint();
             }
 
-            return;
-        }
-
-        if (wheel == 0)
-        {
             return;
         }
 
