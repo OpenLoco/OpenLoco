@@ -13,8 +13,6 @@ namespace OpenLoco::Ui::Widgets
         }
 
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
-        static void drawCheckMark(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
-        static void drawLabel(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
     };
 
 }

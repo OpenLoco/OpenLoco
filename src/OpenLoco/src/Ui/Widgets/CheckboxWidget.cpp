@@ -6,14 +6,8 @@
 
 namespace OpenLoco::Ui::Widgets
 {
-    void Checkbox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
-    {
-        drawCheckMark(drawingCtx, widget, widgetState);
-        drawLabel(drawingCtx, widget, widgetState);
-    }
-
     // 0x004CB00B
-    void Checkbox::drawCheckMark(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    static void drawCheckMark(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
         if (widgetState.enabled)
@@ -40,7 +34,7 @@ namespace OpenLoco::Ui::Widgets
     }
 
     // 0x004CB080
-    void Checkbox::drawLabel(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    static void drawLabel(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         if (widget.content == Widget::kContentNull)
         {
@@ -63,5 +57,11 @@ namespace OpenLoco::Ui::Widgets
 
         auto point = Point(window->x + widget.left + 14, window->y + widget.top);
         tr.drawStringLeft(point, colour, widget.text, formatArgs);
+    }
+
+    void Checkbox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    {
+        drawCheckMark(drawingCtx, widget, widgetState);
+        drawLabel(drawingCtx, widget, widgetState);
     }
 }
