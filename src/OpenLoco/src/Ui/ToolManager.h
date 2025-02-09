@@ -30,6 +30,7 @@ namespace OpenLoco::ToolManager
     {
         none = 0,
         keepFlag6 = 1,
+        gridlines = 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ToolFlags);
 

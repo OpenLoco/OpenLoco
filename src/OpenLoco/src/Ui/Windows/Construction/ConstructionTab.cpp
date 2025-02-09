@@ -121,24 +121,24 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         return widgets;
     }
-
-    static void onToolUpdate([[maybe_unused]] Window& self, const ToolManager::ToolState& state);
-    static void onToolDown([[maybe_unused]] Window& self, const ToolManager::ToolState& state);
-    // temporary, until old methods are removed
-    static void onToolAbort([[maybe_unused]] Window&, const ToolManager::ToolState&)
+    class ToolRepositionTrack : public ToolManager::ToolBase
     {
-        ;
-    }
+        virtual void onMouseMove(Window& self, ToolManager::ToolEventType event);
+        virtual void onMouseDown(Window& self, ToolManager::ToolEventType event);
+        virtual void onStop(Window& self, ToolManager::ToolEventType event);
 
-    constexpr ToolManager::ToolConfiguration kRepositionTrackTool = {
-        .events = {
-            .onMouseMove = onToolUpdate,
-            .onMouseDown = onToolDown,
-            .onAbort = onToolAbort,
-        },
-        .cursor = CursorId::crosshair,
-        .type = WindowType::construction,
+    public:
+        ToolRepositionTrack()
+        {
+            flags = ToolManager::ToolFlags::keepFlag6;
+            cursor = CursorId::crosshair;
+            type = WindowType::construction;
+            events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop) };
+            widget = widx::construct;
+        };
     };
+
+    static ToolRepositionTrack kToolRepositionTrack{};
 
     const uint8_t trackPieceWidgets[] = {
         widx::straight,
@@ -555,7 +555,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
                 removeConstructionGhosts();
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
-                ToolManager::toolSet(&self, kRepositionTrackTool);
+                kToolRepositionTrack.activate(self, true);
                 Input::setFlag(Input::Flags::flag6);
 
                 _cState->constructionHover = 1;
@@ -1995,16 +1995,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_cState->constructionHover == 1)
         {
-            if (!ToolManager::isToolActive(self.number, kRepositionTrackTool))
+            if (!ToolManager::isToolActive(self.number, kToolRepositionTrack))
             {
                 WindowManager::close(&self);
             }
         }
         if (_cState->constructionHover == 0)
         {
-            if (ToolManager::isToolActive(self.number, kRepositionTrackTool))
+            if (ToolManager::isToolActive(self.number, kToolRepositionTrack))
             {
-                ToolManager::toolCancel();
+                kToolRepositionTrack.cancel();
             }
         }
         updateConstruction();
@@ -2481,7 +2481,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     // 0x004A1968
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece, typename GetPlacementArgsFunc, typename PlaceGhostFunc>
-    static void onToolUpdateTrack(const ToolManager::ToolState state, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
+    static void onToolUpdateTrack(Ui::Point pos, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
         World::mapInvalidateMapSelectionTiles();
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
@@ -2538,7 +2538,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         constructHeight -= 16;
         auto maxRetries = 2;
 
-        if (state.shiftPressed)
+        if (Input::hasKeyModifier(Input::KeyModifier::shift))
         {
             maxRetries = 0x80000008;
             constructHeight -= 16;
@@ -2549,21 +2549,21 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC8C
-    static void onToolUpdate([[maybe_unused]] Window& self, const ToolManager::ToolState& state)
+    void ToolRepositionTrack::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
     {
 
         if (_cState->trackType & (1 << 7))
         {
-            onToolUpdateTrack(state, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
+            onToolUpdateTrack(input.pos, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
         }
         else
         {
-            onToolUpdateTrack(state, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
+            onToolUpdateTrack(input.pos, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
         }
     }
 
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
-    static void onToolDownT(const ToolManager::ToolState& state, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece)
+    static void onToolDownT(Ui::Point pos, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece)
     {
         mapInvalidateMapSelectionTiles();
         removeConstructionGhosts();
@@ -2583,7 +2583,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
-        const auto junctionRes = tryMakeJunction(state.pos);
+        const auto junctionRes = tryMakeJunction(pos);
         if (junctionRes)
         {
             constructPos = World::toWorldSpace(junctionRes->first);
@@ -2605,7 +2605,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         ToolManager::toolCancel();
 
         auto maxRetries = 0;
-        if (state.shiftPressed || _cState->makeJunction != 1)
+        if (Input::hasKeyModifier(Input::KeyModifier::shift) || _cState->makeJunction != 1)
         {
             const auto piece = getPiece(_cState->byte_1136065);
 
@@ -2613,7 +2613,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             constructHeight -= 16;
             maxRetries = 2;
 
-            if (state.shiftPressed)
+            if (Input::hasKeyModifier(Input::KeyModifier::shift)
             {
                 maxRetries = 0x80000008;
                 constructHeight -= 16;
@@ -2632,16 +2632,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC97
-    static void onToolDown([[maybe_unused]] Window& self, const ToolManager::ToolState& state)
+    void ToolRepositionTrack::onMouseDown([[maybe_unused]] Window& self, const ToolManager::ToolEventType event)
     {
 
         if (_cState->trackType & (1 << 7))
         {
-            onToolDownT(state, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
+            onToolDownT(input.pos, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
         }
         else
         {
-            onToolDownT(state, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
+            onToolDownT(input.pos, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
         }
     }
 

@@ -43,25 +43,24 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         Widgets::Wt3Widget({ 35, 110 }, { 66, 66 }, WindowColour::secondary),
         makeDropdownWidgets({ 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
 
-    static void onToolUpdate([[maybe_unused]] Window& self, const ToolManager::ToolState& state);
-    static void onToolDown([[maybe_unused]] Window& self, const ToolManager::ToolState& state);
-    static void onToolAbort(Window&, const ToolManager::ToolState&)
+    class ToolPlaceTrackExtra : public ToolManager::ToolBase
     {
-        ;
-    }
-    static void onToolModifier([[maybe_unused]] Window& self, const ToolManager::ToolState&);
+        virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event);
+        virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event);
+        virtual void onModifierChanged(Window& self, const ToolManager::ToolEventType event);
 
-    constexpr ToolManager::ToolConfiguration kPlaceTrackExtraTool = {
-        .events = {
-            .onMouseMove = onToolUpdate,
-            .onMouseDown = onToolDown,
-            .onAbort = onToolAbort,
-            .onShiftChanged = onToolModifier,
-            .onControlChanged = onToolModifier,
-        },
-        .cursor = CursorId::crosshair,
-        .type = WindowType::construction,
+    public:
+        ToolPlaceTrackExtra()
+        {
+            flags = ToolManager::ToolFlags::keepFlag6;
+            cursor = CursorId::crosshair;
+            type = WindowType::construction;
+            events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop), enumValue(ToolManager::ToolEventType::onControlChanged), enumValue(ToolManager::ToolEventType::onShiftChanged) };
+            widget = widx::image;
+        };
     };
+
+    static ToolPlaceTrackExtra kToolPlaceTrackExtra{};
 
     std::span<const Widget> getWidgets()
     {
@@ -144,8 +143,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             case widx::image:
             {
-                ToolManager::toolCancel();
-                ToolManager::toolSet(&self, kPlaceTrackExtraTool);
+                kToolPlaceTrackExtra.activate(self, true);
                 break;
             }
         }
@@ -294,12 +292,12 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC15
-    static void onToolUpdate([[maybe_unused]] Window& self, const ToolManager::ToolState& state)
+    void ToolPlaceTrackExtra::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
     {
 
         if (_cState->trackType & (1 << 7))
         {
-            auto placementArgs = getRoadModsPlacementArgsFromCursor(state.pos);
+            auto placementArgs = getRoadModsPlacementArgsFromCursor(input.pos);
             if (!placementArgs || ((placementArgs->roadObjType | (1 << 7)) != _cState->trackType))
             {
                 removeConstructionGhosts();
@@ -334,7 +332,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
         else
         {
-            auto placementArgs = getTrackModsPlacementArgsFromCursor(state.pos);
+            auto placementArgs = getTrackModsPlacementArgsFromCursor(input.pos);
             if (!placementArgs || (placementArgs->trackObjType != _cState->trackType))
             {
                 removeConstructionGhosts();
@@ -370,13 +368,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC20
-    static void onToolDown([[maybe_unused]] Window& self, const ToolManager::ToolState& state)
+    void ToolPlaceTrackExtra::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
     {
         removeConstructionGhosts();
 
         if (_cState->trackType & (1 << 7))
         {
-            auto args = getRoadModsPlacementArgsFromCursor(state.pos);
+            auto args = getRoadModsPlacementArgsFromCursor(input.pos);
             if (!args)
             {
                 return;
@@ -397,7 +395,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
         else
         {
-            auto args = getTrackModsPlacementArgsFromCursor(state.pos);
+            auto args = getTrackModsPlacementArgsFromCursor(input.pos);
             if (!args)
             {
                 return;
@@ -418,14 +416,14 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
     }
 
-    static void onToolModifier([[maybe_unused]] Window& self, const ToolManager::ToolState& state)
+    void ToolPlaceTrackExtra::onModifierChanged([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
     {
         removeConstructionGhosts();
-        if (state.shiftPressed)
+        if (Input::hasKeyModifier(Input::KeyModifier::shift))
         {
             setPlacementMode(self, PlacementMode::allConnected);
         }
-        else if (state.controlPressed)
+        else if (Input::hasKeyModifier(Input::KeyModifier::control))
         {
             setPlacementMode(self, PlacementMode::blockSection);
         }
