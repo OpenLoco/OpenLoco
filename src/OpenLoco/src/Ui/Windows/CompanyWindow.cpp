@@ -719,7 +719,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onToolDown([[maybe_unused]] Window& self, const ToolManager::ToolState& state);
         static void onToolAbort([[maybe_unused]] Window& self, const ToolManager::ToolState&);
 
-        constexpr ToolManager::ToolConfiguration kPlaceHQToolConfig = {
+        constexpr static ToolManager::ToolConfiguration kPlaceHQToolConfig = {
             .events = {
                 .onMouseMove = onToolUpdate,
                 .onMouseDown = onToolDown,

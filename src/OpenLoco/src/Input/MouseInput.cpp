@@ -1970,15 +1970,15 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (Input::hasKeyModifier(KeyModifier::control) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollControlModifier, 0, 0, wheel))
+        if (Input::hasKeyModifier(KeyModifier::control) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollControlModifier, 0, 0, wheel > 0 ? -1 : 1))
         {
             return;
         }
-        else if (Input::hasKeyModifier(KeyModifier::shift) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollShiftModifier, 0, 0, wheel))
+        else if (Input::hasKeyModifier(KeyModifier::shift) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollShiftModifier, 0, 0, wheel > 0 ? -1 : 1))
         {
             return;
         }
-        else if (ToolManager::fireEvent(ToolManager::ToolEventType::onScrollNoModifier, 0, 0, wheel))
+        else if (ToolManager::fireEvent(ToolManager::ToolEventType::onScrollNoModifier, 0, 0, wheel > 0 ? -1 : 1))
         {
             return;
         }
