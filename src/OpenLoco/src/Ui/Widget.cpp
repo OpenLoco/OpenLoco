@@ -107,7 +107,7 @@ namespace OpenLoco::Ui
         widgetState.hovered = (hoveredWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.scrollviewIndex = scrollviewIndex;
 
-        if (events.draw != nullptr && type != WidgetType::none)
+        if (events.draw != nullptr && type != WidgetType::empty)
         {
             events.draw(drawingCtx, *this, widgetState);
             return;
@@ -115,7 +115,7 @@ namespace OpenLoco::Ui
 
         switch (type)
         {
-            case WidgetType::none:
+            case WidgetType::empty:
                 break;
 
             case WidgetType::panel:
@@ -1188,15 +1188,11 @@ namespace OpenLoco::Ui
             if (window.isDisabled(i))
             {
                 window.widgets[i].hidden = true;
-                // FIXME: Remove when all types are immutable.
-                window.widgets[i].type = WidgetType::none;
             }
 
             else
             {
                 window.widgets[i].hidden = false;
-                // FIXME: Remove when all types are immutable.
-                window.widgets[i].type = WidgetType::tab;
                 window.widgets[i].left = xPos;
                 window.widgets[i].right = xPos + tabWidth;
                 xPos = window.widgets[i].right + 1;

@@ -33,7 +33,7 @@ namespace OpenLoco::Ui
 
     enum class WidgetType : uint8_t
     {
-        none = 0,
+        empty = 0,
         panel = 1,
         frame = 2,
         wt_3,

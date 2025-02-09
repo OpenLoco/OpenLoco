@@ -236,7 +236,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 189, StringIds::title_vehicle_route),
-            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),
+            // TODO: This is not ideal, this is used for the tool, do this in a better way.
+            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::empty, WindowColour::primary),
             Widgets::Button({ 3, 44 }, { 118, 12 }, WindowColour::secondary, StringIds::local_mode_button),
             Widgets::Button({ 121, 44 }, { 119, 12 }, WindowColour::secondary, StringIds::express_mode_button),
             Widgets::ScrollView({ 3, 58 }, { 237, 120 }, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_route_scrollview),

@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::Widgets
             case CaptionVariant::whiteText:
                 return WidgetType::caption_25;
             default:
-                return WidgetType::none;
+                return WidgetType::empty;
         }
     }
 

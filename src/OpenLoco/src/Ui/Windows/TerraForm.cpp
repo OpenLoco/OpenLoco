@@ -2990,7 +2990,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (!self.isDisabled(PlantTrees::widx::rotate_object))
             {
-                if (self.widgets[PlantTrees::widx::rotate_object].type != WidgetType::none)
+                if (!self.widgets[PlantTrees::widx::rotate_object].hidden)
                 {
                     self.callOnMouseUp(PlantTrees::widx::rotate_object);
                     return true;
