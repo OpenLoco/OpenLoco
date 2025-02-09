@@ -281,7 +281,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 177, StringIds::stringid),
             Widgets::Viewport({ 3, 44 }, { 237, 120 }, WindowColour::secondary),
-            Widgets::Label({ 3, 155 }, { 237, 21 }, WindowColour::secondary, ContentAlign::Center),
+            Widgets::Label({ 3, 155 }, { 237, 21 }, WindowColour::secondary, ContentAlign::center),
             Widgets::Slider({ 240, 46 }, { 24, 115 }, WindowColour::secondary),
             Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
             Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),

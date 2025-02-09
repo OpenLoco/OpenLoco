@@ -116,7 +116,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
         Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
         Widgets::ScrollView({ 3, 44 }, { 240, 215 }, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
-        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::Center)
+        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::center)
 
     );
 

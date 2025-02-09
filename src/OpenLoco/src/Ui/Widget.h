@@ -46,9 +46,9 @@ namespace OpenLoco::Ui
 
     enum class ContentAlign : uint8_t
     {
-        Left = 0,
-        Center,
-        Right,
+        left = 0,
+        center,
+        right,
     };
 
     enum class WidgetType : uint8_t
@@ -154,7 +154,7 @@ namespace OpenLoco::Ui
         Gfx::Font font{ Gfx::Font::medium_bold };
         StringId tooltip{ StringIds::null };
         WidgetType type{};
-        ContentAlign contentAlign{ ContentAlign::Left };
+        ContentAlign contentAlign{ ContentAlign::left };
         WindowColour windowColour{};
 
         int16_t midX() const;

@@ -10,7 +10,7 @@ namespace OpenLoco::Ui::Widgets
             : Widget(id, origin, size, WidgetType::buttonWithImage, colour, content, tooltip)
         {
             events.draw = &draw;
-            contentAlign = ContentAlign::Center;
+            contentAlign = ContentAlign::center;
         }
 
         constexpr ImageButton(Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
