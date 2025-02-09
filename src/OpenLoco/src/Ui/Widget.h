@@ -164,7 +164,7 @@ namespace OpenLoco::Ui
         static constexpr uint16_t kDefaultTabWidth = 30;
         static void leftAlignTabs(Window& window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth = kDefaultTabWidth);
 
-        void draw(Gfx::DrawingContext& drawingCtx, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
+        void draw(Gfx::DrawingContext& drawingCtx, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t scrollviewIndex);
     };
 
     constexpr Widget makeWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)

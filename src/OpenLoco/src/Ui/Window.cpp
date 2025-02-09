@@ -1342,6 +1342,13 @@ namespace OpenLoco::Ui
         for (auto& widget : widgets)
         {
             widget.draw(drawingCtx, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
+
+            // FIXME: This is ugly and error prone, put the ScrollArea data in the widget,
+            //        previously it was passed as reference to draw where it incremented it.
+            if (widget.type == WidgetType::scrollview)
+            {
+                scrollviewIndex++;
+            }
         }
 
         if (this->hasFlags(WindowFlags::whiteBorderMask))

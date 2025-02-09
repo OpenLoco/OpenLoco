@@ -60,7 +60,13 @@ namespace OpenLoco::Ui
         return (this->bottom - this->top) + 1;
     }
 
-    void Widget::draw(Gfx::DrawingContext& drawingCtx, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
+    void Widget::draw(
+        Gfx::DrawingContext& drawingCtx,
+        Window* window,
+        const uint64_t pressedWidgets,
+        const uint64_t toolWidgets,
+        const uint64_t hoveredWidgets,
+        uint8_t scrollviewIndex)
     {
         const auto& rt = drawingCtx.currentRenderTarget();
 
@@ -200,7 +206,6 @@ namespace OpenLoco::Ui
 
             case WidgetType::scrollview:
                 drawScrollview(drawingCtx, *this, widgetState);
-                scrollviewIndex++;
                 break;
 
             case WidgetType::checkbox:
