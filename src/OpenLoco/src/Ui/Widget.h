@@ -199,6 +199,9 @@ namespace OpenLoco::Ui
         uint32_t styleData{};
 
         // Widget state.
+        bool enabled : 1 {};
+        bool disabled : 1 {};
+        bool activated : 1 {};
         bool hidden : 1 {};
 
         // TODO: Make tabs actual widgets.

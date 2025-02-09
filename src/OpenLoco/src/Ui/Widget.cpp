@@ -76,11 +76,13 @@ namespace OpenLoco::Ui
         widgetState.window = window;
         widgetState.flags = widgetFlags;
         widgetState.colour = window->getColour(windowColour);
-        widgetState.enabled = (window->enabledWidgets & (1ULL << widgetIndex)) != 0;
-        widgetState.disabled = (window->disabledWidgets & (1ULL << widgetIndex)) != 0;
-        widgetState.activated = (window->activatedWidgets & (1ULL << widgetIndex)) != 0;
+
+        widgetState.enabled = enabled | ((window->enabledWidgets & (1ULL << widgetIndex)) != 0);
+        widgetState.disabled = disabled | ((window->disabledWidgets & (1ULL << widgetIndex)) != 0);
+        widgetState.activated = activated | ((window->activatedWidgets & (1ULL << widgetIndex)) != 0);
         widgetState.activated |= (pressedWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.activated |= (toolWidgets & (1ULL << widgetIndex)) != 0;
+
         widgetState.hovered = (hoveredWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.scrollviewIndex = scrollviewIndex;
 
