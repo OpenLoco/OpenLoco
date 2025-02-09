@@ -274,7 +274,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 598, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::title_object_selection),
+        Widgets::Caption({ 1, 1 }, { 598, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_object_selection),
         Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 42 }, { 600, 356 }, WindowColour::secondary),
 

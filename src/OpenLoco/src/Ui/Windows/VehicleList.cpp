@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 550, 213 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 548, 13 }, CaptionVariant::colourText, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 548, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
         Widgets::ImageButton({ 535, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 550, 172 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trains),

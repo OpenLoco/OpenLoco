@@ -58,7 +58,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 197 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 598, 13 }, CaptionVariant::colourText, WindowColour::primary, StringIds::stringid_all_stations),
+        Widgets::Caption({ 1, 1 }, { 598, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, StringIds::stringid_all_stations),
         Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 600, 155 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_all_stations),

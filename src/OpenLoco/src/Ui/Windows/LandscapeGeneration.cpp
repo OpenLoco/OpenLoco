@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { 366, frame_height }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { 364, 13 }, CaptionVariant::whiteText, WindowColour::primary, window_caption_id),
+                Widgets::Caption({ 1, 1 }, { 364, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, window_caption_id),
                 Widgets::ImageButton({ 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_options),

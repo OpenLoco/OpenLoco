@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 272 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 348, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::title_map),
+        Widgets::Caption({ 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_map),
         Widgets::ImageButton({ 335, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 350, 230 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),

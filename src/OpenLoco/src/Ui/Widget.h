@@ -75,10 +75,7 @@ namespace OpenLoco::Ui
         viewport = 19,
         wt_20,
         wt_21,
-        caption_22,
-        caption_23,
-        caption_24,
-        caption_25,
+        caption,
         scrollview = 26,
         checkbox = 27,
         wt_28,
@@ -164,6 +161,9 @@ namespace OpenLoco::Ui
         int16_t midY() const;
         uint16_t width() const;
         uint16_t height() const;
+
+        // Custom widget attributes.
+        uint32_t styleData{};
 
         // Widget state.
         bool hidden : 1 {};

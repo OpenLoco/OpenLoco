@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x5231D0
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 380, 233 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 378, 13 }, CaptionVariant::colourText, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 378, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
         Widgets::ImageButton({ 365, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
 

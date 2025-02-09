@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, windowSize, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { (uint16_t)(windowSize.width - 2), 13 }, CaptionVariant::whiteText, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { (uint16_t)(windowSize.width - 2), 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { windowSize.width, 102 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_display_options),

@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 358, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::music_selection_title),
+        Widgets::Caption({ 1, 1 }, { 358, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
         Widgets::ImageButton({ 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 360, 223 }, WindowColour::secondary),
         Widgets::ScrollView({ 4, 19 }, { 352, 218 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip)

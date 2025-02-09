@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 610, 412 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 608, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::select_scenario_for_new_game),
+        Widgets::Caption({ 1, 1 }, { 608, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::select_scenario_for_new_game),
         Widgets::ImageButton({ 595, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Wt3Widget({ 0, 48 }, { 610, 364 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),

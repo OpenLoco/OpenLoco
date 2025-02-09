@@ -37,7 +37,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Panel({ 0, 0 }, { 260, 48 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 258, 13 }, CaptionVariant::boxed, WindowColour::primary, StringIds::empty),
+        Widgets::Caption({ 1, 1 }, { 258, 13 }, Widgets::Caption::Style::boxed, WindowColour::primary, StringIds::empty),
         Widgets::Button({ 247, 2 }, { 11, 11 }, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
         Widgets::Label({ 2, 17 }, { 256, 12 }, WindowColour::primary, ContentAlign::Center, StringIds::empty),
         Widgets::Button({ 8, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_save),
