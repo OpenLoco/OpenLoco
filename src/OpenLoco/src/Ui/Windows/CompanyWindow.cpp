@@ -717,14 +717,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         class ToolBuildHQ : public ToolManager::ToolBase
         {
-            virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event);
-            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event);
-            virtual void onStop(Window& self, const ToolManager::ToolEventType event);
+            virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event) override;
+            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event) override;
+            virtual void onStop(Window& self, const ToolManager::ToolEventType event) override;
 
         public:
             ToolBuildHQ()
             {
-                flags = ToolManager::ToolFlags::keepFlag6;
+                toolFlags = ToolManager::ToolFlags::keepFlag6;
                 cursor = CursorId::crosshair;
                 type = WindowType::company;
                 events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop) };
@@ -1062,7 +1062,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432CA1
-        void ToolBuildHQ::onMouseMove([[maybe_unused]] Window& self, const ToolManager::ToolEventType event)
+        void ToolBuildHQ::onMouseMove([[maybe_unused]] Window& self, const ToolManager::ToolEventType)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -1101,7 +1101,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.dx = widgetIndex;
         // regs.ax = mouseX;
         // regs.bx = mouseY;
-        void ToolBuildHQ::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
+        void ToolBuildHQ::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType)
         {
             removeHeadquarterGhost();
 
@@ -1128,14 +1128,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         void ToolBuildHQ::onStop([[maybe_unused]] Window& self, [[maybe_unused]] ToolManager::ToolEventType event)
         {
             removeHeadquarterGhost();
-            Ui::Windows::Main::hideGridlines();
         }
 
         static void onClose(Window& self)
         {
             if (ToolManager::isToolActive(self.number, kToolBuildHQ))
             {
-                ToolManager::toolCancel();
+                kToolBuildHQ.cancel();
             }
         }
 

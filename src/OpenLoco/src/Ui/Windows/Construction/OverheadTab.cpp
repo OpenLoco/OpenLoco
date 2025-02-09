@@ -45,14 +45,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
     class ToolPlaceTrackExtra : public ToolManager::ToolBase
     {
-        virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event);
-        virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event);
-        virtual void onModifierChanged(Window& self, const ToolManager::ToolEventType event);
+        virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event) override;
+        virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event) override;
+        virtual void onModifierChanged(Window& self, const ToolManager::ToolEventType event) override;
 
     public:
         ToolPlaceTrackExtra()
         {
-            flags = ToolManager::ToolFlags::keepFlag6;
             cursor = CursorId::crosshair;
             type = WindowType::construction;
             events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop), enumValue(ToolManager::ToolEventType::onControlChanged), enumValue(ToolManager::ToolEventType::onShiftChanged) };
@@ -292,7 +291,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC15
-    void ToolPlaceTrackExtra::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
+    void ToolPlaceTrackExtra::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType)
     {
 
         if (_cState->trackType & (1 << 7))
@@ -368,7 +367,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC20
-    void ToolPlaceTrackExtra::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
+    void ToolPlaceTrackExtra::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType)
     {
         removeConstructionGhosts();
 
@@ -416,7 +415,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
     }
 
-    void ToolPlaceTrackExtra::onModifierChanged([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
+    void ToolPlaceTrackExtra::onModifierChanged([[maybe_unused]] Window& self, ToolManager::ToolEventType)
     {
         removeConstructionGhosts();
         if (Input::hasKeyModifier(Input::KeyModifier::shift))

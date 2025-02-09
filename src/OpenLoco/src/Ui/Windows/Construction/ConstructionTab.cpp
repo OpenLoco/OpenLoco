@@ -123,17 +123,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
     class ToolRepositionTrack : public ToolManager::ToolBase
     {
-        virtual void onMouseMove(Window& self, ToolManager::ToolEventType event);
-        virtual void onMouseDown(Window& self, ToolManager::ToolEventType event);
-        virtual void onStop(Window& self, ToolManager::ToolEventType event);
+        virtual void onMouseMove(Window& self, ToolManager::ToolEventType event) override;
+        virtual void onMouseDown(Window& self, ToolManager::ToolEventType event) override;
 
     public:
         ToolRepositionTrack()
         {
-            flags = ToolManager::ToolFlags::keepFlag6;
+            toolFlags = ToolManager::ToolFlags::keepFlag6;
             cursor = CursorId::crosshair;
             type = WindowType::construction;
-            events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop) };
+            events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown) };
             widget = widx::construct;
         };
     };
@@ -556,7 +555,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 removeConstructionGhosts();
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
                 kToolRepositionTrack.activate(self, true);
-                Input::setFlag(Input::Flags::flag6);
 
                 _cState->constructionHover = 1;
                 _cState->byte_113607E = 0;
@@ -2488,7 +2486,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         Pos2 constructPos;
         int16_t constructHeight = 0;
-        const auto junctionRes = tryMakeJunction(state.pos);
+        const auto junctionRes = tryMakeJunction(pos);
         if (junctionRes)
         {
             constructPos = World::toWorldSpace(junctionRes->first);
@@ -2498,7 +2496,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         else
         {
-            const auto constRes = getConstructionPos(state.pos);
+            const auto constRes = getConstructionPos(pos);
             if (!constRes)
             {
                 return;
@@ -2549,7 +2547,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC8C
-    void ToolRepositionTrack::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType event)
+    void ToolRepositionTrack::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType)
     {
 
         if (_cState->trackType & (1 << 7))
@@ -2592,7 +2590,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         else
         {
-            const auto constRes = getConstructionPos(state.pos, _cState->word_1136000);
+            const auto constRes = getConstructionPos(pos, _cState->word_1136000);
             if (!constRes)
             {
                 return;
@@ -2613,7 +2611,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             constructHeight -= 16;
             maxRetries = 2;
 
-            if (Input::hasKeyModifier(Input::KeyModifier::shift)
+            if (Input::hasKeyModifier(Input::KeyModifier::shift))
             {
                 maxRetries = 0x80000008;
                 constructHeight -= 16;
@@ -2632,7 +2630,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC97
-    void ToolRepositionTrack::onMouseDown([[maybe_unused]] Window& self, const ToolManager::ToolEventType event)
+    void ToolRepositionTrack::onMouseDown([[maybe_unused]] Window& self, const ToolManager::ToolEventType)
     {
 
         if (_cState->trackType & (1 << 7))

@@ -17,16 +17,18 @@ namespace OpenLoco::ToolManager
     static loco_global<Ui::CursorId, 0x00523393> _toolWindowCursor;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIndex;
 
-    static ToolBase& currentTool;
+    static ToolBase noTool = ToolBase();
+    static ToolBase& currentTool = noTool;
 
-    static void setCurrentTool(const ToolBase& tool)
+    static void setCurrentTool(Window& window, ToolBase& tool)
     {
         currentTool = tool;
+        currentTool.window = window.number;
     }
 
     static void resetCurrentTool()
     {
-        currentTool = ToolBase{};
+        currentTool = noTool;
     }
 
     static void setInteropVariables(const ToolBase& tool)
@@ -109,6 +111,7 @@ namespace OpenLoco::ToolManager
         ToolManager::setToolCursor(cursorId);
         ToolManager::setToolWindowType(w->type);
         ToolManager::setToolWindowNumber(w->number);
+        ToolManager::setToolWidgetIndex(widgetIndex);
         return true;
     }
 
@@ -149,7 +152,6 @@ namespace OpenLoco::ToolManager
         toolCancel();
     }
 
-    //  TODO: delete me
     Ui::WindowNumber_t getToolWindowNumber()
     {
         return _toolWindowNumber;
@@ -159,7 +161,6 @@ namespace OpenLoco::ToolManager
         _toolWindowNumber = toolWindowNumber;
     }
 
-    // TODO: delete me
     Ui::WindowType getToolWindowType()
     {
         return _toolWindowType;
@@ -169,22 +170,45 @@ namespace OpenLoco::ToolManager
         _toolWindowType = toolWindowType;
     }
 
-    // TODO: delete me
     Ui::CursorId getToolCursor()
     {
         return _toolWindowCursor;
     }
 
-    // TODO: delete me
     void setToolCursor(Ui::CursorId toolWindowCursor)
     {
         _toolWindowCursor = toolWindowCursor;
     }
 
-    // TODO: delete me
     int16_t getToolWidgetIndex()
     {
         return _toolWidgetIndex;
+    }
+
+    void setToolWidgetIndex(int16_t widget)
+    {
+        _toolWidgetIndex = widget;
+    }
+
+
+    CursorId getCursor(bool& out, int16_t x, int16_t y)
+    {
+        auto w = WindowManager::find(currentTool.type, currentTool.window);
+        if (w == nullptr)
+        {
+            return currentTool.cursor;
+        }
+        return currentTool.getCursor(*w, out, x, y);
+    }
+
+    bool fireEvent(ToolEventType event, int16_t x, int16_t y, int16_t mouseWheel)
+    {
+        auto w = WindowManager::find(currentTool.type, currentTool.window);
+        if (w == nullptr)
+        {
+            return false;
+        }
+        return currentTool.fireEvent(event, x, y, mouseWheel);
     }
 
     bool ToolBase::fireEvent(ToolEventType event, int16_t x, int16_t y, int16_t mouseWheel)
@@ -196,6 +220,19 @@ namespace OpenLoco::ToolManager
 
         input.set(x, y, mouseWheel);
 
+        switch (event)
+        {
+            case ToolEventType::onMouseDrag:
+                input.dragging = true;
+                break;
+            case ToolEventType::onMouseDragEnd:
+            case ToolEventType::onStart:
+                input.dragging = false;
+                break;
+            default:
+                break;
+        }
+
         if (!hasEvent(event))
         {
             return false;
@@ -204,7 +241,7 @@ namespace OpenLoco::ToolManager
         auto w = WindowManager::find(type, window);
         if (w == nullptr)
         {
-            return;
+            return false;
         }
         switch (event)
         {
@@ -239,6 +276,7 @@ namespace OpenLoco::ToolManager
             default:
                 break;
         }
+        return true;
     }
 
     bool ToolBase::activate(Window& w, bool force)
@@ -256,18 +294,25 @@ namespace OpenLoco::ToolManager
         Input::setFlag(Input::Flags::toolActive);
         Input::resetFlag(Input::Flags::flag6);
 
-        if (flags && ToolFlags::keepFlag6)
+        if (toolFlags && ToolFlags::keepFlag6)
         {
             Input::setFlag(Input::Flags::flag6);
         }
 
-        setCurrentTool(*this);
+        input = {};
+
+        setCurrentTool(w, *this);
         setInteropVariables(*this);
 
         if (widget >= 0)
         {
-            w.activatedWidgets |= (1U << widget);
+            w.activatedWidgets |= (1ULL << widget);
             Ui::WindowManager::invalidateWidget(type, window, widget);
+        }
+        else
+        {
+            // TODO: for breakpoint testing. Remove before merge
+            (void)input;
         }
         if (hasEvent(ToolEventType::onStart))
         {
@@ -276,8 +321,10 @@ namespace OpenLoco::ToolManager
         return true;
     }
 
-    CursorId getCursor(Window& w, int16_t x, int16_t y, int16_t mouseWheel, bool& out)
+    CursorId ToolBase::getCursor(Window& w, bool& out, int16_t x, int16_t y)
     {
+        input.set(x, y);
+        return getCursorCallback(w, out);
     }
 
     void ToolBase::cancel()
@@ -293,9 +340,17 @@ namespace OpenLoco::ToolManager
 
         resetCurrentTool();
 
+        if (toolFlags && ToolFlags::gridlines)
+        {
+            Ui::Windows::Main::hideGridlines();
+        }
+
+        input = {};
+
         auto w = WindowManager::find(type, window);
         if (w == nullptr)
         {
+            window = 0;
             return;
         }
         if (window && type != WindowType::undefined && widget >= 0)
@@ -307,5 +362,6 @@ namespace OpenLoco::ToolManager
         {
             onStop(*w, ToolEventType::onStop);
         }
+        window = 0;
     }
 }
