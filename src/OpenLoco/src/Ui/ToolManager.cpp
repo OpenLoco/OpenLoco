@@ -127,13 +127,13 @@ namespace OpenLoco::ToolManager
 
             if (ToolManager::getToolWidgetIndex() >= 0)
             {
-                // Invalidate tool widget
-                Ui::WindowManager::invalidateWidget(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber(), ToolManager::getToolWidgetIndex());
                 if (fireEvent(ToolEventType::onAbort, 0, 0, 0))
                 {
                     currentTool = ToolConfiguration{};
                     return;
                 }
+                // Invalidate tool widget
+                Ui::WindowManager::invalidateWidget(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber(), ToolManager::getToolWidgetIndex());
                 // Abort tool event
                 Window* w = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                 if (w != nullptr)
