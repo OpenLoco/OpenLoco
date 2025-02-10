@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     public:
         ToolRepositionTrack()
         {
-            toolFlags = ToolFlag::keepFlag6 | ToolFlag::gridlines | ToolFlag::gridlinesPersistWithWindow;
+            toolFlags = ToolFlag::keepFlag6 | ToolFlag::gridlines | ToolFlag::gridlinesPersistWithWindow | ToolFlag::closeWindowWithTool;
             cursor = CursorId::crosshair;
             type = WindowType::construction;
             events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown };
@@ -2004,7 +2004,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             if (kToolRepositionTrack.isActive())
             {
-                kToolRepositionTrack.cancel();
+                kToolRepositionTrack.cancelQuiet();
             }
         }
         updateConstruction();
@@ -2602,7 +2602,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             _cState->makeJunction = 0;
         }
-        kToolRepositionTrack.cancel();
+        kToolRepositionTrack.cancelQuiet();
 
         auto maxRetries = 0;
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || _cState->makeJunction != 1)

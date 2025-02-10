@@ -32,9 +32,10 @@ namespace OpenLoco::ToolManager
         none = 0,
         keepFlag6 = (1U << 0),
         gridlines = (1U << 1),
-        dragStartsOnMouseDown = (1U << 2),
-        persistThroughWindowClose = (1U << 3),
-        gridlinesPersistWithWindow = (1U << 4),
+        gridlinesPersistWithWindow = (1U << 2),
+        dragStartsOnMouseDown = (1U << 3),
+        toolPersistsThroughWindowClose = (1U << 4),
+        closeWindowWithTool = (1U << 5),
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ToolFlag);
 
@@ -86,7 +87,15 @@ namespace OpenLoco::ToolManager
         bool fireEvent(ToolEventType_t event, int16_t x, int16_t y, int16_t mouseWheel);
 
         bool activate(Window& w, bool force = false);
-        void cancel();
+        /*
+         * if newWindow matches tool's current window, do not close window if closeToolWithWindow is set
+         */
+        void cancel(WindowNumber_t newWindow = 0);
+        /*
+         * Does not close window if closeToolWithWindow is set.
+         */
+        void cancelQuiet();
+
         bool isActive();
         bool isActive(Window& w);
 
@@ -101,7 +110,9 @@ namespace OpenLoco::ToolManager
         virtual void onScroll(Window&, ToolEventType_t) {};
         virtual CursorId getCursor(Window&, CursorId current, bool&) { return current; };
 
+    private:
         void setInteropVariables();
+        void trueCancel();
     };
 
     Ui::Window* toolGetActiveWindow();
@@ -112,7 +123,7 @@ namespace OpenLoco::ToolManager
     bool toolSet(Ui::Window* w, int16_t widgetIndex, Ui::CursorId cursorId);
     void toolCancel();
     void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
-    void toolCancelOnClose(Ui::WindowType, Ui::WindowNumber_t);
+    void toolCloseWindowAndTool(Ui::WindowType, Ui::WindowNumber_t);
 
     //  0x00523390
     Ui::WindowNumber_t getToolWindowNumber();

@@ -85,7 +85,10 @@ namespace OpenLoco::ToolManager
             }
             else
             {
-                toolCancel();
+                if (currentTool != nullptr)
+                {
+                    currentTool->cancel(w->number);
+                }
             }
         }
         // will this leak memory?
@@ -102,50 +105,6 @@ namespace OpenLoco::ToolManager
         ToolManager::setToolWindowNumber(w->number);
         ToolManager::setToolWidgetIndex(widgetIndex);
         return true;
-    }
-
-    // 0x004CE3D6
-    void toolCancel()
-    {
-        if (currentTool != nullptr)
-        {
-            currentTool->cancel();
-        }
-    }
-
-    void toolCancel(Ui::WindowType type, Ui::WindowNumber_t number)
-    {
-        if (currentTool == nullptr)
-        {
-            return;
-        }
-
-        if (currentTool->type != type || currentTool->window != number)
-        {
-            return;
-        }
-
-        currentTool->cancel();
-    }
-
-    void toolCancelOnClose(Ui::WindowType type, Ui::WindowNumber_t number)
-    {
-        if (currentTool == nullptr)
-        {
-            return;
-        }
-        if (currentTool->type != type || currentTool->window != number)
-        {
-            return;
-        }
-        if (!currentTool->hasFlag(ToolFlag::persistThroughWindowClose))
-        {
-            if (currentTool->hasFlag(ToolFlag::gridlinesPersistWithWindow))
-            {
-                Ui::Windows::Main::hideGridlines();
-            }
-            currentTool->cancel();
-        }
     }
 
     Ui::WindowNumber_t getToolWindowNumber()
@@ -302,10 +261,16 @@ namespace OpenLoco::ToolManager
         {
             if (!force && isActive(w))
             {
-                toolCancel();
+                if (currentTool != nullptr)
+                {
+                    currentTool->cancel();
+                }
                 return false;
             }
-            toolCancel();
+            if (currentTool != nullptr)
+            {
+                currentTool->cancel(w.number);
+            }
         }
         Input::setFlag(Input::Flags::toolActive);
         Input::resetFlag(Input::Flags::flag6);
@@ -313,6 +278,10 @@ namespace OpenLoco::ToolManager
         if (hasFlag(ToolFlag::keepFlag6))
         {
             Input::setFlag(Input::Flags::flag6);
+        }
+        if (!hasFlag(ToolFlag::gridlines))
+        {
+            Ui::Windows::Main::hideGridlines();
         }
 
         input = {};
@@ -337,7 +306,7 @@ namespace OpenLoco::ToolManager
         return true;
     }
 
-    void ToolBase::cancel()
+    void ToolBase::trueCancel()
     {
         if (!isActive()) // || !Input::hasFlag(Input::Flags::toolActive))
         {
@@ -374,6 +343,70 @@ namespace OpenLoco::ToolManager
         if (hasEvent(ToolEventType::onStop))
         {
             onStop(*w, ToolEventType::onStop);
+        }
+    }
+
+    void ToolBase::cancel(WindowNumber_t newWindow)
+    {
+        if (!isActive()) // || !Input::hasFlag(Input::Flags::toolActive))
+        {
+            return;
+        }
+        auto w = WindowManager::find(type, window);
+        trueCancel();
+        if (w != nullptr && w->number != newWindow && hasFlag(ToolFlag::closeWindowWithTool))
+        {
+            // currentTool is now unset, so no infinite loop
+            WindowManager::close(w);
+        }
+    }
+
+    void ToolBase::cancelQuiet()
+    {
+        trueCancel();
+    }
+
+    // 0x004CE3D6
+    void toolCancel()
+    {
+        if (currentTool != nullptr)
+        {
+            currentTool->cancel();
+        }
+    }
+
+    void toolCancel(Ui::WindowType type, Ui::WindowNumber_t number)
+    {
+        if (currentTool == nullptr)
+        {
+            return;
+        }
+
+        if (currentTool->type != type || currentTool->window != number)
+        {
+            return;
+        }
+
+        currentTool->cancel();
+    }
+
+    void toolCloseWindowAndTool(Ui::WindowType type, Ui::WindowNumber_t number)
+    {
+        if (currentTool == nullptr)
+        {
+            return;
+        }
+        if (currentTool->type != type || currentTool->window != number)
+        {
+            return;
+        }
+        if (!currentTool->hasFlag(ToolFlag::toolPersistsThroughWindowClose))
+        {
+            if (currentTool->hasFlag(ToolFlag::gridlinesPersistWithWindow))
+            {
+                Ui::Windows::Main::hideGridlines();
+            }
+            currentTool->cancelQuiet();
         }
     }
 }
