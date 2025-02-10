@@ -140,7 +140,7 @@ namespace OpenLoco::ToolManager
 
     // 0x00523394
     int16_t getToolWidgetIndex();
-    void setToolWidgetIndex(int16_t widget);
+    void setToolWidgetIndex(uint16_t toolWidgetIndex);
 
     /*
      * gets the current cursor for the active tool
@@ -150,5 +150,5 @@ namespace OpenLoco::ToolManager
     /*
      * fires the selected type and returns if the input was sunk. x, y: mouse position, mouseWheel: mouse wheel input
      */
-    bool fireEvent(ToolEventType_t event, int16_t mouseWheel = std::numeric_limits<int16_t>::min(), int16_t x = std::numeric_limits<int16_t>::min(), int16_t y = std::numeric_limits<int16_t>::min());
+    bool fireEvent(ToolEventType_t event, int16_t mouseWheel = 0, int16_t x = std::numeric_limits<int16_t>::min(), int16_t y = std::numeric_limits<int16_t>::min());
 }

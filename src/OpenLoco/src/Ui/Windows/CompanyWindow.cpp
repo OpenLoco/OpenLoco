@@ -628,7 +628,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         public:
             ToolBuildHQ()
             {
-                toolFlags = ToolFlag::keepFlag6;
+                toolFlags = ToolFlag::keepFlag6 | ToolFlag::gridlines;
                 cursor = CursorId::crosshair;
                 type = WindowType::company;
                 events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onCancel };
