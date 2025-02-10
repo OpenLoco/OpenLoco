@@ -5,6 +5,7 @@
 #include <array>
 #include <bit>
 #include <cassert>
+#include <iostream>
 
 using namespace OpenLoco::World::Track;
 
@@ -996,5 +997,46 @@ namespace OpenLoco::World::TrackData
     const RoadMiscData& getRoadMiscData(size_t roadId)
     {
         return _roadMiscData[roadId];
+    }
+    struct RoadUnkNextToLegacy
+    {
+        int8_t x;         // 0x00 (was 3x int8)
+        int8_t y;         // 0x01 (was 3x int8)
+        int8_t z;         // 0x02 (was 3x int8)
+        uint8_t rotation; // 0x03
+    };
+    static Interop::loco_global<uint8_t* [20], 0x004F6E02> _4F6E02;
+
+    std::array<std::string, 10> roadPieceNames = {
+        "straight",
+        "leftCurveVerySmall",
+        "rightCurveVerySmall",
+        "leftCurveSmall",
+        "rightCurveSmall",
+        "straightSlopeUp",
+        "straightSlopeDown",
+        "straightSteepSlopeUp",
+        "straightSteepSlopeDown",
+        "turnaround",
+    };
+
+    std::span<RoadUnkNextTo> getRoadUnkNextTo(uint16_t trackAndDirection)
+    {
+        for (auto j = 0U; j < 20; ++j)
+        {
+
+            auto* ptr = _4F6E02[trackAndDirection / 4];
+            const uint32_t numItems = *ptr++;
+            auto* unk = reinterpret_cast<RoadUnkNextToLegacy*>(ptr);
+
+            std::cout << fmt::format("constexpr std::array<RoadUnkNextTo, {0}> k{1}LaneUnkNextTo = {{\n", numItems, roadPieceNames[j / 2]);
+            for (auto i = 0U; i < numItems; i++)
+            {
+                auto& item = unk[i];
+                std::cout << fmt::format("    RoadUnkNextTo{{.pos = {{{0}, {1}, {2}},\n.rotation = {3},}},\n", item.x, item.y, item.z, item.rotation);
+            }
+            std::cout << "};\n";
+        }
+        return std::span<RoadUnkNextTo>();
     }
 }

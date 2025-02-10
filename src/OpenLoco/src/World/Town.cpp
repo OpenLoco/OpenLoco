@@ -359,7 +359,16 @@ namespace OpenLoco
                     }
                 }
             }
-            // 0x00498301
+
+            if ((growFlags & TownGrowFlags::flag5) != TownGrowFlags::none && !extent->isBridge)
+            {
+                auto* surface = TileManager::get(roadStart).surface();
+                if (surface->baseHeight() >= roadStart.z)
+                {
+
+                }
+            }
+            // 0x0049844D
         }
 
         GameCommands::setUpdatingCompanyId(oldUpatingCompany);

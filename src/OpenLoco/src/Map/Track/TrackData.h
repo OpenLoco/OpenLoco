@@ -94,4 +94,11 @@ namespace OpenLoco::World::TrackData
 
     const TrackMiscData& getTrackMiscData(size_t trackId);
     const RoadMiscData& getRoadMiscData(size_t roadId);
+
+    struct RoadUnkNextTo
+    {
+        World::Pos3 pos;  // 0x00 (was 3x int8)
+        uint8_t rotation; // 0x03
+    };
+    std::span<RoadUnkNextTo> getRoadUnkNextTo(uint16_t trackAndDirection);
 }
