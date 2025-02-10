@@ -100,5 +100,5 @@ namespace OpenLoco::World::TrackData
         World::Pos3 pos;  // 0x00 (was 3x int8)
         uint8_t rotation; // 0x03
     };
-    std::span<RoadUnkNextTo> getRoadUnkNextTo(uint16_t trackAndDirection);
+    std::span<const RoadUnkNextTo> getRoadUnkNextTo(uint16_t trackAndDirection);
 }
