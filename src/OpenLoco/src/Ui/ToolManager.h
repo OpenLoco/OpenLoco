@@ -12,8 +12,8 @@ namespace OpenLoco::ToolManager
     using ToolEventType_t = uint8_t;
     namespace ToolEventType
     {
-        constexpr ToolEventType_t onStart = 0;
-        constexpr ToolEventType_t onStop = 1;
+        constexpr ToolEventType_t onActivate = 0;
+        constexpr ToolEventType_t onCancel = 1;
         constexpr ToolEventType_t onMouseMove = 2;
         constexpr ToolEventType_t onMouseDown = 3;
         constexpr ToolEventType_t onMouseDrag = 4;
@@ -44,7 +44,7 @@ namespace OpenLoco::ToolManager
     public:
         ToolFlag toolFlags;
         CursorId cursor = CursorId::pointer;
-        WindowNumber_t window;
+        WindowNumber_t window = std::numeric_limits<uint16_t>::max();
         WindowType type = WindowType::undefined;
         StringId toolTip;
         BitSet<ToolEventType::count> events;
@@ -99,8 +99,8 @@ namespace OpenLoco::ToolManager
         bool isActive();
         bool isActive(Window& w);
 
-        virtual void onStart(Window&, ToolEventType_t) {};
-        virtual void onStop(Window&, ToolEventType_t) {};
+        virtual void onActivate(Window&, ToolEventType_t) {};
+        virtual void onCancel(Window&, ToolEventType_t) {};
         virtual void onMouseMove(Window&, ToolEventType_t) {};
         virtual void onMouseDown(Window&, ToolEventType_t) {};
         virtual void onMouseDrag(Window&, ToolEventType_t) {};

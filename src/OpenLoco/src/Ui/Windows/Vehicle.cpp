@@ -253,7 +253,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         class ToolPlaceOrder : public ToolBase
         {
             virtual void onMouseDown(Window& self, const ToolManager::ToolEventType_t event) override;
-            virtual void onStop(Window& self, const ToolManager::ToolEventType_t event) override;
+            virtual void onCancel(Window& self, const ToolManager::ToolEventType_t event) override;
             virtual Ui::CursorId getCursor(Window& self, CursorId current, bool& out) override;
 
         public:
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 cursor = CursorId::crosshair;
                 type = WindowType::vehicle;
-                events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onStop };
+                events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onCancel };
                 widget = widx::tool;
             };
         };
@@ -2933,7 +2933,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5088
-        void ToolPlaceOrder::onStop(Window& self, [[maybe_unused]] const ToolManager::ToolEventType_t event)
+        void ToolPlaceOrder::onCancel(Window& self, [[maybe_unused]] const ToolManager::ToolEventType_t event)
         {
             self.invalidate();
             World::resetMapSelectionFlag(World::MapSelectionFlags::unk_04);

@@ -98,9 +98,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
         static void sub_4A69DD();
 
-        static int16_t decrementToolSize();
-        static int16_t incrementToolSize();
-
         enum class GhostPlacedFlags : uint8_t
         {
             none = 0U,
@@ -108,91 +105,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             wall = 1 << 1,
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
-
-        using namespace ToolManager;
-        class ToolTerraform : public ToolBase
-        {
-            void onScroll(Window& self, ToolEventType_t) override;
-            // 0x004BCDE8
-            void onMouseDragEnd(Ui::Window&, ToolEventType_t) override
-            {
-                lastHeightCursorPosition = {};
-                currentTile = {};
-                World::mapInvalidateSelectionRect();
-                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
-            };
-            CursorId getCursor(Window&, CursorId, bool&) override { return input.dragging ? CursorId::upDownArrow : cursor; };
-
-        public:
-            Ui::Point lastHeightCursorPosition;
-            World::Pos2 currentTile{};
-            int16_t getTerrainUnitsPerPixel();
-            ToolTerraform()
-            {
-                toolFlags = ToolFlag::keepFlag6 | ToolFlag::gridlines | ToolFlag::closeWindowWithTool | ToolFlag::gridlinesPersistWithWindow;
-                type = WindowType::terraform;
-                events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onScrollShiftModifier, ToolEventType::onMouseDrag, ToolEventType::onMouseDragEnd };
-            };
-        };
-
-        void ToolTerraform::onScroll(Window& self, ToolEventType_t)
-        {
-            if (input.mouseWheel > 0)
-            {
-                for (int i = 0; i < input.mouseWheel; i++)
-                {
-                    Common::incrementToolSize();
-                }
-            }
-            else
-            {
-                for (int i = 0; i > input.mouseWheel; i--)
-                {
-                    Common::decrementToolSize();
-                }
-            }
-            self.invalidate();
-            World::mapInvalidateSelectionRect();
-        }
-
-        int16_t ToolTerraform::getTerrainUnitsPerPixel()
-        {
-
-            auto w = WindowManager::findAt(input.pos.x, input.pos.y);
-            if (w == nullptr)
-            {
-                // implicit sentinel value. One would have to move the mouse this many pixels to *not* trigger the return path.
-                return std::numeric_limits<int16_t>::max();
-            }
-
-            WidgetIndex_t newWidgetIndex = w->findWidgetAt(input.pos.x, input.pos.y);
-            if (newWidgetIndex == kWidgetIndexNull)
-            {
-                return std::numeric_limits<int16_t>::max();
-            }
-
-            auto wid = w->widgets[newWidgetIndex];
-            if (wid.type != WidgetType::viewport)
-            {
-                return std::numeric_limits<int16_t>::max();
-            }
-
-            auto viewport = w->viewports[0];
-            if (viewport == nullptr)
-            {
-                return std::numeric_limits<int16_t>::max();
-            }
-
-            auto zoom = viewport->zoom;
-
-            // 16 is how many pixels in one terrain height unit
-            // do not let it become zero
-            return std::max<int16_t>(1, (16 >> zoom));
-        }
     }
 
-    static loco_global<int16_t, 0x0052337A>
-        _dragLastY;
+    static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
@@ -1101,14 +1016,24 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 case widx::decrease_area:
                 {
-                    _clearAreaToolSize = Common::decrementToolSize();
+                    _adjustToolSize--;
+                    if (_adjustToolSize < 1)
+                    {
+                        _adjustToolSize = 1;
+                    }
+                    _clearAreaToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
                 }
 
                 case widx::increase_area:
                 {
-                    _clearAreaToolSize = Common::incrementToolSize();
+                    _adjustToolSize++;
+                    if (_adjustToolSize > 64)
+                    {
+                        _adjustToolSize = 64;
+                    }
+                    _clearAreaToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
                 }
@@ -1419,14 +1344,24 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 case widx::decrease_area:
                 {
-                    _adjustLandToolSize = Common::decrementToolSize();
+                    _adjustToolSize--;
+                    if (_adjustToolSize < 1)
+                    {
+                        _adjustToolSize = 1;
+                    }
+                    _adjustLandToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
                 }
 
                 case widx::increase_area:
                 {
-                    _adjustLandToolSize = Common::incrementToolSize();
+                    _adjustToolSize++;
+                    if (_adjustToolSize > 64)
+                    {
+                        _adjustToolSize = 64;
+                    }
+                    _adjustLandToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
                 }
@@ -1977,46 +1912,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         );
 
-        static void setAdjustCost(uint32_t raiseCost, uint32_t lowerCost);
-        static uint32_t raiseWater(uint8_t flags);
-        static uint32_t lowerWater(uint8_t flags);
-
-        class ToolWater : public Common::ToolTerraform
-        {
-            virtual void onMouseMove(Window& self, ToolManager::ToolEventType_t event) override;
-            virtual void onMouseDown(Window& self, ToolManager::ToolEventType_t event) override;
-            virtual void onMouseDrag(Window& self, ToolManager::ToolEventType_t event) override;
-            bool setAffectedTiles();
-
-        public:
-            ToolWater()
-            {
-                cursor = CursorId::waterTool;
-                widget = Common::widx::panel;
-            };
-        };
-
-        bool ToolWater::setAffectedTiles()
-        {
-            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
-
-            auto res = ViewportInteraction::getMapCoordinatesFromPos(input.pos.x, input.pos.y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
-            auto& interaction = res.first;
-            if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
-            {
-                setAdjustCost(0x80000000, 0x80000000);
-                return true;
-            }
-            if (!setMapSelectionTiles(interaction.pos + World::Pos2(16, 16), MapSelectionType::fullWater))
-            {
-                // no change in selection
-                return true;
-            }
-            return false;
-        }
-
-        static ToolWater kToolWater{};
-
         // 0x004BCDAE
         static void onClose([[maybe_unused]] Window& self)
         {
@@ -2026,7 +1921,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBC46
         static void tabReset(Window* self)
         {
-            kToolWater.activate(*self, true);
+            ToolManager::toolSet(self, Common::widx::panel, CursorId::waterTool);
             Input::setFlag(Input::Flags::flag6);
             _raiseWaterCost = 0x80000000;
             _lowerWaterCost = 0x80000000;
@@ -2046,14 +1941,24 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 case widx::decrease_area:
                 {
-                    _adjustWaterToolSize = Common::decrementToolSize();
+                    _adjustToolSize--;
+                    if (_adjustToolSize < 1)
+                    {
+                        _adjustToolSize = 1;
+                    }
+                    _adjustWaterToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
                 }
 
                 case widx::increase_area:
                 {
-                    _adjustWaterToolSize = Common::incrementToolSize();
+                    _adjustToolSize++;
+                    if (_adjustToolSize > 64)
+                    {
+                        _adjustToolSize = 64;
+                    }
+                    _adjustWaterToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
                 }
@@ -2076,21 +1981,37 @@ namespace OpenLoco::Ui::Windows::Terraform
             WindowManager::invalidate(WindowType::terraform);
         }
 
+        static uint32_t raiseWater(uint8_t flags);
+        static uint32_t lowerWater(uint8_t flags);
+
         // 0x004BCDB4
-        void ToolWater::onMouseMove([[maybe_unused]] Window& self, const ToolManager::ToolEventType_t)
+        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
+            if (widgetIndex != Common::widx::panel)
+            {
+                return;
+            }
             World::mapInvalidateSelectionRect();
 
-            if (!input.dragging)
+            if (ToolManager::getToolCursor() != CursorId::upDownArrow)
             {
-                if (setAffectedTiles())
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
+
+                auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+                auto& interaction = res.first;
+                if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
                 {
+                    setAdjustCost(0x80000000, 0x80000000);
+                    return;
+                }
+                if (!setMapSelectionTiles(interaction.pos + World::Pos2(16, 16), MapSelectionType::fullWater))
+                {
+                    // no change in selection
                     return;
                 }
             }
             else
             {
-                // idk what this is for
                 if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
                 {
                     return;
@@ -2108,14 +2029,18 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDCA
-        void ToolWater::onMouseDown([[maybe_unused]] Window& self, const ToolManager::ToolEventType_t)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
-            lastHeightCursorPosition = input.pos;
-            // idk what this is for
+            if (widgetIndex != Common::widx::panel)
+            {
+                return;
+            }
             if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
             {
                 return;
             }
+
+            ToolManager::setToolCursor(CursorId::upDownArrow);
         }
 
         static uint32_t raiseWater(uint8_t flags)
@@ -2149,30 +2074,77 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDBF
-        void ToolWater::onMouseDrag([[maybe_unused]] Window& self, const ToolManager::ToolEventType_t)
+        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            auto distanceIncrement = getTerrainUnitsPerPixel();
-            auto deltaY = input.pos.y - lastHeightCursorPosition.y;
-
-            if (deltaY <= -distanceIncrement)
-            {
-                raiseWater(Flags::apply);
-                lastHeightCursorPosition.y -= distanceIncrement;
-                _dragLastY = lastHeightCursorPosition.y;
-            }
-            else if (deltaY >= distanceIncrement)
-            {
-                lastHeightCursorPosition.y -= distanceIncrement;
-                _dragLastY = lastHeightCursorPosition.y;
-                lowerWater(Flags::apply);
-            }
-            else
+            if (widgetIndex != Common::widx::panel)
             {
                 return;
             }
-            // is this applied before or after the game action?
+
+            auto window = WindowManager::findAt(x, y);
+            if (window == nullptr)
+            {
+                return;
+            }
+
+            WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
+            if (newWidgetIndex == kWidgetIndexNull)
+            {
+                return;
+            }
+
+            auto widget = window->widgets[newWidgetIndex];
+            if (widget.type != WidgetType::viewport)
+            {
+                return;
+            }
+
+            auto viewport = window->viewports[0];
+            if (viewport == nullptr)
+            {
+                return;
+            }
+
+            auto zoom = viewport->zoom;
+
+            auto dY = -(16 >> zoom);
+            if (dY == 0)
+            {
+                dY = -1;
+            }
+
+            auto deltaY = y - _dragLastY;
+            auto flags = Flags::apply;
+
+            if (deltaY <= dY)
+            {
+                _dragLastY = _dragLastY + dY;
+                raiseWater(flags);
+            }
+            else
+            {
+                dY = -dY;
+                if (deltaY < dY)
+                {
+                    return;
+                }
+                _dragLastY = _dragLastY + dY;
+                lowerWater(flags);
+            }
             _raiseWaterCost = 0x80000000;
             _lowerWaterCost = 0x80000000;
+        }
+
+        // 0x004BCDE8
+        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex)
+        {
+            if (widgetIndex == Common::widx::panel)
+            {
+                World::mapInvalidateSelectionRect();
+
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
+                ToolManager::setToolCursor(CursorId::waterTool);
+            }
         }
 
         // 0x004BCC6D
@@ -2246,16 +2218,19 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static constexpr WindowEventList kEvents
-            = {
-                  .onClose = onClose,
-                  .onMouseUp = Common::onMouseUp,
-                  .onResize = onResize,
-                  .onMouseDown = onMouseDown,
-                  .onUpdate = Common::onUpdate,
-                  .prepareDraw = prepareDraw,
-                  .draw = draw,
-              };
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -2785,26 +2760,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             { BuildWalls::widgets,  widx::tab_build_walls,  BuildWalls::getEvents(),  BuildWalls::enabledWidgets,  BuildWalls::holdableWidgets },
         };
         // clang-format on
-
-        static int16_t decrementToolSize()
-        {
-            _adjustToolSize--;
-            if (_adjustToolSize < 1)
-            {
-                _adjustToolSize = 1;
-            }
-            return _adjustToolSize;
-        }
-
-        static int16_t incrementToolSize()
-        {
-            _adjustToolSize++;
-            if (_adjustToolSize > 64)
-            {
-                _adjustToolSize = 64;
-            }
-            return _adjustToolSize;
-        }
 
         static void onResize(Window& self, uint8_t height)
         {

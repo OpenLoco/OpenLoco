@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             virtual void onMouseMove(Window& self, ToolEventType_t event) override;
             virtual void onMouseDown(Window& self, ToolEventType_t event) override;
-            virtual void onStop(Window& self, ToolEventType_t event) override;
+            virtual void onCancel(Window& self, ToolEventType_t event) override;
 
         public:
             ToolBuildHQ()
@@ -631,7 +631,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 toolFlags = ToolFlag::keepFlag6;
                 cursor = CursorId::crosshair;
                 type = WindowType::company;
-                events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onStop };
+                events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onCancel };
                 widget = 12;
             };
         };
@@ -1129,7 +1129,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432D7A
-        void ToolBuildHQ::onStop([[maybe_unused]] Window& self, ToolEventType_t)
+        void ToolBuildHQ::onCancel([[maybe_unused]] Window& self, ToolEventType_t)
         {
             removeHeadquarterGhost();
         }

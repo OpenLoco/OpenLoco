@@ -17,6 +17,8 @@ namespace OpenLoco::ToolManager
     static loco_global<Ui::CursorId, 0x00523393> _toolWindowCursor;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIndex;
 
+    static ToolBase tempTools[2] = {};
+
     static ToolBase noTool = ToolBase();
     static ToolBase* currentTool;
 
@@ -24,16 +26,22 @@ namespace OpenLoco::ToolManager
     {
         currentTool = tool;
         currentTool->window = window.number;
+        Input::setFlag(Input::Flags::toolActive);
     }
 
     static void resetCurrentTool()
     {
+        Input::resetFlag(Input::Flags::toolActive);
         currentTool = &noTool;
     }
 
     Window* toolGetActiveWindow()
     {
         if (!Input::hasFlag(Input::Flags::toolActive))
+        {
+            return nullptr;
+        }
+        if (currentTool == nullptr)
         {
             return nullptr;
         }
@@ -47,6 +55,10 @@ namespace OpenLoco::ToolManager
         {
             return false;
         }
+        if (currentTool == nullptr)
+        {
+            return false;
+        }
 
         return currentTool->type == type;
     }
@@ -54,6 +66,10 @@ namespace OpenLoco::ToolManager
     bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number)
     {
         if (!isToolActive(type))
+        {
+            return false;
+        }
+        if (currentTool == nullptr)
         {
             return false;
         }
@@ -76,35 +92,16 @@ namespace OpenLoco::ToolManager
     // w (esi)
     bool toolSet(Ui::Window* w, int16_t widgetIndex, CursorId cursorId)
     {
-        if (Input::hasFlag(Input::Flags::toolActive))
-        {
-            if (w->type == _toolWindowType && w->number == _toolWindowNumber && widgetIndex == _toolWidgetIndex)
-            {
-                toolCancel();
-                return false;
-            }
-            else
-            {
-                if (currentTool != nullptr)
-                {
-                    currentTool->cancel(w->number);
-                }
-            }
-        }
         // will this leak memory?
-        ToolBase tempTool{};
-        tempTool.type = w->type;
-        tempTool.widget = widgetIndex;
-        tempTool.window = w->number;
-        tempTool.cursor = cursorId;
-        setCurrentTool(*w, &tempTool);
-        Input::setFlag(Input::Flags::toolActive);
-        Input::resetFlag(Input::Flags::flag6);
-        ToolManager::setToolCursor(cursorId);
-        ToolManager::setToolWindowType(w->type);
-        ToolManager::setToolWindowNumber(w->number);
-        ToolManager::setToolWidgetIndex(widgetIndex);
-        return true;
+        ToolBase* tempTool = tempTools;
+        if (tempTool->isActive())
+        {
+            tempTool++;
+        }
+        tempTool->type = w->type;
+        tempTool->widget = widgetIndex;
+        tempTool->cursor = cursorId;
+        return tempTool->activate(*w);
     }
 
     Ui::WindowNumber_t getToolWindowNumber()
@@ -147,6 +144,10 @@ namespace OpenLoco::ToolManager
 
     CursorId getCursor(CursorId currentCursor, bool& out, int16_t x, int16_t y)
     {
+        if (currentTool == nullptr)
+        {
+            return currentCursor;
+        }
         auto w = WindowManager::find(currentTool->type, currentTool->window);
         if (w == nullptr)
         {
@@ -158,6 +159,10 @@ namespace OpenLoco::ToolManager
 
     bool fireEvent(ToolEventType_t event, int16_t x, int16_t y, int16_t mouseWheel)
     {
+        if (currentTool == nullptr)
+        {
+            return false;
+        }
         auto w = WindowManager::find(currentTool->type, currentTool->window);
         if (w == nullptr)
         {
@@ -168,7 +173,7 @@ namespace OpenLoco::ToolManager
 
     bool ToolBase::fireEvent(ToolEventType_t event, int16_t x, int16_t y, int16_t mouseWheel)
     {
-        if (!Input::hasFlag(Input::Flags::toolActive) && event != ToolEventType::onStop)
+        if (!Input::hasFlag(Input::Flags::toolActive) && event != ToolEventType::onCancel)
         {
             return false;
         }
@@ -184,7 +189,7 @@ namespace OpenLoco::ToolManager
                 input.dragging = true;
                 break;
             case ToolEventType::onMouseDragEnd:
-            case ToolEventType::onStart:
+            case ToolEventType::onActivate:
                 input.dragging = false;
                 break;
             default:
@@ -203,11 +208,11 @@ namespace OpenLoco::ToolManager
         }
         switch (event)
         {
-            case ToolEventType::onStart:
-                onStart(*w, event);
+            case ToolEventType::onActivate:
+                onActivate(*w, event);
                 break;
-            case ToolEventType::onStop:
-                onStop(*w, event);
+            case ToolEventType::onCancel:
+                onCancel(*w, event);
                 break;
             case ToolEventType::onMouseMove:
                 onMouseMove(*w, event);
@@ -272,7 +277,12 @@ namespace OpenLoco::ToolManager
                 currentTool->cancel(w.number);
             }
         }
-        Input::setFlag(Input::Flags::toolActive);
+
+        input = {};
+
+        setCurrentTool(w, this);
+        setInteropVariables();
+
         Input::resetFlag(Input::Flags::flag6);
 
         if (hasFlag(ToolFlag::keepFlag6))
@@ -284,35 +294,24 @@ namespace OpenLoco::ToolManager
             Ui::Windows::Main::hideGridlines();
         }
 
-        input = {};
-
-        setCurrentTool(w, this);
-        setInteropVariables();
-
         if (widget >= 0)
         {
             w.activatedWidgets |= (1ULL << widget);
             Ui::WindowManager::invalidateWidget(type, window, widget);
         }
-        else
+        if (hasEvent(ToolEventType::onActivate))
         {
-            // TODO: for breakpoint testing. Remove before merge
-            (void)input;
-        }
-        if (hasEvent(ToolEventType::onStart))
-        {
-            onStart(w, ToolEventType::onStart);
+            onActivate(w, ToolEventType::onActivate);
         }
         return true;
     }
 
     void ToolBase::trueCancel()
     {
-        if (!isActive()) // || !Input::hasFlag(Input::Flags::toolActive))
+        if (!isActive() || !Input::hasFlag(Input::Flags::toolActive))
         {
             return;
         }
-        Input::resetFlag(Input::Flags::toolActive);
 
         World::mapInvalidateSelectionRect();
         World::mapInvalidateMapSelectionTiles();
@@ -329,21 +328,21 @@ namespace OpenLoco::ToolManager
         input = {};
 
         auto w = WindowManager::find(type, window);
-        window = 0;
         if (w == nullptr)
         {
-            window = 0;
+            window = std::numeric_limits<uint16_t>::max();
             return;
         }
-        if (window && type != WindowType::undefined && widget >= 0)
+        if (widget >= 0)
         {
             w->activatedWidgets &= ~(1U << widget);
             Ui::WindowManager::invalidateWidget(type, w->number, widget);
         }
-        if (hasEvent(ToolEventType::onStop))
+        if (hasEvent(ToolEventType::onCancel))
         {
-            onStop(*w, ToolEventType::onStop);
+            onCancel(*w, ToolEventType::onCancel);
         }
+        window = std::numeric_limits<uint16_t>::max();
     }
 
     void ToolBase::cancel(WindowNumber_t newWindow)
