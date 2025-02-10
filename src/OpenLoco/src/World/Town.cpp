@@ -60,13 +60,13 @@ namespace OpenLoco
         auto growthPerTick = kBuildSpeedToGrowthPerTick[this->buildSpeed];
         if (growthPerTick == 0 || (growthPerTick == 1 && (gPrng1().randNext() & 7)))
         {
-            grow(0x07);
+            grow(TownGrowFlags::flag0 | TownGrowFlags::flag1 | TownGrowFlags::flag2);
         }
         else
         {
             for (int32_t counter = 0; counter < growthPerTick; ++counter)
             {
-                grow(0x3F);
+                grow(TownGrowFlags::flag0 | TownGrowFlags::flag1 | TownGrowFlags::flag2 | TownGrowFlags::flag3 | TownGrowFlags::flag4 | TownGrowFlags::flag5 | TownGrowFlags::flag6);
             }
         }
     }
@@ -260,7 +260,7 @@ namespace OpenLoco
      * @param this @<esi>
      * @param growFlags @<eax>
      */
-    void Town::grow(int32_t growFlags)
+    void Town::grow(TownGrowFlags growFlags)
     {
         // growFlags : 0x01135C40
 
@@ -270,7 +270,7 @@ namespace OpenLoco
         const auto extent = findRoadExtent();
         if (!extent.has_value())
         {
-            if (growFlags & 0x01)
+            if ((growFlags & TownGrowFlags::flag0) != TownGrowFlags::none)
             {
                 buildInitialRoad();
             }
@@ -309,18 +309,63 @@ namespace OpenLoco
             const auto nextRoadRes = sub_47AC3E(roadStart, tad);
             if (nextRoadRes.owner != CompanyId::neutral)
             {
-                // 0x004982D7
+                if ((growFlags & TownGrowFlags::flag2) != TownGrowFlags::none)
+                {
+                    if (extent->isBridge || hasNearbyBuildings(World::toTileSpace(roadStart)))
+                    {
+                        updateAndTakeoverRoad(roadStart, tad, nextRoadRes.roadObjId, CompanyId::neutral, nextRoadRes.streetLightStyle.value_or(0U));
+                        break;
+                    }
+                }
             }
             else
             {
-                // 0x0049821D
+                if (nextRoadRes.roadObjId != idealRoadId.value())
+                {
+                    const auto* curRoadObj = ObjectManager::get<RoadObject>(nextRoadRes.roadObjId);
+                    if (!curRoadObj->hasFlags(RoadObjectFlags::unk_00))
+                    {
+                        const auto* idealRoadObj = ObjectManager::get<RoadObject>(idealRoadId.value());
+
+                        if (curRoadObj->maxSpeed <= idealRoadObj->maxSpeed)
+                        {
+                            if ((growFlags & TownGrowFlags::flag1) != TownGrowFlags::none)
+                            {
+                                if (extent->isBridge || hasNearbyBuildings(World::toTileSpace(roadStart)))
+                                {
+                                    updateAndTakeoverRoad(roadStart, tad, idealRoadId.value(), nextRoadRes.owner, nextRoadRes.streetLightStyle.value_or(0U));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if ((growFlags & TownGrowFlags::flag1) != TownGrowFlags::none)
+                    {
+                        if (nextRoadRes.streetLightStyle.has_value())
+                        {
+                            const auto newStyle = getStreetLightStyle(nextRoadRes.roadObjId, res->second);
+                            if (newStyle != nextRoadRes.streetLightStyle.value())
+                            {
+                                if (extent->isBridge || hasNearbyBuildings(World::toTileSpace(roadStart)))
+                                {
+                                    updateAndTakeoverRoad(roadStart, tad, nextRoadRes.roadObjId, nextRoadRes.owner, newStyle);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
+            // 0x00498301
         }
 
         GameCommands::setUpdatingCompanyId(oldUpatingCompany);
         return;
         registers regs;
-        regs.eax = growFlags;
+        regs.eax = enumValue(growFlags);
         regs.esi = X86Pointer(this);
         call(0x00498116, regs);
     }

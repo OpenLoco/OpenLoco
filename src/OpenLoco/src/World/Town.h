@@ -21,6 +21,22 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TownFlags);
 
+    enum class TownGrowFlags : uint8_t
+    {
+        none = 0U,
+        flag0 = 1U << 0,
+        flag1 = 1U << 1,
+        flag2 = 1U << 2,
+        flag3 = 1U << 3,
+        flag4 = 1U << 4,
+        flag5 = 1U << 5,
+        flag6 = 1U << 6,
+        flag7 = 1U << 7,
+
+        all = flag0 | flag1 | flag2 | flag3 | flag4 | flag5 | flag6 | flag7,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TownGrowFlags);
+
     enum class TownSize : uint8_t
     {
         hamlet,
@@ -79,7 +95,7 @@ namespace OpenLoco
         void updateMonthly();
         void adjustCompanyRating(CompanyId cid, int amount);
         void recalculateSize();
-        void grow(int32_t growFlags);
+        void grow(TownGrowFlags growFlags);
         StringId getTownSizeString() const;
         std::optional<RoadExtentResult> findRoadExtent() const;
         void buildInitialRoad();

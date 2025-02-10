@@ -161,7 +161,7 @@ namespace OpenLoco::GameCommands
         {
             for (int j = growthFactor; j > 0; j--)
             {
-                newTown->grow(0xFF);
+                newTown->grow(TownGrowFlags::all);
                 newTown->recalculateSize();
             }
 
