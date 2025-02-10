@@ -248,33 +248,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widgets::ImageButton({ 240, 164 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip)
 
         );
-
-        using namespace ToolManager;
-        class ToolPlaceOrder : public ToolBase
-        {
-            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType_t event) override;
-            virtual void onCancel(Window& self, const ToolManager::ToolEventType_t event) override;
-            virtual Ui::CursorId getCursor(Window& self, CursorId current, bool& out) override;
-
-        public:
-            ToolPlaceOrder()
-            {
-                cursor = CursorId::crosshair;
-                type = WindowType::vehicle;
-                events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onCancel };
-                widget = widx::tool;
-            };
-        };
-
-        static ToolPlaceOrder kToolPlaceOrder{};
-
-        enum class InsertOrderMode : uint8_t
-        {
-            normal,
-            atTop,
-            belowFirstStation,
-            atBottom
-        };
     }
 
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
@@ -2790,7 +2763,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // order argument : eax (3 - 32 bits), cx
         // Note will move orders so do not use while iterating OrderRingView
         // 0x004B4ECB
-        static void addNewOrder(Window* const self, const Vehicles::Order& order, const InsertOrderMode insertLocation)
+        static void addNewOrder(Window* const self, const Vehicles::Order& order)
         {
             auto head = Common::getVehicle(self);
             if (head == nullptr)
@@ -2798,24 +2771,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             auto chosenOffset = head->sizeOfOrderTable - 1;
-            switch (insertLocation)
+            if (self->var_842 != -1)
             {
-                case InsertOrderMode::belowFirstStation:
-                case InsertOrderMode::normal:
-                    if (self->var_842 != -1)
-                    {
-                        auto* chosenOrder = getOrderTable(head).atIndex(self->var_842);
-                        if (chosenOrder != nullptr)
-                        {
-                            chosenOffset = chosenOrder->getOffset() - head->orderTableOffset;
-                        }
-                    }
-                    break;
-                case InsertOrderMode::atTop:
-                    chosenOffset = 0;
-                    break;
-                case InsertOrderMode::atBottom:
-                    break;
+                auto* chosenOrder = getOrderTable(head).atIndex(self->var_842);
+                if (chosenOrder != nullptr)
+                {
+                    chosenOffset = chosenOrder->getOffset() - head->orderTableOffset;
+                }
             }
 
             GameCommands::setErrorTitle(StringIds::orders_cant_insert);
@@ -2850,28 +2812,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            auto insertMode = InsertOrderMode::normal;
-            if (Input::hasKeyModifier(Input::KeyModifier::shift))
-            {
-                insertMode = InsertOrderMode::belowFirstStation;
-            }
-            else if (Input::hasKeyModifier(Input::KeyModifier::shift))
-            {
-                insertMode = InsertOrderMode::atBottom;
-            }
-
             switch (i)
             {
                 case widx::orderForceUnload:
                 {
                     Vehicles::OrderUnloadAll unload(Dropdown::getItemArgument(item, 3));
-                    addNewOrder(&self, unload, insertMode);
+                    addNewOrder(&self, unload);
                     break;
                 }
                 case widx::orderWait:
                 {
                     Vehicles::OrderWaitFor wait(Dropdown::getItemArgument(item, 3));
-                    addNewOrder(&self, wait, insertMode);
+                    addNewOrder(&self, wait);
                     break;
                 }
             }
@@ -2900,9 +2852,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (!kToolPlaceOrder.isActive(self))
+            if (!ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
-                if (kToolPlaceOrder.activate(self))
+                if (ToolManager::toolSet(&self, widx::tool, CursorId::crosshair))
                 {
                     self.invalidate();
                     Vehicles::OrderManager::generateNumDisplayFrames(head);
@@ -2943,28 +2895,17 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5088
-        void ToolPlaceOrder::onCancel(Window& self, [[maybe_unused]] const ToolManager::ToolEventType_t event)
+        static void toolCancel(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIdx)
         {
             self.invalidate();
             World::resetMapSelectionFlag(World::MapSelectionFlags::unk_04);
             Gfx::invalidateScreen();
         }
 
-        void ToolPlaceOrder::onMouseDown(Window& self, [[maybe_unused]] const ToolManager::ToolEventType_t)
+        static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            auto [interactionType, args] = sub_4B5A1A(self, input.pos.x, input.pos.y);
-
-            auto insertLocation = InsertOrderMode::normal;
-            if (Input::hasKeyModifier(Input::KeyModifier::shift))
-            {
-                insertLocation = InsertOrderMode::atTop;
-            }
-            else if (Input::hasKeyModifier(Input::KeyModifier::control))
-            {
-                insertLocation = InsertOrderMode::atBottom;
-            }
-
-            switch (interactionType)
+            auto [type, args] = sub_4B5A1A(self, x, y);
+            switch (type)
             {
                 case Ui::ViewportInteraction::InteractionItem::track:
                 {
@@ -2987,7 +2928,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->rotation(), trackId);
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
-                    addNewOrder(&self, waypoint, insertLocation);
+                    addNewOrder(&self, waypoint);
                     break;
                 }
                 case Ui::ViewportInteraction::InteractionItem::water:
@@ -3003,7 +2944,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     const auto tPos = World::toTileSpace(args.pos);
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, 0, 0);
-                    addNewOrder(&self, waypoint, insertLocation);
+                    addNewOrder(&self, waypoint);
                     break;
                 }
                 case Ui::ViewportInteraction::InteractionItem::stationLabel:
@@ -3011,7 +2952,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
                     const auto stationId = StationId(args.value);
                     Vehicles::OrderStopAt station(stationId);
-                    addNewOrder(&self, station, insertLocation);
+                    addNewOrder(&self, station);
                     break;
                 }
                 case Ui::ViewportInteraction::InteractionItem::road:
@@ -3035,7 +2976,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->rotation(), roadId);
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
-                    addNewOrder(&self, waypoint, insertLocation);
+                    addNewOrder(&self, waypoint);
                     break;
                 }
 
@@ -3045,15 +2986,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B50CE
-        Ui::CursorId ToolPlaceOrder::getCursor(Window& self, CursorId current, bool& out)
+        static Ui::CursorId toolCursor(Window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
         {
-            auto typeP = sub_4B5A1A(self, input.pos.x, input.pos.y);
+            auto typeP = sub_4B5A1A(self, x, y);
             out = typeP.first != Ui::ViewportInteraction::InteractionItem::noInteraction;
             if (out)
             {
                 return CursorId::inwardArrows;
             }
-            return current;
+            return fallback;
         }
 
         // 0x004B4D9B
@@ -3100,26 +3041,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     }
                     for (auto& order : clonedOrders)
                     {
-                        addNewOrder(toolWindow, *order, InsertOrderMode::normal);
+                        addNewOrder(toolWindow, *order);
                     }
                     WindowManager::bringToFront(*toolWindow);
                 }
                 else
                 {
-
-                    auto insertLocation = InsertOrderMode::normal;
-                    if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                    {
-                        insertLocation = InsertOrderMode::atTop;
-                    }
-                    else if (Input::hasKeyModifier(Input::KeyModifier::control))
-                    {
-                        insertLocation = InsertOrderMode::atBottom;
-                    }
                     // Copy a single entry on the order list
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
                     auto clonedOrder = selectedOrder->clone();
-                    addNewOrder(toolWindow, *clonedOrder, insertLocation);
+                    addNewOrder(toolWindow, *clonedOrder);
                     WindowManager::bringToFront(*toolWindow);
                 }
                 return;
@@ -3532,6 +3463,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             .onUpdate = onUpdate,
             .event_08 = Common::event8,
             .event_09 = Common::event9,
+            .onToolDown = onToolDown,
+            .onToolAbort = toolCancel,
+            .toolCursor = toolCursor,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = scrollMouseDown,
             .scrollMouseOver = scrollMouseOver,
