@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         {
             cursor = CursorId::crosshair;
             type = WindowType::construction;
-            toolFlags = ToolFlag::automaticGridlines;
+            toolFlags = ToolFlag::gridlines | ToolFlag::gridlinesPersistWithWindow;
             events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onStop, ToolEventType::onControlChanged, ToolEventType::onShiftChanged };
             widget = widx::image;
         };

@@ -128,14 +128,22 @@ namespace OpenLoco::ToolManager
         currentTool->cancel();
     }
 
-    void toolCancelOnClose(Ui::WindowType, Ui::WindowNumber_t)
+    void toolCancelOnClose(Ui::WindowType type, Ui::WindowNumber_t number)
     {
         if (currentTool == nullptr)
         {
             return;
         }
+        if (currentTool->type != type || currentTool->window != number)
+        {
+            return;
+        }
         if (!currentTool->hasFlag(ToolFlag::persistThroughWindowClose))
         {
+            if (currentTool->hasFlag(ToolFlag::gridlinesPersistWithWindow))
+            {
+                Ui::Windows::Main::hideGridlines();
+            }
             currentTool->cancel();
         }
     }
@@ -181,7 +189,7 @@ namespace OpenLoco::ToolManager
     CursorId getCursor(CursorId currentCursor, bool& out, int16_t x, int16_t y)
     {
         auto w = WindowManager::find(currentTool->type, currentTool->window);
-        if (w == nullptr || currentTool->hasEvent(ToolEventType::cursorCallback))
+        if (w == nullptr)
         {
             return currentCursor;
         }
@@ -344,7 +352,7 @@ namespace OpenLoco::ToolManager
 
         resetCurrentTool();
 
-        if (toolFlags && ToolFlag::automaticGridlines)
+        if (hasFlag(ToolFlag::gridlines) && !hasFlag(ToolFlag::gridlinesPersistWithWindow))
         {
             Ui::Windows::Main::hideGridlines();
         }

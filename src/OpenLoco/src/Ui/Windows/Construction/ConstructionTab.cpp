@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     public:
         ToolRepositionTrack()
         {
-            toolFlags = ToolFlag::keepFlag6 | ToolFlag::automaticGridlines;
+            toolFlags = ToolFlag::keepFlag6 | ToolFlag::gridlines | ToolFlag::gridlinesPersistWithWindow;
             cursor = CursorId::crosshair;
             type = WindowType::construction;
             events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown };

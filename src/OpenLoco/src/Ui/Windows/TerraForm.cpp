@@ -135,23 +135,60 @@ namespace OpenLoco::Ui::Windows::Terraform
             // 0x004BCDE8
             void onMouseDragEnd(Ui::Window&, ToolEventType_t) override
             {
-                lastPos = { std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::min() };
+                lastHeight = 0;
+                currentTile = {};
                 World::mapInvalidateSelectionRect();
                 World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             };
             CursorId getCursor(Window&, CursorId, bool&) override { return input.dragging ? CursorId::upDownArrow : cursor; };
-
         public:
-            Ui::Point lastPos{
-                std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::min()
-            };
+            int16_t lastHeight;
+            World::Pos2 currentTile{};
+            int16_t getHeightChange();
             ToolTerraform()
             {
-                toolFlags = ToolFlag::keepFlag6 | ToolFlag::automaticGridlines;
+                toolFlags = ToolFlag::keepFlag6 | ToolFlag::gridlines;
                 type = WindowType::terraform;
                 events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onScrollShiftModifier, ToolEventType::onMouseDrag, ToolEventType::onMouseDragEnd };
             };
         };
+
+        int16_t ToolTerraform::getHeightChange()
+        {
+
+            auto w = WindowManager::findAt(input.pos.x, input.pos.y);
+            if (w == nullptr)
+            {
+                return;
+            }
+
+            WidgetIndex_t newWidgetIndex = w->findWidgetAt(input.pos.x, input.pos.y);
+            if (newWidgetIndex == kWidgetIndexNull)
+            {
+                return;
+            }
+
+            auto wid = w->widgets[newWidgetIndex];
+            if (wid.type != WidgetType::viewport)
+            {
+                return;
+            }
+
+            auto viewport = w->viewports[0];
+            if (viewport == nullptr)
+            {
+                return;
+            }
+
+            auto zoom = viewport->zoom;
+
+            auto dY = -(16 >> zoom);
+            if (dY == 0)
+            {
+                dY = -1;
+            }
+            return dY;
+        }
     }
 
     static loco_global<int16_t, 0x0052337A>
@@ -2102,39 +2139,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCDBF
         void ToolWater::onMouseDrag([[maybe_unused]] Window& self, const ToolManager::ToolEventType_t)
         {
-
-            auto w = WindowManager::findAt(input.pos.x, input.pos.y);
-            if (w == nullptr)
-            {
-                return;
-            }
-
-            WidgetIndex_t newWidgetIndex = w->findWidgetAt(input.pos.x, input.pos.y);
-            if (newWidgetIndex == kWidgetIndexNull)
-            {
-                return;
-            }
-
-            auto wid = w->widgets[newWidgetIndex];
-            if (wid.type != WidgetType::viewport)
-            {
-                return;
-            }
-
-            auto viewport = w->viewports[0];
-            if (viewport == nullptr)
-            {
-                return;
-            }
-
-            auto zoom = viewport->zoom;
-
-            auto dY = -(16 >> zoom);
-            if (dY == 0)
-            {
-                dY = -1;
-            }
-
+            auto dY = getHeightChange();
             auto deltaY = input.pos.y - _dragLastY;
 
             if (deltaY <= dY)

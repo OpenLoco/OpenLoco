@@ -24,17 +24,17 @@ namespace OpenLoco::ToolManager
         constexpr ToolEventType_t onScrollShiftModifier = 9;
         constexpr ToolEventType_t onScrollControlModifier = 10;
         constexpr ToolEventType_t onScrollControlShiftModifier = 11;
-        constexpr ToolEventType_t cursorCallback = 12;
-        constexpr ToolEventType_t count = 13;
+        constexpr ToolEventType_t count = 12;
     };
 
     enum class ToolFlag : uint16_t
     {
         none = 0,
         keepFlag6 = (1U << 0),
-        automaticGridlines = (1U << 1),
+        gridlines = (1U << 1),
         dragStartsOnMouseDown = (1U << 2),
         persistThroughWindowClose = (1U << 3),
+        gridlinesPersistWithWindow = (1U << 4),
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ToolFlag);
 
@@ -77,7 +77,7 @@ namespace OpenLoco::ToolManager
             {
                 return false;
             }
-            return events.get(enumValue(event));
+            return events.get(event);
         };
         bool hasFlag(ToolFlag flag)
         {
