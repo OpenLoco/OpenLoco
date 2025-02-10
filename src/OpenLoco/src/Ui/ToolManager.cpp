@@ -200,7 +200,7 @@ namespace OpenLoco::ToolManager
         return currentTool->getCursor(*w, currentCursor, out);
     }
 
-    bool OpenLoco::ToolManager::fireEvent(ToolEventType_t event, int16_t mouseWheel, int16_t x, int16_t y)
+    bool fireEvent(ToolEventType_t event, int16_t mouseWheel, int16_t x, int16_t y)
     {
         if (currentTool == nullptr)
         {

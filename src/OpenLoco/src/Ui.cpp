@@ -814,6 +814,7 @@ namespace OpenLoco::Ui
         {
             return;
         }
+
         if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseMove, 0, x, y))
         {
             return;
@@ -825,8 +826,7 @@ namespace OpenLoco::Ui
         }
         else
         {
-            // TODO: think about how to handle this
-            // I think it should be handled in window manager or whoever actually closes the window. Call ToolManager::toolCancel(window)
+            // this check can be removed when the tools are all updated. WindowManager calls cancel when the window closes.
             ToolManager::toolCancel();
         }
     }
