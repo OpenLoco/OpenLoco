@@ -20,7 +20,7 @@ namespace OpenLoco::ToolManager
     static ToolBase tempTools[2] = {};
 
     static ToolBase noTool = ToolBase();
-    static ToolBase* currentTool;
+    static ToolBase* currentTool = &noTool;
 
     static void setCurrentTool(Window& window, ToolBase* tool)
     {
@@ -157,7 +157,7 @@ namespace OpenLoco::ToolManager
         return currentTool->getCursor(*w, currentCursor, out);
     }
 
-    bool fireEvent(ToolEventType_t event, int16_t x, int16_t y, int16_t mouseWheel)
+    bool OpenLoco::ToolManager::fireEvent(ToolEventType_t event, int16_t mouseWheel, int16_t x, int16_t y)
     {
         if (currentTool == nullptr)
         {
@@ -230,10 +230,10 @@ namespace OpenLoco::ToolManager
             case ToolEventType::onControlChanged:
                 onModifierChanged(*w, event);
                 break;
+            case ToolEventType::onScroll:
             case ToolEventType::onScrollControlModifier:
-            case ToolEventType::onScrollControlShiftModifier:
-            case ToolEventType::onScrollNoModifier:
             case ToolEventType::onScrollShiftModifier:
+            case ToolEventType::onScrollAltModifier:
                 onScroll(*w, event);
                 break;
             default:

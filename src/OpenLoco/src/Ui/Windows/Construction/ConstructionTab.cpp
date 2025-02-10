@@ -125,8 +125,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     using namespace ToolManager;
     class ToolRepositionTrack : public ToolBase
     {
-        virtual void onMouseMove(Window& self, ToolManager::ToolEventType_t event) override;
-        virtual void onMouseDown(Window& self, ToolManager::ToolEventType_t event) override;
+        void onMouseMove(Window& self, ToolManager::ToolEventType_t event) override;
+        void onMouseDown(Window& self, ToolManager::ToolEventType_t event) override;
 
     public:
         ToolRepositionTrack()

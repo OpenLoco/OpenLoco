@@ -272,6 +272,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             normal,
             atTop,
+            belowFirstStation,
             atBottom
         };
     }
@@ -2799,6 +2800,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto chosenOffset = head->sizeOfOrderTable - 1;
             switch (insertLocation)
             {
+                case InsertOrderMode::belowFirstStation:
                 case InsertOrderMode::normal:
                     if (self->var_842 != -1)
                     {
@@ -2810,10 +2812,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     }
                     break;
                 case InsertOrderMode::atTop:
-                {
                     chosenOffset = 0;
                     break;
-                }
                 case InsertOrderMode::atBottom:
                     break;
             }
@@ -2850,18 +2850,28 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
+            auto insertMode = InsertOrderMode::normal;
+            if (Input::hasKeyModifier(Input::KeyModifier::shift))
+            {
+                insertMode = InsertOrderMode::belowFirstStation;
+            }
+            else if (Input::hasKeyModifier(Input::KeyModifier::shift))
+            {
+                insertMode = InsertOrderMode::atBottom;
+            }
+
             switch (i)
             {
                 case widx::orderForceUnload:
                 {
                     Vehicles::OrderUnloadAll unload(Dropdown::getItemArgument(item, 3));
-                    addNewOrder(&self, unload, InsertOrderMode::normal);
+                    addNewOrder(&self, unload, insertMode);
                     break;
                 }
                 case widx::orderWait:
                 {
                     Vehicles::OrderWaitFor wait(Dropdown::getItemArgument(item, 3));
-                    addNewOrder(&self, wait, InsertOrderMode::normal);
+                    addNewOrder(&self, wait, insertMode);
                     break;
                 }
             }

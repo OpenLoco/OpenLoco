@@ -453,7 +453,7 @@ namespace OpenLoco::Input
 
                     if (Input::hasFlag(Flags::toolActive))
                     {
-                        if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDrag, x, y, 0))
+                        if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDrag, 0, x, y))
                         {
                             break;
                         }
@@ -478,7 +478,7 @@ namespace OpenLoco::Input
 
                 if (hasFlag(Flags::toolActive))
                 {
-                    if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDragEnd, x, y, 0))
+                    if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDragEnd, 0, x, y))
                     {
                         break;
                     }
@@ -1366,7 +1366,7 @@ namespace OpenLoco::Input
                 _dragWindowNumber = window->number;
                 if (hasFlag(Flags::toolActive))
                 {
-                    if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDown, x, y, 0))
+                    if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDown, 0, x, y))
                     {
                         return;
                     }
@@ -1945,40 +1945,20 @@ namespace OpenLoco::Input
         }
     }
 
+    constexpr const int16_t kPixelsPerMouseWheel = -17;
+
     // 0x004C6202
     void processMouseWheel()
     {
-        int wheel = 0;
-
-        for (; _cursorWheel > 0; _cursorWheel--)
-        {
-            wheel -= 17;
-        }
-
-        for (; _cursorWheel < 0; _cursorWheel++)
-        {
-            wheel += 17;
-        }
-
-        if (wheel == 0)
+        if (_cursorWheel == 0)
         {
             return;
         }
+
+        int wheel = _cursorWheel;
+        _cursorWheel = 0;
 
         if (Tutorial::state() != Tutorial::State::none)
-        {
-            return;
-        }
-
-        if (Input::hasKeyModifier(KeyModifier::control) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollControlModifier, 0, 0, wheel > 0 ? -1 : 1))
-        {
-            return;
-        }
-        else if (Input::hasKeyModifier(KeyModifier::shift) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollShiftModifier, 0, 0, wheel > 0 ? -1 : 1))
-        {
-            return;
-        }
-        else if (ToolManager::fireEvent(ToolManager::ToolEventType::onScrollNoModifier, 0, 0, wheel > 0 ? -1 : 1))
         {
             return;
         }
@@ -2009,6 +1989,19 @@ namespace OpenLoco::Input
             return;
         }
 
-        WindowManager::wheelInput(wheel);
+        if (Input::hasKeyModifier(KeyModifier::control) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollControlModifier, wheel))
+        {
+            return;
+        }
+        else if (Input::hasKeyModifier(KeyModifier::shift) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollShiftModifier, wheel))
+        {
+            return;
+        }
+        else if (ToolManager::fireEvent(ToolManager::ToolEventType::onScroll, wheel))
+        {
+            return;
+        }
+
+        WindowManager::wheelInput(wheel * kPixelsPerMouseWheel);
     }
 }

@@ -814,7 +814,7 @@ namespace OpenLoco::Ui
         {
             return;
         }
-        if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseMove, x, y, 0))
+        if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseMove, 0, x, y))
         {
             return;
         }

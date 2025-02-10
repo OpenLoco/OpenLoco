@@ -621,9 +621,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         using namespace ToolManager;
         class ToolBuildHQ : public ToolBase
         {
-            virtual void onMouseMove(Window& self, ToolEventType_t event) override;
-            virtual void onMouseDown(Window& self, ToolEventType_t event) override;
-            virtual void onCancel(Window& self, ToolEventType_t event) override;
+            void onMouseMove(Window& self, ToolEventType_t event) override;
+            void onMouseDown(Window& self, ToolEventType_t event) override;
+            void onCancel(Window& self, ToolEventType_t event) override;
 
         public:
             ToolBuildHQ()

@@ -46,9 +46,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     using namespace ToolManager;
     class ToolPlaceTrackExtra : public ToolBase
     {
-        virtual void onMouseMove(Window& self, const ToolEventType_t event) override;
-        virtual void onMouseDown(Window& self, const ToolEventType_t event) override;
-        virtual void onModifierChanged(Window& self, const ToolEventType_t event) override;
+        void onMouseMove(Window& self, const ToolEventType_t event) override;
+        void onMouseDown(Window& self, const ToolEventType_t event) override;
+        void onModifierChanged(Window& self, const ToolEventType_t event) override;
 
     public:
         ToolPlaceTrackExtra()

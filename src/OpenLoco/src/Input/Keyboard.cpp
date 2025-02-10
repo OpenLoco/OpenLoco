@@ -591,22 +591,20 @@ namespace OpenLoco::Input
             _keyModifier |= KeyModifier::control;
         }
 
-        keyScroll();
-
+        bool inputSunk = false;
         if ((_keyModifier & KeyModifier::shift) != (previousKeyModifier & KeyModifier::shift))
         {
-            if (ToolManager::fireEvent(ToolManager::ToolEventType::onShiftChanged, 0, 0, 0))
-            {
-                return;
-            }
+            inputSunk = ToolManager::fireEvent(ToolManager::ToolEventType::onShiftChanged, 0, 0, 0);
         }
-
         if ((_keyModifier & KeyModifier::control) != (previousKeyModifier & KeyModifier::control))
         {
-            if (ToolManager::fireEvent(ToolManager::ToolEventType::onControlChanged, 0, 0, 0))
-            {
-                return;
-            }
+            inputSunk |= ToolManager::fireEvent(ToolManager::ToolEventType::onControlChanged, 0, 0, 0);
         }
+        if (inputSunk)
+        {
+            return;
+        }
+
+        keyScroll();
     }
 }

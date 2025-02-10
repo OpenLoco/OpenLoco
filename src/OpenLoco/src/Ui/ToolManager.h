@@ -20,10 +20,10 @@ namespace OpenLoco::ToolManager
         constexpr ToolEventType_t onMouseDragEnd = 5;
         constexpr ToolEventType_t onShiftChanged = 6;
         constexpr ToolEventType_t onControlChanged = 7;
-        constexpr ToolEventType_t onScrollNoModifier = 8;
+        constexpr ToolEventType_t onScroll = 8;
         constexpr ToolEventType_t onScrollShiftModifier = 9;
         constexpr ToolEventType_t onScrollControlModifier = 10;
-        constexpr ToolEventType_t onScrollControlShiftModifier = 11;
+        constexpr ToolEventType_t onScrollAltModifier = 11;
         constexpr ToolEventType_t count = 12;
     };
 
@@ -109,6 +109,7 @@ namespace OpenLoco::ToolManager
         virtual void onControlChanged(Window&, ToolEventType_t) {};
         virtual void onScroll(Window&, ToolEventType_t) {};
         virtual CursorId getCursor(Window&, CursorId current, bool&) { return current; };
+        virtual ~ToolBase() {};
 
     private:
         void setInteropVariables();
@@ -149,5 +150,5 @@ namespace OpenLoco::ToolManager
     /*
      * fires the selected type and returns if the input was sunk. x, y: mouse position, mouseWheel: mouse wheel input
      */
-    bool fireEvent(ToolEventType_t event, int16_t x = std::numeric_limits<int16_t>::min(), int16_t y = std::numeric_limits<int16_t>::min(), int16_t mouseWheel = std::numeric_limits<int16_t>::min());
+    bool fireEvent(ToolEventType_t event, int16_t mouseWheel = std::numeric_limits<int16_t>::min(), int16_t x = std::numeric_limits<int16_t>::min(), int16_t y = std::numeric_limits<int16_t>::min());
 }
