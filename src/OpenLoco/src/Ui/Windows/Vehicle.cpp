@@ -249,18 +249,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         );
 
-        class ToolPlaceOrder : public ToolManager::ToolBase
+        using namespace ToolManager;
+        class ToolPlaceOrder : public ToolBase
         {
-            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event) override;
-            virtual void onStop(Window& self, const ToolManager::ToolEventType event) override;
-            virtual Ui::CursorId getCursorCallback(Window& self, bool& out) override;
+            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType_t event) override;
+            virtual void onStop(Window& self, const ToolManager::ToolEventType_t event) override;
+            virtual Ui::CursorId getCursor(Window& self, CursorId current, bool& out) override;
 
         public:
             ToolPlaceOrder()
             {
                 cursor = CursorId::crosshair;
                 type = WindowType::vehicle;
-                events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop) };
+                events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onStop };
                 widget = widx::tool;
             };
         };
@@ -2889,7 +2890,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (!ToolManager::isToolActive(self.number, kToolPlaceOrder))
+            if (!kToolPlaceOrder.isActive(self))
             {
                 if (kToolPlaceOrder.activate(self))
                 {
@@ -2932,14 +2933,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5088
-        void ToolPlaceOrder::onStop(Window& self, [[maybe_unused]] const ToolManager::ToolEventType event)
+        void ToolPlaceOrder::onStop(Window& self, [[maybe_unused]] const ToolManager::ToolEventType_t event)
         {
             self.invalidate();
             World::resetMapSelectionFlag(World::MapSelectionFlags::unk_04);
             Gfx::invalidateScreen();
         }
 
-        void ToolPlaceOrder::onMouseDown(Window& self, [[maybe_unused]] const ToolManager::ToolEventType)
+        void ToolPlaceOrder::onMouseDown(Window& self, [[maybe_unused]] const ToolManager::ToolEventType_t)
         {
             auto [interactionType, args] = sub_4B5A1A(self, input.pos.x, input.pos.y);
 
@@ -3034,7 +3035,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B50CE
-        Ui::CursorId ToolPlaceOrder::getCursorCallback(Window& self, bool& out)
+        Ui::CursorId ToolPlaceOrder::getCursor(Window& self, CursorId current, bool& out)
         {
             auto typeP = sub_4B5A1A(self, input.pos.x, input.pos.y);
             out = typeP.first != Ui::ViewportInteraction::InteractionItem::noInteraction;
@@ -3042,7 +3043,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return CursorId::inwardArrows;
             }
-            return cursor;
+            return current;
         }
 
         // 0x004B4D9B

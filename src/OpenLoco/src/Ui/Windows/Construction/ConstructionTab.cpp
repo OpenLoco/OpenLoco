@@ -121,18 +121,20 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         return widgets;
     }
-    class ToolRepositionTrack : public ToolManager::ToolBase
+
+    using namespace ToolManager;
+    class ToolRepositionTrack : public ToolBase
     {
-        virtual void onMouseMove(Window& self, ToolManager::ToolEventType event) override;
-        virtual void onMouseDown(Window& self, ToolManager::ToolEventType event) override;
+        virtual void onMouseMove(Window& self, ToolManager::ToolEventType_t event) override;
+        virtual void onMouseDown(Window& self, ToolManager::ToolEventType_t event) override;
 
     public:
         ToolRepositionTrack()
         {
-            toolFlags = ToolManager::ToolFlags::keepFlag6;
+            toolFlags = ToolFlag::keepFlag6 | ToolFlag::automaticGridlines;
             cursor = CursorId::crosshair;
             type = WindowType::construction;
-            events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown) };
+            events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown };
             widget = widx::construct;
         };
     };
@@ -1993,14 +1995,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_cState->constructionHover == 1)
         {
-            if (!ToolManager::isToolActive(self.number, kToolRepositionTrack))
+            if (!kToolRepositionTrack.isActive())
             {
                 WindowManager::close(&self);
             }
         }
         if (_cState->constructionHover == 0)
         {
-            if (ToolManager::isToolActive(self.number, kToolRepositionTrack))
+            if (kToolRepositionTrack.isActive())
             {
                 kToolRepositionTrack.cancel();
             }
@@ -2547,7 +2549,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC8C
-    void ToolRepositionTrack::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType)
+    void ToolRepositionTrack::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType_t)
     {
 
         if (_cState->trackType & (1 << 7))
@@ -2600,7 +2602,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             _cState->makeJunction = 0;
         }
-        ToolManager::toolCancel();
+        kToolRepositionTrack.cancel();
 
         auto maxRetries = 0;
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || _cState->makeJunction != 1)
@@ -2630,7 +2632,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC97
-    void ToolRepositionTrack::onMouseDown([[maybe_unused]] Window& self, const ToolManager::ToolEventType)
+    void ToolRepositionTrack::onMouseDown([[maybe_unused]] Window& self, const ToolManager::ToolEventType_t)
     {
 
         if (_cState->trackType & (1 << 7))

@@ -616,6 +616,29 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
     }
 
+    namespace Details
+    {
+        using namespace ToolManager;
+        class ToolBuildHQ : public ToolBase
+        {
+            virtual void onMouseMove(Window& self, ToolEventType_t event) override;
+            virtual void onMouseDown(Window& self, ToolEventType_t event) override;
+            virtual void onStop(Window& self, ToolEventType_t event) override;
+
+        public:
+            ToolBuildHQ()
+            {
+                toolFlags = ToolFlag::keepFlag6;
+                cursor = CursorId::crosshair;
+                type = WindowType::company;
+                events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onStop };
+                widget = 12;
+            };
+        };
+
+        static ToolBuildHQ kToolBuildHQ{};
+    }
+
     // 0x004347D0
     static Window* create(CompanyId companyId)
     {
@@ -641,9 +664,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
-            if (ToolManager::isToolActive(window->type, window->number))
+            if (Details::kToolBuildHQ.isActive())
             {
-                ToolManager::toolCancel();
+                Details::kToolBuildHQ.cancel();
                 window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
             }
         }
@@ -714,25 +737,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         );
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
-
-        class ToolBuildHQ : public ToolManager::ToolBase
-        {
-            virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event) override;
-            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event) override;
-            virtual void onStop(Window& self, const ToolManager::ToolEventType event) override;
-
-        public:
-            ToolBuildHQ()
-            {
-                toolFlags = ToolManager::ToolFlags::keepFlag6;
-                cursor = CursorId::crosshair;
-                type = WindowType::company;
-                events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop) };
-                widget = widx::build_hq;
-            };
-        };
-
-        static ToolBuildHQ kToolBuildHQ{};
 
         // 0x004327CF
         static void prepareDraw(Window& self)
@@ -1062,7 +1066,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432CA1
-        void ToolBuildHQ::onMouseMove([[maybe_unused]] Window& self, const ToolManager::ToolEventType)
+        void ToolBuildHQ::onMouseMove([[maybe_unused]] Window& self, ToolEventType_t)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -1101,7 +1105,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.dx = widgetIndex;
         // regs.ax = mouseX;
         // regs.bx = mouseY;
-        void ToolBuildHQ::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType)
+        void ToolBuildHQ::onMouseDown([[maybe_unused]] Window& self, ToolEventType_t)
         {
             removeHeadquarterGhost();
 
@@ -1125,17 +1129,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432D7A
-        void ToolBuildHQ::onStop([[maybe_unused]] Window& self, [[maybe_unused]] ToolManager::ToolEventType event)
+        void ToolBuildHQ::onStop([[maybe_unused]] Window& self, ToolEventType_t)
         {
             removeHeadquarterGhost();
-        }
-
-        static void onClose(Window& self)
-        {
-            if (ToolManager::isToolActive(self.number, kToolBuildHQ))
-            {
-                kToolBuildHQ.cancel();
-            }
         }
 
         // 0x0432D85
@@ -1230,7 +1226,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         static constexpr WindowEventList kEvents = {
-            .onClose = onClose,
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onMouseDown = onMouseDown,
@@ -2779,10 +2774,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043230B
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(self->type, self->number))
-            {
-                ToolManager::toolCancel();
-            }
+            Details::kToolBuildHQ.cancel();
 
             TextInput::sub_4CE6C9(self->type, self->number);
 

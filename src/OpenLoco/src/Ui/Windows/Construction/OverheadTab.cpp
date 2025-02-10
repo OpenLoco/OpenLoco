@@ -43,18 +43,20 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         Widgets::Wt3Widget({ 35, 110 }, { 66, 66 }, WindowColour::secondary),
         makeDropdownWidgets({ 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
 
-    class ToolPlaceTrackExtra : public ToolManager::ToolBase
+    using namespace ToolManager;
+    class ToolPlaceTrackExtra : public ToolBase
     {
-        virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event) override;
-        virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event) override;
-        virtual void onModifierChanged(Window& self, const ToolManager::ToolEventType event) override;
+        virtual void onMouseMove(Window& self, const ToolEventType_t event) override;
+        virtual void onMouseDown(Window& self, const ToolEventType_t event) override;
+        virtual void onModifierChanged(Window& self, const ToolEventType_t event) override;
 
     public:
         ToolPlaceTrackExtra()
         {
             cursor = CursorId::crosshair;
             type = WindowType::construction;
-            events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onStop), enumValue(ToolManager::ToolEventType::onControlChanged), enumValue(ToolManager::ToolEventType::onShiftChanged) };
+            toolFlags = ToolFlag::automaticGridlines;
+            events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onStop, ToolEventType::onControlChanged, ToolEventType::onShiftChanged };
             widget = widx::image;
         };
     };
@@ -291,7 +293,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC15
-    void ToolPlaceTrackExtra::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType)
+    void ToolPlaceTrackExtra::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType_t)
     {
 
         if (_cState->trackType & (1 << 7))
@@ -367,7 +369,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC20
-    void ToolPlaceTrackExtra::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType)
+    void ToolPlaceTrackExtra::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType_t)
     {
         removeConstructionGhosts();
 
@@ -415,7 +417,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
     }
 
-    void ToolPlaceTrackExtra::onModifierChanged([[maybe_unused]] Window& self, ToolManager::ToolEventType)
+    void ToolPlaceTrackExtra::onModifierChanged([[maybe_unused]] Window& self, ToolManager::ToolEventType_t)
     {
         removeConstructionGhosts();
         if (Input::hasKeyModifier(Input::KeyModifier::shift))

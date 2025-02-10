@@ -1649,7 +1649,7 @@ namespace OpenLoco::Input
                         if (Input::hasFlag(Flags::toolActive))
                         {
                             bool out = false;
-                            auto newCursor = ToolManager::getCursor(out, x, y);
+                            auto newCursor = ToolManager::getCursor(cursorId, out, x, y);
                             if (out || cursorId != newCursor)
                             {
                                 cursorId = newCursor;

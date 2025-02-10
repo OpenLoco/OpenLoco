@@ -826,6 +826,7 @@ namespace OpenLoco::Ui
         else
         {
             // TODO: think about how to handle this
+            // I think it should be handled in window manager or whoever actually closes the window. Call ToolManager::toolCancel(window)
             ToolManager::toolCancel();
         }
     }

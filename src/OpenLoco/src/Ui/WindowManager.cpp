@@ -1355,6 +1355,7 @@ namespace OpenLoco::Ui::WindowManager
         auto type = window->type;
         uint16_t number = window->number;
 
+        ToolManager::toolCancelOnClose(type, number);
         window->callClose();
 
         // Lookup the actual window again as it may have been changed.

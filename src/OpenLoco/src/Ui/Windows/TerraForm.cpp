@@ -108,9 +108,54 @@ namespace OpenLoco::Ui::Windows::Terraform
             wall = 1 << 1,
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
+
+        using namespace ToolManager;
+        class ToolTerraform : public ToolBase
+        {
+            void onScroll(Window&, ToolEventType_t)
+                override
+            {
+                if (input.mouseWheel > 0)
+                {
+                    for (int i = 0; i < input.mouseWheel; i++)
+                    {
+                        Common::incrementToolSize();
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i > input.mouseWheel; i--)
+                    {
+                        Common::decrementToolSize();
+                    }
+                }
+
+                World::mapInvalidateSelectionRect();
+            };
+            // 0x004BCDE8
+            void onMouseDragEnd(Ui::Window&, ToolEventType_t) override
+            {
+                lastPos = { std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::min() };
+                World::mapInvalidateSelectionRect();
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
+            };
+            CursorId getCursor(Window&, CursorId, bool&) override { return input.dragging ? CursorId::upDownArrow : cursor; };
+
+        public:
+            Ui::Point lastPos{
+                std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::min()
+            };
+            ToolTerraform()
+            {
+                toolFlags = ToolFlag::keepFlag6 | ToolFlag::automaticGridlines;
+                type = WindowType::terraform;
+                events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onScrollShiftModifier, ToolEventType::onMouseDrag, ToolEventType::onMouseDragEnd };
+            };
+        };
     }
 
-    static loco_global<int16_t, 0x0052337A> _dragLastY;
+    static loco_global<int16_t, 0x0052337A>
+        _dragLastY;
     static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
@@ -1895,21 +1940,16 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         );
 
-        class ToolWater : public ToolManager::ToolBase
+        class ToolWater : public Common::ToolTerraform
         {
-            virtual void onMouseMove(Window& self, const ToolManager::ToolEventType event) override;
-            virtual void onMouseDown(Window& self, const ToolManager::ToolEventType event) override;
-            virtual void onMouseDrag(Window& self, const ToolManager::ToolEventType event) override;
-            virtual void onMouseDragEnd(Window& self, const ToolManager::ToolEventType event) override;
-            virtual void onScroll(Window& self, const ToolManager::ToolEventType event) override;
+            virtual void onMouseMove(Window& self, ToolManager::ToolEventType_t event) override;
+            virtual void onMouseDown(Window& self, ToolManager::ToolEventType_t event) override;
+            virtual void onMouseDrag(Window& self, ToolManager::ToolEventType_t event) override;
 
         public:
             ToolWater()
             {
-                toolFlags = ToolManager::ToolFlags::keepFlag6;
                 cursor = CursorId::waterTool;
-                type = WindowType::terraform;
-                events = { enumValue(ToolManager::ToolEventType::onMouseMove), enumValue(ToolManager::ToolEventType::onMouseDown), enumValue(ToolManager::ToolEventType::onScrollShiftModifier), enumValue(ToolManager::ToolEventType::onMouseDrag), enumValue(ToolManager::ToolEventType::onMouseDragEnd) };
                 widget = Common::widx::panel;
             };
         };
@@ -1978,32 +2018,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         static uint32_t raiseWater(uint8_t flags);
         static uint32_t lowerWater(uint8_t flags);
 
-        void ToolWater::onScroll([[maybe_unused]] Window& self, [[maybe_unused]] const ToolManager::ToolEventType event)
-        {
-            if (input.mouseWheel > 0)
-            {
-                for (int i = 0; i < input.mouseWheel; i++)
-                {
-                    Common::incrementToolSize();
-                }
-            }
-            else
-            {
-                for (int i = 0; i > input.mouseWheel; i--)
-                {
-                    Common::decrementToolSize();
-                }
-            }
-
-            World::mapInvalidateSelectionRect();
-        }
-
         // 0x004BCDB4
-        void ToolWater::onMouseMove([[maybe_unused]] Window& self, const ToolManager::ToolEventType)
+        void ToolWater::onMouseMove([[maybe_unused]] Window& self, const ToolManager::ToolEventType_t)
         {
             World::mapInvalidateSelectionRect();
 
-            if (ToolManager::getToolCursor() != CursorId::waterTool)
+            if (ToolManager::getToolCursor() != CursorId::upDownArrow)
             {
                 World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
 
@@ -2039,13 +2059,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDCA
-        void ToolWater::onMouseDown([[maybe_unused]] Window& self, const ToolManager::ToolEventType)
+        void ToolWater::onMouseDown([[maybe_unused]] Window& self, const ToolManager::ToolEventType_t)
         {
             if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
             {
                 return;
             }
-
+            lastPos = input.pos;
             ToolManager::setToolCursor(CursorId::upDownArrow);
         }
 
@@ -2080,7 +2100,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDBF
-        void ToolWater::onMouseDrag([[maybe_unused]] Window& self, const ToolManager::ToolEventType)
+        void ToolWater::onMouseDrag([[maybe_unused]] Window& self, const ToolManager::ToolEventType_t)
         {
 
             auto w = WindowManager::findAt(input.pos.x, input.pos.y);
@@ -2134,15 +2154,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             _raiseWaterCost = 0x80000000;
             _lowerWaterCost = 0x80000000;
-        }
-
-        // 0x004BCDE8
-        void ToolWater::onMouseDragEnd([[maybe_unused]] Window& self, const ToolManager::ToolEventType)
-        {
-            World::mapInvalidateSelectionRect();
-
-            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
-            ToolManager::setToolCursor(CursorId::waterTool);
         }
 
         // 0x004BCC6D
