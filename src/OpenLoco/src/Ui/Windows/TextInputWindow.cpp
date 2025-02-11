@@ -20,7 +20,7 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 using namespace OpenLoco::Interop;
 

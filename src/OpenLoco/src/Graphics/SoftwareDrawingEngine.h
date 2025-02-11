@@ -13,7 +13,7 @@ struct SDL_Surface;
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Texture;
-struct SDL_PixelFormat;
+enum SDL_PixelFormat : int;
 
 namespace OpenLoco::Gfx
 {
@@ -78,7 +78,6 @@ namespace OpenLoco::Gfx
 
         SDL_Texture* _screenTexture{};
         SDL_Texture* _scaledScreenTexture{};
-        SDL_PixelFormat* _screenTextureFormat{};
 
         SDL_Texture* _screenRGBATexture{};
 

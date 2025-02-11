@@ -16,7 +16,7 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
-#include <fmt/format.h>
+#include <fmt/format-inl.h>
 
 namespace OpenLoco::Ui::Windows::ObjectLoadError
 {

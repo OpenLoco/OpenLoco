@@ -17,7 +17,7 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <unordered_map>
 
 using namespace OpenLoco::Input;
