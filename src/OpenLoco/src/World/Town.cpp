@@ -253,6 +253,10 @@ namespace OpenLoco
         }
     }
 
+    constexpr std::array<World::Pos2, 4> k4FF704 = {
+        { { 0, 0 }, { 0, -32 }, { -32, -32 }, { -32, 0 } }
+    };
+
     /**
      * 0x00498116
      * Grow
@@ -365,7 +369,24 @@ namespace OpenLoco
                 auto* surface = TileManager::get(roadStart).surface();
                 if (surface->baseHeight() >= roadStart.z)
                 {
+                    const auto nextToData = TrackData::getRoadUnkNextTo(tad._data);
 
+                    const auto randItem = (nextToData.size() * (prng.randNext() & 0xFFU)) / 256;
+                    const auto& nextTo = nextToData[randItem];
+                    auto buildingPos = roadStart + World::Pos3(Math::Vector::rotate(nextTo.pos, tad.cardinalDirection()), nextTo.pos.z);
+                    const auto buildingRot = (nextTo.rotation + tad.cardinalDirection()) & 0x3;
+                    // TODO: Urgh dirty, use a normal randBool
+                    uint8_t unkFlags = 0;
+                    if (prng.srand_0() & (1U << 31))
+                    {
+                        unkFlags |= 1U << 0;
+                        buildingPos.x += k4FF704[buildingRot].x;
+                        buildingPos.y += k4FF704[buildingRot].y;
+                    }
+
+                    if ((growFlags & TownGrowFlags::flag7) != TownGrowFlags::none || ((unkFlags & (1U << 0)) && (prng.srand_0() & 0x7C000000)))
+                    {
+                    }
                 }
             }
             // 0x0049844D

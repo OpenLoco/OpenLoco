@@ -1257,6 +1257,7 @@ namespace OpenLoco::World::TrackData
 
     std::span<const RoadUnkNextTo> getRoadUnkNextTo(uint16_t trackAndDirection)
     {
+        assert(trackAndDirection / 4 < kRoadUnkNextTo.size());
         return kRoadUnkNextTo[trackAndDirection / 4];
     }
 }
