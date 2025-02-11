@@ -998,7 +998,9 @@ namespace OpenLoco::World::TrackData
         return _roadMiscData[roadId];
     }
 
-    constexpr std::array<RoadUnkNextTo, 2> kStraightLUnkNextTo = {
+    // TODO: The following i think can be further deduplicated/generated
+
+    constexpr std::array<RoadUnkNextTo, 2> kStraightUnkNextTo = {
         RoadUnkNextTo{
             .pos = { 0, -32, 0 },
             .rotation = 1,
@@ -1009,18 +1011,7 @@ namespace OpenLoco::World::TrackData
         },
     };
 
-    constexpr std::array<RoadUnkNextTo, 2> kStraightRUnkNextTo = {
-        RoadUnkNextTo{
-            .pos = { 0, -32, 0 },
-            .rotation = 1,
-        },
-        RoadUnkNextTo{
-            .pos = { 0, 32, 0 },
-            .rotation = 3,
-        },
-    };
-
-    constexpr std::array<RoadUnkNextTo, 2> kLeftCurveVerySmallLUnkNextTo = {
+    constexpr std::array<RoadUnkNextTo, 2> kLeftCurveVerySmallUnkNextTo = {
         RoadUnkNextTo{
             .pos = { 0, 32, 0 },
             .rotation = 3,
@@ -1031,29 +1022,7 @@ namespace OpenLoco::World::TrackData
         },
     };
 
-    constexpr std::array<RoadUnkNextTo, 2> kLeftCurveVerySmallRUnkNextTo = {
-        RoadUnkNextTo{
-            .pos = { 0, 32, 0 },
-            .rotation = 3,
-        },
-        RoadUnkNextTo{
-            .pos = { -32, 0, 0 },
-            .rotation = 2,
-        },
-    };
-
-    constexpr std::array<RoadUnkNextTo, 2> kRightCurveVerySmallLUnkNextTo = {
-        RoadUnkNextTo{
-            .pos = { -32, 0, 0 },
-            .rotation = 2,
-        },
-        RoadUnkNextTo{
-            .pos = { 0, -32, 0 },
-            .rotation = 1,
-        },
-    };
-
-    constexpr std::array<RoadUnkNextTo, 2> kRightCurveVerySmallRUnkNextTo = {
+    constexpr std::array<RoadUnkNextTo, 2> kRightCurveVerySmallUnkNextTo = {
         RoadUnkNextTo{
             .pos = { -32, 0, 0 },
             .rotation = 2,
@@ -1260,36 +1229,16 @@ namespace OpenLoco::World::TrackData
         },
     };
 
-    constexpr std::array<RoadUnkNextTo, 2> kTurnaroundLUnkNextTo = {
-        RoadUnkNextTo{
-            .pos = { 0, -32, 0 },
-            .rotation = 1,
-        },
-        RoadUnkNextTo{
-            .pos = { 0, 32, 0 },
-            .rotation = 3,
-        },
-    };
-
-    constexpr std::array<RoadUnkNextTo, 2> kTurnaroundRUnkNextTo = {
-        RoadUnkNextTo{
-            .pos = { 0, -32, 0 },
-            .rotation = 1,
-        },
-        RoadUnkNextTo{
-            .pos = { 0, 32, 0 },
-            .rotation = 3,
-        },
-    };
+    constexpr std::array<RoadUnkNextTo, 2> kTurnaroundUnkNextTo = kStraightUnkNextTo;
 
     // 0x004F6E02
     constexpr std::array<std::span<const RoadUnkNextTo>, 20> kRoadUnkNextTo = {
-        kStraightLUnkNextTo,
-        kStraightRUnkNextTo,
-        kLeftCurveVerySmallLUnkNextTo,
-        kLeftCurveVerySmallRUnkNextTo,
-        kRightCurveVerySmallLUnkNextTo,
-        kRightCurveVerySmallRUnkNextTo,
+        kStraightUnkNextTo,
+        kStraightUnkNextTo,
+        kLeftCurveVerySmallUnkNextTo,
+        kLeftCurveVerySmallUnkNextTo,
+        kRightCurveVerySmallUnkNextTo,
+        kRightCurveVerySmallUnkNextTo,
         kLeftCurveSmallLUnkNextTo,
         kLeftCurveSmallRUnkNextTo,
         kRightCurveSmallLUnkNextTo,
