@@ -1,5 +1,6 @@
 25.01+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2916] Vehicles aren't available after adding them with the Object Selection window.
 - Fix: [#2864] News messages are drawn incorrectly.
 - Fix: [#2866] Vehicles lengths with 0 in the tenths place being displayed incorrectly.
 
