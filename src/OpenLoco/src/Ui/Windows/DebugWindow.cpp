@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Windows::Debug
         constexpr auto tab_1 = WidgetId("tab_1");
         constexpr auto tab_2 = WidgetId("tab_2");
         constexpr auto tab_3 = WidgetId("tab_3");
-        constexpr auto tab_4 = WidgetId("tab_4");
+        // constexpr auto tab_4 = WidgetId("tab_4");
     }
 
     static const WindowEventList& getEvents();
