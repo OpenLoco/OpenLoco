@@ -25,15 +25,15 @@ namespace OpenLoco
     {
         none = 0U,
         flag0 = 1U << 0,
-        flag1 = 1U << 1,
-        flag2 = 1U << 2,
+        roadUpdate = 1U << 1,          // roads can be updated with newer types and streetlights can update style
+        neutralRoadTakeover = 1U << 2, // towns can take over company roads and make them neutral owner
         flag3 = 1U << 3,
         flag4 = 1U << 4,
-        flag5 = 1U << 5,
-        flag6 = 1U << 6,
-        flag7 = 1U << 7,
+        constructBuildings = 1U << 5, // new buildings can be constructed
+        buildImmediately = 1U << 6,   // constructed buildings do not require scaffolding
+        updateBuildings = 1U << 7,    // buildings can be updated with newer versions
 
-        all = flag0 | flag1 | flag2 | flag3 | flag4 | flag5 | flag6 | flag7,
+        all = flag0 | roadUpdate | neutralRoadTakeover | flag3 | flag4 | constructBuildings | buildImmediately | updateBuildings,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TownGrowFlags);
 

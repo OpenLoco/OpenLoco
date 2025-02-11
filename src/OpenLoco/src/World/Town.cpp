@@ -60,13 +60,13 @@ namespace OpenLoco
         auto growthPerTick = kBuildSpeedToGrowthPerTick[this->buildSpeed];
         if (growthPerTick == 0 || (growthPerTick == 1 && (gPrng1().randNext() & 7)))
         {
-            grow(TownGrowFlags::flag0 | TownGrowFlags::flag1 | TownGrowFlags::flag2);
+            grow(TownGrowFlags::flag0 | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover);
         }
         else
         {
             for (int32_t counter = 0; counter < growthPerTick; ++counter)
             {
-                grow(TownGrowFlags::flag0 | TownGrowFlags::flag1 | TownGrowFlags::flag2 | TownGrowFlags::flag3 | TownGrowFlags::flag4 | TownGrowFlags::flag5 | TownGrowFlags::flag6);
+                grow(TownGrowFlags::flag0 | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover | TownGrowFlags::flag3 | TownGrowFlags::flag4 | TownGrowFlags::constructBuildings | TownGrowFlags::buildImmediately);
             }
         }
     }
@@ -313,7 +313,7 @@ namespace OpenLoco
             const auto nextRoadRes = sub_47AC3E(roadStart, tad);
             if (nextRoadRes.owner != CompanyId::neutral)
             {
-                if ((growFlags & TownGrowFlags::flag2) != TownGrowFlags::none)
+                if ((growFlags & TownGrowFlags::neutralRoadTakeover) != TownGrowFlags::none)
                 {
                     if (extent->isBridge || hasNearbyBuildings(World::toTileSpace(roadStart)))
                     {
@@ -333,7 +333,7 @@ namespace OpenLoco
 
                         if (curRoadObj->maxSpeed <= idealRoadObj->maxSpeed)
                         {
-                            if ((growFlags & TownGrowFlags::flag1) != TownGrowFlags::none)
+                            if ((growFlags & TownGrowFlags::roadUpdate) != TownGrowFlags::none)
                             {
                                 if (extent->isBridge || hasNearbyBuildings(World::toTileSpace(roadStart)))
                                 {
@@ -346,7 +346,7 @@ namespace OpenLoco
                 }
                 else
                 {
-                    if ((growFlags & TownGrowFlags::flag1) != TownGrowFlags::none)
+                    if ((growFlags & TownGrowFlags::roadUpdate) != TownGrowFlags::none)
                     {
                         if (nextRoadRes.streetLightStyle.has_value())
                         {
@@ -364,7 +364,7 @@ namespace OpenLoco
                 }
             }
 
-            if ((growFlags & TownGrowFlags::flag5) != TownGrowFlags::none && !extent->isBridge)
+            if ((growFlags & TownGrowFlags::constructBuildings) != TownGrowFlags::none && !extent->isBridge)
             {
                 auto* surface = TileManager::get(roadStart).surface();
                 if (surface->baseHeight() >= roadStart.z)
@@ -376,16 +376,34 @@ namespace OpenLoco
                     auto buildingPos = roadStart + World::Pos3(Math::Vector::rotate(nextTo.pos, tad.cardinalDirection()), nextTo.pos.z);
                     const auto buildingRot = (nextTo.rotation + tad.cardinalDirection()) & 0x3;
                     // TODO: Urgh dirty, use a normal randBool
-                    uint8_t unkFlags = 0;
+                    bool isLarge = false;
                     if (prng.srand_0() & (1U << 31))
                     {
-                        unkFlags |= 1U << 0;
+                        isLarge = true;
                         buildingPos.x += k4FF704[buildingRot].x;
                         buildingPos.y += k4FF704[buildingRot].y;
                     }
 
-                    if ((growFlags & TownGrowFlags::flag7) != TownGrowFlags::none || ((unkFlags & (1U << 0)) && (prng.srand_0() & 0x7C000000)))
+                    bool unkFlag = false;
+                    // TODO: Even more dirty
+                    if ((growFlags & TownGrowFlags::updateBuildings) != TownGrowFlags::none || (isLarge && (prng.srand_0() & 0x7C000000)))
                     {
+                        unkFlag = true;
+                    }
+
+                    const auto maxHeight = getMaxHeightOfNewBuilding(buildingPos, isLarge, unkFlag);
+                    if (maxHeight != 0)
+                    {
+                        auto args = generateNewBuildingArgs(buildingPos, maxHeight, buildingRot, isLarge, false);
+                        if (args.has_value())
+                        {
+                            loco_global<Town*, 0x00525D20> _525D20;
+                            if (_525D20 == this && ((growFlags & TownGrowFlags::buildImmediately) != TownGrowFlags::none))
+                            {
+                                args->buildImmediately = true;
+                            }
+                            GameCommands::doCommand(args.value(), GameCommands::Flags::apply);
+                        }
                     }
                 }
             }
