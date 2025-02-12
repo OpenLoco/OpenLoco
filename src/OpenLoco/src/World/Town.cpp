@@ -31,7 +31,7 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
-#include <bitset>
+#include <bit>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -259,6 +259,21 @@ namespace OpenLoco
         { { 0, 0 }, { 0, -32 }, { -32, -32 }, { -32, 0 } }
     };
 
+    std::array<std::array<World::TilePos2, 4>, 2> kIntersectionCheck = {
+        std::array<World::TilePos2, 4>{
+            World::TilePos2{ 0, -2 },
+            World::TilePos2{ 0, -1 },
+            World::TilePos2{ 0, 1 },
+            World::TilePos2{ 0, 2 },
+        },
+        std::array<World::TilePos2, 4>{
+            World::TilePos2{ -2, 0 },
+            World::TilePos2{ -1, 0 },
+            World::TilePos2{ 1, 0 },
+            World::TilePos2{ 2, 0 },
+        },
+    };
+
     /**
      * 0x00498116
      * Grow
@@ -459,12 +474,63 @@ namespace OpenLoco
             {
                 edges |= kRoadTadConnectionEdge[c & World::Track::AdditionalTaDFlags::basicTaDMask];
             }
-            std::bitset<4> edgeBits(edges);
-            if (edgeBits.none())
+            const auto numEdges = std::popcount(edges);
+            if (numEdges == 0)
             {
                 continue;
             }
-            auto randEdge = ((randVal >> 16) & 0xFFU) * edgeBits.count() / 256;
+            auto randEdge = [randVal, numEdges, edges]() {
+                auto num = ((randVal >> 16) & 0xFFU) * numEdges / 256;
+                auto i = 0U;
+                for (; i < 4 && num >= 0; ++i)
+                {
+                    if (edges & (1U << i))
+                    {
+                        --num;
+                    }
+                }
+                return i;
+            }();
+
+            bool hasIncompatibleRoad = [curRoadPos, randEdge]() {
+                for (const auto& offset : kIntersectionCheck[randEdge & 1])
+                {
+                    const auto pos = curRoadPos + World::Pos3(World::toWorldSpace(offset), 0);
+                    if (sub_498D9A(pos, randEdge))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }();
+
+            if (hasIncompatibleRoad)
+            {
+                continue;
+            }
+            // 0x00498676
+            uint8_t newRoadId = 0;
+            if (edges & (1U << (randEdge ^ (1U << 1))))
+            {
+                if (edges & (1U << ((randEdge - 1) & 0x3)))
+                {
+                    newRoadId = 1;
+                }
+                else
+                {
+                    newRoadId = 2;
+                }
+            }
+
+            GameCommands::RoadPlacementArgs args{};
+            args.roadId = newRoadId;
+            args.pos = curRoadPos;
+            args.roadObjectId = idealRoadId.value();
+            args.bridge = 0xFFU;
+            args.rotation = randEdge ^ (1U << 1);
+            args.mods = 0;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            break;
         }
 
         GameCommands::setUpdatingCompanyId(oldUpatingCompany);
