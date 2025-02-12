@@ -200,14 +200,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
-            if (CompanyId(self.number) == CompanyManager::getControllingId())
-            {
-                self.widgets[widx::change_owner_name].hidden = false;
-            }
-            else
-            {
-                self.widgets[widx::change_owner_name].hidden = true;
-            }
+            self.widgets[widx::change_owner_name].hidden = CompanyId(self.number) != CompanyManager::getControllingId();
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
@@ -755,14 +748,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
-            if (CompanyId(self.number) == CompanyManager::getControllingId())
-            {
-                self.widgets[widx::build_hq].hidden = false;
-            }
-            else
-            {
-                self.widgets[widx::build_hq].hidden = true;
-            }
+            self.widgets[widx::build_hq].hidden = CompanyId(self.number) != CompanyManager::getControllingId();
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
@@ -1779,13 +1765,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
-            if (company->id() == CompanyManager::getControllingId())
-            {
-                self.widgets[widx::currentLoan].hidden = false;
-                self.widgets[widx::loan_decrease].hidden = false;
-                self.widgets[widx::loan_increase].hidden = false;
-                self.widgets[widx::loan_autopay].hidden = false;
+            const auto isControllingCompany = company->id() == CompanyManager::getControllingId();
+            self.widgets[widx::currentLoan].hidden = !isControllingCompany;
+            self.widgets[widx::loan_decrease].hidden = !isControllingCompany;
+            self.widgets[widx::loan_increase].hidden = !isControllingCompany;
+            self.widgets[widx::loan_autopay].hidden = !isControllingCompany;
 
+            if (isControllingCompany)
+            {
                 if ((company->challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none)
                 {
                     self.activatedWidgets |= (1ULL << Finances::widx::loan_autopay);
@@ -1794,13 +1781,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     self.activatedWidgets &= ~(1ULL << Finances::widx::loan_autopay);
                 }
-            }
-            else
-            {
-                self.widgets[widx::currentLoan].hidden = true;
-                self.widgets[widx::loan_decrease].hidden = true;
-                self.widgets[widx::loan_increase].hidden = true;
-                self.widgets[widx::loan_autopay].hidden = true;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
