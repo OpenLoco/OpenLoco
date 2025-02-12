@@ -15,6 +15,7 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
+#include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TreeElement.h"
 #include "Objects/BuildingObject.h"
@@ -30,6 +31,7 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
+#include <bitset>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -303,21 +305,24 @@ namespace OpenLoco
             return;
         }
 
+        auto curRoadPos = roadStart;
+        bool curOnBridge = extent->isBridge;
+
         for (auto i = 0U; i < 75; ++i)
         {
-            auto res = TownManager::getClosestTownAndDensity(roadStart);
+            auto res = TownManager::getClosestTownAndDensity(curRoadPos);
             if (!res.has_value() || res->first != id())
             {
                 break;
             }
-            const auto nextRoadRes = sub_47AC3E(roadStart, tad);
+            const auto nextRoadRes = sub_47AC3E(curRoadPos, tad);
             if (nextRoadRes.owner != CompanyId::neutral)
             {
                 if ((growFlags & TownGrowFlags::neutralRoadTakeover) != TownGrowFlags::none)
                 {
-                    if (extent->isBridge || hasNearbyBuildings(World::toTileSpace(roadStart)))
+                    if (curOnBridge || hasNearbyBuildings(World::toTileSpace(curRoadPos)))
                     {
-                        updateAndTakeoverRoad(roadStart, tad, nextRoadRes.roadObjId, CompanyId::neutral, nextRoadRes.streetLightStyle.value_or(0U));
+                        updateAndTakeoverRoad(curRoadPos, tad, nextRoadRes.roadObjId, CompanyId::neutral, nextRoadRes.streetLightStyle.value_or(0U));
                         break;
                     }
                 }
@@ -335,9 +340,9 @@ namespace OpenLoco
                         {
                             if ((growFlags & TownGrowFlags::roadUpdate) != TownGrowFlags::none)
                             {
-                                if (extent->isBridge || hasNearbyBuildings(World::toTileSpace(roadStart)))
+                                if (curOnBridge || hasNearbyBuildings(World::toTileSpace(curRoadPos)))
                                 {
-                                    updateAndTakeoverRoad(roadStart, tad, idealRoadId.value(), nextRoadRes.owner, nextRoadRes.streetLightStyle.value_or(0U));
+                                    updateAndTakeoverRoad(curRoadPos, tad, idealRoadId.value(), nextRoadRes.owner, nextRoadRes.streetLightStyle.value_or(0U));
                                     break;
                                 }
                             }
@@ -353,9 +358,9 @@ namespace OpenLoco
                             const auto newStyle = getStreetLightStyle(nextRoadRes.roadObjId, res->second);
                             if (newStyle != nextRoadRes.streetLightStyle.value())
                             {
-                                if (extent->isBridge || hasNearbyBuildings(World::toTileSpace(roadStart)))
+                                if (curOnBridge || hasNearbyBuildings(World::toTileSpace(curRoadPos)))
                                 {
-                                    updateAndTakeoverRoad(roadStart, tad, nextRoadRes.roadObjId, nextRoadRes.owner, newStyle);
+                                    updateAndTakeoverRoad(curRoadPos, tad, nextRoadRes.roadObjId, nextRoadRes.owner, newStyle);
                                     break;
                                 }
                             }
@@ -364,16 +369,16 @@ namespace OpenLoco
                 }
             }
 
-            if ((growFlags & TownGrowFlags::constructBuildings) != TownGrowFlags::none && !extent->isBridge)
+            if ((growFlags & TownGrowFlags::constructBuildings) != TownGrowFlags::none && !curOnBridge)
             {
-                auto* surface = TileManager::get(roadStart).surface();
-                if (surface->baseHeight() >= roadStart.z)
+                auto* surface = TileManager::get(curRoadPos).surface();
+                if (surface->baseHeight() >= curRoadPos.z)
                 {
                     const auto nextToData = TrackData::getRoadUnkNextTo(tad._data);
 
                     const auto randItem = (nextToData.size() * (prng.randNext() & 0xFFU)) / 256;
                     const auto& nextTo = nextToData[randItem];
-                    auto buildingPos = roadStart + World::Pos3(Math::Vector::rotate(nextTo.pos, tad.cardinalDirection()), nextTo.pos.z);
+                    auto buildingPos = curRoadPos + World::Pos3(Math::Vector::rotate(nextTo.pos, tad.cardinalDirection()), nextTo.pos.z);
                     const auto buildingRot = (nextTo.rotation + tad.cardinalDirection()) & 0x3;
                     // TODO: Urgh dirty, use a normal randBool
                     bool isLarge = false;
@@ -407,15 +412,67 @@ namespace OpenLoco
                     }
                 }
             }
-            // 0x0049844D
+
+            const auto roadEnd = World::Track::getRoadConnectionEnd(curRoadPos, tad._data);
+            const auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, CompanyId::neutral, nextRoadRes.roadObjId, 0, 0);
+            if (rc.connections.empty())
+            {
+                // 0x004986CA
+                // Add new road to end
+            }
+            auto connection = rc.connections[0];
+            if (rc.connections.size() > 1)
+            {
+                const auto randConnect = ((prng.randNext() & 0xFFFF) * rc.connections.size()) / 65536;
+                connection = rc.connections[randConnect];
+            }
+
+            curRoadPos = roadEnd.nextPos;
+            curOnBridge = connection & World::Track::AdditionalTaDFlags::hasBridge;
+            tad._data = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
+            if ((growFlags & TownGrowFlags::flag4) == TownGrowFlags::none)
+            {
+                continue;
+            }
+            const auto roadId = tad.id();
+            if (roadId != 0 || roadId != 1 || roadId != 3)
+            {
+                continue;
+            }
+            if (curOnBridge)
+            {
+                continue;
+            }
+            auto randVal = prng.randNext();
+            if ((randVal & 0xFFFFU) > 0x666)
+            {
+                continue;
+            }
+            auto* surface = TileManager::get(curRoadPos).surface();
+            if (curRoadPos.z < surface->baseHeight())
+            {
+                continue;
+            }
+
+            uint8_t edges = 0;
+            for (auto c : rc.connections)
+            {
+                edges |= kRoadTadConnectionEdge[c & World::Track::AdditionalTaDFlags::basicTaDMask];
+            }
+            std::bitset<4> edgeBits(edges);
+            if (edgeBits.none())
+            {
+                continue;
+            }
+            auto randEdge = ((randVal >> 16) & 0xFFU) * edgeBits.count() / 256;
         }
 
         GameCommands::setUpdatingCompanyId(oldUpatingCompany);
-        return;
-        registers regs;
-        regs.eax = enumValue(growFlags);
-        regs.esi = X86Pointer(this);
-        call(0x00498116, regs);
+        // return;
+        // registers regs;
+        // regs.eax = enumValue(growFlags);
+        // regs.esi = X86Pointer(this);
+        // call(0x00498116, regs);
     }
 
     StringId Town::getTownSizeString() const
