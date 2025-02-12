@@ -300,33 +300,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         x -= 11;
         Common::rightAlignTabs(&window, x, { Common::Widx::road_menu, Common::Widx::terraform_menu });
 
-        if (EditorController::getCurrentStep() == EditorController::Step::landscapeEditor)
-        {
-            window.widgets[Common::Widx::zoom_menu].hidden = false;
-            window.widgets[Common::Widx::rotate_menu].hidden = false;
-            window.widgets[Common::Widx::view_menu].hidden = false;
-            window.widgets[Common::Widx::terraform_menu].hidden = false;
-            window.widgets[Widx::map_generation_menu].hidden = false;
-            window.widgets[Common::Widx::towns_menu].hidden = false;
-            if (getGameState().lastRoadOption != 0xFF)
-            {
-                window.widgets[Common::Widx::road_menu].hidden = false;
-            }
-            else
-            {
-                window.widgets[Common::Widx::road_menu].hidden = true;
-            }
-        }
-        else
-        {
-            window.widgets[Common::Widx::zoom_menu].hidden = true;
-            window.widgets[Common::Widx::rotate_menu].hidden = true;
-            window.widgets[Common::Widx::view_menu].hidden = true;
-            window.widgets[Common::Widx::terraform_menu].hidden = true;
-            window.widgets[Widx::map_generation_menu].hidden = true;
-            window.widgets[Common::Widx::road_menu].hidden = true;
-            window.widgets[Common::Widx::towns_menu].hidden = true;
-        }
+        const bool isLandscapeEditor = EditorController::getCurrentStep() == EditorController::Step::landscapeEditor;
+
+        window.widgets[Common::Widx::zoom_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::Widx::rotate_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::Widx::view_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::Widx::terraform_menu].hidden = !isLandscapeEditor;
+        window.widgets[Widx::map_generation_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::Widx::towns_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::Widx::road_menu].hidden = !(isLandscapeEditor && getGameState().lastRoadOption != 0xFF);
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         if (!Audio::isAudioEnabled())
