@@ -1286,18 +1286,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
             self.activatedWidgets |= (1ULL << widgetIndex);
 
-            if (SceneManager::isEditorMode())
-            {
-                // Disable close button in the scenario editor.
-                self.widgets[Common::widx::close_button].hidden = true;
-                self.widgets[widx::tab_scenario].hidden = false;
-            }
-            else
-            {
-                // Disable scenario details tab in-game.
-                self.widgets[Common::widx::close_button].hidden = false;
-                self.widgets[widx::tab_scenario].hidden = true;
-            }
+            // Disable close button in the scenario editor.
+            self.widgets[Common::widx::close_button].hidden = SceneManager::isEditorMode();
+            self.widgets[widx::tab_scenario].hidden = !SceneManager::isEditorMode();
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;
