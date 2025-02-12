@@ -922,7 +922,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (CompanyManager::isPlayerCompany(head->owner))
                 {
                     viewportRight -= 27;
-                    self.widgets[widx::speedControl].type = WidgetType::slider;
+                    self.widgets[widx::speedControl].hidden = false;
                 }
             }
 

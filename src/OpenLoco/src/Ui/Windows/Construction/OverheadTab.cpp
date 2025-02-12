@@ -398,7 +398,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, StringId name)
     {
         auto widgetIndex = checkboxIndex + widx::checkbox_1;
-        self->widgets[widgetIndex].type = WidgetType::checkbox;
+        self->widgets[widgetIndex].hidden = false;
         self->widgets[widgetIndex].text = name;
 
         if (_cState->lastSelectedMods & (1 << checkboxIndex))
