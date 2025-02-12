@@ -1251,13 +1251,13 @@ namespace OpenLoco::World::TrackData
         kStraightSteepSlopeUpRUnkNextTo,
         kStraightSteepSlopeDownLUnkNextTo,
         kStraightSteepSlopeDownRUnkNextTo,
-        kTurnaroundLUnkNextTo,
-        kTurnaroundRUnkNextTo,
+        kTurnaroundUnkNextTo,
+        kTurnaroundUnkNextTo,
     };
 
     std::span<const RoadUnkNextTo> getRoadUnkNextTo(uint16_t trackAndDirection)
     {
-        assert(trackAndDirection / 4 < kRoadUnkNextTo.size());
+        assert(static_cast<size_t>(trackAndDirection / 4) < kRoadUnkNextTo.size());
         return kRoadUnkNextTo[trackAndDirection / 4];
     }
 }
