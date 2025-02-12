@@ -991,32 +991,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
         }
 
-        if (getGameState().lastRoadOption != 0xFF)
-        {
-            window.widgets[Common::Widx::road_menu].hidden = false;
-        }
-        else
-        {
-            window.widgets[Common::Widx::road_menu].hidden = true;
-        }
-
-        if (getGameState().lastRailroadOption != 0xFF)
-        {
-            window.widgets[Common::Widx::railroad_menu].hidden = false;
-        }
-        else
-        {
-            window.widgets[Common::Widx::railroad_menu].hidden = true;
-        }
-
-        if (getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF)
-        {
-            window.widgets[Common::Widx::port_menu].hidden = false;
-        }
-        else
-        {
-            window.widgets[Common::Widx::port_menu].hidden = true;
-        }
+        window.widgets[Common::Widx::road_menu].hidden = !(getGameState().lastRoadOption != 0xFF);
+        window.widgets[Common::Widx::railroad_menu].hidden = !(getGameState().lastRailroadOption != 0xFF);
+        window.widgets[Common::Widx::port_menu].hidden = !(getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF);
 
         uint32_t x = std::max(640, Ui::width()) - 1;
         Common::rightAlignTabs(&window, x, { Common::Widx::towns_menu, Common::Widx::stations_menu, Common::Widx::vehicles_menu });
