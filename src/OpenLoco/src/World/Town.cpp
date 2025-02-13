@@ -1148,7 +1148,7 @@ namespace OpenLoco
             }
 
             const auto roadEnd = World::Track::getRoadConnectionEnd(curRoadPos, tad._data);
-            const auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, CompanyId::neutral, nextRoadRes.roadObjId, 0, 0);
+            const auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, CompanyId::neutral, 0xFFU, 0, 0);
             if (rc.connections.empty())
             {
                 // TODO 0x004986CA
