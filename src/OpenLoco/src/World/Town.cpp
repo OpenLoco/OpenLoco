@@ -1125,7 +1125,7 @@ namespace OpenLoco
 
                     bool unkFlag = false;
                     // TODO: Even more dirty
-                    if ((growFlags & TownGrowFlags::updateBuildings) != TownGrowFlags::none || (isLarge && (prng.srand_0() & 0x7C000000)))
+                    if ((growFlags & TownGrowFlags::updateBuildings) != TownGrowFlags::none || (isLarge && !(prng.srand_0() & 0x7C000000)))
                     {
                         unkFlag = true;
                     }
