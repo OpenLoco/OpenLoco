@@ -1620,6 +1620,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             Gfx::loadCurrency();
             Gfx::loadDefaultPalette();
             Gfx::invalidateScreen();
+            CompanyManager::determineAvailableVehicles();
+            WindowManager::invalidate(WindowType::buildVehicle);
         }
         ObjectManager::freeSelectionList();
     }
