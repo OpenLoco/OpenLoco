@@ -1096,7 +1096,6 @@ namespace OpenLoco
                                 if (curOnBridge || hasNearbyBuildings(World::toTileSpace(curRoadPos)))
                                 {
                                     updateAndTakeoverRoad(curRoadPos, tad, nextRoadRes.roadObjId, nextRoadRes.owner, newStyle);
-                                    break;
                                 }
                             }
                         }
@@ -1107,7 +1106,7 @@ namespace OpenLoco
             if ((growFlags & TownGrowFlags::constructBuildings) != TownGrowFlags::none && !curOnBridge)
             {
                 auto* surface = TileManager::get(curRoadPos).surface();
-                if (surface->baseHeight() >= curRoadPos.z)
+                if (curRoadPos.z >= surface->baseHeight())
                 {
                     const auto nextToData = TrackData::getRoadUnkNextTo(tad._data);
 
@@ -1154,7 +1153,7 @@ namespace OpenLoco
             {
                 // TODO 0x004986CA
                 // Add new road to end
-                continue;
+                break;
             }
             auto connection = rc.connections[0];
             if (rc.connections.size() > 1)
@@ -1195,6 +1194,7 @@ namespace OpenLoco
             {
                 edges |= kRoadTadConnectionEdge[c & World::Track::AdditionalTaDFlags::basicTaDMask];
             }
+            edges ^= 0xF;
             const auto numEdges = std::popcount(edges);
             if (numEdges == 0)
             {
@@ -1210,7 +1210,7 @@ namespace OpenLoco
                         --num;
                     }
                 }
-                return i;
+                return i - 1;
             }();
 
             bool hasIncompatibleRoad = [curRoadPos, randEdge]() {
