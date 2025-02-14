@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::Town
                     {
                         for (uint32_t j = ebx; j > 0; j--)
                         {
-                            town->grow(0xFF);
+                            town->grow(TownGrowFlags::all);
                             town->recalculateSize();
                         }
 
