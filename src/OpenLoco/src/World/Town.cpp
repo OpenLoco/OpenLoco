@@ -1133,11 +1133,11 @@ namespace OpenLoco
                     const auto maxHeight = getMaxHeightOfNewBuilding(buildingPos, isLarge, unkFlag);
                     if (maxHeight != 0)
                     {
+                        loco_global<Town*, 0x00525D20> _525D20;
                         auto args = generateNewBuildingArgs(buildingPos, maxHeight, buildingRot, isLarge, false);
-                        if (args.has_value())
+                        if (args.has_value() && _525D20 == this)
                         {
-                            loco_global<Town*, 0x00525D20> _525D20;
-                            if (_525D20 == this && ((growFlags & TownGrowFlags::buildImmediately) != TownGrowFlags::none))
+                            if ((growFlags & TownGrowFlags::buildImmediately) != TownGrowFlags::none)
                             {
                                 args->buildImmediately = true;
                             }
