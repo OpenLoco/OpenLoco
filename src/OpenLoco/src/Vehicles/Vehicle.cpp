@@ -236,7 +236,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
+    static constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
     {
         uint8_t nibble = 0;
         if (pos1.x != pos2.x)
@@ -255,7 +255,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00500120
-    constexpr std::array<uint32_t, 8> movementNibbleToDistance = {
+    static constexpr std::array<uint32_t, 8> movementNibbleToDistance = {
         0,
         0x220C,
         0x220C,
@@ -267,7 +267,7 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x00500244
-    constexpr std::array<World::TilePos2, 9> kNearbyTiles = {
+    static constexpr std::array<World::TilePos2, 9> kNearbyTiles = {
         World::TilePos2{ 0, 0 },
         World::TilePos2{ 0, 1 },
         World::TilePos2{ 1, 1 },
@@ -300,16 +300,16 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B1876
-    static std::optional<EntityId> checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
+    static EntityId checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
     {
         if (bogie.mode != TransportMode::rail)
         {
-            return std::nullopt;
+            return EntityId::null;
         }
 
         Vehicle srcTrain(bogie.head);
 
-        for (auto& nearby : kNearbyTiles)
+        for (const auto& nearby : kNearbyTiles)
         {
             const auto inspectionPos = World::toTileSpace(loc) + nearby;
             for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
@@ -366,7 +366,7 @@ namespace OpenLoco::Vehicles
                 return vehicleBase->id;
             }
         }
-        return std::nullopt;
+        return EntityId::null;
     }
 
     // 0x0047C7FA
@@ -408,10 +408,10 @@ namespace OpenLoco::Vehicles
             {
                 // collision checks
                 auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
-                if (collideResult.has_value())
+                if (collideResult != EntityId::null)
                 {
                     _vehicleUpdate_var_1136114 |= (1U << 2);
-                    _vehicleUpdate_collisionCarComponent = collideResult.value();
+                    _vehicleUpdate_collisionCarComponent = collideResult;
                 }
             }
         }
@@ -468,10 +468,10 @@ namespace OpenLoco::Vehicles
                 {
                     // collision checks
                     auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
-                    if (collideResult.has_value())
+                    if (collideResult != EntityId::null)
                     {
                         _vehicleUpdate_var_1136114 |= (1U << 2);
-                        _vehicleUpdate_collisionCarComponent = collideResult.value();
+                        _vehicleUpdate_collisionCarComponent = collideResult;
                     }
                 }
             }
