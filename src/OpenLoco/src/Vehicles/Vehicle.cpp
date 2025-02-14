@@ -300,11 +300,11 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B1876
-    static std::optional<EntityId> checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
+    static EntityId checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
     {
         if (bogie.mode != TransportMode::rail)
         {
-            return std::nullopt;
+            return EntityId::null;
         }
 
         Vehicle srcTrain(bogie.head);
@@ -366,7 +366,7 @@ namespace OpenLoco::Vehicles
                 return vehicleBase->id;
             }
         }
-        return std::nullopt;
+        return EntityId::null;
     }
 
     // 0x0047C7FA
@@ -408,10 +408,10 @@ namespace OpenLoco::Vehicles
             {
                 // collision checks
                 auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
-                if (collideResult.has_value())
+                if (collideResult != EntityId::null)
                 {
                     _vehicleUpdate_var_1136114 |= (1U << 2);
-                    _vehicleUpdate_collisionCarComponent = collideResult.value();
+                    _vehicleUpdate_collisionCarComponent = collideResult;
                 }
             }
         }
@@ -468,10 +468,10 @@ namespace OpenLoco::Vehicles
                 {
                     // collision checks
                     auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
-                    if (collideResult.has_value())
+                    if (collideResult != EntityId::null)
                     {
                         _vehicleUpdate_var_1136114 |= (1U << 2);
-                        _vehicleUpdate_collisionCarComponent = collideResult.value();
+                        _vehicleUpdate_collisionCarComponent = collideResult;
                     }
                 }
             }
