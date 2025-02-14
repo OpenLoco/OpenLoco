@@ -969,7 +969,7 @@ namespace OpenLoco::Ui
         {
             widgetIndex++;
 
-            if (widget.type == WidgetType::none)
+            if (widget.type == WidgetType::empty || widget.hidden)
             {
                 continue;
             }
@@ -1336,6 +1336,13 @@ namespace OpenLoco::Ui
         for (auto& widget : widgets)
         {
             widget.draw(drawingCtx, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
+
+            // FIXME: This is ugly and error prone, put the ScrollArea data in the widget,
+            //        previously it was passed as reference to draw where it incremented it.
+            if (widget.type == WidgetType::scrollview)
+            {
+                scrollviewIndex++;
+            }
         }
 
         if (this->hasFlags(WindowFlags::whiteBorderMask))
@@ -1381,7 +1388,7 @@ namespace OpenLoco::Ui
 
         for (WidgetIndex_t i = activeIndex; i >= minIndex; i--)
         {
-            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none)
+            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::empty || this->widgets[i].hidden)
             {
                 // Wrap around (while compensating for next iteration)
                 if (i == minIndex)
@@ -1414,7 +1421,7 @@ namespace OpenLoco::Ui
 
         for (WidgetIndex_t i = activeIndex; i <= maxIndex; i++)
         {
-            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none)
+            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::empty || this->widgets[i].hidden)
             {
                 // Wrap around (while compensating for next iteration)
                 if (i == maxIndex)

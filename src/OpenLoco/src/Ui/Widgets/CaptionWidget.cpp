@@ -56,18 +56,28 @@ namespace OpenLoco::Ui::Widgets
         drawingCtx.fillRect(x, y, x + width - 1, y + 11, Colours::getShade(colour.c(), 5), Gfx::RectFlags::none);
     }
 
-    static constexpr uint8_t kTextColourByType[3] = {
-        ControlCodes::Colour::black, // 23
-        ControlCodes::windowColour1, // 24
-        ControlCodes::Colour::white, // 25
-    };
-
-    static void drawSimple(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    static void drawSimple(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const Caption::Style captionStyle)
     {
         auto formatArgs = FormatArguments(widget.textArgs);
 
         char stringBuffer[512];
-        stringBuffer[0] = kTextColourByType[enumValue(widget.type) - enumValue(WidgetType::caption_23)];
+        if (captionStyle == Caption::Style::blackText)
+        {
+            stringBuffer[0] = ControlCodes::Colour::black;
+        }
+        else if (captionStyle == Caption::Style::colourText)
+        {
+            stringBuffer[0] = ControlCodes::windowColour1;
+        }
+        else if (captionStyle == Caption::Style::whiteText)
+        {
+            stringBuffer[0] = ControlCodes::Colour::white;
+        }
+        else
+        {
+            assert(false);
+        }
+
         StringManager::formatString(&stringBuffer[1], widget.text, formatArgs);
 
         auto* window = widgetState.window;
@@ -79,7 +89,7 @@ namespace OpenLoco::Ui::Widgets
         int16_t stringWidth = tr.clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        if (widget.type == WidgetType::caption_23)
+        if (captionStyle == Caption::Style::blackText)
         {
             int16_t y = window->y + widget.top + 1;
             drawStationNameBackground(drawingCtx, window, &widget, x, y, widgetState.colour, stringWidth);
@@ -91,9 +101,11 @@ namespace OpenLoco::Ui::Widgets
 
     void Caption::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        if (widget.type != WidgetType::caption_22)
+        const auto captionStyle = static_cast<Caption::Style>(widget.styleData);
+
+        if (captionStyle != Caption::Style::boxed)
         {
-            drawSimple(drawingCtx, widget, widgetState);
+            drawSimple(drawingCtx, widget, widgetState, captionStyle);
         }
         else
         {

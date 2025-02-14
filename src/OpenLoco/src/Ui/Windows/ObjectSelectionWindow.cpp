@@ -48,9 +48,11 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/CaptionWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/Window.h"
@@ -272,7 +274,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 598, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::title_object_selection),
+        Widgets::Caption({ 1, 1 }, { 598, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_object_selection),
         Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 42 }, { 600, 356 }, WindowColour::secondary),
 
@@ -291,7 +293,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Tab({ 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Filter options
-        makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
+        Widgets::dropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
         Widgets::TextBox({ 4, 45 }, { 246, 14 }, WindowColour::secondary),
         Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 
@@ -307,7 +309,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
-        makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::ScrollView({ 4, 85 }, { 288, 300 }, WindowColour::secondary, Scrollbars::vertical),
         Widgets::ImageButton({ 391, 45 }, { 114, 114 }, WindowColour::secondary)
 
     );
@@ -379,7 +381,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
             {
                 self->enabledWidgets |= 1ULL << widgetIndex;
-                self->widgets[widgetIndex].type = WidgetType::tab;
+                self->widgets[widgetIndex].hidden = false;
                 self->widgets[widgetIndex].left = xPos;
                 self->widgets[widgetIndex].right = xPos + 31;
                 xPos = self->widgets[widgetIndex].right;
@@ -387,7 +389,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             else
             {
                 self->enabledWidgets &= ~(1ULL << widgetIndex);
-                self->widgets[widgetIndex].type = WidgetType::none;
+                self->widgets[widgetIndex].hidden = true;
             }
         }
     }
@@ -571,10 +573,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         self.activatedWidgets = (1 << widx::objectImage);
 
-        self.widgets[widx::closeButton].type = WidgetType::buttonWithImage;
+        self.widgets[widx::closeButton].hidden = false;
         if (SceneManager::isEditorMode())
         {
-            self.widgets[widx::closeButton].type = WidgetType::none;
+            self.widgets[widx::closeButton].hidden = true;
         }
 
         self.activatedWidgets |= 1ULL << (widx::primaryTab1 + self.currentTab);
@@ -632,13 +634,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (showSecondaryTabs)
         {
             self.widgets[widx::scrollview].top = 62 + 28;
-            self.widgets[widx::scrollviewFrame].type = WidgetType::panel;
+            self.widgets[widx::scrollviewFrame].hidden = false;
             self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
         }
         else
         {
             self.widgets[widx::scrollview].top = 62;
-            self.widgets[widx::scrollviewFrame].type = WidgetType::none;
+            self.widgets[widx::scrollviewFrame].hidden = true;
         }
     }
 
@@ -651,7 +653,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto i = 0U; i < kMaxNumPrimaryTabs; i++)
         {
             auto widgetIndex = i + widx::primaryTab1;
-            if (self->widgets[widgetIndex].type == WidgetType::none)
+            if (self->widgets[widgetIndex].hidden)
             {
                 continue;
             }
@@ -676,7 +678,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto i = 0U; i < subTabs.size(); i++)
         {
             auto widgetIndex = i + widx::secondaryTab1;
-            if (self->widgets[widgetIndex].type == WidgetType::none)
+            if (self->widgets[widgetIndex].hidden)
             {
                 continue;
             }

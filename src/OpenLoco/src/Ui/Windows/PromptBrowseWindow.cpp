@@ -24,6 +24,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/FileSystem.hpp>
@@ -63,13 +64,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 500, 380 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 498, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::empty),
+        Widgets::Caption({ 1, 1 }, { 498, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::empty),
         Widgets::ImageButton({ 485, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 500, 365 }, WindowColour::secondary),
         Widgets::ImageButton({ 473, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
         Widgets::TextBox({ 88, 348 }, { 408, 14 }, WindowColour::secondary),
         Widgets::Button({ 426, 364 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok),
-        makeWidget({ 3, 45 }, { 494, 323 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::ScrollView({ 3, 45 }, { 494, 323 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
 
@@ -334,19 +335,19 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             self.widgets[widx::ok_button].right = self.width - 16;
             self.widgets[widx::ok_button].top = self.height - 15;
             self.widgets[widx::ok_button].bottom = self.height - 4;
-            self.widgets[widx::ok_button].type = WidgetType::button;
+            self.widgets[widx::ok_button].hidden = false;
 
             self.widgets[widx::text_filename].right = self.width - 4;
             self.widgets[widx::text_filename].top = self.height - 31;
             self.widgets[widx::text_filename].bottom = self.height - 18;
-            self.widgets[widx::text_filename].type = WidgetType::textbox;
+            self.widgets[widx::text_filename].hidden = false;
 
             self.widgets[widx::scrollview].bottom = self.height - 34;
         }
         else
         {
-            self.widgets[widx::ok_button].type = WidgetType::none;
-            self.widgets[widx::text_filename].type = WidgetType::none;
+            self.widgets[widx::ok_button].hidden = true;
+            self.widgets[widx::text_filename].hidden = true;
 
             self.widgets[widx::scrollview].bottom = self.height - 4;
         }
@@ -470,7 +471,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         const auto& filenameBox = window.widgets[widx::text_filename];
-        if (filenameBox.type != WidgetType::none)
+        if (!filenameBox.hidden)
         {
             // Draw filename label
             auto point = Point(window.x + 3, window.y + filenameBox.top + 2);

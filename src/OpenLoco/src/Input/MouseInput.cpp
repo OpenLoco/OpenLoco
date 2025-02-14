@@ -1331,10 +1331,7 @@ namespace OpenLoco::Input
         // Regular widget handling
         switch (widget->type)
         {
-            case Ui::WidgetType::caption_22:
-            case Ui::WidgetType::caption_23:
-            case Ui::WidgetType::caption_24:
-            case Ui::WidgetType::caption_25:
+            case Ui::WidgetType::caption:
                 windowPositionBegin(x, y, window, widgetIndex);
                 break;
 

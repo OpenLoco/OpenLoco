@@ -1,6 +1,9 @@
-#include "TextBoxWidget.h"
+#include "DropdownWidget.h"
+#include "Graphics/Colour.h"
+#include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
+#include "LabelWidget.h"
 #include "Ui/Window.h"
 
 namespace OpenLoco::Ui::Widgets
@@ -32,10 +35,10 @@ namespace OpenLoco::Ui::Widgets
         tr.drawStringLeftClipped(point, width, colour, widget.text, formatArgs);
     }
 
-    // 0x4CB29C
-    void TextBox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    // 0x004CB164
+    void ComboBox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
+        const auto* window = widgetState.window;
 
         const auto flags = widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker;
         drawingCtx.fillRectInset(

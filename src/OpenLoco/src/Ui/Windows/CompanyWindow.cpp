@@ -40,6 +40,8 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
@@ -77,7 +79,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, CaptionVariant::colourText, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),
@@ -137,7 +139,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(270, 182, StringIds::title_company),
-            Widgets::Label({ 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::Center),
+            Widgets::Label({ 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::center),
             Widgets::Viewport({ 3, 44 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
             Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
             Widgets::ImageButton({ 178, 57 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull),
@@ -198,14 +200,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
-            if (CompanyId(self.number) == CompanyManager::getControllingId())
-            {
-                self.widgets[widx::change_owner_name].type = WidgetType::buttonWithImage;
-            }
-            else
-            {
-                self.widgets[widx::change_owner_name].type = WidgetType::none;
-            }
+            self.widgets[widx::change_owner_name].hidden = CompanyId(self.number) != CompanyManager::getControllingId();
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
@@ -753,14 +748,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
-            if (CompanyId(self.number) == CompanyManager::getControllingId())
-            {
-                self.widgets[widx::build_hq].type = WidgetType::buttonWithImage;
-            }
-            else
-            {
-                self.widgets[widx::build_hq].type = WidgetType::none;
-            }
+            self.widgets[widx::build_hq].hidden = CompanyId(self.number) != CompanyManager::getControllingId();
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
@@ -1427,15 +1415,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     self.widgets[tuples[i].primary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].primary);
                     self.widgets[tuples[i].secondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].secondary);
 
-                    self.widgets[tuples[i].primary].type = WidgetType::buttonWithColour;
-                    self.widgets[tuples[i].secondary].type = WidgetType::buttonWithColour;
+                    self.widgets[tuples[i].primary].hidden = false;
+                    self.widgets[tuples[i].secondary].hidden = false;
                 }
                 else
                 {
                     self.activatedWidgets &= ~(1ULL << tuples[i].checkbox);
 
-                    self.widgets[tuples[i].primary].type = WidgetType::none;
-                    self.widgets[tuples[i].secondary].type = WidgetType::none;
+                    self.widgets[tuples[i].primary].hidden = true;
+                    self.widgets[tuples[i].secondary].hidden = true;
                 }
             }
 
@@ -1734,8 +1722,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(636, 319, StringIds::title_company_finances),
-            makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
-            makeStepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
+            Widgets::ScrollView({ 133, 45 }, { 499, 215 }, WindowColour::secondary, Scrollbars::horizontal),
+            Widgets::stepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
             Widgets::Checkbox({ 320, 264 }, { 204, 12 }, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
 
         );
@@ -1777,13 +1765,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
-            if (company->id() == CompanyManager::getControllingId())
-            {
-                self.widgets[widx::currentLoan].type = WidgetType::textbox;
-                self.widgets[widx::loan_decrease].type = WidgetType::button;
-                self.widgets[widx::loan_increase].type = WidgetType::button;
-                self.widgets[widx::loan_autopay].type = WidgetType::checkbox;
+            const auto isControllingCompany = company->id() == CompanyManager::getControllingId();
+            self.widgets[widx::currentLoan].hidden = !isControllingCompany;
+            self.widgets[widx::loan_decrease].hidden = !isControllingCompany;
+            self.widgets[widx::loan_increase].hidden = !isControllingCompany;
+            self.widgets[widx::loan_autopay].hidden = !isControllingCompany;
 
+            if (isControllingCompany)
+            {
                 if ((company->challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none)
                 {
                     self.activatedWidgets |= (1ULL << Finances::widx::loan_autopay);
@@ -1792,13 +1781,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     self.activatedWidgets &= ~(1ULL << Finances::widx::loan_autopay);
                 }
-            }
-            else
-            {
-                self.widgets[widx::currentLoan].type = WidgetType::none;
-                self.widgets[widx::loan_decrease].type = WidgetType::none;
-                self.widgets[widx::loan_increase].type = WidgetType::none;
-                self.widgets[widx::loan_autopay].type = WidgetType::none;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
@@ -2485,7 +2467,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
-            self.widgets[Common::widx::company_select].type = WidgetType::none;
+            self.widgets[Common::widx::company_select].hidden = true;
 
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
         }

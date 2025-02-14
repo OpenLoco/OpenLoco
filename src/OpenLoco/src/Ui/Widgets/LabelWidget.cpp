@@ -32,15 +32,15 @@ namespace OpenLoco::Ui::Widgets
         tr.setCurrentFont(widget.font);
 
         const int16_t x = [&]() {
-            if (widget.contentAlign == ContentAlign::Left)
+            if (widget.contentAlign == ContentAlign::left)
             {
                 return window->x + widget.left;
             }
-            else if (widget.contentAlign == ContentAlign::Center)
+            else if (widget.contentAlign == ContentAlign::center)
             {
                 return window->x + (widget.left + widget.right + 1) / 2 - 1;
             }
-            else if (widget.contentAlign == ContentAlign::Right)
+            else if (widget.contentAlign == ContentAlign::right)
             {
                 // TODO: This is not ideal, add drawStringRightClipped to TextRenderer.
                 char buffer[512]{};
@@ -57,15 +57,15 @@ namespace OpenLoco::Ui::Widgets
         int16_t y = window->y + std::max<int16_t>(widget.top, (widget.top + widget.bottom) / 2 - 5);
         int16_t width = widget.right - widget.left - 2;
 
-        if (widget.contentAlign == ContentAlign::Left)
+        if (widget.contentAlign == ContentAlign::left)
         {
             tr.drawStringLeftClipped(Point(x, y), width, colour, widget.text, formatArgs);
         }
-        else if (widget.contentAlign == ContentAlign::Center)
+        else if (widget.contentAlign == ContentAlign::center)
         {
             tr.drawStringCentredClipped(Point(x, y), width, colour, widget.text, formatArgs);
         }
-        else if (widget.contentAlign == ContentAlign::Right)
+        else if (widget.contentAlign == ContentAlign::right)
         {
             tr.drawStringLeftClipped(Point(x, y), width, colour, widget.text, formatArgs);
         }

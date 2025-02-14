@@ -40,18 +40,18 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     // 0x0043CE21
     static void prepareDraw(Window& self)
     {
-        self.widgets[widx::next_button].type = WidgetType::buttonWithImage;
-        self.widgets[widx::next_frame].type = WidgetType::wt_3;
+        self.widgets[widx::next_frame].hidden = false;
+        self.widgets[widx::next_button].hidden = false;
 
         if (EditorController::canGoBack())
         {
-            self.widgets[widx::previous_button].type = WidgetType::buttonWithImage;
-            self.widgets[widx::previous_frame].type = WidgetType::wt_3;
+            self.widgets[widx::previous_frame].hidden = false;
+            self.widgets[widx::previous_button].hidden = false;
         }
         else
         {
-            self.widgets[widx::previous_button].type = WidgetType::none;
-            self.widgets[widx::previous_frame].type = WidgetType::none;
+            self.widgets[widx::previous_frame].hidden = true;
+            self.widgets[widx::previous_button].hidden = true;
         }
 
         // 0x0043CDD1

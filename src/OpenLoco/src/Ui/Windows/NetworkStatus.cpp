@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 441, 91 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 439, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::empty),
+        Widgets::Caption({ 1, 1 }, { 439, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::empty),
         Widgets::ImageButton({ 426, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 441, 76 }, WindowColour::secondary)
 

@@ -16,6 +16,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/Window.h"
 #include "Vehicles/Vehicle.h"
@@ -324,17 +325,17 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            self.widgets[Common::widx::viewport1].type = WidgetType::none;
-            self.widgets[Common::widx::viewport1Button].type = WidgetType::none;
+            self.widgets[Common::widx::viewport1].hidden = true;
+            self.widgets[Common::widx::viewport1Button].hidden = true;
 
             if (!view.isEmpty())
             {
-                self.widgets[Common::widx::viewport1].type = WidgetType::viewport;
+                self.widgets[Common::widx::viewport1].hidden = false;
             }
 
             if (selectable)
             {
-                self.widgets[Common::widx::viewport1Button].type = WidgetType::buttonWithImage;
+                self.widgets[Common::widx::viewport1Button].hidden = false;
             }
 
             if (_nState.savedView[0] != view)
@@ -419,17 +420,17 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            self.widgets[Common::widx::viewport2].type = WidgetType::none;
-            self.widgets[Common::widx::viewport2Button].type = WidgetType::none;
+            self.widgets[Common::widx::viewport2].hidden = true;
+            self.widgets[Common::widx::viewport2Button].hidden = true;
 
             if (!view.isEmpty())
             {
-                self.widgets[Common::widx::viewport2].type = WidgetType::viewport;
+                self.widgets[Common::widx::viewport2].hidden = false;
             }
 
             if (selectable)
             {
-                self.widgets[Common::widx::viewport2Button].type = WidgetType::buttonWithImage;
+                self.widgets[Common::widx::viewport2Button].hidden = false;
             }
 
             if (_nState.savedView[1] != view)
@@ -890,7 +891,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     namespace News2
     {
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets(360, 159, WidgetType::wt_6)
+            Common::makeCommonWidgets<Widgets::Panel>(360, 159)
 
         );
 

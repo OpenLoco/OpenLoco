@@ -1031,11 +1031,11 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 if (self->isDisabled(i))
                 {
-                    self->widgets[i].type = WidgetType::none;
+                    self->widgets[i].hidden = true;
                     continue;
                 }
 
-                self->widgets[i].type = WidgetType::tab;
+                self->widgets[i].hidden = false;
                 self->widgets[i].left = xPos;
                 self->widgets[i].right = xPos + tabWidth;
                 xPos = self->widgets[i].right + 1;
@@ -1721,7 +1721,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 break;
 
             case Common::widx::tab_station - Common::widx::tab_construction:
-                if (self.widgets[Station::widx::rotate].type != WidgetType::none)
+                if (!self.widgets[Station::widx::rotate].hidden)
                 {
                     self.callOnMouseUp(Station::widx::rotate);
                     return true;

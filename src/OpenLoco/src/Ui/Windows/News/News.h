@@ -48,18 +48,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 Widgets::ImageButton({ 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary),
                 Widgets::ImageButton({ 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary));
         }
-
-        // NOTE: Temporary overload, remove once all widgets havev a proper type.
-        constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, WidgetType frameType)
-        {
-            return makeWidgets(
-                makeWidget({ 0, 0 }, { frameWidth, frameHeight }, frameType, WindowColour::primary),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Viewport({ 2, frameHeight - 73 }, { 168, 64 }, WindowColour::primary, Widget::kContentUnk),
-                Widgets::Viewport({ 180, frameHeight - 73 }, { 168, 64 }, WindowColour::primary, Widget::kContentUnk),
-                Widgets::ImageButton({ 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary),
-                Widgets::ImageButton({ 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary));
-        }
     }
 
     namespace News1

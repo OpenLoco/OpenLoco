@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 47 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 348, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::buffer_1250),
+        Widgets::Caption({ 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::buffer_1250),
         Widgets::Panel({ 0, 15 }, { 350, 32 }, WindowColour::secondary)
 
     );
