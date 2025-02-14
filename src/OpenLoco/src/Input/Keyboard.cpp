@@ -12,6 +12,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/Screenshot.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
@@ -561,6 +562,8 @@ namespace OpenLoco::Input
         handleScreenshotCountdown();
         edgeScroll();
 
+        KeyModifier previousKeyModifier = _keyModifier;
+
         _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::unknown);
 
         if (addr<0x005251CC, uint8_t>() != 1)
@@ -586,6 +589,20 @@ namespace OpenLoco::Input
         if (_keyboardState[SDL_SCANCODE_RCTRL] & 0x80)
         {
             _keyModifier |= KeyModifier::control;
+        }
+
+        bool inputSunk = false;
+        if ((_keyModifier & KeyModifier::shift) != (previousKeyModifier & KeyModifier::shift))
+        {
+            inputSunk = ToolManager::fireEvent(ToolManager::ToolEventType::onShiftChanged, 0, 0, 0);
+        }
+        if ((_keyModifier & KeyModifier::control) != (previousKeyModifier & KeyModifier::control))
+        {
+            inputSunk |= ToolManager::fireEvent(ToolManager::ToolEventType::onControlChanged, 0, 0, 0);
+        }
+        if (inputSunk)
+        {
+            return;
         }
 
         keyScroll();

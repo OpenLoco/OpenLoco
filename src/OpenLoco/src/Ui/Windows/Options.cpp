@@ -2968,7 +2968,6 @@ namespace OpenLoco::Ui::Windows::Options
     // 0x004BFC11
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi)
     {
-        ToolManager::toolCancel(w->type, w->number);
 
         TextInput::sub_4CE6C9(w->type, w->number);
         w->currentTab = wi - Common::Widx::tab_display;
