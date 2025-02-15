@@ -294,7 +294,7 @@
 
 23.02 (2023-02-19)
 ------------------------------------------------------------------------
-- Feature: [#1837] : Add search/filter functionality to object selection window.
+- Feature: [#1837] Add search/filter functionality to object selection window.
 - Change: [#1823] Prevent edge scroll if the window has no input focus.
 - Fix: [#1475] Slow view panning with uncaps FPS disabled.
 - Fix: [#1763] Title music does not stop when unchecked in options window.

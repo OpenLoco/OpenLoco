@@ -120,9 +120,19 @@ function readVersionEntry(ctx, rawEntry, versionInfo) {
         }
     }
 
+    // Make sure the message starts with text and not special characters.
+    if (text.length == 0) {
+        reportLineError(rawEntry, "Expected description text");
+    }
+
+    // Check that messages start correctly.
+    if (text[0] == '-' || text[0] == ':') {
+        reportLineError(rawEntry, `Description must start with text, '${text[0]}' is not allowed`);
+    }
+
     // Check if reference is correct, can be '#123' or 'project#123'
     for (const ref of refs) {
-        if(!isValidReference(ref)) {
+        if (!isValidReference(ref)) {
             reportLineError(rawEntry, `Invalid reference '${ref}', must be '#123' or 'project#123'`);
         }
     }
