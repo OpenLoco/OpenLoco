@@ -1,9 +1,9 @@
 25.01+ (???)
 ------------------------------------------------------------------------
-- Fix: [#2917] Vehicles aren't available after adding them with the Object Selection window.
 - Fix: [#2864] News messages are drawn incorrectly.
 - Fix: [#2866] Vehicles lengths with 0 in the tenths place being displayed incorrectly.
-- Fix: [#2911] Forbidding trams/buses/trucks does not work as expected.
+- Fix: [#2911] Forbidding trams/buses/trucks does not work as expected. (original bug)
+- Fix: [#2917] Vehicles aren't available after adding them with the Object Selection window.
 
 25.01 (2025-01-30)
 ------------------------------------------------------------------------
@@ -71,7 +71,7 @@
 24.09 (2024-09-01)
 ------------------------------------------------------------------------
 - Feature: [#2597] The map generator now allows carving rivers through the landscape.
-- Change: [#2589] See-Through Bridges are now part of the viewing options
+- Change: [#2589] See-Through Bridges are now part of the viewing options.
 - Change: [#2600] The landscape can now be regenerated from all tabs in the Landscape Generation window.
 - Fix: [#2372] Large (16xN) stations could not be created without cheats.
 - Fix: [#2592] Industry ghosts always destroy first industry instead of ghost.
@@ -156,8 +156,8 @@
 24.02 (2024-02-24)
 ------------------------------------------------------------------------
 - Change: [#2294] Track and road elements are now ignored when they are see-through.
-- Fix: [#2277] Dragging vehicle components does not visually remove the component being dragged in some cases.
 - Fix: [#2255] Load/save window fails to show all files in some cases.
+- Fix: [#2277] Dragging vehicle components does not visually remove the component being dragged in some cases.
 - Fix: [#2282] Crash when generating landscape with smallest town size.
 - Fix: [#2282] Town size selection does not match vanilla size selection.
 - Fix: [#2283] Bankrupt AI companies are not being removed from the game.
@@ -175,9 +175,9 @@
 - Feature: [#1238] Mountain tool is now a toggle, making it possible to specify the mountain table size.
 - Feature: [#2228] Max terraform tool sizes have been increased from 10x10 to 64x64.
 - Change: [#1180] Separate track/road see-through toggles.
-- Change: [#2231] Separate trees/buildings/scenery see-through toggles.
 - Change: [#2228] The landscape 'paint mode' button now uses a different paintbrush image.
 - Change: [#2228] The landscape texture selection is now hidden until the 'paint' mode is activated.
+- Change: [#2231] Separate trees/buildings/scenery see-through toggles.
 - Fix: [#2162] Build Vehicle window is not properly reset if opened for new or existing vehicle.
 - Fix: [#2210] Current language is not drawn correctly in options window.
 - Fix: [#2231] Height mark shortcuts for land and tracks are swapped in some cases.
@@ -222,7 +222,7 @@
 - Feature: [#2036] Vehicle object selection is now split into tabs by vehicle subtype.
 - Change: [#61] Placing headquarters now respects the building rotation shortcut.
 - Change: [#2078] Building construction ghosts now show finished buildings instead of scaffolding.
-- Fix: [#56] Orphaned arrow bug when closing construction window with shortcut (original bug).
+- Fix: [#56] Orphaned arrow bug when closing construction window with shortcut. (original bug)
 - Fix: [#891] Non-ASCII characters do not show up correctly in directory listings.
 - Fix: [#1852] Cannot navigate to different drive letters in load/save browse window (Windows only).
 - Fix: [#2005] Right-clicking when display scaling is set to a fractional percent causes random scrolling of view.
@@ -294,7 +294,7 @@
 
 23.02 (2023-02-19)
 ------------------------------------------------------------------------
-- Feature: [#1837]: Add search/filter functionality to object selection window.
+- Feature: [#1837] : Add search/filter functionality to object selection window.
 - Change: [#1823] Prevent edge scroll if the window has no input focus.
 - Fix: [#1475] Slow view panning with uncaps FPS disabled.
 - Fix: [#1763] Title music does not stop when unchecked in options window.
@@ -351,7 +351,7 @@
 - Fix: [#1578] Clang-compiled openloco does not list scenarios.
 - Fix: [#1583] Newspaper text line height is wrong.
 - Technical: [#1565] Any missing objects are now listed in the dev console when encountered.
-- Technical: [#1600] Allow running OpenLoco through Wine on Apple Silicon Macs
+- Technical: [#1600] Allow running OpenLoco through Wine on Apple Silicon Macs.
 
 22.06.1 (2022-07-01)
 ------------------------------------------------------------------------
@@ -463,7 +463,7 @@
 ------------------------------------------------------------------------
 - Change: [#298] Planting clusters of trees now costs money and influences ratings outside of editor mode.
 - Change: [#1079] Allow rotating buildings in town list by keyboard shortcut.
-- Fix: [#366] Original Bug. People and mail cargo incorrectly delivered to far away stations.
+- Fix: [#366] People and mail cargo incorrectly delivered to far away stations. (original bug)
 - Fix: [#1035] Incorrect colour selection when building buildings.
 - Fix: [#1070] Crash when naming stations after exhausting natural names.
 - Fix: [#1094] Repeated clicking on construction window not always working.
@@ -480,7 +480,7 @@
 - Fix: [#1044] Incorrect rotation of headquarters when placing. No scaffolding when placing headquarters.
 - Technical: [#986] Stack misalignment in GCC builds caused unexplained crashes on Linux and Mac during interop hooks with loco.exe.
 - Technical: [#993] Retry hook installation to fix incompatibles with older wine versions.
-- Technical: [#1006] Add breakpad-based dumping for MSVC builds
+- Technical: [#1006] Add breakpad-based dumping for MSVC builds.
 
 21.05 (2021-05-11)
 ------------------------------------------------------------------------
@@ -586,7 +586,7 @@
 - Fix: [#412] Game crashes after a while on Great Britain & Ireland 1930.
 - Fix: [#423] Date in challenge tooltip is incorrect.
 - Fix: [#425] Changing resolution in fullscreen mode doesn't work.
-- Fix: [#428] Show an error when a vehicle can't be built due to invalid properties. (Original bug.)
+- Fix: [#428] Show an error when a vehicle can't be built due to invalid properties. (original bug)
 - Fix: [#440] Final segment in town population graphs could show no population.
 - Fix: [#467] Incorrect scrolling thumbs when leaving the bottom of an auto resizing window.
 - Fix: [#478] Crash when opening narrow gauge tab on train purchasing window.
@@ -614,11 +614,11 @@
 - Feature: [#221, #236] Implement audio through SDL2 mixer, introducing audio on Linux and macOS.
 - Feature: [#237] Allow nearest neighbour scaling the game on integer intervals.
 - Feature: [#275] Allow disabling the title screen music.
-- Feature: [#279] Use OpenLoco logo for window icon. (Logo created by [Zcooger](https://github.com/Zcooger))
+- Feature: [#279] Use OpenLoco logo for window icon. (Logo created by [Zcooger](https://github.com/Zcooger)).
 - Change: [#107] Show git branch and short sha1 hash in version info line.
 - Change: [#211] Store configuration file as YAML.
-- Fix: Tooltips were calling the wrong event.
 - Fix: [#219, #257] Prevent text from being drawn off-screen.
+- Fix: Tooltips were calling the wrong event.
 
 18.02 (2018-02-15)
 ------------------------------------------------------------------------
@@ -629,8 +629,5 @@
 - Feature: Vehicle breakdowns can now be disabled (As seen in OpenTTD).
 - Feature: Playable in a resizable window.
 - Feature: Clicking track / road construction while holding shift will place 10 pieces in a row.
-- Change: [#79] Store `game.cfg`, `plugin.dat` and `scores.dat` in:
-  - Windows: `%APPDATA%\OpenLoco`
-  - Linux: `~/.config/openloco`
-  - macOS: `~/Library/Application Support/OpenLoco`
+- Change: [#79] Store `game.cfg`, `plugin.dat` and `scores.dat` in OpenLoco config directory.
 - Change: [#79] Disable file existence and size checks.
