@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#2864] News messages are drawn incorrectly.
 - Fix: [#2866] Vehicles lengths with 0 in the tenths place being displayed incorrectly.
-- Fix: [#2911] Forbidding trams/buses/trucks does not work as expected. (original bug)
+- Fix: [#2911] Forbidding trams/buses/trucks does not work as expected.
 - Fix: [#2917] Vehicles aren't available after adding them with the Object Selection window.
 
 25.01 (2025-01-30)
