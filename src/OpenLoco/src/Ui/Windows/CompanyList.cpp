@@ -1486,7 +1486,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             self.frameNo++;
             self.callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_company_list);
+            WindowManager::invalidateWidget(WindowType::companyList, self.number, self.currentTab + Common::widx::tab_company_list);
 
             auto legendX = self.x + self.width - kWindowPadding - kLegendWidth;
             auto legendY = self.y + 52;
