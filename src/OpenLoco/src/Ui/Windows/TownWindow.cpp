@@ -731,7 +731,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             self.frameNo++;
             self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::station, self.number);
+            WindowManager::invalidate(WindowType::town, self.number);
         }
 
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex)
