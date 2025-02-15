@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 330, 90 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 328, 13 }, CaptionVariant::whiteText, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 328, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary),
         Widgets::ImageButton({ 315, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 330, 75 }, WindowColour::secondary),
         Widgets::TextBox({ 4, 58 }, { 322, 14 }, WindowColour::secondary),
@@ -155,11 +155,12 @@ namespace OpenLoco::Ui::Windows::TextInput
             window->owner = CompanyManager::getControllingId();
         }
 
-        window->widgets[Widx::title].type = WidgetType::caption_25;
+        // TODO: Get the correct type and provide getter/setter.
+        window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::whiteText);
         if (window->owner != CompanyId::null)
         {
             window->flags |= WindowFlags::flag_11;
-            window->widgets[Widx::title].type = WidgetType::caption_24;
+            window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::colourText);
         }
 
         // Focus the textbox element

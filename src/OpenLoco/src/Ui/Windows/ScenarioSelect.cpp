@@ -20,6 +20,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
@@ -49,7 +50,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 610, 412 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 608, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::select_scenario_for_new_game),
+        Widgets::Caption({ 1, 1 }, { 608, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::select_scenario_for_new_game),
         Widgets::ImageButton({ 595, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Wt3Widget({ 0, 48 }, { 610, 364 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
@@ -57,7 +58,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         Widgets::Tab({ 185, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
         Widgets::Tab({ 276, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
         Widgets::Tab({ 367, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::ScrollView({ 3, 52 }, { 431, 356 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
 
@@ -73,14 +74,14 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             Widget& widget = self->widgets[widx::tab0 + i];
             if (ScenarioManager::hasScenariosForCategory(i))
             {
-                widget.type = WidgetType::tab;
+                widget.hidden = false;
                 widget.left = xPos;
                 widget.right = xPos + 90;
                 xPos += 91;
             }
             else
             {
-                widget.type = WidgetType::none;
+                widget.hidden = true;
             }
         }
     }
@@ -137,12 +138,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         // Select the last tab used, or the first available one.
         uint8_t selectedTab = Config::get().old.scenarioSelectedTab;
-        if (self->widgets[widx::tab0 + selectedTab].type == WidgetType::none)
+        if (self->widgets[widx::tab0 + selectedTab].hidden)
         {
             selectedTab = 0;
             for (int i = 0; i < 5; i++)
             {
-                if (self->widgets[widx::tab0 + i].type == WidgetType::none)
+                if (self->widgets[widx::tab0 + i].hidden)
                 {
                     selectedTab = i;
                     break;
@@ -186,7 +187,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         for (int i = 0; i < 5; i++)
         {
             Widget& widget = self.widgets[widx::tab0 + i];
-            if (widget.type == WidgetType::none)
+            if (widget.hidden)
             {
                 continue;
             }

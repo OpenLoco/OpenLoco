@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004396A4
     static void prepareDraw([[maybe_unused]] Window& window)
     {
-        window.widgets[Widx::inner_frame].type = WidgetType::none;
+        window.widgets[Widx::inner_frame].hidden = true;
         window.widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
         window.widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
         window.widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
@@ -116,8 +116,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         if (SceneManager::isNetworked())
         {
-            window.widgets[Widx::fast_forward_btn].type = WidgetType::none;
-            window.widgets[Widx::extra_fast_forward_btn].type = WidgetType::none;
+            window.widgets[Widx::fast_forward_btn].hidden = true;
+            window.widgets[Widx::extra_fast_forward_btn].hidden = true;
 
             window.widgets[Widx::pause_btn].left = 38;
             window.widgets[Widx::pause_btn].right = 57;
@@ -126,8 +126,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
         else
         {
-            window.widgets[Widx::fast_forward_btn].type = WidgetType::buttonWithImage;
-            window.widgets[Widx::extra_fast_forward_btn].type = WidgetType::buttonWithImage;
+            window.widgets[Widx::fast_forward_btn].hidden = false;
+            window.widgets[Widx::extra_fast_forward_btn].hidden = false;
 
             window.widgets[Widx::pause_btn].left = 18;
             window.widgets[Widx::pause_btn].right = 37;

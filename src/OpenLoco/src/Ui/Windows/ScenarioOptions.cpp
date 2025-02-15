@@ -21,10 +21,12 @@
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -55,7 +57,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { 366, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { 364, 13 }, CaptionVariant::whiteText, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { 364, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_challenge),
@@ -152,7 +154,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             // Scenario details tab
-            if (window->widgets[widx::tab_scenario].type != WidgetType::none)
+            if (!window->widgets[widx::tab_scenario].hidden)
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
                 Widget::drawTab(window, drawingCtx, imageId, widx::tab_scenario);
@@ -194,13 +196,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(197, StringIds::title_scenario_challenge),
-            makeDropdownWidgets({ 10, 52 }, { 346, 12 }, WindowColour::secondary),
-            makeStepperWidgets({ 10, 67 }, { 163, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 193, 67 }, { 163, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 10, 52 }, { 346, 12 }, WindowColour::secondary),
+            Widgets::stepperWidgets({ 10, 67 }, { 163, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 193, 67 }, { 163, 12 }, WindowColour::secondary),
             Widgets::Checkbox({ 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_the_top_company),
             Widgets::Checkbox({ 10, 98 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_within_the_top_companies),
             Widgets::Checkbox({ 10, 113 }, { 346, 12 }, WindowColour::secondary, StringIds::with_a_time_limit),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::time_limit_years_value)
+            Widgets::stepperWidgets({ 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::time_limit_years_value)
 
         );
 
@@ -457,11 +459,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             Common::prepareDraw(self);
 
             self.widgets[widx::objective_type].text = objectiveTypeLabelIds[enumValue(Scenario::getObjective().type)];
-            self.widgets[widx::objective_cargo].type = WidgetType::none;
-            self.widgets[widx::objective_cargo_btn].type = WidgetType::none;
-            self.widgets[widx::time_limit_value].type = WidgetType::none;
-            self.widgets[widx::time_limit_value_down].type = WidgetType::none;
-            self.widgets[widx::time_limit_value_up].type = WidgetType::none;
+            self.widgets[widx::objective_cargo].hidden = true;
+            self.widgets[widx::objective_cargo_btn].hidden = true;
+            self.widgets[widx::time_limit_value].hidden = true;
+            self.widgets[widx::time_limit_value_down].hidden = true;
+            self.widgets[widx::time_limit_value_up].hidden = true;
 
             auto args = FormatArguments(self.widgets[widx::objective_value].textArgs);
 
@@ -488,8 +490,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                     auto cargo = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
                     self.widgets[widx::objective_cargo].text = cargo->name;
-                    self.widgets[widx::objective_cargo].type = WidgetType::combobox;
-                    self.widgets[widx::objective_cargo_btn].type = WidgetType::button;
+                    self.widgets[widx::objective_cargo].hidden = false;
+                    self.widgets[widx::objective_cargo_btn].hidden = false;
                     break;
             }
 
@@ -508,9 +510,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
             {
                 self.activatedWidgets |= 1 << widx::check_time_limit;
-                self.widgets[widx::time_limit_value].type = WidgetType::textbox;
-                self.widgets[widx::time_limit_value_down].type = WidgetType::button;
-                self.widgets[widx::time_limit_value_up].type = WidgetType::button;
+                self.widgets[widx::time_limit_value].hidden = false;
+                self.widgets[widx::time_limit_value_down].hidden = false;
+                self.widgets[widx::time_limit_value_up].hidden = false;
 
                 auto args2 = FormatArguments(self.widgets[widx::time_limit_value].textArgs);
                 args2.push<uint16_t>(Scenario::getObjective().timeLimitYears);
@@ -619,12 +621,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(327, StringIds::title_company_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::max_competing_companies_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
+            Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::max_competing_companies_value),
+            Widgets::stepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
             Widgets::GroupBox({ 5, 102 - 14 - 5 }, { 356, 63 }, WindowColour::secondary, StringIds::selection_of_competing_companies),
-            makeDropdownWidgets({ 246, 102 - 4 }, { 110, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 246, 117 - 4 }, { 110, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 246, 132 - 4 }, { 110, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 246, 102 - 4 }, { 110, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 246, 117 - 4 }, { 110, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 246, 132 - 4 }, { 110, 12 }, WindowColour::secondary),
             Widgets::GroupBox({ 5, 150 }, { 356, 50 }, WindowColour::secondary, StringIds::forbid_competing_companies_from_using),
             Widgets::Checkbox({ 15, 166 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trains),
             Widgets::Checkbox({ 130, 166 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_buses),
@@ -901,9 +903,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_financial_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::starting_loan_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::max_loan_size_value),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::loan_interest_rate_value)
+            Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::starting_loan_value),
+            Widgets::stepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::max_loan_size_value),
+            Widgets::stepperWidgets({ 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::loan_interest_rate_value)
 
         );
 
@@ -1048,7 +1050,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_scenario_options),
             Widgets::Button({ 281, 52 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
-            makeDropdownWidgets({ 196, 67 }, { 160, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::dropdownWidgets({ 196, 67 }, { 160, 12 }, WindowColour::secondary, StringIds::empty),
             Widgets::Button({ 281, 82 }, { 75, 12 }, WindowColour::secondary, StringIds::change)
 
         );
@@ -1284,18 +1286,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
             self.activatedWidgets |= (1ULL << widgetIndex);
 
-            if (SceneManager::isEditorMode())
-            {
-                // Disable close button in the scenario editor.
-                self.widgets[Common::widx::close_button].type = WidgetType::none;
-                self.widgets[widx::tab_scenario].type = WidgetType::tab;
-            }
-            else
-            {
-                // Disable scenario details tab in-game.
-                self.widgets[Common::widx::close_button].type = WidgetType::buttonWithImage;
-                self.widgets[widx::tab_scenario].type = WidgetType::none;
-            }
+            // Disable close button in the scenario editor.
+            self.widgets[Common::widx::close_button].hidden = SceneManager::isEditorMode();
+            self.widgets[widx::tab_scenario].hidden = !SceneManager::isEditorMode();
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;

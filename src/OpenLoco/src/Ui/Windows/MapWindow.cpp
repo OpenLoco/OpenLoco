@@ -36,6 +36,8 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -105,16 +107,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 272 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 348, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::title_map),
+        Widgets::Caption({ 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_map),
         Widgets::ImageButton({ 335, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 350, 230 }, WindowColour::secondary),
-        makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
-        makeWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_vehicles),
-        makeWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_industries),
-        makeWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
-        makeWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
-        makeWidget({ 3, 44 }, { 240, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
-        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::Center)
+        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
+        Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_vehicles),
+        Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_industries),
+        Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
+        Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
+        Widgets::ScrollView({ 3, 44 }, { 240, 215 }, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
+        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::center)
 
     );
 

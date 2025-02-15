@@ -26,6 +26,7 @@
 #include "Ui/Screenshot.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -56,23 +57,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
-        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
-        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),
+        Widgets::ImageButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ImageButton({ 30, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ImageButton({ 60, 0 }, { 30, 28 }, WindowColour::primary),
 
-        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::secondary),
-        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::secondary),
-        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::secondary),
+        Widgets::ImageButton({ 104, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ImageButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ImageButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary),
 
-        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
-        makeWidget({ 387, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
-        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::tertiary),
+        Widgets::ImageButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButton({ 387, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
 
-        makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
-        makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary),
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::quaternary)
+        Widgets::ImageButton({ 490, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ImageButton({ 520, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ImageButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary)
 
     );
 
@@ -825,7 +826,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
-        if (window.widgets[Common::Widx::railroad_menu].type != WidgetType::none)
+        if (!window.widgets[Common::Widx::railroad_menu].hidden)
         {
             uint32_t x = window.widgets[Common::Widx::railroad_menu].left + window.x;
             uint32_t y = window.widgets[Common::Widx::railroad_menu].top + window.y;
@@ -935,7 +936,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (Config::get().cheatsMenuEnabled)
         {
-            window.widgets[Widx::cheats_menu].type = WidgetType::toolbarTab;
+            window.widgets[Widx::cheats_menu].hidden = false;
             auto& baseWidget = window.widgets[Widx::cheats_menu];
             window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
             window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
@@ -943,7 +944,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
         else
         {
-            window.widgets[Widx::cheats_menu].type = WidgetType::none;
+            window.widgets[Widx::cheats_menu].hidden = true;
             auto& baseWidget = window.widgets[Common::Widx::audio_menu];
             window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
             window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
@@ -990,49 +991,26 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
         }
 
-        if (getGameState().lastRoadOption != 0xFF)
-        {
-            window.widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
-        }
-        else
-        {
-            window.widgets[Common::Widx::road_menu].type = WidgetType::none;
-        }
-
-        if (getGameState().lastRailroadOption != 0xFF)
-        {
-            window.widgets[Common::Widx::railroad_menu].type = WidgetType::toolbarTab;
-        }
-        else
-        {
-            window.widgets[Common::Widx::railroad_menu].type = WidgetType::none;
-        }
-
-        if (getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF)
-        {
-            window.widgets[Common::Widx::port_menu].type = WidgetType::toolbarTab;
-        }
-        else
-        {
-            window.widgets[Common::Widx::port_menu].type = WidgetType::none;
-        }
+        window.widgets[Common::Widx::road_menu].hidden = !(getGameState().lastRoadOption != 0xFF);
+        window.widgets[Common::Widx::railroad_menu].hidden = !(getGameState().lastRailroadOption != 0xFF);
+        window.widgets[Common::Widx::port_menu].hidden = !(getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF);
 
         uint32_t x = std::max(640, Ui::width()) - 1;
         Common::rightAlignTabs(&window, x, { Common::Widx::towns_menu, Common::Widx::stations_menu, Common::Widx::vehicles_menu });
         x -= 11;
         Common::rightAlignTabs(&window, x, { Common::Widx::build_vehicles_menu });
 
-        if (window.widgets[Common::Widx::port_menu].type != WidgetType::none)
+        if (!window.widgets[Common::Widx::port_menu].hidden)
         {
             Common::rightAlignTabs(&window, x, { Common::Widx::port_menu });
         }
 
-        if (window.widgets[Common::Widx::road_menu].type != WidgetType::none)
+        if (!window.widgets[Common::Widx::road_menu].hidden)
         {
             Common::rightAlignTabs(&window, x, { Common::Widx::road_menu });
         }
 
-        if (window.widgets[Common::Widx::railroad_menu].type != WidgetType::none)
+        if (!window.widgets[Common::Widx::railroad_menu].hidden)
         {
             Common::rightAlignTabs(&window, x, { Common::Widx::railroad_menu });
         }

@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, CaptionVariant::whiteText, WindowColour::primary, StringIds::change_keyboard_shortcut),
+        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::change_keyboard_shortcut),
         Widgets::ImageButton({ 265, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 57 }, WindowColour::secondary));
 

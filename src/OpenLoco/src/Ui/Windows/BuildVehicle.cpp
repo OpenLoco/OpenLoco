@@ -30,9 +30,11 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/CaptionWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
@@ -221,7 +223,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x5231D0
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 380, 233 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 378, 13 }, CaptionVariant::colourText, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 378, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
         Widgets::ImageButton({ 365, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
 
@@ -244,16 +246,16 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         Widgets::Tab({ 222, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
 
         // Scroll and preview areas
-        makeWidget({ 3, 102 }, { 374, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeWidget({ 250, 44 }, { 180, 66 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::none),
+        Widgets::ScrollView({ 3, 102 }, { 374, 146 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::ScrollView({ 250, 44 }, { 180, 66 }, WindowColour::secondary, Scrollbars::none),
 
         // Filter options
         // NB: deliberately defined after scrollview definitions to keep enums the same as original
         // TODO: can be moved after drawVehicleOverview has been implemented
         Widgets::TextBox({ 4, 72 }, { 246, 14 }, WindowColour::secondary),
         Widgets::Button({ 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
-        makeDropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
-        makeDropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported)
+        Widgets::dropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
+        Widgets::dropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported)
 
     );
 
@@ -1613,10 +1615,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 // Reset the tabs
                 _trackTypesForTab[0] = 0xFF;
                 _numTrackTypeTabs = 1;
-                window->widgets[tab_track_type_0].type = WidgetType::tab;
+                window->widgets[tab_track_type_0].hidden = false;
                 for (WidgetIndex_t j = tab_track_type_1; j <= tab_track_type_7; ++j)
                 {
-                    window->widgets[j].type = WidgetType::none;
+                    window->widgets[j].hidden = true;
                 }
                 return;
             }
@@ -1627,7 +1629,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         for (trackType = Numerics::bitScanForward(railTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Numerics::bitScanForward(railTrackTypes))
         {
             railTrackTypes &= ~(1 << trackType);
-            window->widgets[trackTypeTab].type = WidgetType::tab;
+            window->widgets[trackTypeTab].hidden = false;
             _trackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType;
             trackTypeTab++;
         }
@@ -1637,7 +1639,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             for (trackType = Numerics::bitScanForward(roadTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Numerics::bitScanForward(roadTrackTypes))
             {
                 roadTrackTypes &= ~(1 << trackType);
-                window->widgets[trackTypeTab].type = WidgetType::tab;
+                window->widgets[trackTypeTab].hidden = false;
                 _trackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType | (1 << 7);
                 trackTypeTab++;
             }
@@ -1647,7 +1649,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         for (; trackTypeTab <= tab_track_type_7; ++trackTypeTab)
         {
-            window->widgets[trackTypeTab].type = WidgetType::none;
+            window->widgets[trackTypeTab].hidden = true;
         }
     }
 

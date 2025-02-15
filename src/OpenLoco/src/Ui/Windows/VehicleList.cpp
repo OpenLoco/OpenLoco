@@ -19,9 +19,11 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CaptionWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
@@ -68,7 +70,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 550, 213 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 548, 13 }, CaptionVariant::colourText, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 548, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
         Widgets::ImageButton({ 535, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 550, 172 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trains),
@@ -82,9 +84,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Widgets::TableHeader({ 314, 43 }, { 100, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_profit),
         Widgets::TableHeader({ 414, 43 }, { 65, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
         Widgets::TableHeader({ 479, 43 }, { 67, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
-        makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeDropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::empty),
-        makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::empty)
+        Widgets::ScrollView({ 3, 56 }, { 544, 138 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::dropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::empty),
+        Widgets::dropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::empty)
 
     );
 

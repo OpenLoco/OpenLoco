@@ -24,6 +24,7 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
@@ -63,7 +64,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, CaptionVariant::blackText, WindowColour::primary, StringIds::title_station),
+                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::blackText, WindowColour::primary, StringIds::title_station),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 95 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station),
@@ -96,7 +97,7 @@ namespace OpenLoco::Ui::Windows::Station
             // commonWidgets(kWindowSize.width, kWindowSize.height),
             Common::makeCommonWidgets(223, 136),
             Widgets::Viewport({ 3, 44 }, { 195, 80 }, WindowColour::secondary, Widget::kContentUnk),
-            Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::Center),
+            Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::center),
             Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
@@ -346,8 +347,8 @@ namespace OpenLoco::Ui::Windows::Station
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(223, 136),
-            makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
-            Widgets::Label({ 3, 125 }, { 195, 10 }, WindowColour::secondary, ContentAlign::Center),
+            Widgets::ScrollView({ 3, 44 }, { 217, 80 }, WindowColour::secondary, 2),
+            Widgets::Label({ 3, 125 }, { 195, 10 }, WindowColour::secondary, ContentAlign::center),
             Widgets::ImageButton({ 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment)
 
         );
@@ -627,8 +628,8 @@ namespace OpenLoco::Ui::Windows::Station
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(249, 136),
-            makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
-            Widgets::Label({ 3, 125 }, { 221, 11 }, WindowColour::secondary, ContentAlign::Center)
+            Widgets::ScrollView({ 3, 44 }, { 244, 80 }, WindowColour::secondary, 2),
+            Widgets::Label({ 3, 125 }, { 221, 11 }, WindowColour::secondary, ContentAlign::center)
 
         );
 

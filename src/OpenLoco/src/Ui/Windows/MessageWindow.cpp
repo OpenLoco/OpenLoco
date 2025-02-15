@@ -24,9 +24,11 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -51,7 +53,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, CaptionVariant::colourText, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),
@@ -79,7 +81,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 217, StringIds::title_messages),
-            makeWidget({ 3, 45 }, { 360, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 3, 45 }, { 360, 146 }, WindowColour::secondary, Scrollbars::vertical)
 
         );
 
@@ -418,12 +420,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 155, StringIds::title_messages),
-            makeDropdownWidgets({ 236, 47 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 62 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 77 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 92 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 107 }, { 124, 12 }, WindowColour::secondary),
-            makeDropdownWidgets({ 236, 122 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 47 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 62 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 77 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 92 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 107 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 236, 122 }, { 124, 12 }, WindowColour::secondary),
             Widgets::Checkbox({ 4, 137 }, { 346, 12 }, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
 
         );

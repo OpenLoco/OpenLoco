@@ -62,6 +62,7 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/SliderWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/ViewportWidget.h"
@@ -104,7 +105,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { (frameWidth), (frameHeight) }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { (frameWidth)-2, 13 }, CaptionVariant::colourText, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { (frameWidth)-2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ (frameWidth)-15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { 265, 136 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_main),
@@ -167,7 +168,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_new_vehicle_for),
             Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
             Widgets::ImageButton({ 240, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
-            makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 3, 44 }, { 237, 110 }, WindowColour::secondary, Scrollbars::vertical)
 
         );
     }
@@ -189,7 +190,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 177, StringIds::title_vehicle_cargo),
             Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
-            makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 3, 44 }, { 259, 120 }, WindowColour::secondary, Scrollbars::vertical)
 
         );
     }
@@ -235,10 +236,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 189, StringIds::title_vehicle_route),
-            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),
+            // TODO: This is not ideal, this is used for the tool, do this in a better way.
+            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::empty, WindowColour::primary),
             Widgets::Button({ 3, 44 }, { 118, 12 }, WindowColour::secondary, StringIds::local_mode_button),
             Widgets::Button({ 121, 44 }, { 119, 12 }, WindowColour::secondary, StringIds::express_mode_button),
-            makeWidget({ 3, 58 }, { 237, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_route_scrollview),
+            Widgets::ScrollView({ 3, 58 }, { 237, 120 }, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_route_scrollview),
             Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
             Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
             Widgets::ImageButton({ 240, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
@@ -279,7 +281,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 177, StringIds::stringid),
             Widgets::Viewport({ 3, 44 }, { 237, 120 }, WindowColour::secondary),
-            Widgets::Label({ 3, 155 }, { 237, 21 }, WindowColour::secondary, ContentAlign::Center),
+            Widgets::Label({ 3, 155 }, { 237, 21 }, WindowColour::secondary, ContentAlign::center),
             Widgets::Slider({ 240, 46 }, { 24, 115 }, WindowColour::secondary),
             Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
             Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),
@@ -818,19 +820,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             Vehicles::Vehicle train(*head);
 
-            self.widgets[widx::stopStart].type = WidgetType::buttonWithImage;
-            self.widgets[widx::pickup].type = WidgetType::buttonWithImage;
-            self.widgets[widx::passSignal].type = WidgetType::buttonWithImage;
-            self.widgets[widx::changeDirection].type = WidgetType::buttonWithImage;
+            self.widgets[widx::stopStart].hidden = false;
+            self.widgets[widx::pickup].hidden = false;
+            self.widgets[widx::passSignal].hidden = false;
+            self.widgets[widx::changeDirection].hidden = false;
 
             if (head->mode != TransportMode::rail)
             {
-                self.widgets[widx::passSignal].type = WidgetType::none;
+                self.widgets[widx::passSignal].hidden = true;
             }
 
             if (head->mode == TransportMode::air || head->mode == TransportMode::water)
             {
-                self.widgets[widx::changeDirection].type = WidgetType::none;
+                self.widgets[widx::changeDirection].hidden = true;
             }
 
             self.disabledWidgets &= ~interactiveWidgets;
@@ -904,7 +906,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::pickup].image = Gfx::recolour(pickupImage);
             self.widgets[widx::pickup].tooltip = pickupTooltip;
 
-            self.widgets[widx::speedControl].type = WidgetType::none;
+            self.widgets[widx::speedControl].hidden = true;
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -920,7 +922,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (CompanyManager::isPlayerCompany(head->owner))
                 {
                     viewportRight -= 27;
-                    self.widgets[widx::speedControl].type = WidgetType::slider;
+                    self.widgets[widx::speedControl].hidden = false;
                 }
             }
 
@@ -946,10 +948,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (!CompanyManager::isPlayerCompany(head->owner))
             {
-                self.widgets[widx::stopStart].type = WidgetType::none;
-                self.widgets[widx::pickup].type = WidgetType::none;
-                self.widgets[widx::passSignal].type = WidgetType::none;
-                self.widgets[widx::changeDirection].type = WidgetType::none;
+                self.widgets[widx::stopStart].hidden = true;
+                self.widgets[widx::pickup].hidden = true;
+                self.widgets[widx::passSignal].hidden = true;
+                self.widgets[widx::changeDirection].hidden = true;
                 self.widgets[widx::viewport].right += 22;
             }
 
@@ -969,7 +971,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::drawTabs(&self, drawingCtx);
 
             Widget& pickupButton = self.widgets[widx::pickup];
-            if (pickupButton.type != WidgetType::none)
+            if (!pickupButton.hidden)
             {
                 if ((pickupButton.image & 0x20000000) != 0 && !self.isDisabled(widx::pickup))
                 {
@@ -1005,7 +1007,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             Widget& speedWidget = self.widgets[widx::speedControl];
-            if (speedWidget.type != WidgetType::none)
+            if (!speedWidget.hidden)
             {
                 drawingCtx.drawImage(
                     self.x + speedWidget.left,
@@ -1508,19 +1510,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::remove].right = self.width - 2;
             self.widgets[widx::remove].left = self.width - 25;
 
-            self.widgets[widx::buildNew].type = WidgetType::buttonWithImage;
-            self.widgets[widx::pickup].type = WidgetType::buttonWithImage;
-            self.widgets[widx::remove].type = WidgetType::buttonWithImage;
+            self.widgets[widx::buildNew].hidden = false;
+            self.widgets[widx::pickup].hidden = false;
+            self.widgets[widx::remove].hidden = false;
             // Differs to main tab! Unsure why.
             if (head->isPlaced())
             {
-                self.widgets[widx::pickup].type = WidgetType::none;
+                self.widgets[widx::pickup].hidden = true;
             }
             if (head->owner != CompanyManager::getControllingId())
             {
-                self.widgets[widx::buildNew].type = WidgetType::none;
-                self.widgets[widx::pickup].type = WidgetType::none;
-                self.widgets[widx::remove].type = WidgetType::none;
+                self.widgets[widx::buildNew].hidden = true;
+                self.widgets[widx::pickup].hidden = true;
+                self.widgets[widx::remove].hidden = true;
                 self.widgets[widx::carList].right = self.width - 4;
             }
 
@@ -1553,7 +1555,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::drawTabs(&self, drawingCtx);
 
             // TODO: identical to main tab (doesn't appear to do anything useful)
-            if (self.widgets[widx::pickup].type != WidgetType::none)
+            if (!self.widgets[widx::pickup].hidden)
             {
                 if ((self.widgets[widx::pickup].image & (1 << 29)) && !self.isDisabled(widx::pickup))
                 {
@@ -1878,10 +1880,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::cargoList].bottom = self.height - 27;
             self.widgets[widx::refit].right = self.width - 2;
             self.widgets[widx::refit].left = self.width - 25;
-            self.widgets[widx::refit].type = WidgetType::buttonWithImage;
+            self.widgets[widx::refit].hidden = false;
             if (!canRefit(headVehicle))
             {
-                self.widgets[widx::refit].type = WidgetType::none;
+                self.widgets[widx::refit].hidden = true;
                 self.widgets[widx::cargoList].right = self.width - 26 + 22;
             }
 
@@ -3213,16 +3215,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.activatedWidgets |= (1 << widx::localMode);
             }
 
-            WidgetType type = head->owner == CompanyManager::getControllingId() ? WidgetType::buttonWithImage : WidgetType::none;
-            self.widgets[widx::orderForceUnload].type = type;
-            self.widgets[widx::orderWait].type = type;
-            self.widgets[widx::orderSkip].type = type;
-            self.widgets[widx::orderDelete].type = type;
-            self.widgets[widx::orderUp].type = type;
-            self.widgets[widx::orderDown].type = type;
-            self.widgets[widx::orderReverse].type = type;
+            const bool isControllingCompany = head->owner == CompanyManager::getControllingId() ? false : true;
+            self.widgets[widx::orderForceUnload].hidden = isControllingCompany;
+            self.widgets[widx::orderWait].hidden = isControllingCompany;
+            self.widgets[widx::orderSkip].hidden = isControllingCompany;
+            self.widgets[widx::orderDelete].hidden = isControllingCompany;
+            self.widgets[widx::orderUp].hidden = isControllingCompany;
+            self.widgets[widx::orderDown].hidden = isControllingCompany;
+            self.widgets[widx::orderReverse].hidden = isControllingCompany;
 
-            if (type == WidgetType::none)
+            if (isControllingCompany)
             {
                 self.widgets[widx::routeList].right += 22;
                 self.enabledWidgets &= ~(1 << widx::expressMode | 1 << widx::localMode);

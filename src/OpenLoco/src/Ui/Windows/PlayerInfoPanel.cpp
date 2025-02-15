@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     // 0x004393E7
     static void prepareDraw(Window& window)
     {
-        window.widgets[Widx::inner_frame].type = WidgetType::none;
+        window.widgets[Widx::inner_frame].hidden = true;
     }
 
     // 0x43944B

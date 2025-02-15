@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::Error
         };
 
         static constexpr auto widgets = makeWidgets(
-            makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::panel, WindowColour::primary)
+            Widgets::Panel({ 0, 0 }, { 200, 42 }, WindowColour::primary)
 
         );
     }
