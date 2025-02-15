@@ -44,12 +44,45 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         Widgets::Wt3Widget({ 35, 110 }, { 66, 66 }, WindowColour::secondary),
         Widgets::dropdownWidgets({ 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
 
+    using namespace ToolManager;
+    class ToolPlaceTrackExtra : public ToolBase
+    {
+        void onMouseMove(Window& self, const ToolEventType_t event) override;
+        void onMouseDown(Window& self, const ToolEventType_t event) override;
+        void onModifierChanged(Window& self, const ToolEventType_t event) override;
+
+    public:
+        ToolPlaceTrackExtra()
+        {
+            cursor = CursorId::crosshair;
+            type = WindowType::construction;
+            toolFlags = ToolFlag::gridlines | ToolFlag::gridlinesPersistWithWindow;
+            events = { ToolEventType::onMouseMove, ToolEventType::onMouseDown, ToolEventType::onCancel, ToolEventType::onControlChanged, ToolEventType::onShiftChanged };
+            widget = widx::image;
+        };
+    };
+
+    static ToolPlaceTrackExtra kToolPlaceTrackExtra{};
+
     std::span<const Widget> getWidgets()
     {
         return widgets;
     }
 
     WindowEventList events;
+
+    enum class PlacementMode : uint8_t
+    {
+        single = 0,
+        blockSection = 1,
+        allConnected = 2
+    };
+
+    static void setPlacementMode(Window& self, PlacementMode mode)
+    {
+        _cState->lastSelectedTrackModSection = enumValue(mode);
+        self.invalidate();
+    }
 
     // 0x0049EBD1
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
@@ -112,8 +145,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             case widx::image:
             {
-                ToolManager::toolCancel();
-                ToolManager::toolSet(&self, widgetIndex, CursorId::crosshair);
+                kToolPlaceTrackExtra.activate(self, true);
                 break;
             }
         }
@@ -129,7 +161,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         if (itemIndex != -1)
         {
-            _cState->lastSelectedTrackModSection = itemIndex;
+            setPlacementMode(self, PlacementMode(itemIndex));
             self.invalidate();
         }
     }
@@ -140,11 +172,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         Common::onUpdate(&self, GhostVisibilityFlags::overhead);
     }
 
-    static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const Ui::Point& pos)
     {
         static loco_global<Viewport*, 0x01135F52> _1135F52;
 
-        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::roadAndTram));
+        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(pos.x, pos.y, ~(ViewportInteraction::InteractionItemFlags::roadAndTram));
         _1135F52 = viewport;
 
         if (interaction.type != ViewportInteraction::InteractionItem::road)
@@ -169,11 +201,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         return { args };
     }
 
-    static std::optional<GameCommands::TrackModsPlacementArgs> getTrackModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    static std::optional<GameCommands::TrackModsPlacementArgs> getTrackModsPlacementArgsFromCursor(const Ui::Point& point)
     {
         static loco_global<Viewport*, 0x01135F52> _1135F52;
 
-        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
+        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(point.x, point.y, ~(ViewportInteraction::InteractionItemFlags::track));
         _1135F52 = viewport;
 
         if (interaction.type != ViewportInteraction::InteractionItem::track)
@@ -262,16 +294,12 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC15
-    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    void ToolPlaceTrackExtra::onMouseMove([[maybe_unused]] Window& self, ToolManager::ToolEventType_t)
     {
-        if (widgetIndex != widx::image)
-        {
-            return;
-        }
 
         if (_cState->trackType & (1 << 7))
         {
-            auto placementArgs = getRoadModsPlacementArgsFromCursor(x, y);
+            auto placementArgs = getRoadModsPlacementArgsFromCursor(input.pos);
             if (!placementArgs || ((placementArgs->roadObjType | (1 << 7)) != _cState->trackType))
             {
                 removeConstructionGhosts();
@@ -306,7 +334,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
         else
         {
-            auto placementArgs = getTrackModsPlacementArgsFromCursor(x, y);
+            auto placementArgs = getTrackModsPlacementArgsFromCursor(input.pos);
             if (!placementArgs || (placementArgs->trackObjType != _cState->trackType))
             {
                 removeConstructionGhosts();
@@ -342,18 +370,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC20
-    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    void ToolPlaceTrackExtra::onMouseDown([[maybe_unused]] Window& self, ToolManager::ToolEventType_t)
     {
-        if (widgetIndex != widx::image)
-        {
-            return;
-        }
-
         removeConstructionGhosts();
 
         if (_cState->trackType & (1 << 7))
         {
-            auto args = getRoadModsPlacementArgsFromCursor(x, y);
+            auto args = getRoadModsPlacementArgsFromCursor(input.pos);
             if (!args)
             {
                 return;
@@ -374,7 +397,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
         else
         {
-            auto args = getTrackModsPlacementArgsFromCursor(x, y);
+            auto args = getTrackModsPlacementArgsFromCursor(input.pos);
             if (!args)
             {
                 return;
@@ -392,6 +415,23 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 return;
             }
             Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+        }
+    }
+
+    void ToolPlaceTrackExtra::onModifierChanged([[maybe_unused]] Window& self, ToolManager::ToolEventType_t)
+    {
+        removeConstructionGhosts();
+        if (Input::hasKeyModifier(Input::KeyModifier::shift))
+        {
+            setPlacementMode(self, PlacementMode::allConnected);
+        }
+        else if (Input::hasKeyModifier(Input::KeyModifier::control))
+        {
+            setPlacementMode(self, PlacementMode::blockSection);
+        }
+        else
+        {
+            setPlacementMode(self, PlacementMode::single);
         }
     }
 
@@ -560,8 +600,6 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
-        .onToolUpdate = onToolUpdate,
-        .onToolDown = onToolDown,
         .prepareDraw = prepareDraw,
         .draw = draw,
     };

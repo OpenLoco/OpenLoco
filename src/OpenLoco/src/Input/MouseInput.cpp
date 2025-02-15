@@ -453,6 +453,10 @@ namespace OpenLoco::Input
 
                     if (Input::hasFlag(Flags::toolActive))
                     {
+                        if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDrag, 0, x, y))
+                        {
+                            break;
+                        }
                         auto tool = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                         if (tool != nullptr)
                         {
@@ -474,6 +478,10 @@ namespace OpenLoco::Input
 
                 if (hasFlag(Flags::toolActive))
                 {
+                    if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDragEnd, 0, x, y))
+                    {
+                        break;
+                    }
                     auto tool = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                     if (tool != nullptr)
                     {
@@ -1355,6 +1363,10 @@ namespace OpenLoco::Input
                 _dragWindowNumber = window->number;
                 if (hasFlag(Flags::toolActive))
                 {
+                    if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseDown, 0, x, y))
+                    {
+                        return;
+                    }
                     auto w = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                     if (w != nullptr)
                     {
@@ -1633,12 +1645,19 @@ namespace OpenLoco::Input
                     case Ui::WidgetType::viewport:
                         if (Input::hasFlag(Flags::toolActive))
                         {
+                            bool out = false;
+                            auto newCursor = ToolManager::getCursor(cursorId, out, x, y);
+                            if (out || cursorId != newCursor)
+                            {
+                                cursorId = newCursor;
+                                skipItem = true;
+                                break;
+                            }
                             // 3
                             cursorId = ToolManager::getToolCursor();
                             auto wnd = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                             if (wnd)
                             {
-                                bool out = false;
                                 cursorId = wnd->callToolCursor(x, y, cursorId, &out);
                                 if (out)
                                 {
@@ -1923,20 +1942,18 @@ namespace OpenLoco::Input
         }
     }
 
+    constexpr const int16_t kPixelsPerMouseWheel = -17;
+
     // 0x004C6202
     void processMouseWheel()
     {
-        int wheel = 0;
-
-        for (; _cursorWheel > 0; _cursorWheel--)
+        if (_cursorWheel == 0)
         {
-            wheel -= 17;
+            return;
         }
 
-        for (; _cursorWheel < 0; _cursorWheel++)
-        {
-            wheel += 17;
-        }
+        int wheel = _cursorWheel;
+        _cursorWheel = 0;
 
         if (Tutorial::state() != Tutorial::State::none)
         {
@@ -1951,7 +1968,7 @@ namespace OpenLoco::Input
             }
 
             auto main = WindowManager::getMainWindow();
-            if (main != nullptr && wheel != 0)
+            if (main != nullptr)
             {
                 if (wheel > 0)
                 {
@@ -1969,11 +1986,19 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (wheel == 0)
+        if (Input::hasKeyModifier(KeyModifier::control) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollControlModifier, wheel))
+        {
+            return;
+        }
+        else if (Input::hasKeyModifier(KeyModifier::shift) && ToolManager::fireEvent(ToolManager::ToolEventType::onScrollShiftModifier, wheel))
+        {
+            return;
+        }
+        else if (ToolManager::fireEvent(ToolManager::ToolEventType::onScroll, wheel))
         {
             return;
         }
 
-        WindowManager::wheelInput(wheel);
+        WindowManager::wheelInput(wheel * kPixelsPerMouseWheel);
     }
 }

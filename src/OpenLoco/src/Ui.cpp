@@ -815,6 +815,10 @@ namespace OpenLoco::Ui
             return;
         }
 
+        if (ToolManager::fireEvent(ToolManager::ToolEventType::onMouseMove, 0, x, y))
+        {
+            return;
+        }
         auto toolWindow = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
         if (toolWindow != nullptr)
         {
@@ -822,6 +826,7 @@ namespace OpenLoco::Ui
         }
         else
         {
+            // this check can be removed when the tools are all updated. WindowManager calls cancel when the window closes.
             ToolManager::toolCancel();
         }
     }

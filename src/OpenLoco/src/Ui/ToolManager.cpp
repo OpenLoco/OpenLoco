@@ -17,14 +17,36 @@ namespace OpenLoco::ToolManager
     static loco_global<Ui::CursorId, 0x00523393> _toolWindowCursor;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIndex;
 
+    static ToolBase tempTools[2] = {};
+
+    static ToolBase noTool = ToolBase();
+    static ToolBase* currentTool = &noTool;
+
+    static void setCurrentTool(Window& window, ToolBase* tool)
+    {
+        currentTool = tool;
+        currentTool->window = window.number;
+        Input::setFlag(Input::Flags::toolActive);
+    }
+
+    static void resetCurrentTool()
+    {
+        Input::resetFlag(Input::Flags::toolActive);
+        currentTool = &noTool;
+    }
+
     Window* toolGetActiveWindow()
     {
         if (!Input::hasFlag(Input::Flags::toolActive))
         {
             return nullptr;
         }
+        if (currentTool == nullptr)
+        {
+            return nullptr;
+        }
 
-        return WindowManager::find(_toolWindowType, _toolWindowNumber);
+        return WindowManager::find(currentTool->type, currentTool->window);
     }
 
     bool isToolActive(Ui::WindowType type)
@@ -33,8 +55,12 @@ namespace OpenLoco::ToolManager
         {
             return false;
         }
+        if (currentTool == nullptr)
+        {
+            return false;
+        }
 
-        return _toolWindowType == type;
+        return currentTool->type == type;
     }
 
     bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number)
@@ -43,8 +69,12 @@ namespace OpenLoco::ToolManager
         {
             return false;
         }
+        if (currentTool == nullptr)
+        {
+            return false;
+        }
 
-        return _toolWindowNumber == number;
+        return currentTool->window == number;
     }
 
     bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number, int16_t widgetIndex)
@@ -62,66 +92,61 @@ namespace OpenLoco::ToolManager
     // w (esi)
     bool toolSet(Ui::Window* w, int16_t widgetIndex, CursorId cursorId)
     {
-        if (Input::hasFlag(Input::Flags::toolActive))
+        ToolBase* tempTool = tempTools;
+        if (tempTool->isActive())
         {
-            if (w->type == _toolWindowType && w->number == _toolWindowNumber && widgetIndex == _toolWidgetIndex)
-            {
-                toolCancel();
-                return false;
-            }
-            else
-            {
-                toolCancel();
-            }
+            tempTool++;
         }
-
-        Input::setFlag(Input::Flags::toolActive);
-        Input::resetFlag(Input::Flags::flag6);
-        ToolManager::setToolCursor(cursorId);
-        ToolManager::setToolWindowType(w->type);
-        ToolManager::setToolWindowNumber(w->number);
-        ToolManager::setToolWidgetIndex(widgetIndex);
-        return true;
+        tempTool->type = w->type;
+        tempTool->widget = widgetIndex;
+        tempTool->cursor = cursorId;
+        return tempTool->activate(*w);
     }
 
     // 0x004CE3D6
     void toolCancel()
     {
-        if (Input::hasFlag(Input::Flags::toolActive))
+        if (currentTool != nullptr)
         {
-            Input::resetFlag(Input::Flags::toolActive);
-
-            World::mapInvalidateSelectionRect();
-            World::mapInvalidateMapSelectionTiles();
-
-            resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::enableConstructionArrow | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
-
-            if (ToolManager::getToolWidgetIndex() >= 0)
-            {
-                // Invalidate tool widget
-                Ui::WindowManager::invalidateWidget(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber(), ToolManager::getToolWidgetIndex());
-
-                // Abort tool event
-                Window* w = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
-                if (w != nullptr)
-                {
-                    w->callToolAbort(ToolManager::getToolWidgetIndex());
-                }
-            }
+            currentTool->cancel();
         }
     }
 
     void toolCancel(Ui::WindowType type, Ui::WindowNumber_t number)
     {
-        if (!isToolActive(type, number))
+        if (currentTool == nullptr)
         {
             return;
         }
 
-        toolCancel();
+        if (currentTool->type != type || currentTool->window != number)
+        {
+            return;
+        }
+
+        currentTool->cancel();
     }
 
-    //  0x00523390
+    void toolCloseWindowAndTool(Ui::WindowType type, Ui::WindowNumber_t number)
+    {
+        if (currentTool == nullptr)
+        {
+            return;
+        }
+        if (currentTool->type != type || currentTool->window != number)
+        {
+            return;
+        }
+        if (!currentTool->hasFlag(ToolFlag::toolPersistsThroughWindowClose))
+        {
+            if (currentTool->hasFlag(ToolFlag::gridlinesPersistWithWindow))
+            {
+                Ui::Windows::Main::hideGridlines();
+            }
+            currentTool->cancelQuiet();
+        }
+    }
+
     Ui::WindowNumber_t getToolWindowNumber()
     {
         return _toolWindowNumber;
@@ -151,7 +176,6 @@ namespace OpenLoco::ToolManager
         _toolWindowCursor = toolWindowCursor;
     }
 
-    // 0x00523394
     int16_t getToolWidgetIndex()
     {
         return _toolWidgetIndex;
@@ -159,5 +183,227 @@ namespace OpenLoco::ToolManager
     void setToolWidgetIndex(uint16_t toolWidgetIndex)
     {
         _toolWidgetIndex = toolWidgetIndex;
+    }
+
+    CursorId getCursor(CursorId currentCursor, bool& out, int16_t x, int16_t y)
+    {
+        if (currentTool == nullptr)
+        {
+            return currentCursor;
+        }
+        auto w = WindowManager::find(currentTool->type, currentTool->window);
+        if (w == nullptr)
+        {
+            return currentCursor;
+        }
+        currentTool->input.set(x, y);
+        return currentTool->getCursor(*w, currentCursor, out);
+    }
+
+    bool fireEvent(ToolEventType_t event, int16_t mouseWheel, int16_t x, int16_t y)
+    {
+        if (currentTool == nullptr)
+        {
+            return false;
+        }
+        auto w = WindowManager::find(currentTool->type, currentTool->window);
+        if (w == nullptr)
+        {
+            return false;
+        }
+        return currentTool->fireEvent(event, x, y, mouseWheel);
+    }
+
+    bool ToolBase::fireEvent(ToolEventType_t event, int16_t x, int16_t y, int16_t mouseWheel)
+    {
+        if (!isActive() && event != ToolEventType::onCancel)
+        {
+            return false;
+        }
+
+        input.set(x, y, mouseWheel);
+
+        switch (event)
+        {
+            case ToolEventType::onMouseDown:
+                input.dragging = hasFlag(ToolFlag::dragStartsOnMouseDown);
+                break;
+            case ToolEventType::onMouseDrag:
+                input.dragging = true;
+                break;
+            case ToolEventType::onMouseDragEnd:
+            case ToolEventType::onActivate:
+                input.dragging = false;
+                break;
+            default:
+                break;
+        }
+
+        if (!hasEvent(event))
+        {
+            return false;
+        }
+
+        auto w = WindowManager::find(type, window);
+        if (w == nullptr)
+        {
+            return false;
+        }
+        switch (event)
+        {
+            case ToolEventType::onActivate:
+                onActivate(*w, event);
+                break;
+            case ToolEventType::onCancel:
+                onCancel(*w, event);
+                break;
+            case ToolEventType::onMouseMove:
+                onMouseMove(*w, event);
+                break;
+            case ToolEventType::onMouseDown:
+                onMouseDown(*w, event);
+                break;
+            case ToolEventType::onMouseDrag:
+                onMouseDrag(*w, event);
+                break;
+            case ToolEventType::onMouseDragEnd:
+                onMouseDragEnd(*w, event);
+                break;
+            case ToolEventType::onShiftChanged:
+            case ToolEventType::onControlChanged:
+                onModifierChanged(*w, event);
+                break;
+            case ToolEventType::onScroll:
+            case ToolEventType::onScrollControlModifier:
+            case ToolEventType::onScrollShiftModifier:
+            case ToolEventType::onScrollAltModifier:
+                onScroll(*w, event);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    void ToolBase::setInteropVariables()
+    {
+        _toolWindowNumber = window;
+        _toolWindowType = type;
+        _toolWindowCursor = cursor;
+        _toolWidgetIndex = widget;
+    }
+
+    bool ToolBase::isActive()
+    {
+        return this == currentTool;
+    }
+    bool ToolBase::isActive(Window& w)
+    {
+        return isActive() && w.number == window;
+    }
+
+    bool ToolBase::activate(Window& w, bool force)
+    {
+
+        if (Input::hasFlag(Input::Flags::toolActive))
+        {
+            if (!force && isActive(w))
+            {
+                if (currentTool != nullptr)
+                {
+                    currentTool->cancel();
+                }
+                return false;
+            }
+            if (currentTool != nullptr)
+            {
+                currentTool->cancel(w.number);
+            }
+        }
+
+        input = {};
+
+        setCurrentTool(w, this);
+        setInteropVariables();
+
+        Input::resetFlag(Input::Flags::flag6);
+
+        if (hasFlag(ToolFlag::keepFlag6))
+        {
+            Input::setFlag(Input::Flags::flag6);
+        }
+        if (!hasFlag(ToolFlag::gridlines))
+        {
+            Ui::Windows::Main::hideGridlines();
+        }
+
+        if (widget >= 0)
+        {
+            w.activatedWidgets |= (1ULL << widget);
+            Ui::WindowManager::invalidateWidget(type, window, widget);
+        }
+        if (hasEvent(ToolEventType::onActivate))
+        {
+            onActivate(w, ToolEventType::onActivate);
+        }
+        return true;
+    }
+
+    void ToolBase::trueCancel()
+    {
+        World::mapInvalidateSelectionRect();
+        World::mapInvalidateMapSelectionTiles();
+
+        resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::enableConstructionArrow | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
+
+        resetCurrentTool();
+
+        if (hasFlag(ToolFlag::gridlines) && !hasFlag(ToolFlag::gridlinesPersistWithWindow))
+        {
+            Ui::Windows::Main::hideGridlines();
+        }
+
+        input = {};
+
+        auto w = WindowManager::find(type, window);
+        if (w == nullptr)
+        {
+            window = std::numeric_limits<uint16_t>::max();
+            return;
+        }
+        if (widget >= 0)
+        {
+            w->activatedWidgets &= ~(1U << widget);
+            Ui::WindowManager::invalidateWidget(type, w->number, widget);
+        }
+        if (hasEvent(ToolEventType::onCancel))
+        {
+            onCancel(*w, ToolEventType::onCancel);
+        }
+        window = std::numeric_limits<uint16_t>::max();
+    }
+
+    void ToolBase::cancel(WindowNumber_t newWindow)
+    {
+        if (!isActive() || !Input::hasFlag(Input::Flags::toolActive))
+        {
+            return;
+        }
+        auto w = WindowManager::find(type, window);
+        trueCancel();
+        if (w != nullptr && w->number != newWindow && hasFlag(ToolFlag::closeWindowWithTool))
+        {
+            // currentTool is now unset, so no infinite loop if this is called from window closing
+            WindowManager::close(w);
+        }
+    }
+
+    void ToolBase::cancelQuiet()
+    {
+        if (!isActive() || !Input::hasFlag(Input::Flags::toolActive))
+        {
+            return;
+        }
+        trueCancel();
     }
 }
