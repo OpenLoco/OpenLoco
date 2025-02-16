@@ -750,8 +750,8 @@ else ()
                 ${LOCO_SECTIONS})
         set_target_properties(OpenLoco PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 
-        if (TARGET SDL2::SDL2main)
-            target_link_libraries(OpenLoco SDL2::SDL2main)
+        if (TARGET SDL3::SDL3main)
+            target_link_libraries(OpenLoco SDL3::SDL3main)
         endif ()
     endif ()
 endif ()
@@ -764,7 +764,7 @@ target_link_libraries(OpenLoco
     Utility
     Math
     Engine
-    ${SDL2_LIB}
+    ${SDL3_LIB}
     Threads::Threads
     yaml-cpp
     ${PNG_LIBRARY}
@@ -884,7 +884,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         Utility
         Math
         Engine
-        ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
+        ${SDL3_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
         )
 else ()

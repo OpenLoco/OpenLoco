@@ -24,10 +24,7 @@
 #undef small
 #endif
 
-#include <SDL2/SDL.h>
-#pragma warning(disable : 4121) // alignment of a member was sensitive to packing
-#include <SDL2/SDL_syswm.h>
-#pragma warning(default : 4121) // alignment of a member was sensitive to packing
+#include <SDL3/SDL.h>
 
 #include "Config.h"
 #include "Game.h"
@@ -117,43 +114,55 @@ namespace OpenLoco::Ui
         return _window != nullptr;
     }
 
-    static sdl_window_desc getWindowDesc(const Config::Display& cfg)
+    static SDL_PropertiesID getWindowProps(const Config::Display& cfg)
     {
-        sdl_window_desc desc;
-        desc.x = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
-        desc.y = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
-        desc.width = std::max(640, cfg.windowResolution.width);
-        desc.height = std::max(480, cfg.windowResolution.height);
-        desc.flags = SDL_WINDOW_RESIZABLE;
+        // NOTE: This leaks but SDL3 decided this is better than just passing variables and structs.
+        static SDL_PropertiesID props = SDL_CreateProperties();
+
+        int32_t x = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
+        int32_t y = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
+        int32_t width = std::max(640, cfg.windowResolution.width);
+        int32_t height = std::max(480, cfg.windowResolution.height);
+        uint32_t flags = SDL_WINDOW_RESIZABLE;
+
 #if !(defined(__APPLE__) && defined(__MACH__))
         switch (cfg.mode)
         {
             case Config::ScreenMode::window:
                 break;
             case Config::ScreenMode::fullscreen:
-                desc.width = cfg.fullscreenResolution.width;
-                desc.height = cfg.fullscreenResolution.height;
-                desc.flags |= SDL_WINDOW_FULLSCREEN;
+                width = cfg.fullscreenResolution.width;
+                height = cfg.fullscreenResolution.height;
+                flags |= SDL_WINDOW_FULLSCREEN;
                 break;
             case Config::ScreenMode::fullscreenBorderless:
-                desc.flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+                // TODO: SDL separates this as exclusive fullscreen.
+                // flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
                 break;
         }
 #endif
-        return desc;
+
+        SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "OpenLoco");
+        SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, x);
+        SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, y);
+        SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, width);
+        SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
+
+        return props;
     }
 
     // 0x00405409
     void createWindow(const Config::Display& cfg)
     {
-        if (SDL_Init(SDL_INIT_VIDEO) < 0)
+        if (!SDL_Init(SDL_INIT_VIDEO))
         {
             throw Exception::RuntimeError("Unable to initialise SDL2 video subsystem.");
         }
 
         // Create the window
-        auto desc = getWindowDesc(cfg);
-        _window = SDL_CreateWindow("OpenLoco", desc.x, desc.y, desc.width, desc.height, desc.flags);
+        auto props = getWindowProps(cfg);
+        _window = SDL_CreateWindowWithProperties(props);
+
         if (_window == nullptr)
         {
             throw Exception::RuntimeError("Unable to create SDL2 window.");
@@ -161,21 +170,18 @@ namespace OpenLoco::Ui
 
 #ifdef _WIN32
         // Grab the HWND
-        SDL_SysWMinfo wmInfo;
-        SDL_VERSION(&wmInfo.version);
-        if (SDL_GetWindowWMInfo(_window, &wmInfo) == SDL_FALSE)
-        {
-            throw Exception::RuntimeError("Unable to fetch SDL2 window system handle.");
-        }
-        _hwnd = wmInfo.info.win.window;
+        _hwnd = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr);
 #endif
 
         setWindowIcon();
 
+        auto width = SDL_GetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, 640);
+        auto height = SDL_GetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, 480);
+
         // Create a palette for the window
         auto& drawingEngine = Gfx::getDrawingEngine();
         drawingEngine.initialize(_window);
-        drawingEngine.resize(desc.width, desc.height);
+        drawingEngine.resize(width, height);
     }
 
     static void setWindowIcon()
@@ -211,11 +217,11 @@ namespace OpenLoco::Ui
     // 0x00452001
     void initialiseCursors()
     {
-        _cursors[CursorId::pointer] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+        _cursors[CursorId::pointer] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
         _cursors[CursorId::blank] = loadCursor(Cursor::blank);
         _cursors[CursorId::upArrow] = loadCursor(Cursor::upArrow);
         _cursors[CursorId::upDownArrow] = loadCursor(Cursor::upDownArrow);
-        _cursors[CursorId::handPointer] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+        _cursors[CursorId::handPointer] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
         _cursors[CursorId::busy] = loadCursor(Cursor::busy);
         _cursors[CursorId::diagonalArrows] = loadCursor(Cursor::diagonalArrows);
         _cursors[CursorId::picker] = loadCursor(Cursor::picker);
@@ -262,7 +268,7 @@ namespace OpenLoco::Ui
     {
         for (auto cursor : _cursors)
         {
-            SDL_FreeCursor(cursor.second);
+            SDL_DestroyCursor(cursor.second);
         }
         _cursors.clear();
     }
@@ -303,9 +309,9 @@ namespace OpenLoco::Ui
 
     Point32 getCursorPos()
     {
-        int x = 0, y = 0;
+        float x = 0, y = 0;
         SDL_GetMouseState(&x, &y);
-        return { x, y };
+        return { static_cast<int32_t>(x), static_cast<int32_t>(y) };
     }
 
     // 0x00407FEE
@@ -324,12 +330,12 @@ namespace OpenLoco::Ui
 
     void hideCursor()
     {
-        SDL_ShowCursor(0);
+        SDL_HideCursor();
     }
 
     void showCursor()
     {
-        SDL_ShowCursor(1);
+        SDL_ShowCursor();
     }
 
     // 0x004524C1
@@ -339,10 +345,10 @@ namespace OpenLoco::Ui
 
     static void positionChanged([[maybe_unused]] int32_t x, [[maybe_unused]] int32_t y)
     {
-        auto displayIndex = SDL_GetWindowDisplayIndex(_window);
+        auto displayIndex = SDL_GetDisplayForWindow(_window);
 
         auto& cfg = Config::get().display;
-        if (cfg.index != displayIndex)
+        if (cfg.index != (int32_t)displayIndex)
         {
             cfg.index = displayIndex;
             Config::write();
@@ -453,18 +459,15 @@ namespace OpenLoco::Ui
         {
             switch (e.type)
             {
-                case SDL_QUIT:
+                case SDL_EVENT_QUIT:
                     return false;
-                case SDL_WINDOWEVENT:
-                    switch (e.window.event)
-                    {
-                        case SDL_WINDOWEVENT_MOVED:
-                            positionChanged(e.window.data1, e.window.data2);
-                            break;
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:
-                            resize(e.window.data1, e.window.data2);
-                            break;
-                    }
+
+                case SDL_EVENT_WINDOW_MOVED:
+                    positionChanged(e.window.data1, e.window.data2);
+                    break;
+
+                case SDL_EVENT_WINDOW_RESIZED:
+                    resize(e.window.data1, e.window.data2);
                     break;
             }
         }
@@ -488,21 +491,19 @@ namespace OpenLoco::Ui
         {
             switch (e.type)
             {
-                case SDL_QUIT:
+                case SDL_EVENT_QUIT:
                     _exitRequested = true;
                     return false;
-                case SDL_WINDOWEVENT:
-                    switch (e.window.event)
-                    {
-                        case SDL_WINDOWEVENT_MOVED:
-                            positionChanged(e.window.data1, e.window.data2);
-                            break;
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:
-                            resize(e.window.data1, e.window.data2);
-                            break;
-                    }
+
+                case SDL_EVENT_WINDOW_MOVED:
+                    positionChanged(e.window.data1, e.window.data2);
                     break;
-                case SDL_MOUSEMOTION:
+
+                case SDL_EVENT_WINDOW_RESIZED:
+                    resize(e.window.data1, e.window.data2);
+                    break;
+
+                case SDL_EVENT_MOUSE_MOTION:
                 {
                     auto scaleFactor = Config::get().scaleFactor;
                     auto x = static_cast<int32_t>(e.motion.x / scaleFactor);
@@ -512,10 +513,11 @@ namespace OpenLoco::Ui
                     Input::moveMouse(x, y, xrel, yrel);
                     break;
                 }
-                case SDL_MOUSEWHEEL:
+                case SDL_EVENT_MOUSE_WHEEL:
                     Input::mouseWheel(e.wheel.y);
                     break;
-                case SDL_MOUSEBUTTONDOWN:
+
+                case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 {
                     auto scaleFactor = Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
@@ -536,7 +538,7 @@ namespace OpenLoco::Ui
                     }
                     break;
                 }
-                case SDL_MOUSEBUTTONUP:
+                case SDL_EVENT_MOUSE_BUTTON_UP:
                 {
                     auto scaleFactor = Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
@@ -557,15 +559,15 @@ namespace OpenLoco::Ui
                     }
                     break;
                 }
-                case SDL_KEYDOWN:
+                case SDL_EVENT_KEY_DOWN:
                 {
-                    auto keycode = e.key.keysym.sym;
+                    auto keycode = e.key.key;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
                     // Toggle fullscreen when ALT+RETURN is pressed
                     if (keycode == SDLK_RETURN)
                     {
-                        if ((e.key.keysym.mod & KMOD_LALT) || (e.key.keysym.mod & KMOD_RALT))
+                        if ((e.key.mod & SDL_KMOD_LALT) || (e.key.mod & SDL_KMOD_RALT))
                         {
                             toggleFullscreenDesktop();
                         }
@@ -575,9 +577,11 @@ namespace OpenLoco::Ui
                     enqueueKey(keycode);
                     break;
                 }
-                case SDL_KEYUP:
+
+                case SDL_EVENT_KEY_UP:
                     break;
-                case SDL_TEXTINPUT:
+
+                case SDL_EVENT_TEXT_INPUT:
                     enqueueText(e.text.text);
                     break;
             }
@@ -622,29 +626,23 @@ namespace OpenLoco::Ui
 
     Config::Resolution getDesktopResolution()
     {
-        int32_t displayIndex = SDL_GetWindowDisplayIndex(_window);
-        SDL_DisplayMode desktopDisplayMode;
-        SDL_GetDesktopDisplayMode(displayIndex, &desktopDisplayMode);
+        int32_t displayIndex = SDL_GetDisplayForWindow(_window);
 
-        return { desktopDisplayMode.w, desktopDisplayMode.h };
+        const SDL_DisplayMode* desktopDisplayMode = SDL_GetDesktopDisplayMode(displayIndex);
+        if (desktopDisplayMode == nullptr)
+        {
+            Logging::error("SDL_GetDesktopDisplayMode failed: {}", SDL_GetError());
+            return { 800, 600 };
+        }
+
+        return { desktopDisplayMode->w, desktopDisplayMode->h };
     }
 
     bool setDisplayMode(Config::ScreenMode mode, Config::Resolution newResolution)
     {
-        // First, set the appropriate screen mode flags.
-        auto flags = 0;
-        if (mode == Config::ScreenMode::fullscreen)
-        {
-            flags |= SDL_WINDOW_FULLSCREEN;
-        }
-        else if (mode == Config::ScreenMode::fullscreenBorderless)
-        {
-            flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-        }
-
         // *HACK* Set window to non fullscreen before switching resolution.
         // This fixes issues with high dpi and Windows scaling affecting the GUI size.
-        SDL_SetWindowFullscreen(_window, 0);
+        SDL_SetWindowFullscreen(_window, false);
 
         // Set the new dimensions of the screen.
         if (mode == Config::ScreenMode::window)
@@ -653,27 +651,34 @@ namespace OpenLoco::Ui
             auto x = (desktopResolution.width - newResolution.width) / 2;
             auto y = (desktopResolution.height - newResolution.height) / 2;
             SDL_SetWindowPosition(_window, x, y);
-        }
-        SDL_SetWindowSize(_window, newResolution.width, newResolution.height);
 
-        SDL_DisplayMode dpMode;
-        // NOTE: Should use the value from the enumeration but we are not really dealing with such systems.
-        dpMode.format = SDL_PIXELFORMAT_ARGB8888;
-        dpMode.w = newResolution.width;
-        dpMode.h = newResolution.height;
-        dpMode.refresh_rate = 0;
-        dpMode.driverdata = nullptr;
-        if (SDL_SetWindowDisplayMode(_window, &dpMode) != 0)
-        {
-            Logging::error("SDL_SetWindowDisplayMode failed: {}", SDL_GetError());
-            return false;
+            SDL_SetWindowSize(_window, newResolution.width, newResolution.height);
         }
-
-        // Set the window fullscreen mode.
-        if (SDL_SetWindowFullscreen(_window, flags) != 0)
+        else
         {
-            Logging::error("SDL_SetWindowFullscreen failed: {}", SDL_GetError());
-            return false;
+            SDL_SetWindowPosition(_window, 0, 0);
+            SDL_SetWindowSize(_window, newResolution.width, newResolution.height);
+
+            const auto borderless = mode == Config::ScreenMode::fullscreenBorderless;
+
+            SDL_DisplayMode dpMode{};
+            dpMode.format = SDL_GetWindowSurface(_window)->format;
+            dpMode.w = newResolution.width;
+            dpMode.h = newResolution.height;
+            dpMode.refresh_rate = 0.0f;
+
+            if (SDL_SetWindowFullscreenMode(_window, borderless ? nullptr : &dpMode) != 0)
+            {
+                Logging::error("SDL_SetWindowDisplayMode failed: {}", SDL_GetError());
+                return false;
+            }
+
+            // Set the window fullscreen mode.
+            if (SDL_SetWindowFullscreen(_window, true) != 0)
+            {
+                Logging::error("SDL_SetWindowFullscreen failed: {}", SDL_GetError());
+                return false;
+            }
         }
 
         // It appears we were successful in setting the screen mode, so let's up date the config.
@@ -710,28 +715,31 @@ namespace OpenLoco::Ui
     void updateFullscreenResolutions()
     {
         // Query number of display modes
-        int32_t displayIndex = SDL_GetWindowDisplayIndex(_window);
-        int32_t numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
+        int32_t displayIndex = SDL_GetDisplayForWindow(_window);
 
         // Get desktop aspect ratio
-        SDL_DisplayMode mode;
-        SDL_GetDesktopDisplayMode(displayIndex, &mode);
+        const SDL_DisplayMode* desktopMode = SDL_GetDesktopDisplayMode(displayIndex);
+        float desktopAspectRatio = (float)desktopMode->w / desktopMode->h;
 
         // Get resolutions
+        int32_t numDisplayModes{};
+        SDL_DisplayMode** displayModes = SDL_GetFullscreenDisplayModes(displayIndex, &numDisplayModes);
+
         auto resolutions = std::vector<Resolution>();
-        float desktopAspectRatio = (float)mode.w / mode.h;
         for (int32_t i = 0; i < numDisplayModes; i++)
         {
-            SDL_GetDisplayMode(displayIndex, i, &mode);
-            if (mode.w > 0 && mode.h > 0)
+            const auto* mode = displayModes[i];
+            if (mode->w > 0 && mode->h > 0)
             {
-                float aspectRatio = (float)mode.w / mode.h;
+                float aspectRatio = (float)mode->w / mode->h;
                 if (_resolutionsAllowAnyAspectRatio || std::fabs(desktopAspectRatio - aspectRatio) < 0.0001f)
                 {
-                    resolutions.push_back({ mode.w, mode.h });
+                    resolutions.push_back({ mode->w, mode->h });
                 }
             }
         }
+
+        SDL_free(displayModes);
 
         // Sort by area
         std::sort(resolutions.begin(), resolutions.end(), [](const Resolution& a, const Resolution& b) -> bool {

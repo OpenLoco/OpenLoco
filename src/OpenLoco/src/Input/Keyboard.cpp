@@ -17,7 +17,7 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <cstdint>
 #include <functional>
 
