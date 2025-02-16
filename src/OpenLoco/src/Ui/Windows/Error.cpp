@@ -228,8 +228,8 @@ namespace OpenLoco::Ui::Windows::Error
             }
             else
             {
-                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left + self.x + kPadding;
-                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top + self.y + kPadding;
+                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left + self.x;
+                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top + self.y;
 
                 auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);
