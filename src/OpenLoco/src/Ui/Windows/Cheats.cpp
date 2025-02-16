@@ -525,7 +525,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::company_cheats),
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_select_target_company),
-            Widgets::dropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::black_stringid),
             Widgets::GroupBox({ 4, 86 }, { kWindowSize.width - 8, 96 }, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
             Widgets::Button({ 10, 100 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_switch_to_company),
             Widgets::Button({ 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
@@ -560,30 +560,20 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 self.disabledWidgets &= ~(1 << Widx::complete_challenge_button);
             }
+
+            // Current company name
+            auto& widget = self.widgets[Widx::target_company_dropdown];
+            auto args = FormatArguments(widget.textArgs);
+
+            auto company = CompanyManager::get(_targetCompanyId);
+            args.push(company->name);
         }
 
         static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             // Draw widgets and tabs.
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
-
-            // Draw current company name
-            auto company = CompanyManager::get(_targetCompanyId);
-
-            auto argsBuf = FormatArgumentsBuffer();
-            auto args = FormatArguments(argsBuf);
-            args.push(company->name);
-
-            auto& widget = self.widgets[Widx::target_company_dropdown];
-            auto point = Point(self.x + widget.left, self.y + widget.top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::black_stringid,
-                args);
         }
 
         static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
@@ -662,7 +652,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             if (widgetIndex == Widx::target_company_dropdown_btn)
             {
-                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex - 1]);
             }
         }
 
