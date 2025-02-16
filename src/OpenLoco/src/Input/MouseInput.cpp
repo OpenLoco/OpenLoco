@@ -154,8 +154,8 @@ namespace OpenLoco::Input
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
     {
         _cursor = { x, y };
-        addr<0x0114084C, int32_t>() = relX;
-        addr<0x01140840, int32_t>() = relY;
+        addr<0x0114084C, int32_t>() += relX;
+        addr<0x01140840, int32_t>() += relY;
     }
 
     void processMouseMove()
