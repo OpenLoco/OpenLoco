@@ -7,6 +7,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
+#include "Ui/Widgets/NewsPanelWidget.h"
 #include "World/CompanyManager.h"
 
 namespace OpenLoco::Ui::Windows::NewsWindow
@@ -32,7 +33,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             { x, y },
             kWindowSize,
             flags,
-            News1::getEvents());
+            Common::getEvents());
 
         window->setWidgets(widgets);
         window->enabledWidgets = Common::enabledWidgets;
@@ -43,7 +44,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         _nState.savedView[0].clear();
         _nState.savedView[1].clear();
 
-        News1::initViewports(*window);
+        Common::initViewports(*window);
     }
 
     // 0x00428F8B

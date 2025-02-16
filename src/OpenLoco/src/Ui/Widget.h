@@ -95,6 +95,7 @@ namespace OpenLoco::Ui
     {
         empty = 0,
         panel,
+        newsPanel,
         frame,
         wt_3,
         slider,
