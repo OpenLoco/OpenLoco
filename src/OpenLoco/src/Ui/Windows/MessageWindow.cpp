@@ -27,6 +27,7 @@
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
@@ -401,18 +402,30 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         enum widx
         {
-            company_major_news = 6,
+            company_major_news_label = 6,
+            company_major_news,
             company_major_news_dropdown,
+
+            competitor_major_news_label,
             competitor_major_news,
             competitor_major_news_dropdown,
+
+            company_minor_news_label,
             company_minor_news,
             company_minor_news_dropdown,
+
+            competitor_minor_news_label,
             competitor_minor_news,
             competitor_minor_news_dropdown,
+
+            general_news_label,
             general_news,
             general_news_dropdown,
+
+            advice_label,
             advice,
             advice_dropdown,
+
             playSoundEffects,
         };
 
@@ -420,12 +433,25 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 155, StringIds::title_messages),
+
+            Widgets::Label({ 4, 47 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::company_major_news),
             Widgets::dropdownWidgets({ 236, 47 }, { 124, 12 }, WindowColour::secondary),
+
+            Widgets::Label({ 4, 62 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::competitor_major_news),
             Widgets::dropdownWidgets({ 236, 62 }, { 124, 12 }, WindowColour::secondary),
+
+            Widgets::Label({ 4, 77 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::company_minor_news),
             Widgets::dropdownWidgets({ 236, 77 }, { 124, 12 }, WindowColour::secondary),
+
+            Widgets::Label({ 4, 92 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::competitor_minor_news),
             Widgets::dropdownWidgets({ 236, 92 }, { 124, 12 }, WindowColour::secondary),
+
+            Widgets::Label({ 4, 107 }, {2304, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::general_news),
             Widgets::dropdownWidgets({ 236, 107 }, { 124, 12 }, WindowColour::secondary),
+
+            Widgets::Label({ 4, 122 }, {2304, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::advice),
             Widgets::dropdownWidgets({ 236, 122 }, { 124, 12 }, WindowColour::secondary),
+
             Widgets::Checkbox({ 4, 137 }, { 346, 12 }, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
 
         );
@@ -541,27 +567,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             {
                 self.activatedWidgets &= ~(1 << widx::playSoundEffects);
             }
-        }
 
-        // 0x0042AA02
-        static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
-        {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
-            auto yPos = self.widgets[widx::company_major_news].top + self.y;
-
-            const StringId newsStringIds[] = {
-                StringIds::company_major_news,
-                StringIds::competitor_major_news,
-                StringIds::company_minor_news,
-                StringIds::competitor_minor_news,
-                StringIds::general_news,
-                StringIds::advice,
-            };
-
-            const StringId newsDropdownStringIds[] = {
+            constexpr StringId kNewsDropdownStringIds[] = {
                 StringIds::message_off,
                 StringIds::message_ticker,
                 StringIds::message_window,
@@ -569,24 +576,17 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             for (auto i = 0; i < 6; i++)
             {
-                {
-                    auto args = FormatArguments();
-                    args.push(newsStringIds[i]);
-
-                    auto point = Point(self.x + 4, yPos);
-                    tr.drawStringLeft(point, Colour::black, StringIds::wcolour2_stringid, args);
-                }
-
-                {
-                    auto xPos = self.widgets[widx::company_major_news].left + self.x + 1;
-                    auto args = FormatArguments();
-                    args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().old.newsSettings[i])]);
-
-                    auto point = Point(xPos, yPos);
-                    tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
-                }
-                yPos += 15;
+                auto widgetIndex = widx::company_major_news + (3 * i);
+                auto setting = static_cast<uint8_t>(Config::get().old.newsSettings[i]);
+                self.widgets[widgetIndex].text = kNewsDropdownStringIds[setting];
             }
+        }
+
+        // 0x0042AA02
+        static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
+        {
+            self.draw(drawingCtx);
+            Common::drawTabs(&self, drawingCtx);
         }
 
         // 0x0042A7E8
