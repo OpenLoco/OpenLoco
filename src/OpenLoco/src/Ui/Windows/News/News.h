@@ -49,6 +49,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 Widgets::ImageButton({ 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary),
                 Widgets::ImageButton({ 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary));
         }
+
+        const WindowEventList& getEvents();
+        void initViewports(Window& self);
     }
 
     namespace News1
@@ -56,9 +59,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         static constexpr Ui::Size32 kWindowSize = { 360, 117 };
 
         std::span<const Widget> getWidgets();
-
-        void initViewports(Window& self);
-        const WindowEventList& getEvents();
     }
 
     namespace News2

@@ -47,7 +47,23 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             return widgets;
         }
+    }
 
+    namespace News2
+    {
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets<Widgets::NewsPanel>(360, 159)
+
+        );
+
+        std::span<const Widget> getWidgets()
+        {
+            return widgets;
+        }
+    }
+
+    namespace Common
+    {
         // 0x00429BB7
         static void onMouseUp([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex)
         {
@@ -164,7 +180,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             _nState.slideInHeight = std::min(height, self.height);
 
             height = Ui::height() - _nState.slideInHeight - self.y;
-            auto width = (Ui::width() / 2) - (kWindowSize.width / 2) - self.x;
+            auto width = (Ui::width() / 2) - (self.width / 2) - self.x;
 
             if (width != 0 || height != 0)
             {
@@ -881,19 +897,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         const WindowEventList& getEvents()
         {
             return kEvents;
-        }
-    }
-
-    namespace News2
-    {
-        static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets<Widgets::NewsPanel>(360, 159)
-
-        );
-
-        std::span<const Widget> getWidgets()
-        {
-            return widgets;
         }
     }
 }
