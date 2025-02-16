@@ -158,6 +158,14 @@ namespace OpenLoco::Input
         addr<0x01140840, int32_t>() = relY;
     }
 
+    void processMouseMove()
+    {
+        addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
+        addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
+        addr<0x0114084C, int32_t>() = 0;
+        addr<0x01140840, int32_t>() = 0;
+    }
+
     void mouseWheel(int wheel)
     {
         _cursorWheel += wheel;
@@ -1953,6 +1961,7 @@ namespace OpenLoco::Input
             auto main = WindowManager::getMainWindow();
             if (main != nullptr && wheel != 0)
             {
+
                 if (wheel > 0)
                 {
                     main->viewportRotateRight();
@@ -1976,4 +1985,5 @@ namespace OpenLoco::Input
 
         WindowManager::wheelInput(wheel);
     }
+
 }
