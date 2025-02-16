@@ -446,10 +446,10 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             Widgets::Label({ 4, 92 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::competitor_minor_news),
             Widgets::dropdownWidgets({ 236, 92 }, { 124, 12 }, WindowColour::secondary),
 
-            Widgets::Label({ 4, 107 }, {2304, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::general_news),
+            Widgets::Label({ 4, 107 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::general_news),
             Widgets::dropdownWidgets({ 236, 107 }, { 124, 12 }, WindowColour::secondary),
 
-            Widgets::Label({ 4, 122 }, {2304, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::advice),
+            Widgets::Label({ 4, 122 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::advice),
             Widgets::dropdownWidgets({ 236, 122 }, { 124, 12 }, WindowColour::secondary),
 
             Widgets::Checkbox({ 4, 137 }, { 346, 12 }, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
