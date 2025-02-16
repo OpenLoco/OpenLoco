@@ -95,6 +95,9 @@ namespace OpenLoco::Input
     static uint8_t _5233A9;
     static loco_global<Ui::WindowNumber_t, 0x005233AA> _hoverWindowNumber;
     static loco_global<Ui::WidgetIndex_t, 0x005233AC> _hoverWidgetIdx;
+
+    static loco_global<int32_t, 0x0114084C> _mouseDeltaX;
+    static loco_global<int32_t, 0x01140840> _mouseDeltaY;
     static loco_global<int32_t, 0x005233AE> _mousePosX;
     static loco_global<int32_t, 0x005233B2> _mousePosY;
 
@@ -154,16 +157,16 @@ namespace OpenLoco::Input
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
     {
         _cursor = { x, y };
-        addr<0x0114084C, int32_t>() += relX;
-        addr<0x01140840, int32_t>() += relY;
+        _mouseDeltaX += relX;
+        _mouseDeltaY += relY;
     }
 
     void processMouseMovement()
     {
-        _mousePosX += addr<0x0114084C, int32_t>();
-        _mousePosY += addr<0x01140840, int32_t>();
-        addr<0x0114084C, int32_t>() = 0;
-        addr<0x01140840, int32_t>() = 0;
+        _mousePosX += _mouseDeltaX;
+        _mousePosY += _mouseDeltaY;
+        _mouseDeltaX = 0;
+        _mouseDeltaY = 0;
     }
 
     void mouseWheel(int wheel)
