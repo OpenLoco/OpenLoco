@@ -1347,6 +1347,7 @@ namespace OpenLoco::Input
                 break;
 
             case Ui::WidgetType::panel:
+            case Ui::WidgetType::newsPanel:
             case Ui::WidgetType::frame:
                 if (window->canResize() && (x >= (window->x + window->width - 19)) && (y >= (window->y + window->height - 19)))
                 {
@@ -1605,6 +1606,7 @@ namespace OpenLoco::Input
                 switch (widget.type)
                 {
                     case Ui::WidgetType::panel:
+                    case Ui::WidgetType::newsPanel:
                     case Ui::WidgetType::frame:
                         if (window->hasFlags(Ui::WindowFlags::resizable))
                         {
