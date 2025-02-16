@@ -400,6 +400,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
     {
         static constexpr Ui::Size32 kWindowSize = { 366, 155 };
 
+        static constexpr auto kNumWidgetsPerDropdown = 3;
+
         enum widx
         {
             company_major_news_label = 6,
@@ -480,25 +482,26 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             }
         }
 
+        constexpr StringId kNewsDropdownStringIds[] = {
+            StringIds::message_off,
+            StringIds::message_ticker,
+            StringIds::message_window,
+        };
+
         // 0x0042AA9F
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
-                case widx::company_major_news:
                 case widx::company_major_news_dropdown:
-                case widx::competitor_major_news:
                 case widx::competitor_major_news_dropdown:
-                case widx::company_minor_news:
                 case widx::company_minor_news_dropdown:
-                case widx::competitor_minor_news:
                 case widx::competitor_minor_news_dropdown:
-                case widx::general_news:
                 case widx::general_news_dropdown:
-                case widx::advice:
                 case widx::advice_dropdown:
                 {
-                    auto widget = self.widgets[widgetIndex - 1];
+                    auto wIndex = widgetIndex - 1;
+                    auto widget = self.widgets[wIndex];
                     auto xPos = widget.left + self.x;
                     auto yPos = widget.top + self.y;
                     auto width = widget.width() - 2;
@@ -507,13 +510,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                     Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), 3, flags);
 
-                    Dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
-                    Dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
-                    Dropdown::add(2, StringIds::dropdown_stringid, StringIds::message_window);
+                    for (auto i = 0U; i < std::size(kNewsDropdownStringIds); i++)
+                    {
+                        Dropdown::add(i, StringIds::dropdown_stringid, kNewsDropdownStringIds[i]);
+                    }
 
-                    auto dropdownIndex = Config::get().old.newsSettings[(widgetIndex - 7) / 2];
-
-                    Dropdown::setItemSelected(static_cast<size_t>(dropdownIndex));
+                    auto ddIndex = wIndex - widx::company_major_news;
+                    auto currentItem = Config::get().old.newsSettings[ddIndex / kNumWidgetsPerDropdown];
+                    Dropdown::setItemSelected(static_cast<size_t>(currentItem));
                     break;
                 }
             }
@@ -542,7 +546,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                         return;
                     }
 
-                    auto dropdownIndex = (widgetIndex - 7) / 2;
+                    auto dropdownIndex = (widgetIndex - 7) / kNumWidgetsPerDropdown;
 
                     if (static_cast<Config::NewsType>(itemIndex) != Config::get().old.newsSettings[dropdownIndex])
                     {
@@ -568,15 +572,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 self.activatedWidgets &= ~(1 << widx::playSoundEffects);
             }
 
-            constexpr StringId kNewsDropdownStringIds[] = {
-                StringIds::message_off,
-                StringIds::message_ticker,
-                StringIds::message_window,
-            };
-
             for (auto i = 0; i < 6; i++)
             {
-                auto widgetIndex = widx::company_major_news + (3 * i);
+                auto widgetIndex = widx::company_major_news + (kNumWidgetsPerDropdown * i);
                 auto setting = static_cast<uint8_t>(Config::get().old.newsSettings[i]);
                 self.widgets[widgetIndex].text = kNewsDropdownStringIds[setting];
             }
