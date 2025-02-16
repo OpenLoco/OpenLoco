@@ -38,10 +38,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         constexpr uint64_t enabledWidgets = (1 << close_button) | (1 << viewport1Button) | (1 << viewport2Button);
 
+        template<typename TFrameWidget>
         constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight)
         {
             return makeWidgets(
-                Widgets::NewsPanel({ 0, 0 }, { frameWidth, frameHeight }, Widgets::NewsPanel::Style::old, WindowColour::primary),
+                TFrameWidget({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Viewport({ 2, frameHeight - 73 }, { 168, 64 }, WindowColour::primary, Widget::kContentUnk),
                 Widgets::Viewport({ 180, frameHeight - 73 }, { 168, 64 }, WindowColour::primary, Widget::kContentUnk),

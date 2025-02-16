@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     namespace News1
     {
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets(360, 117)
+            Common::makeCommonWidgets<Widgets::Panel>(360, 117)
 
         );
 
@@ -887,7 +887,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     namespace News2
     {
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets(360, 159)
+            Common::makeCommonWidgets<Widgets::NewsPanel>(360, 159)
 
         );
 
