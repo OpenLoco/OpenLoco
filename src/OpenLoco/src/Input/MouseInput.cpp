@@ -95,8 +95,8 @@ namespace OpenLoco::Input
     static uint8_t _5233A9;
     static loco_global<Ui::WindowNumber_t, 0x005233AA> _hoverWindowNumber;
     static loco_global<Ui::WidgetIndex_t, 0x005233AC> _hoverWidgetIdx;
-    static loco_global<uint32_t, 0x005233AE> _5233AE;
-    static loco_global<uint32_t, 0x005233B2> _5233B2;
+    static loco_global<int32_t, 0x005233AE> _mousePosX;
+    static loco_global<int32_t, 0x005233B2> _mousePosY;
 
     static Ui::WindowType _focusedWindowType;
     static Ui::WindowNumber_t _focusedWindowNumber;
@@ -145,8 +145,8 @@ namespace OpenLoco::Input
         _hoverWindowType = Ui::WindowType::undefined;
         _focusedWindowType = Ui::WindowType::undefined;
 
-        _5233AE = 0;
-        _5233B2 = 0;
+        _mousePosX = 0;
+        _mousePosY = 0;
 
         World::resetMapSelectionFlags();
     }
@@ -158,10 +158,10 @@ namespace OpenLoco::Input
         addr<0x01140840, int32_t>() += relY;
     }
 
-    void processMouseMove()
+    void processMouseMovement()
     {
-        addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
-        addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
+        _mousePosX += addr<0x0114084C, int32_t>();
+        _mousePosY += addr<0x01140840, int32_t>();
         addr<0x0114084C, int32_t>() = 0;
         addr<0x01140840, int32_t>() = 0;
     }
@@ -1460,16 +1460,16 @@ namespace OpenLoco::Input
                 Ui::hideCursor();
                 sub_407218();
 
-                _5233AE = 0;
-                _5233B2 = 0;
+                _mousePosX = 0;
+                _mousePosY = 0;
                 setFlag(Flags::rightMousePressed);
                 break;
 
             case Ui::WidgetType::scrollview:
                 scrollDragBegin(x, y, window, widgetIndex);
 
-                _5233AE = 0;
-                _5233B2 = 0;
+                _mousePosX = 0;
+                _mousePosY = 0;
                 setFlag(Flags::rightMousePressed);
                 break;
         }
@@ -1805,8 +1805,8 @@ namespace OpenLoco::Input
         }
         else
         {
-            x = _5233AE;
-            y = _5233B2;
+            x = _mousePosX;
+            y = _mousePosY;
         }
 
         // 0x004C7136, 0x004C7165
@@ -1920,13 +1920,13 @@ namespace OpenLoco::Input
             }
             else
             {
-                x = _5233AE;
-                y = _5233B2;
+                x = _mousePosX;
+                y = _mousePosY;
             }
 
             // 0x004C709F, 0x004C70D8
-            _5233AE = 0;
-            _5233B2 = 0;
+            _mousePosX = 0;
+            _mousePosY = 0;
             return MouseButton::released;
         }
     }
