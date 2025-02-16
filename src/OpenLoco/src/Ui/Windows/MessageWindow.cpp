@@ -528,17 +528,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             switch (widgetIndex)
             {
-                case widx::company_major_news:
                 case widx::company_major_news_dropdown:
-                case widx::competitor_major_news:
                 case widx::competitor_major_news_dropdown:
-                case widx::company_minor_news:
                 case widx::company_minor_news_dropdown:
-                case widx::competitor_minor_news:
                 case widx::competitor_minor_news_dropdown:
-                case widx::general_news:
                 case widx::general_news_dropdown:
-                case widx::advice:
                 case widx::advice_dropdown:
                 {
                     if (itemIndex == -1)
@@ -546,11 +540,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                         return;
                     }
 
-                    auto dropdownIndex = (widgetIndex - 7) / kNumWidgetsPerDropdown;
+                    auto dropdownIndex = (widgetIndex - widx::company_major_news) / kNumWidgetsPerDropdown;
+                    auto newValue = static_cast<Config::NewsType>(itemIndex);
 
-                    if (static_cast<Config::NewsType>(itemIndex) != Config::get().old.newsSettings[dropdownIndex])
+                    if (newValue != Config::get().old.newsSettings[dropdownIndex])
                     {
-                        Config::get().old.newsSettings[dropdownIndex] = static_cast<Config::NewsType>(itemIndex);
+                        Config::get().old.newsSettings[dropdownIndex] = newValue;
                         Config::write();
                         Gfx::invalidateScreen();
                     }
