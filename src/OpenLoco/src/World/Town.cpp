@@ -4,6 +4,8 @@
 #include "GameCommands/Buildings/CreateBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
+#include "GameCommands/Terraform/LowerLand.h"
+#include "GameCommands/Terraform/RaiseLand.h"
 #include "GameState.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/TextRenderer.h"
@@ -1082,6 +1084,90 @@ namespace OpenLoco
         return true;
     }
 
+    // 0x004986EA
+    static void appendToRoadEnd(Town& town, const World::Pos3 pos, const uint8_t rotation, const Vehicles::TrackAndDirection::_RoadAndDirection tad, const uint32_t iteration, const bool isOnBridge)
+    {
+        if (!World::validCoords(pos))
+        {
+            return;
+        }
+
+        if (iteration >= 3 && isOnBridge)
+        {
+            auto numBuildingsInArea = [pos]() {
+                const auto tileA = World::toTileSpace(pos) - World::TilePos2{ 2, 2 };
+                const auto tileB = tileA + World::TilePos2{ 5, 5 };
+                uint32_t numBuildings = 0;
+                for (const auto& tilePos : getClampedRange(tileA, tileB))
+                {
+                    auto tile = TileManager::get(tilePos);
+                    for (const auto& el : tile)
+                    {
+                        if (el.as<BuildingElement>() != nullptr)
+                        {
+                            numBuildings++;
+                        }
+                    }
+                }
+                return numBuildings;
+            }();
+            if (numBuildingsInArea < 2)
+            {
+                return;
+            }
+        }
+
+        for (auto j : { -1, 1 })
+        {
+            // NOTE: CS mistake here!
+            const auto checkPos = pos + World::Pos3{ World::kRotationOffset[(rotation + j) & 0x3], 0 };
+            if (sub_498D21(checkPos, rotation))
+            {
+                return;
+            }
+        }
+
+        auto* surface = TileManager::get(pos).surface();
+        if (pos.z > surface->baseHeight())
+        {
+            // Bridge
+            // 0x00498801
+        }
+
+        // 0x00498A06
+        if (surface->water() != 0)
+        {
+            return;
+        }
+
+        auto heightDiff = pos.z / World::kSmallZStep - surface->baseZ();
+        if (heightDiff > 0)
+        {
+            if (heightDiff == 4 && !surface->isSlopeDoubleHeight())
+            {
+                const auto normalisedCorners = Numerics::rotr4bit(surface->slopeCorners(), rotation);
+                if (normalisedCorners == 0b0011)
+                {
+                    // Create straightSteepSlopeDown
+                    return;
+                }
+            }
+            if (heightDiff > 8)
+            {
+                return;
+            }
+
+            GameCommands::RaiseLandArgs args{};
+            args.pointA = pos;
+            args.pointB = pos;
+            args.centre = pos;
+            args.corner = MapSelectionType::full;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            return;
+        }
+        // 0x00498A3E
+    }
+
     // 0x00498320
     static void constructBuilding(Town& town, const World::Pos3 pos, const Vehicles::TrackAndDirection::_RoadAndDirection tad, const TownGrowFlags growFlags)
     {
@@ -1249,8 +1335,10 @@ namespace OpenLoco
             const auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, CompanyId::neutral, 0xFFU, 0, 0);
             if (rc.connections.empty())
             {
-                // TODO 0x004986CA
-                // Add new road to end
+                if ((growFlags & TownGrowFlags::flag3) != TownGrowFlags::none && !nextRoadRes.isStationRoadEnd)
+                {
+                    appendToRoadEnd(*this, roadEnd.nextPos, roadEnd.nextRotation, tad, i, curOnBridge);
+                }
                 break;
             }
             auto connection = rc.connections[0];
