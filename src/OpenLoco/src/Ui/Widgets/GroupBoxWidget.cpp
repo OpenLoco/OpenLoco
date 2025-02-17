@@ -8,14 +8,12 @@ namespace OpenLoco::Ui::Widgets
 {
     void GroupBox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
         auto colour = widgetState.colour;
         colour = colour.opaque();
-        int32_t l = window->x + widget.left + 5;
-        int32_t t = window->y + widget.top;
-        int32_t r = window->x + widget.right;
-        int32_t b = window->y + widget.bottom;
+        int32_t l = widget.left + 5;
+        int32_t t = widget.top;
+        int32_t r = widget.right;
+        int32_t b = widget.bottom;
         int32_t textEndPos = l;
 
         // First, draw the label text, if any.
@@ -33,10 +31,10 @@ namespace OpenLoco::Ui::Widgets
         }
 
         // Prepare border dimensions
-        l = window->x + widget.left;
-        t = window->y + widget.top + 4;
-        r = window->x + widget.right;
-        b = window->y + widget.bottom;
+        l = widget.left;
+        t = widget.top + 4;
+        r = widget.right;
+        b = widget.bottom;
 
         // Border left of text
         drawingCtx.fillRect(l, t, l + 4, t, Colours::getShade(colour.c(), 4), Gfx::RectFlags::none);

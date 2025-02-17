@@ -9,8 +9,7 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CADE8
     static void drawTabBackground(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-        Ui::Point placeForImage(widget.left + window->x, widget.top + window->y);
+        Ui::Point placeForImage(widget.left, widget.top);
 
         // TODO: This is always ImageIds::tab at the moment, we should make this implicit.
         ImageId imageId = ImageId{ widget.image };

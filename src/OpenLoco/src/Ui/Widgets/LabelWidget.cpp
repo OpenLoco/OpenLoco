@@ -24,21 +24,19 @@ namespace OpenLoco::Ui::Widgets
             colour = colour.inset();
         }
 
-        auto* window = widgetState.window;
-
         auto formatArgs = FormatArguments(widget.textArgs);
 
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(widget.font);
 
-        const int16_t x = [&]() {
+        const int16_t x = [&]() -> int16_t {
             if (widget.contentAlign == ContentAlign::left)
             {
-                return window->x + widget.left;
+                return widget.left;
             }
             else if (widget.contentAlign == ContentAlign::center)
             {
-                return window->x + (widget.left + widget.right + 1) / 2 - 1;
+                return (widget.left + widget.right + 1) / 2 - 1;
             }
             else if (widget.contentAlign == ContentAlign::right)
             {
@@ -48,13 +46,13 @@ namespace OpenLoco::Ui::Widgets
 
                 const auto stringWidth = tr.getStringWidthNewLined(buffer);
 
-                return window->x + widget.left + (widget.width() - stringWidth) - 1;
+                return widget.left + (widget.width() - stringWidth) - 1;
             }
             assert(false);
             return 0;
         }();
 
-        int16_t y = window->y + std::max<int16_t>(widget.top, (widget.top + widget.bottom) / 2 - 5);
+        int16_t y = std::max<int16_t>(widget.top, (widget.top + widget.bottom) / 2 - 5);
         int16_t width = widget.right - widget.left - 2;
 
         if (widget.contentAlign == ContentAlign::left)
