@@ -5,6 +5,7 @@
 - Fix: [#2911] Forbidding trams/buses/trucks does not work as expected.
 - Fix: [#2917] Vehicles aren't available after adding them with the Object Selection window.
 - Fix: [#2931] Mouse movement not being frame rate independent, causing odd panning behavior.
+- Fix: [#2938] Error messages containing a competitor image are not laid out properly.
 
 25.01 (2025-01-30)
 ------------------------------------------------------------------------
