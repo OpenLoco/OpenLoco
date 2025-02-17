@@ -15,6 +15,18 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
+    static void copyVehicleColours(Vehicles::VehicleBase* source, Vehicles::VehicleBase* target)
+    {
+        auto* sourceHead = source;
+        auto* targetHead = target;
+        while (sourceHead != nullptr && targetHead != nullptr)
+        {
+            targetHead->setColourScheme(sourceHead->getColourScheme());
+            sourceHead = sourceHead->nextVehicleComponent();
+            targetHead = targetHead->nextVehicleComponent();
+        }
+    }
+
     static uint32_t cloneVehicle(EntityId head, uint8_t flags)
     {
         static loco_global<EntityId, 0x0113642A> _113642A;
@@ -93,6 +105,8 @@ namespace OpenLoco::GameCommands
         {
             return FAILURE;
         }
+
+        copyVehicleColours(existingTrain.head, newHead);
 
         // Copy orders
         std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
