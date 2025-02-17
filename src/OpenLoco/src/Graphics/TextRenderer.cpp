@@ -730,6 +730,8 @@ namespace OpenLoco::Gfx
                 basePoint.y += lineHeight;
             }
 
+            basePoint.x -= lineWidth / 2;
+
             return basePoint;
         }
 
