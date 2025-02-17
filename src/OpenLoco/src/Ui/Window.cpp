@@ -1314,6 +1314,10 @@ namespace OpenLoco::Ui
             height,
         };
         auto clipRT = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), windowRect);
+        if (!clipRT)
+        {
+            return;
+        }
 
         drawingCtx.pushRenderTarget(*clipRT);
 
