@@ -42,15 +42,11 @@ namespace OpenLoco::Ui::Widgets
 
         if (viewports[0] != nullptr)
         {
-            viewports[0]->x = widget.left;
-            viewports[0]->y = widget.top;
             viewports[0]->render(drawingCtx);
         }
 
         if (viewports[1] != nullptr)
         {
-            viewports[1]->x = widget.left;
-            viewports[1]->y = widget.top;
             viewports[1]->render(drawingCtx);
         }
     }
