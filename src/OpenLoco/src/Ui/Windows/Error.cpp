@@ -31,6 +31,7 @@ namespace OpenLoco::Ui::Windows::Error
     static constexpr auto kMinWidth = 70;
     static constexpr auto kMaxWidth = 250;
     static constexpr auto kPadding = 4;
+    static constexpr auto kCompetitorSize = 64;
 
     namespace Common
     {
@@ -113,17 +114,20 @@ namespace OpenLoco::Ui::Windows::Error
                 _linebreakCount = breakLineCount;
             }
 
-            // Calculate frame size
+            // Calculate window dimensions
             uint16_t width = strWidth + 2 * kPadding;
             uint16_t height = (_linebreakCount + 1) * 10 + 2 * kPadding;
-            uint16_t frameWidth = width - 1;
-            uint16_t frameHeight = height - 1;
 
+            // Add extra spacing for competitor image
             if (_errorCompetitorId != CompanyId::null)
             {
-                width = kMaxWidth;
-                height = 70;
+                width += kCompetitorSize + 22;
+                height += kCompetitorSize - 22;
             }
+
+            // Calculate frame size
+            uint16_t frameWidth = width - 1;
+            uint16_t frameHeight = height - 1;
 
             // Position error message around the cursor
             auto mousePos = Input::getMouseLocation();
@@ -245,7 +249,7 @@ namespace OpenLoco::Ui::Windows::Error
                     drawingCtx.drawImage(xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                auto point = Point(self.x + 156, self.y + 20);
+                auto point = Point(self.x + (self.width - kCompetitorSize) / 2 + kCompetitorSize + kPadding, self.y + 20);
                 tr.drawStringCentredRaw(point, _linebreakCount, colour, &_errorText[0]);
             }
         }
