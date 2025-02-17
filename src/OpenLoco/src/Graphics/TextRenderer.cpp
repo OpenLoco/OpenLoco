@@ -716,10 +716,12 @@ namespace OpenLoco::Gfx
 
             const char* ptr = buffer;
             uint16_t lineWidth{};
+            uint16_t maxLineWidth{};
 
             for (auto i = 0; ptr != nullptr && i < breakCount; i++)
             {
                 lineWidth = getStringWidth(drawState.font, ptr);
+                maxLineWidth = std::max(lineWidth, maxLineWidth);
 
                 auto point = basePoint;
                 point.x -= lineWidth / 2;
@@ -730,7 +732,7 @@ namespace OpenLoco::Gfx
                 basePoint.y += lineHeight;
             }
 
-            basePoint.x -= lineWidth / 2;
+            basePoint.x -= maxLineWidth / 2;
 
             return basePoint;
         }
