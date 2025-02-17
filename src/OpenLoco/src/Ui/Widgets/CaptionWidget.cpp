@@ -12,11 +12,10 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CA6AE
     static void drawBoxed(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-        int l = window->x + widget.left;
-        int r = window->x + widget.right;
-        int t = window->y + widget.top;
-        int b = window->y + widget.bottom;
+        int l = widget.left;
+        int r = widget.right;
+        int t = widget.top;
+        int b = widget.bottom;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
 

@@ -9,14 +9,13 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CB00B
     static void drawCheckMark(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
         if (widgetState.enabled)
         {
             drawingCtx.fillRectInset(
-                window->x + widget.left,
-                window->y + widget.top,
-                window->x + widget.left + 9,
-                window->y + widget.bottom - 1,
+                widget.left,
+                widget.top,
+                widget.left + 9,
+                widget.bottom - 1,
                 widgetState.colour,
                 widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
         }
@@ -25,7 +24,7 @@ namespace OpenLoco::Ui::Widgets
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
             static constexpr char strCheckmark[] = "\xAC";
-            auto point = Point(window->x + widget.left, window->y + widget.top);
+            auto point = Point(widget.left, widget.top);
 
             auto color = widgetState.colour;
             tr.setCurrentFont(widget.font);
@@ -50,12 +49,11 @@ namespace OpenLoco::Ui::Widgets
         }
 
         auto formatArgs = FormatArguments(widget.textArgs);
-        auto* window = widgetState.window;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(widget.font);
 
-        auto point = Point(window->x + widget.left + 14, window->y + widget.top);
+        auto point = Point(widget.left + 14, widget.top);
         tr.drawStringLeft(point, colour, widget.text, formatArgs);
     }
 
