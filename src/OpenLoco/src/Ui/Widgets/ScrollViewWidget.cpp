@@ -12,7 +12,7 @@ namespace OpenLoco::Ui::Widgets
     {
         uint16_t left = widget.left + 1;
         uint16_t top = widget.top + 1;
-        uint16_t right =widget.right - 1;
+        uint16_t right = widget.right - 1;
         uint16_t bottom = widget.bottom - 1;
 
         top = bottom - 10;
