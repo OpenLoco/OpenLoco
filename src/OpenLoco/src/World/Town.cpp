@@ -1085,7 +1085,7 @@ namespace OpenLoco
     }
 
     // 0x004986EA
-    static void appendToRoadEnd(Town& town, const World::Pos3 pos, const uint8_t rotation, const Vehicles::TrackAndDirection::_RoadAndDirection tad, const uint32_t iteration, const bool isOnBridge)
+    static void appendToRoadEnd(Town& town, const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId, const uint32_t iteration, const bool isOnBridge)
     {
         if (!World::validCoords(pos))
         {
@@ -1127,11 +1127,13 @@ namespace OpenLoco
             }
         }
 
-        auto* surface = TileManager::get(pos).surface();
+        const auto tile = TileManager::get(pos);
+        auto* surface = tile.surface();
         if (pos.z > surface->baseHeight())
         {
             // Bridge
             // 0x00498801
+            return;
         }
 
         // 0x00498A06
@@ -1146,9 +1148,18 @@ namespace OpenLoco
             if (heightDiff == 4 && !surface->isSlopeDoubleHeight())
             {
                 const auto normalisedCorners = Numerics::rotr4bit(surface->slopeCorners(), rotation);
-                if (normalisedCorners == 0b0011)
+                if (normalisedCorners == SurfaceSlope::SideUp::northeast)
                 {
                     // Create straightSteepSlopeDown
+
+                    GameCommands::RoadPlacementArgs args{};
+                    args.pos = pos;
+                    args.bridge = 0xFFU;
+                    args.roadId = 8;
+                    args.mods = 0;
+                    args.roadObjectId = roadObjectId;
+                    args.rotation = rotation;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     return;
                 }
             }
@@ -1165,7 +1176,125 @@ namespace OpenLoco
             GameCommands::doCommand(args, GameCommands::Flags::apply);
             return;
         }
-        // 0x00498A3E
+        if (heightDiff < 0 && heightDiff >= -4)
+        {
+            GameCommands::LowerLandArgs args{};
+            args.pointA = pos;
+            args.pointB = pos;
+            args.centre = pos;
+            args.corner = MapSelectionType::full;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            return;
+        }
+        if (surface->slope())
+        {
+            const auto normalisedCorners = Numerics::rotr4bit(surface->slopeCorners(), rotation);
+            if (!surface->isSlopeDoubleHeight() && normalisedCorners == SurfaceSlope::SideUp::southwest)
+            {
+                // Create straightSteepSlopeUp
+
+                GameCommands::RoadPlacementArgs args{};
+                args.pos = pos;
+                args.bridge = 0xFFU;
+                args.roadId = 7;
+                args.mods = 0;
+                args.roadObjectId = roadObjectId;
+                args.rotation = rotation;
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
+                return;
+            }
+            GameCommands::LowerLandArgs args{};
+            args.pointA = pos;
+            args.pointB = pos;
+            args.centre = pos;
+            args.corner = MapSelectionType::full;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            return;
+        }
+
+        const auto randVar = town.prng.randNext() & 0xFFFFU;
+        uint8_t roadId = 0;   // straight
+        if (randVar < 0x028F) // 1%
+        {
+            roadId = 1; // left curve
+        }
+        else if (randVar < 0x051E) // 1%
+        {
+            roadId = 2; // right curve
+        }
+        auto* elRoad = [&tile, z = pos.z]() -> const World::RoadElement* {
+            for (const auto& el : tile)
+            {
+                auto* elRoad = el.as<RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->baseHeight() != z)
+                {
+                    continue;
+                }
+                return elRoad;
+            }
+            return nullptr;
+        }();
+        if (elRoad != nullptr)
+        {
+            const auto existingRotation = elRoad->rotation();
+            const auto existingRoadId = elRoad->roadId();
+            if (roadId == 1)
+            {
+                if (existingRoadId == 1)
+                {
+                    if ((existingRotation ^ (1U << 1)) == rotation)
+                    {
+                        roadId = 0;
+                    }
+                }
+                else if (existingRoadId == 2)
+                {
+                    if (((existingRotation + 1) & 0x3) == rotation)
+                    {
+                        roadId = 0;
+                    }
+                }
+            }
+            else if (roadId == 2)
+            {
+                if (existingRoadId == 1)
+                {
+                    if (((existingRotation - 1) & 0x3) == rotation)
+                    {
+                        roadId = 0;
+                    }
+                }
+                else if (existingRoadId == 2)
+                {
+                    if ((existingRotation ^ (1U << 1)) == rotation)
+                    {
+                        roadId = 0;
+                    }
+                }
+            }
+            else
+            {
+                if (existingRoadId == 0)
+                {
+                    if ((existingRotation ^ (1U << 1)) == rotation)
+                    {
+                        roadId = 1;
+                    }
+                }
+            }
+        }
+        GameCommands::RoadPlacementArgs args{};
+        args.pos = pos;
+        args.bridge = 0xFFU;
+        args.roadId = roadId;
+        args.mods = 0;
+        args.roadObjectId = roadObjectId;
+        args.rotation = rotation;
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
     // 0x00498320
@@ -1337,7 +1466,7 @@ namespace OpenLoco
             {
                 if ((growFlags & TownGrowFlags::flag3) != TownGrowFlags::none && !nextRoadRes.isStationRoadEnd)
                 {
-                    appendToRoadEnd(*this, roadEnd.nextPos, roadEnd.nextRotation, tad, i, curOnBridge);
+                    appendToRoadEnd(*this, roadEnd.nextPos, roadEnd.nextRotation, idealRoadId.value(), i, curOnBridge);
                 }
                 break;
             }
