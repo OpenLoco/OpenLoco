@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Widgets
 
         auto* window = widgetState.window;
         int16_t width = widget.right - widget.left - 4 - 14;
-        int16_t x = widget.left + window->x + 2 + (width / 2);
+        int16_t x = widget.left + 2 + (width / 2);
 
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(Gfx::Font::medium_bold);
@@ -90,11 +90,11 @@ namespace OpenLoco::Ui::Widgets
 
         if (captionStyle == Caption::Style::blackText)
         {
-            int16_t y = window->y + widget.top + 1;
+            int16_t y = widget.top + 1;
             drawStationNameBackground(drawingCtx, window, &widget, x, y, widgetState.colour, stringWidth);
         }
 
-        auto point = Point(x, window->y + widget.top + 1);
+        auto point = Point(x, widget.top + 1);
         tr.drawString(point, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
