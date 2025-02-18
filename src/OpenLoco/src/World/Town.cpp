@@ -1084,6 +1084,15 @@ namespace OpenLoco
         return true;
     }
 
+    constexpr std::array<Pos2, 6> kBuggedRotationOffset = {
+        Pos2{ -25, 0 },
+        Pos2{ -32, 0 },
+        Pos2{ 0, 32 },
+        Pos2{ 32, 0 },
+        Pos2{ 0, -32 },
+        Pos2{ -32, 0 },
+    };
+
     // 0x004986EA
     static void appendToRoadEnd(Town& town, const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId, const uint32_t iteration, const bool isOnBridge)
     {
@@ -1092,11 +1101,11 @@ namespace OpenLoco
             return;
         }
 
-        if (iteration >= 3 && isOnBridge)
+        if (iteration >= 3 && !isOnBridge)
         {
             auto numBuildingsInArea = [pos]() {
                 const auto tileA = World::toTileSpace(pos) - World::TilePos2{ 2, 2 };
-                const auto tileB = tileA + World::TilePos2{ 5, 5 };
+                const auto tileB = tileA + World::TilePos2{ 4, 4 };
                 uint32_t numBuildings = 0;
                 for (const auto& tilePos : getClampedRange(tileA, tileB))
                 {
@@ -1120,7 +1129,8 @@ namespace OpenLoco
         for (auto j : { -1, 1 })
         {
             // NOTE: CS mistake here!
-            const auto checkPos = pos + World::Pos3{ World::kRotationOffset[(rotation + j) & 0x3], 0 };
+            const auto checkPos = pos + World::Pos3{ kBuggedRotationOffset[1 + (rotation + j)], 0 };
+            //const auto checkPos = pos + World::Pos3{ World::kRotationOffset[(rotation + j) & 0x3], 0 };
             if (sub_498D21(checkPos, rotation))
             {
                 return;
@@ -1186,7 +1196,7 @@ namespace OpenLoco
             GameCommands::doCommand(args, GameCommands::Flags::apply);
             return;
         }
-        if (surface->slope())
+        if (surface->slope() && heightDiff == 0)
         {
             const auto normalisedCorners = Numerics::rotr4bit(surface->slopeCorners(), rotation);
             if (!surface->isSlopeDoubleHeight() && normalisedCorners == SurfaceSlope::SideUp::southwest)
@@ -1791,6 +1801,6 @@ namespace OpenLoco
             regs.edi = style;
             return 0;
         });
-        writeJmp(0x004986CA, (void*)0x00498C64);
+        writeJmp(0x00498801, (void*)0x00498C64);
     }
 }
