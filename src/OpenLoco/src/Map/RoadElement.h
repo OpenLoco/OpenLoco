@@ -64,12 +64,17 @@ namespace OpenLoco::World
             _5 |= index & 0x3;
         }
         uint8_t levelCrossingObjectId() const { return (_5 >> 2) & 0x3; } // _5l 0b0000_1100 NOTE: Shared with streetlight style
-        void setLevelCrossingObjectId(uint8_t levelCrossingObjectId)
+        void setLevelCrossingObjectId(uint8_t levelCrossingObjectId)      // Shared with streetlight style
         {
             _5 &= ~0b1100;
             _5 |= (levelCrossingObjectId & 0x3) << 2;
         }
         uint8_t streetLightStyle() const { return (_5 >> 2) & 0x3; } // _5l 0b0000_1100 NOTE: Shared with level crossing object id 0 = no street light
+        void setStreetLightStyle(uint8_t style)                      // Shared with streetlight style
+        {
+            _5 &= ~0b1100;
+            _5 |= (style & 0x3) << 2;
+        }
         uint8_t unk6l() const { return _6 & 0xF; }
         void setUnk6l(uint8_t value)
         {

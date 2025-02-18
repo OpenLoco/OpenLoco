@@ -21,6 +21,22 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TownFlags);
 
+    enum class TownGrowFlags : uint8_t
+    {
+        none = 0U,
+        flag0 = 1U << 0,
+        roadUpdate = 1U << 1,          // roads can be updated with newer types and streetlights can update style
+        neutralRoadTakeover = 1U << 2, // towns can take over company roads and make them neutral owner
+        flag3 = 1U << 3,
+        flag4 = 1U << 4,
+        constructBuildings = 1U << 5, // new buildings can be constructed
+        buildImmediately = 1U << 6,   // constructed buildings do not require scaffolding
+        updateBuildings = 1U << 7,    // buildings can be updated with newer versions
+
+        all = flag0 | roadUpdate | neutralRoadTakeover | flag3 | flag4 | constructBuildings | buildImmediately | updateBuildings,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TownGrowFlags);
+
     enum class TownSize : uint8_t
     {
         hamlet,
@@ -79,11 +95,13 @@ namespace OpenLoco
         void updateMonthly();
         void adjustCompanyRating(CompanyId cid, int amount);
         void recalculateSize();
-        void grow(int32_t growFlags);
+        void grow(TownGrowFlags growFlags);
         StringId getTownSizeString() const;
         std::optional<RoadExtentResult> findRoadExtent() const;
         void buildInitialRoad();
     };
     static_assert(sizeof(Town) == 0x270);
 #pragma pack(pop)
+
+    void townRegisterHooks();
 }
