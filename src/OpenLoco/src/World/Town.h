@@ -24,16 +24,16 @@ namespace OpenLoco
     enum class TownGrowFlags : uint8_t
     {
         none = 0U,
-        flag0 = 1U << 0,
-        roadUpdate = 1U << 1,          // roads can be updated with newer types and streetlights can update style
-        neutralRoadTakeover = 1U << 2, // towns can take over company roads and make them neutral owner
-        flag3 = 1U << 3,
-        flag4 = 1U << 4,
-        constructBuildings = 1U << 5, // new buildings can be constructed
-        buildImmediately = 1U << 6,   // constructed buildings do not require scaffolding
-        updateBuildings = 1U << 7,    // buildings can be updated with newer versions
+        buildInitialRoad = 1U << 0,      // initial road can be built (No town growth without a single road)
+        roadUpdate = 1U << 1,            // roads can be updated with newer types and streetlights can update style
+        neutralRoadTakeover = 1U << 2,   // towns can take over company roads and make them neutral owner
+        allowRoadExpansion = 1U << 3,    // Road ends can be extended and bridges can be built
+        allowRoadBranching = 1U << 4,    // Existing roads can be branched
+        constructBuildings = 1U << 5,    // new buildings can be constructed
+        buildImmediately = 1U << 6,      // constructed buildings do not require scaffolding
+        alwaysUpdateBuildings = 1U << 7, // buildings if visited will always be updated with newer versions (if possible)
 
-        all = flag0 | roadUpdate | neutralRoadTakeover | flag3 | flag4 | constructBuildings | buildImmediately | updateBuildings,
+        all = buildInitialRoad | roadUpdate | neutralRoadTakeover | allowRoadExpansion | allowRoadBranching | constructBuildings | buildImmediately | alwaysUpdateBuildings,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TownGrowFlags);
 

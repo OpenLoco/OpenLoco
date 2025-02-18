@@ -67,13 +67,13 @@ namespace OpenLoco
         auto growthPerTick = kBuildSpeedToGrowthPerTick[this->buildSpeed];
         if (growthPerTick == 0 || (growthPerTick == 1 && (gPrng1().randNext() & 7)))
         {
-            grow(TownGrowFlags::flag0 | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover);
+            grow(TownGrowFlags::buildInitialRoad | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover);
         }
         else
         {
             for (int32_t counter = 0; counter < growthPerTick; ++counter)
             {
-                grow(TownGrowFlags::flag0 | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover | TownGrowFlags::flag3 | TownGrowFlags::flag4 | TownGrowFlags::constructBuildings);
+                grow(TownGrowFlags::buildInitialRoad | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover | TownGrowFlags::allowRoadExpansion | TownGrowFlags::allowRoadBranching | TownGrowFlags::constructBuildings);
             }
         }
     }
@@ -573,7 +573,7 @@ namespace OpenLoco
     // 0x0042DB35
     // A collision in this function means that the building will not be removed
     // Finds buildings that are old and not headquarters for removal
-    [[maybe_unused]] static World::TileClearance::ClearFuncResult sub_42DB35(World::TileElement& el, uint8_t baseZ, uint8_t& minZDiff, bool unkFlag)
+    [[maybe_unused]] static World::TileClearance::ClearFuncResult sub_42DB35(World::TileElement& el, uint8_t baseZ, uint8_t& minZDiff, bool allowBuildingUpdate)
     {
         auto* elTree = el.as<World::TreeElement>();
         auto* elBuilding = el.as<World::BuildingElement>();
@@ -583,7 +583,7 @@ namespace OpenLoco
         }
         else if (elBuilding != nullptr)
         {
-            if (!unkFlag)
+            if (!allowBuildingUpdate)
             {
                 return World::TileClearance::ClearFuncResult::collision;
             }
@@ -621,9 +621,9 @@ namespace OpenLoco
     // If 0 then no new building can be created here
     // pos : (ax, cx, dx)
     // isLargeTile : bh bit 0
-    // unkFlag : bh bit 2
+    // allowBuildingUpdate : bh bit 2
     // return maxHeightOfBuilding: ebp
-    [[maybe_unused]] static int16_t getMaxHeightOfNewBuilding(const World::Pos3 pos, bool isLargeTile, bool unkFlag)
+    [[maybe_unused]] static int16_t getMaxHeightOfNewBuilding(const World::Pos3 pos, bool isLargeTile, bool allowBuildingUpdate)
     {
         auto offsets = getBuildingTileOffsets(isLargeTile);
         int32_t maxHeightDiff = 0;
@@ -654,8 +654,8 @@ namespace OpenLoco
             const auto elSurface = World::TileManager::get(loc).surface();
             const auto minZ = std::min(elSurface->baseHeight(), pos.z) / World::kSmallZStep;
             World::QuarterTile qt(0xF, 0xF);
-            auto clearFunc = [baseZ = pos.z / World::kSmallZStep, &minClear, unkFlag](TileElement& el) {
-                return sub_42DB35(el, baseZ, minClear, unkFlag);
+            auto clearFunc = [baseZ = pos.z / World::kSmallZStep, &minClear, allowBuildingUpdate](TileElement& el) {
+                return sub_42DB35(el, baseZ, minClear, allowBuildingUpdate);
             };
             if (!World::TileClearance::applyClearAtStandardHeight(loc, minZ, 255, qt, clearFunc))
             {
@@ -1421,14 +1421,14 @@ namespace OpenLoco
             buildingPos.y += k4FF704[buildingRot].y;
         }
 
-        bool unkFlag = false;
+        bool allowBuildingUpdate = false;
         // TODO: Even more dirty
-        if ((growFlags & TownGrowFlags::updateBuildings) != TownGrowFlags::none || (isLarge && !(town.prng.srand_0() & 0x7C000000)))
+        if ((growFlags & TownGrowFlags::alwaysUpdateBuildings) != TownGrowFlags::none || (isLarge && !(town.prng.srand_0() & 0x7C000000)))
         {
-            unkFlag = true;
+            allowBuildingUpdate = true;
         }
 
-        const auto maxHeight = getMaxHeightOfNewBuilding(buildingPos, isLarge, unkFlag);
+        const auto maxHeight = getMaxHeightOfNewBuilding(buildingPos, isLarge, allowBuildingUpdate);
         if (maxHeight == 0)
         {
             return;
@@ -1463,7 +1463,7 @@ namespace OpenLoco
         const auto extent = findRoadExtent();
         if (!extent.has_value())
         {
-            if ((growFlags & TownGrowFlags::flag0) != TownGrowFlags::none)
+            if ((growFlags & TownGrowFlags::buildInitialRoad) != TownGrowFlags::none)
             {
                 buildInitialRoad();
             }
@@ -1564,7 +1564,7 @@ namespace OpenLoco
             const auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, CompanyId::neutral, 0xFFU, 0, 0);
             if (rc.connections.empty())
             {
-                if ((growFlags & TownGrowFlags::flag3) != TownGrowFlags::none && !nextRoadRes.isStationRoadEnd)
+                if ((growFlags & TownGrowFlags::allowRoadExpansion) != TownGrowFlags::none && !nextRoadRes.isStationRoadEnd)
                 {
                     appendToRoadEnd(*this, roadEnd.nextPos, roadEnd.nextRotation, idealRoadId.value(), i, curOnBridge);
                 }
@@ -1580,7 +1580,7 @@ namespace OpenLoco
             curRoadPos = roadEnd.nextPos;
             curOnBridge = connection & World::Track::AdditionalTaDFlags::hasBridge;
             tad._data = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
-            if ((growFlags & TownGrowFlags::flag4) == TownGrowFlags::none)
+            if ((growFlags & TownGrowFlags::allowRoadBranching) == TownGrowFlags::none)
             {
                 continue;
             }
