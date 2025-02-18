@@ -28,6 +28,7 @@
 #include "Random.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
@@ -1093,6 +1094,89 @@ namespace OpenLoco
         Pos2{ -32, 0 },
     };
 
+    // 0x00498801
+    static bool placeRoadBridge(Town& town, const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId)
+    {
+        assert(rotation < 4);
+        std::array<uint8_t, 9> bridges{};
+        Ui::Windows::Construction::Common::refreshBridgeList(bridges.data(), roadObjectId, TransportMode::road);
+        // Copy into a sane container
+        sfl::static_vector<uint8_t, 9> validBridgeTypes(bridges.begin(), std::find(std::begin(bridges), std::end(bridges), 0xFFU));
+
+        auto bridgePos = pos;
+        auto bridgeLength = 1U;
+        bool bridgesWater = false;
+        bool bridgeIsHigh = false;
+        for (; bridgeLength < 15; ++bridgeLength)
+        {
+            sfl::static_vector<uint8_t, 9> iterationValidBridgeTypes;
+            for (auto bridgeObjId : validBridgeTypes)
+            {
+                GameCommands::RoadPlacementArgs args{};
+                args.bridge = bridgeObjId;
+                args.pos = bridgePos;
+                args.mods = 0;
+                args.roadId = 0;
+                args.roadObjectId = roadObjectId;
+                args.rotation = rotation;
+                if (GameCommands::doCommand(args, 0) != GameCommands::FAILURE)
+                {
+                    iterationValidBridgeTypes.push_back(bridgeObjId);
+                }
+            }
+            if (iterationValidBridgeTypes.empty())
+            {
+                return false;
+            }
+            validBridgeTypes = iterationValidBridgeTypes;
+
+            auto tile = TileManager::get(bridgePos);
+            auto* surface = tile.surface();
+            if (surface->water())
+            {
+                bridgesWater = true;
+            }
+            auto bridgeHeight = bridgePos.z - surface->baseHeight();
+            if (bridgeHeight >= 8 * kSmallZStep)
+            {
+                bridgeIsHigh = true;
+            }
+
+            bridgePos += World::Pos3{ World::kRotationOffset[rotation], 0 };
+            if (!World::validCoords(bridgePos))
+            {
+                return false;
+            }
+            auto nextTile = TileManager::get(bridgePos);
+            auto* nextSurface = nextTile.surface();
+            if (bridgePos.z <= nextSurface->baseHeight())
+            {
+                break;
+            }
+        }
+        if ((!bridgeIsHigh && !bridgesWater) || bridgeLength >= 15)
+        {
+            return false;
+        }
+        const auto randBridgeId = validBridgeTypes[((town.prng.randNext() & 0xFFU) * validBridgeTypes.size()) / 256];
+
+        bridgePos = pos;
+        for (auto i = 0U; i < bridgeLength; ++i)
+        {
+            GameCommands::RoadPlacementArgs args{};
+            args.bridge = randBridgeId;
+            args.pos = bridgePos;
+            args.mods = 0;
+            args.roadId = 0;
+            args.roadObjectId = roadObjectId;
+            args.rotation = rotation;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            bridgePos += World::Pos3{ World::kRotationOffset[rotation], 0 };
+        }
+        return true;
+    }
+
     // 0x004986EA
     static void appendToRoadEnd(Town& town, const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId, const uint32_t iteration, const bool isOnBridge)
     {
@@ -1141,9 +1225,10 @@ namespace OpenLoco
         auto* surface = tile.surface();
         if (pos.z > surface->baseHeight())
         {
-            // Bridge
-            // 0x00498801
-            return;
+            if (placeRoadBridge(town, pos, rotation, roadObjectId))
+            {
+                return;
+            }
         }
 
         // 0x00498A06
