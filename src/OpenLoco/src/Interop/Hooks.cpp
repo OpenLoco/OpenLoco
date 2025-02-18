@@ -815,7 +815,6 @@ void OpenLoco::Interop::registerHooks()
     Scenario::registerHooks();
     StationManager::registerHooks();
     TownManager::registerHooks();
-    townRegisterHooks();
 
     S5::registerHooks();
     Title::registerHooks();
