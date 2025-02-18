@@ -1101,7 +1101,7 @@ namespace OpenLoco
             return;
         }
 
-        if (iteration >= 3 && !isOnBridge)
+        if (iteration >= 2 && !isOnBridge)
         {
             auto numBuildingsInArea = [pos]() {
                 const auto tileA = World::toTileSpace(pos) - World::TilePos2{ 2, 2 };
@@ -1130,7 +1130,7 @@ namespace OpenLoco
         {
             // NOTE: CS mistake here!
             const auto checkPos = pos + World::Pos3{ kBuggedRotationOffset[1 + (rotation + j)], 0 };
-            //const auto checkPos = pos + World::Pos3{ World::kRotationOffset[(rotation + j) & 0x3], 0 };
+            // const auto checkPos = pos + World::Pos3{ World::kRotationOffset[(rotation + j) & 0x3], 0 };
             if (sub_498D21(checkPos, rotation))
             {
                 return;
@@ -1290,7 +1290,7 @@ namespace OpenLoco
             {
                 if (existingRoadId == 0)
                 {
-                    if ((existingRotation ^ (1U << 1)) == rotation)
+                    if ((existingRotation ^ (1U << 1)) != rotation)
                     {
                         roadId = 1;
                     }
