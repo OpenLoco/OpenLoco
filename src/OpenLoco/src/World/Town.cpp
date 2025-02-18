@@ -73,7 +73,7 @@ namespace OpenLoco
         {
             for (int32_t counter = 0; counter < growthPerTick; ++counter)
             {
-                grow(TownGrowFlags::flag0 | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover | TownGrowFlags::flag3 | TownGrowFlags::flag4 | TownGrowFlags::constructBuildings | TownGrowFlags::buildImmediately);
+                grow(TownGrowFlags::flag0 | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover | TownGrowFlags::flag3 | TownGrowFlags::flag4 | TownGrowFlags::constructBuildings);
             }
         }
     }
@@ -1255,6 +1255,11 @@ namespace OpenLoco
                     args.roadObjectId = roadObjectId;
                     args.rotation = rotation;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
+                    return;
+                }
+                // TODO: Remove this its just due to a mistake by CS
+                if (normalisedCorners > 8)
+                {
                     return;
                 }
             }
