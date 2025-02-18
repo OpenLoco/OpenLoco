@@ -46,13 +46,6 @@ namespace OpenLoco
         metropolis,
     };
 
-    struct RoadExtentResult
-    {
-        World::Pos3 roadStart;
-        uint16_t tad;
-        bool isBridge;
-    };
-
     namespace Gfx
     {
         class DrawingContext;
@@ -97,8 +90,6 @@ namespace OpenLoco
         void recalculateSize();
         void grow(TownGrowFlags growFlags);
         StringId getTownSizeString() const;
-        std::optional<RoadExtentResult> findRoadExtent() const;
-        void buildInitialRoad();
     };
     static_assert(sizeof(Town) == 0x270);
 #pragma pack(pop)

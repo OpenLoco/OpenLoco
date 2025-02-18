@@ -1446,6 +1446,186 @@ namespace OpenLoco
         }
     }
 
+    template<size_t searchSize>
+    constexpr auto kSquareSearchRange = []() {
+        /* Searches in a square of increasing size
+         * X, Y, Z, J, K
+         *
+         *     -4-3-2-1 0 1 2 3 4 5
+         *     ____________________
+         *  4 | K K K K K K K K K K
+         *  3 | K J J J J J J J J K
+         *  2 | K J Z Z Z Z Z Z J K
+         *  1 | K J Z Y Y Y Y Z J K
+         *  0 | K J Z Y X X Y Z J K
+         * -1 | K J Z Y X X Y Z J K
+         * -2 | K J Z Y Y Y Y Z J K
+         * -3 | K J Z Z Z Z Z Z J K
+         * -4 | K J J J J J J J J K
+         * -5 | K K K K K K K K K K
+         */
+        static_assert((searchSize % 2) == 1, "Must not be an even value");
+        std::array<World::TilePos2, (searchSize + 1) * (searchSize + 1)> range{};
+        // 0x00503C6C
+        std::array<World::TilePos2, 4> kDirections = {
+            World::TilePos2{ -1, 0 },
+            World::TilePos2{ 0, 1 },
+            World::TilePos2{ 1, 0 },
+            World::TilePos2{ 0, -1 },
+        };
+
+        World::TilePos2 pos{ 0, 0 };
+        uint8_t k = 0;
+        for (uint8_t i = 1; i <= searchSize; i += 2)
+        {
+            for (uint8_t direction = 0; direction < 4; ++direction)
+            {
+                for (auto j = i; j != 0; --j)
+                {
+                    range[k++] = pos;
+                    pos += kDirections[direction];
+                }
+            }
+            pos += World::TilePos2{ 1, -1 };
+        }
+        return range;
+    }();
+
+    // 0x00463BD2
+    template<typename Func>
+    static void squareSearch(const World::Pos2& centre, [[maybe_unused]] uint8_t searchSize, Func&& predicate)
+    {
+        assert(searchSize == 9);
+        for (auto& offset : kSquareSearchRange<9>)
+        {
+            const World::Pos2 pos = World::toWorldSpace(offset) + centre;
+            if (World::validCoords(pos))
+            {
+                if (!predicate(pos))
+                {
+                    return;
+                }
+            }
+        }
+    }
+
+    struct RoadExtentResult
+    {
+        World::Pos3 roadStart;
+        uint16_t tad;
+        bool isBridge;
+    };
+
+    // 0x00497FFC
+    static std::optional<RoadExtentResult> findRoadExtent(const Town& town)
+    {
+        struct FindResult
+        {
+            World::Pos2 loc;
+            World::RoadElement* elRoad;
+        };
+
+        std::optional<FindResult> res;
+
+        // 0x00497F74
+        auto validRoad = [randVal = town.prng.srand_0(), &res](const World::Pos2& loc) mutable {
+            auto tile = World::TileManager::get(loc);
+            bool hasPassedSurface = false;
+            for (auto& el : tile)
+            {
+                auto* elSurface = el.as<World::SurfaceElement>();
+                if (elSurface != nullptr)
+                {
+                    hasPassedSurface = true;
+                    continue;
+                }
+                if (!hasPassedSurface)
+                {
+                    continue;
+                }
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->isGhost() || elRoad->isAiAllocated())
+                {
+                    continue;
+                }
+                if (elRoad->sequenceIndex() != 0)
+                {
+                    continue;
+                }
+                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                {
+                    continue;
+                }
+                // There is a 50% chance that it will use a new result
+                if (res.has_value())
+                {
+                    bool bitRes = randVal & 1;
+                    randVal = std::rotr(randVal, 1);
+                    if (bitRes)
+                    {
+                        return true;
+                    }
+                }
+                res = FindResult{ loc, elRoad };
+                return true;
+            }
+            return true;
+        };
+        squareSearch({ town.x, town.y }, 9, validRoad);
+
+        if (!res.has_value())
+        {
+            return std::nullopt;
+        }
+
+        auto& roadPiece = World::TrackData::getRoadPiece(res->elRoad->roadId());
+        return RoadExtentResult{
+            World::Pos3(res->loc, res->elRoad->baseHeight() - roadPiece[0].z),
+            static_cast<uint16_t>((res->elRoad->roadId() << 3) | res->elRoad->rotation()),
+            res->elRoad->hasBridge()
+        };
+    }
+
+    // 0x00498101
+    static void buildInitialRoad(Town& town)
+    {
+        // 0x0049807D
+        auto placeRoadAtTile = [&town](const World::Pos2& loc) {
+            auto tile = World::TileManager::get(loc);
+            auto* elSurface = tile.surface();
+            auto height = elSurface->baseHeight();
+            if (elSurface->slope())
+            {
+                height += 16;
+                if (elSurface->isSlopeDoubleHeight())
+                {
+                    height += 16;
+                }
+            }
+
+            auto roadObjId = getIdealTownRoadId(town);
+            if (!roadObjId.has_value())
+            {
+                return true;
+            }
+
+            GameCommands::RoadPlacementArgs args{};
+            args.pos = World::Pos3{ loc, height };
+            args.rotation = town.prng.randNext(3);
+            args.roadId = 0;
+            args.mods = 0;
+            args.bridge = 0xFF;
+            args.roadObjectId = roadObjId.value();
+            return GameCommands::doCommand(args, GameCommands::Flags::apply) == GameCommands::FAILURE;
+        };
+        squareSearch({ town.x, town.y }, 9, placeRoadAtTile);
+    }
+
     /**
      * 0x00498116
      * Grow
@@ -1455,17 +1635,15 @@ namespace OpenLoco
      */
     void Town::grow(TownGrowFlags growFlags)
     {
-        // growFlags : 0x01135C40
-
         const auto oldUpatingCompany = GameCommands::getUpdatingCompanyId();
         GameCommands::setUpdatingCompanyId(CompanyId::neutral);
 
-        const auto extent = findRoadExtent();
+        const auto extent = findRoadExtent(*this);
         if (!extent.has_value())
         {
             if ((growFlags & TownGrowFlags::buildInitialRoad) != TownGrowFlags::none)
             {
-                buildInitialRoad();
+                buildInitialRoad(*this);
             }
             GameCommands::setUpdatingCompanyId(oldUpatingCompany);
             return;
@@ -1615,178 +1793,5 @@ namespace OpenLoco
             return townSizeNames[static_cast<uint8_t>(size)];
         }
         return StringIds::town_size_hamlet;
-    }
-
-    template<size_t searchSize>
-    constexpr auto kSquareSearchRange = []() {
-        /* Searches in a square of increasing size
-         * X, Y, Z, J, K
-         *
-         *     -4-3-2-1 0 1 2 3 4 5
-         *     ____________________
-         *  4 | K K K K K K K K K K
-         *  3 | K J J J J J J J J K
-         *  2 | K J Z Z Z Z Z Z J K
-         *  1 | K J Z Y Y Y Y Z J K
-         *  0 | K J Z Y X X Y Z J K
-         * -1 | K J Z Y X X Y Z J K
-         * -2 | K J Z Y Y Y Y Z J K
-         * -3 | K J Z Z Z Z Z Z J K
-         * -4 | K J J J J J J J J K
-         * -5 | K K K K K K K K K K
-         */
-        static_assert((searchSize % 2) == 1, "Must not be an even value");
-        std::array<World::TilePos2, (searchSize + 1) * (searchSize + 1)> range{};
-        // 0x00503C6C
-        std::array<World::TilePos2, 4> kDirections = {
-            World::TilePos2{ -1, 0 },
-            World::TilePos2{ 0, 1 },
-            World::TilePos2{ 1, 0 },
-            World::TilePos2{ 0, -1 },
-        };
-
-        World::TilePos2 pos{ 0, 0 };
-        uint8_t k = 0;
-        for (uint8_t i = 1; i <= searchSize; i += 2)
-        {
-            for (uint8_t direction = 0; direction < 4; ++direction)
-            {
-                for (auto j = i; j != 0; --j)
-                {
-                    range[k++] = pos;
-                    pos += kDirections[direction];
-                }
-            }
-            pos += World::TilePos2{ 1, -1 };
-        }
-        return range;
-    }();
-
-    // 0x00463BD2
-    template<typename Func>
-    static void squareSearch(const World::Pos2& centre, [[maybe_unused]] uint8_t searchSize, Func&& predicate)
-    {
-        assert(searchSize == 9);
-        for (auto& offset : kSquareSearchRange<9>)
-        {
-            const World::Pos2 pos = World::toWorldSpace(offset) + centre;
-            if (World::validCoords(pos))
-            {
-                if (!predicate(pos))
-                {
-                    return;
-                }
-            }
-        }
-    }
-
-    // 0x00497FFC
-    std::optional<RoadExtentResult> Town::findRoadExtent() const
-    {
-        struct FindResult
-        {
-            World::Pos2 loc;
-            World::RoadElement* elRoad;
-        };
-
-        std::optional<FindResult> res;
-
-        // 0x00497F74
-        auto validRoad = [randVal = prng.srand_0(), &res](const World::Pos2& loc) mutable {
-            auto tile = World::TileManager::get(loc);
-            bool hasPassedSurface = false;
-            for (auto& el : tile)
-            {
-                auto* elSurface = el.as<World::SurfaceElement>();
-                if (elSurface != nullptr)
-                {
-                    hasPassedSurface = true;
-                    continue;
-                }
-                if (!hasPassedSurface)
-                {
-                    continue;
-                }
-                auto* elRoad = el.as<World::RoadElement>();
-                if (elRoad == nullptr)
-                {
-                    continue;
-                }
-                if (elRoad->isGhost() || elRoad->isAiAllocated())
-                {
-                    continue;
-                }
-                if (elRoad->sequenceIndex() != 0)
-                {
-                    continue;
-                }
-                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
-                {
-                    continue;
-                }
-                // There is a 50% chance that it will use a new result
-                if (res.has_value())
-                {
-                    bool bitRes = randVal & 1;
-                    randVal = std::rotr(randVal, 1);
-                    if (bitRes)
-                    {
-                        return true;
-                    }
-                }
-                res = FindResult{ loc, elRoad };
-                return true;
-            }
-            return true;
-        };
-        squareSearch({ x, y }, 9, validRoad);
-
-        if (!res.has_value())
-        {
-            return std::nullopt;
-        }
-
-        auto& roadPiece = World::TrackData::getRoadPiece(res->elRoad->roadId());
-        return RoadExtentResult{
-            World::Pos3(res->loc, res->elRoad->baseHeight() - roadPiece[0].z),
-            static_cast<uint16_t>((res->elRoad->roadId() << 3) | res->elRoad->rotation()),
-            res->elRoad->hasBridge()
-        };
-    }
-
-    // 0x00498101
-    void Town::buildInitialRoad()
-    {
-        // 0x0049807D
-        auto placeRoadAtTile = [&town = *this](const World::Pos2& loc) {
-            auto tile = World::TileManager::get(loc);
-            auto* elSurface = tile.surface();
-            auto height = elSurface->baseHeight();
-            if (elSurface->slope())
-            {
-                height += 16;
-                if (elSurface->isSlopeDoubleHeight())
-                {
-                    height += 16;
-                }
-            }
-
-            auto roadObjId = getIdealTownRoadId(town);
-            if (!roadObjId.has_value())
-            {
-                return true;
-            }
-
-            GameCommands::RoadPlacementArgs args{};
-            args.pos = World::Pos3{ loc, height };
-            args.rotation = town.prng.randNext(3);
-            args.roadId = 0;
-            args.mods = 0;
-            args.bridge = 0xFF;
-            args.roadObjectId = roadObjId.value();
-            return GameCommands::doCommand(args, GameCommands::Flags::apply) == GameCommands::FAILURE;
-        };
-        squareSearch({ x, y }, 9, placeRoadAtTile);
     }
 }
