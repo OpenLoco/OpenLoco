@@ -97,7 +97,8 @@ namespace OpenLoco::Vehicles
     OPENLOCO_ENABLE_ENUM_OPERATORS(UpdateVar1136114Flags);
 
     bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags);
-    void setUpdateVar1136114Flags(UpdateVar1136114Flags flags, bool enabled);
+    void setUpdateVar1136114Flags(UpdateVar1136114Flags flags);
+    void unsetUpdateVar1136114Flags(UpdateVar1136114Flags flags);
 
     enum class Status : uint8_t
     {

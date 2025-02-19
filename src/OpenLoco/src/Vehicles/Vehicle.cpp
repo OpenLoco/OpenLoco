@@ -265,7 +265,7 @@ namespace OpenLoco::Vehicles
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03, true);
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03);
                     return false;
                 }
             }
@@ -285,7 +285,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound, true);
+                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -319,7 +319,7 @@ namespace OpenLoco::Vehicles
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03, true);
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03);
                     return false;
                 }
             }
@@ -329,7 +329,7 @@ namespace OpenLoco::Vehicles
             const auto tc = World::Track::getTrackConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
             if (tc.hasLevelCrossing)
             {
-                setUpdateVar1136114Flags(UpdateVar1136114Flags::approachingGradeCrossing, true);
+                setUpdateVar1136114Flags(UpdateVar1136114Flags::approachingGradeCrossing);
             }
             bool routingFound = false;
             for (auto& connection : tc.connections)
@@ -342,7 +342,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound, true);
+                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -510,7 +510,7 @@ namespace OpenLoco::Vehicles
                 {
                     returnValue = component.remainingDistance - 0x3689;
                     component.remainingDistance = 0x3689;
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00, true);
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
                     break;
                 }
                 else
@@ -532,7 +532,7 @@ namespace OpenLoco::Vehicles
                 auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                 if (collideResult != EntityId::null)
                 {
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed, true);
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed);
                     _vehicleUpdate_collisionCarComponent = collideResult;
                 }
             }
@@ -570,7 +570,7 @@ namespace OpenLoco::Vehicles
                     {
                         returnValue = component.remainingDistance - 0x3689;
                         component.remainingDistance = 0x3689;
-                        setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00, true);
+                        setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
                         break;
                     }
                     else
@@ -592,8 +592,8 @@ namespace OpenLoco::Vehicles
                     auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                     if (collideResult != EntityId::null)
                     {
-                        setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed, true);
-                        _vehicleUpdate_collisionCarComponent = collideResult.value();
+                        setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed);
+                        _vehicleUpdate_collisionCarComponent = collideResult;
                     }
                 }
             }
@@ -1040,9 +1040,12 @@ namespace OpenLoco::Vehicles
     {
         return _vehicleUpdate_var_1136114 & enumValue(flags);
     }
-    void setUpdateVar1136114Flags(UpdateVar1136114Flags flags, bool enabled)
+    void setUpdateVar1136114Flags(UpdateVar1136114Flags flags)
+    {
+        _vehicleUpdate_var_1136114 |= enumValue(flags);
+    }
+    void unsetUpdateVar1136114Flags(UpdateVar1136114Flags flags)
     {
         _vehicleUpdate_var_1136114 &= ~enumValue(flags);
-        _vehicleUpdate_var_1136114 |= enumValue(flags) * enabled;
     }
 }
