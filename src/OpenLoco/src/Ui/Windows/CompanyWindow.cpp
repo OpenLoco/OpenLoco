@@ -1505,7 +1505,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     GameCommands::ChangeCompanyColourSchemeArgs args{};
 
                     args.value = newMode;
-                    args.colourType = vehicleType;
+                    args.colourType = CompanyColourType(vehicleType);
                     args.setColourMode = 1;
                     args.companyId = CompanyId(self.number);
 
@@ -1628,7 +1628,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                     args.isPrimary = false;
                     args.value = colour;
-                    args.colourType = vehicleType;
+                    args.colourType = CompanyColourType(vehicleType);
                     args.setColourMode = 0;
                     args.companyId = CompanyId(self.number);
 
@@ -1663,7 +1663,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                     args.isPrimary = true;
                     args.value = colour;
-                    args.colourType = vehicleType;
+                    args.colourType = CompanyColourType(vehicleType);
                     args.setColourMode = 0;
                     args.companyId = CompanyId(self.number);
 

@@ -765,6 +765,16 @@ namespace OpenLoco
         Ui::WindowManager::invalidate(Ui::WindowType::companyList);
     }
 
+    ColourScheme Company::getColourSchemeForType(CompanyColourType colourType) const
+    {
+        auto colourScheme = mainColours;
+        if (customVehicleColoursSet & (1 << enumValue(colourType)))
+        {
+            colourScheme = vehicleColours[enumValue(colourType) - 1];
+        }
+        return colourScheme;
+    }
+
     /* 0x004A6841
      * Creates a vector of all the available rail track (trains and trams) for a company
      * Tram track is marked with a (1<<7) flag within the uint8_t
