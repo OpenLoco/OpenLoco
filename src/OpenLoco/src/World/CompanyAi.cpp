@@ -3666,9 +3666,46 @@ namespace OpenLoco
     static void sub_487C83(AiThought& thought)
     {
         // Gets refund costs for vehicles and costs for track mods
-        registers regs;
-        regs.edi = X86Pointer(&thought);
-        call(0x00487C83, regs);
+
+        thought.var_76 = 0;
+        if (thought.var_8B & (1U << 2))
+        {
+            for (auto i = 0U; i < thought.numVehicles; ++i)
+            {
+                auto* head = EntityManager::get<Vehicles::VehicleHead>(thought.vehicles[i]);
+                if (head == nullptr)
+                {
+                    continue;
+                }
+                Vehicles::Vehicle train(*head);
+                for (auto& car : train.cars)
+                {
+                    thought.var_76 -= car.front->refundCost;
+                }
+            }
+        }
+        currency32_t pendingVehicleCarCosts = 0;
+        for (auto i = 0U; i < thought.var_45; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
+            auto objCost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 6);
+            pendingVehicleCarCosts += objCost;
+            if (vehicleObj->hasFlags(VehicleObjectFlags::mustHavePair))
+            {
+                pendingVehicleCarCosts += objCost;
+            }
+        }
+        auto numPendingVehicles = thought.var_43;
+        if (!(thought.var_8B & (1U << 2)))
+        {
+            numPendingVehicles -= thought.numVehicles;
+        }
+        thought.var_76 += pendingVehicleCarCosts * numPendingVehicles;
+
+        if (thought.var_8B & (1U << 3))
+        {
+            thought.var_76 += tryPlaceTrackOrRoadMods(thought, 0);
+        }
     }
 
     // 0x00431209
