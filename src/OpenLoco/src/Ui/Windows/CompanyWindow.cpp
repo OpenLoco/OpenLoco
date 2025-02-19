@@ -228,7 +228,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw company owner image.
             {
-                const uint32_t image = ImageId(competitor->images[enumValue(company->ownerEmotion)] + 1, company->getColourScheme(CompanyColourType::company)).toUInt32();
+                const uint32_t image = ImageId(competitor->images[enumValue(company->ownerEmotion)] + 1, company->getPrimaryColour()).toUInt32();
                 const uint16_t x = self.x + self.widgets[widx::face].left + 1;
                 const uint16_t y = self.y + self.widgets[widx::face].top + 1;
                 drawingCtx.drawImage(x, y, image);

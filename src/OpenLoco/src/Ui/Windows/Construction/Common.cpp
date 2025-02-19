@@ -1044,16 +1044,12 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049ED40
         static void drawTrackTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto company = CompanyManager::getPlayerCompany();
-<<<<<<< HEAD
-            auto companyColour = company->mainColours.primary;
+            const auto* company = CompanyManager::getPlayerCompany();
+            const auto companyColour = company->getPrimaryColour();
 
-            auto& cState = getConstructionState();
-            auto trackObj = ObjectManager::get<TrackObject>(cState.trackType);
-=======
-            auto companyColour = company->getPrimaryColour();
-            auto trackObj = ObjectManager::get<TrackObject>(_cState->trackType);
->>>>>>> 6936686b (add some helpful functions)
+            const auto& cState = getConstructionState();
+            const auto* trackObj = ObjectManager::get<TrackObject>(cState.trackType);
+
             // Construction Tab
             if (!self.isDisabled(widx::tab_construction))
             {

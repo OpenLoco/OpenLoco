@@ -328,8 +328,7 @@ namespace OpenLoco::GameCommands
 
         const auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
         const auto company = CompanyManager::get(getUpdatingCompanyId());
-        const auto colourScheme = company->getColourSchemeForType(vehObject->companyColourType);
-        auto colourScheme = company->getColourSchemeForType(vehObject->companyColourType);
+        const auto colourScheme = company->getColourScheme(vehObject->companyColourType);
 
         VehicleBogie* newCarStart = nullptr;
         for (auto bodyNumber = 0; bodyNumber < vehObject->numCarComponents; ++bodyNumber)
