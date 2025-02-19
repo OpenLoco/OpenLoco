@@ -282,7 +282,11 @@ namespace OpenLoco
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
-        ColourScheme getColourSchemeForType(CompanyColourType) const;
+        Colour getPrimaryColour() const;
+        ColourScheme getColourScheme(CompanyColourType colourType) const;
+        bool usingColourScheme(CompanyColourType colourType) const;
+        void setUsingColourScheme(CompanyColourType colourType);
+        void unsetUsingColourScheme(CompanyColourType colourType);
         uint8_t getHeadquarterPerformanceVariation() const;
 
         bool hashTableContains(const Unk25C0HashTableEntry& entry) const;

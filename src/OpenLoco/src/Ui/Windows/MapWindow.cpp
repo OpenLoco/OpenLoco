@@ -1267,7 +1267,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
                 {
                     auto company = CompanyManager::getPlayerCompany();
-                    colour = company->mainColours.primary;
+                    colour = company->getPrimaryColour();
                 }
 
                 imageId = Gfx::recolour(imageId, colour);
@@ -1518,7 +1518,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         for (const auto& company : CompanyManager::companies())
         {
             auto index = company.id();
-            auto colour = Colours::getShade(company.mainColours.primary, 6);
+            auto colour = Colours::getShade(company.getPrimaryColour(), 6);
 
             if (!(self->var_854 & (1 << enumValue(index))) || !(mapFrameNumber & (1 << 2)))
             {

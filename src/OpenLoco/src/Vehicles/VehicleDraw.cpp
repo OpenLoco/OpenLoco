@@ -527,7 +527,7 @@ namespace OpenLoco
     static ColourScheme getCompanyVehicleColourScheme(CompanyId companyId, const VehicleObject& vehObject)
     {
         auto* company = CompanyManager::get(companyId);
-        return company->getColourSchemeForType(vehObject.companyColourType);
+        return company->getColourScheme(vehObject.companyColourType);
     }
 
     // 0x004B7741

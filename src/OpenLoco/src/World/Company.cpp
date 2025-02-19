@@ -795,12 +795,8 @@ namespace OpenLoco
             for (auto& car : train.cars)
             {
                 const auto* vehObject = car.body->getObject();
-                auto colour = mainColours;
-                if (customVehicleColoursSet & (1 << enumValue(vehObject->companyColourType)))
-                {
-                    colour = vehicleColours[enumValue(vehObject->companyColourType) - 1];
-                }
-                car.applyToComponents([colour](auto& component) { component.colourScheme = colour; });
+                auto colourScheme = getColourScheme(vehObject->companyColourType);
+                car.applyToComponents([colourScheme](auto& component) { component.colourScheme = colourScheme; });
             }
         }
         Gfx::invalidateScreen();
@@ -836,7 +832,7 @@ namespace OpenLoco
             return;
         }
 
-        const auto colour = mainColours.primary;
+        const auto colour = getPrimaryColour();
         auto hqPos = World::toTileSpace(World::Pos2(headquartersX, headquartersY));
         updateHeadquartersColourAtTile(hqPos + World::TilePos2(0, 0), headquartersZ, colour);
         updateHeadquartersColourAtTile(hqPos + World::TilePos2(1, 0), headquartersZ, colour);
@@ -896,14 +892,34 @@ namespace OpenLoco
         Ui::WindowManager::invalidate(Ui::WindowType::companyList);
     }
 
-    ColourScheme Company::getColourSchemeForType(CompanyColourType colourType) const
+    Colour Company::getPrimaryColour() const
+    {
+        return mainColours.primary;
+    }
+
+    ColourScheme Company::getColourScheme(CompanyColourType colourType) const
     {
         auto colourScheme = mainColours;
-        if (customVehicleColoursSet & (1 << enumValue(colourType)) && colourType < CompanyColourType::count)
+        if (usingColourScheme(colourType) && colourType < CompanyColourType::count)
         {
             colourScheme = vehicleColours[enumValue(colourType) - 1];
         }
         return colourScheme;
+    }
+
+    bool Company::usingColourScheme(CompanyColourType colourType) const
+    {
+        return customVehicleColoursSet & (1ULL << enumValue(colourType));
+    }
+
+    void Company::setUsingColourScheme(CompanyColourType colourType)
+    {
+        customVehicleColoursSet |= (1ULL << enumValue(colourType));
+    }
+
+    void Company::unsetUsingColourScheme(CompanyColourType colourType)
+    {
+        customVehicleColoursSet &= ~(1ULL << enumValue(colourType));
     }
 
     // 0x0042F042

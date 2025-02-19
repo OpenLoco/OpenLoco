@@ -949,8 +949,7 @@ namespace OpenLoco::Ui::Dropdown
             auto company = CompanyManager::get(companyId);
             auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
             auto ownerEmotion = company->ownerEmotion;
-            auto imageId = competitorObj->images[enumValue(ownerEmotion)];
-            imageId = Gfx::recolour(imageId, company->mainColours.primary);
+            auto imageId = ImageId(competitorObj->images[enumValue(ownerEmotion)], company->getColourScheme(CompanyColourType::company)).toUInt32();
 
             add(index, StringIds::dropdown_company_select, { imageId, company->name });
         }

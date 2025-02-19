@@ -1204,7 +1204,7 @@ namespace OpenLoco::CompanyManager
         size_t index = 0;
         for (auto& company : rawCompanies())
         {
-            _companyColours[index] = company.mainColours.primary;
+            _companyColours[index] = company.getPrimaryColour();
             index++;
         }
         _companyColours[enumValue(CompanyId::neutral)] = Colour::grey;
