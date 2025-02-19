@@ -332,7 +332,7 @@ namespace OpenLoco::GameCommands
 
         const auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
         const auto company = CompanyManager::get(getUpdatingCompanyId());
-        auto colourScheme = company->getColourSchemeForType(vehObject->companyColourType);
+        auto colourScheme = company->getColourScheme(vehObject->companyColourType);
         _1136140 = colourScheme; // Copy to global variable. Can be removed when all global uses confirmed
 
         VehicleBogie* newCarStart = nullptr;

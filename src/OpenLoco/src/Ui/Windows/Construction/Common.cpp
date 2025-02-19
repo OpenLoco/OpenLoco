@@ -888,7 +888,7 @@ namespace OpenLoco::Ui::Windows::Construction
         static void drawRoadTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto company = CompanyManager::getPlayerCompany();
-            auto companyColour = company->mainColours.primary;
+            auto companyColour = company->getPrimaryColour();
             auto roadObj = ObjectManager::get<RoadObject>(_cState->trackType & ~(1 << 7));
             // Construction Tab
             {
@@ -993,7 +993,7 @@ namespace OpenLoco::Ui::Windows::Construction
         static void drawTrackTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto company = CompanyManager::getPlayerCompany();
-            auto companyColour = company->mainColours.primary;
+            auto companyColour = company->getPrimaryColour();
             auto trackObj = ObjectManager::get<TrackObject>(_cState->trackType);
             // Construction Tab
             {
