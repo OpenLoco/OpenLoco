@@ -247,6 +247,11 @@ namespace OpenLoco
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
+        Colour getPrimaryColour() const;
+        ColourScheme getColourScheme(CompanyColourType colourType) const;
+        bool usingColourScheme(CompanyColourType colourType) const;
+        void setUsingColourScheme(CompanyColourType colourType);
+        void unsetUsingColourScheme(CompanyColourType colourType);
         std::vector<uint8_t> getAvailableRailTracks() const;
         std::vector<uint8_t> getAvailableRoads() const;
         uint8_t getHeadquarterPerformanceVariation() const;
