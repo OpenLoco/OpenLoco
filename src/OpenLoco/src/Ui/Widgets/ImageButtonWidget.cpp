@@ -11,9 +11,7 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CADE8
     static void drawImage(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
-        Ui::Point placeForImage(widget.left + window->x, widget.top + window->y);
+        Ui::Point placeForImage(widget.left, widget.top);
         const bool isColourSet = widget.image & Widget::kImageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
 
@@ -70,10 +68,10 @@ namespace OpenLoco::Ui::Widgets
         auto* window = widgetState.window;
 
         int16_t t, l, b, r;
-        t = window->y + widget.top;
-        l = window->x + widget.left;
-        r = window->x + widget.right;
-        b = window->y + widget.bottom;
+        t = widget.top;
+        l = widget.left;
+        r = widget.right;
+        b = widget.bottom;
 
         auto flags = widgetState.flags;
         if (widgetState.activated)
@@ -114,11 +112,10 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        auto* window = widgetState.window;
-        int l = widget.left + window->x;
-        int t = widget.top + window->y;
-        int r = widget.right + window->x;
-        int b = widget.bottom + window->y;
+        int l = widget.left;
+        int t = widget.top;
+        int r = widget.right;
+        int b = widget.bottom;
 
         if (widgetState.activated)
         {
