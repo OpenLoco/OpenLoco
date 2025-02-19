@@ -339,7 +339,7 @@ namespace OpenLoco::World::TileManager
 
         bool lastFound = false;
         auto isRoadStation = [](const TileElement* source, SmallZ baseZ) {
-            if (baseZ == source->baseZ())
+            if (baseZ != source->baseZ())
             {
                 return false;
             }

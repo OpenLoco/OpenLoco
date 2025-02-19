@@ -898,7 +898,7 @@ namespace OpenLoco
         }
         else
         {
-            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk6))
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk5))
             {
                 costMultiplier *= thought.var_04;
             }
