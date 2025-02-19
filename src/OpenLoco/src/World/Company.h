@@ -85,21 +85,6 @@ namespace OpenLoco
         disgusted,
     };
 
-    enum class CompanyColourType : uint8_t
-    {
-        company = 0,
-        steamLoco = 1,
-        dieselLoco = 2,
-        electricLoco = 3,
-        multipleUnit = 4,
-        passengerRailcar = 5,
-        freightRailcar = 6,
-        busAndTram = 7,
-        freightTruck = 8,
-        airplane = 9,
-        ship = 10,
-    };
-
     class OwnerStatus
     {
     public:

@@ -899,7 +899,7 @@ namespace OpenLoco
     ColourScheme Company::getColourSchemeForType(CompanyColourType colourType) const
     {
         auto colourScheme = mainColours;
-        if (customVehicleColoursSet & (1 << enumValue(colourType)))
+        if (customVehicleColoursSet & (1 << enumValue(colourType)) && colourType < CompanyColourType::count)
         {
             colourScheme = vehicleColours[enumValue(colourType) - 1];
         }

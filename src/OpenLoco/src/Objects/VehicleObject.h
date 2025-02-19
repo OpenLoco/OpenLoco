@@ -3,6 +3,7 @@
 #include "Localisation/StringIds.h"
 #include "Object.h"
 #include "Speed.hpp"
+#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <span>
 
