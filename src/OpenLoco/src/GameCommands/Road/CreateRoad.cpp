@@ -20,7 +20,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
 #include "Objects/TrackObject.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
@@ -537,7 +537,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00476D40
-    static RoadClearFunctionResult clearFunction(World::TileElement& el, currency32_t& totalCost, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const ClearFunctionArgs& args)
+    static RoadClearFunctionResult clearFunction(World::TileElement& el, currency32_t& totalCost, World::TileClearance::RemovedBuildings& removedBuildings, const ClearFunctionArgs& args)
     {
         // stack
         // 0x0 = totalCost
@@ -619,7 +619,7 @@ namespace OpenLoco::GameCommands
         _byte_1136075 = 0xFFU;
         _alternateTrackObjectId = 0xFFU;
 
-        const auto companyId = isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
+        const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
 
         if ((flags & Flags::apply) && !(flags & Flags::aiAllocated) && companyId != CompanyId::neutral)
         {
@@ -671,7 +671,7 @@ namespace OpenLoco::GameCommands
         }
 
         auto& roadPieces = World::TrackData::getRoadPiece(args.roadId);
-        std::set<World::Pos3, World::LessThanPos3> removedBuildings;
+        World::TileClearance::RemovedBuildings removedBuildings;
         // 0x0113C2EC
         bool hasStation = false;
         // 0x0112C2EA
@@ -880,7 +880,7 @@ namespace OpenLoco::GameCommands
         // TODO: Verify if we remembered to do this for track
         if (flags & Flags::apply)
         {
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
             options.madeAnyChanges = 1;
         }
 
