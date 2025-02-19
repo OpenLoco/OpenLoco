@@ -500,7 +500,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 auto company = CompanyManager::get(CompanyId(rowItem));
                 auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
-                auto imageId = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
+                auto imageId = ImageId(competitorObj->images[enumValue(company->ownerEmotion)], company->getColourScheme(CompanyColourType::company)).toUInt32();
 
                 {
                     FormatArguments args{};
@@ -1368,8 +1368,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto company = CompanyManager::get(companyId);
                     auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
 
-                    auto imageId = competitorObj->images[enumValue(company->ownerEmotion)];
-                    imageId = Gfx::recolour(imageId, company->mainColours.primary);
+                    auto imageId = ImageId(competitorObj->images[enumValue(company->ownerEmotion)], company->getColourScheme(CompanyColourType::company)).toUInt32();
 
                     auto x = self.x + 4;
                     drawingCtx.drawImage(x, y, imageId);
