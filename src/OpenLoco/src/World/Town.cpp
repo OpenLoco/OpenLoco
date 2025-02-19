@@ -41,6 +41,8 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco
 {
+    constexpr auto kMaxTownBridgeLength = 15U;
+
     static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
 
     bool Town::empty() const
@@ -1107,7 +1109,8 @@ namespace OpenLoco
         auto bridgeLength = 1U;
         bool bridgesWater = false;
         bool bridgeIsHigh = false;
-        for (; bridgeLength < 15; ++bridgeLength)
+        // Bridge length is 1 based!
+        for (; bridgeLength <= kMaxTownBridgeLength; ++bridgeLength)
         {
             sfl::static_vector<uint8_t, 9> iterationValidBridgeTypes;
             for (auto bridgeObjId : validBridgeTypes)
@@ -1154,7 +1157,8 @@ namespace OpenLoco
                 break;
             }
         }
-        if ((!bridgeIsHigh && !bridgesWater) || bridgeLength >= 15)
+
+        if ((!bridgeIsHigh && !bridgesWater) || bridgeLength > kMaxTownBridgeLength)
         {
             return false;
         }
