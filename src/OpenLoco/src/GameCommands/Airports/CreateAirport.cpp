@@ -25,19 +25,75 @@ namespace OpenLoco::GameCommands
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     // 0x00490372
-    static StationManager::NearbyStation sub_490372(World::Pos3 pos, uint8_t airportObjectId, uint8_t rotation)
+    static StationManager::NearbyStation findNearbyStationAirport(World::Pos3 pos, uint8_t airportObjectId, uint8_t rotation)
     {
-        registers regs;
-        regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.bl = airportObjectId;
-        regs.bh = rotation;
-        call(0x00490372, regs);
-        StationManager::NearbyStation result{};
-        result.id = static_cast<StationId>(regs.bx);
-        result.isPhysicallyAttached = regs.eax & (1U << 31);
-        return result;
+        // This function is very similar to StationManager::findNearbyStation differences are marked
+
+        const auto companyId = getUpdatingCompanyId();
+        // Change from StationManager::findNearbyStation
+        auto* airportObj = ObjectManager::get<AirportObject>(airportObjectId);
+        const auto [minExtent, maxExtent] = airportObj->getAirportExtents(World::toTileSpace(pos), rotation);
+
+        // Check area including a 2 tile border around the airport
+        const auto tilePosA = minExtent - World::TilePos2(2, 2);
+        const auto tilePosB = maxExtent + World::TilePos2(2, 2);
+
+        auto minDistanceStation = StationId::null;
+        auto minDistance = std::numeric_limits<int16_t>::max();
+        bool isPhysicallyAttached = false;
+        for (const auto& tilePos : World::getClampedRange(tilePosA, tilePosB))
+        {
+            const auto tile = World::TileManager::get(tilePos);
+            for (const auto& el : tile)
+            {
+                auto* elStation = el.as<World::StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+                if (elStation->isGhost())
+                {
+                    continue;
+                }
+                auto* station = StationManager::get(elStation->stationId());
+                if (station->owner != companyId)
+                {
+                    continue;
+                }
+
+                const auto distance = Math::Vector::chebyshevDistance2D(World::toWorldSpace(tilePos), pos);
+                if (distance < minDistance)
+                {
+                    auto distDiffZ = std::abs(elStation->baseHeight() - pos.z);
+                    if (distDiffZ > StationManager::kMaxStationNearbyDistance)
+                    {
+                        continue;
+                    }
+                    // Change from StationManager::findNearbyStation
+                    if ((station->flags & StationFlags::flag_6) != StationFlags::none)
+                    {
+                        continue;
+                    }
+
+                    minDistance = distance + distDiffZ / 2;
+                    if (minDistance <= StationManager::kMaxStationNearbyDistance)
+                    {
+                        isPhysicallyAttached = true;
+                    }
+                    minDistanceStation = elStation->stationId();
+                }
+            }
+        }
+
+        const auto nearbyEmptyStation = StationManager::findNearbyEmptyStation(pos, companyId, minDistance);
+        if (nearbyEmptyStation != StationId::null)
+        {
+            return StationManager::NearbyStation{ nearbyEmptyStation, isPhysicallyAttached };
+        }
+        else
+        {
+            return StationManager::NearbyStation{ minDistanceStation, isPhysicallyAttached };
+        }
     }
 
     enum class NearbyStationValidation
@@ -50,7 +106,7 @@ namespace OpenLoco::GameCommands
     // 0x00492E48 & 0x00492DBA
     static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint8_t airportObjectId, const uint8_t rotation, const uint8_t flags)
     {
-        auto nearbyStation = sub_490372(pos, airportObjectId, rotation);
+        auto nearbyStation = findNearbyStationAirport(pos, airportObjectId, rotation);
         if (nearbyStation.id == StationId::null)
         {
             return std::make_pair(NearbyStationValidation::requiresNewStation, StationId::null);
@@ -293,7 +349,7 @@ namespace OpenLoco::GameCommands
         if ((flags & Flags::ghost) && (flags & Flags::apply))
         {
             _lastConstructedAdjoiningStationCentrePos = args.pos;
-            auto nearbyStation = sub_490372(args.pos, args.type, args.rotation);
+            auto nearbyStation = findNearbyStationAirport(args.pos, args.type, args.rotation);
             _lastConstructedAdjoiningStationId = static_cast<int16_t>(nearbyStation.id);
         }
 
