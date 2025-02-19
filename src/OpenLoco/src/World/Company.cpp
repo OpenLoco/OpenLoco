@@ -896,6 +896,16 @@ namespace OpenLoco
         Ui::WindowManager::invalidate(Ui::WindowType::companyList);
     }
 
+    ColourScheme Company::getColourSchemeForType(CompanyColourType colourType) const
+    {
+        auto colourScheme = mainColours;
+        if (customVehicleColoursSet & (1 << enumValue(colourType)))
+        {
+            colourScheme = vehicleColours[enumValue(colourType) - 1];
+        }
+        return colourScheme;
+    }
+
     // 0x0042F042
     uint8_t Company::getHeadquarterPerformanceVariation() const
     {

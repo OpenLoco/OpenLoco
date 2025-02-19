@@ -13,7 +13,7 @@ namespace OpenLoco::GameCommands
             : companyId(CompanyId(regs.dl))
             , isPrimary()
             , value(regs.al)
-            , colourType(regs.cl)
+            , colourType(CompanyColourType(regs.cl))
             , setColourMode(regs.dh)
         {
             if (!setColourMode)
@@ -25,16 +25,16 @@ namespace OpenLoco::GameCommands
         CompanyId companyId;
         bool isPrimary;
         uint8_t value;
-        uint8_t colourType;
+        CompanyColourType colourType;
         bool setColourMode;
 
         explicit operator registers() const
         {
             registers regs;
 
-            regs.cl = colourType;           // vehicle type or main
-            regs.dh = setColourMode;        // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
-            regs.dl = enumValue(companyId); // company id
+            regs.cl = enumValue(colourType); // colour type
+            regs.dh = setColourMode;         // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
+            regs.dl = enumValue(companyId);  // company id
 
             if (!setColourMode)
             {
