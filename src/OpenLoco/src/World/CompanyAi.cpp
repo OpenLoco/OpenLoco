@@ -635,12 +635,118 @@ namespace OpenLoco
         call(0x00430A12, regs);
     }
 
+    struct Unk480EA8Count
+    {
+        uint8_t al;
+        uint8_t ah;
+    };
+
+    // 0x00480EA8
+    static Unk480EA8Count sub_480EA8(Company& company, AiThought& thought)
+    {
+        uint8_t al = 0;
+        uint8_t ah = 0;
+        for (auto& otherCompany : CompanyManager::companies())
+        {
+            for (auto& otherThought : otherCompany.aiThoughts)
+            {
+                if (otherThought.type == AiThoughtType::null)
+                {
+                    continue;
+                }
+                if (otherThought.cargoType != thought.cargoType)
+                {
+                    continue;
+                }
+                auto otherThoughtFlags = kThoughtTypeFlags[enumValue(otherThought.type)];
+                if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk0))
+                {
+                    continue;
+                }
+                if (otherThought.var_01 == thought.var_01)
+                {
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) || otherThought.var_02 == thought.var_02)
+                    {
+                        if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1)
+                            && thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2))
+                        {
+                            // 0x00480F6C
+                        }
+                    }
+                }
+                if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0))
+                {
+                    continue;
+                }
+                if (otherThought.var_02 != thought.var_02)
+                {
+                    continue;
+                }
+                if (otherThought.var_01 != thought.var_01)
+                {
+                    continue;
+                }
+                // Note: unk1 unk2 are swapped on our thought
+                if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2)
+                    || thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+                {
+                    continue;
+                }
+                // 0x00480F6C
+                if (&company != &otherCompany)
+                {
+                    if (al != 0xFFU)
+                    {
+                        ++al;
+                    }
+                    if (otherThought.var_84 >= 3 * otherThought.var_7C)
+                    {
+                        ++ah;
+                    }
+                }
+                else
+                {
+                    if (&otherThought == &thought)
+                    {
+                        continue;
+                    }
+                    al = 0xFFU;
+                }
+            }
+        }
+        return Unk480EA8Count{ al, ah };
+    }
+
     // 0x00430B5D
     static void sub_430B5D(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430B5D, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        auto [al, ah] = sub_480EA8(company, thought);
+        if (al == 0xFFU || al > 1)
+        {
+            clearThought(thought);
+            company.var_4A5 = 13;
+            return;
+        }
+        if (al == 1)
+        {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk12 | ThoughtTypeFlags::unk13))
+            {
+                if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+                {
+                    clearThought(thought);
+                    company.var_4A5 = 13;
+                    return;
+                }
+            }
+            if (al != ah)
+            {
+                clearThought(thought);
+                company.var_4A5 = 13;
+                return;
+            }
+        }
+        company.var_4A5 = 2;
     }
 
     // 0x00430BAB

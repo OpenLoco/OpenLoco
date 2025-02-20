@@ -82,7 +82,7 @@ namespace OpenLoco
         static_assert(sizeof(Station) == 0xE);
         AiThoughtType type; // 0x00 0x4A8
         uint8_t var_01;     // 0x4A9
-        uint8_t pad_02;
+        uint8_t var_02;
         uint8_t numStations; // 0x03 0x4AB size of stations
         uint8_t var_04;      // 0x4AC station length
         uint8_t pad_05;
