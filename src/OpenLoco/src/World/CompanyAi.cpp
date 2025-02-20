@@ -10,6 +10,7 @@
 #include "GameCommands/Docks/CreatePort.h"
 #include "GameCommands/Docks/RemovePort.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Road/CreateRoadStation.h"
 #include "GameCommands/Road/RemoveRoad.h"
@@ -2904,6 +2905,37 @@ namespace OpenLoco
         _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
+    static StationElement* getAiAllocatedStationElement(const Pos3& pos)
+    {
+        auto tile = TileManager::get(pos.x, pos.y);
+        auto baseZ = pos.z / 4;
+
+        for (auto& element : tile)
+        {
+            auto* stationElement = element.as<StationElement>();
+
+            if (stationElement == nullptr)
+            {
+                continue;
+            }
+
+            if (stationElement->baseZ() != baseZ)
+            {
+                continue;
+            }
+
+            if (stationElement->isAiAllocated())
+            {
+                return stationElement;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+        return nullptr;
+    }
+
     struct RoadAndAiStationElements
     {
         const RoadElement* roadElement;
@@ -2982,7 +3014,7 @@ namespace OpenLoco
             const auto center = World::Pos2(pos) + World::Pos2{ 16, 16 };
             companySetObservation(companyId, ObservationStatus::buildingTrackRoad, center, EntityId::null, roadObjectId | (1U << 7));
         }
-        auto* newRoadObj = ObjectManager::get<RoadObject>(roadObjectId);
+
         auto [elRoad, elStation] = getRoadAndAiStationElements(pos, rotation, roadObjectId, roadId, sequenceIndex, noStations, companyId);
         if (elRoad == nullptr || (!elRoad->isAiAllocated() && elStation == nullptr))
         {
@@ -3003,17 +3035,97 @@ namespace OpenLoco
                 return GameCommands::FAILURE;
             }
         }
-        // 0x0047BBA6
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.di = pos.z;
-        regs.bl = flags;
-        regs.bh = rotation;
-        regs.bp = roadObjectId;
-        regs.edx = (noStations ? (1U << 31) : 0) | roadId | (sequenceIndex << 8);
-        call(0x0047BA2C, regs);
-        return regs.ebx;
+
+        currency32_t totalCost = 0;
+        const auto existingRoadObjId = elRoad->roadObjectId();
+        auto* existingRoadObj = ObjectManager::get<RoadObject>(existingRoadObjId);
+        uint8_t mods = 0;
+        if (existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
+        {
+            mods = elRoad->mods();
+        }
+        uint8_t bridge = 0xFFU;
+        if (elRoad->hasBridge())
+        {
+            bridge = elRoad->bridge();
+        }
+
+        if (elStation != nullptr)
+        {
+            GameCommands::RoadStationRemovalArgs args{};
+            args.pos = pos;
+            args.roadId = roadId;
+            args.roadObjectId = existingRoadObjId;
+            args.rotation = rotation;
+            args.index = sequenceIndex;
+            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+        }
+
+        if (!(_112C2F4 & (1U << 0)))
+        {
+            assert(existingRoadObjId == roadObjectId);
+            GameCommands::RoadRemovalArgs args{};
+            args.pos = pos;
+            args.objectId = existingRoadObjId;
+            args.roadId = roadId;
+            args.rotation = rotation;
+            args.sequenceIndex = sequenceIndex;
+            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            // Vanilla copied the bridge here via a global but
+            // we have already previously done that
+        }
+
+        if (!(_112C2F4 & (1U << 0)))
+        {
+            GameCommands::RoadPlacementArgs args{};
+            args.bridge = bridge;
+            args.mods = mods;
+            args.pos = pos;
+            args.roadId = roadId;
+            args.roadObjectId = roadObjectId;
+            args.rotation = rotation;
+            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_7);
+            if (res == GameCommands::FAILURE)
+            {
+                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_7);
+            }
+            if (res != GameCommands::FAILURE)
+            {
+                totalCost += res;
+            }
+        }
+
+        if (elStation != nullptr)
+        {
+            GameCommands::RoadStationPlacementArgs args{};
+            args.pos = pos;
+            args.roadId = roadId;
+            args.roadObjectId = existingRoadObjId;
+            args.rotation = rotation;
+            args.index = sequenceIndex;
+            args.type = roadStationObjId;
+            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_7);
+            if (res == GameCommands::FAILURE)
+            {
+                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_7);
+            }
+            if (res != GameCommands::FAILURE)
+            {
+                totalCost += res;
+            }
+            else
+            {
+                return GameCommands::FAILURE;
+            }
+        }
+
+        // This total cost check seems counter productive as the AI is allowed
+        // to build for free if it can't afford it. TODO: probably remove
+        if ((flags & GameCommands::Flags::apply) && totalCost != 0)
+        {
+            GameCommands::playConstructionPlacementSound(pos);
+        }
+        return totalCost;
     }
 
     // 0x004866C8
@@ -3365,37 +3477,6 @@ namespace OpenLoco
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
         }
-    }
-
-    static StationElement* getAiAllocatedStationElement(const Pos3& pos)
-    {
-        auto tile = TileManager::get(pos.x, pos.y);
-        auto baseZ = pos.z / 4;
-
-        for (auto& element : tile)
-        {
-            auto* stationElement = element.as<StationElement>();
-
-            if (stationElement == nullptr)
-            {
-                continue;
-            }
-
-            if (stationElement->baseZ() != baseZ)
-            {
-                continue;
-            }
-
-            if (stationElement->isAiAllocated())
-            {
-                return stationElement;
-            }
-            else
-            {
-                return nullptr;
-            }
-        }
-        return nullptr;
     }
 
     // 0x00486224
