@@ -2910,7 +2910,7 @@ namespace OpenLoco
         const StationElement* stationElement;
     };
 
-    static RoadAndAiStationElements getRoadAndAiStationElements(const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId, const uint8_t roadId, const uint8_t sequenceIndex, const uint32_t unkFlag, const CompanyId companyId)
+    static RoadAndAiStationElements getRoadAndAiStationElements(const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId, const uint8_t roadId, const uint8_t sequenceIndex, const bool noStations, const CompanyId companyId)
     {
         auto* newRoadObj = ObjectManager::get<RoadObject>(roadObjectId);
         auto tile = TileManager::get(pos);
@@ -2933,8 +2933,9 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (unkFlag & (1U << 31))
+            if (noStations)
             {
+                // Odd? why only in the no station branch!
                 if (elRoad->owner() != companyId)
                 {
                     continue;
@@ -2971,7 +2972,7 @@ namespace OpenLoco
 
     // 0x0047BA2C
     // Converts AiAllocated road to real road
-    static uint32_t replaceAiAllocatedRoad(World::Pos3 pos, uint8_t rotation, uint8_t roadObjectId, uint8_t roadId, uint8_t sequenceIndex, uint32_t unkFlag, uint8_t flags)
+    static uint32_t replaceAiAllocatedRoad(World::Pos3 pos, uint8_t rotation, uint8_t roadObjectId, uint8_t roadId, uint8_t sequenceIndex, bool noStations, uint8_t flags)
     {
         // Structured very like a game command
         GameCommands::setExpenditureType(ExpenditureType::Construction);
@@ -2982,12 +2983,13 @@ namespace OpenLoco
             companySetObservation(companyId, ObservationStatus::buildingTrackRoad, center, EntityId::null, roadObjectId | (1U << 7));
         }
         auto* newRoadObj = ObjectManager::get<RoadObject>(roadObjectId);
-        auto [elRoad, elStation] = getRoadAndAiStationElements(pos, rotation, roadObjectId, roadId, sequenceIndex, unkFlag, companyId);
+        auto [elRoad, elStation] = getRoadAndAiStationElements(pos, rotation, roadObjectId, roadId, sequenceIndex, noStations, companyId);
         if (elRoad == nullptr || (!elRoad->isAiAllocated() && elStation == nullptr))
         {
             return GameCommands::FAILURE;
         }
         uint8_t _112C2F4 = 0;
+        uint8_t roadStationObjId = 0xFFU;
         if (!elRoad->isAiAllocated() && elStation != nullptr)
         {
             _112C2F4 |= 1U << 0; // hasNonAiAllocatedRoad
@@ -2995,12 +2997,13 @@ namespace OpenLoco
         if (elStation != nullptr)
         {
             _112C2F4 |= 1U << 1; // hasStation
-            if (unkFlag)
+            roadStationObjId = elStation->objectId();
+            if (noStations)
             {
                 return GameCommands::FAILURE;
             }
         }
-
+        // 0x0047BBA6
         registers regs;
         regs.ax = pos.x;
         regs.cx = pos.y;
@@ -3008,7 +3011,7 @@ namespace OpenLoco
         regs.bl = flags;
         regs.bh = rotation;
         regs.bp = roadObjectId;
-        regs.edx = unkFlag | roadId | (sequenceIndex << 8);
+        regs.edx = (noStations ? (1U << 31) : 0) | roadId | (sequenceIndex << 8);
         call(0x0047BA2C, regs);
         return regs.ebx;
     }
@@ -3104,7 +3107,7 @@ namespace OpenLoco
                 // Road
 
                 // TODO: Vanilla bug passes rotation for flags???
-                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, 0, aiStation.rotation) == GameCommands::FAILURE)
+                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, aiStation.rotation) == GameCommands::FAILURE)
                 {
                     return 2;
                 }
