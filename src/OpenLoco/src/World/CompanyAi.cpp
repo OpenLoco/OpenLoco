@@ -2904,9 +2904,103 @@ namespace OpenLoco
         _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
-    // 0x0047BA2C
-    static uint32_t sub_47BA2C(World::Pos3 pos, uint8_t rotation, uint8_t roadObjectId, uint32_t unk, uint8_t flags)
+    struct RoadAndAiStationElements
     {
+        const RoadElement* roadElement;
+        const StationElement* stationElement;
+    };
+
+    static RoadAndAiStationElements getRoadAndAiStationElements(const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId, const uint8_t roadId, const uint8_t sequenceIndex, const uint32_t unkFlag, const CompanyId companyId)
+    {
+        auto* newRoadObj = ObjectManager::get<RoadObject>(roadObjectId);
+        auto tile = TileManager::get(pos);
+        for (const auto& el : tile)
+        {
+            auto* elRoad = el.as<RoadElement>();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+            if (elRoad->baseHeight() != pos.z)
+            {
+                continue;
+            }
+            if (elRoad->rotation() != rotation)
+            {
+                continue;
+            }
+            if (elRoad->sequenceIndex() != sequenceIndex)
+            {
+                continue;
+            }
+            if (unkFlag & (1U << 31))
+            {
+                if (elRoad->owner() != companyId)
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                if (elRoad->roadObjectId() != roadObjectId)
+                {
+                    auto* existingRoadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                    if (!existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
+                    {
+                        continue;
+                    }
+                    if (!newRoadObj->hasFlags(RoadObjectFlags::unk_03))
+                    {
+                        continue;
+                    }
+                }
+            }
+            if (elRoad->roadId() != roadId)
+            {
+                continue;
+            }
+
+            if (!elRoad->hasStationElement())
+            {
+                return { elRoad, nullptr };
+            }
+            return { elRoad, getAiAllocatedStationElement(pos) };
+        }
+        return { nullptr, nullptr };
+    }
+
+    // 0x0047BA2C
+    // Converts AiAllocated road to real road
+    static uint32_t replaceAiAllocatedRoad(World::Pos3 pos, uint8_t rotation, uint8_t roadObjectId, uint8_t roadId, uint8_t sequenceIndex, uint32_t unkFlag, uint8_t flags)
+    {
+        // Structured very like a game command
+        GameCommands::setExpenditureType(ExpenditureType::Construction);
+        const auto companyId = GameCommands::getUpdatingCompanyId();
+        if (flags & GameCommands::Flags::apply)
+        {
+            const auto center = World::Pos2(pos) + World::Pos2{ 16, 16 };
+            companySetObservation(companyId, ObservationStatus::buildingTrackRoad, center, EntityId::null, roadObjectId | (1U << 7));
+        }
+        auto* newRoadObj = ObjectManager::get<RoadObject>(roadObjectId);
+        auto [elRoad, elStation] = getRoadAndAiStationElements(pos, rotation, roadObjectId, roadId, sequenceIndex, unkFlag, companyId);
+        if (elRoad == nullptr || (!elRoad->isAiAllocated() && elStation == nullptr))
+        {
+            return GameCommands::FAILURE;
+        }
+        uint8_t _112C2F4 = 0;
+        if (!elRoad->isAiAllocated() && elStation != nullptr)
+        {
+            _112C2F4 |= 1U << 0; // hasNonAiAllocatedRoad
+        }
+        if (elStation != nullptr)
+        {
+            _112C2F4 |= 1U << 1; // hasStation
+            if (unkFlag)
+            {
+                return GameCommands::FAILURE;
+            }
+        }
+
         registers regs;
         regs.ax = pos.x;
         regs.cx = pos.y;
@@ -2914,13 +3008,14 @@ namespace OpenLoco
         regs.bl = flags;
         regs.bh = rotation;
         regs.bp = roadObjectId;
-        regs.edx = unk;
+        regs.edx = unkFlag | roadId | (sequenceIndex << 8);
         call(0x0047BA2C, regs);
         return regs.ebx;
     }
 
     // 0x004866C8
-    static uint8_t sub_4866C8(const Company& company, AiThought& thought)
+    // Replaces AiAllocated assets with real assets
+    static uint8_t replaceAiAllocated(const Company& company, AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -3009,7 +3104,7 @@ namespace OpenLoco
                 // Road
 
                 // TODO: Vanilla bug passes rotation for flags???
-                if (sub_47BA2C(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, aiStation.rotation) == GameCommands::FAILURE)
+                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, 0, aiStation.rotation) == GameCommands::FAILURE)
                 {
                     return 2;
                 }
@@ -3067,7 +3162,7 @@ namespace OpenLoco
     // 0x0043106B
     static void sub_43106B(Company& company, AiThought& thought)
     {
-        const auto res = sub_4866C8(company, thought);
+        const auto res = replaceAiAllocated(company, thought);
         if (res == 2)
         {
             company.var_4A4 = AiThinkState::unk6;
@@ -3662,6 +3757,45 @@ namespace OpenLoco
         _funcs_4F9524[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
+    // 0x00487DAD
+    static uint32_t tryPlaceTrackOrRoadMods(AiThought& thought, uint8_t flags)
+    {
+        if (thought.trackObjId & (1U << 7))
+        {
+            GameCommands::RoadModsPlacementArgs args{};
+            args.pos = World::Pos3(thought.stations[0].pos, thought.stations[0].baseZ * World::kSmallZStep);
+            args.rotation = thought.stations[0].rotation;
+            args.roadObjType = thought.trackObjId & ~(1U << 7);
+            args.index = 0;
+            args.modSection = 2;
+            args.roadId = 0;
+            args.type = thought.mods;
+            const auto cost = GameCommands::doCommand(args, flags);
+            if (cost != GameCommands::FAILURE)
+            {
+                return cost;
+            }
+            return GameCommands::doCommand(args, flags | GameCommands::Flags::noPayment);
+        }
+        else
+        {
+            GameCommands::TrackModsPlacementArgs args{};
+            args.pos = World::Pos3(thought.stations[0].pos, thought.stations[0].baseZ * World::kSmallZStep);
+            args.rotation = thought.stations[0].rotation;
+            args.trackObjType = thought.trackObjId;
+            args.index = 0;
+            args.modSection = 2;
+            args.trackId = 0;
+            args.type = thought.mods;
+            const auto cost = GameCommands::doCommand(args, flags);
+            if (cost != GameCommands::FAILURE)
+            {
+                return cost;
+            }
+            return GameCommands::doCommand(args, flags | GameCommands::Flags::noPayment);
+        }
+    }
+
     // 0x00487C83
     static void sub_487C83(AiThought& thought)
     {
@@ -3720,45 +3854,6 @@ namespace OpenLoco
     {
         // branch on sub_487E6D (which is a nop) would have made var_4A4 = 1
         company.var_4A5 = 2;
-    }
-
-    // 0x00487DAD
-    static uint32_t tryPlaceTrackOrRoadMods(AiThought& thought, uint8_t flags)
-    {
-        if (thought.trackObjId & (1U << 7))
-        {
-            GameCommands::RoadModsPlacementArgs args{};
-            args.pos = World::Pos3(thought.stations[0].pos, thought.stations[0].baseZ * World::kSmallZStep);
-            args.rotation = thought.stations[0].rotation;
-            args.roadObjType = thought.trackObjId & ~(1U << 7);
-            args.index = 0;
-            args.modSection = 2;
-            args.roadId = 0;
-            args.type = thought.mods;
-            const auto cost = GameCommands::doCommand(args, flags);
-            if (cost != GameCommands::FAILURE)
-            {
-                return cost;
-            }
-            return GameCommands::doCommand(args, flags | GameCommands::Flags::noPayment);
-        }
-        else
-        {
-            GameCommands::TrackModsPlacementArgs args{};
-            args.pos = World::Pos3(thought.stations[0].pos, thought.stations[0].baseZ * World::kSmallZStep);
-            args.rotation = thought.stations[0].rotation;
-            args.trackObjType = thought.trackObjId;
-            args.index = 0;
-            args.modSection = 2;
-            args.trackId = 0;
-            args.type = thought.mods;
-            const auto cost = GameCommands::doCommand(args, flags);
-            if (cost != GameCommands::FAILURE)
-            {
-                return cost;
-            }
-            return GameCommands::doCommand(args, flags | GameCommands::Flags::noPayment);
-        }
     }
 
     // 0x00487E74
