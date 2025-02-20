@@ -899,7 +899,7 @@ namespace OpenLoco
         }
         else
         {
-            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk6))
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk5))
             {
                 costMultiplier *= thought.var_04;
             }
@@ -3040,7 +3040,7 @@ namespace OpenLoco
         const auto existingRoadObjId = elRoad->roadObjectId();
         auto* existingRoadObj = ObjectManager::get<RoadObject>(existingRoadObjId);
         uint8_t mods = 0;
-        if (existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
         {
             mods = elRoad->mods();
         }
@@ -3081,6 +3081,10 @@ namespace OpenLoco
             args.bridge = bridge;
             args.mods = mods;
             args.pos = pos;
+            // We shift this down as we need to be at the start of the road piece
+            // which for road that is sloping will not be the same as the
+            // produced road element
+            args.pos.z -= TrackData::getRoadPiece(roadId)[0].z;
             args.roadId = roadId;
             args.roadObjectId = roadObjectId;
             args.rotation = rotation;
