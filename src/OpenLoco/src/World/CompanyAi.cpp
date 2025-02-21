@@ -658,37 +658,44 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                auto otherThoughtFlags = kThoughtTypeFlags[enumValue(otherThought.type)];
-                if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk0))
-                {
-                    continue;
-                }
-                if (otherThought.var_01 == thought.var_01)
-                {
-                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) || otherThought.var_02 == thought.var_02)
+                auto compatibleThought = [&otherThought, &thought]() {
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk0))
                     {
-                        if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1)
-                            && thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2))
+                        return false;
+                    }
+                    if (otherThought.var_01 == thought.var_01)
+                    {
+                        if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) || otherThought.var_02 == thought.var_02)
                         {
-                            // 0x00480F6C
+                            if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1)
+                                && thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2))
+                            {
+                                return true;
+                            }
                         }
                     }
-                }
-                if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0))
-                {
-                    continue;
-                }
-                if (otherThought.var_02 != thought.var_02)
-                {
-                    continue;
-                }
-                if (otherThought.var_01 != thought.var_01)
-                {
-                    continue;
-                }
-                // Note: unk1 unk2 are swapped on our thought
-                if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2)
-                    || thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0))
+                    {
+                        return false;
+                    }
+                    if (otherThought.var_02 != thought.var_01)
+                    {
+                        return false;
+                    }
+                    if (otherThought.var_01 != thought.var_02)
+                    {
+                        return false;
+                    }
+                    // Note: unk1 unk2 are swapped on our thought
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2)
+                        || thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+                    {
+                        return false;
+                    }
+                    return true;
+                }();
+
+                if (!compatibleThought)
                 {
                     continue;
                 }
