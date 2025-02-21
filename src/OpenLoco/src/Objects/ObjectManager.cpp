@@ -1020,6 +1020,33 @@ namespace OpenLoco::ObjectManager
         Gfx::PaletteMap::setEntryImage(ExtColour::water, paletteImageId);
     }
 
+    // 0x00469F90
+    static void resetDefaultLandObject()
+    {
+        for (size_t i = 0; i < getMaxObjects(ObjectType::land); i++)
+        {
+            auto* landObj = get<LandObject>(i);
+            if (landObj != nullptr)
+            {
+                if (landObj->distributionPattern == 0)
+                {
+                    getGameState().lastLandOption = i;
+                    return;
+                }
+            }
+        }
+        for (size_t i = 0; i < getMaxObjects(ObjectType::land); i++)
+        {
+            auto* landObj = get<LandObject>(i);
+            if (landObj != nullptr)
+            {
+                getGameState().lastLandOption = i;
+                return;
+            }
+        }
+        getGameState().lastLandOption = 0xFFU;
+    }
+
     // 0x004748FA
     void sub_4748FA()
     {
@@ -1027,7 +1054,7 @@ namespace OpenLoco::ObjectManager
         // determine trafficHandedness
         call(0x0047D9F2);
         updateWaterPalette();
-        call(0x00469F90);
+        resetDefaultLandObject();
     }
 
     void registerHooks()
