@@ -635,17 +635,18 @@ namespace OpenLoco
         call(0x00430A12, regs);
     }
 
-    struct Unk480EA8Count
+    struct SimilarThoughts
     {
-        uint8_t al;
-        uint8_t ah;
+        uint8_t total;
+        uint8_t totalUnprofitable;
+        bool inSameCompany;
     };
 
     // 0x00480EA8
-    static Unk480EA8Count sub_480EA8(Company& company, AiThought& thought)
+    static SimilarThoughts getSimilarThoughtsInAllCompanies(Company& company, AiThought& thought)
     {
-        uint8_t al = 0;
-        uint8_t ah = 0;
+        uint8_t numSimilarThoughts = 0;
+        uint8_t numUnprofitableThoughts = 0;
         for (auto& otherCompany : CompanyManager::companies())
         {
             for (auto& otherThought : otherCompany.aiThoughts)
@@ -702,13 +703,13 @@ namespace OpenLoco
                 // 0x00480F6C
                 if (&company != &otherCompany)
                 {
-                    if (al != 0xFFU)
+                    if (numSimilarThoughts != 0xFFU)
                     {
-                        ++al;
+                        ++numSimilarThoughts;
                     }
                     if (otherThought.var_84 >= 3 * otherThought.var_7C)
                     {
-                        ++ah;
+                        ++numUnprofitableThoughts;
                     }
                 }
                 else
@@ -717,25 +718,25 @@ namespace OpenLoco
                     {
                         continue;
                     }
-                    al = 0xFFU;
+                    return { 0, 0, true };
                 }
             }
         }
-        return Unk480EA8Count{ al, ah };
+        return SimilarThoughts{ numSimilarThoughts, numUnprofitableThoughts, false };
     }
 
     // 0x00430B5D
     static void sub_430B5D(Company& company)
     {
         auto& thought = company.aiThoughts[company.activeThoughtId];
-        auto [al, ah] = sub_480EA8(company, thought);
-        if (al == 0xFFU || al > 1)
+        auto similarThoughts = getSimilarThoughtsInAllCompanies(company, thought);
+        if (similarThoughts.inSameCompany || similarThoughts.total > 1)
         {
             clearThought(thought);
             company.var_4A5 = 13;
             return;
         }
-        if (al == 1)
+        if (similarThoughts.total == 1)
         {
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk12 | ThoughtTypeFlags::unk13))
             {
@@ -746,7 +747,7 @@ namespace OpenLoco
                     return;
                 }
             }
-            if (al != ah)
+            if (similarThoughts.total != similarThoughts.totalUnprofitable)
             {
                 clearThought(thought);
                 company.var_4A5 = 13;
