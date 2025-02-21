@@ -39,34 +39,30 @@ namespace OpenLoco::World
         return _data == nullptr;
     }
 
-    TileElement* Tile::begin()
+    Tile::Iterator Tile::begin()
     {
-        return _data;
+        return Iterator{ _data };
     }
 
-    TileElement* Tile::begin() const
+    Tile::Iterator Tile::begin() const
     {
-        return const_cast<Tile&>(*this).begin();
+        return Iterator{ _data };
     }
 
-    TileElement* Tile::end()
+    Tile::Iterator Tile::end()
     {
-        auto el = _data;
-        do
-        {
-            el++;
-        } while (!(el - 1)->isLast());
-        return el;
+        return Iterator{};
     }
 
-    TileElement* Tile::end() const
+    Tile::Iterator Tile::end() const
     {
-        return const_cast<Tile&>(*this).end();
+        return Iterator{};
     }
 
     size_t Tile::size()
     {
-        return end() - begin();
+        const auto dist = std::distance(begin(), end());
+        return static_cast<size_t>(dist);
     }
 
     TileElement* Tile::operator[](size_t i)
