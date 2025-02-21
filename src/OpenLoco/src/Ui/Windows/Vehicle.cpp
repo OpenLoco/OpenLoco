@@ -86,6 +86,8 @@ using OpenLoco::GameCommands::VehicleChangeRunningModeArgs;
 
 namespace OpenLoco::Ui::Windows::Vehicle
 {
+    static loco_global<StationId, 0x00F252A4> _hoveredStationId;
+
     namespace Common
     {
         enum widx
@@ -2878,22 +2880,264 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return args;
         }
 
+        // 0x004B5BB9
+        static ViewportInteraction::InteractionArg stationLabelAdjustedInteaction(const Vehicles::VehicleHead& head, int16_t var_842, StationId stationId, ViewportInteraction::InteractionArg interaction)
+        {
+            auto* station = StationManager::get(stationId);
+            if (station == nullptr)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+            if (station->owner != CompanyManager::getControllingId())
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            _hoveredStationId = stationId;
+            World::setMapSelectionFlags(World::MapSelectionFlags::hoveringOverStation);
+            ViewportManager::invalidate(station);
+
+            {
+                auto args = FormatArguments::mapToolTip(StringIds::click_to_insert_new_order_stop_at);
+                args.push(station->name);
+                args.push(station->town);
+            }
+
+            if (var_842 != 0)
+            {
+                uint32_t targetOffset = 0U;
+                if (var_842 < 0)
+                {
+                    Vehicles::OrderRingView orders(head.orderTableOffset);
+                    auto lastOrder = orders.begin();
+                    while ((lastOrder + 1) != orders.end())
+                    {
+                        lastOrder++;
+                    }
+                    targetOffset = lastOrder->getOffset();
+                }
+                else
+                {
+                    Vehicles::OrderRingView orders(head.orderTableOffset);
+                    auto lastOrder = orders.begin();
+                    while ((lastOrder + 1) != orders.end() && var_842 != 0)
+                    {
+                        lastOrder++;
+                        var_842--;
+                    }
+                    targetOffset = lastOrder->getOffset();
+                }
+                auto* order = Vehicles::OrderManager::orders()[targetOffset].as<Vehicles::OrderStopAt>();
+                if (order != nullptr)
+                {
+                    if (order->getStation() == stationId)
+                    {
+                        if (head.mode != TransportMode::water && head.mode != TransportMode::air)
+                        {
+                            auto args = FormatArguments::mapToolTip(StringIds::click_again_to_change_last_order_route_through);
+                            args.push(station->name);
+                            args.push(station->town);
+                        }
+                    }
+                }
+            }
+            return ViewportInteraction::InteractionArg(interaction.pos, enumValue(stationId), ViewportInteraction::InteractionItem::stationLabel, interaction.modId);
+        }
+
+        // 0x004B5BA3
+        static ViewportInteraction::InteractionArg stationAdjustedInteaction(const Vehicles::VehicleHead& head, int16_t var_842, World::TileElementBase* el, ViewportInteraction::InteractionArg interaction)
+        {
+            auto* elStation = el->as<StationElement>();
+            if (elStation == nullptr)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+            if (elStation->isAiAllocated() || elStation->isGhost())
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            return stationLabelAdjustedInteaction(head, var_842, elStation->stationId(), interaction);
+        }
+
+        // 0x004B5B92
+        static ViewportInteraction::InteractionArg trainStationAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
+        {
+            auto* el = static_cast<TileElement*>(interaction.object);
+            auto* elStation = el->as<StationElement>();
+            if (elStation == nullptr)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+            auto* elTrack = elStation->prev()->as<TrackElement>();
+            if (elTrack == nullptr)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            if (elTrack->owner() != CompanyManager::getControllingId())
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            return stationAdjustedInteaction(head, var_842, elStation, interaction);
+        }
+
+        // 0x004B5AC9
+        static ViewportInteraction::InteractionArg trackAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
+        {
+            auto* el = static_cast<TileElement*>(interaction.object);
+            auto* elTrack = el->as<TrackElement>();
+            if (elTrack == nullptr)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            if (elTrack->isAiAllocated() || elTrack->isGhost())
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            if (elTrack->owner() != CompanyManager::getControllingId())
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            if (elTrack->hasStationElement())
+            {
+                auto* elStation = elTrack->next()->as<StationElement>();
+                if (elStation != nullptr)
+                {
+                    if (!elStation->isAiAllocated() && !elStation->isGhost())
+                    {
+                        return trainStationAdjustedInteraction(head, var_842, { interaction.pos, reinterpret_cast<uint32_t>(elStation), interaction.type, interaction.modId });
+                    }
+                }
+            }
+
+            if (head.mode == TransportMode::water || head.mode == TransportMode::air)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            FormatArguments::mapToolTip(StringIds::click_to_insert_new_order_route_through);
+            return interaction;
+        }
+
+        // 0x004B5AC9
+        static ViewportInteraction::InteractionArg roadAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
+        {
+            auto* el = static_cast<TileElement*>(interaction.object);
+            auto* elRoad = el->as<RoadElement>();
+            if (elRoad == nullptr)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            if (elRoad->isAiAllocated() || elRoad->isGhost())
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            if (elRoad->hasStationElement())
+            {
+                auto* elStation = getStationElement({ interaction.pos, elRoad->baseHeight() });
+                if (elStation != nullptr)
+                {
+                    if (!elStation->isAiAllocated() && !elStation->isGhost())
+                    {
+                        return stationAdjustedInteaction(head, var_842, elStation, interaction);
+                    }
+                }
+            }
+            if (head.mode == TransportMode::air)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+            FormatArguments::mapToolTip(StringIds::click_to_insert_new_order_route_through);
+            return interaction;
+        }
+
+        // 0x004B5B7F
+        static ViewportInteraction::InteractionArg dockAirportAdjustedInteaction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
+        {
+            auto* el = static_cast<TileElement*>(interaction.object);
+            auto* elStation = el->as<StationElement>();
+            if (elStation == nullptr)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+            if (elStation->owner() != CompanyManager::getControllingId())
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
+            return stationAdjustedInteaction(head, var_842, elStation, interaction);
+        }
+
+        // 0x004B5A9B
+        static ViewportInteraction::InteractionArg waterAdjustedInteraction(const Vehicles::VehicleHead& head, ViewportInteraction::InteractionArg interaction)
+        {
+            if (head.mode != TransportMode::water)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+            FormatArguments::mapToolTip(StringIds::click_to_insert_new_order_route_through);
+            return interaction;
+        }
+
         // 0x004B5A1A
         static std::pair<Ui::ViewportInteraction::InteractionItem, Ui::ViewportInteraction::InteractionArg> sub_4B5A1A(Window& self, const int16_t x, const int16_t y)
         {
-            registers regs{};
-            regs.esi = X86Pointer(&self);
-            regs.ax = x;
-            regs.cx = y;
-            regs.bl = 0; // Not set during function but needed to indicate failure
-            call(0x004B5A1A, regs);
-            static loco_global<int16_t, 0x0113623C> _mapX;
-            static loco_global<int16_t, 0x0113623E> _mapY;
-            Ui::ViewportInteraction::InteractionArg output;
-            output.pos.x = _mapX;
-            output.pos.y = _mapY;
-            output.object = reinterpret_cast<void*>(regs.edx);
-            return std::make_pair(static_cast<Ui::ViewportInteraction::InteractionItem>(regs.bl), output);
+            auto head = Common::getVehicle(&self);
+            auto flags = ViewportInteraction::InteractionItemFlags::track
+                | ViewportInteraction::InteractionItemFlags::roadAndTram
+                | ViewportInteraction::InteractionItemFlags::station
+                | ViewportInteraction::InteractionItemFlags::stationLabel;
+
+            if (head->mode == TransportMode::water)
+            {
+                flags = ViewportInteraction::InteractionItemFlags::water
+                    | ViewportInteraction::InteractionItemFlags::station
+                    | ViewportInteraction::InteractionItemFlags::stationLabel;
+            }
+            auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~flags);
+
+            switch (interaction.type)
+            {
+                case ViewportInteraction::InteractionItem::track:
+                    interaction = trackAdjustedInteraction(*head, self.var_842, interaction);
+                    break;
+
+                case ViewportInteraction::InteractionItem::road:
+                    interaction = roadAdjustedInteraction(*head, self.var_842, interaction);
+                    break;
+
+                case ViewportInteraction::InteractionItem::trainStation:
+                    interaction = trainStationAdjustedInteraction(*head, self.var_842, interaction);
+                    break;
+
+                case ViewportInteraction::InteractionItem::roadStation:
+                    interaction = stationAdjustedInteaction(*head, self.var_842, static_cast<TileElement*>(interaction.object), interaction);
+                    break;
+
+                case ViewportInteraction::InteractionItem::airport:
+                case ViewportInteraction::InteractionItem::dock:
+                    interaction = dockAirportAdjustedInteaction(*head, self.var_842, interaction);
+                    break;
+
+                case ViewportInteraction::InteractionItem::stationLabel:
+                    interaction = stationLabelAdjustedInteaction(*head, self.var_842, static_cast<StationId>(interaction.value), interaction);
+                    break;
+                case ViewportInteraction::InteractionItem::water:
+                    interaction = waterAdjustedInteraction(*head, interaction);
+                    break;
+
+                default:
+                    interaction = ViewportInteraction::kNoInteractionArg;
+                    break;
+            }
+            return { interaction.type, interaction };
         }
 
         // 0x004B5088
