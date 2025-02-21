@@ -40,6 +40,11 @@ namespace OpenLoco::Vehicles::RoutingManager
         return routings()[routing.getVehicleRef()][routing.getIndex()];
     }
 
+    void setRouting(const RoutingHandle routing, uint16_t value)
+    {
+        routings()[routing.getVehicleRef()][routing.getIndex()] = value;
+    }
+
     void freeRouting(const RoutingHandle routing)
     {
         routings()[routing.getVehicleRef()][routing.getIndex()] = kAllocatedButFreeRoutingStation;

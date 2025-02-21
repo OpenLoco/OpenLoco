@@ -686,6 +686,272 @@ namespace OpenLoco::Vehicles
         return AirportObjectFlags::acceptsHeavyPlanes;
     }
 
+    // 0x004AFFF3
+    // it's possible this is a VehicleHead method not a VehicleBogie method
+    VehicleBogie* VehicleBogie::reverseCarAndGetNewFrontBogie()
+    {
+        // mov ebp, esi // this is in ebp
+        // mov eax, 0FFFFFFFFh // null sentinel? I will use std::vector::size
+        // push eax (0xFFFFFFFF)
+        // push esi (this, 0xFFFFFFFF)
+        // mov dword_1136100 esi // This
+        std::vector<VehicleBogie*> stack;
+        stack.push_back(this);
+
+        // movzx edi, word ptr [esi+3Ah]
+        // shl edi, 7
+        // add edi, offset things
+        // note that This is front bogie I think
+        VehicleBogie rearBogie = *nextVehicleComponent()->asBase<VehicleBogie>(); // edi
+
+        // mov al, [esi+39h]
+        // xchg al, [edi+39h]
+        // mov [esi+39h], al
+        auto spriteTypeSwap = rearBogie.objectSpriteType;
+        rearBogie.objectSpriteType = objectSpriteType;
+        objectSpriteType = spriteTypeSwap;
+
+        // movzx esi, word ptr [edi+3Ah]
+        // shl esi, 7
+        // add esi, offset things
+        VehicleBody* firstBody = rearBogie.nextVehicleComponent()->asBase<VehicleBody>();
+
+        // mov dword_1136104, esi // body
+
+        // movzx esi, word ptr [esi+3Ah]
+        // shl esi, 7
+        // add esi, offset things
+        VehicleBogie* frontBogieOfNextComponent = firstBody->nextVehicleComponent()->asBase<VehicleBogie>(); // esi
+
+        // loc_4B0038
+
+        // cmp bypte ptr [esi+1], 3
+        // jnz short loc_4B0091
+        while (frontBogieOfNextComponent->getSubType() == VehicleEntityType::bogie)
+        {
+            // loc_4B0038 cont.
+
+            // movzx edi, word ptr [esi+3Ah]
+            // shl edi, 7
+            // add edi, offset things
+            // movzx edi, word ptr [edi+3Ah]
+            // shl edi, 7
+            // add edi, offset things
+
+            // cmp bypte ptr [edi+1], 4
+            // jz short loc_4B0091
+            if (frontBogieOfNextComponent->nextVehicleComponent()->nextVehicleComponent()->getSubType() == VehicleEntityType::body_start)
+            {
+                // if the car associated with the first bogie of the next vehicle is a body_start, this first bogie is of the next vehicle
+                break;
+            }
+            // push esi
+            stack.push_back(frontBogieOfNextComponent);
+            // movzx edi, word ptr [esi+3Ah]
+            // shl edi, 7
+            // add edi, offset things
+            VehicleBogie* rearBogieOfNextVehicle = frontBogieOfNextComponent->nextVehicleComponent()->asBase<VehicleBogie>();
+
+            // mov al, [esi+39h]
+            // xchg al, [edi+39h]
+            // mov [esi+39h], al
+            spriteTypeSwap = frontBogieOfNextComponent->objectSpriteType;
+            frontBogieOfNextComponent->objectSpriteType = rearBogieOfNextVehicle->objectSpriteType;
+            rearBogieOfNextVehicle->objectSpriteType = spriteTypeSwap;
+
+            // movzx edi, word ptr [edi+3Ah]
+            // shl edi, 7
+            // add edi, offset things
+            // movzx esi, word ptr [edi+3Ah]
+            // shl esi, 7
+            // add esi, offset things
+            frontBogieOfNextComponent = rearBogieOfNextVehicle->nextVehicleComponent()->nextVehicleComponent()->asBase<VehicleBogie>();
+            // jmp short loc_4B0038
+        }
+
+        // loc_4B0091
+
+        // mov ecx, esi // the end of the Car (?) is in ecx
+        // movzx edi, word ptr [esi+26h] // head of train
+        // shl edi, 7
+        // add edi, offset things
+        VehicleCommon* componentAhead = EntityManager::get<VehicleBase>(getHead())->asBase<VehicleCommon>();
+
+        // loc_4B00A0
+        // Get the vehicle before the first bogie of this Car. Is either a Body or a Vehicle_2
+
+        // movzx ebx, word ptr [edi+3Ah]
+        // shl ebx, 7
+        // add ebx, offset things
+        // cmp ebx, ebp
+        // jz short loc_4B00B5
+        while (componentAhead->nextVehicleComponent() != this)
+        {
+
+            // loc_4B00A0 cont.
+            // mov edi, ebx
+            // jmp short loc_4B00A0
+            componentAhead = componentAhead->nextVehicleComponent()->asBase<VehicleCommon>();
+        }
+
+        // loc_4B00B5
+
+        // xor edx, edx
+
+        // loc_4B00B7
+        // pop ebx
+        // cmp ebx, 0FFFFFFFFh
+        // jz short loc_4B00F4
+
+        // iterate through the Car's bogies in reverse order
+        for (int32_t i = stack.size() - 1; i >= 0; i--)
+        {
+            VehicleBogie* frontBogie = stack[i];
+
+            // loc_4B00B7 cont.
+
+            // mov ax, [ebx+0Ah] // ebx is the first component of the next carComponent/tail
+            // mov  [edi+3Ah], ax // edi is the last body
+            componentAhead->nextEntityId = frontBogie->id;
+            // movzx edi, word ptr [ebx+3Ah]
+            // shl edi, 7
+            // add edi, offset things
+            // movzx edi, word ptr [edi+3Ah]
+            // shl edi, 7
+            // add edi, offset things
+            componentAhead = frontBogie->nextVehicleComponent()->nextVehicleComponent()->asBase<VehicleCommon>(); // get the body
+            // xor byte ptr [edi+38h], 2
+            componentAhead->var_38 ^= Flags38::isReversed;
+            // mov byte ptr [edi+1], 5
+            componentAhead->setSubType(VehicleEntityType::body_continued);
+            // or edx, edx
+            // jnz short loc_4B00F1
+
+            // loc_4B00B7 cont.
+            // This code hits on only the first iteration
+            // Sets esi to the rearmost body and sets its type to body start
+
+            // mov esi, ebx
+            // mov byte ptr [edi+1], 4
+
+            // loc_4B00F1
+            // inc edx
+            // jmp short loc_4B00B7
+        }
+        // esi, set with the very top of the stack only
+        // stack is at minimum one element long with This
+        VehicleBogie* newFirstBogie = stack[stack.size() - 1]->asBase<VehicleBogie>(); // esi
+        newFirstBogie->nextVehicleComponent()->nextVehicleComponent()->setSubType(VehicleEntityType::body_start);
+
+        // loc_4B00F4
+
+        // mov ax, [ecx+0Ah]
+        // mov [edi+3Ah], ax
+        componentAhead->nextEntityId = frontBogieOfNextComponent->id;
+
+        // mov edi, dword_1136100 // This
+        // mov ebx, dword_1136104 // firstBody
+
+        // movzx ebp, word ptr [esi+3Ah]
+        // shl ebp, 7
+        // add ebp, offset things
+        // movzx ebp, word ptr [ebp+3Ah]
+        // shl ebp, 7
+        // add ebp, offset things
+        VehicleBody* newFirstBody = newFirstBogie->nextVehicleComponent()->nextVehicleComponent()->asBase<VehicleBody>();
+
+        newFirstBogie->secondaryCargo = this->secondaryCargo;
+        newFirstBody->primaryCargo = firstBody->primaryCargo;
+        // copy VehicleCargo::acceptedTypes and cleanup to 0
+        // xor eax, eax
+        // xor ecx, ecx
+        // xchg eax, [edi+48h]
+        // xchg ecx, [ebx+48h]
+        // mov [esi+48h], eax
+        // mov [ebp+48h], ecx
+        this->secondaryCargo.acceptedTypes = 0;
+        firstBody->primaryCargo.acceptedTypes = 0;
+
+        // copy VehicleCargo::type and cleanup to 0xFF
+        // mov ax, 0FFFFh
+        // xchg al, [edi+4Ch]
+        // xchg ah, [ebx+4Ch]
+        // mov [esi+4Ch], al
+        // mov [ebp+4Ch], ah
+        this->secondaryCargo.type = 0xFF;
+        firstBody->primaryCargo.type = 0xFF;
+
+        // copy VehicleCargo::maxQty
+        // xor ax, ax
+        // xchg al, [edi+4Dh]
+        // xchg ah, [ebx+4Dh]
+        // mov [esi+4Dh], al
+        // mov [ebp+4Dh], ah
+
+        // copy VehicleCargo::townFrom
+        // mov ax, [edi+4Eh]
+        // mov cx, [ebp+4Eh]
+        // mov [esi+4Eh], ax
+        // mov [ebp+4Eh], cx
+
+        // copy VehicleCargo::qty and cleanup to 0
+        // xor ax, ax
+        // xchg al, [edi + 51h]
+        // xchg ah, [ebx + 51h]
+        // mov[esi + 51h], al
+        // mov[ebp + 51h], ah
+        this->secondaryCargo.qty = 0;
+        firstBody->primaryCargo.qty = 0;
+
+        // copy VehicleCargo::numDays and cleanup to 0
+        // xor ax, ax
+        // xchg al, [edi + 50h]
+        // xchg ah, [ebx + 50h]
+        // mov[esi + 50h], al
+        // mov[ebp + 50h], ah
+        this->secondaryCargo.numDays = 0;
+        firstBody->primaryCargo.numDays = 0;
+
+        // copy breakdown flags and cleanup to 0
+        // xor ax, ax
+        // xchg al, [edi + 5Fh]
+        // xchg ah, [ebx + 5Fh]
+        // mov[esi + 5Fh], al
+        // mov[ebp + 5Fh], ah
+        newFirstBogie->breakdownFlags = this->breakdownFlags;
+        newFirstBody->breakdownFlags = firstBody->breakdownFlags;
+        this->breakdownFlags = BreakdownFlags::none;
+        firstBody->breakdownFlags = BreakdownFlags::none;
+
+        // copy breakdown timeout and cleanup to 0
+        // xor ax, ax
+        // xchg al, [edi + 6Ah]
+        // xchg ah, [ebx + 6Ah]
+        // mov[esi + 6Ah], al
+        // mov[ebp + 6Ah], ah
+        newFirstBogie->breakdownTimeout = this->breakdownTimeout;
+        newFirstBody->breakdownTimeout = firstBody->breakdownTimeout;
+        this->breakdownTimeout = 0;
+        firstBody->breakdownTimeout = 0;
+
+        // copy var_52 to new first bogie
+        // mov ax, [edi + 52h]
+        // mov[esi + 52h], ax
+        newFirstBogie->var_52 = this->var_52;
+
+        // copy reliability to new first bogie
+        // mov ax, [edi + 66h]
+        // mov[esi + 66h], ax
+        newFirstBogie->reliability = this->reliability;
+
+        // copy breakdown timeout to new first bogie
+        // mov ax, [edi + 68h]
+        // mov[esi + 68h], ax
+        newFirstBogie->breakdownTimeout = this->breakdownTimeout;
+
+        return newFirstBogie;
+    }
+
     // 0x004AF16A
     void removeAllCargo(CarComponent& carComponent)
     {

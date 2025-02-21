@@ -8,6 +8,8 @@ namespace OpenLoco::Vehicles
     struct RoutingHandle
     {
         uint16_t _data;
+        constexpr RoutingHandle(const uint16_t data)
+            : _data(data) {};
         constexpr RoutingHandle(const uint16_t vehicleRef, const uint8_t index)
             : _data((vehicleRef * Limits::kMaxRoutingsPerVehicle) | index)
         {
