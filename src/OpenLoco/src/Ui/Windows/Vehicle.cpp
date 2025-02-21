@@ -2881,7 +2881,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5BB9
-        static ViewportInteraction::InteractionArg stationLabelAdjustedInteaction(const Vehicles::VehicleHead& head, int16_t var_842, StationId stationId, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg stationLabelAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, StationId stationId, ViewportInteraction::InteractionArg interaction)
         {
             auto* station = StationManager::get(stationId);
             if (station == nullptr)
@@ -2945,7 +2945,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5BA3
-        static ViewportInteraction::InteractionArg stationAdjustedInteaction(const Vehicles::VehicleHead& head, int16_t var_842, World::TileElementBase* el, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg stationAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, World::TileElementBase* el, ViewportInteraction::InteractionArg interaction)
         {
             auto* elStation = el->as<StationElement>();
             if (elStation == nullptr)
@@ -2957,7 +2957,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return ViewportInteraction::kNoInteractionArg;
             }
 
-            return stationLabelAdjustedInteaction(head, var_842, elStation->stationId(), interaction);
+            return stationLabelAdjustedInteraction(head, var_842, elStation->stationId(), interaction);
         }
 
         // 0x004B5B92
@@ -2980,7 +2980,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return ViewportInteraction::kNoInteractionArg;
             }
 
-            return stationAdjustedInteaction(head, var_842, elStation, interaction);
+            return stationAdjustedInteraction(head, var_842, elStation, interaction);
         }
 
         // 0x004B5AC9
@@ -3046,7 +3046,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     if (!elStation->isAiAllocated() && !elStation->isGhost())
                     {
-                        return stationAdjustedInteaction(head, var_842, elStation, interaction);
+                        return stationAdjustedInteraction(head, var_842, elStation, interaction);
                     }
                 }
             }
@@ -3059,7 +3059,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5B7F
-        static ViewportInteraction::InteractionArg dockAirportAdjustedInteaction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg dockAirportAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
         {
             auto* el = static_cast<TileElement*>(interaction.object);
             auto* elStation = el->as<StationElement>();
@@ -3072,7 +3072,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return ViewportInteraction::kNoInteractionArg;
             }
 
-            return stationAdjustedInteaction(head, var_842, elStation, interaction);
+            return stationAdjustedInteraction(head, var_842, elStation, interaction);
         }
 
         // 0x004B5A9B
@@ -3087,7 +3087,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5A1A
-        static std::pair<Ui::ViewportInteraction::InteractionItem, Ui::ViewportInteraction::InteractionArg> sub_4B5A1A(Window& self, const int16_t x, const int16_t y)
+        static Ui::ViewportInteraction::InteractionArg getRouteInteractionFromCursor(Window& self, const int16_t x, const int16_t y)
         {
             auto head = Common::getVehicle(&self);
             auto flags = ViewportInteraction::InteractionItemFlags::track
@@ -3106,38 +3106,30 @@ namespace OpenLoco::Ui::Windows::Vehicle
             switch (interaction.type)
             {
                 case ViewportInteraction::InteractionItem::track:
-                    interaction = trackAdjustedInteraction(*head, self.var_842, interaction);
-                    break;
+                    return trackAdjustedInteraction(*head, self.var_842, interaction);
 
                 case ViewportInteraction::InteractionItem::road:
-                    interaction = roadAdjustedInteraction(*head, self.var_842, interaction);
-                    break;
+                    return roadAdjustedInteraction(*head, self.var_842, interaction);
 
                 case ViewportInteraction::InteractionItem::trainStation:
-                    interaction = trainStationAdjustedInteraction(*head, self.var_842, interaction);
-                    break;
+                    return trainStationAdjustedInteraction(*head, self.var_842, interaction);
 
                 case ViewportInteraction::InteractionItem::roadStation:
-                    interaction = stationAdjustedInteaction(*head, self.var_842, static_cast<TileElement*>(interaction.object), interaction);
-                    break;
+                    return stationAdjustedInteraction(*head, self.var_842, static_cast<TileElement*>(interaction.object), interaction);
 
                 case ViewportInteraction::InteractionItem::airport:
                 case ViewportInteraction::InteractionItem::dock:
-                    interaction = dockAirportAdjustedInteaction(*head, self.var_842, interaction);
-                    break;
+                    return dockAirportAdjustedInteraction(*head, self.var_842, interaction);
 
                 case ViewportInteraction::InteractionItem::stationLabel:
-                    interaction = stationLabelAdjustedInteaction(*head, self.var_842, static_cast<StationId>(interaction.value), interaction);
-                    break;
+                    return stationLabelAdjustedInteraction(*head, self.var_842, static_cast<StationId>(interaction.value), interaction);
+
                 case ViewportInteraction::InteractionItem::water:
-                    interaction = waterAdjustedInteraction(*head, interaction);
-                    break;
+                    return waterAdjustedInteraction(*head, interaction);
 
                 default:
-                    interaction = ViewportInteraction::kNoInteractionArg;
-                    break;
+                    return ViewportInteraction::kNoInteractionArg;
             }
-            return { interaction.type, interaction };
         }
 
         // 0x004B5088
@@ -3150,8 +3142,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            auto [type, args] = sub_4B5A1A(self, x, y);
-            switch (type)
+            auto args = getRouteInteractionFromCursor(self, x, y);
+            switch (args.type)
             {
                 case Ui::ViewportInteraction::InteractionItem::track:
                 {
@@ -3234,8 +3226,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B50CE
         static Ui::CursorId toolCursor(Window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
         {
-            auto typeP = sub_4B5A1A(self, x, y);
-            out = typeP.first != Ui::ViewportInteraction::InteractionItem::noInteraction;
+            auto args = getRouteInteractionFromCursor(self, x, y);
+            out = args.type != Ui::ViewportInteraction::InteractionItem::noInteraction;
             if (out)
             {
                 return CursorId::inwardArrows;
