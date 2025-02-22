@@ -124,7 +124,7 @@ namespace OpenLoco::TownManager
             uint16_t dx = category.count + category.bias;
             int16_t index = ((ax * dx) >> 16) - category.bias;
 
-            if (index > 0)
+            if (index >= 0)
             {
                 char* strEnd = const_cast<char*>(buffer + strlen(buffer));
                 locationFlags |= copyTownNameToBuffer(namesObj, category.offset, index, strEnd);
