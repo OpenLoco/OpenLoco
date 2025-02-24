@@ -697,7 +697,7 @@ namespace OpenLoco::Vehicles
         }
 
         VehicleBase* ptr = this; // lvalue required
-        CarComponent newLastComponent(ptr);
+        CarComponent oldFirstComponent(ptr);
         ptr = this; // CarComponent constructor changes value
         Car car(ptr);
 
@@ -715,10 +715,10 @@ namespace OpenLoco::Vehicles
             components.push_back(component);
         }
         auto lastComponentIndex = components.size() - 1;
-        auto newFirstComponent = components[lastComponentIndex];
+        auto newFirstComponent = components.back();
 
         // if the Car is only one CarComponent we don't have to swap any values
-        if (newFirstComponent.front == newLastComponent.front)
+        if (newFirstComponent.front == oldFirstComponent.front)
         {
             return this;
         }
@@ -732,7 +732,7 @@ namespace OpenLoco::Vehicles
 
         newFirstComponent.body->setSubType(VehicleEntityType::body_start);
         precedingCarBody->nextEntityId = newFirstComponent.front->id;
-        newLastComponent.body->nextEntityId = nextVehicleComponent->id;
+        oldFirstComponent.body->nextEntityId = nextVehicleComponent->id;
 
         for (int i = lastComponentIndex - 1; i >= 0; i--)
         {
@@ -740,32 +740,32 @@ namespace OpenLoco::Vehicles
             components[i + 1].body->nextEntityId = components[i].front->id;
         }
 
-        newFirstComponent.body->primaryCargo = newLastComponent.body->primaryCargo;
-        newFirstComponent.body->breakdownFlags = newLastComponent.body->breakdownFlags;
-        newFirstComponent.body->breakdownTimeout = newLastComponent.body->breakdownTimeout;
-        newFirstComponent.front->secondaryCargo = newLastComponent.front->secondaryCargo;
-        newFirstComponent.front->breakdownFlags = newLastComponent.front->breakdownFlags;
-        newFirstComponent.front->breakdownTimeout = newLastComponent.front->breakdownTimeout;
-        newFirstComponent.front->var_52 = newLastComponent.front->var_52;
-        newFirstComponent.front->reliability = newLastComponent.front->reliability;
-        newFirstComponent.front->breakdownTimeout = newLastComponent.front->breakdownTimeout;
+        newFirstComponent.body->primaryCargo = oldFirstComponent.body->primaryCargo;
+        newFirstComponent.body->breakdownFlags = oldFirstComponent.body->breakdownFlags;
+        newFirstComponent.body->breakdownTimeout = oldFirstComponent.body->breakdownTimeout;
+        newFirstComponent.back->secondaryCargo = oldFirstComponent.front->secondaryCargo;
+        newFirstComponent.back->breakdownFlags = oldFirstComponent.front->breakdownFlags;
+        newFirstComponent.back->breakdownTimeout = oldFirstComponent.front->breakdownTimeout;
+        newFirstComponent.back->var_52 = oldFirstComponent.front->var_52;
+        newFirstComponent.back->reliability = oldFirstComponent.front->reliability;
+        newFirstComponent.back->timeoutToBreakdown = oldFirstComponent.front->timeoutToBreakdown;
 
         // vanilla does not reset every cargo value
-        newLastComponent.body->primaryCargo.acceptedTypes = 0;
-        newLastComponent.body->primaryCargo.type = 0xFF;
-        newLastComponent.body->primaryCargo.qty = 0;
-        newLastComponent.body->primaryCargo.numDays = 0;
-        newLastComponent.front->secondaryCargo.acceptedTypes = 0;
-        newLastComponent.front->secondaryCargo.type = 0xFF;
-        newLastComponent.front->secondaryCargo.qty = 0;
-        newLastComponent.front->secondaryCargo.numDays = 0;
+        oldFirstComponent.body->primaryCargo.acceptedTypes = 0;
+        oldFirstComponent.body->primaryCargo.type = 0xFF;
+        oldFirstComponent.body->primaryCargo.qty = 0;
+        oldFirstComponent.body->primaryCargo.numDays = 0;
+        oldFirstComponent.front->secondaryCargo.acceptedTypes = 0;
+        oldFirstComponent.front->secondaryCargo.type = 0xFF;
+        oldFirstComponent.front->secondaryCargo.qty = 0;
+        oldFirstComponent.front->secondaryCargo.numDays = 0;
 
-        newLastComponent.body->breakdownFlags = BreakdownFlags::none;
-        newLastComponent.body->breakdownTimeout = 0;
-        newLastComponent.front->breakdownFlags = BreakdownFlags::none;
-        newLastComponent.front->breakdownTimeout = 0;
+        oldFirstComponent.body->breakdownFlags = BreakdownFlags::none;
+        oldFirstComponent.body->breakdownTimeout = 0;
+        oldFirstComponent.front->breakdownFlags = BreakdownFlags::none;
+        oldFirstComponent.front->breakdownTimeout = 0;
 
-        return newLastComponent.front;
+        return newFirstComponent.front;
     }
 
     // 0x004AF16A
