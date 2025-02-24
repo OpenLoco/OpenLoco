@@ -690,47 +690,50 @@ namespace OpenLoco::Vehicles
     VehicleBogie* flipCar(VehicleBogie* frontBogie)
     {
         Vehicle train(frontBogie->head);
-        VehicleBase* precedingCarBody = train.veh2;
-        while (precedingCarBody->nextVehicleComponent()->asBase<VehicleBogie>() != frontBogie)
+        VehicleBase* precedingVehicleComponent = nullptr;
+        if (train.veh2->nextCarId == frontBogie->id)
         {
-            precedingCarBody = precedingCarBody->nextVehicleComponent();
+            precedingVehicleComponent = train.veh2;
         }
-
-        VehicleBase* ptr = frontBogie; // lvalue required
-        CarComponent oldFirstComponent(ptr);
-        ptr = frontBogie; // CarComponent constructor changes value
-        Car car(ptr);
-
+        CarComponent oldFirstComponent;
         sfl::static_vector<CarComponent, VehicleObject::kMaxCarComponents> components;
-        for (CarComponent& component : car)
+
+        for (auto& car : train.cars)
         {
-            auto frontSprite = component.front->objectSpriteType;
-            component.front->objectSpriteType = component.back->objectSpriteType;
-            component.back->objectSpriteType = frontSprite;
-            component.body->var_38 ^= Flags38::isReversed;
-            components.push_back(component);
+            if (precedingVehicleComponent != nullptr)
+            {
+                oldFirstComponent = car;
+                for (CarComponent& component : car)
+                {
+                    std::swap(component.front->objectSpriteType, component.back->objectSpriteType);
+                    component.body->var_38 ^= Flags38::isReversed;
+                    components.push_back(component);
+                }
+                break;
+            }
+            if (car.back != nullptr && car.back->nextCarId == frontBogie->id)
+            {
+                precedingVehicleComponent = car.back;
+            }
         }
-        auto lastComponentIndex = components.size() - 1;
-        auto newFirstComponent = components.back();
+
+        auto& newFirstComponent = components.back();
 
         // if the Car is only one CarComponent we don't have to swap any values
         if (newFirstComponent.front == oldFirstComponent.front)
         {
             return frontBogie;
         }
-
-        // silence -Werror=null-dereference
-        auto nextVehicleComponent = newFirstComponent.body->nextVehicleComponent();
-        if (nextVehicleComponent == nullptr)
+        if (precedingVehicleComponent == nullptr)
         {
             return frontBogie;
         }
 
         newFirstComponent.body->setSubType(VehicleEntityType::body_start);
-        precedingCarBody->setNextCar(newFirstComponent.front->id);
-        oldFirstComponent.body->setNextCar(nextVehicleComponent->id);
+        precedingVehicleComponent->setNextCar(newFirstComponent.front->id);
+        oldFirstComponent.body->setNextCar(newFirstComponent.body->nextCarId);
 
-        for (int i = lastComponentIndex - 1; i >= 0; i--)
+        for (int i = components.size() - 2; i >= 0; i--)
         {
             components[i].body->setSubType(VehicleEntityType::body_continued);
             components[i + 1].body->setNextCar(components[i].front->id);
@@ -746,7 +749,7 @@ namespace OpenLoco::Vehicles
         newFirstComponent.back->reliability = oldFirstComponent.front->reliability;
         newFirstComponent.back->timeoutToBreakdown = oldFirstComponent.front->timeoutToBreakdown;
 
-        // vanilla does not reset every cargo value
+        // vanilla does not reset every value
         oldFirstComponent.body->primaryCargo.acceptedTypes = 0;
         oldFirstComponent.body->primaryCargo.type = 0xFF;
         oldFirstComponent.body->primaryCargo.qty = 0;
