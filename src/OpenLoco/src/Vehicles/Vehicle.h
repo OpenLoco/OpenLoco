@@ -598,7 +598,7 @@ namespace OpenLoco::Vehicles
         uint8_t wheelSlipping;         // 0x5E timeout that counts up
         BreakdownFlags breakdownFlags; // 0x5F
         uint8_t pad_60[0x6A - 0x60];
-        uint8_t breakdownTimeout;    // 0x6A front bogies only (days)
+        uint8_t breakdownTimeout; // 0x6A front bogies only (days)
 
         const VehicleObject* getObject() const;
         bool update();
