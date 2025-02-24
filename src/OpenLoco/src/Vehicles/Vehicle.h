@@ -147,10 +147,6 @@ namespace OpenLoco::Vehicles
 #pragma pack(push, 1)
     struct TrackAndDirection
     {
-        static constexpr uint16_t directionMask = 0b11;
-        static constexpr uint16_t reversedFlag = (1 << 2);
-        static constexpr uint16_t isBackToFrontFlag = (1 << 7);
-        static constexpr uint16_t unk8Flag = (1 << 8);
         struct _TrackAndDirection
         {
             uint16_t _data;
@@ -159,8 +155,8 @@ namespace OpenLoco::Vehicles
             {
             }
             constexpr uint8_t id() const { return (_data >> 3) & 0x3F; }
-            constexpr uint8_t cardinalDirection() const { return _data & directionMask; }
-            constexpr bool isReversed() const { return _data & reversedFlag; }
+            constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
+            constexpr bool isReversed() const { return _data & (1 << 2); }
             constexpr void setReversed(bool state)
             {
                 _data &= ~(1 << 2);
@@ -176,9 +172,9 @@ namespace OpenLoco::Vehicles
             {
             }
             constexpr uint8_t id() const { return (_data >> 3) & 0xF; }
-            constexpr uint8_t cardinalDirection() const { return _data & directionMask; }
+            constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
             // Used by road and tram vehicles to indicate side
-            constexpr bool isReversed() const { return _data & reversedFlag; }
+            constexpr bool isReversed() const { return _data & (1 << 2); }
             constexpr void setReversed(bool state)
             {
                 _data &= ~(1 << 2);
@@ -186,9 +182,9 @@ namespace OpenLoco::Vehicles
             }
             // Road vehicles are briefly back to front when reaching dead ends
             // Trams can stay back to front
-            constexpr bool isBackToFront() const { return _data & isBackToFrontFlag; }
+            constexpr bool isBackToFront() const { return _data & (1 << 7); }
             // Related to road vehicles turning around
-            constexpr bool isUnk8() const { return _data & unk8Flag; }
+            constexpr bool isUnk8() const { return _data & (1 << 8); }
             constexpr bool operator==(const _RoadAndDirection other) const { return _data == other._data; }
         };
 
@@ -398,8 +394,6 @@ namespace OpenLoco::Vehicles
         void sub_4AD778();
         void sub_4AD93A();
         void sub_4ADB47(bool unk);
-        void shouldChangeDirection();
-        void changeDirection(bool unk_bool);
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void sub_4AF7A4();
@@ -462,9 +456,8 @@ namespace OpenLoco::Vehicles
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
         bool sub_4ACCDC();
-        void loc_4ADC9D();
-        void loc_4ADB85_cont();
         StationId manualFindTrainStationAtLocation();
+        bool sub_4BADE4();
         bool isOnExpectedRoadOrTrack();
         VehicleStatus getStatusTravelling() const;
         void getSecondStatus(VehicleStatus& vehStatus) const;
@@ -597,18 +590,14 @@ namespace OpenLoco::Vehicles
         uint8_t var_46;            // 0x46 roll/animation sprite index
         uint8_t var_47;            // 0x47 cargo sprite index
         VehicleCargo primaryCargo; // 0x48
-        uint16_t var_52;
+        uint8_t pad_52[0x54 - 0x52];
         uint8_t bodyIndex; // 0x54
         int8_t chuffSoundIndex;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
         uint8_t wheelSlipping;         // 0x5E timeout that counts up
         BreakdownFlags breakdownFlags; // 0x5F
-        uint8_t var_60;
-        uint8_t var_61;
-        uint32_t refundCost;         // 0x62 front bogies only
-        uint16_t reliability;        // 0x66 front bogies only
-        uint16_t timeoutToBreakdown; // 0x68 front bogies only (days) counts down to the next breakdown 0xFFFFU disables this
+        uint8_t pad_60[0x6A - 0x60];
         uint8_t breakdownTimeout;    // 0x6A front bogies only (days)
 
         const VehicleObject* getObject() const;
@@ -669,8 +658,8 @@ namespace OpenLoco::Vehicles
         uint8_t pad_55;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
-        uint8_t wheelSlipping;         // 0x5E timeout that counts up
-        BreakdownFlags breakdownFlags; // 0x5F
+        uint8_t wheelSlipping; // 0x5E timeout that counts up
+        BreakdownFlags breakdownFlags;
         uint8_t var_60;
         uint8_t var_61;
         uint32_t refundCost;         // 0x62 front bogies only
@@ -680,13 +669,13 @@ namespace OpenLoco::Vehicles
 
     public:
         AirportObjectFlags getCompatibleAirportType();
-        VehicleBogie * reverseCarAndGetNewFrontBogie();
         bool update();
         bool isOnRackRail();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
+        VehicleBogie* flipCar();
 
     private:
         void updateRoll();
