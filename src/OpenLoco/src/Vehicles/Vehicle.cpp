@@ -724,11 +724,10 @@ namespace OpenLoco::Vehicles
         {
             return frontBogie;
         }
-        if (precedingVehicleComponent == nullptr)
+        if (precedingVehicleComponent == nullptr || newFirstComponent.body == nullptr || oldFirstComponent.body == nullptr)
         {
             return frontBogie;
         }
-
         newFirstComponent.body->setSubType(VehicleEntityType::body_start);
         precedingVehicleComponent->setNextCar(newFirstComponent.front->id);
         // set the new last component to point to the next car
@@ -737,7 +736,10 @@ namespace OpenLoco::Vehicles
         for (int i = components.size() - 2; i >= 0; i--)
         {
             components[i].body->setSubType(VehicleEntityType::body_continued);
-            components[i + 1].body->setNextCar(components[i].front->id);
+            if (components[i + 1].body != nullptr)
+            {
+                components[i + 1].body->setNextCar(components[i].front->id);
+            }
         }
 
         newFirstComponent.body->primaryCargo = oldFirstComponent.body->primaryCargo;
