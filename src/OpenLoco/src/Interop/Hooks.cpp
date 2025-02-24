@@ -976,15 +976,4 @@ void OpenLoco::Interop::registerHooks()
             regs = backup;
             return 0;
         });
-
-    registerHook(
-        0x004AFFF3,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            auto* entity = reinterpret_cast<OpenLoco::Vehicles::VehicleBogie*>(regs.esi);
-            OpenLoco::Vehicles::VehicleBogie* asdf = entity->flipCar();
-            regs = backup;
-            regs.esi = X86Pointer(asdf);
-            return 0;
-        });
 }

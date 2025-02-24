@@ -687,18 +687,18 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AFFF3
-    VehicleBogie* VehicleBogie::flipCar()
+    VehicleBogie* flipCar(VehicleBogie* frontBogie)
     {
-        Vehicle train(head);
+        Vehicle train(frontBogie->head);
         VehicleBase* precedingCarBody = train.veh2;
-        while (precedingCarBody->nextVehicleComponent()->asBase<VehicleBogie>() != this)
+        while (precedingCarBody->nextVehicleComponent()->asBase<VehicleBogie>() != frontBogie)
         {
             precedingCarBody = precedingCarBody->nextVehicleComponent();
         }
 
-        VehicleBase* ptr = this; // lvalue required
+        VehicleBase* ptr = frontBogie; // lvalue required
         CarComponent oldFirstComponent(ptr);
-        ptr = this; // CarComponent constructor changes value
+        ptr = frontBogie; // CarComponent constructor changes value
         Car car(ptr);
 
         sfl::static_vector<CarComponent, VehicleObject::kMaxCarComponents> components;
@@ -716,14 +716,14 @@ namespace OpenLoco::Vehicles
         // if the Car is only one CarComponent we don't have to swap any values
         if (newFirstComponent.front == oldFirstComponent.front)
         {
-            return this;
+            return frontBogie;
         }
 
         // silence -Werror=null-dereference
         auto nextVehicleComponent = newFirstComponent.body->nextVehicleComponent();
         if (nextVehicleComponent == nullptr)
         {
-            return this;
+            return frontBogie;
         }
 
         newFirstComponent.body->setSubType(VehicleEntityType::body_start);
@@ -798,6 +798,17 @@ namespace OpenLoco::Vehicles
 
                 regs = backup;
                 regs.eax = res;
+                return 0;
+            });
+
+        registerHook(
+            0x004AFFF3,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                VehicleBogie* component = X86Pointer<VehicleBogie>(regs.esi);
+                VehicleBogie* newComponent = flipCar(component);
+                regs = backup;
+                regs.esi = X86Pointer(newComponent);
                 return 0;
             });
     }

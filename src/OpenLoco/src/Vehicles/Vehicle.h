@@ -675,7 +675,6 @@ namespace OpenLoco::Vehicles
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
-        VehicleBogie* flipCar();
 
     private:
         void updateRoll();
@@ -965,6 +964,7 @@ namespace OpenLoco::Vehicles
     // TODO: move this?
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
     void removeAllCargo(CarComponent& carComponent);
+    VehicleBogie* flipCar();
 
     void registerHooks();
 }
