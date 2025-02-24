@@ -707,11 +707,7 @@ namespace OpenLoco::Vehicles
             auto frontSprite = component.front->objectSpriteType;
             component.front->objectSpriteType = component.back->objectSpriteType;
             component.back->objectSpriteType = frontSprite;
-
-            // silence -Werror=null-dereference
-            VehicleBody* body = component.body;
-            body->var_38 ^= Flags38::isReversed;
-
+            component.body->var_38 ^= Flags38::isReversed;
             components.push_back(component);
         }
         auto lastComponentIndex = components.size() - 1;
@@ -731,13 +727,13 @@ namespace OpenLoco::Vehicles
         }
 
         newFirstComponent.body->setSubType(VehicleEntityType::body_start);
-        precedingCarBody->nextEntityId = newFirstComponent.front->id;
-        oldFirstComponent.body->nextEntityId = nextVehicleComponent->id;
+        precedingCarBody->setNextCar(newFirstComponent.front->id);
+        oldFirstComponent.body->setNextCar(nextVehicleComponent->id);
 
         for (int i = lastComponentIndex - 1; i >= 0; i--)
         {
             components[i].body->setSubType(VehicleEntityType::body_continued);
-            components[i + 1].body->nextEntityId = components[i].front->id;
+            components[i + 1].body->setNextCar(components[i].front->id);
         }
 
         newFirstComponent.body->primaryCargo = oldFirstComponent.body->primaryCargo;
