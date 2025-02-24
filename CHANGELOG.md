@@ -1,5 +1,6 @@
 25.01+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2701] Town names are not always generated correctly.
 - Fix: [#2864] News messages are drawn incorrectly.
 - Fix: [#2866] Vehicles lengths with 0 in the tenths place being displayed incorrectly.
 - Fix: [#2876] Setting the UI scale back to 1.0 when using Fullscreen mode would freeze the screen.
