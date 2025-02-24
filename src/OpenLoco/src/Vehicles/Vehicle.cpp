@@ -709,11 +709,7 @@ namespace OpenLoco::Vehicles
             component.back->objectSpriteType = frontSprite;
 
             // silence -Werror=null-dereference
-            auto body = component.body->asBase<VehicleCommon>();
-            if (body == nullptr)
-            {
-                return this;
-            }
+            VehicleCommon* body = component.body;
             body->var_38 ^= Flags38::isReversed;
 
             components.push_back(component);
