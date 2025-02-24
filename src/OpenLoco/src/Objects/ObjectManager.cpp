@@ -1023,7 +1023,7 @@ namespace OpenLoco::ObjectManager
     // 0x00469F90
     static void resetDefaultLandObject()
     {
-        for (size_t i = 0; i < getMaxObjects(ObjectType::land); i++)
+        for (auto i = 0U; i < getMaxObjects(ObjectType::land); i++)
         {
             auto* landObj = get<LandObject>(i);
             if (landObj != nullptr)
@@ -1035,7 +1035,7 @@ namespace OpenLoco::ObjectManager
                 }
             }
         }
-        for (size_t i = 0; i < getMaxObjects(ObjectType::land); i++)
+        for (auto i = 0U; i < getMaxObjects(ObjectType::land); i++)
         {
             auto* landObj = get<LandObject>(i);
             if (landObj != nullptr)
