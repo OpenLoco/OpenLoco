@@ -696,9 +696,9 @@ namespace OpenLoco::Vehicles
             precedingCarBody = precedingCarBody->nextVehicleComponent();
         }
 
-        VehicleBase* ptr = this->asBase<VehicleBase>(); // lvalue required
+        VehicleBase* ptr = this; // lvalue required
         CarComponent firstComponent(ptr);
-        ptr = this->asBase<VehicleBase>(); // CarComponent constructor changes value
+        ptr = this; // CarComponent constructor changes value
         Car car(ptr);
 
         sfl::static_vector<CarComponent, VehicleObject::kMaxCarComponents> components;
@@ -707,7 +707,15 @@ namespace OpenLoco::Vehicles
             auto frontSprite = component.front->objectSpriteType;
             component.front->objectSpriteType = component.back->objectSpriteType;
             component.back->objectSpriteType = frontSprite;
-            component.body->asBase<VehicleCommon>()->var_38 ^= Flags38::isReversed;
+
+            // silence -Werror=null-dereference
+            auto body = component.body->asBase<VehicleCommon>();
+            if (body == nullptr)
+            {
+                return this;
+            }
+            body->var_38 ^= Flags38::isReversed;
+
             components.push_back(component);
         }
         auto lastComponentIndex = components.size() - 1;
@@ -718,8 +726,16 @@ namespace OpenLoco::Vehicles
         {
             return this;
         }
+
+        // silence -Werror=null-dereference
+        auto nextVehicleComponent = lastComponent.body->nextVehicleComponent();
+        if (nextVehicleComponent == nullptr)
+        {
+            return this;
+        }
+
         precedingCarBody->nextEntityId = lastComponent.front->id;
-        firstComponent.body->nextEntityId = lastComponent.body->nextVehicleComponent()->id;
+        firstComponent.body->nextEntityId = nextVehicleComponent->id;
 
         for (; lastComponentIndex > 0; lastComponentIndex--)
         {
