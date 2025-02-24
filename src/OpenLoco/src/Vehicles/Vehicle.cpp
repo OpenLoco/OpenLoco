@@ -697,7 +697,7 @@ namespace OpenLoco::Vehicles
         }
 
         VehicleBase* ptr = this; // lvalue required
-        CarComponent firstComponent(ptr);
+        CarComponent newLastComponent(ptr);
         ptr = this; // CarComponent constructor changes value
         Car car(ptr);
 
@@ -709,61 +709,63 @@ namespace OpenLoco::Vehicles
             component.back->objectSpriteType = frontSprite;
 
             // silence -Werror=null-dereference
-            VehicleCommon* body = component.body;
+            VehicleBody* body = component.body;
             body->var_38 ^= Flags38::isReversed;
 
             components.push_back(component);
         }
         auto lastComponentIndex = components.size() - 1;
-        auto lastComponent = components[lastComponentIndex];
+        auto newFirstComponent = components[lastComponentIndex];
 
         // if the Car is only one CarComponent we don't have to swap any values
-        if (lastComponent.front == firstComponent.front)
+        if (newFirstComponent.front == newLastComponent.front)
         {
             return this;
         }
 
         // silence -Werror=null-dereference
-        auto nextVehicleComponent = lastComponent.body->nextVehicleComponent();
+        auto nextVehicleComponent = newFirstComponent.body->nextVehicleComponent();
         if (nextVehicleComponent == nullptr)
         {
             return this;
         }
 
-        precedingCarBody->nextEntityId = lastComponent.front->id;
-        firstComponent.body->nextEntityId = nextVehicleComponent->id;
+        newFirstComponent.body->setSubType(VehicleEntityType::body_start);
+        precedingCarBody->nextEntityId = newFirstComponent.front->id;
+        newLastComponent.body->nextEntityId = nextVehicleComponent->id;
 
-        for (; lastComponentIndex > 0; lastComponentIndex--)
+        for (int i = lastComponentIndex - 1; i >= 0; i--)
         {
-            components[lastComponentIndex].body->nextEntityId = components[lastComponentIndex - 1].front->id;
+            components[i].body->setSubType(VehicleEntityType::body_continued);
+            components[i + 1].body->nextEntityId = components[i].front->id;
         }
 
-        lastComponent.body->primaryCargo = firstComponent.body->primaryCargo;
-        lastComponent.body->breakdownFlags = firstComponent.body->breakdownFlags;
-        lastComponent.body->breakdownTimeout = firstComponent.body->breakdownTimeout;
-        lastComponent.front->secondaryCargo = this->secondaryCargo;
-        lastComponent.front->breakdownFlags = this->breakdownFlags;
-        lastComponent.front->breakdownTimeout = this->breakdownTimeout;
-        lastComponent.front->var_52 = this->var_52;
-        lastComponent.front->reliability = this->reliability;
-        lastComponent.front->breakdownTimeout = this->breakdownTimeout;
+        newFirstComponent.body->primaryCargo = newLastComponent.body->primaryCargo;
+        newFirstComponent.body->breakdownFlags = newLastComponent.body->breakdownFlags;
+        newFirstComponent.body->breakdownTimeout = newLastComponent.body->breakdownTimeout;
+        newFirstComponent.front->secondaryCargo = newLastComponent.front->secondaryCargo;
+        newFirstComponent.front->breakdownFlags = newLastComponent.front->breakdownFlags;
+        newFirstComponent.front->breakdownTimeout = newLastComponent.front->breakdownTimeout;
+        newFirstComponent.front->var_52 = newLastComponent.front->var_52;
+        newFirstComponent.front->reliability = newLastComponent.front->reliability;
+        newFirstComponent.front->breakdownTimeout = newLastComponent.front->breakdownTimeout;
 
         // vanilla does not reset every cargo value
-        firstComponent.body->primaryCargo.acceptedTypes = 0;
-        firstComponent.body->primaryCargo.type = 0xFF;
-        firstComponent.body->primaryCargo.qty = 0;
-        firstComponent.body->primaryCargo.numDays = 0;
-        this->secondaryCargo.acceptedTypes = 0;
-        this->secondaryCargo.type = 0xFF;
-        this->secondaryCargo.qty = 0;
-        this->secondaryCargo.numDays = 0;
+        newLastComponent.body->primaryCargo.acceptedTypes = 0;
+        newLastComponent.body->primaryCargo.type = 0xFF;
+        newLastComponent.body->primaryCargo.qty = 0;
+        newLastComponent.body->primaryCargo.numDays = 0;
+        newLastComponent.front->secondaryCargo.acceptedTypes = 0;
+        newLastComponent.front->secondaryCargo.type = 0xFF;
+        newLastComponent.front->secondaryCargo.qty = 0;
+        newLastComponent.front->secondaryCargo.numDays = 0;
 
-        firstComponent.body->breakdownFlags = BreakdownFlags::none;
-        lastComponent.front->breakdownTimeout = 0;
-        this->breakdownFlags = BreakdownFlags::none;
-        this->breakdownTimeout = 0;
+        newLastComponent.body->breakdownFlags = BreakdownFlags::none;
+        newLastComponent.body->breakdownTimeout = 0;
+        newLastComponent.front->breakdownFlags = BreakdownFlags::none;
+        newLastComponent.front->breakdownTimeout = 0;
 
-        return lastComponent.front;
+        return newLastComponent.front;
     }
 
     // 0x004AF16A
