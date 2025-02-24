@@ -725,7 +725,7 @@ namespace OpenLoco::Vehicles
         precedingCarBody->nextEntityId = lastComponent.front->id;
         firstComponent.body->nextEntityId = lastComponent.body->nextVehicleComponent()->id;
 
-        for (lastComponentIndex; lastComponentIndex > 0; lastComponentIndex--)
+        for (; lastComponentIndex > 0; lastComponentIndex--)
         {
             components[lastComponentIndex].body->nextEntityId = components[lastComponentIndex - 1].front->id;
         }
