@@ -689,10 +689,6 @@ namespace OpenLoco::Vehicles
     // 0x004AFFF3
     VehicleBogie* VehicleBogie::flipCar()
     {
-        if (getSubType() != VehicleEntityType::bogie)
-        {
-            return this;
-        }
         Vehicle train(head);
         VehicleBase* precedingCarBody = train.veh2;
         while (precedingCarBody->nextVehicleComponent()->asBase<VehicleBogie>() != this)
