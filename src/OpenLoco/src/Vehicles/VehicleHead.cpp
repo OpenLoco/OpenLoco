@@ -599,11 +599,11 @@ namespace OpenLoco::Vehicles
         }
 
         {
-            // Alternate forward/backward if VehicleObjectFlags::alternateCarriageDirection set
+            // Alternate forward/backward if VehicleObjectFlags::alternatingDirection set
             bool directionForward = true;
             for (auto& cd : carData)
             {
-                if (cd.hasFlags(VehicleObjectFlags::alternateCarriageDirection))
+                if (cd.hasFlags(VehicleObjectFlags::alternatingDirection))
                 {
                     cd.isReversed = directionForward;
                     directionForward ^= true;
@@ -616,11 +616,11 @@ namespace OpenLoco::Vehicles
             for (auto i = 0U; i < carData.size(); ++i)
             {
                 auto& cd = carData[i];
-                if (cd.power != 0 || cd.hasFlags(VehicleObjectFlags::carriagePositionTopAndTail))
+                if (cd.power != 0 || cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
                 {
                     if (isFirst)
                     {
-                        if (cd.hasFlags(VehicleObjectFlags::carriagePositionTopAndTail))
+                        if (cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
                         {
                             cd.isReversed = false;
                             std::rotate(carData.begin(), carData.begin() + i, carData.begin() + i + 1);
@@ -628,7 +628,7 @@ namespace OpenLoco::Vehicles
                         isFirst = false;
                         continue;
                     }
-                    if (cd.hasFlags(VehicleObjectFlags::carriagePositionTopAndTail))
+                    if (cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
                     {
                         cd.isReversed = true;
                         std::rotate(carData.begin() + i, carData.begin() + i + 1, carData.end());
@@ -642,11 +642,11 @@ namespace OpenLoco::Vehicles
         // 0x004AFBC0
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
-            const auto numMiddles = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::carriagePositionCentered); });
+            const auto numMiddles = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::centerPosition); });
             const auto middle = (carData.size() / 2) + 1;
             if (middle < carData.size())
             {
-                std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::carriagePositionCentered); });
+                std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::centerPosition); });
                 const auto middleStart = middle - numMiddles / 2;
                 const auto middleEnd = middleStart + numMiddles;
                 std::rotate(carData.begin() + middleStart, carData.begin() + middleEnd, carData.end());
@@ -689,12 +689,12 @@ namespace OpenLoco::Vehicles
             for (auto& car : train.cars)
             {
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (!vehicleObj->hasFlags(VehicleObjectFlags::alternateCarriageSprite))
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::alternatingCarSprite))
                 {
                     continue;
                 }
                 car.body->bodyIndex = front ? 0 : 1;
-                car.body->objectSpriteType = vehicleObj->var_24[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::flag_unk7;
+                car.body->objectSpriteType = vehicleObj->carComponents[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::flag_unk7;
                 front ^= true;
             }
         }
