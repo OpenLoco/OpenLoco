@@ -717,13 +717,13 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        auto& newFirstComponent = components.back();
-
         // if the Car is only one CarComponent we don't have to swap any values
-        if (newFirstComponent.front == oldFirstComponent.front)
+        if (components.size() == 1)
         {
             return frontBogie;
         }
+
+        auto& newFirstComponent = components.back();
         if (precedingVehicleComponent == nullptr || newFirstComponent.body == nullptr || oldFirstComponent.body == nullptr)
         {
             return frontBogie;
