@@ -569,9 +569,53 @@ namespace OpenLoco
         return thought.var_84 < val2;
     }
 
-    // 0x00488050
-    static bool sub_488050(const Company& company, const AiThought& thought)
+    struct VehiclePurchaseRequest
     {
+        uint8_t numVehicleObjects; // cl
+        uint8_t dl;                // dl
+        currency32_t ebx;          // ebx
+        currency32_t eax;          // eax
+    };
+
+    // 0x004802DD
+    static VehiclePurchaseRequest aiGenerateVehiclePurchaseRequest(AiThought& thought, uint16_t* requestBuffer)
+    {
+        registers regs;
+        regs.esi = X86Pointer(requestBuffer);
+        regs.edi = X86Pointer(&thought);
+        call(0x004802DD, regs);
+        VehiclePurchaseRequest res{};
+        res.numVehicleObjects = regs.cl;
+        res.dl = regs.dl;
+        res.ebx = regs.ebx;
+        res.eax = regs.eax;
+        return res;
+    }
+
+    // 0x00488050
+    static bool sub_488050(const Company& company, AiThought& thought)
+    {
+        thought.var_8B &= ~((1U << 2) | (1U << 3));
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return false;
+        }
+
+        if (thought.numVehicles != 0)
+        {
+            auto train = Vehicles::Vehicle(thought.vehicles[0]);
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                const auto reliability = car.front->reliability;
+                if (vehicleObj->power != 0 && (getCurrentYear() >= vehicleObj->obsolete || (reliability != 0 && reliability < 0x1900)))
+                {
+                    // 0x0048817D
+                    // return ...;
+                }
+            }
+        }
+        // 0x00488149
         registers regs;
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&thought);
@@ -584,7 +628,7 @@ namespace OpenLoco
         company.activeThoughtId++;
         if (company.activeThoughtId < kMaxAiThoughts)
         {
-            const auto& thought = company.aiThoughts[company.activeThoughtId];
+            auto& thought = company.aiThoughts[company.activeThoughtId];
             if (thought.type == AiThoughtType::null)
             {
                 aiThinkState1(company);
