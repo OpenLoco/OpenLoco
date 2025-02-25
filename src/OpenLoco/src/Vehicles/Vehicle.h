@@ -968,11 +968,13 @@ namespace OpenLoco::Vehicles
     void removeAllCargo(CarComponent& carComponent);
     VehicleBogie* flipCar(VehicleBogie& frontBogie);
 
-    /* insertCar
-     * takes source vehicle out of its train and puts it just before the destination vehicle in the destination train
+    /* insertCarBefore
+     * Takes source vehicle out of its train and puts it in front of the destination vehicle in the destination train.
+     * Source and destination trains can be the same.
      * esi: source (VehicleBogie)
      * edi: dest (VehicleBogie or VehicleTail)
+     * returns nothing
      */
-    void insertCar(VehicleBogie& source, VehicleBase& dest);
+    void insertCarBefore(VehicleBogie& source, VehicleBase& dest);
     void registerHooks();
 }

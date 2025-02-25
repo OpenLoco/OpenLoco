@@ -800,7 +800,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AF4D6
-    void insertCar(VehicleBogie& source, VehicleBase& dest)
+    void insertCarBefore(VehicleBogie& source, VehicleBase& dest)
     {
         if (source.id == dest.id)
         {
@@ -811,14 +811,14 @@ namespace OpenLoco::Vehicles
         Ui::WindowManager::invalidate(Ui::WindowType::vehicleList);
 
         Vehicle sourceTrain(source.head);
-        auto precedingVehicleComponent = source.previousVehicleComponent();
+        auto precedingSourceComponent = source.previousVehicleComponent();
         for (auto& car : sourceTrain.cars)
         {
             if (car.front->id != source.id)
             {
                 continue;
             }
-            auto& lastBody = car.body;
+            auto* lastBody = car.body;
             for (auto& component : car)
             {
                 component.front->head = dest.getHead();
@@ -826,12 +826,12 @@ namespace OpenLoco::Vehicles
                 component.body->head = dest.getHead();
                 lastBody = component.body;
             }
-            precedingVehicleComponent->setNextCar(lastBody->nextCarId);
+            precedingSourceComponent->setNextCar(lastBody->nextCarId);
             lastBody->nextCarId = dest.id;
             break;
         }
-        precedingVehicleComponent = dest.previousVehicleComponent();
-        precedingVehicleComponent->setNextCar(source.id);
+        auto precedingDestComponent = dest.previousVehicleComponent();
+        precedingDestComponent->setNextCar(source.id);
     }
 
     void registerHooks()
@@ -870,7 +870,7 @@ namespace OpenLoco::Vehicles
                 VehicleBogie* source = X86Pointer<VehicleBogie>(regs.esi);
                 VehicleBase* dest = X86Pointer<VehicleBase>(regs.edi);
 
-                insertCar(*source, *dest);
+                insertCarBefore(*source, *dest);
 
                 regs = backup;
                 return 0;
