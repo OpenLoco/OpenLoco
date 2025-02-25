@@ -953,9 +953,8 @@ namespace OpenLoco::Vehicles
                         component.front->objectSpriteType = 0xFF;
                         component.back->objectSpriteType = 0xFF;
                         component.body->objectSpriteType = 0xFF;
-                        auto o3 = ObjectManager::get<VehicleObject>(previousCarComponent.front->objectId);
-                        auto middleBodyIndex = component.front->bodyIndex - 1; // maybe change this to previousCarComponent.body->bodyIndex;
-                        previousCarComponent.back->asBase<VehicleBogie>()->objectSpriteType = o3->carComponents[middleBodyIndex].backBogieSpriteInd;
+                        auto o3 = ObjectManager::get<VehicleObject>(previousCarComponent.back->objectId);
+                        previousCarComponent.back->objectSpriteType = o3->carComponents[previousCarComponent.back->objectId].backBogieSpriteInd;
                     }
                 }
                 secondPreviousCarComponent = previousCarComponent;
