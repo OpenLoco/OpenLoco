@@ -110,6 +110,12 @@ namespace OpenLoco::Vehicles
         veh->nextCarId = newNextCar;
     }
 
+    EntityId VehicleBase::getNextCar() const
+    {
+        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
+        return veh->nextCarId;
+    }
+
     bool VehicleBase::has38Flags(Flags38 flagsToTest) const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
@@ -687,11 +693,11 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AFFF3
-    VehicleBogie* flipCar(VehicleBogie* frontBogie)
+    VehicleBogie& flipCar(VehicleBogie& frontBogie)
     {
-        Vehicle train(frontBogie->head);
+        Vehicle train(frontBogie.head);
         VehicleBase* precedingVehicleComponent = train.veh2;
-        while (precedingVehicleComponent->nextVehicleComponent() != frontBogie)
+        while (precedingVehicleComponent->getNextCar() != frontBogie.id)
         {
             precedingVehicleComponent = precedingVehicleComponent->nextVehicleComponent();
         }
@@ -700,7 +706,7 @@ namespace OpenLoco::Vehicles
 
         for (auto& car : train.cars)
         {
-            if (car.front != frontBogie)
+            if (car.front->id != frontBogie.id)
             {
                 continue;
             }
@@ -759,7 +765,7 @@ namespace OpenLoco::Vehicles
         oldFirstComponent.front->breakdownFlags = BreakdownFlags::none;
         oldFirstComponent.front->breakdownTimeout = 0;
 
-        return newFirstComponent.front;
+        return *newFirstComponent.front;
     }
 
     // 0x004AF16A
@@ -804,9 +810,9 @@ namespace OpenLoco::Vehicles
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 VehicleBogie* component = X86Pointer<VehicleBogie>(regs.esi);
-                VehicleBogie* newComponent = flipCar(component);
+                VehicleBogie& newComponent = flipCar(*component);
                 regs = backup;
-                regs.esi = X86Pointer(newComponent);
+                regs.esi = X86Pointer(&newComponent);
                 return 0;
             });
     }
