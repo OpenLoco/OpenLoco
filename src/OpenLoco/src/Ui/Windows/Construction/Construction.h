@@ -10,6 +10,7 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <sfl/static_vector.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -174,16 +175,26 @@ namespace OpenLoco::Ui::Windows::Construction
         void createConstructionWindow();
         void refreshAirportList(uint8_t* stationList);
         void refreshDockList(uint8_t* stationList);
-        void refreshStationList(uint8_t* stationList, uint8_t trackType, TransportMode transportMode);
-        void refreshBridgeList(uint8_t* bridgeList, uint8_t trackType, TransportMode transportMode);
-        void refreshModList(uint8_t* modList, uint8_t trackType, TransportMode transportMode);
+        sfl::static_vector<uint8_t, 16>  refreshStationList(uint8_t trackType, TransportMode transportMode);
+        sfl::static_vector<uint8_t, 8> refreshBridgeList(uint8_t trackType, TransportMode transportMode);
+        std::array<uint8_t, 4> refreshModList(uint8_t trackType, TransportMode transportMode);
         void sub_4A3A50();
-        void refreshSignalList(uint8_t* signalList, uint8_t trackType);
+        sfl::static_vector<uint8_t, 16> refreshSignalList(uint8_t trackType);
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos);
         void setNextAndPreviousRoadTile(const RoadElement& elRoad, const World::Pos2& pos);
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport);
         void previousTab(Window* self);
         void nextTab(Window* self);
+
+        template<typename T>
+        void copyToLegacyList(T sflType, uint8_t* legacyList)
+        {
+            for (size_t i = 0; i < sflType.size(); i++)
+            {
+                legacyList[i] = sflType[i];
+            }
+            legacyList[sflType.size()] = 0xFFU;
+        }
     }
 
     namespace Construction

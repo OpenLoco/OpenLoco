@@ -78,7 +78,8 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         Common::createConstructionWindow();
 
-        Common::refreshSignalList(_cState->signalList, _cState->trackType);
+        const auto signalList = Common::refreshSignalList(_cState->trackType);
+        Common::copyToLegacyList(signalList, _cState->signalList);
 
         auto lastSignal = Scenario::getConstruction().signals[_cState->trackType];
 
@@ -89,7 +90,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedSignal = lastSignal;
 
-        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::rail);
+        const auto stationList = Common::refreshStationList(_cState->trackType, TransportMode::rail);
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         auto lastStation = Scenario::getConstruction().trainStations[_cState->trackType];
 
@@ -100,7 +102,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::rail);
+        const auto bridgeList = Common::refreshBridgeList(_cState->trackType, TransportMode::rail);
+        Common::copyToLegacyList(bridgeList, _cState->bridgeList);
 
         auto lastBridge = Scenario::getConstruction().bridges[_cState->trackType];
 
@@ -111,7 +114,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedBridge = lastBridge;
 
-        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::rail);
+        const auto modList = Common::refreshModList(_cState->trackType, TransportMode::rail);
+        std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
         auto lastMod = Scenario::getConstruction().trackMods[_cState->trackType];
 
@@ -132,7 +136,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedSignal = 0xFF;
 
-        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::road);
+        const auto stationList = Common::refreshStationList(_cState->trackType, TransportMode::road);
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         auto lastStation = Scenario::getConstruction().roadStations[(_cState->trackType & ~(1ULL << 7))];
 
@@ -143,7 +148,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::road);
+        const auto bridgeList = Common::refreshBridgeList(_cState->trackType, TransportMode::road);
+        Common::copyToLegacyList(bridgeList, _cState->bridgeList);
 
         auto lastBridge = Scenario::getConstruction().bridges[(_cState->trackType & ~(1ULL << 7))];
 
@@ -154,7 +160,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedBridge = lastBridge;
 
-        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::road);
+        const auto modList = Common::refreshModList(_cState->trackType, TransportMode::road);
+        std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
         auto lastMod = Scenario::getConstruction().roadMods[(_cState->trackType & ~(1ULL << 7))];
 
@@ -274,7 +281,8 @@ namespace OpenLoco::Ui::Windows::Construction
         _cState->lastSelectedTrackPiece = 0;
         _cState->lastSelectedTrackGradient = 0;
 
-        Common::refreshSignalList(_cState->signalList, _cState->trackType);
+        const auto signalList = Common::refreshSignalList(_cState->trackType);
+        Common::copyToLegacyList(signalList, _cState->signalList);
         auto lastSignal = Scenario::getConstruction().signals[_cState->trackType];
 
         if (lastSignal == 0xFF)
@@ -284,7 +292,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedSignal = lastSignal;
 
-        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::rail);
+        const auto stationList = Common::refreshStationList(_cState->trackType, TransportMode::rail);
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         auto lastStation = Scenario::getConstruction().trainStations[_cState->trackType];
 
@@ -295,7 +304,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::rail);
+        const auto bridgeList = Common::refreshBridgeList(_cState->trackType, TransportMode::rail);
+        Common::copyToLegacyList(bridgeList, _cState->bridgeList);
 
         auto lastBridge = Scenario::getConstruction().bridges[_cState->trackType];
 
@@ -310,7 +320,8 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             _cState->lastSelectedBridge = copyElement->bridge();
         }
-        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::rail);
+        const auto modList = Common::refreshModList(_cState->trackType, TransportMode::rail);
+        std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
         _cState->lastSelectedMods = copyElement->mods();
         _cState->byte_113603A = 0;
@@ -371,7 +382,8 @@ namespace OpenLoco::Ui::Windows::Construction
         _cState->lastSelectedTrackGradient = 0;
         _cState->lastSelectedSignal = 0xFF;
 
-        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::road);
+        const auto stationList = Common::refreshStationList(_cState->trackType, TransportMode::road);
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         auto lastStation = Scenario::getConstruction().roadStations[(_cState->trackType & ~(1ULL << 7))];
 
@@ -382,7 +394,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::road);
+        const auto bridgeList = Common::refreshBridgeList(_cState->trackType, TransportMode::road);
+        Common::copyToLegacyList(bridgeList, _cState->bridgeList);
 
         auto lastBridge = Scenario::getConstruction().bridges[(_cState->trackType & ~(1ULL << 7))];
 
@@ -397,7 +410,8 @@ namespace OpenLoco::Ui::Windows::Construction
             _cState->lastSelectedBridge = copyElement->bridge();
         }
 
-        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::road);
+        const auto modList = Common::refreshModList(_cState->trackType, TransportMode::road);
+        std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
         _cState->lastSelectedMods = 0;
         auto* roadObj = ObjectManager::get<RoadObject>(_cState->trackType & ~(1ULL << 7));
@@ -1259,10 +1273,10 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0048D678, 0x0048D5E4
-        void refreshStationList(uint8_t* stationList, uint8_t trackType, TransportMode transportMode)
+        sfl::static_vector<uint8_t, 16> refreshStationList(uint8_t trackType, TransportMode transportMode)
         {
             auto currentYear = getCurrentYear();
-            auto stationCount = 0;
+            sfl::static_vector<uint8_t, 16> stationList;
 
             if (transportMode == TransportMode::road)
             {
@@ -1285,8 +1299,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         continue;
                     }
-                    stationList[stationCount] = station;
-                    stationCount++;
+                    stationList.push_back(station);
                 }
             }
 
@@ -1310,8 +1323,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         continue;
                     }
-                    stationList[stationCount] = station;
-                    stationCount++;
+                    stationList.push_back(station);
                 }
             }
 
@@ -1336,7 +1348,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     designedYear = roadStationObj->designedYear;
                     obsoleteYear = roadStationObj->obsoleteYear;
                 }
-                else if (transportMode == TransportMode::rail)
+                else // transportMode == TransportMode::rail
                 {
                     auto trainStationObj = ObjectManager::get<TrainStationObject>(i);
 
@@ -1349,10 +1361,6 @@ namespace OpenLoco::Ui::Windows::Construction
                     mods = trainStationObj->mods;
                     designedYear = trainStationObj->designedYear;
                     obsoleteYear = trainStationObj->obsoleteYear;
-                }
-                else
-                {
-                    return;
                 }
 
                 for (auto modCount = 0; modCount < numCompatible; modCount++)
@@ -1369,32 +1377,21 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         continue;
                     }
-                    for (size_t k = 0; k < std::size(_cState->stationList); k++)
+                    if (std::find(std::begin(stationList), std::end(stationList), i) == std::end(stationList))
                     {
-                        if (&stationList[k] == &stationList[stationCount])
-                        {
-                            stationList[stationCount] = i;
-                            stationCount++;
-                            break;
-                        }
-                        if (i == stationList[k])
-                        {
-                            break;
-                        }
+                        stationList.push_back(i);
                     }
                 }
             }
-
-            stationList[stationCount] = 0xFF;
-
-            sortList(stationList);
+            std::sort(std::begin(stationList), std::end(stationList));
+            return stationList;
         }
 
         // 0x0042C518, 0x0042C490
-        void refreshBridgeList(uint8_t* bridgeList, uint8_t trackType, TransportMode transportMode)
+        sfl::static_vector<uint8_t, 8> refreshBridgeList(uint8_t trackType, TransportMode transportMode)
         {
             auto currentYear = getCurrentYear();
-            auto bridgeCount = 0;
+            sfl::static_vector<uint8_t, 8> bridgeList;
 
             if (transportMode == TransportMode::road)
             {
@@ -1412,8 +1409,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         continue;
                     }
-                    bridgeList[bridgeCount] = bridge;
-                    bridgeCount++;
+                    bridgeList.push_back(bridge);
                 }
             }
 
@@ -1432,8 +1428,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         continue;
                     }
-                    bridgeList[bridgeCount] = bridge;
-                    bridgeCount++;
+                    bridgeList.push_back(bridge);
                 }
             }
 
@@ -1453,14 +1448,10 @@ namespace OpenLoco::Ui::Windows::Construction
                     numCompatible = bridgeObj->roadNumCompatible;
                     mods = bridgeObj->roadMods;
                 }
-                else if (transportMode == TransportMode::rail)
+                else // transportMode == TransportMode::rail
                 {
                     numCompatible = bridgeObj->trackNumCompatible;
                     mods = bridgeObj->trackMods;
-                }
-                else
-                {
-                    return;
                 }
 
                 for (auto modCount = 0; modCount < numCompatible; modCount++)
@@ -1473,29 +1464,18 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         continue;
                     }
-                    for (size_t k = 0; k < std::size(_cState->bridgeList); k++)
+                    if (std::find(bridgeList.begin(), bridgeList.end(), i) == bridgeList.end())
                     {
-                        if (&bridgeList[k] == &bridgeList[bridgeCount])
-                        {
-                            bridgeList[bridgeCount] = i;
-                            bridgeCount++;
-                            break;
-                        }
-                        if (i == bridgeList[k])
-                        {
-                            break;
-                        }
+                        bridgeList.push_back(i);
                     }
                 }
             }
-
-            bridgeList[bridgeCount] = 0xFF;
-
-            sortList(bridgeList);
+            std::sort(bridgeList.begin(), bridgeList.end());
+            return bridgeList;
         }
 
         // 0x004781C5, 0x004A693D
-        void refreshModList(uint8_t* modList, uint8_t trackType, TransportMode transportMode)
+        std::array<uint8_t, 4> refreshModList(uint8_t trackType, TransportMode transportMode)
         {
             if (transportMode == TransportMode::road)
             {
@@ -1503,11 +1483,7 @@ namespace OpenLoco::Ui::Windows::Construction
             }
 
             auto companyId = GameCommands::getUpdatingCompanyId();
-
-            modList[0] = 0xFF;
-            modList[1] = 0xFF;
-            modList[2] = 0xFF;
-            modList[3] = 0xFF;
+            std::array<uint8_t, 4> modList = { 0xFF, 0xFF, 0xFF, 0xFF };
             auto flags = 0;
 
             for (uint8_t vehicle = 0; vehicle < ObjectManager::getMaxObjects(ObjectType::vehicle); vehicle++)
@@ -1574,6 +1550,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     }
                 }
             }
+            return modList;
         }
 
         // 0x004A3A50
@@ -1581,7 +1558,8 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             removeConstructionGhosts();
             setTrackOptions(_cState->trackType);
-            refreshStationList(_cState->stationList, _cState->trackType, TransportMode::road);
+            const auto stationList = refreshStationList(_cState->trackType, TransportMode::road);
+            copyToLegacyList(stationList, _cState->stationList);
 
             auto lastStation = Scenario::getConstruction().roadStations[(_cState->trackType & ~(1ULL << 7))];
             if (lastStation == 0xFF)
@@ -1590,7 +1568,8 @@ namespace OpenLoco::Ui::Windows::Construction
             }
             _cState->lastSelectedStationType = lastStation;
 
-            refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::road);
+            const auto bridgeList = refreshBridgeList(_cState->trackType, TransportMode::road);
+            copyToLegacyList(bridgeList, _cState->bridgeList);
 
             auto lastBridge = Scenario::getConstruction().bridges[(_cState->trackType & ~(1ULL << 7))];
             if (lastBridge == 0xFF)
@@ -1599,7 +1578,8 @@ namespace OpenLoco::Ui::Windows::Construction
             }
             _cState->lastSelectedBridge = lastBridge;
 
-            refreshModList(_cState->modList, _cState->trackType, TransportMode::road);
+            const auto modList = refreshModList(_cState->trackType, TransportMode::road);
+            std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
             auto lastMod = Scenario::getConstruction().roadMods[(_cState->trackType & ~(1ULL << 7))];
             if (lastMod == 0xFF)
@@ -1618,11 +1598,11 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x00488B4D
-        void refreshSignalList(uint8_t* signalList, uint8_t trackType)
+        sfl::static_vector<uint8_t, 16> refreshSignalList(uint8_t trackType)
         {
+            sfl::static_vector<uint8_t, 16> signalList;
             auto currentYear = getCurrentYear();
             auto trackObj = ObjectManager::get<TrackObject>(trackType);
-            auto signalCount = 0;
             auto signals = trackObj->signals;
             while (signals > 0)
             {
@@ -1642,8 +1622,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 {
                     continue;
                 }
-                signalList[signalCount] = signalId;
-                signalCount++;
+                signalList.push_back(signalId);
             }
 
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::trackSignal); i++)
@@ -1667,25 +1646,14 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         continue;
                     }
-                    for (size_t k = 0; k < std::size(_cState->signalList); k++)
+                    if (std::find(signalList.begin(), signalList.end(), i) == signalList.end())
                     {
-                        if (&signalList[k] == &signalList[signalCount])
-                        {
-                            signalList[signalCount] = i;
-                            signalCount++;
-                            break;
-                        }
-                        if (i == signalList[k])
-                        {
-                            break;
-                        }
+                        signalList.push_back(i);
                     }
                 }
             }
-
-            signalList[signalCount] = 0xFF;
-
-            sortList(signalList);
+            std::sort(signalList.begin(), signalList.end());
+            return signalList;
         }
 
         void previousTab(Window* self)
