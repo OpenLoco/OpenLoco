@@ -398,7 +398,7 @@ namespace OpenLoco::Vehicles
         void sub_4ADB47(bool unk);
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
-        void sub_4AF7A4();
+        void autoLayoutTrain();
         uint32_t getVehicleTotalLength() const;
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -967,6 +967,8 @@ namespace OpenLoco::Vehicles
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
     void removeAllCargo(CarComponent& carComponent);
     VehicleBogie* flipCar(VehicleBogie& frontBogie);
+
+    void sub_4AF4D6(Vehicles::VehicleBogie& source, Vehicles::VehicleBase& dest);
 
     void registerHooks();
 }
