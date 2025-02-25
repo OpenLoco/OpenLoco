@@ -912,6 +912,7 @@ namespace OpenLoco::Vehicles
             {
                 if (component.body->has38Flags(Flags38::jacobsBogieAvailable))
                 {
+                    // reset jacob's bogie at the front of the car
                     if (component.body->getSubType() == VehicleEntityType::body_start)
                     {
                         component.front->objectSpriteType = 0xFF;
@@ -925,13 +926,12 @@ namespace OpenLoco::Vehicles
 
                         CarComponent nextComponent = CarComponent(frontBogieOfNext);
                         auto o = ObjectManager::get<VehicleObject>(component.front->objectId);
-                        auto frontBogieSprite = o->carComponents[nextComponent.body->bodyIndex].frontBogieSpriteInd;
+                        nextComponent.front->objectSpriteType = o->carComponents[nextComponent.body->bodyIndex].frontBogieSpriteInd;
                         if (nextComponent.body->has38Flags(Flags38::isReversed))
                         {
                             nextComponent.front->objectSpriteType = o->carComponents[nextComponent.body->bodyIndex].backBogieSpriteInd;
                         }
-                        nextComponent.front->objectSpriteType = frontBogieSprite;
-
+                        // connect jacob's bogie to the front
                         if (componentsFound >= 0 and previousCarComponent.body->has38Flags(Flags38::jacobsBogieAvailable))
                         {
                             if (componentsFound < 2)
@@ -946,6 +946,7 @@ namespace OpenLoco::Vehicles
                     }
                     else
                     {
+                        // reset jacob's bogie at the rear of the car
                         if (componentsFound == 0)
                         {
                             throw Exception::RuntimeError("connectJacobsBogies reached end of Car without previousCarComponent");
@@ -955,6 +956,10 @@ namespace OpenLoco::Vehicles
                         component.body->objectSpriteType = 0xFF;
                         auto o3 = ObjectManager::get<VehicleObject>(previousCarComponent.back->objectId);
                         previousCarComponent.back->objectSpriteType = o3->carComponents[previousCarComponent.back->objectId].backBogieSpriteInd;
+                        if (previousCarComponent.body->has38Flags(Flags38::isReversed))
+                        {
+                            previousCarComponent.back->objectSpriteType = o3->carComponents[previousCarComponent.back->objectId].frontBogieSpriteInd;
+                        }
                     }
                 }
                 secondPreviousCarComponent = previousCarComponent;
