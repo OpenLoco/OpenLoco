@@ -735,6 +735,11 @@ namespace OpenLoco::Vehicles
         newFirstComponent.body->setSubType(VehicleEntityType::body_start);
         precedingVehicleComponent->setNextCar(newFirstComponent.front->id);
         // set the new last component to point to the next car
+
+        if (oldFirstComponent.body == nullptr)
+        {
+            throw Exception::RuntimeError("oldFirstComponent.body was nullptr");
+        }
         oldFirstComponent.body->setNextCar(newFirstComponent.body->nextCarId);
 
         for (int i = components.size() - 2; i >= 0; i--)
