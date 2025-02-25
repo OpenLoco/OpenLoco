@@ -929,9 +929,8 @@ namespace OpenLoco::Vehicles
         // if jacob's bogie is available at back the end body will have jacobsBogieAvailable
         Vehicle train(head);
         auto componentsFound = 0;
-        CarComponent nullCarComponent{};
-        CarComponent& previousCarComponent = nullCarComponent;
-        CarComponent& secondPreviousCarComponent = nullCarComponent;
+        CarComponent previousCarComponent;
+        CarComponent secondPreviousCarComponent;
         for (auto& car : train.cars)
         {
             for (auto& component : car)
@@ -978,7 +977,7 @@ namespace OpenLoco::Vehicles
                         // jz loc_4AF76D
                         if (componentsFound >= 0 and previousCarComponent.body->has38Flags(Flags38::jacobsBogieAvailable))
                         {
-                            if (componentsFound == 1)
+                            if (componentsFound < 2)
                             {
                                 throw Exception::RuntimeError("connectJacobsBogies tried to connect jacob's bogie without secondPreviousCarComponent");
                             }
@@ -1004,6 +1003,10 @@ namespace OpenLoco::Vehicles
                     }
                     else
                     {
+                        if (componentsFound == 0)
+                        {
+                            throw Exception::RuntimeError("connectJacobsBogies reached end of Car with no previous CarComponent");
+                        }
                         // loc_4AF720:
                         // mov byte ptr [esi+39h], 0FFh
                         component.front->objectSpriteType = 0xFF;
@@ -1016,10 +1019,6 @@ namespace OpenLoco::Vehicles
                         // movzx ebp, word ptr[edi+3Ah] // previousCarComponent's back bogie (?)
                         // movzx ebp, word ptr [ebp+40h]
                         // mov ebx, _vehicleObjects[ebx*4]
-                        if (componentsFound == 0)
-                        {
-                            throw Exception::RuntimeError("connectJacobsBogies reached end of Car with no previous CarComponents");
-                        }
                         auto o3 = ObjectManager::get<VehicleObject>(previousCarComponent.front->objectId);
                         // movzx eax, byte ptr [esi+54h]
                         // dec eax // this path is for non-front bodies
