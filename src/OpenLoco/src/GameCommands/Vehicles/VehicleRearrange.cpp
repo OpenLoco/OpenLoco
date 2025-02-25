@@ -139,7 +139,7 @@ namespace OpenLoco::GameCommands
             std::optional<PlacementBackup> sourcePlacement = tryPickupTrain(sourceTrain);
             std::optional<PlacementBackup> destPlacement = tryPickupTrain(destTrain);
 
-            sub_4AF4D6(*sourceBogie, *destVehicle);
+            insertBeforeVehicle(*sourceBogie, *destVehicle);
 
             // Vehicle has been invalidate so get it again
             sourceTrain = Vehicles::Vehicle(*sourceHead);

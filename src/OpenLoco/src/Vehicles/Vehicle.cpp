@@ -800,57 +800,21 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AF4D6
-    // esi: source (VehicleBogie)
-    // edi: dest (VehicleBogie or VehicleTail)
-    void sub_4AF4D6(VehicleBogie& source, VehicleBase& dest)
+    void insertBeforeVehicle(VehicleBogie& source, VehicleBase& dest)
     {
-        VehicleCommon& dest2 = *dest.asBase<VehicleCommon>();
-        (void)dest2;
-        // cmp edi, esi
-        // jz locret_4AF6E0
         if (source.id == dest.id)
         {
             return;
         }
-        // unknown if this is caused by a bug in reverse engineering
-        // its a bug, the vehicle winds up with zero Cars
-        if (source.getSubType() == VehicleEntityType::tail)
-        {
-            return;
-        }
-        // mov al, wt_vehicle ; windowtype
-        // mov bx, [esi+26h] // head of train
-        // call window_invalidate_by_id
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(source.head));
-        // mov al wt_vehicle ; windowtype
-        // mov bx, [edi+26h]
-        // call window_invalidate_by_id
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(dest.getHead()));
-        // mov al, 5Bh // vehicleList with (1 << 6) set
-        // window_invalidate_by_id
         Ui::WindowManager::invalidate(Ui::WindowType::vehicleList);
 
-        // movzx ebp, word ptr [esi+26h] // source head
-        // shl ebp, 7
-        // add ebp, offset things
         Vehicle sourceTrain(source.head);
-
-        // loc_4AF508:
-        // iterate until we find the component ahead of source
-
-        // movzx ebx, word ptr [ebp+3Ah]
-        // shl ebx, 7
-        // add ebx, offset things
-        // cmp ebx, esi
-        // jz short loc_4AF51D
-
-        // loc_4AF508 cont.:
-        // mov ebp, ebx
-        // jmp short loc_4AF508
-        VehicleCommon* precedingVehicleComponent = nullptr; // ebp
+        VehicleBase* precedingVehicleComponent = nullptr;
         if (sourceTrain.veh2->nextCarId == source.id)
         {
-            precedingVehicleComponent = sourceTrain.veh2->asBase<VehicleCommon>(); // casting to VehicleCommon for debugging pruposes
+            precedingVehicleComponent = sourceTrain.veh2;
         }
         VehicleBody* lastBody = nullptr;
         for (auto& car : sourceTrain.cars)
@@ -862,16 +826,16 @@ namespace OpenLoco::Vehicles
                     component.front->head = dest.getHead();
                     component.back->head = dest.getHead();
                     component.body->head = dest.getHead();
-                    lastBody = component.body; // edx
-                    precedingVehicleComponent->setNextCar(lastBody->nextCarId);
+                    lastBody = component.body;
                 }
                 if (component.body != nullptr && component.body->nextCarId == source.id)
                 {
-                    precedingVehicleComponent = component.body->asBase<VehicleCommon>();
+                    precedingVehicleComponent = component.body;
                 }
             }
             if (lastBody != nullptr)
             {
+                precedingVehicleComponent->setNextCar(lastBody->nextCarId);
                 lastBody->nextCarId = dest.id;
                 break;
             }
@@ -879,30 +843,8 @@ namespace OpenLoco::Vehicles
         // could not find the source vehicle in the source train
         if (lastBody == nullptr)
         {
-            return;
+            throw Exception::RuntimeError("insertBeforeVehicle could not find the source vehicle in the source train.");
         }
-        // esi = source
-        // edi = dest
-        // ebx = first component of the next vehicle or tail
-        // edx = body of lastComponent
-        // ebp = precedingVehicleComponent
-
-        // loc_4AF67F:
-        // remove source Car from source's train
-
-        // mov ax, [ebx+0Ah] // id
-        // mov [ebp+3Ah], ax // nextCarId
-        // movzx ebp, word ptr [edi+26h] // destination head
-        // shl ebp, 7
-        // add ebp, offset things
-
-        //  loc_4AF594:
-        // movzx ebx, word ptr[ebp+3Ah]
-        // shl ebx, 7
-        // add ebx, offset things
-        // cmp ebx, edi
-        // jz short loc_4AF5A9
-        // define here because it won't reflect changes made to the first car of the train, which can occur if the source and dest train are the same
         Vehicle destTrain(dest.getHead());
         if (destTrain.veh2->nextCarId == dest.id)
         {
@@ -923,33 +865,7 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        // this code should never trigger
-        assert(false);
-        // esi = source
-        // edi = dest
-        // ebp = precedingVehicleComponent
-        // edx = body of source's lastComponent
-
-        // loc_4AF5A9:
-        // mov ax, [esi+0Ah]
-        // mov [ebp+3Ah], ax
-        // mov ax, [edi+0Ah]
-        // mov [edx+3Ah], ax
-        // mov ax, [edi+26h]
-        // movzx ebp, ax
-        // shl ebp, 7
-        // add ebp, offset things // ebp is now head of dest
-        // set the head property of all components in the dest train
-        // loc_4AF5C9:
-        // mov [ebp+26h, ax]
-        // movzx ebp, word ptr [ebp+3Ah]
-        // shl ebp, 7
-        // add ebp, offset things
-        // cmp byte ptr[ebp+1], 6
-        // jnz short loc_4AF5C9
-
-        // locret_4AF5E0:
-        // retn
+        throw Exception::RuntimeError("insertBeforeVehicle could not find the destination vehicle in the destination train.");
     }
 
     void registerHooks()
@@ -988,7 +904,7 @@ namespace OpenLoco::Vehicles
                 VehicleBogie* source = X86Pointer<VehicleBogie>(regs.esi);
                 VehicleBase* dest = X86Pointer<VehicleBase>(regs.edi);
 
-                sub_4AF4D6(*source, *dest);
+                insertBeforeVehicle(*source, *dest);
 
                 regs = backup;
                 return 0;
