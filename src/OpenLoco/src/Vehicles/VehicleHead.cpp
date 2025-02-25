@@ -523,15 +523,6 @@ namespace OpenLoco::Vehicles
         call(0x004AF4D6, regs);
     }
 
-    // 0x004AFFF3
-    void sub_4AFFF3(Vehicles::VehicleBogie& source)
-    {
-        // Looks to swap front/back bogies
-        registers regs{};
-        regs.esi = X86Pointer(&source);
-        call(0x004AFFF3, regs);
-    }
-
     // 0x004AF5E1
     static void sub_4AF5E1(Vehicles::VehicleHead& head)
     {
