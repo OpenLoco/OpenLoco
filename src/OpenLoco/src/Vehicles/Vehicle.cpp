@@ -59,7 +59,7 @@ namespace OpenLoco::Vehicles
     VehicleBase* VehicleBase::previousVehicleComponent()
     {
         auto head = EntityManager::get<VehicleBase>(this->getHead());
-        while (head->getNextCar() != this->id)
+        while (head->nextVehicleComponent() != this)
         {
             head = head->nextVehicleComponent();
         }
