@@ -293,6 +293,7 @@ namespace OpenLoco::Vehicles
         bool hasVehicleFlags(VehicleFlags flagsToTest) const;
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
+        VehicleBase* previousVehicleComponent();
         bool updateComponent();
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);

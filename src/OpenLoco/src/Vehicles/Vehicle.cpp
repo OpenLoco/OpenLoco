@@ -56,6 +56,16 @@ namespace OpenLoco::Vehicles
         return EntityManager::get<VehicleBase>(veh->nextCarId);
     }
 
+    VehicleBase* VehicleBase::previousVehicleComponent()
+    {
+        auto head = EntityManager::get<VehicleBase>(this->getHead());
+        while (head->getNextCar() != this->id)
+        {
+            head = head->nextVehicleComponent();
+        }
+        return head;
+    }
+
     TransportMode VehicleBase::getTransportMode() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
@@ -696,11 +706,7 @@ namespace OpenLoco::Vehicles
     VehicleBogie& flipCar(VehicleBogie& frontBogie)
     {
         Vehicle train(frontBogie.head);
-        VehicleBase* precedingVehicleComponent = train.veh2;
-        while (precedingVehicleComponent->getNextCar() != frontBogie.id)
-        {
-            precedingVehicleComponent = precedingVehicleComponent->nextVehicleComponent();
-        }
+        auto precedingVehicleComponent = frontBogie.previousVehicleComponent();
         CarComponent oldFirstComponent;
         sfl::static_vector<CarComponent, VehicleObject::kMaxCarComponents> components;
 
