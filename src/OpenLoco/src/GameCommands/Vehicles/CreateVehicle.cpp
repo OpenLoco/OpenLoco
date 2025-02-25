@@ -293,12 +293,12 @@ namespace OpenLoco::GameCommands
 
         if (bodyNumber == 0 && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieFront))
         {
-            newBody->var_38 |= Flags38::unk_3;
+            newBody->var_38 |= Flags38::jacobsBogieAvailable;
         }
 
         if (bodyNumber + 1 == vehObject.var_04 && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieRear))
         {
-            newBody->var_38 |= Flags38::unk_3;
+            newBody->var_38 |= Flags38::jacobsBogieAvailable;
         }
 
         lastVeh->setNextCar(newBody->id); // same as create bogie
