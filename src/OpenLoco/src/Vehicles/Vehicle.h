@@ -970,7 +970,7 @@ namespace OpenLoco::Vehicles
     /* flipCar
      * Reverses a Car in-place and returns the new front bogie
      * frontBogie: front bogie of the Car
-     * returns VehicleBogie 
+     * returns new front bogie of the Car
      */
     VehicleBogie* flipCar(VehicleBogie& frontBogie);
 
