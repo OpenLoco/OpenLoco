@@ -882,11 +882,23 @@ namespace OpenLoco::Vehicles
                 regs = backup;
                 return 0;
             });
+
+        registerHook(
+            0x004AF5E1,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
+                connectJacobsBogies(*head);
+                regs = backup;
+                return 0;
+            });
     }
 
     // remember to move this above registerHooks after rebasing
     // 0x004AF5E1
-    static void sub_4AF5E1(VehicleBogie &frontBogie)
+    // esi: head
+    // returns nothing
+    void connectJacobsBogies(VehicleHead& head)
     {
         // push eax
         // push ebx
@@ -894,8 +906,150 @@ namespace OpenLoco::Vehicles
         // push edi
         // push ebp
         // push esi
-        // off to a cracking start already, normally the calling function does this before calling
+        // off to a cracking start already, normally the calling function does this before calling, but this is only called from one function so its fine I guess
 
+        // movzx esi, word ptr [esi+3Ah] // veh1
+        // shl esi, 7
+        // add esi, offset things
+        // movzx esi, word ptr [esi+3Ah] // veh2
+        // shl esi, 7
+        // add esi, offset things
 
+        // mov edi, 0FFFFFFFFh // frontBogie of CarComponent two CarComponents behind esi
+        // mov edx, 0FFFFFFFFh // frontBogie of CarComponent one CarComponent behind esi
+        // movzx edi, word ptr [esi+3Ah] // first bogie of first Car
+        // shl esi, 7
+        // add esi, offset things
+
+        // loc 4AF618:
+        // cmp byte ptr [esi+1], 6
+        // jz loc_4AF69D
+
+        // if jacob's bogie is available at front the front body will have jacobsBogieAvailable
+        // if jacob's bogie is available at back the end body will have jacobsBogieAvailable
+        Vehicle train(head);
+        auto componentsFound = 0;
+        CarComponent nullCarComponent{};
+        CarComponent& previousCarComponent = nullCarComponent;
+        CarComponent& secondPreviousCarComponent = nullCarComponent;
+        for (auto& car : train.cars)
+        {
+            for (auto& component : car)
+            {
+                // loc_4AF618 cont:
+                // movzx ebp, word ptr [esi+3Ah] // second bogie
+                // movzx ebp, word ptr [esi+3Ah] // body
+                // test bypte ptr [ebp+38h], 8
+                // jz loc_4AF76D
+                if (component.body->has38Flags(Flags38::jacobsBogieAvailable))
+                {
+                    // cmp bypte ptr [ebp+1], 4
+                    // jnz loc_4AF720
+                    if (component.body->getSubType() == VehicleEntityType::body_start)
+                    {
+
+                        // loc_4AF76D cont:
+                        // this is a jacob's bogie at the front
+                        // disable jacob's bogie connection
+
+                        // mov byte ptr [esi+39h], 0FFh
+                        // mov ebp, word ptr [esi+3Ah] // back bogie
+                        // mov byte ptr [ebp+39h], 0FFh
+                        // mov ebp, word ptr [ebp+3Ah] // body
+                        // mov byte ptr [ebp+39h], 0FFh
+                        component.front->objectSpriteType = 0xFF;
+                        component.back->objectSpriteType = 0xFF;
+                        component.body->objectSpriteType = 0xFF;
+                        // mov ebp, word ptr[ebp+3Ah] // front bogie of second component
+                        // reset jacob's bogie of middle car
+                        auto frontBogieOfNext = component.body->nextVehicleComponent()->asBase<VehicleBogie>();
+                        if (frontBogieOfNext == nullptr)
+                        {
+                            throw Exception::RuntimeError("connectJacobsBogies frontBogieOfNext was unexpectedly nullptr");
+                        }
+                        auto o = ObjectManager::get<VehicleObject>(component.front->objectId);
+                        frontBogieOfNext->objectSpriteType = o->carComponents[frontBogieOfNext->bodyIndex].frontBogieSpriteInd; // oversight? does not take into account body's Flags38::isReversed
+
+                        // cmp edi, 0FFFFFFFFh
+                        // jz loc_4AF76D
+                        // movzx ebp, word ptr [edi+3Ah] // rear bogie of previousCarComponent
+                        // movzx ebp, word ptr [ebp+3Ah] // body
+                        // test byte ptr [ebp+38h, 8]
+                        // jz loc_4AF76D
+                        if (componentsFound >= 0 and previousCarComponent.body->has38Flags(Flags38::jacobsBogieAvailable))
+                        {
+                            if (componentsFound == 1)
+                            {
+                                throw Exception::RuntimeError("connectJacobsBogies tried to connect jacob's bogie without secondPreviousCarComponent");
+                            }
+                            // movzx ebx, word ptr [esi+40h]
+                            // mov ebx, _vehicleObjects[ebx*4]
+                            auto o2 = ObjectManager::get<VehicleObject>(component.front->objectId);
+                            // movzx eax, byte ptr [esi+54h]
+                            // imul eax, 6
+                            // mov al, [eax+ebx+26h] // frontBogieSprite of first component's bodyIndex
+                            // mov [esi+39h], al
+                            component.front->objectSpriteType = o2->carComponents[component.front->bodyIndex].frontBogieSpriteInd;
+                            // movzx ebp, word ptr [esi+3Ah] // first CarComponent rear bogie
+                            // movzx ebp, [ebp+3Ah] // body
+                            // movzx ebp, [ebp+3Ah] // first bogie of second CarComponent which we already have
+                            frontBogieOfNext->objectSpriteType = 0xFF;
+                            // movzx ebp, word ptr [edx+3Ah]
+                            // shl ebp, 7
+                            // add ebp, offset things
+                            // mov byte ptr [ebp+39h], 0FFh
+                            secondPreviousCarComponent.back->objectSpriteType = 0xFF;
+                            // jmp short loc_4AF76D
+                        }
+                    }
+                    else
+                    {
+                        // loc_4AF720:
+                        // mov byte ptr [esi+39h], 0FFh
+                        component.front->objectSpriteType = 0xFF;
+                        // movzx ebp, word ptr [esi+3Ah] // second bogie
+                        // mov ptr [ebp+39h], 0FFh
+                        component.back->objectSpriteType = 0xFF;
+                        // movzx ebp, word ptr [ebp+3Ah] // body
+                        // mov byte ptr[ebp+39h], 0FFh
+                        component.body->objectSpriteType = 0xFF;
+                        // movzx ebp, word ptr[edi+3Ah] // previousCarComponent's back bogie (?)
+                        // movzx ebp, word ptr [ebp+40h]
+                        // mov ebx, _vehicleObjects[ebx*4]
+                        if (componentsFound == 0)
+                        {
+                            throw Exception::RuntimeError("connectJacobsBogies reached end of Car with no previous CarComponents");
+                        }
+                        auto o3 = ObjectManager::get<VehicleObject>(previousCarComponent.front->objectId);
+                        // movzx eax, byte ptr [esi+54h]
+                        // dec eax // this path is for non-front bodies
+                        auto middleBodyIndex = component.front->bodyIndex - 1; // maybe change this to previousCarComponent.body->bodyIndex;
+                        // imul eax, 6
+                        // mov al, [eax+ebx+27h]
+                        // mov [ebp+39], al
+                        previousCarComponent.back->asBase<VehicleBogie>()->objectSpriteType = o3->carComponents[middleBodyIndex].backBogieSpriteInd;
+                    }
+                }
+                // loc_4AF76D
+                // mov edx, edi
+                // mov edi, esi
+                secondPreviousCarComponent = previousCarComponent;
+                previousCarComponent = component;
+                componentsFound++;
+
+                // movzx esi, word ptr [esi+3Ah] // second bogie
+                // movzx esi, word ptr [esi+3Ah] // body
+                // movzx esi, word ptr [esi+3Ah] // first bogie next component
+                // jmp loc_3AF618
+            }
+        }
+        // loc_4AF79D:
+        // pop esi
+        // pop ebp
+        // pop edi
+        // pop edx
+        // pop ebx
+        // pop eax
+        // retn
     }
 }
