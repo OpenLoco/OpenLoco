@@ -917,14 +917,21 @@ namespace OpenLoco::Vehicles
                         component.front->objectSpriteType = 0xFF;
                         component.back->objectSpriteType = 0xFF;
                         component.body->objectSpriteType = 0xFF;
-                        auto frontBogieOfNext = component.body->nextVehicleComponent()->asBase<VehicleBogie>();
+                        auto frontBogieOfNext = component.body->nextVehicleComponent();
                         if (frontBogieOfNext == nullptr)
                         {
                             throw Exception::RuntimeError("connectJacobsBogies frontBogieOfNext was unexpectedly nullptr");
                         }
+
+                        CarComponent nextComponent = CarComponent(frontBogieOfNext);
                         auto o = ObjectManager::get<VehicleObject>(component.front->objectId);
-                        // oversight? does not take into account body's Flags38::isReversed
-                        frontBogieOfNext->objectSpriteType = o->carComponents[frontBogieOfNext->bodyIndex].frontBogieSpriteInd;
+                        auto frontBogieSprite = o->carComponents[nextComponent.body->bodyIndex].frontBogieSpriteInd;
+                        if (nextComponent.body->has38Flags(Flags38::isReversed))
+                        {
+                            nextComponent.front->objectSpriteType = o->carComponents[nextComponent.body->bodyIndex].backBogieSpriteInd;
+                        }
+                        nextComponent.front->objectSpriteType = frontBogieSprite;
+
                         if (componentsFound >= 0 and previousCarComponent.body->has38Flags(Flags38::jacobsBogieAvailable))
                         {
                             if (componentsFound < 2)
@@ -933,7 +940,7 @@ namespace OpenLoco::Vehicles
                             }
                             auto o2 = ObjectManager::get<VehicleObject>(component.front->objectId);
                             component.front->objectSpriteType = o2->carComponents[component.front->bodyIndex].frontBogieSpriteInd;
-                            frontBogieOfNext->objectSpriteType = 0xFF;
+                            nextComponent.front->objectSpriteType = 0xFF;
                             secondPreviousCarComponent.back->objectSpriteType = 0xFF;
                         }
                     }
@@ -941,7 +948,7 @@ namespace OpenLoco::Vehicles
                     {
                         if (componentsFound == 0)
                         {
-                            throw Exception::RuntimeError("connectJacobsBogies reached end of Car with no previous CarComponent");
+                            throw Exception::RuntimeError("connectJacobsBogies reached end of Car without previousCarComponent");
                         }
                         component.front->objectSpriteType = 0xFF;
                         component.back->objectSpriteType = 0xFF;
