@@ -702,6 +702,26 @@ namespace OpenLoco::Vehicles
         return AirportObjectFlags::acceptsHeavyPlanes;
     }
 
+    // 0x004AF16A
+    void removeAllCargo(CarComponent& carComponent)
+    {
+        carComponent.front->secondaryCargo.qty = 0;
+        carComponent.back->secondaryCargo.qty = 0;
+        carComponent.body->primaryCargo.qty = 0;
+
+        auto* head = EntityManager::get<VehicleHead>(carComponent.front->head);
+        if (head == nullptr)
+        {
+            throw Exception::RuntimeError("Invalid Vehicle head");
+        }
+        head->sub_4B7CC3();
+
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head->id));
+
+        // Vanilla called updateCargoSprite on the bogies but that does nothing so skipping that.
+        carComponent.body->updateCargoSprite();
+    }
+
     // 0x004AFFF3
     // esi: frontBogie
     // returns new front bogie as esi
@@ -779,26 +799,6 @@ namespace OpenLoco::Vehicles
         oldFirstComponent.front->breakdownTimeout = 0;
 
         return newFirstComponent.front;
-    }
-
-    // 0x004AF16A
-    void removeAllCargo(CarComponent& carComponent)
-    {
-        carComponent.front->secondaryCargo.qty = 0;
-        carComponent.back->secondaryCargo.qty = 0;
-        carComponent.body->primaryCargo.qty = 0;
-
-        auto* head = EntityManager::get<VehicleHead>(carComponent.front->head);
-        if (head == nullptr)
-        {
-            throw Exception::RuntimeError("Invalid Vehicle head");
-        }
-        head->sub_4B7CC3();
-
-        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head->id));
-
-        // Vanilla called updateCargoSprite on the bogies but that does nothing so skipping that.
-        carComponent.body->updateCargoSprite();
     }
 
     // 0x004AF4D6
