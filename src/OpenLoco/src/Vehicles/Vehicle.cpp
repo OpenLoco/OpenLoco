@@ -711,9 +711,9 @@ namespace OpenLoco::Vehicles
                 }
                 break;
             }
-            if (car.back != nullptr && car.back->nextCarId == frontBogie->id)
+            if (car.body != nullptr && car.body->nextCarId == frontBogie->id)
             {
-                precedingVehicleComponent = car.back;
+                precedingVehicleComponent = car.body;
             }
         }
 
