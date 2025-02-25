@@ -59,7 +59,7 @@ namespace OpenLoco::Vehicles
     VehicleBase* VehicleBase::previousVehicleComponent()
     {
         auto head = EntityManager::get<VehicleBase>(this->getHead());
-        while (head->nextVehicleComponent() != this)
+        while (head->getNextCar() != this->id)
         {
             head = head->nextVehicleComponent();
         }
@@ -811,11 +811,7 @@ namespace OpenLoco::Vehicles
         Ui::WindowManager::invalidate(Ui::WindowType::vehicleList);
 
         Vehicle sourceTrain(source.head);
-        VehicleBase* precedingVehicleComponent = sourceTrain.veh2;
-        while (precedingVehicleComponent->getNextCar() != source.id)
-        {
-            precedingVehicleComponent = precedingVehicleComponent->nextVehicleComponent();
-        }
+        auto precedingVehicleComponent = source.previousVehicleComponent();
         for (auto& car : sourceTrain.cars)
         {
             if (car.front->id != source.id)
@@ -825,24 +821,16 @@ namespace OpenLoco::Vehicles
             auto& lastBody = car.body;
             for (auto& component : car)
             {
-                if (precedingVehicleComponent != nullptr)
-                {
-                    component.front->head = dest.getHead();
-                    component.back->head = dest.getHead();
-                    component.body->head = dest.getHead();
-                    lastBody = component.body;
-                }
+                component.front->head = dest.getHead();
+                component.back->head = dest.getHead();
+                component.body->head = dest.getHead();
+                lastBody = component.body;
             }
             precedingVehicleComponent->setNextCar(lastBody->nextCarId);
             lastBody->nextCarId = dest.id;
             break;
         }
-        Vehicle destTrain(dest.getHead());
-        precedingVehicleComponent = destTrain.veh2;
-        while (precedingVehicleComponent->getNextCar() != dest.id)
-        {
-            precedingVehicleComponent = precedingVehicleComponent->nextVehicleComponent();
-        }
+        precedingVehicleComponent = dest.previousVehicleComponent();
         precedingVehicleComponent->setNextCar(source.id);
     }
 
