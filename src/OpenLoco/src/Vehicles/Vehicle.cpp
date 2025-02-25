@@ -818,7 +818,7 @@ namespace OpenLoco::Vehicles
         }
         for (auto& car : sourceTrain.cars)
         {
-            if (car.front != &source)
+            if (car.front->id != source.id)
             {
                 continue;
             }
