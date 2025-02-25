@@ -690,31 +690,28 @@ namespace OpenLoco::Vehicles
     VehicleBogie* flipCar(VehicleBogie* frontBogie)
     {
         Vehicle train(frontBogie->head);
-        VehicleBase* precedingVehicleComponent = nullptr;
-        if (train.veh2->nextCarId == frontBogie->id)
+        VehicleBase* precedingVehicleComponent = train.veh2;
+        while (precedingVehicleComponent->nextVehicleComponent() != frontBogie)
         {
-            precedingVehicleComponent = train.veh2;
+            precedingVehicleComponent = precedingVehicleComponent->nextVehicleComponent();
         }
         CarComponent oldFirstComponent;
         sfl::static_vector<CarComponent, VehicleObject::kMaxCarComponents> components;
 
         for (auto& car : train.cars)
         {
-            if (precedingVehicleComponent != nullptr)
+            if (car.front != frontBogie)
             {
-                oldFirstComponent = car;
-                for (CarComponent& component : car)
-                {
-                    std::swap(component.front->objectSpriteType, component.back->objectSpriteType);
-                    component.body->var_38 ^= Flags38::isReversed;
-                    components.push_back(component);
-                }
-                break;
+                continue;
             }
-            if (car.body != nullptr && car.body->nextCarId == frontBogie->id)
+            oldFirstComponent = car;
+            for (CarComponent& component : car)
             {
-                precedingVehicleComponent = car.body;
+                std::swap(component.front->objectSpriteType, component.back->objectSpriteType);
+                component.body->var_38 ^= Flags38::isReversed;
+                components.push_back(component);
             }
+            break;
         }
 
         // if the Car is only one CarComponent we don't have to swap any values
@@ -722,12 +719,7 @@ namespace OpenLoco::Vehicles
         {
             return frontBogie;
         }
-
-        auto& newFirstComponent = components.back();
-        if (precedingVehicleComponent == nullptr || newFirstComponent.body == nullptr || oldFirstComponent.body == nullptr)
-        {
-            return frontBogie;
-        }
+        CarComponent& newFirstComponent = components.back();
         newFirstComponent.body->setSubType(VehicleEntityType::body_start);
         precedingVehicleComponent->setNextCar(newFirstComponent.front->id);
         // set the new last component to point to the next car
