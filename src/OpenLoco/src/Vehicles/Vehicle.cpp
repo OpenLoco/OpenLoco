@@ -811,14 +811,18 @@ namespace OpenLoco::Vehicles
         Ui::WindowManager::invalidate(Ui::WindowType::vehicleList);
 
         Vehicle sourceTrain(source.head);
-        VehicleBase* precedingVehicleComponent = nullptr;
-        if (sourceTrain.veh2->nextCarId == source.id)
+        VehicleBase* precedingVehicleComponent = sourceTrain.veh2;
+        while (precedingVehicleComponent->getNextCar() != source.id)
         {
-            precedingVehicleComponent = sourceTrain.veh2;
+            precedingVehicleComponent = precedingVehicleComponent->nextVehicleComponent();
         }
-        VehicleBody* lastBody = nullptr;
         for (auto& car : sourceTrain.cars)
         {
+            if (car.front != &source)
+            {
+                continue;
+            }
+            auto& lastBody = car.body;
             for (auto& component : car)
             {
                 if (precedingVehicleComponent != nullptr)
@@ -828,44 +832,18 @@ namespace OpenLoco::Vehicles
                     component.body->head = dest.getHead();
                     lastBody = component.body;
                 }
-                if (component.body != nullptr && component.body->nextCarId == source.id)
-                {
-                    precedingVehicleComponent = component.body;
-                }
             }
-            if (lastBody != nullptr)
-            {
-                precedingVehicleComponent->setNextCar(lastBody->nextCarId);
-                lastBody->nextCarId = dest.id;
-                break;
-            }
-        }
-        // could not find the source vehicle in the source train
-        if (lastBody == nullptr)
-        {
-            throw Exception::RuntimeError("insertCar could not find the source vehicle in the source train.");
+            precedingVehicleComponent->setNextCar(lastBody->nextCarId);
+            lastBody->nextCarId = dest.id;
+            break;
         }
         Vehicle destTrain(dest.getHead());
-        if (destTrain.veh2->nextCarId == dest.id)
+        precedingVehicleComponent = destTrain.veh2;
+        while (precedingVehicleComponent->getNextCar() != dest.id)
         {
-            destTrain.veh2->nextCarId = source.id;
-            return;
+            precedingVehicleComponent = precedingVehicleComponent->nextVehicleComponent();
         }
-        else
-        {
-            for (auto& car : destTrain.cars)
-            {
-                for (auto& component : car)
-                {
-                    if (component.body != nullptr && component.body->nextCarId == dest.id)
-                    {
-                        component.body->nextCarId = source.id;
-                        return;
-                    }
-                }
-            }
-        }
-        throw Exception::RuntimeError("insertCar could not find the destination vehicle in the destination train.");
+        precedingVehicleComponent->setNextCar(source.id);
     }
 
     void registerHooks()
