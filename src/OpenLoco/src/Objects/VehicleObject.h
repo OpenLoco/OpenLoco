@@ -231,6 +231,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::vehicle;
         static constexpr auto kMaxBodySprites = 4;
+        static constexpr auto kMaxCarComponents = 4;
 
         StringId name;      // 0x00
         TransportMode mode; // 0x02
@@ -247,7 +248,7 @@ namespace OpenLoco
         uint8_t numCompatibleVehicles;                        // 0x0F
         uint16_t compatibleVehicles[8];                       // 0x10 array of compatible vehicle_types
         uint8_t requiredTrackExtras[4];                       // 0x20
-        VehicleObjectCar carComponents[4];                    // 0x24
+        VehicleObjectCar carComponents[kMaxCarComponents];    // 0x24
         VehicleObjectBodySprite bodySprites[kMaxBodySprites]; // 0x3C
         VehicleObjectBogieSprite bogieSprites[2];             // 0xB4
         uint16_t power;                                       // 0xD8

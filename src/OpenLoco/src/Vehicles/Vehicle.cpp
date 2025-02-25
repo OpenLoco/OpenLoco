@@ -56,6 +56,16 @@ namespace OpenLoco::Vehicles
         return EntityManager::get<VehicleBase>(veh->nextCarId);
     }
 
+    VehicleBase* VehicleBase::previousVehicleComponent()
+    {
+        auto head = EntityManager::get<VehicleBase>(this->getHead());
+        while (head->nextVehicleComponent() != this)
+        {
+            head = head->nextVehicleComponent();
+        }
+        return head;
+    }
+
     TransportMode VehicleBase::getTransportMode() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
@@ -108,6 +118,12 @@ namespace OpenLoco::Vehicles
     {
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
         veh->nextCarId = newNextCar;
+    }
+
+    EntityId VehicleBase::getNextCar() const
+    {
+        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
+        return veh->nextCarId;
     }
 
     bool VehicleBase::has38Flags(Flags38 flagsToTest) const
@@ -686,6 +702,83 @@ namespace OpenLoco::Vehicles
         return AirportObjectFlags::acceptsHeavyPlanes;
     }
 
+    // 0x004AFFF3
+    VehicleBogie* flipCar(VehicleBogie& frontBogie)
+    {
+        Vehicle train(frontBogie.head);
+        auto precedingVehicleComponent = frontBogie.previousVehicleComponent();
+        CarComponent oldFirstComponent;
+        sfl::static_vector<CarComponent, VehicleObject::kMaxCarComponents> components;
+
+        for (auto& car : train.cars)
+        {
+            if (car.front->id != frontBogie.id)
+            {
+                continue;
+            }
+            oldFirstComponent = car;
+            for (CarComponent& component : car)
+            {
+                std::swap(component.front->objectSpriteType, component.back->objectSpriteType);
+                component.body->var_38 ^= Flags38::isReversed;
+                components.push_back(component);
+            }
+            break;
+        }
+
+        // if the Car is only one CarComponent we don't have to swap any values
+        if (components.size() == 1)
+        {
+            return &frontBogie;
+        }
+        CarComponent& newFirstComponent = components.back();
+        newFirstComponent.body->setSubType(VehicleEntityType::body_start);
+        precedingVehicleComponent->setNextCar(newFirstComponent.front->id);
+        // set the new last component to point to the next car
+
+        if (oldFirstComponent.body == nullptr)
+        {
+            throw Exception::RuntimeError("oldFirstComponent.body was nullptr");
+        }
+        oldFirstComponent.body->setNextCar(newFirstComponent.body->nextCarId);
+
+        for (int i = components.size() - 2; i >= 0; i--)
+        {
+            components[i].body->setSubType(VehicleEntityType::body_continued);
+            if (components[i + 1].body != nullptr)
+            {
+                components[i + 1].body->setNextCar(components[i].front->id);
+            }
+        }
+
+        newFirstComponent.body->primaryCargo = oldFirstComponent.body->primaryCargo;
+        newFirstComponent.body->breakdownFlags = oldFirstComponent.body->breakdownFlags;
+        newFirstComponent.body->breakdownTimeout = oldFirstComponent.body->breakdownTimeout;
+        newFirstComponent.back->secondaryCargo = oldFirstComponent.front->secondaryCargo;
+        newFirstComponent.back->breakdownFlags = oldFirstComponent.front->breakdownFlags;
+        newFirstComponent.back->breakdownTimeout = oldFirstComponent.front->breakdownTimeout;
+        newFirstComponent.back->var_52 = oldFirstComponent.front->var_52;
+        newFirstComponent.back->reliability = oldFirstComponent.front->reliability;
+        newFirstComponent.back->timeoutToBreakdown = oldFirstComponent.front->timeoutToBreakdown;
+
+        // vanilla does not reset every value
+        oldFirstComponent.body->primaryCargo.acceptedTypes = 0;
+        oldFirstComponent.body->primaryCargo.type = 0xFF;
+        oldFirstComponent.body->primaryCargo.qty = 0;
+        oldFirstComponent.body->primaryCargo.numDays = 0;
+        oldFirstComponent.front->secondaryCargo.acceptedTypes = 0;
+        oldFirstComponent.front->secondaryCargo.type = 0xFF;
+        oldFirstComponent.front->secondaryCargo.qty = 0;
+        oldFirstComponent.front->secondaryCargo.numDays = 0;
+
+        oldFirstComponent.body->breakdownFlags = BreakdownFlags::none;
+        oldFirstComponent.body->breakdownTimeout = 0;
+        oldFirstComponent.front->breakdownFlags = BreakdownFlags::none;
+        oldFirstComponent.front->breakdownTimeout = 0;
+
+        return newFirstComponent.front;
+    }
+
     // 0x004AF16A
     void removeAllCargo(CarComponent& carComponent)
     {
@@ -720,6 +813,17 @@ namespace OpenLoco::Vehicles
 
                 regs = backup;
                 regs.eax = res;
+                return 0;
+            });
+
+        registerHook(
+            0x004AFFF3,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                VehicleBogie* component = X86Pointer<VehicleBogie>(regs.esi);
+                VehicleBogie* newComponent = flipCar(*component);
+                regs = backup;
+                regs.esi = X86Pointer(newComponent);
                 return 0;
             });
     }
