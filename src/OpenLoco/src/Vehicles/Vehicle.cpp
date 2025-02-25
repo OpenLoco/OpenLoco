@@ -883,4 +883,19 @@ namespace OpenLoco::Vehicles
                 return 0;
             });
     }
+
+    // remember to move this above registerHooks after rebasing
+    // 0x004AF5E1
+    static void sub_4AF5E1(VehicleBogie &frontBogie)
+    {
+        // push eax
+        // push ebx
+        // push edx
+        // push edi
+        // push ebp
+        // push esi
+        // off to a cracking start already, normally the calling function does this before calling
+
+
+    }
 }
