@@ -335,12 +335,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            auto* insertVehicle = EntityManager::get<VehicleHead>(insertId);
-            if (insertVehicle == nullptr)
+            auto* insertCar = EntityManager::get<VehicleHead>(insertId);
+            if (insertCar == nullptr)
             {
                 continue;
             }
-            if (getOrder(SortMode(self->sortMode), *vehicle, *insertVehicle))
+            if (getOrder(SortMode(self->sortMode), *vehicle, *insertCar))
             {
                 insertId = vehicle->id;
                 continue;

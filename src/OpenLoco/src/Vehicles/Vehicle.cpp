@@ -800,7 +800,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AF4D6
-    void insertVehicle(VehicleBogie& source, VehicleBase& dest)
+    void insertCar(VehicleBogie& source, VehicleBase& dest)
     {
         if (source.id == dest.id)
         {
@@ -843,7 +843,7 @@ namespace OpenLoco::Vehicles
         // could not find the source vehicle in the source train
         if (lastBody == nullptr)
         {
-            throw Exception::RuntimeError("insertVehicle could not find the source vehicle in the source train.");
+            throw Exception::RuntimeError("insertCar could not find the source vehicle in the source train.");
         }
         Vehicle destTrain(dest.getHead());
         if (destTrain.veh2->nextCarId == dest.id)
@@ -865,7 +865,7 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        throw Exception::RuntimeError("insertVehicle could not find the destination vehicle in the destination train.");
+        throw Exception::RuntimeError("insertCar could not find the destination vehicle in the destination train.");
     }
 
     void registerHooks()
@@ -904,7 +904,7 @@ namespace OpenLoco::Vehicles
                 VehicleBogie* source = X86Pointer<VehicleBogie>(regs.esi);
                 VehicleBase* dest = X86Pointer<VehicleBase>(regs.edi);
 
-                insertVehicle(*source, *dest);
+                insertCar(*source, *dest);
 
                 regs = backup;
                 return 0;
