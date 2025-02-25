@@ -154,6 +154,35 @@ namespace OpenLoco
         2,
     };
 
+    struct ThoughtMinMaxVehicles
+    {
+        uint8_t min;
+        uint8_t max;
+    };
+    // 0x004FE784 & 0x004FE785
+    static constexpr std::array<ThoughtMinMaxVehicles, kAiThoughtTypeCount> kThoughtTypeMinMaxNumVehicles = {
+        ThoughtMinMaxVehicles{ 1, 3 },
+        ThoughtMinMaxVehicles{ 1, 3 },
+        ThoughtMinMaxVehicles{ 2, 6 },
+        ThoughtMinMaxVehicles{ 1, 1 },
+        ThoughtMinMaxVehicles{ 2, 5 },
+        ThoughtMinMaxVehicles{ 1, 3 },
+        ThoughtMinMaxVehicles{ 2, 5 },
+        ThoughtMinMaxVehicles{ 1, 1 },
+        ThoughtMinMaxVehicles{ 2, 5 },
+        ThoughtMinMaxVehicles{ 1, 1 },
+        ThoughtMinMaxVehicles{ 2, 5 },
+        ThoughtMinMaxVehicles{ 2, 5 },
+        ThoughtMinMaxVehicles{ 2, 5 },
+        ThoughtMinMaxVehicles{ 1, 3 },
+        ThoughtMinMaxVehicles{ 1, 2 },
+        ThoughtMinMaxVehicles{ 1, 3 },
+        ThoughtMinMaxVehicles{ 1, 4 },
+        ThoughtMinMaxVehicles{ 1, 3 },
+        ThoughtMinMaxVehicles{ 1, 1 },
+        ThoughtMinMaxVehicles{ 2, 5 },
+    };
+
     static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
     {
         return (kThoughtTypeFlags[enumValue(type)] & flags) != ThoughtTypeFlags::none;
@@ -592,6 +621,40 @@ namespace OpenLoco
         return res;
     }
 
+    // 0x004883D4
+    static uint32_t getUntransportedQuantity(const AiThought& thought)
+    {
+        uint32_t quantity = 0;
+        for (auto i = 0U; i < thought.numStations; ++i)
+        {
+            auto& aiStation = thought.stations[i];
+            auto* station = StationManager::get(aiStation.id);
+            auto& cargoStats = station->cargoStats[thought.cargoType];
+            quantity += cargoStats.quantity;
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+            {
+                break;
+            }
+        }
+        if (thought.numVehicles == 0)
+        {
+            return quantity;
+        }
+        auto train = Vehicles::Vehicle(thought.vehicles[0]);
+        for (const auto& car : train.cars)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            for (auto i = 0U; i < 2; ++i)
+            {
+                if (vehicleObj->compatibleCargoCategories[i] & (1U << thought.cargoType))
+                {
+                    quantity -= vehicleObj->maxCargo[i];
+                }
+            }
+        }
+        return quantity;
+    }
+
     // 0x00488050
     static bool sub_488050(const Company& company, AiThought& thought)
     {
@@ -616,10 +679,30 @@ namespace OpenLoco
             }
         }
         // 0x00488149
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        return call(0x00488050, regs) & X86_FLAG_CARRY;
+        if (thought.var_88 < 2)
+        {
+            return false;
+        }
+        if (thought.var_8B & (1U << 4))
+        {
+            return false;
+        }
+        if (thought.numVehicles >= kThoughtTypeMinMaxNumVehicles[enumValue(thought.type)].max)
+        {
+            return false;
+        }
+        if (getUntransportedQuantity(thought) <= 32)
+        {
+            return false;
+        }
+        const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+        if (purchaseRequest.numVehicleObjects == 0)
+        {
+            return false;
+        }
+        thought.var_43 = thought.numVehicles + 1;
+        thought.var_45 = purchaseRequest.eax;
+        thought.var_8B &= ~(1U << 2);
     }
 
     // 0x00430971
