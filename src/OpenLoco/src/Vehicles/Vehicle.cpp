@@ -703,7 +703,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AFFF3
-    VehicleBogie& flipCar(VehicleBogie& frontBogie)
+    VehicleBogie* flipCar(VehicleBogie& frontBogie)
     {
         Vehicle train(frontBogie.head);
         auto precedingVehicleComponent = frontBogie.previousVehicleComponent();
@@ -729,7 +729,7 @@ namespace OpenLoco::Vehicles
         // if the Car is only one CarComponent we don't have to swap any values
         if (components.size() == 1)
         {
-            return frontBogie;
+            return &frontBogie;
         }
         CarComponent& newFirstComponent = components.back();
         newFirstComponent.body->setSubType(VehicleEntityType::body_start);
@@ -771,7 +771,7 @@ namespace OpenLoco::Vehicles
         oldFirstComponent.front->breakdownFlags = BreakdownFlags::none;
         oldFirstComponent.front->breakdownTimeout = 0;
 
-        return *newFirstComponent.front;
+        return newFirstComponent.front;
     }
 
     // 0x004AF16A
@@ -816,9 +816,9 @@ namespace OpenLoco::Vehicles
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 VehicleBogie* component = X86Pointer<VehicleBogie>(regs.esi);
-                VehicleBogie& newComponent = flipCar(*component);
+                VehicleBogie* newComponent = flipCar(*component);
                 regs = backup;
-                regs.esi = X86Pointer(&newComponent);
+                regs.esi = X86Pointer(newComponent);
                 return 0;
             });
     }
