@@ -703,6 +703,8 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AFFF3
+    // esi: frontBogie
+    // returns new front bogie as esi
     VehicleBogie* flipCar(VehicleBogie& frontBogie)
     {
         Vehicle train(frontBogie.head);
@@ -800,6 +802,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AF4D6
+    // source: esi
+    // dest: edi
+    // returns nothing
     void insertCarBefore(VehicleBogie& source, VehicleBase& dest)
     {
         if (source.id == dest.id)
