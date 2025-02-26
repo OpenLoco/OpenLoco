@@ -40,7 +40,7 @@ namespace OpenLoco
             stationList.push_back(i);
         }
 
-        std::sort(std::begin(stationList), std::end(stationList));
+        std::ranges::sort(stationList);
         return stationList;
     }
 
@@ -66,7 +66,7 @@ namespace OpenLoco
             }
             stationList.push_back(i);
         }
-        std::sort(std::begin(stationList), std::end(stationList));
+        std::ranges::sort(stationList);
         return stationList;
     }
 
@@ -175,13 +175,13 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                if (std::find(std::begin(stationList), std::end(stationList), i) == std::end(stationList))
+                if (std::ranges::find(stationList, i) == std::end(stationList))
                 {
                     stationList.push_back(i);
                 }
             }
         }
-        std::sort(std::begin(stationList), std::end(stationList));
+        std::ranges::sort(stationList);
         return stationList;
     }
 
@@ -262,13 +262,13 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                if (std::find(bridgeList.begin(), bridgeList.end(), i) == bridgeList.end())
+                if (std::ranges::find(bridgeList, i) == bridgeList.end())
                 {
                     bridgeList.push_back(i);
                 }
             }
         }
-        std::sort(bridgeList.begin(), bridgeList.end());
+        std::ranges::sort(bridgeList);
         return bridgeList;
     }
 
@@ -399,13 +399,13 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                if (std::find(signalList.begin(), signalList.end(), i) == signalList.end())
+                if (std::ranges::find(signalList, i) == signalList.end())
                 {
                     signalList.push_back(i);
                 }
             }
         }
-        std::sort(signalList.begin(), signalList.end());
+        std::ranges::sort(signalList);
         return signalList;
     }
 }
