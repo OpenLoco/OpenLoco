@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Widgets
     }
 
     // 0x004CF3EB
-    static void drawStationNameBackground(Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const Window* window, [[maybe_unused]] const Widget* widget, const Ui::Point& origin, AdvancedColour colour, uint16_t width)
+    static void drawStationNameBackground(Gfx::DrawingContext& drawingCtx, const Ui::Point& origin, AdvancedColour colour, uint16_t width)
     {
         drawingCtx.drawImage(origin - Ui::Point{ 4, 0 }, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
         drawingCtx.drawImage(origin + Ui::Point(width, 0), Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Widgets
 
         if (captionStyle == Caption::Style::blackText)
         {
-            drawStationNameBackground(drawingCtx, window, &widget, stationNamePos, widgetState.colour, stringWidth);
+            drawStationNameBackground(drawingCtx, stationNamePos, widgetState.colour, stringWidth);
         }
 
         auto textPos = stationNamePos;
