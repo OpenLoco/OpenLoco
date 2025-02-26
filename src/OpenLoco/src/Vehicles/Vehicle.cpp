@@ -932,7 +932,7 @@ namespace OpenLoco::Vehicles
                             nextComponent.front->objectSpriteType = o->carComponents[nextComponent.body->bodyIndex].backBogieSpriteInd;
                         }
                         // connect jacob's bogie to the front
-                        if (componentsFound >= 0 and previousCarComponent.body->has38Flags(Flags38::jacobsBogieAvailable))
+                        if (componentsFound >= 0 && previousCarComponent.body->has38Flags(Flags38::jacobsBogieAvailable))
                         {
                             if (componentsFound < 2)
                             {
