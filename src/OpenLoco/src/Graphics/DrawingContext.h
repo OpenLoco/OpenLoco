@@ -52,7 +52,7 @@ namespace OpenLoco::Gfx
 
         void fillRect(const Ui::Point& origin, const Ui::Size& size, uint8_t colour, RectFlags flags)
         {
-            fillRect(origin.x, origin.y, origin.x + size.width, origin.y + size.height, colour, flags);
+            fillRect(origin.x, origin.y, origin.x + size.width - 1, origin.y + size.height - 1, colour, flags);
         }
 
         virtual void drawRect(int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags) = 0;
@@ -66,7 +66,7 @@ namespace OpenLoco::Gfx
 
         void fillRectInset(const Ui::Point& origin, const Ui::Size& size, AdvancedColour colour, RectInsetFlags flags)
         {
-            fillRectInset(origin.x, origin.y, origin.x + size.width, origin.y + size.height, colour, flags);
+            fillRectInset(origin.x, origin.y, origin.x + size.width - 1, origin.y + size.height - 1, colour, flags);
         }
 
         virtual void drawRectInset(int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags) = 0;
