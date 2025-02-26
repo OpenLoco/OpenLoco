@@ -47,6 +47,7 @@
 #include "Objects/CompetitorObject.h"
 #include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/ObjectUtils.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
@@ -59,7 +60,6 @@
 #include "Station.h"
 #include "StationManager.h"
 #include "TownManager.h"
-#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -817,16 +817,11 @@ namespace OpenLoco
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
-            std::array<uint8_t, 17> airports{};
-            Ui::Windows::Construction::Common::refreshAirportList(airports.data());
+            const auto airports = getAvailableAirports();
             int16_t bestDesignYear = -1;
 
             for (const auto airportObjId : airports)
             {
-                if (airportObjId == 0xFFU)
-                {
-                    break;
-                }
                 auto* airportObj = ObjectManager::get<AirportObject>(airportObjId);
                 if (airportObj->hasFlags(AirportObjectFlags::acceptsHeavyPlanes | AirportObjectFlags::acceptsLightPlanes))
                 {
@@ -847,16 +842,11 @@ namespace OpenLoco
         }
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
         {
-            std::array<uint8_t, 17> docks{};
-            Ui::Windows::Construction::Common::refreshDockList(docks.data());
+            const auto docks = getAvailableDocks();
             int16_t bestDesignYear = -1;
 
             for (const auto dockObjId : docks)
             {
-                if (dockObjId == 0xFFU)
-                {
-                    break;
-                }
                 auto* dockObj = ObjectManager::get<DockObject>(dockObjId);
 
                 if (bestDesignYear < dockObj->designedYear)
@@ -875,7 +865,7 @@ namespace OpenLoco
         }
         else if (thought.trackObjId & (1U << 7))
         {
-            auto roadStations = Ui::Windows::Construction::Common::refreshStationList(thought.trackObjId & ~(1U << 7), TransportMode::road);
+            auto roadStations = getAvailableCompatibleStations(thought.trackObjId & ~(1U << 7), TransportMode::road);
             int16_t bestDesignYear = -1;
             bool hadIdealSelection = false;
             for (const auto roadStationObjId : roadStations)
@@ -927,7 +917,7 @@ namespace OpenLoco
         }
         else
         {
-            const auto trainStations = Ui::Windows::Construction::Common::refreshStationList(thought.trackObjId, TransportMode::rail);
+            const auto trainStations = getAvailableCompatibleStations(thought.trackObjId, TransportMode::rail);
             int16_t bestDesignYear = -1;
             for (const auto trainStationObjId : trainStations)
             {
@@ -946,7 +936,7 @@ namespace OpenLoco
             }
             thought.stationObjId = chosenStationObject;
 
-            const auto signals = Ui::Windows::Construction::Common::refreshSignalList(thought.trackObjId);
+            const auto signals = getAvailableCompatibleSignals(thought.trackObjId);
             bestDesignYear = -1;
             uint8_t chosenSignal = 0xFFU;
 
@@ -1455,11 +1445,11 @@ namespace OpenLoco
         if (thought.trackObjId & (1U << 7))
         {
             const uint8_t roadObjId = thought.trackObjId & ~(1U << 7);
-            bridges = Ui::Windows::Construction::Common::refreshBridgeList(roadObjId, TransportMode::road);
+            bridges = getAvailableCompatibleBridges(roadObjId, TransportMode::road);
         }
         else
         {
-            bridges = Ui::Windows::Construction::Common::refreshBridgeList(thought.trackObjId, TransportMode::rail);
+            bridges = getAvailableCompatibleBridges(thought.trackObjId, TransportMode::rail);
         }
 
         const auto chosenBridge = [&bridges, &bridgeFilter]() {

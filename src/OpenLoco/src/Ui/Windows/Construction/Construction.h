@@ -173,13 +173,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void setTrackOptions(const uint8_t trackType);
         void setDisabledWidgets(Window* self);
         void createConstructionWindow();
-        void refreshAirportList(uint8_t* stationList);
-        void refreshDockList(uint8_t* stationList);
-        sfl::static_vector<uint8_t, 16>  refreshStationList(uint8_t trackType, TransportMode transportMode);
-        sfl::static_vector<uint8_t, 8> refreshBridgeList(uint8_t trackType, TransportMode transportMode);
-        std::array<uint8_t, 4> refreshModList(uint8_t trackType, TransportMode transportMode);
         void sub_4A3A50();
-        sfl::static_vector<uint8_t, 16> refreshSignalList(uint8_t trackType);
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos);
         void setNextAndPreviousRoadTile(const RoadElement& elRoad, const World::Pos2& pos);
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport);
