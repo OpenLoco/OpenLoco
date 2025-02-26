@@ -21,10 +21,13 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        int16_t x = widget.right + window->x - 18;
-        int16_t y = widget.bottom + window->y - 18;
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
+
+        const auto resizeBarPos = pos + Ui::Point(size.width - 18, size.height - 18);
+
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
-        drawingCtx.drawImage(x, y, image);
+        drawingCtx.drawImage(resizeBarPos, image);
     }
 
     // 0x004CAAB9
@@ -32,8 +35,11 @@ namespace OpenLoco::Ui::Widgets
     {
         auto* window = widgetState.window;
 
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
+
         const auto& rt = drawingCtx.currentRenderTarget();
-        const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget.left + window->x, widget.top + window->y, widget.right - widget.left, 41));
+        const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(pos.x, pos.y, size.width, 41));
         if (clipped)
         {
             uint32_t imageId = widget.image;
@@ -61,11 +67,19 @@ namespace OpenLoco::Ui::Widgets
             shade = Colours::getShade(widgetState.colour.c(), 1);
         }
 
+        // ORIGINAL CODE: Width was always zero so what is the purpose here?
+        /*
         drawingCtx.fillRect(
             window->x + widget.right,
             window->y + widget.top,
-            window->x + widget.right,
+            window->x + widget.right, // w = 0 ? left = window.x + widget.right, right = window.x + widget.right
             window->y + widget.top + 40,
+            shade,
+            Gfx::RectFlags::none);
+        */
+        drawingCtx.fillRect(
+            pos,
+            Ui::Size{ 0, 40u },
             shade,
             Gfx::RectFlags::none);
 
