@@ -26,13 +26,14 @@ namespace OpenLoco::Ui::Widgets
             colour = colour.FD();
         }
 
-        auto formatArgs = FormatArguments(widget.textArgs);
         auto* window = widgetStated.window;
-        auto point = Point(window->x + widget.left + 1, window->y + widget.top);
-        int width = widget.right - widget.left - 2;
+
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
 
         auto tr = Gfx::TextRenderer(drawingCtx);
-        tr.drawStringLeftClipped(point, width, colour, widget.text, formatArgs);
+        auto formatArgs = FormatArgumentsView(widget.textArgs);
+        tr.drawStringLeftClipped(pos + Ui::Point{ 1, 1 }, size.width - 2, colour, widget.text, formatArgs);
     }
 
     // 0x004CB164
@@ -40,12 +41,13 @@ namespace OpenLoco::Ui::Widgets
     {
         const auto* window = widgetState.window;
 
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
+
         const auto flags = widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker;
         drawingCtx.fillRectInset(
-            window->x + widget.left,
-            window->y + widget.top,
-            window->x + widget.right,
-            window->y + widget.bottom,
+            pos,
+            size,
             widgetState.colour,
             flags);
 
