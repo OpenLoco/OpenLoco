@@ -10,13 +10,15 @@ namespace OpenLoco::Ui::Widgets
     static void drawCheckMark(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
+
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
+
         if (widgetState.enabled)
         {
             drawingCtx.fillRectInset(
-                window->x + widget.left,
-                window->y + widget.top,
-                window->x + widget.left + 9,
-                window->y + widget.bottom - 1,
+                pos,
+                Ui::Size{ 9, size.height - 2 },
                 widgetState.colour,
                 widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
         }
@@ -25,11 +27,10 @@ namespace OpenLoco::Ui::Widgets
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
             static constexpr char strCheckmark[] = "\xAC";
-            auto point = Point(window->x + widget.left, window->y + widget.top);
 
             auto color = widgetState.colour;
             tr.setCurrentFont(widget.font);
-            tr.drawString(point, color.opaque(), strCheckmark);
+            tr.drawString(pos, color.opaque(), strCheckmark);
         }
     }
 
@@ -55,8 +56,8 @@ namespace OpenLoco::Ui::Widgets
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(widget.font);
 
-        auto point = Point(window->x + widget.left + 14, window->y + widget.top);
-        tr.drawStringLeft(point, colour, widget.text, formatArgs);
+        const auto pos = window->position() + widget.position();
+        tr.drawStringLeft(pos + Point{ 14, 0 }, colour, widget.text, formatArgs);
     }
 
     void Checkbox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
