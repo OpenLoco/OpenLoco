@@ -4,6 +4,7 @@
 - Fix: [#2864] News messages are drawn incorrectly.
 - Fix: [#2866] Vehicles lengths with 0 in the tenths place being displayed incorrectly.
 - Fix: [#2876] Setting the UI scale back to 1.0 when using Fullscreen mode would freeze the screen.
+- Fix: [#2895] Unable to set ship waypoints.
 - Fix: [#2911] Forbidding trams/buses/trucks does not work as expected.
 - Fix: [#2917] Vehicles aren't available after adding them with the Object Selection window.
 - Fix: [#2926] The toggle jail cheat doesn't actually toggle when currently jailed.
