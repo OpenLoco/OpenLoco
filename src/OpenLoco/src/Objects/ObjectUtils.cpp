@@ -18,9 +18,9 @@
 namespace OpenLoco
 {
     // 0x0048D70C
-    sfl::static_vector<uint8_t, 16> getAvailableAirports()
+    sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::airport)> getAvailableAirports()
     {
-        sfl::static_vector<uint8_t, 16> stationList;
+        sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::airport)> stationList;
         auto currentYear = getCurrentYear();
         for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::airport); i++)
         {
@@ -45,9 +45,9 @@ namespace OpenLoco
     }
 
     // 0x0048D753
-    sfl::static_vector<uint8_t, 16> getAvailableDocks()
+    sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::dock)> getAvailableDocks()
     {
-        sfl::static_vector<uint8_t, 16> stationList;
+        sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::dock)> stationList;
         auto currentYear = getCurrentYear();
         for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::dock); i++)
         {
@@ -71,10 +71,10 @@ namespace OpenLoco
     }
 
     // 0x0048D678, 0x0048D5E4
-    sfl::static_vector<uint8_t, 16> getAvailableCompatibleStations(uint8_t trackType, TransportMode transportMode)
+    sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::trainStation)> getAvailableCompatibleStations(uint8_t trackType, TransportMode transportMode)
     {
         auto currentYear = getCurrentYear();
-        sfl::static_vector<uint8_t, 16> stationList;
+        sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::trainStation)> stationList;
 
         if (transportMode == TransportMode::road)
         {
@@ -186,10 +186,10 @@ namespace OpenLoco
     }
 
     // 0x0042C518, 0x0042C490
-    sfl::static_vector<uint8_t, 8> getAvailableCompatibleBridges(uint8_t trackType, TransportMode transportMode)
+    sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::bridge)> getAvailableCompatibleBridges(uint8_t trackType, TransportMode transportMode)
     {
         auto currentYear = getCurrentYear();
-        sfl::static_vector<uint8_t, 8> bridgeList;
+        sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::bridge)> bridgeList;
 
         if (transportMode == TransportMode::road)
         {
@@ -273,7 +273,7 @@ namespace OpenLoco
     }
 
     // 0x004781C5, 0x004A693D
-    std::array<uint8_t, 4> getAvailableCompatibleMods(uint8_t trackType, TransportMode transportMode, CompanyId companyId)
+    std::array<uint8_t, kMaxMods> getAvailableCompatibleMods(uint8_t trackType, TransportMode transportMode, CompanyId companyId)
     {
         if (transportMode == TransportMode::road)
         {
@@ -351,9 +351,9 @@ namespace OpenLoco
     }
 
     // 0x00488B4D
-    sfl::static_vector<uint8_t, 16> getAvailableCompatibleSignals(uint8_t trackType)
+    sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::trackSignal)> getAvailableCompatibleSignals(uint8_t trackType)
     {
-        sfl::static_vector<uint8_t, 16> signalList;
+        sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::trackSignal)> signalList;
         auto currentYear = getCurrentYear();
         auto trackObj = ObjectManager::get<TrackObject>(trackType);
         auto signals = trackObj->signals;
