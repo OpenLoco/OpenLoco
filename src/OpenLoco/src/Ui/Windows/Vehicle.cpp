@@ -2906,27 +2906,25 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (var_842 != 0)
             {
                 uint32_t targetOffset = 0U;
+                Vehicles::OrderRingView orders(head.orderTableOffset);
+                auto lastOrder = orders.begin();
                 if (var_842 < 0)
                 {
-                    Vehicles::OrderRingView orders(head.orderTableOffset);
-                    auto lastOrder = orders.begin();
                     while ((lastOrder + 1) != orders.end())
                     {
                         lastOrder++;
                     }
-                    targetOffset = lastOrder->getOffset();
                 }
                 else
                 {
-                    Vehicles::OrderRingView orders(head.orderTableOffset);
-                    auto lastOrder = orders.begin();
                     while ((lastOrder + 1) != orders.end() && var_842 != 0)
                     {
                         lastOrder++;
                         var_842--;
                     }
-                    targetOffset = lastOrder->getOffset();
                 }
+                targetOffset = lastOrder->getOffset();
+
                 auto* order = Vehicles::OrderManager::orders()[targetOffset].as<Vehicles::OrderStopAt>();
                 if (order != nullptr)
                 {
@@ -3142,7 +3140,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            auto args = getRouteInteractionFromCursor(self, x, y);
+            const auto args = getRouteInteractionFromCursor(self, x, y);
             switch (args.type)
             {
                 case Ui::ViewportInteraction::InteractionItem::track:
@@ -3226,7 +3224,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B50CE
         static Ui::CursorId toolCursor(Window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
         {
-            auto args = getRouteInteractionFromCursor(self, x, y);
+            const auto args = getRouteInteractionFromCursor(self, x, y);
             out = args.type != Ui::ViewportInteraction::InteractionItem::noInteraction;
             if (out)
             {
