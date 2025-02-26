@@ -754,20 +754,22 @@ namespace OpenLoco::Vehicles
         newFirstComponent.body->primaryCargo = oldFirstComponent.body->primaryCargo;
         newFirstComponent.body->breakdownFlags = oldFirstComponent.body->breakdownFlags;
         newFirstComponent.body->breakdownTimeout = oldFirstComponent.body->breakdownTimeout;
-        newFirstComponent.back->secondaryCargo = oldFirstComponent.front->secondaryCargo;
-        newFirstComponent.back->breakdownFlags = oldFirstComponent.front->breakdownFlags;
-        newFirstComponent.back->breakdownTimeout = oldFirstComponent.front->breakdownTimeout;
-        newFirstComponent.back->var_52 = oldFirstComponent.front->var_52;
-        newFirstComponent.back->reliability = oldFirstComponent.front->reliability;
-        newFirstComponent.back->timeoutToBreakdown = oldFirstComponent.front->timeoutToBreakdown;
+        newFirstComponent.front->secondaryCargo = oldFirstComponent.front->secondaryCargo;
+        newFirstComponent.front->breakdownFlags = oldFirstComponent.front->breakdownFlags;
+        newFirstComponent.front->breakdownTimeout = oldFirstComponent.front->breakdownTimeout;
+        newFirstComponent.front->var_52 = oldFirstComponent.front->var_52;
+        newFirstComponent.front->reliability = oldFirstComponent.front->reliability;
+        newFirstComponent.front->timeoutToBreakdown = oldFirstComponent.front->timeoutToBreakdown;
 
         // vanilla does not reset every value
         oldFirstComponent.body->primaryCargo.acceptedTypes = 0;
         oldFirstComponent.body->primaryCargo.type = 0xFF;
+        oldFirstComponent.body->primaryCargo.maxQty = 0;
         oldFirstComponent.body->primaryCargo.qty = 0;
         oldFirstComponent.body->primaryCargo.numDays = 0;
         oldFirstComponent.front->secondaryCargo.acceptedTypes = 0;
         oldFirstComponent.front->secondaryCargo.type = 0xFF;
+        oldFirstComponent.front->secondaryCargo.maxQty = 0;
         oldFirstComponent.front->secondaryCargo.qty = 0;
         oldFirstComponent.front->secondaryCargo.numDays = 0;
 
