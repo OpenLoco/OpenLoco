@@ -36,6 +36,8 @@ namespace OpenLoco::Ui::Widgets
         }
 
         auto* window = widgetState.window;
-        drawingCtx.drawImage(Ui::Point(window->x + widget.left, window->y + widget.top), imageId);
+
+        const auto pos = window->position() + widget.position();
+        drawingCtx.drawImage(pos, imageId);
     }
 }
