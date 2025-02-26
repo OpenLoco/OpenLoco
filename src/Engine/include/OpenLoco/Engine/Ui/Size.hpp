@@ -14,6 +14,16 @@ namespace OpenLoco::Ui
             , height(_height)
         {
         }
+
+        constexpr Size operator-(const Size& rhs) const
+        {
+            return { static_cast<uint16_t>(width - rhs.width), static_cast<uint16_t>(height - rhs.height) };
+        }
+
+        constexpr Size operator+(const Size& rhs) const
+        {
+            return { static_cast<uint16_t>(width + rhs.width), static_cast<uint16_t>(height + rhs.height) };
+        }
     };
 
     // TODO: Remove the Size struct and rename this one to Size once interop is gone.
