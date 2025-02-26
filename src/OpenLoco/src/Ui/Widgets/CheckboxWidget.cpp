@@ -18,7 +18,7 @@ namespace OpenLoco::Ui::Widgets
         {
             drawingCtx.fillRectInset(
                 pos,
-                Ui::Size{ 9, size.height - 2 },
+                Ui::Size{ 10U, size.height - 1 },
                 widgetState.colour,
                 widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
         }
