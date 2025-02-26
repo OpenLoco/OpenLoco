@@ -15,6 +15,12 @@ namespace OpenLoco::Ui
         {
         }
 
+        constexpr Size(const int32_t _width, const int32_t _height)
+            : width(static_cast<uint16_t>(_width))
+            , height(static_cast<uint16_t>(_height))
+        {
+        }
+
         constexpr Size operator-(const Size& rhs) const
         {
             return { static_cast<uint16_t>(width - rhs.width), static_cast<uint16_t>(height - rhs.height) };
