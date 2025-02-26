@@ -951,7 +951,9 @@ namespace OpenLoco::StringIds
     constexpr StringId orders_wait_for_full_load_of2 = 1226;
     constexpr StringId orders_current_order = 1227;
     constexpr StringId orders_cant_insert = 1228;
-
+    constexpr StringId click_to_insert_new_order_route_through = 1229;
+    constexpr StringId click_to_insert_new_order_stop_at = 1230;
+    constexpr StringId click_again_to_change_last_order_route_through = 1231;
     constexpr StringId tooltip_route_insert_wait_full_cargo = 1232;
     constexpr StringId tooltip_route_insert_force_unload = 1233;
     constexpr StringId tooltip_route_skip_next_order = 1234;
