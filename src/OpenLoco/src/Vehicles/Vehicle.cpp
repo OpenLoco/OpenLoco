@@ -702,7 +702,29 @@ namespace OpenLoco::Vehicles
         return AirportObjectFlags::acceptsHeavyPlanes;
     }
 
+    // 0x004AF16A
+    void removeAllCargo(CarComponent& carComponent)
+    {
+        carComponent.front->secondaryCargo.qty = 0;
+        carComponent.back->secondaryCargo.qty = 0;
+        carComponent.body->primaryCargo.qty = 0;
+
+        auto* head = EntityManager::get<VehicleHead>(carComponent.front->head);
+        if (head == nullptr)
+        {
+            throw Exception::RuntimeError("Invalid Vehicle head");
+        }
+        head->sub_4B7CC3();
+
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head->id));
+
+        // Vanilla called updateCargoSprite on the bogies but that does nothing so skipping that.
+        carComponent.body->updateCargoSprite();
+    }
+
     // 0x004AFFF3
+    // esi: frontBogie
+    // returns new front bogie as esi
     VehicleBogie* flipCar(VehicleBogie& frontBogie)
     {
         Vehicle train(frontBogie.head);
@@ -781,24 +803,42 @@ namespace OpenLoco::Vehicles
         return newFirstComponent.front;
     }
 
-    // 0x004AF16A
-    void removeAllCargo(CarComponent& carComponent)
+    // 0x004AF4D6
+    // source: esi
+    // dest: edi
+    // returns nothing
+    void insertCarBefore(VehicleBogie& source, VehicleBase& dest)
     {
-        carComponent.front->secondaryCargo.qty = 0;
-        carComponent.back->secondaryCargo.qty = 0;
-        carComponent.body->primaryCargo.qty = 0;
-
-        auto* head = EntityManager::get<VehicleHead>(carComponent.front->head);
-        if (head == nullptr)
+        if (source.id == dest.id)
         {
-            throw Exception::RuntimeError("Invalid Vehicle head");
+            return;
         }
-        head->sub_4B7CC3();
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(source.head));
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(dest.getHead()));
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicleList);
 
-        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head->id));
-
-        // Vanilla called updateCargoSprite on the bogies but that does nothing so skipping that.
-        carComponent.body->updateCargoSprite();
+        Vehicle sourceTrain(source.head);
+        auto precedingSourceComponent = source.previousVehicleComponent();
+        for (auto& car : sourceTrain.cars)
+        {
+            if (car.front->id != source.id)
+            {
+                continue;
+            }
+            auto* lastBody = car.body;
+            for (auto& component : car)
+            {
+                component.front->head = dest.getHead();
+                component.back->head = dest.getHead();
+                component.body->head = dest.getHead();
+                lastBody = component.body;
+            }
+            precedingSourceComponent->setNextCar(lastBody->nextCarId);
+            lastBody->nextCarId = dest.id;
+            break;
+        }
+        auto precedingDestComponent = dest.previousVehicleComponent();
+        precedingDestComponent->setNextCar(source.id);
     }
 
     void registerHooks()
@@ -826,6 +866,20 @@ namespace OpenLoco::Vehicles
                 VehicleBogie* newComponent = flipCar(*component);
                 regs = backup;
                 regs.esi = X86Pointer(newComponent);
+                return 0;
+            });
+
+        registerHook(
+            0x004AF4D6,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                VehicleBogie* source = X86Pointer<VehicleBogie>(regs.esi);
+                VehicleBase* dest = X86Pointer<VehicleBase>(regs.edi);
+
+                insertCarBefore(*source, *dest);
+
+                regs = backup;
                 return 0;
             });
     }

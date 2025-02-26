@@ -966,7 +966,21 @@ namespace OpenLoco::Vehicles
     // TODO: move this?
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
     void removeAllCargo(CarComponent& carComponent);
+
+    /* flipCar
+     * Reverses a Car in-place and returns the new front bogie
+     * frontBogie: front bogie of the Car
+     * returns new front bogie of the Car
+     */
     VehicleBogie* flipCar(VehicleBogie& frontBogie);
 
+    /* insertCarBefore
+     * Takes source vehicle out of its train and puts it in front of the destination vehicle in the destination train.
+     * Source and destination trains can be the same.
+     * source: front bogie of the Car to move
+     * dest: VehicleBogie or VehicleTail to place Car before
+     * returns nothing
+     */
+    void insertCarBefore(VehicleBogie& source, VehicleBase& dest);
     void registerHooks();
 }
