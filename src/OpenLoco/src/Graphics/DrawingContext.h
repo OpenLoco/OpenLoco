@@ -50,15 +50,40 @@ namespace OpenLoco::Gfx
 
         virtual void fillRect(int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags) = 0;
 
+        void fillRect(const Ui::Point& origin, const Ui::Size& size, uint8_t colour, RectFlags flags)
+        {
+            fillRect(origin.x, origin.y, origin.x + size.width, origin.y + size.height, colour, flags);
+        }
+
         virtual void drawRect(int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags) = 0;
+
+        void drawRect(const Ui::Point& origin, const Ui::Size& size, uint8_t colour, RectFlags flags)
+        {
+            drawRect(origin.x, origin.y, size.width, size.height, colour, flags);
+        }
 
         virtual void fillRectInset(int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags) = 0;
 
+        void fillRectInset(const Ui::Point& origin, const Ui::Size& size, AdvancedColour colour, RectInsetFlags flags)
+        {
+            fillRectInset(origin.x, origin.y, origin.x + size.width, origin.y + size.height, colour, flags);
+        }
+
         virtual void drawRectInset(int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags) = 0;
+
+        void drawRectInset(const Ui::Point& origin, const Ui::Size& size, AdvancedColour colour, RectInsetFlags flags)
+        {
+            drawRectInset(origin.x, origin.y, size.width, size.height, colour, flags);
+        }
 
         virtual void drawLine(const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour) = 0;
 
         virtual void drawImage(int16_t x, int16_t y, uint32_t image) = 0;
+
+        void drawImage(const Ui::Point& pos, uint32_t image)
+        {
+            drawImage(pos, ImageId::fromUInt32(image));
+        }
 
         virtual void drawImage(const Ui::Point& pos, const ImageId& image) = 0;
 
