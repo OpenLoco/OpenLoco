@@ -91,6 +91,62 @@ namespace OpenLoco::World
 
     struct Tile
     {
+    public:
+        struct Iterator
+        {
+            using iterator_concept = std::forward_iterator_tag;
+            using value_type = TileElement;
+            using difference_type = std::ptrdiff_t;
+            using pointer = TileElement*;
+            using reference = TileElement&;
+
+        private:
+            TileElement* _current{};
+
+        public:
+            constexpr Iterator() = default;
+            constexpr Iterator(TileElement* current)
+                : _current(current)
+            {
+            }
+
+            constexpr TileElement& operator*() const
+            {
+                return *_current;
+            }
+
+            constexpr TileElement* operator->() const
+            {
+                return _current;
+            }
+
+            constexpr Iterator& operator++()
+            {
+                if (_current == nullptr)
+                {
+                    return *this;
+                }
+                if (_current->isLast())
+                {
+                    _current = nullptr;
+                }
+                else
+                {
+                    _current = _current->next();
+                }
+                return *this;
+            }
+
+            constexpr Iterator operator++(int)
+            {
+                Iterator result = *this;
+                ++(*this);
+                return result;
+            }
+
+            constexpr auto operator<=>(const Iterator& other) const = default;
+        };
+
     private:
         TileElement* const _data;
 
@@ -101,10 +157,10 @@ namespace OpenLoco::World
 
         Tile(const TilePos2& tPos, TileElement* data);
         bool isNull() const;
-        TileElement* begin();
-        TileElement* begin() const;
-        TileElement* end();
-        TileElement* end() const;
+        Iterator begin();
+        Iterator begin() const;
+        Iterator end();
+        Iterator end() const;
         size_t size();
         TileElement* operator[](size_t i);
 
