@@ -288,10 +288,12 @@ namespace OpenLoco::Vehicles
         EntityId getHead() const;
         int32_t getRemainingDistance() const;
         void setNextCar(const EntityId newNextCar);
+        EntityId getNextCar() const;
         bool has38Flags(Flags38 flagsToTest) const;
         bool hasVehicleFlags(VehicleFlags flagsToTest) const;
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
+        VehicleBase* previousVehicleComponent();
         bool updateComponent();
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
@@ -595,8 +597,10 @@ namespace OpenLoco::Vehicles
         int8_t chuffSoundIndex;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
-        uint8_t wheelSlipping; // 0x5E timeout that counts up
-        BreakdownFlags breakdownFlags;
+        uint8_t wheelSlipping;         // 0x5E timeout that counts up
+        BreakdownFlags breakdownFlags; // 0x5F
+        uint8_t pad_60[0x6A - 0x60];
+        uint8_t breakdownTimeout; // 0x6A (likely unused)
 
         const VehicleObject* getObject() const;
         bool update();
@@ -620,7 +624,7 @@ namespace OpenLoco::Vehicles
         Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
         Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
     };
-    static_assert(sizeof(VehicleBody) == 0x60); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleBody) == 0x6B); // Can't use offset_of change this to last field if more found
 
     uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw1FromVectorPlane(int16_t xDiff, int16_t yDiff);
@@ -963,5 +967,20 @@ namespace OpenLoco::Vehicles
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
     void removeAllCargo(CarComponent& carComponent);
 
+    /* flipCar
+     * Reverses a Car in-place and returns the new front bogie
+     * frontBogie: front bogie of the Car
+     * returns new front bogie of the Car
+     */
+    VehicleBogie* flipCar(VehicleBogie& frontBogie);
+
+    /* insertCarBefore
+     * Takes source vehicle out of its train and puts it in front of the destination vehicle in the destination train.
+     * Source and destination trains can be the same.
+     * source: front bogie of the Car to move
+     * dest: VehicleBogie or VehicleTail to place Car before
+     * returns nothing
+     */
+    void insertCarBefore(VehicleBogie& source, VehicleBase& dest);
     void registerHooks();
 }

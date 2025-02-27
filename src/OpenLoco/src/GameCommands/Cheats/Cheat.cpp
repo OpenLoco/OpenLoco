@@ -160,7 +160,14 @@ namespace OpenLoco::GameCommands
         static uint32_t toggleJail(CompanyId targetCompanyId)
         {
             auto company = CompanyManager::get(targetCompanyId);
-            company->jailStatus = 30;
+            if (company->jailStatus == 0)
+            {
+                company->jailStatus = 30;
+            }
+            else
+            {
+                company->jailStatus = 0;
+            }
             return 0;
         }
 

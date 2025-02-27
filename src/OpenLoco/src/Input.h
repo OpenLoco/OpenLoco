@@ -93,9 +93,13 @@ namespace OpenLoco::Input
     StationId getHoveredStationId();
 
     void handleKeyboard();
+
     void handleMouse(int16_t x, int16_t y, MouseButton button);
     MouseButton getLastKnownButtonState();
+    // Sets the current coordinates of the mouse position and accumulates the relative movement.
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
+    // Applies the accumulated mouse position changes.
+    void processMouseMovement();
     // Inputs the mouse wheel delta.
     void mouseWheel(int wheel);
     // Processes the mouse wheel delta.

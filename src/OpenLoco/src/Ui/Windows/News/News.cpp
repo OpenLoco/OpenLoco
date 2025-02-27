@@ -16,6 +16,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/NewsPanelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/Window.h"
@@ -38,7 +39,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     namespace News1
     {
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets<Widgets::Wt3Widget>(360, 117)
+            Common::makeCommonWidgets<Widgets::Panel>(360, 117)
 
         );
 
@@ -46,7 +47,23 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             return widgets;
         }
+    }
 
+    namespace News2
+    {
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets<Widgets::NewsPanel>(360, 159)
+
+        );
+
+        std::span<const Widget> getWidgets()
+        {
+            return widgets;
+        }
+    }
+
+    namespace Common
+    {
         // 0x00429BB7
         static void onMouseUp([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex)
         {
@@ -163,7 +180,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             _nState.slideInHeight = std::min(height, self.height);
 
             height = Ui::height() - _nState.slideInHeight - self.y;
-            auto width = (Ui::width() / 2) - (kWindowSize.width / 2) - self.x;
+            auto width = (Ui::width() / 2) - (self.width / 2) - self.x;
 
             if (width != 0 || height != 0)
             {
@@ -628,13 +645,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429872
         static void drawLateNews(Window* self, Gfx::DrawingContext& drawingCtx, Message* news)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            drawingCtx.drawImage(self->x, self->y, ImageIds::news_background_new_left);
-
-            drawingCtx.drawImage(self->x + (kWindowSize.width / 2), self->y, ImageIds::news_background_new_right);
+            // TODO: This should be a proper setter and we should obtain it type safe.
+            self->widgets[Common::widx::frame].styleData = enumValue(Widgets::NewsPanel::Style::new_);
 
             self->draw(drawingCtx);
+
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -708,16 +724,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x004299E7
         static void drawEarlyNews(Window* self, Gfx::DrawingContext& drawingCtx, Message* news)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            auto imageId = Gfx::recolour(ImageIds::news_background_old_left, ExtColour::translucentBrown1);
-            drawingCtx.drawImage(self->x, self->y, imageId);
-
-            imageId = Gfx::recolour(ImageIds::news_background_old_right, ExtColour::translucentBrown1);
-
-            drawingCtx.drawImage(self->x + (kWindowSize.width / 2), self->y, imageId);
+            // TODO: This should be a proper setter and we should obtain it type safe.
+            self->widgets[Common::widx::frame].styleData = enumValue(Widgets::NewsPanel::Style::old);
 
             self->draw(drawingCtx);
+
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -767,9 +779,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429761
         static void drawStationNews(Window* self, Gfx::DrawingContext& drawingCtx, Message* news)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             self->draw(drawingCtx);
+
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -885,19 +897,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         const WindowEventList& getEvents()
         {
             return kEvents;
-        }
-    }
-
-    namespace News2
-    {
-        static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets<Widgets::Panel>(360, 159)
-
-        );
-
-        std::span<const Widget> getWidgets()
-        {
-            return widgets;
         }
     }
 }

@@ -95,8 +95,11 @@ namespace OpenLoco::Input
     static uint8_t _5233A9;
     static loco_global<Ui::WindowNumber_t, 0x005233AA> _hoverWindowNumber;
     static loco_global<Ui::WidgetIndex_t, 0x005233AC> _hoverWidgetIdx;
-    static loco_global<uint32_t, 0x005233AE> _5233AE;
-    static loco_global<uint32_t, 0x005233B2> _5233B2;
+
+    static loco_global<int32_t, 0x0114084C> _mouseDeltaX;
+    static loco_global<int32_t, 0x01140840> _mouseDeltaY;
+    static loco_global<int32_t, 0x005233AE> _mousePosX;
+    static loco_global<int32_t, 0x005233B2> _mousePosY;
 
     static Ui::WindowType _focusedWindowType;
     static Ui::WindowNumber_t _focusedWindowNumber;
@@ -145,8 +148,8 @@ namespace OpenLoco::Input
         _hoverWindowType = Ui::WindowType::undefined;
         _focusedWindowType = Ui::WindowType::undefined;
 
-        _5233AE = 0;
-        _5233B2 = 0;
+        _mousePosX = 0;
+        _mousePosY = 0;
 
         World::resetMapSelectionFlags();
     }
@@ -154,8 +157,16 @@ namespace OpenLoco::Input
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
     {
         _cursor = { x, y };
-        addr<0x0114084C, int32_t>() = relX;
-        addr<0x01140840, int32_t>() = relY;
+        _mouseDeltaX += relX;
+        _mouseDeltaY += relY;
+    }
+
+    void processMouseMovement()
+    {
+        _mousePosX += _mouseDeltaX;
+        _mousePosY += _mouseDeltaY;
+        _mouseDeltaX = 0;
+        _mouseDeltaY = 0;
     }
 
     void mouseWheel(int wheel)
@@ -1336,6 +1347,7 @@ namespace OpenLoco::Input
                 break;
 
             case Ui::WidgetType::panel:
+            case Ui::WidgetType::newsPanel:
             case Ui::WidgetType::frame:
                 if (window->canResize() && (x >= (window->x + window->width - 19)) && (y >= (window->y + window->height - 19)))
                 {
@@ -1452,16 +1464,16 @@ namespace OpenLoco::Input
                 Ui::hideCursor();
                 sub_407218();
 
-                _5233AE = 0;
-                _5233B2 = 0;
+                _mousePosX = 0;
+                _mousePosY = 0;
                 setFlag(Flags::rightMousePressed);
                 break;
 
             case Ui::WidgetType::scrollview:
                 scrollDragBegin(x, y, window, widgetIndex);
 
-                _5233AE = 0;
-                _5233B2 = 0;
+                _mousePosX = 0;
+                _mousePosY = 0;
                 setFlag(Flags::rightMousePressed);
                 break;
         }
@@ -1594,6 +1606,7 @@ namespace OpenLoco::Input
                 switch (widget.type)
                 {
                     case Ui::WidgetType::panel:
+                    case Ui::WidgetType::newsPanel:
                     case Ui::WidgetType::frame:
                         if (window->hasFlags(Ui::WindowFlags::resizable))
                         {
@@ -1797,8 +1810,8 @@ namespace OpenLoco::Input
         }
         else
         {
-            x = _5233AE;
-            y = _5233B2;
+            x = _mousePosX;
+            y = _mousePosY;
         }
 
         // 0x004C7136, 0x004C7165
@@ -1912,13 +1925,13 @@ namespace OpenLoco::Input
             }
             else
             {
-                x = _5233AE;
-                y = _5233B2;
+                x = _mousePosX;
+                y = _mousePosY;
             }
 
             // 0x004C709F, 0x004C70D8
-            _5233AE = 0;
-            _5233B2 = 0;
+            _mousePosX = 0;
+            _mousePosY = 0;
             return MouseButton::released;
         }
     }
@@ -1953,6 +1966,7 @@ namespace OpenLoco::Input
             auto main = WindowManager::getMainWindow();
             if (main != nullptr && wheel != 0)
             {
+
                 if (wheel > 0)
                 {
                     main->viewportRotateRight();
@@ -1976,4 +1990,5 @@ namespace OpenLoco::Input
 
         WindowManager::wheelInput(wheel);
     }
+
 }

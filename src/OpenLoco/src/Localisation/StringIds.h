@@ -157,7 +157,7 @@ namespace OpenLoco::StringIds
     constexpr StringId station_not_compatible_with_string_id = 149;
     constexpr StringId level_crossing_in_the_way = 150;
     constexpr StringId level_crossing_only_possible_with_straight_road_and_track_at_same_level = 151;
-
+    constexpr StringId junction_not_possible = 152;
     constexpr StringId junction_must_be_entirely_level = 153;
     constexpr StringId string_id_in_the_way_wrong_height_for_junction = 154;
     constexpr StringId already_built_here = 155;
@@ -951,7 +951,9 @@ namespace OpenLoco::StringIds
     constexpr StringId orders_wait_for_full_load_of2 = 1226;
     constexpr StringId orders_current_order = 1227;
     constexpr StringId orders_cant_insert = 1228;
-
+    constexpr StringId click_to_insert_new_order_route_through = 1229;
+    constexpr StringId click_to_insert_new_order_stop_at = 1230;
+    constexpr StringId click_again_to_change_last_order_route_through = 1231;
     constexpr StringId tooltip_route_insert_wait_full_cargo = 1232;
     constexpr StringId tooltip_route_insert_force_unload = 1233;
     constexpr StringId tooltip_route_skip_next_order = 1234;

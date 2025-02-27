@@ -333,11 +333,6 @@ namespace OpenLoco
             GameCommands::resetCommandNestLevel();
             Ui::update();
 
-            addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
-            addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
-            addr<0x0114084C, int32_t>() = 0;
-            addr<0x01140840, int32_t>() = 0;
-
             {
                 call(0x00440DEC); // install scenario from 0x0050C18C ptr??
 
@@ -348,6 +343,7 @@ namespace OpenLoco
                 }
 
                 Input::handleKeyboard();
+                Input::processMouseMovement();
                 Audio::updateSounds();
 
                 Network::update();
