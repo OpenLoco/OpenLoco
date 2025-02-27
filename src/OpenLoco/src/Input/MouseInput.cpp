@@ -43,8 +43,8 @@ namespace OpenLoco::Input
     static void stateWidgetPressed(MouseButton button, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex);
     static void stateNormal(MouseButton state, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex);
     static void stateNormalHover(int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex);
-    static void stateNormalLeft(int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex);
-    static void stateNormalRight(int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex);
+    static void stateNormalLeft(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex);
+    static void stateNormalRight(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex);
     static void statePositioningWindow(MouseButton button, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex);
     static void windowPositionEnd();
 
@@ -1182,10 +1182,10 @@ namespace OpenLoco::Input
         switch (state)
         {
             case MouseButton::leftPressed:
-                stateNormalLeft(x, y, window, widget, widgetIndex);
+                stateNormalLeft(x, y, window, widgetIndex);
                 break;
             case MouseButton::rightPressed:
-                stateNormalRight(x, y, window, widget, widgetIndex);
+                stateNormalRight(x, y, window, widgetIndex);
                 break;
             case MouseButton::released:
                 stateNormalHover(x, y, window, widget, widgetIndex);
@@ -1301,7 +1301,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004C84BE
-    static void stateNormalLeft(int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex)
+    static void stateNormalLeft(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex)
     {
         Ui::WindowType windowType = Ui::WindowType::undefined;
         Ui::WindowNumber_t windowNumber = 0;
@@ -1327,6 +1327,8 @@ namespace OpenLoco::Input
         {
             return;
         }
+        // Widget may have changed memory position during bringToFront
+        auto* widget = &window->widgets[widgetIndex];
 
         // Handle text input focus
         if (widget->type == WidgetType::textbox)
@@ -1408,7 +1410,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004C834A
-    static void stateNormalRight(int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex)
+    static void stateNormalRight(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex)
     {
         Ui::WindowType windowType = Ui::WindowType::undefined;
         Ui::WindowNumber_t windowNumber = 0;
@@ -1434,6 +1436,8 @@ namespace OpenLoco::Input
         {
             return;
         }
+        // Widget may have changed memory position during bringToFront
+        auto* widget = &window->widgets[widgetIndex];
 
         if (WindowManager::getCurrentModalType() != Ui::WindowType::undefined)
         {
