@@ -841,60 +841,6 @@ namespace OpenLoco::Vehicles
         precedingDestComponent->setNextCar(source.id);
     }
 
-    void registerHooks()
-    {
-        registerHook(
-            0x0047C7FA,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                uint32_t distance = regs.eax;
-                VehicleCommon* component = X86Pointer<VehicleCommon>(regs.esi);
-
-                const auto res = updateRoadMotion(*component, distance);
-
-                regs = backup;
-                regs.eax = res;
-                return 0;
-            });
-
-        registerHook(
-            0x004AFFF3,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                VehicleBogie* component = X86Pointer<VehicleBogie>(regs.esi);
-                VehicleBogie* newComponent = flipCar(*component);
-                regs = backup;
-                regs.esi = X86Pointer(newComponent);
-                return 0;
-            });
-
-        registerHook(
-            0x004AF4D6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                VehicleBogie* source = X86Pointer<VehicleBogie>(regs.esi);
-                VehicleBase* dest = X86Pointer<VehicleBase>(regs.edi);
-
-                insertCarBefore(*source, *dest);
-
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004AF5E1,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
-                connectJacobsBogies(*head);
-                regs = backup;
-                return 0;
-            });
-    }
-
-    // remember to move this above registerHooks after rebasing
     // 0x004AF5E1
     // esi: head
     // returns nothing
@@ -965,5 +911,58 @@ namespace OpenLoco::Vehicles
                 componentsFound++;
             }
         }
+    }
+
+    void registerHooks()
+    {
+        registerHook(
+            0x0047C7FA,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                uint32_t distance = regs.eax;
+                VehicleCommon* component = X86Pointer<VehicleCommon>(regs.esi);
+
+                const auto res = updateRoadMotion(*component, distance);
+
+                regs = backup;
+                regs.eax = res;
+                return 0;
+            });
+
+        registerHook(
+            0x004AFFF3,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                VehicleBogie* component = X86Pointer<VehicleBogie>(regs.esi);
+                VehicleBogie* newComponent = flipCar(*component);
+                regs = backup;
+                regs.esi = X86Pointer(newComponent);
+                return 0;
+            });
+
+        registerHook(
+            0x004AF4D6,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                VehicleBogie* source = X86Pointer<VehicleBogie>(regs.esi);
+                VehicleBase* dest = X86Pointer<VehicleBase>(regs.edi);
+
+                insertCarBefore(*source, *dest);
+
+                regs = backup;
+                return 0;
+            });
+
+        registerHook(
+            0x004AF5E1,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
+                connectJacobsBogies(*head);
+                regs = backup;
+                return 0;
+            });
     }
 }
