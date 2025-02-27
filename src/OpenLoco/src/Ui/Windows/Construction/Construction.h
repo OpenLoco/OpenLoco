@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void previousTab(Window* self);
         void nextTab(Window* self);
 
-        template<int NewCapacity, int LegacyCapacity>
+        template<uint32_t NewCapacity, uint32_t LegacyCapacity>
         void copyToLegacyList(const sfl::static_vector<uint8_t, NewCapacity>& sflType, uint8_t (&legacyList)[LegacyCapacity])
         {
             static_assert(LegacyCapacity >= NewCapacity);
