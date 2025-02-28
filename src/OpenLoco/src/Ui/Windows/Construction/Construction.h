@@ -183,11 +183,8 @@ namespace OpenLoco::Ui::Windows::Construction
         template<uint32_t NewCapacity, uint32_t LegacyCapacity>
         void copyToLegacyList(const sfl::static_vector<uint8_t, NewCapacity>& sflType, uint8_t (&legacyList)[LegacyCapacity])
         {
-            static_assert(LegacyCapacity >= NewCapacity);
-            for (size_t i = 0; i < sflType.size(); i++)
-            {
-                legacyList[i] = sflType[i];
-            }
+            static_assert(LegacyCapacity > NewCapacity);
+            std::copy(sflType.begin(), sflType.end(), legacyList);
             legacyList[sflType.size()] = 0xFFU;
         }
     }
