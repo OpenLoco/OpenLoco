@@ -9,6 +9,7 @@
 - Fix: [#2926] The toggle jail cheat doesn't actually toggle when currently jailed.
 - Fix: [#2931] Mouse movement not being frame rate independent, causing odd panning behavior.
 - Fix: [#2938] Error messages containing a competitor image are not laid out properly.
+- Fix: [#2966] Vehicle-related news messages not using the right vehicle string.
 
 25.01 (2025-01-30)
 ------------------------------------------------------------------------
