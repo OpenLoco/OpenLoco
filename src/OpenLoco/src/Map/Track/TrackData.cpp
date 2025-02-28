@@ -997,4 +997,267 @@ namespace OpenLoco::World::TrackData
     {
         return _roadMiscData[roadId];
     }
+
+    // TODO: The following i think can be further deduplicated/generated
+
+    static constexpr std::array<RoadUnkNextTo, 2> kStraightUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 32, 0 },
+            .rotation = 3,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 2> kLeftCurveVerySmallUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, 32, 0 },
+            .rotation = 3,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, 0, 0 },
+            .rotation = 2,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 2> kRightCurveVerySmallUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { -32, 0, 0 },
+            .rotation = 2,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, -32, 0 },
+            .rotation = 1,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 4> kLeftCurveSmallLUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, 32, 0 },
+            .rotation = 3,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, 32, 0 },
+            .rotation = 3,
+        },
+        RoadUnkNextTo{
+            .pos = { -64, 0, 0 },
+            .rotation = 2,
+        },
+        RoadUnkNextTo{
+            .pos = { -64, -32, 0 },
+            .rotation = 2,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 4> kLeftCurveSmallRUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 32, 64, 0 },
+            .rotation = 3,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 64, 0 },
+            .rotation = 3,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, 0, 0 },
+            .rotation = 2,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, 32, 0 },
+            .rotation = 2,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 4> kRightCurveSmallLUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, -32, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { -64, 0, 0 },
+            .rotation = 2,
+        },
+        RoadUnkNextTo{
+            .pos = { -64, 32, 0 },
+            .rotation = 2,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 4> kRightCurveSmallRUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -64, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 32, -64, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, 0, 0 },
+            .rotation = 2,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, -32, 0 },
+            .rotation = 2,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 4> kStraightSlopeUpLUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 32, 0 },
+            .rotation = 3,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, -32, 16 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, 32, 16 },
+            .rotation = 3,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 4> kStraightSlopeUpRUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 16 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 32, 16 },
+            .rotation = 3,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, -32, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, 32, 0 },
+            .rotation = 3,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 4> kStraightSlopeDownLUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 16 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 32, 16 },
+            .rotation = 3,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, -32, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, 32, 0 },
+            .rotation = 3,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 4> kStraightSlopeDownRUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 32, 0 },
+            .rotation = 3,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, -32, 16 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { -32, 32, 16 },
+            .rotation = 3,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 2> kStraightSteepSlopeUpLUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 16 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 32, 16 },
+            .rotation = 3,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 2> kStraightSteepSlopeUpRUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 32, 0 },
+            .rotation = 3,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 2> kStraightSteepSlopeDownLUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 0 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 32, 0 },
+            .rotation = 3,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 2> kStraightSteepSlopeDownRUnkNextTo = {
+        RoadUnkNextTo{
+            .pos = { 0, -32, 16 },
+            .rotation = 1,
+        },
+        RoadUnkNextTo{
+            .pos = { 0, 32, 16 },
+            .rotation = 3,
+        },
+    };
+
+    static constexpr std::array<RoadUnkNextTo, 2> kTurnaroundUnkNextTo = kStraightUnkNextTo;
+
+    // 0x004F6E02
+    static constexpr std::array<std::span<const RoadUnkNextTo>, 20> kRoadUnkNextTo = {
+        kStraightUnkNextTo,
+        kStraightUnkNextTo,
+        kLeftCurveVerySmallUnkNextTo,
+        kLeftCurveVerySmallUnkNextTo,
+        kRightCurveVerySmallUnkNextTo,
+        kRightCurveVerySmallUnkNextTo,
+        kLeftCurveSmallLUnkNextTo,
+        kLeftCurveSmallRUnkNextTo,
+        kRightCurveSmallLUnkNextTo,
+        kRightCurveSmallRUnkNextTo,
+        kStraightSlopeUpLUnkNextTo,
+        kStraightSlopeUpRUnkNextTo,
+        kStraightSlopeDownLUnkNextTo,
+        kStraightSlopeDownRUnkNextTo,
+        kStraightSteepSlopeUpLUnkNextTo,
+        kStraightSteepSlopeUpRUnkNextTo,
+        kStraightSteepSlopeDownLUnkNextTo,
+        kStraightSteepSlopeDownRUnkNextTo,
+        kTurnaroundUnkNextTo,
+        kTurnaroundUnkNextTo,
+    };
+
+    std::span<const RoadUnkNextTo> getRoadUnkNextTo(uint16_t trackAndDirection)
+    {
+        assert(static_cast<size_t>(trackAndDirection / 4) < kRoadUnkNextTo.size());
+        return kRoadUnkNextTo[trackAndDirection / 4];
+    }
 }
