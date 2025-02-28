@@ -5,6 +5,8 @@
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
 #include "TrackData.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -37,7 +39,7 @@ namespace OpenLoco::World::Track
     }
 
     // 0x004788C8
-    RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    static RoadConnections getRoadConnectionsImpl(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods, bool checkOneWay)
     {
         RoadConnections result{};
 
@@ -137,6 +139,16 @@ namespace OpenLoco::World::Track
             {
                 continue;
             }
+
+            if (checkOneWay)
+            {
+                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                if (roadObj->hasFlags(RoadObjectFlags::unk_01))
+                {
+                    continue;
+                }
+            }
+
             if (elRoad->hasBridge())
             {
                 trackAndDirection2 |= elRoad->bridge() << 9;
@@ -166,6 +178,19 @@ namespace OpenLoco::World::Track
             result.connections.push_back(trackAndDirection2);
         }
         return result;
+    }
+
+    // 0x004788C8
+    RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        return getRoadConnectionsImpl(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods, false);
+    }
+
+    // 0x00478D16
+    // For 0x00478CE9 call getRoadConnectionEnd followed by this
+    RoadConnections getRoadConnectionsOneWay(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        return getRoadConnectionsImpl(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods, true);
     }
 
     // Part of 0x004A2604
