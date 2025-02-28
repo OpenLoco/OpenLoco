@@ -10,6 +10,7 @@
 #include "GameCommands/Docks/CreatePort.h"
 #include "GameCommands/Docks/RemovePort.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Road/CreateRoadStation.h"
 #include "GameCommands/Road/RemoveRoad.h"
@@ -634,12 +635,126 @@ namespace OpenLoco
         call(0x00430A12, regs);
     }
 
+    struct SimilarThoughts
+    {
+        uint8_t total;
+        uint8_t totalUnprofitable;
+        bool inSameCompany;
+    };
+
+    // 0x00480EA8
+    static SimilarThoughts getSimilarThoughtsInAllCompanies(Company& company, AiThought& thought)
+    {
+        uint8_t numSimilarThoughts = 0;
+        uint8_t numUnprofitableThoughts = 0;
+        for (auto& otherCompany : CompanyManager::companies())
+        {
+            for (auto& otherThought : otherCompany.aiThoughts)
+            {
+                if (otherThought.type == AiThoughtType::null)
+                {
+                    continue;
+                }
+                if (otherThought.cargoType != thought.cargoType)
+                {
+                    continue;
+                }
+                auto compatibleThought = [&otherThought, &thought]() {
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk0))
+                    {
+                        return false;
+                    }
+                    if (otherThought.var_01 == thought.var_01)
+                    {
+                        if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) || otherThought.var_02 == thought.var_02)
+                        {
+                            if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1)
+                                && thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0))
+                    {
+                        return false;
+                    }
+                    if (otherThought.var_02 != thought.var_01)
+                    {
+                        return false;
+                    }
+                    if (otherThought.var_01 != thought.var_02)
+                    {
+                        return false;
+                    }
+                    // Note: unk1 unk2 are swapped on our thought
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2)
+                        || thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+                    {
+                        return false;
+                    }
+                    return true;
+                }();
+
+                if (!compatibleThought)
+                {
+                    continue;
+                }
+                // 0x00480F6C
+                if (&company != &otherCompany)
+                {
+                    if (numSimilarThoughts != 0xFFU)
+                    {
+                        ++numSimilarThoughts;
+                    }
+                    if (otherThought.var_84 >= 3 * otherThought.var_7C)
+                    {
+                        ++numUnprofitableThoughts;
+                    }
+                }
+                else
+                {
+                    if (&otherThought == &thought)
+                    {
+                        continue;
+                    }
+                    return { 0, 0, true };
+                }
+            }
+        }
+        return SimilarThoughts{ numSimilarThoughts, numUnprofitableThoughts, false };
+    }
+
     // 0x00430B5D
     static void sub_430B5D(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430B5D, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        auto similarThoughts = getSimilarThoughtsInAllCompanies(company, thought);
+        if (similarThoughts.inSameCompany || similarThoughts.total > 1)
+        {
+            clearThought(thought);
+            company.var_4A5 = 13;
+            return;
+        }
+        if (similarThoughts.total == 1)
+        {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk12 | ThoughtTypeFlags::unk13))
+            {
+                if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+                {
+                    clearThought(thought);
+                    company.var_4A5 = 13;
+                    return;
+                }
+            }
+            if (similarThoughts.total != similarThoughts.totalUnprofitable)
+            {
+                clearThought(thought);
+                company.var_4A5 = 13;
+                return;
+            }
+        }
+        company.var_4A5 = 2;
     }
 
     // 0x00430BAB
@@ -2904,23 +3019,236 @@ namespace OpenLoco
         _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
-    // 0x0047BA2C
-    static uint32_t sub_47BA2C(World::Pos3 pos, uint8_t rotation, uint8_t roadObjectId, uint32_t unk, uint8_t flags)
+    static StationElement* getAiAllocatedStationElement(const Pos3& pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.di = pos.z;
-        regs.bl = flags;
-        regs.bh = rotation;
-        regs.bp = roadObjectId;
-        regs.edx = unk;
-        call(0x0047BA2C, regs);
-        return regs.ebx;
+        auto tile = TileManager::get(pos.x, pos.y);
+        auto baseZ = pos.z / 4;
+
+        for (auto& element : tile)
+        {
+            auto* stationElement = element.as<StationElement>();
+
+            if (stationElement == nullptr)
+            {
+                continue;
+            }
+
+            if (stationElement->baseZ() != baseZ)
+            {
+                continue;
+            }
+
+            if (stationElement->isAiAllocated())
+            {
+                return stationElement;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+        return nullptr;
+    }
+
+    struct RoadAndAiStationElements
+    {
+        const RoadElement* roadElement;
+        const StationElement* stationElement;
+    };
+
+    static RoadAndAiStationElements getRoadAndAiStationElements(const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId, const uint8_t roadId, const uint8_t sequenceIndex, const bool noStations, const CompanyId companyId)
+    {
+        auto* newRoadObj = ObjectManager::get<RoadObject>(roadObjectId);
+        auto tile = TileManager::get(pos);
+        for (const auto& el : tile)
+        {
+            auto* elRoad = el.as<RoadElement>();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+            if (elRoad->baseHeight() != pos.z)
+            {
+                continue;
+            }
+            if (elRoad->rotation() != rotation)
+            {
+                continue;
+            }
+            if (elRoad->sequenceIndex() != sequenceIndex)
+            {
+                continue;
+            }
+            if (noStations)
+            {
+                // Odd? why only in the no station branch!
+                if (elRoad->owner() != companyId)
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                if (elRoad->roadObjectId() != roadObjectId)
+                {
+                    auto* existingRoadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                    if (!existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
+                    {
+                        continue;
+                    }
+                    if (!newRoadObj->hasFlags(RoadObjectFlags::unk_03))
+                    {
+                        continue;
+                    }
+                }
+            }
+            if (elRoad->roadId() != roadId)
+            {
+                continue;
+            }
+
+            if (!elRoad->hasStationElement())
+            {
+                return { elRoad, nullptr };
+            }
+            return { elRoad, getAiAllocatedStationElement(pos) };
+        }
+        return { nullptr, nullptr };
+    }
+
+    // 0x0047BA2C
+    // Converts AiAllocated road to real road
+    static uint32_t replaceAiAllocatedRoad(World::Pos3 pos, uint8_t rotation, uint8_t roadObjectId, uint8_t roadId, uint8_t sequenceIndex, bool noStations, uint8_t flags)
+    {
+        // Structured very like a game command
+        GameCommands::setExpenditureType(ExpenditureType::Construction);
+        const auto companyId = GameCommands::getUpdatingCompanyId();
+        if (flags & GameCommands::Flags::apply)
+        {
+            const auto center = World::Pos2(pos) + World::Pos2{ 16, 16 };
+            companySetObservation(companyId, ObservationStatus::buildingTrackRoad, center, EntityId::null, roadObjectId | (1U << 7));
+        }
+
+        auto [elRoad, elStation] = getRoadAndAiStationElements(pos, rotation, roadObjectId, roadId, sequenceIndex, noStations, companyId);
+        if (elRoad == nullptr || (!elRoad->isAiAllocated() && elStation == nullptr))
+        {
+            return GameCommands::FAILURE;
+        }
+        uint8_t _112C2F4 = 0;
+        uint8_t roadStationObjId = 0xFFU;
+        if (!elRoad->isAiAllocated() && elStation != nullptr)
+        {
+            _112C2F4 |= 1U << 0; // hasNonAiAllocatedRoad
+        }
+        if (elStation != nullptr)
+        {
+            _112C2F4 |= 1U << 1; // hasStation
+            roadStationObjId = elStation->objectId();
+            if (noStations)
+            {
+                return GameCommands::FAILURE;
+            }
+        }
+
+        currency32_t totalCost = 0;
+        const auto existingRoadObjId = elRoad->roadObjectId();
+        auto* existingRoadObj = ObjectManager::get<RoadObject>(existingRoadObjId);
+        uint8_t mods = 0;
+        if (!existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
+        {
+            mods = elRoad->mods();
+        }
+        uint8_t bridge = 0xFFU;
+        if (elRoad->hasBridge())
+        {
+            bridge = elRoad->bridge();
+        }
+
+        if (elStation != nullptr)
+        {
+            GameCommands::RoadStationRemovalArgs args{};
+            args.pos = pos;
+            args.roadId = roadId;
+            args.roadObjectId = existingRoadObjId;
+            args.rotation = rotation;
+            args.index = sequenceIndex;
+            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+        }
+
+        if (!(_112C2F4 & (1U << 0)))
+        {
+            assert(existingRoadObjId == roadObjectId);
+            GameCommands::RoadRemovalArgs args{};
+            args.pos = pos;
+            args.objectId = existingRoadObjId;
+            args.roadId = roadId;
+            args.rotation = rotation;
+            args.sequenceIndex = sequenceIndex;
+            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
+            // Vanilla copied the bridge here via a global but
+            // we have already previously done that
+        }
+
+        if (!(_112C2F4 & (1U << 0)))
+        {
+            GameCommands::RoadPlacementArgs args{};
+            args.bridge = bridge;
+            args.mods = mods;
+            args.pos = pos;
+            // We shift this down as we need to be at the start of the road piece
+            // which for road that is sloping will not be the same as the
+            // produced road element
+            args.pos.z -= TrackData::getRoadPiece(roadId)[0].z;
+            args.roadId = roadId;
+            args.roadObjectId = roadObjectId;
+            args.rotation = rotation;
+            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_7);
+            if (res == GameCommands::FAILURE)
+            {
+                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_7);
+            }
+            if (res != GameCommands::FAILURE)
+            {
+                totalCost += res;
+            }
+        }
+
+        if (elStation != nullptr)
+        {
+            GameCommands::RoadStationPlacementArgs args{};
+            args.pos = pos;
+            args.roadId = roadId;
+            args.roadObjectId = existingRoadObjId;
+            args.rotation = rotation;
+            args.index = sequenceIndex;
+            args.type = roadStationObjId;
+            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_7);
+            if (res == GameCommands::FAILURE)
+            {
+                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_7);
+            }
+            if (res != GameCommands::FAILURE)
+            {
+                totalCost += res;
+            }
+            else
+            {
+                return GameCommands::FAILURE;
+            }
+        }
+
+        // This total cost check seems counter productive as the AI is allowed
+        // to build for free if it can't afford it. TODO: probably remove
+        if ((flags & GameCommands::Flags::apply) && totalCost != 0)
+        {
+            GameCommands::playConstructionPlacementSound(pos);
+        }
+        return totalCost;
     }
 
     // 0x004866C8
-    static uint8_t sub_4866C8(const Company& company, AiThought& thought)
+    // Replaces AiAllocated assets with real assets
+    static uint8_t replaceAiAllocated(const Company& company, AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -3009,7 +3337,7 @@ namespace OpenLoco
                 // Road
 
                 // TODO: Vanilla bug passes rotation for flags???
-                if (sub_47BA2C(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, aiStation.rotation) == GameCommands::FAILURE)
+                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, aiStation.rotation) == GameCommands::FAILURE)
                 {
                     return 2;
                 }
@@ -3067,7 +3395,7 @@ namespace OpenLoco
     // 0x0043106B
     static void sub_43106B(Company& company, AiThought& thought)
     {
-        const auto res = sub_4866C8(company, thought);
+        const auto res = replaceAiAllocated(company, thought);
         if (res == 2)
         {
             company.var_4A4 = AiThinkState::unk6;
@@ -3267,37 +3595,6 @@ namespace OpenLoco
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
         }
-    }
-
-    static StationElement* getAiAllocatedStationElement(const Pos3& pos)
-    {
-        auto tile = TileManager::get(pos.x, pos.y);
-        auto baseZ = pos.z / 4;
-
-        for (auto& element : tile)
-        {
-            auto* stationElement = element.as<StationElement>();
-
-            if (stationElement == nullptr)
-            {
-                continue;
-            }
-
-            if (stationElement->baseZ() != baseZ)
-            {
-                continue;
-            }
-
-            if (stationElement->isAiAllocated())
-            {
-                return stationElement;
-            }
-            else
-            {
-                return nullptr;
-            }
-        }
-        return nullptr;
     }
 
     // 0x00486224
@@ -3662,29 +3959,6 @@ namespace OpenLoco
         _funcs_4F9524[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
-    // 0x00487C83
-    static void sub_487C83(AiThought& thought)
-    {
-        // Gets refund costs for vehicles and costs for track mods
-        registers regs;
-        regs.edi = X86Pointer(&thought);
-        call(0x00487C83, regs);
-    }
-
-    // 0x00431209
-    static void sub_431209(Company& company, AiThought& thought)
-    {
-        sub_487C83(thought);
-        company.var_4A5 = 1;
-    }
-
-    // 0x00431216
-    static void sub_431216(Company& company, AiThought&)
-    {
-        // branch on sub_487E6D (which is a nop) would have made var_4A4 = 1
-        company.var_4A5 = 2;
-    }
-
     // 0x00487DAD
     static uint32_t tryPlaceTrackOrRoadMods(AiThought& thought, uint8_t flags)
     {
@@ -3722,6 +3996,66 @@ namespace OpenLoco
             }
             return GameCommands::doCommand(args, flags | GameCommands::Flags::noPayment);
         }
+    }
+
+    // 0x00487C83
+    static void sub_487C83(AiThought& thought)
+    {
+        // Gets refund costs for vehicles and costs for track mods
+
+        thought.var_76 = 0;
+        if (thought.var_8B & (1U << 2))
+        {
+            for (auto i = 0U; i < thought.numVehicles; ++i)
+            {
+                auto* head = EntityManager::get<Vehicles::VehicleHead>(thought.vehicles[i]);
+                if (head == nullptr)
+                {
+                    continue;
+                }
+                Vehicles::Vehicle train(*head);
+                for (auto& car : train.cars)
+                {
+                    thought.var_76 -= car.front->refundCost;
+                }
+            }
+        }
+        currency32_t pendingVehicleCarCosts = 0;
+        for (auto i = 0U; i < thought.var_45; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
+            auto objCost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 6);
+            pendingVehicleCarCosts += objCost;
+            if (vehicleObj->hasFlags(VehicleObjectFlags::mustHavePair))
+            {
+                pendingVehicleCarCosts += objCost;
+            }
+        }
+        auto numPendingVehicles = thought.var_43;
+        if (!(thought.var_8B & (1U << 2)))
+        {
+            numPendingVehicles -= thought.numVehicles;
+        }
+        thought.var_76 += pendingVehicleCarCosts * numPendingVehicles;
+
+        if (thought.var_8B & (1U << 3))
+        {
+            thought.var_76 += tryPlaceTrackOrRoadMods(thought, 0);
+        }
+    }
+
+    // 0x00431209
+    static void sub_431209(Company& company, AiThought& thought)
+    {
+        sub_487C83(thought);
+        company.var_4A5 = 1;
+    }
+
+    // 0x00431216
+    static void sub_431216(Company& company, AiThought&)
+    {
+        // branch on sub_487E6D (which is a nop) would have made var_4A4 = 1
+        company.var_4A5 = 2;
     }
 
     // 0x00487E74
