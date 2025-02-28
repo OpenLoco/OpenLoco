@@ -211,8 +211,8 @@ namespace OpenLoco::MessageManager
                 {
                     break;
                 }
-                args.push(head->ordinalNumber);
                 args.push(head->name);
+                args.push(head->ordinalNumber);
                 auto* station = StationManager::get(static_cast<StationId>(message.itemSubjects[1]));
                 args.push(station->name);
                 args.push(station->town);
@@ -373,8 +373,8 @@ namespace OpenLoco::MessageManager
                 {
                     break;
                 }
-                args.push(head->ordinalNumber);
                 args.push(head->name);
+                args.push(head->ordinalNumber);
                 StringManager::formatString(tempBuffer, StringIds::message_has_crashed, args);
             }
             break;
