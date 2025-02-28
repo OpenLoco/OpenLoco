@@ -773,12 +773,208 @@ namespace OpenLoco
         call(0x00430BDA, regs);
     }
 
+    struct DestinationPositions
+    {
+        Pos2 posA;
+        std::optional<Pos2> posB;
+    };
+    static DestinationPositions getDestinationPositions(const AiThought& thought)
+    {
+        DestinationPositions destPos{};
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+        {
+            const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
+            destPos.posA = { industry->x, industry->y };
+        }
+        else
+        {
+            const auto* town = TownManager::get(static_cast<TownId>(thought.var_01));
+            destPos.posA = { town->x, town->y };
+        }
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk0))
+        {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2))
+            {
+                const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_02));
+                destPos.posB = { industry->x, industry->y };
+            }
+            else
+            {
+                const auto* town = TownManager::get(static_cast<TownId>(thought.var_02));
+                destPos.posB = { town->x, town->y };
+            }
+        }
+        return destPos;
+    }
+
+    // 0x0047FE3A
+    static bool chooseTrackObject(Company& company, AiThought& thought)
+    {
+        const auto destinations = getDestinationPositions(thought);
+        using enum World::Track::TrackTraitFlags;
+        auto requiredTraits = smallCurve | slope | junction;
+        if (destinations.posB.has_value())
+        {
+            auto* surfaceA = TileManager::get(destinations.posA).surface();
+            auto* surfaceB = TileManager::get(destinations.posB.value()).surface();
+            auto heightDiff = std::abs(surfaceA->baseZ() - surfaceB->baseZ());
+            const auto dist = Math::Vector::distance2D(destinations.posA, destinations.posB.value());
+            if (heightDiff > 32 && dist <= 45 * 32)
+            {
+                requiredTraits |= steepSlope;
+            }
+        }
+
+        const auto tracks = company.getAvailableRailTracks();
+        Speed16 maxSpeed = 0_mph;
+        uint8_t bestTrack = 0xFFU;
+        for (const auto trackObjId : tracks)
+        {
+            if (trackObjId & (1U << 7))
+            {
+                continue;
+            }
+            auto* trackObj = ObjectManager::get<TrackObject>(trackObjId);
+            if ((trackObj->trackPieces & requiredTraits) != requiredTraits)
+            {
+                continue;
+            }
+            if (maxSpeed < trackObj->curveSpeed)
+            {
+                maxSpeed = trackObj->curveSpeed;
+                bestTrack = trackObjId;
+            }
+        }
+        if (bestTrack == 0xFFU)
+        {
+            return true;
+        }
+        thought.trackObjId = bestTrack;
+        if ((requiredTraits & steepSlope) != World::Track::TrackTraitFlags::none)
+        {
+            thought.var_8B |= 1U << 0;
+        }
+        auto* trackObj = ObjectManager::get<TrackObject>(bestTrack);
+        if (trackObj->hasFlags(TrackObjectFlags::unk_04))
+        {
+            thought.var_8B |= 1U << 1;  
+        }
+        return false;
+    }
+
+    // 0x0047FFE5
+    static bool chooseBasicRoadObject(Company& company, AiThought& thought)
+    {
+        const auto roads = company.getAvailableRoads();
+        const auto requiredTraits = World::Track::RoadTraitFlags::verySmallCurve | World::Track::RoadTraitFlags::slope | World::Track::RoadTraitFlags::steepSlope | World::Track::RoadTraitFlags::unk4 | World::Track::RoadTraitFlags::junction;
+        Speed16 maxSpeed = 0_mph;
+        uint8_t bestRoad = 0xFFU;
+        for (const auto roadObjId : roads)
+        {
+            if (!(roadObjId & (1U << 7)))
+            {
+                continue;
+            }
+
+            auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
+            using enum RoadObjectFlags;
+            if ((roadObj->flags & unk_07 | isRoad | unk_03 | unk_02) != (unk_07 | isRoad | unk_03 | unk_02))
+            {
+                continue;
+            }
+            if (roadObj->hasFlags(unk_00))
+            {
+                continue;
+            }
+            if ((roadObj->roadPieces & requiredTraits) != requiredTraits)
+            {
+                continue;
+            }
+            if (maxSpeed < roadObj->maxSpeed)
+            {
+                maxSpeed = roadObj->maxSpeed;
+                bestRoad = roadObjId;
+            }
+        }
+        if (bestRoad == 0xFFU)
+        {
+            return true;
+        }
+        thought.trackObjId = bestRoad | (1U << 7);
+        return false;
+    }
+
+    // 0x0047FF77
+    static bool chooseTramRoadObject(Company& company, AiThought& thought)
+    {
+        const auto roads = company.getAvailableRoads();
+        const auto requiredTraits = World::Track::RoadTraitFlags::verySmallCurve | World::Track::RoadTraitFlags::slope | World::Track::RoadTraitFlags::steepSlope | World::Track::RoadTraitFlags::unk4 | World::Track::RoadTraitFlags::junction | World::Track::RoadTraitFlags::turnaround;
+        Speed16 maxSpeed = 0_mph;
+        uint8_t bestRoad = 0xFFU;
+        for (const auto roadObjId : roads)
+        {
+            if (!(roadObjId & (1U << 7)))
+            {
+                continue;
+            }
+
+            auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
+            using enum RoadObjectFlags;
+            if ((roadObj->flags & unk_07 | isRoad | unk_03 | unk_00) != (unk_07 | isRoad | unk_03 | unk_00))
+            {
+                continue;
+            }
+            if ((roadObj->roadPieces & requiredTraits) != requiredTraits)
+            {
+                continue;
+            }
+            if (maxSpeed < roadObj->maxSpeed)
+            {
+                maxSpeed = roadObj->maxSpeed;
+                bestRoad = roadObjId;
+            }
+        }
+        if (bestRoad == 0xFFU)
+        {
+            return true;
+        }
+        thought.trackObjId = bestRoad | (1U << 7);
+        return false;
+    }
+
+    // 0x00480059
+    static bool chooseTrackRoadObject(Company& company, AiThought& thought)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased | ThoughtTypeFlags::airBased))
+        {
+            return false;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
+        {
+            return chooseTrackObject(company, thought);
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk5))
+        {
+            return chooseBasicRoadObject(company, thought);
+        }
+        else
+        {
+            return chooseTramRoadObject(company, thought);
+        }
+    }
+
     // 0x00430C06
     static void sub_430C06(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430C06, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        if (chooseTrackRoadObject(company, thought))
+        {
+            state2ClearActiveThought(company);
+        }
+        else
+        {
+            company.var_4A5 = 5;
+        }
     }
 
     // 0x00430C2D
