@@ -16,10 +16,10 @@ namespace OpenLoco::Vehicles::RoutingManager
     std::optional<RoutingHandle> getAndAllocateFreeRoutingHandle();
     void freeRoutingHandle(const RoutingHandle handle);
     uint16_t getRouting(const RoutingHandle handle);
+    void setRouting(const RoutingHandle handle, uint16_t routing);
     void freeRouting(const RoutingHandle handle);
     bool isEmptyRoutingSlotAvailable();
     void resetRoutingTable();
-    void setRouting(const RoutingHandle handle, uint16_t routing);
 
     struct RingView
     {
