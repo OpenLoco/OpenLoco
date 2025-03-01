@@ -1,4 +1,7 @@
-25.01+ (???)
+25.02+ (???)
+------------------------------------------------------------------------
+
+25.02 (2025-02-28)
 ------------------------------------------------------------------------
 - Fix: [#2701] Town names are not always generated correctly.
 - Fix: [#2764] Scroll view item selection is wrong after switching window focus.
@@ -12,6 +15,7 @@
 - Fix: [#2930] Sandbox mode no longer allows AI companies or towns to remove indestructible buildings.
 - Fix: [#2931] Mouse movement not being frame rate independent, causing odd panning behavior.
 - Fix: [#2938] Error messages containing a competitor image are not laid out properly.
+- Fix: [#2966] Vehicle-related news messages not using the right vehicle string.
 
 25.01 (2025-01-30)
 ------------------------------------------------------------------------
