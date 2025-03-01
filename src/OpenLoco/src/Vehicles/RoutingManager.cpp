@@ -47,7 +47,7 @@ namespace OpenLoco::Vehicles::RoutingManager
 
     void freeRouting(const RoutingHandle handle)
     {
-        routings()[handle.getVehicleRef()][handle.getIndex()] = kAllocatedButFreeRoutingStation;
+        setRouting(handle, kAllocatedButFreeRoutingStation);
     }
 
     // 0x004B1E77
