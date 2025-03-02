@@ -215,7 +215,11 @@ namespace OpenLoco::Ui
         uint16_t var_83C;
         uint16_t rowHeight;
         int16_t rowHover = -1;
-        int16_t var_842;
+        union
+        {
+            int16_t orderTableIndex;
+            int16_t selectedTileIndex;
+        };
         uint16_t sortMode;
         uint16_t var_846 = 0;
         uint16_t var_850 = 0;
