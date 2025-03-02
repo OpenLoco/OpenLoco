@@ -692,8 +692,9 @@ namespace OpenLoco::Input
                 if (x != 0 || y != 0)
                 {
                     _ticksSinceDragStart = 1000;
-                    const auto invert = Config::get().invertRightMouseViewPan ? -1 : 1;
+
                     Ui::Widget* widget = &window->widgets[_dragWidgetIndex];
+                    const auto invert = Config::get().invertRightMouseViewPan ? -1 : 1;
                     Ui::ScrollView::horizontalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, x * invert);
                     Ui::ScrollView::verticalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, y * invert);
                 }
