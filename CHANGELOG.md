@@ -1,5 +1,6 @@
 25.02+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2741] Tree, fence, and wall ghosts being left behind when reopening Terraform window with keyboard shortcuts.
 
 25.02 (2025-02-28)
 ------------------------------------------------------------------------
