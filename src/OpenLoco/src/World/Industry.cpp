@@ -374,8 +374,11 @@ namespace OpenLoco
     bool Industry::isMonthlyProductionUp()
     {
         auto* indObj = getObject();
-        return indObj->hasFlags(IndustryObjectFlags::canIncreaseProduction)
-            && producedCargoPercentTransportedPreviousMonth[0] > 70
+        if (!indObj->hasFlags(IndustryObjectFlags::canIncreaseProduction))
+        {
+            return false;
+        }
+        return producedCargoPercentTransportedPreviousMonth[0] > 70
             && gPrng1().randNext(31) == 0
             && productionRate[0] < 100
             && productionRate[1] < 100;
