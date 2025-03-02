@@ -1,4 +1,7 @@
 #include "GameCommands/GameCommands.h"
+#include "Map/Track/TrackModSection.h"
+
+using namespace OpenLoco::World::Track;
 
 namespace OpenLoco::GameCommands
 {
@@ -14,7 +17,7 @@ namespace OpenLoco::GameCommands
             , index(regs.dh & 0x3)
             , type((regs.edi >> 16) & 0xF)
             , trackObjType(regs.ebp & 0xFF)
-            , modSection((regs.ebp >> 16) & 0xFF)
+            , modSection(static_cast<ModSection>((regs.ebp >> 16) & 0xFF))
         {
         }
 
@@ -24,7 +27,7 @@ namespace OpenLoco::GameCommands
         uint8_t index;
         uint8_t type;
         uint8_t trackObjType;
-        uint8_t modSection;
+        ModSection modSection;
 
         explicit operator registers() const
         {
@@ -35,7 +38,7 @@ namespace OpenLoco::GameCommands
             regs.dl = trackId;
             regs.dh = index;
             regs.edi = pos.z | (type << 16);
-            regs.ebp = trackObjType | (modSection << 16);
+            regs.ebp = trackObjType | (enumValue(modSection) << 16);
             return regs;
         }
     };

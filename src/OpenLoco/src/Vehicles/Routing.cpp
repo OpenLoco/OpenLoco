@@ -8,6 +8,7 @@
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
+#include "Map/Track/TrackModSection.h"
 #include "Map/TrackElement.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
@@ -22,6 +23,7 @@ namespace OpenLoco::Vehicles
 {
     using namespace OpenLoco::Interop;
     using namespace OpenLoco::World;
+    using namespace OpenLoco::World::Track;
 
     enum class TrackNetworkSearchFlags : uint16_t
     {
@@ -721,7 +723,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A5D94
-    static bool applyTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    static bool applyTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the hashmap to prevent it being visited.
@@ -875,7 +877,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (modSelection == 1)
+        if (modSelection == ModSection::block)
         {
             return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
         }
@@ -883,7 +885,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A6136
-    static bool removeTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    static bool removeTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the hashmap to prevent it being visited.
@@ -1012,21 +1014,21 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (modSelection == 1)
+        if (modSelection == ModSection::block)
         {
             return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
         }
         return false;
     }
 
-    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, ModSection modSelection, uint8_t trackModObjIds)
     {
         ApplyTrackModsResult result{};
         result.cost = 0;
         result.allPlacementsFailed = true;
         result.networkTooComplex = false;
 
-        if (modSelection == 0)
+        if (modSelection == Track::ModSection::single)
         {
             LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
             applyTrackModToTrack(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
@@ -1043,10 +1045,10 @@ namespace OpenLoco::Vehicles
         return result;
     }
 
-    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, ModSection modSelection, uint8_t trackModObjIds)
     {
         currency32_t cost = 0;
-        if (modSelection == 0)
+        if (modSelection == Track::ModSection::single)
         {
             LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
             removeTrackModToTrack(interest, flags, nullptr, modSelection, trackType, trackModObjIds, cost, company);
