@@ -902,74 +902,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
     }
 
-    // 0x004BB4A3
-    Window* open()
-    {
-        auto window = WindowManager::bringToFront(WindowType::terraform, 0);
-        if (window != nullptr)
-        {
-            window->callOnMouseUp(Common::widx::tab_plant_trees);
-        }
-        else
-        {
-            // 0x004BB586
-            window = WindowManager::createWindow(
-                WindowType::terraform,
-                { Ui::width() - PlantTrees::kWindowSize.width, 30 },
-                PlantTrees::kWindowSize,
-                WindowFlags::flag_11,
-                PlantTrees::getEvents());
-
-            window->number = 0;
-            window->currentTab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
-            window->frameNo = 0;
-            _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
-            _lastTreeCost = 0x80000000;
-            window->owner = CompanyManager::getControllingId();
-            window->var_846 = 0xFFFF;
-            window->savedView.mapX = 0;
-            _treeClusterType = PlantTrees::treeCluster::none;
-
-            WindowManager::sub_4CEE0B(*window);
-
-            window->minWidth = PlantTrees::kWindowSize.width;
-            window->minHeight = PlantTrees::kWindowSize.height;
-            window->maxWidth = PlantTrees::kWindowSize.width;
-            window->maxHeight = PlantTrees::kWindowSize.height;
-
-            auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, skin->windowTerraFormColour);
-
-            // End of 0x004BB586
-
-            Ui::Windows::Main::showGridlines();
-            _treeRotation = 2;
-
-            window->invalidate();
-
-            window->setWidgets(PlantTrees::widgets);
-            window->enabledWidgets = PlantTrees::enabledWidgets;
-            window->holdableWidgets = 0;
-            window->activatedWidgets = 0;
-
-            window->disabledWidgets = 0;
-
-            window->callOnResize();
-            window->callPrepareDraw();
-            window->initScrollWidgets();
-
-            window->var_83C = 0;
-            window->rowHover = -1;
-
-            PlantTrees::refreshTreeList(window);
-
-            ToolManager::toolSet(window, Common::widx::panel, CursorId::landTool);
-
-            Input::setFlag(Input::Flags::flag6);
-        }
-        return window;
-    }
-
     namespace ClearArea
     {
         enum widx
@@ -2947,6 +2879,78 @@ namespace OpenLoco::Ui::Windows::Terraform
                 Ui::Windows::Construction::removeConstructionGhosts();
             }
         }
+    }
+
+    // 0x004BB4A3
+    Window* open()
+    {
+        auto window = WindowManager::bringToFront(WindowType::terraform, 0);
+        if (window != nullptr)
+        {
+            // Remove any ghosts before re-opening this window
+            PlantTrees::removeTreeGhost();
+            BuildWalls::removeWallGhost();
+
+            window->callOnMouseUp(Common::widx::tab_plant_trees);
+        }
+        else
+        {
+            // 0x004BB586
+            window = WindowManager::createWindow(
+                WindowType::terraform,
+                { Ui::width() - PlantTrees::kWindowSize.width, 30 },
+                PlantTrees::kWindowSize,
+                WindowFlags::flag_11,
+                PlantTrees::getEvents());
+
+            window->number = 0;
+            window->currentTab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
+            window->frameNo = 0;
+            _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
+            _lastTreeCost = 0x80000000;
+            window->owner = CompanyManager::getControllingId();
+            window->var_846 = 0xFFFF;
+            window->savedView.mapX = 0;
+            _treeClusterType = PlantTrees::treeCluster::none;
+
+            WindowManager::sub_4CEE0B(*window);
+
+            window->minWidth = PlantTrees::kWindowSize.width;
+            window->minHeight = PlantTrees::kWindowSize.height;
+            window->maxWidth = PlantTrees::kWindowSize.width;
+            window->maxHeight = PlantTrees::kWindowSize.height;
+
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
+            window->setColour(WindowColour::secondary, skin->windowTerraFormColour);
+
+            // End of 0x004BB586
+
+            Ui::Windows::Main::showGridlines();
+            _treeRotation = 2;
+
+            window->invalidate();
+
+            window->setWidgets(PlantTrees::widgets);
+            window->enabledWidgets = PlantTrees::enabledWidgets;
+            window->holdableWidgets = 0;
+            window->activatedWidgets = 0;
+
+            window->disabledWidgets = 0;
+
+            window->callOnResize();
+            window->callPrepareDraw();
+            window->initScrollWidgets();
+
+            window->var_83C = 0;
+            window->rowHover = -1;
+
+            PlantTrees::refreshTreeList(window);
+
+            ToolManager::toolSet(window, Common::widx::panel, CursorId::landTool);
+
+            Input::setFlag(Input::Flags::flag6);
+        }
+        return window;
     }
 
     // 0x004BB566
