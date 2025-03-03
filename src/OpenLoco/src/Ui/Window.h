@@ -217,7 +217,7 @@ namespace OpenLoco::Ui
         int16_t rowHover = -1;
         union
         {
-            int16_t orderTableIndex;
+            int16_t orderTableIndex = -1;
             int16_t selectedTileIndex;
         };
         uint16_t sortMode;
