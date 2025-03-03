@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Widgets
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(widget.font);
 
-        const auto x = [&]()->int16_t {
+        const auto x = [&]() -> int16_t {
             if (widget.contentAlign == ContentAlign::left)
             {
                 return position.x;
