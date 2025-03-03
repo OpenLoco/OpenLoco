@@ -878,7 +878,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if ((roadObj->flags & unk_07 | isRoad | unk_03 | unk_02) != (unk_07 | isRoad | unk_03 | unk_02))
+            if ((roadObj->flags & (unk_07 | isRoad | unk_03 | unk_02)) != (unk_07 | isRoad | unk_03 | unk_02))
             {
                 continue;
             }
@@ -920,7 +920,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if ((roadObj->flags & unk_07 | isRoad | unk_03 | unk_00) != (unk_07 | isRoad | unk_03 | unk_00))
+            if ((roadObj->flags & (unk_07 | isRoad | unk_03 | unk_00)) != (unk_07 | isRoad | unk_03 | unk_00))
             {
                 continue;
             }
