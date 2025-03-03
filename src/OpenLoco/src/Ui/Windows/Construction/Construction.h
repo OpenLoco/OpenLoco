@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameCommands/Track/CreateTrackMod.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackModSection.h"
 #include "Objects/VehicleObject.h"
@@ -10,7 +11,6 @@
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
-#include <GameCommands/Track/CreateTrackMod.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
