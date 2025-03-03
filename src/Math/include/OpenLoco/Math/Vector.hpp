@@ -21,9 +21,9 @@ namespace OpenLoco::Math::Vector
         T y{};
 
         constexpr TVector2() noexcept = default;
-        constexpr TVector2(T _x, T _y) noexcept
-            : x(_x)
-            , y(_y)
+        constexpr TVector2(int32_t _x, int32_t _y) noexcept
+            : x{ static_cast<T>(_x) }
+            , y{ static_cast<T>(_y) }
         {
         }
 
@@ -103,9 +103,9 @@ namespace OpenLoco::Math::Vector
         T z{};
 
         constexpr TVector3() noexcept = default;
-        constexpr TVector3(T _x, T _y, T _z) noexcept
+        constexpr TVector3(int32_t _x, int32_t _y, int32_t _z) noexcept
             : Base(_x, _y)
-            , z(_z)
+            , z(static_cast<T>(_z))
         {
         }
 
