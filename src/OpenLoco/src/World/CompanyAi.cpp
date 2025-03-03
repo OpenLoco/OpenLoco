@@ -907,7 +907,7 @@ namespace OpenLoco
     // 0x0047FF77
     static bool chooseTramRoadObject(Company& company, AiThought& thought)
     {
-        const auto roads = company.getAvailableRoads();
+        const auto roads = company.getAvailableRailTracks();
         const auto requiredTraits = World::Track::RoadTraitFlags::verySmallCurve | World::Track::RoadTraitFlags::slope | World::Track::RoadTraitFlags::steepSlope | World::Track::RoadTraitFlags::unk4 | World::Track::RoadTraitFlags::junction | World::Track::RoadTraitFlags::turnaround;
         Speed16 maxSpeed = 0_mph;
         uint8_t bestRoad = 0xFFU;
@@ -920,7 +920,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if ((roadObj->flags & (unk_07 | isRoad | unk_03 | unk_00)) != (unk_07 | isRoad | unk_03 | unk_00))
+            if (!roadObj->hasFlags(unk_07 | isRoad | unk_03 | unk_00))
             {
                 continue;
             }
