@@ -17,6 +17,7 @@
 #include "Objects/DockObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/ObjectUtils.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
@@ -78,7 +79,8 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         Common::createConstructionWindow();
 
-        Common::refreshSignalList(_cState->signalList, _cState->trackType);
+        const auto signalList = getAvailableCompatibleSignals(_cState->trackType);
+        Common::copyToLegacyList(signalList, _cState->signalList);
 
         auto lastSignal = Scenario::getConstruction().signals[_cState->trackType];
 
@@ -89,7 +91,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedSignal = lastSignal;
 
-        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::rail);
+        const auto stationList = getAvailableCompatibleStations(_cState->trackType, TransportMode::rail);
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         auto lastStation = Scenario::getConstruction().trainStations[_cState->trackType];
 
@@ -100,7 +103,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::rail);
+        const auto bridgeList = getAvailableCompatibleBridges(_cState->trackType, TransportMode::rail);
+        Common::copyToLegacyList(bridgeList, _cState->bridgeList);
 
         auto lastBridge = Scenario::getConstruction().bridges[_cState->trackType];
 
@@ -111,7 +115,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedBridge = lastBridge;
 
-        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::rail);
+        const auto modList = getAvailableCompatibleMods(_cState->trackType, TransportMode::rail, GameCommands::getUpdatingCompanyId());
+        std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
         auto lastMod = Scenario::getConstruction().trackMods[_cState->trackType];
 
@@ -132,7 +137,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedSignal = 0xFF;
 
-        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::road);
+        const auto stationList = getAvailableCompatibleStations(_cState->trackType, TransportMode::road);
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         auto lastStation = Scenario::getConstruction().roadStations[(_cState->trackType & ~(1ULL << 7))];
 
@@ -143,7 +149,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::road);
+        const auto bridgeList = getAvailableCompatibleBridges(_cState->trackType, TransportMode::road);
+        Common::copyToLegacyList(bridgeList, _cState->bridgeList);
 
         auto lastBridge = Scenario::getConstruction().bridges[(_cState->trackType & ~(1ULL << 7))];
 
@@ -154,7 +161,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedBridge = lastBridge;
 
-        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::road);
+        const auto modList = getAvailableCompatibleMods(_cState->trackType, TransportMode::road, GameCommands::getUpdatingCompanyId());
+        std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
         auto lastMod = Scenario::getConstruction().roadMods[(_cState->trackType & ~(1ULL << 7))];
 
@@ -183,7 +191,8 @@ namespace OpenLoco::Ui::Windows::Construction
         _cState->lastSelectedMods = 0;
         _cState->lastSelectedBridge = 0xFF;
 
-        Common::refreshDockList(_cState->stationList);
+        const auto stationList = getAvailableDocks();
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         if (getGameState().lastShipPort == 0xFF)
         {
@@ -209,7 +218,8 @@ namespace OpenLoco::Ui::Windows::Construction
         _cState->lastSelectedMods = 0;
         _cState->lastSelectedBridge = 0xFF;
 
-        Common::refreshAirportList(_cState->stationList);
+        const auto stationList = getAvailableAirports();
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         if (getGameState().lastAirport == 0xFF)
         {
@@ -274,7 +284,8 @@ namespace OpenLoco::Ui::Windows::Construction
         _cState->lastSelectedTrackPiece = 0;
         _cState->lastSelectedTrackGradient = 0;
 
-        Common::refreshSignalList(_cState->signalList, _cState->trackType);
+        const auto signalList = getAvailableCompatibleSignals(_cState->trackType);
+        Common::copyToLegacyList(signalList, _cState->signalList);
         auto lastSignal = Scenario::getConstruction().signals[_cState->trackType];
 
         if (lastSignal == 0xFF)
@@ -284,7 +295,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedSignal = lastSignal;
 
-        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::rail);
+        const auto stationList = getAvailableCompatibleStations(_cState->trackType, TransportMode::rail);
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         auto lastStation = Scenario::getConstruction().trainStations[_cState->trackType];
 
@@ -295,7 +307,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::rail);
+        const auto bridgeList = getAvailableCompatibleBridges(_cState->trackType, TransportMode::rail);
+        Common::copyToLegacyList(bridgeList, _cState->bridgeList);
 
         auto lastBridge = Scenario::getConstruction().bridges[_cState->trackType];
 
@@ -310,7 +323,8 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             _cState->lastSelectedBridge = copyElement->bridge();
         }
-        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::rail);
+        const auto modList = getAvailableCompatibleMods(_cState->trackType, TransportMode::rail, GameCommands::getUpdatingCompanyId());
+        std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
         _cState->lastSelectedMods = copyElement->mods();
         _cState->byte_113603A = 0;
@@ -371,7 +385,8 @@ namespace OpenLoco::Ui::Windows::Construction
         _cState->lastSelectedTrackGradient = 0;
         _cState->lastSelectedSignal = 0xFF;
 
-        Common::refreshStationList(_cState->stationList, _cState->trackType, TransportMode::road);
+        const auto stationList = getAvailableCompatibleStations(_cState->trackType, TransportMode::road);
+        Common::copyToLegacyList(stationList, _cState->stationList);
 
         auto lastStation = Scenario::getConstruction().roadStations[(_cState->trackType & ~(1ULL << 7))];
 
@@ -382,7 +397,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _cState->lastSelectedStationType = lastStation;
 
-        Common::refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::road);
+        const auto bridgeList = getAvailableCompatibleBridges(_cState->trackType, TransportMode::road);
+        Common::copyToLegacyList(bridgeList, _cState->bridgeList);
 
         auto lastBridge = Scenario::getConstruction().bridges[(_cState->trackType & ~(1ULL << 7))];
 
@@ -397,7 +413,8 @@ namespace OpenLoco::Ui::Windows::Construction
             _cState->lastSelectedBridge = copyElement->bridge();
         }
 
-        Common::refreshModList(_cState->modList, _cState->trackType, TransportMode::road);
+        const auto modList = getAvailableCompatibleMods(_cState->trackType, TransportMode::road, GameCommands::getUpdatingCompanyId());
+        std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
         _cState->lastSelectedMods = 0;
         auto* roadObj = ObjectManager::get<RoadObject>(_cState->trackType & ~(1ULL << 7));
@@ -1178,410 +1195,13 @@ namespace OpenLoco::Ui::Windows::Construction
             Windows::Main::showGridlines();
         }
 
-        // 0x004723BD
-        static void sortList(uint8_t* list)
-        {
-            size_t count = 0;
-            while (list[count] != 0xFF)
-            {
-                count++;
-            }
-            while (count > 1)
-            {
-                for (size_t i = 1; i < count; i++)
-                {
-                    uint8_t item1 = list[i];
-                    uint8_t item2 = list[i - 1];
-                    if (item2 > item1)
-                    {
-                        list[i - 1] = item1;
-                        list[i] = item2;
-                    }
-                }
-                count--;
-            }
-        }
-
-        // 0x0048D70C
-        void refreshAirportList(uint8_t* stationList)
-        {
-            auto currentYear = getCurrentYear();
-            auto airportCount = 0;
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::airport); i++)
-            {
-                auto airportObj = ObjectManager::get<AirportObject>(i);
-                if (airportObj == nullptr)
-                {
-                    continue;
-                }
-                if (currentYear < airportObj->designedYear)
-                {
-                    continue;
-                }
-                if (currentYear > airportObj->obsoleteYear)
-                {
-                    continue;
-                }
-                stationList[airportCount] = i;
-                airportCount++;
-            }
-            stationList[airportCount] = 0xFF;
-
-            sortList(stationList);
-        }
-
-        // 0x0048D753
-        void refreshDockList(uint8_t* stationList)
-        {
-            auto currentYear = getCurrentYear();
-            auto dockCount = 0;
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::dock); i++)
-            {
-                auto dockObj = ObjectManager::get<DockObject>(i);
-                if (dockObj == nullptr)
-                {
-                    continue;
-                }
-                if (currentYear < dockObj->designedYear)
-                {
-                    continue;
-                }
-                if (currentYear > dockObj->obsoleteYear)
-                {
-                    continue;
-                }
-                stationList[dockCount] = i;
-                dockCount++;
-            }
-            stationList[dockCount] = 0xFF;
-
-            sortList(stationList);
-        }
-
-        // 0x0048D678, 0x0048D5E4
-        void refreshStationList(uint8_t* stationList, uint8_t trackType, TransportMode transportMode)
-        {
-            auto currentYear = getCurrentYear();
-            auto stationCount = 0;
-
-            if (transportMode == TransportMode::road)
-            {
-                trackType &= ~(1 << 7);
-                auto roadObj = ObjectManager::get<RoadObject>(trackType);
-
-                for (auto i = 0; i < roadObj->numStations; i++)
-                {
-                    auto station = roadObj->stations[i];
-                    if (station == 0xFF)
-                    {
-                        continue;
-                    }
-                    auto roadStationObj = ObjectManager::get<RoadStationObject>(station);
-                    if (currentYear < roadStationObj->designedYear)
-                    {
-                        continue;
-                    }
-                    if (currentYear > roadStationObj->obsoleteYear)
-                    {
-                        continue;
-                    }
-                    stationList[stationCount] = station;
-                    stationCount++;
-                }
-            }
-
-            if (transportMode == TransportMode::rail)
-            {
-                auto trackObj = ObjectManager::get<TrackObject>(trackType);
-
-                for (auto i = 0; i < trackObj->numStations; i++)
-                {
-                    auto station = trackObj->stations[i];
-                    if (station == 0xFF)
-                    {
-                        continue;
-                    }
-                    auto trainStationObj = ObjectManager::get<TrainStationObject>(station);
-                    if (currentYear < trainStationObj->designedYear)
-                    {
-                        continue;
-                    }
-                    if (currentYear > trainStationObj->obsoleteYear)
-                    {
-                        continue;
-                    }
-                    stationList[stationCount] = station;
-                    stationCount++;
-                }
-            }
-
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::roadStation); i++)
-            {
-                uint8_t numCompatible;
-                const uint8_t* mods;
-                uint16_t designedYear;
-                uint16_t obsoleteYear;
-
-                if (transportMode == TransportMode::road)
-                {
-                    const auto* roadStationObj = ObjectManager::get<RoadStationObject>(i);
-
-                    if (roadStationObj == nullptr)
-                    {
-                        continue;
-                    }
-
-                    numCompatible = roadStationObj->numCompatible;
-                    mods = roadStationObj->mods;
-                    designedYear = roadStationObj->designedYear;
-                    obsoleteYear = roadStationObj->obsoleteYear;
-                }
-                else if (transportMode == TransportMode::rail)
-                {
-                    auto trainStationObj = ObjectManager::get<TrainStationObject>(i);
-
-                    if (trainStationObj == nullptr)
-                    {
-                        continue;
-                    }
-
-                    numCompatible = trainStationObj->numCompatible;
-                    mods = trainStationObj->mods;
-                    designedYear = trainStationObj->designedYear;
-                    obsoleteYear = trainStationObj->obsoleteYear;
-                }
-                else
-                {
-                    return;
-                }
-
-                for (auto modCount = 0; modCount < numCompatible; modCount++)
-                {
-                    if (trackType != mods[modCount])
-                    {
-                        continue;
-                    }
-                    if (currentYear < designedYear)
-                    {
-                        continue;
-                    }
-                    if (currentYear > obsoleteYear)
-                    {
-                        continue;
-                    }
-                    for (size_t k = 0; k < std::size(_cState->stationList); k++)
-                    {
-                        if (&stationList[k] == &stationList[stationCount])
-                        {
-                            stationList[stationCount] = i;
-                            stationCount++;
-                            break;
-                        }
-                        if (i == stationList[k])
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            stationList[stationCount] = 0xFF;
-
-            sortList(stationList);
-        }
-
-        // 0x0042C518, 0x0042C490
-        void refreshBridgeList(uint8_t* bridgeList, uint8_t trackType, TransportMode transportMode)
-        {
-            auto currentYear = getCurrentYear();
-            auto bridgeCount = 0;
-
-            if (transportMode == TransportMode::road)
-            {
-                trackType &= ~(1 << 7);
-                auto roadObj = ObjectManager::get<RoadObject>(trackType);
-                for (auto i = 0; i < roadObj->numBridges; i++)
-                {
-                    auto bridge = roadObj->bridges[i];
-                    if (bridge == 0xFF)
-                    {
-                        continue;
-                    }
-                    auto bridgeObj = ObjectManager::get<BridgeObject>(bridge);
-                    if (currentYear < bridgeObj->designedYear)
-                    {
-                        continue;
-                    }
-                    bridgeList[bridgeCount] = bridge;
-                    bridgeCount++;
-                }
-            }
-
-            if (transportMode == TransportMode::rail)
-            {
-                auto trackObj = ObjectManager::get<TrackObject>(trackType);
-                for (auto i = 0; i < trackObj->numBridges; i++)
-                {
-                    auto bridge = trackObj->bridges[i];
-                    if (bridge == 0xFF)
-                    {
-                        continue;
-                    }
-                    auto bridgeObj = ObjectManager::get<BridgeObject>(bridge);
-                    if (currentYear < bridgeObj->designedYear)
-                    {
-                        continue;
-                    }
-                    bridgeList[bridgeCount] = bridge;
-                    bridgeCount++;
-                }
-            }
-
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::bridge); i++)
-            {
-                auto bridgeObj = ObjectManager::get<BridgeObject>(i);
-                if (bridgeObj == nullptr)
-                {
-                    continue;
-                }
-
-                uint8_t numCompatible;
-                const uint8_t* mods;
-
-                if (transportMode == TransportMode::road)
-                {
-                    numCompatible = bridgeObj->roadNumCompatible;
-                    mods = bridgeObj->roadMods;
-                }
-                else if (transportMode == TransportMode::rail)
-                {
-                    numCompatible = bridgeObj->trackNumCompatible;
-                    mods = bridgeObj->trackMods;
-                }
-                else
-                {
-                    return;
-                }
-
-                for (auto modCount = 0; modCount < numCompatible; modCount++)
-                {
-                    if (trackType != mods[modCount])
-                    {
-                        continue;
-                    }
-                    if (currentYear < bridgeObj->designedYear)
-                    {
-                        continue;
-                    }
-                    for (size_t k = 0; k < std::size(_cState->bridgeList); k++)
-                    {
-                        if (&bridgeList[k] == &bridgeList[bridgeCount])
-                        {
-                            bridgeList[bridgeCount] = i;
-                            bridgeCount++;
-                            break;
-                        }
-                        if (i == bridgeList[k])
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            bridgeList[bridgeCount] = 0xFF;
-
-            sortList(bridgeList);
-        }
-
-        // 0x004781C5, 0x004A693D
-        void refreshModList(uint8_t* modList, uint8_t trackType, TransportMode transportMode)
-        {
-            if (transportMode == TransportMode::road)
-            {
-                trackType &= ~(1 << 7);
-            }
-
-            auto companyId = GameCommands::getUpdatingCompanyId();
-
-            modList[0] = 0xFF;
-            modList[1] = 0xFF;
-            modList[2] = 0xFF;
-            modList[3] = 0xFF;
-            auto flags = 0;
-
-            for (uint8_t vehicle = 0; vehicle < ObjectManager::getMaxObjects(ObjectType::vehicle); vehicle++)
-            {
-                auto vehicleObj = ObjectManager::get<VehicleObject>(vehicle);
-
-                if (vehicleObj == nullptr)
-                {
-                    continue;
-                }
-
-                if (vehicleObj->mode != transportMode)
-                {
-                    continue;
-                }
-
-                if (trackType != vehicleObj->trackType)
-                {
-                    continue;
-                }
-
-                auto company = CompanyManager::get(companyId);
-
-                if (!company->isVehicleIndexUnlocked(vehicle))
-                {
-                    continue;
-                }
-
-                for (auto i = 0; i < vehicleObj->numTrackExtras; i++)
-                {
-                    flags |= 1ULL << vehicleObj->requiredTrackExtras[i];
-                }
-
-                if (!vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
-                {
-                    continue;
-                }
-
-                flags |= 1ULL << vehicleObj->rackRailType;
-            }
-
-            if (transportMode == TransportMode::road)
-            {
-                auto roadObj = ObjectManager::get<RoadObject>(trackType);
-
-                for (auto i = 0; i < roadObj->numMods; i++)
-                {
-                    if (flags & (1 << roadObj->mods[i]))
-                    {
-                        modList[i] = roadObj->mods[i];
-                    }
-                }
-            }
-
-            if (transportMode == TransportMode::rail)
-            {
-                auto trackObj = ObjectManager::get<TrackObject>(trackType);
-
-                for (auto i = 0; i < trackObj->numMods; i++)
-                {
-                    if (flags & (1 << trackObj->mods[i]))
-                    {
-                        modList[i] = trackObj->mods[i];
-                    }
-                }
-            }
-        }
-
         // 0x004A3A50
         void sub_4A3A50()
         {
             removeConstructionGhosts();
             setTrackOptions(_cState->trackType);
-            refreshStationList(_cState->stationList, _cState->trackType, TransportMode::road);
+            const auto stationList = getAvailableCompatibleStations(_cState->trackType, TransportMode::road);
+            copyToLegacyList(stationList, _cState->stationList);
 
             auto lastStation = Scenario::getConstruction().roadStations[(_cState->trackType & ~(1ULL << 7))];
             if (lastStation == 0xFF)
@@ -1590,7 +1210,8 @@ namespace OpenLoco::Ui::Windows::Construction
             }
             _cState->lastSelectedStationType = lastStation;
 
-            refreshBridgeList(_cState->bridgeList, _cState->trackType, TransportMode::road);
+            const auto bridgeList = getAvailableCompatibleBridges(_cState->trackType, TransportMode::road);
+            copyToLegacyList(bridgeList, _cState->bridgeList);
 
             auto lastBridge = Scenario::getConstruction().bridges[(_cState->trackType & ~(1ULL << 7))];
             if (lastBridge == 0xFF)
@@ -1599,7 +1220,8 @@ namespace OpenLoco::Ui::Windows::Construction
             }
             _cState->lastSelectedBridge = lastBridge;
 
-            refreshModList(_cState->modList, _cState->trackType, TransportMode::road);
+            const auto modList = getAvailableCompatibleMods(_cState->trackType, TransportMode::road, GameCommands::getUpdatingCompanyId());
+            std::copy(modList.begin(), modList.end(), std::begin(_cState->modList));
 
             auto lastMod = Scenario::getConstruction().roadMods[(_cState->trackType & ~(1ULL << 7))];
             if (lastMod == 0xFF)
@@ -1615,77 +1237,6 @@ namespace OpenLoco::Ui::Windows::Construction
                 setDisabledWidgets(window);
             }
             Construction::activateSelectedConstructionWidgets();
-        }
-
-        // 0x00488B4D
-        void refreshSignalList(uint8_t* signalList, uint8_t trackType)
-        {
-            auto currentYear = getCurrentYear();
-            auto trackObj = ObjectManager::get<TrackObject>(trackType);
-            auto signalCount = 0;
-            auto signals = trackObj->signals;
-            while (signals > 0)
-            {
-                const auto signalId = Numerics::bitScanForward(signals);
-                if (signalId == -1)
-                {
-                    break;
-                }
-                signals &= ~(1 << signalId);
-                auto signalObj = ObjectManager::get<TrainSignalObject>(signalId);
-
-                if (currentYear > signalObj->obsoleteYear)
-                {
-                    continue;
-                }
-                if (currentYear < signalObj->designedYear)
-                {
-                    continue;
-                }
-                signalList[signalCount] = signalId;
-                signalCount++;
-            }
-
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::trackSignal); i++)
-            {
-                auto signalObj = ObjectManager::get<TrainSignalObject>(i);
-                if (signalObj == nullptr)
-                {
-                    continue;
-                }
-                for (auto modCount = 0; modCount < signalObj->numCompatible; modCount++)
-                {
-                    if (trackType != ObjectManager::get<TrainSignalObject>(i)->mods[modCount])
-                    {
-                        continue;
-                    }
-                    if (currentYear < signalObj->designedYear)
-                    {
-                        continue;
-                    }
-                    if (currentYear > signalObj->obsoleteYear)
-                    {
-                        continue;
-                    }
-                    for (size_t k = 0; k < std::size(_cState->signalList); k++)
-                    {
-                        if (&signalList[k] == &signalList[signalCount])
-                        {
-                            signalList[signalCount] = i;
-                            signalCount++;
-                            break;
-                        }
-                        if (i == signalList[k])
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            signalList[signalCount] = 0xFF;
-
-            sortList(signalList);
         }
 
         void previousTab(Window* self)

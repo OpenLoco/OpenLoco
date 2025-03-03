@@ -47,6 +47,7 @@
 #include "Objects/CompetitorObject.h"
 #include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/ObjectUtils.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
@@ -59,7 +60,6 @@
 #include "Station.h"
 #include "StationManager.h"
 #include "TownManager.h"
-#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -817,16 +817,11 @@ namespace OpenLoco
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
-            std::array<uint8_t, 17> airports{};
-            Ui::Windows::Construction::Common::refreshAirportList(airports.data());
+            const auto airports = getAvailableAirports();
             int16_t bestDesignYear = -1;
 
             for (const auto airportObjId : airports)
             {
-                if (airportObjId == 0xFFU)
-                {
-                    break;
-                }
                 auto* airportObj = ObjectManager::get<AirportObject>(airportObjId);
                 if (airportObj->hasFlags(AirportObjectFlags::acceptsHeavyPlanes | AirportObjectFlags::acceptsLightPlanes))
                 {
@@ -847,16 +842,11 @@ namespace OpenLoco
         }
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
         {
-            std::array<uint8_t, 17> docks{};
-            Ui::Windows::Construction::Common::refreshDockList(docks.data());
+            const auto docks = getAvailableDocks();
             int16_t bestDesignYear = -1;
 
             for (const auto dockObjId : docks)
             {
-                if (dockObjId == 0xFFU)
-                {
-                    break;
-                }
                 auto* dockObj = ObjectManager::get<DockObject>(dockObjId);
 
                 if (bestDesignYear < dockObj->designedYear)
@@ -875,16 +865,11 @@ namespace OpenLoco
         }
         else if (thought.trackObjId & (1U << 7))
         {
-            std::array<uint8_t, 17> roadStations{};
-            Ui::Windows::Construction::Common::refreshStationList(roadStations.data(), thought.trackObjId & ~(1U << 7), TransportMode::road);
+            auto roadStations = getAvailableCompatibleStations(thought.trackObjId & ~(1U << 7), TransportMode::road);
             int16_t bestDesignYear = -1;
             bool hadIdealSelection = false;
             for (const auto roadStationObjId : roadStations)
             {
-                if (roadStationObjId == 0xFFU)
-                {
-                    break;
-                }
                 auto* roadStationObj = ObjectManager::get<RoadStationObject>(roadStationObjId);
                 if (roadStationObj->hasFlags(RoadStationFlags::passenger)
                     && roadStationObj->cargoType != thought.cargoType)
@@ -932,15 +917,10 @@ namespace OpenLoco
         }
         else
         {
-            std::array<uint8_t, 17> trainStations{};
-            Ui::Windows::Construction::Common::refreshStationList(trainStations.data(), thought.trackObjId, TransportMode::rail);
+            const auto trainStations = getAvailableCompatibleStations(thought.trackObjId, TransportMode::rail);
             int16_t bestDesignYear = -1;
             for (const auto trainStationObjId : trainStations)
             {
-                if (trainStationObjId == 0xFFU)
-                {
-                    break;
-                }
                 auto* trainStationObj = ObjectManager::get<TrainStationObject>(trainStationObjId);
 
                 if (bestDesignYear < trainStationObj->designedYear)
@@ -956,17 +936,12 @@ namespace OpenLoco
             }
             thought.stationObjId = chosenStationObject;
 
-            std::array<uint8_t, 17> signals{};
-            Ui::Windows::Construction::Common::refreshSignalList(signals.data(), thought.trackObjId);
+            const auto signals = getAvailableCompatibleSignals(thought.trackObjId);
             bestDesignYear = -1;
             uint8_t chosenSignal = 0xFFU;
 
             for (const auto signalObjId : signals)
             {
-                if (signalObjId == 0xFFU)
-                {
-                    break;
-                }
                 auto* signalObj = ObjectManager::get<TrainSignalObject>(signalObjId);
 
                 if (bestDesignYear < signalObj->designedYear)
@@ -1466,15 +1441,15 @@ namespace OpenLoco
             return 0;
         }
 
-        std::array<uint8_t, 9> bridges{};
+        sfl::static_vector<uint8_t, 8> bridges{};
         if (thought.trackObjId & (1U << 7))
         {
             const uint8_t roadObjId = thought.trackObjId & ~(1U << 7);
-            Ui::Windows::Construction::Common::refreshBridgeList(bridges.data(), roadObjId, TransportMode::road);
+            bridges = getAvailableCompatibleBridges(roadObjId, TransportMode::road);
         }
         else
         {
-            Ui::Windows::Construction::Common::refreshBridgeList(bridges.data(), thought.trackObjId, TransportMode::rail);
+            bridges = getAvailableCompatibleBridges(thought.trackObjId, TransportMode::rail);
         }
 
         const auto chosenBridge = [&bridges, &bridgeFilter]() {
@@ -1482,10 +1457,6 @@ namespace OpenLoco
             uint8_t bestBridge = 0xFFU;
             for (auto bridgeObjId : bridges)
             {
-                if (bridgeObjId == 0xFFU)
-                {
-                    break;
-                }
                 auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeObjId);
                 if (!bridgeFilter(*bridgeObj))
                 {
