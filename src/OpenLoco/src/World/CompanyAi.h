@@ -64,7 +64,7 @@ namespace OpenLoco
         unk0 = 1U << 0,
         unk1 = 1U << 1,
         unk2 = 1U << 2,
-        unk3 = 1U << 3,
+        requiresMods = 1U << 3, // can be track or road mods
         unk4 = 1U << 4,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(AiPurchaseFlags);
@@ -109,14 +109,14 @@ namespace OpenLoco
         EntityId vehicles[8]; // 0x66 0x50E see also numVehicles for current size
         currency32_t var_76;  // 0x51E
         uint8_t pad_7A[0x7C - 0x7A];
-        currency32_t var_7C;    // 0x524
-        currency32_t var_80;    // 0x528
-        currency32_t var_84;    // 0x52C
-        uint8_t var_88;         // 0x530
-        uint8_t stationObjId;   // 0x531 Could be either Airport/Dock/TrainStation/RoadStation
-        uint8_t signalObjId;    // 0x532 Can be 0xFFU for n
-        AiPurchaseFlags var_8B; // 0x533
-        constexpr bool hasPurchaseFlags(AiPurchaseFlags flags) const { return (var_8B & flags) != AiPurchaseFlags::none; }
+        currency32_t var_7C;           // 0x524
+        currency32_t var_80;           // 0x528
+        currency32_t var_84;           // 0x52C
+        uint8_t var_88;                // 0x530
+        uint8_t stationObjId;          // 0x89 0x531 Could be either Airport/Dock/TrainStation/RoadStation
+        uint8_t signalObjId;           // 0x8A 0x532 Can be 0xFFU for n
+        AiPurchaseFlags purchaseFlags; // 0x8B 0x533
+        constexpr bool hasPurchaseFlags(AiPurchaseFlags flags) const { return (purchaseFlags & flags) != AiPurchaseFlags::none; }
     };
 #pragma pack(pop)
     static_assert(sizeof(AiThought) == 0x8C);
