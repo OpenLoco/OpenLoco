@@ -85,11 +85,11 @@ namespace OpenLoco
     {
         none = 0U,
 
-        unk0 = 1U << 0,
+        singleDestination = 1U << 0, // I.e. could be all based in one town
         destinationAIsIndustry = 1U << 1,
         destinationBIsIndustry = 1U << 2,
         railBased = 1U << 3,
-        unk4 = 1U << 4,
+        tramBased = 1U << 4,
         roadBased = 1U << 5, // But not tram
         unk6 = 1U << 6,      // Circular track - 4 stations
         unk7 = 1U << 7,
@@ -108,12 +108,12 @@ namespace OpenLoco
 
     // 0x004FE720
     static constexpr std::array<ThoughtTypeFlags, kAiThoughtTypeCount> kThoughtTypeFlags = {
-        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::railBased | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk11,
-        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk14,
-        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk14,
+        ThoughtTypeFlags::singleDestination | ThoughtTypeFlags::railBased | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::singleDestination | ThoughtTypeFlags::tramBased | ThoughtTypeFlags::unk14,
+        ThoughtTypeFlags::singleDestination | ThoughtTypeFlags::tramBased | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk14,
         ThoughtTypeFlags::railBased | ThoughtTypeFlags::unk11,
         ThoughtTypeFlags::railBased | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
-        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::roadBased | ThoughtTypeFlags::unk10 | ThoughtTypeFlags::unk12,
+        ThoughtTypeFlags::singleDestination | ThoughtTypeFlags::roadBased | ThoughtTypeFlags::unk10 | ThoughtTypeFlags::unk12,
         ThoughtTypeFlags::roadBased | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk12,
         ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::destinationBIsIndustry | ThoughtTypeFlags::railBased | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11,
         ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::destinationBIsIndustry | ThoughtTypeFlags::railBased | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
@@ -660,13 +660,13 @@ namespace OpenLoco
                     continue;
                 }
                 auto compatibleThought = [&otherThought, &thought]() {
-                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk0))
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::singleDestination) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
                     {
                         return false;
                     }
                     if (otherThought.destinationA == thought.destinationA)
                     {
-                        if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) || otherThought.destinationB == thought.destinationB)
+                        if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::singleDestination) || otherThought.destinationB == thought.destinationB)
                         {
                             if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationAIsIndustry) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry)
                                 && thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationBIsIndustry) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry))
@@ -675,7 +675,7 @@ namespace OpenLoco
                             }
                         }
                     }
-                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0))
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::singleDestination))
                     {
                         return false;
                     }
@@ -791,7 +791,7 @@ namespace OpenLoco
             const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
             destPos.posA = { town->x, town->y };
         }
-        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk0))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
         {
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry))
             {
@@ -920,7 +920,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if (!roadObj->hasFlags(unk_07 | isRoad | unk_03 | unk_00))
+            if (roadObj->hasFlags(unk_07 | isRoad | unk_03 | unk_00))
             {
                 continue;
             }
@@ -1184,7 +1184,7 @@ namespace OpenLoco
         }
         else
         {
-            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk4 | ThoughtTypeFlags::roadBased))
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::tramBased | ThoughtTypeFlags::roadBased))
             {
                 costMultiplier *= thought.var_04;
             }
