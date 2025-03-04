@@ -655,6 +655,173 @@ namespace OpenLoco
         return quantity;
     }
 
+    // 0x00480096
+    static bool determineStationAndTrackModTypes(AiThought& thought)
+    {
+        uint16_t mods = 0;
+        uint8_t rackRail = 0xFFU;
+        for (auto i = 0U; i < thought.var_45; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
+            for (auto j = 0U; j < vehicleObj->numTrackExtras; ++j)
+            {
+                mods |= (1U << vehicleObj->requiredTrackExtras[j]);
+            }
+
+            if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+            {
+                if (thought.var_8B & (1U << 0))
+                {
+                    rackRail = vehicleObj->rackRailType;
+                }
+            }
+        }
+        thought.mods = mods;
+        thought.rackRailType = rackRail;
+
+        uint8_t chosenStationObject = 0xFFU;
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            const auto airports = getAvailableAirports();
+            int16_t bestDesignYear = -1;
+
+            for (const auto airportObjId : airports)
+            {
+                auto* airportObj = ObjectManager::get<AirportObject>(airportObjId);
+                if (airportObj->hasFlags(AirportObjectFlags::acceptsHeavyPlanes | AirportObjectFlags::acceptsLightPlanes))
+                {
+                    if (bestDesignYear < airportObj->designedYear)
+                    {
+                        bestDesignYear = airportObj->designedYear;
+                        chosenStationObject = airportObjId;
+                    }
+                }
+            }
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+            thought.signalObjId = 0xFFU;
+            return false;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            const auto docks = getAvailableDocks();
+            int16_t bestDesignYear = -1;
+
+            for (const auto dockObjId : docks)
+            {
+                auto* dockObj = ObjectManager::get<DockObject>(dockObjId);
+
+                if (bestDesignYear < dockObj->designedYear)
+                {
+                    bestDesignYear = dockObj->designedYear;
+                    chosenStationObject = dockObjId;
+                }
+            }
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+            thought.signalObjId = 0xFFU;
+            return false;
+        }
+        else if (thought.trackObjId & (1U << 7))
+        {
+            auto roadStations = getAvailableCompatibleStations(thought.trackObjId & ~(1U << 7), TransportMode::road);
+            int16_t bestDesignYear = -1;
+            bool hadIdealSelection = false;
+            for (const auto roadStationObjId : roadStations)
+            {
+                auto* roadStationObj = ObjectManager::get<RoadStationObject>(roadStationObjId);
+                if (roadStationObj->hasFlags(RoadStationFlags::passenger)
+                    && roadStationObj->cargoType != thought.cargoType)
+                {
+                    continue;
+                }
+                if (roadStationObj->hasFlags(RoadStationFlags::freight)
+                    && roadStationObj->cargoType == thought.cargoType) // Why??
+                {
+                    continue;
+                }
+
+                bool hasRequiredRoadEnd = roadStationObj->hasFlags(RoadStationFlags::roadEnd) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk8);
+
+                // If we have previously used a fallback we want to remove the fallback and use
+                // the ideal selection
+                bool alwaysSelect = hasRequiredRoadEnd && !hadIdealSelection;
+
+                // We have now entered ideal selection mode so can remove non-ideal stations
+                // from potential selection
+                if (hadIdealSelection && !hasRequiredRoadEnd)
+                {
+                    continue;
+                }
+                hadIdealSelection |= hasRequiredRoadEnd;
+
+                if (!alwaysSelect)
+                {
+                    if (bestDesignYear >= roadStationObj->designedYear)
+                    {
+                        continue;
+                    }
+                }
+                bestDesignYear = roadStationObj->designedYear;
+                chosenStationObject = roadStationObjId;
+            }
+
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+            thought.signalObjId = 0xFFU;
+            return false;
+        }
+        else
+        {
+            const auto trainStations = getAvailableCompatibleStations(thought.trackObjId, TransportMode::rail);
+            int16_t bestDesignYear = -1;
+            for (const auto trainStationObjId : trainStations)
+            {
+                auto* trainStationObj = ObjectManager::get<TrainStationObject>(trainStationObjId);
+
+                if (bestDesignYear < trainStationObj->designedYear)
+                {
+                    bestDesignYear = trainStationObj->designedYear;
+                    chosenStationObject = trainStationObjId;
+                }
+            }
+
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+
+            const auto signals = getAvailableCompatibleSignals(thought.trackObjId);
+            bestDesignYear = -1;
+            uint8_t chosenSignal = 0xFFU;
+
+            for (const auto signalObjId : signals)
+            {
+                auto* signalObj = ObjectManager::get<TrainSignalObject>(signalObjId);
+
+                if (bestDesignYear < signalObj->designedYear)
+                {
+                    bestDesignYear = signalObj->designedYear;
+                    chosenSignal = signalObjId;
+                }
+            }
+
+            thought.signalObjId = chosenSignal;
+            return false;
+        }
+    }
+
     // 0x00488050
     static bool sub_488050(const Company& company, AiThought& thought)
     {
@@ -691,7 +858,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (getUntransportedQuantity(thought) <= 32)
+        if (getUntransportedQuantity(thought) <= 50)
         {
             return false;
         }
@@ -703,6 +870,61 @@ namespace OpenLoco
         thought.var_43 = thought.numVehicles + 1;
         thought.var_45 = purchaseRequest.eax;
         thought.var_8B &= ~(1U << 2);
+        if (determineStationAndTrackModTypes(thought))
+        {
+            return false;
+        }
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+        uint16_t existingMods = 0xFFFFU;
+        auto tile = World::TileManager::get(thought.stations[0].pos);
+        for (const auto& el : tile)
+        {
+            if (el.baseZ() != thought.stations[0].baseZ)
+            {
+                continue;
+            }
+            auto* elTrack = el.as<World::TrackElement>();
+            if (elTrack != nullptr)
+            {
+                existingMods = 0U;
+                auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
+                for (auto i = 0U; i < 4; ++i)
+                {
+                    if (elTrack->hasMod(i))
+                    {
+                        existingMods |= 1U << trackObj->mods[i];
+                    }
+                }
+                break;
+            }
+            auto* elRoad = el.as<World::RoadElement>();
+            if (elRoad != nullptr)
+            {
+                existingMods = 0U;
+                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                for (auto i = 0U; i < 2; ++i)
+                {
+                    if (elRoad->hasMod(i))
+                    {
+                        existingMods |= 1U << roadObj->mods[i];
+                    }
+                }
+                break;
+            }
+        }
+        if (existingMods == 0xFFFFU)
+        {
+            return false;
+        }
+        if (thought.mods != existingMods)
+        {
+            thought.mods |= existingMods;
+            thought.var_8B |= (1U << 3);
+        }
+        return true;
     }
 
     // 0x00430971
@@ -1110,173 +1332,6 @@ namespace OpenLoco
         registers regs;
         regs.esi = X86Pointer(&company);
         call(0x00430C2D, regs);
-    }
-
-    // 0x00480096
-    static bool determineStationAndTrackModTypes(AiThought& thought)
-    {
-        uint16_t mods = 0;
-        uint8_t rackRail = 0xFFU;
-        for (auto i = 0U; i < thought.var_45; ++i)
-        {
-            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
-            for (auto j = 0U; j < vehicleObj->numTrackExtras; ++j)
-            {
-                mods |= (1U << vehicleObj->requiredTrackExtras[j]);
-            }
-
-            if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
-            {
-                if (thought.var_8B & (1U << 0))
-                {
-                    rackRail = vehicleObj->rackRailType;
-                }
-            }
-        }
-        thought.mods = mods;
-        thought.rackRailType = rackRail;
-
-        uint8_t chosenStationObject = 0xFFU;
-
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
-        {
-            const auto airports = getAvailableAirports();
-            int16_t bestDesignYear = -1;
-
-            for (const auto airportObjId : airports)
-            {
-                auto* airportObj = ObjectManager::get<AirportObject>(airportObjId);
-                if (airportObj->hasFlags(AirportObjectFlags::acceptsHeavyPlanes | AirportObjectFlags::acceptsLightPlanes))
-                {
-                    if (bestDesignYear < airportObj->designedYear)
-                    {
-                        bestDesignYear = airportObj->designedYear;
-                        chosenStationObject = airportObjId;
-                    }
-                }
-            }
-            if (bestDesignYear == -1)
-            {
-                return true;
-            }
-            thought.stationObjId = chosenStationObject;
-            thought.signalObjId = 0xFFU;
-            return false;
-        }
-        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
-        {
-            const auto docks = getAvailableDocks();
-            int16_t bestDesignYear = -1;
-
-            for (const auto dockObjId : docks)
-            {
-                auto* dockObj = ObjectManager::get<DockObject>(dockObjId);
-
-                if (bestDesignYear < dockObj->designedYear)
-                {
-                    bestDesignYear = dockObj->designedYear;
-                    chosenStationObject = dockObjId;
-                }
-            }
-            if (bestDesignYear == -1)
-            {
-                return true;
-            }
-            thought.stationObjId = chosenStationObject;
-            thought.signalObjId = 0xFFU;
-            return false;
-        }
-        else if (thought.trackObjId & (1U << 7))
-        {
-            auto roadStations = getAvailableCompatibleStations(thought.trackObjId & ~(1U << 7), TransportMode::road);
-            int16_t bestDesignYear = -1;
-            bool hadIdealSelection = false;
-            for (const auto roadStationObjId : roadStations)
-            {
-                auto* roadStationObj = ObjectManager::get<RoadStationObject>(roadStationObjId);
-                if (roadStationObj->hasFlags(RoadStationFlags::passenger)
-                    && roadStationObj->cargoType != thought.cargoType)
-                {
-                    continue;
-                }
-                if (roadStationObj->hasFlags(RoadStationFlags::freight)
-                    && roadStationObj->cargoType == thought.cargoType) // Why??
-                {
-                    continue;
-                }
-
-                bool hasRequiredRoadEnd = roadStationObj->hasFlags(RoadStationFlags::roadEnd) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk8);
-
-                // If we have previously used a fallback we want to remove the fallback and use
-                // the ideal selection
-                bool alwaysSelect = hasRequiredRoadEnd && !hadIdealSelection;
-
-                // We have now entered ideal selection mode so can remove non-ideal stations
-                // from potential selection
-                if (hadIdealSelection && !hasRequiredRoadEnd)
-                {
-                    continue;
-                }
-                hadIdealSelection |= hasRequiredRoadEnd;
-
-                if (!alwaysSelect)
-                {
-                    if (bestDesignYear >= roadStationObj->designedYear)
-                    {
-                        continue;
-                    }
-                }
-                bestDesignYear = roadStationObj->designedYear;
-                chosenStationObject = roadStationObjId;
-            }
-
-            if (bestDesignYear == -1)
-            {
-                return true;
-            }
-            thought.stationObjId = chosenStationObject;
-            thought.signalObjId = 0xFFU;
-            return false;
-        }
-        else
-        {
-            const auto trainStations = getAvailableCompatibleStations(thought.trackObjId, TransportMode::rail);
-            int16_t bestDesignYear = -1;
-            for (const auto trainStationObjId : trainStations)
-            {
-                auto* trainStationObj = ObjectManager::get<TrainStationObject>(trainStationObjId);
-
-                if (bestDesignYear < trainStationObj->designedYear)
-                {
-                    bestDesignYear = trainStationObj->designedYear;
-                    chosenStationObject = trainStationObjId;
-                }
-            }
-
-            if (bestDesignYear == -1)
-            {
-                return true;
-            }
-            thought.stationObjId = chosenStationObject;
-
-            const auto signals = getAvailableCompatibleSignals(thought.trackObjId);
-            bestDesignYear = -1;
-            uint8_t chosenSignal = 0xFFU;
-
-            for (const auto signalObjId : signals)
-            {
-                auto* signalObj = ObjectManager::get<TrainSignalObject>(signalObjId);
-
-                if (bestDesignYear < signalObj->designedYear)
-                {
-                    bestDesignYear = signalObj->designedYear;
-                    chosenSignal = signalObjId;
-                }
-            }
-
-            thought.signalObjId = chosenSignal;
-            return false;
-        }
     }
 
     // 0x00430C73
