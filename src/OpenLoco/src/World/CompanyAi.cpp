@@ -28,6 +28,7 @@
 #include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
+#include "GameState.h"
 #include "Industry.h"
 #include "IndustryManager.h"
 #include "Map/BuildingElement.h"
@@ -840,8 +841,94 @@ namespace OpenLoco
                 const auto reliability = car.front->reliability;
                 if (vehicleObj->power != 0 && (getCurrentYear() >= vehicleObj->obsolete || (reliability != 0 && reliability < 0x1900)))
                 {
-                    // 0x0048817D
-                    // return ...;
+                    const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+                    if (purchaseRequest.numVehicleObjects == 0)
+                    {
+                        return false;
+                    }
+                    thought.var_43 = purchaseRequest.dl;
+                    thought.var_45 = purchaseRequest.numVehicleObjects;
+                    thought.var_8B &= ~(1U << 2);
+                    if (determineStationAndTrackModTypes(thought))
+                    {
+                        return false;
+                    }
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+                    {
+                        return true;
+                    }
+                    uint16_t existingMods = 0xFFFFU;
+                    auto tile = World::TileManager::get(thought.stations[0].pos);
+                    for (const auto& el : tile)
+                    {
+                        if (el.baseZ() != thought.stations[0].baseZ)
+                        {
+                            continue;
+                        }
+                        auto* elTrack = el.as<World::TrackElement>();
+                        if (elTrack != nullptr)
+                        {
+                            existingMods = 0U;
+                            auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
+                            for (auto i = 0U; i < 4; ++i)
+                            {
+                                if (elTrack->hasMod(i))
+                                {
+                                    existingMods |= 1U << trackObj->mods[i];
+                                }
+                            }
+                            break;
+                        }
+                        auto* elRoad = el.as<World::RoadElement>();
+                        if (elRoad != nullptr)
+                        {
+                            const bool targetIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << (thought.trackObjId & ~(1U << 7)));
+                            const bool elIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId());
+                            if (targetIsNotTram)
+                            {
+                                if (!elIsNotTram)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (elIsNotTram)
+                                {
+                                    continue;
+                                }
+                                if (thought.trackObjId != elRoad->roadObjectId())
+                                {
+                                    continue;
+                                }
+                            }
+                            {
+                                existingMods = 0U;
+                            }
+                            auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                            if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                            {
+                                for (auto i = 0U; i < 2; ++i)
+                                {
+                                    if (elRoad->hasMod(i))
+                                    {
+                                        existingMods |= 1U << roadObj->mods[i];
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    if (existingMods == 0xFFFFU)
+                    {
+                        return false;
+                    }
+                    if (thought.mods != existingMods)
+                    {
+                        thought.mods |= existingMods;
+                        thought.var_8B |= (1U << 3);
+                    }
+                    return true;
                 }
             }
         }
@@ -862,14 +949,14 @@ namespace OpenLoco
         {
             return false;
         }
-        // this code from here matches 0x0048817D
+
         const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
         if (purchaseRequest.numVehicleObjects == 0)
         {
             return false;
         }
         thought.var_43 = thought.numVehicles + 1;
-        thought.var_45 = purchaseRequest.eax;
+        thought.var_45 = purchaseRequest.numVehicleObjects;
         thought.var_8B &= ~(1U << 2);
         if (determineStationAndTrackModTypes(thought))
         {
@@ -1330,9 +1417,19 @@ namespace OpenLoco
     // 0x00430C2D
     static void sub_430C2D(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430C2D, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        const auto request = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+        if (request.numVehicleObjects == 0)
+        {
+            state2ClearActiveThought(company);
+            return;
+        }
+        thought.var_45 = request.numVehicleObjects;
+        thought.var_43 = request.dl;
+        thought.var_7C = request.dl * request.ebx;
+        thought.var_76 += request.eax;
+        company.var_85F2 = request.eax;
+        company.var_4A5 = 6;
     }
 
     // 0x00430C73
