@@ -862,6 +862,7 @@ namespace OpenLoco
         {
             return false;
         }
+        // this code from here matches 0x0048817D
         const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
         if (purchaseRequest.numVehicleObjects == 0)
         {
