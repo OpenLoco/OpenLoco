@@ -1,8 +1,6 @@
 #include "GameCommands/GameCommands.h"
 #include "Map/Track/TrackModSection.h"
 
-using namespace OpenLoco::World::Track;
-
 namespace OpenLoco::GameCommands
 {
     struct TrackModsRemovalArgs
@@ -17,7 +15,7 @@ namespace OpenLoco::GameCommands
             , index(regs.dh & 0x3)
             , type((regs.edi >> 16) & 0xF)
             , trackObjType(regs.ebp & 0xFF)
-            , modSection(static_cast<ModSection>((regs.ebp >> 16) & 0xFF))
+            , modSection(static_cast<World::Track::ModSection>((regs.ebp >> 16) & 0xFF))
         {
         }
 
@@ -27,7 +25,7 @@ namespace OpenLoco::GameCommands
         uint8_t index;
         uint8_t type;
         uint8_t trackObjType;
-        ModSection modSection;
+        World::Track::ModSection modSection;
 
         explicit operator registers() const
         {

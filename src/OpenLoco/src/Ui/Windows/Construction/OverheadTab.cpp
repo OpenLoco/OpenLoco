@@ -130,7 +130,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         if (itemIndex != -1)
         {
-            _cState->lastSelectedTrackModSection = static_cast<ModSection>(itemIndex);
+            _cState->lastSelectedTrackModSection = static_cast<Track::ModSection>(itemIndex);
             self.invalidate();
         }
     }
