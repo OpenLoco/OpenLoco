@@ -2617,19 +2617,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::orderDelete:
                 {
 
-                    onOrderDelete(head, self.var_842);
-                    if (self.var_842 == -1)
+                    onOrderDelete(head, self.orderTableIndex);
+                    if (self.orderTableIndex == -1)
                     {
                         return;
                     }
 
                     // Refresh selection (check if we are now at no order selected)
-                    auto* order = getOrderTable(head).atIndex(self.var_842);
+                    auto* order = getOrderTable(head).atIndex(self.orderTableIndex);
 
                     // If no order selected anymore
                     if (order == nullptr)
                     {
-                        self.var_842 = -1;
+                        self.orderTableIndex = -1;
                     }
                     break;
                 }
@@ -2678,26 +2678,26 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 }
                 case widx::orderUp:
-                    if (onOrderMove(head, self.var_842, orderUpCommand))
+                    if (onOrderMove(head, self.orderTableIndex, orderUpCommand))
                     {
-                        if (self.var_842 <= 0)
+                        if (self.orderTableIndex <= 0)
                         {
                             return;
                         }
-                        self.var_842--;
+                        self.orderTableIndex--;
                     }
                     break;
                 case widx::orderDown:
-                    if (onOrderMove(head, self.var_842, orderDownCommand))
+                    if (onOrderMove(head, self.orderTableIndex, orderDownCommand))
                     {
-                        if (self.var_842 < 0)
+                        if (self.orderTableIndex < 0)
                         {
                             return;
                         }
-                        auto* order = getOrderTable(head).atIndex(self.var_842);
+                        auto* order = getOrderTable(head).atIndex(self.orderTableIndex);
                         if (order != nullptr)
                         {
-                            self.var_842++;
+                            self.orderTableIndex++;
                         }
                     }
                     break;
@@ -2775,9 +2775,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             auto chosenOffset = head->sizeOfOrderTable - 1;
-            if (self->var_842 != -1)
+            if (self->orderTableIndex != -1)
             {
-                auto* chosenOrder = getOrderTable(head).atIndex(self->var_842);
+                auto* chosenOrder = getOrderTable(head).atIndex(self->orderTableIndex);
                 if (chosenOrder != nullptr)
                 {
                     chosenOffset = chosenOrder->getOffset() - head->orderTableOffset;
@@ -2800,12 +2800,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (self->var_842 == -1)
+            if (self->orderTableIndex == -1)
             {
                 return;
             }
 
-            self->var_842++;
+            self->orderTableIndex++;
         }
 
         // 0x004B4BAC
@@ -2881,7 +2881,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5BB9
-        static ViewportInteraction::InteractionArg stationLabelAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, StationId stationId, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg stationLabelAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, StationId stationId, ViewportInteraction::InteractionArg interaction)
         {
             auto* station = StationManager::get(stationId);
             if (station == nullptr)
@@ -2903,12 +2903,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(station->town);
             }
 
-            if (var_842 != 0)
+            if (orderTableIndex != 0)
             {
                 uint32_t targetOffset = 0U;
                 Vehicles::OrderRingView orders(head.orderTableOffset);
                 auto lastOrder = orders.begin();
-                if (var_842 < 0)
+                if (orderTableIndex < 0)
                 {
                     while ((lastOrder + 1) != orders.end())
                     {
@@ -2917,10 +2917,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 else
                 {
-                    while ((lastOrder + 1) != orders.end() && var_842 != 0)
+                    while ((lastOrder + 1) != orders.end() && orderTableIndex != 0)
                     {
                         lastOrder++;
-                        var_842--;
+                        orderTableIndex--;
                     }
                 }
                 targetOffset = lastOrder->getOffset();
@@ -2943,7 +2943,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5BA3
-        static ViewportInteraction::InteractionArg stationAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, World::TileElementBase* el, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg stationAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, World::TileElementBase* el, ViewportInteraction::InteractionArg interaction)
         {
             auto* elStation = el->as<StationElement>();
             if (elStation == nullptr)
@@ -2955,11 +2955,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return ViewportInteraction::kNoInteractionArg;
             }
 
-            return stationLabelAdjustedInteraction(head, var_842, elStation->stationId(), interaction);
+            return stationLabelAdjustedInteraction(head, orderTableIndex, elStation->stationId(), interaction);
         }
 
         // 0x004B5B92
-        static ViewportInteraction::InteractionArg trainStationAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg trainStationAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, ViewportInteraction::InteractionArg interaction)
         {
             auto* el = static_cast<TileElement*>(interaction.object);
             auto* elStation = el->as<StationElement>();
@@ -2978,11 +2978,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return ViewportInteraction::kNoInteractionArg;
             }
 
-            return stationAdjustedInteraction(head, var_842, elStation, interaction);
+            return stationAdjustedInteraction(head, orderTableIndex, elStation, interaction);
         }
 
         // 0x004B5AC9
-        static ViewportInteraction::InteractionArg trackAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg trackAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, ViewportInteraction::InteractionArg interaction)
         {
             auto* el = static_cast<TileElement*>(interaction.object);
             auto* elTrack = el->as<TrackElement>();
@@ -3008,7 +3008,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     if (!elStation->isAiAllocated() && !elStation->isGhost())
                     {
-                        return trainStationAdjustedInteraction(head, var_842, { interaction.pos, reinterpret_cast<uint32_t>(elStation), interaction.type, interaction.modId });
+                        return trainStationAdjustedInteraction(head, orderTableIndex, { interaction.pos, reinterpret_cast<uint32_t>(elStation), interaction.type, interaction.modId });
                     }
                 }
             }
@@ -3023,7 +3023,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5AC9
-        static ViewportInteraction::InteractionArg roadAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg roadAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, ViewportInteraction::InteractionArg interaction)
         {
             auto* el = static_cast<TileElement*>(interaction.object);
             auto* elRoad = el->as<RoadElement>();
@@ -3044,7 +3044,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     if (!elStation->isAiAllocated() && !elStation->isGhost())
                     {
-                        return stationAdjustedInteraction(head, var_842, elStation, interaction);
+                        return stationAdjustedInteraction(head, orderTableIndex, elStation, interaction);
                     }
                 }
             }
@@ -3057,7 +3057,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5B7F
-        static ViewportInteraction::InteractionArg dockAirportAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t var_842, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg dockAirportAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, ViewportInteraction::InteractionArg interaction)
         {
             auto* el = static_cast<TileElement*>(interaction.object);
             auto* elStation = el->as<StationElement>();
@@ -3070,7 +3070,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return ViewportInteraction::kNoInteractionArg;
             }
 
-            return stationAdjustedInteraction(head, var_842, elStation, interaction);
+            return stationAdjustedInteraction(head, orderTableIndex, elStation, interaction);
         }
 
         // 0x004B5A9B
@@ -3104,23 +3104,23 @@ namespace OpenLoco::Ui::Windows::Vehicle
             switch (interaction.type)
             {
                 case ViewportInteraction::InteractionItem::track:
-                    return trackAdjustedInteraction(*head, self.var_842, interaction);
+                    return trackAdjustedInteraction(*head, self.orderTableIndex, interaction);
 
                 case ViewportInteraction::InteractionItem::road:
-                    return roadAdjustedInteraction(*head, self.var_842, interaction);
+                    return roadAdjustedInteraction(*head, self.orderTableIndex, interaction);
 
                 case ViewportInteraction::InteractionItem::trainStation:
-                    return trainStationAdjustedInteraction(*head, self.var_842, interaction);
+                    return trainStationAdjustedInteraction(*head, self.orderTableIndex, interaction);
 
                 case ViewportInteraction::InteractionItem::roadStation:
-                    return stationAdjustedInteraction(*head, self.var_842, static_cast<TileElement*>(interaction.object), interaction);
+                    return stationAdjustedInteraction(*head, self.orderTableIndex, static_cast<TileElement*>(interaction.object), interaction);
 
                 case ViewportInteraction::InteractionItem::airport:
                 case ViewportInteraction::InteractionItem::dock:
-                    return dockAirportAdjustedInteraction(*head, self.var_842, interaction);
+                    return dockAirportAdjustedInteraction(*head, self.orderTableIndex, interaction);
 
                 case ViewportInteraction::InteractionItem::stationLabel:
-                    return stationLabelAdjustedInteraction(*head, self.var_842, static_cast<StationId>(interaction.value), interaction);
+                    return stationLabelAdjustedInteraction(*head, self.orderTableIndex, static_cast<StationId>(interaction.value), interaction);
 
                 case ViewportInteraction::InteractionItem::water:
                     return waterAdjustedInteraction(*head, interaction);
@@ -3255,7 +3255,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            auto item = y / lineHeight;
+            int16_t item = y / lineHeight;
             Vehicles::Order* selectedOrder = getOrderTable(head).atIndex(item);
             if (selectedOrder == nullptr)
             {
@@ -3292,9 +3292,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (item != self.var_842)
+            if (item != self.orderTableIndex)
             {
-                self.var_842 = item;
+                self.orderTableIndex = item;
                 self.invalidate();
                 return;
             }
@@ -3473,7 +3473,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::localMode].right = self.widgets[widx::expressMode].left - 1;
 
             self.disabledWidgets |= (1 << widx::orderUp) | (1 << widx::orderDown);
-            if (self.var_842 != -1)
+            if (self.orderTableIndex != -1)
             {
                 self.disabledWidgets &= ~((1 << widx::orderUp) | (1 << widx::orderDown));
             }
@@ -3625,7 +3625,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 int16_t y = rowNum * lineHeight;
                 auto strFormat = StringIds::black_stringid;
-                if (self.var_842 == rowNum)
+                if (self.orderTableIndex == rowNum)
                 {
                     drawingCtx.fillRect(0, y, self.width, y + 9, PaletteIndex::black0, Gfx::RectFlags::none);
                     strFormat = StringIds::white_stringid;
@@ -3674,7 +3674,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Output the end of orders
             Ui::Point loc = { 8, static_cast<int16_t>(rowNum * lineHeight) };
             auto strFormat = StringIds::black_stringid;
-            if (self.var_842 == rowNum)
+            if (self.orderTableIndex == rowNum)
             {
                 drawingCtx.fillRect(0, loc.y, self.width, loc.y + lineHeight, PaletteIndex::black0, Gfx::RectFlags::none);
                 strFormat = StringIds::white_stringid;
@@ -4584,7 +4584,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Main::resetDisabledWidgets(self);
             self->invalidate();
             self->rowHover = -1;
-            self->var_842 = -1;
+            self->orderTableIndex = -1;
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();
