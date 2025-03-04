@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A19F
     void roadMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        const auto availableObjects = CompanyManager::getPlayerCompany()->getAvailableRoads();
+        const auto availableObjects = companyGetAvailableRoads(CompanyManager::getControllingId());
         // Copy to global as its used in the dropdown event
         std::copy(availableObjects.begin(), availableObjects.end(), _availableObjects.begin());
 

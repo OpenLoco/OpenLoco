@@ -2342,8 +2342,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         availableColours = checkIndustryColours(PaletteIndex::black0, availableColours);
         availableColours = checkIndustryColours(PaletteIndex::blackB, availableColours);
 
-        auto availableTracks = CompanyManager::getPlayerCompany()->getAvailableRailTracks();
-        auto availableRoads = CompanyManager::getPlayerCompany()->getAvailableRoads();
+        auto availableTracks = companyGetAvailableRailTracks(CompanyManager::getControllingId());
+        auto availableRoads = companyGetAvailableRoads(CompanyManager::getControllingId());
 
         auto i = 0U;
         auto assignColour = [&i, &availableColours](uint8_t id) {
