@@ -607,13 +607,13 @@ namespace OpenLoco
         currency32_t eax;          // eax
     };
 
-    // 0x004802DD
+    // 0x004802D0
     static VehiclePurchaseRequest aiGenerateVehiclePurchaseRequest(AiThought& thought, uint16_t* requestBuffer)
     {
         registers regs;
         regs.esi = X86Pointer(requestBuffer);
         regs.edi = X86Pointer(&thought);
-        call(0x004802DD, regs);
+        call(0x004802D0, regs);
         VehiclePurchaseRequest res{};
         res.numVehicleObjects = regs.cl;
         res.dl = regs.dl;
@@ -826,7 +826,7 @@ namespace OpenLoco
     // 0x00488050
     static bool sub_488050(const Company& company, AiThought& thought)
     {
-        thought.var_8B &= ~(AiPurchaseFlags::unk2 | AiPurchaseFlags::unk3);
+        thought.purchaseFlags &= ~(AiPurchaseFlags::unk2 | AiPurchaseFlags::requiresMods);
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
             return false;
@@ -848,7 +848,7 @@ namespace OpenLoco
                     }
                     thought.var_43 = purchaseRequest.dl;
                     thought.var_45 = purchaseRequest.numVehicleObjects;
-                    thought.var_8B &= ~AiPurchaseFlags::unk2;
+                    thought.purchaseFlags |= AiPurchaseFlags::unk2;
                     if (determineStationAndTrackModTypes(thought))
                     {
                         return false;
@@ -924,7 +924,7 @@ namespace OpenLoco
                     if (thought.mods != existingMods)
                     {
                         thought.mods |= existingMods;
-                        thought.var_8B |= AiPurchaseFlags::unk3;
+                        thought.purchaseFlags |= AiPurchaseFlags::requiresMods;
                     }
                     return true;
                 }
@@ -955,7 +955,7 @@ namespace OpenLoco
         }
         thought.var_43 = thought.numVehicles + 1;
         thought.var_45 = purchaseRequest.numVehicleObjects;
-        thought.var_8B &= ~AiPurchaseFlags::unk2;
+        thought.purchaseFlags &= ~AiPurchaseFlags::unk2;
         if (determineStationAndTrackModTypes(thought))
         {
             return false;
@@ -1008,7 +1008,7 @@ namespace OpenLoco
         if (thought.mods != existingMods)
         {
             thought.mods |= existingMods;
-            thought.var_8B |= AiPurchaseFlags::unk3;
+            thought.purchaseFlags |= AiPurchaseFlags::requiresMods;
         }
         return true;
     }
@@ -4483,7 +4483,7 @@ namespace OpenLoco
         }
         thought.var_76 += pendingVehicleCarCosts * numPendingVehicles;
 
-        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk3))
+        if (thought.hasPurchaseFlags(AiPurchaseFlags::requiresMods))
         {
             thought.var_76 += tryPlaceTrackOrRoadMods(thought, 0);
         }
@@ -4511,7 +4511,7 @@ namespace OpenLoco
             return true;
         }
 
-        if (!thought.hasPurchaseFlags(AiPurchaseFlags::unk3))
+        if (!thought.hasPurchaseFlags(AiPurchaseFlags::requiresMods))
         {
             return false;
         }
