@@ -1,6 +1,7 @@
 25.02+ (???)
 ------------------------------------------------------------------------
 - Change: [#2457] Right mouse dragging in ScrollViews now respects "Invert right mouse dragging" option.
+- Fix: [#2972] More vehicle-related messages not using the correct vehicle name string.
 
 25.02 (2025-02-28)
 ------------------------------------------------------------------------
