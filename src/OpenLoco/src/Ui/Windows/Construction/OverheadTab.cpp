@@ -13,6 +13,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
+#include "Map/Track/TrackModSection.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
@@ -106,7 +107,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 Dropdown::add(1, StringIds::block_section);
                 Dropdown::add(2, StringIds::all_connected_track);
 
-                Dropdown::setHighlightedItem(_cState->lastSelectedTrackModSection);
+                Dropdown::setHighlightedItem(enumValue(_cState->lastSelectedTrackModSection));
                 break;
             }
 
@@ -129,7 +130,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         if (itemIndex != -1)
         {
-            _cState->lastSelectedTrackModSection = itemIndex;
+            _cState->lastSelectedTrackModSection = static_cast<Track::ModSection>(itemIndex);
             self.invalidate();
         }
     }
@@ -484,7 +485,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             StringIds::all_connected_track,
         };
 
-        self.widgets[widx::track].text = modString[_cState->lastSelectedTrackModSection];
+        self.widgets[widx::track].text = modString[enumValue(_cState->lastSelectedTrackModSection)];
 
         Common::repositionTabs(&self);
     }

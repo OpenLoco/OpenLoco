@@ -2,6 +2,7 @@
 
 #include "Audio/Audio.h"
 #include "Entities/Entity.h"
+#include "Map/Track/TrackModSection.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
@@ -212,8 +213,8 @@ namespace OpenLoco::Vehicles
         bool networkTooComplex;
         bool allPlacementsFailed;
     };
-    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
-    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
 
     void playPickupSound(Vehicles::Vehicle2* veh2);
     void playPlacedownSound(const World::Pos3 pos);

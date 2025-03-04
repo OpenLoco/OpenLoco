@@ -1,6 +1,8 @@
 #pragma once
 
+#include "GameCommands/Track/CreateTrackMod.h"
 #include "Map/TileManager.h"
+#include "Map/Track/TrackModSection.h"
 #include "Objects/VehicleObject.h"
 #include "ScenarioConstruction.h"
 #include "Ui/Widgets/CaptionWidget.h"
@@ -111,7 +113,7 @@ namespace OpenLoco::Ui::Windows::Construction
         uint8_t stationGhostRotation;                   // 0x0113606B
         uint8_t stationGhostTrackId;                    // 0x0113606C
         uint8_t stationGhostTileIndex;                  // 0x0113606D
-        uint8_t lastSelectedTrackModSection;            // 0x0113606E
+        Track::ModSection lastSelectedTrackModSection;  // 0x0113606E
         uint8_t pad_113606F[3];                         // 0x0113606F
         uint8_t byte_1136072;                           // 0x01136072
         uint8_t byte_1136073;                           // 0x01136073

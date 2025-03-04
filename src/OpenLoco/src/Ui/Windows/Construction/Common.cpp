@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::Construction
         _cState->byte_113607E = 1;
         _cState->trackCost = 0x80000000;
         _cState->byte_1136076 = 0;
-        _cState->lastSelectedTrackModSection = 0;
+        _cState->lastSelectedTrackModSection = Track::ModSection::single;
 
         Common::setNextAndPreviousTrackTile(*copyElement, pos);
 
@@ -369,7 +369,7 @@ namespace OpenLoco::Ui::Windows::Construction
         _cState->byte_113607E = 1;
         _cState->trackCost = 0x80000000;
         _cState->byte_1136076 = 0;
-        _cState->lastSelectedTrackModSection = 0;
+        _cState->lastSelectedTrackModSection = Track::ModSection::single;
 
         Common::setNextAndPreviousRoadTile(*copyElement, pos);
 
@@ -499,7 +499,7 @@ namespace OpenLoco::Ui::Windows::Construction
         _cState->byte_1136076 = 0;
         _cState->lastSelectedTrackPiece = 0;
         _cState->lastSelectedTrackGradient = 0;
-        _cState->lastSelectedTrackModSection = 0;
+        _cState->lastSelectedTrackModSection = Track::ModSection::single;
 
         Common::setTrackOptions(flags);
 
@@ -596,7 +596,7 @@ namespace OpenLoco::Ui::Windows::Construction
         return _cState->lastSelectedMods;
     }
 
-    uint16_t getLastSelectedTrackModSection()
+    Track::ModSection getLastSelectedTrackModSection()
     {
         if (WindowManager::find(WindowType::construction) != nullptr)
         {
@@ -604,7 +604,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
         else
         {
-            return 0;
+            return Track::ModSection::single;
         }
     }
 

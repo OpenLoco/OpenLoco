@@ -3940,7 +3940,7 @@ namespace OpenLoco
             args.rotation = thought.stations[0].rotation;
             args.roadObjType = thought.trackObjId & ~(1U << 7);
             args.index = 0;
-            args.modSection = 2;
+            args.modSection = Track::ModSection::allConnected;
             args.roadId = 0;
             args.type = thought.mods;
             const auto cost = GameCommands::doCommand(args, flags);
@@ -3957,7 +3957,7 @@ namespace OpenLoco
             args.rotation = thought.stations[0].rotation;
             args.trackObjType = thought.trackObjId;
             args.index = 0;
-            args.modSection = 2;
+            args.modSection = Track::ModSection::allConnected;
             args.trackId = 0;
             args.type = thought.mods;
             const auto cost = GameCommands::doCommand(args, flags);

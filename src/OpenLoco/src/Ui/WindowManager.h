@@ -2,6 +2,7 @@
 
 #include "Localisation/StringManager.h"
 #include "Window.h"
+#include <Map/Track/TrackModSection.h>
 #include <OpenLoco/Engine/World.hpp>
 #include <cstddef>
 #include <functional>
@@ -169,7 +170,7 @@ namespace OpenLoco::Ui::Windows
         void removeConstructionGhosts();
         void registerHooks();
         uint16_t getLastSelectedMods();
-        uint16_t getLastSelectedTrackModSection();
+        World::Track::ModSection getLastSelectedTrackModSection();
     }
 
     namespace DragVehiclePart
