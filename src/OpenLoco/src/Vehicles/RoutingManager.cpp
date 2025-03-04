@@ -35,20 +35,25 @@ namespace OpenLoco::Vehicles::RoutingManager
         return std::nullopt;
     }
 
-    uint16_t getRouting(const RoutingHandle routing)
+    uint16_t getRouting(const RoutingHandle handle)
     {
-        return routings()[routing.getVehicleRef()][routing.getIndex()];
+        return routings()[handle.getVehicleRef()][handle.getIndex()];
     }
 
-    void freeRouting(const RoutingHandle routing)
+    void setRouting(const RoutingHandle handle, uint16_t routing)
     {
-        routings()[routing.getVehicleRef()][routing.getIndex()] = kAllocatedButFreeRoutingStation;
+        routings()[handle.getVehicleRef()][handle.getIndex()] = routing;
+    }
+
+    void freeRouting(const RoutingHandle handle)
+    {
+        setRouting(handle, kAllocatedButFreeRoutingStation);
     }
 
     // 0x004B1E77
-    void freeRoutingHandle(const RoutingHandle routing)
+    void freeRoutingHandle(const RoutingHandle handle)
     {
-        auto& vehRoutingArr = routings()[routing.getVehicleRef()];
+        auto& vehRoutingArr = routings()[handle.getVehicleRef()];
         std::fill(std::begin(vehRoutingArr), std::end(vehRoutingArr), kRoutingNull);
     }
 

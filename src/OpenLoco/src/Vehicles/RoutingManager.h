@@ -14,9 +14,10 @@ namespace OpenLoco::Vehicles::RoutingManager
     constexpr uint16_t kRoutingNull = 0xFFFFU;                    // Indicates that this array is unallocated to any vehicle.
 
     std::optional<RoutingHandle> getAndAllocateFreeRoutingHandle();
-    void freeRoutingHandle(const RoutingHandle routing);
-    uint16_t getRouting(const RoutingHandle routing);
-    void freeRouting(const RoutingHandle routing);
+    void freeRoutingHandle(const RoutingHandle handle);
+    uint16_t getRouting(const RoutingHandle handle);
+    void setRouting(const RoutingHandle handle, uint16_t routing);
+    void freeRouting(const RoutingHandle handle);
     bool isEmptyRoutingSlotAvailable();
     void resetRoutingTable();
 

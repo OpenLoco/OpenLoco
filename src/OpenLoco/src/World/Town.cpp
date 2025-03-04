@@ -22,13 +22,13 @@
 #include "Map/TreeElement.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/ObjectUtils.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
 #include "Objects/StreetLightObject.h"
 #include "Random.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
-#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
@@ -1102,10 +1102,7 @@ namespace OpenLoco
     static bool placeRoadBridge(Town& town, const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId)
     {
         assert(rotation < 4);
-        std::array<uint8_t, 9> bridges{};
-        Ui::Windows::Construction::Common::refreshBridgeList(bridges.data(), roadObjectId, TransportMode::road);
-        // Copy into a sane container
-        sfl::static_vector<uint8_t, 9> validBridgeTypes(bridges.begin(), std::find(std::begin(bridges), std::end(bridges), 0xFFU));
+        auto validBridgeTypes = getAvailableCompatibleBridges(roadObjectId, TransportMode::road);
 
         auto bridgePos = pos;
         auto bridgeLength = 1U;
@@ -1114,7 +1111,7 @@ namespace OpenLoco
         // Bridge length is 1 based!
         for (; bridgeLength <= kMaxTownBridgeLength; ++bridgeLength)
         {
-            sfl::static_vector<uint8_t, 9> iterationValidBridgeTypes;
+            sfl::static_vector<uint8_t, Limits::kMaxBridgeObjects> iterationValidBridgeTypes;
             for (auto bridgeObjId : validBridgeTypes)
             {
                 GameCommands::RoadPlacementArgs args{};

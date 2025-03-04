@@ -10,6 +10,7 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <sfl/static_vector.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -172,18 +173,20 @@ namespace OpenLoco::Ui::Windows::Construction
         void setTrackOptions(const uint8_t trackType);
         void setDisabledWidgets(Window* self);
         void createConstructionWindow();
-        void refreshAirportList(uint8_t* stationList);
-        void refreshDockList(uint8_t* stationList);
-        void refreshStationList(uint8_t* stationList, uint8_t trackType, TransportMode transportMode);
-        void refreshBridgeList(uint8_t* bridgeList, uint8_t trackType, TransportMode transportMode);
-        void refreshModList(uint8_t* modList, uint8_t trackType, TransportMode transportMode);
         void sub_4A3A50();
-        void refreshSignalList(uint8_t* signalList, uint8_t trackType);
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos);
         void setNextAndPreviousRoadTile(const RoadElement& elRoad, const World::Pos2& pos);
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport);
         void previousTab(Window* self);
         void nextTab(Window* self);
+
+        template<uint32_t NewCapacity, uint32_t LegacyCapacity>
+        void copyToLegacyList(const sfl::static_vector<uint8_t, NewCapacity>& sflType, uint8_t (&legacyList)[LegacyCapacity])
+        {
+            static_assert(LegacyCapacity > NewCapacity);
+            std::copy(sflType.begin(), sflType.end(), legacyList);
+            legacyList[sflType.size()] = 0xFFU;
+        }
     }
 
     namespace Construction
