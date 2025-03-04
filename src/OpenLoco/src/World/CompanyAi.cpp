@@ -623,9 +623,9 @@ namespace OpenLoco
     }
 
     // 0x004883D4
-    static uint32_t getUntransportedQuantity(const AiThought& thought)
+    static int32_t getUntransportedQuantity(const AiThought& thought)
     {
-        uint32_t quantity = 0;
+        int32_t quantity = 0;
         for (auto i = 0U; i < thought.numStations; ++i)
         {
             auto& aiStation = thought.stations[i];
