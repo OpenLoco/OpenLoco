@@ -26,6 +26,9 @@
 #include "GameCommands/Vehicles/VehiclePickup.h"
 #include "GameCommands/Vehicles/VehiclePickupAir.h"
 #include "GameCommands/Vehicles/VehiclePickupWater.h"
+#include "GameCommands/Vehicles/VehiclePlace.h"
+#include "GameCommands/Vehicles/VehiclePlaceAir.h"
+#include "GameCommands/Vehicles/VehiclePlaceWater.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
 #include "GameState.h"
@@ -4729,9 +4732,130 @@ namespace OpenLoco
     // 0x00487784
     static bool tryPlaceVehicles(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        return call(0x00487784, regs) & X86_FLAG_CARRY;
+        company.var_259E++;
+        auto* head = [&company]() -> Vehicles::VehicleHead* {
+            auto i = company.var_259E;
+            for (auto* v : VehicleManager::VehicleList())
+            {
+                if (v->owner != company.id())
+                {
+                    continue;
+                }
+                i--;
+                if (i == 0)
+                {
+                    return v;
+                }
+            }
+            return nullptr;
+        }();
+        if (head == nullptr)
+        {
+            return true;
+        }
+        if (head->tileX != -1)
+        {
+            return false;
+        }
+        if (head->hasBreakdownFlags(Vehicles::BreakdownFlags::breakdownPending))
+        {
+            return false;
+        }
+        const auto pos = World::Pos3(head->var_61, head->var_63, head->var_67 * World::kSmallZStep);
+        if (head->mode == TransportMode::air)
+        {
+            // 0x00487926
+            auto* elStation = [&pos, &head]() -> const StationElement* {
+                auto tile = World::TileManager::get(pos);
+                for (const auto& el : tile)
+                {
+                    auto* elStation = el.as<StationElement>();
+                    if (elStation == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elStation->baseHeight() != pos.z)
+                    {
+                        continue;
+                    }
+                    if (elStation->isAiAllocated() || elStation->isGhost())
+                    {
+                        continue;
+                    }
+                    if (elStation->stationType() != StationType::airport)
+                    {
+                        continue;
+                    }
+                    if (elStation->owner() != head->owner)
+                    {
+                        continue;
+                    }
+                    return elStation;
+                }
+                return nullptr;
+            }();
+            if (elStation == nullptr)
+            {
+                // 0x00487AC6 ??
+                return false;
+            }
+
+            auto* station = StationManager::get(elStation->stationId());
+            auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+            for (auto nodeIndex = 0U; nodeIndex < airportObj->numMovementNodes; ++nodeIndex)
+            {
+                auto& node = airportObj->movementNodes[nodeIndex];
+                if (!node.hasFlags(AirportMovementNodeFlags::terminal))
+                {
+                    continue;
+                }
+                const auto mustBeClearEdges = [nodeIndex, &airportObj]() {
+                    for (auto edgeIndex = 0U; edgeIndex < airportObj->numMovementEdges; ++edgeIndex)
+                    {
+                        auto& edge = airportObj->movementEdges[edgeIndex];
+                        if (edge.nextNode == nodeIndex)
+                        {
+                            return edge.mustBeClearEdges;
+                        }
+                    }
+                    return 0U;
+                }();
+                if (station->airportMovementOccupiedEdges & mustBeClearEdges)
+                {
+                    continue;
+                }
+
+                GameCommands::VehicleAirPlacementArgs args{};
+                args.head = head->id;
+                args.airportNode = nodeIndex;
+                args.stationId = elStation->stationId();
+
+                const auto oldUpdatingCompanyId = GameCommands::getUpdatingCompanyId();
+                GameCommands::setUpdatingCompanyId(CompanyId::neutral); // Why?
+
+                const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+                GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
+                if (res == GameCommands::FAILURE)
+                {
+                    // 0x00487AC6 ??
+                    return false;
+                }
+                // 0x00487B77
+                // Starts the vehicle
+                return false;
+            }
+            // 0x00487AC6 ??
+            return false;
+        }
+        else if (head->mode == TransportMode::water)
+        {
+            // 0x00487A27
+        }
+        else
+        {
+            // 0x004877E7
+        }
     }
 
     // 0x004312AF
