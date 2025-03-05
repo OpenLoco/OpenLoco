@@ -4779,6 +4779,341 @@ namespace OpenLoco
         GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
     }
 
+    static std::optional<GameCommands::VehiclePlacementArgs> generateBackupRoadPlacement(const World::Pos2 pos, const uint8_t roadObjectId, const CompanyId companyId)
+    {
+        const auto randVal = gPrng1().randNext();
+        const auto randX = (randVal & 0xFU) - 7;
+        const auto randY = ((randVal >> 4) & 0xFU) - 7;
+        const auto randPos = World::Pos2(pos.x + randX, pos.y + randY);
+        if (!validCoords(randPos))
+        {
+            return std::nullopt;
+        }
+
+        const auto tile = World::TileManager::get(randPos);
+        for (const auto& el : tile)
+        {
+            auto* elRoad = el.as<RoadElement>();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+            if (elRoad->sequenceIndex() != 0)
+            {
+                continue;
+            }
+            if (roadObjectId == 0xFFU)
+            {
+                if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                if (elRoad->roadObjectId() != roadObjectId)
+                {
+                    continue;
+                }
+                if (elRoad->owner() != companyId)
+                {
+                    continue;
+                }
+            }
+            GameCommands::VehiclePlacementArgs args{};
+            args.convertGhost = false;
+            args.pos = World::Pos3(randPos, elRoad->baseHeight() - World::TrackData::getRoadPiece(elRoad->roadId())[0].z);
+            args.trackAndDirection = (elRoad->roadId() << 3) | elRoad->rotation();
+            args.trackProgress = 0;
+            return args;
+        }
+        return std::nullopt;
+    }
+
+    // 0x0047C371
+    static uint8_t validateRoadPlacement(const World::Pos3 pos, const uint8_t roadObjectId, const uint16_t tad)
+    {
+        const auto rotation = tad & 0x3;
+        const auto roadId = tad >> 3;
+        World::Pos3 initialPos = pos;
+        if (tad & (1U << 2))
+        {
+            const auto& trackSize = World::TrackData::getUnkRoad(tad);
+            initialPos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                initialPos.x -= kRotationOffset[trackSize.rotationEnd].x;
+                initialPos.y -= kRotationOffset[trackSize.rotationEnd].y;
+            }
+        }
+
+        auto& roadPieces = World::TrackData::getRoadPiece(roadId);
+        for (auto& piece : roadPieces)
+        {
+            const auto rotatedPiece = World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            const auto piecePos = initialPos + rotatedPiece;
+            auto* elRoad = [piecePos, rotation, &piece, roadId, roadObjectId]() -> const World::RoadElement* {
+                const auto tile = World::TileManager::get(piecePos);
+                for (const auto& el : tile)
+                {
+                    auto* elRoad = el.as<RoadElement>();
+                    if (elRoad == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elRoad->baseHeight() != piecePos.z)
+                    {
+                        continue;
+                    }
+                    if (elRoad->isGhost() || elRoad->isAiAllocated())
+                    {
+                        continue;
+                    }
+                    if (elRoad->rotation() != rotation)
+                    {
+                        continue;
+                    }
+                    if (elRoad->sequenceIndex() != piece.index)
+                    {
+                        continue;
+                    }
+                    if (elRoad->roadId() != roadId)
+                    {
+                        continue;
+                    }
+                    if (elRoad->roadObjectId() != roadObjectId)
+                    {
+                        if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+                        {
+                            continue;
+                        }
+                    }
+                    return elRoad;
+                }
+                return nullptr;
+            }();
+            if (elRoad == nullptr)
+            {
+                return 2;
+            }
+        }
+        return 0;
+    }
+
+    // 0x004878E3
+    // args is expected to not have head set yet
+    static bool tryPlaceSurfaceVehicle(Company& company, Vehicles::VehicleHead& head, GameCommands::VehiclePlacementArgs args)
+    {
+        args.head = head.id;
+        const auto oldUpdatingCompanyId = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral); // Why?
+
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+        GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
+        if (res == GameCommands::FAILURE)
+        {
+            tryPlaceVehicleFailure(company, head);
+            return false;
+        }
+        tryPlaceVehicleSuccess(head);
+        return true;
+    }
+
+    // 0x00487A27
+    static bool tryPlaceWaterVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
+    {
+        auto* elStation = [&pos, &head]() -> const StationElement* {
+            auto tile = World::TileManager::get(pos);
+            for (const auto& el : tile)
+            {
+                auto* elStation = el.as<StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+                if (elStation->baseHeight() != pos.z)
+                {
+                    continue;
+                }
+                if (elStation->isAiAllocated() || elStation->isGhost())
+                {
+                    continue;
+                }
+                if (elStation->stationType() != StationType::docks)
+                {
+                    continue;
+                }
+                if (elStation->owner() != head.owner)
+                {
+                    continue;
+                }
+                if (elStation->isFlag6())
+                {
+                    continue;
+                }
+                return elStation;
+            }
+            return nullptr;
+        }();
+        if (elStation == nullptr)
+        {
+            tryPlaceVehicleFailure(company, head);
+            return false;
+        }
+
+        GameCommands::VehicleWaterPlacementArgs args{};
+        args.head = head.id;
+        args.pos = pos;
+        args.convertGhost = false;
+
+        const auto oldUpdatingCompanyId = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral); // Why?
+
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+        GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
+        if (res == GameCommands::FAILURE)
+        {
+            tryPlaceVehicleFailure(company, head);
+            return false;
+        }
+        tryPlaceVehicleSuccess(head);
+        return false;
+    }
+
+    // 0x00487926
+    static bool tryPlaceAirVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
+    {
+        auto* elStation = [&pos, &head]() -> const StationElement* {
+            auto tile = World::TileManager::get(pos);
+            for (const auto& el : tile)
+            {
+                auto* elStation = el.as<StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+                if (elStation->baseHeight() != pos.z)
+                {
+                    continue;
+                }
+                if (elStation->isAiAllocated() || elStation->isGhost())
+                {
+                    continue;
+                }
+                if (elStation->stationType() != StationType::airport)
+                {
+                    continue;
+                }
+                if (elStation->owner() != head.owner)
+                {
+                    continue;
+                }
+                return elStation;
+            }
+            return nullptr;
+        }();
+        if (elStation == nullptr)
+        {
+            tryPlaceVehicleFailure(company, head);
+            return false;
+        }
+
+        auto* station = StationManager::get(elStation->stationId());
+        auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+        for (auto nodeIndex = 0U; nodeIndex < airportObj->numMovementNodes; ++nodeIndex)
+        {
+            auto& node = airportObj->movementNodes[nodeIndex];
+            if (!node.hasFlags(AirportMovementNodeFlags::terminal))
+            {
+                continue;
+            }
+            const auto mustBeClearEdges = [nodeIndex, &airportObj]() {
+                for (auto edgeIndex = 0U; edgeIndex < airportObj->numMovementEdges; ++edgeIndex)
+                {
+                    auto& edge = airportObj->movementEdges[edgeIndex];
+                    if (edge.nextNode == nodeIndex)
+                    {
+                        return edge.mustBeClearEdges;
+                    }
+                }
+                return 0U;
+            }();
+            if (station->airportMovementOccupiedEdges & mustBeClearEdges)
+            {
+                continue;
+            }
+
+            GameCommands::VehicleAirPlacementArgs args{};
+            args.head = head.id;
+            args.airportNode = nodeIndex;
+            args.stationId = elStation->stationId();
+            args.convertGhost = false;
+
+            const auto oldUpdatingCompanyId = GameCommands::getUpdatingCompanyId();
+            GameCommands::setUpdatingCompanyId(CompanyId::neutral); // Why?
+
+            const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
+            if (res == GameCommands::FAILURE)
+            {
+                tryPlaceVehicleFailure(company, head);
+                return false;
+            }
+            tryPlaceVehicleSuccess(head);
+            return false;
+        }
+        tryPlaceVehicleFailure(company, head);
+        return false;
+    }
+
+    // 0x004877E7
+    static bool tryPlaceRoadVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
+    {
+        if (validateRoadPlacement(pos, head.trackType, head.var_65) & (1U << 1))
+        {
+            // 0x0048788E
+            auto args = generateBackupRoadPlacement(pos, head.trackType, company.id());
+            if (!args.has_value())
+            {
+                return false;
+            }
+            return tryPlaceSurfaceVehicle(company, head, args.value());
+        }
+
+        if (!head.hasBreakdownFlags(Vehicles::BreakdownFlags::brokenDown))
+        {
+            auto train = Vehicles::Vehicle(head);
+            const auto firstCarAge = getCurrentDay() - train.cars.firstCar.front->creationDay;
+            if (firstCarAge >= 28 && head.aiThoughtId != 0xFFU)
+            {
+                // 0x0048788E
+                auto args = generateBackupRoadPlacement(pos, head.trackType, company.id());
+                if (!args.has_value())
+                {
+                    return false;
+                }
+                return tryPlaceSurfaceVehicle(company, head, args.value());
+            }
+        }
+        GameCommands::VehiclePlacementArgs args{};
+        args.convertGhost = false;
+        args.pos = pos;
+        args.trackAndDirection = head.var_65;
+        args.trackProgress = 0;
+
+        if (!head.hasBreakdownFlags(Vehicles::BreakdownFlags::brokenDown))
+        {
+            if (head.trackType == 0xFFU)
+            {
+                head.var_65 ^= (1U << 2);
+            }
+        }
+        return tryPlaceSurfaceVehicle(company, head, args);
+    }
+
     // 0x00487784
     static bool tryPlaceVehicles(Company& company)
     {
@@ -4814,94 +5149,17 @@ namespace OpenLoco
         const auto pos = World::Pos3(head->var_61, head->var_63, head->var_67 * World::kSmallZStep);
         if (head->mode == TransportMode::air)
         {
-            // 0x00487926
-            auto* elStation = [&pos, &head]() -> const StationElement* {
-                auto tile = World::TileManager::get(pos);
-                for (const auto& el : tile)
-                {
-                    auto* elStation = el.as<StationElement>();
-                    if (elStation == nullptr)
-                    {
-                        continue;
-                    }
-                    if (elStation->baseHeight() != pos.z)
-                    {
-                        continue;
-                    }
-                    if (elStation->isAiAllocated() || elStation->isGhost())
-                    {
-                        continue;
-                    }
-                    if (elStation->stationType() != StationType::airport)
-                    {
-                        continue;
-                    }
-                    if (elStation->owner() != head->owner)
-                    {
-                        continue;
-                    }
-                    return elStation;
-                }
-                return nullptr;
-            }();
-            if (elStation == nullptr)
-            {
-                tryPlaceVehicleFailure(company, *head);
-                return false;
-            }
-
-            auto* station = StationManager::get(elStation->stationId());
-            auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
-            for (auto nodeIndex = 0U; nodeIndex < airportObj->numMovementNodes; ++nodeIndex)
-            {
-                auto& node = airportObj->movementNodes[nodeIndex];
-                if (!node.hasFlags(AirportMovementNodeFlags::terminal))
-                {
-                    continue;
-                }
-                const auto mustBeClearEdges = [nodeIndex, &airportObj]() {
-                    for (auto edgeIndex = 0U; edgeIndex < airportObj->numMovementEdges; ++edgeIndex)
-                    {
-                        auto& edge = airportObj->movementEdges[edgeIndex];
-                        if (edge.nextNode == nodeIndex)
-                        {
-                            return edge.mustBeClearEdges;
-                        }
-                    }
-                    return 0U;
-                }();
-                if (station->airportMovementOccupiedEdges & mustBeClearEdges)
-                {
-                    continue;
-                }
-
-                GameCommands::VehicleAirPlacementArgs args{};
-                args.head = head->id;
-                args.airportNode = nodeIndex;
-                args.stationId = elStation->stationId();
-
-                const auto oldUpdatingCompanyId = GameCommands::getUpdatingCompanyId();
-                GameCommands::setUpdatingCompanyId(CompanyId::neutral); // Why?
-
-                const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-
-                GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
-                if (res == GameCommands::FAILURE)
-                {
-                    tryPlaceVehicleFailure(company, *head);
-                    return false;
-                }
-                tryPlaceVehicleSuccess(*head);
-                return false;
-            }
-            tryPlaceVehicleFailure(company, *head);
-            return false;
+            return tryPlaceAirVehicle(company, *head, pos);
         }
         else if (head->mode == TransportMode::water)
         {
-            // 0x00487A27
+            return tryPlaceWaterVehicle(company, *head, pos);
         }
-        else
+        else if (head->mode == TransportMode::road)
+        {
+            return tryPlaceRoadVehicle(company, *head, pos);
+        }
+        else if (head->mode == TransportMode::rail)
         {
             // 0x004877E7
         }
