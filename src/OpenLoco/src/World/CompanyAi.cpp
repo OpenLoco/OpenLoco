@@ -4729,6 +4729,56 @@ namespace OpenLoco
         company.var_259E = 0;
     }
 
+    // 0x00497AC6
+    static void tryPlaceVehicleFailure(Company& company, Vehicles::VehicleHead& head)
+    {
+        if (head.hasBreakdownFlags(Vehicles::BreakdownFlags::brokenDown))
+        {
+            return;
+        }
+        auto train = Vehicles::Vehicle(head);
+        const auto firstCarAge = getCurrentDay() - train.cars.firstCar.front->creationDay;
+        if (firstCarAge < 42)
+        {
+            return;
+        }
+        if (head.aiThoughtId == 0xFFU)
+        {
+            return;
+        }
+        auto& thought = company.aiThoughts[head.aiThoughtId];
+        removeEntityFromThought(thought, head.id);
+        thought.var_43--;
+        thought.var_8B |= (1U << 4);
+
+        GameCommands::VehicleSellArgs args{};
+        args.car = head.id;
+
+        const auto oldUpdatingCompanyId = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral); // Why?
+
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+        GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
+    }
+
+    // 0x00487B77
+    static void tryPlaceVehicleSuccess(Vehicles::VehicleHead& head)
+    {
+        head.breakdownFlags |= Vehicles::BreakdownFlags::brokenDown; // Why?
+
+        GameCommands::VehicleChangeRunningModeArgs args{};
+        args.head = head.id;
+        args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::startVehicle;
+
+        const auto oldUpdatingCompanyId = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral); // Why?
+
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+        GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
+    }
+
     // 0x00487784
     static bool tryPlaceVehicles(Company& company)
     {
@@ -4796,7 +4846,7 @@ namespace OpenLoco
             }();
             if (elStation == nullptr)
             {
-                // 0x00487AC6 ??
+                tryPlaceVehicleFailure(company, *head);
                 return false;
             }
 
@@ -4838,14 +4888,13 @@ namespace OpenLoco
                 GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
                 if (res == GameCommands::FAILURE)
                 {
-                    // 0x00487AC6 ??
+                    tryPlaceVehicleFailure(company, *head);
                     return false;
                 }
-                // 0x00487B77
-                // Starts the vehicle
+                tryPlaceVehicleSuccess(*head);
                 return false;
             }
-            // 0x00487AC6 ??
+            tryPlaceVehicleFailure(company, *head);
             return false;
         }
         else if (head->mode == TransportMode::water)
