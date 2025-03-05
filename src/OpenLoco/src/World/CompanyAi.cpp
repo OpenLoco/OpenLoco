@@ -4782,8 +4782,8 @@ namespace OpenLoco
     static std::optional<GameCommands::VehiclePlacementArgs> generateBackupRoadPlacement(const World::Pos2 pos, const uint8_t roadObjectId, const CompanyId companyId)
     {
         const auto randVal = gPrng1().randNext();
-        const auto randX = (randVal & 0xFU) - 7;
-        const auto randY = ((randVal >> 4) & 0xFU) - 7;
+        const auto randX = ((randVal & 0xFU) - 7) * 32;
+        const auto randY = (((randVal >> 4) & 0xFU) - 7) * 32;
         const auto randPos = World::Pos2(pos.x + randX, pos.y + randY);
         if (!validCoords(randPos))
         {
@@ -4893,6 +4893,120 @@ namespace OpenLoco
                 return nullptr;
             }();
             if (elRoad == nullptr)
+            {
+                return 2;
+            }
+        }
+        return 0;
+    }
+
+    // 0x004A868A
+    static std::optional<GameCommands::VehiclePlacementArgs> generateBackupTrackPlacement(const World::Pos2 pos, const uint8_t trackObjectId, const CompanyId companyId)
+    {
+        const auto randVal = gPrng1().randNext();
+        const auto randX = ((randVal & 0xFU) - 7) * 32;
+        const auto randY = (((randVal >> 4) & 0xFU) - 7) * 32;
+        const auto randPos = World::Pos2(pos.x + randX, pos.y + randY);
+        if (!validCoords(randPos))
+        {
+            return std::nullopt;
+        }
+
+        const auto tile = World::TileManager::get(randPos);
+        for (const auto& el : tile)
+        {
+            auto* elTrack = el.as<TrackElement>();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+            if (elTrack->sequenceIndex() != 0)
+            {
+                continue;
+            }
+            if (elTrack->trackObjectId() != trackObjectId)
+            {
+                continue;
+            }
+            if (elTrack->owner() != companyId)
+            {
+                continue;
+            }
+
+            GameCommands::VehiclePlacementArgs args{};
+            args.convertGhost = false;
+            args.pos = World::Pos3(randPos, elTrack->baseHeight() - World::TrackData::getTrackPiece(elTrack->trackId())[0].z);
+            args.trackAndDirection = (elTrack->trackId() << 3) | elTrack->rotation();
+            args.trackProgress = 0;
+            return args;
+        }
+        return std::nullopt;
+    }
+
+    // 0x004A852B
+    static uint8_t validateTrackPlacement(const World::Pos3 pos, const uint8_t trackObjectId, const uint16_t tad, const CompanyId companyId)
+    {
+        const auto rotation = tad & 0x3;
+        const auto trackId = tad >> 3;
+        World::Pos3 initialPos = pos;
+        if (tad & (1U << 2))
+        {
+            const auto& trackSize = World::TrackData::getUnkTrack(tad);
+            initialPos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                initialPos.x -= kRotationOffset[trackSize.rotationEnd].x;
+                initialPos.y -= kRotationOffset[trackSize.rotationEnd].y;
+            }
+        }
+
+        auto& trackPieces = World::TrackData::getTrackPiece(trackId);
+        for (auto& piece : trackPieces)
+        {
+            const auto rotatedPiece = World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            const auto piecePos = initialPos + rotatedPiece;
+            auto* elTrack = [piecePos, rotation, &piece, trackId, trackObjectId, companyId]() -> const World::TrackElement* {
+                const auto tile = World::TileManager::get(piecePos);
+                for (const auto& el : tile)
+                {
+                    auto* elTrack = el.as<TrackElement>();
+                    if (elTrack == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elTrack->baseHeight() != piecePos.z)
+                    {
+                        continue;
+                    }
+                    if (elTrack->isAiAllocated())
+                    {
+                        continue;
+                    }
+                    if (elTrack->rotation() != rotation)
+                    {
+                        continue;
+                    }
+                    if (elTrack->sequenceIndex() != piece.index)
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackId() != trackId)
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackObjectId() != trackObjectId)
+                    {
+                        continue;
+                    }
+                    if (elTrack->owner() != companyId)
+                    {
+                        continue;
+                    }
+                    return elTrack;
+                }
+                return nullptr;
+            }();
+            if (elTrack == nullptr)
             {
                 return 2;
             }
@@ -5069,7 +5183,7 @@ namespace OpenLoco
         return false;
     }
 
-    // 0x004877E7
+    // 0x00487818
     static bool tryPlaceRoadVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
     {
         if (validateRoadPlacement(pos, head.trackType, head.var_65) & (1U << 1))
@@ -5111,6 +5225,27 @@ namespace OpenLoco
                 head.var_65 ^= (1U << 2);
             }
         }
+        return tryPlaceSurfaceVehicle(company, head, args);
+    }
+
+    // 0x00487807
+    static bool tryPlaceTrackVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
+    {
+        GameCommands::VehiclePlacementArgs args{};
+        args.convertGhost = false;
+        args.pos = pos;
+        args.trackAndDirection = head.var_65;
+        args.trackProgress = 0;
+        if (validateTrackPlacement(pos, head.trackType, head.var_65, company.id()) & (1U << 1))
+        {
+            auto res = generateBackupTrackPlacement(pos, head.trackType, company.id());
+            if (!res.has_value())
+            {
+                return false;
+            }
+            args = res.value();
+        }
+
         return tryPlaceSurfaceVehicle(company, head, args);
     }
 
@@ -5159,9 +5294,9 @@ namespace OpenLoco
         {
             return tryPlaceRoadVehicle(company, *head, pos);
         }
-        else if (head->mode == TransportMode::rail)
+        else // head->mode == TransportMode::rail
         {
-            // 0x004877E7
+            return tryPlaceTrackVehicle(company, *head, pos);
         }
     }
 
