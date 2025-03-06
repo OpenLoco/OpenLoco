@@ -44,6 +44,18 @@ endif ()
 
 project(${PROJECT} LANGUAGES CXX VERSION 25.02)
 
+# Enable IPO for all Release targets by default
+include(CheckIPOSupported)
+check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
+
+if(ipo_supported)
+    # Enable IPO globally for all Release builds
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
+    message(STATUS "IPO/LTO enabled for all Release targets.")
+else()
+    message(WARNING "IPO/LTO not supported: ${ipo_error}")
+endif()
+
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
 endif()
