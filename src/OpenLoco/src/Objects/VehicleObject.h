@@ -166,7 +166,7 @@ namespace OpenLoco
         uint8_t numCargoLoadFrames;      // 0x03
         uint8_t numCargoFrames;          // 0x04
         uint8_t numTiltFrames;           // 0x05 currently the only valid values are 1 and 3
-        uint8_t halfLength;              // 0x06 the distance from pivot of body to either end of car component (not strictly the visible body, see crocodile train car)
+        uint8_t halfLength;              // 0x06 the distance from pivot of body to one end of car component (not strictly the visible body, see CE68 locomotive)
         BodySpriteFlags flags;           // 0x07
         uint8_t width;                   // 0x08 sprite width
         uint8_t heightNegative;          // 0x09 sprite height negative
