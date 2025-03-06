@@ -243,8 +243,8 @@ namespace OpenLoco::GameCommands
         auto& prng = gPrng1();
         newBody->var_44 = prng.randNext();
         newBody->creationDay = getCurrentDay();
-        newBody->animationSprite = 0;
-        newBody->cargoSprite = 0;
+        newBody->animationFrame = 0;
+        newBody->cargoFrame = 0;
         newBody->primaryCargo.acceptedTypes = 0;
         newBody->primaryCargo.type = 0xFF;
         newBody->primaryCargo.qty = 0;

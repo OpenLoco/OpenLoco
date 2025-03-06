@@ -192,7 +192,7 @@ namespace OpenLoco::Paint
             pitch = kReversePitch[static_cast<uint8_t>(body->spritePitch)];
         }
 
-        uint32_t bodyImageIndex = getBodyImageIndex(sprite, pitch, yaw, body->animationSprite, body->cargoSprite);
+        uint32_t bodyImageIndex = getBodyImageIndex(sprite, pitch, yaw, body->animationFrame, body->cargoFrame);
 
         std::optional<uint32_t> brakingImageIndex = {};
         if (sprite.hasFlags(BodySpriteFlags::hasBrakingLights))
