@@ -338,7 +338,7 @@ namespace OpenLoco
                 {
                     rollIndex = (bodySprites.numAnimationFrames - 1) & roll;
                 }
-                if (bodySprites.numRollFrames != 1)
+                if (bodySprites.numTiltFrames != 1)
                 {
                     rollIndex += unk11360E8;
                 }
@@ -427,9 +427,9 @@ namespace OpenLoco
                     unk ^= 1U << 5;
                 }
 
-                auto rollIndex = isAnimated ? carComponent.body->animationSprite : 0;
+                auto rollIndex = isAnimated ? carComponent.body->animationFrame : 0;
 
-                auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, carComponent.body->cargoSprite);
+                auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, carComponent.body->cargoFrame);
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.body->colourScheme), bodyDist, true });
                 if (isAnimated
                     && bodySprites.hasFlags(BodySpriteFlags::hasBrakingLights)

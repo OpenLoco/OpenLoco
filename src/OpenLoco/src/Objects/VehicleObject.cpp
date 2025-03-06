@@ -269,7 +269,7 @@ namespace OpenLoco
             {
                 return false;
             }
-            switch (bodySprite.numRollFrames)
+            switch (bodySprite.numTiltFrames)
             {
                 case 1:
                 case 3:
@@ -516,7 +516,7 @@ namespace OpenLoco
             bodySprite.flatImageId = offset + imgRes.imageOffset;
             bodySprite.flatYawAccuracy = getYawAccuracyFlat(bodySprite.numFlatRotationFrames);
 
-            bodySprite.numFramesPerRotation = bodySprite.numAnimationFrames * bodySprite.numCargoFrames * bodySprite.numRollFrames + (bodySprite.hasFlags(BodySpriteFlags::hasBrakingLights) ? 1 : 0);
+            bodySprite.numFramesPerRotation = bodySprite.numAnimationFrames * bodySprite.numCargoFrames * bodySprite.numTiltFrames + (bodySprite.hasFlags(BodySpriteFlags::hasBrakingLights) ? 1 : 0);
             const auto numFlatFrames = (bodySprite.numFramesPerRotation * bodySprite.numFlatRotationFrames);
             offset += numFlatFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
 
