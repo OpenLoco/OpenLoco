@@ -274,7 +274,7 @@ namespace OpenLoco
             if (componentObject.frontBogieSpriteInd != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
             {
                 auto unk = yaw;
-                if (componentObject.bodySpriteInd & SpriteIndex::flag_unk7)
+                if (componentObject.bodySpriteInd & SpriteIndex::isReversed)
                 {
                     unk ^= 1U << 5;
                 }
@@ -305,7 +305,7 @@ namespace OpenLoco
             if (componentObject.backBogieSpriteInd != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
             {
                 auto unk = yaw;
-                if (!(componentObject.bodySpriteInd & SpriteIndex::flag_unk7))
+                if (!(componentObject.bodySpriteInd & SpriteIndex::isReversed))
                 {
                     unk ^= 1U << 5;
                 }
@@ -325,10 +325,10 @@ namespace OpenLoco
             auto bodyDist = drawItems.totalDistance + (unkDist + carComponentLength - unk1136174) / 2;
             if (componentObject.bodySpriteInd != SpriteIndex::null)
             {
-                auto& bodySprites = vehObject.bodySprites[componentObject.bodySpriteInd & ~SpriteIndex::flag_unk7];
+                auto& bodySprites = vehObject.bodySprites[componentObject.bodySpriteInd & ~SpriteIndex::isReversed];
 
                 auto unk = yaw;
-                if (componentObject.bodySpriteInd & SpriteIndex::flag_unk7)
+                if (componentObject.bodySpriteInd & SpriteIndex::isReversed)
                 {
                     unk ^= 1U << 5;
                 }
@@ -427,14 +427,13 @@ namespace OpenLoco
                     unk ^= 1U << 5;
                 }
 
-                auto rollIndex = isAnimated ? carComponent.body->var_46 : 0;
-                rollIndex += carComponent.body->var_47;
+                auto rollIndex = isAnimated ? carComponent.body->animationSprite : 0;
 
-                auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, 0);
+                auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, carComponent.body->cargoSprite);
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.body->colourScheme), bodyDist, true });
                 if (isAnimated
                     && bodySprites.hasFlags(BodySpriteFlags::hasBrakingLights)
-                    && train.veh2->var_5B != 0)
+                    && train.veh2->brakeLightTimeout != 0)
                 {
                     const auto brakingImageIndex = getBrakingImageIndex(bodySprites, Pitch::flat, yaw);
                     drawItems.items.push_back(DrawItem{ ImageId(brakingImageIndex, carComponent.body->colourScheme), bodyDist, true });
