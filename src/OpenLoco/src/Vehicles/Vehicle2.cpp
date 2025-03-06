@@ -18,6 +18,8 @@ namespace OpenLoco::Vehicles
     static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
     static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
 
+    constexpr const uint8_t kBrakeLightTimeout = 7;
+
     // values are pre *256 for maths
     // Lateral force due to gravity due to Pitch possibly SIN(angle) * 256 * 256
     static constexpr std::array<int32_t, 13> _500170{
@@ -318,7 +320,7 @@ namespace OpenLoco::Vehicles
 
         if (motorState == MotorState::braking)
         {
-            if (var_5B == 0)
+            if (brakeLightTimeout == 0)
             {
                 invalidateSprite();
                 train.veh1->invalidateSprite();
@@ -326,17 +328,17 @@ namespace OpenLoco::Vehicles
                 train.cars.applyToComponents([](auto& component) { component.invalidateSprite(); });
             }
 
-            var_5B = 7;
+            brakeLightTimeout = kBrakeLightTimeout;
             return true;
         }
         else
         {
-            if (var_5B == 0)
+            if (brakeLightTimeout == 0)
             {
                 return true;
             }
-            var_5B--;
-            if (var_5B == 0)
+            brakeLightTimeout--;
+            if (brakeLightTimeout == 0)
             {
                 invalidateSprite();
                 train.veh1->invalidateSprite();

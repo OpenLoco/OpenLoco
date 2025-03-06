@@ -41,7 +41,7 @@ namespace OpenLoco
     namespace SpriteIndex
     {
         constexpr uint8_t null = 0xFF;
-        constexpr uint8_t flag_unk7 = (1 << 7); // Set on electric multiple unit
+        constexpr uint8_t isReversed = (1 << 7); // the bogie or body should be drawn reversed
     }
 
 #pragma pack(push, 1)
@@ -122,7 +122,7 @@ namespace OpenLoco
         rotationalSymmetry = 1U << 1, // requires half the number of sprites i.e. 16 instead of 32
         hasGentleSprites = 1U << 2,   // for gentle slopes
         hasSteepSprites = 1U << 3,    // for steep slopes
-        unk_4 = 1U << 4,              // Increases bounding box size
+        largerBoundingBox = 1U << 4,              // Increases bounding box size
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BogieSpriteFlags);
 

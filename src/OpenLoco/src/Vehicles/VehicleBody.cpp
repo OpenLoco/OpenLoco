@@ -166,7 +166,7 @@ namespace OpenLoco::Vehicles
         {
             VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
             Vehicle2* veh3 = _vehicleUpdate_2;
-            al = var_46;
+            al = animationSprite;
             int8_t ah = 0;
             if (veh3->currentSpeed < 35.0_mph)
             {
@@ -232,9 +232,9 @@ namespace OpenLoco::Vehicles
         {
             al = (var_44 >> 12) & (vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
         }
-        if (var_46 != al)
+        if (animationSprite != al)
         {
-            var_46 = al;
+            animationSprite = al;
             invalidateSprite();
         }
     }
@@ -1395,9 +1395,9 @@ namespace OpenLoco::Vehicles
             spriteIndex += vehicleObj->cargoTypeSpriteOffsets[primaryCargo.type];
         }
         spriteIndex *= bodySprite.numAnimationFrames;
-        if (spriteIndex != var_47)
+        if (spriteIndex != cargoSprite)
         {
-            var_47 = spriteIndex;
+            cargoSprite = spriteIndex;
             invalidateSprite();
         }
     }
