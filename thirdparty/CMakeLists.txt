@@ -85,7 +85,7 @@ if ( NOT sfl_FOUND )
     FetchContent_Declare(
         sfl
         GIT_REPOSITORY      https://github.com/slavenf/sfl-library
-        GIT_TAG             1.9.0
+        GIT_TAG             d331ddb219ea2f7438fa6dca1248551622156f72
         GIT_SHALLOW         ON
     )
     FetchContent_MakeAvailable(sfl)
