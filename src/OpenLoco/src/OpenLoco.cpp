@@ -122,23 +122,14 @@ namespace OpenLoco
     }
 
     // 0x004BE621
-    [[noreturn]] void exitWithError(StringId eax, StringId ebx)
+    [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)
     {
-        registers regs;
-        regs.eax = eax;
-        regs.ebx = ebx;
-        call(0x004BE621, regs);
-        exitCleanly();
-    }
+        char titleBuffer[256] = { 0 };
+        char messageBuffer[256] = { 0 };
+        StringManager::formatString(titleBuffer, 255, titleStringId);
+        StringManager::formatString(messageBuffer, 255, messageStringId);
+        Ui::showMessageBox(titleBuffer, messageBuffer);
 
-    // 0x004BE5EB
-    [[noreturn]] void exitWithError(StringId message, uint32_t errorCode)
-    {
-        // Saves the error code for later writing to error log 1.TMP.
-        registers regs;
-        regs.eax = errorCode;
-        regs.bx = message;
-        call(0x004BE5EB, regs);
         exitCleanly();
     }
 
