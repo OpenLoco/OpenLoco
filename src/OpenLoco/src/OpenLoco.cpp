@@ -122,12 +122,12 @@ namespace OpenLoco
     }
 
     // 0x004BE621
-    [[noreturn]] void exitWithError(StringId eax, StringId ebx)
+    [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)
     {
         char titleBuffer[256] = { 0 };
         char messageBuffer[256] = { 0 };
-        StringManager::formatString(titleBuffer, 255, eax);
-        StringManager::formatString(messageBuffer, 255, ebx);
+        StringManager::formatString(titleBuffer, 255, titleStringId);
+        StringManager::formatString(messageBuffer, 255, messageStringId);
         Ui::showMessageBox(titleBuffer, messageBuffer);
 
         exitCleanly();

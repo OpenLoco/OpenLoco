@@ -28,5 +28,5 @@ namespace OpenLoco
     int main(std::vector<std::string>&& argv);
     bool promptTickLoop(std::function<bool()> tickAction);
     [[noreturn]] void exitCleanly();
-    [[noreturn]] void exitWithError(StringId eax, StringId ebx);
+    [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId);
 }
