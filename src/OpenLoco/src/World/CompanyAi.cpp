@@ -85,13 +85,13 @@ namespace OpenLoco
     {
         none = 0U,
 
-        unk0 = 1U << 0,
-        unk1 = 1U << 1,
-        unk2 = 1U << 2,
-        unk3 = 1U << 3,
-        unk4 = 1U << 4,
-        unk5 = 1U << 5,
-        unk6 = 1U << 6, // Circular track - 4 stations
+        singleDestination = 1U << 0, // I.e. could be all based in one town
+        destinationAIsIndustry = 1U << 1,
+        destinationBIsIndustry = 1U << 2,
+        railBased = 1U << 3,
+        tramBased = 1U << 4,
+        roadBased = 1U << 5, // But not tram
+        unk6 = 1U << 6,      // Circular track - 4 stations
         unk7 = 1U << 7,
         unk8 = 1U << 8,
         unk9 = 1U << 9, // Tunnel (unused)
@@ -108,26 +108,26 @@ namespace OpenLoco
 
     // 0x004FE720
     static constexpr std::array<ThoughtTypeFlags, kAiThoughtTypeCount> kThoughtTypeFlags = {
-        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk11,
-        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk14,
-        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk14,
-        ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11,
-        ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
-        ThoughtTypeFlags::unk0 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk10 | ThoughtTypeFlags::unk12,
-        ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk12,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk5 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
+        ThoughtTypeFlags::railBased | ThoughtTypeFlags::singleDestination | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::tramBased | ThoughtTypeFlags::singleDestination | ThoughtTypeFlags::unk14,
+        ThoughtTypeFlags::tramBased | ThoughtTypeFlags::singleDestination | ThoughtTypeFlags::unk6 | ThoughtTypeFlags::unk14,
+        ThoughtTypeFlags::railBased | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::railBased | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::roadBased | ThoughtTypeFlags::singleDestination | ThoughtTypeFlags::unk10 | ThoughtTypeFlags::unk12,
+        ThoughtTypeFlags::roadBased | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk12,
+        ThoughtTypeFlags::railBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::destinationBIsIndustry | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::railBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::destinationBIsIndustry | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::railBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::railBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::roadBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::destinationBIsIndustry | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
+        ThoughtTypeFlags::roadBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::unk8 | ThoughtTypeFlags::unk13,
         ThoughtTypeFlags::airBased,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::airBased,
+        ThoughtTypeFlags::airBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::unk7,
         ThoughtTypeFlags::waterBased,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk2 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::waterBased,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk7 | ThoughtTypeFlags::waterBased,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11,
-        ThoughtTypeFlags::unk1 | ThoughtTypeFlags::unk3 | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
+        ThoughtTypeFlags::waterBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::destinationBIsIndustry | ThoughtTypeFlags::unk7,
+        ThoughtTypeFlags::waterBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::unk7,
+        ThoughtTypeFlags::railBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::unk11,
+        ThoughtTypeFlags::railBased | ThoughtTypeFlags::destinationAIsIndustry | ThoughtTypeFlags::unk11 | ThoughtTypeFlags::unk17,
     };
 
     // 0x004FE770
@@ -303,7 +303,7 @@ namespace OpenLoco
             }
             // Potential vanilla issue below it checks for 1ULL << 11 here 1ULL << 7
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7)
-                && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+                && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
             {
                 GameCommands::VehicleOrderInsertArgs insertArgs2{};
                 insertArgs2.head = trainHeadId;
@@ -318,7 +318,7 @@ namespace OpenLoco
                 }
             }
         }
-        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
         {
             return PurchaseVehicleResult::success;
         }
@@ -660,36 +660,36 @@ namespace OpenLoco
                     continue;
                 }
                 auto compatibleThought = [&otherThought, &thought]() {
-                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk0))
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::singleDestination) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
                     {
                         return false;
                     }
-                    if (otherThought.var_01 == thought.var_01)
+                    if (otherThought.destinationA == thought.destinationA)
                     {
-                        if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0) || otherThought.var_02 == thought.var_02)
+                        if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::singleDestination) || otherThought.destinationB == thought.destinationB)
                         {
-                            if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1)
-                                && thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2))
+                            if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationAIsIndustry) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry)
+                                && thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationBIsIndustry) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry))
                             {
                                 return true;
                             }
                         }
                     }
-                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk0))
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::singleDestination))
                     {
                         return false;
                     }
-                    if (otherThought.var_02 != thought.var_01)
+                    if (otherThought.destinationB != thought.destinationA)
                     {
                         return false;
                     }
-                    if (otherThought.var_01 != thought.var_02)
+                    if (otherThought.destinationA != thought.destinationB)
                     {
                         return false;
                     }
                     // Note: unk1 unk2 are swapped on our thought
-                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk1) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk2)
-                        || thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::unk2) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+                    if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationAIsIndustry) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry)
+                        || thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationBIsIndustry) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
                     {
                         return false;
                     }
@@ -773,12 +773,208 @@ namespace OpenLoco
         call(0x00430BDA, regs);
     }
 
+    struct DestinationPositions
+    {
+        Pos2 posA;
+        std::optional<Pos2> posB;
+    };
+    static DestinationPositions getDestinationPositions(const AiThought& thought)
+    {
+        DestinationPositions destPos{};
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
+        {
+            const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationA));
+            destPos.posA = { industry->x, industry->y };
+        }
+        else
+        {
+            const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
+            destPos.posA = { town->x, town->y };
+        }
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
+        {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry))
+            {
+                const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationB));
+                destPos.posB = { industry->x, industry->y };
+            }
+            else
+            {
+                const auto* town = TownManager::get(static_cast<TownId>(thought.destinationB));
+                destPos.posB = { town->x, town->y };
+            }
+        }
+        return destPos;
+    }
+
+    // 0x0047FE3A
+    static bool chooseTrackObject(Company& company, AiThought& thought)
+    {
+        const auto destinations = getDestinationPositions(thought);
+        using enum World::Track::TrackTraitFlags;
+        auto requiredTraits = smallCurve | slope | junction;
+        if (destinations.posB.has_value())
+        {
+            auto* surfaceA = TileManager::get(destinations.posA).surface();
+            auto* surfaceB = TileManager::get(destinations.posB.value()).surface();
+            auto heightDiff = std::abs(surfaceA->baseZ() - surfaceB->baseZ());
+            const auto dist = Math::Vector::distance2D(destinations.posA, destinations.posB.value());
+            if (heightDiff > 32 && dist <= 45 * 32)
+            {
+                requiredTraits |= steepSlope;
+            }
+        }
+
+        const auto tracks = company.getAvailableRailTracks();
+        Speed16 maxSpeed = 0_mph;
+        uint8_t bestTrack = 0xFFU;
+        for (const auto trackObjId : tracks)
+        {
+            if (trackObjId & (1U << 7))
+            {
+                continue;
+            }
+            auto* trackObj = ObjectManager::get<TrackObject>(trackObjId);
+            if ((trackObj->trackPieces & requiredTraits) != requiredTraits)
+            {
+                continue;
+            }
+            if (maxSpeed < trackObj->curveSpeed)
+            {
+                maxSpeed = trackObj->curveSpeed;
+                bestTrack = trackObjId;
+            }
+        }
+        if (bestTrack == 0xFFU)
+        {
+            return true;
+        }
+        thought.trackObjId = bestTrack;
+        if ((requiredTraits & steepSlope) != World::Track::TrackTraitFlags::none)
+        {
+            thought.var_8B |= 1U << 0;
+        }
+        auto* trackObj = ObjectManager::get<TrackObject>(bestTrack);
+        if (trackObj->hasFlags(TrackObjectFlags::unk_04))
+        {
+            thought.var_8B |= 1U << 1;
+        }
+        return false;
+    }
+
+    // 0x0047FFE5
+    static bool chooseBasicRoadObject(Company& company, AiThought& thought)
+    {
+        const auto roads = company.getAvailableRoads();
+        const auto requiredTraits = World::Track::RoadTraitFlags::verySmallCurve | World::Track::RoadTraitFlags::slope | World::Track::RoadTraitFlags::steepSlope | World::Track::RoadTraitFlags::unk4 | World::Track::RoadTraitFlags::junction;
+        Speed16 maxSpeed = 0_mph;
+        uint8_t bestRoad = 0xFFU;
+        for (const auto roadObjId : roads)
+        {
+            if (!(roadObjId & (1U << 7)))
+            {
+                continue;
+            }
+
+            auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
+            using enum RoadObjectFlags;
+            if ((roadObj->flags & (unk_07 | isRoad | unk_03 | unk_02)) != (unk_07 | isRoad | unk_03 | unk_02))
+            {
+                continue;
+            }
+            if (roadObj->hasFlags(unk_00))
+            {
+                continue;
+            }
+            if ((roadObj->roadPieces & requiredTraits) != requiredTraits)
+            {
+                continue;
+            }
+            if (maxSpeed < roadObj->maxSpeed)
+            {
+                maxSpeed = roadObj->maxSpeed;
+                bestRoad = roadObjId;
+            }
+        }
+        if (bestRoad == 0xFFU)
+        {
+            return true;
+        }
+        thought.trackObjId = bestRoad | (1U << 7);
+        return false;
+    }
+
+    // 0x0047FF77
+    static bool chooseTramRoadObject(Company& company, AiThought& thought)
+    {
+        const auto roads = company.getAvailableRailTracks();
+        const auto requiredTraits = World::Track::RoadTraitFlags::verySmallCurve | World::Track::RoadTraitFlags::slope | World::Track::RoadTraitFlags::steepSlope | World::Track::RoadTraitFlags::unk4 | World::Track::RoadTraitFlags::junction | World::Track::RoadTraitFlags::turnaround;
+        Speed16 maxSpeed = 0_mph;
+        uint8_t bestRoad = 0xFFU;
+        for (const auto roadObjId : roads)
+        {
+            if (!(roadObjId & (1U << 7)))
+            {
+                continue;
+            }
+
+            auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
+            using enum RoadObjectFlags;
+            if (roadObj->hasFlags(unk_07 | isRoad | unk_03 | unk_00))
+            {
+                continue;
+            }
+            if ((roadObj->roadPieces & requiredTraits) != requiredTraits)
+            {
+                continue;
+            }
+            if (maxSpeed < roadObj->maxSpeed)
+            {
+                maxSpeed = roadObj->maxSpeed;
+                bestRoad = roadObjId;
+            }
+        }
+        if (bestRoad == 0xFFU)
+        {
+            return true;
+        }
+        thought.trackObjId = bestRoad | (1U << 7);
+        return false;
+    }
+
+    // 0x00480059
+    static bool chooseTrackRoadObject(Company& company, AiThought& thought)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased | ThoughtTypeFlags::airBased))
+        {
+            return false;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
+        {
+            return chooseTrackObject(company, thought);
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+        {
+            return chooseBasicRoadObject(company, thought);
+        }
+        else
+        {
+            return chooseTramRoadObject(company, thought);
+        }
+    }
+
     // 0x00430C06
     static void sub_430C06(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430C06, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        if (chooseTrackRoadObject(company, thought))
+        {
+            state2ClearActiveThought(company);
+        }
+        else
+        {
+            company.var_4A5 = 5;
+        }
     }
 
     // 0x00430C2D
@@ -988,7 +1184,7 @@ namespace OpenLoco
         }
         else
         {
-            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk4 | ThoughtTypeFlags::unk5))
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::tramBased | ThoughtTypeFlags::roadBased))
             {
                 costMultiplier *= thought.var_04;
             }
@@ -2125,7 +2321,7 @@ namespace OpenLoco
         auto& aiStation = thought.stations[aiStationIdx];
         const auto randStationTilePos = World::toTileSpace(aiStation.pos) + randTileOffset;
 
-        const auto length = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3) ? thought.var_04 : 1;
+        const auto length = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased) ? thought.var_04 : 1;
         const auto newStationTilePos = randStationTilePos - toTileSpace(kRotationOffset[aiStation.rotation]) * (length / 2);
 
         auto checkLength = length;
@@ -2484,7 +2680,7 @@ namespace OpenLoco
             auto rotation = aiStation.rotation;
             if (company.var_85C3 & (1U << 0))
             {
-                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
                 {
                     const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
                     pos += stationEndDiff;
@@ -2511,7 +2707,7 @@ namespace OpenLoco
             auto rotation = aiStation.rotation;
             if (company.var_85C3 & (1U << 1))
             {
-                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
                 {
                     const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
                     pos += stationEndDiff;
@@ -2834,7 +3030,7 @@ namespace OpenLoco
             }
         }
 
-        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk3))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
         {
             return 2;
         }
@@ -2961,10 +3157,10 @@ namespace OpenLoco
             }
             company.challengeFlags |= CompanyFlags::unk0;
 
-            auto townId = static_cast<TownId>(thought.var_01);
-            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+            auto townId = static_cast<TownId>(thought.destinationA);
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
             {
-                townId = IndustryManager::get(static_cast<IndustryId>(thought.var_01))->town;
+                townId = IndustryManager::get(static_cast<IndustryId>(thought.destinationA))->town;
             }
             const auto id = GameCommands::getUpdatingCompanyId();
             MessageManager::post(MessageType::newCompany, id, enumValue(id), enumValue(townId));
@@ -4337,14 +4533,14 @@ namespace OpenLoco
         auto& thought = company->aiThoughts[index];
 
         World::Pos2 pos;
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
         {
-            auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
+            auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationA));
             pos = { industry->x, industry->y };
         }
         else
         {
-            auto* town = TownManager::get(static_cast<TownId>(thought.var_01));
+            auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
             pos = { town->x, town->y };
         }
 
@@ -4387,15 +4583,15 @@ namespace OpenLoco
         {
             World::Pos2 pos{};
             auto& thought = company->aiThoughts[company->activeThoughtId];
-            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk1))
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
             {
-                auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
+                auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationA));
                 pos = World::Pos2{ industry->x, industry->y };
             }
             else
             {
                 // Interestingly var_01 isn't a uint16_t
-                auto* town = TownManager::get(static_cast<TownId>(thought.var_01));
+                auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
                 pos = World::Pos2{ town->x, town->y };
             }
             companySetObservation(id, ObservationStatus::surveyingLandscape, pos, EntityId::null, 0xFFFFU);
