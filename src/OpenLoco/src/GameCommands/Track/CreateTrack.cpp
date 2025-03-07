@@ -53,18 +53,21 @@ namespace OpenLoco::GameCommands
         return false;
     }
 
-    struct ClearFunctionArgs
+    namespace
     {
-        World::Pos3 pos;
-        uint8_t rotation;
-        uint8_t trackId;
-        uint8_t unkFlags;
-        uint8_t bridgeId;
-        uint8_t trackObjectId;
-        uint8_t index;
-        bool isLastIndex;
-        uint8_t flags;
-    };
+        struct ClearFunctionArgs
+        {
+            World::Pos3 pos;
+            uint8_t rotation;
+            uint8_t trackId;
+            uint8_t unkFlags;
+            uint8_t bridgeId;
+            uint8_t trackObjectId;
+            uint8_t index;
+            bool isLastIndex;
+            uint8_t flags;
+        };
+    }
 
     // 0x0049C4FF
     static World::TileClearance::ClearFuncResult clearTrack(World::TrackElement& elTrack, const ClearFunctionArgs& args)

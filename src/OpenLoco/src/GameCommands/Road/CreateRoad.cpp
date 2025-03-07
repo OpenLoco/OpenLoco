@@ -58,18 +58,21 @@ namespace OpenLoco::GameCommands
         return false;
     }
 
-    struct ClearFunctionArgs
+    namespace
     {
-        World::Pos3 pos;
-        uint8_t rotation;
-        uint8_t roadId;
-        uint8_t bridgeId;
-        uint8_t roadObjectId;
-        uint8_t index;
-        bool isLastIndex;
-        uint8_t flags;
-        uint8_t unkFlags;
-    };
+        struct ClearFunctionArgs
+        {
+            World::Pos3 pos;
+            uint8_t rotation;
+            uint8_t roadId;
+            uint8_t bridgeId;
+            uint8_t roadObjectId;
+            uint8_t index;
+            bool isLastIndex;
+            uint8_t flags;
+            uint8_t unkFlags;
+        };
+    }
 
     struct RoadClearFunctionResult
     {
