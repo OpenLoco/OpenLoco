@@ -174,7 +174,7 @@ namespace OpenLoco
         uint32_t var_4A0;
         AiThinkState var_4A4; // 0x04A4
         uint8_t var_4A5;
-        uint8_t var_4A6;
+        AiPlaceVehicleState var_4A6;
         uint8_t var_4A7;
         AiThought aiThoughts[kMaxAiThoughts]; // 0x04A8
         uint8_t activeThoughtId;              // 0x2578
@@ -193,7 +193,7 @@ namespace OpenLoco
         uint8_t var_259B;
         uint8_t var_259C;
         uint8_t pad_259D;
-        uint32_t var_259E;
+        uint32_t aiPlaceVehicleIndex;
         uint8_t pad_25A2[0x25BE - 0x25A2];
         uint8_t var_25BE;
         CorporateRating currentRating;          // 0x25BF
