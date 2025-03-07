@@ -707,8 +707,7 @@ namespace OpenLoco::World::TileManager
         }
         catch (const std::bad_alloc&)
         {
-            Ui::showMessageBox("Bad Alloc", "Bad memory allocation, exiting");
-            exitWithError(4370, StringIds::null);
+            exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
         }
 
         // Note: original implementation did not revert the cursor
