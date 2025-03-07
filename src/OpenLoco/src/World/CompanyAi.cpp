@@ -358,29 +358,27 @@ namespace OpenLoco
 
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
             {
-                head->var_61 = thought.stations[0].pos.x;
-                head->var_63 = thought.stations[0].pos.y;
-                head->var_67 = thought.stations[0].baseZ;
-                head->var_65 = thought.stations[0].rotation;
+                head->aiPlacementPos = thought.stations[0].pos;
+                head->aiPlacementBaseZ = thought.stations[0].baseZ;
+                head->aiPlacementTaD = thought.stations[0].rotation; // For air and water this doesn't actually get used
             }
             else
             {
-                head->var_61 = thought.stations[0].pos.x;
-                head->var_63 = thought.stations[0].pos.y;
-                head->var_67 = thought.stations[0].baseZ;
+                head->aiPlacementPos = thought.stations[0].pos;
+                head->aiPlacementBaseZ = thought.stations[0].baseZ;
 
-                uint8_t rotation = thought.stations[0].rotation;
+                uint8_t tad = thought.stations[0].rotation | (0U << 3); // Always trackId/roadId 0 (straight)
                 if (thought.trackObjId & (1U << 7))
                 {
                     if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
                     {
                         if (i & 0b1)
                         {
-                            rotation ^= (1U << 2);
+                            tad ^= (1U << 2);
                         }
                     }
                 }
-                head->var_65 = rotation;
+                head->aiPlacementTaD = tad;
             }
             head->breakdownFlags |= Vehicles::BreakdownFlags::breakdownPending;
             thought.var_88 = 0;
@@ -4244,7 +4242,6 @@ namespace OpenLoco
 
     namespace PlaceVehicleStateMachine
     {
-
         // 0x00431295
         static void beginPlacement(Company& company)
         {
@@ -4714,11 +4711,11 @@ namespace OpenLoco
         // 0x00487818
         static void tryPlaceRoadVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
         {
-            if (validateRoadPlacement(pos, head.trackType, head.var_65) & (1U << 1))
+            if (validateRoadPlacement(pos, head.trackType, head.aiPlacementTaD) & (1U << 1))
             {
                 // 0x0048788E
                 auto args = generateBackupRoadPlacement(pos, head.trackType, company.id());
-                if (!args.has_value())
+                if (args.has_value())
                 {
                     tryPlaceSurfaceVehicle(company, head, args.value());
                 }
@@ -4743,14 +4740,14 @@ namespace OpenLoco
             GameCommands::VehiclePlacementArgs args{};
             args.convertGhost = false;
             args.pos = pos;
-            args.trackAndDirection = head.var_65;
+            args.trackAndDirection = head.aiPlacementTaD;
             args.trackProgress = 0;
 
             if (!head.hasBreakdownFlags(Vehicles::BreakdownFlags::brokenDown))
             {
                 if (head.trackType == 0xFFU)
                 {
-                    head.var_65 ^= (1U << 2);
+                    head.aiPlacementTaD ^= (1U << 2);
                 }
             }
             tryPlaceSurfaceVehicle(company, head, args);
@@ -4762,9 +4759,9 @@ namespace OpenLoco
             GameCommands::VehiclePlacementArgs args{};
             args.convertGhost = false;
             args.pos = pos;
-            args.trackAndDirection = head.var_65;
+            args.trackAndDirection = head.aiPlacementTaD;
             args.trackProgress = 0;
-            if (validateTrackPlacement(pos, head.trackType, head.var_65, company.id()) & (1U << 1))
+            if (validateTrackPlacement(pos, head.trackType, head.aiPlacementTaD, company.id()) & (1U << 1))
             {
                 auto res = generateBackupTrackPlacement(pos, head.trackType, company.id());
                 if (!res.has_value())
@@ -4809,7 +4806,7 @@ namespace OpenLoco
             {
                 return false;
             }
-            const auto pos = World::Pos3(head->var_61, head->var_63, head->var_67 * World::kSmallZStep);
+            const auto pos = World::Pos3(head->aiPlacementPos, head->aiPlacementBaseZ * World::kSmallZStep);
             if (head->mode == TransportMode::air)
             {
                 tryPlaceAirVehicle(company, *head, pos);
