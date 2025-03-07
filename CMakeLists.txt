@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.22)
 cmake_policy(VERSION 3.22)
 
+# IPO warning.
+cmake_policy(SET CMP0069 NEW) 
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
+
 set (PROJECT openloco)
 
 # Store the top level source directory in a variable to be passed down to targets.
@@ -43,6 +47,18 @@ if (WIN32)
 endif ()
 
 project(${PROJECT} LANGUAGES CXX VERSION 25.02)
+
+# Enable IPO for all Release targets by default
+include(CheckIPOSupported)
+check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
+
+if(ipo_supported)
+    # Enable IPO globally for all Release builds
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
+    message(STATUS "IPO/LTO enabled for all Release targets.")
+else()
+    message(WARNING "IPO/LTO not supported: ${ipo_error}")
+endif()
 
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
