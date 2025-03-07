@@ -296,6 +296,13 @@ namespace OpenLoco
                     return false;
             }
         }
+
+        const auto startSoundCount = numStartSounds & NumStartSounds::kMask;
+        if (startSoundCount > kMaxStartSounds)
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -480,7 +487,8 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        for (auto i = 0; i < (numStartSounds & NumStartSounds::kMask); ++i)
+        const auto startSoundCount = std::min(kMaxStartSounds, numStartSounds & NumStartSounds::kMask);
+        for (auto i = 0; i < startSoundCount; ++i)
         {
             ObjectHeader soundHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)

@@ -232,6 +232,7 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::vehicle;
         static constexpr auto kMaxBodySprites = 4;
         static constexpr auto kMaxCarComponents = 4;
+        static constexpr auto kMaxStartSounds = 3;
 
         StringId name;      // 0x00
         TransportMode mode; // 0x02
@@ -273,8 +274,8 @@ namespace OpenLoco
             VehicleGearboxMotorSound gearboxMotor;
         } sound;
         uint8_t pad_135[0x15A - 0x135];
-        uint8_t numStartSounds;         // 0x15A use mask when accessing kHasCrossingWhistle stuffed in (1 << 7)
-        SoundObjectId_t startSounds[3]; // 0x15B sound array length numStartSounds highest sound is the crossing whistle
+        uint8_t numStartSounds;                       // 0x15A use mask when accessing kHasCrossingWhistle stuffed in (1 << 7)
+        SoundObjectId_t startSounds[kMaxStartSounds]; // 0x15B sound array length numStartSounds highest sound is the crossing whistle
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, const int16_t width) const;
