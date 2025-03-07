@@ -4542,7 +4542,7 @@ namespace OpenLoco
 
     // 0x004878E3
     // args is expected to not have head set yet
-    static bool tryPlaceSurfaceVehicle(Company& company, Vehicles::VehicleHead& head, GameCommands::VehiclePlacementArgs args)
+    static void tryPlaceSurfaceVehicle(Company& company, Vehicles::VehicleHead& head, GameCommands::VehiclePlacementArgs args)
     {
         args.head = head.id;
         const auto oldUpdatingCompanyId = GameCommands::getUpdatingCompanyId();
@@ -4554,14 +4554,13 @@ namespace OpenLoco
         if (res == GameCommands::FAILURE)
         {
             tryPlaceVehicleFailure(company, head);
-            return false;
+            return;
         }
         tryPlaceVehicleSuccess(head);
-        return true;
     }
 
     // 0x00487A27
-    static bool tryPlaceWaterVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
+    static void tryPlaceWaterVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
     {
         auto* elStation = [&pos, &head]() -> const StationElement* {
             auto tile = World::TileManager::get(pos);
@@ -4599,7 +4598,7 @@ namespace OpenLoco
         if (elStation == nullptr)
         {
             tryPlaceVehicleFailure(company, head);
-            return false;
+            return;
         }
 
         GameCommands::VehicleWaterPlacementArgs args{};
@@ -4616,14 +4615,13 @@ namespace OpenLoco
         if (res == GameCommands::FAILURE)
         {
             tryPlaceVehicleFailure(company, head);
-            return false;
+            return;
         }
         tryPlaceVehicleSuccess(head);
-        return false;
     }
 
     // 0x00487926
-    static bool tryPlaceAirVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
+    static void tryPlaceAirVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
     {
         auto* elStation = [&pos, &head]() -> const StationElement* {
             auto tile = World::TileManager::get(pos);
@@ -4657,7 +4655,7 @@ namespace OpenLoco
         if (elStation == nullptr)
         {
             tryPlaceVehicleFailure(company, head);
-            return false;
+            return;
         }
 
         auto* station = StationManager::get(elStation->stationId());
@@ -4700,17 +4698,18 @@ namespace OpenLoco
             if (res == GameCommands::FAILURE)
             {
                 tryPlaceVehicleFailure(company, head);
-                return false;
             }
-            tryPlaceVehicleSuccess(head);
-            return false;
+            else
+            {
+                tryPlaceVehicleSuccess(head);
+            }
+            return;
         }
         tryPlaceVehicleFailure(company, head);
-        return false;
     }
 
     // 0x00487818
-    static bool tryPlaceRoadVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
+    static void tryPlaceRoadVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
     {
         if (validateRoadPlacement(pos, head.trackType, head.var_65) & (1U << 1))
         {
@@ -4718,9 +4717,9 @@ namespace OpenLoco
             auto args = generateBackupRoadPlacement(pos, head.trackType, company.id());
             if (!args.has_value())
             {
-                return false;
+                tryPlaceSurfaceVehicle(company, head, args.value());
             }
-            return tryPlaceSurfaceVehicle(company, head, args.value());
+            return;
         }
 
         if (!head.hasBreakdownFlags(Vehicles::BreakdownFlags::brokenDown))
@@ -4731,11 +4730,11 @@ namespace OpenLoco
             {
                 // 0x0048788E
                 auto args = generateBackupRoadPlacement(pos, head.trackType, company.id());
-                if (!args.has_value())
+                if (args.has_value())
                 {
-                    return false;
+                    tryPlaceSurfaceVehicle(company, head, args.value());
                 }
-                return tryPlaceSurfaceVehicle(company, head, args.value());
+                return;
             }
         }
         GameCommands::VehiclePlacementArgs args{};
@@ -4751,11 +4750,11 @@ namespace OpenLoco
                 head.var_65 ^= (1U << 2);
             }
         }
-        return tryPlaceSurfaceVehicle(company, head, args);
+        tryPlaceSurfaceVehicle(company, head, args);
     }
 
     // 0x00487807
-    static bool tryPlaceTrackVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
+    static void tryPlaceTrackVehicle(Company& company, Vehicles::VehicleHead& head, World::Pos3 pos)
     {
         GameCommands::VehiclePlacementArgs args{};
         args.convertGhost = false;
@@ -4767,12 +4766,12 @@ namespace OpenLoco
             auto res = generateBackupTrackPlacement(pos, head.trackType, company.id());
             if (!res.has_value())
             {
-                return false;
+                return;
             }
             args = res.value();
         }
 
-        return tryPlaceSurfaceVehicle(company, head, args);
+        tryPlaceSurfaceVehicle(company, head, args);
     }
 
     // 0x00487784
@@ -4803,27 +4802,28 @@ namespace OpenLoco
         {
             return false;
         }
-        if (head->hasBreakdownFlags(Vehicles::BreakdownFlags::breakdownPending))
+        if (!head->hasBreakdownFlags(Vehicles::BreakdownFlags::breakdownPending))
         {
             return false;
         }
         const auto pos = World::Pos3(head->var_61, head->var_63, head->var_67 * World::kSmallZStep);
         if (head->mode == TransportMode::air)
         {
-            return tryPlaceAirVehicle(company, *head, pos);
+            tryPlaceAirVehicle(company, *head, pos);
         }
         else if (head->mode == TransportMode::water)
         {
-            return tryPlaceWaterVehicle(company, *head, pos);
+            tryPlaceWaterVehicle(company, *head, pos);
         }
         else if (head->mode == TransportMode::road)
         {
-            return tryPlaceRoadVehicle(company, *head, pos);
+            tryPlaceRoadVehicle(company, *head, pos);
         }
         else // head->mode == TransportMode::rail
         {
-            return tryPlaceTrackVehicle(company, *head, pos);
+            tryPlaceTrackVehicle(company, *head, pos);
         }
+        return false;
     }
 
     // 0x004312AF
