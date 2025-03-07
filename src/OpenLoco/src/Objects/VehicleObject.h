@@ -150,7 +150,7 @@ namespace OpenLoco
         none = 0U,
         hasSprites = 1U << 0,         // If not set then no body will be loaded
         rotationalSymmetry = 1U << 1, // requires half the number of sprites i.e. 32 instead of 64
-        flag_02_deprecated = 1U << 2, // incomplete feature of vanilla. Do not use until new object format
+        flag_02_deprecated = 1U << 2, // incomplete feature of vanilla. Do not repurpose until new object format
         hasGentleSprites = 1U << 3,   // for gentle slopes
         hasSteepSprites = 1U << 4,    // for steep slopes
         hasBrakingLights = 1U << 5,
