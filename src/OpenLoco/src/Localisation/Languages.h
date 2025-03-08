@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <span>
 #include <string>
-#include <vector>
 
 namespace OpenLoco::Localisation
 {
@@ -35,6 +35,6 @@ namespace OpenLoco::Localisation
     };
 
     void enumerateLanguages();
-    std::vector<LanguageDescriptor>& getLanguageDescriptors();
+    std::span<const LanguageDescriptor> getLanguageDescriptors();
     const LanguageDescriptor& getDescriptorForLanguage(std::string_view targetLocale);
 }

@@ -10,14 +10,14 @@
 
 namespace OpenLoco::Localisation
 {
-    std::vector<LanguageDescriptor> languageDescriptors;
+    static std::vector<LanguageDescriptor> _languageDescriptors;
 
     void enumerateLanguages()
     {
         // (Re-)initialise the languages table.
-        languageDescriptors.clear();
+        _languageDescriptors.clear();
         LanguageDescriptor undefinedLanguage = { "", "", "", LocoLanguageId::english_uk };
-        languageDescriptors.emplace_back(undefinedLanguage);
+        _languageDescriptors.emplace_back(undefinedLanguage);
 
         // Search the languages dir for YAML language files.
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
@@ -58,23 +58,23 @@ namespace OpenLoco::Localisation
             language.locoOriginalId = (LocoLanguageId)header["loco_original_id"].as<size_t>();
 
             // Store it in the languages map.
-            languageDescriptors.emplace_back(language);
+            _languageDescriptors.emplace_back(language);
         }
 
         // Sort by native name.
-        std::sort(languageDescriptors.begin(), languageDescriptors.end(), [](const LanguageDescriptor& a, const LanguageDescriptor& b) -> bool {
+        std::sort(_languageDescriptors.begin(), _languageDescriptors.end(), [](const LanguageDescriptor& a, const LanguageDescriptor& b) -> bool {
             return a.nativeName < b.nativeName;
         });
     }
 
-    std::vector<LanguageDescriptor>& getLanguageDescriptors()
+    std::span<const LanguageDescriptor> getLanguageDescriptors()
     {
-        return languageDescriptors;
+        return _languageDescriptors;
     }
 
     const LanguageDescriptor& getDescriptorForLanguage(std::string_view target_locale)
     {
-        for (auto& ld : languageDescriptors)
+        for (auto& ld : _languageDescriptors)
         {
             if (ld.locale == target_locale)
             {
@@ -82,6 +82,6 @@ namespace OpenLoco::Localisation
             }
         }
 
-        return languageDescriptors[0];
+        return _languageDescriptors[0];
     }
 }
