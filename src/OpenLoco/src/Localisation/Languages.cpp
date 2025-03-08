@@ -23,13 +23,15 @@ namespace OpenLoco::Localisation
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
         for (auto& entry : fs::directory_iterator(languageDir))
         {
-            auto filename = entry.path().string();
-            if (filename.substr(filename.size() - 4, 4) != ".yml")
+            const auto filePath = entry.path();
+
+            const auto fileExt = filePath.extension();
+            if (fileExt != ".yml")
             {
                 continue;
             }
 
-            std::fstream stream(entry.path());
+            std::fstream stream(filePath);
             if (!stream.is_open())
             {
                 continue;
