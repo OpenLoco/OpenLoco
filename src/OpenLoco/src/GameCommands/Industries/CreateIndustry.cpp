@@ -458,18 +458,18 @@ namespace OpenLoco::GameCommands
         auto prodRateRand = randVal;
         for (auto i = 0; i < 2; ++i)
         {
-            newIndustry->var_17D[i] = 0;
+            newIndustry->dailyProduction[i] = 0;
 
             const auto& initalRate = indObj->initialProductionRate[i];
-            newIndustry->productionRate[i] = (((initalRate.max - initalRate.min) * prodRateRand) / 256) + initalRate.min;
+            newIndustry->dailyProductionTarget[i] = (((initalRate.max - initalRate.min) * prodRateRand) / 256) + initalRate.min;
 
             if (SceneManager::isEditorMode())
             {
-                newIndustry->var_17D[i] = newIndustry->productionRate[i];
-                newIndustry->producedCargoQuantityPreviousMonth[i] = newIndustry->var_17D[i] * 30;
+                newIndustry->dailyProduction[i] = newIndustry->dailyProductionTarget[i];
+                newIndustry->producedCargoQuantityPreviousMonth[i] = newIndustry->dailyProduction[i] * 30;
             }
             // This is odd but follows vanilla
-            prodRateRand = newIndustry->productionRate[i] & 0xFF;
+            prodRateRand = newIndustry->dailyProductionTarget[i] & 0xFF;
         }
 
         currency32_t totalCost = 0;

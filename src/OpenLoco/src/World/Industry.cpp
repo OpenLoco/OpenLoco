@@ -152,17 +152,18 @@ namespace OpenLoco
     // 0x00453275
     void Industry::update()
     {
+        // Maybe worthwhile returning early if the industry does not use farm tiles
         if (!hasFlags(IndustryFlags::isGhost) && under_construction == 0xFF)
         {
-            // Run tile loop for 100 iterations
+            // Run tile loop for 100 iterations every tick; whole 384x384 map scans in 1475 ticks/15 days/37 seconds
             for (int i = 0; i < 100; i++)
             {
-                sub_45329B(tileLoop.current());
+                isFarmTileProducing(tileLoop.current());
 
                 // loc_453318
                 if (tileLoop.next() == Pos2())
                 {
-                    sub_453354();
+                    calculateFarmProduction();
                     break;
                 }
             }
@@ -179,24 +180,24 @@ namespace OpenLoco
 
         auto* indObj = getObject();
 
-        uint16_t production = 0;
+        uint16_t amountToProduce = 0;
         if (indObj->hasFlags(IndustryObjectFlags::requiresAllCargo))
         {
-            production = std::numeric_limits<uint16_t>::max();
+            amountToProduce = std::numeric_limits<uint16_t>::max();
             for (auto i = 0; i < 3; ++i)
             {
                 if (indObj->requiredCargoType[i] != 0xFF)
                 {
-                    production = std::min(production, receivedCargoQuantityDailyTotal[i]);
+                    amountToProduce = std::min(amountToProduce, receivedCargoQuantityDailyTotal[i]);
                 }
             }
-            if (production != 0)
+            if (amountToProduce != 0)
             {
                 for (auto i = 0; i < 3; ++i)
                 {
                     if (indObj->requiredCargoType[i] != 0xFF)
                     {
-                        receivedCargoQuantityDailyTotal[i] -= production;
+                        receivedCargoQuantityDailyTotal[i] -= amountToProduce;
                     }
                 }
             }
@@ -207,18 +208,19 @@ namespace OpenLoco
             {
                 if (indObj->requiredCargoType[i] != 0xFF)
                 {
-                    production = Math::Bound::add(production, receivedCargoQuantityDailyTotal[i]);
+                    amountToProduce = Math::Bound::add(amountToProduce, receivedCargoQuantityDailyTotal[i]);
                     receivedCargoQuantityDailyTotal[i] = 0;
                 }
             }
         }
-        if (production != 0)
+
+        if (amountToProduce != 0)
         {
             for (auto i = 0; i < 2; ++i)
             {
                 if (indObj->producedCargoType[i] != 0xFF)
                 {
-                    var_181[i] = Math::Bound::add(var_181[i], production);
+                    outputBuffer[i] = Math::Bound::add(outputBuffer[i], amountToProduce);
                 }
             }
         }
@@ -236,23 +238,23 @@ namespace OpenLoco
                 continue;
             }
 
-            uint16_t ax = (productionRate[i] * var_DF) / 256;
-            if (ax < var_17D[i])
+            uint16_t realDailyProductionTarget = (dailyProductionTarget[i] * productionRate) / 256;
+            if (realDailyProductionTarget < dailyProduction[i])
             {
-                var_17D[i]--;
+                dailyProduction[i]--;
             }
-            else if (ax > var_17D[i])
+            else if (realDailyProductionTarget > dailyProduction[i])
             {
-                var_17D[i]++;
+                dailyProduction[i]++;
             }
 
-            var_181[i] = Math::Bound::add(var_17D[i], var_181[i]);
+            outputBuffer[i] = Math::Bound::add(dailyProduction[i], outputBuffer[i]);
 
-            if (var_181[i] >= 8)
+            if (outputBuffer[i] >= 8)
             {
-                const auto max = std::min<uint16_t>(var_181[i], 255);
-                var_181[i] -= max;
-                producedCargoQuantityMonthlyTotal[i] = Math::Bound::add(producedCargoQuantityMonthlyTotal[i], max);
+                const auto quantityToSend = std::min<uint16_t>(outputBuffer[i], 255);
+                outputBuffer[i] -= quantityToSend;
+                producedCargoQuantityMonthlyTotal[i] = Math::Bound::add(producedCargoQuantityMonthlyTotal[i], quantityToSend);
 
                 std::vector<StationId> stations;
                 for (auto stationId : producedCargoStatsStation[i])
@@ -263,7 +265,7 @@ namespace OpenLoco
                     }
                 }
 
-                const auto quantityDelivered = StationManager::deliverCargoToStations(stations, indObj->producedCargoType[i], max);
+                const auto quantityDelivered = StationManager::deliverCargoToStations(stations, indObj->producedCargoType[i], quantityToSend);
                 producedCargoQuantityDeliveredMonthlyTotal[i] = Math::Bound::add(quantityDelivered, producedCargoQuantityDeliveredMonthlyTotal[i]);
             }
         }
@@ -277,7 +279,7 @@ namespace OpenLoco
             return;
         }
 
-        if (hasFlags(IndustryFlags::closingDown) && var_17D[0] == 0 && var_17D[1] == 0)
+        if (hasFlags(IndustryFlags::closingDown) && dailyProduction[0] == 0 && dailyProduction[1] == 0)
         {
             GameCommands::IndustryRemovalArgs args;
             args.industryId = id();
@@ -292,15 +294,15 @@ namespace OpenLoco
         {
             if (isMonthlyProductionUp())
             {
-                productionRate[0] = std::min(100, productionRate[0] * 2);
-                productionRate[1] = std::min(100, productionRate[1] * 2);
+                dailyProductionTarget[0] = std::min(100, dailyProductionTarget[0] * 2);
+                dailyProductionTarget[1] = std::min(100, dailyProductionTarget[1] * 2);
                 MessageManager::post(MessageType::industryProductionUp, CompanyId::null, enumValue(id()), 0xFFFF);
                 hasEvent = true;
             }
             else if (isMonthlyProductionDown())
             {
-                productionRate[0] /= 2;
-                productionRate[1] /= 2;
+                dailyProductionTarget[0] /= 2;
+                dailyProductionTarget[1] /= 2;
                 MessageManager::post(MessageType::industryProductionDown, CompanyId::null, enumValue(id()), 0xFFFF);
                 hasEvent = true;
             }
@@ -313,8 +315,8 @@ namespace OpenLoco
             if (isMonthlyProductionClosing())
             {
                 flags |= IndustryFlags::closingDown;
-                productionRate[0] = 0;
-                productionRate[1] = 0;
+                dailyProductionTarget[0] = 0;
+                dailyProductionTarget[1] = 0;
                 MessageManager::post(MessageType::industryClosingDown, CompanyId::null, enumValue(id()), 0xFFFF);
             }
         }
@@ -380,8 +382,8 @@ namespace OpenLoco
         }
         return producedCargoPercentTransportedPreviousMonth[0] > 70
             && gPrng1().randNext(31) == 0
-            && productionRate[0] < 100
-            && productionRate[1] < 100;
+            && dailyProductionTarget[0] < 100
+            && dailyProductionTarget[1] < 100;
     }
 
     bool Industry::isMonthlyProductionDown()
@@ -392,10 +394,10 @@ namespace OpenLoco
             return false;
         }
         return (producedCargoPercentTransportedPreviousMonth[0] > 50
-                && productionRate[0] > 20
+                && dailyProductionTarget[0] > 20
                 && gPrng1().randNext(31) == 0)
             || (producedCargoPercentTransportedPreviousMonth[0] <= 50
-                && productionRate[0] > 10
+                && dailyProductionTarget[0] > 10
                 && gPrng1().randNext(15) == 0);
     }
 
@@ -408,7 +410,7 @@ namespace OpenLoco
     }
 
     // 0x0045329B
-    void Industry::sub_45329B(const Pos2& pos)
+    void Industry::isFarmTileProducing(const Pos2& pos)
     {
         const auto& surface = TileManager::get(pos).surface();
         if (surface != nullptr)
@@ -422,10 +424,10 @@ namespace OpenLoco
                     if (bl == 0 || bl != obj->var_EA)
                     {
                         // loc_4532E5
-                        var_DB++;
+                        numFarmTiles++;
                         if ((!obj->hasFlags(IndustryObjectFlags::flag_28) && surface->snowCoverage() != 0) || findTree(surface))
                         {
-                            var_DD++;
+                            numIdleFarmTiles++;
                         }
                     }
                 }
@@ -433,29 +435,30 @@ namespace OpenLoco
         }
     }
 
-    void Industry::sub_453354()
+    void Industry::calculateFarmProduction()
     {
         // 0x00453366
-        int16_t tmp_a = var_DB / 16;
-        int16_t tmp_b = std::max(0, var_DD - tmp_a);
-        int16_t tmp_c = var_DB - tmp_b;
-        int16_t tmp_d = std::min(tmp_c / 25, 255);
+        // subtract 6% of farm tiles from idle farm tiles, prevents complete shutdown of production in winter
+        int16_t adjustedIdleFarmTiles = std::max(0, numIdleFarmTiles - numFarmTiles / 16);
+        int16_t productiveFarmTiles = numFarmTiles - adjustedIdleFarmTiles;
+        int16_t relativeFarmSize = std::min(productiveFarmTiles / 25, 255);
 
         const auto* obj = getObject();
-        if (tmp_d < obj->var_EB)
+        if (relativeFarmSize < obj->var_EB)
         {
-            var_DF = ((tmp_d * 256) / obj->var_EB) & 0xFF;
+            productionRate = ((relativeFarmSize * 256) / obj->var_EB) & 0xFF;
         }
         else
         {
             // 0x0045335F; moved here.
-            var_DF = 255;
+            productionRate = 255;
         }
 
         // 0x004533B2
-        var_DB = 0;
-        var_DD = 0;
-        if (var_DF < 224)
+        numFarmTiles = 0;
+        numIdleFarmTiles = 0;
+        // if the farm is significantly smaller than ideal and 13% of cargo was transported last month, 1/2 chance to grow farm size by one field
+        if (productionRate < 224)
         {
             if (producedCargoQuantityPreviousMonth[0] / 8 <= producedCargoQuantityDeliveredPreviousMonth[0] || producedCargoQuantityPreviousMonth[1] / 8 <= producedCargoQuantityDeliveredPreviousMonth[1])
             {
@@ -695,7 +698,7 @@ namespace OpenLoco
             }
 
             auto id = 0;
-            for (const auto& hasBit : var_E1)
+            for (const auto& hasBit : stationsInRange)
             {
                 const auto stationId = static_cast<StationId>(id);
                 id++;
@@ -738,6 +741,6 @@ namespace OpenLoco
                 ratingFraction = -rating;
             }
         }
-        var_E1.reset();
+        stationsInRange.reset();
     }
 }
