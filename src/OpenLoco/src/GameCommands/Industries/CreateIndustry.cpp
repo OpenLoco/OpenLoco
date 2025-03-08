@@ -669,7 +669,7 @@ namespace OpenLoco::GameCommands
                     const auto randExpandVal = newIndustry->prng.randNext();
                     // dl
                     const auto growthStage = ((randExpandVal & 0xFF) * indObj->farmTileNumGrowthStages) / 256;
-                    const auto updateTimerVal = ((randExpandVal >> 8) & 0x7) << 5;
+                    const auto updateTimerVal = (randExpandVal >> 8) & 0x7;
 
                     const World::TilePos2 randOffset(
                         ((randExpandVal >> 11) & 0x1F) - 15,
