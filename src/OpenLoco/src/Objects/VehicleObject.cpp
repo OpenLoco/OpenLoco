@@ -541,13 +541,6 @@ namespace OpenLoco
                 }
             }
 
-            if (bodySprite.hasFlags(BodySpriteFlags::hasUnkSprites))
-            {
-                bodySprite.unkImageId = offset + imgRes.imageOffset;
-                const auto numUnkFrames = bodySprite.numFlatRotationFrames * 3;
-                offset += numUnkFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
-            }
-
             const auto numImages = imgRes.imageOffset + offset - bodySprite.flatImageId;
             if (bodySprite.flatImageId + numImages <= ObjectManager::getTotalNumImages())
             {
