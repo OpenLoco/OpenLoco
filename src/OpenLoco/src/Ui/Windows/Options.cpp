@@ -1656,7 +1656,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void languageMouseDown(Window* w)
         {
-            auto& lds = Localisation::getLanguageDescriptors();
+            const auto lds = Localisation::getLanguageDescriptors();
             uint8_t numLanguages = static_cast<uint8_t>(lds.size());
 
             Widget dropdown = w->widgets[Widx::language];
@@ -1684,8 +1684,8 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            auto& lds = Localisation::getLanguageDescriptors();
-            auto& ld = lds[ax + 1];
+            const auto lds = Localisation::getLanguageDescriptors();
+            const auto& ld = lds[ax + 1];
             Config::get().language = ld.locale;
             Config::write();
             Localisation::loadLanguageFile();
