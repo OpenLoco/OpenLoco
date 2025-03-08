@@ -590,8 +590,8 @@ namespace OpenLoco
             if (is23prng.has_value())
             {
                 const auto randVal = is23prng->randNext();
-                growthStage = (((randVal & 0xFF) * indObj->var_EC) / 256);
-                updateTimer = (((randVal >> 8) & 0x7) << 5);
+                growthStage = ((randVal & 0xFF) * indObj->var_EC) / 256;
+                updateTimer = (randVal >> 8) & 0x7;
             }
             bool skipBorderClear = false;
             if (is27prng.has_value())
