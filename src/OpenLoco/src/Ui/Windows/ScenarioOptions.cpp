@@ -628,20 +628,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             Widgets::dropdownWidgets({ 246, 117 - 4 }, { 110, 12 }, WindowColour::secondary),
             Widgets::dropdownWidgets({ 246, 132 - 4 }, { 110, 12 }, WindowColour::secondary),
             Widgets::GroupBox({ 5, 150 }, { 356, 50 }, WindowColour::secondary, StringIds::forbid_competing_companies_from_using),
-            Widgets::Checkbox({ 15, 166 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trains),
-            Widgets::Checkbox({ 130, 166 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_buses),
-            Widgets::Checkbox({ 130, 180 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
-            Widgets::Checkbox({ 15, 180 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trams),
-            Widgets::Checkbox({ 260, 166 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
-            Widgets::Checkbox({ 260, 180 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_ships),
+            Widgets::Checkbox({ 11 + 115 * 0, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trains),
+            Widgets::Checkbox({ 11 + 115 * 1, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_buses),
+            Widgets::Checkbox({ 11 + 115 * 1, 180 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
+            Widgets::Checkbox({ 11 + 115 * 0, 180 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trams),
+            Widgets::Checkbox({ 11 + 115 * 2, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
+            Widgets::Checkbox({ 11 + 115 * 2, 180 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_ships),
             Widgets::GroupBox({ 5, 202 }, { 356, 50 }, WindowColour::secondary, StringIds::forbid_player_companies_from_using),
-            Widgets::Checkbox({ 15, 219 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trains),
-            Widgets::Checkbox({ 130, 219 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_buses),
-            Widgets::Checkbox({ 130, 233 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
-            Widgets::Checkbox({ 15, 233 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_trams),
-            Widgets::Checkbox({ 260, 219 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
-            Widgets::Checkbox({ 260, 233 }, { 341, 12 }, WindowColour::secondary, StringIds::forbid_ships)
-
+            Widgets::Checkbox({ 11 + 115 * 0, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trains),
+            Widgets::Checkbox({ 11 + 115 * 1, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_buses),
+            Widgets::Checkbox({ 11 + 115 * 1, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
+            Widgets::Checkbox({ 11 + 115 * 0, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trams),
+            Widgets::Checkbox({ 11 + 115 * 2, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
+            Widgets::Checkbox({ 11 + 115 * 2, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_ships)
         );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up) | (1ULL << widx::preferred_intelligence) | (1ULL << widx::preferred_intelligence_btn) | (1ULL << widx::preferred_aggressiveness) | (1ULL << widx::preferred_aggressiveness_btn) | (1ULL << widx::preferred_competitiveness) | (1ULL << widx::preferred_competitiveness_btn) | (1ULL << widx::competitor_forbid_trains) | (1ULL << widx::competitor_forbid_buses) | (1ULL << widx::competitor_forbid_trucks) | (1ULL << widx::competitor_forbid_trams) | (1ULL << widx::competitor_forbid_aircraft) | (1ULL << widx::competitor_forbid_ships) | (1ULL << widx::player_forbid_trains) | (1ULL << widx::player_forbid_buses) | (1ULL << widx::player_forbid_trucks) | (1ULL << widx::player_forbid_trams) | (1ULL << widx::player_forbid_aircraft) | (1ULL << widx::player_forbid_ships);
