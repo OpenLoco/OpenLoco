@@ -641,6 +641,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             Widgets::Checkbox({ 11 + 115 * 0, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trams),
             Widgets::Checkbox({ 11 + 115 * 2, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
             Widgets::Checkbox({ 11 + 115 * 2, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_ships)
+
         );
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up) | (1ULL << widx::preferred_intelligence) | (1ULL << widx::preferred_intelligence_btn) | (1ULL << widx::preferred_aggressiveness) | (1ULL << widx::preferred_aggressiveness_btn) | (1ULL << widx::preferred_competitiveness) | (1ULL << widx::preferred_competitiveness_btn) | (1ULL << widx::competitor_forbid_trains) | (1ULL << widx::competitor_forbid_buses) | (1ULL << widx::competitor_forbid_trucks) | (1ULL << widx::competitor_forbid_trams) | (1ULL << widx::competitor_forbid_aircraft) | (1ULL << widx::competitor_forbid_ships) | (1ULL << widx::player_forbid_trains) | (1ULL << widx::player_forbid_buses) | (1ULL << widx::player_forbid_trucks) | (1ULL << widx::player_forbid_trams) | (1ULL << widx::player_forbid_aircraft) | (1ULL << widx::player_forbid_ships);
