@@ -65,9 +65,7 @@ namespace OpenLoco::Localisation
         }
 
         // Sort by native name.
-        std::sort(_languageDescriptors.begin(), _languageDescriptors.end(), [](const LanguageDescriptor& a, const LanguageDescriptor& b) -> bool {
-            return a.nativeName < b.nativeName;
-        });
+        std::ranges::sort(_languageDescriptors, {}, &LanguageDescriptor::nativeName);
     }
 
     std::span<const LanguageDescriptor> getLanguageDescriptors()
