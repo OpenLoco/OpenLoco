@@ -36,7 +36,7 @@ namespace OpenLoco
         StringId name;
         uint8_t costIndex;                // 0x02
         uint8_t numGrowthStages;          // 0x03 "healing" animation after disturbing land
-        uint8_t numImageAngles;           // 0x04 see wheat farm object for example
+        uint8_t numImageAngles;           // 0x04 no vanilla object uses this but is identical to numFarmImageAngles of IndustryObject
         LandObjectFlags flags;            // 0x05
         uint8_t cliffEdgeHeader1;         // 0x06
         uint8_t cliffEdgeHeader2;         // 0x07

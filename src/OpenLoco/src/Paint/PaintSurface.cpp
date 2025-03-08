@@ -57,7 +57,7 @@ namespace OpenLoco::Paint
         uint8_t slope;
         EdgeHeight edgeHeight;
         uint8_t snowCoverage;
-        uint8_t var6SLR5;
+        uint8_t growthStage;
     };
 
     static constexpr std::array<CornerHeight, 32> kCornerHeights = {
@@ -818,7 +818,7 @@ namespace OpenLoco::Paint
         auto selfObj = self.snowCoverage >= 4 ? 0xFFU : self.landObjectId;
         auto neighbourObj = neighbour.snowCoverage >= 4 ? 0xFFU : neighbour.landObjectId;
 
-        if (self.var6SLR5 == neighbour.var6SLR5 && selfObj == neighbourObj)
+        if (self.growthStage == neighbour.growthStage && selfObj == neighbourObj)
         {
             // same tint
             if (cl == dh)
@@ -862,7 +862,7 @@ namespace OpenLoco::Paint
         else
         {
             auto* landObj = ObjectManager::get<LandObject>(neighbour.landObjectId);
-            const auto variation = landObj->numImagesPerGrowthStage * neighbour.var6SLR5 + 19 + cl;
+            const auto variation = landObj->numImagesPerGrowthStage * neighbour.growthStage + 19 + cl;
             const auto maskImageId = ImageId(landObj->image).withIndexOffset(variation);
 
             auto* attachedPs = session.attachToPrevious(baseImageId, { 0, 0 });
@@ -1443,7 +1443,7 @@ namespace OpenLoco::Paint
                 descriptor.edgeHeight.neighbour1 = microZ + ch.bottom;
             }
             descriptor.snowCoverage = descriptor.elSurface->snowCoverage();
-            descriptor.var6SLR5 = descriptor.elSurface->getGrowthStage();
+            descriptor.growthStage = descriptor.elSurface->getGrowthStage();
         }
 
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_land) != Ui::ViewportFlags::none)
