@@ -964,7 +964,6 @@ void OpenLoco::Interop::registerHooks()
             return 0;
         });
 
-    // consider removing this
     registerHook(
         0x00454A43,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
