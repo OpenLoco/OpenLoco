@@ -964,6 +964,7 @@ void OpenLoco::Interop::registerHooks()
             return 0;
         });
 
+    // consider removing this
     registerHook(
         0x00454A43,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -972,7 +973,9 @@ void OpenLoco::Interop::registerHooks()
             uint8_t primaryWall = regs.bl;
             uint8_t secondaryWall = regs.bh;
             auto* industry = IndustryManager::get(static_cast<IndustryId>(regs.dh));
-            industry->expandGrounds(pos, primaryWall, secondaryWall, regs.dl);
+            uint8_t growthStage = regs.dl & 0x07;
+            uint8_t updateTimerVal = regs.dl >> 5;
+            industry->expandGrounds(pos, primaryWall, secondaryWall, growthStage, updateTimerVal);
             regs = backup;
             return 0;
         });
