@@ -1370,7 +1370,7 @@ namespace OpenLoco::Paint
             rotatedSlope,
             {}, // Edge height unused
             elSurface.snowCoverage(),
-            elSurface.var_6_SLR5(),
+            elSurface.getGrowthStage(),
         };
 
         // Used by bridge shadows to know where to draw
@@ -1443,7 +1443,7 @@ namespace OpenLoco::Paint
                 descriptor.edgeHeight.neighbour1 = microZ + ch.bottom;
             }
             descriptor.snowCoverage = descriptor.elSurface->snowCoverage();
-            descriptor.var6SLR5 = descriptor.elSurface->var_6_SLR5();
+            descriptor.var6SLR5 = descriptor.elSurface->getGrowthStage();
         }
 
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_land) != Ui::ViewportFlags::none)
@@ -1474,7 +1474,7 @@ namespace OpenLoco::Paint
 
             session.setItemType(Ui::ViewportInteraction::InteractionItem::industryTree);
 
-            const auto variation = industryObj->var_1A * elSurface.var_6_SLR5() + ((industryObj->var_E9 - 1) & rotation) * 21;
+            const auto variation = industryObj->var_1A * elSurface.getGrowthStage() + ((industryObj->var_E9 - 1) & rotation) * 21;
 
             // Draw trees if they exist
             {
@@ -1518,7 +1518,7 @@ namespace OpenLoco::Paint
         }
         else
         {
-            const auto variation = landObj->numImagesPerGrowthStage * elSurface.var_6_SLR5() + ((landObj->numImageAngles - 1) & rotation) * 25;
+            const auto variation = landObj->numImagesPerGrowthStage * elSurface.getGrowthStage() + ((landObj->numImageAngles - 1) & rotation) * 25;
             if (elSurface.snowCoverage())
             {
                 // Draw snow surface image
@@ -1545,7 +1545,7 @@ namespace OpenLoco::Paint
                         && elSurface.variation() != 0
                         && zoomLevel == 0
                         && displaySlope == 0
-                        && (landObj->numGrowthStages - 1) == elSurface.var_6_SLR5())
+                        && (landObj->numGrowthStages - 1) == elSurface.getGrowthStage())
                     {
                         return landObj->mapPixelImage + 3 + elSurface.variation();
                     }
@@ -1650,7 +1650,7 @@ namespace OpenLoco::Paint
                 auto* industry = IndustryManager::get(elSurface.industryId());
                 auto* industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
 
-                const auto variation = industryObj->var_1A * elSurface.var_6_SLR5() + ((industryObj->var_E9 - 1) & rotation) * 21;
+                const auto variation = industryObj->var_1A * elSurface.getGrowthStage() + ((industryObj->var_E9 - 1) & rotation) * 21;
                 const auto imageIndex = industryObj->var_16 + variation + displaySlope;
 
                 if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::unk26))
@@ -1681,7 +1681,7 @@ namespace OpenLoco::Paint
             }
             else
             {
-                const auto variation = landObj->numImagesPerGrowthStage * elSurface.var_6_SLR5() + ((landObj->numImageAngles - 1) & rotation) * 25;
+                const auto variation = landObj->numImagesPerGrowthStage * elSurface.getGrowthStage() + ((landObj->numImageAngles - 1) & rotation) * 25;
                 const auto imageIndex = landObj->image + variation + displaySlope;
 
                 if (selfDescriptor.snowCoverage == 0)

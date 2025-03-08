@@ -37,7 +37,7 @@ namespace OpenLoco::GameCommands
             surface->setTerrain(landType);
             if (!surface->isIndustrial())
             {
-                surface->setVar6SLR5(0);
+                surface->setGrowthStage(0);
             }
             const auto variation = World::MapGenerator::getRandomTerrainVariation(*surface);
             if (variation.has_value())
@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
             {
                 if (!surface->isIndustrial())
                 {
-                    surface->setVar6SLR5(landObj->numGrowthStages - 1);
+                    surface->setGrowthStage(landObj->numGrowthStages - 1);
                 }
             }
             World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));

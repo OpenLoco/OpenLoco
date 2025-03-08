@@ -249,7 +249,7 @@ namespace OpenLoco::GameCommands
                         surface->setClearZ(baseHeight / World::kSmallZStep);
                         surface->setSlope(0);
                         surface->setSnowCoverage(0);
-                        surface->setVar6SLR5(0);
+                        surface->setGrowthStage(0);
                     }
                 }
             }

@@ -111,7 +111,7 @@ namespace OpenLoco::GameCommands
                 continue;
             }
             surface->setIsIndustrialFlag(false);
-            surface->setVar6SLR5(0);
+            surface->setGrowthStage(0);
             surface->setVariation(0);
             Ui::ViewportManager::invalidate(World::toWorldSpace(pos), surface->baseHeight(), surface->baseHeight() + 32);
             World::TileManager::removeAllWallsOnTileAbove(pos, surface->baseZ());
