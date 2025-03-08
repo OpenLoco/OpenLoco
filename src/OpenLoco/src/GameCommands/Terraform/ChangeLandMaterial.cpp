@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
             {
                 if (!surface->isIndustrial())
                 {
-                    surface->setVar6SLR5(landObj->var_03 - 1);
+                    surface->setVar6SLR5(landObj->numGrowthStages - 1);
                 }
             }
             World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));

@@ -34,20 +34,20 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::land;
 
         StringId name;
-        uint8_t costIndex; // 0x02
-        uint8_t var_03;
-        uint8_t var_04;
-        LandObjectFlags flags;    // 0x05
-        uint8_t cliffEdgeHeader1; // 0x06
-        uint8_t cliffEdgeHeader2; // 0x07
-        int16_t costFactor;       // 0x08
-        uint32_t image;           // 0x0A
-        uint32_t var_0E;
-        uint32_t cliffEdgeImage;     // 0x12
-        uint32_t mapPixelImage;      // 0x16
-        uint8_t distributionPattern; // 0x1A
-        uint8_t numVariations;       // 0x1B
-        uint8_t variationLikelihood; // 0x1C
+        uint8_t costIndex;                // 0x02
+        uint8_t numGrowthStages;          // 0x03 "healing" animation after disturbing land
+        uint8_t numImageAngles;           // 0x04 see wheat farm object for example
+        LandObjectFlags flags;            // 0x05
+        uint8_t cliffEdgeHeader1;         // 0x06
+        uint8_t cliffEdgeHeader2;         // 0x07
+        int16_t costFactor;               // 0x08
+        uint32_t image;                   // 0x0A calculated value
+        uint32_t numImagesPerGrowthStage; // 0x0E calculated value
+        uint32_t cliffEdgeImage;          // 0x12 calculated value
+        uint32_t mapPixelImage;           // 0x16 calculated value
+        uint8_t distributionPattern;      // 0x1A
+        uint8_t numVariations;            // 0x1B
+        uint8_t variationLikelihood;      // 0x1C
         uint8_t pad_1D;
 
         bool validate() const;

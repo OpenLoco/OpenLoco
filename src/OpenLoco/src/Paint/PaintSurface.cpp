@@ -862,7 +862,7 @@ namespace OpenLoco::Paint
         else
         {
             auto* landObj = ObjectManager::get<LandObject>(neighbour.landObjectId);
-            const auto variation = landObj->var_0E * neighbour.var6SLR5 + 19 + cl;
+            const auto variation = landObj->numImagesPerGrowthStage * neighbour.var6SLR5 + 19 + cl;
             const auto maskImageId = ImageId(landObj->image).withIndexOffset(variation);
 
             auto* attachedPs = session.attachToPrevious(baseImageId, { 0, 0 });
@@ -1518,7 +1518,7 @@ namespace OpenLoco::Paint
         }
         else
         {
-            const auto variation = landObj->var_0E * elSurface.var_6_SLR5() + ((landObj->var_04 - 1) & rotation) * 25;
+            const auto variation = landObj->numImagesPerGrowthStage * elSurface.var_6_SLR5() + ((landObj->numImageAngles - 1) & rotation) * 25;
             if (elSurface.snowCoverage())
             {
                 // Draw snow surface image
@@ -1545,7 +1545,7 @@ namespace OpenLoco::Paint
                         && elSurface.variation() != 0
                         && zoomLevel == 0
                         && displaySlope == 0
-                        && (landObj->var_03 - 1) == elSurface.var_6_SLR5())
+                        && (landObj->numGrowthStages - 1) == elSurface.var_6_SLR5())
                     {
                         return landObj->mapPixelImage + 3 + elSurface.variation();
                     }
@@ -1681,7 +1681,7 @@ namespace OpenLoco::Paint
             }
             else
             {
-                const auto variation = landObj->var_0E * elSurface.var_6_SLR5() + ((landObj->var_04 - 1) & rotation) * 25;
+                const auto variation = landObj->numImagesPerGrowthStage * elSurface.var_6_SLR5() + ((landObj->numImageAngles - 1) & rotation) * 25;
                 const auto imageIndex = landObj->image + variation + displaySlope;
 
                 if (selfDescriptor.snowCoverage == 0)

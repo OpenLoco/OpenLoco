@@ -608,7 +608,7 @@ namespace OpenLoco::World::MapGenerator
 
                     if (!setVariation)
                     {
-                        surface->setVar6SLR5(landObj->var_03 - 1);
+                        surface->setVar6SLR5(landObj->numGrowthStages - 1);
                     }
                 }
             }

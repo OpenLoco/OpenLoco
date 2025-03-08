@@ -59,7 +59,7 @@ namespace OpenLoco::World
             }
         }
 
-        if (elSurface.var_6_SLR5() + 1 < landObj->var_03)
+        if (elSurface.var_6_SLR5() + 1 < landObj->numGrowthStages)
         {
             elSurface.setVar6SLR5(elSurface.var_6_SLR5() + 1);
             Ui::ViewportManager::invalidate(loc, elSurface.baseHeight(), elSurface.baseHeight());

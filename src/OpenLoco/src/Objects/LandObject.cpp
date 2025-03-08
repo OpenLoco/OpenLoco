@@ -21,16 +21,16 @@ namespace OpenLoco
         {
             return false;
         }
-        if (var_03 < 1)
+        if (numGrowthStages < 1)
         {
             return false;
         }
-        if (var_03 > 8)
+        if (numGrowthStages > 8)
         {
             return false;
         }
 
-        return (var_04 == 1 || var_04 == 2 || var_04 == 4);
+        return (numImageAngles == 1 || numImageAngles == 2 || numImageAngles == 4);
     }
 
     // 0x0046983C
@@ -74,9 +74,9 @@ namespace OpenLoco
 
         auto imgRes = ObjectManager::loadImageTable(remainingData);
 
-        var_0E = var_04 * 25;
-        image = var_04 * var_03 * 57 + imgRes.imageOffset;
-        mapPixelImage = var_04 * var_03 * 82 + imgRes.imageOffset;
+        numImagesPerGrowthStage = numImageAngles * 25;
+        image = numImageAngles * numGrowthStages * 57 + imgRes.imageOffset;
+        mapPixelImage = numImageAngles * numGrowthStages * 82 + imgRes.imageOffset;
 
         assert(remainingData.size() == imgRes.tableLength);
     }
@@ -86,7 +86,7 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        var_0E = 0;
+        numImagesPerGrowthStage = 0;
         cliffEdgeImage = 0;
         cliffEdgeHeader1 = 0;
         cliffEdgeHeader2 = 0;
@@ -96,7 +96,7 @@ namespace OpenLoco
     // 0x004699A8
     void LandObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
-        uint32_t imageId = image + (var_03 - 1) * var_0E;
+        uint32_t imageId = image + (numGrowthStages - 1) * numImagesPerGrowthStage;
         drawingCtx.drawImage(x, y, imageId);
     }
 }
