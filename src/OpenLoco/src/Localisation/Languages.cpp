@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <ranges>
 
 namespace OpenLoco::Localisation
 {
@@ -76,12 +77,10 @@ namespace OpenLoco::Localisation
 
     const LanguageDescriptor& getDescriptorForLanguage(std::string_view target_locale)
     {
-        for (auto& ld : _languageDescriptors)
+        const auto it = std::ranges::find(_languageDescriptors, target_locale, &LanguageDescriptor::locale);
+        if (it != _languageDescriptors.end())
         {
-            if (ld.locale == target_locale)
-            {
-                return ld;
-            }
+            return *it;
         }
 
         return _languageDescriptors[0];
