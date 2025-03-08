@@ -23,6 +23,7 @@
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 
+#include <sfl/static_vector.hpp>
 #include <sstream>
 
 using namespace OpenLoco::Diagnostics;
@@ -96,9 +97,12 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::Vehicles::OrderManager
 {
-    // TODO: Make this a fixed vector of size 63 (kMaxNumOrderPerVehicle) no need for it to be dynamic
-    std::vector<NumDisplayFrame> _displayFrames;
-    const std::vector<NumDisplayFrame>& displayFrames() { return _displayFrames; }
+    static sfl::static_vector<NumDisplayFrame, Limits::kMaxOrdersPerVehicle> _displayFrames;
+
+    std::span<const NumDisplayFrame> displayFrames()
+    {
+        return _displayFrames;
+    }
 
     Order* orders() { return reinterpret_cast<Order*>(getGameState().orders); }
     uint32_t& orderTableLength() { return getGameState().orderTableLength; }
