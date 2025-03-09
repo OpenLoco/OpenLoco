@@ -108,13 +108,13 @@ namespace OpenLoco::World
             return false;
         }
 
-        if (elSurface.var_6_SLR5() != industryObj->var_EA || elSurface.var_6_SLR5() == 0)
+        if (elSurface.var_6_SLR5() != industryObj->farmTileGrowthStageNoProduction || elSurface.var_6_SLR5() == 0)
         {
             elSurface.setVar5SLR5(elSurface.getVar5SLR5() + 1);
             if (elSurface.getVar5SLR5() == 0)
             {
                 uint8_t newVar6SLR5 = elSurface.var_6_SLR5() + 1;
-                if (newVar6SLR5 >= industryObj->var_EC)
+                if (newVar6SLR5 >= industryObj->farmTileNumGrowthStages)
                 {
                     newVar6SLR5 = 0;
                 }
@@ -150,7 +150,7 @@ namespace OpenLoco::World
                 // Wall has been found on this surface tile.
                 // Validate if it should be here and if not
                 // remove it
-                if (surf->var_6_SLR5() != industryObj->var_EA)
+                if (surf->var_6_SLR5() != industryObj->farmTileGrowthStageNoProduction)
                 {
                     continue;
                 }
@@ -165,7 +165,7 @@ namespace OpenLoco::World
                 {
                     continue;
                 }
-                if (nextSurface->var_6_SLR5() != industryObj->var_EA)
+                if (nextSurface->var_6_SLR5() != industryObj->farmTileGrowthStageNoProduction)
                 {
                     continue;
                 }
@@ -246,9 +246,9 @@ namespace OpenLoco::World
                 {
                     continue;
                 }
-                if (surf->var_6_SLR5() != industryObj->var_EA || industryObj->buildingWall != 0xFFU)
+                if (surf->var_6_SLR5() != industryObj->farmTileGrowthStageNoProduction || industryObj->buildingWall != 0xFFU)
                 {
-                    if (surf->var_6_SLR5() == industryObj->var_EA)
+                    if (surf->var_6_SLR5() == industryObj->farmTileGrowthStageNoProduction)
                     {
                         wallType = industryObj->buildingWall;
                     }

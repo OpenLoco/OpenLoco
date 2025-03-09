@@ -34,8 +34,8 @@ namespace OpenLoco
         builtNearTrees = 1U << 11,
         builtRequiresOpenSpace = 1U << 12,
         oilfieldStationName = 1U << 13, // stations built nearby get named Oilfield
-        minesStationName = 1U << 14, // stations built nearby get named Mines
-        notRotatable = 1U << 15, // used on windmills
+        minesStationName = 1U << 14,    // stations built nearby get named Mines
+        notRotatable = 1U << 15,        // used on windmills
         canBeFoundedByPlayer = 1U << 16,
         requiresAllCargo = 1U << 17,
         canIncreaseProduction = 1U << 18,
@@ -111,15 +111,15 @@ namespace OpenLoco
         Colour mapColour;                                           // 0xE3
         IndustryObjectFlags flags;                                  // 0xE4
         uint8_t var_E8;
-        uint8_t var_E9;
-        uint8_t var_EA;
-        uint8_t var_EB;
-        uint8_t var_EC;       // Used by Livestock cow shed count??
-        uint8_t wallTypes[4]; // 0xED There can be up to 4 different wall types for an industry
+        uint8_t farmTileNumImageAngles;          // 0xE9 How many viewing angles the farm tiles have
+        uint8_t farmTileGrowthStageNoProduction; // 0xEA At this stage of growth (except 0), a field tile produces nothing
+        uint8_t farmNumFields;                   // 0xEB Max production is reached at farmIdealSize * 25 tiles
+        uint8_t farmTileNumGrowthStages;         // 0xEC How many growth stages there are sprites for
+        uint8_t wallTypes[4];                    // 0xED There can be up to 4 different wall types for an industry
         // Selection of wall types isn't completely random from the 4 it is biased into 2 groups of 2 (wall and entrance)
         uint8_t buildingWall;         // 0xF1
         uint8_t buildingWallEntrance; // 0xF2 An alternative wall type that looks like a gate placed at random places in building perimeter
-        uint8_t var_F3;
+        uint8_t monthlyClosureChance; // 0xF3 Random chance that industry will close at the end of the month, out of 65535. Max of 255 is a 0.4% chance.
 
         bool requiresCargo() const;
         bool producesCargo() const;
