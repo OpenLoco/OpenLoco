@@ -35,14 +35,14 @@ namespace OpenLoco::Ui::Widgets
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Scroll track
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y }, scrollSize, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y }, scrollSize, Colours::getShade(colour.c(), 3), Gfx::RectFlags::crossHatching);
+        drawingCtx.fillRect(scrollPos, scrollSize, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos, scrollSize, Colours::getShade(colour.c(), 3), Gfx::RectFlags::crossHatching);
 
         // Track lines
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 2 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 3 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 7 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 8 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos + Point{ 0, 2 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos + Point{ 0, 3 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos + Point{ 0, 7 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos + Point{ 0, 8 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
         // Left button
         f = Gfx::RectInsetFlags::none;
@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Widgets
         {
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
-        drawingCtx.fillRectInset({ scrollPos.x, scrollPos.y }, kScrollButtonSize, widgetState.colour, f);
+        drawingCtx.fillRectInset(scrollPos, kScrollButtonSize, widgetState.colour, f);
 
         // Left arrow
         {
@@ -112,21 +112,21 @@ namespace OpenLoco::Ui::Widgets
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Scroll track
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y }, scrollSize, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y }, scrollSize, Colours::getShade(colour.c(), 3), Gfx::RectFlags::crossHatching);
+        drawingCtx.fillRect(scrollPos, scrollSize, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos, scrollSize, Colours::getShade(colour.c(), 3), Gfx::RectFlags::crossHatching);
 
         // Track lines
-        drawingCtx.fillRect({ scrollPos.x + 2, scrollPos.y }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 3, scrollPos.y }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 7, scrollPos.y }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 8, scrollPos.y }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos + Point{ 2, 0 }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos + Point{ 3, 0 }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos + Point{ 7, 0 }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
+        drawingCtx.fillRect(scrollPos + Point{ 8, 0 }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
         // Up button
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarUpPressed))
         {
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
-        drawingCtx.fillRectInset({ scrollPos.x, scrollPos.y }, kScrollButtonSize, widgetState.colour, f);
+        drawingCtx.fillRectInset(scrollPos, kScrollButtonSize, widgetState.colour, f);
 
         // Up arrow
         {
