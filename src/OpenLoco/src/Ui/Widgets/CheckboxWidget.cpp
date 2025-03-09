@@ -6,6 +6,9 @@
 
 namespace OpenLoco::Ui::Widgets
 {
+    static constexpr auto kCheckMarkSize = Ui::Size{ 10, 10 };
+    static constexpr auto kLabelMarginLeft = 4;
+
     // 0x004CB00B
     static void drawCheckMark(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
@@ -18,7 +21,7 @@ namespace OpenLoco::Ui::Widgets
         {
             drawingCtx.fillRectInset(
                 pos,
-                Ui::Size{ 10U, size.height - 1 },
+                kCheckMarkSize,
                 widgetState.colour,
                 widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
         }
@@ -57,7 +60,7 @@ namespace OpenLoco::Ui::Widgets
         tr.setCurrentFont(widget.font);
 
         const auto pos = window->position() + widget.position();
-        tr.drawStringLeft(pos + Point{ 14, 0 }, colour, widget.text, formatArgs);
+        tr.drawStringLeft(pos + Point{ kCheckMarkSize.width + kLabelMarginLeft, 0 }, colour, widget.text, formatArgs);
     }
 
     void Checkbox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)

@@ -8,23 +8,41 @@
 
 namespace OpenLoco::Ui::Widgets
 {
+    // For horizontal scrollbars its 10 wide, for vertical its 10 tall
+    static constexpr auto kScrollbarSize = 10;
+    static constexpr auto kScrollbarMargin = 1;
+
+    static constexpr auto kScrollButtonSize = Ui::Size(10, 10);
+    static constexpr auto kArrowOffset = 2;
+
     static void drawHScroll(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const ScrollArea& scrollArea)
     {
         auto* window = widgetState.window;
         const auto position = window->position() + widget.position();
         const auto size = widget.size();
+        const auto colour = widgetState.colour;
 
         // Calculate adjusted dimensions
-        auto scrollPos = Ui::Point{ position.x + 1, position.y + size.height - 11 }; // top = bottom - 10
-        auto scrollSize = Ui::Size{ size.width - 2, 10 };                            // Account for 1px offset on each side
+        auto scrollPos = Ui::Point{ position.x + kScrollbarMargin, position.y + size.height - kScrollbarSize - kScrollbarMargin };
+        auto scrollSize = Ui::Size{ size.width - kScrollbarMargin, kScrollbarSize };
 
         if (scrollArea.hasFlags(Ui::ScrollFlags::vscrollbarVisible))
         {
-            scrollSize.width -= 11;
+            scrollSize.width -= kScrollbarSize + kScrollbarMargin;
         }
 
         Gfx::RectInsetFlags f;
         auto tr = Gfx::TextRenderer(drawingCtx);
+
+        // Scroll track
+        drawingCtx.fillRect({ scrollPos.x, scrollPos.y }, scrollSize, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect({ scrollPos.x, scrollPos.y }, scrollSize, Colours::getShade(colour.c(), 3), Gfx::RectFlags::crossHatching);
+
+        // Track lines
+        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 2 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
+        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 3 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 7 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
+        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 8 }, { +scrollSize.width, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
         // Left button
         f = Gfx::RectInsetFlags::none;
@@ -32,12 +50,12 @@ namespace OpenLoco::Ui::Widgets
         {
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
-        drawingCtx.fillRectInset({ scrollPos.x, scrollPos.y }, { 10u, scrollSize.height }, widgetState.colour, f);
+        drawingCtx.fillRectInset({ scrollPos.x, scrollPos.y }, kScrollButtonSize, widgetState.colour, f);
 
         // Left arrow
         {
             const char* hLeftStr = "\x90\xBE";
-            tr.drawString(Point(scrollPos.x + 2, scrollPos.y), Colour::black, hLeftStr);
+            tr.drawString(Point(scrollPos.x + kArrowOffset, scrollPos.y), Colour::black, hLeftStr);
         }
 
         // Right button
@@ -46,24 +64,20 @@ namespace OpenLoco::Ui::Widgets
         {
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
-        drawingCtx.fillRectInset({ scrollPos.x + scrollSize.width - 10, scrollPos.y }, { 10U, scrollSize.height }, widgetState.colour, f);
+        drawingCtx.fillRectInset(
+            { scrollPos.x + scrollSize.width - kScrollButtonSize.width, scrollPos.y },
+            kScrollButtonSize,
+            widgetState.colour,
+            f);
 
         // Right arrow
         {
             const char* hRightStr = "\x90\xAF";
-            tr.drawString(Point(scrollPos.x + scrollSize.width - 7, scrollPos.y), Colour::black, hRightStr);
+            tr.drawString(
+                Point(scrollPos.x + scrollSize.width - kScrollButtonSize.width + kArrowOffset, scrollPos.y),
+                Colour::black,
+                hRightStr);
         }
-
-        const auto colour = widgetState.colour;
-        // Scroll track
-        drawingCtx.fillRect({ scrollPos.x + 10, scrollPos.y }, { scrollSize.width - 20, +scrollSize.height }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 10, scrollPos.y }, { scrollSize.width - 20, +scrollSize.height }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::crossHatching);
-
-        // Track lines
-        drawingCtx.fillRect({ scrollPos.x + 10, scrollPos.y + 2 }, { scrollSize.width - 20, 1 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 10, scrollPos.y + 3 }, { scrollSize.width - 20, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 10, scrollPos.y + 7 }, { scrollSize.width - 20, 1 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 10, scrollPos.y + 8 }, { scrollSize.width - 20, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
         // Thumb
         f = Gfx::RectInsetFlags::none;
@@ -71,7 +85,11 @@ namespace OpenLoco::Ui::Widgets
         {
             f = Gfx::RectInsetFlags::borderInset;
         }
-        drawingCtx.fillRectInset({ scrollPos.x - 1 + scrollArea.hThumbLeft, scrollPos.y }, { scrollArea.hThumbRight - scrollArea.hThumbLeft, +scrollSize.height }, colour, f);
+        drawingCtx.fillRectInset(
+            { scrollPos.x - kScrollbarMargin + scrollArea.hThumbLeft, scrollPos.y },
+            { scrollArea.hThumbRight - scrollArea.hThumbLeft + (kScrollbarMargin * 2), +scrollSize.height },
+            colour,
+            f);
     }
 
     static void drawVScroll(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const ScrollArea& scrollArea)
@@ -79,25 +97,36 @@ namespace OpenLoco::Ui::Widgets
         auto* window = widgetState.window;
         const auto position = window->position() + widget.position();
         const auto size = widget.size();
+        const auto colour = widgetState.colour;
 
         // Calculate adjusted dimensions
-        auto scrollPos = Ui::Point{ position.x + size.width - 11, position.y + 1 }; // left = right - 10
-        auto scrollSize = Ui::Size{ 10, size.height - 1 };                          // Account for 1px offset on each side
+        auto scrollPos = Ui::Point{ position.x + size.width - kScrollbarSize - kScrollbarMargin, position.y + kScrollbarMargin };
+        auto scrollSize = Ui::Size{ kScrollbarSize, size.height - kScrollbarMargin };
 
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            scrollSize.height -= 10;
+            scrollSize.height -= kScrollbarSize + kScrollbarMargin;
         }
 
         Gfx::RectInsetFlags f = Gfx::RectInsetFlags::none;
         auto tr = Gfx::TextRenderer(drawingCtx);
+
+        // Scroll track
+        drawingCtx.fillRect({ scrollPos.x, scrollPos.y }, scrollSize, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect({ scrollPos.x, scrollPos.y }, scrollSize, Colours::getShade(colour.c(), 3), Gfx::RectFlags::crossHatching);
+
+        // Track lines
+        drawingCtx.fillRect({ scrollPos.x + 2, scrollPos.y }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
+        drawingCtx.fillRect({ scrollPos.x + 3, scrollPos.y }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect({ scrollPos.x + 7, scrollPos.y }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
+        drawingCtx.fillRect({ scrollPos.x + 8, scrollPos.y }, { 1, +scrollSize.height }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
         // Up button
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarUpPressed))
         {
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
-        drawingCtx.fillRectInset({ scrollPos.x, scrollPos.y }, { scrollSize.width, 10U }, widgetState.colour, f);
+        drawingCtx.fillRectInset({ scrollPos.x, scrollPos.y }, kScrollButtonSize, widgetState.colour, f);
 
         // Up arrow
         {
@@ -111,24 +140,20 @@ namespace OpenLoco::Ui::Widgets
         {
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
-        drawingCtx.fillRectInset({ scrollPos.x, scrollPos.y + scrollSize.height - 10 }, { scrollSize.width, 10U }, widgetState.colour, f);
+        drawingCtx.fillRectInset(
+            { scrollPos.x, scrollPos.y + scrollSize.height - kScrollButtonSize.height },
+            kScrollButtonSize,
+            widgetState.colour,
+            f);
 
         // Down arrow
         {
             const char* vBottomStr = "\x90\xAA";
-            tr.drawString(Point(scrollPos.x + 1, scrollPos.y + scrollSize.height - 9), Colour::black, vBottomStr);
+            tr.drawString(
+                Point(scrollPos.x + kScrollbarMargin, scrollPos.y + scrollSize.height - kScrollButtonSize.height),
+                Colour::black,
+                vBottomStr);
         }
-
-        const auto colour = widgetState.colour;
-        // Scroll track
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 10 }, { +scrollSize.width, scrollSize.height - 20 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x, scrollPos.y + 10 }, { +scrollSize.width, scrollSize.height - 20 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::crossHatching);
-
-        // Track lines
-        drawingCtx.fillRect({ scrollPos.x + 2, scrollPos.y + 10 }, { 1, scrollSize.height - 20 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 3, scrollPos.y + 10 }, { 1, scrollSize.height - 20 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 7, scrollPos.y + 10 }, { 1, scrollSize.height - 20 }, Colours::getShade(colour.c(), 3), Gfx::RectFlags::none);
-        drawingCtx.fillRect({ scrollPos.x + 8, scrollPos.y + 10 }, { 1, scrollSize.height - 20 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
         // Thumb
         f = Gfx::RectInsetFlags::none;
@@ -136,7 +161,11 @@ namespace OpenLoco::Ui::Widgets
         {
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
-        drawingCtx.fillRectInset({ scrollPos.x, scrollPos.y - 1 + scrollArea.vThumbTop }, { +scrollSize.width, scrollArea.vThumbBottom - scrollArea.vThumbTop + 2 }, colour, f);
+        drawingCtx.fillRectInset(
+            { scrollPos.x, scrollPos.y - kScrollbarMargin + scrollArea.vThumbTop },
+            { +scrollSize.width, scrollArea.vThumbBottom - scrollArea.vThumbTop + (kScrollbarMargin * 2) },
+            colour,
+            f);
     }
 
     // 0x004CAB58
@@ -152,8 +181,8 @@ namespace OpenLoco::Ui::Widgets
         drawingCtx.fillRectInset(position, size, widgetState.colour, widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
 
         // Adjusted content area (1px inset)
-        auto contentPos = Ui::Point{ position.x + 1, position.y + 1 };
-        auto contentSize = Ui::Size{ size.width - 2, size.height - 2 };
+        auto contentPos = Ui::Point{ position.x + kScrollbarMargin, position.y + kScrollbarMargin };
+        auto contentSize = Ui::Size{ size.width - (kScrollbarMargin * 2), size.height - (kScrollbarMargin * 2) };
 
         const auto& scrollArea = window->scrollAreas[widgetState.scrollviewIndex];
 
@@ -161,13 +190,13 @@ namespace OpenLoco::Ui::Widgets
         if (scrollArea.contentWidth > size.width && scrollArea.hasFlags(Ui::ScrollFlags::hscrollbarVisible))
         {
             drawHScroll(drawingCtx, widget, widgetState, scrollArea);
-            contentSize.height -= 11;
+            contentSize.height -= kScrollbarSize + kScrollbarMargin;
         }
 
         if (scrollArea.contentHeight > size.height && scrollArea.hasFlags(Ui::ScrollFlags::vscrollbarVisible))
         {
             drawVScroll(drawingCtx, widget, widgetState, scrollArea);
-            contentSize.width -= 11;
+            contentSize.width -= kScrollbarSize + kScrollbarMargin;
         }
 
         Gfx::RenderTarget cropped = drawingCtx.currentRenderTarget();
