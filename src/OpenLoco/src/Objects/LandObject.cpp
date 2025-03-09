@@ -10,6 +10,14 @@
 
 namespace OpenLoco
 {
+    // Zoom levels are mandatory with DAT. Consider changing this with new object format.
+    constexpr auto const kNumTerrainImages = 19;
+    constexpr auto const kNumTerrainBlendImages = 6;
+    constexpr auto const kNumTerrainImageZoomLevels = 4;
+    constexpr auto const kTerrainFlatImageOffset = kNumTerrainImages * (kNumTerrainImageZoomLevels - 1);
+    constexpr auto const kNumImagesPerGrowthStage = kNumTerrainImages + kNumTerrainBlendImages;
+    constexpr auto const kNumImagesPerGrowthStagePlusZoom = kNumTerrainImages * kNumTerrainImageZoomLevels + kNumTerrainBlendImages;
+
     // 0x00469973
     bool LandObject::validate() const
     {
@@ -74,9 +82,9 @@ namespace OpenLoco
 
         auto imgRes = ObjectManager::loadImageTable(remainingData);
 
-        numImagesPerGrowthStage = numImageAngles * 25;
-        image = numImageAngles * numGrowthStages * 57 + imgRes.imageOffset;
-        mapPixelImage = numImageAngles * numGrowthStages * 82 + imgRes.imageOffset;
+        numImagesPerGrowthStage = numImageAngles * kNumImagesPerGrowthStage;
+        image = numImageAngles * numGrowthStages * kTerrainFlatImageOffset + imgRes.imageOffset;
+        mapPixelImage = numImageAngles * numGrowthStages * kNumImagesPerGrowthStagePlusZoom + imgRes.imageOffset;
 
         assert(remainingData.size() == imgRes.tableLength);
     }
