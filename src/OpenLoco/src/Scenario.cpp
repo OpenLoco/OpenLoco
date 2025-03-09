@@ -105,7 +105,7 @@ namespace OpenLoco::Scenario
     void initialiseSnowLine()
     {
         auto today = calcDate(getCurrentDay());
-        int32_t currentDayOfYear = today.dayOfOlympiad;
+        int32_t currentDayOfYear = today.dayOfYear;
 
         auto* climateObj = ObjectManager::get<ClimateObject>();
         if (climateObj == nullptr)
