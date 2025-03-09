@@ -590,17 +590,17 @@ namespace OpenLoco::IndustryManager
             industry->numTiles = 0;
             industry->under_construction = 0;
             industry->tileLoop = World::TileLoop{};
-            industry->var_DB = 0;
-            industry->var_DD = 0;
-            industry->var_DF = 25;
+            industry->numFarmTiles = 0;
+            industry->numIdleFarmTiles = 0;
+            industry->productionRate = 25;
             industry->foundingYear = getCurrentYear();
-            industry->var_E1 = {};
+            industry->stationsInRange = {};
             for (auto& stats : industry->producedCargoStatsStation)
             {
                 std::fill(std::begin(stats), std::end(stats), StationId::null);
             }
-            std::fill(std::begin(industry->var_17D), std::end(industry->var_17D), 0);
-            std::fill(std::begin(industry->var_181), std::end(industry->var_181), 0);
+            std::fill(std::begin(industry->dailyProduction), std::end(industry->dailyProduction), 0);
+            std::fill(std::begin(industry->outputBuffer), std::end(industry->outputBuffer), 0);
             std::fill(std::begin(industry->producedCargoQuantityMonthlyTotal), std::end(industry->producedCargoQuantityMonthlyTotal), 0);
             std::fill(std::begin(industry->producedCargoQuantityPreviousMonth), std::end(industry->producedCargoQuantityPreviousMonth), 0);
             std::fill(std::begin(industry->receivedCargoQuantityMonthlyTotal), std::end(industry->receivedCargoQuantityMonthlyTotal), 0);
