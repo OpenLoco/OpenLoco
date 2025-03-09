@@ -85,19 +85,19 @@ namespace OpenLoco::World
         MicroZ water() const { return _water & 0x1F; }
         int16_t waterHeight() const { return (_water & 0x1F) * kMicroZStep; }
         void setWater(MicroZ level) { _water = (_water & 0xE0) | (level & 0x1F); };
-        uint8_t getVar5SLR5() const
+        uint8_t getUpdateTimer() const
         {
             return (_water & 0xE0) >> 5;
         }
-        void setVar5SLR5(uint8_t var5) { _water = (_water & 0x1F) | ((var5 << 5) & 0xE0); }
+        void setUpdateTimer(uint8_t var5) { _water = (_water & 0x1F) | ((var5 << 5) & 0xE0); }
         uint8_t terrain() const { return _terrain & 0x1F; }
         void setTerrain(uint8_t terrain)
         {
             _terrain &= ~0x1F;
             _terrain |= terrain & 0x1F;
         }
-        uint8_t var_6_SLR5() const { return _terrain >> 5; }
-        void setVar6SLR5(uint8_t var6)
+        uint8_t getGrowthStage() const { return _terrain >> 5; }
+        void setGrowthStage(uint8_t var6)
         {
             _terrain &= 0x1F;
             _terrain |= var6 << 5;

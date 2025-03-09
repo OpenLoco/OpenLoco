@@ -417,7 +417,7 @@ namespace OpenLoco
             {
                 if (surface->industryId() == id())
                 {
-                    uint8_t bl = surface->var_6_SLR5();
+                    uint8_t bl = surface->getGrowthStage();
                     const auto* obj = getObject();
                     if (bl == 0 || bl != obj->var_EA)
                     {
@@ -532,8 +532,8 @@ namespace OpenLoco
         World::SurfaceElement* surface = tile.surface();
         surface->setIsIndustrialFlag(true);
         surface->setIndustry(industryId);
-        surface->setVar5SLR5((var_EA & 0xE0) >> 5);
-        surface->setVar6SLR5((var_EA & 0x7));
+        surface->setUpdateTimer((var_EA & 0xE0) >> 5);
+        surface->setGrowthStage((var_EA & 0x7));
         Ui::ViewportManager::invalidate(World::toWorldSpace(pos), surface->baseHeight(), surface->baseHeight() + 32);
         World::TileManager::removeAllWallsOnTileAbove(pos, surface->baseZ());
 

@@ -1244,9 +1244,9 @@ namespace OpenLoco::World::TileManager
         {
             return;
         }
-        if (surface.var_6_SLR5() > 0)
+        if (surface.getGrowthStage() > 0)
         {
-            surface.setVar6SLR5(0);
+            surface.setGrowthStage(0);
             surface.setSnowCoverage(0);
 
             Ui::ViewportManager::invalidate(pos, surface.baseHeight(), surface.baseHeight() + 32, ZoomLevel::eighth);

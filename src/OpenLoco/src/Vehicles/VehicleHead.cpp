@@ -2597,7 +2597,7 @@ namespace OpenLoco::Vehicles
                 if (surface->isIndustrial())
                 {
                     surface->setIsIndustrialFlag(false);
-                    surface->setVar6SLR5(0);
+                    surface->setGrowthStage(0);
                 }
                 surface->setIndustry(IndustryId(0));
                 surface->setType6Flag(true);
