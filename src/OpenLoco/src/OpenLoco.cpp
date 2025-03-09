@@ -628,7 +628,7 @@ namespace OpenLoco
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
                 setDate(today);
-                Scenario::updateSnowLine(today.dayOfOlympiad);
+                Scenario::updateSnowLine(today.dayOfYear);
                 Ui::Windows::TimePanel::invalidateFrame();
 
                 if (today.month != yesterday.month)
