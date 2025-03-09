@@ -15,7 +15,6 @@ namespace OpenLoco::Ui::Widgets
         auto* window = widgetState.window;
 
         const auto pos = window->position() + widget.position();
-        const auto size = widget.size();
 
         if (widgetState.enabled)
         {
