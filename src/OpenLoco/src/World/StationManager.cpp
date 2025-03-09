@@ -256,7 +256,7 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FA41
-        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::oilfield))
+        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::oilfieldStationName))
         {
             if (!realNamesInUse.test(StationName::townOilfield))
             {
@@ -264,7 +264,7 @@ namespace OpenLoco::StationManager
             }
         }
 
-        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::mines))
+        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::minesStationName))
         {
             if (!realNamesInUse.test(StationName::townMines))
             {
