@@ -244,6 +244,18 @@ namespace OpenLoco::Ui
 
         Window(Ui::Point32 position, Ui::Size32 size);
 
+        // TODO: Remove this once position is a member.
+        constexpr Ui::Point position() const
+        {
+            return { x, y };
+        }
+
+        // TODO: Remove this once size is a member.
+        constexpr Ui::Size size() const
+        {
+            return { width, height };
+        }
+
         void setWidgets(std::span<const Widget> newWidgets)
         {
             widgets.clear();

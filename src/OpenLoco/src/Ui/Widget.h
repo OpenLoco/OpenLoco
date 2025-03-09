@@ -205,6 +205,18 @@ namespace OpenLoco::Ui
         bool activated : 1 {};
         bool hidden : 1 {};
 
+        // TODO: Remove this once position is a member.
+        Ui::Point position() const
+        {
+            return { static_cast<int16_t>(left), static_cast<int16_t>(top) };
+        }
+
+        // TODO: Remove this once size is a member.
+        Ui::Size size() const
+        {
+            return { width(), height() };
+        }
+
         // TODO: Make tabs actual widgets.
         static void drawTab(Window* w, Gfx::DrawingContext& drawingCtx, uint32_t imageId, WidgetIndex_t index);
 

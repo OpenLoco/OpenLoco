@@ -10,7 +10,8 @@ namespace OpenLoco::Ui::Widgets
     static void drawTabBackground(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
-        Ui::Point placeForImage(widget.left + window->x, widget.top + window->y);
+
+        const auto pos = window->position() + widget.position();
 
         // TODO: This is always ImageIds::tab at the moment, we should make this implicit.
         ImageId imageId = ImageId{ widget.image };
@@ -27,16 +28,16 @@ namespace OpenLoco::Ui::Widgets
             if (colour.isTranslucent())
             {
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid(placeForImage + Ui::Point{ 1, 1 }, imageId, c);
+                drawingCtx.drawImageSolid(pos + Ui::Point{ 1, 1 }, imageId, c);
                 c = Colours::getShade(colour.c(), 2);
-                drawingCtx.drawImageSolid(placeForImage, imageId, c);
+                drawingCtx.drawImageSolid(pos, imageId, c);
             }
             else
             {
                 c = Colours::getShade(colour.c(), 6);
-                drawingCtx.drawImageSolid(placeForImage + Ui::Point{ 1, 1 }, imageId, c);
+                drawingCtx.drawImageSolid(pos + Ui::Point{ 1, 1 }, imageId, c);
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid(placeForImage, imageId, c);
+                drawingCtx.drawImageSolid(pos, imageId, c);
             }
 
             return;
@@ -44,7 +45,7 @@ namespace OpenLoco::Ui::Widgets
 
         imageId = imageId.withPrimary(colour.c());
 
-        drawingCtx.drawImage(placeForImage, imageId);
+        drawingCtx.drawImage(pos, imageId);
     }
 
     void Tab::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
