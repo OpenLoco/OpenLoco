@@ -406,7 +406,7 @@ namespace OpenLoco
         auto* indObj = getObject();
         // isObsolete or isTooLowProduction
         return (getCurrentYear() > indObj->obsoleteYear && prng.randNext(0xFFFF) < 102)
-            || (indObj->var_F3 != 0 && indObj->var_F3 > prng.randNext(0xFFFF));
+            || (indObj->monthlyClosureChance != 0 && indObj->monthlyClosureChance > prng.randNext(0xFFFF));
     }
 
     // 0x0045329B
@@ -421,7 +421,7 @@ namespace OpenLoco
                 {
                     uint8_t bl = surface->getGrowthStage();
                     const auto* obj = getObject();
-                    if (bl == 0 || bl != obj->var_EA)
+                    if (bl == 0 || bl != obj->farmTileGrowthStageNoProduction)
                     {
                         // loc_4532E5
                         numFarmTiles++;
@@ -444,9 +444,9 @@ namespace OpenLoco
         int16_t relativeFarmSize = std::min(productiveFarmTiles / 25, 255);
 
         const auto* obj = getObject();
-        if (relativeFarmSize < obj->var_EB)
+        if (relativeFarmSize < obj->farmNumFields)
         {
-            productionRate = ((relativeFarmSize * 256) / obj->var_EB) & 0xFF;
+            productionRate = ((relativeFarmSize * 256) / obj->farmNumFields) & 0xFF;
         }
         else
         {
@@ -591,7 +591,7 @@ namespace OpenLoco
             if (is23prng.has_value())
             {
                 const auto randVal = is23prng->randNext();
-                dl = (((randVal & 0xFF) * indObj->var_EC) / 256)
+                dl = (((randVal & 0xFF) * indObj->farmTileNumGrowthStages) / 256)
                     | (((randVal >> 8) & 0x7) << 5);
             }
             bool skipBorderClear = false;

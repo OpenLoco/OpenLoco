@@ -1474,7 +1474,7 @@ namespace OpenLoco::Paint
 
             session.setItemType(Ui::ViewportInteraction::InteractionItem::industryTree);
 
-            const auto variation = industryObj->var_1A * elSurface.getGrowthStage() + ((industryObj->var_E9 - 1) & rotation) * 21;
+            const auto variation = industryObj->var_1A * elSurface.getGrowthStage() + ((industryObj->farmTileNumImageAngles - 1) & rotation) * 21;
 
             // Draw trees if they exist
             {
@@ -1650,7 +1650,7 @@ namespace OpenLoco::Paint
                 auto* industry = IndustryManager::get(elSurface.industryId());
                 auto* industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
 
-                const auto variation = industryObj->var_1A * elSurface.getGrowthStage() + ((industryObj->var_E9 - 1) & rotation) * 21;
+                const auto variation = industryObj->var_1A * elSurface.getGrowthStage() + ((industryObj->farmTileNumImageAngles - 1) & rotation) * 21;
                 const auto imageIndex = industryObj->var_16 + variation + displaySlope;
 
                 if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::farmTilesDrawAboveSnow))

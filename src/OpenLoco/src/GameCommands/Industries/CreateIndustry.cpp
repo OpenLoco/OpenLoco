@@ -592,7 +592,7 @@ namespace OpenLoco::GameCommands
         // 0x00454745
         if ((flags & Flags::apply) && !(flags & Flags::ghost) && newIndustry->numTiles != 0)
         {
-            if (indObj->var_EA != 0xFF)
+            if (indObj->farmTileGrowthStageNoProduction != 0xFF)
             {
                 uint32_t buildingWallEntranceMask = 0;
                 if (indObj->buildingWallEntrance != 0xFF)
@@ -612,7 +612,7 @@ namespace OpenLoco::GameCommands
                     const auto topRight = bottomLeft + (isMultiTile ? World::TilePos2{ 3, 3 } : World::TilePos2{ 2, 2 });
                     for (const auto& tilePos : World::TilePosRangeView(bottomLeft, topRight))
                     {
-                        claimSurfaceForIndustry(tilePos, newIndustry->id(), indObj->var_EA);
+                        claimSurfaceForIndustry(tilePos, newIndustry->id(), indObj->farmTileGrowthStageNoProduction);
                         // TODO: This is very similar to expand grounds code
                         if (indObj->buildingWall != 0xFF)
                         {
@@ -661,14 +661,14 @@ namespace OpenLoco::GameCommands
             }
 
             // Expand grounds
-            if (indObj->var_EC != 0)
+            if (indObj->farmTileNumGrowthStages != 0)
             {
-                const auto numExpands = (((indObj->var_EB * newIndustry->prng.randNext(0xFF)) / 256) + 1) * 4;
+                const auto numExpands = (((indObj->farmNumFields * newIndustry->prng.randNext(0xFF)) / 256) + 1) * 4;
                 for (auto i = 0; i < numExpands; ++i)
                 {
                     const auto randExpandVal = newIndustry->prng.randNext();
                     // dl
-                    const auto surfaceUnk = (((randExpandVal & 0xFF) * indObj->var_EC) / 256) | (((randExpandVal >> 8) & 0x7) << 5);
+                    const auto surfaceUnk = (((randExpandVal & 0xFF) * indObj->farmTileNumGrowthStages) / 256) | (((randExpandVal >> 8) & 0x7) << 5);
 
                     const World::TilePos2 randOffset(
                         ((randExpandVal >> 11) & 0x1F) - 15,

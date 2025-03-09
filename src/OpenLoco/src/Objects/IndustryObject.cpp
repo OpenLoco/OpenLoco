@@ -151,7 +151,7 @@ namespace OpenLoco
         {
             return false;
         }
-        switch (var_E9)
+        switch (farmTileNumImageAngles)
         {
             case 1:
             case 2:
@@ -161,12 +161,12 @@ namespace OpenLoco
                 return false;
         }
 
-        if (var_EA != 0xFF && var_EA > 7)
+        if (farmTileGrowthStageNoProduction != 0xFF && farmTileGrowthStageNoProduction > 7)
         {
             return false;
         }
 
-        if (var_EC > 8)
+        if (farmTileNumGrowthStages > 8)
         {
             return false;
         }
@@ -351,7 +351,7 @@ namespace OpenLoco
             var_12 += numBuildingVariations * 4;
         }
         var_16 = numBuildingParts * 4 + var_12;
-        var_1A = var_E9 * 21;
+        var_1A = farmTileNumImageAngles * 21;
     }
 
     // 0x0045919D

@@ -108,15 +108,15 @@ namespace OpenLoco::World
             return false;
         }
 
-        if (elSurface.getGrowthStage() != industryObj->var_EA || elSurface.getGrowthStage() == 0)
+        if (elSurface.getGrowthStage() != industryObj->farmTileGrowthStageNoProduction || elSurface.getGrowthStage() == 0)
         {
             elSurface.setUpdateTimer(elSurface.getUpdateTimer() + 1);
             if (elSurface.getUpdateTimer() == 0)
             {
-                uint8_t newVar6SLR5 = elSurface.getGrowthStage() + 1;
-                if (newVar6SLR5 >= industryObj->var_EC)
+                uint8_t newGrowthStage = elSurface.getGrowthStage() + 1;
+                if (newGrowthStage >= industryObj->farmTileNumGrowthStages)
                 {
-                    newVar6SLR5 = 0;
+                    newGrowthStage = 0;
                 }
                 elSurface.setGrowthStage(newVar6SLR5);
                 Ui::ViewportManager::invalidate(loc, elSurface.baseHeight(), elSurface.baseHeight());
@@ -150,7 +150,7 @@ namespace OpenLoco::World
                 // Wall has been found on this surface tile.
                 // Validate if it should be here and if not
                 // remove it
-                if (surf->getGrowthStage() != industryObj->var_EA)
+                if (surf->getGrowthStage() != industryObj->farmTileGrowthStageNoProduction)
                 {
                     continue;
                 }
@@ -165,7 +165,7 @@ namespace OpenLoco::World
                 {
                     continue;
                 }
-                if (nextSurface->getGrowthStage() != industryObj->var_EA)
+                if (nextSurface->getGrowthStage() != industryObj->farmTileGrowthStageNoProduction)
                 {
                     continue;
                 }
@@ -246,9 +246,9 @@ namespace OpenLoco::World
                 {
                     continue;
                 }
-                if (surf->getGrowthStage() != industryObj->var_EA || industryObj->buildingWall != 0xFFU)
+                if (surf->getGrowthStage() != industryObj->farmTileGrowthStageNoProduction || industryObj->buildingWall != 0xFFU)
                 {
-                    if (surf->getGrowthStage() == industryObj->var_EA)
+                    if (surf->getGrowthStage() == industryObj->farmTileGrowthStageNoProduction)
                     {
                         wallType = industryObj->buildingWall;
                     }
