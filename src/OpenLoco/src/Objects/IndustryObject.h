@@ -33,21 +33,21 @@ namespace OpenLoco
         builtAwayFromTown = 1U << 10,
         builtNearTrees = 1U << 11,
         builtRequiresOpenSpace = 1U << 12,
-        oilfield = 1U << 13,
-        mines = 1U << 14,
-        notRotatable = 1U << 15,
+        oilfieldStationName = 1U << 13, // stations built nearby get named Oilfield
+        minesStationName = 1U << 14, // stations built nearby get named Mines
+        notRotatable = 1U << 15, // used on windmills
         canBeFoundedByPlayer = 1U << 16,
         requiresAllCargo = 1U << 17,
         canIncreaseProduction = 1U << 18,
         canDecreaseProduction = 1U << 19,
         requiresElectricityPylons = 1U << 20,
         hasShadows = 1U << 21,
-        unk23 = 1U << 23,
+        farmTilesGrowthStageDesynchronized = 1U << 23, // used by livestock farm, since it produces all the time. NOT used by regular farm, to keep the harvest roughly synchronized
         builtInDesert = 1U << 24,
         builtNearDesert = 1U << 25,
-        unk26 = 1U << 26,
-        unk27 = 1U << 27,
-        flag_28 = 1U << 28,
+        farmTilesDrawAboveSnow = 1U << 26,    // used by skislopes, otherwise farm tiles draw below snow
+        farmTilesPartialCoverage = 1U << 27,  // used by skislopes to randomly skip 7/8 of tiles when creating 5x5 fields
+        farmProductionIgnoresSnow = 1U << 28, // used by forest
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryObjectFlags);
 

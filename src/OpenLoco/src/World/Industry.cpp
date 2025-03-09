@@ -425,7 +425,7 @@ namespace OpenLoco
                     {
                         // loc_4532E5
                         numFarmTiles++;
-                        if ((!obj->hasFlags(IndustryObjectFlags::flag_28) && surface->snowCoverage() != 0) || findTree(surface))
+                        if ((!obj->hasFlags(IndustryObjectFlags::farmProductionIgnoresSnow) && surface->snowCoverage() != 0) || findTree(surface))
                         {
                             numIdleFarmTiles++;
                         }
@@ -567,12 +567,12 @@ namespace OpenLoco
         const auto* indObj = ObjectManager::get<IndustryObject>(objectId);
 
         std::optional<Core::Prng> is23prng;
-        if (indObj->hasFlags(IndustryObjectFlags::unk23)) // Livestock use this
+        if (indObj->hasFlags(IndustryObjectFlags::farmTilesGrowthStageDesynchronized))
         {
             is23prng = prng;
         }
         std::optional<Core::Prng> is27prng;
-        if (indObj->hasFlags(IndustryObjectFlags::unk27)) // Skislope use this
+        if (indObj->hasFlags(IndustryObjectFlags::farmTilesPartialCoverage))
         {
             // Vanilla mistake here didn't set the prng! It would just recycle from a previous unk23 caller
             is27prng = prng;

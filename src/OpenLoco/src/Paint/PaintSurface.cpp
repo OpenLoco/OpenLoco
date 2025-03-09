@@ -1489,7 +1489,7 @@ namespace OpenLoco::Paint
 
             session.setItemType(Ui::ViewportInteraction::InteractionItem::surface);
 
-            if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::unk26))
+            if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::farmTilesDrawAboveSnow))
                 || elSurface.snowCoverage() == 0)
             {
                 // Draw main surface image
@@ -1653,7 +1653,7 @@ namespace OpenLoco::Paint
                 const auto variation = industryObj->var_1A * elSurface.getGrowthStage() + ((industryObj->var_E9 - 1) & rotation) * 21;
                 const auto imageIndex = industryObj->var_16 + variation + displaySlope;
 
-                if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::unk26))
+                if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::farmTilesDrawAboveSnow))
                     || selfDescriptor.snowCoverage == 0)
                 {
                     paintMainUndergroundSurface(session, imageIndex, displaySlope);
