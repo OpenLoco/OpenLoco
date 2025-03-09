@@ -23,7 +23,7 @@ namespace OpenLoco::Ui::Widgets
         const auto colour = widgetState.colour;
 
         // Calculate adjusted dimensions
-        auto scrollPos = Ui::Point{ position.x + kScrollbarMargin, position.y + size.height - kScrollbarSize - kScrollbarMargin };
+        auto scrollPos = position + Point{ kScrollbarMargin, size.height - kScrollbarSize - kScrollbarMargin };
         auto scrollSize = Ui::Size{ size.width - kScrollbarMargin, kScrollbarSize };
 
         if (scrollArea.hasFlags(Ui::ScrollFlags::vscrollbarVisible))
@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Widgets
         // Left arrow
         {
             const char* hLeftStr = "\x90\xBE";
-            tr.drawString(Point(scrollPos.x + kArrowOffset, scrollPos.y), Colour::black, hLeftStr);
+            tr.drawString(scrollPos + Point{ kArrowOffset, 0 }, Colour::black, hLeftStr);
         }
 
         // Right button
@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Widgets
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
         drawingCtx.fillRectInset(
-            { scrollPos.x + scrollSize.width - kScrollButtonSize.width, scrollPos.y },
+            scrollPos + Point{ scrollSize.width - kScrollButtonSize.width, 0 },
             kScrollButtonSize,
             widgetState.colour,
             f);
@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::Widgets
         {
             const char* hRightStr = "\x90\xAF";
             tr.drawString(
-                Point(scrollPos.x + scrollSize.width - kScrollButtonSize.width + kArrowOffset, scrollPos.y),
+                scrollPos + Point{ scrollSize.width - kScrollButtonSize.width + kArrowOffset, 0 },
                 Colour::black,
                 hRightStr);
         }
@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Widgets
             f = Gfx::RectInsetFlags::borderInset;
         }
         drawingCtx.fillRectInset(
-            { scrollPos.x - kScrollbarMargin + scrollArea.hThumbLeft, scrollPos.y },
+            scrollPos + Point{ scrollArea.hThumbLeft - kScrollbarMargin, 0 },
             { scrollArea.hThumbRight - scrollArea.hThumbLeft + (kScrollbarMargin * 2), +scrollSize.height },
             colour,
             f);
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Widgets
         const auto colour = widgetState.colour;
 
         // Calculate adjusted dimensions
-        auto scrollPos = Ui::Point{ position.x + size.width - kScrollbarSize - kScrollbarMargin, position.y + kScrollbarMargin };
+        auto scrollPos = position + Point{ size.width - kScrollbarSize - kScrollbarMargin, kScrollbarMargin };
         auto scrollSize = Ui::Size{ kScrollbarSize, size.height - kScrollbarMargin };
 
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Widgets
         // Up arrow
         {
             const char* vTopStr = "\x90\xA0";
-            tr.drawString(Point(scrollPos.x + 1, scrollPos.y - 1), Colour::black, vTopStr);
+            tr.drawString(scrollPos + Point{ 1, -1 }, Colour::black, vTopStr);
         }
 
         // Down button
@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Widgets
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
         drawingCtx.fillRectInset(
-            { scrollPos.x, scrollPos.y + scrollSize.height - kScrollButtonSize.height },
+            scrollPos + Point{ 0, scrollSize.height - kScrollButtonSize.height },
             kScrollButtonSize,
             widgetState.colour,
             f);
@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Widgets
         {
             const char* vBottomStr = "\x90\xAA";
             tr.drawString(
-                Point(scrollPos.x + kScrollbarMargin, scrollPos.y + scrollSize.height - kScrollButtonSize.height),
+                scrollPos + Point{ kScrollbarMargin, scrollSize.height - kScrollButtonSize.height },
                 Colour::black,
                 vBottomStr);
         }
@@ -162,7 +162,7 @@ namespace OpenLoco::Ui::Widgets
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
         drawingCtx.fillRectInset(
-            { scrollPos.x, scrollPos.y - kScrollbarMargin + scrollArea.vThumbTop },
+            scrollPos + Point{ 0, scrollArea.vThumbTop - kScrollbarMargin },
             { +scrollSize.width, scrollArea.vThumbBottom - scrollArea.vThumbTop + (kScrollbarMargin * 2) },
             colour,
             f);
@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Widgets
         drawingCtx.fillRectInset(position, size, widgetState.colour, widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
 
         // Adjusted content area (1px inset)
-        auto contentPos = Ui::Point{ position.x + kScrollbarMargin, position.y + kScrollbarMargin };
+        auto contentPos = position + Point{ kScrollbarMargin, kScrollbarMargin };
         auto contentSize = Ui::Size{ size.width - (kScrollbarMargin * 2), size.height - (kScrollbarMargin * 2) };
 
         const auto& scrollArea = window->scrollAreas[widgetState.scrollviewIndex];
