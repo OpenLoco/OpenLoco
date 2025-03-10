@@ -14,15 +14,18 @@
       "name": "sdl2",
       "default-features": false,
       "features": [
-        "x11"
+        {
+          "name": "x11",
+          "platform": "linux"
+        }
       ]
     }
   ],
   "builtin-baseline": "300239058e33420acd153135b3f6e6b187828992",
   "overrides": [
     {
-        "name": "openal-soft",
-        "version": "1.24.1"
+      "name": "openal-soft",
+      "version": "1.24.1"
     }
-]
+  ]
 }
