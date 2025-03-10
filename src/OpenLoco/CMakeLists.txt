@@ -811,6 +811,9 @@ else ()
         PRIVATE
             DEBUG=${DEBUG_LEVEL}
             _NO_LOCO_WIN32_=1)
+
+    target_link_libraries(OpenLoco
+        ZLIB::ZLIB) # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
 endif()
 
 if (APPLE AND FALSE) # TODO: This is broken after moving resources into src/Resources
