@@ -1063,8 +1063,8 @@ namespace OpenLoco
         company.var_4A5 = 13;
     }
 
-    // 0x0047EABE
-    static TownId getUnkTown(uint32_t& randVal, uint32_t minPopulationCapcity)
+    // 0x0047EABE & 0x0047EB17
+    static TownId generateTargetTownByPopulation(uint32_t& randVal, uint32_t minPopulationCapcity)
     {
         sfl::static_vector<TownId, Limits::kMaxTowns> possibleTowns;
         for (auto& town : TownManager::towns())
@@ -1079,8 +1079,155 @@ namespace OpenLoco
             return TownId::null;
         }
         const auto randTown = possibleTowns[(randVal & 0x7F) * possibleTowns.size() / 128];
-        std::rotr(randVal, 7);
+        randVal = std::rotr(randVal, 7);
         return randTown;
+    }
+
+    struct TownDestinations
+    {
+        TownId townA;
+        TownId townB;
+    };
+
+    // 0x0047EB70, 0x0047EC43
+    static TownDestinations generateTargetTowns(uint32_t& randVal, uint32_t minPopulationCapcity, int32_t minDistance, int32_t maxDistance)
+    {
+        sfl::static_vector<TownId, Limits::kMaxTowns> possibleTowns;
+        for (auto& town : TownManager::towns())
+        {
+            if (town.populationCapacity >= minPopulationCapcity)
+            {
+                possibleTowns.push_back(town.id());
+            }
+        }
+
+        if (possibleTowns.empty())
+        {
+            return { TownId::null, TownId::null };
+        }
+
+        const auto randTownA = possibleTowns[(randVal & 0x7F) * possibleTowns.size() / 128];
+        randVal = std::rotr(randVal, 7);
+
+        const auto* townA = TownManager::get(randTownA);
+        const auto townAPos = World::Pos2{ townA->x, townA->y };
+
+        possibleTowns.clear();
+        for (auto& town : TownManager::towns())
+        {
+            if (town.populationCapacity >= minPopulationCapcity && town.id() != randTownA)
+            {
+                const auto townBPos = World::Pos2{ town.x, town.y };
+                const auto dist = Math::Vector::manhattanDistance2D(townAPos, townBPos);
+                if (dist <= maxDistance && dist >= minDistance)
+                {
+                    possibleTowns.push_back(town.id());
+                }
+            }
+        }
+
+        if (possibleTowns.empty())
+        {
+            return { TownId::null, TownId::null };
+        }
+
+        const auto randTownB = possibleTowns[(randVal & 0x7F) * possibleTowns.size() / 128];
+        randVal = std::rotr(randVal, 7);
+        return { randTownA, randTownB };
+    }
+
+    struct IndustryDestinations
+    {
+        IndustryId industryA;
+        IndustryId industryB;
+        uint32_t cargoType;
+    };
+
+    // 0x0047EF49 & 0x0047F0C7
+    static IndustryDestinations generateTargetIndustries(uint32_t& randVal, int32_t minDistance, int32_t maxDistance)
+    {
+        sfl::static_vector<IndustryId, Limits::kMaxIndustries> possibleIndustries;
+        for (auto& industry : IndustryManager::industries())
+        {
+            if (industry.hasFlags(IndustryFlags::closingDown))
+            {
+                continue;
+            }
+            bool shouldAdd = false;
+            for (auto i = 0; i < 2; ++i)
+            {
+                if (industry.producedCargoQuantityPreviousMonth[i] >= 150)
+                {
+                    shouldAdd = true;
+                    break;
+                }
+                if (industry.dailyProduction[i] >= 8)
+                {
+                    shouldAdd = true;
+                    break;
+                }
+            }
+            if (shouldAdd)
+            {
+                possibleIndustries.push_back(industry.id());
+            }
+        }
+        if (possibleIndustries.empty())
+        {
+            return { IndustryId::null, IndustryId::null, 0 };
+        }
+        const auto randIndustryA = possibleIndustries[(randVal & 0xFF) * possibleIndustries.size() / 256];
+        randVal = std::rotr(randVal, 8);
+        auto* industryA = IndustryManager::get(randIndustryA);
+        const auto industryAPos = World::Pos2{ industryA->x, industryA->y };
+
+        auto* industryObj = industryA->getObject();
+        uint8_t cargoType = industryObj->producedCargoType[0];
+        if (industryA->producedCargoQuantityPreviousMonth[1] >= 150 || industryA->dailyProduction[1] >= 8)
+        {
+            cargoType = industryObj->producedCargoType[1];
+            if (industryA->producedCargoQuantityPreviousMonth[0] >= 150 || industryA->dailyProduction[0] >= 8)
+            {
+                if (randVal & (1U << 31))
+                {
+                    cargoType = industryObj->producedCargoType[0];
+                }
+                randVal = std::rotr(randVal, 1);
+            }
+        }
+
+        possibleIndustries.clear();
+        for (auto& industry : IndustryManager::industries())
+        {
+            auto* industryObjB = industry.getObject();
+            bool takesRequiredCargo = false;
+            for (auto i = 0U; i < 3; ++i)
+            {
+                if (industryObjB->requiredCargoType[i] == cargoType)
+                {
+                    takesRequiredCargo = true;
+                    break;
+                }
+            }
+            if (!takesRequiredCargo)
+            {
+                continue;
+            }
+
+            const auto industryBPos = World::Pos2{ industry.x, industry.y };
+            const auto dist = Math::Vector::manhattanDistance2D(industryAPos, industryBPos);
+            if (dist <= maxDistance && dist >= minDistance)
+            {
+                possibleIndustries.push_back(industry.id());
+            }
+        }
+        if (possibleIndustries.empty())
+        {
+            return { IndustryId::null, IndustryId::null, 0 };
+        }
+        const auto randIndustryB = possibleIndustries[(randVal & 0xFF) * possibleIndustries.size() / 128];
+        randVal = std::rotr(randVal, 8);
+        return { randIndustryA, randIndustryB, cargoType };
     }
 
     // 0x0047E7DC
@@ -1132,7 +1279,7 @@ namespace OpenLoco
             case AiThoughtType::unk2:
             {
                 // 0x0047E8C8
-                const auto destination = getUnkTown(randVal);
+                const auto destination = generateTargetTownByPopulation(randVal, 1200);
                 if (destination == TownId::null)
                 {
                     thought.type = AiThoughtType::null;
@@ -1144,22 +1291,80 @@ namespace OpenLoco
             }
             case AiThoughtType::unk1:
             case AiThoughtType::unk5:
+            {
                 // 0x0047E8AA
+                const auto destination = generateTargetTownByPopulation(randVal, 600);
+                if (destination == TownId::null)
+                {
+                    thought.type = AiThoughtType::null;
+                    return;
+                }
+                thought.var_01 = enumValue(destination);
+                thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
+            }
             case AiThoughtType::unk3:
             case AiThoughtType::unk6:
+            {
                 // 0x0047E8E6
+                const auto [destinationA, destinationB] = generateTargetTowns(randVal, 800, 0, 85 * 32);
+                if (destinationA == TownId::null || destinationB == TownId::null)
+                {
+                    thought.type = AiThoughtType::null;
+                    return;
+                }
+                thought.var_01 = enumValue(destinationA);
+                thought.var_02 = enumValue(destinationB);
+
+                thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
+            }
             case AiThoughtType::unk4:
+            {
                 // 0x0047E907
+                const auto [destinationA, destinationB] = generateTargetTowns(randVal, 800, 40 * 32, 220 * 32);
+                if (destinationA == TownId::null || destinationB == TownId::null)
+                {
+                    thought.type = AiThoughtType::null;
+                    return;
+                }
+                thought.var_01 = enumValue(destinationA);
+                thought.var_02 = enumValue(destinationB);
+
+                thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
+            }
             case AiThoughtType::unk7:
             case AiThoughtType::unk11:
+            {
                 // 0x0047E928
+                const auto dest = generateTargetIndustries(randVal, 20 * 32, 80 * 32);
+                if (dest.industryA == IndustryId::null || dest.industryB == IndustryId::null)
+                {
+                    thought.type = AiThoughtType::null;
+                    return;
+                }
+                thought.var_01 = enumValue(dest.industryA);
+                thought.var_02 = enumValue(dest.industryB);
+
+                thought.cargoType = dest.cargoType;
                 break;
+            }
             case AiThoughtType::unk8:
+            {
                 // 0x0047E944
+                const auto dest = generateTargetIndustries(randVal, 60 * 32, 250 * 32);
+                if (dest.industryA == IndustryId::null || dest.industryB == IndustryId::null)
+                {
+                    thought.type = AiThoughtType::null;
+                    return;
+                }
+                thought.var_01 = enumValue(dest.industryA);
+                thought.var_02 = enumValue(dest.industryB);
+
+                thought.cargoType = dest.cargoType;
                 break;
+            }
             case AiThoughtType::unk9:
             case AiThoughtType::unk12:
                 // 0x0047E960
@@ -1168,8 +1373,20 @@ namespace OpenLoco
                 // 0x0047E97C
                 break;
             case AiThoughtType::unk13:
+            {
                 // 0x0047E998
+                const auto [destinationA, destinationB] = generateTargetTowns(randVal, 1200, 120 * 32, std::numeric_limits<int32_t>::max());
+                if (destinationA == TownId::null || destinationB == TownId::null)
+                {
+                    thought.type = AiThoughtType::null;
+                    return;
+                }
+                thought.var_01 = enumValue(destinationA);
+                thought.var_02 = enumValue(destinationB);
+
+                thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
+            }
             case AiThoughtType::unk14:
                 // 0x0047E9B9
                 break;
