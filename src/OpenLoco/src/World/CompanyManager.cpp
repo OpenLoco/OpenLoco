@@ -1,5 +1,5 @@
 #include "CompanyManager.h"
-#include "CompanyAi.h"
+#include "CompanyAi/CompanyAi.h"
 #include "CompanyRecords.h"
 #include "Config.h"
 #include "Date.h"

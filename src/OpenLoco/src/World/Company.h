@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CompanyAi.h"
+#include "CompanyAi/CompanyAi.h"
 #include "Economy/Currency.h"
 #include "Economy/Expenditures.h"
 #include "Engine/Limits.h"
