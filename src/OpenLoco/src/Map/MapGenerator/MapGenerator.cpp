@@ -526,7 +526,7 @@ namespace OpenLoco::World::MapGenerator
                 continue;
             }
             surface->setTerrain(*style);
-            surface->setVar6SLR5(0);
+            surface->setGrowthStage(0);
 
             const auto variation = getRandomTerrainVariation(*surface);
             if (variation.has_value())
@@ -600,7 +600,7 @@ namespace OpenLoco::World::MapGenerator
                         {
                             if (surface->terrain() != 0)
                             {
-                                surface->setVar6SLR5(0);
+                                surface->setGrowthStage(0);
                                 setVariation = true;
                             }
                         }
@@ -608,7 +608,7 @@ namespace OpenLoco::World::MapGenerator
 
                     if (!setVariation)
                     {
-                        surface->setVar6SLR5(landObj->var_03 - 1);
+                        surface->setGrowthStage(landObj->numGrowthStages - 1);
                     }
                 }
             }
