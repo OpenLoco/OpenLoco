@@ -536,8 +536,8 @@ namespace OpenLoco
         World::SurfaceElement* surface = tile.surface();
         surface->setIsIndustrialFlag(true);
         surface->setIndustry(industryId);
-        surface->setUpdateTimer(updateTimer & 0xE0);
-        surface->setGrowthStage(growthStage & 0x7);
+        surface->setUpdateTimer(updateTimer);
+        surface->setGrowthStage(growthStage);
         Ui::ViewportManager::invalidate(World::toWorldSpace(pos), surface->baseHeight(), surface->baseHeight() + 32);
         World::TileManager::removeAllWallsOnTileAbove(pos, surface->baseZ());
 
