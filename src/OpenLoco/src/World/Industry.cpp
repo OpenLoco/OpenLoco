@@ -472,7 +472,7 @@ namespace OpenLoco
                         wallType = obj->wallTypes[2];
                         wallEntranceType = obj->wallTypes[3];
                     }
-                    uint8_t updateTimerVal = prng.randNext(7) * 32;
+                    uint8_t updateTimerVal = prng.randNext(7);
                     expandGrounds(randTile, wallType, wallEntranceType, 0, updateTimerVal);
                 }
             }
