@@ -77,10 +77,10 @@ namespace OpenLoco
         StringId nameDownProduction; // 0x8
         StringId nameSingular;       // 0x0A
         StringId namePlural;         // 0x0C
-        uint32_t var_0E;             // 0x0E shadows image id base
-        uint32_t var_12;             // 0x12 Base image id for building 0
-        uint32_t var_16;
-        uint32_t var_1A;
+        uint32_t shadowImageIds;             // 0x0E shadows image id base
+        uint32_t buildingImageIds;             // 0x12 Base image id for building 0
+        uint32_t fieldImageIds;
+        uint32_t numImagesPerFieldGrowthStage;
         uint8_t numBuildingParts;                            // 0x1E
         uint8_t numBuildingVariations;                       // 0x1F
         const uint8_t* buildingPartHeights;                  // 0x20 This is the height of a building image

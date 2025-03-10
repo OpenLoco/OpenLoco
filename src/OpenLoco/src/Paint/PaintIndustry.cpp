@@ -119,7 +119,7 @@ namespace OpenLoco::Paint
                 }
             }
             const auto sectionHeight = indObj.buildingPartHeights[adjustedBuildingPart];
-            const uint32_t imageIdx = adjustedBuildingPart * 4 + indObj.var_12 + rotation;
+            const uint32_t imageIdx = adjustedBuildingPart * 4 + indObj.buildingImageIds + rotation;
             ImageId image = baseColour.withIndex(imageIdx);
             if (sectionCount == 0 && !baseColour.isBlended())
             {
@@ -190,7 +190,7 @@ namespace OpenLoco::Paint
         {
             if (session.getRenderTarget()->zoomLevel <= 1)
             {
-                const auto shadowImageOffset = buildingType * 4 + indObj->var_0E + rotation;
+                const auto shadowImageOffset = buildingType * 4 + indObj->shadowImageIds + rotation;
                 const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.var_6_F800()));
                 if (isMultiTile)
                 {
