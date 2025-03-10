@@ -419,9 +419,9 @@ namespace OpenLoco
             {
                 if (surface->industryId() == id())
                 {
-                    uint8_t bl = surface->getGrowthStage();
+                    uint8_t growthStage = surface->getGrowthStage();
                     const auto* obj = getObject();
-                    if (bl == 0 || bl != obj->farmTileGrowthStageNoProduction)
+                    if (growthStage == 0 || growthStage != obj->farmTileGrowthStageNoProduction)
                     {
                         // loc_4532E5
                         numFarmTiles++;
@@ -566,16 +566,16 @@ namespace OpenLoco
 
         const auto* indObj = ObjectManager::get<IndustryObject>(objectId);
 
-        std::optional<Core::Prng> is23prng;
+        std::optional<Core::Prng> isGrowthStageDesyncPrng;
         if (indObj->hasFlags(IndustryObjectFlags::farmTilesGrowthStageDesynchronized))
         {
-            is23prng = prng;
+            isGrowthStageDesyncPrng = prng;
         }
-        std::optional<Core::Prng> is27prng;
+        std::optional<Core::Prng> isPartialCoveragePrng;
         if (indObj->hasFlags(IndustryObjectFlags::farmTilesPartialCoverage))
         {
-            // Vanilla mistake here didn't set the prng! It would just recycle from a previous unk23 caller
-            is27prng = prng;
+            // Vanilla mistake here, prng was not set! It would just recycle from a previous isPartialCoveragePrng caller
+            isPartialCoveragePrng = prng;
         }
 
         uint32_t randEntraceMask = 0;
@@ -588,16 +588,17 @@ namespace OpenLoco
         std::size_t i = 0;
         for (const auto& tilePos : getClampedRange(topRight, bottomLeft))
         {
-            if (is23prng.has_value())
+            if (isGrowthStageDesyncPrng.has_value())
             {
-                const auto randVal = is23prng->randNext();
+                const auto randVal = isGrowthStageDesyncPrng->randNext();
                 dl = (((randVal & 0xFF) * indObj->farmTileNumGrowthStages) / 256)
                     | (((randVal >> 8) & 0x7) << 5);
             }
             bool skipBorderClear = false;
-            if (is27prng.has_value())
+            if (isPartialCoveragePrng.has_value())
             {
-                if (is27prng->randNext() & 0x7)
+                // 87% chance that farm tile is not generated. Note that 5x5 fields can overlap so this can be checked multiple times per tile.
+                if (isPartialCoveragePrng->randNext() & 0x7)
                 {
                     skipBorderClear = true;
                 }

@@ -351,6 +351,8 @@ namespace OpenLoco
             buildingImageIds += numBuildingVariations * 4;
         }
         fieldImageIds = numBuildingParts * 4 + buildingImageIds;
+        // 19 field images plus 1 tree image plus 1 snowy tree image
+        // even industries without fields have blank images for the trees
         numImagesPerFieldGrowthStage = farmTileNumImageAngles * 21;
     }
 
