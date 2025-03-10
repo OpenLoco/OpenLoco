@@ -8,8 +8,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static loco_global<int32_t, 0x0112C810> _currentDayInYear;
-
     static std::pair<MonthId, uint8_t> getMonthDay(int32_t dayOfYear);
 
     bool isLeapYear(const int year)
@@ -127,8 +125,6 @@ namespace OpenLoco
                 day++;
             }
         }
-
-        _currentDayInYear = day;
 
         const auto year = kBaseYear + years;
         const auto monthDay = getMonthDay(day);
