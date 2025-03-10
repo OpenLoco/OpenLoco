@@ -118,7 +118,7 @@ namespace OpenLoco::World
                 {
                     newGrowthStage = 0;
                 }
-                elSurface.setGrowthStage(newVar6SLR5);
+                elSurface.setGrowthStage(newGrowthStage);
                 Ui::ViewportManager::invalidate(loc, elSurface.baseHeight(), elSurface.baseHeight());
             }
         }
