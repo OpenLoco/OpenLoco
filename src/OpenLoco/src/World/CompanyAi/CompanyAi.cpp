@@ -1063,12 +1063,166 @@ namespace OpenLoco
         company.var_4A5 = 13;
     }
 
+    // 0x0047EABE
+    static TownId getUnkTown(uint32_t& randVal, uint32_t minPopulationCapcity)
+    {
+        sfl::static_vector<TownId, Limits::kMaxTowns> possibleTowns;
+        for (auto& town : TownManager::towns())
+        {
+            if (town.populationCapacity >= minPopulationCapcity)
+            {
+                possibleTowns.push_back(town.id());
+            }
+        }
+        if (possibleTowns.empty())
+        {
+            return TownId::null;
+        }
+        const auto randTown = possibleTowns[(randVal & 0x7F) * possibleTowns.size() / 128];
+        std::rotr(randVal, 7);
+        return randTown;
+    }
+
+    // 0x0047E7DC
+    static void generateNewThought(Company& company, AiThought& thought)
+    {
+        thought.var_84 = 0;
+        thought.var_80 = 0;
+        thought.var_7C = 0;
+        thought.var_76 = 0;
+        thought.var_88 = 0;
+        thought.trackObjId = 0xFFU;
+        thought.signalObjId = 0xFFU;
+        thought.stationObjId = 0xFFU;
+        thought.mods = 0;
+        thought.rackRailType = 0xFFU;
+        thought.var_45 = 0xFFU;
+        thought.numVehicles = 0;
+        thought.var_43 = 0;
+        thought.var_8B = 0;
+
+        auto randVal = gPrng1().randNext();
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            thought.type = AiThoughtType::null;
+            return;
+        }
+
+        bool use25BE = false;
+        const auto var25BE = company.var_25BE;
+        if (var25BE != AiThoughtType::null)
+        {
+            if (randVal & 0x1F)
+            {
+                use25BE = true;
+            }
+            randVal = std::rotr(randVal, 5);
+        }
+        thought.type = var25BE;
+        if (!use25BE)
+        {
+            thought.type = static_cast<AiThoughtType>(((randVal & 0x1F) * 20) / 32);
+            randVal = std::rotr(randVal, 5);
+        }
+        company.var_25BE = thought.type;
+
+        switch (thought.type)
+        {
+            case AiThoughtType::unk0:
+            case AiThoughtType::unk2:
+            {
+                // 0x0047E8C8
+                const auto destination = getUnkTown(randVal);
+                if (destination == TownId::null)
+                {
+                    thought.type = AiThoughtType::null;
+                    return;
+                }
+                thought.var_01 = enumValue(destination);
+                thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
+                break;
+            }
+            case AiThoughtType::unk1:
+            case AiThoughtType::unk5:
+                // 0x0047E8AA
+                break;
+            case AiThoughtType::unk3:
+            case AiThoughtType::unk6:
+                // 0x0047E8E6
+                break;
+            case AiThoughtType::unk4:
+                // 0x0047E907
+                break;
+            case AiThoughtType::unk7:
+            case AiThoughtType::unk11:
+                // 0x0047E928
+                break;
+            case AiThoughtType::unk8:
+                // 0x0047E944
+                break;
+            case AiThoughtType::unk9:
+            case AiThoughtType::unk12:
+                // 0x0047E960
+                break;
+            case AiThoughtType::unk10:
+                // 0x0047E97C
+                break;
+            case AiThoughtType::unk13:
+                // 0x0047E998
+                break;
+            case AiThoughtType::unk14:
+                // 0x0047E9B9
+                break;
+            case AiThoughtType::unk15:
+                // 0x0047E9CE
+                break;
+            case AiThoughtType::unk16:
+                // 0x0047E9E8
+                break;
+            case AiThoughtType::unk17:
+                // 0x0047E9FD
+                break;
+            case AiThoughtType::unk18:
+                // 0x0047EA12
+                break;
+            case AiThoughtType::unk19:
+                // 0x0047EA27
+                break;
+            default:
+                assert(false);
+                break;
+        }
+    }
+
     // 0x00430A12
     static void sub_430A12(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430A12, regs);
+        company.activeThoughtId = 0xFFU;
+        for (auto thoughtId = 0U; thoughtId < std::size(company.aiThoughts); ++thoughtId)
+        {
+            auto& thought = company.aiThoughts[thoughtId];
+            if (thought.type != AiThoughtType::null)
+            {
+                continue;
+            }
+            company.activeThoughtId = thoughtId;
+            company.challengeFlags &= ~(CompanyFlags::unk1 | CompanyFlags::unk2);
+
+            for (auto i = 0U; i < 20; ++i)
+            {
+                generateNewThought(company, thought);
+                if (thought.type != AiThoughtType::null)
+                {
+                    company.var_4A5 = 1;
+                    return;
+                }
+            }
+        }
+        if (company.activeThoughtId != 0xFFU)
+        {
+            company.aiThoughts[company.activeThoughtId].type = AiThoughtType::null;
+        }
+        company.var_4A5 = 13;
     }
 
     struct SimilarThoughts
@@ -1807,7 +1961,7 @@ namespace OpenLoco
     // 0x00430D26
     static void sub_430D26(Company& company)
     {
-        company.var_25BE = 0xFFU;
+        company.var_25BE = AiThoughtType::null;
         auto& thought = company.aiThoughts[company.activeThoughtId];
         company.activeThoughtRevenueEstimate = estimateThoughtRevenue(thought);
         company.var_4A5 = 11;
