@@ -1474,12 +1474,12 @@ namespace OpenLoco::Paint
 
             session.setItemType(Ui::ViewportInteraction::InteractionItem::industryTree);
 
-            const auto variation = industryObj->var_1A * elSurface.getGrowthStage() + ((industryObj->var_E9 - 1) & rotation) * 21;
+            const auto variation = industryObj->numImagesPerFieldGrowthStage * elSurface.getGrowthStage() + ((industryObj->farmTileNumImageAngles - 1) & rotation) * 21;
 
             // Draw trees if they exist
             {
                 const auto height = baseHeight + k4FD30C[displaySlope];
-                const auto imageIndex = industryObj->var_16 + variation + (elSurface.snowCoverage() ? 20 : 19);
+                const auto imageIndex = industryObj->fieldImageIds + variation + (elSurface.snowCoverage() ? 20 : 19);
 
                 const World::Pos3 offset(0, 0, height);
                 const World::Pos3 bbOffset(14, 14, height + 4);
@@ -1489,11 +1489,11 @@ namespace OpenLoco::Paint
 
             session.setItemType(Ui::ViewportInteraction::InteractionItem::surface);
 
-            if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::unk26))
+            if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::farmTilesDrawAboveSnow))
                 || elSurface.snowCoverage() == 0)
             {
                 // Draw main surface image
-                const auto imageIndex = industryObj->var_16 + variation + displaySlope;
+                const auto imageIndex = industryObj->fieldImageIds + variation + displaySlope;
                 paintMainSurface(session, imageIndex, baseHeight);
             }
             else
@@ -1506,7 +1506,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    const auto imageIndex = industryObj->var_16 + variation + displaySlope;
+                    const auto imageIndex = industryObj->fieldImageIds + variation + displaySlope;
                     paintMainSurface(session, imageIndex, baseHeight);
 
                     if ((session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) == Ui::ViewportFlags::none)
@@ -1650,10 +1650,10 @@ namespace OpenLoco::Paint
                 auto* industry = IndustryManager::get(elSurface.industryId());
                 auto* industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
 
-                const auto variation = industryObj->var_1A * elSurface.getGrowthStage() + ((industryObj->var_E9 - 1) & rotation) * 21;
-                const auto imageIndex = industryObj->var_16 + variation + displaySlope;
+                const auto variation = industryObj->numImagesPerFieldGrowthStage * elSurface.getGrowthStage() + ((industryObj->farmTileNumImageAngles - 1) & rotation) * 21;
+                const auto imageIndex = industryObj->fieldImageIds + variation + displaySlope;
 
-                if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::unk26))
+                if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::farmTilesDrawAboveSnow))
                     || selfDescriptor.snowCoverage == 0)
                 {
                     paintMainUndergroundSurface(session, imageIndex, displaySlope);

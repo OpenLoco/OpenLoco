@@ -33,21 +33,21 @@ namespace OpenLoco
         builtAwayFromTown = 1U << 10,
         builtNearTrees = 1U << 11,
         builtRequiresOpenSpace = 1U << 12,
-        oilfield = 1U << 13,
-        mines = 1U << 14,
-        notRotatable = 1U << 15,
+        oilfieldStationName = 1U << 13, // stations built nearby get named Oilfield
+        minesStationName = 1U << 14,    // stations built nearby get named Mines
+        notRotatable = 1U << 15,        // used on windmills
         canBeFoundedByPlayer = 1U << 16,
         requiresAllCargo = 1U << 17,
         canIncreaseProduction = 1U << 18,
         canDecreaseProduction = 1U << 19,
         requiresElectricityPylons = 1U << 20,
         hasShadows = 1U << 21,
-        unk23 = 1U << 23,
+        farmTilesGrowthStageDesynchronized = 1U << 23, // used by livestock farm, since it produces all the time. NOT used by regular farm, to keep the harvest roughly synchronized
         builtInDesert = 1U << 24,
         builtNearDesert = 1U << 25,
-        unk26 = 1U << 26,
-        unk27 = 1U << 27,
-        flag_28 = 1U << 28,
+        farmTilesDrawAboveSnow = 1U << 26,    // used by skislopes, otherwise farm tiles draw below snow
+        farmTilesPartialCoverage = 1U << 27,  // used by skislopes to randomly skip 7/8 of tiles when creating 5x5 fields
+        farmProductionIgnoresSnow = 1U << 28, // used by forest
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryObjectFlags);
 
@@ -70,17 +70,17 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::industry;
 
-        StringId name;               // 0x0
-        StringId var_02;             // 0x2
-        StringId nameClosingDown;    // 0x4
-        StringId nameUpProduction;   // 0x6
-        StringId nameDownProduction; // 0x8
-        StringId nameSingular;       // 0x0A
-        StringId namePlural;         // 0x0C
-        uint32_t var_0E;             // 0x0E shadows image id base
-        uint32_t var_12;             // 0x12 Base image id for building 0
-        uint32_t var_16;
-        uint32_t var_1A;
+        StringId name;                                       // 0x0
+        StringId var_02;                                     // 0x2
+        StringId nameClosingDown;                            // 0x4
+        StringId nameUpProduction;                           // 0x6
+        StringId nameDownProduction;                         // 0x8
+        StringId nameSingular;                               // 0x0A
+        StringId namePlural;                                 // 0x0C
+        uint32_t shadowImageIds;                             // 0x0E shadows image id base
+        uint32_t buildingImageIds;                           // 0x12 Base image id for building 0
+        uint32_t fieldImageIds;                              // 0x16 Base image for field sprites
+        uint32_t numImagesPerFieldGrowthStage;               // 0x1A
         uint8_t numBuildingParts;                            // 0x1E
         uint8_t numBuildingVariations;                       // 0x1F
         const uint8_t* buildingPartHeights;                  // 0x20 This is the height of a building image
@@ -111,15 +111,15 @@ namespace OpenLoco
         Colour mapColour;                                           // 0xE3
         IndustryObjectFlags flags;                                  // 0xE4
         uint8_t var_E8;
-        uint8_t var_E9;
-        uint8_t var_EA;
-        uint8_t var_EB;
-        uint8_t var_EC;       // Used by Livestock cow shed count??
-        uint8_t wallTypes[4]; // 0xED There can be up to 4 different wall types for an industry
+        uint8_t farmTileNumImageAngles;          // 0xE9 How many viewing angles the farm tiles have
+        uint8_t farmTileGrowthStageNoProduction; // 0xEA At this stage of growth (except 0), a field tile produces nothing
+        uint8_t farmNumFields;                   // 0xEB Max production is reached at farmIdealSize * 25 tiles
+        uint8_t farmTileNumGrowthStages;         // 0xEC How many growth stages there are sprites for
+        uint8_t wallTypes[4];                    // 0xED There can be up to 4 different wall types for an industry
         // Selection of wall types isn't completely random from the 4 it is biased into 2 groups of 2 (wall and entrance)
         uint8_t buildingWall;         // 0xF1
         uint8_t buildingWallEntrance; // 0xF2 An alternative wall type that looks like a gate placed at random places in building perimeter
-        uint8_t var_F3;
+        uint8_t monthlyClosureChance; // 0xF3 Random chance that industry will close at the end of the month, out of 65535. Max of 255 is a 0.4% chance.
 
         bool requiresCargo() const;
         bool producesCargo() const;

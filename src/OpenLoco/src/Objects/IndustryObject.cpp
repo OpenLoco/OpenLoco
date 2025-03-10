@@ -109,7 +109,7 @@ namespace OpenLoco
         auto firstColour = Numerics::bitScanReverse(availableColours);
         Colour c = firstColour != -1 ? static_cast<Colour>(firstColour)
                                      : Colour::black;
-        ImageId baseImage(var_12, c);
+        ImageId baseImage(buildingImageIds, c);
         Ui::Point pos{ x, y };
         for (const auto part : getBuildingParts(0))
         {
@@ -151,7 +151,7 @@ namespace OpenLoco
         {
             return false;
         }
-        switch (var_E9)
+        switch (farmTileNumImageAngles)
         {
             case 1:
             case 2:
@@ -161,12 +161,12 @@ namespace OpenLoco
                 return false;
         }
 
-        if (var_EA != 0xFF && var_EA > 7)
+        if (farmTileGrowthStageNoProduction != 0xFF && farmTileGrowthStageNoProduction > 7)
         {
             return false;
         }
 
-        if (var_EC > 8)
+        if (farmTileNumGrowthStages > 8)
         {
             return false;
         }
@@ -343,15 +343,16 @@ namespace OpenLoco
 
         // Load Image Offsets
         auto imgRes = ObjectManager::loadImageTable(remainingData);
-        var_0E = imgRes.imageOffset;
+        shadowImageIds = imgRes.imageOffset;
         assert(remainingData.size() == imgRes.tableLength);
-        var_12 = var_0E;
+        buildingImageIds = shadowImageIds;
         if (hasFlags(IndustryObjectFlags::hasShadows))
         {
-            var_12 += numBuildingVariations * 4;
+            buildingImageIds += numBuildingVariations * 4;
         }
-        var_16 = numBuildingParts * 4 + var_12;
-        var_1A = var_E9 * 21;
+        fieldImageIds = numBuildingParts * 4 + buildingImageIds;
+        // 19 field images plus 1 tree image plus 1 snowy tree image
+        numImagesPerFieldGrowthStage = farmTileNumImageAngles * 21;
     }
 
     // 0x0045919D
@@ -365,10 +366,10 @@ namespace OpenLoco
         nameSingular = 0;
         namePlural = 0;
 
-        var_0E = 0;
-        var_12 = 0;
-        var_16 = 0;
-        var_1A = 0;
+        shadowImageIds = 0;
+        buildingImageIds = 0;
+        fieldImageIds = 0;
+        numImagesPerFieldGrowthStage = 0;
         buildingPartHeights = nullptr;
         buildingPartAnimations = nullptr;
         std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);

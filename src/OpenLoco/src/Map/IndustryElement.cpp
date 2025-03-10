@@ -233,7 +233,7 @@ namespace OpenLoco::World
                         continue;
                     }
                     const auto station = elStation->stationId();
-                    ind->var_E1.set(enumValue(station), true);
+                    ind->stationsInRange.set(enumValue(station), true);
                 }
             }
         }
