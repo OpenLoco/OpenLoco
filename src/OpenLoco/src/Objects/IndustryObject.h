@@ -70,17 +70,17 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::industry;
 
-        StringId name;               // 0x0
-        StringId var_02;             // 0x2
-        StringId nameClosingDown;    // 0x4
-        StringId nameUpProduction;   // 0x6
-        StringId nameDownProduction; // 0x8
-        StringId nameSingular;       // 0x0A
-        StringId namePlural;         // 0x0C
-        uint32_t shadowImageIds;             // 0x0E shadows image id base
-        uint32_t buildingImageIds;             // 0x12 Base image id for building 0
-        uint32_t fieldImageIds;
-        uint32_t numImagesPerFieldGrowthStage;
+        StringId name;                                       // 0x0
+        StringId var_02;                                     // 0x2
+        StringId nameClosingDown;                            // 0x4
+        StringId nameUpProduction;                           // 0x6
+        StringId nameDownProduction;                         // 0x8
+        StringId nameSingular;                               // 0x0A
+        StringId namePlural;                                 // 0x0C
+        uint32_t shadowImageIds;                             // 0x0E shadows image id base
+        uint32_t buildingImageIds;                           // 0x12 Base image id for building 0
+        uint32_t fieldImageIds;                              // 0x16 Base image for field sprites
+        uint32_t numImagesPerFieldGrowthStage;               // 0x1A
         uint8_t numBuildingParts;                            // 0x1E
         uint8_t numBuildingVariations;                       // 0x1F
         const uint8_t* buildingPartHeights;                  // 0x20 This is the height of a building image
