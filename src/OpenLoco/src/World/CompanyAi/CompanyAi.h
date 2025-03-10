@@ -22,6 +22,14 @@ namespace OpenLoco
         endCompany,
     };
 
+    enum class AiPlaceVehicleState : uint8_t
+    {
+        begin,
+        resetList,
+        place,
+        restart,
+    };
+
     enum class AiThoughtType : uint8_t
     {
         unk0,
