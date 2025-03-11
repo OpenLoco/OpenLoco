@@ -134,7 +134,7 @@ namespace OpenLoco::IndustryManager
         }
 
         // If none are common pick any valid cargo object
-        for (size_t cargoObjId = 0; cargoObjId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoObjId)
+        for (uint8_t cargoObjId = 0; cargoObjId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoObjId)
         {
             const auto* cargoObj = ObjectManager::get<CargoObject>(cargoObjId);
             if (cargoObj == nullptr)
