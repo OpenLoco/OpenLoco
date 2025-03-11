@@ -472,8 +472,8 @@ namespace OpenLoco
                         wallType = obj->wallTypes[2];
                         wallEntranceType = obj->wallTypes[3];
                     }
-                    uint8_t dl = prng.randNext(7) * 32;
-                    expandGrounds(randTile, wallType, wallEntranceType, dl);
+                    uint8_t updateTimerVal = prng.randNext(7);
+                    expandGrounds(randTile, wallType, wallEntranceType, 0, updateTimerVal);
                 }
             }
         }
@@ -524,7 +524,8 @@ namespace OpenLoco
     }
 
     // 0x0045510C bl == 1
-    bool claimSurfaceForIndustry(const World::TilePos2& pos, IndustryId industryId, uint8_t var_EA)
+    // originally argument 3 was a union of two fields 0bYYY00XXX; X is growthStage and Y is updateTimer
+    bool claimSurfaceForIndustry(const World::TilePos2& pos, IndustryId industryId, uint8_t growthStage, uint8_t updateTimer)
     {
         if (!isSurfaceClaimed(pos))
         {
@@ -535,8 +536,8 @@ namespace OpenLoco
         World::SurfaceElement* surface = tile.surface();
         surface->setIsIndustrialFlag(true);
         surface->setIndustry(industryId);
-        surface->setUpdateTimer((var_EA & 0xE0) >> 5);
-        surface->setGrowthStage((var_EA & 0x7));
+        surface->setUpdateTimer(updateTimer);
+        surface->setGrowthStage(growthStage);
         Ui::ViewportManager::invalidate(World::toWorldSpace(pos), surface->baseHeight(), surface->baseHeight() + 32);
         World::TileManager::removeAllWallsOnTileAbove(pos, surface->baseZ());
 
@@ -544,7 +545,8 @@ namespace OpenLoco
     }
 
     // 0x00454A43
-    void Industry::expandGrounds(const Pos2& pos, uint8_t wallType, uint8_t wallEntranceType, uint8_t dl)
+    // originally argument 3 was a union of two fields 0bYYY00XXX; X is growthStage and Y is updateTimer
+    void Industry::expandGrounds(const Pos2& pos, uint8_t wallType, uint8_t wallEntranceType, uint8_t growthStage, uint8_t updateTimer)
     {
         std::size_t numBorders = 0;
         // Search a 5x5 area centred on Pos
@@ -591,8 +593,8 @@ namespace OpenLoco
             if (isGrowthStageDesyncPrng.has_value())
             {
                 const auto randVal = isGrowthStageDesyncPrng->randNext();
-                dl = (((randVal & 0xFF) * indObj->farmTileNumGrowthStages) / 256)
-                    | (((randVal >> 8) & 0x7) << 5);
+                growthStage = ((randVal & 0xFF) * indObj->farmTileNumGrowthStages) / 256;
+                updateTimer = (randVal >> 8) & 0x7;
             }
             bool skipBorderClear = false;
             if (isPartialCoveragePrng.has_value())
@@ -605,7 +607,7 @@ namespace OpenLoco
             }
             if (!skipBorderClear)
             {
-                claimSurfaceForIndustry(tilePos, id(), dl);
+                claimSurfaceForIndustry(tilePos, id(), growthStage, updateTimer);
             }
             if (wallType == 0xFF)
             {
