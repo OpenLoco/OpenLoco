@@ -17,12 +17,72 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::GameCommands
 {
     // 0x004B6B0C
-    static bool sub_4B6B0C(Vehicles::VehicleHead* head)
+    static bool canVehicleBeStarted(Vehicles::VehicleHead* head)
     {
-        // Looks like a variant of Vehicles::VehicleHead::canBeModified?
-        registers regs;
-        regs.esi = X86Pointer(head);
-        return !(call(0x004B6B0C, regs) & X86_FLAG_CARRY);
+        auto* company = CompanyManager::get(head->owner);
+        if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            GameCommands::setErrorText(StringIds::company_is_bankrupt);
+            return false;
+        }
+
+        Vehicles::Vehicle train(*head);
+        if (train.cars.empty())
+        {
+            GameCommands::setErrorText(StringIds::train_has_no_vehicles);
+            return false;
+        }
+
+        if (!head->hasVehicleFlags(VehicleFlags::manualControl))
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
+            if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+            {
+                if (vehicleObj->power == 0 || vehicleObj->hasFlags(VehicleObjectFlags::centerPosition))
+                {
+                    GameCommands::setErrorText(StringIds::train_has_no_driving_cab);
+                    return false;
+                }
+            }
+        }
+        if (train.veh2->totalPower == 0)
+        {
+            GameCommands::setErrorText(StringIds::train_needs_a_locomotive_or_power_car);
+            return false;
+        }
+        if (!head->hasVehicleFlags(VehicleFlags::manualControl))
+        {
+            uint16_t pairObjectId = 0xFFFFU;
+            uint16_t pairCount = 0U;
+            for (auto& car : train.cars)
+            {
+                if (pairCount == 0)
+                {
+                    auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                    if (vehicleObj->hasFlags(VehicleObjectFlags::mustHavePair))
+                    {
+                        pairObjectId = car.front->objectId;
+                        pairCount++;
+                    }
+                    continue;
+                }
+                else
+                {
+                    if (car.front->objectId == pairObjectId)
+                    {
+                        pairCount++;
+                    }
+                }
+            }
+            if (pairCount & 1)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(pairObjectId);
+                FormatArguments::common(vehicleObj->name);
+                GameCommands::setErrorText(StringIds::requires_an_extra_stringid);
+                return false;
+            }
+        }
+        return true;
     }
 
     static void invalidateWindow(EntityId headId)
@@ -47,7 +107,7 @@ namespace OpenLoco::GameCommands
     static uint32_t startStopVehicle(const Vehicles::Vehicle& train, bool startVehicle, const uint8_t flags)
     {
         // Starting this vehicle -- can we?
-        if (startVehicle && !sub_4B6B0C(train.head))
+        if (startVehicle && !canVehicleBeStarted(train.head))
         {
             return FAILURE;
         }
@@ -93,7 +153,7 @@ namespace OpenLoco::GameCommands
     static uint32_t toggleManualDriving(const Vehicles::Vehicle& train, const uint8_t flags)
     {
         // Can we change driving modes?
-        if (!sub_4B6B0C(train.head))
+        if (!canVehicleBeStarted(train.head))
         {
             return FAILURE;
         }
