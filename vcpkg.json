@@ -17,6 +17,10 @@
         {
           "name": "x11",
           "platform": "linux"
+        },
+        {
+          "name": "wayland",
+          "platform": "linux"
         }
       ]
     }
