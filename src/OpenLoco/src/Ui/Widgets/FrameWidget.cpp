@@ -33,7 +33,7 @@ namespace OpenLoco::Ui::Widgets
         auto* window = widgetState.window;
 
         const auto& rt = drawingCtx.currentRenderTarget();
-        const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget.left + window->x, widget.top + window->y, widget.right - widget.left, 41));
+        const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget.left, widget.top, widget.right - widget.left, 41));
         if (clipped)
         {
             uint32_t imageId = widget.image;
@@ -62,10 +62,10 @@ namespace OpenLoco::Ui::Widgets
         }
 
         drawingCtx.fillRect(
-            window->x + widget.right,
-            window->y + widget.top,
-            window->x + widget.right,
-            window->y + widget.top + 40,
+            widget.right,
+            widget.top,
+            widget.right,
+            widget.top + 40,
             shade,
             Gfx::RectFlags::none);
 

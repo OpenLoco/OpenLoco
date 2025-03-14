@@ -20,8 +20,8 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        int16_t x = widget.right + window->x - 18;
-        int16_t y = widget.bottom + window->y - 18;
+        int16_t x = widget.right - 18;
+        int16_t y = widget.bottom - 18;
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
         drawingCtx.drawImage(x, y, image);
     }
@@ -32,10 +32,10 @@ namespace OpenLoco::Ui::Widgets
         auto* window = widgetState.window;
 
         drawingCtx.fillRectInset(
-            window->x + widget.left,
-            window->y + widget.top,
-            window->x + widget.right,
-            window->y + widget.bottom,
+            widget.left,
+            widget.top,
+            widget.right,
+            widget.bottom,
             widgetState.colour,
             widgetState.flags);
 

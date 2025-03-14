@@ -35,7 +35,6 @@ namespace OpenLoco::Ui::Widgets
             imageId = imageId.withPrimary(widgetState.colour.c());
         }
 
-        auto* window = widgetState.window;
-        drawingCtx.drawImage(Ui::Point(window->x + widget.left, window->y + widget.top), imageId);
+        drawingCtx.drawImage(Ui::Point(widget.left, widget.top), imageId);
     }
 }

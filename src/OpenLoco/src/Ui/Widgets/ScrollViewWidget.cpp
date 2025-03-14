@@ -10,12 +10,10 @@ namespace OpenLoco::Ui::Widgets
 {
     static void drawHScroll(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const ScrollArea& scrollArea)
     {
-        auto* window = widgetState.window;
-
-        uint16_t left = window->x + widget.left + 1;
-        uint16_t top = window->y + widget.top + 1;
-        uint16_t right = window->x + widget.right - 1;
-        uint16_t bottom = window->y + widget.bottom - 1;
+        uint16_t left = widget.left + 1;
+        uint16_t top = widget.top + 1;
+        uint16_t right = widget.right - 1;
+        uint16_t bottom = widget.bottom - 1;
 
         top = bottom - 10;
         if (scrollArea.hasFlags(Ui::ScrollFlags::vscrollbarVisible))
@@ -83,12 +81,10 @@ namespace OpenLoco::Ui::Widgets
 
     static void drawVScroll(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const ScrollArea& scrollArea)
     {
-        auto* window = widgetState.window;
-
-        uint16_t left = window->x + widget.left + 1;
-        uint16_t top = window->y + widget.top + 1;
-        uint16_t right = window->x + widget.right - 1;
-        uint16_t bottom = window->y + widget.bottom - 1;
+        uint16_t left = widget.left + 1;
+        uint16_t top = widget.top + 1;
+        uint16_t right = widget.right - 1;
+        uint16_t bottom = widget.bottom - 1;
 
         left = right - 10;
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
@@ -159,10 +155,10 @@ namespace OpenLoco::Ui::Widgets
     {
         auto* window = widgetState.window;
 
-        int16_t left = window->x + widget.left;
-        int16_t top = window->y + widget.top;
-        int16_t right = window->x + widget.right;
-        int16_t bottom = window->y + widget.bottom;
+        int16_t left = widget.left;
+        int16_t top = widget.top;
+        int16_t right = widget.right;
+        int16_t bottom = widget.bottom;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
 

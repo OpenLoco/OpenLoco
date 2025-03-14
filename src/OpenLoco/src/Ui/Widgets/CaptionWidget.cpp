@@ -12,11 +12,10 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CA6AE
     static void drawBoxed(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-        int l = window->x + widget.left;
-        int r = window->x + widget.right;
-        int t = window->y + widget.top;
-        int b = window->y + widget.bottom;
+        int l = widget.left;
+        int r = widget.right;
+        int t = widget.top;
+        int b = widget.bottom;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -82,7 +81,7 @@ namespace OpenLoco::Ui::Widgets
 
         auto* window = widgetState.window;
         int16_t width = widget.right - widget.left - 4 - 14;
-        int16_t x = widget.left + window->x + 2 + (width / 2);
+        int16_t x = widget.left + 2 + (width / 2);
 
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(Gfx::Font::medium_bold);
@@ -91,11 +90,11 @@ namespace OpenLoco::Ui::Widgets
 
         if (captionStyle == Caption::Style::blackText)
         {
-            int16_t y = window->y + widget.top + 1;
+            int16_t y = widget.top + 1;
             drawStationNameBackground(drawingCtx, window, &widget, x, y, widgetState.colour, stringWidth);
         }
 
-        auto point = Point(x, window->y + widget.top + 1);
+        auto point = Point(x, widget.top + 1);
         tr.drawString(point, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
