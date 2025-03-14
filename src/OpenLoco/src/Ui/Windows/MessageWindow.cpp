@@ -345,7 +345,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 WindowFlags::flag_11,
                 Messages::getEvents());
 
-            window->enabledWidgets = Messages::enabledWidgets;
             window->number = 0;
             window->currentTab = 0;
             window->frameNo = 0;
@@ -372,7 +371,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         window->invalidate();
 
         window->setWidgets(Messages::widgets);
-        window->enabledWidgets = Messages::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Messages::getEvents();
         window->disabledWidgets = 0;
@@ -657,7 +655,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_messages];
 
-            self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

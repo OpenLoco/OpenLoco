@@ -76,8 +76,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             tab_build_walls,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_adjust_land) | (1 << widx::tab_adjust_water) | (1 << widx::tab_build_walls) | (1 << widx::tab_clear_area) | (1 << widx::tab_plant_trees);
-
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
@@ -151,7 +149,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             plant_cluster_random,
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour) | (1 << plant_cluster_selected) | (1 << plant_cluster_random);
         const uint64_t holdableWidgets = 0;
 
         static constexpr auto widgets = makeWidgets(
@@ -948,7 +945,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->invalidate();
 
             window->setWidgets(PlantTrees::widgets);
-            window->enabledWidgets = PlantTrees::enabledWidgets;
             window->holdableWidgets = 0;
             window->activatedWidgets = 0;
 
@@ -979,7 +975,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             increase_area,
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
 
         static constexpr auto widgets = makeWidgets(
@@ -1219,7 +1214,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             land_material
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material) | (1 << mountain_mode) | (1 << paint_mode);
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
         static bool isMountainMode = false;
         static bool isPaintMode = false;
@@ -1903,7 +1897,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             increase_area,
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
 
         static constexpr auto widgets = makeWidgets(
@@ -2251,7 +2244,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             scrollview = 9,
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
         const uint64_t holdableWidgets = 0;
 
         static constexpr auto widgets = makeWidgets(
@@ -2749,17 +2741,16 @@ namespace OpenLoco::Ui::Windows::Terraform
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t enabledWidgets;
             const uint64_t holdableWidgets;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { ClearArea::widgets,   widx::tab_clear_area,   ClearArea::getEvents(),   ClearArea::enabledWidgets,   ClearArea::holdableWidgets },
-            { AdjustLand::widgets,  widx::tab_adjust_land,  AdjustLand::getEvents(),  AdjustLand::enabledWidgets,  AdjustLand::holdableWidgets },
-            { AdjustWater::widgets, widx::tab_adjust_water, AdjustWater::getEvents(), AdjustWater::enabledWidgets, AdjustWater::holdableWidgets },
-            { PlantTrees::widgets,  widx::tab_plant_trees,  PlantTrees::getEvents(),  PlantTrees::enabledWidgets,  PlantTrees::holdableWidgets },
-            { BuildWalls::widgets,  widx::tab_build_walls,  BuildWalls::getEvents(),  BuildWalls::enabledWidgets,  BuildWalls::holdableWidgets },
+            { ClearArea::widgets,   widx::tab_clear_area,   ClearArea::getEvents(),   ClearArea::holdableWidgets },
+            { AdjustLand::widgets,  widx::tab_adjust_land,  AdjustLand::getEvents(),  AdjustLand::holdableWidgets },
+            { AdjustWater::widgets, widx::tab_adjust_water, AdjustWater::getEvents(), AdjustWater::holdableWidgets },
+            { PlantTrees::widgets,  widx::tab_plant_trees,  PlantTrees::getEvents(),  PlantTrees::holdableWidgets },
+            { BuildWalls::widgets,  widx::tab_build_walls,  BuildWalls::getEvents(),  BuildWalls::holdableWidgets },
         };
         // clang-format on
 
@@ -2893,7 +2884,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_clear_area];
 
-            self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = tabInfo.holdableWidgets;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

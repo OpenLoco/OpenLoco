@@ -16,7 +16,7 @@ namespace OpenLoco::Ui::Widgets
 
         const auto pos = window->position() + widget.position();
 
-        if (widgetState.enabled)
+        if (!widgetState.disabled)
         {
             drawingCtx.fillRectInset(
                 pos,

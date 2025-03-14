@@ -53,8 +53,6 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
             getEvents());
 
         window->setWidgets(widgets);
-        window->enabledWidgets = (1 << Widx::closeBtn);
-
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, Colour::black);
         window->setColour(WindowColour::secondary, Colour::black);

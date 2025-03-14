@@ -352,7 +352,6 @@ namespace OpenLoco::Ui::Windows::Industry
         window->invalidate();
 
         window->setWidgets(Industry::widgets);
-        window->enabledWidgets = Industry::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Industry::getEvents();
         window->activatedWidgets = 0;
@@ -827,7 +826,6 @@ namespace OpenLoco::Ui::Windows::Industry
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry];
 
-            self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

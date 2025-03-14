@@ -2421,8 +2421,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, getEvents());
         window->setWidgets(widgets);
-        window->enabledWidgets |= enabledWidgets;
-
         window->initScrollWidgets();
         window->frameNo = 0;
 

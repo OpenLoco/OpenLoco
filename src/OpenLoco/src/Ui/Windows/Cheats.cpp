@@ -990,7 +990,6 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         window->setWidgets(Finances::_widgets);
         window->currentTab = Common::Widx::tab_finances - Common::Widx::tab_finances;
-        window->enabledWidgets = Finances::enabledWidgets;
         window->holdableWidgets = Finances::holdableWidgets;
         window->initScrollWidgets();
 
@@ -1029,7 +1028,6 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             auto tabInfo = tabInformationByTabOffset[self->currentTab];
 
-            self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

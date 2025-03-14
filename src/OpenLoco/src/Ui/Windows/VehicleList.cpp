@@ -92,9 +92,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     // clang-format off
     constexpr uint16_t _tabWidgets = (1 << Widx::tab_trains) | (1 << Widx::tab_buses) | (1 << Widx::tab_trucks) | (1 << Widx::tab_trams) | (1 << Widx::tab_aircraft) | (1 << Widx::tab_ships);
-    constexpr uint64_t _enabledWidgets = (1ULL << Widx::close_button) | _tabWidgets | (1ULL << Widx::company_select) |
-        (1ULL << Widx::sort_name) | (1ULL << Widx::sort_profit) | (1ULL << Widx::sort_age) | (1ULL << Widx::sort_reliability) |
-        (1ULL << Widx::scrollview) | (1ULL << Widx::filter_type) | (1ULL << Widx::filter_type_btn) | (1ULL << Widx::cargo_type) | (1ULL << Widx::cargo_type_btn);
     // clang-format on
 
     enum SortMode : uint16_t
@@ -487,7 +484,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
             getEvents());
 
         self->setWidgets(_widgets);
-        self->enabledWidgets = _enabledWidgets;
         self->number = enumValue(companyId);
         self->owner = companyId;
         self->frameNo = 0;

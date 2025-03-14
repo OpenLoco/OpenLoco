@@ -89,7 +89,6 @@ namespace OpenLoco::Ui::Windows::Debug
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = ~0ULL;
         // window->disabledWidgets = 1U << widx::tab_3;
         window->initScrollWidgets();
 
