@@ -67,19 +67,10 @@ namespace OpenLoco::Ui::Widgets
             shade = Colours::getShade(widgetState.colour.c(), 1);
         }
 
-        // ORIGINAL CODE: Width was always zero so what is the purpose here?
-        /*
+        // Shadow at the right side.
         drawingCtx.fillRect(
-            window->x + widget.right,
-            window->y + widget.top,
-            window->x + widget.right, // w = 0 ? left = window.x + widget.right, right = window.x + widget.right
-            window->y + widget.top + 40,
-            shade,
-            Gfx::RectFlags::none);
-        */
-        drawingCtx.fillRect(
-            pos,
-            Ui::Size{ 0, 40u },
+            pos + Point{ size.width - 1, 0 },
+            Ui::Size{ 1, 40u },
             shade,
             Gfx::RectFlags::none);
 
