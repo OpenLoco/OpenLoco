@@ -51,7 +51,10 @@ namespace OpenLoco::Ui::Widgets
             return {};
         }();
 
-        const int16_t y = position.y + std::max<int16_t>(0, (size.height - 10) / 2);
+        const auto fontHeight = tr.getLineHeight(tr.getCurrentFont());
+        // NOTE: -1 is an ugly hack for buttons with inset border, remove that when all buttons have consistent height.
+        const int16_t yOffset = std::max<int16_t>(0, (size.height - fontHeight) / 2 - 1);
+        const int16_t y = position.y + yOffset;
         const int16_t width = size.width - 2;
 
         if (widget.contentAlign == ContentAlign::left)
