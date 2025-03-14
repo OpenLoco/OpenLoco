@@ -8,11 +8,11 @@
 
 namespace OpenLoco::Ui::Widgets
 {
-    // For horizontal scrollbars its 10 wide, for vertical its 10 tall
-    static constexpr auto kScrollbarSize = 10;
+    // For horizontal scrollbars its N wide, for vertical its N tall
+    static constexpr auto kScrollbarSize = 11;
     static constexpr auto kScrollbarMargin = 1;
 
-    static constexpr auto kScrollButtonSize = Ui::Size(10, 10);
+    static constexpr auto kScrollButtonSize = Ui::Size(11, 11);
     static constexpr auto kArrowOffset = 2;
 
     static void drawHScroll(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const ScrollArea& scrollArea)
@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Widgets
 
         // Calculate adjusted dimensions
         auto scrollPos = position + Point{ kScrollbarMargin, size.height - kScrollbarSize - kScrollbarMargin };
-        auto scrollSize = Ui::Size{ size.width - kScrollbarMargin, kScrollbarSize };
+        auto scrollSize = Ui::Size{ size.width - (kScrollbarMargin * 2), kScrollbarSize };
 
         if (scrollArea.hasFlags(Ui::ScrollFlags::vscrollbarVisible))
         {
@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Widgets
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
         drawingCtx.fillRectInset(
-            scrollPos + Point{ scrollSize.width - kScrollButtonSize.width, 0 },
+            scrollPos + Point{ scrollSize.width - kScrollButtonSize.width + kScrollbarMargin, 0 },
             kScrollButtonSize,
             widgetState.colour,
             f);
@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::Widgets
         {
             const char* hRightStr = "\x90\xAF";
             tr.drawString(
-                scrollPos + Point{ scrollSize.width - kScrollButtonSize.width + kArrowOffset, 0 },
+                scrollPos + Point{ scrollSize.width - kScrollButtonSize.width + kScrollbarMargin + kArrowOffset, 0 },
                 Colour::black,
                 hRightStr);
         }
@@ -86,8 +86,8 @@ namespace OpenLoco::Ui::Widgets
             f = Gfx::RectInsetFlags::borderInset;
         }
         drawingCtx.fillRectInset(
-            scrollPos + Point{ scrollArea.hThumbLeft - kScrollbarMargin, 0 },
-            { scrollArea.hThumbRight - scrollArea.hThumbLeft + (kScrollbarMargin * 2), +scrollSize.height },
+            scrollPos + Point{ scrollArea.hThumbLeft, 0 },
+            { scrollArea.hThumbRight - scrollArea.hThumbLeft - kScrollbarMargin, +scrollSize.height },
             colour,
             f);
     }
@@ -101,11 +101,11 @@ namespace OpenLoco::Ui::Widgets
 
         // Calculate adjusted dimensions
         auto scrollPos = position + Point{ size.width - kScrollbarSize - kScrollbarMargin, kScrollbarMargin };
-        auto scrollSize = Ui::Size{ kScrollbarSize, size.height - kScrollbarMargin };
+        auto scrollSize = Ui::Size{ kScrollbarSize, size.height - (kScrollbarMargin * 2) };
 
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            scrollSize.height -= kScrollbarSize + kScrollbarMargin;
+            scrollSize.height -= kScrollbarSize;
         }
 
         Gfx::RectInsetFlags f = Gfx::RectInsetFlags::none;
@@ -162,8 +162,8 @@ namespace OpenLoco::Ui::Widgets
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
         drawingCtx.fillRectInset(
-            scrollPos + Point{ 0, scrollArea.vThumbTop - kScrollbarMargin },
-            { +scrollSize.width, scrollArea.vThumbBottom - scrollArea.vThumbTop + (kScrollbarMargin * 2) },
+            scrollPos + Point{ 0, scrollArea.vThumbTop },
+            { +scrollSize.width, scrollArea.vThumbBottom - scrollArea.vThumbTop - kScrollbarMargin },
             colour,
             f);
     }
@@ -190,18 +190,18 @@ namespace OpenLoco::Ui::Widgets
         if (scrollArea.contentWidth > size.width && scrollArea.hasFlags(Ui::ScrollFlags::hscrollbarVisible))
         {
             drawHScroll(drawingCtx, widget, widgetState, scrollArea);
-            contentSize.height -= kScrollbarSize + kScrollbarMargin;
+            contentSize.height -= kScrollbarSize;
         }
 
         if (scrollArea.contentHeight > size.height && scrollArea.hasFlags(Ui::ScrollFlags::vscrollbarVisible))
         {
             drawVScroll(drawingCtx, widget, widgetState, scrollArea);
-            contentSize.width -= kScrollbarSize + kScrollbarMargin;
+            contentSize.width -= kScrollbarSize;
         }
 
         Gfx::RenderTarget cropped = drawingCtx.currentRenderTarget();
         // Restore original dimensions for cropping calculations
-        auto cropSize = Ui::Size{ contentSize.width + 1, contentSize.height + 1 };
+        auto cropSize = Ui::Size{ contentSize.width, contentSize.height };
 
         if (contentPos.x > cropped.x)
         {
