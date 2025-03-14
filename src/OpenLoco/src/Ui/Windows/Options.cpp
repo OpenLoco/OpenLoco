@@ -330,7 +330,7 @@ namespace OpenLoco::Ui::Windows::Options
             | (1ULL << Display::Widx::display_scale_down_btn);
 
         // 0x004BFB8C
-        static void onMouseUp(Window& w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -607,7 +607,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004BFBB7
-        static void onMouseDown(Window& w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -636,7 +636,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004BFBE8
-        static void onDropdown(Window& w, WidgetIndex_t wi, int16_t item_index)
+        static void onDropdown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id, int16_t item_index)
         {
             switch (wi)
             {
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui::Windows::Options
             Common::drawTabs(&w, drawingCtx);
         }
 
-        static void onMouseUp(Window& w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -936,7 +936,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static void onMouseDown(Window& w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -946,7 +946,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -1168,7 +1168,7 @@ namespace OpenLoco::Ui::Windows::Options
             drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left + x, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w.getColour(WindowColour::secondary).c()));
         }
 
-        static void onMouseUp(Window& w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -1205,7 +1205,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C06F2
-        static void onMouseDown(Window& w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -1222,7 +1222,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C070D
-        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -1574,7 +1574,7 @@ namespace OpenLoco::Ui::Windows::Options
             Common::drawTabs(&w, drawingCtx);
         }
 
-        static void onMouseUp(Window& w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -1603,7 +1603,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004BFBB7
-        static void onMouseDown(Window& w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -1626,7 +1626,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C0C4A
-        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -2002,7 +2002,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C114A
-        static void onMouseUp(Window& w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -2305,7 +2305,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static void onMouseUp(Window& w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -2357,7 +2357,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C1304
-        static void textInput(Window& w, WidgetIndex_t i, const char* str)
+        static void textInput(Window& w, WidgetIndex_t i, [[maybe_unused]] const WidgetId id, const char* str)
         {
             switch (i)
             {
@@ -2693,7 +2693,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C12D2
-        static void onMouseUp(Window& w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -2747,7 +2747,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static void onMouseDown(Window& w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
@@ -2763,7 +2763,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static void onDropdown(Window& w, WidgetIndex_t wi, int16_t item_index)
+        static void onDropdown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id, int16_t item_index)
         {
             switch (wi)
             {
@@ -2942,7 +2942,7 @@ namespace OpenLoco::Ui::Windows::Options
     {
         auto window = open();
 
-        window->callOnMouseUp(Common::Widx::tab_music);
+        window->callOnMouseUp(Common::Widx::tab_music, window->widgets[Common::Widx::tab_music].id);
 
         return window;
     }

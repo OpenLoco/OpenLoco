@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     // 0x004392AD
-    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {

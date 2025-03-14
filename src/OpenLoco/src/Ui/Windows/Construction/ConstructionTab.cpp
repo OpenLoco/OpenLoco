@@ -504,7 +504,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D3F6
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -1742,7 +1742,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D42F
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -1883,7 +1883,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D4EA
-    static void onDropdown([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex == widx::bridge_dropdown)
         {
@@ -2092,7 +2092,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             // Attempt to place track piece -- in silent
             _suppressErrorSound = true;
-            onMouseUp(*window, widx::construct);
+            onMouseUp(*window, widx::construct, WidgetId::none);
             _suppressErrorSound = false;
 
             if (_cState->dword_1135F42 != 0x80000000)
@@ -2120,7 +2120,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
 
             // Failed to place track piece -- rotate and make error sound
-            onMouseUp(*window, widx::rotate_90);
+            onMouseUp(*window, widx::rotate_90, WidgetId::none);
             Audio::playSound(Audio::SoundId::error, int32_t(Input::getMouseLocation().x));
             return;
         }
@@ -2536,7 +2536,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC8C
-    static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::construct)
         {
@@ -2623,7 +2623,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC97
-    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::construct)
         {
@@ -2641,7 +2641,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D4F5
-    static Ui::CursorId cursor([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
         {
@@ -2669,7 +2669,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         Common::repositionTabs(&self);
     }
 
-    static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.skip(2);
@@ -3121,7 +3121,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             _cState->constructionHover = 0;
             _cState->byte_113607E = 1;
-            self->callOnMouseUp(widx::rotate_90);
+            self->callOnMouseUp(widx::rotate_90, self->widgets[widx::rotate_90].id);
         }
     }
 
@@ -3150,7 +3150,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
         if (prev != -1)
         {
-            self->callOnMouseDown(prev);
+            self->callOnMouseDown(prev, self->widgets[prev].id);
         }
     }
 
@@ -3159,7 +3159,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
         if (next != -1)
         {
-            self->callOnMouseDown(next);
+            self->callOnMouseDown(next, self->widgets[next].id);
         }
     }
 
@@ -3168,7 +3168,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
         if (prev != -1)
         {
-            self->callOnMouseDown(prev);
+            self->callOnMouseDown(prev, self->widgets[prev].id);
         }
     }
 
@@ -3177,7 +3177,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
         if (next != -1)
         {
-            self->callOnMouseDown(next);
+            self->callOnMouseDown(next, self->widgets[next].id);
         }
     }
 
@@ -3190,7 +3190,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_cState->constructionHover == 0)
         {
-            self->callOnMouseUp(widx::construct);
+            self->callOnMouseUp(widx::construct, self->widgets[widx::construct].id);
         }
     }
 
@@ -3198,7 +3198,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         if (self->currentTab == Common::widx::tab_construction - Common::widx::tab_construction)
         {
-            self->callOnMouseUp(widx::remove);
+            self->callOnMouseUp(widx::remove, self->widgets[widx::remove].id);
         }
     }
 
@@ -3211,7 +3211,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_cState->constructionHover == 0)
         {
-            self->callOnMouseUp(widx::rotate_90);
+            self->callOnMouseUp(widx::rotate_90, self->widgets[widx::rotate_90].id);
         }
     }
 }

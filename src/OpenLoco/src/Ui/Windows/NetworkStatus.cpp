@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         }
     }
 
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {

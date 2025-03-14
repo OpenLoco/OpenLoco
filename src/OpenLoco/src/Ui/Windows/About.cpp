@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     // 0x0043B4AF
-    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {

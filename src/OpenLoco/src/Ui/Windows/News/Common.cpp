@@ -187,6 +187,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     void close(Window* self)
     {
         // Only affects the newspaper view; the ticker ignores this widget
-        self->callOnMouseUp(1);
+        self->callOnMouseUp(Common::close_button, self->widgets[Common::close_button].id);
     }
 }

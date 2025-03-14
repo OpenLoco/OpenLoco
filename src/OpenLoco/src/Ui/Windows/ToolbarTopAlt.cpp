@@ -246,7 +246,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D541
-    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D5A6
-    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         switch (widgetIndex)
         {

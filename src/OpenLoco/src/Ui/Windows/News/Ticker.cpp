@@ -26,7 +26,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429EA2
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         if (widgetIndex != 0)
         {

@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -408,7 +408,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             return std::max<int32_t>(0, std::min<int32_t>(getMonthTotalDay(date.year, date.month) - 1, date.day));
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             currency32_t cashStepSize{};
             int32_t timeStepSize{};
@@ -576,7 +576,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(&self, drawingCtx);
         }
 
-        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -648,7 +648,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Widx::target_company_dropdown_btn)
             {
@@ -656,7 +656,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (itemIndex == -1)
             {
@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(&self, drawingCtx);
         }
 
-        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -887,7 +887,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(&self, drawingCtx);
         }
 
-        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {

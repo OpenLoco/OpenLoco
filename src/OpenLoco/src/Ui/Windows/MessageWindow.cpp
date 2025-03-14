@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         );
 
         // 0x0042A6F5
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -205,7 +205,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A70C
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_message_list);
@@ -459,7 +459,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         );
 
         // 0x0042AA84
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -489,7 +489,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         };
 
         // 0x0042AA9F
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AAAC
-        static void onDropdown([[maybe_unused]] Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown([[maybe_unused]] Window& self, Ui::WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             switch (widgetIndex)
             {

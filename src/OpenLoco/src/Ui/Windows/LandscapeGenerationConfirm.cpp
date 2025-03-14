@@ -58,7 +58,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     }
 
     // 0x004C18E4
-    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {

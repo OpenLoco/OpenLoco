@@ -117,7 +117,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     }
 
     // 0x0043C3F4
-    static void onMouseUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {

@@ -446,7 +446,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443E9B
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -457,7 +457,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443EA6
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -554,7 +554,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00444001
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_scenario_list);

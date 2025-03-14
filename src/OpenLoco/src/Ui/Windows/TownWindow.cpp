@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window& self);
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input);
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
         static void update(Window& self);
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00499079
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -497,7 +497,7 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004996AC
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004998E7
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -696,7 +696,7 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00499287
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget != Common::widx::caption)
             {

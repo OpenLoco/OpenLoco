@@ -177,7 +177,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457EC4
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -447,7 +447,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457EE8
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_industry_list);
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458113
-        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
             {
@@ -627,7 +627,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         auto window = WindowManager::bringToFront(WindowType::industryList, 0);
         if (window != nullptr)
         {
-            window->callOnMouseUp(Common::widx::tab_industry_list);
+            window->callOnMouseUp(Common::widx::tab_industry_list, window->widgets[Common::widx::tab_industry_list].id);
         }
         else
         {
@@ -814,7 +814,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045843A
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1005,7 +1005,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458455
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_new_industry_list);
@@ -1161,7 +1161,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045848A
-        static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
+        static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -1198,7 +1198,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045851F
-        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t x, const int16_t y)
         {
             removeIndustryGhost();
             auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
@@ -1216,7 +1216,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004585AD
-        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             removeIndustryGhost();
             Ui::Windows::Main::hideGridlines();

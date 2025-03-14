@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x435299
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352B1
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, const WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, const WidgetIndex_t, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);

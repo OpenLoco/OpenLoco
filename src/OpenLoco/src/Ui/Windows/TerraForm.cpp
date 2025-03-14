@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void prepareDraw(Window& self);
         static void onUpdate(Window& self);
         static void onResize(Window& self, uint8_t height);
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id);
         static void sub_4A69DD();
 
         enum class GhostPlacedFlags : uint8_t
@@ -277,7 +277,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBAB5
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -344,7 +344,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBAEA
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == widx::object_colour && self.rowHover != -1)
             {
@@ -354,7 +354,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBAF5
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
             {
@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBB15
-        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -563,7 +563,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBB20
-        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -694,7 +694,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBB00
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_trees_list);
@@ -908,7 +908,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         auto window = WindowManager::bringToFront(WindowType::terraform, 0);
         if (window != nullptr)
         {
-            window->callOnMouseUp(Common::widx::tab_plant_trees);
+            window->callOnMouseUp(Common::widx::tab_plant_trees, window->widgets[Common::widx::tab_plant_trees].id);
         }
         else
         {
@@ -1012,7 +1012,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC65C
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1043,7 +1043,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC677
-        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -1090,7 +1090,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC689
-        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -1100,7 +1100,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC682
-        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
+        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -1115,7 +1115,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC701
-        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex)
+        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Common::widx::panel)
             {
@@ -1334,7 +1334,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC9A7
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1370,7 +1370,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1407,7 +1407,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC9C6
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex != widx::land_material)
             {
@@ -1596,7 +1596,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC9D7
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             switch (widgetIndex)
             {
@@ -1631,7 +1631,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC9ED
-        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             switch (widgetIndex)
             {
@@ -1654,7 +1654,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC9E2
-        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             switch (widgetIndex)
             {
@@ -1728,7 +1728,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCA5D
-        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex)
+        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1937,7 +1937,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCD9D
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1987,7 +1987,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static uint32_t lowerWater(uint8_t flags);
 
         // 0x004BCDB4
-        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -2031,7 +2031,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDCA
-        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -2076,7 +2076,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDBF
-        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -2138,7 +2138,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDE8
-        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex)
+        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Common::widx::panel)
             {
@@ -2508,7 +2508,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC227
-        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -2543,7 +2543,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC232
-        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -2625,7 +2625,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC212
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_walls_list);
@@ -2796,7 +2796,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCD82
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -2953,35 +2953,35 @@ namespace OpenLoco::Ui::Windows::Terraform
     void openClearArea()
     {
         auto terraformWindow = open();
-        terraformWindow->callOnMouseUp(Common::widx::tab_clear_area);
+        terraformWindow->callOnMouseUp(Common::widx::tab_clear_area, terraformWindow->widgets[Common::widx::tab_clear_area].id);
     }
 
     // 0x004BB546
     void openAdjustLand()
     {
         auto terraformWindow = open();
-        terraformWindow->callOnMouseUp(Common::widx::tab_adjust_land);
+        terraformWindow->callOnMouseUp(Common::widx::tab_adjust_land, terraformWindow->widgets[Common::widx::tab_adjust_land].id);
     }
 
     // 0x004BB556
     void openAdjustWater()
     {
         auto terraformWindow = open();
-        terraformWindow->callOnMouseUp(Common::widx::tab_adjust_water);
+        terraformWindow->callOnMouseUp(Common::widx::tab_adjust_water, terraformWindow->widgets[Common::widx::tab_adjust_water].id);
     }
 
     // 0x004BB4A3
     void openPlantTrees()
     {
         auto terraformWindow = open();
-        terraformWindow->callOnMouseUp(Common::widx::tab_plant_trees);
+        terraformWindow->callOnMouseUp(Common::widx::tab_plant_trees, terraformWindow->widgets[Common::widx::tab_plant_trees].id);
     }
 
     // 0x004BB576
     void openBuildWalls()
     {
         auto terraformWindow = open();
-        terraformWindow->callOnMouseUp(Common::widx::tab_build_walls);
+        terraformWindow->callOnMouseUp(Common::widx::tab_build_walls, terraformWindow->widgets[Common::widx::tab_build_walls].id);
     }
 
     bool rotate(Window& self)
@@ -2992,7 +2992,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 if (!self.widgets[PlantTrees::widx::rotate_object].hidden)
                 {
-                    self.callOnMouseUp(PlantTrees::widx::rotate_object);
+                    self.callOnMouseUp(PlantTrees::widx::rotate_object, self.widgets[PlantTrees::widx::rotate_object].id);
                     return true;
                 }
             }

@@ -205,7 +205,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446465
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004467D7
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -693,12 +693,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         if (keyCode == SDLK_RETURN)
         {
-            w.callOnMouseUp(widx::ok_button);
+            w.callOnMouseUp(widx::ok_button, w.widgets[widx::ok_button].id);
             return true;
         }
         else if (keyCode == SDLK_ESCAPE)
         {
-            w.callOnMouseUp(widx::close_button);
+            w.callOnMouseUp(widx::close_button, w.widgets[widx::close_button].id);
             return true;
         }
         else if (!Input::isFocused(w.type, w.number, widx::text_filename) || !inputSession.handleInput(charCode, keyCode))

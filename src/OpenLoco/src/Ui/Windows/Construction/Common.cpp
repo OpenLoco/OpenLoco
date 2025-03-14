@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         if (window != nullptr)
         {
-            window->callOnMouseUp(Common::widx::tab_station);
+            window->callOnMouseUp(Common::widx::tab_station, window->widgets[Common::widx::tab_station].id);
         }
         return window;
     }
@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         if (window != nullptr)
         {
-            window->callOnMouseUp(Construction::widx::rotate_90);
+            window->callOnMouseUp(Construction::widx::rotate_90, window->widgets[Construction::widx::rotate_90].id);
         }
 
         return window;
@@ -535,7 +535,7 @@ namespace OpenLoco::Ui::Windows::Construction
             }
             else
             {
-                window->callOnMouseUp(Common::widx::tab_construction);
+                window->callOnMouseUp(Common::widx::tab_construction, window->widgets[Common::widx::tab_construction].id);
             }
         }
     }
@@ -1244,7 +1244,7 @@ namespace OpenLoco::Ui::Windows::Construction
             WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::tab_construction, widx::tab_overhead);
             if (prev != -1)
             {
-                self->callOnMouseUp(prev);
+                self->callOnMouseUp(prev, self->widgets[prev].id);
             }
         }
 
@@ -1253,7 +1253,7 @@ namespace OpenLoco::Ui::Windows::Construction
             WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::tab_construction, widx::tab_overhead);
             if (next != -1)
             {
-                self->callOnMouseUp(next);
+                self->callOnMouseUp(next, self->widgets[next].id);
             }
         }
     }
@@ -1265,7 +1265,7 @@ namespace OpenLoco::Ui::Windows::Construction
             case Common::widx::tab_construction - Common::widx::tab_construction:
                 if (_cState->constructionHover == 1)
                 {
-                    self.callOnMouseUp(Construction::widx::rotate_90);
+                    self.callOnMouseUp(Construction::widx::rotate_90, self.widgets[Construction::widx::rotate_90].id);
                     removeConstructionGhosts();
                     return true;
                 }
@@ -1274,7 +1274,7 @@ namespace OpenLoco::Ui::Windows::Construction
             case Common::widx::tab_station - Common::widx::tab_construction:
                 if (!self.widgets[Station::widx::rotate].hidden)
                 {
-                    self.callOnMouseUp(Station::widx::rotate);
+                    self.callOnMouseUp(Station::widx::rotate, self.widgets[Station::widx::rotate].id);
                     return true;
                 }
                 break;
