@@ -89,7 +89,7 @@ namespace OpenLoco::Ui
 
     bool Window::isEnabled(WidgetIndex_t widgetIndex)
     {
-        return (this->enabledWidgets & (1ULL << widgetIndex)) != 0;
+        return (this->disabledWidgets & (1ULL << widgetIndex)) == 0;
     }
 
     bool Window::isDisabled(WidgetIndex_t widgetIndex)
