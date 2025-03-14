@@ -10,29 +10,31 @@ namespace OpenLoco::Ui::Widgets
     static constexpr auto kLabelMarginLeft = 4;
 
     // 0x004CB00B
-    static void drawCheckMark(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    static void drawCheckBox(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
 
         const auto pos = window->position() + widget.position();
 
-        if (!widgetState.disabled)
-        {
-            drawingCtx.fillRectInset(
-                pos,
-                kCheckMarkSize,
-                widgetState.colour,
-                widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
-        }
+        drawingCtx.fillRectInset(
+            pos,
+            kCheckMarkSize,
+            widgetState.colour,
+            widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
 
         if (widgetState.activated)
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
             static constexpr char strCheckmark[] = "\xAC";
 
-            auto color = widgetState.colour;
+            auto colour = widgetState.colour;
+            if (widgetState.disabled)
+            {
+                colour = colour.inset();
+            }
+
             tr.setCurrentFont(widget.font);
-            tr.drawString(pos, color.opaque(), strCheckmark);
+            tr.drawString(pos, colour.opaque(), strCheckmark);
         }
     }
 
@@ -64,7 +66,7 @@ namespace OpenLoco::Ui::Widgets
 
     void Checkbox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        drawCheckMark(drawingCtx, widget, widgetState);
+        drawCheckBox(drawingCtx, widget, widgetState);
         drawLabel(drawingCtx, widget, widgetState);
     }
 }
