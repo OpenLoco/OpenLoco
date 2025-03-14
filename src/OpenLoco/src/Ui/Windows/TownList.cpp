@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A27F
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -505,7 +505,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00491841
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_town_list);
@@ -513,7 +513,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x004919A4
-        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
             {
@@ -571,7 +571,7 @@ namespace OpenLoco::Ui::Windows::TownList
         auto window = WindowManager::bringToFront(WindowType::townList, 0);
         if (window != nullptr)
         {
-            window->callOnMouseUp(Common::widx::tab_town_list);
+            window->callOnMouseUp(Common::widx::tab_town_list, window->widgets[Common::widx::tab_town_list].id);
         }
         else
         {
@@ -716,7 +716,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A675
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -746,7 +746,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A697
-        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex != widx::select_size)
             {
@@ -761,13 +761,13 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A7C1
-        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             Ui::Windows::Main::hideGridlines();
         }
 
         // 0x0049A710
-        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -783,7 +783,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A75E
-        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
             if (mapPos)
@@ -815,7 +815,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A690
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == widx::select_size)
             {
@@ -960,7 +960,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB31
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1060,7 +1060,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB59
-        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
             {
@@ -1088,7 +1088,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AD46
-        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             removeBuildingGhost();
             Ui::Windows::Main::hideGridlines();
@@ -1160,7 +1160,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ABF0
-        static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -1199,7 +1199,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ACBD
-        static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             removeBuildingGhost();
             auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
@@ -1223,7 +1223,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB52
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == widx::object_colour)
             {
@@ -1285,7 +1285,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ABBB
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_building_list);
@@ -1584,7 +1584,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 if (!self.widgets[BuildBuildings::widx::rotate_object].hidden)
                 {
-                    self.callOnMouseUp(BuildBuildings::widx::rotate_object);
+                    self.callOnMouseUp(BuildBuildings::widx::rotate_object, self.widgets[BuildBuildings::widx::rotate_object].id);
                     return true;
                 }
             }

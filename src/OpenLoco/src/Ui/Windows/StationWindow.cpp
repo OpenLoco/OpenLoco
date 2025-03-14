@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window& self);
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input);
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
         static void update(Window& self);
         static void renameStationPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E4D4
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -425,7 +425,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB0B
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB4F
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_cargo_list);
@@ -656,7 +656,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE1A
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -699,7 +699,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE73
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_ratings_list);
@@ -894,7 +894,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E5DF
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget != Common::widx::caption)
             {

@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records));
         }
 
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id);
         static void onUpdate(Window& self);
         static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -123,7 +123,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         };
 
         // 0x004360A2
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -384,7 +384,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004362B6
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_company_list);
@@ -392,7 +392,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x0043632C
-        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
             {
@@ -667,7 +667,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     void openPerformanceIndexes()
     {
         auto window = open();
-        window->callOnMouseUp(Common::widx::tab_performance);
+        window->callOnMouseUp(Common::widx::tab_performance, window->widgets[Common::widx::tab_performance].id);
     }
 
     namespace CompanyPerformance
@@ -1427,7 +1427,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // clang-format on
 
         // 0x0043667B
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {

@@ -818,7 +818,8 @@ namespace OpenLoco::Ui
         auto toolWindow = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
         if (toolWindow != nullptr)
         {
-            toolWindow->callToolUpdate(ToolManager::getToolWidgetIndex(), x, y);
+            // TODO: Use widget ids properly for tools.
+            toolWindow->callToolUpdate(ToolManager::getToolWidgetIndex(), WidgetId::none, x, y);
         }
         else
         {

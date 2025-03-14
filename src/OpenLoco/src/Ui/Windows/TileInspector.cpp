@@ -478,7 +478,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void onMouseDown(Ui::Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -529,7 +529,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         *scrollHeight = self.rowCount * self.rowHeight;
     }
 
-    static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::panel)
         {
@@ -545,7 +545,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::panel || !World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
         {

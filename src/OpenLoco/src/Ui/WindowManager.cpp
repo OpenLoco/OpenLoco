@@ -1693,7 +1693,7 @@ namespace OpenLoco::Ui::WindowManager
             return false;
         }
 
-        w.callOnMouseDown(targetWidgetIndex);
+        w.callOnMouseDown(targetWidgetIndex, w.widgets[targetWidgetIndex].id);
         return true;
     }
 

@@ -68,14 +68,14 @@ namespace OpenLoco::Ui::Windows::Industry
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window& self);
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input);
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
         static void update(Window& self);
         static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
         static void setDisabledWidgets(Window* self);
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx);
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id);
     }
 
     namespace Industry
@@ -160,7 +160,7 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00455C86
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -698,7 +698,7 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x004565B5, 0x00456505
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -746,7 +746,7 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00455CBC
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget != Common::widx::caption)
             {

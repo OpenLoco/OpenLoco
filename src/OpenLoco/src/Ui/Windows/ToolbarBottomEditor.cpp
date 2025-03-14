@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     }
 
     // 0x0043D0ED
-    static void onMouseUp(Window&, WidgetIndex_t i)
+    static void onMouseUp(Window&, WidgetIndex_t i, [[maybe_unused]] const WidgetId id)
     {
         switch (i)
         {

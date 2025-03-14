@@ -125,7 +125,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         _tooltipWindowNumber = window->number;
         _tooltipWidgetIndex = widgetIndex;
 
-        auto toolArgs = window->callTooltip(widgetIndex);
+        auto toolArgs = window->callTooltip(widgetIndex, window->widgets[widgetIndex].id);
         if (!toolArgs)
         {
             return;
@@ -151,7 +151,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         _tooltipWindowNumber = window->number;
         _tooltipWidgetIndex = widgetIndex;
 
-        auto toolArgs = window->callTooltip(widgetIndex);
+        auto toolArgs = window->callTooltip(widgetIndex, window->widgets[widgetIndex].id);
         if (!toolArgs)
         {
             return;

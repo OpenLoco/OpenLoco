@@ -365,13 +365,13 @@ namespace OpenLoco::Ui::Windows::StationList
 
         Window* stationList = open(companyId);
         widx target = tabInformationByType[type].widgetIndex;
-        stationList->callOnMouseUp(target);
+        stationList->callOnMouseUp(target, stationList->widgets[target].id);
 
         return stationList;
     }
 
     // 0x004919A4
-    static Ui::CursorId cursor(Window& window, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& window, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview)
         {
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004917BB
-    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex != widx::company_select)
         {
@@ -668,7 +668,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004917B0
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         if (widgetIndex == widx::company_select)
         {
@@ -677,7 +677,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491785
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -796,7 +796,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491841
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_station_list);

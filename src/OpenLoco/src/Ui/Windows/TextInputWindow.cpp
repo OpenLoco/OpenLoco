@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE8B6
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -306,7 +306,7 @@ namespace OpenLoco::Ui::Windows::TextInput
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
-                    caller->callTextInput(_callingWidget, inputSession.buffer.c_str());
+                    caller->callTextInput(_callingWidget, caller->widgets[_callingWidget].id, inputSession.buffer.c_str());
                 }
                 WindowManager::close(&window);
                 break;
@@ -328,12 +328,12 @@ namespace OpenLoco::Ui::Windows::TextInput
     {
         if (charCode == SDLK_RETURN)
         {
-            w.callOnMouseUp(Widx::ok);
+            w.callOnMouseUp(Widx::ok, w.widgets[Widx::ok].id);
             return true;
         }
         else if (charCode == SDLK_ESCAPE)
         {
-            w.callOnMouseUp(Widx::close);
+            w.callOnMouseUp(Widx::close, w.widgets[Widx::close].id);
             return true;
         }
         else if (!Input::isFocused(w.type, w.number, Widx::input) || !inputSession.handleInput(charCode, keyCode))

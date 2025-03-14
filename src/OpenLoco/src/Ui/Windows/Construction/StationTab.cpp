@@ -67,7 +67,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     WindowEventList events;
 
     // 0x0049E228
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -108,7 +108,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E249
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -155,7 +155,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E256
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex == widx::station_dropdown)
         {
@@ -531,7 +531,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E421
-    static void onToolUpdate(Window&, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate(Window&, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::image)
         {
@@ -855,7 +855,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E42C
-    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::image)
         {
@@ -1094,7 +1094,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     void tabReset(Window* self)
     {
-        self->callOnMouseDown(Station::widx::image);
+        self->callOnMouseDown(Station::widx::image, self->widgets[Station::widx::image].id);
     }
 
     static constexpr WindowEventList kEvents = {

@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     {
         if (keyCode == SDLK_ESCAPE)
         {
-            w.callOnMouseUp(widx::closeButton);
+            w.callOnMouseUp(widx::closeButton, w.widgets[widx::closeButton].id);
             return true;
         }
         return false;
@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x004470FD
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {

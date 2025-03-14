@@ -234,7 +234,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static int16_t cargoByDropdownIndex[kMaxCargoObjects] = { -1 };
 
         // 0x0043FD51
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (itemIndex == -1)
             {
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043FD14
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -421,7 +421,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043FCED
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         // 0x0043F67C
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (itemIndex == -1)
             {
@@ -706,7 +706,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F639
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             auto& state = getGameState();
 
@@ -777,7 +777,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F60C
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             auto& state = getGameState();
 
@@ -929,7 +929,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             tr.drawStringLeft(point, Colour::black, StringIds::loan_interest_rate);
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             auto& state = getGameState();
 
@@ -971,7 +971,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.invalidate();
         }
 
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1134,7 +1134,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         // 0x0043F14B
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex == widx::scenario_group_btn && itemIndex != -1)
             {
@@ -1144,7 +1144,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F140
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == widx::scenario_group_btn)
             {
@@ -1161,7 +1161,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F11F
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1219,7 +1219,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F156
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             switch (callingWidget)
             {

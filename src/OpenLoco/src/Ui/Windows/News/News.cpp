@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     namespace Common
     {
         // 0x00429BB7
-        static void onMouseUp([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {

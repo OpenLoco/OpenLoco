@@ -506,7 +506,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Window* self = WindowManager::bringToFront(WindowType::vehicleList, enumValue(companyId));
         if (self != nullptr)
         {
-            self->callOnMouseUp(VehicleList::getTabFromType(type));
+            const auto tabWidx = getTabFromType(type);
+            self->callOnMouseUp(tabWidx, self->widgets[tabWidx].id);
             return self;
         }
 
@@ -914,7 +915,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2409
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -954,7 +955,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2434
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         if (widgetIndex == Widx::company_select)
         {
@@ -1047,7 +1048,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->invalidate();
     }
 
-    static void onDropdown(Ui::Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex == Widx::company_select)
         {
@@ -1070,7 +1071,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C24CA
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_vehicle_list);
@@ -1115,7 +1116,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C266D
-    static CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, CursorId fallback)
+    static CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, CursorId fallback)
     {
         if (widgetIdx != Widx::scrollview)
         {

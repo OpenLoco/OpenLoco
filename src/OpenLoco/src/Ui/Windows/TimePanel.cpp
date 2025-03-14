@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x004398FB
-    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -274,7 +274,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x043992E
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -285,7 +285,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x439939
-    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index)
+    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t item_index)
     {
         switch (widgetIndex)
         {
@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439944
-    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIdx)
         {
@@ -309,7 +309,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439955
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         switch (widgetIndex)
@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439A15
-    static void textInput([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, const char* str)
+    static void textInput([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const char* str)
     {
         switch (widgetIndex)
         {

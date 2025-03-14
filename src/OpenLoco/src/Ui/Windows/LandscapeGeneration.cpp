@@ -110,7 +110,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -460,7 +460,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E1BA
-        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043DC83
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             auto& options = Scenario::getOptions();
 
@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043DC58
-        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 }
 
                 default:
-                    Common::onMouseUp(window, widgetIndex);
+                    Common::onMouseUp(window, widgetIndex, id);
             }
         }
 
@@ -779,7 +779,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043E1BA
-        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -802,7 +802,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E173
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             auto& options = Scenario::getOptions();
 
@@ -848,7 +848,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E14E
-        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -858,7 +858,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 default:
-                    Common::onMouseUp(window, widgetIndex);
+                    Common::onMouseUp(window, widgetIndex, id);
             }
         }
 
@@ -944,7 +944,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E2A2
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_list);
@@ -1085,7 +1085,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E173
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             auto& gameState = getGameState();
             auto& options = Scenario::getOptions();
@@ -1300,7 +1300,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E670
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             auto& options = Scenario::getOptions();
 
@@ -1543,7 +1543,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043EA28
-        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex != widx::max_town_size_btn || itemIndex == -1)
             {
@@ -1555,7 +1555,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EA0D
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             auto& options = Scenario::getOptions();
 
@@ -1668,7 +1668,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043EBF8
-        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex != widx::num_industries_btn || itemIndex == -1)
             {
@@ -1680,7 +1680,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EBF1
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {

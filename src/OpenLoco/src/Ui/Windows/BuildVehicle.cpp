@@ -351,7 +351,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 // Not a vehicle but a type
                 tab += vehicle;
             }
-            window->callOnMouseUp(tab);
+            window->callOnMouseUp(tab, window->widgets[tab].id);
 
             if (tabMode)
             {
@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
         }
 
-        window->callOnMouseUp(widgetIndex);
+        window->callOnMouseUp(widgetIndex, window->widgets[widgetIndex].id);
         return window;
     }
 
@@ -718,7 +718,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3576
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -819,7 +819,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
     }
 
-    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         if (widgetIndex == widx::filterDropdown)
         {
@@ -915,7 +915,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
     }
 
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (itemIndex < 0)
         {
@@ -1106,7 +1106,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C370C
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         if (widgetIndex < widx::tab_track_type_0 || widgetIndex >= widx::scrollview_vehicle_selection)
@@ -1149,7 +1149,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37CB
-    static Ui::CursorId cursor(Window& window, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& window, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview_vehicle_selection)
         {

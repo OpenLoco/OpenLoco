@@ -286,7 +286,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432244
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -325,7 +325,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432283
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -334,7 +334,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043228E
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -397,7 +397,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x004322F6
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -675,7 +675,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // Allow setting company owner name if no preferred owner name has been set.
         if (!Config::get().usePreferredOwnerName)
         {
-            Status::onMouseUp(*self, Status::widx::change_owner_name);
+            Status::onMouseUp(*self, Status::widx::change_owner_name, WidgetId::none);
         }
 
         return self;
@@ -890,7 +890,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432BDD
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -918,7 +918,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C08
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -934,7 +934,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C19
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -953,7 +953,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C24
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -1031,7 +1031,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432CA1
-        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -1070,7 +1070,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.dx = widgetIndex;
         // regs.ax = mouseX;
         // regs.bx = mouseY;
-        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t mouseX, const int16_t mouseY)
+        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t mouseX, const int16_t mouseY)
         {
             removeHeadquarterGhost();
 
@@ -1090,7 +1090,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432D7A
-        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             removeHeadquarterGhost();
             Ui::Windows::Main::hideGridlines();
@@ -1464,7 +1464,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433032
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1516,7 +1516,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433067
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1585,7 +1585,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433092
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -1594,7 +1594,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043309D
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -2040,7 +2040,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433819
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -2076,7 +2076,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043383E
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -2113,7 +2113,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043385D
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -2147,7 +2147,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433868
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -2165,7 +2165,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433887
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_list);
@@ -2335,7 +2335,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433BE6
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -2359,7 +2359,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C0B
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -2368,7 +2368,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C16
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -2377,7 +2377,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C21
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -2560,7 +2560,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433FFE
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -2584,7 +2584,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00434023
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {

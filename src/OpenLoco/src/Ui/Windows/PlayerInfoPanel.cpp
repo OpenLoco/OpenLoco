@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395A4
-    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -271,7 +271,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395B1
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395BC
-    static void onDropdown([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, int16_t item_index)
+    static void onDropdown([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t item_index)
     {
         switch (widgetIndex)
         {
@@ -305,7 +305,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395DE
-    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIndex)
         {
@@ -318,7 +318,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395F5
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         switch (widgetIndex)

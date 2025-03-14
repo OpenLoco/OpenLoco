@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043BFB0
-    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043BFC0
-    static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_credits_list);

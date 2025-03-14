@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::Debug
     }
 
     // 0x0043B4AF
-    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         const auto& widget = window.widgets[widgetIndex];
         switch (widget.id)
