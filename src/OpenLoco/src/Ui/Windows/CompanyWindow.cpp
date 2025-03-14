@@ -73,8 +73,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             company_select,
         };
 
-        constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_status) | (1 << widx::tab_details) | (1 << widx::tab_colour_scheme) | (1 << widx::tab_finances) | (1 << widx::tab_cargo_delivered) | (1 << widx::tab_challenge);
-
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
@@ -146,8 +144,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Widgets::ImageButton({ 154, 124 }, { 112, 22 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name)
 
         );
-
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
 
         // 0x00431EBB
         static void prepareDraw(Window& self)
@@ -706,8 +702,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
-
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
 
         // 0x004327CF
         static void prepareDraw(Window& self)
@@ -1347,8 +1341,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         );
 
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | allMainColours | allSecondaryColours | allColourChecks;
-
         // 0x00432E0F
         static void prepareDraw(Window& self)
         {
@@ -1726,8 +1718,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Widgets::Checkbox({ 320, 264 }, { 204, 12 }, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
 
         );
-
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase) | (1 << widx::loan_autopay);
 
         const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase);
 
@@ -2251,8 +2241,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         );
 
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select);
-
         // 0x00433A22
         static void prepareDraw(Window& self)
         {
@@ -2439,8 +2427,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::makeCommonWidgets(320, 182, StringIds::title_company_challenge)
 
         );
-
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets;
 
         // 0x00433D39
         static void prepareDraw(Window& self)
@@ -2661,18 +2647,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t* enabledWidgets;
             const Ui::Size32* kWindowSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Status::widgets,         widx::tab_status,          Status::getEvents(),         &Status::enabledWidgets,         &Status::kWindowSize },
-            { Details::widgets,        widx::tab_details,         Details::getEvents(),        &Details::enabledWidgets,        &Details::kWindowSize },
-            { ColourScheme::widgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   &ColourScheme::enabledWidgets,   &ColourScheme::kWindowSize },
-            { Finances::widgets,       widx::tab_finances,        Finances::getEvents(),       &Finances::enabledWidgets,       &Finances::kWindowSize },
-            { CargoDelivered::widgets, widx::tab_cargo_delivered, CargoDelivered::getEvents(), &CargoDelivered::enabledWidgets, &CargoDelivered::kWindowSize },
-            { Challenge::widgets,      widx::tab_challenge,       Challenge::getEvents(),      &Challenge::enabledWidgets,      &Challenge::kWindowSize }
+            { Status::widgets,         widx::tab_status,          Status::getEvents(),         &Status::kWindowSize },
+            { Details::widgets,        widx::tab_details,         Details::getEvents(),        &Details::kWindowSize },
+            { ColourScheme::widgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   &ColourScheme::kWindowSize },
+            { Finances::widgets,       widx::tab_finances,        Finances::getEvents(),       &Finances::kWindowSize },
+            { CargoDelivered::widgets, widx::tab_cargo_delivered, CargoDelivered::getEvents(), &CargoDelivered::kWindowSize },
+            { Challenge::widgets,      widx::tab_challenge,       Challenge::getEvents(),      &Challenge::kWindowSize }
         };
         // clang-format on
 

@@ -48,8 +48,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             tab_settings,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_messages) | (1 << widx::tab_settings);
-
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
@@ -77,8 +75,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             scrollview = 6,
         };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 217, StringIds::title_messages),
@@ -429,8 +425,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             playSoundEffects,
         };
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::company_major_news) | (1 << widx::company_major_news_dropdown) | (1 << widx::competitor_major_news) | (1 << widx::competitor_major_news_dropdown) | (1 << widx::company_minor_news) | (1 << widx::company_minor_news_dropdown) | (1 << widx::competitor_minor_news) | (1 << widx::competitor_minor_news_dropdown) | (1 << widx::general_news) | (1 << widx::general_news_dropdown) | (1 << widx::advice) | (1 << widx::advice_dropdown) | (1 << widx::playSoundEffects);
-
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 155, StringIds::title_messages),
 
@@ -613,12 +607,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t enabledWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { Messages::widgets, widx::tab_messages, Messages::getEvents(), Messages::enabledWidgets },
-            { Settings::widgets, widx::tab_settings, Settings::getEvents(), Settings::enabledWidgets },
+            { Messages::widgets, widx::tab_messages, Messages::getEvents() },
+            { Settings::widgets, widx::tab_settings, Settings::getEvents() },
         };
 
         static void prepareDraw(Window& self)

@@ -68,8 +68,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab));
         }
 
-        constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
-
         static void drawTabs(Ui::Window* const self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -203,20 +201,6 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::Button({ 10, 186 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_date_change_apply)
 
         );
-
-        static uint64_t enabledWidgets
-            = Common::enabledWidgets
-            | (1 << Widx::loan_clear)
-            | (1 << Widx::cash_step_decrease)
-            | (1 << Widx::cash_step_increase)
-            | (1 << Widx::cash_step_apply)
-            | (1 << Widx::year_step_decrease)
-            | (1 << Widx::year_step_increase)
-            | (1 << Widx::month_step_decrease)
-            | (1 << Widx::month_step_increase)
-            | (1 << Widx::day_step_decrease)
-            | (1 << Widx::day_step_increase)
-            | (1 << Widx::date_change_apply);
 
         const uint64_t holdableWidgets
             = (1 << Widx::cash_step_decrease)
@@ -535,8 +519,6 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         );
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button) | (1 << Widx::toggle_bankruptcy_button) | (1 << Widx::toggle_jail_status_button) | (1 << Widx::complete_challenge_button);
-
         static CompanyId _targetCompanyId{};
 
         static void prepareDraw(Window& self)
@@ -720,8 +702,6 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         );
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred) | (1 << Widx::checkbox_display_locked_vehicles) | (1 << Widx::checkbox_build_locked_vehicles);
-
         static void prepareDraw(Window& self)
         {
             self.activatedWidgets = (1 << Common::Widx::tab_vehicles);
@@ -873,8 +853,6 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         );
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::ratings_all_min_10pct) | (1 << Widx::ratings_all_plus_10pct) | (1 << Widx::ratings_all_to_min) | (1 << Widx::ratings_all_to_max);
-
         static void prepareDraw(Window& self)
         {
             self.activatedWidgets = (1 << Common::Widx::tab_towns);
@@ -1007,17 +985,16 @@ namespace OpenLoco::Ui::Windows::Cheats
             std::span<const Widget> widgets;
             WidgetIndex_t widgetIndex;
             const WindowEventList& events;
-            const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
             Ui::Size32 kWindowSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Finances::_widgets,  Widx::tab_finances,  Finances::getEvents(),  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::kWindowSize  },
-            { Companies::_widgets, Widx::tab_companies, Companies::getEvents(), &Companies::enabledWidgets, nullptr,                    Companies::kWindowSize },
-            { Vehicles::_widgets,  Widx::tab_vehicles,  Vehicles::getEvents(),  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::kWindowSize  },
-            { Towns::_widgets,     Widx::tab_towns,     Towns::getEvents(),     &Towns::enabledWidgets,     nullptr,                    Towns::kWindowSize     },
+            { Finances::_widgets,  Widx::tab_finances,  Finances::getEvents(),  &Finances::holdableWidgets, Finances::kWindowSize  },
+            { Companies::_widgets, Widx::tab_companies, Companies::getEvents(), nullptr,                    Companies::kWindowSize },
+            { Vehicles::_widgets,  Widx::tab_vehicles,  Vehicles::getEvents(),  nullptr,                    Vehicles::kWindowSize  },
+            { Towns::_widgets,     Widx::tab_towns,     Towns::getEvents(),     nullptr,                    Towns::kWindowSize     },
         };
         // clang-format on
 
