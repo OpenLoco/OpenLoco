@@ -21,10 +21,13 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        int16_t x = widget.right + window->x - 18;
-        int16_t y = widget.bottom + window->y - 18;
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
+
+        const auto resizeBarPos = pos + Ui::Point(size.width - 18, size.height - 18);
+
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
-        drawingCtx.drawImage(x, y, image);
+        drawingCtx.drawImage(resizeBarPos, image);
     }
 
     // 0x004CAAB9
@@ -32,8 +35,11 @@ namespace OpenLoco::Ui::Widgets
     {
         auto* window = widgetState.window;
 
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
+
         const auto& rt = drawingCtx.currentRenderTarget();
-        const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget.left + window->x, widget.top + window->y, widget.right - widget.left, 41));
+        const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(pos.x, pos.y, size.width, 41));
         if (clipped)
         {
             uint32_t imageId = widget.image;
@@ -61,11 +67,10 @@ namespace OpenLoco::Ui::Widgets
             shade = Colours::getShade(widgetState.colour.c(), 1);
         }
 
+        // Shadow at the right side.
         drawingCtx.fillRect(
-            window->x + widget.right,
-            window->y + widget.top,
-            window->x + widget.right,
-            window->y + widget.top + 40,
+            pos + Point{ size.width - 1, 0 },
+            Ui::Size{ 1, 40u },
             shade,
             Gfx::RectFlags::none);
 

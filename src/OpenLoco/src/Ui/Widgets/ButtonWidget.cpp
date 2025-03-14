@@ -13,18 +13,13 @@ namespace OpenLoco::Ui::Widgets
     {
         const auto* window = widgetState.window;
 
-        int l = window->x + widget.left;
-        int r = window->x + widget.right;
-        int t = window->y + widget.top;
-        int b = window->y + widget.bottom;
-
         auto flags = widgetState.flags;
         if (widgetState.activated)
         {
             flags |= Gfx::RectInsetFlags::borderInset;
         }
 
-        drawingCtx.fillRectInset(l, t, r, b, widgetState.colour, flags);
+        drawingCtx.fillRectInset(window->position() + widget.position(), widget.size(), widgetState.colour, flags);
 
         Label::draw(drawingCtx, widget, widgetState);
     }
