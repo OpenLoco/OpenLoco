@@ -334,7 +334,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->name);
-                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_6_month, args);
+                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_6_months_remaining, args);
             }
             break;
             case MessageType::bankruptcyWarning3MonthsRemaining:
@@ -343,7 +343,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->name);
-                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_3_month, args);
+                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_3_months_remaining, args);
             }
             break;
             case MessageType::bankruptcyDeclared:
