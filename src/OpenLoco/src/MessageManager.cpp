@@ -328,7 +328,7 @@ namespace OpenLoco::MessageManager
                 StringManager::formatString(tempBuffer, StringIds::message_beaten_has_completed, args);
             }
             break;
-            case MessageType::bankruptcyWarning6Months:
+            case MessageType::bankruptcyWarning6MonthsRemaining:
             {
                 // 0x00428BDF
                 FormatArguments args{};
@@ -337,7 +337,7 @@ namespace OpenLoco::MessageManager
                 StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_6_month, args);
             }
             break;
-            case MessageType::bankruptcyWarning3Months:
+            case MessageType::bankruptcyWarning3MonthsRemaining:
             {
                 // 0x00428C0F
                 FormatArguments args{};
