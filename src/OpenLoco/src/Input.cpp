@@ -6,8 +6,8 @@
 #include "Ui/ScrollView.h"
 #include "Ui/Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
-#include <map>
 #include <SDL_mouse.h>
+#include <map>
 
 using namespace OpenLoco::Interop;
 
@@ -89,7 +89,6 @@ namespace OpenLoco::Input
     {
         auto deltaX = 0;
         auto deltaY = 0;
-
 
         if (SDL_GetRelativeMouseMode())
         {
