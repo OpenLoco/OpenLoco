@@ -622,12 +622,12 @@ namespace OpenLoco
                 {
                     if (numMonthsInTheRed == 3)
                     {
-                        MessageManager::post(MessageType::bankruptcyWarning3Months, id(), enumValue(id()), 0xFFFFU);
+                        MessageManager::post(MessageType::bankruptcyWarning6MonthsRemaining, id(), enumValue(id()), 0xFFFFU);
                         companyEmotionEvent(id(), Emotion::scared);
                     }
                     else if (numMonthsInTheRed == 6)
                     {
-                        MessageManager::post(MessageType::bankruptcyWarning6Months, id(), enumValue(id()), 0xFFFFU);
+                        MessageManager::post(MessageType::bankruptcyWarning3MonthsRemaining, id(), enumValue(id()), 0xFFFFU);
                         companyEmotionEvent(id(), Emotion::scared);
                     }
                 }

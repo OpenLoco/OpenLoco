@@ -420,8 +420,8 @@ namespace OpenLoco::StringIds
     constexpr StringId message_congratulations_you_have_completed = 411;
     constexpr StringId message_failure_you_have_failed = 412;
     constexpr StringId message_beaten_has_completed = 413;
-    constexpr StringId message_bankruptcy_warning_6_month = 414;
-    constexpr StringId message_bankruptcy_warning_3_month = 415;
+    constexpr StringId message_bankruptcy_warning_6_months_remaining = 414;
+    constexpr StringId message_bankruptcy_warning_3_months_remaining = 415;
     constexpr StringId message_bankrupt = 416;
     constexpr StringId message_bankrupt_2 = 417;
     constexpr StringId message_has_crashed = 418;
