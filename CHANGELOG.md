@@ -1,6 +1,7 @@
 25.02+ (???)
 ------------------------------------------------------------------------
 - Change: [#2457] Right mouse dragging in ScrollViews now respects "Invert right mouse dragging" option.
+- Change: [#3022] use relative mouse mode for right mouse dragging where available.
 - Fix: [#2972] More vehicle-related messages not using the correct vehicle name string.
 - Fix: [#2984] Areas of forbid trams checkboxes covering forbidding trucks checkboxes.
 
