@@ -612,7 +612,7 @@ namespace OpenLoco::GameCommands
                     const auto topRight = bottomLeft + (isMultiTile ? World::TilePos2{ 3, 3 } : World::TilePos2{ 2, 2 });
                     for (const auto& tilePos : World::TilePosRangeView(bottomLeft, topRight))
                     {
-                        claimSurfaceForIndustry(tilePos, newIndustry->id(), indObj->farmTileGrowthStageNoProduction);
+                        claimSurfaceForIndustry(tilePos, newIndustry->id(), indObj->farmTileGrowthStageNoProduction, 0);
                         // TODO: This is very similar to expand grounds code
                         if (indObj->buildingWall != 0xFF)
                         {
@@ -668,7 +668,8 @@ namespace OpenLoco::GameCommands
                 {
                     const auto randExpandVal = newIndustry->prng.randNext();
                     // dl
-                    const auto surfaceUnk = (((randExpandVal & 0xFF) * indObj->farmTileNumGrowthStages) / 256) | (((randExpandVal >> 8) & 0x7) << 5);
+                    const auto growthStage = ((randExpandVal & 0xFF) * indObj->farmTileNumGrowthStages) / 256;
+                    const auto updateTimerVal = (randExpandVal >> 8) & 0x7;
 
                     const World::TilePos2 randOffset(
                         ((randExpandVal >> 11) & 0x1F) - 15,
@@ -680,7 +681,7 @@ namespace OpenLoco::GameCommands
 
                     const auto wallType = useSecondWallType ? indObj->wallTypes[2] : indObj->wallTypes[0];
                     const auto wallEntranceType = useSecondWallType ? indObj->wallTypes[3] : indObj->wallTypes[1];
-                    newIndustry->expandGrounds(randPos, wallType, wallEntranceType, surfaceUnk);
+                    newIndustry->expandGrounds(randPos, wallType, wallEntranceType, growthStage, updateTimerVal);
                 }
             }
         }
