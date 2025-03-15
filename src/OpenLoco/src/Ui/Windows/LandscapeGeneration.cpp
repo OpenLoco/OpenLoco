@@ -67,8 +67,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             generate_now,
         };
 
-        const uint64_t enabled_widgets = (1 << widx::close_button) | (1 << tab_options) | (1 << tab_land) | (1 << tab_water) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries) | (1 << generate_now);
-
         static constexpr auto makeCommonWidgets(int32_t frame_height, StringId window_caption_id)
         {
             return makeWidgets(
@@ -276,16 +274,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             (1 << widx::start_year_down) |
             (1 << widx::terrainSmoothingNumUp) |
             (1 << widx::terrainSmoothingNumDown);
-
-        const uint64_t enabled_widgets = Common::enabled_widgets |
-            (1 << widx::start_year_up) |
-            (1 << widx::start_year_down) |
-            (1 << widx::heightMapBox) |
-            (1 << widx::heightMapDropdown) |
-            (1 << widx::change_heightmap_btn) |
-            (1 << widx::terrainSmoothingNumUp) |
-            (1 << widx::terrainSmoothingNumDown) |
-            (1 << widx::generate_when_game_starts);
         // clang-format on
 
         static constexpr auto widgets = makeWidgets(
@@ -402,9 +390,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 case Scenario::LandGeneratorType::Original:
                 {
-                    self.enabledWidgets |= (1 << widx::change_heightmap_btn);
-                    self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                    self.enabledWidgets &= ~(1 << widx::browseHeightmapFile);
+                    self.disabledWidgets &= ~(1 << widx::change_heightmap_btn);
+                    self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
+                    self.disabledWidgets |= (1 << widx::browseHeightmapFile);
 
                     self.widgets[widx::change_heightmap_btn].hidden = false;
                     self.widgets[widx::terrainSmoothingNum].hidden = true;
@@ -416,9 +404,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case Scenario::LandGeneratorType::Simplex:
                 {
-                    self.enabledWidgets &= ~(1 << widx::change_heightmap_btn);
-                    self.enabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                    self.enabledWidgets &= ~(1 << widx::browseHeightmapFile);
+                    self.disabledWidgets |= (1 << widx::change_heightmap_btn);
+                    self.disabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
+                    self.disabledWidgets |= (1 << widx::browseHeightmapFile);
 
                     self.widgets[widx::change_heightmap_btn].hidden = true;
                     self.widgets[widx::terrainSmoothingNum].hidden = false;
@@ -430,9 +418,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case Scenario::LandGeneratorType::PngHeightMap:
                 {
-                    self.enabledWidgets &= ~(1 << widx::change_heightmap_btn);
-                    self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                    self.enabledWidgets |= (1 << widx::browseHeightmapFile);
+                    self.disabledWidgets |= (1 << widx::change_heightmap_btn);
+                    self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
+                    self.disabledWidgets &= ~(1 << widx::browseHeightmapFile);
 
                     self.widgets[widx::change_heightmap_btn].hidden = true;
                     self.widgets[widx::terrainSmoothingNum].hidden = true;
@@ -596,7 +584,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, kWindowSize, WindowFlags::none, Options::getEvents());
             window->setWidgets(Options::widgets);
-            window->enabledWidgets = Options::enabled_widgets;
             window->number = 0;
             window->currentTab = 0;
             window->frameNo = 0;
@@ -639,7 +626,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             scrollview,
         };
 
-        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hillsEdgeOfMap);
         const uint64_t holdable_widgets = (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
         static constexpr auto widgets = makeWidgets(
@@ -1013,14 +999,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // clang-format off
-        const uint64_t enabled_widgets = Common::enabled_widgets |
-            (1 << widx::sea_level_down) | (1 << widx::sea_level_up) |
-            (1 << widx::num_riverbeds_down) | (1 << widx::num_riverbeds_up) |
-            (1 << widx::min_river_width_down) | (1 << widx::min_river_width_up) |
-            (1 << widx::max_river_width_down) | (1 << widx::max_river_width_up) |
-            (1 << widx::riverbank_width_down) | (1 << widx::riverbank_width_up) |
-            (1 << widx::meander_rate_down) | (1 << widx::meander_rate_up);
-
         const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) |
             (1 << widx::num_riverbeds_down) | (1 << widx::num_riverbeds_up) |
             (1 << widx::min_river_width_down) | (1 << widx::min_river_width_up) |
@@ -1227,7 +1205,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             max_altitude_for_trees_up,
         };
 
-        const uint64_t enabled_widgets = Common::enabled_widgets | (1ULL << widx::number_of_forests_up) | (1ULL << widx::number_of_forests_down) | (1ULL << widx::min_forest_radius_up) | (1ULL << widx::min_forest_radius_down) | (1ULL << widx::max_forest_radius_up) | (1ULL << widx::max_forest_radius_down) | (1ULL << widx::min_forest_density_up) | (1ULL << widx::min_forest_density_down) | (1 << widx::max_forest_density_up) | (1ULL << widx::max_forest_density_down) | (1ULL << widx::number_random_trees_up) | (1ULL << widx::number_random_trees_down) | (1ULL << widx::min_altitude_for_trees_up) | (1ULL << widx::min_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_up);
         const uint64_t holdable_widgets = (1ULL << widx::number_of_forests_up) | (1ULL << widx::number_of_forests_down) | (1ULL << widx::min_forest_radius_up) | (1ULL << widx::min_forest_radius_down) | (1ULL << widx::max_forest_radius_up) | (1ULL << widx::max_forest_radius_down) | (1ULL << widx::min_forest_density_up) | (1ULL << widx::min_forest_density_down) | (1ULL << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1ULL << widx::number_random_trees_up) | (1ULL << widx::number_random_trees_down) | (1ULL << widx::min_altitude_for_trees_up) | (1ULL << widx::min_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_up);
 
         static constexpr auto widgets = makeWidgets(
@@ -1501,7 +1478,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             max_town_size_btn,
         };
 
-        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down) | (1 << widx::max_town_size) | (1 << widx::max_town_size_btn);
         const uint64_t holdable_widgets = (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down);
 
         static constexpr auto widgets = makeWidgets(
@@ -1636,7 +1612,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             check_allow_industries_start_up,
         };
 
-        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::num_industries) | (1 << widx::num_industries_btn) | (1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up);
         const uint64_t holdable_widgets = 0;
 
         static constexpr auto widgets = makeWidgets(
@@ -1787,17 +1762,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->frameNo = 0;
             window->flags &= ~(WindowFlags::flag_16);
             window->disabledWidgets = 0;
-
-            static const uint64_t* enabledWidgetsByTab[] = {
-                &Options::enabled_widgets,
-                &Land::enabled_widgets,
-                &Water::enabled_widgets,
-                &Forests::enabled_widgets,
-                &Towns::enabled_widgets,
-                &Industries::enabled_widgets,
-            };
-
-            window->enabledWidgets = *enabledWidgetsByTab[window->currentTab];
 
             static const uint64_t* holdableWidgetsByTab[] = {
                 &Options::holdable_widgets,

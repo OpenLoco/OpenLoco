@@ -69,8 +69,6 @@ namespace OpenLoco::Ui::Windows::TownList
             tab_build_misc_buildings,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_town_list) | (1 << widx::tab_build_town) | (1 << widx::tab_build_buildings) | (1 << widx::tab_build_misc_buildings);
-
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
@@ -106,8 +104,6 @@ namespace OpenLoco::Ui::Windows::TownList
             sort_town_stations,
             scrollview,
         };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_town_name) | (1 << sort_town_type) | (1 << sort_town_population) | (1 << sort_town_stations) | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(600, 197, StringIds::title_towns),
@@ -613,7 +609,6 @@ namespace OpenLoco::Ui::Windows::TownList
             window->invalidate();
 
             window->setWidgets(TownList::widgets);
-            window->enabledWidgets = TownList::enabledWidgets;
 
             if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
@@ -670,8 +665,6 @@ namespace OpenLoco::Ui::Windows::TownList
             current_size = 8,
             select_size,
         };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << current_size) | (1 << select_size);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(220, 87, StringIds::title_build_new_towns),
@@ -884,8 +877,6 @@ namespace OpenLoco::Ui::Windows::TownList
             rotate_object,
             object_colour,
         };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(640, 172, StringIds::title_build_new_buildings),
@@ -1600,15 +1591,14 @@ namespace OpenLoco::Ui::Windows::TownList
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t enabledWidgets;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { TownList::widgets,       widx::tab_town_list,            TownList::getEvents(),       TownList::enabledWidgets },
-            { BuildTowns::widgets,     widx::tab_build_town,           BuildTowns::getEvents(),     BuildTowns::enabledWidgets },
-            { BuildBuildings::widgets, widx::tab_build_buildings,      BuildBuildings::getEvents(), BuildBuildings::enabledWidgets },
-            { BuildBuildings::widgets, widx::tab_build_misc_buildings, BuildBuildings::getEvents(), BuildBuildings::enabledWidgets },
+            { TownList::widgets,       widx::tab_town_list,            TownList::getEvents()       },
+            { BuildTowns::widgets,     widx::tab_build_town,           BuildTowns::getEvents()     },
+            { BuildBuildings::widgets, widx::tab_build_buildings,      BuildBuildings::getEvents() },
+            { BuildBuildings::widgets, widx::tab_build_misc_buildings, BuildBuildings::getEvents() },
         };
         // clang-format on
 
@@ -1759,7 +1749,6 @@ namespace OpenLoco::Ui::Windows::TownList
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town_list];
 
-            self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

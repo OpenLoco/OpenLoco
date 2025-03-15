@@ -124,7 +124,6 @@ namespace OpenLoco::Ui::Windows::TileInspector
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
         window->rowCount = 0;
         window->rowHeight = 10;
         window->selectedTileIndex = -1;

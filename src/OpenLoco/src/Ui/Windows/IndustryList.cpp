@@ -61,8 +61,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             tab_new_industry,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_industry_list) | (1 << widx::tab_new_industry);
-
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
@@ -96,8 +94,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             sort_industry_production_last_month,
             scrollview,
         };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_industry_name) | (1 << sort_industry_status) | (1 << sort_industry_production_transported) | (1 << sort_industry_production_last_month) | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(600, 197, StringIds::title_industries),
@@ -670,8 +666,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             window->invalidate();
 
             window->setWidgets(IndustryList::widgets);
-            window->enabledWidgets = IndustryList::enabledWidgets;
-
             window->activatedWidgets = 0;
             window->holdableWidgets = 0;
 
@@ -719,8 +713,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
         {
             scrollview = 6,
         };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(577, 171, StringIds::title_fund_new_industries),
@@ -1382,12 +1374,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t enabledWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { IndustryList::widgets, widx::tab_industry_list, IndustryList::getEvents(), IndustryList::enabledWidgets },
-            { NewIndustries::widgets, widx::tab_new_industry, NewIndustries::getEvents(), NewIndustries::enabledWidgets },
+            { IndustryList::widgets, widx::tab_industry_list, IndustryList::getEvents() },
+            { NewIndustries::widgets, widx::tab_new_industry, NewIndustries::getEvents() },
         };
 
         // 0x00457B94
@@ -1425,7 +1416,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry_list];
 
-            self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

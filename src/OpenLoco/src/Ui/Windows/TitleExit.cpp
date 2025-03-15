@@ -43,8 +43,6 @@ namespace OpenLoco::Ui::Windows::TitleExit
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << Widx::exit_button);
-
         window->initScrollWidgets();
 
         window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());

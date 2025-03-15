@@ -54,7 +54,6 @@ namespace OpenLoco::Ui::Windows::About
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << widx::close) | (1 << widx::music_acknowledgements_btn);
         window->initScrollWidgets();
 
         const auto interface = ObjectManager::get<InterfaceSkinObject>();

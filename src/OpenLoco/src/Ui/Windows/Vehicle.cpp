@@ -117,8 +117,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicle_tab_route));
         }
 
-        constexpr uint64_t enabledWidgets = (1 << closeButton) | (1 << tabMain) | (1 << tabDetails) | (1 << tabCargo) | (1 << tabFinances) | (1 << tabRoute);
-
         static Vehicles::VehicleHead* getVehicle(const Window* self)
         {
             auto* veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(self->number));
@@ -162,7 +160,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             carList
         };
 
-        constexpr uint64_t enabledWidgets = (1 << widx::buildNew) | (1 << widx::pickup) | (1 << widx::remove) | (1 << widx::carList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
         static constexpr auto widgets = makeWidgets(
@@ -186,7 +183,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             cargoList = 10,
         };
 
-        constexpr uint64_t enabledWidgets = (1 << widx::refit) | (1 << widx::cargoList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
         static constexpr auto widgets = makeWidgets(
@@ -202,7 +198,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static constexpr Ui::Size32 kMinWindowSize = { 400, 202 };
         static constexpr Ui::Size32 kMaxWindowSize = kMinWindowSize;
 
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
         // 0x00522470
@@ -232,7 +227,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             orderReverse
         };
 
-        constexpr uint64_t enabledWidgets = (1ULL << widx::routeList) | (1ULL << widx::orderForceUnload) | (1ULL << widx::orderWait) | (1ULL << widx::orderSkip) | (1ULL << widx::orderDelete) | (1ULL << widx::orderUp) | (1ULL << widx::orderDown) | (1ULL << widx::orderReverse) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
         constexpr auto lineHeight = 10;
 
@@ -294,7 +288,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         );
 
         constexpr uint64_t interactiveWidgets = (1 << widx::stopStart) | (1 << widx::pickup) | (1 << widx::passSignal) | (1 << widx::changeDirection) | (1 << widx::centreViewport);
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::speedControl) | interactiveWidgets;
         constexpr uint64_t holdableWidgets = 1 << widx::speedControl;
 
         // 0x004B5D82
@@ -406,7 +399,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, Main::getEvents());
             self->setWidgets(widgets);
-            self->enabledWidgets = enabledWidgets;
             self->number = enumValue(head);
             const auto* vehicle = Common::getVehicle(self);
             if (vehicle == nullptr)
@@ -457,7 +449,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->currentTab = 0;
             self->invalidate();
             self->setWidgets(widgets);
-            self->enabledWidgets = enabledWidgets;
             self->holdableWidgets = holdableWidgets;
             self->eventHandlers = &getEvents();
             self->activatedWidgets = 0;
@@ -3461,11 +3452,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (isControllingCompany)
             {
                 self.widgets[widx::routeList].right += 22;
-                self.enabledWidgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
+                self.disabledWidgets |= (1 << widx::expressMode | 1 << widx::localMode);
             }
             else
             {
-                self.enabledWidgets |= (1 << widx::expressMode | 1 << widx::localMode);
+                self.disabledWidgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
             }
 
             self.widgets[widx::expressMode].right = self.widgets[widx::routeList].right;
@@ -3728,17 +3719,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             const widx widgetIndex;
             std::span<const Widget> widgets;
             const WindowEventList& events;
-            const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { widx::tabMain,     Main::widgets,     Main::getEvents(),     &Main::enabledWidgets,     &Main::holdableWidgets },
-            { widx::tabDetails,  Details::widgets,  Details::getEvents(),  &Details::enabledWidgets,  &Details::holdableWidgets },
-            { widx::tabCargo,    Cargo::widgets,    Cargo::getEvents(),    &Cargo::enabledWidgets,    &Cargo::holdableWidgets },
-            { widx::tabFinances, Finances::widgets, Finances::getEvents(), &Finances::enabledWidgets, &Finances::holdableWidgets },
-            { widx::tabRoute,    Route::widgets,    Route::getEvents(),    &Route::enabledWidgets,    &Route::holdableWidgets }
+            { widx::tabMain,     Main::widgets,     Main::getEvents(),     &Main::holdableWidgets },
+            { widx::tabDetails,  Details::widgets,  Details::getEvents(),  &Details::holdableWidgets },
+            { widx::tabCargo,    Cargo::widgets,    Cargo::getEvents(),    &Cargo::holdableWidgets },
+            { widx::tabFinances, Finances::widgets, Finances::getEvents(), &Finances::holdableWidgets },
+            { widx::tabRoute,    Route::widgets,    Route::getEvents(),    &Route::holdableWidgets }
         };
         // clang-format on
 
@@ -4574,9 +4564,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tabMain];
 
-            self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = *tabInfo.holdableWidgets;
-
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->setWidgets(tabInfo.widgets);
@@ -4595,7 +4583,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B1E94
         static void setCaptionEnableState(Window* const self)
         {
-            self->enabledWidgets |= 1 << widx::caption;
+            self->disabledWidgets &= ~(1ULL << widx::caption);
             auto head = getVehicle(self);
             if (head == nullptr)
             {
@@ -4603,7 +4591,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             if (head->owner != CompanyManager::getControllingId())
             {
-                self->enabledWidgets &= ~static_cast<uint64_t>(1 << widx::caption);
+                self->disabledWidgets |= (1ULL << widx::caption);
             }
         }
 

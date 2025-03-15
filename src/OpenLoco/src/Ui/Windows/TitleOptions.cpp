@@ -40,8 +40,6 @@ namespace OpenLoco::Ui::Windows::TitleOptions
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1U << Widx::options_button);
-
         window->initScrollWidgets();
 
         window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());

@@ -183,7 +183,6 @@ namespace OpenLoco::Ui
 
         sfl::small_vector<Widget, 16> widgets;
         const WindowEventList* eventHandlers;
-        uint64_t enabledWidgets = 0;
         uint64_t disabledWidgets = 0;
         uint64_t activatedWidgets = 0;
         uint64_t holdableWidgets = 0;
