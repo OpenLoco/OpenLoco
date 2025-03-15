@@ -59,14 +59,14 @@ namespace OpenLoco::Input
             _cursorDragStart = cursor;
 
             auto result = SDL_SetRelativeMouseMode(SDL_TRUE);
-            if (result == -1) // relative mode not supported
-            {
-                Ui::hideCursor();
-            }
-            else
+            if (result == 0)
             {
                 // Consume the mouse delta x and y of SDL centering the mouse cursor
                 SDL_GetRelativeMouseState(nullptr, nullptr);
+            }
+            else
+            {
+                Ui::hideCursor();
             }
         }
     }
