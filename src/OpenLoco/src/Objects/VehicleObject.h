@@ -41,7 +41,7 @@ namespace OpenLoco
     namespace SpriteIndex
     {
         constexpr uint8_t null = 0xFF;
-        constexpr uint8_t flag_unk7 = (1 << 7); // Set on electric multiple unit
+        constexpr uint8_t isReversed = (1 << 7); // the bogie or body should be drawn reversed
     }
 
 #pragma pack(push, 1)
@@ -122,7 +122,7 @@ namespace OpenLoco
         rotationalSymmetry = 1U << 1, // requires half the number of sprites i.e. 16 instead of 32
         hasGentleSprites = 1U << 2,   // for gentle slopes
         hasSteepSprites = 1U << 3,    // for steep slopes
-        unk_4 = 1U << 4,              // Increases bounding box size
+        largerBoundingBox = 1U << 4,  // Increases bounding box size
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BogieSpriteFlags);
 
@@ -165,15 +165,15 @@ namespace OpenLoco
         uint8_t numAnimationFrames;      // 0x02
         uint8_t numCargoLoadFrames;      // 0x03
         uint8_t numCargoFrames;          // 0x04
-        uint8_t numRollFrames;           // 0x05
-        uint8_t halfLength;              // 0x06 the longest distance from pivot of body to either end of car component (not strictly body half length see crocidile train car)
+        uint8_t numTiltFrames;           // 0x05 currently the only valid values are 1 and 3
+        uint8_t halfLength;              // 0x06 the distance from pivot of body to one end of car component (not strictly the visible body, see CE68 locomotive)
         BodySpriteFlags flags;           // 0x07
         uint8_t width;                   // 0x08 sprite width
         uint8_t heightNegative;          // 0x09 sprite height negative
         uint8_t heightPositive;          // 0x0A sprite height positive
         uint8_t flatYawAccuracy;         // 0x0B 0 - 4 accuracy of yaw on flat built from numFlatRotationFrames (0 = lowest accuracy 3bits, 4 = highest accuracy 7bits)
         uint8_t slopedYawAccuracy;       // 0x0C 0 - 3 accuracy of yaw on slopes built from numSlopedRotationFrames  (0 = lowest accuracy 3bits, 3 = highest accuracy 6bits)
-        uint8_t numFramesPerRotation;    // 0x0D numAnimationFrames * numCargoFrames * numRollFrames + 1 (for braking lights)
+        uint8_t numFramesPerRotation;    // 0x0D numAnimationFrames * numCargoFrames * numTiltFrames + 1 (for braking lights)
         uint32_t flatImageId;            // 0x0E
         uint32_t unkImageId;             // 0x12
         uint32_t gentleImageId;          // 0x16
