@@ -2,6 +2,7 @@
 #include "CompanyAi.h"
 #include "CompanyRecords.h"
 #include "Config.h"
+#include "Date.h"
 #include "Economy/Economy.h"
 #include "Effects/Effect.h"
 #include "Effects/MoneyEffect.h"
@@ -442,13 +443,291 @@ namespace OpenLoco::CompanyManager
         return selectNewCompetitorFromHeader(chosenHeader);
     }
 
+    // 0x004F93F8
+    static constexpr std::array<Colour, 13> kAiPrimaryColours = {
+        Colour::black,
+        Colour::grey,
+        Colour::white,
+        Colour::mutedDarkPurple,
+        Colour::blue,
+        Colour::green,
+        Colour::amber,
+        Colour::darkOrange,
+        Colour::mutedYellow,
+        Colour::mutedDarkRed,
+        Colour::red,
+        Colour::max, // Pick randomcolour
+        Colour::max, // Pick randomcolour
+    };
+
+    // 0x004F9405
+    static constexpr std::array<Colour, 31> kPrimaryToSecondary = {
+        Colour::mutedDarkPurple,
+        Colour::mutedDarkRed,
+        Colour::mutedTeal,
+        Colour::white,
+        Colour::mutedPurple,
+        Colour::white,
+        Colour::white,
+        Colour::blue,
+        Colour::white,
+        Colour::darkRed,
+        Colour::mutedGrassGreen,
+        Colour::white,
+        Colour::yellow,
+        Colour::mutedGrassGreen,
+        Colour::darkGreen,
+        Colour::yellow,
+        Colour::red,
+        Colour::mutedOrange,
+        Colour::mutedYellow,
+        Colour::amber,
+        Colour::white,
+        Colour::mutedDarkRed,
+        Colour::white,
+        Colour::yellow,
+        Colour::white,
+        Colour::white,
+        Colour::yellow,
+        Colour::white,
+        Colour::darkPink,
+        Colour::white,
+        Colour::mutedDarkRed,
+    };
+
+    // 0x004F93C4
+    static constexpr std::array<uint32_t, 13> k4F93C4 = {
+        0,
+        0,
+        0,
+        54,
+        53,
+        47,
+        54,
+        64,
+        54,
+        64,
+        64,
+        64,
+        59,
+    };
+
+    static constexpr std::array<StringId, 11> kCompanyAiColourNames = {
+        StringIds::company_ai_name_ebony,
+        StringIds::company_ai_name_silver,
+        StringIds::company_ai_name_ivory,
+        StringIds::company_ai_name_indigo,
+        StringIds::company_ai_name_sapphire,
+        StringIds::company_ai_name_emerald,
+        StringIds::company_ai_name_golden,
+        StringIds::company_ai_name_amber,
+        StringIds::company_ai_name_bronze,
+        StringIds::company_ai_name_burgundy,
+        StringIds::company_ai_name_scarlet,
+    };
+
+    static constexpr std::array<StringId, 13> kCompanyAiTypeString = {
+        company_ai_name_string_transport,
+        company_ai_name_string_express,
+        company_ai_name_string_lines,
+        company_ai_name_string_tracks,
+        company_ai_name_string_coaches,
+        company_ai_name_string_air,
+        company_ai_name_string_rail,
+        company_ai_name_string_carts,
+        company_ai_name_string_trains,
+        company_ai_name_string_haulage,
+        company_ai_name_string_shipping,
+        company_ai_name_string_freight,
+        company_ai_name_string_trucks,
+    };
+
     static CompanyId createCompany(LoadedObjectId competitorId, bool isPlayer)
     {
-        registers regs;
-        regs.dl = competitorId;
-        regs.dh = isPlayer ? 1 : 0;
-        call(0x0042FE06, regs);
-        return static_cast<CompanyId>(regs.al);
+        auto chosenCompanyId = []() {
+            for (auto& company : rawCompanies())
+            {
+                if (company.empty())
+                {
+                    return company.id();
+                }
+            }
+            return CompanyId::null;
+        }();
+        if (chosenCompanyId == CompanyId::null)
+        {
+            return CompanyId::null;
+        }
+
+        auto* company = get(chosenCompanyId);
+        company->competitorId = competitorId;
+        auto* competitorObj = ObjectManager::get<CompetitorObject>(competitorId);
+        company->challengeFlags = CompanyFlags::none;
+        company->var_49C = 0;
+        company->var_4A0 = 0;
+        company->ownerEmotion = Emotion::neutral;
+        company->name = StringIds::new_company;
+        company->ownerName = StringIds::new_owner;
+        company->startedDate = getCurrentDay();
+        if (isPlayer)
+        {
+            Colour primaryColour = Colour::max;
+            while (true)
+            {
+                const auto randVal = gPrng1().randNext();
+
+                auto primaryColour = ((randVal & 0xFFU) * enumValue(Colour::max)) / 256;
+
+                const auto colourMask = competingColourMask(chosenCompanyId);
+                if (colourMask & (1U << enumValue(primaryColour)))
+                {
+                    continue;
+                }
+                break;
+            }
+
+            const auto secondaryColour = kPrimaryToSecondary[enumValue(primaryColour)];
+            const auto colourScheme = ColourScheme{ primaryColour, secondaryColour };
+            company->mainColours = colourScheme;
+            std::fill(std::begin(company->vehicleColours), std::end(company->vehicleColours), colourScheme);
+
+            company->customVehicleColoursSet = 0;
+        }
+        else
+        {
+            company->ownerName = competitorObj->name;
+            uint32_t randVal = 0;
+            uint8_t randUnk = 0;
+            uint8_t randUnk2 = 0;
+            Colour primaryColour = Colour::max;
+            bool colourOk = false;
+            for (auto i = 0U; i < 250; ++i)
+            {
+                randVal = gPrng1().randNext();
+                sfl::static_vector<uint8_t, 32> unks;
+                for (auto i = 0U; i < 32; ++i)
+                {
+                    if (competitorObj->var_04 & (1U << i))
+                    {
+                        unks.push_back(i);
+                    }
+                }
+                randUnk = unks[unks.size() * (randVal & 0xFFU) / 256];
+                randVal = std::rotr(randVal, 8);
+
+                sfl::static_vector<uint8_t, 32> unks2;
+                for (auto i = 0U; i < 32; ++i)
+                {
+                    if (competitorObj->var_04 & (1U << i))
+                    {
+                        unks2.push_back(i);
+                    }
+                }
+                randUnk2 = unks2[unks2.size() * (randVal & 0xFFU) / 256];
+                randVal = std::rotr(randVal, 8);
+
+                auto primaryColour = kAiPrimaryColours[randUnk];
+                if (primaryColour == Colour::max)
+                {
+                    primaryColour = static_cast<Colour>((randVal & 0xFFU) * 31 / 256);
+                    randVal = std::rotr(randVal, 8);
+                }
+
+                const auto colourMask = competingColourMask(chosenCompanyId);
+                if (colourMask & (1U << enumValue(primaryColour)))
+                {
+                    continue;
+                }
+                colourOk = true;
+                break;
+            }
+            if (!colourOk)
+            {
+                company->name = StringIds::empty;
+                return CompanyId::null;
+            }
+
+            const auto secondaryColour = kPrimaryToSecondary[enumValue(primaryColour)];
+            const auto colourScheme = ColourScheme{ primaryColour, secondaryColour };
+            company->mainColours = colourScheme;
+            std::fill(std::begin(company->vehicleColours), std::end(company->vehicleColours), colourScheme);
+
+            company->customVehicleColoursSet = 0;
+            company->var_52 = k4F93C4[randUnk2];
+            company->var_56 = 0xFFU;
+
+            if (randUnk == 12)
+            {
+                const auto numTowns = TownManager::towns().size();
+                if (numTowns == 0)
+                {
+                    company->name = StringIds::empty;
+                    return CompanyId::null;
+                }
+                auto randTown = (((randVal & 0xFFU) * numTowns) / 256) + 1;
+                randVal = std::rotr(randVal, 8);
+                const auto randTownId = [&randTown]() {
+                    for (auto& town : TownManager::towns())
+                    {
+                        randTown--;
+                        if (randTown == 0)
+                        {
+                            return town.id();
+                        }
+                    }
+                    return TownId::null;
+                }();
+                for (auto& otherCompany : companies())
+                {
+                    if (otherCompany.id() == chosenCompanyId)
+                    {
+                        continue;
+                    }
+                    if (!(otherCompany.var_52 & (1U << 8)))
+                    {
+                        continue;
+                    }
+                    if (static_cast<TownId>(otherCompany.var_56) == randTownId)
+                    {
+                        company->name = StringIds::empty;
+                        return CompanyId::null;
+                    }
+                }
+                company->var_56 = enumValue(randTownId);
+                company->var_52 |= 1U << 8;
+            }
+
+            const auto stringId = kCompanyAiTypeString[randUnk2];
+            auto args = FormatArguments::common(kCompanyAiColourNames[randUnk], competitorObj->lastName);
+            if (company->var_56 != 0xFFU)
+            {
+                args.push(TownManager::get(static_cast<TownId>(company->var_56))->name);
+            }
+
+            char buffer[256]{};
+            StringManager::formatString(buffer, 256U, stringId, args);
+            for (auto& otherCompany : companies())
+            {
+                if (otherCompany.id() == chosenCompanyId)
+                {
+                    continue;
+                }
+
+                char buffer2[256]{};
+                StringManager::formatString(buffer2, 256U, otherCompany.name);
+                if (std::strncmp(buffer, buffer2, 256) == 0)
+                {
+                    company->name = StringIds::empty;
+                    return CompanyId::null;
+                }
+            }
+            company->name = StringManager::userStringAllocate(buffer, false);
+            if (company->name == StringIds::empty)
+            {
+                return CompanyId::null;
+            }
+        }
+        // 0x0043012B
     }
 
     static void sub_4A6DA9()

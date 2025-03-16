@@ -136,19 +136,20 @@ namespace OpenLoco
 
         StringId name;
         StringId ownerName;
-        CompanyFlags challengeFlags;      // 0x04
-        currency48_t cash;                // 0x08
-        currency32_t currentLoan;         // 0x0E
-        uint32_t updateCounter;           // 0x12
-        int16_t performanceIndex;         // 0x16
-        uint8_t competitorId;             // 0x18
-        Emotion ownerEmotion;             // 0x19
-        ColourScheme mainColours;         // 0x1A
-        ColourScheme vehicleColours[10];  // 0x1C
-        uint32_t customVehicleColoursSet; // 0x30
-        BitSet<224> unlockedVehicles;     // 0x34
-        uint16_t availableVehicles;       // 0x50
-        uint8_t pad_52[0x57 - 0x52];
+        CompanyFlags challengeFlags;                                                    // 0x04
+        currency48_t cash;                                                              // 0x08
+        currency32_t currentLoan;                                                       // 0x0E
+        uint32_t updateCounter;                                                         // 0x12
+        int16_t performanceIndex;                                                       // 0x16
+        uint8_t competitorId;                                                           // 0x18
+        Emotion ownerEmotion;                                                           // 0x19
+        ColourScheme mainColours;                                                       // 0x1A
+        ColourScheme vehicleColours[10];                                                // 0x1C
+        uint32_t customVehicleColoursSet;                                               // 0x30
+        BitSet<224> unlockedVehicles;                                                   // 0x34
+        uint16_t availableVehicles;                                                     // 0x50
+        uint32_t var_52;                                                                // 0x52
+        uint8_t var_56;                                                                 // 0x56
         uint8_t numExpenditureYears;                                                    // 0x57
         currency32_t expenditures[kExpenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
         uint32_t startedDate;                                                           // 0x0498
