@@ -120,8 +120,6 @@ namespace OpenLoco::Ui::Windows::TextInput
             WindowFlags::stickToFront | WindowFlags::flag_12,
             getEvents());
         window->setWidgets(_widgets);
-        window->enabledWidgets |= 1ULL << Widx::close;
-        window->enabledWidgets |= 1ULL << Widx::ok;
         window->initScrollWidgets();
 
         memcpy(_formatArgs, _commonFormatArgs, 16);
