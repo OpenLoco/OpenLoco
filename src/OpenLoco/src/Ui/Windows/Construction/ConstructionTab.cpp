@@ -1575,11 +1575,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DAA5
     static void onResize(Window& self)
     {
-        self.enabledWidgets &= ~(1 << widx::construct);
+        self.disabledWidgets |= (1ULL << widx::construct);
 
         if (_cState->constructionHover != 1)
         {
-            self.enabledWidgets |= (1 << widx::construct);
+            self.disabledWidgets &= ~(1ULL << widx::construct);
         }
 
         auto disabledWidgets = self.disabledWidgets;

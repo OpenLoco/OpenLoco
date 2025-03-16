@@ -9,6 +9,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
 #include "Ui/Widgets/CaptionWidget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
@@ -44,6 +45,12 @@ namespace OpenLoco::Ui::Windows::Debug
         constexpr auto tab_1 = WidgetId("tab_1");
         constexpr auto tab_2 = WidgetId("tab_2");
         constexpr auto tab_3 = WidgetId("tab_3");
+
+        constexpr auto checkbox_1 = WidgetId("checkbox_1");
+        constexpr auto checkbox_2 = WidgetId("checkbox_2");
+        constexpr auto checkbox_3 = WidgetId("checkbox_3");
+        constexpr auto checkbox_4 = WidgetId("checkbox_4");
+
         // constexpr auto tab_4 = WidgetId("tab_4");
     }
 
@@ -67,9 +74,14 @@ namespace OpenLoco::Ui::Windows::Debug
             Label(widx::label_2, { kMargin, kTitlebarHeight + kMargin + (3 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::center, StringIds::openloco),
             Label(widx::label_3, { kMargin, kTitlebarHeight + kMargin + (4 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::right, StringIds::openloco),
 
-            Tab(widx::tab_1, { kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
-            Tab(widx::tab_2, { kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
-            Tab(widx::tab_3, { kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
+            Checkbox(widx::checkbox_1, { kMargin, kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
+            Checkbox(widx::checkbox_2, { kMargin, kTitlebarHeight + kMargin + (6 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
+            Checkbox(widx::checkbox_3, { kMargin, kTitlebarHeight + kMargin + (7 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
+            Checkbox(widx::checkbox_4, { kMargin, kTitlebarHeight + kMargin + (8 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
+
+            Tab(widx::tab_1, { kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (9 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
+            Tab(widx::tab_2, { kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (9 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
+            Tab(widx::tab_3, { kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (9 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
             //
         );
     }
@@ -89,9 +101,30 @@ namespace OpenLoco::Ui::Windows::Debug
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = ~0ULL;
         // window->disabledWidgets = 1U << widx::tab_3;
         window->initScrollWidgets();
+
+        auto getWidgetById = [&](Window& window, const WidgetId id) -> Widget& {
+            for (auto& widget : window.widgets)
+            {
+                if (widget.id == id)
+                {
+                    return widget;
+                }
+            }
+            throw std::runtime_error("Widget not found");
+        };
+
+        auto& chkbox2 = getWidgetById(*window, widx::checkbox_2);
+        chkbox2.activated = true;
+
+        auto& chkbox3 = getWidgetById(*window, widx::checkbox_3);
+        chkbox3.activated = false;
+        chkbox3.disabled = true;
+
+        auto& chkbox4 = getWidgetById(*window, widx::checkbox_4);
+        chkbox4.activated = true;
+        chkbox4.disabled = true;
 
         const auto interface = ObjectManager::get<InterfaceSkinObject>();
         window->setColour(WindowColour::primary, interface->windowTitlebarColour);

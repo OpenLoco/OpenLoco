@@ -240,7 +240,6 @@ namespace OpenLoco::Ui::Windows::Options
             | (1ULL << Widx::tab_company)
             | (1ULL << Widx::tab_miscellaneous);
 
-        static constexpr int enabledWidgets = (1ULL << Widx::close_button) | tabWidgets;
     }
 
     namespace Display
@@ -312,22 +311,6 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Checkbox({ 10, 243 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering)
 
         );
-
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
-            | (1ULL << Widx::show_fps)
-            | (1ULL << Widx::uncap_fps)
-            | (1ULL << Widx::screen_mode_label)
-            | (1ULL << Widx::cash_popup_rendering)
-            | (1ULL << Display::Widx::landscape_smoothing)
-            | (1ULL << Display::Widx::gridlines_on_landscape)
-            | (1ULL << Display::Widx::vehicles_min_scale)
-            | (1ULL << Display::Widx::vehicles_min_scale_btn)
-            | (1ULL << Display::Widx::station_names_min_scale)
-            | (1ULL << Display::Widx::station_names_min_scale_btn)
-            | (1ULL << Display::Widx::construction_marker)
-            | (1ULL << Display::Widx::construction_marker_btn)
-            | (1ULL << Display::Widx::display_scale_up_btn)
-            | (1ULL << Display::Widx::display_scale_down_btn);
 
         // 0x004BFB8C
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
@@ -525,12 +508,12 @@ namespace OpenLoco::Ui::Windows::Options
         {
             if (Config::get().display.mode == Config::ScreenMode::fullscreen)
             {
-                w->enabledWidgets |= (1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
+                w->disabledWidgets &= ~(1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
                 w->disabledWidgets &= ~((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
             }
             else
             {
-                w->enabledWidgets &= ~((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
+                w->disabledWidgets |= ((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
                 w->disabledWidgets |= (1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
             }
         }
@@ -806,7 +789,6 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            w->enabledWidgets |= (1ULL << Display::Widx::screen_mode) | (1ULL << Display::Widx::screen_mode_btn);
             Display::screenModeToggleEnabled(w);
 #else
             w->disabledWidgets |= (1ULL << Display::Widx::screen_mode)
@@ -845,11 +827,6 @@ namespace OpenLoco::Ui::Windows::Options
                 play_title_music,
             };
         }
-
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
-            | (1ULL << Sound::Widx::audio_device)
-            | (1ULL << Sound::Widx::audio_device_btn)
-            | (1ULL << Sound::Widx::play_title_music);
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_sound),
@@ -1059,17 +1036,6 @@ namespace OpenLoco::Ui::Windows::Options
                 edit_selection
             };
         }
-
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
-            | (1ULL << Music::Widx::currently_playing)
-            | (1ULL << Music::Widx::currently_playing_btn)
-            | (1ULL << Music::Widx::music_controls_stop)
-            | (1ULL << Music::Widx::music_controls_play)
-            | (1ULL << Music::Widx::music_controls_next)
-            | (1ULL << Music::Widx::volume)
-            | (1ULL << Music::Widx::music_playlist)
-            | (1ULL << Music::Widx::music_playlist_btn)
-            | (1ULL << Music::Widx::edit_selection);
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
@@ -1429,20 +1395,6 @@ namespace OpenLoco::Ui::Windows::Options
                 preferred_currency_always
             };
         }
-
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
-            | (1ULL << Regional::Widx::language)
-            | (1ULL << Regional::Widx::language_btn)
-            | (1ULL << Regional::Widx::distance_speed)
-            | (1ULL << Regional::Widx::distance_speed_btn)
-            | (1ULL << Regional::Widx::heights)
-            | (1ULL << Regional::Widx::heights_btn)
-            | (1ULL << Regional::Widx::currency)
-            | (1ULL << Regional::Widx::currency_btn)
-            | (1ULL << Regional::Widx::preferred_currency)
-            | (1ULL << Regional::Widx::preferred_currency_btn)
-            | (1ULL << Regional::Widx::preferred_currency_for_new_games)
-            | (1ULL << Regional::Widx::preferred_currency_always);
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_regional),
@@ -1940,12 +1892,6 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
-            | (1ULL << Controls::Widx::edge_scrolling)
-            | (1ULL << Controls::Widx::customize_keys)
-            | (1ULL << Controls::Widx::zoom_to_cursor)
-            | (1ULL << Controls::Widx::invertRightMouseViewPan);
-
         static constexpr Ui::Size32 kWindowSize = { 366, 114 };
 
         static constexpr auto _widgets = makeWidgets(
@@ -2115,15 +2061,6 @@ namespace OpenLoco::Ui::Windows::Options
                 ownerFacePreview,
             };
         }
-
-        // clang-format off
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets |
-            (1ULL << Widx::usePreferredOwnerFace) |
-            (1ULL << Widx::changeOwnerFaceBtn) |
-            (1ULL << Widx::usePreferredOwnerName) |
-            (1ULL << Widx::changeOwnerNameBtn) |
-            (1ULL << Widx::ownerFacePreview);
-        // clang-format on
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_company),
@@ -2420,20 +2357,6 @@ namespace OpenLoco::Ui::Windows::Options
                 export_plugin_objects,
             };
         }
-
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets
-            | (1ULL << Widx::enableCheatsToolbarButton)
-            | (1ULL << Widx::disableAICompanies)
-            | (1ULL << Widx::disableTownExpansion)
-            | (1ULL << Widx::disable_vehicle_breakdowns)
-            | (1ULL << Widx::disable_vehicle_load_penalty)
-            | (1ULL << Widx::disableStationSizeLimit)
-            | (1ULL << Widx::trainsReverseAtSignals)
-            | (1ULL << Widx::autosave_amount)
-            | (1ULL << Widx::autosave_amount_down_btn)
-            | (1ULL << Widx::autosave_amount_up_btn)
-            | (1ULL << Widx::autosave_frequency_btn)
-            | (1ULL << Widx::export_plugin_objects);
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_miscellaneous),
@@ -2923,7 +2846,6 @@ namespace OpenLoco::Ui::Windows::Options
         populateAvailableCurrencies();
         setPreferredCurrencyNameBuffer();
 
-        window->enabledWidgets = Display::enabledWidgets;
         Display::applyScreenModeRestrictions(window);
 
         window->holdableWidgets = 0;
@@ -2952,18 +2874,17 @@ namespace OpenLoco::Ui::Windows::Options
         std::span<const Widget> widgets;
         const WindowEventList& events;
         Ui::Size32 kWindowSize;
-        const uint64_t* enabledWidgets;
     };
 
     // clang-format off
     static TabInformation tabInformationByTabOffset[] = {
-        { Display::_widgets,  Display::getEvents(),  Display::kWindowSize,  &Display::enabledWidgets },
-        { Sound::_widgets,    Sound::getEvents(),    Sound::kWindowSize,    &Sound::enabledWidgets },
-        { Music::_widgets,    Music::getEvents(),    Music::kWindowSize,    &Music::enabledWidgets },
-        { Regional::_widgets, Regional::getEvents(), Regional::kWindowSize, &Regional::enabledWidgets },
-        { Controls::_widgets, Controls::getEvents(), Controls::kWindowSize, &Controls::enabledWidgets },
-        { Company::_widgets,  Company::getEvents(),  Company::kWindowSize,  &Company::enabledWidgets },
-        { Misc::_widgets,     Misc::getEvents(),     Misc::kWindowSize,     &Misc::enabledWidgets },
+        { Display::_widgets,  Display::getEvents(),  Display::kWindowSize  },
+        { Sound::_widgets,    Sound::getEvents(),    Sound::kWindowSize    },
+        { Music::_widgets,    Music::getEvents(),    Music::kWindowSize    },
+        { Regional::_widgets, Regional::getEvents(), Regional::kWindowSize },
+        { Controls::_widgets, Controls::getEvents(), Controls::kWindowSize },
+        { Company::_widgets,  Company::getEvents(),  Company::kWindowSize  },
+        { Misc::_widgets,     Misc::getEvents(),     Misc::kWindowSize     },
     };
     // clang-format on
 
@@ -2983,7 +2904,6 @@ namespace OpenLoco::Ui::Windows::Options
         w->viewportRemove(0);
 
         auto& tabInfo = tabInformationByTabOffset[w->currentTab];
-        w->enabledWidgets = *tabInfo.enabledWidgets;
         w->eventHandlers = &tabInfo.events;
         w->setWidgets(tabInfo.widgets);
         w->invalidate();

@@ -51,8 +51,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             tab_scenario,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
-
         static constexpr auto makeCommonWidgets(int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
@@ -191,7 +189,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             time_limit_value_up,
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::objective_type) | (1 << widx::objective_type_btn) | (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::objective_cargo) | (1 << widx::objective_cargo_btn) | (1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
         const uint64_t holdableWidgets = (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
 
         static constexpr auto widgets = makeWidgets(
@@ -553,7 +550,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             // 0x0043EEFF start
             window = WindowManager::createWindowCentred(WindowType::scenarioOptions, kOtherWindowSize, WindowFlags::none, Challenge::getEvents());
             window->setWidgets(Challenge::widgets);
-            window->enabledWidgets = Challenge::enabledWidgets;
             window->number = 0;
             window->currentTab = 0;
             window->frameNo = 0;
@@ -574,7 +570,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         window->invalidate();
 
         window->setWidgets(Challenge::widgets);
-        window->enabledWidgets = Challenge::enabledWidgets;
         window->holdableWidgets = Challenge::holdableWidgets;
         window->eventHandlers = &Challenge::getEvents();
         window->activatedWidgets = 0;
@@ -644,7 +639,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         );
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up) | (1ULL << widx::preferred_intelligence) | (1ULL << widx::preferred_intelligence_btn) | (1ULL << widx::preferred_aggressiveness) | (1ULL << widx::preferred_aggressiveness_btn) | (1ULL << widx::preferred_competitiveness) | (1ULL << widx::preferred_competitiveness_btn) | (1ULL << widx::competitor_forbid_trains) | (1ULL << widx::competitor_forbid_buses) | (1ULL << widx::competitor_forbid_trucks) | (1ULL << widx::competitor_forbid_trams) | (1ULL << widx::competitor_forbid_aircraft) | (1ULL << widx::competitor_forbid_ships) | (1ULL << widx::player_forbid_trains) | (1ULL << widx::player_forbid_buses) | (1ULL << widx::player_forbid_trucks) | (1ULL << widx::player_forbid_trams) | (1ULL << widx::player_forbid_aircraft) | (1ULL << widx::player_forbid_ships);
         const uint64_t holdableWidgets = (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up);
 
         // 0x0043F4EB
@@ -909,7 +903,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         );
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
         const uint64_t holdableWidgets = (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
 
         // 0x0043F97D
@@ -1055,7 +1048,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         );
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::change_name_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
         const uint64_t holdableWidgets = 0;
 
         // 0x0043F004
@@ -1266,16 +1258,15 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Challenge::widgets,   widx::tab_challenge,  Challenge::getEvents(),   &Challenge::enabledWidgets,   &Challenge::holdableWidgets },
-            { Companies::widgets,   widx::tab_companies,  Companies::getEvents(),   &Companies::enabledWidgets,   &Companies::holdableWidgets },
-            { Finances::widgets,    widx::tab_finances,   Finances::getEvents(),    &Finances::enabledWidgets,    &Finances::holdableWidgets },
-            { ScenarioTab::widgets, widx::tab_scenario,   ScenarioTab::getEvents(), &ScenarioTab::enabledWidgets, &ScenarioTab::holdableWidgets }
+            { Challenge::widgets,   widx::tab_challenge,  Challenge::getEvents(),   &Challenge::holdableWidgets },
+            { Companies::widgets,   widx::tab_companies,  Companies::getEvents(),   &Companies::holdableWidgets },
+            { Finances::widgets,    widx::tab_finances,   Finances::getEvents(),    &Finances::holdableWidgets },
+            { ScenarioTab::widgets, widx::tab_scenario,   ScenarioTab::getEvents(), &ScenarioTab::holdableWidgets }
         };
         // clang-format on
 
@@ -1317,7 +1308,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];
 
-            self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = *tabInfo.holdableWidgets;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

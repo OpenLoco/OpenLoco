@@ -72,7 +72,6 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = 1 << Widx::close;
         window->initScrollWidgets();
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();
