@@ -846,50 +846,71 @@ namespace OpenLoco::Vehicles
     // returns nothing
     void connectJacobsBogies(VehicleHead& head)
     {
-        // if jacob's bogie is available at front the front body will have jacobsBogieAvailable
-        // if jacob's bogie is available at back the end body will have jacobsBogieAvailable
+        /*
+        Jacobs Bogie connections are completely invisible until a jacob's bogie connection is made. The visible body of the car is another
+        CarComponent that is either the first CarComponent (if a connection is available only at the back of the Car), the middle CarComponent
+        (if there are two connections available), or the last CarComponent (if a connection is available only at the front of the Car).
+        The comments in the code assume that two connections are available, and refer to each CarComponent as the First, Last, and Body CarComponent.
+
+        The bodies of these invisible CarComponents are used to store the flag that the jacob's bogie connection is available. If the first
+        CarComponent of a Car sees that the previous CarComponent has the flag, and it has the flag as well, a connection will be made.
+
+        If the last CarComponent of a Car is flagged for a connection, it will reset to default without checking if the next component should
+        connect, and the connection will be re-made by the next Car, if necessary. This is eaiser than verifying that the connection is made
+        correctly.
+        */
         Vehicle train(head);
         auto componentsFound = 0;
         CarComponent previousCarComponent;
         CarComponent secondPreviousCarComponent;
         for (auto& car : train.cars)
         {
-            // reset jacob's bogie at the front of the car
             if (car.body->has38Flags(Flags38::jacobsBogieAvailable))
             {
-                car.front->objectSpriteType = 0xFF;
-                car.back->objectSpriteType = 0xFF;
-                car.body->objectSpriteType = 0xFF;
                 auto frontBogieOfNext = car.body->nextVehicleComponent();
                 if (frontBogieOfNext == nullptr)
                 {
                     throw Exception::RuntimeError("connectJacobsBogies frontBogieOfNext was unexpectedly nullptr");
                 }
-
+                // Body's component
                 CarComponent nextComponent = CarComponent(frontBogieOfNext);
-                auto o = ObjectManager::get<VehicleObject>(car.front->objectId);
-                nextComponent.front->objectSpriteType = o->carComponents[nextComponent.body->bodyIndex].frontBogieSpriteInd;
-                if (nextComponent.body->has38Flags(Flags38::isReversed))
-                {
-                    nextComponent.front->objectSpriteType = o->carComponents[nextComponent.body->bodyIndex].backBogieSpriteInd;
-                }
-                // connect jacob's bogie to the front
+
+                // Create First's jacob's bogie connection
+                // Change from vanilla: this case occurred after the code in the else-block and the else-block was not conditional.
                 if (componentsFound >= 1 && previousCarComponent.body->has38Flags(Flags38::jacobsBogieAvailable))
                 {
                     if (componentsFound < 2)
                     {
                         throw Exception::RuntimeError("connectJacobsBogies tried to connect jacob's bogie without secondPreviousCarComponent");
                     }
-                    auto o2 = ObjectManager::get<VehicleObject>(car.front->objectId);
-                    car.front->objectSpriteType = o2->carComponents[car.front->bodyIndex].frontBogieSpriteInd;
+
+                    auto frontObject = ObjectManager::get<VehicleObject>(car.front->objectId);
+                    car.front->objectSpriteType = frontObject->carComponents[car.front->bodyIndex].frontBogieSpriteInd;
+                    // set my body's front bogie to invisible
                     nextComponent.front->objectSpriteType = 0xFF;
+                    // set previous car's body's rear bogie to invisible
                     secondPreviousCarComponent.back->objectSpriteType = 0xFF;
+                }
+                // Reset First's jacob's bogie connection
+                else
+                {
+                    car.front->objectSpriteType = 0xFF;
+                    car.back->objectSpriteType = 0xFF;
+                    car.body->objectSpriteType = 0xFF;
+
+                    auto bodyObject = ObjectManager::get<VehicleObject>(nextComponent.body->objectId);
+                    nextComponent.front->objectSpriteType = bodyObject->carComponents[nextComponent.body->bodyIndex].frontBogieSpriteInd;
+                    if (nextComponent.body->has38Flags(Flags38::isReversed))
+                    {
+                        // Change from vanilla: set bogie orientation based on body's object
+                        nextComponent.front->objectSpriteType = bodyObject->carComponents[nextComponent.body->bodyIndex].backBogieSpriteInd;
+                    }
                 }
             }
             for (auto& component : car)
             {
-                // reset jacob's bogie at the rear of the car
-                // jacobs bogie flag is only set on the first and last CarComponent of the car, it cannot be set on middle one(s)
+                // Reset Last jacob's bogie connection
+                // Jacobs bogie flag is only set on the first and last CarComponent of the car, it cannot be set on middle one(s)
                 if (component.body->has38Flags(Flags38::jacobsBogieAvailable) && component.body->getSubType() == VehicleEntityType::body_continued)
                 {
                     if (componentsFound == 0)
@@ -899,11 +920,13 @@ namespace OpenLoco::Vehicles
                     component.front->objectSpriteType = 0xFF;
                     component.back->objectSpriteType = 0xFF;
                     component.body->objectSpriteType = 0xFF;
-                    auto o3 = ObjectManager::get<VehicleObject>(previousCarComponent.back->objectId);
-                    previousCarComponent.back->objectSpriteType = o3->carComponents[previousCarComponent.back->bodyIndex].backBogieSpriteInd;
+                    // Change from vanilla: gets bogie's object instead of body's object
+                    auto carLastBogieObject = ObjectManager::get<VehicleObject>(previousCarComponent.back->objectId);
+                    previousCarComponent.back->objectSpriteType = carLastBogieObject->carComponents[previousCarComponent.back->bodyIndex].backBogieSpriteInd;
                     if (previousCarComponent.body->has38Flags(Flags38::isReversed))
                     {
-                        previousCarComponent.back->objectSpriteType = o3->carComponents[previousCarComponent.back->bodyIndex].frontBogieSpriteInd;
+                        // Change from vanilla: sets bogie orientation based on body's object
+                        previousCarComponent.back->objectSpriteType = carLastBogieObject->carComponents[previousCarComponent.back->bodyIndex].frontBogieSpriteInd;
                     }
                 }
                 secondPreviousCarComponent = previousCarComponent;
