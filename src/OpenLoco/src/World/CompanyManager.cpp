@@ -496,23 +496,23 @@ namespace OpenLoco::CompanyManager
     };
 
     // 0x004F93C4
-    static constexpr std::array<uint32_t, 13> k4F93C4 = {
-        0,
-        0,
-        0,
-        54,
-        53,
-        47,
-        54,
-        64,
-        54,
-        64,
-        64,
-        64,
-        59,
+    static constexpr std::array<UnkAiFlags, 13> k4F93C4 = {
+        UnkAiFlags::none,
+        UnkAiFlags::none,
+        UnkAiFlags::none,
+        UnkAiFlags::unk1 | UnkAiFlags::unk2 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
+        UnkAiFlags::unk0 | UnkAiFlags::unk2 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
+        UnkAiFlags::unk0 | UnkAiFlags::unk1 | UnkAiFlags::unk2 | UnkAiFlags::unk3 | UnkAiFlags::unk5,
+        UnkAiFlags::unk1 | UnkAiFlags::unk2 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
+        UnkAiFlags::unk6,
+        UnkAiFlags::unk1 | UnkAiFlags::unk2 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
+        UnkAiFlags::unk6,
+        UnkAiFlags::unk6,
+        UnkAiFlags::unk6,
+        UnkAiFlags::unk0 | UnkAiFlags::unk1 | UnkAiFlags::unk3 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
     };
 
-    static constexpr std::array<StringId, 11> kCompanyAiColourNames = {
+    static constexpr std::array<StringId, 13> kCompanyAiColourNames = {
         StringIds::company_ai_name_ebony,
         StringIds::company_ai_name_silver,
         StringIds::company_ai_name_ivory,
@@ -524,6 +524,8 @@ namespace OpenLoco::CompanyManager
         StringIds::company_ai_name_bronze,
         StringIds::company_ai_name_burgundy,
         StringIds::company_ai_name_scarlet,
+        StringIds::company_ai_name_string,
+        StringIds::company_ai_name_pop_string,
     };
 
     static constexpr std::array<StringId, 13> kCompanyAiTypeString = {
@@ -542,6 +544,7 @@ namespace OpenLoco::CompanyManager
         StringIds::company_ai_name_string_trucks,
     };
 
+    // 0x0042FE06
     static CompanyId createCompany(LoadedObjectId competitorId, bool isPlayer)
     {
         auto chosenCompanyId = []() {
@@ -618,7 +621,7 @@ namespace OpenLoco::CompanyManager
                 sfl::static_vector<uint8_t, 32> unks2;
                 for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->var_04 & (1U << j))
+                    if (competitorObj->var_08 & (1U << j))
                     {
                         unks2.push_back(j);
                     }
@@ -683,7 +686,7 @@ namespace OpenLoco::CompanyManager
                     {
                         continue;
                     }
-                    if (!(otherCompany.var_52 & (1U << 8)))
+                    if ((otherCompany.var_52 & UnkAiFlags::unk8) != UnkAiFlags::none)
                     {
                         continue;
                     }
@@ -694,7 +697,7 @@ namespace OpenLoco::CompanyManager
                     }
                 }
                 company->var_56 = enumValue(randTownId);
-                company->var_52 |= 1U << 8;
+                company->var_52 |= UnkAiFlags::unk8;
             }
 
             const auto stringId = kCompanyAiTypeString[randUnk2];

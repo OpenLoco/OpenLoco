@@ -1060,7 +1060,8 @@ namespace OpenLoco::StringIds
     constexpr StringId company_ai_name_bronze = 1336;
     constexpr StringId company_ai_name_burgundy = 1337;
     constexpr StringId company_ai_name_scarlet = 1338;
-
+    constexpr StringId company_ai_name_string = 1339;
+    constexpr StringId company_ai_name_pop_string = 1340;
     constexpr StringId company_ai_name_string_transport = 1341;
     constexpr StringId company_ai_name_string_express = 1342;
     constexpr StringId company_ai_name_string_lines = 1343;
