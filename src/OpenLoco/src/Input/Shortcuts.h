@@ -58,6 +58,7 @@ namespace OpenLoco::Input
         gameSpeedNormal,
         gameSpeedFastForward,
         gameSpeedExtraFastForward,
+        gameSpeedOneSecondPerYear,
         openDebugWindow,
     };
 

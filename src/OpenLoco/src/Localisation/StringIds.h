@@ -1994,6 +1994,7 @@ namespace OpenLoco::StringIds
     constexpr StringId riverbank_width = 2355;
     constexpr StringId meander_rate = 2356;
     constexpr StringId objSelectionFilterOpenLoco = 2357;
+    constexpr StringId shortcut_game_speed_one_second_per_year = 2358;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
