@@ -766,7 +766,7 @@ namespace OpenLoco::CompanyManager
         company->observationX = -1;
         company->observationY = -1;
         company->observationObject = 0xFFFFU;
-        company->var_85C4.x = 0;
+        company->observationTimeout = 0;
         company->ownerStatus = OwnerStatus();
         company->updateCounter = 0;
         company->currentRating = CorporateRating::platelayer;
