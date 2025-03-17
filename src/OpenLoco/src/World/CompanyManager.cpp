@@ -527,19 +527,19 @@ namespace OpenLoco::CompanyManager
     };
 
     static constexpr std::array<StringId, 13> kCompanyAiTypeString = {
-        company_ai_name_string_transport,
-        company_ai_name_string_express,
-        company_ai_name_string_lines,
-        company_ai_name_string_tracks,
-        company_ai_name_string_coaches,
-        company_ai_name_string_air,
-        company_ai_name_string_rail,
-        company_ai_name_string_carts,
-        company_ai_name_string_trains,
-        company_ai_name_string_haulage,
-        company_ai_name_string_shipping,
-        company_ai_name_string_freight,
-        company_ai_name_string_trucks,
+        StringIds::company_ai_name_string_transport,
+        StringIds::company_ai_name_string_express,
+        StringIds::company_ai_name_string_lines,
+        StringIds::company_ai_name_string_tracks,
+        StringIds::company_ai_name_string_coaches,
+        StringIds::company_ai_name_string_air,
+        StringIds::company_ai_name_string_rail,
+        StringIds::company_ai_name_string_carts,
+        StringIds::company_ai_name_string_trains,
+        StringIds::company_ai_name_string_haulage,
+        StringIds::company_ai_name_string_shipping,
+        StringIds::company_ai_name_string_freight,
+        StringIds::company_ai_name_string_trucks,
     };
 
     static CompanyId createCompany(LoadedObjectId competitorId, bool isPlayer)
@@ -576,7 +576,7 @@ namespace OpenLoco::CompanyManager
             {
                 const auto randVal = gPrng1().randNext();
 
-                auto primaryColour = ((randVal & 0xFFU) * enumValue(Colour::max)) / 256;
+                primaryColour = static_cast<Colour>(((randVal & 0xFFU) * enumValue(Colour::max)) / 256);
 
                 const auto colourMask = competingColourMask(chosenCompanyId);
                 if (colourMask & (1U << enumValue(primaryColour)))
@@ -605,28 +605,28 @@ namespace OpenLoco::CompanyManager
             {
                 randVal = gPrng1().randNext();
                 sfl::static_vector<uint8_t, 32> unks;
-                for (auto i = 0U; i < 32; ++i)
+                for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->var_04 & (1U << i))
+                    if (competitorObj->var_04 & (1U << j))
                     {
-                        unks.push_back(i);
+                        unks.push_back(j);
                     }
                 }
                 randUnk = unks[unks.size() * (randVal & 0xFFU) / 256];
                 randVal = std::rotr(randVal, 8);
 
                 sfl::static_vector<uint8_t, 32> unks2;
-                for (auto i = 0U; i < 32; ++i)
+                for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->var_04 & (1U << i))
+                    if (competitorObj->var_04 & (1U << j))
                     {
-                        unks2.push_back(i);
+                        unks2.push_back(j);
                     }
                 }
                 randUnk2 = unks2[unks2.size() * (randVal & 0xFFU) / 256];
                 randVal = std::rotr(randVal, 8);
 
-                auto primaryColour = kAiPrimaryColours[randUnk];
+                primaryColour = kAiPrimaryColours[randUnk];
                 if (primaryColour == Colour::max)
                 {
                     primaryColour = static_cast<Colour>((randVal & 0xFFU) * 31 / 256);
@@ -727,7 +727,56 @@ namespace OpenLoco::CompanyManager
                 return CompanyId::null;
             }
         }
-        // 0x0043012B
+        company->numExpenditureYears = 1;
+        for (auto i = 0U; i < ExpenditureType::Count; ++i)
+        {
+            company->expenditures[0][i] = 0;
+        }
+        company->var_4A4 = AiThinkState::unk0;
+        company->var_4A6 = 0;
+        company->var_85F6 = 0;
+        for (auto& thought : company->aiThoughts)
+        {
+            thought.type = AiThoughtType::null;
+        }
+        company->headquartersX = -1;
+        company->var_25BE = 0xFFU;
+        company->unlockedVehicles.reset();
+        company->availableVehicles = 0;
+        company->currentLoan = getInflationAdjustedStartingLoan();
+        company->cash = company->currentLoan;
+        VehicleManager::determineAvailableVehicles(*company);
+        company->cargoUnitsTotalDelivered = 0;
+        company->cargoUnitsTotalDistance = 0;
+        company->historySize = 1;
+        company->performanceIndex = 0;
+        company->performanceIndexHistory[0] = 0;
+        company->cargoUnitsDeliveredHistory[0] = 0;
+        std::fill(std::begin(company->transportTypeCount), std::end(company->transportTypeCount), 0);
+        std::fill(std::begin(company->activeEmotions), std::end(company->activeEmotions), 0);
+        const auto value = calculateCompanyValue(*company);
+        company->companyValueHistory[0] = value.companyValue;
+        company->vehicleProfit = value.vehicleProfit;
+        updateColours();
+        company->observationStatus = ObservationStatus::empty;
+        company->observationEntity = EntityId::null;
+        company->observationX = -1;
+        company->observationY = -1;
+        company->observationObject = 0xFFFFU;
+        company->var_85C4.x = 0;
+        company->ownerStatus = OwnerStatus();
+        company->updateCounter = 0;
+        company->currentRating = CorporateRating::platelayer;
+        company->challengeProgress = 0;
+        company->numMonthsInTheRed = 0;
+        company->jailStatus = 0;
+        std::fill(std::begin(company->cargoDelivered), std::end(company->cargoDelivered), 0);
+        for (auto& town : TownManager::towns())
+        {
+            town.companyRatings[enumValue(chosenCompanyId)] = 500;
+            town.companiesWithRating &= ~(1 << enumValue(chosenCompanyId));
+        }
+        return chosenCompanyId;
     }
 
     static void sub_4A6DA9()
@@ -1344,6 +1393,12 @@ namespace OpenLoco::CompanyManager
             ObjectType::competitor, company->competitorId }));
         ObjectManager::reloadAll();
         Ui::Dropdown::forceCloseCompanySelect();
+    }
+
+    // 0x0046E306
+    currency32_t getInflationAdjustedStartingLoan()
+    {
+        return Economy::getInflationAdjustedCost(getStartingLoanSize(), 0, 8) / 100 * 100;
     }
 }
 

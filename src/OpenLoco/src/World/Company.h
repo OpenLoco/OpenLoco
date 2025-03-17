@@ -273,4 +273,12 @@ namespace OpenLoco
     void companyEmotionEvent(CompanyId companyId, Emotion emotion);
     void companySetObservation(CompanyId id, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object);
     void updateYearly(Company& company);
+    struct ProfitAndValue
+    {
+        currency48_t vehicleProfit;
+        currency48_t companyValue;
+    };
+
+    // 0x00437D79
+    ProfitAndValue calculateCompanyValue(const Company& company);
 }
