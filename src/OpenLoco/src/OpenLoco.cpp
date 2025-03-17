@@ -411,7 +411,7 @@ namespace OpenLoco
                             break;
 
                         case GameSpeed::OneSecondPerYear:
-                            speed = 900; // Roughly one second per Julian year 
+                            speed = 900; // Roughly one second per Julian year
                             break;
 
                         default:
