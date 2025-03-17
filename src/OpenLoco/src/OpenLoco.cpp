@@ -395,14 +395,29 @@ namespace OpenLoco
                     }
                     uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
                     SceneManager::setSceneAge(std::min(0xFFFF, (int32_t)SceneManager::getSceneAge() + var_F253A0));
-                    if (SceneManager::getGameSpeed() != GameSpeed::Normal)
+
+                    auto speed = 1;
+                    switch (SceneManager::getGameSpeed())
                     {
-                        numUpdates *= 3;
-                        if (SceneManager::getGameSpeed() != GameSpeed::FastForward)
-                        {
-                            numUpdates *= 3;
-                        }
+                        case GameSpeed::Normal:
+                            break;
+
+                        case GameSpeed::FastForward:
+                            speed = 3;
+                            break;
+
+                        case GameSpeed::ExtraFastForward:
+                            speed = 9;
+                            break;
+
+                        case GameSpeed::OneSecondPerYear:
+                            speed = 900; // Roughly one second per Julian year 
+                            break;
+
+                        default:
+                            assert(false);
                     }
+                    numUpdates *= speed;
 
                     // Catch up to server (usually after we have just joined the game)
                     auto numTicksBehind = Network::getServerTick() - ScenarioManager::getScenarioTicks();

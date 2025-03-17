@@ -673,6 +673,11 @@ namespace OpenLoco::Input::Shortcuts
         GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::ExtraFastForward }, GameCommands::Flags::apply);
     }
 
+    static void gameSpeedOneSecondPerYear()
+    {
+        GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::OneSecondPerYear }, GameCommands::Flags::apply);
+    }
+
     static void openDebugWindow()
     {
         Windows::Debug::open();
@@ -733,6 +738,7 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::gameSpeedNormal,                 StringIds::shortcut_game_speed_normal,                  gameSpeedNormal,                "gameSpeedNormal",                  "");
         ShortcutManager::add(Shortcut::gameSpeedFastForward,            StringIds::shortcut_game_speed_fast_forward,            gameSpeedFastForward,           "gameSpeedFastForward",             "");
         ShortcutManager::add(Shortcut::gameSpeedExtraFastForward,       StringIds::shortcut_game_speed_extra_fast_forward,      gameSpeedExtraFastForward,      "gameSpeedExtraFastForward",        "");
+        ShortcutManager::add(Shortcut::gameSpeedOneSecondPerYear,       StringIds::shortcut_game_speed_one_second_per_year,     gameSpeedOneSecondPerYear,      "gameSpeedOneSecondPerYear",        "");
         ShortcutManager::add(Shortcut::openDebugWindow,                 StringIds::empty,                                       openDebugWindow,                "openDebugWindow",                  "F10");
         // clang-format on
     }
