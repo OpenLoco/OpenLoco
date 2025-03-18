@@ -219,8 +219,8 @@ namespace OpenLoco::Jukebox
         return true;
     }
 
-    // Disables music altogether.
-    bool stopMusic()
+    // When the player stops the music or turns off playing music from the music options.
+    bool disableMusic()
     {
         auto& cfg = Config::get().old;
 
