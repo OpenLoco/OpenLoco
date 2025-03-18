@@ -954,94 +954,62 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            sea_level = Common::widx::generate_now + 1,
+            sea_level_label = Common::widx::generate_now + 1,
+            sea_level,
             sea_level_down,
             sea_level_up,
 
+            num_riverbeds_label,
             num_riverbeds,
             num_riverbeds_down,
             num_riverbeds_up,
 
+            min_river_width_label,
             min_river_width,
             min_river_width_down,
             min_river_width_up,
 
+            max_river_width_label,
             max_river_width,
             max_river_width_down,
             max_river_width_up,
 
+            riverbank_width_label,
             riverbank_width,
             riverbank_width_down,
             riverbank_width_up,
 
+            meander_rate_label,
             meander_rate,
             meander_rate_down,
             meander_rate_up,
         };
 
         // clang-format off
-        const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) |
-            (1 << widx::num_riverbeds_down) | (1 << widx::num_riverbeds_up) |
-            (1 << widx::min_river_width_down) | (1 << widx::min_river_width_up) |
-            (1 << widx::max_river_width_down) | (1 << widx::max_river_width_up) |
-            (1 << widx::riverbank_width_down) | (1 << widx::riverbank_width_up) |
-            (1 << widx::meander_rate_down) | (1 << widx::meander_rate_up);
+        const uint64_t holdable_widgets = (1ULL << widx::sea_level_up) | (1ULL << widx::sea_level_down) |
+            (1ULL << widx::num_riverbeds_down) | (1ULL << widx::num_riverbeds_up) |
+            (1ULL << widx::min_river_width_down) | (1ULL << widx::min_river_width_up) |
+            (1ULL << widx::max_river_width_down) | (1ULL << widx::max_river_width_up) |
+            (1ULL << widx::riverbank_width_down) | (1ULL << widx::riverbank_width_up) |
+            (1ULL << widx::meander_rate_down) | (1ULL << widx::meander_rate_up);
         // clang-format on
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_water),
+            Widgets::Label({ 10, 52 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::sea_level),
             Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::sea_level_units),
+            Widgets::Label({ 10, 68 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_riverbeds),
             Widgets::stepperWidgets({ 256, 68 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
+            Widgets::Label({ 10, 84 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::minimum_river_width),
             Widgets::stepperWidgets({ 256, 84 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
+            Widgets::Label({ 10, 100 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::maximum_river_width),
             Widgets::stepperWidgets({ 256, 100 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
+            Widgets::Label({ 10, 116 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::riverbank_width),
             Widgets::stepperWidgets({ 256, 116 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
+            Widgets::Label({ 10, 132 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::meander_rate),
             Widgets::stepperWidgets({ 256, 132 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units)
 
         );
-
-        // 0x0043DF89
-        static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
-        {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            Common::draw(window, drawingCtx);
-
-            auto point = Point(window.x + 10, window.y + window.widgets[widx::sea_level].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::sea_level);
-
-            point.y = window.y + window.widgets[widx::num_riverbeds].top;
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::number_riverbeds);
-
-            point.y = window.y + window.widgets[widx::min_river_width].top;
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::minimum_river_width);
-
-            point.y = window.y + window.widgets[widx::max_river_width].top;
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::maximum_river_width);
-
-            point.y = window.y + window.widgets[widx::riverbank_width].top;
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::riverbank_width);
-
-            point.y = window.y + window.widgets[widx::meander_rate].top;
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::meander_rate);
-        }
 
         // 0x0043E173
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
@@ -1147,7 +1115,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .onMouseDown = onMouseDown,
             .onUpdate = Common::update,
             .prepareDraw = prepareDraw,
-            .draw = draw,
+            .draw = Common::draw,
         };
 
         static const WindowEventList& getEvents()
