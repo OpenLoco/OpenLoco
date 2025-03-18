@@ -28,6 +28,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/StepperWidget.h"
@@ -614,11 +615,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            topography_style = Common::widx::generate_now + 1,
+            topography_style_label = Common::widx::generate_now + 1,
+            topography_style,
             topography_style_btn,
+            min_land_height_label,
             min_land_height,
             min_land_height_down,
             min_land_height_up,
+            hill_density_label,
             hill_density,
             hill_density_down,
             hill_density_up,
@@ -630,39 +634,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(252, StringIds::title_landscape_generation_land),
+            Widgets::Label({ 10, 52 }, { 160, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::topography_style),
             Widgets::dropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
+            Widgets::Label({ 10, 68 }, { 250, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::min_land_height),
             Widgets::stepperWidgets({ 256, 68 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
+            Widgets::Label({ 10, 84 }, { 250, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::hill_density),
             Widgets::stepperWidgets({ 256, 84 }, { 100, 12 }, WindowColour::secondary, StringIds::hill_density_percent),
             Widgets::Checkbox({ 10, 100 }, { 346, 12 }, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
             Widgets::ScrollView({ 4, 116 }, { 358, 112 }, WindowColour::secondary, Scrollbars::vertical)
 
         );
-
-        // 0x0043DF89
-        static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
-        {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            Common::draw(window, drawingCtx);
-
-            auto point = Point(window.x + 10, window.y + window.widgets[widx::min_land_height].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::min_land_height);
-
-            point.y = window.y + window.widgets[widx::topography_style].top;
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::topography_style);
-
-            point.y = window.y + window.widgets[widx::hill_density].top;
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::hill_density);
-        }
 
         static constexpr StringId landDistributionLabelIds[] = {
             StringIds::land_distribution_everywhere,
@@ -959,7 +940,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .scrollMouseDown = scrollMouseDown,
             .tooltip = tooltip,
             .prepareDraw = prepareDraw,
-            .draw = draw,
+            .draw = Common::draw,
             .drawScroll = drawScroll,
         };
 
