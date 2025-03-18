@@ -22,7 +22,18 @@ namespace OpenLoco::Jukebox
         uint16_t endYear;
     };
 
-    std::vector<MusicId> makeSelectedPlaylist();
-    MusicId chooseNextMusicTrack(MusicId lastSong);
+    static constexpr MusicId kNoSong = 0xFF;
+
     const MusicInfo& getMusicInfo(MusicId track);
+    bool isMusicPlaying();
+    MusicId getRequestedTrack();
+    MusicId getCurrentTrack();
+    StringId getCurrentTrackTitleId();
+
+    std::vector<MusicId> makeSelectedPlaylist();
+    const MusicInfo& changeTrack();
+    bool changeTrackTo(MusicId toTrack);
+    bool skipCurrentTrack();
+    bool stopMusic();
+    void resetJukebox();
 }

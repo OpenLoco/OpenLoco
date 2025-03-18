@@ -11,6 +11,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Jukebox
 {
+    static MusicId currentTrack; // 0x0050D434
+    static MusicId previousTrack;    // 0x0050D435
+
     // 0x004FE910
     static constexpr MusicInfo kMusicInfo[] = {
         { PathId::music_chuggin_along, StringIds::music_chuggin_along, 1925, 1933 },
@@ -43,6 +46,41 @@ namespace OpenLoco::Jukebox
         { PathId::music_get_me_to_gladstone_bay, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
         { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 }
     };
+
+    const MusicInfo& getMusicInfo(MusicId track)
+    {
+        return kMusicInfo[track];
+    }
+
+    bool isMusicPlaying()
+    {
+        return (currentTrack != kNoSong && Config::get().old.musicPlaying);
+    }
+
+    MusicId getCurrentTrack()
+    {
+        return currentTrack;
+    }
+
+    StringId getCurrentTrackTitleId()
+    {
+        if (currentTrack == kNoSong)
+        {
+            return StringIds::music_none;
+        }
+        return kMusicInfo[currentTrack].titleId;
+    }
+
+    // If the player has manually requested a track, returns the MusicId of that track.
+    // Otherwise, returns kNoSong.
+    MusicId getRequestedTrack()
+    {
+        if (previousTrack == currentTrack)
+        {
+            return currentTrack;
+        }
+        return kNoSong;
+    }
 
     static std::vector<MusicId> makeAllMusicPlaylist()
     {
@@ -103,7 +141,7 @@ namespace OpenLoco::Jukebox
         throw Exception::RuntimeError("Invalid MusicPlaylistType");
     }
 
-    MusicId chooseNextMusicTrack(MusicId lastSong)
+    static MusicId chooseNextMusicTrack(MusicId lastSong)
     {
         auto playlist = makeSelectedPlaylist();
 
@@ -135,8 +173,86 @@ namespace OpenLoco::Jukebox
         return track;
     }
 
-    const MusicInfo& getMusicInfo(MusicId track)
+    // Changes currentTrack to the next music track if applicable, updates previousTrack,
+    // and returns its MusicInfo.
+    const MusicInfo& changeTrack()
     {
-        return kMusicInfo[track];
+        // If currentTrack == previousTrack, that is our signal that a track has been manually requested.
+        bool trackRequested = previousTrack != kNoSong && previousTrack == currentTrack;
+
+        // Choose a track to play, unless we have requested one track in particular.
+        if (currentTrack == kNoSong || !trackRequested)
+        {
+            previousTrack = currentTrack;
+            currentTrack = chooseNextMusicTrack(previousTrack);
+        }
+        else
+        {
+            // Make sure it doesn't think it is manually requested again for next time.
+            previousTrack = kNoSong;
+        }
+
+        // Return the information for this track so that Audio.cpp can get its PathId to play.
+        return kMusicInfo[currentTrack];
+    }
+
+    // The player manually selects a song that they want to be played immediately.
+    // Note: assumes music is already being played.
+    bool changeTrackTo(MusicId toTrack)
+    {
+        if (toTrack == currentTrack)
+        {
+            return false;
+        }
+
+        Audio::stopMusic();
+
+        currentTrack = toTrack;
+        previousTrack = toTrack; // Setting these to the same track is how Audio::playBackgroundMusic() detects that it has been requested manually
+
+        // Previously 0x0050D430 '_songProgress' would be set to 0 here, but this loco global was not used for anything anymore.
+
+        return true;
+    }
+
+    // Prematurely stop the current song so another can be played.
+    bool skipCurrentTrack()
+    {
+        if (Config::get().old.musicPlaying == 0)
+        {
+            return false;
+        }
+
+        // By stopping the music, the next time OpenLoco::tick() calls Audio::playBackgroundMusic(),
+        // it will detect that the channel is not playing anything and it will play the next music track.
+        Audio::stopMusic();
+
+        return true;
+    }
+
+    // Disables music altogether.
+    bool stopMusic()
+    {
+        auto& cfg = Config::get().old;
+
+        if (cfg.musicPlaying == 0)
+        {
+            return false;
+        }
+
+        cfg.musicPlaying = 0;
+        Config::write();
+
+        Audio::stopMusic();
+
+        currentTrack = kNoSong;
+
+        return true;
+    }
+
+    void resetJukebox()
+    {
+        currentTrack = kNoSong;
+        previousTrack = kNoSong;
     }
 }
