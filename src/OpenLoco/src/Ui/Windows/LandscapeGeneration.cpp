@@ -1128,27 +1128,35 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            number_of_forests = Common::widx::generate_now + 1,
+            number_of_forests_label = Common::widx::generate_now + 1,
+            number_of_forests,
             number_of_forests_down,
             number_of_forests_up,
+            minForestRadiusLabel,
             minForestRadius,
             min_forest_radius_down,
             min_forest_radius_up,
+            maxForestRadiusLabel,
             maxForestRadius,
             max_forest_radius_down,
             max_forest_radius_up,
+            minForestDensityLabel,
             minForestDensity,
             min_forest_density_down,
             min_forest_density_up,
+            maxForestDensityLabel,
             maxForestDensity,
             max_forest_density_down,
             max_forest_density_up,
+            number_random_trees_label,
             number_random_trees,
             number_random_trees_down,
             number_random_trees_up,
+            min_altitude_for_trees_label,
             min_altitude_for_trees,
             min_altitude_for_trees_down,
             min_altitude_for_trees_up,
+            max_altitude_for_trees_label,
             max_altitude_for_trees,
             max_altitude_for_trees_down,
             max_altitude_for_trees_up,
@@ -1158,72 +1166,24 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_forests),
+            Widgets::Label({ 10, 52 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_of_forests),
             Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::number_of_forests_value),
+            Widgets::Label({ 10, 67 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::min_forest_radius),
             Widgets::stepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::min_forest_radius_blocks),
+            Widgets::Label({ 10, 82 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_forest_radius),
             Widgets::stepperWidgets({ 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::max_forest_radius_blocks),
+            Widgets::Label({ 10, 97 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::min_forest_density),
             Widgets::stepperWidgets({ 256, 97 }, { 100, 12 }, WindowColour::secondary, StringIds::min_forest_density_percent),
+            Widgets::Label({ 10, 112 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_forest_density),
             Widgets::stepperWidgets({ 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::max_forest_density_percent),
+            Widgets::Label({ 10, 127 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_random_trees),
             Widgets::stepperWidgets({ 256, 127 }, { 100, 12 }, WindowColour::secondary, StringIds::number_random_trees_value),
+            Widgets::Label({ 10, 142 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::min_altitude_for_trees),
             Widgets::stepperWidgets({ 256, 142 }, { 100, 12 }, WindowColour::secondary, StringIds::min_altitude_for_trees_height),
+            Widgets::Label({ 10, 157 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_altitude_for_trees),
             Widgets::stepperWidgets({ 256, 157 }, { 100, 12 }, WindowColour::secondary, StringIds::max_altitude_for_trees_height)
 
         );
-
-        // 0x0043E53A
-        static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
-        {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            Common::draw(window, drawingCtx);
-
-            auto point = Point(window.x + 10, window.y + window.widgets[widx::number_of_forests].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::number_of_forests);
-
-            point = Point(window.x + 10, window.y + window.widgets[widx::minForestRadius].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::min_forest_radius);
-
-            point = Point(window.x + 10, window.y + window.widgets[widx::maxForestRadius].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::max_forest_radius);
-
-            point = Point(window.x + 10, window.y + window.widgets[widx::minForestDensity].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::min_forest_density);
-
-            point = Point(window.x + 10, window.y + window.widgets[widx::maxForestDensity].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::max_forest_density);
-
-            point = Point(window.x + 10, window.y + window.widgets[widx::number_random_trees].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::number_random_trees);
-
-            point = Point(window.x + 10, window.y + window.widgets[widx::min_altitude_for_trees].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::min_altitude_for_trees);
-
-            point = Point(window.x + 10, window.y + window.widgets[widx::max_altitude_for_trees].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::max_altitude_for_trees);
-        }
 
         // 0x0043E670
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
@@ -1407,7 +1367,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .onMouseDown = onMouseDown,
             .onUpdate = Common::update,
             .prepareDraw = prepareDraw,
-            .draw = draw,
+            .draw = Common::draw,
         };
 
         static const WindowEventList& getEvents()
