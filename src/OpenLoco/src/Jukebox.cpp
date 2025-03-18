@@ -71,17 +71,6 @@ namespace OpenLoco::Jukebox
         return kMusicInfo[currentTrack].titleId;
     }
 
-    // If the player has manually requested a track, returns the MusicId of that track.
-    // Otherwise, returns kNoSong.
-    MusicId getRequestedTrack()
-    {
-        if (previousTrack == currentTrack)
-        {
-            return currentTrack;
-        }
-        return kNoSong;
-    }
-
     static std::vector<MusicId> makeAllMusicPlaylist()
     {
         std::vector<MusicId> playlist(kNumMusicTracks);

@@ -26,7 +26,6 @@ namespace OpenLoco::Jukebox
 
     const MusicInfo& getMusicInfo(MusicId track);
     bool isMusicPlaying();
-    MusicId getRequestedTrack();
     MusicId getCurrentTrack();
     StringId getCurrentTrackTitleId();
 
