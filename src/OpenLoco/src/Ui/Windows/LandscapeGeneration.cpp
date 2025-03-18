@@ -1499,7 +1499,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            num_industries = Common::widx::generate_now + 1,
+            num_industries_label = Common::widx::generate_now + 1,
+            num_industries,
             num_industries_btn,
             check_allow_industries_close_down,
             check_allow_industries_start_up,
@@ -1509,25 +1510,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_industries),
+            Widgets::Label({ 10, 52 }, { 160, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_of_industries),
             Widgets::dropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
             Widgets::Checkbox({ 10, 68 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
             Widgets::Checkbox({ 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game)
 
         );
-
-        // 0x0043EB9D
-        static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
-        {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            Common::draw(window, drawingCtx);
-
-            auto point = Point(window.x + 10, window.y + window.widgets[widx::num_industries].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::number_of_industries);
-        }
 
         static constexpr StringId numIndustriesLabels[] = {
             StringIds::industry_size_low,
@@ -1601,7 +1589,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .onDropdown = onDropdown,
             .onUpdate = Common::update,
             .prepareDraw = prepareDraw,
-            .draw = draw,
+            .draw = Common::draw,
         };
 
         static const WindowEventList& getEvents()
