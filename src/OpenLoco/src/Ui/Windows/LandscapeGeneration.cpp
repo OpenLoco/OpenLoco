@@ -1380,9 +1380,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            number_of_towns = Common::widx::generate_now + 1,
+            number_of_towns_label = Common::widx::generate_now + 1,
+            number_of_towns,
             number_of_towns_down,
             number_of_towns_up,
+            max_town_size_label,
             max_town_size,
             max_town_size_btn,
         };
@@ -1391,30 +1393,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_towns),
+            Widgets::Label({ 10, 52 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_of_towns),
             Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::number_of_towns_value),
+            Widgets::Label({ 10, 67 }, { 160, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_town_size),
             Widgets::dropdownWidgets({ 176, 67 }, { 180, 12 }, WindowColour::secondary)
 
         );
-
-        // 0x0043E9A3
-        static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
-        {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            Common::draw(window, drawingCtx);
-
-            auto point = Point(window.x + 10, window.y + window.widgets[widx::number_of_towns].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::number_of_towns);
-
-            point = Point(window.x + 10, window.y + window.widgets[widx::max_town_size].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::max_town_size);
-        }
 
         static constexpr StringId townSizeLabels[] = {
             StringIds::town_size_1,
@@ -1502,7 +1486,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .onDropdown = onDropdown,
             .onUpdate = Common::update,
             .prepareDraw = prepareDraw,
-            .draw = draw,
+            .draw = Common::draw,
         };
 
         static const WindowEventList& getEvents()
