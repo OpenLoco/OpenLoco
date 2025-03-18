@@ -1,9 +1,9 @@
 25.02+ (???)
 ------------------------------------------------------------------------
 - Change: [#2457] Right mouse dragging in ScrollViews now respects "Invert right mouse dragging" option.
+- Fix: [#2703, #2704, #3033] Set currently playing track correctly after clicking "Next music track" button and after unchecking "Play Music".
 - Fix: [#2972] More vehicle-related messages not using the correct vehicle name string.
 - Fix: [#2984] Areas of forbid trams checkboxes covering forbidding trucks checkboxes.
-- Fix: [#2703, #2704, #3033] Set currently playing track correctly after clicking "Next music track" button and after unchecking "Play Music."
 
 25.02 (2025-02-28)
 ------------------------------------------------------------------------
