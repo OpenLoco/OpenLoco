@@ -322,6 +322,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             auto& options = Scenario::getOptions();
 
+            // Start year info
             {
                 auto args = FormatArguments(self.widgets[widx::start_year].textArgs);
                 args.push<uint16_t>(options.scenarioStartYear);
@@ -329,95 +330,74 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             self.widgets[widx::heightMapBox].text = generatorIds[enumValue(options.generator)];
 
-            switch (options.generator)
+            bool isOriginal = options.generator == Scenario::LandGeneratorType::Original;
+            bool isSimplex = options.generator == Scenario::LandGeneratorType::Simplex;
+            bool isPngFile = options.generator == Scenario::LandGeneratorType::PngHeightMap;
+
+            // Hide widgets depending on active generator
+            self.widgets[widx::hillObjectLabel].hidden = !isOriginal;
+            self.widgets[widx::change_heightmap_btn].hidden = !isOriginal;
+
+            self.widgets[widx::terrainSmoothingLabel].hidden = !isSimplex;
+            self.widgets[widx::terrainSmoothingNum].hidden = !isSimplex;
+            self.widgets[widx::terrainSmoothingNumUp].hidden = !isSimplex;
+            self.widgets[widx::terrainSmoothingNumDown].hidden = !isSimplex;
+
+            self.widgets[widx::heightmapFileLabel].hidden = !isPngFile;
+            self.widgets[widx::browseHeightmapFile].hidden = !isPngFile;
+
+            if (isOriginal)
             {
-                case Scenario::LandGeneratorType::Original:
-                {
-                    // Prepare object name
-                    auto& widget = self.widgets[widx::hillObjectLabel];
-                    FormatArguments args{ widget.textArgs };
-                    auto* obj = ObjectManager::get<HillShapesObject>();
-                    args.push(obj->name);
+                // Prepare object name
+                auto& widget = self.widgets[widx::hillObjectLabel];
+                FormatArguments args{ widget.textArgs };
+                auto* obj = ObjectManager::get<HillShapesObject>();
+                args.push(obj->name);
 
-                    self.disabledWidgets &= ~(1 << widx::change_heightmap_btn);
-                    self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                    self.disabledWidgets |= (1 << widx::browseHeightmapFile);
-
-                    self.widgets[widx::hillObjectLabel].hidden = false;
-                    self.widgets[widx::terrainSmoothingLabel].hidden = true;
-                    self.widgets[widx::heightmapFileLabel].hidden = true;
-
-                    self.widgets[widx::change_heightmap_btn].hidden = false;
-                    self.widgets[widx::terrainSmoothingNum].hidden = true;
-                    self.widgets[widx::terrainSmoothingNumUp].hidden = true;
-                    self.widgets[widx::terrainSmoothingNumDown].hidden = true;
-                    self.widgets[widx::browseHeightmapFile].hidden = true;
-                    break;
-                }
-
-                case Scenario::LandGeneratorType::Simplex:
-                {
-                    // Prepare value
-                    auto& widget = self.widgets[widx::terrainSmoothingNum];
-                    FormatArguments args{ widget.textArgs };
-                    args.push<uint16_t>(options.numTerrainSmoothingPasses);
-
-                    self.disabledWidgets |= (1 << widx::change_heightmap_btn);
-                    self.disabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                    self.disabledWidgets |= (1 << widx::browseHeightmapFile);
-
-                    self.widgets[widx::hillObjectLabel].hidden = true;
-                    self.widgets[widx::terrainSmoothingLabel].hidden = false;
-                    self.widgets[widx::heightmapFileLabel].hidden = true;
-
-                    self.widgets[widx::change_heightmap_btn].hidden = true;
-                    self.widgets[widx::terrainSmoothingNum].hidden = false;
-                    self.widgets[widx::terrainSmoothingNumUp].hidden = false;
-                    self.widgets[widx::terrainSmoothingNumDown].hidden = false;
-                    self.widgets[widx::browseHeightmapFile].hidden = true;
-                    break;
-                }
-
-                case Scenario::LandGeneratorType::PngHeightMap:
-                {
-                    // Prepare filename label
-                    auto path = World::MapGenerator::getPngHeightmapPath();
-                    auto filename = path.filename().make_preferred().u8string();
-                    auto& widget = self.widgets[widx::heightmapFileLabel];
-                    FormatArguments args{ widget.textArgs };
-                    if (!filename.empty())
-                    {
-                        _pngFilename = Localisation::convertUnicodeToLoco(filename);
-                        args.push(_pngFilename.c_str());
-                    }
-                    else
-                    {
-                        args.push(StringManager::getString(StringIds::noneSelected));
-                    }
-
-                    self.disabledWidgets |= (1 << widx::change_heightmap_btn);
-                    self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                    self.disabledWidgets &= ~(1 << widx::browseHeightmapFile);
-
-                    self.widgets[widx::hillObjectLabel].hidden = true;
-                    self.widgets[widx::terrainSmoothingLabel].hidden = true;
-                    self.widgets[widx::heightmapFileLabel].hidden = false;
-
-                    self.widgets[widx::change_heightmap_btn].hidden = true;
-                    self.widgets[widx::terrainSmoothingNum].hidden = true;
-                    self.widgets[widx::terrainSmoothingNumUp].hidden = true;
-                    self.widgets[widx::terrainSmoothingNumDown].hidden = true;
-                    self.widgets[widx::browseHeightmapFile].hidden = false;
-                    break;
-                }
+                self.disabledWidgets &= ~(1 << widx::change_heightmap_btn);
+                self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
+                self.disabledWidgets |= (1 << widx::browseHeightmapFile);
             }
 
-            if (options.generator == Scenario::LandGeneratorType::PngHeightMap)
+            else if (isSimplex)
             {
+                // Prepare value
+                auto& widget = self.widgets[widx::terrainSmoothingNum];
+                FormatArguments args{ widget.textArgs };
+                args.push<uint16_t>(options.numTerrainSmoothingPasses);
+
+                self.disabledWidgets |= (1 << widx::change_heightmap_btn);
+                self.disabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
+                self.disabledWidgets |= (1 << widx::browseHeightmapFile);
+            }
+
+            else if (isPngFile)
+            {
+                // Prepare filename label
+                auto path = World::MapGenerator::getPngHeightmapPath();
+                auto filename = path.filename().make_preferred().u8string();
+                auto& widget = self.widgets[widx::heightmapFileLabel];
+                FormatArguments args{ widget.textArgs };
+                if (!filename.empty())
+                {
+                    _pngFilename = Localisation::convertUnicodeToLoco(filename);
+                    args.push(_pngFilename.c_str());
+                }
+                else
+                {
+                    args.push(StringManager::getString(StringIds::noneSelected));
+                }
+
+                self.disabledWidgets |= (1 << widx::change_heightmap_btn);
+                self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
+                self.disabledWidgets &= ~(1 << widx::browseHeightmapFile);
+
                 self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
                 self.disabledWidgets |= (1 << widx::generate_when_game_starts);
             }
-            else if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
+
+            // Enable/disable the 'generate when game starts' checkbox
+            if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
             {
                 self.activatedWidgets |= (1 << widx::generate_when_game_starts);
                 self.disabledWidgets &= ~(1 << widx::generate_when_game_starts);
