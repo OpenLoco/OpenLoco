@@ -496,23 +496,23 @@ namespace OpenLoco::CompanyManager
     };
 
     // 0x004F93C4
-    static constexpr std::array<UnkAiFlags, 13> k4F93C4 = {
-        UnkAiFlags::none,
-        UnkAiFlags::none,
-        UnkAiFlags::none,
-        UnkAiFlags::unk1 | UnkAiFlags::unk2 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
-        UnkAiFlags::unk0 | UnkAiFlags::unk2 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
-        UnkAiFlags::unk0 | UnkAiFlags::unk1 | UnkAiFlags::unk2 | UnkAiFlags::unk3 | UnkAiFlags::unk5,
-        UnkAiFlags::unk1 | UnkAiFlags::unk2 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
-        UnkAiFlags::unk6,
-        UnkAiFlags::unk1 | UnkAiFlags::unk2 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
-        UnkAiFlags::unk6,
-        UnkAiFlags::unk6,
-        UnkAiFlags::unk6,
-        UnkAiFlags::unk0 | UnkAiFlags::unk1 | UnkAiFlags::unk3 | UnkAiFlags::unk4 | UnkAiFlags::unk5,
+    static constexpr std::array<AiPlaystyleFlags, 13> kCompanyAiPlaystyleFlags = {
+        AiPlaystyleFlags::none,
+        AiPlaystyleFlags::none,
+        AiPlaystyleFlags::none,
+        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk3 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk6,
+        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk6,
+        AiPlaystyleFlags::unk6,
+        AiPlaystyleFlags::unk6,
+        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk3 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
     };
 
-    static constexpr std::array<StringId, 13> kCompanyAiColourNames = {
+    static constexpr std::array<StringId, 13> kCompanyAiNamePrefixes = {
         StringIds::company_ai_name_ebony,
         StringIds::company_ai_name_silver,
         StringIds::company_ai_name_ivory,
@@ -528,7 +528,7 @@ namespace OpenLoco::CompanyManager
         StringIds::company_ai_name_pop_string,
     };
 
-    static constexpr std::array<StringId, 13> kCompanyAiTypeString = {
+    static constexpr std::array<StringId, 13> kCompanyAiPlaystyleString = {
         StringIds::company_ai_name_string_transport,
         StringIds::company_ai_name_string_express,
         StringIds::company_ai_name_string_lines,
@@ -600,36 +600,36 @@ namespace OpenLoco::CompanyManager
         {
             company->ownerName = competitorObj->name;
             uint32_t randVal = 0;
-            uint8_t randUnk = 0;
-            uint8_t randUnk2 = 0;
+            uint8_t companyNamePrefix = 0; // Usually a colour but can be a town
+            uint8_t companyPlaystyle = 0;
             Colour primaryColour = Colour::max;
             bool colourOk = false;
             for (auto i = 0U; i < 250; ++i)
             {
                 randVal = gPrng1().randNext();
-                sfl::static_vector<uint8_t, 32> unks;
+                sfl::static_vector<uint8_t, 32> availableNamePrefixes;
                 for (auto j = 0U; j < 32; ++j)
                 {
                     if (competitorObj->var_04 & (1U << j))
                     {
-                        unks.push_back(j);
+                        availableNamePrefixes.push_back(j);
                     }
                 }
-                randUnk = unks[unks.size() * (randVal & 0xFFU) / 256];
+                companyNamePrefix = availableNamePrefixes[availableNamePrefixes.size() * (randVal & 0xFFU) / 256];
                 randVal = std::rotr(randVal, 8);
 
-                sfl::static_vector<uint8_t, 32> unks2;
+                sfl::static_vector<uint8_t, 32> availablePlaystyles;
                 for (auto j = 0U; j < 32; ++j)
                 {
                     if (competitorObj->var_08 & (1U << j))
                     {
-                        unks2.push_back(j);
+                        availablePlaystyles.push_back(j);
                     }
                 }
-                randUnk2 = unks2[unks2.size() * (randVal & 0xFFU) / 256];
+                companyPlaystyle = availablePlaystyles[availablePlaystyles.size() * (randVal & 0xFFU) / 256];
                 randVal = std::rotr(randVal, 8);
 
-                primaryColour = kAiPrimaryColours[randUnk];
+                primaryColour = kAiPrimaryColours[companyNamePrefix];
                 if (primaryColour == Colour::max)
                 {
                     primaryColour = static_cast<Colour>((randVal & 0xFFU) * 31 / 256);
@@ -656,10 +656,10 @@ namespace OpenLoco::CompanyManager
             std::fill(std::begin(company->vehicleColours), std::end(company->vehicleColours), colourScheme);
 
             company->customVehicleColoursSet = 0;
-            company->var_52 = k4F93C4[randUnk2];
-            company->var_56 = 0xFFU;
+            company->aiPlaystyleFlags = kCompanyAiPlaystyleFlags[companyPlaystyle];
+            company->aiPlaystyleTownId = 0xFFU;
 
-            if (randUnk == 12)
+            if (companyNamePrefix == 12)
             {
                 const auto numTowns = TownManager::towns().size();
                 if (numTowns == 0)
@@ -686,25 +686,25 @@ namespace OpenLoco::CompanyManager
                     {
                         continue;
                     }
-                    if ((otherCompany.var_52 & UnkAiFlags::unk8) != UnkAiFlags::none)
+                    if ((otherCompany.aiPlaystyleFlags & AiPlaystyleFlags::townIdSet) != AiPlaystyleFlags::none)
                     {
                         continue;
                     }
-                    if (static_cast<TownId>(otherCompany.var_56) == randTownId)
+                    if (static_cast<TownId>(otherCompany.aiPlaystyleTownId) == randTownId)
                     {
                         company->name = StringIds::empty;
                         return CompanyId::null;
                     }
                 }
-                company->var_56 = enumValue(randTownId);
-                company->var_52 |= UnkAiFlags::unk8;
+                company->aiPlaystyleTownId = enumValue(randTownId);
+                company->aiPlaystyleFlags |= AiPlaystyleFlags::townIdSet;
             }
 
-            const auto stringId = kCompanyAiTypeString[randUnk2];
-            auto args = FormatArguments::common(kCompanyAiColourNames[randUnk], competitorObj->lastName);
-            if (company->var_56 != 0xFFU)
+            const auto stringId = kCompanyAiPlaystyleString[companyPlaystyle];
+            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->lastName);
+            if (company->aiPlaystyleTownId != 0xFFU)
             {
-                args.push(TownManager::get(static_cast<TownId>(company->var_56))->name);
+                args.push(TownManager::get(static_cast<TownId>(company->aiPlaystyleTownId))->name);
             }
 
             char buffer[256]{};

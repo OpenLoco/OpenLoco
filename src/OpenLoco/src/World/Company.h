@@ -31,20 +31,20 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(CompanyFlags);
 
-    enum class UnkAiFlags : uint32_t
+    enum class AiPlaystyleFlags : uint32_t
     {
         none = 0U,
-        unk0 = (1U << 0), // 0x01
-        unk1 = (1U << 1), // 0x02
-        unk2 = (1U << 2), // 0x04
-        unk3 = (1U << 3), // 0x08
-        unk4 = (1U << 4), // 0x10
-        unk5 = (1U << 5), // 0x20
-        unk6 = (1U << 6), // 0x40
-        unk7 = (1U << 7), // 0x80
-        unk8 = (1U << 8), // 0x100
+        unk0 = (1U << 0),      // 0x01
+        unk1 = (1U << 1),      // 0x02
+        unk2 = (1U << 2),      // 0x04
+        unk3 = (1U << 3),      // 0x08
+        unk4 = (1U << 4),      // 0x10
+        unk5 = (1U << 5),      // 0x20
+        unk6 = (1U << 6),      // 0x40
+        unk7 = (1U << 7),      // 0x80
+        townIdSet = (1U << 8), // 0x100
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(UnkAiFlags);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(AiPlaystyleFlags);
 
     enum class CorporateRating : uint8_t
     {
@@ -163,8 +163,8 @@ namespace OpenLoco
         uint32_t customVehicleColoursSet;                                               // 0x30
         BitSet<224> unlockedVehicles;                                                   // 0x34
         uint16_t availableVehicles;                                                     // 0x50
-        UnkAiFlags var_52;                                                              // 0x52
-        uint8_t var_56;                                                                 // 0x56
+        AiPlaystyleFlags aiPlaystyleFlags;                                              // 0x52
+        uint8_t aiPlaystyleTownId;                                                      // 0x56
         uint8_t numExpenditureYears;                                                    // 0x57
         currency32_t expenditures[kExpenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
         uint32_t startedDate;                                                           // 0x0498
