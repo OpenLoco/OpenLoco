@@ -11,8 +11,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Jukebox
 {
-    static MusicId currentTrack; // 0x0050D434
-    static MusicId previousTrack;    // 0x0050D435
+    static MusicId currentTrack;  // 0x0050D434
+    static MusicId previousTrack; // 0x0050D435
 
     // 0x004FE910
     static constexpr MusicInfo kMusicInfo[] = {
