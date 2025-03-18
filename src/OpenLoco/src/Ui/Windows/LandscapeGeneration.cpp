@@ -253,9 +253,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         enum widx
         {
             groupGeneral = Common::widx::generate_now + 1,
+            start_year_label,
             start_year,
             start_year_down,
             start_year_up,
+            heightMapBoxLabel,
             heightMapBox,
             heightMapDropdown,
 
@@ -282,7 +284,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             // General options
             Widgets::GroupBox({ 4, 50 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGeneral),
+            Widgets::Label({ 10, 65 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::start_year),
             Widgets::stepperWidgets({ 256, 65 }, { 100, 12 }, WindowColour::secondary, StringIds::start_year_value),
+            Widgets::Label({ 10, 81 }, { 160, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::height_map_source),
             Widgets::dropdownWidgets({ 176, 81 }, { 180, 12 }, WindowColour::secondary),
 
             // Generator options
@@ -302,18 +306,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, drawingCtx);
-
-            auto point = Point(window.x + 10, window.y + window.widgets[widx::start_year].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::start_year);
-
-            point = Point(window.x + 10, window.y + window.widgets[widx::heightMapBox].top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::height_map_source);
 
             auto& options = Scenario::getOptions();
             switch (options.generator)
