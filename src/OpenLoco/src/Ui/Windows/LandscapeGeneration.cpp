@@ -262,12 +262,15 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             heightMapDropdown,
 
             groupGenerator,
+            hillObjectLabel,
             change_heightmap_btn,
+            terrainSmoothingLabel,
             terrainSmoothingNum,
             terrainSmoothingNumDown,
             terrainSmoothingNumUp,
             generate_when_game_starts,
 
+            heightmapFileLabel,
             browseHeightmapFile,
         };
 
@@ -291,81 +294,26 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             // Generator options
             Widgets::GroupBox({ 4, 105 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
+            Widgets::Label({ 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsCurrentHillObject),
             Widgets::Button({ 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
-            Widgets::stepperWidgets({ 256, 120 }, { 100, 12 }, WindowColour::secondary),
+            Widgets::Label({ 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsSmoothingPasses),
+            Widgets::stepperWidgets({ 256, 120 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
             Widgets::Checkbox({ 10, 136 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
             // PNG browser
+            Widgets::Label({ 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currentHeightmapFile),
             Widgets::Button({ 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::button_browse)
 
         );
-
-        // 0x0043DC30
-        static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
-        {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            Common::draw(window, drawingCtx);
-
-            auto& options = Scenario::getOptions();
-            switch (options.generator)
-            {
-                case Scenario::LandGeneratorType::Original:
-                {
-                    auto* obj = ObjectManager::get<HillShapesObject>();
-                    FormatArguments args{};
-                    args.push(obj->name);
-
-                    auto pos = Point(window.x + 10, window.y + window.widgets[widx::change_heightmap_btn].top);
-                    tr.drawStringLeft(pos, Colour::black, StringIds::landscapeOptionsCurrentHillObject, args);
-                    break;
-                }
-
-                case Scenario::LandGeneratorType::Simplex:
-                {
-                    // Draw label
-                    auto& widget = window.widgets[widx::terrainSmoothingNum];
-                    auto pos = Point(window.x + 10, window.y + widget.top);
-                    tr.drawStringLeft(pos, Colour::black, StringIds::landscapeOptionsSmoothingPasses);
-
-                    // Prepare value
-                    FormatArguments args{};
-                    args.push(StringIds::uint16_raw);
-                    args.push<uint16_t>(options.numTerrainSmoothingPasses);
-
-                    // Draw value
-                    pos = Point(window.x + widget.left + 1, window.y + widget.top);
-                    tr.drawStringLeft(pos, Colour::black, StringIds::black_stringid, args);
-                    break;
-                }
-
-                case Scenario::LandGeneratorType::PngHeightMap:
-                {
-                    FormatArguments args{};
-                    auto path = World::MapGenerator::getPngHeightmapPath();
-                    auto filename = path.filename().make_preferred().u8string();
-                    if (!filename.empty())
-                    {
-                        filename = Localisation::convertUnicodeToLoco(filename);
-                        args.push(filename.c_str());
-                    }
-                    else
-                    {
-                        args.push(StringManager::getString(StringIds::noneSelected));
-                    }
-
-                    auto pos = Point(window.x + 10, window.y + window.widgets[widx::browseHeightmapFile].top);
-                    tr.drawStringLeft(pos, Colour::black, StringIds::currentHeightmapFile, args);
-                    break;
-                }
-            }
-        }
 
         static constexpr StringId generatorIds[] = {
             StringIds::generator_original,
             StringIds::generator_simplex,
             StringIds::generator_png_heightmap,
         };
+
+        // TODO: static memory for state is a bit hacky
+        static std::string _pngFilename{};
 
         // 0x0043DB76
         static void prepareDraw(Window& self)
@@ -374,8 +322,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             auto& options = Scenario::getOptions();
 
-            auto args = FormatArguments(self.widgets[widx::start_year].textArgs);
-            args.push<uint16_t>(options.scenarioStartYear);
+            {
+                auto args = FormatArguments(self.widgets[widx::start_year].textArgs);
+                args.push<uint16_t>(options.scenarioStartYear);
+            }
 
             self.widgets[widx::heightMapBox].text = generatorIds[enumValue(options.generator)];
 
@@ -383,9 +333,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 case Scenario::LandGeneratorType::Original:
                 {
+                    // Prepare object name
+                    auto& widget = self.widgets[widx::hillObjectLabel];
+                    FormatArguments args{ widget.textArgs };
+                    auto* obj = ObjectManager::get<HillShapesObject>();
+                    args.push(obj->name);
+
                     self.disabledWidgets &= ~(1 << widx::change_heightmap_btn);
                     self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
                     self.disabledWidgets |= (1 << widx::browseHeightmapFile);
+
+                    self.widgets[widx::hillObjectLabel].hidden = false;
+                    self.widgets[widx::terrainSmoothingLabel].hidden = true;
+                    self.widgets[widx::heightmapFileLabel].hidden = true;
 
                     self.widgets[widx::change_heightmap_btn].hidden = false;
                     self.widgets[widx::terrainSmoothingNum].hidden = true;
@@ -397,9 +357,18 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case Scenario::LandGeneratorType::Simplex:
                 {
+                    // Prepare value
+                    auto& widget = self.widgets[widx::terrainSmoothingNum];
+                    FormatArguments args{ widget.textArgs };
+                    args.push<uint16_t>(options.numTerrainSmoothingPasses);
+
                     self.disabledWidgets |= (1 << widx::change_heightmap_btn);
                     self.disabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
                     self.disabledWidgets |= (1 << widx::browseHeightmapFile);
+
+                    self.widgets[widx::hillObjectLabel].hidden = true;
+                    self.widgets[widx::terrainSmoothingLabel].hidden = false;
+                    self.widgets[widx::heightmapFileLabel].hidden = true;
 
                     self.widgets[widx::change_heightmap_btn].hidden = true;
                     self.widgets[widx::terrainSmoothingNum].hidden = false;
@@ -411,9 +380,28 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case Scenario::LandGeneratorType::PngHeightMap:
                 {
+                    // Prepare filename label
+                    auto path = World::MapGenerator::getPngHeightmapPath();
+                    auto filename = path.filename().make_preferred().u8string();
+                    auto& widget = self.widgets[widx::heightmapFileLabel];
+                    FormatArguments args{ widget.textArgs };
+                    if (!filename.empty())
+                    {
+                        _pngFilename = Localisation::convertUnicodeToLoco(filename);
+                        args.push(_pngFilename.c_str());
+                    }
+                    else
+                    {
+                        args.push(StringManager::getString(StringIds::noneSelected));
+                    }
+
                     self.disabledWidgets |= (1 << widx::change_heightmap_btn);
                     self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
                     self.disabledWidgets &= ~(1 << widx::browseHeightmapFile);
+
+                    self.widgets[widx::hillObjectLabel].hidden = true;
+                    self.widgets[widx::terrainSmoothingLabel].hidden = true;
+                    self.widgets[widx::heightmapFileLabel].hidden = false;
 
                     self.widgets[widx::change_heightmap_btn].hidden = true;
                     self.widgets[widx::terrainSmoothingNum].hidden = true;
@@ -549,7 +537,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .onDropdown = onDropdown,
             .onUpdate = Common::update,
             .prepareDraw = prepareDraw,
-            .draw = draw,
+            .draw = Common::draw,
         };
 
         static const WindowEventList& getEvents()
