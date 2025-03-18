@@ -219,7 +219,7 @@ namespace OpenLoco::Jukebox
         return true;
     }
 
-    // When the player stops the music or turns off playing music from the music options.
+    // When the player stops the music from the music options, or disabled playing music from the top toolbar.
     bool disableMusic()
     {
         auto& cfg = Config::get().old;
@@ -235,6 +235,21 @@ namespace OpenLoco::Jukebox
         Audio::stopMusic();
 
         currentTrack = kNoSong;
+
+        return true;
+    }
+
+    bool enableMusic()
+    {
+        auto& cfg = Config::get().old;
+
+        if (cfg.musicPlaying != 0)
+        {
+            return false;
+        }
+
+        cfg.musicPlaying = 1;
+        Config::write();
 
         return true;
     }

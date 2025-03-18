@@ -1207,7 +1207,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0778
         static void stopMusic(Window* w)
         {
-            if (Jukebox::stopMusic())
+            if (Jukebox::disableMusic())
             {
                 w->invalidate();
             }
@@ -1216,17 +1216,10 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C07A4
         static void playMusic(Window* w)
         {
-            auto& cfg = Config::get().old;
-
-            if (cfg.musicPlaying != 0)
+            if (Jukebox::enableMusic())
             {
-                return;
+                w->invalidate();
             }
-
-            cfg.musicPlaying = 1;
-            Config::write();
-
-            w->invalidate();
         }
 
         // 0x004C07C4

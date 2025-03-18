@@ -33,6 +33,7 @@ namespace OpenLoco::Jukebox
     const MusicInfo& changeTrack();
     bool changeTrackTo(MusicId toTrack);
     bool skipCurrentTrack();
-    bool stopMusic();
+    bool disableMusic();
+    bool enableMusic();
     void resetJukebox();
 }
