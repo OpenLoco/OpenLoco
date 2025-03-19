@@ -222,7 +222,8 @@ namespace OpenLoco
         }
 
         // Load unk Animation Related Structure
-        var_38 = reinterpret_cast<const IndustryObjectUnk38*>(remainingData.data());
+        // var_38 = reinterpret_cast<const IndustryObjectUnk38*>(remainingData.data());
+        var_38_Offset = remainingData.data() - data.data();
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
             remainingData = remainingData.subspan(sizeof(IndustryObjectUnk38));
@@ -373,7 +374,7 @@ namespace OpenLoco
         buildingPartHeightsOffset = 0;
         buildingPartAnimations = nullptr;
         std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
-        var_38 = nullptr;
+        var_38_Offset = 0;
         std::fill(std::begin(buildingVariationPartOffsets), std::end(buildingVariationPartOffsets), 0);
         buildings = nullptr;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
@@ -413,7 +414,8 @@ namespace OpenLoco
 
     std::span<const IndustryObjectUnk38> OpenLoco::IndustryObject::getUnk38() const
     {
-        const auto* unkPointer = var_38;
+        const auto* base = reinterpret_cast<const std::uint8_t*>(this);
+        const auto* unkPointer = reinterpret_cast<const IndustryObjectUnk38*>(base + var_38_Offset);
         auto* end = unkPointer;
         while (end->var_00 != 0xFF)
         {
