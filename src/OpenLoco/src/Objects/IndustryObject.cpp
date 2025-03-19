@@ -210,7 +210,6 @@ namespace OpenLoco
         remainingData = remainingData.subspan(numBuildingParts * sizeof(uint8_t));
 
         // Load Part Animations
-        //buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
         buildingPartAnimationsOffset = remainingData.data() - data.data();
         remainingData = remainingData.subspan(numBuildingParts * sizeof(BuildingPartAnimation));
 
@@ -224,7 +223,6 @@ namespace OpenLoco
         }
 
         // Load unk Animation Related Structure
-        // var_38 = reinterpret_cast<const IndustryObjectUnk38*>(remainingData.data());
         var_38_Offset = remainingData.data() - data.data();
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
@@ -245,7 +243,6 @@ namespace OpenLoco
         // LOAD BUILDING PARTS End
 
         // Load unk?
-        //buildings = reinterpret_cast<const uint8_t*>(remainingData.data());
         buildingsOffset = remainingData.data() - data.data();
         remainingData = remainingData.subspan(maxNumBuildings * sizeof(uint8_t));
 
