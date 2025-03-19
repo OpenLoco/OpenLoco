@@ -165,11 +165,12 @@ namespace OpenLoco::GameCommands
 
         // Workout clearance height of building (including scaffolding if required)
         const auto buildingParts = indObj->getBuildingParts(buildingType);
+        const auto partHeights = indObj->getBuildingPartHeights();
         // 0x00E0C3BC (note this is bigZ and does not include the base height)
         auto clearHeight = 0;
         for (auto part : buildingParts)
         {
-            clearHeight += indObj->buildingPartHeights[part];
+            clearHeight += partHeights[part];
         }
         if (!buildImmediate && indObj->scaffoldingSegmentType != 0xFF)
         {

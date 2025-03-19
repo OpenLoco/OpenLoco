@@ -111,11 +111,12 @@ namespace OpenLoco
                                      : Colour::black;
         ImageId baseImage(buildingImageIds, c);
         Ui::Point pos{ x, y };
+        const auto partHeights = getBuildingPartHeights();
         for (const auto part : getBuildingParts(0))
         {
             auto image = baseImage.withIndexOffset(part * 4 + 1);
             drawingCtx.drawImage(pos, image);
-            pos.y -= buildingPartHeights[part];
+            pos.y -= partHeights[part];
         }
     }
 
@@ -205,7 +206,7 @@ namespace OpenLoco
 
         // LOAD BUILDING VARIATION PARTS Start
         // Load variation heights
-        buildingPartHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        buildingPartHeightsOffset = remainingData.data() - data.data();
         remainingData = remainingData.subspan(numBuildingParts * sizeof(uint8_t));
 
         // Load Part Animations
@@ -370,7 +371,7 @@ namespace OpenLoco
         buildingImageIds = 0;
         fieldImageIds = 0;
         numImagesPerFieldGrowthStage = 0;
-        buildingPartHeights = nullptr;
+        buildingPartHeightsOffset = 0;
         buildingPartAnimations = nullptr;
         std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
         var_38 = nullptr;
@@ -401,6 +402,12 @@ namespace OpenLoco
         const auto* sequencePointer = animationSequences[unk];
         const auto size = *sequencePointer++;
         return std::span<const std::uint8_t>(sequencePointer, size);
+    }
+
+    std::span<const std::uint8_t> IndustryObject::getBuildingPartHeights() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        return std::span<const std::uint8_t>(base + buildingPartHeightsOffset, numBuildingParts);
     }
 
     std::span<const IndustryObjectUnk38> OpenLoco::IndustryObject::getUnk38() const

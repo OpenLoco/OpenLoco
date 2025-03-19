@@ -125,7 +125,8 @@ namespace OpenLoco::World
             if (progress == 0x7)
             {
                 const size_t numSections = var_6_003F();
-                auto parts = indObj->getBuildingParts(type);
+                const auto parts = indObj->getBuildingParts(type);
+                const auto heights = indObj->getBuildingPartHeights();
                 if (parts.size() <= numSections + 1)
                 {
                     ind->under_construction++;
@@ -136,7 +137,7 @@ namespace OpenLoco::World
                         Ui::WindowManager::invalidate(Ui::WindowType::industryList);
                     }
 
-                    const auto height = std::accumulate(parts.begin(), parts.end(), 0, [partHeights = indObj->buildingPartHeights](int32_t total, uint8_t part) {
+                    const auto height = std::accumulate(parts.begin(), parts.end(), 0, [partHeights = heights](int32_t total, uint8_t part) {
                         return total + partHeights[part];
                     });
 
