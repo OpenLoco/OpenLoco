@@ -71,7 +71,7 @@ namespace OpenLoco::Ui
         void (*onClose)(Window&) = nullptr;
         void (*onMouseUp)(Window&, WidgetIndex_t, WidgetId) = nullptr;
         void (*onResize)(Window&) = nullptr;
-        void (*event_03)(Window&, WidgetIndex_t, WidgetId) = nullptr; // mouse_over?
+        void (*onMouseHover)(Window&, WidgetIndex_t, WidgetId) = nullptr;
         void (*onMouseDown)(Window&, WidgetIndex_t, WidgetId) = nullptr;
         void (*onDropdown)(Window&, WidgetIndex_t, WidgetId, int16_t) = nullptr;
         void (*onPeriodicUpdate)(Window&) = nullptr;
@@ -375,7 +375,7 @@ namespace OpenLoco::Ui
         void callClose();                                                                                                 // 0
         void callOnMouseUp(WidgetIndex_t widgetIndex, WidgetId id);                                                       // 1
         Ui::Window* callOnResize();                                                                                       // 2
-        void call_3(WidgetIndex_t widgetIndex, WidgetId id);                                                              // 3
+        void callOnMouseHover(WidgetIndex_t widgetIndex, WidgetId id);                                                    // 3
         void callOnMouseDown(WidgetIndex_t widgetIndex, WidgetId id);                                                     // 4
         void callOnDropdown(WidgetIndex_t widgetIndex, WidgetId id, int16_t itemIndex);                                   // 5
         void callOnPeriodicUpdate();                                                                                      // 6

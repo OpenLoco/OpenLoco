@@ -1225,7 +1225,7 @@ namespace OpenLoco::Input
         {
             if (!window->isDisabled(widgetIndex))
             {
-                window->call_3(widgetIndex, window->widgets[widgetIndex].id);
+                window->callOnMouseHover(widgetIndex, window->widgets[widgetIndex].id);
             }
         }
 
