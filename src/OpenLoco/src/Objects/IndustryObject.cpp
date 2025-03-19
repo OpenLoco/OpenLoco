@@ -215,11 +215,12 @@ namespace OpenLoco
         remainingData = remainingData.subspan(numBuildingParts * sizeof(BuildingPartAnimation));
 
         // Load Animations
-        for (auto& animSeq : animationSequences)
+        for (auto& animSeqOffset : animationSequenceOffsets)
         {
-            animSeq = reinterpret_cast<const uint8_t*>(remainingData.data());
+            animSeqOffset = remainingData.data() - data.data();
             // animationSequences comprises of a size then data. Size will always be a power of 2
-            remainingData = remainingData.subspan(*animSeq * sizeof(uint8_t) + 1);
+            const auto* ptr = reinterpret_cast<const uint8_t*>(remainingData.data());
+            remainingData = remainingData.subspan(*ptr * sizeof(uint8_t) + 1);
         }
 
         // Load unk Animation Related Structure
@@ -374,7 +375,7 @@ namespace OpenLoco
         numImagesPerFieldGrowthStage = 0;
         buildingPartHeightsOffset = 0;
         buildingPartAnimationsOffset = 0;
-        std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
+        std::fill(std::begin(animationSequenceOffsets), std::end(animationSequenceOffsets), 0);
         var_38_Offset = 0;
         std::fill(std::begin(buildingVariationPartOffsets), std::end(buildingVariationPartOffsets), 0);
         buildings = nullptr;
@@ -402,7 +403,8 @@ namespace OpenLoco
     std::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t unk) const
     {
         // animationSequences comprises of a size then data. Size will always be a power of 2
-        const auto* sequencePointer = animationSequences[unk];
+        const auto* base = reinterpret_cast<const std::uint8_t*>(this);
+        const auto* sequencePointer = base + animationSequenceOffsets[unk];
         const auto size = *sequencePointer++;
         return std::span<const std::uint8_t>(sequencePointer, size);
     }
