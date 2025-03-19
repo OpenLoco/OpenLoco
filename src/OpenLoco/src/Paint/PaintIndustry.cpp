@@ -44,6 +44,7 @@ namespace OpenLoco::Paint
         uint32_t buildingType = elIndustry.buildingType();
         const auto buildingParts = indObj.getBuildingParts(buildingType);
         const auto partHeights = indObj.getBuildingPartHeights();
+        const auto buildingPartAnims = indObj.getBuildingPartAnimations();
 
         // 0x00525D4F
         uint8_t totalSectionHeight = 0;
@@ -96,7 +97,7 @@ namespace OpenLoco::Paint
             {
                 break;
             }
-            auto& buildingAnimation = indObj.buildingPartAnimations[buildingPart];
+            auto& buildingAnimation = buildingPartAnims[buildingPart];
             auto adjustedBuildingPart = buildingPart;
             if (buildingAnimation.numFrames)
             {
