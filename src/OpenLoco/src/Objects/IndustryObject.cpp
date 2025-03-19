@@ -210,7 +210,8 @@ namespace OpenLoco
         remainingData = remainingData.subspan(numBuildingParts * sizeof(uint8_t));
 
         // Load Part Animations
-        buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
+        //buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
+        buildingPartAnimationsOffset = remainingData.data() - data.data();
         remainingData = remainingData.subspan(numBuildingParts * sizeof(BuildingPartAnimation));
 
         // Load Animations
@@ -372,7 +373,7 @@ namespace OpenLoco
         fieldImageIds = 0;
         numImagesPerFieldGrowthStage = 0;
         buildingPartHeightsOffset = 0;
-        buildingPartAnimations = nullptr;
+        buildingPartAnimationsOffset = 0;
         std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
         var_38_Offset = 0;
         std::fill(std::begin(buildingVariationPartOffsets), std::end(buildingVariationPartOffsets), 0);
@@ -410,6 +411,13 @@ namespace OpenLoco
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         return std::span<const std::uint8_t>(base + buildingPartHeightsOffset, numBuildingParts);
+    }
+
+    std::span<const BuildingPartAnimation> IndustryObject::getBuildingPartAnimations() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + buildingPartAnimationsOffset);
+        return std::span<const BuildingPartAnimation>(ptr, numBuildingParts);
     }
 
     std::span<const IndustryObjectUnk38> OpenLoco::IndustryObject::getUnk38() const

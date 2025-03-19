@@ -175,9 +175,10 @@ namespace OpenLoco::World
         if (isConstructed())
         {
             bool hasAZeroFrame = false;
+            const auto buildingPartAnims = indObj->getBuildingPartAnimations();
             for (auto& part : indObj->getBuildingParts(type))
             {
-                const auto animFrames = indObj->buildingPartAnimations[part].numFrames;
+                const auto animFrames = buildingPartAnims[part].numFrames;
                 if (animFrames == 0)
                 {
                     hasAZeroFrame = true;
@@ -259,12 +260,13 @@ namespace OpenLoco::World
 
             auto* industry = elIndustry->industry();
             const auto* indObj = industry->getObject();
-            auto buildingParts = indObj->getBuildingParts(elIndustry->buildingType());
+            const auto buildingParts = indObj->getBuildingParts(elIndustry->buildingType());
+            const auto buildingPartAnims = indObj->getBuildingPartAnimations();
             bool hasAnimation = false;
             uint8_t animSpeed = std::numeric_limits<uint8_t>::max();
             for (auto& part : buildingParts)
             {
-                auto& partAnim = indObj->buildingPartAnimations[part];
+                auto& partAnim = buildingPartAnims[part];
                 if (partAnim.numFrames > 1)
                 {
                     hasAnimation = true;
@@ -308,14 +310,15 @@ namespace OpenLoco::World
             auto* industry = elIndustry->industry();
             const auto* indObj = industry->getObject();
             const auto type = elIndustry->buildingType();
-            auto buildingParts = indObj->getBuildingParts(type);
+            const auto buildingParts = indObj->getBuildingParts(type);
+            const auto buildingPartAnims = indObj->getBuildingPartAnimations();
             // Guaranteed power of 2
             auto animLength = indObj->getAnimationSequence(elIndustry->var_6_003F() & 0x3).size();
             const auto isMultiTile = indObj->buildingSizeFlags & (1 << type);
 
             for (auto& part : buildingParts)
             {
-                auto& partAnim = indObj->buildingPartAnimations[part];
+                auto& partAnim = buildingPartAnims[part];
                 if (partAnim.numFrames == 0)
                 {
                     const auto animSpeed = partAnim.animationSpeed & ~(1 << 7);
