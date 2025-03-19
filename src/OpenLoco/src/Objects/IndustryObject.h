@@ -90,7 +90,7 @@ namespace OpenLoco
         uint32_t buildingVariationPartOffsets[32]; // 0x3C Access with getBuildingParts helper method
         uint8_t minNumBuildings;                   // 0xBC
         uint8_t maxNumBuildings;                   // 0xBD
-        const uint8_t* buildings;                  // 0xBE
+        uint32_t buildingsOffset;                  // 0xBE
         uint32_t availableColours;                 // 0xC2 bitset
         uint32_t buildingSizeFlags;                // 0xC6 flags indicating the building types size 1:large4x4, 0:small1x1
         uint16_t designedYear;                     // 0xCA start year
@@ -135,6 +135,7 @@ namespace OpenLoco
         std::span<const std::uint8_t> getBuildingPartHeights() const;
         std::span<const IndustryObjectUnk38> getUnk38() const;
         std::span<const BuildingPartAnimation> getBuildingPartAnimations() const;
+        std::span<const std::uint8_t> getBuildings() const;
 
         constexpr bool hasFlags(IndustryObjectFlags flagsToTest) const
         {
