@@ -232,8 +232,7 @@ namespace OpenLoco
         // Load Parts
         for (auto i = 0; i < numBuildingVariations; ++i)
         {
-            auto& part = buildingVariationParts[i];
-            part = reinterpret_cast<const uint8_t*>(remainingData.data());
+            buildingVariationPartOffsets[i] = remainingData.data() - data.data();
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 remainingData = remainingData.subspan(1);
@@ -375,7 +374,7 @@ namespace OpenLoco
         buildingPartAnimations = nullptr;
         std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
         var_38 = nullptr;
-        std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);
+        std::fill(std::begin(buildingVariationPartOffsets), std::end(buildingVariationPartOffsets), 0);
         buildings = nullptr;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
@@ -386,7 +385,9 @@ namespace OpenLoco
 
     std::span<const std::uint8_t> IndustryObject::getBuildingParts(const uint8_t buildingType) const
     {
-        const auto* partsPointer = buildingVariationParts[buildingType];
+        const auto offset = buildingVariationPartOffsets[buildingType];
+
+        const auto* partsPointer = reinterpret_cast<const std::uint8_t*>(this) + offset;
         auto* end = partsPointer;
         while (*end != 0xFF)
         {

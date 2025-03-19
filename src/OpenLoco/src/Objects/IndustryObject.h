@@ -87,7 +87,7 @@ namespace OpenLoco
         const BuildingPartAnimation* buildingPartAnimations; // 0x24
         const uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
         const IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
-        const uint8_t* buildingVariationParts[32];           // 0x3C Access with getBuildingParts helper method
+        uint32_t buildingVariationPartOffsets[32];           // 0x3C Access with getBuildingParts helper method
         uint8_t minNumBuildings;                             // 0xBC
         uint8_t maxNumBuildings;                             // 0xBD
         const uint8_t* buildings;                            // 0xBE
