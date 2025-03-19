@@ -83,7 +83,7 @@ namespace OpenLoco
         uint32_t numImagesPerFieldGrowthStage;               // 0x1A
         uint8_t numBuildingParts;                            // 0x1E
         uint8_t numBuildingVariations;                       // 0x1F
-        const uint8_t* buildingPartHeights;                  // 0x20 This is the height of a building image
+        uint32_t buildingPartHeightsOffset;                  // 0x20 This is the height of a building image
         const BuildingPartAnimation* buildingPartAnimations; // 0x24
         const uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
         const IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
@@ -132,6 +132,7 @@ namespace OpenLoco
         void unload();
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
         std::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
+        std::span<const std::uint8_t> getBuildingPartHeights() const;
         std::span<const IndustryObjectUnk38> getUnk38() const;
 
         constexpr bool hasFlags(IndustryObjectFlags flagsToTest) const
