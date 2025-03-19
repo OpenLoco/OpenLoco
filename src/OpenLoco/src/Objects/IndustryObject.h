@@ -85,7 +85,7 @@ namespace OpenLoco
         uint8_t numBuildingVariations;             // 0x1F
         uint32_t buildingPartHeightsOffset;        // 0x20 This is the height of a building image
         uint32_t buildingPartAnimationsOffset;     // 0x24
-        const uint8_t* animationSequences[4];      // 0x28 Access with getAnimationSequence helper method
+        uint32_t animationSequenceOffsets[4];      // 0x28 Access with getAnimationSequence helper method
         uint32_t var_38_Offset;                    // 0x38 Access with getUnk38 helper method
         uint32_t buildingVariationPartOffsets[32]; // 0x3C Access with getBuildingParts helper method
         uint8_t minNumBuildings;                   // 0xBC
