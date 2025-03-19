@@ -477,9 +477,10 @@ namespace OpenLoco::GameCommands
 
         // 0x00454552
         const auto numBuildings = (((indObj->maxNumBuildings - indObj->minNumBuildings + 1) * randVal) / 256) + indObj->minNumBuildings;
+        const auto buildings = indObj->getBuildings();
         for (auto i = 0U; i < numBuildings; ++i)
         {
-            const auto building = indObj->buildings[i];
+            const auto building = buildings[i];
             // 0x00E0C3D2 (bit 0)
             const bool isMultiTile = indObj->buildingSizeFlags & (1ULL << building);
 
