@@ -1151,14 +1151,14 @@ namespace OpenLoco::Ui
         return this;
     }
 
-    void Window::call_3(WidgetIndex_t widgetIndex, const WidgetId id)
+    void Window::callOnMouseHover(WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (eventHandlers->event_03 == nullptr)
+        if (eventHandlers->onMouseHover == nullptr)
         {
             return;
         }
 
-        eventHandlers->event_03(*this, widgetIndex, id);
+        eventHandlers->onMouseHover(*this, widgetIndex, id);
     }
 
     void Window::callOnMouseDown(WidgetIndex_t widgetIndex, const WidgetId id)
