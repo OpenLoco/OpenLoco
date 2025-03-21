@@ -70,31 +70,31 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::industry;
 
-        StringId name;                                       // 0x0
-        StringId var_02;                                     // 0x2
-        StringId nameClosingDown;                            // 0x4
-        StringId nameUpProduction;                           // 0x6
-        StringId nameDownProduction;                         // 0x8
-        StringId nameSingular;                               // 0x0A
-        StringId namePlural;                                 // 0x0C
-        uint32_t shadowImageIds;                             // 0x0E shadows image id base
-        uint32_t buildingImageIds;                           // 0x12 Base image id for building 0
-        uint32_t fieldImageIds;                              // 0x16 Base image for field sprites
-        uint32_t numImagesPerFieldGrowthStage;               // 0x1A
-        uint8_t numBuildingParts;                            // 0x1E
-        uint8_t numBuildingVariations;                       // 0x1F
-        const uint8_t* buildingPartHeights;                  // 0x20 This is the height of a building image
-        const BuildingPartAnimation* buildingPartAnimations; // 0x24
-        const uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
-        const IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
-        const uint8_t* buildingVariationParts[32];           // 0x3C Access with getBuildingParts helper method
-        uint8_t minNumBuildings;                             // 0xBC
-        uint8_t maxNumBuildings;                             // 0xBD
-        const uint8_t* buildings;                            // 0xBE
-        uint32_t availableColours;                           // 0xC2 bitset
-        uint32_t buildingSizeFlags;                          // 0xC6 flags indicating the building types size 1:large4x4, 0:small1x1
-        uint16_t designedYear;                               // 0xCA start year
-        uint16_t obsoleteYear;                               // 0xCC end year
+        StringId name;                             // 0x0
+        StringId var_02;                           // 0x2
+        StringId nameClosingDown;                  // 0x4
+        StringId nameUpProduction;                 // 0x6
+        StringId nameDownProduction;               // 0x8
+        StringId nameSingular;                     // 0x0A
+        StringId namePlural;                       // 0x0C
+        uint32_t shadowImageIds;                   // 0x0E shadows image id base
+        uint32_t buildingImageIds;                 // 0x12 Base image id for building 0
+        uint32_t fieldImageIds;                    // 0x16 Base image for field sprites
+        uint32_t numImagesPerFieldGrowthStage;     // 0x1A
+        uint8_t numBuildingParts;                  // 0x1E
+        uint8_t numBuildingVariations;             // 0x1F
+        uint32_t buildingPartHeightsOffset;        // 0x20 This is the height of a building image
+        uint32_t buildingPartAnimationsOffset;     // 0x24
+        uint32_t animationSequenceOffsets[4];      // 0x28 Access with getAnimationSequence helper method
+        uint32_t var_38_Offset;                    // 0x38 Access with getUnk38 helper method
+        uint32_t buildingVariationPartOffsets[32]; // 0x3C Access with getBuildingParts helper method
+        uint8_t minNumBuildings;                   // 0xBC
+        uint8_t maxNumBuildings;                   // 0xBD
+        uint32_t buildingsOffset;                  // 0xBE
+        uint32_t availableColours;                 // 0xC2 bitset
+        uint32_t buildingSizeFlags;                // 0xC6 flags indicating the building types size 1:large4x4, 0:small1x1
+        uint16_t designedYear;                     // 0xCA start year
+        uint16_t obsoleteYear;                     // 0xCC end year
         // Total industries of this type that can be created in a scenario
         // Note: this is not directly comparable to total industries and varies based
         // on scenario total industries cap settings. At low industries cap this value is ~3x the
@@ -132,7 +132,10 @@ namespace OpenLoco
         void unload();
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
         std::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
+        std::span<const std::uint8_t> getBuildingPartHeights() const;
         std::span<const IndustryObjectUnk38> getUnk38() const;
+        std::span<const BuildingPartAnimation> getBuildingPartAnimations() const;
+        std::span<const std::uint8_t> getBuildings() const;
 
         constexpr bool hasFlags(IndustryObjectFlags flagsToTest) const
         {
