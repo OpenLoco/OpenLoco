@@ -10,6 +10,7 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
+#include "Jukebox.h"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
 #include "Network/Network.h"
@@ -312,23 +313,21 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         switch (itemIndex)
         {
-            case 0:
+            case 0: // "Mute"
                 Audio::toggleSound();
                 break;
 
-            case 1:
+            case 1: // "Play Music"
             {
                 auto& config = Config::get().old;
                 if (config.musicPlaying)
                 {
-                    config.musicPlaying = false;
-                    Audio::stopMusic();
+                    Jukebox::disableMusic();
                 }
                 else
                 {
-                    config.musicPlaying = true;
+                    Jukebox::enableMusic();
                 }
-                Config::write();
                 break;
             }
 
