@@ -3,6 +3,7 @@
 - Change: [#2457] Right mouse dragging in ScrollViews now respects "Invert right mouse dragging" option.
 - Fix: [#2972] More vehicle-related messages not using the correct vehicle name string.
 - Fix: [#2984] Areas of forbid trams checkboxes covering forbidding trucks checkboxes.
+- Fix: [#3038] Music changing when unpausing the game.
 
 25.02 (2025-02-28)
 ------------------------------------------------------------------------
