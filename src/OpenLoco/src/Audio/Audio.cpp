@@ -1120,7 +1120,7 @@ namespace OpenLoco::Audio
     void stopMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && channel->isPlaying())
+        if (_audioInitialised && channel != nullptr && (channel->isPlaying() || channel->isPaused()))
         {
             channel->stop();
         }
