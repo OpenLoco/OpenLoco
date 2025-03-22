@@ -673,8 +673,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
         };
 
         {
-            // Set footer text
+            // Reposition status bar
             auto& widget = self.widgets[Widx::status_bar];
+            widget.top = self.height - 13;
+            widget.bottom = self.height - 3;
+
+            // Set status bar
             FormatArguments args{ widget.textArgs };
             auto& footerStringPair = typeToFooterStringIds[self.currentTab];
             args.push(self.var_83C == 1 ? footerStringPair.first : footerStringPair.second);
