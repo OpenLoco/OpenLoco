@@ -696,7 +696,7 @@ void OpenLoco::Interop::registerHooks()
         0x00407231,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            OpenLoco::Input::sub_407231();
+            OpenLoco::Input::stopCursorDrag();
             regs = backup;
             return 0;
         });

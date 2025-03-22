@@ -222,7 +222,7 @@ namespace OpenLoco::Game
 
                 if (Input::hasFlag(Input::Flags::rightMousePressed))
                 {
-                    Input::sub_407231();
+                    Input::stopCursorDrag();
                     Input::resetFlag(Input::Flags::rightMousePressed);
                 }
 
@@ -257,7 +257,7 @@ namespace OpenLoco::Game
 
         if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
-            Input::sub_407231();
+            Input::stopCursorDrag();
             Input::resetFlag(Input::Flags::rightMousePressed);
         }
 

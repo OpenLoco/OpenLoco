@@ -1471,7 +1471,7 @@ namespace OpenLoco::Input
                 _dragLast->y = y;
 
                 Ui::hideCursor();
-                sub_407218();
+                startCursorDrag();
 
                 _mousePosX = 0;
                 _mousePosY = 0;
@@ -1551,7 +1551,7 @@ namespace OpenLoco::Input
         _dragScrollIndex = window->getScrollDataIndex(widgetIndex);
 
         Ui::hideCursor();
-        sub_407218();
+        startCursorDrag();
     }
 
 #pragma mark - Widgets
@@ -1808,7 +1808,7 @@ namespace OpenLoco::Input
     // 0x004C70F1
     static MouseButton loc_4C70F1(uint32_t& x, int16_t& y)
     {
-        sub_407231();
+        stopCursorDrag();
         resetFlag(Flags::rightMousePressed);
         Ui::setCursor(_52336C);
 
