@@ -431,13 +431,8 @@ namespace OpenLoco
         return profitFactor + cargoFactor;
     }
 
-    struct ProfitAndValue
-    {
-        currency48_t vehicleProfit;
-        currency48_t companyValue;
-    };
     // 0x00437D79
-    static ProfitAndValue calculateCompanyValue(const Company& company)
+    ProfitAndValue calculateCompanyValue(const Company& company)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {

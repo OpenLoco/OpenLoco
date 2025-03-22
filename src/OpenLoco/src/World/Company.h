@@ -31,6 +31,21 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(CompanyFlags);
 
+    enum class AiPlaystyleFlags : uint32_t
+    {
+        none = 0U,
+        unk0 = (1U << 0),      // 0x01
+        unk1 = (1U << 1),      // 0x02
+        unk2 = (1U << 2),      // 0x04
+        unk3 = (1U << 3),      // 0x08
+        unk4 = (1U << 4),      // 0x10
+        unk5 = (1U << 5),      // 0x20
+        unk6 = (1U << 6),      // 0x40
+        unk7 = (1U << 7),      // 0x80
+        townIdSet = (1U << 8), // 0x100
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(AiPlaystyleFlags);
+
     enum class CorporateRating : uint8_t
     {
         platelayer,           // 0 - 9.9%
@@ -136,19 +151,20 @@ namespace OpenLoco
 
         StringId name;
         StringId ownerName;
-        CompanyFlags challengeFlags;      // 0x04
-        currency48_t cash;                // 0x08
-        currency32_t currentLoan;         // 0x0E
-        uint32_t updateCounter;           // 0x12
-        int16_t performanceIndex;         // 0x16
-        uint8_t competitorId;             // 0x18
-        Emotion ownerEmotion;             // 0x19
-        ColourScheme mainColours;         // 0x1A
-        ColourScheme vehicleColours[10];  // 0x1C
-        uint32_t customVehicleColoursSet; // 0x30
-        BitSet<224> unlockedVehicles;     // 0x34
-        uint16_t availableVehicles;       // 0x50
-        uint8_t pad_52[0x57 - 0x52];
+        CompanyFlags challengeFlags;                                                    // 0x04
+        currency48_t cash;                                                              // 0x08
+        currency32_t currentLoan;                                                       // 0x0E
+        uint32_t updateCounter;                                                         // 0x12
+        int16_t performanceIndex;                                                       // 0x16
+        uint8_t competitorId;                                                           // 0x18
+        Emotion ownerEmotion;                                                           // 0x19
+        ColourScheme mainColours;                                                       // 0x1A
+        ColourScheme vehicleColours[10];                                                // 0x1C
+        uint32_t customVehicleColoursSet;                                               // 0x30
+        BitSet<224> unlockedVehicles;                                                   // 0x34
+        uint16_t availableVehicles;                                                     // 0x50
+        AiPlaystyleFlags aiPlaystyleFlags;                                              // 0x52
+        uint8_t aiPlaystyleTownId;                                                      // 0x56
         uint8_t numExpenditureYears;                                                    // 0x57
         currency32_t expenditures[kExpenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
         uint32_t startedDate;                                                           // 0x0498
@@ -272,4 +288,12 @@ namespace OpenLoco
     void companyEmotionEvent(CompanyId companyId, Emotion emotion);
     void companySetObservation(CompanyId id, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object);
     void updateYearly(Company& company);
+    struct ProfitAndValue
+    {
+        currency48_t vehicleProfit;
+        currency48_t companyValue;
+    };
+
+    // 0x00437D79
+    ProfitAndValue calculateCompanyValue(const Company& company);
 }

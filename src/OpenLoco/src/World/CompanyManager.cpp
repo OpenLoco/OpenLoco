@@ -2,6 +2,7 @@
 #include "CompanyAi.h"
 #include "CompanyRecords.h"
 #include "Config.h"
+#include "Date.h"
 #include "Economy/Economy.h"
 #include "Effects/Effect.h"
 #include "Effects/MoneyEffect.h"
@@ -442,13 +443,343 @@ namespace OpenLoco::CompanyManager
         return selectNewCompetitorFromHeader(chosenHeader);
     }
 
+    // 0x004F93F8
+    static constexpr std::array<Colour, 13> kAiPrimaryColours = {
+        Colour::black,
+        Colour::grey,
+        Colour::white,
+        Colour::mutedDarkPurple,
+        Colour::blue,
+        Colour::green,
+        Colour::amber,
+        Colour::darkOrange,
+        Colour::mutedYellow,
+        Colour::mutedDarkRed,
+        Colour::red,
+        Colour::max, // Pick randomcolour
+        Colour::max, // Pick randomcolour
+    };
+
+    // 0x004F9405
+    static constexpr std::array<Colour, 31> kPrimaryToSecondary = {
+        Colour::mutedDarkPurple,
+        Colour::mutedDarkRed,
+        Colour::mutedTeal,
+        Colour::white,
+        Colour::mutedPurple,
+        Colour::white,
+        Colour::white,
+        Colour::blue,
+        Colour::white,
+        Colour::darkRed,
+        Colour::mutedGrassGreen,
+        Colour::white,
+        Colour::yellow,
+        Colour::mutedGrassGreen,
+        Colour::darkGreen,
+        Colour::yellow,
+        Colour::red,
+        Colour::mutedOrange,
+        Colour::mutedYellow,
+        Colour::amber,
+        Colour::white,
+        Colour::mutedDarkRed,
+        Colour::white,
+        Colour::yellow,
+        Colour::white,
+        Colour::white,
+        Colour::yellow,
+        Colour::white,
+        Colour::darkPink,
+        Colour::white,
+        Colour::mutedDarkRed,
+    };
+
+    // 0x004F93C4
+    static constexpr std::array<AiPlaystyleFlags, 13> kCompanyAiPlaystyleFlags = {
+        AiPlaystyleFlags::none,
+        AiPlaystyleFlags::none,
+        AiPlaystyleFlags::none,
+        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk3 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk6,
+        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk6,
+        AiPlaystyleFlags::unk6,
+        AiPlaystyleFlags::unk6,
+        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk3 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+    };
+
+    static constexpr std::array<StringId, 13> kCompanyAiNamePrefixes = {
+        StringIds::company_ai_name_ebony,
+        StringIds::company_ai_name_silver,
+        StringIds::company_ai_name_ivory,
+        StringIds::company_ai_name_indigo,
+        StringIds::company_ai_name_sapphire,
+        StringIds::company_ai_name_emerald,
+        StringIds::company_ai_name_golden,
+        StringIds::company_ai_name_amber,
+        StringIds::company_ai_name_bronze,
+        StringIds::company_ai_name_burgundy,
+        StringIds::company_ai_name_scarlet,
+        StringIds::company_ai_name_string,
+        StringIds::company_ai_name_pop_string,
+    };
+
+    static constexpr std::array<StringId, 13> kCompanyAiPlaystyleString = {
+        StringIds::company_ai_name_string_transport,
+        StringIds::company_ai_name_string_express,
+        StringIds::company_ai_name_string_lines,
+        StringIds::company_ai_name_string_tracks,
+        StringIds::company_ai_name_string_coaches,
+        StringIds::company_ai_name_string_air,
+        StringIds::company_ai_name_string_rail,
+        StringIds::company_ai_name_string_carts,
+        StringIds::company_ai_name_string_trains,
+        StringIds::company_ai_name_string_haulage,
+        StringIds::company_ai_name_string_shipping,
+        StringIds::company_ai_name_string_freight,
+        StringIds::company_ai_name_string_trucks,
+    };
+
+    // 0x0042FE06
     static CompanyId createCompany(LoadedObjectId competitorId, bool isPlayer)
     {
-        registers regs;
-        regs.dl = competitorId;
-        regs.dh = isPlayer ? 1 : 0;
-        call(0x0042FE06, regs);
-        return static_cast<CompanyId>(regs.al);
+        auto chosenCompanyId = []() {
+            for (auto& company : rawCompanies())
+            {
+                if (company.empty())
+                {
+                    return company.id();
+                }
+            }
+            return CompanyId::null;
+        }();
+        if (chosenCompanyId == CompanyId::null)
+        {
+            return CompanyId::null;
+        }
+
+        auto* company = get(chosenCompanyId);
+        company->competitorId = competitorId;
+        auto* competitorObj = ObjectManager::get<CompetitorObject>(competitorId);
+        company->challengeFlags = CompanyFlags::none;
+        company->var_49C = 0;
+        company->var_4A0 = 0;
+        company->ownerEmotion = Emotion::neutral;
+        company->name = StringIds::new_company;
+        company->ownerName = StringIds::new_owner;
+        company->startedDate = getCurrentDay();
+        if (isPlayer)
+        {
+            Colour primaryColour = Colour::max;
+            while (true)
+            {
+                const auto randVal = gPrng1().randNext();
+
+                primaryColour = static_cast<Colour>(((randVal & 0xFFU) * enumValue(Colour::max)) / 256);
+
+                const auto colourMask = competingColourMask(chosenCompanyId);
+                if (colourMask & (1U << enumValue(primaryColour)))
+                {
+                    continue;
+                }
+                break;
+            }
+
+            const auto secondaryColour = kPrimaryToSecondary[enumValue(primaryColour)];
+            const auto colourScheme = ColourScheme{ primaryColour, secondaryColour };
+            company->mainColours = colourScheme;
+            std::fill(std::begin(company->vehicleColours), std::end(company->vehicleColours), colourScheme);
+
+            company->customVehicleColoursSet = 0;
+        }
+        else
+        {
+            company->ownerName = competitorObj->name;
+            uint32_t randVal = 0;
+            uint8_t companyNamePrefix = 0; // Usually a colour but can be a town
+            uint8_t companyPlaystyle = 0;
+            Colour primaryColour = Colour::max;
+            bool colourOk = false;
+            for (auto i = 0U; i < 250; ++i)
+            {
+                randVal = gPrng1().randNext();
+                sfl::static_vector<uint8_t, 32> availableNamePrefixes;
+                for (auto j = 0U; j < 32; ++j)
+                {
+                    if (competitorObj->var_04 & (1U << j))
+                    {
+                        availableNamePrefixes.push_back(j);
+                    }
+                }
+                companyNamePrefix = availableNamePrefixes[availableNamePrefixes.size() * (randVal & 0xFFU) / 256];
+                randVal = std::rotr(randVal, 8);
+
+                sfl::static_vector<uint8_t, 32> availablePlaystyles;
+                for (auto j = 0U; j < 32; ++j)
+                {
+                    if (competitorObj->var_08 & (1U << j))
+                    {
+                        availablePlaystyles.push_back(j);
+                    }
+                }
+                companyPlaystyle = availablePlaystyles[availablePlaystyles.size() * (randVal & 0xFFU) / 256];
+                randVal = std::rotr(randVal, 8);
+
+                primaryColour = kAiPrimaryColours[companyNamePrefix];
+                if (primaryColour == Colour::max)
+                {
+                    primaryColour = static_cast<Colour>((randVal & 0xFFU) * 31 / 256);
+                    randVal = std::rotr(randVal, 8);
+                }
+
+                const auto colourMask = competingColourMask(chosenCompanyId);
+                if (colourMask & (1U << enumValue(primaryColour)))
+                {
+                    continue;
+                }
+                colourOk = true;
+                break;
+            }
+            if (!colourOk)
+            {
+                company->name = StringIds::empty;
+                return CompanyId::null;
+            }
+
+            const auto secondaryColour = kPrimaryToSecondary[enumValue(primaryColour)];
+            const auto colourScheme = ColourScheme{ primaryColour, secondaryColour };
+            company->mainColours = colourScheme;
+            std::fill(std::begin(company->vehicleColours), std::end(company->vehicleColours), colourScheme);
+
+            company->customVehicleColoursSet = 0;
+            company->aiPlaystyleFlags = kCompanyAiPlaystyleFlags[companyPlaystyle];
+            company->aiPlaystyleTownId = 0xFFU;
+
+            if (companyNamePrefix == 12)
+            {
+                const auto numTowns = TownManager::towns().size();
+                if (numTowns == 0)
+                {
+                    company->name = StringIds::empty;
+                    return CompanyId::null;
+                }
+                auto randTown = (((randVal & 0xFFU) * numTowns) / 256) + 1;
+                randVal = std::rotr(randVal, 8);
+                const auto randTownId = [&randTown]() {
+                    for (auto& town : TownManager::towns())
+                    {
+                        randTown--;
+                        if (randTown == 0)
+                        {
+                            return town.id();
+                        }
+                    }
+                    return TownId::null;
+                }();
+                for (auto& otherCompany : companies())
+                {
+                    if (otherCompany.id() == chosenCompanyId)
+                    {
+                        continue;
+                    }
+                    if ((otherCompany.aiPlaystyleFlags & AiPlaystyleFlags::townIdSet) != AiPlaystyleFlags::none)
+                    {
+                        continue;
+                    }
+                    if (static_cast<TownId>(otherCompany.aiPlaystyleTownId) == randTownId)
+                    {
+                        company->name = StringIds::empty;
+                        return CompanyId::null;
+                    }
+                }
+                company->aiPlaystyleTownId = enumValue(randTownId);
+                company->aiPlaystyleFlags |= AiPlaystyleFlags::townIdSet;
+            }
+
+            const auto stringId = kCompanyAiPlaystyleString[companyPlaystyle];
+            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->lastName);
+            if (company->aiPlaystyleTownId != 0xFFU)
+            {
+                args.push(TownManager::get(static_cast<TownId>(company->aiPlaystyleTownId))->name);
+            }
+
+            char buffer[256]{};
+            StringManager::formatString(buffer, 256U, stringId, args);
+            for (auto& otherCompany : companies())
+            {
+                if (otherCompany.id() == chosenCompanyId)
+                {
+                    continue;
+                }
+
+                char buffer2[256]{};
+                StringManager::formatString(buffer2, 256U, otherCompany.name);
+                if (std::strncmp(buffer, buffer2, 256) == 0)
+                {
+                    company->name = StringIds::empty;
+                    return CompanyId::null;
+                }
+            }
+            company->name = StringManager::userStringAllocate(buffer, false);
+            if (company->name == StringIds::empty)
+            {
+                return CompanyId::null;
+            }
+        }
+        company->numExpenditureYears = 1;
+        for (auto i = 0U; i < ExpenditureType::Count; ++i)
+        {
+            company->expenditures[0][i] = 0;
+        }
+        company->var_4A4 = AiThinkState::unk0;
+        company->var_4A6 = 0;
+        company->var_85F6 = 0;
+        for (auto& thought : company->aiThoughts)
+        {
+            thought.type = AiThoughtType::null;
+        }
+        company->headquartersX = -1;
+        company->var_25BE = 0xFFU;
+        company->unlockedVehicles.reset();
+        company->availableVehicles = 0;
+        company->currentLoan = getInflationAdjustedStartingLoan();
+        company->cash = company->currentLoan;
+        VehicleManager::determineAvailableVehicles(*company);
+        company->cargoUnitsTotalDelivered = 0;
+        company->cargoUnitsTotalDistance = 0;
+        company->historySize = 1;
+        company->performanceIndex = 0;
+        company->performanceIndexHistory[0] = 0;
+        company->cargoUnitsDeliveredHistory[0] = 0;
+        std::fill(std::begin(company->transportTypeCount), std::end(company->transportTypeCount), 0);
+        std::fill(std::begin(company->activeEmotions), std::end(company->activeEmotions), 0);
+        const auto value = calculateCompanyValue(*company);
+        company->companyValueHistory[0] = value.companyValue;
+        company->vehicleProfit = value.vehicleProfit;
+        updateColours();
+        company->observationStatus = ObservationStatus::empty;
+        company->observationEntity = EntityId::null;
+        company->observationX = -1;
+        company->observationY = -1;
+        company->observationObject = 0xFFFFU;
+        company->observationTimeout = 0;
+        company->ownerStatus = OwnerStatus();
+        company->updateCounter = 0;
+        company->currentRating = CorporateRating::platelayer;
+        company->challengeProgress = 0;
+        company->numMonthsInTheRed = 0;
+        company->jailStatus = 0;
+        std::fill(std::begin(company->cargoDelivered), std::end(company->cargoDelivered), 0);
+        for (auto& town : TownManager::towns())
+        {
+            town.companyRatings[enumValue(chosenCompanyId)] = 500;
+            town.companiesWithRating &= ~(1 << enumValue(chosenCompanyId));
+        }
+        return chosenCompanyId;
     }
 
     static void sub_4A6DA9()
@@ -1065,6 +1396,12 @@ namespace OpenLoco::CompanyManager
             ObjectType::competitor, company->competitorId }));
         ObjectManager::reloadAll();
         Ui::Dropdown::forceCloseCompanySelect();
+    }
+
+    // 0x0046E306
+    currency32_t getInflationAdjustedStartingLoan()
+    {
+        return Economy::getInflationAdjustedCost(getStartingLoanSize(), 0, 8) / 100 * 100;
     }
 }
 

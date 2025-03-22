@@ -22,6 +22,7 @@ namespace OpenLoco::CompanyManager
     void setMaxLoanSize(uint16_t loanSize);
 
     uint16_t getStartingLoanSize();
+    currency32_t getInflationAdjustedStartingLoan();
     void setStartingLoanSize(uint16_t loanSize);
 
     FixedVector<Company, Limits::kMaxCompanies> companies();
