@@ -6,7 +6,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
-#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -24,6 +23,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
@@ -162,20 +162,25 @@ namespace OpenLoco::Ui::Windows::Cheats
             enum
             {
                 cash_step_group = Common::Widx::nextWidx,
+                cash_step_label,
                 cash_step_value,
                 cash_step_decrease,
                 cash_step_increase,
                 cash_step_apply,
                 loan_group,
+                loan_label,
                 loan_value,
                 loan_clear,
                 time_group,
+                year_label,
                 year_step_value,
                 year_step_decrease,
                 year_step_increase,
+                month_label,
                 month_step_value,
                 month_step_decrease,
                 month_step_increase,
+                day_label,
                 day_step_value,
                 day_step_decrease,
                 day_step_increase,
@@ -187,17 +192,22 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::financial_cheats),
             // money
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_increase_funds),
-            Widgets::stepperWidgets({ 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::Label({ 10, 62 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_amount),
+            Widgets::stepperWidgets({ 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_loan_value),
             Widgets::Button({ 180, 62 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_add),
             // loan
             Widgets::GroupBox({ 4, 86 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_clear_loan),
-            Widgets::TextBox({ 80, 100 }, { 95, 12 }, WindowColour::secondary),
+            Widgets::Label({ 10, 100 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::company_current_loan),
+            Widgets::TextBox({ 80, 100 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_loan_value),
             Widgets::Button({ 180, 100 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_clear),
             // date/time
             Widgets::GroupBox({ 4, 124 }, { kWindowSize.width - 8, 80 }, WindowColour::secondary, StringIds::cheat_date_change_apply),
-            Widgets::stepperWidgets({ 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
-            Widgets::stepperWidgets({ 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
-            Widgets::stepperWidgets({ 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::Label({ 10, 138 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_year),
+            Widgets::stepperWidgets({ 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_year_value),
+            Widgets::Label({ 10, 154 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_month),
+            Widgets::stepperWidgets({ 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::black_stringid),
+            Widgets::Label({ 10, 170 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_day),
+            Widgets::stepperWidgets({ 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_day_value),
             Widgets::Button({ 10, 186 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_date_change_apply)
 
         );
@@ -218,122 +228,49 @@ namespace OpenLoco::Ui::Windows::Cheats
         static void prepareDraw(Window& self)
         {
             self.activatedWidgets = (1 << Common::Widx::tab_finances);
-        }
-
-        static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
-        {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            // Draw widgets and tabs.
-            self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
 
             // Add cash step label and value
             {
                 auto& widget = self.widgets[Widx::cash_step_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_amount);
-
-                FormatArguments args{};
+                FormatArguments args{ widget.textArgs };
                 args.push(_cashIncreaseStep);
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_loan_value,
-                    args);
             }
 
             // Loan label and value
             {
                 auto& widget = self.widgets[Widx::loan_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::company_current_loan);
-
+                FormatArguments args{ widget.textArgs };
                 auto company = CompanyManager::getPlayerCompany();
-
-                FormatArguments args{};
                 args.push(company->currentLoan);
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_loan_value,
-                    args);
             }
 
             // Add year label and value
             {
                 auto& widget = self.widgets[Widx::year_step_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_year);
-
-                FormatArguments args{};
+                FormatArguments args{ widget.textArgs };
                 args.push(_date.year);
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_year_value,
-                    args);
             }
 
             // Add month label and value
             {
                 auto& widget = self.widgets[Widx::month_step_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_month);
-
-                FormatArguments args{};
-                args.push((StringId)StringManager::monthToString(_date.month).second);
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::black_stringid,
-                    args);
+                FormatArguments args{ widget.textArgs };
+                args.push(StringManager::monthToString(_date.month).second);
             }
 
             // Add day label and value
             {
                 auto& widget = self.widgets[Widx::day_step_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_day);
-
-                FormatArguments args{};
+                FormatArguments args{ widget.textArgs };
                 args.push(_date.day + 1); // +1 since days in game are 0-based, but IRL they are 1-based
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_day_value,
-                    args);
             }
+        }
+
+        static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
+        {
+            // Draw widgets and tabs.
+            self.draw(drawingCtx);
+            Common::drawTabs(&self, drawingCtx);
         }
 
         static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)

@@ -31,6 +31,7 @@
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
@@ -103,6 +104,7 @@ namespace OpenLoco::Ui::Windows::TownList
             sort_town_population,
             sort_town_stations,
             scrollview,
+            status_bar,
         };
 
         static constexpr auto widgets = makeWidgets(
@@ -111,7 +113,8 @@ namespace OpenLoco::Ui::Windows::TownList
             Widgets::TableHeader({ 204, 43 }, { 80, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
             Widgets::TableHeader({ 284, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
             Widgets::TableHeader({ 354, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
-            Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, 2)
+            Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, 2),
+            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -150,6 +153,16 @@ namespace OpenLoco::Ui::Windows::TownList
             self.widgets[widx::sort_town_stations].text = self.sortMode == SortMode::Stations ? StringIds::table_header_stations_desc : StringIds::table_header_stations;
 
             Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings);
+
+            // Reposition status bar
+            auto& widget = self.widgets[widx::status_bar];
+            widget.top = self.height - 12;
+            widget.bottom = self.height - 2;
+
+            // Set status bar text
+            FormatArguments args{ widget.textArgs };
+            args.push(self.var_83C == 1 ? StringIds::status_towns_singular : StringIds::status_towns_plural);
+            args.push(self.var_83C);
         }
 
         // 0x0049A0F8
@@ -230,24 +243,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A0A7
         static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
-
-            FormatArguments args{};
-            if (self.var_83C == 1)
-            {
-                args.push(StringIds::status_towns_singular);
-            }
-            else
-            {
-                args.push(StringIds::status_towns_plural);
-            }
-            args.push(self.var_83C);
-
-            auto point = Point(self.x + 4, self.y + self.height - 12);
-            tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x0049A27F
