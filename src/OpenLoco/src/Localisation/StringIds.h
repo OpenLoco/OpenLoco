@@ -890,7 +890,9 @@ namespace OpenLoco::StringIds
     constexpr StringId cant_remove_string_id = 1164;
     constexpr StringId cant_pass_signal_at_danger = 1165;
     constexpr StringId this_vehicle_requires_stringid = 1166;
-
+    constexpr StringId train_has_no_vehicles = 1167;
+    constexpr StringId train_has_no_driving_cab = 1168;
+    constexpr StringId train_needs_a_locomotive_or_power_car = 1169;
     constexpr StringId cargo_from = 1170;
     constexpr StringId cargo_empty = 1171;
     constexpr StringId cargo_capacity_tooltip = 1172;
