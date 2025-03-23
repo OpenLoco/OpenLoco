@@ -153,11 +153,11 @@ namespace OpenLoco::GameCommands
         newBogie->var_38 = Flags38::none;
 
         int32_t reliability = vehObject.reliability * 256;
-        if (getCurrentYear() + 2 > vehObject.designed)
+        if (vehObject.designed + 2 > getCurrentYear())
         {
             // Reduce reliability by an eighth after 2 years past design
             reliability -= reliability / 8;
-            if (getCurrentYear() + 3 > vehObject.designed)
+            if (vehObject.designed + 3 > getCurrentYear())
             {
                 // Reduce reliability by a further eighth (quarter total) after 3 years past design
                 reliability -= reliability / 8;
