@@ -28,10 +28,13 @@ namespace OpenLoco::Audio
         }
         bool load(uint32_t buffer);
         bool play(bool loop);
+        bool pause();
+        bool unpause();
         void stop();
         void setVolume(int32_t volume);
         void setPan(int32_t pan);
         void setFrequency(int32_t freq);
+        bool isPaused() const;
         bool isPlaying() const;
         const OpenAL::Source& getSource() const { return _source; }
         const Attributes& getAttributes() const { return _attributes; }
