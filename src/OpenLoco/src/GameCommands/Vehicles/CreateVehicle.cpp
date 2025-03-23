@@ -155,13 +155,9 @@ namespace OpenLoco::GameCommands
         int32_t reliability = vehObject.reliability * 256;
         if (vehObject.designed + 2 > getCurrentYear())
         {
-            // Reduce reliability by an eighth after 2 years past design
+            // Reduce reliability by an eighth twice until 2 years past design year
             reliability -= reliability / 8;
-            if (vehObject.designed + 3 > getCurrentYear())
-            {
-                // Reduce reliability by a further eighth (quarter total) after 3 years past design
-                reliability -= reliability / 8;
-            }
+            reliability -= reliability / 8;
         }
         if (reliability != 0)
         {
