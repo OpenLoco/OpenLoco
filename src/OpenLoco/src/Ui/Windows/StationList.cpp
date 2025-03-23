@@ -19,6 +19,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
@@ -54,6 +55,7 @@ namespace OpenLoco::Ui::Windows::StationList
         sort_total_waiting,
         sort_accepts,
         scrollview,
+        status_bar,
     };
 
     static constexpr auto _widgets = makeWidgets(
@@ -71,7 +73,8 @@ namespace OpenLoco::Ui::Windows::StationList
         Widgets::TableHeader({ 204, 43 }, { 200, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_station_status),
         Widgets::TableHeader({ 404, 43 }, { 90, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
         Widgets::TableHeader({ 494, 43 }, { 120, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
-        Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::Label({ 4, kWindowSize.height - 12 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
     );
 
@@ -415,10 +418,12 @@ namespace OpenLoco::Ui::Windows::StationList
         window.activatedWidgets &= ~((1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports));
         window.activatedWidgets |= (1ULL << tabInformationByType[window.currentTab].widgetIndex);
 
-        // Set company name.
-        auto company = CompanyManager::get(CompanyId(window.number));
-        auto args = FormatArguments(window.widgets[widx::caption].textArgs);
-        args.push(company->name);
+        {
+            // Set company name
+            auto company = CompanyManager::get(CompanyId(window.number));
+            auto args = FormatArguments(window.widgets[widx::caption].textArgs);
+            args.push(company->name);
+        }
 
         // Set window title.
         window.widgets[widx::caption].text = tabInformationByType[window.currentTab].windowTitleId;
@@ -462,6 +467,16 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Reposition tabs
         Widget::leftAlignTabs(window, widx::tab_all_stations, widx::tab_ship_ports);
+
+        // Reposition status label
+        auto& widget = window.widgets[widx::status_bar];
+        widget.top = window.height - 12;
+        widget.bottom = window.height - 2;
+
+        // TODO: locale-based pluralisation.
+        auto args = FormatArguments{ widget.textArgs };
+        args.push(window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural);
+        args.push<uint16_t>(window.var_83C);
     }
 
     // 0x0049157F
@@ -589,8 +604,6 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x004914D8
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
         // Draw widgets and tabs.
         window.draw(drawingCtx);
         drawTabs(&window, drawingCtx);
@@ -602,22 +615,6 @@ namespace OpenLoco::Ui::Windows::StationList
         uint16_t x = window.x + window.widgets[widx::company_select].left + 1;
         uint16_t y = window.y + window.widgets[widx::company_select].top + 1;
         drawingCtx.drawImage(x, y, image);
-
-        // TODO: locale-based pluralisation.
-        auto args = FormatArguments{};
-        if (window.var_83C == 1)
-        {
-            args.push(StringIds::status_num_stations_singular);
-        }
-        else
-        {
-            args.push(StringIds::status_num_stations_plural);
-        }
-        args.push<uint16_t>(window.var_83C);
-
-        // Draw number of stations.
-        auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
-        tr.drawStringLeft(origin, Colour::black, StringIds::black_stringid, args);
     }
 
     // 0x004917BB
