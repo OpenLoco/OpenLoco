@@ -155,7 +155,7 @@ namespace OpenLoco::GameCommands
         int32_t reliability = vehObject.reliability * 256;
         if (vehObject.designed + 2 > getCurrentYear())
         {
-            // Vanilla intended to reduce reliability by 1/8th twice for the first two years after year designed, then reduce reliability by 1/8th once for the third year. However, a bug in the vanilla assembly meant that the third-year condition was only true if the two-year condition was true, so only the twice-applied 1/8th reduction for the first two years was applied.
+            // Vanilla intended to reduce reliability by 1/8th twice for the first two years after the year designed, then reduce reliability by 1/8th once for the third year. However, a bug meant that only the two 1/8th reductions were applied.
             reliability -= reliability / 8;
             reliability -= reliability / 8;
         }
