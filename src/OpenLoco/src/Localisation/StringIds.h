@@ -9,7 +9,7 @@ namespace OpenLoco::StringIds
     constexpr StringId empty = 0;
     constexpr StringId empty_pop = 1;
     constexpr StringId new_company = 2;
-
+    constexpr StringId new_owner = 3;
     constexpr StringId train_number = 4;
     constexpr StringId bus_number = 5;
     constexpr StringId truck_number = 6;
@@ -1049,7 +1049,32 @@ namespace OpenLoco::StringIds
     constexpr StringId tooltip_industries_list = 1325;
     constexpr StringId tooltip_fund_new_industries = 1326;
     constexpr StringId tooltip_build_new_industries = 1327;
-
+    constexpr StringId company_ai_name_ebony = 1328;
+    constexpr StringId company_ai_name_silver = 1329;
+    constexpr StringId company_ai_name_ivory = 1330;
+    constexpr StringId company_ai_name_indigo = 1331;
+    constexpr StringId company_ai_name_sapphire = 1332;
+    constexpr StringId company_ai_name_emerald = 1333;
+    constexpr StringId company_ai_name_golden = 1334;
+    constexpr StringId company_ai_name_amber = 1335;
+    constexpr StringId company_ai_name_bronze = 1336;
+    constexpr StringId company_ai_name_burgundy = 1337;
+    constexpr StringId company_ai_name_scarlet = 1338;
+    constexpr StringId company_ai_name_string = 1339;
+    constexpr StringId company_ai_name_pop_string = 1340;
+    constexpr StringId company_ai_name_string_transport = 1341;
+    constexpr StringId company_ai_name_string_express = 1342;
+    constexpr StringId company_ai_name_string_lines = 1343;
+    constexpr StringId company_ai_name_string_tracks = 1344;
+    constexpr StringId company_ai_name_string_coaches = 1345;
+    constexpr StringId company_ai_name_string_air = 1346;
+    constexpr StringId company_ai_name_string_rail = 1347;
+    constexpr StringId company_ai_name_string_carts = 1348;
+    constexpr StringId company_ai_name_string_trains = 1349;
+    constexpr StringId company_ai_name_string_haulage = 1350;
+    constexpr StringId company_ai_name_string_shipping = 1351;
+    constexpr StringId company_ai_name_string_freight = 1352;
+    constexpr StringId company_ai_name_string_trucks = 1353;
     constexpr StringId wcolour2_headquarters = 1354;
     constexpr StringId window_owner = 1355;
     constexpr StringId interest_per_year = 1356;
