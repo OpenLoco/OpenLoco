@@ -17,23 +17,22 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::GameCommands
 {
     // 0x004B6B0C
-    static bool canVehicleBeStarted(Vehicles::VehicleHead* head)
+    static bool canVehicleBeStarted(const Vehicles::Vehicle& train)
     {
-        auto* company = CompanyManager::get(head->owner);
+        auto* company = CompanyManager::get(train.head->owner);
         if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
             GameCommands::setErrorText(StringIds::company_is_bankrupt);
             return false;
         }
 
-        Vehicles::Vehicle train(*head);
         if (train.cars.empty())
         {
             GameCommands::setErrorText(StringIds::train_has_no_vehicles);
             return false;
         }
 
-        if (!head->hasVehicleFlags(VehicleFlags::manualControl))
+        if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
             auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
@@ -50,7 +49,7 @@ namespace OpenLoco::GameCommands
             GameCommands::setErrorText(StringIds::train_needs_a_locomotive_or_power_car);
             return false;
         }
-        if (!head->hasVehicleFlags(VehicleFlags::manualControl))
+        if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
             uint16_t pairObjectId = 0xFFFFU;
             uint16_t pairCount = 0U;
@@ -107,7 +106,7 @@ namespace OpenLoco::GameCommands
     static uint32_t startStopVehicle(const Vehicles::Vehicle& train, bool startVehicle, const uint8_t flags)
     {
         // Starting this vehicle -- can we?
-        if (startVehicle && !canVehicleBeStarted(train.head))
+        if (startVehicle && !canVehicleBeStarted(train))
         {
             return FAILURE;
         }
@@ -153,7 +152,7 @@ namespace OpenLoco::GameCommands
     static uint32_t toggleManualDriving(const Vehicles::Vehicle& train, const uint8_t flags)
     {
         // Can we change driving modes?
-        if (!canVehicleBeStarted(train.head))
+        if (!canVehicleBeStarted(train))
         {
             return FAILURE;
         }
