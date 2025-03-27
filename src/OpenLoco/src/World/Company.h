@@ -3,6 +3,7 @@
 #include "CompanyAi.h"
 #include "Economy/Currency.h"
 #include "Economy/Expenditures.h"
+#include "Engine/Limits.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -10,6 +11,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <sfl/static_vector.hpp>
 #include <vector>
 
 namespace OpenLoco
@@ -263,8 +265,6 @@ namespace OpenLoco
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
-        std::vector<uint8_t> getAvailableRailTracks() const;
-        std::vector<uint8_t> getAvailableRoads() const;
         uint8_t getHeadquarterPerformanceVariation() const;
 
     private:
@@ -287,6 +287,13 @@ namespace OpenLoco
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
     void companyEmotionEvent(CompanyId companyId, Emotion emotion);
     void companySetObservation(CompanyId id, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object);
+
+    // This is kMaxRoadObjects + kMaxTrackObjects as tram tracks are roads but are tracks
+    // and vice versa there was capabilities for some unknown track type to be classed as a road
+    using AvailableTracksAndRoads = sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects>;
+
+    AvailableTracksAndRoads companyGetAvailableRailTracks(const CompanyId id);
+    AvailableTracksAndRoads companyGetAvailableRoads(const CompanyId id);
     void updateYearly(Company& company);
     struct ProfitAndValue
     {

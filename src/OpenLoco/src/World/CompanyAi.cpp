@@ -808,7 +808,7 @@ namespace OpenLoco
     }
 
     // 0x0047FE3A
-    static bool chooseTrackObject(Company& company, AiThought& thought)
+    static bool chooseTrackObject(CompanyId companyId, AiThought& thought)
     {
         const auto destinations = getDestinationPositions(thought);
         using enum World::Track::TrackTraitFlags;
@@ -825,7 +825,7 @@ namespace OpenLoco
             }
         }
 
-        const auto tracks = company.getAvailableRailTracks();
+        const auto tracks = companyGetAvailableRailTracks(companyId);
         Speed16 maxSpeed = 0_mph;
         uint8_t bestTrack = 0xFFU;
         for (const auto trackObjId : tracks)
@@ -863,9 +863,9 @@ namespace OpenLoco
     }
 
     // 0x0047FFE5
-    static bool chooseBasicRoadObject(Company& company, AiThought& thought)
+    static bool chooseBasicRoadObject(CompanyId companyId, AiThought& thought)
     {
-        const auto roads = company.getAvailableRoads();
+        const auto roads = companyGetAvailableRoads(companyId);
         const auto requiredTraits = World::Track::RoadTraitFlags::verySmallCurve | World::Track::RoadTraitFlags::slope | World::Track::RoadTraitFlags::steepSlope | World::Track::RoadTraitFlags::unk4 | World::Track::RoadTraitFlags::junction;
         Speed16 maxSpeed = 0_mph;
         uint8_t bestRoad = 0xFFU;
@@ -905,9 +905,9 @@ namespace OpenLoco
     }
 
     // 0x0047FF77
-    static bool chooseTramRoadObject(Company& company, AiThought& thought)
+    static bool chooseTramRoadObject(CompanyId companyId, AiThought& thought)
     {
-        const auto roads = company.getAvailableRailTracks();
+        const auto roads = companyGetAvailableRailTracks(companyId);
         const auto requiredTraits = World::Track::RoadTraitFlags::verySmallCurve | World::Track::RoadTraitFlags::slope | World::Track::RoadTraitFlags::steepSlope | World::Track::RoadTraitFlags::unk4 | World::Track::RoadTraitFlags::junction | World::Track::RoadTraitFlags::turnaround;
         Speed16 maxSpeed = 0_mph;
         uint8_t bestRoad = 0xFFU;
@@ -943,7 +943,7 @@ namespace OpenLoco
     }
 
     // 0x00480059
-    static bool chooseTrackRoadObject(Company& company, AiThought& thought)
+    static bool chooseTrackRoadObject(CompanyId companyId, AiThought& thought)
     {
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased | ThoughtTypeFlags::airBased))
         {
@@ -951,15 +951,15 @@ namespace OpenLoco
         }
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
         {
-            return chooseTrackObject(company, thought);
+            return chooseTrackObject(companyId, thought);
         }
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
         {
-            return chooseBasicRoadObject(company, thought);
+            return chooseBasicRoadObject(companyId, thought);
         }
         else
         {
-            return chooseTramRoadObject(company, thought);
+            return chooseTramRoadObject(companyId, thought);
         }
     }
 
@@ -967,7 +967,7 @@ namespace OpenLoco
     static void sub_430C06(Company& company)
     {
         auto& thought = company.aiThoughts[company.activeThoughtId];
-        if (chooseTrackRoadObject(company, thought))
+        if (chooseTrackRoadObject(company.id(), thought))
         {
             state2ClearActiveThought(company);
         }
