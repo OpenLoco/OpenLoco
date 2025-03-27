@@ -1783,7 +1783,7 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(destination);
+                thought.destinationA = enumValue(destination);
                 thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
             }
@@ -1797,7 +1797,7 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(destination);
+                thought.destinationA = enumValue(destination);
                 thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
             }
@@ -1811,8 +1811,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(destinationA);
-                thought.var_02 = enumValue(destinationB);
+                thought.destinationA = enumValue(destinationA);
+                thought.destinationB = enumValue(destinationB);
 
                 thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
@@ -1826,8 +1826,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(destinationA);
-                thought.var_02 = enumValue(destinationB);
+                thought.destinationA = enumValue(destinationA);
+                thought.destinationB = enumValue(destinationB);
 
                 thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
@@ -1842,8 +1842,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(dest.industryA);
-                thought.var_02 = enumValue(dest.industryB);
+                thought.destinationA = enumValue(dest.industryA);
+                thought.destinationB = enumValue(dest.industryB);
 
                 thought.cargoType = dest.cargoType;
                 break;
@@ -1857,8 +1857,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(dest.industryA);
-                thought.var_02 = enumValue(dest.industryB);
+                thought.destinationA = enumValue(dest.industryA);
+                thought.destinationB = enumValue(dest.industryB);
 
                 thought.cargoType = dest.cargoType;
                 break;
@@ -1873,8 +1873,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(dest.industryA);
-                thought.var_02 = enumValue(dest.townB);
+                thought.destinationA = enumValue(dest.industryA);
+                thought.destinationB = enumValue(dest.townB);
 
                 thought.cargoType = dest.cargoType;
                 break;
@@ -1888,8 +1888,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(dest.industryA);
-                thought.var_02 = enumValue(dest.townB);
+                thought.destinationA = enumValue(dest.industryA);
+                thought.destinationB = enumValue(dest.townB);
 
                 thought.cargoType = dest.cargoType;
                 break;
@@ -1903,8 +1903,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(destinationA);
-                thought.var_02 = enumValue(destinationB);
+                thought.destinationA = enumValue(destinationA);
+                thought.destinationB = enumValue(destinationB);
 
                 thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
@@ -1918,8 +1918,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(dest.industryA);
-                thought.var_02 = enumValue(dest.townB);
+                thought.destinationA = enumValue(dest.industryA);
+                thought.destinationB = enumValue(dest.townB);
 
                 thought.cargoType = dest.cargoType;
                 break;
@@ -1933,8 +1933,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(destinationA);
-                thought.var_02 = enumValue(destinationB);
+                thought.destinationA = enumValue(destinationA);
+                thought.destinationB = enumValue(destinationB);
 
                 thought.cargoType = IndustryManager::getMostCommonBuildingCargoType();
                 break;
@@ -1948,8 +1948,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(dest.industryA);
-                thought.var_02 = enumValue(dest.industryB);
+                thought.destinationA = enumValue(dest.industryA);
+                thought.destinationB = enumValue(dest.industryB);
 
                 thought.cargoType = dest.cargoType;
                 break;
@@ -1963,8 +1963,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(dest.industryA);
-                thought.var_02 = enumValue(dest.townB);
+                thought.destinationA = enumValue(dest.industryA);
+                thought.destinationB = enumValue(dest.townB);
 
                 thought.cargoType = dest.cargoType;
                 break;
@@ -1978,8 +1978,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(dest.industryA);
-                thought.var_02 = enumValue(dest.townB);
+                thought.destinationA = enumValue(dest.industryA);
+                thought.destinationB = enumValue(dest.townB);
 
                 thought.cargoType = dest.cargoType;
                 break;
@@ -1993,8 +1993,8 @@ namespace OpenLoco
                     thought.type = AiThoughtType::null;
                     return;
                 }
-                thought.var_01 = enumValue(dest.industryA);
-                thought.var_02 = enumValue(dest.townB);
+                thought.destinationA = enumValue(dest.industryA);
+                thought.destinationB = enumValue(dest.townB);
 
                 thought.cargoType = dest.cargoType;
                 break;
