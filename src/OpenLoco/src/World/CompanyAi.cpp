@@ -1287,12 +1287,12 @@ namespace OpenLoco
         thought.trackObjId = bestTrack;
         if ((requiredTraits & steepSlope) != World::Track::TrackTraitFlags::none)
         {
-            thought.var_8B |= 1U << 0;
+            thought.purchaseFlags |= AiPurchaseFlags::unk0;
         }
         auto* trackObj = ObjectManager::get<TrackObject>(bestTrack);
         if (trackObj->hasFlags(TrackObjectFlags::unk_04))
         {
-            thought.var_8B |= 1U << 1;
+            thought.purchaseFlags |= AiPurchaseFlags::unk1;
         }
         return false;
     }
