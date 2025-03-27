@@ -161,28 +161,28 @@ namespace OpenLoco
         uint8_t max;
     };
     // 0x004FE784 & 0x004FE785
-    static constexpr std::array<ThoughtMinMaxVehicles, kAiThoughtTypeCount> kThoughtTypeMinMaxNumVehicles = {
-        ThoughtMinMaxVehicles{ 1, 3 },
-        ThoughtMinMaxVehicles{ 1, 3 },
-        ThoughtMinMaxVehicles{ 2, 6 },
-        ThoughtMinMaxVehicles{ 1, 1 },
-        ThoughtMinMaxVehicles{ 2, 5 },
-        ThoughtMinMaxVehicles{ 1, 3 },
-        ThoughtMinMaxVehicles{ 2, 5 },
-        ThoughtMinMaxVehicles{ 1, 1 },
-        ThoughtMinMaxVehicles{ 2, 5 },
-        ThoughtMinMaxVehicles{ 1, 1 },
-        ThoughtMinMaxVehicles{ 2, 5 },
-        ThoughtMinMaxVehicles{ 2, 5 },
-        ThoughtMinMaxVehicles{ 2, 5 },
-        ThoughtMinMaxVehicles{ 1, 3 },
-        ThoughtMinMaxVehicles{ 1, 2 },
-        ThoughtMinMaxVehicles{ 1, 3 },
-        ThoughtMinMaxVehicles{ 1, 4 },
-        ThoughtMinMaxVehicles{ 1, 3 },
-        ThoughtMinMaxVehicles{ 1, 1 },
-        ThoughtMinMaxVehicles{ 2, 5 },
-    };
+    static constexpr std::array<ThoughtMinMaxVehicles, kAiThoughtTypeCount> kThoughtTypeMinMaxNumVehicles = std::to_array<ThoughtMinMaxVehicles>({
+        { 1, 3 },
+        { 1, 3 },
+        { 2, 6 },
+        { 1, 1 },
+        { 2, 5 },
+        { 1, 3 },
+        { 2, 5 },
+        { 1, 1 },
+        { 2, 5 },
+        { 1, 1 },
+        { 2, 5 },
+        { 2, 5 },
+        { 2, 5 },
+        { 1, 3 },
+        { 1, 2 },
+        { 1, 3 },
+        { 1, 4 },
+        { 1, 3 },
+        { 1, 1 },
+        { 2, 5 },
+    });
 
     static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
     {
