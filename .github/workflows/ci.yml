@@ -39,10 +39,10 @@ jobs:
           fetch-depth: 0
           submodules: true
       - name: Restore artifacts, or setup vcpkg
-        uses: lukka/run-vcpkg@v11.4
+        uses: lukka/run-vcpkg@v11.5
         with:
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-          vcpkgGitCommitId: 1de2026f28ead93ff1773e6e680387643e914ea1
+          vcpkgGitCommitId: c63619856b89f0af4d77ba2049396039e4985418
       - name: Build OpenLoco
         shell: cmd
         run: |
