@@ -287,8 +287,13 @@ namespace OpenLoco
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
     void companyEmotionEvent(CompanyId companyId, Emotion emotion);
     void companySetObservation(CompanyId id, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object);
-    sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects> companyGetAvailableRailTracks(const CompanyId id);
-    sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects> companyGetAvailableRoads(const CompanyId id);
+
+    // This is kMaxRoadObjects + kMaxTrackObjects as tram tracks are roads but are tracks
+    // and vice versa there was capabilities for some unknown track type to be classed as a road
+    using AvailableTracksAndRoads = sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects>;
+
+    AvailableTracksAndRoads companyGetAvailableRailTracks(const CompanyId id);
+    AvailableTracksAndRoads companyGetAvailableRoads(const CompanyId id);
     void updateYearly(Company& company);
     struct ProfitAndValue
     {

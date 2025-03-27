@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static loco_global<uint8_t, 0x009C870D> _lastPortOption;
     static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
     // Replaces 0x0050A006
-    sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects> availableTracks;
+    AvailableTracksAndRoads availableTracks;
 
     namespace Widx
     {

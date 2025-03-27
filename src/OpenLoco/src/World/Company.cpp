@@ -341,9 +341,9 @@ namespace OpenLoco
      * Creates a vector of all the available rail track (trains and trams) for a company
      * Tram track is marked with a (1<<7) flag within the uint8_t
      */
-    sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects> companyGetAvailableRailTracks(const CompanyId id)
+    AvailableTracksAndRoads companyGetAvailableRailTracks(const CompanyId id)
     {
-        sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects> result;
+        AvailableTracksAndRoads result;
         const auto* company = CompanyManager::get(id);
         sfl::static_unordered_flat_set<uint8_t, Limits::kMaxTrackObjects> tracks;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
@@ -408,9 +408,9 @@ namespace OpenLoco
      * Creates a vector of all the available road track (roads {no trams} and tracks with no rails??) for a company
      * Roads are marked with a (1<<7) flag within the uint8_t
      */
-    sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects> companyGetAvailableRoads(const CompanyId id)
+    AvailableTracksAndRoads companyGetAvailableRoads(const CompanyId id)
     {
-        sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects> result;
+        AvailableTracksAndRoads result;
 
         const auto* company = CompanyManager::get(id);
         sfl::static_unordered_flat_set<uint8_t, Limits::kMaxRoadObjects> roads;
