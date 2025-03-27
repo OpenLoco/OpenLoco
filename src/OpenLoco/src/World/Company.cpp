@@ -1030,7 +1030,7 @@ namespace OpenLoco
                 {
                     return 100;
                 }
-                return (objective.companyValue / 100) / curMonthValue.asInt64();
+                return curMonthValue.asInt64() / (objective.companyValue / 100);
             }
             case Scenario::ObjectiveType::vehicleProfit:
             {
@@ -1044,7 +1044,7 @@ namespace OpenLoco
                     progress = 100;
                     break;
                 }
-                progress = (objective.monthlyVehicleProfit / 100) / vehicleProfit.asInt64();
+                progress = vehicleProfit.asInt64() / (objective.monthlyVehicleProfit / 100);
                 break;
             }
             case Scenario::ObjectiveType::performanceIndex:
@@ -1074,7 +1074,7 @@ namespace OpenLoco
                     progress = 100;
                     break;
                 }
-                progress = (objective.deliveredCargoAmount / 100) / cargoQty;
+                progress = cargoQty / (objective.deliveredCargoAmount / 100);
                 break;
             }
         }
