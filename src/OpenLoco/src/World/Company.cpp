@@ -1,5 +1,6 @@
 #include "Company.h"
 #include "CompanyManager.h"
+#include "Date.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/Company/ChangeLoan.h"
@@ -15,6 +16,7 @@
 #include "Map/TileManager.h"
 #include "MessageManager.h"
 #include "Objects/BuildingObject.h"
+#include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -952,13 +954,130 @@ namespace OpenLoco
         }
     }
 
+    // 0x00438747
+    static uint8_t applyBeTopProgressModifiers(const uint8_t progress, const Scenario::Objective& objective, const Company& company)
+    {
+        if ((objective.flags & (Scenario::ObjectiveFlags::beTopCompany | Scenario::ObjectiveFlags::beWithinTopThreeCompanies)) == Scenario::ObjectiveFlags::none)
+        {
+            return progress;
+        }
+
+        auto numCompaniesBetterPerforming = 0U;
+        for (auto& otherCompany : CompanyManager::companies())
+        {
+            if (otherCompany.id() == company.id())
+            {
+                continue;
+            }
+            if (company.performanceIndex < otherCompany.performanceIndex)
+            {
+                numCompaniesBetterPerforming++;
+            }
+        }
+
+        if ((objective.flags & Scenario::ObjectiveFlags::beTopCompany) != Scenario::ObjectiveFlags::none)
+        {
+            if (numCompaniesBetterPerforming != 0)
+            {
+                return std::max(progress - 10, 0);
+            }
+            return progress;
+        }
+        if ((objective.flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != Scenario::ObjectiveFlags::none)
+        {
+            if (numCompaniesBetterPerforming >= 3)
+            {
+                // Reduces progress by 10% for each company outside of top 3 better performing than the player
+                // Caps out at 30% reduction
+                const auto multiplier = std::min(numCompaniesBetterPerforming - 2, 3U);
+                return std::max(progress - 10 * multiplier, 0U);
+            }
+            return progress;
+        }
+        return progress;
+    }
+
     // 0x004385F6
     uint8_t Company::getNewChallengeProgress() const
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.ebx = enumValue(id());
-        call(0x004385F6, regs);
-        return regs.al;
+        if ((challengeFlags & CompanyFlags::challengeCompleted) != CompanyFlags::none)
+        {
+            return 100;
+        }
+
+        if ((challengeFlags & (CompanyFlags::challengeFailed | CompanyFlags::challengeBeatenByOpponent)) != CompanyFlags::none)
+        {
+            return 255;
+        }
+
+        auto& objectiveProgress = Scenario::getObjectiveProgress();
+        auto& objective = Scenario::getObjective();
+        if ((challengeFlags & CompanyFlags::unk2) != CompanyFlags::none)
+        {
+            if (objectiveProgress.timeLimitUntilYear < getCurrentYear() && getCurrentMonth() != MonthId::january)
+            {
+                return 255;
+            }
+        }
+
+        uint8_t progress = 0U;
+        switch (objective.type)
+        {
+            case Scenario::ObjectiveType::companyValue:
+            {
+                const auto curMonthValue = companyValueHistory[0];
+                if (curMonthValue >= currency32_t(objective.companyValue))
+                {
+                    return 100;
+                }
+                return (objective.companyValue / 100) / curMonthValue.asInt64();
+            }
+            case Scenario::ObjectiveType::vehicleProfit:
+            {
+                if (vehicleProfit <= 0)
+                {
+                    return 0;
+                }
+
+                if (vehicleProfit >= currency32_t(objective.monthlyVehicleProfit))
+                {
+                    progress = 100;
+                    break;
+                }
+                progress = (objective.monthlyVehicleProfit / 100) / vehicleProfit.asInt64();
+                break;
+            }
+            case Scenario::ObjectiveType::performanceIndex:
+            {
+                if (objective.performanceIndex * 10 <= performanceIndex)
+                {
+                    progress = 100;
+                    break;
+                }
+                progress = (performanceIndex * 10) / objective.performanceIndex;
+                break;
+            }
+            case Scenario::ObjectiveType::cargoDelivery:
+            {
+                if (objective.deliveredCargoType == 0xFFU)
+                {
+                    return 0;
+                }
+                auto* cargoObj = ObjectManager::get<CargoObject>(objective.deliveredCargoType);
+                if (cargoObj == nullptr)
+                {
+                    return 0;
+                }
+                const auto cargoQty = cargoDelivered[objective.deliveredCargoType];
+                if (cargoQty >= objective.deliveredCargoAmount)
+                {
+                    progress = 100;
+                    break;
+                }
+                progress = (objective.deliveredCargoAmount / 100) / cargoQty;
+                break;
+            }
+        }
+        return applyBeTopProgressModifiers(progress, objective, *this);
     }
 }
