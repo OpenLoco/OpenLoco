@@ -2028,12 +2028,9 @@ namespace OpenLoco
                     return;
                 }
             }
+            break;
         }
-        if (company.activeThoughtId != 0xFFU)
-        {
-            company.aiThoughts[company.activeThoughtId].type = AiThoughtType::null;
-        }
-        company.var_4A5 = 13;
+        state2ClearActiveThought(company);
     }
 
     struct SimilarThoughts
