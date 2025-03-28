@@ -54,7 +54,7 @@ namespace OpenLoco::CompanyAi
         auto& thought = company.aiThoughts[head.aiThoughtId];
         removeEntityFromThought(thought, head.id);
         thought.var_43--;
-        thought.var_8B |= (1U << 4);
+        thought.purchaseFlags |= AiPurchaseFlags::unk4;
 
         GameCommands::VehicleSellArgs args{};
         args.car = head.id;

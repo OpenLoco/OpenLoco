@@ -27,6 +27,7 @@
 #include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
+#include "GameState.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
