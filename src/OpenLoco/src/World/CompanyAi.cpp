@@ -161,7 +161,7 @@ namespace OpenLoco
         uint8_t max;
     };
     // 0x004FE784 & 0x004FE785
-    static constexpr std::array<ThoughtMinMaxVehicles, kAiThoughtTypeCount> kThoughtTypeMinMaxNumVehicles = std::to_array<ThoughtMinMaxVehicles>({
+    static constexpr auto kThoughtTypeMinMaxNumVehicles = std::to_array<ThoughtMinMaxVehicles>({
         { 1, 3 },
         { 1, 3 },
         { 2, 6 },
@@ -183,6 +183,7 @@ namespace OpenLoco
         { 1, 1 },
         { 2, 5 },
     });
+    static_assert(std::size(kThoughtTypeMinMaxNumVehicles) == kAiThoughtTypeCount);
 
     static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
     {
