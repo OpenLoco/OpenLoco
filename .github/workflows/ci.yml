@@ -72,7 +72,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: OpenLoco/TestData
-          ref: c787563d0ec37b8173e303bf00416d8cde2c51fc
+          ref: 3621e988e3b3cdbbd4040119991afbc72e6d72f2
           path: TestData
       - name: Run Simulate Test
         if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }} 
