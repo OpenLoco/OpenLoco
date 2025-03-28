@@ -28,6 +28,7 @@
 #include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
+#include "GameState.h"
 #include "Industry.h"
 #include "IndustryManager.h"
 #include "Map/BuildingElement.h"
@@ -153,6 +154,36 @@ namespace OpenLoco
         2,
         2,
     };
+
+    struct ThoughtMinMaxVehicles
+    {
+        uint8_t min;
+        uint8_t max;
+    };
+    // 0x004FE784 & 0x004FE785
+    static constexpr auto kThoughtTypeMinMaxNumVehicles = std::to_array<ThoughtMinMaxVehicles>({
+        { 1, 3 },
+        { 1, 3 },
+        { 2, 6 },
+        { 1, 1 },
+        { 2, 5 },
+        { 1, 3 },
+        { 2, 5 },
+        { 1, 1 },
+        { 2, 5 },
+        { 1, 1 },
+        { 2, 5 },
+        { 2, 5 },
+        { 2, 5 },
+        { 1, 3 },
+        { 1, 2 },
+        { 1, 3 },
+        { 1, 4 },
+        { 1, 3 },
+        { 1, 1 },
+        { 2, 5 },
+    });
+    static_assert(std::size(kThoughtTypeMinMaxNumVehicles) == kAiThoughtTypeCount);
 
     static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
     {
@@ -569,13 +600,418 @@ namespace OpenLoco
         return thought.var_84 < val2;
     }
 
-    // 0x00488050
-    static bool sub_488050(const Company& company, const AiThought& thought)
+    struct VehiclePurchaseRequest
+    {
+        uint8_t numVehicleObjects; // cl
+        uint8_t dl;                // dl
+        currency32_t ebx;          // ebx
+        currency32_t eax;          // eax
+    };
+
+    // 0x004802D0
+    static VehiclePurchaseRequest aiGenerateVehiclePurchaseRequest(AiThought& thought, uint16_t* requestBuffer)
     {
         registers regs;
-        regs.esi = X86Pointer(&company);
+        regs.esi = X86Pointer(requestBuffer);
         regs.edi = X86Pointer(&thought);
-        return call(0x00488050, regs) & X86_FLAG_CARRY;
+        call(0x004802D0, regs);
+        VehiclePurchaseRequest res{};
+        res.numVehicleObjects = regs.cl;
+        res.dl = regs.dl;
+        res.ebx = regs.ebx;
+        res.eax = regs.eax;
+        return res;
+    }
+
+    // 0x004883D4
+    static int32_t getUntransportedQuantity(const AiThought& thought)
+    {
+        int32_t quantity = 0;
+        for (auto i = 0U; i < thought.numStations; ++i)
+        {
+            auto& aiStation = thought.stations[i];
+            auto* station = StationManager::get(aiStation.id);
+            auto& cargoStats = station->cargoStats[thought.cargoType];
+            quantity += cargoStats.quantity;
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+            {
+                break;
+            }
+        }
+        if (thought.numVehicles == 0)
+        {
+            return quantity;
+        }
+        auto train = Vehicles::Vehicle(thought.vehicles[0]);
+        for (const auto& car : train.cars)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            for (auto i = 0U; i < 2; ++i)
+            {
+                if (vehicleObj->compatibleCargoCategories[i] & (1U << thought.cargoType))
+                {
+                    quantity -= vehicleObj->maxCargo[i];
+                }
+            }
+        }
+        return quantity;
+    }
+
+    // 0x00480096
+    static bool determineStationAndTrackModTypes(AiThought& thought)
+    {
+        uint16_t mods = 0;
+        uint8_t rackRail = 0xFFU;
+        for (auto i = 0U; i < thought.var_45; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
+            for (auto j = 0U; j < vehicleObj->numTrackExtras; ++j)
+            {
+                mods |= (1U << vehicleObj->requiredTrackExtras[j]);
+            }
+
+            if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+            {
+                if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
+                {
+                    rackRail = vehicleObj->rackRailType;
+                }
+            }
+        }
+        thought.mods = mods;
+        thought.rackRailType = rackRail;
+
+        uint8_t chosenStationObject = 0xFFU;
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            const auto airports = getAvailableAirports();
+            int16_t bestDesignYear = -1;
+
+            for (const auto airportObjId : airports)
+            {
+                auto* airportObj = ObjectManager::get<AirportObject>(airportObjId);
+                if (airportObj->hasFlags(AirportObjectFlags::acceptsHeavyPlanes | AirportObjectFlags::acceptsLightPlanes))
+                {
+                    if (bestDesignYear < airportObj->designedYear)
+                    {
+                        bestDesignYear = airportObj->designedYear;
+                        chosenStationObject = airportObjId;
+                    }
+                }
+            }
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+            thought.signalObjId = 0xFFU;
+            return false;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            const auto docks = getAvailableDocks();
+            int16_t bestDesignYear = -1;
+
+            for (const auto dockObjId : docks)
+            {
+                auto* dockObj = ObjectManager::get<DockObject>(dockObjId);
+
+                if (bestDesignYear < dockObj->designedYear)
+                {
+                    bestDesignYear = dockObj->designedYear;
+                    chosenStationObject = dockObjId;
+                }
+            }
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+            thought.signalObjId = 0xFFU;
+            return false;
+        }
+        else if (thought.trackObjId & (1U << 7))
+        {
+            auto roadStations = getAvailableCompatibleStations(thought.trackObjId & ~(1U << 7), TransportMode::road);
+            int16_t bestDesignYear = -1;
+            bool hadIdealSelection = false;
+            for (const auto roadStationObjId : roadStations)
+            {
+                auto* roadStationObj = ObjectManager::get<RoadStationObject>(roadStationObjId);
+                if (roadStationObj->hasFlags(RoadStationFlags::passenger)
+                    && roadStationObj->cargoType != thought.cargoType)
+                {
+                    continue;
+                }
+                if (roadStationObj->hasFlags(RoadStationFlags::freight)
+                    && roadStationObj->cargoType == thought.cargoType) // Why??
+                {
+                    continue;
+                }
+
+                bool hasRequiredRoadEnd = roadStationObj->hasFlags(RoadStationFlags::roadEnd) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk8);
+
+                // If we have previously used a fallback we want to remove the fallback and use
+                // the ideal selection
+                bool alwaysSelect = hasRequiredRoadEnd && !hadIdealSelection;
+
+                // We have now entered ideal selection mode so can remove non-ideal stations
+                // from potential selection
+                if (hadIdealSelection && !hasRequiredRoadEnd)
+                {
+                    continue;
+                }
+                hadIdealSelection |= hasRequiredRoadEnd;
+
+                if (!alwaysSelect)
+                {
+                    if (bestDesignYear >= roadStationObj->designedYear)
+                    {
+                        continue;
+                    }
+                }
+                bestDesignYear = roadStationObj->designedYear;
+                chosenStationObject = roadStationObjId;
+            }
+
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+            thought.signalObjId = 0xFFU;
+            return false;
+        }
+        else
+        {
+            const auto trainStations = getAvailableCompatibleStations(thought.trackObjId, TransportMode::rail);
+            int16_t bestDesignYear = -1;
+            for (const auto trainStationObjId : trainStations)
+            {
+                auto* trainStationObj = ObjectManager::get<TrainStationObject>(trainStationObjId);
+
+                if (bestDesignYear < trainStationObj->designedYear)
+                {
+                    bestDesignYear = trainStationObj->designedYear;
+                    chosenStationObject = trainStationObjId;
+                }
+            }
+
+            if (bestDesignYear == -1)
+            {
+                return true;
+            }
+            thought.stationObjId = chosenStationObject;
+
+            const auto signals = getAvailableCompatibleSignals(thought.trackObjId);
+            bestDesignYear = -1;
+            uint8_t chosenSignal = 0xFFU;
+
+            for (const auto signalObjId : signals)
+            {
+                auto* signalObj = ObjectManager::get<TrainSignalObject>(signalObjId);
+
+                if (bestDesignYear < signalObj->designedYear)
+                {
+                    bestDesignYear = signalObj->designedYear;
+                    chosenSignal = signalObjId;
+                }
+            }
+
+            thought.signalObjId = chosenSignal;
+            return false;
+        }
+    }
+
+    // 0x00488050
+    static bool sub_488050(const Company& company, AiThought& thought)
+    {
+        thought.purchaseFlags &= ~(AiPurchaseFlags::unk2 | AiPurchaseFlags::requiresMods);
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return false;
+        }
+
+        if (thought.numVehicles != 0)
+        {
+            auto train = Vehicles::Vehicle(thought.vehicles[0]);
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                const auto reliability = car.front->reliability;
+                if (vehicleObj->power != 0 && (getCurrentYear() >= vehicleObj->obsolete || (reliability != 0 && reliability < 0x1900)))
+                {
+                    const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+                    if (purchaseRequest.numVehicleObjects == 0)
+                    {
+                        return false;
+                    }
+                    thought.var_43 = purchaseRequest.dl;
+                    thought.var_45 = purchaseRequest.numVehicleObjects;
+                    thought.purchaseFlags |= AiPurchaseFlags::unk2;
+                    if (determineStationAndTrackModTypes(thought))
+                    {
+                        return false;
+                    }
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+                    {
+                        return true;
+                    }
+                    uint16_t existingMods = 0xFFFFU;
+                    auto tile = World::TileManager::get(thought.stations[0].pos);
+                    for (const auto& el : tile)
+                    {
+                        if (el.baseZ() != thought.stations[0].baseZ)
+                        {
+                            continue;
+                        }
+                        auto* elTrack = el.as<World::TrackElement>();
+                        if (elTrack != nullptr)
+                        {
+                            existingMods = 0U;
+                            auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
+                            for (auto i = 0U; i < 4; ++i)
+                            {
+                                if (elTrack->hasMod(i))
+                                {
+                                    existingMods |= 1U << trackObj->mods[i];
+                                }
+                            }
+                            break;
+                        }
+                        auto* elRoad = el.as<World::RoadElement>();
+                        if (elRoad != nullptr)
+                        {
+                            const bool targetIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << (thought.trackObjId & ~(1U << 7)));
+                            const bool elIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId());
+                            if (targetIsNotTram)
+                            {
+                                if (!elIsNotTram)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (elIsNotTram)
+                                {
+                                    continue;
+                                }
+                                if (thought.trackObjId != elRoad->roadObjectId())
+                                {
+                                    continue;
+                                }
+                            }
+                            existingMods = 0U;
+                            auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                            if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                            {
+                                for (auto i = 0U; i < 2; ++i)
+                                {
+                                    if (elRoad->hasMod(i))
+                                    {
+                                        existingMods |= 1U << roadObj->mods[i];
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    if (existingMods == 0xFFFFU)
+                    {
+                        return false;
+                    }
+                    if (thought.mods != existingMods)
+                    {
+                        thought.mods |= existingMods;
+                        thought.purchaseFlags |= AiPurchaseFlags::requiresMods;
+                    }
+                    return true;
+                }
+            }
+        }
+        // 0x00488149
+        if (thought.var_88 < 2)
+        {
+            return false;
+        }
+        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk4))
+        {
+            return false;
+        }
+        if (thought.numVehicles >= kThoughtTypeMinMaxNumVehicles[enumValue(thought.type)].max)
+        {
+            return false;
+        }
+        if (getUntransportedQuantity(thought) <= 50)
+        {
+            return false;
+        }
+
+        const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+        if (purchaseRequest.numVehicleObjects == 0)
+        {
+            return false;
+        }
+        thought.var_43 = thought.numVehicles + 1;
+        thought.var_45 = purchaseRequest.numVehicleObjects;
+        thought.purchaseFlags &= ~AiPurchaseFlags::unk2;
+        if (determineStationAndTrackModTypes(thought))
+        {
+            return false;
+        }
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+        uint16_t existingMods = 0xFFFFU;
+        auto tile = World::TileManager::get(thought.stations[0].pos);
+        for (const auto& el : tile)
+        {
+            if (el.baseZ() != thought.stations[0].baseZ)
+            {
+                continue;
+            }
+            auto* elTrack = el.as<World::TrackElement>();
+            if (elTrack != nullptr)
+            {
+                existingMods = 0U;
+                auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
+                for (auto i = 0U; i < 4; ++i)
+                {
+                    if (elTrack->hasMod(i))
+                    {
+                        existingMods |= 1U << trackObj->mods[i];
+                    }
+                }
+                break;
+            }
+            auto* elRoad = el.as<World::RoadElement>();
+            if (elRoad != nullptr)
+            {
+                existingMods = 0U;
+                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                for (auto i = 0U; i < 2; ++i)
+                {
+                    if (elRoad->hasMod(i))
+                    {
+                        existingMods |= 1U << roadObj->mods[i];
+                    }
+                }
+                break;
+            }
+        }
+        if (existingMods == 0xFFFFU)
+        {
+            return false;
+        }
+        if (thought.mods != existingMods)
+        {
+            thought.mods |= existingMods;
+            thought.purchaseFlags |= AiPurchaseFlags::requiresMods;
+        }
+        return true;
     }
 
     // 0x00430971
@@ -584,7 +1020,7 @@ namespace OpenLoco
         company.activeThoughtId++;
         if (company.activeThoughtId < kMaxAiThoughts)
         {
-            const auto& thought = company.aiThoughts[company.activeThoughtId];
+            auto& thought = company.aiThoughts[company.activeThoughtId];
             if (thought.type == AiThoughtType::null)
             {
                 aiThinkState1(company);
@@ -852,12 +1288,12 @@ namespace OpenLoco
         thought.trackObjId = bestTrack;
         if ((requiredTraits & steepSlope) != World::Track::TrackTraitFlags::none)
         {
-            thought.var_8B |= 1U << 0;
+            thought.purchaseFlags |= AiPurchaseFlags::unk0;
         }
         auto* trackObj = ObjectManager::get<TrackObject>(bestTrack);
         if (trackObj->hasFlags(TrackObjectFlags::unk_04))
         {
-            thought.var_8B |= 1U << 1;
+            thought.purchaseFlags |= AiPurchaseFlags::unk1;
         }
         return false;
     }
@@ -980,176 +1416,19 @@ namespace OpenLoco
     // 0x00430C2D
     static void sub_430C2D(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430C2D, regs);
-    }
-
-    // 0x00480096
-    static bool determineStationAndTrackModTypes(AiThought& thought)
-    {
-        uint16_t mods = 0;
-        uint8_t rackRail = 0xFFU;
-        for (auto i = 0U; i < thought.var_45; ++i)
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        const auto request = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+        if (request.numVehicleObjects == 0)
         {
-            auto* vehicleObj = ObjectManager::get<VehicleObject>(thought.var_46[i]);
-            for (auto j = 0U; j < vehicleObj->numTrackExtras; ++j)
-            {
-                mods |= (1U << vehicleObj->requiredTrackExtras[j]);
-            }
-
-            if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
-            {
-                if (thought.var_8B & (1U << 0))
-                {
-                    rackRail = vehicleObj->rackRailType;
-                }
-            }
+            state2ClearActiveThought(company);
+            return;
         }
-        thought.mods = mods;
-        thought.rackRailType = rackRail;
-
-        uint8_t chosenStationObject = 0xFFU;
-
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
-        {
-            const auto airports = getAvailableAirports();
-            int16_t bestDesignYear = -1;
-
-            for (const auto airportObjId : airports)
-            {
-                auto* airportObj = ObjectManager::get<AirportObject>(airportObjId);
-                if (airportObj->hasFlags(AirportObjectFlags::acceptsHeavyPlanes | AirportObjectFlags::acceptsLightPlanes))
-                {
-                    if (bestDesignYear < airportObj->designedYear)
-                    {
-                        bestDesignYear = airportObj->designedYear;
-                        chosenStationObject = airportObjId;
-                    }
-                }
-            }
-            if (bestDesignYear == -1)
-            {
-                return true;
-            }
-            thought.stationObjId = chosenStationObject;
-            thought.signalObjId = 0xFFU;
-            return false;
-        }
-        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
-        {
-            const auto docks = getAvailableDocks();
-            int16_t bestDesignYear = -1;
-
-            for (const auto dockObjId : docks)
-            {
-                auto* dockObj = ObjectManager::get<DockObject>(dockObjId);
-
-                if (bestDesignYear < dockObj->designedYear)
-                {
-                    bestDesignYear = dockObj->designedYear;
-                    chosenStationObject = dockObjId;
-                }
-            }
-            if (bestDesignYear == -1)
-            {
-                return true;
-            }
-            thought.stationObjId = chosenStationObject;
-            thought.signalObjId = 0xFFU;
-            return false;
-        }
-        else if (thought.trackObjId & (1U << 7))
-        {
-            auto roadStations = getAvailableCompatibleStations(thought.trackObjId & ~(1U << 7), TransportMode::road);
-            int16_t bestDesignYear = -1;
-            bool hadIdealSelection = false;
-            for (const auto roadStationObjId : roadStations)
-            {
-                auto* roadStationObj = ObjectManager::get<RoadStationObject>(roadStationObjId);
-                if (roadStationObj->hasFlags(RoadStationFlags::passenger)
-                    && roadStationObj->cargoType != thought.cargoType)
-                {
-                    continue;
-                }
-                if (roadStationObj->hasFlags(RoadStationFlags::freight)
-                    && roadStationObj->cargoType == thought.cargoType) // Why??
-                {
-                    continue;
-                }
-
-                bool hasRequiredRoadEnd = roadStationObj->hasFlags(RoadStationFlags::roadEnd) == thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk8);
-
-                // If we have previously used a fallback we want to remove the fallback and use
-                // the ideal selection
-                bool alwaysSelect = hasRequiredRoadEnd && !hadIdealSelection;
-
-                // We have now entered ideal selection mode so can remove non-ideal stations
-                // from potential selection
-                if (hadIdealSelection && !hasRequiredRoadEnd)
-                {
-                    continue;
-                }
-                hadIdealSelection |= hasRequiredRoadEnd;
-
-                if (!alwaysSelect)
-                {
-                    if (bestDesignYear >= roadStationObj->designedYear)
-                    {
-                        continue;
-                    }
-                }
-                bestDesignYear = roadStationObj->designedYear;
-                chosenStationObject = roadStationObjId;
-            }
-
-            if (bestDesignYear == -1)
-            {
-                return true;
-            }
-            thought.stationObjId = chosenStationObject;
-            thought.signalObjId = 0xFFU;
-            return false;
-        }
-        else
-        {
-            const auto trainStations = getAvailableCompatibleStations(thought.trackObjId, TransportMode::rail);
-            int16_t bestDesignYear = -1;
-            for (const auto trainStationObjId : trainStations)
-            {
-                auto* trainStationObj = ObjectManager::get<TrainStationObject>(trainStationObjId);
-
-                if (bestDesignYear < trainStationObj->designedYear)
-                {
-                    bestDesignYear = trainStationObj->designedYear;
-                    chosenStationObject = trainStationObjId;
-                }
-            }
-
-            if (bestDesignYear == -1)
-            {
-                return true;
-            }
-            thought.stationObjId = chosenStationObject;
-
-            const auto signals = getAvailableCompatibleSignals(thought.trackObjId);
-            bestDesignYear = -1;
-            uint8_t chosenSignal = 0xFFU;
-
-            for (const auto signalObjId : signals)
-            {
-                auto* signalObj = ObjectManager::get<TrainSignalObject>(signalObjId);
-
-                if (bestDesignYear < signalObj->designedYear)
-                {
-                    bestDesignYear = signalObj->designedYear;
-                    chosenSignal = signalObjId;
-                }
-            }
-
-            thought.signalObjId = chosenSignal;
-            return false;
-        }
+        thought.var_45 = request.numVehicleObjects;
+        thought.var_43 = request.dl;
+        thought.var_7C = request.dl * request.ebx;
+        thought.var_76 += request.eax;
+        company.var_85F2 = request.eax;
+        company.var_4A5 = 6;
     }
 
     // 0x00430C73
@@ -2575,11 +2854,11 @@ namespace OpenLoco
         {
             company.var_85C3 |= (1U << 3);
         }
-        if (thought.var_8B & (1U << 0))
+        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
         {
             company.var_85C3 |= (1U << 2);
         }
-        if (thought.var_8B & (1U << 1))
+        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk1))
         {
             company.var_85C3 |= (1U << 4);
         }
@@ -4171,7 +4450,7 @@ namespace OpenLoco
         // Gets refund costs for vehicles and costs for track mods
 
         thought.var_76 = 0;
-        if (thought.var_8B & (1U << 2))
+        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk2))
         {
             for (auto i = 0U; i < thought.numVehicles; ++i)
             {
@@ -4199,13 +4478,13 @@ namespace OpenLoco
             }
         }
         auto numPendingVehicles = thought.var_43;
-        if (!(thought.var_8B & (1U << 2)))
+        if (!thought.hasPurchaseFlags(AiPurchaseFlags::unk2))
         {
             numPendingVehicles -= thought.numVehicles;
         }
         thought.var_76 += pendingVehicleCarCosts * numPendingVehicles;
 
-        if (thought.var_8B & (1U << 3))
+        if (thought.hasPurchaseFlags(AiPurchaseFlags::requiresMods))
         {
             thought.var_76 += tryPlaceTrackOrRoadMods(thought, 0);
         }
@@ -4233,7 +4512,7 @@ namespace OpenLoco
             return true;
         }
 
-        if (!(thought.var_8B & (1U << 3)))
+        if (!thought.hasPurchaseFlags(AiPurchaseFlags::requiresMods))
         {
             return false;
         }
@@ -4259,7 +4538,7 @@ namespace OpenLoco
     // returns true when there are no vehicles left to sell
     static bool sellAiThoughtVehicleIfRequired(AiThought& thought)
     {
-        if (!(thought.var_8B & (1U << 2)))
+        if (!thought.hasPurchaseFlags(AiPurchaseFlags::unk2))
         {
             return true;
         }
