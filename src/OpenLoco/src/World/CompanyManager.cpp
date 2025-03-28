@@ -743,7 +743,7 @@ namespace OpenLoco::CompanyManager
             thought.type = AiThoughtType::null;
         }
         company->headquartersX = -1;
-        company->var_25BE = 0xFFU;
+        company->var_25BE = AiThoughtType::null;
         company->unlockedVehicles.reset();
         company->availableVehicles = 0;
         company->currentLoan = getInflationAdjustedStartingLoan();

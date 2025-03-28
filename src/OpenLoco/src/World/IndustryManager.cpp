@@ -109,7 +109,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x0047EA42
-    size_t getMostCommonBuildingCargoType()
+    uint8_t getMostCommonBuildingCargoType()
     {
         // First generate a count of all the different cargo based on what building could generate
         std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)> cargoCounts{};
@@ -134,7 +134,7 @@ namespace OpenLoco::IndustryManager
         }
 
         // If none are common pick any valid cargo object
-        for (size_t cargoObjId = 0; cargoObjId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoObjId)
+        for (uint8_t cargoObjId = 0; cargoObjId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoObjId)
         {
             const auto* cargoObj = ObjectManager::get<CargoObject>(cargoObjId);
             if (cargoObj == nullptr)
