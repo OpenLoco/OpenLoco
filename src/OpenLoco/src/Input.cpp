@@ -6,6 +6,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <SDL_mouse.h>
 #include <map>
 
 using namespace OpenLoco::Interop;
@@ -56,7 +57,17 @@ namespace OpenLoco::Input
             _cursorDragState = 1;
             auto cursor = Ui::getCursorPos();
             _cursorDragStart = cursor;
-            Ui::hideCursor();
+
+            auto result = SDL_SetRelativeMouseMode(SDL_TRUE);
+            if (result == 0)
+            {
+                // Consume the mouse delta x and y of SDL centering the mouse cursor
+                SDL_GetRelativeMouseState(nullptr, nullptr);
+            }
+            else
+            {
+                Ui::hideCursor();
+            }
         }
     }
 
@@ -67,22 +78,41 @@ namespace OpenLoco::Input
         {
             _cursorDragState = 0;
             Ui::setCursorPos(_cursorDragStart.x, _cursorDragStart.y);
+            SDL_SetRelativeMouseMode(SDL_FALSE);
             Ui::showCursor();
         }
     }
 
+    // Returns how far the mouse cursor has moved since this function was last called,
+    // and resets its position (if not using relative mouse mode).
     Ui::Point getNextDragOffset()
     {
-        auto current = Ui::getCursorPos();
+        auto deltaX = 0;
+        auto deltaY = 0;
 
-        auto delta = current - _cursorDragStart;
+        if (SDL_GetRelativeMouseMode())
+        {
+            // get the mouse deltas since the last call to SDL_GetRelativeMouseState() or since event initialization.
+            SDL_GetRelativeMouseState(&deltaX, &deltaY);
+        }
+        else
+        {
+            // Fallback for if relative mode could not be enabled
 
-        Ui::setCursorPos(_cursorDragStart.x, _cursorDragStart.y);
+            const auto oldCursorPos = Ui::getCursorPos();
 
-        auto scale = Config::get().scaleFactor;
-        delta.x /= scale;
-        delta.y /= scale;
+            // TODO: midX, midY would ideally be the center of the screen to minimise the cursor getting stopped by the edges of the monitor, in theory
+            const auto midX = _cursorDragStart.x;
+            const auto midY = _cursorDragStart.y;
 
-        return { static_cast<int16_t>(delta.x), static_cast<int16_t>(delta.y) };
+            deltaX = (oldCursorPos.x - midX);
+            deltaY = (oldCursorPos.y - midY);
+
+            Ui::setCursorPos(midX, midY); // Moves the mouse cursor
+        }
+
+        const auto scale = Config::get().scaleFactor;
+
+        return { static_cast<int16_t>(deltaX / scale), static_cast<int16_t>(deltaY / scale) };
     }
 }
