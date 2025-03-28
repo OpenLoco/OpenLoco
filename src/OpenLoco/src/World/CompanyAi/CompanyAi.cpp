@@ -2155,12 +2155,75 @@ namespace OpenLoco
         company.var_4A5 = 2;
     }
 
+    // 0x00480FC3
+    static bool sub_480FC3(Company& company, AiThought& thought)
+    {
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk0) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk1) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk12))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk2) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk13))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk3) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk14))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk4) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk5) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk7) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk6) != AiPlaystyleFlags::none
+            && !thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::townIdSet) != AiPlaystyleFlags::none)
+        {
+            // 0x0048107C
+        }
+        // 0x00481156
+    }
+
     // 0x00430BAB
     static void sub_430BAB(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430BAB, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        if (sub_480FC3(company, thought))
+        {
+            company.var_25BE = AiThoughtType::null;
+            state2ClearActiveThought(company);
+            return;
+        }
+        company.var_4A5 = 3;
     }
 
     // 0x00430BDA
