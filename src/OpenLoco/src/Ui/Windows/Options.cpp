@@ -1072,7 +1072,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
             {
-                StringId songName = Jukebox::getCurrentTrackTitleId();
+                StringId songName = Jukebox::getSelectedTrackTitleId();
 
                 auto args = FormatArguments(w.widgets[Widx::currently_playing].textArgs);
                 args.push(songName);
@@ -1296,7 +1296,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             auto track = Jukebox::makeSelectedPlaylist().at(ax);
-            if (Jukebox::changeTrackTo(track))
+            if (Jukebox::requestTrack(track))
             {
                 w->invalidate();
             }

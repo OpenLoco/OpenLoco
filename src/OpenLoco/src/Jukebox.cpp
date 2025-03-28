@@ -13,6 +13,7 @@ namespace OpenLoco::Jukebox
 {
     static MusicId currentTrack;  // 0x0050D434
     static MusicId previousTrack; // 0x0050D435
+    static MusicId requestedNextTrack;
 
     // 0x004FE910
     static constexpr MusicInfo kMusicInfo[] = {
@@ -62,13 +63,18 @@ namespace OpenLoco::Jukebox
         return currentTrack;
     }
 
-    StringId getCurrentTrackTitleId()
+    StringId getSelectedTrackTitleId()
     {
-        if (currentTrack == kNoSong)
+        if (requestedNextTrack != kNoSong)
         {
-            return StringIds::music_none;
+            return kMusicInfo[requestedNextTrack].titleId;
         }
-        return kMusicInfo[currentTrack].titleId;
+        if (currentTrack != kNoSong)
+        {
+            return kMusicInfo[currentTrack].titleId;
+        }
+        return StringIds::music_none;
+        
     }
 
     static std::vector<MusicId> makeAllMusicPlaylist()
@@ -162,49 +168,44 @@ namespace OpenLoco::Jukebox
         return track;
     }
 
-    // Changes currentTrack to the next music track if applicable, updates previousTrack,
-    // and returns its MusicInfo.
     const MusicInfo& changeTrack()
     {
-        // If currentTrack == previousTrack, that is our signal that a track has been manually requested.
-        bool trackRequested = previousTrack != kNoSong && previousTrack == currentTrack;
-
-        // Choose a track to play, unless we have requested one track in particular.
-        if (currentTrack == kNoSong || !trackRequested)
+        previousTrack = currentTrack;
+        if (requestedNextTrack != kNoSong)
         {
-            previousTrack = currentTrack;
-            currentTrack = chooseNextMusicTrack(previousTrack);
+            currentTrack = requestedNextTrack;
+            requestedNextTrack = kNoSong;
         }
         else
         {
-            // Make sure it doesn't think it is manually requested again for next time.
-            previousTrack = kNoSong;
+            currentTrack = chooseNextMusicTrack(previousTrack);
         }
 
         // Return the information for this track so that Audio.cpp can get its PathId to play.
         return kMusicInfo[currentTrack];
     }
 
-    // The player manually selects a song that they want to be played immediately.
-    // Note: assumes music is already being played.
-    bool changeTrackTo(MusicId toTrack)
+    // The player manually selects a song from the drop-down in the music options.
+    bool requestTrack(MusicId track)
     {
-        if (toTrack == currentTrack)
+        if (track == currentTrack)
         {
             return false;
         }
 
+        requestedNextTrack = track;
+
+        // Stop the currently playing song prematurely
         Audio::stopMusic();
 
-        currentTrack = toTrack;
-        previousTrack = toTrack; // Setting these to the same track is how Audio::playBackgroundMusic() detects that it has been requested manually
+        // Previously 0x0050D430 '_songProgress' would be set to 0 here, but that loco global was no longer used for anything.
 
-        // Previously 0x0050D430 '_songProgress' would be set to 0 here, but this loco global was not used for anything anymore.
+        assert(requestedNextTrack != kNoSong); // "[None]" should not appear in the drop-down, how did you request it?
 
         return true;
     }
 
-    // Prematurely stop the current song so another can be played.
+    // Prematurely stops the current song so that another can be played.
     bool skipCurrentTrack()
     {
         if (Config::get().old.musicPlaying == 0)
@@ -213,13 +214,13 @@ namespace OpenLoco::Jukebox
         }
 
         // By stopping the music, the next time OpenLoco::tick() calls Audio::playBackgroundMusic(),
-        // it will detect that the channel is not playing anything and it will play the next music track.
+        // it will detect that the channel is not playing anything, and so it will play the next music track.
         Audio::stopMusic();
 
         return true;
     }
 
-    // When the player stops the music from the music options, or disabled playing music from the top toolbar.
+    // When the player disables "Play Music" from the top toolbar, or clicks the stop button in the music options.
     bool disableMusic()
     {
         auto& cfg = Config::get().old;
@@ -233,7 +234,6 @@ namespace OpenLoco::Jukebox
         Config::write();
 
         Audio::stopMusic();
-
         currentTrack = kNoSong;
 
         return true;
@@ -258,5 +258,6 @@ namespace OpenLoco::Jukebox
     {
         currentTrack = kNoSong;
         previousTrack = kNoSong;
+        requestedNextTrack = kNoSong;
     }
 }

@@ -27,11 +27,11 @@ namespace OpenLoco::Jukebox
     const MusicInfo& getMusicInfo(MusicId track);
     bool isMusicPlaying();
     MusicId getCurrentTrack();
-    StringId getCurrentTrackTitleId();
+    StringId getSelectedTrackTitleId();
 
     std::vector<MusicId> makeSelectedPlaylist();
     const MusicInfo& changeTrack();
-    bool changeTrackTo(MusicId toTrack);
+    bool requestTrack(MusicId track);
     bool skipCurrentTrack();
     bool disableMusic();
     bool enableMusic();
