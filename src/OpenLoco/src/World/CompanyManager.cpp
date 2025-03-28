@@ -1,5 +1,5 @@
 #include "CompanyManager.h"
-#include "CompanyAi.h"
+#include "CompanyAi/CompanyAi.h"
 #include "CompanyRecords.h"
 #include "Config.h"
 #include "Date.h"
@@ -736,7 +736,7 @@ namespace OpenLoco::CompanyManager
             company->expenditures[0][i] = 0;
         }
         company->var_4A4 = AiThinkState::unk0;
-        company->var_4A6 = 0;
+        company->var_4A6 = AiPlaceVehicleState::begin;
         company->var_85F6 = 0;
         for (auto& thought : company->aiThoughts)
         {

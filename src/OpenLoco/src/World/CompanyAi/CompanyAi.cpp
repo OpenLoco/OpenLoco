@@ -1,6 +1,5 @@
 #include "CompanyAi.h"
-#include "Company.h"
-#include "CompanyManager.h"
+#include "CompanyAiPlaceVehicle.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "GameCommands/Airports/CreateAirport.h"
@@ -29,8 +28,6 @@
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
 #include "GameState.h"
-#include "Industry.h"
-#include "IndustryManager.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
@@ -58,12 +55,16 @@
 #include "Objects/TrainStationObject.h"
 #include "Objects/TreeObject.h"
 #include "Random.h"
-#include "Station.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include "World/Company.h"
+#include "World/CompanyManager.h"
+#include "World/Industry.h"
+#include "World/IndustryManager.h"
+#include "World/Station.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
@@ -72,6 +73,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
+using namespace OpenLoco::CompanyAi; // Eventually this will all be under this namespace
 
 namespace OpenLoco
 {
@@ -385,29 +387,27 @@ namespace OpenLoco
 
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
             {
-                head->var_61 = thought.stations[0].pos.x;
-                head->var_63 = thought.stations[0].pos.y;
-                head->var_67 = thought.stations[0].baseZ;
-                head->var_65 = thought.stations[0].rotation;
+                head->aiPlacementPos = thought.stations[0].pos;
+                head->aiPlacementBaseZ = thought.stations[0].baseZ;
+                head->aiPlacementTaD = thought.stations[0].rotation; // For air and water this doesn't actually get used
             }
             else
             {
-                head->var_61 = thought.stations[0].pos.x;
-                head->var_63 = thought.stations[0].pos.y;
-                head->var_67 = thought.stations[0].baseZ;
+                head->aiPlacementPos = thought.stations[0].pos;
+                head->aiPlacementBaseZ = thought.stations[0].baseZ;
 
-                uint8_t rotation = thought.stations[0].rotation;
+                uint8_t tad = thought.stations[0].rotation | (0U << 3); // Always trackId/roadId 0 (straight)
                 if (thought.trackObjId & (1U << 7))
                 {
                     if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
                     {
                         if (i & 0b1)
                         {
-                            rotation ^= (1U << 2);
+                            tad ^= (1U << 2);
                         }
                     }
                 }
-                head->var_65 = rotation;
+                head->aiPlacementTaD = tad;
             }
             head->breakdownFlags |= Vehicles::BreakdownFlags::breakdownPending;
             thought.var_88 = 0;
@@ -4713,64 +4713,6 @@ namespace OpenLoco
         aiThinkEndCompany,
     };
 
-    // 0x00431295
-    static void sub_431295(Company& company)
-    {
-        company.var_4A6 = 1;
-    }
-
-    // 0x0043129D
-    static void sub_43129D(Company& company)
-    {
-        company.var_4A6 = 2;
-        company.var_259E = 0;
-    }
-
-    // 0x00487784
-    static bool tryPlaceVehicles(Company& company)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        return call(0x00487784, regs) & X86_FLAG_CARRY;
-    }
-
-    // 0x004312AF
-    static void sub_4312AF(Company& company)
-    {
-        if (tryPlaceVehicles(company))
-        {
-            company.var_4A6 = 3;
-        }
-    }
-
-    // 0x004312BF
-    static void sub_4312BF(Company& company)
-    {
-        company.var_4A6 = 0;
-    }
-
-    static void callThinkFunc2(Company& company)
-    {
-        switch (company.var_4A6)
-        {
-            case 0:
-                sub_431295(company);
-                break;
-            case 1:
-                sub_43129D(company);
-                break;
-            case 2:
-                sub_4312AF(company);
-                break;
-            case 3:
-                sub_4312BF(company);
-                break;
-            default:
-                assert(false);
-                return;
-        }
-    }
-
     // 0x00430762
     void aiThink(const CompanyId id)
     {
@@ -4792,7 +4734,7 @@ namespace OpenLoco
             return;
         }
 
-        callThinkFunc2(*company);
+        processVehiclePlaceStateMachine(*company);
 
         if (company->headquartersX != -1 || (company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none || (company->challengeFlags & CompanyFlags::unk0) == CompanyFlags::none)
         {
