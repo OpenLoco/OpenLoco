@@ -11,6 +11,10 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Jukebox
 {
+    static MusicId currentTrack;  // 0x0050D434
+    static MusicId previousTrack; // 0x0050D435
+    static MusicId requestedNextTrack;
+
     // 0x004FE910
     static constexpr MusicInfo kMusicInfo[] = {
         { PathId::music_chuggin_along, StringIds::music_chuggin_along, 1925, 1933 },
@@ -43,6 +47,34 @@ namespace OpenLoco::Jukebox
         { PathId::music_get_me_to_gladstone_bay, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
         { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 }
     };
+
+    const MusicInfo& getMusicInfo(MusicId track)
+    {
+        return kMusicInfo[track];
+    }
+
+    bool isMusicPlaying()
+    {
+        return (currentTrack != kNoSong && Config::get().old.musicPlaying);
+    }
+
+    MusicId getCurrentTrack()
+    {
+        return currentTrack;
+    }
+
+    StringId getSelectedTrackTitleId()
+    {
+        if (requestedNextTrack != kNoSong)
+        {
+            return kMusicInfo[requestedNextTrack].titleId;
+        }
+        if (currentTrack != kNoSong)
+        {
+            return kMusicInfo[currentTrack].titleId;
+        }
+        return StringIds::music_none;
+    }
 
     static std::vector<MusicId> makeAllMusicPlaylist()
     {
@@ -103,7 +135,7 @@ namespace OpenLoco::Jukebox
         throw Exception::RuntimeError("Invalid MusicPlaylistType");
     }
 
-    MusicId chooseNextMusicTrack(MusicId lastSong)
+    static MusicId chooseNextMusicTrack(MusicId lastSong)
     {
         auto playlist = makeSelectedPlaylist();
 
@@ -135,8 +167,96 @@ namespace OpenLoco::Jukebox
         return track;
     }
 
-    const MusicInfo& getMusicInfo(MusicId track)
+    const MusicInfo& changeTrack()
     {
-        return kMusicInfo[track];
+        previousTrack = currentTrack;
+        if (requestedNextTrack != kNoSong)
+        {
+            currentTrack = requestedNextTrack;
+            requestedNextTrack = kNoSong;
+        }
+        else
+        {
+            currentTrack = chooseNextMusicTrack(previousTrack);
+        }
+
+        // Return the information for this track so that Audio.cpp can get its PathId to play.
+        return kMusicInfo[currentTrack];
+    }
+
+    // The player manually selects a song from the drop-down in the music options.
+    bool requestTrack(MusicId track)
+    {
+        if (track == currentTrack)
+        {
+            return false;
+        }
+
+        requestedNextTrack = track;
+
+        // Stop the currently playing song prematurely
+        Audio::stopMusic();
+
+        // Previously 0x0050D430 '_songProgress' would be set to 0 here, but that loco global was no longer used for anything.
+
+        assert(requestedNextTrack != kNoSong); // "[None]" should not appear in the drop-down, how did you request it?
+
+        return true;
+    }
+
+    // Prematurely stops the current song so that another can be played.
+    bool skipCurrentTrack()
+    {
+        if (Config::get().old.musicPlaying == 0)
+        {
+            return false;
+        }
+
+        // By stopping the music, the next time OpenLoco::tick() calls Audio::playBackgroundMusic(),
+        // it will detect that the channel is not playing anything, and so it will play the next music track.
+        Audio::stopMusic();
+
+        return true;
+    }
+
+    // When the player disables "Play Music" from the top toolbar, or clicks the stop button in the music options.
+    bool disableMusic()
+    {
+        auto& cfg = Config::get().old;
+
+        if (cfg.musicPlaying == 0)
+        {
+            return false;
+        }
+
+        cfg.musicPlaying = 0;
+        Config::write();
+
+        Audio::stopMusic();
+        currentTrack = kNoSong;
+
+        return true;
+    }
+
+    bool enableMusic()
+    {
+        auto& cfg = Config::get().old;
+
+        if (cfg.musicPlaying != 0)
+        {
+            return false;
+        }
+
+        cfg.musicPlaying = 1;
+        Config::write();
+
+        return true;
+    }
+
+    void resetJukebox()
+    {
+        currentTrack = kNoSong;
+        previousTrack = kNoSong;
+        requestedNextTrack = kNoSong;
     }
 }
