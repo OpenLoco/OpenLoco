@@ -1744,7 +1744,7 @@ namespace OpenLoco
         thought.var_45 = 0xFFU;
         thought.numVehicles = 0;
         thought.var_43 = 0;
-        thought.var_8B = 0;
+        thought.purchaseFlags = AiPurchaseFlags::none;
 
         auto randVal = gPrng1().randNext();
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
