@@ -74,7 +74,6 @@ namespace OpenLoco::Jukebox
             return kMusicInfo[currentTrack].titleId;
         }
         return StringIds::music_none;
-        
     }
 
     static std::vector<MusicId> makeAllMusicPlaylist()
