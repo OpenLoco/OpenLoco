@@ -10,7 +10,8 @@ namespace OpenLoco
         Normal = 0,
         FastForward = 1,
         ExtraFastForward = 2,
-        MAX = ExtraFastForward,
+        OneSecondPerYear, // Approximate
+        MAX = OneSecondPerYear,
     };
 
     namespace SceneManager
