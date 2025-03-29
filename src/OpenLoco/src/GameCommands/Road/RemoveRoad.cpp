@@ -1,10 +1,10 @@
 #include "RemoveRoad.h"
 #include "Economy/Economy.h"
-#include "RemoveRoadStation.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
+#include "RemoveRoadStation.h"
 #include "SceneManager.h"
 #include "World/TownManager.h"
 
