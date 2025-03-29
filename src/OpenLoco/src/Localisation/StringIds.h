@@ -1187,7 +1187,7 @@ namespace OpenLoco::StringIds
     constexpr StringId cannot_change_owner_name = 1461;
     constexpr StringId headquarters = 1462;
     constexpr StringId stringid_headquarters = 1463;
-
+    constexpr StringId stringid_local_authority_wont_allow_removal_in_use = 1464;
     constexpr StringId tooltip_select_company = 1465;
 
     constexpr StringId enter_host_address = 1483;
