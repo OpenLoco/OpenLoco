@@ -2156,7 +2156,7 @@ namespace OpenLoco
     }
 
     // 0x00480FC3
-    static bool sub_480FC3(Company& company, AiThought& thought)
+    static bool applyPlaystyleRestrictions(Company& company, AiThought& thought)
     {
         if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk0) != AiPlaystyleFlags::none
             && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
@@ -2339,7 +2339,7 @@ namespace OpenLoco
     static void sub_430BAB(Company& company)
     {
         auto& thought = company.aiThoughts[company.activeThoughtId];
-        if (sub_480FC3(company, thought))
+        if (applyPlaystyleRestrictions(company, thought))
         {
             company.var_25BE = AiThoughtType::null;
             state2ClearActiveThought(company);
