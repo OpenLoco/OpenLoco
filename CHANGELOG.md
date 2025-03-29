@@ -4,6 +4,7 @@
 - Fix: [#1689] Reliability penalty for newly designed vehicles not removed after two years.
 - Fix: [#2972] More vehicle-related messages not using the correct vehicle name string.
 - Fix: [#2984] Areas of forbid trams checkboxes covering forbidding trucks checkboxes.
+- Fix: [#3013] Fix issue causing AI to potentially miscalculate town cargo types. (original bug)
 - Fix: [#3017] Bankruptcy warnings in wrong order.
 
 25.02 (2025-02-28)
