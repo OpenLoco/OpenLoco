@@ -239,8 +239,8 @@ namespace OpenLoco::GameCommands
         auto& prng = gPrng1();
         newBody->var_44 = prng.randNext();
         newBody->creationDay = getCurrentDay();
-        newBody->var_46 = 0;
-        newBody->var_47 = 0;
+        newBody->animationFrame = 0;
+        newBody->cargoFrame = 0;
         newBody->primaryCargo.acceptedTypes = 0;
         newBody->primaryCargo.type = 0xFF;
         newBody->primaryCargo.qty = 0;
@@ -274,10 +274,10 @@ namespace OpenLoco::GameCommands
         auto spriteType = vehObject.carComponents[bodyNumber].bodySpriteInd;
         if (spriteType != SpriteIndex::null)
         {
-            if (spriteType & SpriteIndex::flag_unk7)
+            if (spriteType & SpriteIndex::isReversed)
             {
                 newBody->var_38 |= Flags38::isReversed;
-                spriteType &= ~SpriteIndex::flag_unk7;
+                spriteType &= ~SpriteIndex::isReversed;
             }
         }
         newBody->objectSpriteType = spriteType;
@@ -487,7 +487,7 @@ namespace OpenLoco::GameCommands
         newVeh2->var_38 = Flags38::none;
         newVeh2->currentSpeed = 0.0_mph;
         newVeh2->motorState = MotorState::stopped;
-        newVeh2->var_5B = 0;
+        newVeh2->brakeLightTimeout = 0;
         newVeh2->drivingSoundId = SoundObjectId::null;
         newVeh2->objectId = 0xFFFFU;
         newVeh2->soundFlags = Vehicles::SoundFlags::none;
