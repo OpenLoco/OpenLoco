@@ -30,7 +30,7 @@
 - Fix: [#2810] Large performance regression when there are a lot of vehicles.
 - Fix: [#2818] Incorrect bridge segment shown on some rotations.
 - Fix: [#2829] Large performance regression when using a window scale factor of 1.0.
-- Fix: [#2836] Stations with glass draw incorrectly when there are cantenary wires.
+- Fix: [#2836] Stations with glass draw incorrectly when there are catenary wires.
 
 24.12 (2024-12-27)
 ------------------------------------------------------------------------
@@ -138,7 +138,7 @@
 - Fix: [#2374] Height markers re-appear when building sloped track in construction window.
 - Fix: [#2411] Progress bar windows are not actually rendered.
 - Fix: [#2413] Gridlines are hidden when closing construction windows.
-- Fix: [#2416] Cursors in embedded text fiels are not rendering in the right position.
+- Fix: [#2416] Cursors in embedded text fields are not rendering in the right position.
 - Fix: [#2441] Can't change name of scenarios with text object selected.
 - Fix: [#2470] Only one tunnel image drawn when there are multiple in the same surface tile.
 - Technical: [#2456] Changing the in-game language has been sped up considerably.
@@ -146,7 +146,7 @@
 24.04 (2024-04-07)
 ------------------------------------------------------------------------
 - Fix: [#2375] PNG heightmaps are mirrored when generating terrain.
-- Fix: [#2377] When cloning vehicle without having sufficient funds, the error message appears below the window.
+- Fix: [#2377] When cloning vehicle without having sufficient funds, the error message appears behind the window.
 - Fix: [#2379] Text cursor is not rendering in the right position.
 - Fix: [#2380] 'Number of smoothing passes' label is displayed incorrectly.
 - Fix: [#2387] Potential crash when a vehicle is deleted while viewing vehicle orders.
@@ -257,7 +257,7 @@
 - Feature: [#2019] Allow mouse scrolling on +/- stepper widgets to change their values.
 - Fix: [#1999] Potential crash at startup due to the screen buffer being too small.
 - Fix: [#2011] Crash when using terraform tools using a range that exceeds the map edge.
-- Fix: [#2027] Crash when loading scenarios with a non-ASCII locomotion installtion path.
+- Fix: [#2027] Crash when loading scenarios with a non-ASCII locomotion installation path.
 - Fix: [#2028] Incorrect industry building clearing heights causing graphical glitches.
 - Fix: [#2039] Crash/hang when clicking on news items of new vehicle available.
 - Fix: [#2042] Crash when Data Execution Prevention (DEP) is enabled on all executables on Windows.
@@ -275,7 +275,7 @@
 - Feature: [#376] Allow fractional UI scaling in addition to integer scaling.
 - Feature: [#418] Use hardware-backed SDL canvas when available for better performance.
 - Feature: [#1963] Make news sound effects optional through message settings window.
-- Feature: [#1973] Allow reversing a vehice's route order table.
+- Feature: [#1973] Allow reversing a vehicle's route order table.
 - Fix: [#1966] Unable to select terrain type for terrain painting.
 - Fix: [#1968] Crash when game tries to plant trees during natural growth.
 
@@ -304,7 +304,7 @@
 - Fix: [#1783] Crash when drawing track tunnels under certain situations.
 - Fix: [#1869] Crash when changing language.
 - Fix: [#1875] Tooltips weren't line-wrapping properly.
-- Fix: [#1882] Process hang when the game trys to crash uncleanly.
+- Fix: [#1882] Process hang when the game tries to crash uncleanly.
 - Fix: [#1887] Autosave frequency dropdown not working.
 - Fix: [#1888] Tree shadows disappeared and docks double displayed.
 - Fix: [#1890] Crash when wrapping words that are longer than max width.
@@ -424,7 +424,7 @@
 - Feature: [#1327] Readd the game intro (use commandline switch --intro to enable).
 - Feature: [#1350] Show vehicle obsolete date in build vehicle window.
 - Feature: [#1354] Added a cheat to display locked vehicles.
-- Change: [#1276] Transfering cargo is now viable. The cargo age is calculated as the weighted average of the present and delivered cargo.
+- Change: [#1276] Transferring cargo is now viable. The cargo age is calculated as the weighted average of the present and delivered cargo.
 - Fix: [#239] Vehicles sound do not modify pitch and incorrect sounds can be loaded when loading saves.
 - Fix: [#1280] Crash when removing crashed vehicles with news window open.
 - Fix: [#1320] Inability to mark scenario as complete.
