@@ -52,6 +52,9 @@ namespace OpenLoco::GameCommands
         auto tile = World::TileManager::get(args.pos.x, args.pos.y);
         const auto baseZ = args.pos.z / World::kSmallZStep;
 
+        // This entire loop was made redundant by a no-op write in Hooks.cpp
+        // writeNop(0x004776DD, 6);
+        /*
         for (auto& element : tile)
         {
             auto* elRoad = element.as<World::RoadElement>();
@@ -115,6 +118,7 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
         }
+        */
 
         currency32_t totalCost = 0;
 
