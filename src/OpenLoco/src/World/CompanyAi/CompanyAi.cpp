@@ -1064,7 +1064,7 @@ namespace OpenLoco
     }
 
     // 0x0047EABE & 0x0047EB17
-    static TownId generateTargetTownByPopulation(uint32_t& randVal, uint32_t minPopulationCapcity)
+    static TownId generateTargetTownByPopulation(uint32_t randVal, uint32_t minPopulationCapcity)
     {
         sfl::static_vector<TownId, Limits::kMaxTowns> possibleTowns;
         for (auto& town : TownManager::towns())
@@ -1090,7 +1090,7 @@ namespace OpenLoco
     };
 
     // 0x0047EB70, 0x0047EC43
-    static TownDestinations generateTargetTowns(uint32_t& randVal, uint32_t minPopulationCapcity, int32_t minDistance, int32_t maxDistance)
+    static TownDestinations generateTargetTowns(uint32_t randVal, uint32_t minPopulationCapcity, int32_t minDistance, int32_t maxDistance)
     {
         sfl::static_vector<TownId, Limits::kMaxTowns> possibleTowns;
         for (auto& town : TownManager::towns())
@@ -1137,7 +1137,7 @@ namespace OpenLoco
     }
 
     // 0x0047EDF0
-    static TownDestinations generateTargetTownsWater(uint32_t& randVal, uint32_t minPopulationCapcity, int32_t minDistance, int32_t maxDistance)
+    static TownDestinations generateTargetTownsWater(uint32_t randVal, uint32_t minPopulationCapcity, int32_t minDistance, int32_t maxDistance)
     {
         sfl::static_vector<TownId, Limits::kMaxTowns> possibleTowns;
         for (auto& town : TownManager::towns())
@@ -1215,7 +1215,7 @@ namespace OpenLoco
     };
 
     // 0x0047EF49 & 0x0047F0C7
-    static IndustryDestinations generateTargetIndustries(uint32_t& randVal, int32_t minDistance, int32_t maxDistance)
+    static IndustryDestinations generateTargetIndustries(uint32_t randVal, int32_t minDistance, int32_t maxDistance)
     {
         sfl::static_vector<IndustryId, Limits::kMaxIndustries> possibleIndustries;
         for (auto& industry : IndustryManager::industries())
@@ -1302,7 +1302,7 @@ namespace OpenLoco
     }
 
     // 0x0047F245
-    static IndustryDestinations generateTargetIndustriesWater(uint32_t& randVal, int32_t minDistance, int32_t maxDistance)
+    static IndustryDestinations generateTargetIndustriesWater(uint32_t randVal, int32_t minDistance, int32_t maxDistance)
     {
         sfl::static_vector<IndustryId, Limits::kMaxIndustries> possibleIndustries;
         for (auto& industry : IndustryManager::industries())
@@ -1473,7 +1473,7 @@ namespace OpenLoco
     }
 
     // 0x0047F43E & 0x0047F5D6 & 0x0047F76E
-    static MixedDestinations generateTargetMixedIndustries(uint32_t& randVal, int32_t minDistance, int32_t maxDistance)
+    static MixedDestinations generateTargetMixedIndustries(uint32_t randVal, int32_t minDistance, int32_t maxDistance)
     {
         const uint8_t cargoType = IndustryManager::getMostCommonBuildingCargoType();
 
@@ -1560,7 +1560,7 @@ namespace OpenLoco
     }
 
     // 0x0047F8FF
-    static MixedDestinations generateTargetMixedIndustriesWater(uint32_t& randVal, int32_t minDistance, int32_t maxDistance)
+    static MixedDestinations generateTargetMixedIndustriesWater(uint32_t randVal, int32_t minDistance, int32_t maxDistance)
     {
         const uint8_t cargoType = IndustryManager::getMostCommonBuildingCargoType();
 
@@ -1666,7 +1666,7 @@ namespace OpenLoco
     }
 
     // 0x0047FB1D & 0x0047FC56
-    static MixedDestinations generateTargetMixedIndustriesAir(uint32_t& randVal, uint32_t minPopulationCapacity, int32_t minDistance, int32_t maxDistance)
+    static MixedDestinations generateTargetMixedIndustriesAir(uint32_t randVal, uint32_t minPopulationCapacity, int32_t minDistance, int32_t maxDistance)
     {
         sfl::static_vector<TownId, Limits::kMaxTowns> possibleTowns;
         for (auto& town : TownManager::towns())
