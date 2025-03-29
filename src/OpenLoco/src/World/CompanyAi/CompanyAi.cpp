@@ -2182,13 +2182,13 @@ namespace OpenLoco
             return true;
         }
 
-        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk4) != AiPlaystyleFlags::none
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::noAir) != AiPlaystyleFlags::none
             && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
             return true;
         }
 
-        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk5) != AiPlaystyleFlags::none
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::noWater) != AiPlaystyleFlags::none
             && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
         {
             return true;
