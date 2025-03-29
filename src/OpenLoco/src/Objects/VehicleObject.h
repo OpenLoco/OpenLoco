@@ -165,7 +165,7 @@ namespace OpenLoco
         uint8_t numAnimationFrames;      // 0x02
         uint8_t numCargoLoadFrames;      // 0x03
         uint8_t numCargoFrames;          // 0x04
-        uint8_t numTiltFrames;           // 0x05 currently the only valid values are 1 and 3
+        uint8_t numRollFrames;           // 0x05 currently the only valid values are 1 and 3
         uint8_t halfLength;              // 0x06 the distance from pivot of body to one end of car component (not strictly the visible body, see CE68 locomotive)
         BodySpriteFlags flags;           // 0x07
         uint8_t width;                   // 0x08 sprite width
@@ -173,7 +173,7 @@ namespace OpenLoco
         uint8_t heightPositive;          // 0x0A sprite height positive
         uint8_t flatYawAccuracy;         // 0x0B 0 - 4 accuracy of yaw on flat built from numFlatRotationFrames (0 = lowest accuracy 3bits, 4 = highest accuracy 7bits)
         uint8_t slopedYawAccuracy;       // 0x0C 0 - 3 accuracy of yaw on slopes built from numSlopedRotationFrames  (0 = lowest accuracy 3bits, 3 = highest accuracy 6bits)
-        uint8_t numFramesPerRotation;    // 0x0D numAnimationFrames * numCargoFrames * numTiltFrames + 1 (for braking lights)
+        uint8_t numFramesPerRotation;    // 0x0D numAnimationFrames * numCargoFrames * numRollFrames + 1 (for braking lights)
         uint32_t flatImageId;            // 0x0E
         uint32_t unkImageId;             // 0x12
         uint32_t gentleImageId;          // 0x16

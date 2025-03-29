@@ -162,7 +162,7 @@ namespace OpenLoco::Vehicles
             targetAnimationFrame = veh3->currentSpeed / (vehicleObj->speed / vehicleObj->bodySprites[objectSpriteType].numAnimationFrames);
             targetAnimationFrame = std::min<uint8_t>(targetAnimationFrame, vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
         }
-        else if (vehicleObj->bodySprites[objectSpriteType].numTiltFrames != 1)
+        else if (vehicleObj->bodySprites[objectSpriteType].numRollFrames != 1)
         {
             VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
             Vehicle2* veh3 = _vehicleUpdate_2;

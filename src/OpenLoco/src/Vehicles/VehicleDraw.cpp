@@ -338,7 +338,7 @@ namespace OpenLoco
                 {
                     rollIndex = (bodySprites.numAnimationFrames - 1) & roll;
                 }
-                if (bodySprites.numTiltFrames != 1)
+                if (bodySprites.numRollFrames != 1)
                 {
                     rollIndex += unk11360E8;
                 }
