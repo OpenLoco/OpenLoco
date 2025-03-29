@@ -68,7 +68,7 @@ if ( NOT fmt_FOUND )
     FetchContent_Declare(
         fmt
         GIT_REPOSITORY      https://github.com/fmtlib/fmt
-        GIT_TAG             11.1.2
+        GIT_TAG             11.1.4
         GIT_SHALLOW         ON
     )
     FetchContent_MakeAvailable(fmt)

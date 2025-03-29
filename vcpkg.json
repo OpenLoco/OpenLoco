@@ -1,12 +1,35 @@
 {
-    "name": "openloco",
-    "version-string": "22.02",
-    "dependencies": [
-        "benchmark",
-        "breakpad",
-        "gtest",
-        "libpng",
-        "openal-soft",
-        "sdl2"
-    ]
+  "name": "openloco",
+  "version-string": "22.02",
+  "dependencies": [
+    "benchmark",
+    {
+      "name": "breakpad",
+      "platform": "windows"
+    },
+    "gtest",
+    "libpng",
+    "openal-soft",
+    {
+      "name": "sdl2",
+      "default-features": false,
+      "features": [
+        {
+          "name": "x11",
+          "platform": "linux"
+        },
+        {
+          "name": "wayland",
+          "platform": "linux"
+        }
+      ]
+    }
+  ],
+  "builtin-baseline": "300239058e33420acd153135b3f6e6b187828992",
+  "overrides": [
+    {
+      "name": "openal-soft",
+      "version": "1.24.1"
+    }
+  ]
 }
