@@ -1,5 +1,6 @@
 25.02+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3047] Add OpenGraphics replacements for RE 4/4, the interface skin, and all walls.
 - Change: [#2457] Right mouse dragging in ScrollViews now respects "Invert right mouse dragging" option.
 - Fix: [#1689] Reliability penalty for newly designed vehicles not removed after two years.
 - Fix: [#2972] More vehicle-related messages not using the correct vehicle name string.
