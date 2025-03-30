@@ -2258,7 +2258,7 @@ namespace OpenLoco
         // Thoughts from a company must all be located nearby to at least one other thought from the same company
         // nearby is defined as within 60 tiles
 
-        auto destinationPosition = [&company](bool isIndustry, uint8_t destination) {
+        auto destinationPosition = [](bool isIndustry, uint8_t destination) {
             if (isIndustry)
             {
                 const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
