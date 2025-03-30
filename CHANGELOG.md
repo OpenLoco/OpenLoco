@@ -1,6 +1,6 @@
 25.02+ (???)
 ------------------------------------------------------------------------
-- Feature: [#3047] Add RE 4/4 OpenGraphics vehicle, add OpenGraphics interface skin, add all replacement OpenGraphics walls.
+- Feature: [#3047] Add OpenGraphics replacements for RE 4/4, the interface skin, and all walls.
 - Change: [#2457] Right mouse dragging in ScrollViews now respects "Invert right mouse dragging" option.
 - Fix: [#2972] More vehicle-related messages not using the correct vehicle name string.
 - Fix: [#2984] Areas of forbid trams checkboxes covering forbidding trucks checkboxes.
