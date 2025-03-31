@@ -40,8 +40,8 @@ namespace OpenLoco
         unk1 = (1U << 1),      // 0x02
         unk2 = (1U << 2),      // 0x04
         unk3 = (1U << 3),      // 0x08
-        unk4 = (1U << 4),      // 0x10
-        unk5 = (1U << 5),      // 0x20
+        noAir = (1U << 4),     // 0x10
+        noWater = (1U << 5),   // 0x20
         unk6 = (1U << 6),      // 0x40
         unk7 = (1U << 7),      // 0x80
         townIdSet = (1U << 8), // 0x100
