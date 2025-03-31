@@ -84,6 +84,11 @@ namespace OpenAL
         // close();
     }
 
+    void Source::pause()
+    {
+        alSourcePause(_id);
+    }
+
     void Source::play()
     {
         alSourcePlay(_id);
@@ -124,6 +129,13 @@ namespace OpenAL
     void Source::setLooping(bool value)
     {
         alSourcei(_id, AL_LOOPING, value ? AL_TRUE : AL_FALSE);
+    }
+
+    bool Source::isPaused() const
+    {
+        int32_t value = AL_PAUSED;
+        alGetSourcei(_id, AL_SOURCE_STATE, &value);
+        return value == AL_PAUSED;
     }
 
     bool Source::isPlaying() const
