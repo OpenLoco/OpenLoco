@@ -1,4 +1,4 @@
-25.02+ (???)
+25.03 (2025-03-31)
 ------------------------------------------------------------------------
 - Feature: [#3047] Add OpenGraphics replacements for RE 4/4, the interface skin, and all walls.
 - Change: [#2457] Right mouse dragging in ScrollViews now respects "Invert right mouse dragging" option.
