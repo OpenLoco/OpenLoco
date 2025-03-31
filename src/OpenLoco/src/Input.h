@@ -104,8 +104,8 @@ namespace OpenLoco::Input
     void mouseWheel(int wheel);
     // Processes the mouse wheel delta.
     void processMouseWheel();
-    void sub_407218();
-    void sub_407231();
+    void startCursorDrag();
+    void stopCursorDrag();
     Ui::Point getNextDragOffset();
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();

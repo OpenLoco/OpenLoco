@@ -19,6 +19,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
@@ -98,6 +99,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             sort_performance,
             sort_value,
             scrollview,
+            status_bar,
         };
 
         static constexpr auto widgets = makeWidgets(
@@ -106,7 +108,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Widgets::TableHeader({ 179, 43 }, { 210, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
             Widgets::TableHeader({ 389, 43 }, { 145, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
             Widgets::TableHeader({ 534, 43 }, { 100, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
-            Widgets::ScrollView({ 3, 56 }, { 634, 201 }, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 3, 56 }, { 634, 201 }, WindowColour::secondary, Scrollbars::vertical),
+            Widgets::Label({ 3, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -429,30 +432,23 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.widgets[widx::sort_status].text = self.sortMode == SortMode::Status ? StringIds::table_header_company_status_desc : StringIds::table_header_company_status;
             self.widgets[widx::sort_performance].text = self.sortMode == SortMode::Performance ? StringIds::table_header_company_performance_desc : StringIds::table_header_company_performance;
             self.widgets[widx::sort_value].text = self.sortMode == SortMode::Value ? StringIds::table_header_company_value_desc : StringIds::table_header_company_value;
+
+            // Reposition status bar
+            auto& widget = self.widgets[widx::status_bar];
+            widget.top = self.height - 13;
+            widget.bottom = self.height - 3;
+
+            // Set status bar text
+            FormatArguments args{ widget.textArgs };
+            args.push(self.var_83C == 1 ? StringIds::company_singular : StringIds::companies_plural);
+            args.push(self.var_83C);
         }
 
         // 0x00435E56
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
-
-            FormatArguments args{};
-            if (self.var_83C == 1)
-            {
-                args.push(StringIds::company_singular);
-            }
-            else
-            {
-                args.push(StringIds::companies_plural);
-            }
-
-            args.push(self.var_83C);
-
-            auto point = Point(self.x + 3, self.y + self.height - 13);
-            tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x00435EA7

@@ -68,7 +68,7 @@ if ( NOT fmt_FOUND )
     FetchContent_Declare(
         fmt
         GIT_REPOSITORY      https://github.com/fmtlib/fmt
-        GIT_TAG             11.1.2
+        GIT_TAG             11.1.4
         GIT_SHALLOW         ON
     )
     FetchContent_MakeAvailable(fmt)
@@ -85,7 +85,8 @@ if ( NOT sfl_FOUND )
     FetchContent_Declare(
         sfl
         GIT_REPOSITORY      https://github.com/slavenf/sfl-library
-        GIT_TAG             d331ddb219ea2f7438fa6dca1248551622156f72
+        GIT_TAG             1.9.2
+        GIT_SHALLOW         ON
     )
     FetchContent_MakeAvailable(sfl)
     

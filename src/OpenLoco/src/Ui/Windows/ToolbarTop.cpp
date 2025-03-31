@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static loco_global<uint8_t, 0x009C870D> _lastPortOption;
     static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
     // Replaces 0x0050A006
-    std::vector<uint8_t> availableTracks;
+    AvailableTracksAndRoads availableTracks;
 
     namespace Widx
     {
@@ -431,7 +431,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         // Load dropdown objects removing any that are not unlocked.
         // Note: This is not using player company id! This looks odd.
-        availableTracks = CompanyManager::get(GameCommands::getUpdatingCompanyId())->getAvailableRailTracks();
+        availableTracks = companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId());
 
         assert(std::size(_availableObjects) >= std::size(availableTracks));
         // Legacy copy to available_objects remove when all users of 0x0050A006 accounted for

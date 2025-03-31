@@ -364,10 +364,9 @@ namespace OpenLoco::Vehicles
         VehicleType vehicleType;           // 0x5E
         BreakdownFlags breakdownFlags;     // 0x5F
         uint8_t aiThoughtId;               // 0x60 0xFFU for null
-        int16_t var_61;                    // 0x61 unkAiX
-        int16_t var_63;                    // 0x61 unkAiY
-        uint16_t var_65;                   // 0x61 unkAiRotation
-        uint8_t var_67;                    // 0x61 unkAiBaseZ
+        World::Pos2 aiPlacementPos;        // 0x61
+        uint16_t aiPlacementTaD;           // 0x65 for air/water this is just rotation
+        uint8_t aiPlacementBaseZ;          // 0x67
         uint8_t airportMovementEdge;       // 0x68
         uint32_t totalRefundCost;          // 0x69
         uint8_t crashedTimeout;            // 0x6D
@@ -551,7 +550,7 @@ namespace OpenLoco::Vehicles
         Speed16 maxSpeed;     // 0x54
         Speed32 currentSpeed; // 0x56
         MotorState motorState;
-        uint8_t var_5B;
+        uint8_t brakeLightTimeout;
         Speed16 rackRailMaxSpeed;     // 0x5C
         currency32_t curMonthRevenue; // 0x5E monthly revenue
         currency32_t profit[4];       // 0x62 last 4 months net profit
@@ -590,8 +589,8 @@ namespace OpenLoco::Vehicles
         TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44;
-        uint8_t var_46;            // 0x46 roll/animation sprite index
-        uint8_t var_47;            // 0x47 cargo sprite index
+        uint8_t animationFrame;    // 0x46 roll/animation sprite index
+        uint8_t cargoFrame;        // 0x47 cargo sprite index
         VehicleCargo primaryCargo; // 0x48
         uint8_t pad_52[0x54 - 0x52];
         uint8_t bodyIndex; // 0x54
