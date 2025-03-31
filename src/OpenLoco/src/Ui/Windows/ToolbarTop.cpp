@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static loco_global<uint8_t, 0x009C870D> _lastPortOption;
     static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
     // Replaces 0x0050A006
-    std::vector<uint8_t> availableTracks;
+    AvailableTracksAndRoads availableTracks;
 
     namespace Widx
     {
@@ -106,7 +106,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Common::Widx::railroad_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::port_menu) | (1 << Common::Widx::build_vehicles_menu) | (1 << Common::Widx::vehicles_menu) | (1 << Common::Widx::stations_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -432,7 +431,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         // Load dropdown objects removing any that are not unlocked.
         // Note: This is not using player company id! This looks odd.
-        availableTracks = CompanyManager::get(GameCommands::getUpdatingCompanyId())->getAvailableRailTracks();
+        availableTracks = companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId());
 
         assert(std::size(_availableObjects) >= std::size(availableTracks));
         // Legacy copy to available_objects remove when all users of 0x0050A006 accounted for
@@ -1020,7 +1019,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static constexpr WindowEventList kEvents = {
         .onResize = Common::onResize,
-        .event_03 = onMouseDown,
+        .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = Common::onUpdate,

@@ -89,7 +89,7 @@ namespace OpenLoco::Ui
 
     bool Window::isEnabled(WidgetIndex_t widgetIndex)
     {
-        return (this->enabledWidgets & (1ULL << widgetIndex)) != 0;
+        return (this->disabledWidgets & (1ULL << widgetIndex)) == 0;
     }
 
     bool Window::isDisabled(WidgetIndex_t widgetIndex)
@@ -1151,14 +1151,14 @@ namespace OpenLoco::Ui
         return this;
     }
 
-    void Window::call_3(WidgetIndex_t widgetIndex, const WidgetId id)
+    void Window::callOnMouseHover(WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (eventHandlers->event_03 == nullptr)
+        if (eventHandlers->onMouseHover == nullptr)
         {
             return;
         }
 
-        eventHandlers->event_03(*this, widgetIndex, id);
+        eventHandlers->onMouseHover(*this, widgetIndex, id);
     }
 
     void Window::callOnMouseDown(WidgetIndex_t widgetIndex, const WidgetId id)

@@ -124,6 +124,32 @@ namespace OpenLoco::GameSaveCompare
         return divergentBytesTotal > 0;
     }
 
+    static bool isLoggedDivergenceUserString(const std::string type, const std::span<char[32]> lhsArr, const std::span<char[32]> rhsArr, bool displayAllDivergences)
+    {
+        long divergentBytesTotal = 0;
+        for (auto offset = 0U; offset < lhsArr.size(); offset++)
+        {
+            bool isSame = strcmp(lhsArr[offset], rhsArr[offset]) == 0;
+            if (!isSame)
+            {
+                divergentBytesTotal++;
+                if (displayAllDivergences || divergentBytesTotal == 1)
+                {
+                    Logging::info("DIVERGENCE");
+                    Logging::info("TYPE: {}", type);
+                    Logging::info("    OFFSET: {}", offset);
+                    Logging::info("    LHS: {}", lhsArr[offset]);
+                    Logging::info("    RHS: {}", rhsArr[offset]);
+                }
+            }
+        }
+        if (!displayAllDivergences && divergentBytesTotal > 1)
+        {
+            Logging::info(" {} other diverging bytes omitted", divergentBytesTotal);
+        }
+        return divergentBytesTotal > 0;
+    }
+
     template<typename T>
     bool isLoggedDivergentGameStateField(const std::string type, int offset, const T& lhs, const T& rhs)
     {
@@ -509,7 +535,7 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= logDivergentEntity(gameState1.entities, gameState2.entities, S5::Limits::kMaxEntities, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("animations", gameState1.animations, gameState2.animations, S5::Limits::kMaxAnimations, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("waves", gameState1.waves, gameState2.waves, S5::Limits::kMaxWaves, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("userStrings ", gameState1.userStrings, gameState2.userStrings, S5::Limits::kMaxUserStrings, displayAllDivergences);
+        foundDivergence |= isLoggedDivergenceUserString("userStrings ", gameState1.userStrings, gameState2.userStrings, displayAllDivergences);
         foundDivergence |= isLoggedDivergenceRoutings(gameState1, gameState2, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("orders", gameState1.orders, gameState2.orders, S5::Limits::kMaxOrders, displayAllDivergences);
 

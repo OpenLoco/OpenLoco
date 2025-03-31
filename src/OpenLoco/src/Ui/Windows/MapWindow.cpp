@@ -103,8 +103,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         statusBar,
     };
 
-    const uint64_t enabledWidgets = (1 << closeButton) | (1 << tabOverall) | (1 << tabVehicles) | (1 << tabIndustries) | (1 << tabRoutes) | (1 << tabOwnership);
-
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 272 }, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_map),
@@ -2344,8 +2342,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         availableColours = checkIndustryColours(PaletteIndex::black0, availableColours);
         availableColours = checkIndustryColours(PaletteIndex::blackB, availableColours);
 
-        auto availableTracks = CompanyManager::getPlayerCompany()->getAvailableRailTracks();
-        auto availableRoads = CompanyManager::getPlayerCompany()->getAvailableRoads();
+        auto availableTracks = companyGetAvailableRailTracks(CompanyManager::getControllingId());
+        auto availableRoads = companyGetAvailableRoads(CompanyManager::getControllingId());
 
         auto i = 0U;
         auto assignColour = [&i, &availableColours](uint8_t id) {
@@ -2421,8 +2419,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, getEvents());
         window->setWidgets(widgets);
-        window->enabledWidgets |= enabledWidgets;
-
         window->initScrollWidgets();
         window->frameNo = 0;
 

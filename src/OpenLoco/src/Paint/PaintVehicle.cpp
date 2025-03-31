@@ -111,7 +111,7 @@ namespace OpenLoco::Paint
                     imageId = ImageId(imageIndex, bogie->colourScheme);
                 }
 
-                if (sprite.hasFlags(BogieSpriteFlags::unk_4))
+                if (sprite.hasFlags(BogieSpriteFlags::largerBoundingBox))
                 {
                     // larger sprite
                     session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -9, -9, static_cast<coord_t>(bogie->position.z + 3) }, { 18, 18, 5 });
@@ -139,7 +139,7 @@ namespace OpenLoco::Paint
                 {
                     imageId = ImageId(imageIndex, bogie->colourScheme);
                 }
-                if (sprite.hasFlags(BogieSpriteFlags::unk_4))
+                if (sprite.hasFlags(BogieSpriteFlags::largerBoundingBox))
                 {
                     // larger sprite
                     session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -8, -8, static_cast<coord_t>(bogie->position.z + 3) }, { 16, 16, 1 });
@@ -192,7 +192,7 @@ namespace OpenLoco::Paint
             pitch = kReversePitch[static_cast<uint8_t>(body->spritePitch)];
         }
 
-        uint32_t bodyImageIndex = getBodyImageIndex(sprite, pitch, yaw, body->var_46, body->var_47);
+        uint32_t bodyImageIndex = getBodyImageIndex(sprite, pitch, yaw, body->animationFrame, body->cargoFrame);
 
         std::optional<uint32_t> brakingImageIndex = {};
         if (sprite.hasFlags(BodySpriteFlags::hasBrakingLights))
@@ -217,7 +217,7 @@ namespace OpenLoco::Paint
                 overhangLength = -overhangLength;
             }
 
-            if (componentObject.bodySpriteInd & SpriteIndex::flag_unk7)
+            if (componentObject.bodySpriteInd & SpriteIndex::isReversed)
             {
                 overhangLength = -overhangLength;
             }
@@ -255,7 +255,7 @@ namespace OpenLoco::Paint
         if (brakingImageIndex)
         {
             Vehicle train(body->head);
-            if (train.veh2->var_5B != 0
+            if (train.veh2->brakeLightTimeout != 0
                 && !body->has38Flags(Flags38::isGhost)
                 && !body->hasVehicleFlags(VehicleFlags::unk_5))
             {

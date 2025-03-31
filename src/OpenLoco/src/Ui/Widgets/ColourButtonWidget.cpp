@@ -19,12 +19,12 @@ namespace OpenLoco::Ui::Widgets
         // TODO: Remove addition
         ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
 
-        if (widgetState.enabled && widgetState.activated && widgetState.hovered)
+        if (!widgetState.disabled && widgetState.activated && widgetState.hovered)
         {
             // TODO: Remove addition
             imageId = imageId.withIndexOffset(2);
         }
-        else if (widgetState.enabled && !widgetState.activated && widgetState.hovered)
+        else if (!widgetState.disabled && !widgetState.activated && widgetState.hovered)
         {
             // TODO: Remove addition
             imageId = imageId.withIndexOffset(1);

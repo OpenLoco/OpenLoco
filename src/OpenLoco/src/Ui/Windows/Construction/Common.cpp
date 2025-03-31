@@ -615,16 +615,15 @@ namespace OpenLoco::Ui::Windows::Construction
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t enabledWidgets;
             void (*tabReset)(Window*);
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Construction::getWidgets(), widx::tab_construction, Construction::getEvents(), Construction::enabledWidgets, &Construction::tabReset },
-            { Station::getWidgets(),      widx::tab_station,      Station::getEvents(),      Station::enabledWidgets,      &Station::tabReset },
-            { Signal::getWidgets(),       widx::tab_signal,       Signal::getEvents(),       Signal::enabledWidgets,       &Signal::tabReset },
-            { Overhead::getWidgets(),     widx::tab_overhead,     Overhead::getEvents(),     Overhead::enabledWidgets,     &Overhead::tabReset },
+            { Construction::getWidgets(), widx::tab_construction, Construction::getEvents(), &Construction::tabReset },
+            { Station::getWidgets(),      widx::tab_station,      Station::getEvents(),      &Station::tabReset },
+            { Signal::getWidgets(),       widx::tab_signal,       Signal::getEvents(),       &Signal::tabReset },
+            { Overhead::getWidgets(),     widx::tab_overhead,     Overhead::getEvents(),     &Overhead::tabReset },
         };
         // clang-format on
 
@@ -642,7 +641,6 @@ namespace OpenLoco::Ui::Windows::Construction
 
             const auto& tabInfo = tabInformationByTabOffset[tabWidgetIndex - widx::tab_construction];
 
-            self.enabledWidgets = tabInfo.enabledWidgets;
             self.eventHandlers = &tabInfo.events;
             self.activatedWidgets = 0;
             self.setWidgets(tabInfo.widgets);
@@ -753,7 +751,6 @@ namespace OpenLoco::Ui::Windows::Construction
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
 
-            self->enabledWidgets = tabInfo.enabledWidgets;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->setWidgets(tabInfo.widgets);
@@ -1179,7 +1176,6 @@ namespace OpenLoco::Ui::Windows::Construction
 
             window->setWidgets(Construction::getWidgets());
             window->currentTab = 0;
-            window->enabledWidgets = Construction::enabledWidgets;
             window->activatedWidgets = 0;
 
             setDisabledWidgets(window);

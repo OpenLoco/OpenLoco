@@ -118,14 +118,13 @@ namespace OpenLoco::Ui
 
     struct WidgetState
     {
-        Window* window;
-        Gfx::RectInsetFlags flags;
-        AdvancedColour colour;
-        bool enabled;
-        bool disabled;
-        bool activated;
-        bool hovered;
-        int scrollviewIndex;
+        Window* window{};
+        Gfx::RectInsetFlags flags{};
+        AdvancedColour colour{};
+        bool disabled{};
+        bool activated{};
+        bool hovered{};
+        int scrollviewIndex{};
     };
 
     struct Widget;
@@ -200,7 +199,6 @@ namespace OpenLoco::Ui
         uint32_t styleData{};
 
         // Widget state.
-        bool enabled : 1 {};
         bool disabled : 1 {};
         bool activated : 1 {};
         bool hidden : 1 {};

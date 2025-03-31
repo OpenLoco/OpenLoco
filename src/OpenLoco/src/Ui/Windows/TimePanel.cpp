@@ -73,7 +73,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);
         window->var_854 = 0;
         window->numTicksVisible = 0;
         window->initScrollWidgets();
@@ -411,7 +410,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
-        .event_03 = onMouseDown,
+        .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,

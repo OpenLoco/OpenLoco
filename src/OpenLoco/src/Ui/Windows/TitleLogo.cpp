@@ -35,8 +35,6 @@ namespace OpenLoco::Ui::Windows::TitleLogo
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = 1 << Widx::logo;
-
         window->initScrollWidgets();
 
         window->setColour(WindowColour::primary, AdvancedColour(Colour::grey).translucent());

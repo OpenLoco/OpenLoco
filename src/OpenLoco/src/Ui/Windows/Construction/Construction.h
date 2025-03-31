@@ -162,8 +162,6 @@ namespace OpenLoco::Ui::Windows::Construction
                 Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_electrification_construction));
         }
 
-        constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
-
         void prepareDraw(Window* self);
         void resetWindow(Window& self, WidgetIndex_t tabWidgetIndex);
         void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -256,8 +254,6 @@ namespace OpenLoco::Ui::Windows::Construction
 
         std::span<const Widget> getWidgets();
 
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | allConstruction;
-
         void reset();
         void activateSelectedConstructionWidgets();
         void tabReset(Window* self);
@@ -286,8 +282,6 @@ namespace OpenLoco::Ui::Windows::Construction
 
         std::span<const Widget> getWidgets();
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
-
         void tabReset(Window* self);
         void removeStationGhost();
         const WindowEventList& getEvents();
@@ -304,8 +298,6 @@ namespace OpenLoco::Ui::Windows::Construction
         };
 
         std::span<const Widget> getWidgets();
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
 
         void tabReset(Window* self);
         void removeSignalGhost();
@@ -326,8 +318,6 @@ namespace OpenLoco::Ui::Windows::Construction
         };
 
         std::span<const Widget> getWidgets();
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
 
         void tabReset(Window* self);
         void removeTrackModsGhost();

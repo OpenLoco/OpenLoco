@@ -24,6 +24,8 @@ namespace OpenLoco
         unk_00 = 1U << 0,
         unk_01 = 1U << 1,
         unk_02 = 1U << 2,
+
+        unk_04 = 1U << 4,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrackObjectFlags);
 

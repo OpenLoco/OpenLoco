@@ -36,8 +36,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             viewport2Button,
         };
 
-        constexpr uint64_t enabledWidgets = (1 << close_button) | (1 << viewport1Button) | (1 << viewport2Button);
-
         template<typename TFrameWidget>
         constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight)
         {
@@ -76,7 +74,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             frame,
         };
-        constexpr uint64_t enabledWidgets = (1 << widx::frame);
 
         std::span<const Widget> getWidgets();
 

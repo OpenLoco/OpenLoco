@@ -19,6 +19,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
@@ -60,8 +61,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             tab_speed_records,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_company_list) | (1 << widx::tab_performance) | (1 << widx::tab_cargo_units) | (1 << widx::tab_cargo_distance) | (1 << widx::tab_values) | (1 << widx::tab_payment_rates) | (1 << widx::tab_speed_records);
-
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
@@ -100,9 +99,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             sort_performance,
             sort_value,
             scrollview,
+            status_bar,
         };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_name) | (1 << sort_status) | (1 << sort_performance) | (1 << sort_value) | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(640, 272, StringIds::title_company_list),
@@ -110,7 +108,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Widgets::TableHeader({ 179, 43 }, { 210, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
             Widgets::TableHeader({ 389, 43 }, { 145, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
             Widgets::TableHeader({ 534, 43 }, { 100, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
-            Widgets::ScrollView({ 3, 56 }, { 634, 201 }, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 3, 56 }, { 634, 201 }, WindowColour::secondary, Scrollbars::vertical),
+            Widgets::Label({ 3, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -433,30 +432,23 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.widgets[widx::sort_status].text = self.sortMode == SortMode::Status ? StringIds::table_header_company_status_desc : StringIds::table_header_company_status;
             self.widgets[widx::sort_performance].text = self.sortMode == SortMode::Performance ? StringIds::table_header_company_performance_desc : StringIds::table_header_company_performance;
             self.widgets[widx::sort_value].text = self.sortMode == SortMode::Value ? StringIds::table_header_company_value_desc : StringIds::table_header_company_value;
+
+            // Reposition status bar
+            auto& widget = self.widgets[widx::status_bar];
+            widget.top = self.height - 13;
+            widget.bottom = self.height - 3;
+
+            // Set status bar text
+            FormatArguments args{ widget.textArgs };
+            args.push(self.var_83C == 1 ? StringIds::company_singular : StringIds::companies_plural);
+            args.push(self.var_83C);
         }
 
         // 0x00435E56
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
-
-            FormatArguments args{};
-            if (self.var_83C == 1)
-            {
-                args.push(StringIds::company_singular);
-            }
-            else
-            {
-                args.push(StringIds::companies_plural);
-            }
-
-            args.push(self.var_83C);
-
-            auto point = Point(self.x + 3, self.y + self.height - 13);
-            tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x00435EA7
@@ -638,7 +630,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
         window->invalidate();
 
         window->setWidgets(CompanyList::widgets);
-        window->enabledWidgets = CompanyList::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &CompanyList::getEvents();
         window->activatedWidgets = 0;
@@ -673,8 +664,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
     namespace CompanyPerformance
     {
         static constexpr Ui::Size32 kWindowSize = { 635, 322 };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets;
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(635, 322, StringIds::title_company_performance)
@@ -769,8 +758,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         static constexpr Ui::Size32 kWindowSize = { 640, 272 };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets;
-
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(635, 322, StringIds::title_company_cargo_units)
 
@@ -863,8 +850,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
     namespace CargoDistance
     {
         static constexpr Ui::Size32 kWindowSize = { 660, 272 };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets;
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(635, 322, StringIds::title_cargo_distance_graphs)
@@ -959,8 +944,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         static constexpr Ui::Size32 kWindowSize = { 685, 322 };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets;
-
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(685, 322, StringIds::title_company_values)
 
@@ -1053,8 +1036,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
     namespace CargoPaymentRates
     {
         static constexpr Ui::Size32 kWindowSize = { 495, 342 };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets;
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(495, 342, StringIds::title_cargo_payment_rates)
@@ -1316,8 +1297,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         static constexpr Ui::Size32 kWindowSize = { 495, 169 };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets;
-
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(495, 169, StringIds::title_speed_records)
 
@@ -1411,18 +1390,17 @@ namespace OpenLoco::Ui::Windows::CompanyList
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t enabledWidgets;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { CompanyList::widgets,         widx::tab_company_list,   CompanyList::getEvents(),         CompanyList::enabledWidgets },
-            { CompanyPerformance::widgets,  widx::tab_performance,    CompanyPerformance::getEvents(),  CompanyPerformance::enabledWidgets },
-            { CargoUnits::widgets,          widx::tab_cargo_units,    CargoUnits::getEvents(),          CargoUnits::enabledWidgets },
-            { CargoDistance::widgets,       widx::tab_cargo_distance, CargoDistance::getEvents(),       CargoDistance::enabledWidgets },
-            { CompanyValues::widgets,       widx::tab_values,         CompanyValues::getEvents(),       CompanyValues::enabledWidgets },
-            { CargoPaymentRates::widgets,   widx::tab_payment_rates,  CargoPaymentRates::getEvents(),   CargoPaymentRates::enabledWidgets },
-            { CompanySpeedRecords::widgets, widx::tab_speed_records,  CompanySpeedRecords::getEvents(), CompanySpeedRecords::enabledWidgets },
+            { CompanyList::widgets,         widx::tab_company_list,   CompanyList::getEvents()         },
+            { CompanyPerformance::widgets,  widx::tab_performance,    CompanyPerformance::getEvents()  },
+            { CargoUnits::widgets,          widx::tab_cargo_units,    CargoUnits::getEvents()          },
+            { CargoDistance::widgets,       widx::tab_cargo_distance, CargoDistance::getEvents()       },
+            { CompanyValues::widgets,       widx::tab_values,         CompanyValues::getEvents()       },
+            { CargoPaymentRates::widgets,   widx::tab_payment_rates,  CargoPaymentRates::getEvents()   },
+            { CompanySpeedRecords::widgets, widx::tab_speed_records,  CompanySpeedRecords::getEvents() },
         };
         // clang-format on
 
@@ -1549,7 +1527,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_company_list];
 
-            self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

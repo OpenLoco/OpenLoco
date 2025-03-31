@@ -22,6 +22,7 @@
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
@@ -62,6 +63,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         sort_age,
         sort_reliability,
         scrollview,
+        status_bar,
         filter_type,
         filter_type_btn,
         cargo_type,
@@ -85,16 +87,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Widgets::TableHeader({ 414, 43 }, { 65, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
         Widgets::TableHeader({ 479, 43 }, { 67, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
         Widgets::ScrollView({ 3, 56 }, { 544, 138 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::dropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::empty),
-        Widgets::dropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::empty)
+        Widgets::Label({ 3, kWindowSize.height - 13 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
+        Widgets::dropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid),
+        Widgets::dropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid)
 
     );
 
     // clang-format off
     constexpr uint16_t _tabWidgets = (1 << Widx::tab_trains) | (1 << Widx::tab_buses) | (1 << Widx::tab_trucks) | (1 << Widx::tab_trams) | (1 << Widx::tab_aircraft) | (1 << Widx::tab_ships);
-    constexpr uint64_t _enabledWidgets = (1ULL << Widx::close_button) | _tabWidgets | (1ULL << Widx::company_select) |
-        (1ULL << Widx::sort_name) | (1ULL << Widx::sort_profit) | (1ULL << Widx::sort_age) | (1ULL << Widx::sort_reliability) |
-        (1ULL << Widx::scrollview) | (1ULL << Widx::filter_type) | (1ULL << Widx::filter_type_btn) | (1ULL << Widx::cargo_type) | (1ULL << Widx::cargo_type_btn);
     // clang-format on
 
     enum SortMode : uint16_t
@@ -487,7 +487,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
             getEvents());
 
         self->setWidgets(_widgets);
-        self->enabledWidgets = _enabledWidgets;
         self->number = enumValue(companyId);
         self->owner = companyId;
         self->frameNo = 0;
@@ -578,9 +577,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         auto company = CompanyManager::get(CompanyId(self.number));
 
-        // Set company in title.
-        auto args = FormatArguments(self.widgets[Widx::caption].textArgs);
-        args.push(company->name);
+        {
+            // Set company in title
+            auto args = FormatArguments(self.widgets[Widx::caption].textArgs);
+            args.push(company->name);
+        }
 
         static constexpr StringId typeToCaption[] = {
             StringIds::stringid_trains,
@@ -661,23 +662,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[Widx::cargo_type_btn].tooltip = kFilterTooltipByType[self.var_88A];
 
         Widget::leftAlignTabs(self, Widx::tab_trains, Widx::tab_ships);
-    }
-
-    // 0x004C211C
-    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
-    {
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
-        self.draw(drawingCtx);
-        drawTabs(&self, drawingCtx);
-
-        // Draw company owner image.
-        auto company = CompanyManager::get(CompanyId(self.number));
-        auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
-        uint32_t image = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
-        uint16_t x = self.x + self.widgets[Widx::company_select].left + 1;
-        uint16_t y = self.y + self.widgets[Widx::company_select].top + 1;
-        drawingCtx.drawImage(x, y, image);
 
         static constexpr std::pair<StringId, StringId> typeToFooterStringIds[]{
             { StringIds::num_trains_singular, StringIds::num_trains_plural },
@@ -689,15 +673,16 @@ namespace OpenLoco::Ui::Windows::VehicleList
         };
 
         {
+            // Reposition status bar
+            auto& widget = self.widgets[Widx::status_bar];
+            widget.top = self.height - 13;
+            widget.bottom = self.height - 3;
+
+            // Set status bar
+            FormatArguments args{ widget.textArgs };
             auto& footerStringPair = typeToFooterStringIds[self.currentTab];
-            StringId footerStringId = self.var_83C == 1 ? footerStringPair.first : footerStringPair.second;
-
-            FormatArguments args{};
-            args.push(footerStringId);
+            args.push(self.var_83C == 1 ? footerStringPair.first : footerStringPair.second);
             args.push(self.var_83C);
-
-            auto point = Point(self.x + 3, self.y + self.height - 13);
-            tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
         }
 
         static constexpr std::array<StringId, 3> typeToFilterStringIds{
@@ -707,19 +692,15 @@ namespace OpenLoco::Ui::Windows::VehicleList
         };
 
         {
-            // Show current filter type
-            FormatArguments args{};
+            // Set current filter type
+            auto& widget = self.widgets[Widx::filter_type];
+            FormatArguments args{ widget.textArgs };
             args.push(typeToFilterStringIds[self.var_88A]);
-            auto* widget = &self.widgets[Widx::filter_type];
-
-            auto point = Point(self.x + widget->left + 1, self.y + widget->top);
-            tr.drawStringLeftClipped(point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
-        auto* widget = &self.widgets[Widx::cargo_type];
-        auto xPos = self.x + widget->left + 1;
+        auto& widget = self.widgets[Widx::cargo_type];
         bool filterActive = false;
-        FormatArguments args{};
+        FormatArguments args{ widget.textArgs };
 
         if (isStationFilterActive(&self, false))
         {
@@ -746,9 +727,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 args.push(StringIds::carrying_cargoid_sprite);
                 args.push(cargoObj->name);
                 args.push(cargoObj->unitInlineSprite);
-
-                // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
-                xPos = self.x + widget->left - 9;
             }
             else
             {
@@ -756,12 +734,22 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
         }
 
-        if (filterActive)
-        {
-            // Draw filter text as prepared
-            auto point = Point(xPos, self.y + widget->top);
-            tr.drawStringLeftClipped(point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
-        }
+        widget.text = filterActive ? StringIds::wcolour2_stringid : StringIds::empty;
+    }
+
+    // 0x004C211C
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
+    {
+        self.draw(drawingCtx);
+        drawTabs(&self, drawingCtx);
+
+        // Draw company owner image.
+        auto company = CompanyManager::get(CompanyId(self.number));
+        auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
+        uint32_t image = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
+        uint16_t x = self.x + self.widgets[Widx::company_select].left + 1;
+        uint16_t y = self.y + self.widgets[Widx::company_select].top + 1;
+        drawingCtx.drawImage(x, y, image);
     }
 
     // 0x004C21CD
