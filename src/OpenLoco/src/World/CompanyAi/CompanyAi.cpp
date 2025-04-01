@@ -625,8 +625,260 @@ namespace OpenLoco
     };
 
     // 0x004802D0
-    static VehiclePurchaseRequest aiGenerateVehiclePurchaseRequest(AiThought& thought, uint16_t* requestBuffer)
+    static VehiclePurchaseRequest aiGenerateVehiclePurchaseRequest(const Company& company, AiThought& thought, uint16_t* requestBuffer)
     {
+        sfl::static_vector<uint16_t, 3> requests;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            // 0x00480CD5
+            Speed16 bestSpeed = 0_mph;
+            uint16_t bestDesignedYear = 0;
+            uint16_t bestVehicleObjId = 0xFFFF;
+            auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+                if (vehicleObj == nullptr)
+                {
+                    continue;
+                }
+                if (vehicleObj->mode != TransportMode::air)
+                {
+                    continue;
+                }
+                if (vehicleObj->hasFlags(VehicleObjectFlags::aircraftIsHelicopter))
+                {
+                    continue;
+                }
+                bool compatibleCargo = false;
+                for (auto j = 0U; j < 2; ++j)
+                {
+                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                    {
+                        compatibleCargo = true;
+                        break;
+                    }
+                }
+                if (!compatibleCargo)
+                {
+                    if (!vehicleObj->hasFlags(VehicleObjectFlags::refittable) || !cargoObj->hasFlags(CargoObjectFlags::refit))
+                    {
+                        continue;
+                    }
+                }
+                if (!company.unlockedVehicles[i])
+                {
+                    continue;
+                }
+                if (vehicleObj->speed >= bestSpeed)
+                {
+                    if (vehicleObj->speed == bestSpeed)
+                    {
+                        if (bestDesignedYear > vehicleObj->designed)
+                        {
+                            continue;
+                        }
+                    }
+                    bestSpeed = vehicleObj->speed;
+                    bestDesignedYear = vehicleObj->designed;
+                    bestVehicleObjId = i;
+                }
+            }
+            if (bestSpeed == 0_mph)
+            {
+                return VehiclePurchaseRequest{};
+            }
+            requests.push_back(bestVehicleObjId);
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            // 0x00480DC6
+            Speed16 bestSpeed = 0_mph;
+            uint16_t bestDesignedYear = 0;
+            uint16_t bestVehicleObjId = 0xFFFF;
+            auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+                if (vehicleObj == nullptr)
+                {
+                    continue;
+                }
+                if (vehicleObj->mode != TransportMode::water)
+                {
+                    continue;
+                }
+                bool compatibleCargo = false;
+                for (auto j = 0U; j < 2; ++j)
+                {
+                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                    {
+                        compatibleCargo = true;
+                        break;
+                    }
+                }
+                if (!compatibleCargo)
+                {
+                    if (!vehicleObj->hasFlags(VehicleObjectFlags::refittable) || !cargoObj->hasFlags(CargoObjectFlags::refit))
+                    {
+                        continue;
+                    }
+                }
+                if (!company.unlockedVehicles[i])
+                {
+                    continue;
+                }
+                if (vehicleObj->speed >= bestSpeed)
+                {
+                    if (vehicleObj->speed == bestSpeed)
+                    {
+                        if (bestDesignedYear > vehicleObj->designed)
+                        {
+                            continue;
+                        }
+                    }
+                    bestSpeed = vehicleObj->speed;
+                    bestDesignedYear = vehicleObj->designed;
+                    bestVehicleObjId = i;
+                }
+            }
+            if (bestSpeed == 0_mph)
+            {
+                return VehiclePurchaseRequest{};
+            }
+            requests.push_back(bestVehicleObjId);
+        }
+        else
+        {
+            // 0x004802F7
+            uint8_t unk112C5A6 = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7) ? 6 : 3;
+            uint8_t trackType = thought.trackObjId;
+            TransportMode mode = TransportMode::rail;
+            if (trackType & (1U << 7))
+            {
+                trackType &= ~(1U << 7);
+                mode = TransportMode::road;
+                auto* roadObj = ObjectManager::get<RoadObject>(trackType);
+                if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+                {
+                    trackType = 0xFFU;
+                }
+            }
+
+            Speed16 bestSpeed = 0_mph;
+            uint16_t bestDesignedYear = 0;
+            uint16_t bestVehicleObjId = 0xFFFF;
+            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+                if (vehicleObj == nullptr)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->mode != mode)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->trackType != trackType)
+                {
+                    continue;
+                }
+
+                bool compatibleCargo = false;
+                for (auto j = 0U; j < 2; ++j)
+                {
+                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                    {
+                        compatibleCargo = true;
+                        break;
+                    }
+                }
+
+                if (!compatibleCargo)
+                {
+                    continue;
+                }
+
+                auto speed = vehicleObj->speed;
+                if (vehicleObj->power != 0)
+                {
+                    speed -= 1_mph;
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+                    {
+                        speed = (speed + 1_mph) * 4;
+                        const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
+                        speed += speedRand;
+                    }
+                }
+
+                if (speed >= bestSpeed)
+                {
+                    if (vehicleObj->speed == bestSpeed)
+                    {
+                        if (bestDesignedYear > vehicleObj->designed)
+                        {
+                            continue;
+                        }
+                    }
+                    if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+                    {
+                        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
+                        {
+                            continue;
+                        }
+                    }
+                    bestSpeed = vehicleObj->speed;
+                    bestDesignedYear = vehicleObj->designed;
+                    bestVehicleObjId = i;
+                }
+            }
+
+            if (bestSpeed == 0_mph)
+            {
+                return VehiclePurchaseRequest{};
+            }
+
+            auto destinationPosition = [](bool isIndustry, uint8_t destination) {
+                if (isIndustry)
+                {
+                    const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
+                    return Pos2{ industry->x, industry->y };
+                }
+                else
+                {
+                    auto* town = TownManager::get(static_cast<TownId>(destination));
+                    return Pos2{ town->x, town->y };
+                }
+            };
+
+            requests.push_back(bestVehicleObjId);
+            auto* vehicleObj1 = ObjectManager::get<VehicleObject>(bestVehicleObjId);
+            auto minSpeed = vehicleObj1->speed;
+            if (vehicleObj1->power == 0)
+            {
+                bool longDistane = false;
+                if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6 | ThoughtTypeFlags::singleDestination))
+                {
+                    const auto posA = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
+                    const auto posB = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
+                    const auto distance = Math::Vector::distance2D(posA, posB);
+                    longDistane = distance > 28 * 32;
+                }
+
+                if (longDistane)
+                {
+                    // 0x004806A9
+                }
+                else
+                {
+                    // 0x00480551
+                }
+            }
+        }
+        // 0x00480A74
+
         registers regs;
         regs.esi = X86Pointer(requestBuffer);
         regs.edi = X86Pointer(&thought);
@@ -858,7 +1110,7 @@ namespace OpenLoco
                 const auto reliability = car.front->reliability;
                 if (vehicleObj->power != 0 && (getCurrentYear() >= vehicleObj->obsolete || (reliability != 0 && reliability < 0x1900)))
                 {
-                    const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+                    const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(company, thought, thought.var_46);
                     if (purchaseRequest.numVehicleObjects == 0)
                     {
                         return false;
@@ -965,7 +1217,7 @@ namespace OpenLoco
             return false;
         }
 
-        const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+        const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(company, thought, thought.var_46);
         if (purchaseRequest.numVehicleObjects == 0)
         {
             return false;
@@ -2933,7 +3185,7 @@ namespace OpenLoco
     static void sub_430C2D(Company& company)
     {
         auto& thought = company.aiThoughts[company.activeThoughtId];
-        const auto request = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+        const auto request = aiGenerateVehiclePurchaseRequest(company, thought, thought.var_46);
         if (request.numVehicleObjects == 0)
         {
             state2ClearActiveThought(company);
