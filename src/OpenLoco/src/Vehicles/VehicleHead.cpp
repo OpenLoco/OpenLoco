@@ -484,7 +484,7 @@ namespace OpenLoco::Vehicles
     // 0x004B90F0
     // eax : newVehicleTypeId
     // ebx : sourceVehicleTypeId;
-    static bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
+    bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
     {
         auto newObject = ObjectManager::get<VehicleObject>(newVehicleTypeId);       // edi
         auto sourceObject = ObjectManager::get<VehicleObject>(sourceVehicleTypeId); // esi
