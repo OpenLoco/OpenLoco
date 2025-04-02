@@ -1219,7 +1219,7 @@ namespace OpenLoco
         }
         // 0x00480A74
 
-        uint8_t targetLengthWorld = 0;
+        int8_t targetLengthWorld = 0;
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
         {
             targetLengthWorld = 44;
@@ -1274,7 +1274,7 @@ namespace OpenLoco
         }
 
         const auto* vehObj = ObjectManager::get<VehicleObject>(cargoCariageObjId);
-        const auto length = vehObj->getLength();
+        const int32_t length = vehObj->getLength();
         targetLength -= length;
         requests.push_back(cargoCariageObjId);
         totalCost = Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
