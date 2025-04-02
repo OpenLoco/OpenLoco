@@ -1090,7 +1090,7 @@ namespace OpenLoco::Vehicles
         }
         else if (status == Status::crashed)
         {
-            sub_4AA625();
+            landCrashedUpdate();
 
             return false;
         }
@@ -3650,12 +3650,12 @@ namespace OpenLoco::Vehicles
         call(0x004AD778, regs);
     }
 
-    // 0x004AA625
-    void VehicleHead::sub_4AA625()
+    // 0x004AA64B
+    void VehicleHead::sub_4AA64B()
     {
         registers regs;
         regs.esi = X86Pointer(this);
-        call(0x004AA625, regs);
+        call(0x004AA64B, regs);
     }
 
     // 0x004ACEE7

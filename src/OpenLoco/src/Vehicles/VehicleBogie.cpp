@@ -119,6 +119,13 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    void VehicleBogie::sub_4AA68E()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004AA68E, regs);
+    }
+
     // 0x004AA0DF
     void VehicleBogie::collision()
     {

@@ -139,6 +139,13 @@ namespace OpenLoco::Vehicles
         secondaryAnimationUpdate();
     }
 
+    void VehicleBody::sub_4AA904()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004AA904, regs);
+    }
+
     // 0x004AAB0B
     void VehicleBody::sub_4AAB0B()
     {
