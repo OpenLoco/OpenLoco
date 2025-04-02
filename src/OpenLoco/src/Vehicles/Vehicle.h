@@ -399,6 +399,8 @@ namespace OpenLoco::Vehicles
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void sub_4AF7A4();
+        void landCrashedUpdate();
+        void sub_4AA64B();
         uint32_t getVehicleTotalLength() const;
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -453,7 +455,6 @@ namespace OpenLoco::Vehicles
         void produceLeavingDockSound();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
-        void sub_4AA625();
         std::tuple<uint8_t, uint8_t, StationId> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
@@ -605,6 +606,7 @@ namespace OpenLoco::Vehicles
         const VehicleObject* getObject() const;
         bool update();
         void secondaryAnimationUpdate();
+        void sub_4AA904();
         void sub_4AAB0B();
         void updateCargoSprite();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
@@ -672,6 +674,7 @@ namespace OpenLoco::Vehicles
     public:
         AirportObjectFlags getCompatibleAirportType();
         bool update();
+        void sub_4AA68E();
         bool isOnRackRail();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
