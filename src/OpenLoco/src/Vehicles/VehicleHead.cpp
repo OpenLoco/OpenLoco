@@ -3650,6 +3650,51 @@ namespace OpenLoco::Vehicles
         call(0x004AD778, regs);
     }
 
+    // 0x004AA625
+    void VehicleHead::landCrashedUpdate()
+    {
+        VehicleBase* currentVehicle = reinterpret_cast<VehicleBase*>(this);
+        EntityId nextVehicleId = currentVehicle->id;
+
+        while(currentVehicle)
+        {
+            switch(currentVehicle->getSubType())
+            {
+                case VehicleEntityType::head:
+                    reinterpret_cast<VehicleHead*>(currentVehicle)->sub_4AA64B();
+                    break;
+                case VehicleEntityType::vehicle_1:
+                    // calls nullsub_21: empty subroutine
+                    break;
+                case VehicleEntityType::vehicle_2:
+                    // calls nullsub_22: empty subroutine
+                    break;
+                case VehicleEntityType::bogie:
+                    reinterpret_cast<VehicleBogie*>(currentVehicle)->sub_4AA68E();
+                    break;
+                case VehicleEntityType::body_start:
+                case VehicleEntityType::body_continued:
+                    reinterpret_cast<VehicleBody*>(currentVehicle)->sub_4AA904();
+                    break;
+                case VehicleEntityType::tail:
+                    // calls nullsub_23: empty subroutine
+                    break;
+                default:
+                    break;
+            }
+
+            nextVehicleId = currentVehicle->getNextCar();
+            if(nextVehicleId == EntityId::null)
+            {
+                return;
+            }
+            else
+            {
+                currentVehicle = EntityManager::get<VehicleBase>(nextVehicleId);
+            }
+        }
+    }
+
     // 0x004AA64B
     void VehicleHead::sub_4AA64B()
     {
