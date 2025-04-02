@@ -3661,7 +3661,7 @@ namespace OpenLoco::Vehicles
             switch(currentVehicle->getSubType())
             {
                 case VehicleEntityType::head:
-                    reinterpret_cast<VehicleHead*>(currentVehicle)->sub_4AA64B();
+                    reinterpret_cast<VehicleHead*>(currentVehicle)->updateSegmentCrashed();
                     break;
                 case VehicleEntityType::vehicle_1:
                     // calls nullsub_21: empty subroutine
@@ -3696,11 +3696,15 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA64B
-    void VehicleHead::sub_4AA64B()
+    void VehicleHead::updateSegmentCrashed()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AA64B, regs);
+        _vehicleUpdate_head = X86Pointer(this);
+        _vehicleUpdate_frontBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
+        _vehicleUpdate_backBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
+
+        VehicleBase* nextCar = EntityManager::get<VehicleBase>(this->getNextCar());
+        _vehicleUpdate_1 = reinterpret_cast<Vehicle1*>(nextCar);
+        _vehicleUpdate_2 = EntityManager::get<Vehicle2>(nextCar->getNextCar());
     }
 
     // 0x004ACEE7

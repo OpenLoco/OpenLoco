@@ -400,7 +400,7 @@ namespace OpenLoco::Vehicles
         void applyBreakdownToTrain();
         void sub_4AF7A4();
         void landCrashedUpdate();
-        void sub_4AA64B();
+        void updateSegmentCrashed();
         uint32_t getVehicleTotalLength() const;
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
