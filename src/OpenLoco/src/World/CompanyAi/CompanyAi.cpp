@@ -620,8 +620,8 @@ namespace OpenLoco
     {
         uint8_t numVehicleObjects; // cl
         uint8_t dl;                // dl
-        currency32_t trainRunCost;          // ebx
-        currency32_t trainCost;          // eax
+        currency32_t trainRunCost; // ebx
+        currency32_t trainCost;    // eax
     };
 
     // 0x004802D0
@@ -1207,11 +1207,10 @@ namespace OpenLoco
                         bestVehicleObjIdObj3 = i;
                     }
 
-                    if (bestScore == 0_mph)
+                    if (bestScore != 0_mph)
                     {
-                        return VehiclePurchaseRequest{};
+                        secondCariageObjId = bestVehicleObjIdObj3;
                     }
-                    secondCariageObjId = bestVehicleObjIdObj3;
                 }
             }
         }
