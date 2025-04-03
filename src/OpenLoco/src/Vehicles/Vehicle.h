@@ -296,6 +296,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicleComponent();
         VehicleBase* previousVehicleComponent();
         bool updateComponent();
+        void explodeComponent();
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
         int32_t updateTrackMotion(int32_t unk1);
