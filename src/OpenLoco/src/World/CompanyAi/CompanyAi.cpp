@@ -1243,7 +1243,7 @@ namespace OpenLoco
             const auto length = vehObj->getLength();
             targetLength -= length;
             requests.push_back(frontCariageObjId);
-            totalCost = Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+            totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
             numVehicleObjects++;
             if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
             {
@@ -1260,7 +1260,7 @@ namespace OpenLoco
             const auto length = vehObj->getLength();
             targetLength -= length;
             requests.push_back(secondCariageObjId);
-            totalCost = Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+            totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
             numVehicleObjects++;
             if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
             {
@@ -1275,7 +1275,7 @@ namespace OpenLoco
         const int32_t length = vehObj->getLength();
         targetLength -= length;
         requests.push_back(cargoCariageObjId);
-        totalCost = Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+        totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
         numVehicleObjects++;
         if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
         {
@@ -1307,7 +1307,7 @@ namespace OpenLoco
                     }
                 }
                 requests.push_back(cargoCariageObjId);
-                totalCost = Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+                totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
                 numVehicleObjects++;
                 if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
                 {
