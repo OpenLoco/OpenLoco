@@ -23,6 +23,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
+/*
     // 0x004AA407
     template<typename T>
     void explodeComponent(T& component)
@@ -39,12 +40,12 @@ namespace OpenLoco::Vehicles
         {
             VehicleCrashParticle::create(pos, component.colourScheme);
         }
-    }
+    }   */
 
     template<typename T>
     void applyDestructionToComponent(T& component)
     {
-        explodeComponent(component);
+        component.explodeComponent();
         component.var_5A &= ~(1u << 31);
         component.var_5A >>= 3;
         component.var_5A |= (1u << 31);
