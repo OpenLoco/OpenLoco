@@ -141,9 +141,23 @@ namespace OpenLoco::Vehicles
 
     void VehicleBody::sub_4AA904()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AA904, regs);
+        invalidateSprite();
+        sub_4AC255(_vehicleUpdate_backBogie, _vehicleUpdate_frontBogie);
+        invalidateSprite();
+        animationUpdate();
+        sub_4AAB0B();
+        if(!hasVehicleFlags(VehicleFlags::unk_5))
+        {
+            VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
+            VehicleBogie* backBogie = _vehicleUpdate_backBogie;
+
+            if(frontBogie->hasVehicleFlags(VehicleFlags::unk_5)
+                || backBogie->hasVehicleFlags(VehicleFlags::unk_5))
+            {
+                explodeComponent();
+                this->vehicleFlags |= VehicleFlags::unk_5;
+            }
+        }
     }
 
     // 0x004AAB0B
