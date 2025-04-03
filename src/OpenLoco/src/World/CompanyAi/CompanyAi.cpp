@@ -754,7 +754,7 @@ namespace OpenLoco
         else
         {
             // 0x004802F7
-            uint8_t unk112C5A6 = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7) ? 6 : 3;
+            uint8_t unk112C5A6 = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7) ? 3 : 6;
             uint8_t trackType = thought.trackObjId;
             TransportMode mode = TransportMode::rail;
             if (trackType & (1U << 7))
@@ -879,7 +879,7 @@ namespace OpenLoco
                 if (longDistane)
                 {
                     // 0x004806A9
-                    uint16_t bestScore = 0;
+                    int16_t bestScore = 0;
                     uint16_t bestDesignedYearObj2 = 0;
                     uint16_t bestVehicleObjIdObj2 = 0xFFFF;
                     for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
@@ -912,10 +912,8 @@ namespace OpenLoco
 
                         const auto adjustedPower = vehicleObj->power >> unk112C5A6;
                         const auto adjustedSpeed = std::min(minSpeed, vehicleObj->speed);
-                        auto speed = Speed16((adjustedPower + adjustedSpeed.getRaw()) / 2);
                         const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
-                        speed += speedRand;
-                        const auto score = vehicleObj->getLength() - speed.getRaw();
+                        auto score = (adjustedSpeed + speedRand).getRaw() + adjustedPower;
                         if (score < bestScore)
                         {
                             continue;
@@ -1219,7 +1217,7 @@ namespace OpenLoco
         }
         // 0x00480A74
 
-        int8_t targetLengthWorld = 0;
+        int32_t targetLengthWorld = 0;
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
         {
             targetLengthWorld = 44;
