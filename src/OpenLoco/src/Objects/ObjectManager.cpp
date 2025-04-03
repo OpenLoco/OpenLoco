@@ -24,6 +24,7 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
+#include "MessageManager.h"
 #include "ObjectImageTable.h"
 #include "ObjectIndex.h"
 #include "ObjectStringTable.h"
@@ -47,9 +48,12 @@
 #include "TunnelObject.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include "Ui/WindowManager.h"
 #include "VehicleObject.h"
+#include "Vehicles/VehicleManager.h"
 #include "WallObject.h"
 #include "WaterObject.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Core/Stream.hpp>
@@ -983,8 +987,72 @@ namespace OpenLoco::ObjectManager
     // 0x004C3A9E
     void updateYearly2()
     {
-        // update available vehicles/roads/airports/etc.
-        call(0x004C3A9E);
+        const auto currentYear = getCurrentYear(); // 0x004C3AB7
+
+        // 0x004C3A9E, 004C3B8E-004C3B95
+        for (uint16_t vehicleObjId = 0; vehicleObjId < ObjectManager::getMaxObjects(ObjectType::vehicle); vehicleObjId++)
+        {
+            const auto* vehicleObject = ObjectManager::get<VehicleObject>(vehicleObjId); // 004C3AA0
+
+            if (vehicleObject == nullptr) // 004C3AA7
+            {
+                continue; // 0x004C3AAA
+            }
+
+            if (currentYear == vehicleObject->designed) // 004C3AB0-004C3ABE
+            {
+                for (Company& company : CompanyManager::companies()) // 004C3AC4-004C3AC9, 004C3B44-004C3B4F
+                {
+                    if (company.name == 0) // 004C3ACB-004C3ACF
+                    {
+                        continue;
+                    }
+
+                    // 004C3AD1-004C3AE7
+                    const auto forbiddenVehicles = CompanyManager::isPlayerCompany(company.id()) ? getGameState().forbiddenVehiclesPlayers : getGameState().forbiddenVehiclesCompetitors;
+                    if (forbiddenVehicles & (1U << enumValue(vehicleObject->type))) // 004C3AED-004C3AF6
+                    {
+                        continue;
+                    }
+
+                    if (company.unlockedVehicles[vehicleObjId]) // 004C3AF8-004C3B07
+                    {
+                        continue;
+                    }
+
+                    company.unlockedVehicles.set(vehicleObjId, true);                                    // 004C3B02
+                    company.availableVehicles = VehicleManager::determineAvailableVehicleTypes(company); // 004C3B09-004C3B13
+
+                    if (!CompanyManager::isPlayerCompany(company.id())) // 004C3B14-004C3B1A
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObject->hasFlags(VehicleObjectFlags::quietInvention)) // 004C3B1D-004C3B2D
+                    {
+                        continue;
+                    }
+
+                    MessageManager::post(MessageType::newVehicle, CompanyId::null, vehicleObjId, 0xFFFF); // 004C3B2F-004C3B3E
+                }
+            }
+
+            if (currentYear == vehicleObject->obsolete) // 004C3B55-004C3B63
+            {
+                for (Company& company : CompanyManager::companies()) // 004C3B65-004C3B6A, 004C3B81-004C3B8C
+                {
+                    if (company.name == 0) // 004C3B6C-004C3B70
+                    {
+                        continue;
+                    }
+
+                    company.unlockedVehicles.set(vehicleObjId, false); // 004C3B72-004C3B7C
+                }
+            }
+        }
+
+        Ui::Windows::Construction::updateAvailableRoadAndRailOptions();    // 004C3B9B
+        Ui::Windows::Construction::updateAvailableAirportAndDockOptions(); // 004C3BA0
     }
 
     // TODO: Refactor this, variable is also defined in PaintSurface.cpp.
