@@ -873,7 +873,7 @@ namespace OpenLoco
                     const auto posA = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
                     const auto posB = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
                     const auto distance = Math::Vector::distance2D(posA, posB);
-                    longDistane = distance > 28 * 32;
+                    longDistane = distance > 40 * 32;
                 }
 
                 if (longDistane)
@@ -1286,7 +1286,7 @@ namespace OpenLoco
 
         if (Vehicles::canVehiclesCouple(cargoCariageObjId, cargoCariageObjId))
         {
-            while (targetLength - length > 0)
+            while (targetLength - length >= 0)
             {
                 targetLength -= length;
                 if (numVehicleObjects >= 16)
