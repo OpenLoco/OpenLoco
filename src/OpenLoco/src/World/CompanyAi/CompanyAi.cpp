@@ -134,7 +134,7 @@ namespace OpenLoco
     };
 
     // 0x004FE770
-    static constexpr std::array<uint8_t, kAiThoughtTypeCount> kThoughtTypeEstimatedCostMultiplier = {
+    static constexpr std::array<uint8_t, kAiThoughtTypeCount> kThoughtTypeNumStations = {
         4,
         2,
         4,
@@ -2349,6 +2349,77 @@ namespace OpenLoco
         company.var_4A5 = 3;
     }
 
+    // 0x00481433
+    static int32_t distanceBetweenDestinations(AiThought& thought)
+    {
+        auto destinationPosition = [](bool isIndustry, uint8_t destination) {
+            if (isIndustry)
+            {
+                const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
+                return Pos2{ industry->x, industry->y };
+            }
+            else
+            {
+                auto* town = TownManager::get(static_cast<TownId>(destination));
+                return Pos2{ town->x, town->y };
+            }
+        };
+        const auto posA = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
+        const auto posB = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
+        return Math::Vector::distance2D(posA, posB);
+    }
+
+    // 0x0048137F
+    static void sub_48137F(AiThought& thought)
+    {
+        thought.numStations = kThoughtTypeNumStations[enumValue(thought.type)];
+        for (auto i = 0U; i < thought.numStations; ++i)
+        {
+            auto& aiStation = thought.stations[i];
+            aiStation.var_02 = AiThoughtStationFlags::none;
+        }
+
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
+        {
+            thought.var_04 = 1;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+        {
+            if (getCurrentYear() < 1945)
+            {
+                thought.var_04 = 5;
+            }
+            else if (getCurrentYear() < 1991)
+            {
+                thought.var_04 = 6;
+            }
+            else
+            {
+                thought.var_04 = 7;
+            }
+        }
+        else
+        {
+            const auto distance = distanceBetweenDestinations(thought);
+            auto baseStationLength = (std::max(0, distance - 32 * 28) / 1024) + 5;
+            auto yearAdditionalLength = 0;
+            if (getCurrentYear() >= 1925 && getCurrentYear() < 1955)
+            {
+                yearAdditionalLength = 1;
+            }
+            else if (getCurrentYear() < 1985)
+            {
+                yearAdditionalLength = 2;
+            }
+            else
+            {
+                yearAdditionalLength = 3;
+            }
+            const auto minLength = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17) ? 7 : 0;
+            thought.var_04 = std::clamp(baseStationLength + yearAdditionalLength, minLength, 11);
+        }
+    }
+
     // 0x00430BDA
     static void sub_430BDA(Company& company)
     {
@@ -2563,7 +2634,7 @@ namespace OpenLoco
     static currency32_t estimateStationCost(const AiThought& thought)
     {
         currency32_t baseCost = 0;
-        uint8_t costMultiplier = kThoughtTypeEstimatedCostMultiplier[enumValue(thought.type)];
+        uint8_t costMultiplier = kThoughtTypeNumStations[enumValue(thought.type)];
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
