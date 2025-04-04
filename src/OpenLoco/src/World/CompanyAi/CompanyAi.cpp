@@ -2420,12 +2420,94 @@ namespace OpenLoco
         }
     }
 
+    // 0x004814D6
+    static bool sub_4814D6(AiThought& thought)
+    {
+        auto destinationPosition = [](bool isIndustry, uint8_t destination) {
+            if (isIndustry)
+            {
+                const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
+                return Pos2{ industry->x, industry->y };
+            }
+            else
+            {
+                auto* town = TownManager::get(static_cast<TownId>(destination));
+                return Pos2{ town->x, town->y };
+            }
+        };
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
+        {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+            {
+                // 0x00481A2D
+            }
+            else
+            {
+                // 0x004816D9
+            }
+        }
+        else
+        {
+            // 0x004816D9
+            auto& aiStationA = thought.stations[0];
+            if (!aiStationA.hasFlags(AiThoughtStationFlags::operational))
+            {
+                auto posA = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
+                aiStationA.pos = posA;
+                aiStationA.var_9 = 1;
+                aiStationA.var_A = 0xFFU;
+                aiStationA.var_B = 0;
+                aiStationA.var_C = 0;
+                aiStationA.var_B |= thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17) ? (1U << 0) : 0;
+            }
+            auto& aiStationB = thought.stations[1];
+            if (!aiStationB.hasFlags(AiThoughtStationFlags::operational))
+            {
+                auto posB = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
+                aiStationB.pos = posB;
+                aiStationB.var_9 = 0;
+                aiStationB.var_A = 0xFFU;
+                aiStationB.var_B = 0;
+                aiStationB.var_C = 0;
+                aiStationB.var_B |= thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17) ? (1U << 0) : 0;
+            }
+
+            if (!aiStationA.hasFlags(AiThoughtStationFlags::operational))
+            {
+                const auto posDiff1 = toTileSpace(aiStationB.pos - aiStationA.pos);
+                const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
+
+                aiStationA.pos += kRotationOffset[rotation1] * 4;
+
+                const auto posDiff2 = aiStationB.pos - aiStationA.pos;
+                const auto rotation2 = (Vehicles::calculateYaw1FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
+                aiStationA.rotation = rotation2;
+            }
+            if (!aiStationB.hasFlags(AiThoughtStationFlags::operational))
+            {
+                const auto posDiff1 = toTileSpace(aiStationA.pos - aiStationB.pos);
+                const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
+
+                aiStationB.pos += kRotationOffset[rotation1] * 4;
+
+                const auto posDiff2 = aiStationA.pos - aiStationB.pos;
+                const auto rotation2 = (Vehicles::calculateYaw1FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
+                aiStationB.rotation = rotation2;
+            }
+        }
+    }
+
     // 0x00430BDA
     static void sub_430BDA(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430BDA, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        sub_48137F(thought);
+        if (sub_4814D6(thought))
+        {
+            state2ClearActiveThought(company);
+            return;
+        }
+        company.var_4A5 = 4;
     }
 
     // 0x0047FE3A
