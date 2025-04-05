@@ -675,7 +675,7 @@ namespace OpenLoco::Vehicles
     public:
         AirportObjectFlags getCompatibleAirportType();
         bool update();
-        void sub_4AA68E();
+        void updateSegmentCrashed();
         bool isOnRackRail();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -683,6 +683,7 @@ namespace OpenLoco::Vehicles
         }
 
     private:
+        bool sub_4AA959(World::Pos3& pos);
         void updateRoll();
         void collision();
     };

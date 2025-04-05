@@ -3670,7 +3670,7 @@ namespace OpenLoco::Vehicles
                     // calls nullsub_22: empty subroutine
                     break;
                 case VehicleEntityType::bogie:
-                    reinterpret_cast<VehicleBogie*>(currentVehicle)->sub_4AA68E();
+                    reinterpret_cast<VehicleBogie*>(currentVehicle)->updateSegmentCrashed();
                     break;
                 case VehicleEntityType::body_start:
                 case VehicleEntityType::body_continued:
