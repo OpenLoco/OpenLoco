@@ -26,25 +26,6 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
-/*
-    // 0x004AA407
-    template<typename T>
-    void explodeComponent(T& component)
-    {
-        assert(component.getSubType() == VehicleEntityType::bogie || component.getSubType() == VehicleEntityType::body_start || component.getSubType() == VehicleEntityType::body_continued);
-
-        const auto pos = component.position + World::Pos3{ 0, 0, 22 };
-        Audio::playSound(Audio::SoundId::crash, pos);
-
-        ExplosionCloud::create(pos);
-
-        const auto numParticles = std::min(component.spriteWidth / 4, 7);
-        for (auto i = 0; i < numParticles; ++i)
-        {
-            VehicleCrashParticle::create(pos, component.colourScheme);
-        }
-    }   */
-
     template<typename T>
     void applyDestructionToComponent(T& component)
     {
@@ -123,183 +104,162 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // To replace several instances of the same exact code in
+    // VehicleBogie::updateSegmentCrashed(). Returns true if the
+    // vehicle crashed in the process.
+    bool VehicleBogie::rotateAndExplodeIfNotAlreadyExploded()
+    {
+        // update sprite yaw
+        this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
+
+        // explode, if we haven't already
+        if(!this->hasVehicleFlags(VehicleFlags::unk_5))
+        {
+            this->explodeComponent();
+            this->vehicleFlags |= VehicleFlags::unk_5;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     // 0x004AA68E
     void VehicleBogie::updateSegmentCrashed()
     {
         _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
         _vehicleUpdate_backBogie = X86Pointer(this);
 
-        auto eax = this->var_5A & 0x7FFFFFFF;
-        auto ebx = this->var_5A & 0x80000000;
-        eax = eax - (eax / 64);
-        if(eax <= 0x2000)
+        uint32_t speed = this->var_5A & 0x7FFFFFFF;
+        uint32_t var_5A_msb_flag_temp = this->var_5A & 0x80000000;
+        speed = speed - (speed / 64);
+        if(speed <= 8192)
         {
-            eax = 0;
+            speed = 0;
         }
 
-        // loc_4AA6BB
-        this->var_5A = eax | ebx;
-
-        auto newSpeed = (this->var_5A & 0x7FFFFFFF) / 128;
-        _vehicleUpdate_var_113612C = newSpeed;
-        _vehicleUpdate_var_1136130 = newSpeed;
+        this->var_5A = speed | var_5A_msb_flag_temp;
+        _vehicleUpdate_var_113612C = speed / 128;
+        _vehicleUpdate_var_1136130 = speed / 128;
 
         this->updateRoll();
+
         if((this->var_5A & 0x80000000) == 0x80000000)
         {
-            // loc_4AA712
-            int32_t eax = this->var_5A & 0x7FFFFFFF;
-            int32_t ecx = eax;
-            if(eax >= 0x10000)
-            {
-                // 0x00AA72B
-                int32_t cos_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].x;   // ebx
-                int32_t sin_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].y;   // edx
-                eax = (eax * cos_angle) / 4096;
-                ecx = (eax * sin_angle) / 4096;
+            int32_t distance = this->var_5A & 0x7FFFFFFF;
 
-                int16_t tileHDistance = eax & 0x0000FFFF;
-                int16_t tileVDistance = ecx & 0x0000FFFF;
-                int16_t xDistance = eax / 65536;
-                int16_t yDistance = ecx / 65536;
-                int32_t newTileX = this->tileX + tileHDistance;
+            if(distance >= 0x10000)
+            {
+                int32_t cos_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].x;
+                int32_t sin_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].y;
+                int32_t x_distance = (distance * cos_angle) / 4096;
+                int32_t y_distance = (distance * sin_angle) / 4096;
+
+                int16_t x_distance_low = x_distance & 0x0000FFFF;
+                int16_t y_distance_low = y_distance & 0x0000FFFF;
+                int16_t x_distance_hi = x_distance / 65536;
+                int16_t y_distance_hi = y_distance / 65536;
+                int32_t newTileX = this->tileX + x_distance_low;
                 if(newTileX >= 0x00010000)
                 {
-                    xDistance += 1;   // carry bit
+                    x_distance_hi += 1;   // carry bit
                 }
                 this->tileX = newTileX & 0x0000FFFF;
 
-                int32_t newTileY = this->tileY + tileVDistance;
+                int32_t newTileY = this->tileY + y_distance_low;
                 if(newTileY >= 0x00010000)
                 {
-                    yDistance += 1; // carry bit
+                    y_distance_hi += 1; // carry bit
                 }
+                this->tileY = newTileY & 0x0000FFFF;
 
                 this->tileBaseZ++;
                 int16_t zDistance = this->tileBaseZ / 32;
 
                 // Calculate new position - but don't update yet!! This is pushed to the stack.
-                World::Pos3 newPosition{ this->position.x + xDistance, this->position.y + yDistance, this->position.z - zDistance };
+                World::Pos3 newPosition{ this->position.x + x_distance_hi, this->position.y + y_distance_hi, this->position.z - zDistance };
 
                 if(!sub_4AA959(this->position))
                 {
-                    // 0x00AA78E
-                    // pos x and y are pulled from the stack, z from the struct in memory
                     World::Pos3 position_to_test = {newPosition.x, newPosition.y, this->position.z};
                     if(sub_4AA959(position_to_test))
                     {
-                        // 0x004AA7A3
                         newPosition.x = this->position.x;
                         newPosition.y = this->position.y;
 
                         if(this->var_5A >= 0x50000)
                         {
-                            // 0x004AA7BE
-                            this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
-                            if(!this->hasVehicleFlags(VehicleFlags::unk_5))
-                            {
-                                // 0x004AA7CE
-                                this->explodeComponent();
-                                this->vehicleFlags |= VehicleFlags::unk_5;
-                            }
+                            rotateAndExplodeIfNotAlreadyExploded();
                         }
 
-                        // loc_4AA7D8
                         this->var_5A = ((this->var_5A & 0x7FFFFFFF) / 2) | 0x80000000;
                     }
 
-                    // loc_4AA7EB
                     if(sub_4AA959(newPosition))
                     {
-                        // 0x004AA800
-
                         newPosition.z = this->position.z;
                         if(this->tileBaseZ >= 0x0A)
                         {
-                            this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
-
-                            if(!this->hasVehicleFlags(VehicleFlags::unk_5))
-                            {
-                                this->explodeComponent();
-                                this->vehicleFlags |= VehicleFlags::unk_5;
-                            }
+                            rotateAndExplodeIfNotAlreadyExploded();
                         }
 
-                        // loc_4AA829
                         this->tileBaseZ = 0;
                     }
                 }
 
-                // loc_4AA82F
-                World::Pos2 tilePos{newPosition.x, newPosition.y};
-                auto newTileHeight = World::TileManager::getHeight(tilePos);
-                if(newTileHeight.landHeight >= this->position.z || newTileHeight.landHeight >= newPosition.z)
+                World::Pos2 currentPosition2D{newPosition.x, newPosition.y};
+                auto newTileHeight = World::TileManager::getHeight(currentPosition2D);
+                if(newTileHeight.landHeight >= this->position.z
+                    || newTileHeight.landHeight >= newPosition.z)
                 {
-                    // 0x004AA844
-                    if(newTileHeight.landHeight >= newPosition.z)
+                    if(newTileHeight.landHeight < this->position.z
+                        && newTileHeight.landHeight >= newPosition.z)
                     {
-                        // 0x004AA84A
                         newTileHeight.landHeight = this->position.z;
                         newPosition.z = newTileHeight.landHeight;
+                        this->tileBaseZ = 0;
                     }
 
-                    // loc_4AA858
                     newPosition.x = this->position.x;
                     newPosition.y = this->position.y;
 
                     if(this->var_5A >= 0x50000)
                     {
-                        // 0x004AA873
-                        this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
-                        if(!this->hasVehicleFlags(VehicleFlags::unk_5))
-                        {
-                            this->explodeComponent();
-                            this->vehicleFlags |= VehicleFlags::unk_5;
-                        }
+                        rotateAndExplodeIfNotAlreadyExploded();
                     }
 
-                    // loc_4AA88D
                     this->var_5A = ((this->var_5A & 0x7FFFFFFF) / 2) | 0x80000000;
                 }
 
-                // loc_4AA8A0
                 if(newTileHeight.waterHeight != 0
                     && newTileHeight.waterHeight < this->position.z
                     && newTileHeight.waterHeight >= newPosition.z)
                 {
-                    this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
-                    if(!this->hasVehicleFlags(VehicleFlags::unk_5))
+                    if(rotateAndExplodeIfNotAlreadyExploded())
                     {
                         World::Pos3 splashPos{this->position.x, this->position.y, newTileHeight.waterHeight};
                         Splash::create(splashPos);
                         Audio::playSound(Audio::SoundId::splash2, splashPos, 0x8001);   // TODO: use kPlayAtLocation instead of hex literal for 0x8001
-                        this->vehicleFlags |= VehicleFlags::unk_5;
                     }
                 }
 
-                // loc_4AA8F6
                 this->moveTo(newPosition);
                 this->invalidateSprite();
             }
         }
         else
         {
-            // 0x000AA6E3
             _vehicleUpdate_var_1136114 = 0;
             if(this->mode != TransportMode::road)
             {
                 this->updateTrackMotion(_vehicleUpdate_var_113612C);
                 if((_vehicleUpdate_var_1136114 & 0x3) != 0)
                 {
-                    // loc_4AA70A
                     this->var_5A |= 0x80000000;
                 }
             }
         }
-        /*
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AA68E, regs); */
     }
 
     // 0x004AA0DF
