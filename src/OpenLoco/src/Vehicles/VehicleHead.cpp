@@ -3656,9 +3656,9 @@ namespace OpenLoco::Vehicles
         VehicleBase* currentVehicle = reinterpret_cast<VehicleBase*>(this);
         EntityId nextVehicleId = currentVehicle->id;
 
-        while(currentVehicle)
+        while (currentVehicle)
         {
-            switch(currentVehicle->getSubType())
+            switch (currentVehicle->getSubType())
             {
                 case VehicleEntityType::head:
                     reinterpret_cast<VehicleHead*>(currentVehicle)->updateSegmentCrashed();
@@ -3684,7 +3684,7 @@ namespace OpenLoco::Vehicles
             }
 
             nextVehicleId = currentVehicle->getNextCar();
-            if(nextVehicleId == EntityId::null)
+            if (nextVehicleId == EntityId::null)
             {
                 return;
             }
