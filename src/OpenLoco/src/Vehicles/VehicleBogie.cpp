@@ -1,4 +1,5 @@
 #include "Effects/ExplosionEffect.h"
+#include "Effects/SplashEffect.h"
 #include "Effects/VehicleCrashEffect.h"
 #include "Entities/EntityManager.h"
 #include "Map/RoadElement.h"
@@ -9,6 +10,8 @@
 #include "Random.h"
 #include "Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Trigonometry.hpp>
+#include <cstdint>
 
 using namespace OpenLoco::Interop;
 
@@ -120,11 +123,183 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    void VehicleBogie::sub_4AA68E()
+    // 0x004AA68E
+    void VehicleBogie::updateSegmentCrashed()
     {
+        _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
+        _vehicleUpdate_backBogie = X86Pointer(this);
+
+        auto eax = this->var_5A & 0x7FFFFFFF;
+        auto ebx = this->var_5A & 0x80000000;
+        eax = eax - (eax / 64);
+        if(eax <= 0x2000)
+        {
+            eax = 0;
+        }
+
+        // loc_4AA6BB
+        this->var_5A = eax | ebx;
+
+        auto newSpeed = (this->var_5A & 0x7FFFFFFF) / 128;
+        _vehicleUpdate_var_113612C = newSpeed;
+        _vehicleUpdate_var_1136130 = newSpeed;
+
+        this->updateRoll();
+        if((this->var_5A & 0x80000000) == 0x80000000)
+        {
+            // loc_4AA712
+            int32_t eax = this->var_5A & 0x7FFFFFFF;
+            int32_t ecx = eax;
+            if(eax >= 0x10000)
+            {
+                // 0x00AA72B
+                int32_t cos_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].x;   // ebx
+                int32_t sin_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].y;   // edx
+                eax = (eax * cos_angle) / 4096;
+                ecx = (eax * sin_angle) / 4096;
+
+                int16_t tileHDistance = eax & 0x0000FFFF;
+                int16_t tileVDistance = ecx & 0x0000FFFF;
+                int16_t xDistance = eax / 65536;
+                int16_t yDistance = ecx / 65536;
+                int32_t newTileX = this->tileX + tileHDistance;
+                if(newTileX >= 0x00010000)
+                {
+                    xDistance += 1;   // carry bit
+                }
+                this->tileX = newTileX & 0x0000FFFF;
+
+                int32_t newTileY = this->tileY + tileVDistance;
+                if(newTileY >= 0x00010000)
+                {
+                    yDistance += 1; // carry bit
+                }
+
+                this->tileBaseZ++;
+                int16_t zDistance = this->tileBaseZ / 32;
+
+                // Calculate new position - but don't update yet!! This is pushed to the stack.
+                World::Pos3 newPosition{ this->position.x + xDistance, this->position.y + yDistance, this->position.z - zDistance };
+
+                if(!sub_4AA959(this->position))
+                {
+                    // 0x00AA78E
+                    // pos x and y are pulled from the stack, z from the struct in memory
+                    World::Pos3 position_to_test = {newPosition.x, newPosition.y, this->position.z};
+                    if(sub_4AA959(position_to_test))
+                    {
+                        // 0x004AA7A3
+                        newPosition.x = this->position.x;
+                        newPosition.y = this->position.y;
+
+                        if(this->var_5A >= 0x50000)
+                        {
+                            // 0x004AA7BE
+                            this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
+                            if(!this->hasVehicleFlags(VehicleFlags::unk_5))
+                            {
+                                // 0x004AA7CE
+                                this->explodeComponent();
+                                this->vehicleFlags |= VehicleFlags::unk_5;
+                            }
+                        }
+
+                        // loc_4AA7D8
+                        this->var_5A = ((this->var_5A & 0x7FFFFFFF) / 2) | 0x80000000;
+                    }
+
+                    // loc_4AA7EB
+                    if(sub_4AA959(newPosition))
+                    {
+                        // 0x004AA800
+
+                        newPosition.z = this->position.z;
+                        if(this->tileBaseZ >= 0x0A)
+                        {
+                            this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
+
+                            if(!this->hasVehicleFlags(VehicleFlags::unk_5))
+                            {
+                                this->explodeComponent();
+                                this->vehicleFlags |= VehicleFlags::unk_5;
+                            }
+                        }
+
+                        // loc_4AA829
+                        this->tileBaseZ = 0;
+                    }
+                }
+
+                // loc_4AA82F
+                World::Pos2 tilePos{newPosition.x, newPosition.y};
+                auto newTileHeight = World::TileManager::getHeight(tilePos);
+                if(newTileHeight.landHeight >= this->position.z || newTileHeight.landHeight >= newPosition.z)
+                {
+                    // 0x004AA844
+                    if(newTileHeight.landHeight >= newPosition.z)
+                    {
+                        // 0x004AA84A
+                        newTileHeight.landHeight = this->position.z;
+                        newPosition.z = newTileHeight.landHeight;
+                    }
+
+                    // loc_4AA858
+                    newPosition.x = this->position.x;
+                    newPosition.y = this->position.y;
+
+                    if(this->var_5A >= 0x50000)
+                    {
+                        // 0x004AA873
+                        this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
+                        if(!this->hasVehicleFlags(VehicleFlags::unk_5))
+                        {
+                            this->explodeComponent();
+                            this->vehicleFlags |= VehicleFlags::unk_5;
+                        }
+                    }
+
+                    // loc_4AA88D
+                    this->var_5A = ((this->var_5A & 0x7FFFFFFF) / 2) | 0x80000000;
+                }
+
+                // loc_4AA8A0
+                if(newTileHeight.waterHeight != 0
+                    && newTileHeight.waterHeight < this->position.z
+                    && newTileHeight.waterHeight >= newPosition.z)
+                {
+                    this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
+                    if(!this->hasVehicleFlags(VehicleFlags::unk_5))
+                    {
+                        World::Pos3 splashPos{this->position.x, this->position.y, newTileHeight.waterHeight};
+                        Splash::create(splashPos);
+                        Audio::playSound(Audio::SoundId::splash2, splashPos, 0x8001);   // TODO: use kPlayAtLocation instead of hex literal for 0x8001
+                        this->vehicleFlags |= VehicleFlags::unk_5;
+                    }
+                }
+
+                // loc_4AA8F6
+                this->moveTo(newPosition);
+                this->invalidateSprite();
+            }
+        }
+        else
+        {
+            // 0x000AA6E3
+            _vehicleUpdate_var_1136114 = 0;
+            if(this->mode != TransportMode::road)
+            {
+                this->updateTrackMotion(_vehicleUpdate_var_113612C);
+                if((_vehicleUpdate_var_1136114 & 0x3) != 0)
+                {
+                    // loc_4AA70A
+                    this->var_5A |= 0x80000000;
+                }
+            }
+        }
+        /*
         registers regs;
         regs.esi = X86Pointer(this);
-        call(0x004AA68E, regs);
+        call(0x004AA68E, regs); */
     }
 
     // 0x004AA0DF
@@ -185,6 +360,18 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
+    }
+
+    // 0x0004AA959
+    // Returns true when original subroutine sets carry flag (not yet reversed)
+    bool VehicleBogie::sub_4AA959(World::Pos3& pos)
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dx = pos.z;
+        return ((call(0x0004AA959, regs) & X86_FLAG_CARRY) == X86_FLAG_CARRY);
     }
 
     // 0x004AA984
