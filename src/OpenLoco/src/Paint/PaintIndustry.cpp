@@ -43,6 +43,8 @@ namespace OpenLoco::Paint
 
         uint32_t buildingType = elIndustry.buildingType();
         const auto buildingParts = indObj.getBuildingParts(buildingType);
+        const auto partHeights = indObj.getBuildingPartHeights();
+        const auto buildingPartAnims = indObj.getBuildingPartAnimations();
 
         // 0x00525D4F
         uint8_t totalSectionHeight = 0;
@@ -51,7 +53,7 @@ namespace OpenLoco::Paint
             int8_t sectionCount = numSections;
             for (const auto buildingPart : buildingParts)
             {
-                totalSectionHeight += indObj.buildingPartHeights[buildingPart];
+                totalSectionHeight += partHeights[buildingPart];
                 sectionCount--;
                 if (sectionCount == -1)
                 {
@@ -95,7 +97,7 @@ namespace OpenLoco::Paint
             {
                 break;
             }
-            auto& buildingAnimation = indObj.buildingPartAnimations[buildingPart];
+            auto& buildingAnimation = buildingPartAnims[buildingPart];
             auto adjustedBuildingPart = buildingPart;
             if (buildingAnimation.numFrames)
             {
@@ -118,7 +120,7 @@ namespace OpenLoco::Paint
                     adjustedBuildingPart += animationSequence[tickThing];
                 }
             }
-            const auto sectionHeight = indObj.buildingPartHeights[adjustedBuildingPart];
+            const auto sectionHeight = partHeights[adjustedBuildingPart];
             const uint32_t imageIdx = adjustedBuildingPart * 4 + indObj.buildingImageIds + rotation;
             ImageId image = baseColour.withIndex(imageIdx);
             if (sectionCount == 0 && !baseColour.isBlended())
