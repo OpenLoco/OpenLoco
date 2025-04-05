@@ -607,7 +607,7 @@ namespace OpenLoco::Vehicles
         const VehicleObject* getObject() const;
         bool update();
         void secondaryAnimationUpdate();
-        void sub_4AA904();
+        void updateSegmentCrashed();
         void sub_4AAB0B();
         void updateCargoSprite();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
