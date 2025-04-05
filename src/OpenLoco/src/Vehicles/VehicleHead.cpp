@@ -3674,7 +3674,7 @@ namespace OpenLoco::Vehicles
                     break;
                 case VehicleEntityType::body_start:
                 case VehicleEntityType::body_continued:
-                    reinterpret_cast<VehicleBody*>(currentVehicle)->sub_4AA904();
+                    reinterpret_cast<VehicleBody*>(currentVehicle)->updateSegmentCrashed();
                     break;
                 case VehicleEntityType::tail:
                     // calls nullsub_23: empty subroutine

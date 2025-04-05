@@ -139,7 +139,8 @@ namespace OpenLoco::Vehicles
         secondaryAnimationUpdate();
     }
 
-    void VehicleBody::sub_4AA904()
+    // 0x004AA904
+    void VehicleBody::updateSegmentCrashed()
     {
         invalidateSprite();
         sub_4AC255(_vehicleUpdate_backBogie, _vehicleUpdate_frontBogie);
