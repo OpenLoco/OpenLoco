@@ -113,7 +113,7 @@ namespace OpenLoco::Vehicles
         this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
 
         // explode, if we haven't already
-        if(!this->hasVehicleFlags(VehicleFlags::unk_5))
+        if (!this->hasVehicleFlags(VehicleFlags::unk_5))
         {
             this->explodeComponent();
             this->vehicleFlags |= VehicleFlags::unk_5;
@@ -134,7 +134,7 @@ namespace OpenLoco::Vehicles
         uint32_t speed = this->var_5A & 0x7FFFFFFF;
         uint32_t var_5A_msb_flag_temp = this->var_5A & 0x80000000;
         speed = speed - (speed / 64);
-        if(speed <= 8192)
+        if (speed <= 8192)
         {
             speed = 0;
         }
@@ -145,11 +145,11 @@ namespace OpenLoco::Vehicles
 
         this->updateRoll();
 
-        if((this->var_5A & 0x80000000) == 0x80000000)
+        if ((this->var_5A & 0x80000000) == 0x80000000)
         {
             int32_t distance = this->var_5A & 0x7FFFFFFF;
 
-            if(distance >= 0x10000)
+            if (distance >= 0x10000)
             {
                 int32_t cos_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].x;
                 int32_t sin_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].y;
@@ -161,14 +161,14 @@ namespace OpenLoco::Vehicles
                 int16_t x_distance_hi = x_distance / 65536;
                 int16_t y_distance_hi = y_distance / 65536;
                 int32_t newTileX = this->tileX + x_distance_low;
-                if(newTileX >= 0x00010000)
+                if (newTileX >= 0x00010000)
                 {
-                    x_distance_hi += 1;   // carry bit
+                    x_distance_hi += 1; // carry bit
                 }
                 this->tileX = newTileX & 0x0000FFFF;
 
                 int32_t newTileY = this->tileY + y_distance_low;
-                if(newTileY >= 0x00010000)
+                if (newTileY >= 0x00010000)
                 {
                     y_distance_hi += 1; // carry bit
                 }
@@ -180,15 +180,15 @@ namespace OpenLoco::Vehicles
                 // Calculate new position - but don't update yet!! This is pushed to the stack.
                 World::Pos3 newPosition{ this->position.x + x_distance_hi, this->position.y + y_distance_hi, this->position.z - zDistance };
 
-                if(!sub_4AA959(this->position))
+                if (!sub_4AA959(this->position))
                 {
-                    World::Pos3 position_to_test = {newPosition.x, newPosition.y, this->position.z};
-                    if(sub_4AA959(position_to_test))
+                    World::Pos3 position_to_test = { newPosition.x, newPosition.y, this->position.z };
+                    if (sub_4AA959(position_to_test))
                     {
                         newPosition.x = this->position.x;
                         newPosition.y = this->position.y;
 
-                        if(this->var_5A >= 0x50000)
+                        if (this->var_5A >= 0x50000)
                         {
                             rotateAndExplodeIfNotAlreadyExploded();
                         }
@@ -196,10 +196,10 @@ namespace OpenLoco::Vehicles
                         this->var_5A = ((this->var_5A & 0x7FFFFFFF) / 2) | 0x80000000;
                     }
 
-                    if(sub_4AA959(newPosition))
+                    if (sub_4AA959(newPosition))
                     {
                         newPosition.z = this->position.z;
-                        if(this->tileBaseZ >= 0x0A)
+                        if (this->tileBaseZ >= 0x0A)
                         {
                             rotateAndExplodeIfNotAlreadyExploded();
                         }
@@ -208,12 +208,12 @@ namespace OpenLoco::Vehicles
                     }
                 }
 
-                World::Pos2 currentPosition2D{newPosition.x, newPosition.y};
+                World::Pos2 currentPosition2D{ newPosition.x, newPosition.y };
                 auto newTileHeight = World::TileManager::getHeight(currentPosition2D);
-                if(newTileHeight.landHeight >= this->position.z
+                if (newTileHeight.landHeight >= this->position.z
                     || newTileHeight.landHeight >= newPosition.z)
                 {
-                    if(newTileHeight.landHeight < this->position.z
+                    if (newTileHeight.landHeight < this->position.z
                         && newTileHeight.landHeight >= newPosition.z)
                     {
                         newTileHeight.landHeight = this->position.z;
@@ -224,7 +224,7 @@ namespace OpenLoco::Vehicles
                     newPosition.x = this->position.x;
                     newPosition.y = this->position.y;
 
-                    if(this->var_5A >= 0x50000)
+                    if (this->var_5A >= 0x50000)
                     {
                         rotateAndExplodeIfNotAlreadyExploded();
                     }
@@ -232,15 +232,15 @@ namespace OpenLoco::Vehicles
                     this->var_5A = ((this->var_5A & 0x7FFFFFFF) / 2) | 0x80000000;
                 }
 
-                if(newTileHeight.waterHeight != 0
+                if (newTileHeight.waterHeight != 0
                     && newTileHeight.waterHeight < this->position.z
                     && newTileHeight.waterHeight >= newPosition.z)
                 {
-                    if(rotateAndExplodeIfNotAlreadyExploded())
+                    if (rotateAndExplodeIfNotAlreadyExploded())
                     {
-                        World::Pos3 splashPos{this->position.x, this->position.y, newTileHeight.waterHeight};
+                        World::Pos3 splashPos{ this->position.x, this->position.y, newTileHeight.waterHeight };
                         Splash::create(splashPos);
-                        Audio::playSound(Audio::SoundId::splash2, splashPos, 0x8001);   // TODO: use kPlayAtLocation instead of hex literal for 0x8001
+                        Audio::playSound(Audio::SoundId::splash2, splashPos, 0x8001); // TODO: use kPlayAtLocation instead of hex literal for 0x8001
                     }
                 }
 
@@ -251,10 +251,10 @@ namespace OpenLoco::Vehicles
         else
         {
             _vehicleUpdate_var_1136114 = 0;
-            if(this->mode != TransportMode::road)
+            if (this->mode != TransportMode::road)
             {
                 this->updateTrackMotion(_vehicleUpdate_var_113612C);
-                if((_vehicleUpdate_var_1136114 & 0x3) != 0)
+                if ((_vehicleUpdate_var_1136114 & 0x3) != 0)
                 {
                     this->var_5A |= 0x80000000;
                 }

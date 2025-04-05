@@ -154,9 +154,7 @@ namespace OpenLoco::Vehicles
         const auto numParticles = std::min(spriteWidth / 4, 7);
         for (auto i = 0; i < numParticles; ++i)
         {
-            ColourScheme colourScheme = (subType == VehicleEntityType::bogie) ?
-                                            reinterpret_cast<VehicleBogie*>(this)->colourScheme :
-                                            reinterpret_cast<VehicleBody*>(this)->colourScheme;
+            ColourScheme colourScheme = (subType == VehicleEntityType::bogie) ? reinterpret_cast<VehicleBogie*>(this)->colourScheme : reinterpret_cast<VehicleBody*>(this)->colourScheme;
             VehicleCrashParticle::create(pos, colourScheme);
         }
     }

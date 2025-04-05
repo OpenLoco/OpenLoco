@@ -147,12 +147,12 @@ namespace OpenLoco::Vehicles
         invalidateSprite();
         animationUpdate();
         sub_4AAB0B();
-        if(!hasVehicleFlags(VehicleFlags::unk_5))
+        if (!hasVehicleFlags(VehicleFlags::unk_5))
         {
             VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
             VehicleBogie* backBogie = _vehicleUpdate_backBogie;
 
-            if(frontBogie->hasVehicleFlags(VehicleFlags::unk_5)
+            if (frontBogie->hasVehicleFlags(VehicleFlags::unk_5)
                 || backBogie->hasVehicleFlags(VehicleFlags::unk_5))
             {
                 explodeComponent();
