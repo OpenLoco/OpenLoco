@@ -43,7 +43,7 @@ namespace OpenLoco::Vehicles
         unk_0 = 1U << 0,
         isReversed = 1U << 1,
         unk_2 = 1U << 2,
-        unk_3 = 1U << 3,
+        jacobsBogieAvailable = 1U << 3,
         isGhost = 1U << 4,
         fasterAroundCurves = 1U << 5,
     };
@@ -983,4 +983,5 @@ namespace OpenLoco::Vehicles
      */
     void insertCarBefore(VehicleBogie& source, VehicleBase& dest);
     void registerHooks();
+    void connectJacobsBogies(VehicleHead& head);
 }
