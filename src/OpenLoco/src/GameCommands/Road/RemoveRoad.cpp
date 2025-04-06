@@ -1,9 +1,12 @@
 #include "RemoveRoad.h"
+#include "Audio/Audio.h"
 #include "Economy/Economy.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/TrackData.h"
+#include "Random.h"
 #include "RemoveRoadStation.h"
 #include "SceneManager.h"
 #include "World/TownManager.h"
@@ -20,6 +23,13 @@ namespace OpenLoco::GameCommands
     static loco_global<uint16_t, 0x0112C2B0> _word_112C2B0; // objectId
     static loco_global<uint8_t, 0x0112C2F3> _byte_112C2F3;  // flags
     static loco_global<uint8_t, 0x0112C2F7> _companyId;     // company id
+
+    // Copy of `playTrackRemovalSound`
+    static void playRoadRemovalSound(const World::Pos3 pos)
+    {
+        const auto frequency = gPrng2().randNext(17955, 26146);
+        Audio::playSound(Audio::SoundId::demolish, pos, 0, frequency);
+    }
 
     static World::RoadElement* getRoadElement(const World::Tile& tile, const RoadRemovalArgs& args, uint8_t flags)
     {
@@ -162,6 +172,36 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x004777EB
+        if (auto* roadEl = getRoadElement(tile, args, flags); roadEl != nullptr)
+        {
+            const auto& roadPieces = World::TrackData::getRoadPiece(roadEl->roadId());
+            const auto& currentPart = roadPieces[roadEl->sequenceIndex()];
+            const auto roadStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ currentPart.x, currentPart.y }, args.rotation), currentPart.z };
+
+            for (auto& piece : roadPieces)
+            {
+                const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
+
+                if (!(flags & Flags::aiAllocated))
+                {
+                    World::TileManager::mapInvalidateTileFull(roadLoc);
+                }
+
+                // 0x00477934
+            }
+        }
+
+        // 0x00477B39
+        if (flags & Flags::apply)
+        {
+            if (!(flags & (Flags::aiAllocated | Flags::ghost)))
+            {
+                if (getUpdatingCompanyId() != CompanyId::neutral)
+                {
+                    playRoadRemovalSound(args.pos);
+                }
+            }
+        }
 
         return totalCost;
     }
