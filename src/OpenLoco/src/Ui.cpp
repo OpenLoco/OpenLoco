@@ -390,8 +390,6 @@ namespace OpenLoco::Ui
             return;
         }
 
-        WindowManager::updateViewports();
-
         if (!Intro::isActive())
         {
             drawingEngine.render();
