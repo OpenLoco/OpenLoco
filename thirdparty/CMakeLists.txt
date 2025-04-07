@@ -14,7 +14,7 @@ if ( NOT yaml-cpp_FOUND )
     FetchContent_Declare(
         yaml-cpp
         GIT_REPOSITORY      https://github.com/jbeder/yaml-cpp
-        GIT_TAG             1b50109f7bea60bd382d8ea7befce3d2bd67da5f
+        GIT_TAG             c2680200486572baf8221ba052ef50b58ecd816e # 0.8.0 + cmake fix patch 
     )
     FetchContent_MakeAvailable(yaml-cpp)
     loco_thirdparty_target_compile_link_flags(yaml-cpp)
