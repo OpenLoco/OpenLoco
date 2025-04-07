@@ -2420,6 +2420,27 @@ namespace OpenLoco
         }
     }
 
+    // 0x00481D6F
+    static bool sub_481D6F(const World::Pos2& pos)
+    {
+        auto tilePosA = toTileSpace(pos) - TilePos2{ 2, 2 };
+        auto tilePosB = toTileSpace(pos) + TilePos2{ 2, 2 };
+        auto numBuildings = 0U;
+        for (const auto& tilePos : TilePosRangeView(tilePosA, tilePosB))
+        {
+            auto tile = World::TileManager::get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elBuilding = el.as<World::BuildingElement>();
+                if (elBuilding != nullptr)
+                {
+                    numBuildings++;
+                }
+            }
+        }
+        return numBuildings < 4;
+    }
+
     // 0x004814D6
     static bool sub_4814D6(AiThought& thought)
     {
@@ -2440,6 +2461,120 @@ namespace OpenLoco
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
             {
                 // 0x00481A2D
+
+                // 0x00112C5A4
+                auto randDirection = gPrng1().randNext() & 0b10;
+
+                const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
+                const auto townPos = World::Pos2{ town->x, town->y };
+
+                auto& aiStation0 = thought.stations[0];
+                if (!aiStation0.hasFlags(AiThoughtStationFlags::operational))
+                {
+                    auto pos0 = kRotationOffset[randDirection] * 3 + townPos;
+                    for (auto i = 0U; i < 18; ++i)
+                    {
+                        if (sub_481D6F(pos0))
+                        {
+                            break;
+                        }
+                        pos0 += kRotationOffset[randDirection];
+                        if (i == 17)
+                        {
+                            return true;
+                        }
+                    }
+                    pos0 -= kRotationOffset[randDirection];
+                    aiStation0.pos = pos0;
+                    aiStation0.rotation = 1;
+                    aiStation0.var_9 = 3;
+                    aiStation0.var_A = 1;
+                    aiStation0.var_B = 0;
+                    aiStation0.var_C = 0;
+                }
+                auto& aiStation1 = thought.stations[1];
+                if (!aiStation1.hasFlags(AiThoughtStationFlags::operational))
+                {
+                    auto pos1 = kRotationOffset[1] * 3 + townPos;
+                    for (auto i = 0U; i < 18; ++i)
+                    {
+                        if (sub_481D6F(pos1))
+                        {
+                            break;
+                        }
+                        pos1 += kRotationOffset[1];
+                        if (i == 17)
+                        {
+                            return true;
+                        }
+                    }
+                    pos1 -= kRotationOffset[1];
+                    aiStation1.pos = pos1;
+                    aiStation1.rotation = 0b10 ^ randDirection;
+                    aiStation1.var_9 = 0;
+                    aiStation1.var_A = 2;
+                    aiStation1.var_B = 0;
+                    aiStation1.var_C = 0;
+                }
+                auto& aiStation2 = thought.stations[2];
+                if (!aiStation2.hasFlags(AiThoughtStationFlags::operational))
+                {
+                    const auto stationRot = randDirection ^ 0b10;
+                    auto pos1 = kRotationOffset[stationRot] * 3 + townPos;
+                    for (auto i = 0U; i < 18; ++i)
+                    {
+                        if (sub_481D6F(pos1))
+                        {
+                            break;
+                        }
+                        pos1 += kRotationOffset[stationRot];
+                        if (i == 17)
+                        {
+                            return true;
+                        }
+                    }
+                    pos1 -= kRotationOffset[stationRot];
+                    aiStation2.pos = pos1;
+                    aiStation2.rotation = 3;
+                    aiStation2.var_9 = 1;
+                    aiStation2.var_A = 3;
+                    aiStation2.var_B = 0;
+                    aiStation2.var_C = 0;
+                }
+                auto& aiStation3 = thought.stations[3];
+                if (!aiStation3.hasFlags(AiThoughtStationFlags::operational))
+                {
+                    auto pos1 = kRotationOffset[3] * 3 + townPos;
+                    for (auto i = 0U; i < 18; ++i)
+                    {
+                        if (sub_481D6F(pos1))
+                        {
+                            break;
+                        }
+                        pos1 += kRotationOffset[3];
+                        if (i == 17)
+                        {
+                            return true;
+                        }
+                    }
+                    pos1 -= kRotationOffset[3];
+                    aiStation3.pos = pos1;
+                    aiStation3.rotation = randDirection;
+                    aiStation3.var_9 = 2;
+                    aiStation3.var_A = 0;
+                    aiStation3.var_B = 0;
+                    aiStation3.var_C = 0;
+                }
+
+                auto minBaseZ = std::numeric_limits<SmallZ>::max();
+                auto maxBaseZ = std::numeric_limits<SmallZ>::min();
+                for (auto& aiStation : thought.stations)
+                {
+                    auto* elSurface = World::TileManager::get(aiStation.pos).surface();
+                    minBaseZ = std::min(elSurface->baseZ(), minBaseZ);
+                    maxBaseZ = std::max(elSurface->baseZ(), maxBaseZ);
+                }
+                return (maxBaseZ - minBaseZ > 20);
             }
             else
             {
@@ -2494,6 +2629,7 @@ namespace OpenLoco
                 const auto rotation2 = (Vehicles::calculateYaw1FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
                 aiStationB.rotation = rotation2;
             }
+            return false;
         }
     }
 
