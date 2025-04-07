@@ -987,72 +987,50 @@ namespace OpenLoco::ObjectManager
     // 0x004C3A9E
     void updateYearly2()
     {
-        const auto currentYear = getCurrentYear(); // 0x004C3AB7
-
-        // 0x004C3A9E, 004C3B8E-004C3B95
+        const auto currentYear = getCurrentYear();
         for (uint16_t vehicleObjId = 0; vehicleObjId < ObjectManager::getMaxObjects(ObjectType::vehicle); vehicleObjId++)
         {
-            const auto* vehicleObject = ObjectManager::get<VehicleObject>(vehicleObjId); // 004C3AA0
-
-            if (vehicleObject == nullptr) // 004C3AA7
+            const auto* vehicleObject = ObjectManager::get<VehicleObject>(vehicleObjId);
+            if (vehicleObject == nullptr)
             {
-                continue; // 0x004C3AAA
+                continue;
             }
-
-            if (currentYear == vehicleObject->designed) // 004C3AB0-004C3ABE
+            if (currentYear == vehicleObject->designed)
             {
-                for (Company& company : CompanyManager::companies()) // 004C3AC4-004C3AC9, 004C3B44-004C3B4F
+                for (Company& company : CompanyManager::companies())
                 {
-                    if (company.name == 0) // 004C3ACB-004C3ACF
-                    {
-                        continue;
-                    }
-
-                    // 004C3AD1-004C3AE7
                     const auto forbiddenVehicles = CompanyManager::isPlayerCompany(company.id()) ? getGameState().forbiddenVehiclesPlayers : getGameState().forbiddenVehiclesCompetitors;
-                    if (forbiddenVehicles & (1U << enumValue(vehicleObject->type))) // 004C3AED-004C3AF6
+                    if (forbiddenVehicles & (1U << enumValue(vehicleObject->type)))
                     {
                         continue;
                     }
-
-                    if (company.unlockedVehicles[vehicleObjId]) // 004C3AF8-004C3B07
+                    if (company.unlockedVehicles[vehicleObjId])
                     {
                         continue;
                     }
-
-                    company.unlockedVehicles.set(vehicleObjId, true);                                    // 004C3B02
-                    company.availableVehicles = VehicleManager::determineAvailableVehicleTypes(company); // 004C3B09-004C3B13
-
-                    if (!CompanyManager::isPlayerCompany(company.id())) // 004C3B14-004C3B1A
+                    company.unlockedVehicles.set(vehicleObjId, true);
+                    company.availableVehicles = VehicleManager::determineAvailableVehicleTypes(company);
+                    if (CompanyManager::getControllingId() != company.id())
                     {
                         continue;
                     }
-
-                    if (vehicleObject->hasFlags(VehicleObjectFlags::quietInvention)) // 004C3B1D-004C3B2D
+                    if (vehicleObject->hasFlags(VehicleObjectFlags::quietInvention))
                     {
                         continue;
                     }
-
-                    MessageManager::post(MessageType::newVehicle, CompanyId::null, vehicleObjId, 0xFFFF); // 004C3B2F-004C3B3E
+                    MessageManager::post(MessageType::newVehicle, CompanyId::null, vehicleObjId, 0xFFFF);
                 }
             }
-
-            if (currentYear == vehicleObject->obsolete) // 004C3B55-004C3B63
+            if (currentYear == vehicleObject->obsolete)
             {
-                for (Company& company : CompanyManager::companies()) // 004C3B65-004C3B6A, 004C3B81-004C3B8C
+                for (Company& company : CompanyManager::companies())
                 {
-                    if (company.name == 0) // 004C3B6C-004C3B70
-                    {
-                        continue;
-                    }
-
-                    company.unlockedVehicles.set(vehicleObjId, false); // 004C3B72-004C3B7C
+                    company.unlockedVehicles.set(vehicleObjId, false);
                 }
             }
         }
-
-        Ui::Windows::Construction::updateAvailableRoadAndRailOptions();    // 004C3B9B
-        Ui::Windows::Construction::updateAvailableAirportAndDockOptions(); // 004C3BA0
+        Ui::Windows::Construction::updateAvailableRoadAndRailOptions();
+        Ui::Windows::Construction::updateAvailableAirportAndDockOptions();
     }
 
     // TODO: Refactor this, variable is also defined in PaintSurface.cpp.
