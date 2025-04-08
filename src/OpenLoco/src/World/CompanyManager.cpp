@@ -500,16 +500,16 @@ namespace OpenLoco::CompanyManager
         AiPlaystyleFlags::none,
         AiPlaystyleFlags::none,
         AiPlaystyleFlags::none,
-        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
-        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
-        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk3 | AiPlaystyleFlags::unk5,
-        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::noAir | AiPlaystyleFlags::noWater,
+        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::noAir | AiPlaystyleFlags::noWater,
+        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk3 | AiPlaystyleFlags::noWater,
+        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::noAir | AiPlaystyleFlags::noWater,
         AiPlaystyleFlags::unk6,
-        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk2 | AiPlaystyleFlags::noAir | AiPlaystyleFlags::noWater,
         AiPlaystyleFlags::unk6,
         AiPlaystyleFlags::unk6,
         AiPlaystyleFlags::unk6,
-        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk3 | AiPlaystyleFlags::unk4 | AiPlaystyleFlags::unk5,
+        AiPlaystyleFlags::unk0 | AiPlaystyleFlags::unk1 | AiPlaystyleFlags::unk3 | AiPlaystyleFlags::noAir | AiPlaystyleFlags::noWater,
     };
 
     static constexpr std::array<StringId, 13> kCompanyAiNamePrefixes = {
