@@ -2579,6 +2579,116 @@ namespace OpenLoco
             else
             {
                 // 0x004816D9
+
+                // Why 7?
+                auto randDirection = gPrng1().randNext() & 0b111;
+
+                const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
+                const auto townPos = World::Pos2{ town->x, town->y };
+
+                auto& aiStation0 = thought.stations[0];
+                if (!aiStation0.hasFlags(AiThoughtStationFlags::operational))
+                {
+                    auto pos0 = kRotationOffset[randDirection] * 3 + townPos;
+                    for (auto i = 0U; i < 15; ++i)
+                    {
+                        if (sub_481D6F(pos0))
+                        {
+                            break;
+                        }
+                        pos0 += kRotationOffset[randDirection];
+                        if (i == 14)
+                        {
+                            return true;
+                        }
+                    }
+                    pos0 -= kRotationOffset[randDirection] * 2;
+                    aiStation0.pos = pos0;
+                    aiStation0.rotation = randDirection;
+                    aiStation0.var_9 = 0xFFU;
+                    aiStation0.var_A = 1;
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+                    {
+                        aiStation0.var_9 = 0;
+                    }
+                    aiStation0.var_B = 0;
+                    aiStation0.var_C = 0;
+                }
+                auto& aiStation1 = thought.stations[1];
+                if (!aiStation1.hasFlags(AiThoughtStationFlags::operational))
+                {
+                    const auto direction = randDirection ^ 0b100;
+                    auto pos1 = kRotationOffset[direction] * 3 + townPos;
+                    for (auto i = 0U; i < 15; ++i)
+                    {
+                        if (sub_481D6F(pos1))
+                        {
+                            break;
+                        }
+                        pos1 += kRotationOffset[direction];
+                        if (i == 14)
+                        {
+                            return true;
+                        }
+                    }
+                    pos1 -= kRotationOffset[direction] * 2;
+                    aiStation1.pos = pos1;
+                    aiStation1.var_9 = 0xFFU;
+                    aiStation1.var_A = 0;
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+                    {
+                        aiStation1.var_9 = 1;
+                    }
+                    aiStation1.var_B = 0;
+                    aiStation1.var_C = 0;
+                }
+                if (thought.numStations > 2)
+                {
+                    auto& aiStation2 = thought.stations[2];
+                    if (!aiStation2.hasFlags(AiThoughtStationFlags::operational))
+                    {
+                        const auto direction = (randDirection + 0b10) & 0x7;
+                        auto pos2 = kRotationOffset[direction] * 3 + townPos;
+                        for (auto i = 0U; i < 9; ++i)
+                        {
+                            if (sub_481D6F(pos2))
+                            {
+                                break;
+                            }
+                            pos2 += kRotationOffset[direction];
+                        }
+                        pos2 -= kRotationOffset[direction] * 3;
+                        aiStation2.pos = pos2;
+                        aiStation2.var_9 = 0;
+                        aiStation2.var_A = 3;
+                        aiStation2.var_B = 0;
+                        aiStation2.var_C = 0;
+
+                        aiStation0.var_A = 2;
+                        aiStation1.var_A = 3;
+                    }
+                    auto& aiStation3 = thought.stations[3];
+                    if (!aiStation3.hasFlags(AiThoughtStationFlags::operational))
+                    {
+                        const auto direction = (randDirection - 0b10) & 0x7;
+                        auto pos3 = kRotationOffset[direction] * 3 + townPos;
+                        for (auto i = 0U; i < 9; ++i)
+                        {
+                            if (sub_481D6F(pos3))
+                            {
+                                break;
+                            }
+                            pos3 += kRotationOffset[direction];
+                        }
+                        pos3 -= kRotationOffset[direction] * 3;
+                        aiStation2.pos = pos3;
+                        aiStation2.var_9 = 2;
+                        aiStation2.var_A = 1;
+                        aiStation2.var_B = 0;
+                        aiStation2.var_C = 0;
+                    }
+                }
+                return false;
             }
         }
         else
