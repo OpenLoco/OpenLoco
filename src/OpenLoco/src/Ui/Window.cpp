@@ -278,7 +278,6 @@ namespace OpenLoco::Ui
             {
                 continue;
             }
-            this->callOnResize();
 
             viewport_pos centre;
 
