@@ -6078,8 +6078,65 @@ namespace OpenLoco
     }
 
     // 0x004869F7
-    static uint8_t sub_4869F7(const Company& company, const AiThought& thought)
+    static uint8_t sub_4869F7(Company& company, const AiThought& thought)
     {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return 1;
+        }
+
+        company.var_85DE++;
+
+        if (company.var_85DE < company.var_85EA)
+        {
+            return 0;
+        }
+
+        company.var_85DE = 0;
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return 2;
+        }
+        if (thought.trackObjId & (1U << 7))
+        {
+            // Road
+            // 0x00486C98
+            if (company.var_85C2 == 0xFFU)
+            {
+                for (auto i = 0U; i < thought.numStations; ++i)
+                {
+                    if (thought.stations[i].var_B & 0b1010)
+                    {
+                        company.var_85C2 = i;
+                        company.var_85C3 &= ~(1U << 7);
+                        company.var_85D0 = thought.stations[i].pos;
+                        company.var_85D4 = thought.stations[i].baseZ;
+                        company.var_85D5 = thought.stations[i].rotation ^ (1U << 1);
+                        return 0;
+                    }
+                    else if (thought.stations[i].var_C & 0b1010)
+                    {
+                        company.var_85C2 = i;
+                        company.var_85C3 |= 1U << 0;
+                        company.var_85D0 = thought.stations[i].pos;
+                        company.var_85D4 = thought.stations[i].baseZ;
+                        company.var_85D5 = thought.stations[i].rotation;
+                        return 0;
+                    }
+                }
+                return 1;
+            }
+            else
+            {
+                // 0x00486D3E
+            }
+        }
+        else
+        {
+            // Rail
+            // 0x00486A37
+        }
+
         // gc_unk_52?
         registers regs;
         regs.esi = X86Pointer(&company);
