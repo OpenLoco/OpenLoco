@@ -882,5 +882,27 @@ namespace OpenLoco::Vehicles
                 regs = backup;
                 return 0;
             });
+
+        registerHook(
+            0x00478CE9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const uint16_t tad = regs.bp;
+                const auto companyId = CompanyId(regs.bl);
+                const uint8_t roadObjId = regs.bh;
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+                auto& legacyConnections = *X86Pointer<World::Track::LegacyTrackConnections>(regs.edi - 4);
+                const auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, tad);
+                const auto connections = World::Track::getRoadConnectionsOneWay(nextPos, nextRot, companyId, roadObjId, requiredMods, queryMods);
+                World::Track::toLegacyConnections(connections, legacyConnections);
+                regs = backup;
+                regs.ax = nextPos.x;
+                regs.cx = nextPos.y;
+                regs.dx = nextPos.z;
+                return 0;
+            });
     }
 }
