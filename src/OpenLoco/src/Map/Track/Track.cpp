@@ -39,7 +39,8 @@ namespace OpenLoco::World::Track
     }
 
     // 0x004788C8
-    static RoadConnections getRoadConnectionsImpl(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods, bool checkOneWay)
+    template<bool checkOneWay, bool aiAllocated>
+    static RoadConnections getRoadConnectionsImpl(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
         RoadConnections result{};
 
@@ -80,9 +81,19 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (elRoad->isGhost() || elRoad->isAiAllocated())
+            if constexpr (aiAllocated)
             {
-                continue;
+                if (!elRoad->isAiAllocated())
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                if (elRoad->isGhost() || elRoad->isAiAllocated())
+                {
+                    continue;
+                }
             }
 
             if (elRoad->sequenceIndex() == 0)
@@ -140,7 +151,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (checkOneWay)
+            if constexpr (checkOneWay)
             {
                 auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
                 if (roadObj->hasFlags(RoadObjectFlags::unk_01))
@@ -183,14 +194,21 @@ namespace OpenLoco::World::Track
     // 0x004788C8
     RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
-        return getRoadConnectionsImpl(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods, false);
+        return getRoadConnectionsImpl<false, false>(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods);
     }
 
     // 0x00478D16
     // For 0x00478CE9 call getRoadConnectionEnd followed by this
     RoadConnections getRoadConnectionsOneWay(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
-        return getRoadConnectionsImpl(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods, true);
+        return getRoadConnectionsImpl<true, false>(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods);
+    }
+
+    // 0x00478AF6
+    // For 0x00478AC9 call getRoadConnectionEnd followed by this
+    RoadConnections getRoadConnectionsAiAllocated(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        return getRoadConnectionsImpl<false, true>(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods);
     }
 
     // Part of 0x004A2604
