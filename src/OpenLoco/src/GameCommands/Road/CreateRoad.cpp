@@ -287,7 +287,7 @@ namespace OpenLoco::GameCommands
         // RoadObject of the road we are placing as part of createRoad
         const auto& newRoadObj = ObjectManager::get<RoadObject>(args.roadObjectId);
 
-        if ((args.flags & Flags::aiAllocated) && (args.unkFlags & (1U << 4)) && targetRoadObj->hasFlags(RoadObjectFlags::unk_00))
+        if ((args.flags & Flags::aiAllocated) && (args.unkFlags & (1U << 4)) && targetRoadObj->hasFlags(RoadObjectFlags::isOneWay))
         {
             setErrorText(StringIds::junctions_not_possible);
             return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
