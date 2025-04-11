@@ -6129,6 +6129,54 @@ namespace OpenLoco
             else
             {
                 // 0x00486D3E
+                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep);
+                const auto tad = company.var_85D5;
+                const auto queryMods = 0U;
+                const auto requiredMods = 0U;
+                const auto roadObjId = thought.trackObjId & ~(1U << 7);
+                auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+                auto compatRoadObjId = roadObj->hasFlags(RoadObjectFlags::unk_03) ? 0xFFU : roadObjId;
+
+                auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(pos, tad);
+                auto rc = Track::getRoadConnectionsAiAllocated(nextPos, nextRotation, company.id(), compatRoadObjId, requiredMods, queryMods);
+                if (rc.connections.empty())
+                {
+                    // 0x00486E63
+                }
+                else
+                {
+                    auto replaceTad = rc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+                    auto replacePos = nextPos;
+
+                    company.var_85D0 = replacePos;
+                    company.var_85D4 = replacePos.z / World::kSmallZStep;
+                    company.var_85D5 = replaceTad;
+
+                    // This is completely wrong but it matches vanilla
+                    // TODO: Remove and replace with 'apply' when we want to diverge
+                    uint8_t flags = enumValue(company.id()) & 0b1;
+
+                    if (replaceTad & (1U << 2))
+                    {
+                        auto& roadSize = TrackData::getUnkRoad(replaceTad);
+                        replacePos += roadSize.pos;
+
+                        // Again completely wrong but it matches vanilla
+                        flags = roadSize.rotationEnd & 0b1;
+
+                        replacePos.x -= kRotationOffset[roadSize.rotationEnd].x;
+                        replacePos.y -= kRotationOffset[roadSize.rotationEnd].y;
+                        replaceTad ^= (1U << 2);
+                    }
+
+                    replacePos.z += TrackData::getRoadPiece(replaceTad)[0].z;
+                    const auto roadId = (replaceTad >> 3) & 0xF;
+                    const auto noStations = true;
+                    const auto rotation = replaceTad & 0x3;
+
+                    const auto success = replaceAiAllocatedRoad(replacePos, rotation, roadObjId, roadId, 0, noStations, flags) != GameCommands::FAILURE;
+                    return success ? 0 : 2;
+                }
             }
         }
         else
