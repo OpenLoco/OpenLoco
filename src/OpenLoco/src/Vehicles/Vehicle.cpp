@@ -895,6 +895,7 @@ namespace OpenLoco::Vehicles
                 const auto requiredMods = addr<0x0113601A, uint8_t>();
                 const auto queryMods = addr<0x0113601B, uint8_t>();
                 auto& legacyConnections = *X86Pointer<World::Track::LegacyTrackConnections>(regs.edi - 4);
+                legacyConnections.size = 0;
                 const auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, tad);
                 const auto connections = World::Track::getRoadConnectionsOneWay(nextPos, nextRot, companyId, roadObjId, requiredMods, queryMods);
                 World::Track::toLegacyConnections(connections, legacyConnections);
@@ -917,6 +918,7 @@ namespace OpenLoco::Vehicles
                 const auto requiredMods = addr<0x0113601A, uint8_t>();
                 const auto queryMods = addr<0x0113601B, uint8_t>();
                 auto& legacyConnections = *X86Pointer<World::Track::LegacyTrackConnections>(regs.edi - 4);
+                legacyConnections.size = 0;
                 const auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, tad);
                 const auto connections = World::Track::getRoadConnectionsAiAllocated(nextPos, nextRot, companyId, roadObjId, requiredMods, queryMods);
                 World::Track::toLegacyConnections(connections, legacyConnections);

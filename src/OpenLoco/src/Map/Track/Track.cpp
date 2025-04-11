@@ -154,7 +154,7 @@ namespace OpenLoco::World::Track
             if constexpr (checkOneWay)
             {
                 auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                if (roadObj->hasFlags(RoadObjectFlags::unk_01))
+                if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
                 {
                     continue;
                 }
@@ -201,7 +201,25 @@ namespace OpenLoco::World::Track
     // For 0x00478CE9 call getRoadConnectionEnd followed by this
     RoadConnections getRoadConnectionsOneWay(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
-        return getRoadConnectionsImpl<true, false>(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods);
+        auto res = getRoadConnectionsImpl<true, false>(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods);
+
+        registers regs;
+        regs.ax = nextTrackPos.x;
+        regs.cx = nextTrackPos.y;
+        regs.dx = nextTrackPos.z / 4;
+        regs.dh = nextRotation;
+        regs.bl = enumValue(company);
+        regs.bh = roadObjectId;
+        LegacyTrackConnections legacyConnections{};
+        regs.edi = static_cast<uint32_t>(X86Pointer(&legacyConnections)) + 4;
+
+        call(0x00478CE6, regs);
+
+        if (legacyConnections.size != std::size(res.connections))
+        {
+            res = getRoadConnectionsImpl<true, false>(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods);
+        }
+        return res;
     }
 
     // 0x00478AF6
@@ -226,6 +244,7 @@ namespace OpenLoco::World::Track
         {
             data.push_back(c);
         }
+        data.data[data.size] = 0xFFFF;
         _1135FAE = src.stationId;
         _113607D = src.hasLevelCrossing ? 1 : 0;
     }
@@ -236,6 +255,7 @@ namespace OpenLoco::World::Track
         {
             data.push_back(c);
         }
+        data.data[data.size] = 0xFFFF;
         _1135FAE = src.stationId;
         _112C2ED = src.roadObjectId;
         _1136087 = src.stationObjectId;

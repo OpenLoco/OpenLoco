@@ -2280,7 +2280,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (roadObj->hasFlags(unk_00))
+            if (roadObj->hasFlags(isOneWay))
             {
                 continue;
             }
@@ -2318,7 +2318,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if (roadObj->hasFlags(unk_07 | isRoad | unk_03 | unk_00))
+            if (roadObj->hasFlags(unk_07 | isRoad | unk_03 | isOneWay))
             {
                 continue;
             }
