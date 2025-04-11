@@ -165,11 +165,12 @@ namespace OpenLoco::GameCommands
 
         // Workout clearance height of building (including scaffolding if required)
         const auto buildingParts = indObj->getBuildingParts(buildingType);
+        const auto partHeights = indObj->getBuildingPartHeights();
         // 0x00E0C3BC (note this is bigZ and does not include the base height)
         auto clearHeight = 0;
         for (auto part : buildingParts)
         {
-            clearHeight += indObj->buildingPartHeights[part];
+            clearHeight += partHeights[part];
         }
         if (!buildImmediate && indObj->scaffoldingSegmentType != 0xFF)
         {
@@ -476,9 +477,10 @@ namespace OpenLoco::GameCommands
 
         // 0x00454552
         const auto numBuildings = (((indObj->maxNumBuildings - indObj->minNumBuildings + 1) * randVal) / 256) + indObj->minNumBuildings;
+        const auto buildings = indObj->getBuildings();
         for (auto i = 0U; i < numBuildings; ++i)
         {
-            const auto building = indObj->buildings[i];
+            const auto building = buildings[i];
             // 0x00E0C3D2 (bit 0)
             const bool isMultiTile = indObj->buildingSizeFlags & (1ULL << building);
 
