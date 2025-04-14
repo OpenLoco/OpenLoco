@@ -103,7 +103,7 @@ namespace OpenLoco
         uint16_t obsoleteYear;                     // 0xAA
         uint8_t numMovementNodes;                  // 0xAC
         uint8_t numMovementEdges;                  // 0xAD
-        const MovementNode* movementNodes;         // 0xAE
+        uint32_t movementNodesOffset;              // 0xAE
         const MovementEdge* movementEdges;         // 0xB2
         uint32_t var_B6;
 
@@ -118,6 +118,7 @@ namespace OpenLoco
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
         std::span<const uint8_t> getBuildingPartHeights() const;
         std::span<const BuildingPartAnimation> getBuildingPartAnimations() const;
+        std::span<const MovementNode> getMovementNodes() const;
 
         constexpr bool hasFlags(AirportObjectFlags flagsToTest) const
         {

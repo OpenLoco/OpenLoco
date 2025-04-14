@@ -439,9 +439,10 @@ namespace OpenLoco::CompanyAi
 
         auto* station = StationManager::get(elStation->stationId());
         auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+        const auto movementNodes = airportObj->getMovementNodes();
         for (auto nodeIndex = 0U; nodeIndex < airportObj->numMovementNodes; ++nodeIndex)
         {
-            auto& node = airportObj->movementNodes[nodeIndex];
+            auto& node = movementNodes[nodeIndex];
             if (!node.hasFlags(AirportMovementNodeFlags::terminal))
             {
                 continue;

@@ -2213,13 +2213,14 @@ namespace OpenLoco::Vehicles
             }
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementNodes = airportObject->getMovementNodes();
 
             if (curEdge == kAirportMovementNodeNull)
             {
                 for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                 {
                     const auto& transition = airportObject->movementEdges[movementEdge];
-                    if (!airportObject->movementNodes[transition.curNode].hasFlags(AirportMovementNodeFlags::flag2))
+                    if (!movementNodes[transition.curNode].hasFlags(AirportMovementNodeFlags::flag2))
                     {
                         continue;
                     }
@@ -2247,7 +2248,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 uint8_t targetNode = airportObject->movementEdges[curEdge].nextNode;
-                if (status == Status::takingOff && airportObject->movementNodes[targetNode].hasFlags(AirportMovementNodeFlags::takeoffEnd))
+                if (status == Status::takingOff && movementNodes[targetNode].hasFlags(AirportMovementNodeFlags::takeoffEnd))
                 {
                     return kAirportMovementNodeNull;
                 }
@@ -2265,7 +2266,7 @@ namespace OpenLoco::Vehicles
                             continue;
                         }
 
-                        if (airportObject->movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::takeoffBegin))
+                        if (movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::takeoffBegin))
                         {
                             continue;
                         }
@@ -2300,7 +2301,7 @@ namespace OpenLoco::Vehicles
                             continue;
                         }
 
-                        if (airportObject->movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::heliTakeoffBegin))
+                        if (movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::heliTakeoffBegin))
                         {
                             continue;
                         }
@@ -2356,20 +2357,21 @@ namespace OpenLoco::Vehicles
             }
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementNodes = airportObject->getMovementNodes();
 
             auto destinationNode = airportObject->movementEdges[curEdge].nextNode;
 
             Pos2 loc2 = {
-                static_cast<int16_t>(airportObject->movementNodes[destinationNode].x - 16),
-                static_cast<int16_t>(airportObject->movementNodes[destinationNode].y - 16)
+                static_cast<int16_t>(movementNodes[destinationNode].x - 16),
+                static_cast<int16_t>(movementNodes[destinationNode].y - 16)
             };
             loc2 = Math::Vector::rotate(loc2, elStation->rotation());
-            auto airportMovement = airportObject->movementNodes[destinationNode];
+            auto airportMovement = movementNodes[destinationNode];
 
             loc2.x += 16 + stationLoc.x;
             loc2.y += 16 + stationLoc.y;
 
-            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(airportObject->movementNodes[destinationNode].z + stationLoc.z) };
+            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(movementNodes[destinationNode].z + stationLoc.z) };
 
             if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
             {

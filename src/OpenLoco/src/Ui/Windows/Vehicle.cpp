@@ -4003,12 +4003,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             placementArgs.stationId = elStation->stationId();
             placementArgs.head = head.id;
             auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementNodes = airportObj->getMovementNodes();
 
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint8_t bestNode = 0;
             for (auto node = airportObj->numMovementNodes - 1; node > -1; node--)
             {
-                const auto& movementNode = airportObj->movementNodes[node];
+                const auto& movementNode = movementNodes[node];
                 if (!movementNode.hasFlags(AirportMovementNodeFlags::terminal))
                 {
                     continue;

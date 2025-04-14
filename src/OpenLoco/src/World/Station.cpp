@@ -1368,7 +1368,9 @@ namespace OpenLoco
         }
 
         auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
-        const auto& movementNode = airportObj->movementNodes[node];
+        const auto movementNodes = airportObj->getMovementNodes();
+
+        const auto& movementNode = movementNodes[node];
         auto nodeOffset = Math::Vector::rotate(World::Pos2(movementNode.x, movementNode.y) - World::Pos2(16, 16), elStation->rotation()) + World::Pos2(16, 16);
         auto nodeLoc = World::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.z } + station->airportStartPos;
         if (!movementNode.hasFlags(AirportMovementNodeFlags::taxiing))

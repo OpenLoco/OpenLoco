@@ -73,8 +73,9 @@ namespace OpenLoco
         }
         remainingData = remainingData.subspan(1);
 
-        movementNodes = reinterpret_cast<const MovementNode*>(remainingData.data());
+        movementNodesOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numMovementNodes * sizeof(MovementNode));
+
         movementEdges = reinterpret_cast<const MovementEdge*>(remainingData.data());
         remainingData = remainingData.subspan(numMovementEdges * sizeof(MovementEdge));
 
@@ -101,7 +102,7 @@ namespace OpenLoco
 
         buildingPositionsOffset = 0;
 
-        movementNodes = nullptr;
+        movementNodesOffset = 0;
         movementEdges = nullptr;
     }
 
@@ -169,6 +170,13 @@ namespace OpenLoco
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + buildingPartAnimationsOffset);
         return std::span<const BuildingPartAnimation>(ptr, numSpriteSets);
+    }
+
+    std::span<const AirportObject::MovementNode> AirportObject::getMovementNodes() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const MovementNode*>(base + movementNodesOffset);
+        return std::span<const MovementNode>(ptr, numMovementNodes);
     }
 
 }
