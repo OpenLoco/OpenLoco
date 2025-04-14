@@ -4655,8 +4655,8 @@ namespace OpenLoco
     }
 
     // 0x004866C8
-    // Replaces AiAllocated assets with real assets
-    static uint8_t replaceAiAllocated(const Company& company, AiThought& thought)
+    // Replaces AiAllocated station assets with real assets
+    static uint8_t replaceAiAllocatedStation(const Company& company, AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -4804,7 +4804,7 @@ namespace OpenLoco
     // 0x0043106B
     static void sub_43106B(Company& company, AiThought& thought)
     {
-        const auto res = replaceAiAllocated(company, thought);
+        const auto res = replaceAiAllocatedStation(company, thought);
         if (res == 2)
         {
             company.var_4A4 = AiThinkState::unk6;
@@ -4819,7 +4819,8 @@ namespace OpenLoco
     }
 
     // 0x004869F7
-    static uint8_t sub_4869F7(Company& company, AiThought& thought)
+    // Replaces AiAllocated track / road assets with real assets
+    static uint8_t replaceAiAllocatedTrackRoad(Company& company, AiThought& thought)
     {
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
         {
@@ -5075,7 +5076,7 @@ namespace OpenLoco
     // 0x0043109A
     static void sub_43109A(Company& company, AiThought& thought)
     {
-        const auto res = sub_4869F7(company, thought);
+        const auto res = replaceAiAllocatedTrackRoad(company, thought);
         if (res == 2)
         {
             company.var_4A4 = AiThinkState::unk6;
