@@ -4007,6 +4007,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint8_t bestNode = 0;
+            // TODO: Use std::ranges::reverse_view
             for (auto node = airportObj->numMovementNodes - 1; node > -1; node--)
             {
                 const auto& movementNode = movementNodes[node];
