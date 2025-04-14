@@ -89,7 +89,7 @@ namespace OpenLoco::GameCommands
         createTown = 49,
         removeTown = 50,
         gc_unk_51 = 51,
-        gc_unk_52 = 52,
+        aiTrackReplacement = 52,
         gc_unk_53 = 53,
         buildCompanyHeadquarters = 54,
         removeCompanyHeadquarters = 55,
@@ -138,22 +138,24 @@ namespace OpenLoco::GameCommands
         return doCommand(T::command, regs);
     }
 
-    struct Unk52Args
+    struct AiTrackReplacementArgs
     {
-        static constexpr auto command = GameCommand::gc_unk_52;
+        static constexpr auto command = GameCommand::aiTrackReplacement;
 
-        Unk52Args() = default;
-        explicit Unk52Args(const registers& regs)
+        AiTrackReplacementArgs() = default;
+        explicit AiTrackReplacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
-            , unk(regs.dx)
+            , trackId(regs.dl)
+            , sequenceIndex(regs.dh)
             , trackObjectId(regs.bp)
         {
         }
 
         World::Pos3 pos;
         uint8_t rotation;
-        uint16_t unk;
+        uint8_t trackId;
+        uint8_t sequenceIndex;
         uint8_t trackObjectId;
 
         explicit operator registers() const
@@ -163,7 +165,8 @@ namespace OpenLoco::GameCommands
             regs.cx = pos.y;
             regs.di = pos.z;
             regs.bh = rotation;
-            regs.dx = unk;
+            regs.dl = trackId;
+            regs.dh = sequenceIndex;
             regs.bp = trackObjectId;
             return regs;
         }

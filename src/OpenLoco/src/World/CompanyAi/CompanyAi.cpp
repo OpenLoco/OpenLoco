@@ -6018,10 +6018,11 @@ namespace OpenLoco
             else
             {
                 // Track
-                GameCommands::Unk52Args placeArgs{};
+                GameCommands::AiTrackReplacementArgs placeArgs{};
                 placeArgs.rotation = aiStation.rotation;
                 placeArgs.trackObjectId = thought.trackObjId;
-                placeArgs.unk = 0;
+                placeArgs.trackId = 0;
+                placeArgs.sequenceIndex = 0;
                 placeArgs.pos = pos;
 
                 for (auto j = 0U; j < thought.stationLength; ++j)
@@ -6078,7 +6079,7 @@ namespace OpenLoco
     }
 
     // 0x004869F7
-    static uint8_t sub_4869F7(Company& company, const AiThought& thought)
+    static uint8_t sub_4869F7(Company& company, AiThought& thought)
     {
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
         {
@@ -6108,7 +6109,7 @@ namespace OpenLoco
                     if (thought.stations[i].var_B & 0b1010)
                     {
                         company.var_85C2 = i;
-                        company.var_85C3 &= ~(1U << 7);
+                        company.var_85C3 &= ~(1U << 0);
                         company.var_85D0 = thought.stations[i].pos;
                         company.var_85D4 = thought.stations[i].baseZ;
                         company.var_85D5 = thought.stations[i].rotation ^ (1U << 1);
@@ -6142,6 +6143,36 @@ namespace OpenLoco
                 if (rc.connections.empty())
                 {
                     // 0x00486E63
+                    const auto aiStationIndex = company.var_85C2;
+                    auto& aiStation = thought.stations[aiStationIndex];
+                    if (company.var_85C3 & (1U << 0))
+                    {
+                        if (aiStation.var_C & (1U << 1))
+                        {
+                            aiStation.var_C &= ~(1U << 3);
+                            aiStation.var_C |= (1U << 4);
+                        }
+                        else
+                        {
+                            aiStation.var_C &= ~(1U << 1);
+                            aiStation.var_C |= (1U << 2);
+                        }
+                    }
+                    else
+                    {
+                        if (aiStation.var_B & (1U << 1))
+                        {
+                            aiStation.var_B &= ~(1U << 3);
+                            aiStation.var_B |= (1U << 4);
+                        }
+                        else
+                        {
+                            aiStation.var_B &= ~(1U << 1);
+                            aiStation.var_B |= (1U << 2);
+                        }
+                    }
+                    company.var_85C2 = 0xFFU;
+                    return 0;
                 }
                 else
                 {
@@ -6183,14 +6214,122 @@ namespace OpenLoco
         {
             // Rail
             // 0x00486A37
-        }
+            if (company.var_85C2 == 0xFFU)
+            {
+                for (auto i = 0U; i < thought.numStations; ++i)
+                {
+                    if (thought.stations[i].var_B & 0b1010)
+                    {
+                        company.var_85C2 = i;
+                        company.var_85C3 &= ~(1U << 0);
+                        company.var_85D0 = thought.stations[i].pos;
+                        company.var_85D4 = thought.stations[i].baseZ;
+                        company.var_85D5 = thought.stations[i].rotation ^ (1U << 1);
+                        return 0;
+                    }
+                    else if (thought.stations[i].var_C & 0b1010)
+                    {
+                        company.var_85C2 = i;
+                        company.var_85C3 |= 1U << 0;
+                        // This line is different to road
+                        company.var_85D0 = thought.stations[i].pos + kRotationOffset[thought.stations[i].rotation] * (thought.var_04 - 1);
+                        company.var_85D4 = thought.stations[i].baseZ;
+                        company.var_85D5 = thought.stations[i].rotation;
+                        return 0;
+                    }
+                }
+                return 1;
+            }
+            else
+            {
+                // 0x00486AFC
+                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep);
+                const auto tad = company.var_85D5;
+                const auto queryMods = 0U;
+                const auto requiredMods = 0U;
+                const auto trackObjId = thought.trackObjId;
 
-        // gc_unk_52?
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x004869F7, regs);
-        return regs.al;
+                auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(pos, tad);
+                auto tc = Track::getTrackConnectionsAi(nextPos, nextRotation, company.id(), trackObjId, requiredMods, queryMods);
+                if (tc.connections.empty())
+                {
+                    // 0x00486C2C
+                    // Identical to road
+                    const auto aiStationIndex = company.var_85C2;
+                    auto& aiStation = thought.stations[aiStationIndex];
+                    if (company.var_85C3 & (1U << 0))
+                    {
+                        if (aiStation.var_C & (1U << 1))
+                        {
+                            aiStation.var_C &= ~(1U << 3);
+                            aiStation.var_C |= (1U << 4);
+                        }
+                        else
+                        {
+                            aiStation.var_C &= ~(1U << 1);
+                            aiStation.var_C |= (1U << 2);
+                        }
+                    }
+                    else
+                    {
+                        if (aiStation.var_B & (1U << 1))
+                        {
+                            aiStation.var_B &= ~(1U << 3);
+                            aiStation.var_B |= (1U << 4);
+                        }
+                        else
+                        {
+                            aiStation.var_B &= ~(1U << 1);
+                            aiStation.var_B |= (1U << 2);
+                        }
+                    }
+                    company.var_85C2 = 0xFFU;
+                    return 0;
+                }
+                else
+                {
+                    auto replaceTad = tc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+                    auto replacePos = nextPos;
+
+                    company.var_85D0 = replacePos;
+                    company.var_85D4 = replacePos.z / World::kSmallZStep;
+                    company.var_85D5 = replaceTad;
+
+                    if (replaceTad & (1U << 2))
+                    {
+                        auto& trackSize = TrackData::getUnkTrack(replaceTad);
+                        replacePos += trackSize.pos;
+                        if (trackSize.rotationEnd <= 12)
+                        {
+                            replacePos.x -= kRotationOffset[trackSize.rotationEnd].x;
+                            replacePos.y -= kRotationOffset[trackSize.rotationEnd].y;
+                        }
+                        replaceTad ^= (1U << 2);
+                    }
+
+                    replacePos.z += TrackData::getTrackPiece(replaceTad)[0].z;
+                    const auto trackId = (replaceTad >> 3) & 0x3F;
+                    const auto rotation = replaceTad & 0x3;
+
+                    GameCommands::AiTrackReplacementArgs args{};
+                    args.pos = replacePos;
+                    args.rotation = rotation;
+                    args.trackObjectId = trackObjId;
+                    args.trackId = trackId;
+                    args.sequenceIndex = 0;
+
+                    const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    if (!success)
+                    {
+                        if (GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                        {
+                            return 2;
+                        }
+                    }
+                    return 0;
+                }
+            }
+        }
     }
 
     // 0x0043109A
