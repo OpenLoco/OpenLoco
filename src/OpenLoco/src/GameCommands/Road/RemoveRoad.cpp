@@ -124,28 +124,33 @@ namespace OpenLoco::GameCommands
         // 0x0047762D
         auto tile = World::TileManager::get(args.pos.x, args.pos.y);
 
-        // This part was made redundant by a no-op write in Hooks.cpp
-        // writeNop(0x004776DD, 6);
-        /*
         if (auto* roadEl = getRoadElement(tile, args, args.sequenceIndex, flags); roadEl != nullptr)
         {
-            if (!sub_431E6A(companyId, reinterpret_cast<const World::TileElement*>(&elRoad)))
+            const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
+            if (!sub_431E6A(companyId, reinterpret_cast<const World::TileElement*>(roadEl)))
             {
                 return FAILURE;
             }
 
-            setErrorText(StringIds::empty);
-
-            auto nearest = TownManager::getClosestTownAndDensity(args.pos);
-            if (nearest.has_value())
+            /*
+            // This part was made redundant by a no-op write in Hooks.cpp:
+            // writeNop(0x004776DD, 6);
+            // TODO: turn this into a setting?
+            if (companyId != CompanyId::neutral && roadEl->mods() != 0) // What's with the mods check??
             {
-                auto* town = TownManager::get(nearest->first);
-                FormatArguments::common(town->name);
-                setErrorText(StringIds::stringid_local_authority_wont_allow_removal_in_use);
-                return FAILURE;
+                setErrorText(StringIds::empty);
+
+                auto nearest = TownManager::getClosestTownAndDensity(args.pos);
+                if (nearest.has_value())
+                {
+                    auto* town = TownManager::get(nearest->first);
+                    FormatArguments::common(town->name);
+                    setErrorText(StringIds::stringid_local_authority_wont_allow_removal_in_use);
+                    return FAILURE;
+                }
             }
+            */
         }
-        */
 
         currency32_t totalRemovalCost = 0;
 
