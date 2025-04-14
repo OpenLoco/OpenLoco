@@ -19,15 +19,6 @@ namespace OpenLoco::GameCommands
 {
     using namespace World::TileManager;
 
-    static loco_global<uint32_t, 0x0112C298> _dword_112C298;
-    static loco_global<uint8_t, 0x0112C2CD> _byte_112C2CD;
-    static loco_global<uint8_t, 0x0112C2D0> _byte_112C2D0;
-    static loco_global<uint8_t, 0x0112C2CE> _byte_112C2CE;  // sequenceIndex
-    static loco_global<uint8_t, 0x0112C2CF> _byte_112C2CF;  // roadId
-    static loco_global<uint16_t, 0x0112C2B0> _word_112C2B0; // objectId
-    static loco_global<uint8_t, 0x0112C2F3> _byte_112C2F3;  // flags
-    static loco_global<uint8_t, 0x0112C2F7> _companyId;     // company id
-
     // Copy of `playTrackRemovalSound`
     static void playRoadRemovalSound(const World::Pos3 pos)
     {
@@ -135,25 +126,6 @@ namespace OpenLoco::GameCommands
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
-
-        // TODO: trying to use args instead of these; just for reference
-        _dword_112C298 = 0;
-        _byte_112C2CD = 0;
-        _byte_112C2D0 = 0xFF;
-        _byte_112C2CE = args.sequenceIndex;
-        _byte_112C2CF = args.roadId;
-        _word_112C2B0 = args.objectId;
-
-        // TODO: already obsolete; just for reference
-        _byte_112C2F3 = 0;
-        if (flags & Flags::aiAllocated)
-        {
-            _byte_112C2F3 = _byte_112C2F3 | 0x10;
-        }
-        if (flags & Flags::ghost)
-        {
-            _byte_112C2F3 = _byte_112C2F3 | 0x20;
-        }
 
         // 0x0047762D
         auto tile = World::TileManager::get(args.pos.x, args.pos.y);
