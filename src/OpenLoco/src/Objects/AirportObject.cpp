@@ -58,13 +58,12 @@ namespace OpenLoco
 
         for (auto i = 0; i < numTiles; ++i)
         {
-            buildingVariationParts[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
-            auto* ptr = buildingVariationParts[i];
-            while (*ptr++ != 0xFF)
+            buildingVariationPartOffsets[i] = remainingData.data() - data.data();
+            while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
-                ;
+                remainingData = remainingData.subspan(1);
             }
-            remainingData = remainingData.subspan(ptr - buildingVariationParts[i]);
+            remainingData = remainingData.subspan(1);
         }
 
         buildingPositions = reinterpret_cast<const AirportBuilding*>(remainingData.data());
@@ -100,7 +99,7 @@ namespace OpenLoco
         image = 0;
         buildingImage = 0;
 
-        std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);
+        std::fill(std::begin(buildingVariationPartOffsets), std::end(buildingVariationPartOffsets), 0);
 
         buildingPositions = nullptr;
 
@@ -146,7 +145,9 @@ namespace OpenLoco
 
     std::span<const std::uint8_t> AirportObject::getBuildingParts(const uint8_t buildingType) const
     {
-        const auto* partsPointer = buildingVariationParts[buildingType];
+        const auto offset = buildingVariationPartOffsets[buildingType];
+
+        const auto* partsPointer = reinterpret_cast<const std::uint8_t*>(this) + offset;
         auto* end = partsPointer;
         while (*end != 0xFF)
         {
