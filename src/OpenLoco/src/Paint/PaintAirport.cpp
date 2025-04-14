@@ -27,11 +27,12 @@ namespace OpenLoco::Paint
         const auto variation = elStation.buildingType();
         const auto parts = airportObj.getBuildingParts(variation);
         const auto heights = airportObj.getBuildingPartHeights();
+        const auto animations = airportObj.getBuildingPartAnimations();
 
         auto sectionImageOffset = imageOffset;
         for (const auto part : parts)
         {
-            const auto partAnimation = airportObj.buildingPartAnimations[part];
+            const auto partAnimation = animations[part];
 
             auto frameMask = partAnimation.numFrames - 1;
             auto cl = partAnimation.animationSpeed & 0x7F;

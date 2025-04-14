@@ -53,8 +53,8 @@ namespace OpenLoco
         buildingPartHeightsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numSpriteSets * sizeof(uint8_t));
 
-        buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
-        remainingData = remainingData.subspan(numSpriteSets * sizeof(uint16_t));
+        buildingPartAnimationsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
+        remainingData = remainingData.subspan(numSpriteSets * sizeof(BuildingPartAnimation));
 
         for (auto i = 0; i < numTiles; ++i)
         {
@@ -160,6 +160,13 @@ namespace OpenLoco
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         return std::span<const std::uint8_t>(base + buildingPartHeightsOffset, numSpriteSets);
+    }
+
+    std::span<const BuildingPartAnimation> AirportObject::getBuildingPartAnimations() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + buildingPartAnimationsOffset);
+        return std::span<const BuildingPartAnimation>(ptr, numSpriteSets);
     }
 
 }

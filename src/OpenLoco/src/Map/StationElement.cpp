@@ -32,11 +32,12 @@ namespace OpenLoco::World
 
             const auto* obj = ObjectManager::get<Object>(elStation->objectId());
             auto buildingParts = obj->getBuildingParts(elStation->buildingType());
+            const auto animations = obj->getBuildingPartAnimations();
             bool hasAnimation = false;
             uint8_t animSpeed = std::numeric_limits<uint8_t>::max();
             for (auto& part : buildingParts)
             {
-                auto& partAnim = obj->buildingPartAnimations[part];
+                auto& partAnim = animations[part];
                 if (partAnim.numFrames > 1)
                 {
                     hasAnimation = true;
