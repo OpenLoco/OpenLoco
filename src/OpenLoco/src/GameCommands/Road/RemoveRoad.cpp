@@ -72,10 +72,6 @@ namespace OpenLoco::GameCommands
             {
                 return nullptr;
             }
-            if (elRoad->mods())
-            {
-                return nullptr;
-            }
 
             return elRoad;
         }
