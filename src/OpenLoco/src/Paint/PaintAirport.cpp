@@ -26,6 +26,7 @@ namespace OpenLoco::Paint
 
         const auto variation = elStation.buildingType();
         const auto parts = airportObj.getBuildingParts(variation);
+        const auto heights = airportObj.getBuildingPartHeights();
 
         auto sectionImageOffset = imageOffset;
         for (const auto part : parts)
@@ -43,7 +44,7 @@ namespace OpenLoco::Paint
             }
             const auto adjustedPart = part + (frameMask & tickThing);
 
-            const auto sectionHeight = airportObj.buildingPartHeights[adjustedPart];
+            const auto sectionHeight = heights[adjustedPart];
             const uint32_t imageIdx = adjustedPart * 4 + airportObj.buildingImage + rotation;
             ImageId image = baseColour.withIndex(imageIdx);
             session.addToPlotListAsChild(image, sectionImageOffset, bbOffset, bbSize);
@@ -72,9 +73,10 @@ namespace OpenLoco::Paint
 
         // Odd... different to industry, building, dock
         auto clearHeight = 0;
+        const auto heights = airportObj->getBuildingPartHeights();
         for (auto part : airportObj->getBuildingParts(variation))
         {
-            clearHeight += airportObj->buildingPartHeights[part];
+            clearHeight += heights[part];
         }
         // ceil to 4
         clearHeight += 3;

@@ -90,7 +90,7 @@ namespace OpenLoco
         AirportObjectFlags flags;                            // 0x10
         uint8_t numSpriteSets;                               // 0x12
         uint8_t numTiles;                                    // 0x13
-        const uint8_t* buildingPartHeights;                  // 0x14
+        uint32_t buildingPartHeightsOffset;                  // 0x14
         const BuildingPartAnimation* buildingPartAnimations; // 0x18
         const uint8_t* buildingVariationParts[32];           // 0x1C
         const AirportBuilding* buildingPositions;            // 0x9C
@@ -116,6 +116,7 @@ namespace OpenLoco
         std::pair<World::TilePos2, World::TilePos2> getAirportExtents(const World::TilePos2& centrePos, const uint8_t rotation) const;
         std::span<const AirportBuilding> getBuildingPositions() const;
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
+        std::span<const uint8_t> getBuildingPartHeights() const;
 
         constexpr bool hasFlags(AirportObjectFlags flagsToTest) const
         {

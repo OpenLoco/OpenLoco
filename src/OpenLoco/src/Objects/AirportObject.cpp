@@ -50,8 +50,9 @@ namespace OpenLoco
             remainingData = remainingData.subspan(strRes.tableLength);
         }
 
-        buildingPartHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        buildingPartHeightsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numSpriteSets * sizeof(uint8_t));
+
         buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
         remainingData = remainingData.subspan(numSpriteSets * sizeof(uint16_t));
 
@@ -154,4 +155,11 @@ namespace OpenLoco
 
         return std::span<const std::uint8_t>(partsPointer, end);
     }
+
+    std::span<const uint8_t> AirportObject::getBuildingPartHeights() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        return std::span<const std::uint8_t>(base + buildingPartHeightsOffset, numSpriteSets);
+    }
+
 }
