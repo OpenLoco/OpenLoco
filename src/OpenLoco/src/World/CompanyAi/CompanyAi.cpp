@@ -6201,10 +6201,10 @@ namespace OpenLoco
                         replaceTad ^= (1U << 2);
                     }
 
-                    replacePos.z += TrackData::getRoadPiece(replaceTad)[0].z;
                     const auto roadId = (replaceTad >> 3) & 0xF;
-                    const auto noStations = true;
                     const auto rotation = replaceTad & 0x3;
+                    replacePos.z += TrackData::getRoadPiece(roadId)[0].z;
+                    const auto noStations = true;
 
                     const auto success = replaceAiAllocatedRoad(replacePos, rotation, roadObjId, roadId, 0, noStations, flags) != GameCommands::FAILURE;
                     return success ? 0 : 2;
@@ -6308,9 +6308,9 @@ namespace OpenLoco
                         replaceTad ^= (1U << 2);
                     }
 
-                    replacePos.z += TrackData::getTrackPiece(replaceTad)[0].z;
                     const auto trackId = (replaceTad >> 3) & 0x3F;
                     const auto rotation = replaceTad & 0x3;
+                    replacePos.z += TrackData::getTrackPiece(trackId)[0].z;
 
                     GameCommands::AiTrackReplacementArgs args{};
                     args.pos = replacePos;
