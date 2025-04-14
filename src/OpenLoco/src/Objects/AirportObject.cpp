@@ -66,14 +66,12 @@ namespace OpenLoco
             remainingData = remainingData.subspan(1);
         }
 
-        buildingPositions = reinterpret_cast<const AirportBuilding*>(remainingData.data());
-        auto* ptr = reinterpret_cast<const uint8_t*>(remainingData.data());
-        while (*ptr != 0xFF)
+        buildingPositionsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
+        while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
-            ptr += 4;
+            remainingData = remainingData.subspan(sizeof(AirportBuilding));
         }
-        ptr++;
-        remainingData = remainingData.subspan(ptr - reinterpret_cast<const uint8_t*>(buildingPositions));
+        remainingData = remainingData.subspan(1);
 
         movementNodes = reinterpret_cast<const MovementNode*>(remainingData.data());
         remainingData = remainingData.subspan(numMovementNodes * sizeof(MovementNode));
@@ -101,7 +99,7 @@ namespace OpenLoco
 
         std::fill(std::begin(buildingVariationPartOffsets), std::end(buildingVariationPartOffsets), 0);
 
-        buildingPositions = nullptr;
+        buildingPositionsOffset = 0;
 
         movementNodes = nullptr;
         movementEdges = nullptr;
@@ -132,6 +130,9 @@ namespace OpenLoco
 
     std::span<const AirportBuilding> AirportObject::getBuildingPositions() const
     {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* buildingPositions = reinterpret_cast<const AirportBuilding*>(base + buildingPositionsOffset);
+
         const auto* firstBuildingPtr = buildingPositions;
         auto* endBuildingPtr = firstBuildingPtr;
 

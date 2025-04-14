@@ -93,7 +93,7 @@ namespace OpenLoco
         uint32_t buildingPartHeightsOffset;        // 0x14
         uint32_t buildingPartAnimationsOffset;     // 0x18
         uint32_t buildingVariationPartOffsets[32]; // 0x1C
-        const AirportBuilding* buildingPositions;  // 0x9C
+        uint32_t buildingPositionsOffset;          // 0x9C
         uint32_t largeTiles;                       // 0xA0
         int8_t minX;                               // 0xA4
         int8_t minY;                               // 0xA5
