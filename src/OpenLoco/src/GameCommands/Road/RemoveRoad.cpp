@@ -58,25 +58,23 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if ((elRoad->isGhost() && !(flags & Flags::ghost)) || (elRoad->isAiAllocated() && !(flags & Flags::aiAllocated)))
+            if (elRoad->isGhost() != ((flags & Flags::ghost) != 0))
             {
                 continue;
             }
-            if ((flags & Flags::aiAllocated) && elRoad->owner() != companyId)
+            if (elRoad->isAiAllocated() != ((flags & Flags::aiAllocated) != 0))
             {
                 continue;
             }
-            if (flags & Flags::aiAllocated)
+            // Ghost only as this is checked elsewhere for non-ghost so that
+            // neutral company is always allowed
+            if (((flags & Flags::ghost) != 0) && elRoad->owner() != companyId)
             {
-                return nullptr; // to 0x004776E3
-            }
-            if (elRoad->owner() != CompanyId::neutral)
-            {
-                return nullptr; // to 0x004776E3
+                return nullptr;
             }
             if (elRoad->mods())
             {
-                return nullptr; // to 0x004776E3
+                return nullptr;
             }
 
             return elRoad;
