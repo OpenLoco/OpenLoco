@@ -76,7 +76,7 @@ namespace OpenLoco
         movementNodesOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numMovementNodes * sizeof(MovementNode));
 
-        movementEdges = reinterpret_cast<const MovementEdge*>(remainingData.data());
+        movementEdgesOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numMovementEdges * sizeof(MovementEdge));
 
         auto imgRes = ObjectManager::loadImageTable(remainingData);
@@ -103,7 +103,7 @@ namespace OpenLoco
         buildingPositionsOffset = 0;
 
         movementNodesOffset = 0;
-        movementEdges = nullptr;
+        movementEdgesOffset = 0;
     }
 
     std::pair<World::TilePos2, World::TilePos2> AirportObject::getAirportExtents(const World::TilePos2& centrePos, const uint8_t rotation) const
@@ -177,6 +177,13 @@ namespace OpenLoco
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         const auto* ptr = reinterpret_cast<const MovementNode*>(base + movementNodesOffset);
         return std::span<const MovementNode>(ptr, numMovementNodes);
+    }
+
+    std::span<const AirportObject::MovementEdge> AirportObject::getMovementEdges() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const MovementEdge*>(base + movementEdgesOffset);
+        return std::span<const MovementEdge>(ptr, numMovementEdges);
     }
 
 }

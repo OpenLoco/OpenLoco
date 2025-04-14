@@ -440,6 +440,8 @@ namespace OpenLoco::CompanyAi
         auto* station = StationManager::get(elStation->stationId());
         auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
         const auto movementNodes = airportObj->getMovementNodes();
+        const auto movementEdges = airportObj->getMovementEdges();
+
         for (auto nodeIndex = 0U; nodeIndex < airportObj->numMovementNodes; ++nodeIndex)
         {
             auto& node = movementNodes[nodeIndex];
@@ -447,10 +449,10 @@ namespace OpenLoco::CompanyAi
             {
                 continue;
             }
-            const auto mustBeClearEdges = [nodeIndex, &airportObj]() {
+            const auto mustBeClearEdges = [nodeIndex, &airportObj, &movementEdges]() {
                 for (auto edgeIndex = 0U; edgeIndex < airportObj->numMovementEdges; ++edgeIndex)
                 {
-                    auto& edge = airportObj->movementEdges[edgeIndex];
+                    auto& edge = movementEdges[edgeIndex];
                     if (edge.nextNode == nodeIndex)
                     {
                         return edge.mustBeClearEdges;

@@ -104,7 +104,7 @@ namespace OpenLoco
         uint8_t numMovementNodes;                  // 0xAC
         uint8_t numMovementEdges;                  // 0xAD
         uint32_t movementNodesOffset;              // 0xAE
-        const MovementEdge* movementEdges;         // 0xB2
+        uint32_t movementEdgesOffset;              // 0xB2
         uint32_t var_B6;
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
@@ -119,6 +119,7 @@ namespace OpenLoco
         std::span<const uint8_t> getBuildingPartHeights() const;
         std::span<const BuildingPartAnimation> getBuildingPartAnimations() const;
         std::span<const MovementNode> getMovementNodes() const;
+        std::span<const MovementEdge> getMovementEdges() const;
 
         constexpr bool hasFlags(AirportObjectFlags flagsToTest) const
         {

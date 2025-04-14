@@ -1749,9 +1749,10 @@ namespace OpenLoco::Vehicles
             }
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementEdges = airportObject->getMovementEdges();
 
-            uint8_t al = airportObject->movementEdges[airportMovementEdge].var_03;
-            uint8_t cl = airportObject->movementEdges[airportMovementEdge].var_00;
+            uint8_t al = movementEdges[airportMovementEdge].var_03;
+            uint8_t cl = movementEdges[airportMovementEdge].var_00;
 
             auto veh2 = train.veh2;
             if (al != 0)
@@ -2214,12 +2215,13 @@ namespace OpenLoco::Vehicles
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
             const auto movementNodes = airportObject->getMovementNodes();
+            const auto movementEdges = airportObject->getMovementEdges();
 
             if (curEdge == kAirportMovementNodeNull)
             {
                 for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                 {
-                    const auto& transition = airportObject->movementEdges[movementEdge];
+                    const auto& transition = movementEdges[movementEdge];
                     if (!movementNodes[transition.curNode].hasFlags(AirportMovementNodeFlags::flag2))
                     {
                         continue;
@@ -2247,7 +2249,7 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                uint8_t targetNode = airportObject->movementEdges[curEdge].nextNode;
+                uint8_t targetNode = movementEdges[curEdge].nextNode;
                 if (status == Status::takingOff && movementNodes[targetNode].hasFlags(AirportMovementNodeFlags::takeoffEnd))
                 {
                     return kAirportMovementNodeNull;
@@ -2259,7 +2261,7 @@ namespace OpenLoco::Vehicles
                 {
                     for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                     {
-                        const auto& transition = airportObject->movementEdges[movementEdge];
+                        const auto& transition = movementEdges[movementEdge];
 
                         if (transition.curNode != targetNode)
                         {
@@ -2295,7 +2297,7 @@ namespace OpenLoco::Vehicles
                 {
                     for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                     {
-                        const auto& transition = airportObject->movementEdges[movementEdge];
+                        const auto& transition = movementEdges[movementEdge];
                         if (transition.curNode != targetNode)
                         {
                             continue;
@@ -2358,8 +2360,9 @@ namespace OpenLoco::Vehicles
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
             const auto movementNodes = airportObject->getMovementNodes();
+            const auto movementEdges = airportObject->getMovementEdges();
 
-            auto destinationNode = airportObject->movementEdges[curEdge].nextNode;
+            auto destinationNode = movementEdges[curEdge].nextNode;
 
             Pos2 loc2 = {
                 static_cast<int16_t>(movementNodes[destinationNode].x - 16),

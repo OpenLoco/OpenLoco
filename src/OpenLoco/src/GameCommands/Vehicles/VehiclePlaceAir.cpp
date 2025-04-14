@@ -103,10 +103,11 @@ namespace OpenLoco::GameCommands
             }
 
             auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementEdges = airportObj->getMovementEdges();
             auto previousEdgeId = 0;
             for (; previousEdgeId < airportObj->numMovementEdges; ++previousEdgeId)
             {
-                if (airportObj->movementEdges[previousEdgeId].nextNode == args.airportNode)
+                if (movementEdges[previousEdgeId].nextNode == args.airportNode)
                 {
                     break;
                 }
@@ -116,7 +117,7 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            auto& previousMovEdge = airportObj->movementEdges[previousEdgeId];
+            auto& previousMovEdge = movementEdges[previousEdgeId];
             if (station->airportMovementOccupiedEdges & previousMovEdge.mustBeClearEdges)
             {
                 setErrorText(StringIds::vehicle_approaching_or_in_the_way);
