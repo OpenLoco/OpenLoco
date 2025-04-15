@@ -6434,15 +6434,194 @@ namespace OpenLoco
         }
     }
 
+    // 0x0046C1E0
+    static uint8_t sub_47C1E0(World::Pos3 pos, uint16_t tad, uint8_t roadObjId, CompanyId companyId)
+    {
+        auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+        if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+        {
+            return 1;
+        }
+
+        auto roadStart = pos;
+        if (tad & (1U << 2))
+        {
+            auto& roadSize = TrackData::getUnkRoad(tad);
+            roadStart = pos + roadSize.pos;
+            tad ^= (1U << 2);
+            if (roadSize.rotationEnd < 12)
+            {
+                roadStart -= World::Pos3{ kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+        }
+
+        const auto rotation = tad & 0x3;
+        const auto roadId = (tad >> 3) & 0xF;
+
+        uint8_t flags = 0U;
+        auto& roadPieces = TrackData::getRoadPiece(roadObjId);
+        for (auto& piece : roadPieces)
+        {
+            const auto rotatedPiece = World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            const auto piecePos = roadStart + rotatedPiece;
+            auto* elRoad = [piecePos, rotation, &piece, &flags, roadId, roadObjId, companyId]() -> const World::RoadElement* {
+                const auto tile = World::TileManager::get(piecePos);
+                for (const auto& el : tile)
+                {
+                    auto* elRoad = el.as<RoadElement>();
+                    if (elRoad == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elRoad->baseHeight() != piecePos.z)
+                    {
+                        continue;
+                    }
+                    if (elRoad->isGhost() || elRoad->isAiAllocated())
+                    {
+                        continue;
+                    }
+                    if (elRoad->roadObjectId() != roadObjId)
+                    {
+                        continue;
+                    }
+
+                    if (elRoad->rotation() != rotation)
+                    {
+                        flags |= (1U << 3);
+                        continue;
+                    }
+                    if (elRoad->sequenceIndex() != piece.index)
+                    {
+                        flags |= (1U << 3);
+                        continue;
+                    }
+                    if (elRoad->owner() != companyId)
+                    {
+                        flags |= (1U << 3);
+                        continue;
+                    }
+                    if (elRoad->roadId() != roadId)
+                    {
+                        flags |= (1U << 3);
+                        continue;
+                    }
+                    return elRoad;
+                }
+                return nullptr;
+            }();
+
+            if (elRoad == nullptr)
+            {
+                return 2;
+            }
+            if (elRoad->hasBridge())
+            {
+                flags |= (1U << 2);
+            }
+        }
+        return flags;
+    }
+
+    // 0x0047B238
+    static void removeRoadStationAndRoad(World::Pos3 pos, uint8_t rotation, uint8_t roadObjId, CompanyId companyId)
+    {
+        auto args = GameCommands::RoadStationRemovalArgs{};
+        args.index = 0;
+        args.pos = pos;
+        args.roadId = 0;
+        args.roadObjectId = roadObjId;
+        args.rotation = rotation;
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            args.rotation ^= (1u << 1);
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+        }
+
+        auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        {
+            if (!(sub_47C1E0(pos, (0 << 3) | rotation, roadObjId, companyId) & ((1U << 0) | (1U << 1))))
+            {
+                auto roadArgs = GameCommands::RoadRemovalArgs{};
+                roadArgs.pos = pos;
+                roadArgs.objectId = roadObjId;
+                roadArgs.roadId = 0;
+                roadArgs.rotation = rotation;
+                roadArgs.sequenceIndex = 0;
+                GameCommands::doCommand(roadArgs, GameCommands::Flags::apply);
+            }
+        }
+    }
+
+    // 0x004A7E07
+    static void removeTrainStationAndTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjId, uint8_t stationLength, CompanyId companyId)
+    {
+        auto piecePos = pos;
+        for (auto i = 0U; i < stationLength; ++i)
+        {
+            auto args = GameCommands::TrackRemovalArgs{};
+            args.index = 0;
+            args.pos = piecePos;
+            args.rotation = rotation;
+            args.trackId = 0;
+            args.trackObjectId = trackObjId;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            piecePos += World::Pos3{ kRotationOffset[rotation], 0 };
+        }
+    }
+
+    // 0x004836EB
+    static bool sub_4836EB(AiThought& thought, CompanyId companyId)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+
+        auto operationalStationIdx = [&thought]() {
+            for (auto i = 0; i < thought.numStations; ++i)
+            {
+                auto& aiStation = thought.stations[i];
+                if (aiStation.hasFlags(AiThoughtStationFlags::operational))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }();
+        if (operationalStationIdx == -1)
+        {
+            return true;
+        }
+
+        auto& aiStation = thought.stations[operationalStationIdx];
+        if (thought.trackObjId & (1U << 7))
+        {
+            const auto roadObjId = thought.trackObjId & ~(1U << 7);
+
+            removeRoadStationAndRoad(
+                World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep), aiStation.rotation, roadObjId, companyId);
+        }
+        else
+        {
+            removeTrainStationAndTrack(
+                World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep), aiStation.rotation, thought.trackObjId, thought.var_04, companyId);
+        }
+        aiStation.var_02 &= ~AiThoughtStationFlags::operational;
+        return false;
+    }
+
     // 0x0048715C
     static bool sub_48715C(Company& company, AiThought& thought)
     {
-        // fair amount of logic
-        // removes roads/tracks
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        return call(0x0048715C, regs) & X86_FLAG_CARRY;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased)
+            || !(company.var_85C3 & (1U << 2)))
+        {
+            return sub_4836EB(thought, company.id());
+        }
+        // 0x00487183
     }
 
     // 0x0043112D
