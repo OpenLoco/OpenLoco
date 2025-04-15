@@ -9,8 +9,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World
 {
-    static loco_global<int16_t, 0x0050A000> _adjustToolSize;
-
     static loco_global<MapSelectionFlags, 0x00F24484> _mapSelectionFlags;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
@@ -22,7 +20,7 @@ namespace OpenLoco::World
     static loco_global<Pos2[kMapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
 
     // TODO: Return std::optional
-    uint16_t setMapSelectionTiles(const Pos2& loc, const MapSelectionType selectionType)
+    uint16_t setMapSelectionTiles(const Pos2& loc, const MapSelectionType selectionType, uint16_t toolSizeA)
     {
         uint16_t xPos = loc.x;
         uint16_t yPos = loc.y;
@@ -39,8 +37,6 @@ namespace OpenLoco::World
             _word_F2448E = selectionType;
             count++;
         }
-
-        uint16_t toolSizeA = _adjustToolSize;
 
         if (!toolSizeA)
         {
