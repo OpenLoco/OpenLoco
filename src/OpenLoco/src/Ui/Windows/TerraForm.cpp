@@ -1095,7 +1095,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC682
-        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
+        static void toolDrag([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -1190,7 +1190,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onUpdate = Common::onUpdate,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
-            .toolDragContinue = toolDragContinue,
+            .toolDrag = toolDrag,
             .toolDragEnd = toolDragEnd,
             .prepareDraw = prepareDraw,
             .draw = draw,
@@ -1648,7 +1648,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC9E2
-        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+        static void toolDrag([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             switch (widgetIndex)
             {
@@ -1876,7 +1876,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onUpdate = Common::onUpdate,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
-            .toolDragContinue = toolDragContinue,
+            .toolDrag = toolDrag,
             .toolDragEnd = toolDragEnd,
             .prepareDraw = prepareDraw,
             .draw = draw,
@@ -2069,7 +2069,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDBF
-        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+        static void toolDrag([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -2221,7 +2221,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onUpdate = Common::onUpdate,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
-            .toolDragContinue = toolDragContinue,
+            .toolDrag = toolDrag,
             .toolDragEnd = toolDragEnd,
             .prepareDraw = prepareDraw,
             .draw = draw,

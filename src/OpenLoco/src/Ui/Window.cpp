@@ -1079,14 +1079,14 @@ namespace OpenLoco::Ui
         eventHandlers->onToolDown(*this, widgetIndex, id, xPos, yPos);
     }
 
-    void Window::callToolDragContinue(const WidgetIndex_t widgetIndex, const WidgetId id, const int16_t xPos, const int16_t yPos)
+    void Window::callToolDrag(const WidgetIndex_t widgetIndex, const WidgetId id, const int16_t xPos, const int16_t yPos)
     {
-        if (eventHandlers->toolDragContinue == nullptr)
+        if (eventHandlers->toolDrag == nullptr)
         {
             return;
         }
 
-        eventHandlers->toolDragContinue(*this, widgetIndex, id, xPos, yPos);
+        eventHandlers->toolDrag(*this, widgetIndex, id, xPos, yPos);
     }
 
     void Window::callToolDragEnd(const WidgetIndex_t widgetIndex, const WidgetId id)
