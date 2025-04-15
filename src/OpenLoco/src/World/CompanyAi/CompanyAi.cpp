@@ -6150,26 +6150,26 @@ namespace OpenLoco
                     {
                         if (aiStation.var_C & (1U << 1))
                         {
-                            aiStation.var_C &= ~(1U << 3);
-                            aiStation.var_C |= (1U << 4);
+                            aiStation.var_C &= ~(1U << 1);
+                            aiStation.var_C |= (1U << 2);
                         }
                         else
                         {
-                            aiStation.var_C &= ~(1U << 1);
-                            aiStation.var_C |= (1U << 2);
+                            aiStation.var_C &= ~(1U << 3);
+                            aiStation.var_C |= (1U << 4);
                         }
                     }
                     else
                     {
                         if (aiStation.var_B & (1U << 1))
                         {
-                            aiStation.var_B &= ~(1U << 3);
-                            aiStation.var_B |= (1U << 4);
+                            aiStation.var_B &= ~(1U << 1);
+                            aiStation.var_B |= (1U << 2);
                         }
                         else
                         {
-                            aiStation.var_B &= ~(1U << 1);
-                            aiStation.var_B |= (1U << 2);
+                            aiStation.var_B &= ~(1U << 3);
+                            aiStation.var_B |= (1U << 4);
                         }
                     }
                     company.var_85C2 = 0xFFU;
@@ -6262,26 +6262,26 @@ namespace OpenLoco
                     {
                         if (aiStation.var_C & (1U << 1))
                         {
-                            aiStation.var_C &= ~(1U << 3);
-                            aiStation.var_C |= (1U << 4);
+                            aiStation.var_C &= ~(1U << 1);
+                            aiStation.var_C |= (1U << 2);
                         }
                         else
                         {
-                            aiStation.var_C &= ~(1U << 1);
-                            aiStation.var_C |= (1U << 2);
+                            aiStation.var_C &= ~(1U << 3);
+                            aiStation.var_C |= (1U << 4);
                         }
                     }
                     else
                     {
                         if (aiStation.var_B & (1U << 1))
                         {
-                            aiStation.var_B &= ~(1U << 3);
-                            aiStation.var_B |= (1U << 4);
+                            aiStation.var_B &= ~(1U << 1);
+                            aiStation.var_B |= (1U << 2);
                         }
                         else
                         {
-                            aiStation.var_B &= ~(1U << 1);
-                            aiStation.var_B |= (1U << 2);
+                            aiStation.var_B &= ~(1U << 3);
+                            aiStation.var_B |= (1U << 4);
                         }
                     }
                     company.var_85C2 = 0xFFU;
