@@ -2554,7 +2554,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
-    static void onToolDownT(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece)
+    static void onToolUpT(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece)
     {
         mapInvalidateMapSelectionTiles();
         removeConstructionGhosts();
@@ -2623,7 +2623,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC97
-    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+    static void onToolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::construct)
         {
@@ -2632,11 +2632,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_cState->trackType & (1 << 7))
         {
-            onToolDownT(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
+            onToolUpT(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
         }
         else
         {
-            onToolDownT(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
+            onToolUpT(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
         }
     }
 
@@ -3133,7 +3133,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
         .onToolUpdate = onToolUpdate,
-        .onToolDown = onToolDown,
+        .toolUp = onToolUp,
         .tooltip = tooltip,
         .cursor = cursor,
         .prepareDraw = prepareDraw,
