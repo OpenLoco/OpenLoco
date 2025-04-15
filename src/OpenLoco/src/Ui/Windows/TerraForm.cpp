@@ -1110,7 +1110,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC701
-        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void toolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Common::widx::panel)
             {
@@ -1191,7 +1191,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .toolDrag = toolDrag,
-            .toolDragEnd = toolDragEnd,
+            .toolUp = toolUp,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -1722,7 +1722,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCA5D
-        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void toolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1877,7 +1877,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .toolDrag = toolDrag,
-            .toolDragEnd = toolDragEnd,
+            .toolUp = toolUp,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -2131,7 +2131,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDE8
-        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void toolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Common::widx::panel)
             {
@@ -2222,7 +2222,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .toolDrag = toolDrag,
-            .toolDragEnd = toolDragEnd,
+            .toolUp = toolUp,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
