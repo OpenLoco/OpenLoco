@@ -490,7 +490,7 @@ namespace OpenLoco::Input
                     if (tool != nullptr)
                     {
                         // TODO: Handle widget id properly for tools.
-                        tool->callToolUp(ToolManager::getToolWidgetIndex(), WidgetId::none);
+                        tool->callToolUp(ToolManager::getToolWidgetIndex(), WidgetId::none, x, y);
                     }
                 }
                 else if (!hasFlag(Flags::leftMousePressed))

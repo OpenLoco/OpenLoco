@@ -1110,7 +1110,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC701
-        static void toolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void toolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex == Common::widx::panel)
             {
@@ -1722,7 +1722,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCA5D
-        static void toolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void toolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             switch (widgetIndex)
             {
@@ -2131,7 +2131,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDE8
-        static void toolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void toolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex == Common::widx::panel)
             {
