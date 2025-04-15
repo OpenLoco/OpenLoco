@@ -2535,11 +2535,22 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         World::mapInvalidateMapSelectionTiles();
     }
 
+    static bool _isDragging = false;
+    static World::TilePos2 _toolPosDrag;
+    static World::TilePos2 _toolPosInitial;
+
     // 0x0049DC8C
     static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::construct)
         {
+            return;
+        }
+
+        if (_isDragging)
+        {
+            mapInvalidateMapSelectionTiles();
+            removeConstructionGhosts();
             return;
         }
 
@@ -2551,6 +2562,48 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             onToolUpdateSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
         }
+    }
+
+    static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+    {
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+        auto& interaction = res.first;
+        if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
+        {
+            return;
+        }
+
+        _toolPosInitial = World::toTileSpace(interaction.pos);
+        _isDragging = false;
+    }
+
+    static void onToolDrag([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
+    {
+        mapInvalidateSelectionRect();
+        removeConstructionGhosts();
+
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+        auto& interaction = res.first;
+        if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
+        {
+            return;
+        }
+
+        _toolPosDrag = World::toTileSpace(interaction.pos);
+        _isDragging = _toolPosInitial != _toolPosDrag;
+        if (!_isDragging)
+        {
+            return;
+        }
+
+        auto posA = World::toWorldSpace({ std::min(_toolPosInitial.x, _toolPosDrag.x), std::min(_toolPosInitial.y, _toolPosDrag.y) });
+        auto posB = World::toWorldSpace({ std::max(_toolPosInitial.x, _toolPosDrag.x), std::max(_toolPosInitial.y, _toolPosDrag.y) });
+
+        World::setMapSelectionFlags(World::MapSelectionFlags::enable);
+        World::setMapSelectionCorner(MapSelectionType::full);
+
+        World::setMapSelectionArea(posA, posB);
+        World::mapInvalidateSelectionRect();
     }
 
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
@@ -2627,6 +2680,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         if (widgetIndex != widx::construct)
         {
+            return;
+        }
+
+        if (_isDragging)
+        {
+            mapInvalidateMapSelectionTiles();
+            removeConstructionGhosts();
+            ToolManager::toolCancel();
+
+            _isDragging = false;
             return;
         }
 
@@ -3133,6 +3196,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
         .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .toolDrag = onToolDrag,
         .toolUp = onToolUp,
         .tooltip = tooltip,
         .cursor = cursor,
