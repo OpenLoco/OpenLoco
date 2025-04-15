@@ -2075,7 +2075,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(startHeight, elTrack->trackId()) };
     }
 
-    static void constructionLoop(const Pos2& mapPos, uint32_t maxRetries, int16_t height)
+    static void constructionLoop(const Pos2& mapPos, uint32_t maxRetries, int16_t height, bool cancelAfter = false)
     {
         while (true)
         {
@@ -2117,6 +2117,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         continue;
                     }
                 }
+            }
+
+            if (maxRetries == 0 && cancelAfter)
+            {
+                return;
             }
 
             // Failed to place track piece -- rotate and make error sound
@@ -2607,7 +2612,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
-    static void onToolUpSingle(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece)
+    static void onToolUpSingle(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, bool cancelAfter = true)
     {
         mapInvalidateMapSelectionTiles();
         removeConstructionGhosts();
@@ -2646,7 +2651,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             _cState->makeJunction = 0;
         }
-        ToolManager::toolCancel();
+
+        if (cancelAfter)
+        {
+            ToolManager::toolCancel();
+        }
 
         auto maxRetries = 0;
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || _cState->makeJunction != 1)
@@ -2672,7 +2681,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         // Height should never go negative
         constructHeight = std::max<int16_t>(0, constructHeight);
 
-        constructionLoop(constructPos, maxRetries, constructHeight);
+        constructionLoop(constructPos, maxRetries, constructHeight, !cancelAfter);
     }
 
     // 0x0049DC97
@@ -2687,9 +2696,26 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             mapInvalidateMapSelectionTiles();
             removeConstructionGhosts();
-            ToolManager::toolCancel();
 
-            _isDragging = false;
+            auto posA = World::TilePos2{ std::min(_toolPosInitial.x, _toolPosDrag.x), std::min(_toolPosInitial.y, _toolPosDrag.y) };
+            auto posB = World::TilePos2{ std::max(_toolPosInitial.x, _toolPosDrag.x), std::max(_toolPosInitial.y, _toolPosDrag.y) };
+
+            for (auto tilePos : TilePosRangeView(posA, posB))
+            {
+                // TODO: this doesn't work, as `onToolUpSingle` expects screen coordinates, not tile coordinates!!
+                if (_cState->trackType & (1 << 7))
+                {
+                    onToolUpSingle(tilePos.x, tilePos.y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, false);
+                }
+                else
+                {
+                    onToolUpSingle(tilePos.x, tilePos.y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, false);
+                }
+
+                onMouseUp(self, widx::rotate_90, {});
+            }
+
+            ToolManager::toolCancel();
             return;
         }
 
