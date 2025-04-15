@@ -205,7 +205,8 @@ namespace OpenLoco::GameCommands
                 }
 
                 // 0x00477934
-                auto* roadElPiece = getRoadElement(tile, args, piece.index, flags);
+                auto pieceTile = World::TileManager::get(roadLoc.x, roadLoc.y);
+                auto* roadElPiece = getRoadElement(pieceTile, args, piece.index, flags);
                 if (roadElPiece == nullptr)
                 {
                     continue;
