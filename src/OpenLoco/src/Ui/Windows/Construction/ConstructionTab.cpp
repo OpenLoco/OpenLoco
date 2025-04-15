@@ -2699,23 +2699,30 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             auto posA = World::TilePos2{ std::min(_toolPosInitial.x, _toolPosDrag.x), std::min(_toolPosInitial.y, _toolPosDrag.y) };
             auto posB = World::TilePos2{ std::max(_toolPosInitial.x, _toolPosDrag.x), std::max(_toolPosInitial.y, _toolPosDrag.y) };
+            auto rotation = _cState->constructionRotation;
 
             for (auto tilePos : TilePosRangeView(posA, posB))
             {
-                // TODO: this doesn't work, as `onToolUpSingle` expects screen coordinates, not tile coordinates!!
-                if (_cState->trackType & (1 << 7))
-                {
-                    onToolUpSingle(tilePos.x, tilePos.y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, false);
-                }
-                else
-                {
-                    onToolUpSingle(tilePos.x, tilePos.y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, false);
-                }
+                auto pos = World::toWorldSpace(tilePos);
+                _cState->x = pos.x;
+                _cState->y = pos.y;
 
-                onMouseUp(self, widx::rotate_90, {});
+                auto height = TileManager::getHeight(pos);
+                _cState->constructionZ = height.landHeight;
+
+                // Try placing the track at this location, ignoring errors if they occur
+                _suppressErrorSound = true;
+                constructTrack(&self, widgetIndex);
+                _suppressErrorSound = false;
+                WindowManager::close(WindowType::error);
+
+                // Prevent automatic rotation when constructing track
+                _cState->constructionRotation = rotation;
+
+                // Leave the tool active, but make ghost piece visible for the next round
+                _isDragging = false;
             }
 
-            ToolManager::toolCancel();
             return;
         }
 
