@@ -81,7 +81,7 @@ namespace OpenLoco::Ui
         void (*onToolUpdate)(Window&, const WidgetIndex_t, WidgetId, const int16_t, const int16_t) = nullptr;
         void (*onToolDown)(Window&, const WidgetIndex_t, WidgetId, const int16_t, const int16_t) = nullptr;
         void (*toolDrag)(Window&, const WidgetIndex_t, WidgetId, const int16_t, const int16_t) = nullptr;
-        void (*toolUp)(Window&, const WidgetIndex_t, WidgetId) = nullptr;
+        void (*toolUp)(Window&, const WidgetIndex_t, WidgetId, const int16_t, const int16_t) = nullptr;
         void (*onToolAbort)(Window&, const WidgetIndex_t, WidgetId) = nullptr;
         Ui::CursorId (*toolCursor)(Window&, const int16_t x, const int16_t y, const Ui::CursorId, bool&) = nullptr;
         void (*getScrollSize)(Window&, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight) = nullptr;
@@ -385,7 +385,7 @@ namespace OpenLoco::Ui
         void callToolUpdate(WidgetIndex_t widgetIndex, WidgetId id, int16_t xPos, int16_t yPos);                          // 10
         void callToolDown(WidgetIndex_t widgetIndex, WidgetId id, int16_t xPos, int16_t yPos);                            // 11
         void callToolDrag(WidgetIndex_t widgetIndex, WidgetId id, const int16_t xPos, const int16_t yPos);        // 12
-        void callToolUp(WidgetIndex_t widgetIndex, WidgetId id);                                                     // 13
+        void callToolUp(WidgetIndex_t widgetIndex, WidgetId id, const int16_t xPos, const int16_t yPos);          // 13
         void callToolAbort(WidgetIndex_t widgetIndex, WidgetId id);                                                       // 14
         Ui::CursorId callToolCursor(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out);                        // 15
         void callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);                      // 16
