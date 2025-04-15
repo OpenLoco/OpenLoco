@@ -1047,7 +1047,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
             if (res)
             {
-                if (setMapSelectionTiles(res->first, MapSelectionType::full) == 0)
+                if (setMapSelectionTiles(res->first, MapSelectionType::full, _adjustToolSize) == 0)
                 {
                     return;
                 }
@@ -1508,7 +1508,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
             if (res)
             {
-                if (setMapSelectionTiles(res->first, MapSelectionType::full) == 0)
+                if (setMapSelectionTiles(res->first, MapSelectionType::full, _adjustToolSize) == 0)
                 {
                     return;
                 }
@@ -1552,7 +1552,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     }
                     else
                     {
-                        auto count = setMapSelectionTiles(res->first, MapSelectionType::full);
+                        auto count = setMapSelectionTiles(res->first, MapSelectionType::full, _adjustToolSize);
 
                         if (!count)
                         {
@@ -1999,7 +1999,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     setAdjustCost(0x80000000, 0x80000000);
                     return;
                 }
-                if (!setMapSelectionTiles(interaction.pos + World::Pos2(16, 16), MapSelectionType::fullWater))
+                if (!setMapSelectionTiles(interaction.pos + World::Pos2(16, 16), MapSelectionType::fullWater, _adjustToolSize))
                 {
                     // no change in selection
                     return;
