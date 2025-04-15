@@ -468,7 +468,7 @@ namespace OpenLoco::Input
                         if (tool != nullptr)
                         {
                             // TODO: Handle widget id properly for tools.
-                            tool->callToolDragContinue(ToolManager::getToolWidgetIndex(), WidgetId::none, x, y);
+                            tool->callToolDrag(ToolManager::getToolWidgetIndex(), WidgetId::none, x, y);
                         }
                     }
                 }
