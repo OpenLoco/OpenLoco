@@ -410,7 +410,7 @@ namespace OpenLoco::GameCommands
 
             if (_gameCommandNestLevel == 1)
             {
-                if ((_gameCommandFlags & Flags::flag_2) == 0
+                if ((_gameCommandFlags & Flags::skipFundingCheck) == 0
                     && (_gameCommandFlags & Flags::ghost) == 0
                     && ebx != 0)
                 {
