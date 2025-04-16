@@ -32,7 +32,7 @@ namespace OpenLoco::GameCommands
         constexpr uint8_t aiAllocated = 1 << 4;        // 0x10 ai can place down invisible ghosts with this that blocks players
         constexpr uint8_t noPayment = 1 << 5;          // 0x20 calculates cost but does not deduct it
         constexpr uint8_t ghost = 1 << 6;              // 0x40
-        constexpr uint8_t flag_7 = 1 << 7;             // 0x80
+        constexpr uint8_t flag_7 = 1 << 7;             // 0x80 ai only?
     }
 
     enum class GameCommand : uint8_t
