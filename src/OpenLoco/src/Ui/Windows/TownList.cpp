@@ -1086,7 +1086,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static currency32_t placeBuildingGhost(const GameCommands::BuildingPlacementArgs& placementArgs)
         {
             removeBuildingGhost();
-            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::skipGhostPlacement | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             if (res != GameCommands::FAILURE)
             {
                 _buildingGhostPos = placementArgs.pos;
@@ -1195,7 +1195,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
 
-                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::skipGhostPlacement) != GameCommands::FAILURE)
                 {
                     Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
                 }
