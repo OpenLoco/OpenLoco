@@ -6440,7 +6440,7 @@ namespace OpenLoco
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
         if (roadObj->hasFlags(RoadObjectFlags::unk_03))
         {
-            return 1;
+            return (1U << 0);
         }
 
         auto roadStart = pos;
@@ -6513,7 +6513,7 @@ namespace OpenLoco
 
             if (elRoad == nullptr)
             {
-                return 2;
+                return (1U << 1);
             }
             if (elRoad->hasBridge())
             {
@@ -6622,6 +6622,136 @@ namespace OpenLoco
             return sub_4836EB(thought, company.id());
         }
         // 0x00487183
+        company.var_85F0++;
+        if (company.var_85F0 >= 1600)
+        {
+            company.var_85C3 |= (1U << 2);
+            return false;
+        }
+        if (thought.trackObjId & (1U << 7))
+        {
+            const auto roadObjId = thought.trackObjId & ~(1U << 7);
+            // 0x00487432
+            if (company.var_85C3 & (1U << 1))
+            {
+                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * kSmallZStep);
+                const auto tad = company.var_85D5;
+                const auto roadFlags = sub_47C1E0(pos, tad, roadObjId, company.id());
+                // If there is no road here we can remove or its a junction
+                // progress to next phase of road removal
+                if ((roadFlags & ((1U << 0) | (1U << 1) | (1U << 3))))
+                {
+                    company.var_85C3 &= ~(1U << 1);
+                    return false;
+                }
+
+                // Get the next road (will be used after the removal)
+                auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(pos, tad);
+                const auto rc = Track::getRoadConnections(nextPos, nextRotation, company.id(), roadObjId, 0, 0);
+
+                auto roadStart = pos;
+                auto roadStartTad = tad;
+                if (roadStartTad & (1U << 2))
+                {
+                    auto& roadSize = TrackData::getUnkRoad(roadStartTad);
+                    roadStart = pos + roadSize.pos;
+                    roadStartTad ^= (1U << 2);
+                    if (roadSize.rotationEnd < 12)
+                    {
+                        roadStart -= World::Pos3{ kRotationOffset[roadSize.rotationEnd], 0 };
+                    }
+                }
+
+                const auto roadId = (roadStartTad >> 3) & 0xF;
+                const auto rotation = roadStartTad & 0x3;
+                roadStart.z += TrackData::getRoadPiece(roadId)[0].z;
+
+                auto args = GameCommands::RoadRemovalArgs{};
+                args.pos = roadStart;
+                args.objectId = roadObjId;
+                args.roadId = roadId;
+                args.rotation = rotation;
+                args.sequenceIndex = 0;
+                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                // If we fail for some reason or we are at the end of the road
+                // we progress to the next phase of road removal
+                if (!success || rc.connections.empty())
+                {
+                    company.var_85C3 &= ~(1U << 1);
+                    return false;
+                }
+
+                company.var_85D0 = nextPos;
+                company.var_85D4 = nextPos.z / kSmallZStep;
+                company.var_85D5 = rc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+                return false;
+            }
+            else
+            {
+                auto stationIdx = company.var_85C2;
+                auto& aiStation = thought.stations[stationIdx];
+                std::optional<World::Pos3> stationPos;
+                uint8_t rotation = 0U;
+                if (company.var_85C3 & (1U << 0))
+                {
+                    if (aiStation.var_A != 0xFFU)
+                    {
+                        stationPos = World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep);
+                        rotation = aiStation.rotation;
+                    }
+                }
+                else
+                {
+                    if (aiStation.var_9 != 0xFFU)
+                    {
+                        stationPos = World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep);
+                        rotation = aiStation.rotation ^ (1U << 1);
+                    }
+                }
+                if (stationPos.has_value())
+                {
+                    uint16_t tad = rotation | (0U << 3);
+                    auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(stationPos.value(), tad);
+                    const auto rc = Track::getRoadConnections(nextPos, nextRotation, company.id(), roadObjId, 0, 0);
+                    for (const auto connection : rc.connections)
+                    {
+                        const auto tadConnection = connection & Track::AdditionalTaDFlags::basicTaDMask;
+
+                        const auto roadFlags = sub_47C1E0(nextPos, tadConnection, roadObjId, company.id());
+                        // If there is no road here we can remove or its a junction or its a bridge
+                        if (roadFlags & ((1U << 0) | (1U << 1) | (1U << 2) | (1U << 3)))
+                        {
+                            continue;
+                        }
+
+                        company.var_85D0 = nextPos;
+                        company.var_85D4 = nextPos.z / kSmallZStep;
+                        company.var_85D5 = tadConnection;
+                        company.var_85C3 |= (1U << 1);
+                        return false;
+                    }
+                }
+                // 0x00487504
+                if (company.var_85C3 & (1U << 0))
+                {
+                    company.var_85C3 &= ~(1U << 0);
+                    company.var_85C2++;
+                    if (company.var_85C2 >= thought.numStations)
+                    {
+                        company.var_85C3 |= (1U << 2); // All stations removed
+                    }
+                }
+                else
+                {
+                    company.var_85C3 |= (1U << 0);
+                }
+                return false;
+            }
+        }
+        else
+        {
+            // 0x0048718D
+        }
     }
 
     // 0x0043112D
