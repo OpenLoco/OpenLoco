@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#3067] Prevent pixel artifacts from incomplete redraws when shifting the viewport.
 - Fix: [#3068] The construction button is missing a border around it.
+- Fix: [#3075] The top toolbar menu can default to showing airports when they are unavailable.
 
 25.03 (2025-03-31)
 ------------------------------------------------------------------------
