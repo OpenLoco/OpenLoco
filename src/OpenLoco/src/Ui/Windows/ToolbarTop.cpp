@@ -501,14 +501,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         uint8_t ddIndex = 0;
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        if (addr<0x525FAC, int8_t>() != -1)
+        if (getGameState().lastAirport != 0xFF)
         {
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_airport, StringIds::menu_airport });
             _menuOptions[ddIndex] = 0;
             ddIndex++;
         }
 
-        if (addr<0x525FAD, int8_t>() != -1)
+        if (getGameState().lastShipPort != 0xFF)
         {
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port, StringIds::menu_ship_port });
             _menuOptions[ddIndex] = 1;
@@ -951,8 +951,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         if (_lastPortOption == 0
-            && getGameState().lastAirport != 0xFF
-            && getGameState().lastShipPort == 0xFF)
+            && getGameState().lastAirport == 0xFF
+            && getGameState().lastShipPort != 0xFF)
         {
             _lastPortOption = 1;
         }
