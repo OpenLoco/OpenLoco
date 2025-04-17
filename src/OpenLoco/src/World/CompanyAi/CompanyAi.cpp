@@ -192,6 +192,22 @@ namespace OpenLoco
         return (kThoughtTypeFlags[enumValue(type)] & flags) != ThoughtTypeFlags::none;
     }
 
+    struct DestinationPositions
+    {
+        Pos2 posA;
+        std::optional<Pos2> posB;
+    };
+    static DestinationPositions getDestinationPositions(const AiThought& thought)
+    {
+        DestinationPositions destPos;
+        destPos.posA = thought.getDestinationPositionA();
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
+        {
+            destPos.posB = thought.getDestinationPositionB();
+        }
+        return destPos;
+    }
+
     // 0x00483778
     static void clearThought(AiThought& thought)
     {
@@ -2155,12 +2171,182 @@ namespace OpenLoco
         company.var_4A5 = 2;
     }
 
+    // 0x00480FC3
+    static bool applyPlaystyleRestrictions(Company& company, AiThought& thought)
+    {
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk0) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk1) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk12))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk2) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk13))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk3) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk14))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::noAir) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::noWater) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk7) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk6) != AiPlaystyleFlags::none
+            && !thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::townIdSet) != AiPlaystyleFlags::none)
+        {
+            // The first thought of this play style must be located near to the home town chosen for the company
+            // this ensures that the company is based around that town
+            bool noOtherThoughts = true;
+            for (auto& otherThought : company.aiThoughts)
+            {
+                if (&otherThought == &thought)
+                {
+                    continue;
+                }
+                if (otherThought.type != AiThoughtType::null)
+                {
+                    noOtherThoughts = false;
+                    break;
+                }
+            }
+            if (noOtherThoughts)
+            {
+                auto destinationReferenceHomeTown = [&company](bool isIndustry, uint8_t destination) {
+                    if (isIndustry)
+                    {
+                        const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
+                        const auto* homeTown = TownManager::get(static_cast<TownId>(company.aiPlaystyleTownId));
+                        const auto distance = Math::Vector::manhattanDistance2D(Pos2{ industry->x, industry->y }, Pos2{ homeTown->x, homeTown->y });
+                        return distance < 33 * kTileSize;
+                    }
+                    else
+                    {
+                        return destination == company.aiPlaystyleTownId;
+                    }
+                };
+                const bool destAReferencesHomeTown = destinationReferenceHomeTown(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
+
+                if (!destAReferencesHomeTown)
+                {
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
+                    {
+                        return true;
+                    }
+                    const bool destBReferencesHomeTown = destinationReferenceHomeTown(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
+                    if (!destBReferencesHomeTown)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // Thoughts from a company must all be located nearby to at least one other thought from the same company
+        // nearby is defined as within 60 tiles
+
+        const auto destPositions = getDestinationPositions(thought);
+        const auto destAPos = destPositions.posA;
+        const auto destBPos = destPositions.posB.value_or(destAPos);
+
+        bool otherThoughts = false;
+        bool otherThoughtNearby = false;
+        for (auto& otherThought : company.aiThoughts)
+        {
+            if (&otherThought == &thought)
+            {
+                continue;
+            }
+            if (otherThought.type == AiThoughtType::null)
+            {
+                continue;
+            }
+            otherThoughts = true;
+            const auto otherDestPositions = getDestinationPositions(otherThought);
+            const auto otherDestAPos = otherDestPositions.posA;
+            const auto distAA = Math::Vector::distance2D(destAPos, otherDestAPos);
+            if (distAA <= 60 * kTileSize)
+            {
+                otherThoughtNearby = true;
+                break;
+            }
+            const auto distBA = Math::Vector::distance2D(destBPos, otherDestAPos);
+            if (distBA <= 60 * kTileSize)
+            {
+                otherThoughtNearby = true;
+                break;
+            }
+            if (!otherDestPositions.posB.has_value())
+            {
+                continue;
+            }
+            const auto otherDestBPos = otherDestPositions.posB.value();
+            const auto distAB = Math::Vector::distance2D(destAPos, otherDestBPos);
+            if (distAB <= 60 * kTileSize)
+            {
+                otherThoughtNearby = true;
+                break;
+            }
+            const auto distBB = Math::Vector::distance2D(destBPos, otherDestBPos);
+            if (distBB <= 60 * kTileSize)
+            {
+                otherThoughtNearby = true;
+                break;
+            }
+        }
+        if (otherThoughts && !otherThoughtNearby)
+        {
+            return true;
+        }
+
+        auto* competitorObj = ObjectManager::get<CompetitorObject>(company.competitorId);
+        if (competitorObj->competitiveness < 5)
+        {
+            return getSimilarThoughtsInAllCompanies(company, thought).total != 0;
+        }
+        return false;
+    }
+
     // 0x00430BAB
     static void sub_430BAB(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430BAB, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        if (applyPlaystyleRestrictions(company, thought))
+        {
+            company.var_25BE = AiThoughtType::null;
+            state2ClearActiveThought(company);
+            return;
+        }
+        company.var_4A5 = 3;
     }
 
     // 0x00430BDA
@@ -2169,40 +2355,6 @@ namespace OpenLoco
         registers regs;
         regs.esi = X86Pointer(&company);
         call(0x00430BDA, regs);
-    }
-
-    struct DestinationPositions
-    {
-        Pos2 posA;
-        std::optional<Pos2> posB;
-    };
-    static DestinationPositions getDestinationPositions(const AiThought& thought)
-    {
-        DestinationPositions destPos{};
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
-        {
-            const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationA));
-            destPos.posA = { industry->x, industry->y };
-        }
-        else
-        {
-            const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
-            destPos.posA = { town->x, town->y };
-        }
-        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
-        {
-            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry))
-            {
-                const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationB));
-                destPos.posB = { industry->x, industry->y };
-            }
-            else
-            {
-                const auto* town = TownManager::get(static_cast<TownId>(thought.destinationB));
-                destPos.posB = { town->x, town->y };
-            }
-        }
-        return destPos;
     }
 
     // 0x0047FE3A
@@ -5848,5 +6000,29 @@ namespace OpenLoco
         }
 
         removeEntityFromThought(thought, std::distance(std::begin(thought.vehicles), iter));
+    }
+
+    static Pos2 getDestinationPosition(bool isIndustry, uint8_t destination)
+    {
+        if (isIndustry)
+        {
+            const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
+            return Pos2{ industry->x, industry->y };
+        }
+        else
+        {
+            auto* town = TownManager::get(static_cast<TownId>(destination));
+            return Pos2{ town->x, town->y };
+        }
+    }
+
+    Pos2 AiThought::getDestinationPositionA() const
+    {
+        return getDestinationPosition(thoughtTypeHasFlags(type, ThoughtTypeFlags::destinationAIsIndustry), destinationA);
+    }
+
+    Pos2 AiThought::getDestinationPositionB() const
+    {
+        return getDestinationPosition(thoughtTypeHasFlags(type, ThoughtTypeFlags::destinationBIsIndustry), destinationB);
     }
 }
