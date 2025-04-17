@@ -2357,7 +2357,6 @@ namespace OpenLoco
         call(0x00430BDA, regs);
     }
 
-
     // 0x0047FE3A
     static bool chooseTrackObject(CompanyId companyId, AiThought& thought)
     {
