@@ -4972,13 +4972,26 @@ namespace OpenLoco
         }
     }
 
-    // 0x0046C1E0
-    static uint8_t sub_47C1E0(World::Pos3 pos, uint16_t tad, uint8_t roadObjId, CompanyId companyId)
+    enum class TrackRoadRemoveQueryFlags : uint8_t
     {
+        none = 0,
+        roadTypeShouldNotBeRemoved = 1U << 0,
+        // if there is an element missing from road/track
+        // perhaps a user with cheats removed a different companies road
+        malformed = 1U << 1,
+        isRoadJunction = 1U << 2,
+        hasBridge = 1U << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackRoadRemoveQueryFlags);
+
+    // 0x0046C1E0
+    static TrackRoadRemoveQueryFlags sub_47C1E0(World::Pos3 pos, uint16_t tad, uint8_t roadObjId, CompanyId companyId)
+    {
+        using enum TrackRoadRemoveQueryFlags;
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
         if (roadObj->hasFlags(RoadObjectFlags::unk_03))
         {
-            return (1U << 0);
+            return roadTypeShouldNotBeRemoved;
         }
 
         auto roadStart = pos;
@@ -4996,7 +5009,7 @@ namespace OpenLoco
         const auto rotation = tad & 0x3;
         const auto roadId = (tad >> 3) & 0xF;
 
-        uint8_t flags = 0U;
+        TrackRoadRemoveQueryFlags flags = none;
         auto& roadPieces = TrackData::getRoadPiece(roadObjId);
         for (auto& piece : roadPieces)
         {
@@ -5026,22 +5039,22 @@ namespace OpenLoco
 
                     if (elRoad->rotation() != rotation)
                     {
-                        flags |= (1U << 3);
+                        flags |= isRoadJunction;
                         continue;
                     }
                     if (elRoad->sequenceIndex() != piece.index)
                     {
-                        flags |= (1U << 3);
+                        flags |= isRoadJunction;
                         continue;
                     }
                     if (elRoad->owner() != companyId)
                     {
-                        flags |= (1U << 3);
+                        flags |= isRoadJunction;
                         continue;
                     }
                     if (elRoad->roadId() != roadId)
                     {
-                        flags |= (1U << 3);
+                        flags |= isRoadJunction;
                         continue;
                     }
                     return elRoad;
@@ -5051,11 +5064,92 @@ namespace OpenLoco
 
             if (elRoad == nullptr)
             {
-                return (1U << 1);
+                return malformed;
             }
             if (elRoad->hasBridge())
             {
-                flags |= (1U << 2);
+                flags |= hasBridge;
+            }
+        }
+        return flags;
+    }
+
+    // 0x004A83C0
+    static TrackRoadRemoveQueryFlags sub_4A83C0(World::Pos3 pos, uint16_t tad, uint8_t trackObjId, CompanyId companyId)
+    {
+        using enum TrackRoadRemoveQueryFlags;
+
+        auto trackStart = pos;
+        if (tad & (1U << 2))
+        {
+            auto& trackSize = TrackData::getUnkTrack(tad);
+            trackStart = pos + trackSize.pos;
+            tad ^= (1U << 2);
+            if (trackSize.rotationEnd < 12)
+            {
+                trackStart -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+        }
+
+        const auto rotation = tad & 0x3;
+        const auto trackId = (tad >> 3) & 0xF;
+
+        TrackRoadRemoveQueryFlags flags = none;
+        auto& trackPieces = TrackData::getTrackPiece(trackId);
+        for (auto& piece : trackPieces)
+        {
+            const auto rotatedPiece = World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            const auto piecePos = trackStart + rotatedPiece;
+            auto* elTrack = [piecePos, rotation, &piece, trackId, trackObjId, companyId]() -> const World::TrackElement* {
+                const auto tile = World::TileManager::get(piecePos);
+                for (const auto& el : tile)
+                {
+                    auto* elTrack = el.as<TrackElement>();
+                    if (elTrack == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elTrack->baseHeight() != piecePos.z)
+                    {
+                        continue;
+                    }
+                    if (elTrack->isAiAllocated()) // Why no ghost?
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackObjectId() != trackObjId)
+                    {
+                        continue;
+                    }
+
+                    if (elTrack->rotation() != rotation)
+                    {
+                        continue;
+                    }
+                    if (elTrack->sequenceIndex() != piece.index)
+                    {
+                        continue;
+                    }
+                    if (elTrack->owner() != companyId)
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackId() != trackId)
+                    {
+                        continue;
+                    }
+                    return elTrack;
+                }
+                return nullptr;
+            }();
+
+            if (elTrack == nullptr)
+            {
+                return malformed;
+            }
+            if (elTrack->hasBridge())
+            {
+                flags |= hasBridge;
             }
         }
         return flags;
@@ -5079,7 +5173,8 @@ namespace OpenLoco
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
         if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
         {
-            if (!(sub_47C1E0(pos, (0 << 3) | rotation, roadObjId, companyId) & ((1U << 0) | (1U << 1))))
+            using enum TrackRoadRemoveQueryFlags;
+            if ((sub_47C1E0(pos, (0 << 3) | rotation, roadObjId, companyId) & (malformed | roadTypeShouldNotBeRemoved)) == none)
             {
                 auto roadArgs = GameCommands::RoadRemovalArgs{};
                 roadArgs.pos = pos;
@@ -5166,6 +5261,7 @@ namespace OpenLoco
             company.var_85C3 |= (1U << 2);
             return false;
         }
+        using enum TrackRoadRemoveQueryFlags;
         if (thought.trackObjId & (1U << 7))
         {
             const auto roadObjId = thought.trackObjId & ~(1U << 7);
@@ -5175,9 +5271,8 @@ namespace OpenLoco
                 const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * kSmallZStep);
                 const auto tad = company.var_85D5;
                 const auto roadFlags = sub_47C1E0(pos, tad, roadObjId, company.id());
-                // If there is no road here we can remove or its a junction
-                // progress to next phase of road removal
-                if ((roadFlags & ((1U << 0) | (1U << 1) | (1U << 3))))
+
+                if ((roadFlags & (malformed | roadTypeShouldNotBeRemoved | hasBridge)) != none)
                 {
                     company.var_85C3 &= ~(1U << 1);
                     return false;
@@ -5256,8 +5351,8 @@ namespace OpenLoco
                         const auto tadConnection = connection & Track::AdditionalTaDFlags::basicTaDMask;
 
                         const auto roadFlags = sub_47C1E0(nextPos, tadConnection, roadObjId, company.id());
-                        // If there is no road here we can remove or its a junction or its a bridge
-                        if (roadFlags & ((1U << 0) | (1U << 1) | (1U << 2) | (1U << 3)))
+
+                        if ((roadFlags & (roadTypeShouldNotBeRemoved | malformed | isRoadJunction | hasBridge)) != none)
                         {
                             continue;
                         }
