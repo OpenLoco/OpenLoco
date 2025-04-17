@@ -6650,7 +6650,7 @@ namespace OpenLoco
     }
 
     // 0x004A7E07
-    static void removeTrainStationAndTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjId, uint8_t stationLength, CompanyId companyId)
+    static void removeTrainStationAndTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjId, uint8_t stationLength)
     {
         auto piecePos = pos;
         for (auto i = 0U; i < stationLength; ++i)
@@ -6702,7 +6702,7 @@ namespace OpenLoco
         else
         {
             removeTrainStationAndTrack(
-                World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep), aiStation.rotation, thought.trackObjId, thought.var_04, companyId);
+                World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep), aiStation.rotation, thought.trackObjId, thought.var_04);
         }
         aiStation.var_02 &= ~AiThoughtStationFlags::operational;
         return false;
