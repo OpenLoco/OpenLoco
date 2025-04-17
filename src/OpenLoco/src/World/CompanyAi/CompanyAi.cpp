@@ -192,6 +192,22 @@ namespace OpenLoco
         return (kThoughtTypeFlags[enumValue(type)] & flags) != ThoughtTypeFlags::none;
     }
 
+    struct DestinationPositions
+    {
+        Pos2 posA;
+        std::optional<Pos2> posB;
+    };
+    static DestinationPositions getDestinationPositions(const AiThought& thought)
+    {
+        DestinationPositions destPos;
+        destPos.posA = thought.getDestinationPositionA();
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
+        {
+            destPos.posB = thought.getDestinationPositionB();
+        }
+        return destPos;
+    }
+
     // 0x00483778
     static void clearThought(AiThought& thought)
     {
@@ -2231,7 +2247,7 @@ namespace OpenLoco
                         const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
                         const auto* homeTown = TownManager::get(static_cast<TownId>(company.aiPlaystyleTownId));
                         const auto distance = Math::Vector::manhattanDistance2D(Pos2{ industry->x, industry->y }, Pos2{ homeTown->x, homeTown->y });
-                        return distance < 33 * 32;
+                        return distance < 33 * kTileSize;
                     }
                     else
                     {
@@ -2258,25 +2274,9 @@ namespace OpenLoco
         // Thoughts from a company must all be located nearby to at least one other thought from the same company
         // nearby is defined as within 60 tiles
 
-        auto destinationPosition = [](bool isIndustry, uint8_t destination) {
-            if (isIndustry)
-            {
-                const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
-                return Pos2{ industry->x, industry->y };
-            }
-            else
-            {
-                auto* town = TownManager::get(static_cast<TownId>(destination));
-                return Pos2{ town->x, town->y };
-            }
-        };
-        const auto destAPos = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
-
-        World::Pos2 destBPos = destAPos;
-        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
-        {
-            destBPos = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
-        }
+        const auto destPositions = getDestinationPositions(thought);
+        const auto destAPos = destPositions.posA;
+        const auto destBPos = destPositions.posB.value_or(destAPos);
 
         bool otherThoughts = false;
         bool otherThoughtNearby = false;
@@ -2291,32 +2291,33 @@ namespace OpenLoco
                 continue;
             }
             otherThoughts = true;
-            const auto otherDestAPos = destinationPosition(thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationAIsIndustry), otherThought.destinationA);
+            const auto otherDestPositions = getDestinationPositions(otherThought);
+            const auto otherDestAPos = otherDestPositions.posA;
             const auto distAA = Math::Vector::distance2D(destAPos, otherDestAPos);
-            if (distAA <= 60 * 32)
+            if (distAA <= 60 * kTileSize)
             {
                 otherThoughtNearby = true;
                 break;
             }
             const auto distBA = Math::Vector::distance2D(destBPos, otherDestAPos);
-            if (distBA <= 60 * 32)
+            if (distBA <= 60 * kTileSize)
             {
                 otherThoughtNearby = true;
                 break;
             }
-            if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::singleDestination))
+            if (!otherDestPositions.posB.has_value())
             {
                 continue;
             }
-            const auto otherDestBPos = destinationPosition(thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationBIsIndustry), otherThought.destinationB);
+            const auto otherDestBPos = otherDestPositions.posB.value();
             const auto distAB = Math::Vector::distance2D(destAPos, otherDestBPos);
-            if (distAB <= 60 * 32)
+            if (distAB <= 60 * kTileSize)
             {
                 otherThoughtNearby = true;
                 break;
             }
             const auto distBB = Math::Vector::distance2D(destBPos, otherDestBPos);
-            if (distBB <= 60 * 32)
+            if (distBB <= 60 * kTileSize)
             {
                 otherThoughtNearby = true;
                 break;
@@ -2356,39 +2357,6 @@ namespace OpenLoco
         call(0x00430BDA, regs);
     }
 
-    struct DestinationPositions
-    {
-        Pos2 posA;
-        std::optional<Pos2> posB;
-    };
-    static DestinationPositions getDestinationPositions(const AiThought& thought)
-    {
-        DestinationPositions destPos{};
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
-        {
-            const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationA));
-            destPos.posA = { industry->x, industry->y };
-        }
-        else
-        {
-            const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
-            destPos.posA = { town->x, town->y };
-        }
-        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
-        {
-            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry))
-            {
-                const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationB));
-                destPos.posB = { industry->x, industry->y };
-            }
-            else
-            {
-                const auto* town = TownManager::get(static_cast<TownId>(thought.destinationB));
-                destPos.posB = { town->x, town->y };
-            }
-        }
-        return destPos;
-    }
 
     // 0x0047FE3A
     static bool chooseTrackObject(CompanyId companyId, AiThought& thought)
@@ -6033,5 +6001,29 @@ namespace OpenLoco
         }
 
         removeEntityFromThought(thought, std::distance(std::begin(thought.vehicles), iter));
+    }
+
+    static Pos2 getDestinationPosition(bool isIndustry, uint8_t destination)
+    {
+        if (isIndustry)
+        {
+            const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
+            return Pos2{ industry->x, industry->y };
+        }
+        else
+        {
+            auto* town = TownManager::get(static_cast<TownId>(destination));
+            return Pos2{ town->x, town->y };
+        }
+    }
+
+    Pos2 AiThought::getDestinationPositionA() const
+    {
+        return getDestinationPosition(thoughtTypeHasFlags(type, ThoughtTypeFlags::destinationAIsIndustry), destinationA);
+    }
+
+    Pos2 AiThought::getDestinationPositionB() const
+    {
+        return getDestinationPosition(thoughtTypeHasFlags(type, ThoughtTypeFlags::destinationBIsIndustry), destinationB);
     }
 }
