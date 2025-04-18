@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Widgets
         drawingCtx.drawImage(pos, imageId);
     }
 
-    void drawTabContent(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    static void drawTabContent(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
 
