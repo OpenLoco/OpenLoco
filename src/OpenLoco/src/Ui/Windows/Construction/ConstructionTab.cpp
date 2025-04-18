@@ -2678,34 +2678,37 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         mapInvalidateMapSelectionTiles();
         removeConstructionGhosts();
 
-        auto posA = World::TilePos2{ std::min(_toolPosInitial.x, _toolPosDrag.x), std::min(_toolPosInitial.y, _toolPosDrag.y) };
-        auto posB = World::TilePos2{ std::max(_toolPosInitial.x, _toolPosDrag.x), std::max(_toolPosInitial.y, _toolPosDrag.y) };
-
         auto rotation = _cState->constructionRotation;
         auto piece = _cState->lastSelectedTrackPiece;
 
-        for (auto tilePos : TilePosRangeView(posA, posB))
+        auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
+        auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;
+
+        for (auto yPos = _toolPosInitial.y; yPos != _toolPosDrag.y + dirY; yPos += dirY)
         {
-            auto pos = World::toWorldSpace(tilePos);
-            _cState->x = pos.x;
-            _cState->y = pos.y;
+            for (auto xPos = _toolPosInitial.x; xPos != _toolPosDrag.x + dirX; xPos += dirX)
+            {
+                auto pos = World::toWorldSpace({ xPos, yPos });
+                _cState->x = pos.x;
+                _cState->y = pos.y;
 
-            auto height = TileManager::getHeight(pos);
-            _cState->constructionZ = height.landHeight;
+                auto height = TileManager::getHeight(pos);
+                _cState->constructionZ = height.landHeight;
 
-            // Try placing the track at this location, ignoring errors if they occur
-            _suppressErrorSound = true;
-            constructTrack(&self, widgetIndex);
-            _suppressErrorSound = false;
-            WindowManager::close(WindowType::error);
+                // Try placing the track at this location, ignoring errors if they occur
+                _suppressErrorSound = true;
+                constructTrack(&self, widgetIndex);
+                _suppressErrorSound = false;
+                WindowManager::close(WindowType::error);
 
-            // Prevent automatic track advancement when constructing track
-            _cState->constructionRotation = rotation;
-            _cState->lastSelectedTrackPiece = piece;
-
-            // Leave the tool active, but make ghost piece visible for the next round
-            _isDragging = false;
+                // Prevent automatic track advancement when constructing track
+                _cState->constructionRotation = rotation;
+                _cState->lastSelectedTrackPiece = piece;
+            }
         }
+
+        // Leave the tool active, but make ghost piece visible for the next round
+        _isDragging = false;
     }
 
     // 0x0049DC97
