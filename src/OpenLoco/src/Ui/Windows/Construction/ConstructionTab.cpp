@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049F92D
-    static void constructTrack([[maybe_unused]] Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static void constructTrackOrRoad([[maybe_unused]] Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         if (_cState->trackType & (1 << 7))
         {
@@ -525,7 +525,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 break;
 
             case widx::construct:
-                constructTrack(&self, widgetIndex);
+                constructTrackOrRoad(&self, widgetIndex);
                 break;
 
             case widx::remove:
@@ -1871,7 +1871,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 if (Input::getClickRepeatTicks() >= 40)
                 {
-                    constructTrack(&self, widgetIndex);
+                    constructTrackOrRoad(&self, widgetIndex);
                 }
                 break;
             }
@@ -2697,7 +2697,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 // Try placing the track at this location, ignoring errors if they occur
                 _suppressErrorSound = true;
-                constructTrack(&self, widgetIndex);
+                constructTrackOrRoad(&self, widgetIndex);
                 _suppressErrorSound = false;
                 WindowManager::close(WindowType::error);
 
