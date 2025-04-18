@@ -2691,7 +2691,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         auto posA = World::TilePos2{ std::min(_toolPosInitial.x, _toolPosDrag.x), std::min(_toolPosInitial.y, _toolPosDrag.y) };
         auto posB = World::TilePos2{ std::max(_toolPosInitial.x, _toolPosDrag.x), std::max(_toolPosInitial.y, _toolPosDrag.y) };
+
         auto rotation = _cState->constructionRotation;
+        auto piece = _cState->lastSelectedTrackPiece;
 
         for (auto tilePos : TilePosRangeView(posA, posB))
         {
@@ -2708,8 +2710,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _suppressErrorSound = false;
             WindowManager::close(WindowType::error);
 
-            // Prevent automatic rotation when constructing track
+            // Prevent automatic track advancement when constructing track
             _cState->constructionRotation = rotation;
+            _cState->lastSelectedTrackPiece = piece;
 
             // Leave the tool active, but make ghost piece visible for the next round
             _isDragging = false;
