@@ -13,8 +13,7 @@ namespace OpenLoco::Ui::Widgets
 
         const auto pos = window->position() + widget.position();
 
-        // TODO: This is always ImageIds::tab at the moment, we should make this implicit.
-        ImageId imageId = ImageId{ widget.image };
+        ImageId imageId = ImageId{ ImageIds::tab };
         if (widgetState.activated)
         {
             // TODO: remove image addition
@@ -48,6 +47,43 @@ namespace OpenLoco::Ui::Widgets
         drawingCtx.drawImage(pos, imageId);
     }
 
+    void drawTabContent(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    {
+        auto* window = widgetState.window;
+
+        const auto pos = window->position() + widget.position();
+
+        if (widgetState.disabled)
+        {
+            return; // 0x8000
+        }
+
+        bool isActivated = widgetState.activated;
+
+        if (widget.image == Widget::kContentNull)
+        {
+            return;
+        }
+
+        if (isActivated)
+        {
+            if (widget.image != Widget::kContentNull)
+            {
+                drawingCtx.drawImage(pos.x, pos.y, widget.image);
+            }
+        }
+        else
+        {
+            if (widget.image != Widget::kContentUnk)
+            {
+                drawingCtx.drawImage(pos.x, pos.y + 1, widget.image);
+            }
+
+            drawingCtx.drawImage(pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
+            drawingCtx.drawRect(pos.x, pos.y + 26, 31, 1, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
+        }
+    }
+
     void Tab::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         if (widget.content == Widget::kContentNull)
@@ -57,6 +93,11 @@ namespace OpenLoco::Ui::Widgets
 
         drawTabBackground(drawingCtx, widget, widgetState);
 
-        // TODO: Draw the content of the tab once the background is implicit.
+        // Ugly hack to detect if the drawTab code is used or not.
+        // We always draw the background as ImageIds::tab so only draw the content if the image is not the tab image.
+        if (widget.image != ImageIds::tab)
+        {
+            drawTabContent(drawingCtx, widget, widgetState);
+        }
     }
 }
