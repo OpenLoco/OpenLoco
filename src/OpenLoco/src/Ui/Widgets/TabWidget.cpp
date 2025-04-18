@@ -14,6 +14,14 @@ namespace OpenLoco::Ui::Widgets
         const auto pos = window->position() + widget.position();
 
         ImageId imageId = ImageId{ ImageIds::tab };
+
+        // TODO: Separate content image and background image.
+        // This is only done to keep everything as is for the time being.
+        if (widget.image == ImageIds::wide_tab)
+        {
+            imageId = ImageId{ ImageIds::wide_tab };
+        }
+
         if (widgetState.activated)
         {
             // TODO: remove image addition
@@ -95,7 +103,7 @@ namespace OpenLoco::Ui::Widgets
 
         // Ugly hack to detect if the drawTab code is used or not.
         // We always draw the background as ImageIds::tab so only draw the content if the image is not the tab image.
-        if (widget.image != ImageIds::tab)
+        if (widget.image != ImageIds::tab && widget.image != ImageIds::wide_tab)
         {
             drawTabContent(drawingCtx, widget, widgetState);
         }
