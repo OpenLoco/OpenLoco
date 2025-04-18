@@ -48,10 +48,16 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Station
 {
+    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
+
+    // TODO: move to ConstructionState when no longer a loco_global
+    static bool _isDragging = false;
+    static World::TilePos2 _toolPosDrag;
+    static World::TilePos2 _toolPosInitial;
 
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 190, StringIds::stringid_2),
@@ -542,6 +548,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             return;
         }
+
+        if (_isDragging)
+        {
+            mapInvalidateMapSelectionTiles();
+            removeConstructionGhosts();
+            return;
+        }
+
         if (_cState->byte_1136063 & (1 << 7))
         {
             onToolUpdateAirport({ x, y });
@@ -558,6 +572,45 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             onToolUpdateTrainStation({ x, y });
         }
+    }
+
+    static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+    {
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+        auto& interaction = res.first;
+        if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
+        {
+            return;
+        }
+
+        _toolPosInitial = World::toTileSpace(interaction.pos);
+        _isDragging = false;
+    }
+
+    static void onToolDrag([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
+    {
+        mapInvalidateSelectionRect();
+        removeConstructionGhosts();
+
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+        auto& interaction = res.first;
+        if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
+        {
+            return;
+        }
+
+        _toolPosDrag = World::toTileSpace(interaction.pos);
+        _isDragging = _toolPosInitial != _toolPosDrag;
+        if (!_isDragging)
+        {
+            return;
+        }
+
+        setMapSelectionFlags(MapSelectionFlags::enable);
+        setMapSelectionCorner(MapSelectionType::full);
+
+        setMapSelectionArea(toWorldSpace(_toolPosInitial), toWorldSpace(_toolPosDrag));
+        mapInvalidateSelectionRect();
     }
 
     // 0x004A47D9
@@ -789,6 +842,25 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgs(const World::Pos2 pos, const RoadElement* elRoad)
     {
+        if (elRoad == nullptr)
+        {
+            auto tile = World::TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                auto* elRoadCandidate = el.as<World::RoadElement>();
+                if (elRoadCandidate != nullptr)
+                {
+                    elRoad = elRoadCandidate;
+                    break;
+                }
+            }
+        }
+
+        if (elRoad == nullptr)
+        {
+            return std::nullopt;
+        }
+
         GameCommands::RoadStationPlacementArgs placementArgs;
         placementArgs.pos = World::Pos3(pos.x, pos.y, elRoad->baseHeight());
         placementArgs.rotation = elRoad->rotation();
@@ -841,6 +913,26 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgs(const World::Pos2 pos, const TrackElement* elTrack)
     {
+        if (elTrack == nullptr)
+        {
+            auto tile = World::TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                auto* elTrackCandidate = el.as<World::TrackElement>();
+                if (elTrackCandidate != nullptr)
+                {
+                    elTrack = elTrackCandidate;
+                    break;
+                }
+            }
+        }
+
+        if (elTrack == nullptr)
+        {
+            return std::nullopt;
+        }
+
+
         GameCommands::TrainStationPlacementArgs placementArgs;
         placementArgs.pos = World::Pos3(pos.x, pos.y, elTrack->baseHeight());
         placementArgs.rotation = elTrack->rotation();
@@ -879,14 +971,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
-    // 0x0049E42C
-    static void onToolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+    static void onToolUpSingle(const int16_t x, const int16_t y)
     {
-        if (widgetIndex != widx::image)
-        {
-            return;
-        }
-
         if (_cState->byte_1136063 & (1 << 7))
         {
             onToolUpAirport(x, y);
@@ -903,6 +989,98 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             onToolUpTrainStation(x, y);
         }
+    }
+
+    static uint32_t constructPieceAtPosition(World::Pos2 pos)
+    {
+        if (_cState->byte_1136063 & (1 << 7))
+        {
+            if (auto args = getAirportPlacementArgs(pos))
+            {
+                return GameCommands::doCommand(*args, GameCommands::Flags::apply);
+            }
+        }
+        else if (_cState->byte_1136063 & (1 << 6))
+        {
+            if (auto args = getDockPlacementArgs(pos))
+            {
+                return GameCommands::doCommand(*args, GameCommands::Flags::apply);
+            }
+        }
+        else if (_cState->trackType & (1 << 7))
+        {
+            if (auto args = getRoadStationPlacementArgs(pos, nullptr))
+            {
+                return GameCommands::doCommand(*args, GameCommands::Flags::apply);
+            }
+        }
+        else
+        {
+            if (auto args = getTrainStationPlacementArgs(pos, nullptr))
+            {
+                return GameCommands::doCommand(*args, GameCommands::Flags::apply);
+            }
+        }
+        return GameCommands::FAILURE;
+    }
+
+    static void onToolUpMultiple()
+    {
+        mapInvalidateMapSelectionTiles();
+        removeConstructionGhosts();
+
+        auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
+        auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;
+
+        for (auto yPos = _toolPosInitial.y; yPos != _toolPosDrag.y + dirY; yPos += dirY)
+        {
+            for (auto xPos = _toolPosInitial.x; xPos != _toolPosDrag.x + dirX; xPos += dirX)
+            {
+                auto pos = World::toWorldSpace({ xPos, yPos });
+                _cState->x = pos.x;
+                _cState->y = pos.y;
+
+                auto height = TileManager::getHeight(pos);
+                _cState->constructionZ = height.landHeight;
+
+                // Try placing the station at this location, ignoring errors if they occur
+                _suppressErrorSound = true;
+                constructPieceAtPosition(pos);
+                _suppressErrorSound = false;
+                WindowManager::close(WindowType::error);
+            }
+        }
+
+        // Leave the tool active, but make ghost piece visible for the next round
+        _isDragging = false;
+    }
+
+    // 0x0049E42C
+    static void onToolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+    {
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+
+        if (_isDragging)
+        {
+            onToolUpMultiple();
+        }
+        else
+        {
+            onToolUpSingle(x, y);
+        }
+    }
+
+    static void onToolAbort([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    {
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+
+        _isDragging = false;
     }
 
     // 0x0049DD39
@@ -1129,7 +1307,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
         .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .toolDrag = onToolDrag,
         .toolUp = onToolUp,
+        .onToolAbort = onToolAbort,
         .prepareDraw = prepareDraw,
         .draw = draw,
     };
