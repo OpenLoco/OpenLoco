@@ -54,6 +54,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
     static loco_global<uint8_t[18], 0x0050A006> _availableObjects;   // top toolbar
 
+    // TODO: move to ConstructionState when no longer a loco_global?
+    static bool _isDragging = false;
+    static World::TilePos2 _toolPosDrag;
+    static World::TilePos2 _toolPosInitial;
+
     namespace TrackPiece
     {
         enum
@@ -2090,7 +2095,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             activateSelectedConstructionWidgets();
             auto window = WindowManager::find(WindowType::construction);
 
-            // Attempt to place track piece -- in silent
+            // Attempt to place track piece -- in silence
             _suppressErrorSound = true;
             onMouseUp(*window, widx::construct, WidgetId::none);
             _suppressErrorSound = false;
@@ -2539,10 +2544,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries, getPlacementArgs, placeGhost);
         World::mapInvalidateMapSelectionTiles();
     }
-
-    static bool _isDragging = false;
-    static World::TilePos2 _toolPosDrag;
-    static World::TilePos2 _toolPosInitial;
 
     // 0x0049DC8C
     static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
