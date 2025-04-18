@@ -932,7 +932,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
-
         GameCommands::TrainStationPlacementArgs placementArgs;
         placementArgs.pos = World::Pos3(pos.x, pos.y, elTrack->baseHeight());
         placementArgs.rotation = elTrack->rotation();
