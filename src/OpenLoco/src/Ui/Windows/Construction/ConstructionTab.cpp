@@ -2684,8 +2684,40 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         constructionLoop(constructPos, maxRetries, constructHeight, !cancelAfter);
     }
 
+    static void onToolUpMultiple(Window& self, const WidgetIndex_t widgetIndex)
+    {
+        mapInvalidateMapSelectionTiles();
+        removeConstructionGhosts();
+
+        auto posA = World::TilePos2{ std::min(_toolPosInitial.x, _toolPosDrag.x), std::min(_toolPosInitial.y, _toolPosDrag.y) };
+        auto posB = World::TilePos2{ std::max(_toolPosInitial.x, _toolPosDrag.x), std::max(_toolPosInitial.y, _toolPosDrag.y) };
+        auto rotation = _cState->constructionRotation;
+
+        for (auto tilePos : TilePosRangeView(posA, posB))
+        {
+            auto pos = World::toWorldSpace(tilePos);
+            _cState->x = pos.x;
+            _cState->y = pos.y;
+
+            auto height = TileManager::getHeight(pos);
+            _cState->constructionZ = height.landHeight;
+
+            // Try placing the track at this location, ignoring errors if they occur
+            _suppressErrorSound = true;
+            constructTrack(&self, widgetIndex);
+            _suppressErrorSound = false;
+            WindowManager::close(WindowType::error);
+
+            // Prevent automatic rotation when constructing track
+            _cState->constructionRotation = rotation;
+
+            // Leave the tool active, but make ghost piece visible for the next round
+            _isDragging = false;
+        }
+    }
+
     // 0x0049DC97
-    static void onToolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+    static void onToolUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::construct)
         {
@@ -2694,39 +2726,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_isDragging)
         {
-            mapInvalidateMapSelectionTiles();
-            removeConstructionGhosts();
-
-            auto posA = World::TilePos2{ std::min(_toolPosInitial.x, _toolPosDrag.x), std::min(_toolPosInitial.y, _toolPosDrag.y) };
-            auto posB = World::TilePos2{ std::max(_toolPosInitial.x, _toolPosDrag.x), std::max(_toolPosInitial.y, _toolPosDrag.y) };
-            auto rotation = _cState->constructionRotation;
-
-            for (auto tilePos : TilePosRangeView(posA, posB))
-            {
-                auto pos = World::toWorldSpace(tilePos);
-                _cState->x = pos.x;
-                _cState->y = pos.y;
-
-                auto height = TileManager::getHeight(pos);
-                _cState->constructionZ = height.landHeight;
-
-                // Try placing the track at this location, ignoring errors if they occur
-                _suppressErrorSound = true;
-                constructTrack(&self, widgetIndex);
-                _suppressErrorSound = false;
-                WindowManager::close(WindowType::error);
-
-                // Prevent automatic rotation when constructing track
-                _cState->constructionRotation = rotation;
-
-                // Leave the tool active, but make ghost piece visible for the next round
-                _isDragging = false;
-            }
-
-            return;
+            onToolUpMultiple(self, widgetIndex);
         }
-
-        if (_cState->trackType & (1 << 7))
+        else if (_cState->trackType & (1 << 7))
         {
             onToolUpSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
         }
