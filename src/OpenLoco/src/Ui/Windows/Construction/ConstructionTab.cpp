@@ -2742,6 +2742,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
+    static void onToolAbort([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    {
+        if (widgetIndex != widx::construct)
+        {
+            return;
+        }
+
+        _isDragging = false;
+    }
+
     // 0x0049D4F5
     static Ui::CursorId cursor([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
@@ -3238,6 +3248,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         .onToolDown = onToolDown,
         .toolDrag = onToolDrag,
         .toolUp = onToolUp,
+        .onToolAbort = onToolAbort,
         .tooltip = tooltip,
         .cursor = cursor,
         .prepareDraw = prepareDraw,
