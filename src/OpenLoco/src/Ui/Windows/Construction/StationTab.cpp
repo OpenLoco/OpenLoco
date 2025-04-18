@@ -598,7 +598,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x004A5550
-    static void onToolDownAirport(const int16_t x, const int16_t y)
+    static void onToolUpAirport(const int16_t x, const int16_t y)
     {
         removeConstructionGhosts();
 
@@ -736,7 +736,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x004A55AB
-    static void onToolDownDock(const int16_t x, const int16_t y)
+    static void onToolUpDock(const int16_t x, const int16_t y)
     {
         removeConstructionGhosts();
 
@@ -780,7 +780,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x004A548F
-    static void onToolDownRoadStation(const int16_t x, const int16_t y)
+    static void onToolUpRoadStation(const int16_t x, const int16_t y)
     {
         removeConstructionGhosts();
 
@@ -827,7 +827,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x004A5390
-    static void onToolDownTrainStation(const int16_t x, const int16_t y)
+    static void onToolUpTrainStation(const int16_t x, const int16_t y)
     {
         removeConstructionGhosts();
 
@@ -855,7 +855,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E42C
-    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+    static void onToolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::image)
         {
@@ -864,19 +864,19 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if (_cState->byte_1136063 & (1 << 7))
         {
-            onToolDownAirport(x, y);
+            onToolUpAirport(x, y);
         }
         else if (_cState->byte_1136063 & (1 << 6))
         {
-            onToolDownDock(x, y);
+            onToolUpDock(x, y);
         }
         else if (_cState->trackType & (1 << 7))
         {
-            onToolDownRoadStation(x, y);
+            onToolUpRoadStation(x, y);
         }
         else
         {
-            onToolDownTrainStation(x, y);
+            onToolUpTrainStation(x, y);
         }
     }
 
@@ -1104,7 +1104,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
         .onToolUpdate = onToolUpdate,
-        .onToolDown = onToolDown,
+        .toolUp = onToolUp,
         .prepareDraw = prepareDraw,
         .draw = draw,
     };
