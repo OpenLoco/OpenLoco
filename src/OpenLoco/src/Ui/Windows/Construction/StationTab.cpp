@@ -258,6 +258,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
     static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
 
+    static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgs(const World::Pos2 pos);
+    static std::optional<GameCommands::PortPlacementArgs> getDockPlacementArgs(const World::Pos2 pos);
+    static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgs(const World::Pos2 pos, const World::RoadElement* roadEl);
+    static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgs(const World::Pos2 pos, const World::TrackElement* trackEl);
+
     static loco_global<World::Pos2, 0x001135F7C> _1135F7C;
     static loco_global<World::Pos2, 0x001135F80> _1135F90;
 
@@ -564,12 +569,17 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
+        return getAirportPlacementArgs(pos.value());
+    }
+
+    static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgs(const World::Pos2 pos)
+    {
         GameCommands::AirportPlacementArgs placementArgs;
         placementArgs.type = _cState->lastSelectedStationType;
         placementArgs.rotation = _cState->constructionRotation;
 
         const auto airportObj = ObjectManager::get<AirportObject>(placementArgs.type);
-        const auto [minPos, maxPos] = airportObj->getAirportExtents(World::toTileSpace(*pos), placementArgs.rotation);
+        const auto [minPos, maxPos] = airportObj->getAirportExtents(World::toTileSpace(pos), placementArgs.rotation);
 
         _1135F7C = World::toWorldSpace(minPos);
         _1135F90 = World::toWorldSpace(maxPos);
@@ -593,7 +603,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 maxBaseZ = std::max(maxBaseZ, baseZ);
             }
         }
-        placementArgs.pos = World::Pos3(pos->x, pos->y, maxBaseZ * World::kSmallZStep);
+        placementArgs.pos = World::Pos3(pos.x, pos.y, maxBaseZ * World::kSmallZStep);
         return { placementArgs };
     }
 
@@ -625,14 +635,19 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
+        return getDockPlacementArgs(pos.value());
+    }
+
+    static std::optional<GameCommands::PortPlacementArgs> getDockPlacementArgs(const World::Pos2 pos)
+    {
         // count of water on each side of the placement
         // 0x0113608B
         std::array<uint8_t, 4> _nearbyWaterCount = { 0 };
 
         uint8_t directionOfIndustry = 0xFF;
         uint8_t waterHeight = 0;
-        _1135F7C = *pos;
-        _1135F90 = World::toWorldSpace(World::toTileSpace(*pos) + TilePos2(1, 1));
+        _1135F7C = pos;
+        _1135F90 = World::toWorldSpace(World::toTileSpace(pos) + TilePos2(1, 1));
 
         constexpr std::array<std::array<TilePos2, 2>, 4> searchArea = {
             std::array<TilePos2, 2>{ TilePos2{ -1, 0 }, TilePos2{ -1, 1 } },
@@ -644,7 +659,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             for (const auto& offset : searchArea[side])
             {
-                const auto searchPos = offset + World::toTileSpace(*pos);
+                const auto searchPos = offset + World::toTileSpace(pos);
                 if (!validCoords(searchPos))
                 {
                     continue;
@@ -706,7 +721,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         GameCommands::PortPlacementArgs placementArgs;
         placementArgs.type = _cState->lastSelectedStationType;
-        placementArgs.pos = World::Pos3(pos->x, pos->y, waterHeight * World::kSmallZStep);
+        placementArgs.pos = World::Pos3(pos.x, pos.y, waterHeight * World::kSmallZStep);
         if (directionOfIndustry != 0xFF)
         {
             placementArgs.rotation = directionOfIndustry;
@@ -769,8 +784,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
+        return getRoadStationPlacementArgs(interaction.pos, elRoad);
+    }
+
+    static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgs(const World::Pos2 pos, const RoadElement* elRoad)
+    {
         GameCommands::RoadStationPlacementArgs placementArgs;
-        placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
+        placementArgs.pos = World::Pos3(pos.x, pos.y, elRoad->baseHeight());
         placementArgs.rotation = elRoad->rotation();
         placementArgs.roadId = elRoad->roadId();
         placementArgs.index = elRoad->sequenceIndex();
@@ -816,8 +836,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
+        return getTrainStationPlacementArgs(interaction.pos, elTrack);
+    }
+
+    static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgs(const World::Pos2 pos, const TrackElement* elTrack)
+    {
         GameCommands::TrainStationPlacementArgs placementArgs;
-        placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
+        placementArgs.pos = World::Pos3(pos.x, pos.y, elTrack->baseHeight());
         placementArgs.rotation = elTrack->rotation();
         placementArgs.trackId = elTrack->trackId();
         placementArgs.index = elTrack->sequenceIndex();
