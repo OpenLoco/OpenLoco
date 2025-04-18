@@ -2597,14 +2597,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
 
-        auto posA = World::toWorldSpace({ std::min(_toolPosInitial.x, _toolPosDrag.x), std::min(_toolPosInitial.y, _toolPosDrag.y) });
-        auto posB = World::toWorldSpace({ std::max(_toolPosInitial.x, _toolPosDrag.x), std::max(_toolPosInitial.y, _toolPosDrag.y) });
+        setMapSelectionFlags(MapSelectionFlags::enable);
+        setMapSelectionCorner(MapSelectionType::full);
 
-        World::setMapSelectionFlags(World::MapSelectionFlags::enable);
-        World::setMapSelectionCorner(MapSelectionType::full);
-
-        World::setMapSelectionArea(posA, posB);
-        World::mapInvalidateSelectionRect();
+        setMapSelectionArea(toWorldSpace(_toolPosInitial), toWorldSpace(_toolPosDrag));
+        mapInvalidateSelectionRect();
     }
 
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
