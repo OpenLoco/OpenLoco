@@ -196,10 +196,10 @@ namespace OpenLoco::World
 
     void setMapSelectionArea(const Pos2& locA, const Pos2& locB)
     {
-        _mapSelectionAX = locA.x;
-        _mapSelectionAY = locA.y;
-        _mapSelectionBX = locB.x;
-        _mapSelectionBY = locB.y;
+        _mapSelectionAX = std::min(locA.x, locB.x);
+        _mapSelectionAY = std::min(locA.y, locB.y);
+        _mapSelectionBX = std::max(locA.x, locB.x);
+        _mapSelectionBY = std::max(locA.y, locB.y);
     }
 
     std::pair<Pos2, Pos2> getMapSelectionArea()
