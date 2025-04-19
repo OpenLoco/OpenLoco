@@ -34,7 +34,6 @@
 #include "Vehicles/VehicleDraw.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
-#include "World/StationManager.h"
 #include <OpenLoco/Utility/String.hpp>
 #include <stdexcept>
 #include <utility>
@@ -108,7 +107,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
     enum FilterMode : uint8_t
     {
         allVehicles,
-        stoppingAt,
         transportingCargo,
     };
 
@@ -123,57 +121,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     static Widx getTabFromType(VehicleType type);
 
-    constexpr bool isStationFilterActive(const Window* self, bool checkSelection = true)
-    {
-        return self->var_88A == static_cast<int16_t>(FilterMode::stoppingAt) && (!checkSelection || self->var_88C != -1);
-    }
-
     constexpr bool isCargoFilterActive(const Window* self, bool checkSelection = true)
     {
         return self->var_88A == static_cast<int16_t>(FilterMode::transportingCargo) && (!checkSelection || self->var_88C != -1);
     }
 
-    static bool refreshActiveStation(Window* self)
-    {
-        if (!isStationFilterActive(self, false))
-        {
-            return false;
-        }
-
-        auto stationWindow = WindowManager::find(WindowType::station);
-        if (stationWindow != nullptr)
-        {
-            self->var_88C = stationWindow->number;
-            return true;
-        }
-        else
-        {
-            self->var_88C = -1;
-            return false;
-        }
-    }
-
     using Vehicles::VehicleHead;
-
-    static bool vehicleStopsAtActiveStation(const VehicleHead* head, StationId filterStationId)
-    {
-        auto orders = Vehicles::OrderRingView(head->orderTableOffset);
-        for (auto& order : orders)
-        {
-            auto* stationOrder = order.as<Vehicles::OrderStation>();
-            if (stationOrder == nullptr)
-            {
-                continue;
-            }
-
-            const auto stationId = stationOrder->getStation();
-            if (stationId == filterStationId)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
 
     static bool vehicleIsTransportingCargo(const VehicleHead* head, int16_t filterCargoId)
     {
@@ -202,7 +155,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1D4F
     static void refreshVehicleList(Window* self)
     {
-        refreshActiveStation(self);
         self->rowCount = 0;
         for (auto* vehicle : VehicleManager::VehicleList())
         {
@@ -212,11 +164,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
 
             if (vehicle->owner != CompanyId(self->number))
-            {
-                continue;
-            }
-
-            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
             {
                 continue;
             }
@@ -315,11 +262,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
 
             if (vehicle->hasVehicleFlags(VehicleFlags::sorted))
-            {
-                continue;
-            }
-
-            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
             {
                 continue;
             }
@@ -685,9 +627,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
             args.push(self.var_83C);
         }
 
-        static constexpr std::array<StringId, 3> typeToFilterStringIds{
+        static constexpr std::array<StringId, 2> typeToFilterStringIds{
             StringIds::all_vehicles,
-            StringIds::stopping_at_station,
             StringIds::transporting_cargo,
         };
 
@@ -702,22 +643,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         bool filterActive = false;
         FormatArguments args{ widget.textArgs };
 
-        if (isStationFilterActive(&self, false))
-        {
-            filterActive = true;
-            if (self.var_88C != -1)
-            {
-                auto station = StationManager::get(StationId(self.var_88C));
-                args.push(station->name);
-                args.push(station->town);
-            }
-            else
-            {
-                args.push(StringIds::no_station_selected);
-            }
-        }
-
-        else if (isCargoFilterActive(&self, false))
+        if (isCargoFilterActive(&self, false))
         {
             filterActive = true;
             if (self.var_88C != -1)
@@ -953,11 +879,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         else if (widgetIndex == Widx::filter_type_btn)
         {
             Widget dropdown = self.widgets[Widx::filter_type];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::stopping_at_station);
-            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::transporting_cargo);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::transporting_cargo);
             Dropdown::setItemSelected(self.var_88A);
         }
         else if (widgetIndex == Widx::cargo_type_btn)
