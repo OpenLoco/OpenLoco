@@ -338,6 +338,11 @@ namespace OpenLoco::Ui::Windows
         void reset();
         void showStationCatchment(StationId id);
         void sub_491BC6();
+
+        namespace VehiclesCalling
+        {
+            void removeTrainFromList(Window& self, EntityId head);
+        }
     }
 
     namespace StationList
