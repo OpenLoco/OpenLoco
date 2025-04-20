@@ -1031,6 +1031,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
         auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;
 
+        bool builtAnything = false;
+
         for (auto yPos = _toolPosInitial.y; yPos != _toolPosDrag.y + dirY; yPos += dirY)
         {
             for (auto xPos = _toolPosInitial.x; xPos != _toolPosDrag.x + dirX; xPos += dirX)
@@ -1044,10 +1046,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
                 // Try placing the station at this location, ignoring errors if they occur
                 _suppressErrorSound = true;
-                constructPieceAtPosition(pos);
+                builtAnything |= constructPieceAtPosition(pos) != GameCommands::FAILURE;
                 _suppressErrorSound = false;
-                WindowManager::close(WindowType::error);
             }
+        }
+
+        if (builtAnything)
+        {
+            WindowManager::close(WindowType::error);
         }
 
         // Leave the tool active, but make ghost piece visible for the next round

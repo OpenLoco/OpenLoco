@@ -2684,6 +2684,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
         auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;
 
+        bool builtAnything = false;
+
         for (auto yPos = _toolPosInitial.y; yPos != _toolPosDrag.y + dirY; yPos += dirY)
         {
             for (auto xPos = _toolPosInitial.x; xPos != _toolPosDrag.x + dirX; xPos += dirX)
@@ -2699,12 +2701,18 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 _suppressErrorSound = true;
                 constructTrackOrRoad(&self, widgetIndex);
                 _suppressErrorSound = false;
-                WindowManager::close(WindowType::error);
+
+                builtAnything |= _cState->dword_1135F42 != GameCommands::FAILURE;
 
                 // Prevent automatic track advancement when constructing track
                 _cState->constructionRotation = rotation;
                 _cState->lastSelectedTrackPiece = piece;
             }
+        }
+
+        if (builtAnything)
+        {
+            WindowManager::close(WindowType::error);
         }
 
         // Leave the tool active, but make ghost piece visible for the next round
