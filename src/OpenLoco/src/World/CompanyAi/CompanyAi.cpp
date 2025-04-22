@@ -2352,20 +2352,8 @@ namespace OpenLoco
     // 0x00481433
     static int32_t distanceBetweenDestinations(AiThought& thought)
     {
-        auto destinationPosition = [](bool isIndustry, uint8_t destination) {
-            if (isIndustry)
-            {
-                const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
-                return Pos2{ industry->x, industry->y };
-            }
-            else
-            {
-                auto* town = TownManager::get(static_cast<TownId>(destination));
-                return Pos2{ town->x, town->y };
-            }
-        };
-        const auto posA = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
-        const auto posB = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
+        const auto posA = thought.getDestinationPositionA();
+        const auto posB = thought.getDestinationPositionB();
         return Math::Vector::distance2D(posA, posB);
     }
 
@@ -2444,18 +2432,6 @@ namespace OpenLoco
     // 0x004814D6
     static bool sub_4814D6(AiThought& thought)
     {
-        auto destinationPosition = [](bool isIndustry, uint8_t destination) {
-            if (isIndustry)
-            {
-                const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
-                return Pos2{ industry->x, industry->y };
-            }
-            else
-            {
-                auto* town = TownManager::get(static_cast<TownId>(destination));
-                return Pos2{ town->x, town->y };
-            }
-        };
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
         {
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
@@ -2697,7 +2673,7 @@ namespace OpenLoco
             auto& aiStationA = thought.stations[0];
             if (!aiStationA.hasFlags(AiThoughtStationFlags::operational))
             {
-                auto posA = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
+                auto posA = thought.getDestinationPositionA();
                 aiStationA.pos = posA;
                 aiStationA.var_9 = 1;
                 aiStationA.var_A = 0xFFU;
@@ -2708,7 +2684,7 @@ namespace OpenLoco
             auto& aiStationB = thought.stations[1];
             if (!aiStationB.hasFlags(AiThoughtStationFlags::operational))
             {
-                auto posB = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
+                auto posB = thought.getDestinationPositionB();
                 aiStationB.pos = posB;
                 aiStationB.var_9 = 0;
                 aiStationB.var_A = 0xFFU;
