@@ -2367,7 +2367,7 @@ namespace OpenLoco
             aiStation.var_02 = AiThoughtStationFlags::none;
         }
 
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
         {
             thought.var_04 = 1;
         }
@@ -2429,6 +2429,18 @@ namespace OpenLoco
         return numBuildings < 4;
     }
 
+    // 3bit yaw to rotation offset
+    static constexpr std::array<World::Pos2, 8> kYaw0RotationOffsets = {
+        World::Pos2{ -32, 0 },
+        World::Pos2{ -32, 32 },
+        World::Pos2{ 0, 32 },
+        World::Pos2{ 32, 32 },
+        World::Pos2{ 32, 0 },
+        World::Pos2{ 32, -32 },
+        World::Pos2{ 0, -32 },
+        World::Pos2{ -32, -32 },
+    };
+
     // 0x004814D6
     static bool sub_4814D6(AiThought& thought)
     {
@@ -2439,6 +2451,7 @@ namespace OpenLoco
                 // 0x00481A2D
 
                 // 0x00112C5A4
+                // 2bit rotation
                 auto randDirection = gPrng1().randNext() & 0b10;
 
                 const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
@@ -2556,7 +2569,7 @@ namespace OpenLoco
             {
                 // 0x004816D9
 
-                // Why 7?
+                // 3bit yaw rotation
                 auto randDirection = gPrng1().randNext() & 0b111;
 
                 const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
@@ -2565,20 +2578,20 @@ namespace OpenLoco
                 auto& aiStation0 = thought.stations[0];
                 if (!aiStation0.hasFlags(AiThoughtStationFlags::operational))
                 {
-                    auto pos0 = kRotationOffset[randDirection] * 3 + townPos;
+                    auto pos0 = kYaw0RotationOffsets[randDirection] * 3 + townPos;
                     for (auto i = 0U; i < 15; ++i)
                     {
                         if (sub_481D6F(pos0))
                         {
                             break;
                         }
-                        pos0 += kRotationOffset[randDirection];
+                        pos0 += kYaw0RotationOffsets[randDirection];
                         if (i == 14)
                         {
                             return true;
                         }
                     }
-                    pos0 -= kRotationOffset[randDirection] * 2;
+                    pos0 -= kYaw0RotationOffsets[randDirection] * 2;
                     aiStation0.pos = pos0;
                     aiStation0.rotation = randDirection;
                     aiStation0.var_9 = 0xFFU;
@@ -2594,20 +2607,20 @@ namespace OpenLoco
                 if (!aiStation1.hasFlags(AiThoughtStationFlags::operational))
                 {
                     const auto direction = randDirection ^ 0b100;
-                    auto pos1 = kRotationOffset[direction] * 3 + townPos;
+                    auto pos1 = kYaw0RotationOffsets[direction] * 3 + townPos;
                     for (auto i = 0U; i < 15; ++i)
                     {
                         if (sub_481D6F(pos1))
                         {
                             break;
                         }
-                        pos1 += kRotationOffset[direction];
+                        pos1 += kYaw0RotationOffsets[direction];
                         if (i == 14)
                         {
                             return true;
                         }
                     }
-                    pos1 -= kRotationOffset[direction] * 2;
+                    pos1 -= kYaw0RotationOffsets[direction] * 2;
                     aiStation1.pos = pos1;
                     aiStation1.var_9 = 0xFFU;
                     aiStation1.var_A = 0;
@@ -2624,16 +2637,16 @@ namespace OpenLoco
                     if (!aiStation2.hasFlags(AiThoughtStationFlags::operational))
                     {
                         const auto direction = (randDirection + 0b10) & 0x7;
-                        auto pos2 = kRotationOffset[direction] * 3 + townPos;
+                        auto pos2 = kYaw0RotationOffsets[direction] * 3 + townPos;
                         for (auto i = 0U; i < 9; ++i)
                         {
                             if (sub_481D6F(pos2))
                             {
                                 break;
                             }
-                            pos2 += kRotationOffset[direction];
+                            pos2 += kYaw0RotationOffsets[direction];
                         }
-                        pos2 -= kRotationOffset[direction] * 3;
+                        pos2 -= kYaw0RotationOffsets[direction] * 3;
                         aiStation2.pos = pos2;
                         aiStation2.var_9 = 0;
                         aiStation2.var_A = 3;
@@ -2647,16 +2660,16 @@ namespace OpenLoco
                     if (!aiStation3.hasFlags(AiThoughtStationFlags::operational))
                     {
                         const auto direction = (randDirection - 0b10) & 0x7;
-                        auto pos3 = kRotationOffset[direction] * 3 + townPos;
+                        auto pos3 = kYaw0RotationOffsets[direction] * 3 + townPos;
                         for (auto i = 0U; i < 9; ++i)
                         {
                             if (sub_481D6F(pos3))
                             {
                                 break;
                             }
-                            pos3 += kRotationOffset[direction];
+                            pos3 += kYaw0RotationOffsets[direction];
                         }
-                        pos3 -= kRotationOffset[direction] * 3;
+                        pos3 -= kYaw0RotationOffsets[direction] * 3;
                         aiStation2.pos = pos3;
                         aiStation2.var_9 = 2;
                         aiStation2.var_A = 1;
@@ -2698,7 +2711,7 @@ namespace OpenLoco
                 const auto posDiff1 = toTileSpace(aiStationB.pos - aiStationA.pos);
                 const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
 
-                aiStationA.pos += kRotationOffset[rotation1] * 4;
+                aiStationA.pos += kYaw0RotationOffsets[rotation1] * 4;
 
                 const auto posDiff2 = aiStationB.pos - aiStationA.pos;
                 const auto rotation2 = (Vehicles::calculateYaw1FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
@@ -2709,7 +2722,7 @@ namespace OpenLoco
                 const auto posDiff1 = toTileSpace(aiStationA.pos - aiStationB.pos);
                 const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
 
-                aiStationB.pos += kRotationOffset[rotation1] * 4;
+                aiStationB.pos += kYaw0RotationOffsets[rotation1] * 4;
 
                 const auto posDiff2 = aiStationA.pos - aiStationB.pos;
                 const auto rotation2 = (Vehicles::calculateYaw1FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
