@@ -2714,7 +2714,7 @@ namespace OpenLoco
                 aiStationA.pos += kYaw0RotationOffsets[rotation1] * 4;
 
                 const auto posDiff2 = aiStationB.pos - aiStationA.pos;
-                const auto rotation2 = (Vehicles::calculateYaw1FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
+                const auto rotation2 = (Vehicles::calculateYaw0FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
                 aiStationA.rotation = rotation2;
             }
             if (!aiStationB.hasFlags(AiThoughtStationFlags::operational))
@@ -2725,7 +2725,7 @@ namespace OpenLoco
                 aiStationB.pos += kYaw0RotationOffsets[rotation1] * 4;
 
                 const auto posDiff2 = aiStationA.pos - aiStationB.pos;
-                const auto rotation2 = (Vehicles::calculateYaw1FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
+                const auto rotation2 = (Vehicles::calculateYaw0FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
                 aiStationB.rotation = rotation2;
             }
             return false;
