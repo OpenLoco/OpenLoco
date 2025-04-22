@@ -2596,7 +2596,7 @@ namespace OpenLoco
                     aiStation0.rotation = randDirection;
                     aiStation0.var_9 = 0xFFU;
                     aiStation0.var_A = 1;
-                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+                    if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
                     {
                         aiStation0.var_9 = 0;
                     }
@@ -2624,7 +2624,7 @@ namespace OpenLoco
                     aiStation1.pos = pos1;
                     aiStation1.var_9 = 0xFFU;
                     aiStation1.var_A = 0;
-                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+                    if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
                     {
                         aiStation1.var_9 = 1;
                     }
