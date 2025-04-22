@@ -2670,11 +2670,11 @@ namespace OpenLoco
                             pos3 += kYaw0RotationOffsets[direction];
                         }
                         pos3 -= kYaw0RotationOffsets[direction] * 3;
-                        aiStation2.pos = pos3;
-                        aiStation2.var_9 = 2;
-                        aiStation2.var_A = 1;
-                        aiStation2.var_B = 0;
-                        aiStation2.var_C = 0;
+                        aiStation3.pos = pos3;
+                        aiStation3.var_9 = 2;
+                        aiStation3.var_A = 1;
+                        aiStation3.var_B = 0;
+                        aiStation3.var_C = 0;
                     }
                 }
                 return false;
