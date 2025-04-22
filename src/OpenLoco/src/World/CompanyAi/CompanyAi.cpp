@@ -850,19 +850,6 @@ namespace OpenLoco
 
             cargoCariageObjId = bestVehicleObjId;
 
-            auto destinationPosition = [](bool isIndustry, uint8_t destination) {
-                if (isIndustry)
-                {
-                    const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
-                    return Pos2{ industry->x, industry->y };
-                }
-                else
-                {
-                    auto* town = TownManager::get(static_cast<TownId>(destination));
-                    return Pos2{ town->x, town->y };
-                }
-            };
-
             auto* cargoCarriageObj = ObjectManager::get<VehicleObject>(cargoCariageObjId);
             auto minSpeed = cargoCarriageObj->speed;
             if (cargoCarriageObj->power == 0)
@@ -870,8 +857,8 @@ namespace OpenLoco
                 bool longDistane = false;
                 if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6 | ThoughtTypeFlags::singleDestination))
                 {
-                    const auto posA = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
-                    const auto posB = destinationPosition(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
+                    const auto posA = thought.getDestinationPositionA();
+                    const auto posB = thought.getDestinationPositionB();
                     const auto distance = Math::Vector::distance2D(posA, posB);
                     longDistane = distance > 40 * 32;
                 }
