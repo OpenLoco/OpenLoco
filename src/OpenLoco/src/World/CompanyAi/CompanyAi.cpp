@@ -616,429 +616,253 @@ namespace OpenLoco
         return thought.var_84 < val2;
     }
 
-    struct VehiclePurchaseRequest
+    struct VehiclePurchaseObjects
     {
-        uint8_t numVehicleObjects; // cl
-        uint8_t dl;                // dl
-        currency32_t trainRunCost; // ebx
-        currency32_t trainCost;    // eax
+        uint16_t cargoObjId;
+        uint16_t frontObjId;
+        uint16_t secondObjId;
     };
 
-    // 0x004802D0
-    static VehiclePurchaseRequest aiGenerateVehiclePurchaseRequest(const Company& company, AiThought& thought, uint16_t* requestBuffer)
+    // 0x00480CD5
+    static std::optional<VehiclePurchaseObjects> getAirBasedIdealObjects(const Company& company, const AiThought& thought)
     {
-        uint16_t cargoCariageObjId = 0xFFFFU;
-        uint16_t frontCariageObjId = 0xFFFFU;
-        uint16_t secondCariageObjId = 0xFFFFU;
-        sfl::static_vector<uint16_t, 16> requests;
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        Speed16 bestSpeed = 0_mph;
+        uint16_t bestDesignedYear = 0;
+        uint16_t bestVehicleObjId = 0xFFFF;
+        auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+        for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
         {
-            // 0x00480CD5
-            Speed16 bestSpeed = 0_mph;
-            uint16_t bestDesignedYear = 0;
-            uint16_t bestVehicleObjId = 0xFFFF;
-            auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
-            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+            if (vehicleObj == nullptr)
             {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
-                if (vehicleObj == nullptr)
+                continue;
+            }
+            if (vehicleObj->mode != TransportMode::air)
+            {
+                continue;
+            }
+            if (vehicleObj->hasFlags(VehicleObjectFlags::aircraftIsHelicopter))
+            {
+                continue;
+            }
+            bool compatibleCargo = false;
+            for (auto j = 0U; j < 2; ++j)
+            {
+                if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                {
+                    compatibleCargo = true;
+                    break;
+                }
+            }
+            if (!compatibleCargo)
+            {
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::refittable) || !cargoObj->hasFlags(CargoObjectFlags::refit))
                 {
                     continue;
                 }
-                if (vehicleObj->mode != TransportMode::air)
+            }
+            if (!company.unlockedVehicles[i])
+            {
+                continue;
+            }
+            if (vehicleObj->speed >= bestSpeed)
+            {
+                if (vehicleObj->speed == bestSpeed)
                 {
-                    continue;
-                }
-                if (vehicleObj->hasFlags(VehicleObjectFlags::aircraftIsHelicopter))
-                {
-                    continue;
-                }
-                bool compatibleCargo = false;
-                for (auto j = 0U; j < 2; ++j)
-                {
-                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
-                    {
-                        compatibleCargo = true;
-                        break;
-                    }
-                }
-                if (!compatibleCargo)
-                {
-                    if (!vehicleObj->hasFlags(VehicleObjectFlags::refittable) || !cargoObj->hasFlags(CargoObjectFlags::refit))
+                    if (bestDesignedYear > vehicleObj->designed)
                     {
                         continue;
                     }
                 }
-                if (!company.unlockedVehicles[i])
-                {
-                    continue;
-                }
-                if (vehicleObj->speed >= bestSpeed)
-                {
-                    if (vehicleObj->speed == bestSpeed)
-                    {
-                        if (bestDesignedYear > vehicleObj->designed)
-                        {
-                            continue;
-                        }
-                    }
-                    bestSpeed = vehicleObj->speed;
-                    bestDesignedYear = vehicleObj->designed;
-                    bestVehicleObjId = i;
-                }
+                bestSpeed = vehicleObj->speed;
+                bestDesignedYear = vehicleObj->designed;
+                bestVehicleObjId = i;
             }
-            if (bestSpeed == 0_mph)
-            {
-                return VehiclePurchaseRequest{};
-            }
-            cargoCariageObjId = bestVehicleObjId;
         }
-        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        if (bestSpeed == 0_mph)
         {
-            // 0x00480DC6
-            Speed16 bestSpeed = 0_mph;
-            uint16_t bestDesignedYear = 0;
-            uint16_t bestVehicleObjId = 0xFFFF;
-            auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
-            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            return std::nullopt;
+        }
+        return VehiclePurchaseObjects{ bestVehicleObjId, 0xFFFFU, 0xFFFFU };
+    }
+
+    // 0x00480DC6
+    static std::optional<VehiclePurchaseObjects> getWaterBasedIdealObjects(const Company& company, const AiThought& thought)
+    {
+        Speed16 bestSpeed = 0_mph;
+        uint16_t bestDesignedYear = 0;
+        uint16_t bestVehicleObjId = 0xFFFF;
+        auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+        for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+            if (vehicleObj == nullptr)
             {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
-                if (vehicleObj == nullptr)
+                continue;
+            }
+            if (vehicleObj->mode != TransportMode::water)
+            {
+                continue;
+            }
+            bool compatibleCargo = false;
+            for (auto j = 0U; j < 2; ++j)
+            {
+                if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                {
+                    compatibleCargo = true;
+                    break;
+                }
+            }
+            if (!compatibleCargo)
+            {
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::refittable) || !cargoObj->hasFlags(CargoObjectFlags::refit))
                 {
                     continue;
                 }
-                if (vehicleObj->mode != TransportMode::water)
+            }
+            if (!company.unlockedVehicles[i])
+            {
+                continue;
+            }
+            if (vehicleObj->speed >= bestSpeed)
+            {
+                if (vehicleObj->speed == bestSpeed)
                 {
-                    continue;
-                }
-                bool compatibleCargo = false;
-                for (auto j = 0U; j < 2; ++j)
-                {
-                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
-                    {
-                        compatibleCargo = true;
-                        break;
-                    }
-                }
-                if (!compatibleCargo)
-                {
-                    if (!vehicleObj->hasFlags(VehicleObjectFlags::refittable) || !cargoObj->hasFlags(CargoObjectFlags::refit))
+                    if (bestDesignedYear > vehicleObj->designed)
                     {
                         continue;
                     }
                 }
-                if (!company.unlockedVehicles[i])
-                {
-                    continue;
-                }
-                if (vehicleObj->speed >= bestSpeed)
-                {
-                    if (vehicleObj->speed == bestSpeed)
-                    {
-                        if (bestDesignedYear > vehicleObj->designed)
-                        {
-                            continue;
-                        }
-                    }
-                    bestSpeed = vehicleObj->speed;
-                    bestDesignedYear = vehicleObj->designed;
-                    bestVehicleObjId = i;
-                }
+                bestSpeed = vehicleObj->speed;
+                bestDesignedYear = vehicleObj->designed;
+                bestVehicleObjId = i;
             }
-            if (bestSpeed == 0_mph)
-            {
-                return VehiclePurchaseRequest{};
-            }
-            cargoCariageObjId = bestVehicleObjId;
         }
-        else
+        if (bestSpeed == 0_mph)
         {
-            // 0x004802F7
-            uint8_t unk112C5A6 = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7) ? 3 : 6;
-            uint8_t trackType = thought.trackObjId;
-            TransportMode mode = TransportMode::rail;
-            if (trackType & (1U << 7))
+            return std::nullopt;
+        }
+        return VehiclePurchaseObjects{ bestVehicleObjId, 0xFFFFU, 0xFFFFU };
+    }
+
+    // 0x004802F7
+    static std::optional<VehiclePurchaseObjects> getTrackAndRoadIdealObjects(const Company& company, const AiThought& thought)
+    {
+        uint8_t unk112C5A6 = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7) ? 3 : 6;
+        uint8_t trackType = thought.trackObjId;
+        TransportMode mode = TransportMode::rail;
+        if (trackType & (1U << 7))
+        {
+            trackType &= ~(1U << 7);
+            mode = TransportMode::road;
+            auto* roadObj = ObjectManager::get<RoadObject>(trackType);
+            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
             {
-                trackType &= ~(1U << 7);
-                mode = TransportMode::road;
-                auto* roadObj = ObjectManager::get<RoadObject>(trackType);
-                if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+                trackType = 0xFFU;
+            }
+        }
+
+        Speed16 bestSpeed = 0_mph;
+        uint16_t bestDesignedYear = 0;
+        uint16_t bestVehicleObjId = 0xFFFF;
+        for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+            if (vehicleObj == nullptr)
+            {
+                continue;
+            }
+
+            if (vehicleObj->mode != mode)
+            {
+                continue;
+            }
+
+            if (vehicleObj->trackType != trackType)
+            {
+                continue;
+            }
+
+            bool compatibleCargo = false;
+            for (auto j = 0U; j < 2; ++j)
+            {
+                if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
                 {
-                    trackType = 0xFFU;
+                    compatibleCargo = true;
+                    break;
                 }
             }
 
-            Speed16 bestSpeed = 0_mph;
-            uint16_t bestDesignedYear = 0;
-            uint16_t bestVehicleObjId = 0xFFFF;
-            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            if (!compatibleCargo)
             {
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
-                if (vehicleObj == nullptr)
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                if (vehicleObj->mode != mode)
+            auto speed = vehicleObj->speed;
+            if (vehicleObj->power != 0)
+            {
+                speed -= 1_mph;
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
                 {
-                    continue;
-                }
-
-                if (vehicleObj->trackType != trackType)
-                {
-                    continue;
-                }
-
-                bool compatibleCargo = false;
-                for (auto j = 0U; j < 2; ++j)
-                {
-                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
-                    {
-                        compatibleCargo = true;
-                        break;
-                    }
-                }
-
-                if (!compatibleCargo)
-                {
-                    continue;
-                }
-
-                auto speed = vehicleObj->speed;
-                if (vehicleObj->power != 0)
-                {
-                    speed -= 1_mph;
-                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
-                    {
-                        speed = (speed + 1_mph) * 4;
-                        const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
-                        speed += speedRand;
-                    }
-                }
-
-                if (!company.unlockedVehicles[i])
-                {
-                    continue;
-                }
-
-                if (speed >= bestSpeed)
-                {
-                    if (speed == bestSpeed)
-                    {
-                        if (bestDesignedYear > vehicleObj->designed)
-                        {
-                            continue;
-                        }
-                    }
-                    if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
-                    {
-                        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
-                        {
-                            continue;
-                        }
-                    }
-                    bestSpeed = speed;
-                    bestDesignedYear = vehicleObj->designed;
-                    bestVehicleObjId = i;
+                    speed = (speed + 1_mph) * 4;
+                    const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
+                    speed += speedRand;
                 }
             }
 
-            if (bestSpeed == 0_mph)
+            if (!company.unlockedVehicles[i])
             {
-                return VehiclePurchaseRequest{};
+                continue;
             }
 
-            cargoCariageObjId = bestVehicleObjId;
-
-            auto* cargoCarriageObj = ObjectManager::get<VehicleObject>(cargoCariageObjId);
-            auto minSpeed = cargoCarriageObj->speed;
-            if (cargoCarriageObj->power == 0)
+            if (speed >= bestSpeed)
             {
-                bool longDistane = false;
-                if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6 | ThoughtTypeFlags::singleDestination))
+                if (speed == bestSpeed)
                 {
-                    const auto posA = thought.getDestinationPositionA();
-                    const auto posB = thought.getDestinationPositionB();
-                    const auto distance = Math::Vector::distance2D(posA, posB);
-                    longDistane = distance > 40 * 32;
+                    if (bestDesignedYear > vehicleObj->designed)
+                    {
+                        continue;
+                    }
                 }
-
-                if (longDistane)
+                if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
                 {
-                    // 0x004806A9
-                    int16_t bestScore = 0;
-                    uint16_t bestDesignedYearObj2 = 0;
-                    uint16_t bestVehicleObjIdObj2 = 0xFFFF;
-                    for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+                    if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
                     {
-                        auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
-                        if (vehicleObj == nullptr)
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->mode != mode)
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->trackType != trackType)
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->power == 0)
-                        {
-                            continue;
-                        }
-
-                        if (!Vehicles::canVehiclesCouple(cargoCariageObjId, i))
-                        {
-                            continue;
-                        }
-
-                        const auto adjustedPower = vehicleObj->power >> unk112C5A6;
-                        const auto adjustedSpeed = std::min(minSpeed, vehicleObj->speed);
-                        const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
-                        auto score = (adjustedSpeed + speedRand).getRaw() + adjustedPower;
-                        if (score < bestScore)
-                        {
-                            continue;
-                        }
-                        if (score == bestScore)
-                        {
-                            if (bestDesignedYearObj2 > vehicleObj->designed)
-                            {
-                                continue;
-                            }
-                        }
-
-                        if (!company.unlockedVehicles[i])
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
-                        {
-                            if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
-                            {
-                                continue;
-                            }
-                        }
-                        bestScore = score;
-                        bestDesignedYearObj2 = vehicleObj->designed;
-                        bestVehicleObjIdObj2 = i;
+                        continue;
                     }
-
-                    if (bestScore == 0)
-                    {
-                        return VehiclePurchaseRequest{};
-                    }
-                    frontCariageObjId = bestVehicleObjIdObj2;
                 }
-                else
-                {
-                    // 0x00480551
-                    uint16_t bestScore = 0x8300;
-                    uint16_t bestDesignedYearObj2 = 0;
-                    uint16_t bestVehicleObjIdObj2 = 0xFFFF;
-                    for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
-                    {
-                        auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
-                        if (vehicleObj == nullptr)
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->mode != mode)
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->trackType != trackType)
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->power == 0)
-                        {
-                            continue;
-                        }
-
-                        if (!Vehicles::canVehiclesCouple(cargoCariageObjId, i))
-                        {
-                            continue;
-                        }
-
-                        auto adjustedPower = vehicleObj->power >> unk112C5A6;
-                        auto adjustedSpeed = std::min(minSpeed, vehicleObj->speed);
-                        auto speed = Speed16((adjustedPower + adjustedSpeed.getRaw()) / 2);
-                        const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
-                        speed += speedRand;
-                        const auto score = vehicleObj->getLength() - speed.getRaw();
-                        if (score > bestScore)
-                        {
-                            continue;
-                        }
-
-                        if (score == bestScore)
-                        {
-                            if (bestDesignedYearObj2 > vehicleObj->designed)
-                            {
-                                continue;
-                            }
-                        }
-
-                        if (!company.unlockedVehicles[i])
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
-                        {
-                            if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
-                            {
-                                continue;
-                            }
-                        }
-                        bestScore = score;
-                        bestDesignedYearObj2 = vehicleObj->designed;
-                        bestVehicleObjIdObj2 = i;
-                    }
-
-                    if (bestScore == 0x8300)
-                    {
-                        return VehiclePurchaseRequest{};
-                    }
-                    frontCariageObjId = bestVehicleObjIdObj2;
-                }
+                bestSpeed = speed;
+                bestDesignedYear = vehicleObj->designed;
+                bestVehicleObjId = i;
             }
-            // 0x004807E5
-            auto requiresFurtherVehicle = [](uint16_t objId) {
-                if (objId == 0xFFFFU)
-                {
-                    return true;
-                }
-                auto* vehicleObj = ObjectManager::get<VehicleObject>(objId);
-                if (vehicleObj == nullptr)
-                {
-                    return true;
-                }
-                if (vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
-                {
-                    return false;
-                }
-                if (vehicleObj->power == 0)
-                {
-                    return true;
-                }
-                return vehicleObj->hasFlags(VehicleObjectFlags::centerPosition);
-            };
-            if (requiresFurtherVehicle(cargoCariageObjId) && requiresFurtherVehicle(frontCariageObjId))
+        }
+
+        if (bestSpeed == 0_mph)
+        {
+            return std::nullopt;
+        }
+        VehiclePurchaseObjects chosenObjects{ 0xFFFFU, 0xFFFFU, 0xFFFFU };
+        chosenObjects.cargoObjId = bestVehicleObjId;
+
+        auto* cargoCarriageObj = ObjectManager::get<VehicleObject>(chosenObjects.cargoObjId);
+        auto minSpeed = cargoCarriageObj->speed;
+        if (cargoCarriageObj->power == 0)
+        {
+            bool longDistane = false;
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6 | ThoughtTypeFlags::singleDestination))
             {
-                Speed16 bestScore = 0_mph;
-                uint16_t bestDesignedYearObj3 = 0;
-                uint16_t bestVehicleObjIdObj3 = 0xFFFF;
+                const auto posA = thought.getDestinationPositionA();
+                const auto posB = thought.getDestinationPositionB();
+                const auto distance = Math::Vector::distance2D(posA, posB);
+                longDistane = distance > 40 * 32;
+            }
+
+            if (longDistane)
+            {
+                // 0x004806A9
+                int16_t bestScore = 0;
+                uint16_t bestDesignedYearObj2 = 0;
+                uint16_t bestVehicleObjIdObj2 = 0xFFFF;
                 for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
                 {
                     auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
@@ -1057,24 +881,27 @@ namespace OpenLoco
                         continue;
                     }
 
-                    if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+                    if (vehicleObj->power == 0)
                     {
                         continue;
                     }
 
-                    if (!Vehicles::canVehiclesCouple(cargoCariageObjId, i))
+                    if (!Vehicles::canVehiclesCouple(chosenObjects.cargoObjId, i))
                     {
                         continue;
                     }
 
-                    const auto score = vehicleObj->speed;
+                    const auto adjustedPower = vehicleObj->power >> unk112C5A6;
+                    const auto adjustedSpeed = std::min(minSpeed, vehicleObj->speed);
+                    const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
+                    auto score = (adjustedSpeed + speedRand).getRaw() + adjustedPower;
                     if (score < bestScore)
                     {
                         continue;
                     }
                     if (score == bestScore)
                     {
-                        if (bestDesignedYearObj3 > vehicleObj->designed)
+                        if (bestDesignedYearObj2 > vehicleObj->designed)
                         {
                             continue;
                         }
@@ -1093,115 +920,318 @@ namespace OpenLoco
                         }
                     }
                     bestScore = score;
-                    bestDesignedYearObj3 = vehicleObj->designed;
-                    bestVehicleObjIdObj3 = i;
+                    bestDesignedYearObj2 = vehicleObj->designed;
+                    bestVehicleObjIdObj2 = i;
                 }
 
-                if (bestScore == 0_mph)
+                if (bestScore == 0)
                 {
-                    return VehiclePurchaseRequest{};
+                    return std::nullopt;
                 }
-                secondCariageObjId = bestVehicleObjIdObj3;
+                chosenObjects.frontObjId = bestVehicleObjIdObj2;
             }
-
-            if (secondCariageObjId == 0xFFFFU)
+            else
             {
-                auto isTopAndTailVehicle = [](uint16_t objId) {
-                    if (objId == 0xFFFFU)
-                    {
-                        return false;
-                    }
-                    auto* vehicleObj = ObjectManager::get<VehicleObject>(objId);
+                // 0x00480551
+                uint16_t bestScore = 0x8300;
+                uint16_t bestDesignedYearObj2 = 0;
+                uint16_t bestVehicleObjIdObj2 = 0xFFFF;
+                for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+                {
+                    auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
                     if (vehicleObj == nullptr)
                     {
-                        return false;
+                        continue;
                     }
-                    return !vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition);
-                };
-                if (!isTopAndTailVehicle(cargoCariageObjId) && !isTopAndTailVehicle(frontCariageObjId))
-                {
-                    Speed16 bestScore = 0_mph;
-                    uint16_t bestDesignedYearObj3 = 0;
-                    uint16_t bestVehicleObjIdObj3 = 0xFFFF;
-                    for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+
+                    if (vehicleObj->mode != mode)
                     {
-                        auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
-                        if (vehicleObj == nullptr)
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->mode != mode)
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->trackType != trackType)
-                        {
-                            continue;
-                        }
-
-                        if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
-                        {
-                            continue;
-                        }
-
-                        if (vehicleObj->power != 0)
-                        {
-                            continue;
-                        }
-
-                        if (!Vehicles::canVehiclesCouple(cargoCariageObjId, i))
-                        {
-                            continue;
-                        }
-
-                        bool compatibleCargo = false;
-                        for (auto j = 0U; j < 2; ++j)
-                        {
-                            if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
-                            {
-                                compatibleCargo = true;
-                                break;
-                            }
-                        }
-
-                        if (!compatibleCargo)
-                        {
-                            continue;
-                        }
-
-                        const auto score = vehicleObj->speed;
-                        if (score < bestScore)
-                        {
-                            continue;
-                        }
-                        if (score == bestScore)
-                        {
-                            if (bestDesignedYearObj3 > vehicleObj->designed)
-                            {
-                                continue;
-                            }
-                        }
-
-                        if (!company.unlockedVehicles[i])
-                        {
-                            continue;
-                        }
-
-                        bestScore = score;
-                        bestDesignedYearObj3 = vehicleObj->designed;
-                        bestVehicleObjIdObj3 = i;
+                        continue;
                     }
 
-                    if (bestScore != 0_mph)
+                    if (vehicleObj->trackType != trackType)
                     {
-                        secondCariageObjId = bestVehicleObjIdObj3;
+                        continue;
                     }
+
+                    if (vehicleObj->power == 0)
+                    {
+                        continue;
+                    }
+
+                    if (!Vehicles::canVehiclesCouple(chosenObjects.cargoObjId, i))
+                    {
+                        continue;
+                    }
+
+                    auto adjustedPower = vehicleObj->power >> unk112C5A6;
+                    auto adjustedSpeed = std::min(minSpeed, vehicleObj->speed);
+                    auto speed = Speed16((adjustedPower + adjustedSpeed.getRaw()) / 2);
+                    const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
+                    speed += speedRand;
+                    const auto score = vehicleObj->getLength() - speed.getRaw();
+                    if (score > bestScore)
+                    {
+                        continue;
+                    }
+
+                    if (score == bestScore)
+                    {
+                        if (bestDesignedYearObj2 > vehicleObj->designed)
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (!company.unlockedVehicles[i])
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+                    {
+                        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
+                        {
+                            continue;
+                        }
+                    }
+                    bestScore = score;
+                    bestDesignedYearObj2 = vehicleObj->designed;
+                    bestVehicleObjIdObj2 = i;
                 }
+
+                if (bestScore == 0x8300)
+                {
+                    return std::nullopt;
+                }
+                chosenObjects.frontObjId = bestVehicleObjIdObj2;
             }
         }
+        // 0x004807E5
+        auto requiresFurtherVehicle = [](uint16_t objId) {
+            if (objId == 0xFFFFU)
+            {
+                return true;
+            }
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(objId);
+            if (vehicleObj == nullptr)
+            {
+                return true;
+            }
+            if (vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+            {
+                return false;
+            }
+            if (vehicleObj->power == 0)
+            {
+                return true;
+            }
+            return vehicleObj->hasFlags(VehicleObjectFlags::centerPosition);
+        };
+        if (requiresFurtherVehicle(chosenObjects.cargoObjId) && requiresFurtherVehicle(chosenObjects.frontObjId))
+        {
+            Speed16 bestScore = 0_mph;
+            uint16_t bestDesignedYearObj3 = 0;
+            uint16_t bestVehicleObjIdObj3 = 0xFFFF;
+            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+                if (vehicleObj == nullptr)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->mode != mode)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->trackType != trackType)
+                {
+                    continue;
+                }
+
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+                {
+                    continue;
+                }
+
+                if (!Vehicles::canVehiclesCouple(chosenObjects.cargoObjId, i))
+                {
+                    continue;
+                }
+
+                const auto score = vehicleObj->speed;
+                if (score < bestScore)
+                {
+                    continue;
+                }
+                if (score == bestScore)
+                {
+                    if (bestDesignedYearObj3 > vehicleObj->designed)
+                    {
+                        continue;
+                    }
+                }
+
+                if (!company.unlockedVehicles[i])
+                {
+                    continue;
+                }
+
+                if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+                {
+                    if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
+                    {
+                        continue;
+                    }
+                }
+                bestScore = score;
+                bestDesignedYearObj3 = vehicleObj->designed;
+                bestVehicleObjIdObj3 = i;
+            }
+
+            if (bestScore == 0_mph)
+            {
+                return std::nullopt;
+            }
+            chosenObjects.secondObjId = bestVehicleObjIdObj3;
+        }
+
+        if (chosenObjects.secondObjId != 0xFFFFU)
+        {
+            return chosenObjects;
+        }
+
+        auto isTopAndTailVehicle = [](uint16_t objId) {
+            if (objId == 0xFFFFU)
+            {
+                return false;
+            }
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(objId);
+            if (vehicleObj == nullptr)
+            {
+                return false;
+            }
+            return !vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition);
+        };
+        if (!isTopAndTailVehicle(chosenObjects.cargoObjId) && !isTopAndTailVehicle(chosenObjects.frontObjId))
+        {
+            Speed16 bestScore = 0_mph;
+            uint16_t bestDesignedYearObj3 = 0;
+            uint16_t bestVehicleObjIdObj3 = 0xFFFF;
+            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+                if (vehicleObj == nullptr)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->mode != mode)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->trackType != trackType)
+                {
+                    continue;
+                }
+
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+                {
+                    continue;
+                }
+
+                if (vehicleObj->power != 0)
+                {
+                    continue;
+                }
+
+                if (!Vehicles::canVehiclesCouple(chosenObjects.cargoObjId, i))
+                {
+                    continue;
+                }
+
+                bool compatibleCargo = false;
+                for (auto j = 0U; j < 2; ++j)
+                {
+                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                    {
+                        compatibleCargo = true;
+                        break;
+                    }
+                }
+
+                if (!compatibleCargo)
+                {
+                    continue;
+                }
+
+                const auto score = vehicleObj->speed;
+                if (score < bestScore)
+                {
+                    continue;
+                }
+                if (score == bestScore)
+                {
+                    if (bestDesignedYearObj3 > vehicleObj->designed)
+                    {
+                        continue;
+                    }
+                }
+
+                if (!company.unlockedVehicles[i])
+                {
+                    continue;
+                }
+
+                bestScore = score;
+                bestDesignedYearObj3 = vehicleObj->designed;
+                bestVehicleObjIdObj3 = i;
+            }
+
+            if (bestScore != 0_mph)
+            {
+                chosenObjects.secondObjId = bestVehicleObjIdObj3;
+            }
+        }
+
+        return chosenObjects;
+    }
+
+    struct VehiclePurchaseRequest
+    {
+        uint8_t numVehicleObjects; // cl
+        uint8_t dl;                // dl
+        currency32_t trainRunCost; // ebx
+        currency32_t trainCost;    // eax
+    };
+
+    // 0x004802D0
+    static VehiclePurchaseRequest aiGenerateVehiclePurchaseRequest(const Company& company, AiThought& thought, uint16_t* requestBuffer)
+    {
+        sfl::static_vector<uint16_t, 16> requests;
+        std::optional<VehiclePurchaseObjects> chosenObjects;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            chosenObjects = getAirBasedIdealObjects(company, thought);
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            chosenObjects = getWaterBasedIdealObjects(company, thought);
+        }
+        else
+        {
+            chosenObjects = getTrackAndRoadIdealObjects(company, thought);
+        }
         // 0x00480A74
+        if (!chosenObjects.has_value())
+        {
+            return VehiclePurchaseRequest{};
+        }
+
+        // Build a train from the chosen objects
 
         int32_t targetLengthWorld = 0;
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
@@ -1223,55 +1253,55 @@ namespace OpenLoco
         auto targetLength = targetLengthWorld * 4;
         currency32_t totalCost = 0;
         uint8_t numVehicleObjects = 0;
-        if (frontCariageObjId != 0xFFFFU)
+        if (chosenObjects->frontObjId != 0xFFFFU)
         {
-            auto* vehObj = ObjectManager::get<VehicleObject>(frontCariageObjId);
+            auto* vehObj = ObjectManager::get<VehicleObject>(chosenObjects->frontObjId);
             const auto length = vehObj->getLength();
             targetLength -= length;
-            requests.push_back(frontCariageObjId);
+            requests.push_back(chosenObjects->frontObjId);
             totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
             numVehicleObjects++;
             if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
             {
                 targetLength -= length;
                 totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
-                requests.push_back(frontCariageObjId);
+                requests.push_back(chosenObjects->frontObjId);
                 numVehicleObjects++;
             }
         }
 
-        if (secondCariageObjId != 0xFFFFU)
+        if (chosenObjects->secondObjId != 0xFFFFU)
         {
-            auto* vehObj = ObjectManager::get<VehicleObject>(secondCariageObjId);
+            auto* vehObj = ObjectManager::get<VehicleObject>(chosenObjects->secondObjId);
             const auto length = vehObj->getLength();
             targetLength -= length;
-            requests.push_back(secondCariageObjId);
+            requests.push_back(chosenObjects->secondObjId);
             totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
             numVehicleObjects++;
             if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
             {
                 targetLength -= length;
                 totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
-                requests.push_back(secondCariageObjId);
+                requests.push_back(chosenObjects->secondObjId);
                 numVehicleObjects++;
             }
         }
 
-        const auto* vehObj = ObjectManager::get<VehicleObject>(cargoCariageObjId);
+        const auto* vehObj = ObjectManager::get<VehicleObject>(chosenObjects->cargoObjId);
         const int32_t length = vehObj->getLength();
         targetLength -= length;
-        requests.push_back(cargoCariageObjId);
+        requests.push_back(chosenObjects->cargoObjId);
         totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
         numVehicleObjects++;
         if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
         {
             targetLength -= length;
             totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
-            requests.push_back(cargoCariageObjId);
+            requests.push_back(chosenObjects->cargoObjId);
             numVehicleObjects++;
         }
 
-        if (Vehicles::canVehiclesCouple(cargoCariageObjId, cargoCariageObjId))
+        if (Vehicles::canVehiclesCouple(chosenObjects->cargoObjId, chosenObjects->cargoObjId))
         {
             while (targetLength - length >= 0)
             {
@@ -1292,13 +1322,13 @@ namespace OpenLoco
                         break;
                     }
                 }
-                requests.push_back(cargoCariageObjId);
+                requests.push_back(chosenObjects->cargoObjId);
                 totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
                 numVehicleObjects++;
                 if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
                 {
                     totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
-                    requests.push_back(cargoCariageObjId);
+                    requests.push_back(chosenObjects->cargoObjId);
                     numVehicleObjects++;
                 }
             }
