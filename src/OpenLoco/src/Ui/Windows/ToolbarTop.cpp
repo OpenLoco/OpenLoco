@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static loco_global<uint8_t, 0x009C870D> _lastPortOption;
     static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
     // Replaces 0x0050A006
-    std::vector<uint8_t> availableTracks;
+    AvailableTracksAndRoads availableTracks;
 
     namespace Widx
     {
@@ -430,7 +430,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         // Load dropdown objects removing any that are not unlocked.
         // Note: This is not using player company id! This looks odd.
-        availableTracks = CompanyManager::get(GameCommands::getUpdatingCompanyId())->getAvailableRailTracks();
+        availableTracks = companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId());
 
         assert(std::size(_availableObjects) >= std::size(availableTracks));
         // Legacy copy to available_objects remove when all users of 0x0050A006 accounted for
@@ -500,14 +500,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         uint8_t ddIndex = 0;
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        if (addr<0x525FAC, int8_t>() != -1)
+        if (getGameState().lastAirport != 0xFF)
         {
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_airport, StringIds::menu_airport });
             _menuOptions[ddIndex] = 0;
             ddIndex++;
         }
 
-        if (addr<0x525FAD, int8_t>() != -1)
+        if (getGameState().lastShipPort != 0xFF)
         {
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port, StringIds::menu_ship_port });
             _menuOptions[ddIndex] = 1;
@@ -950,8 +950,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         if (_lastPortOption == 0
-            && getGameState().lastAirport != 0xFF
-            && getGameState().lastShipPort == 0xFF)
+            && getGameState().lastAirport == 0xFF
+            && getGameState().lastShipPort != 0xFF)
         {
             _lastPortOption = 1;
         }
@@ -1018,7 +1018,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static constexpr WindowEventList kEvents = {
         .onResize = Common::onResize,
-        .event_03 = onMouseDown,
+        .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = Common::onUpdate,

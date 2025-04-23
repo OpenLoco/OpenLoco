@@ -981,23 +981,15 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        // 0x0046E306
-        static uint32_t getLoanSizeInCurrency()
-        {
-            currency32_t loanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getStartingLoanSize(), 0, 8) / 100 * 100;
-            return static_cast<uint32_t>(loanSizeInCurrency);
-        }
-
         // 0x0043F8CF
         static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
             {
-
                 auto args = FormatArguments(self.widgets[widx::starting_loan].textArgs);
 
-                uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
+                uint32_t loanSizeInCurrency = CompanyManager::getInflationAdjustedStartingLoan();
                 args.push<uint32_t>(loanSizeInCurrency);
             }
 

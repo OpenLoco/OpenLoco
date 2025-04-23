@@ -58,7 +58,7 @@ namespace OpenLoco::VehicleManager
     }
 
     // 0x004C39D4
-    static uint16_t determineAvailableVehicleTypes(const Company& company)
+    uint16_t determineAvailableVehicleTypes(const Company& company)
     {
         uint16_t availableTypes = 0;
 

@@ -254,16 +254,28 @@ namespace OpenLoco::Gfx
     // 0x004C5CFA
     void SoftwareDrawingEngine::render()
     {
-        // Draw all dirty regions.
-        _invalidationGrid.traverseDirtyCells([this](int32_t left, int32_t top, int32_t right, int32_t bottom) {
-            this->render(Rect::fromLTRB(left, top, right, bottom));
-        });
+        // Need to first render the current dirty regions before updating the viewports.
+        // This is needed to ensure it will copy the correct pixels when the viewport will be moved.
+        renderDirtyRegions();
+
+        // Updating the viewports will potentially move pixels and mark previously invisible regions as dirty.
+        WindowManager::updateViewports();
+
+        // Render the uncovered regions.
+        renderDirtyRegions();
 
         // Draw FPS counter.
         if (Config::get().showFPS)
         {
             Gfx::drawFPS(_ctx);
         }
+    }
+
+    void SoftwareDrawingEngine::renderDirtyRegions()
+    {
+        _invalidationGrid.traverseDirtyCells([this](int32_t left, int32_t top, int32_t right, int32_t bottom) {
+            this->render(Rect::fromLTRB(left, top, right, bottom));
+        });
     }
 
     void SoftwareDrawingEngine::render(const Rect& _rect)
@@ -404,4 +416,5 @@ namespace OpenLoco::Gfx
             from += stride;
         }
     }
+
 }

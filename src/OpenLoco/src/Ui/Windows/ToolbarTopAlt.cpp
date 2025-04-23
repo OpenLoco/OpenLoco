@@ -342,7 +342,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
     static constexpr WindowEventList kEvents = {
         .onResize = Common::onResize,
-        .event_03 = onMouseDown,
+        .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = Common::onUpdate,

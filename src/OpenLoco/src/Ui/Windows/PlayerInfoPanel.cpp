@@ -371,7 +371,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
-        .event_03 = onMouseDown,
+        .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,

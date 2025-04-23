@@ -114,7 +114,7 @@ namespace OpenLoco::World::Track
         verySmallCurve = 1U << 1,
         slope = 1U << 2,
         steepSlope = 1U << 3,
-
+        unk4 = 1U << 4,
         turnaround = 1U << 5,
         junction = 1U << 6,
     };

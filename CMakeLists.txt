@@ -38,7 +38,7 @@ if (WIN32)
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
-            GIT_TAG 1de2026f28ead93ff1773e6e680387643e914ea1)
+            GIT_TAG d5182f703b51d7b258f83f94d936ac03488dcdbe)
         FetchContent_MakeAvailable(vcpkg)
 
         set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
@@ -46,7 +46,7 @@ if (WIN32)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.02)
+project(${PROJECT} LANGUAGES CXX VERSION 25.03)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
@@ -163,8 +163,8 @@ if (UNIX)
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.1/objects.zip
-            URL_HASH SHA256=e75ad13a8e8d58458e0c54e5ce62902a073d7bb025ef8fb97cb56108ff7c57c3)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.3/objects.zip
+            URL_HASH SHA256=c08937691b9d7a956305864b535c6e4537a84b81a9dc5d4c9016edff83dcceb6)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)

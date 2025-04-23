@@ -14,7 +14,7 @@ if ( NOT yaml-cpp_FOUND )
     FetchContent_Declare(
         yaml-cpp
         GIT_REPOSITORY      https://github.com/jbeder/yaml-cpp
-        GIT_TAG             1b50109f7bea60bd382d8ea7befce3d2bd67da5f
+        GIT_TAG             c2680200486572baf8221ba052ef50b58ecd816e # 0.8.0 + cmake fix patch 
     )
     FetchContent_MakeAvailable(yaml-cpp)
     loco_thirdparty_target_compile_link_flags(yaml-cpp)
@@ -68,7 +68,7 @@ if ( NOT fmt_FOUND )
     FetchContent_Declare(
         fmt
         GIT_REPOSITORY      https://github.com/fmtlib/fmt
-        GIT_TAG             11.1.2
+        GIT_TAG             11.1.4
         GIT_SHALLOW         ON
     )
     FetchContent_MakeAvailable(fmt)
@@ -85,7 +85,8 @@ if ( NOT sfl_FOUND )
     FetchContent_Declare(
         sfl
         GIT_REPOSITORY      https://github.com/slavenf/sfl-library
-        GIT_TAG             d331ddb219ea2f7438fa6dca1248551622156f72
+        GIT_TAG             1.9.2
+        GIT_SHALLOW         ON
     )
     FetchContent_MakeAvailable(sfl)
     

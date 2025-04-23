@@ -102,11 +102,13 @@ namespace OpenLoco::Ui
     }
 #endif // _WIN32
 
+    // Returns the width of the game screen, which is scaled by the window scale factor.
     int32_t width()
     {
         return _screenInfo->width;
     }
 
+    // Returns the height of the game screen, which is scaled by the window scale factor.
     int32_t height()
     {
         return _screenInfo->height;
@@ -387,8 +389,6 @@ namespace OpenLoco::Ui
         {
             return;
         }
-
-        WindowManager::updateViewports();
 
         if (!Intro::isActive())
         {
