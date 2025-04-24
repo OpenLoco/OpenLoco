@@ -335,7 +335,7 @@ namespace OpenLoco::Audio
         // Do not stop title screen music
         if (!SceneManager::isTitleMode())
         {
-            stopMusic();
+            pauseMusic();
         }
     }
 
@@ -343,6 +343,7 @@ namespace OpenLoco::Audio
     void unpauseSound()
     {
         _audioIsPaused = false;
+        unpauseMusic();
     }
 
     static const SoundObject* getSoundObject(SoundId id)
@@ -1101,9 +1102,27 @@ namespace OpenLoco::Audio
     void stopMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && channel->isPlaying())
+        if (_audioInitialised && channel != nullptr && (channel->isPlaying() || channel->isPaused()))
         {
             channel->stop();
+        }
+    }
+
+    void pauseMusic()
+    {
+        auto* channel = getChannel(ChannelId::music);
+        if (_audioInitialised && channel != nullptr && channel->isPlaying())
+        {
+            channel->pause();
+        }
+    }
+
+    void unpauseMusic()
+    {
+        auto* channel = getChannel(ChannelId::music);
+        if (_audioInitialised && channel != nullptr && channel->isPaused())
+        {
+            channel->unpause();
         }
     }
 
