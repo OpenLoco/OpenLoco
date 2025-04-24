@@ -5915,8 +5915,8 @@ namespace OpenLoco
     }
 
     // 0x004866C8
-    // Replaces AiAllocated assets with real assets
-    static uint8_t replaceAiAllocated(const Company& company, AiThought& thought)
+    // Replaces AiAllocated station assets with real assets
+    static uint8_t replaceAiAllocatedStation(const Company& company, AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -6018,10 +6018,11 @@ namespace OpenLoco
             else
             {
                 // Track
-                GameCommands::Unk52Args placeArgs{};
+                GameCommands::AiTrackReplacementArgs placeArgs{};
                 placeArgs.rotation = aiStation.rotation;
                 placeArgs.trackObjectId = thought.trackObjId;
-                placeArgs.unk = 0;
+                placeArgs.trackId = 0;
+                placeArgs.sequenceIndex = 0;
                 placeArgs.pos = pos;
 
                 for (auto j = 0U; j < thought.stationLength; ++j)
@@ -6063,7 +6064,7 @@ namespace OpenLoco
     // 0x0043106B
     static void sub_43106B(Company& company, AiThought& thought)
     {
-        const auto res = replaceAiAllocated(company, thought);
+        const auto res = replaceAiAllocatedStation(company, thought);
         if (res == 2)
         {
             company.var_4A4 = AiThinkState::unk6;
@@ -6077,21 +6078,222 @@ namespace OpenLoco
         }
     }
 
-    // 0x004869F7
-    static uint8_t sub_4869F7(const Company& company, const AiThought& thought)
+    // 0x00486E63 & 0x00486C2C
+    static void advanceAiStationAiAllocationReplacementState(Company& company, AiThought& thought)
     {
-        // gc_unk_52?
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x004869F7, regs);
-        return regs.al;
+        const auto aiStationIndex = company.var_85C2;
+        auto& aiStation = thought.stations[aiStationIndex];
+
+        auto advanceStationSide = [](uint8_t& stationSide) {
+            if (stationSide & (1U << 1))
+            {
+                stationSide &= ~(1U << 1);
+                stationSide |= (1U << 2);
+            }
+            else
+            {
+                stationSide &= ~(1U << 3);
+                stationSide |= (1U << 4);
+            }
+        };
+
+        if (company.var_85C3 & (1U << 0))
+        {
+            advanceStationSide(aiStation.var_C);
+        }
+        else
+        {
+            advanceStationSide(aiStation.var_B);
+        }
+        company.var_85C2 = 0xFFU;
+    }
+
+    // 0x00486C98 & 0x00486A37
+    // Returns 0 on aiStation found requiring replacement and 1 if no stations found
+    static uint8_t setupNextAiStationAiAllocationReplacement(Company& company, AiThought& thought, bool isRoad)
+    {
+        for (auto i = 0U; i < thought.numStations; ++i)
+        {
+            if (thought.stations[i].var_B & 0b1010)
+            {
+                company.var_85C2 = i;
+                company.var_85C3 &= ~(1U << 0);
+                company.var_85D0 = thought.stations[i].pos;
+                company.var_85D4 = thought.stations[i].baseZ;
+                company.var_85D5 = thought.stations[i].rotation ^ (1U << 1);
+                return 0;
+            }
+            else if (thought.stations[i].var_C & 0b1010)
+            {
+                company.var_85C2 = i;
+                company.var_85C3 |= 1U << 0;
+                const auto stationOffset = isRoad ? World::Pos2{ 0, 0 } : kRotationOffset[thought.stations[i].rotation] * (thought.stationLength - 1);
+                company.var_85D0 = thought.stations[i].pos + stationOffset;
+                company.var_85D4 = thought.stations[i].baseZ;
+                company.var_85D5 = thought.stations[i].rotation;
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    // 0x004869F7
+    // Replaces AiAllocated track / road assets with real assets
+    static uint8_t replaceAiAllocatedTrackRoad(Company& company, AiThought& thought)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return 1;
+        }
+
+        company.var_85DE++;
+
+        if (company.var_85DE < company.var_85EA)
+        {
+            return 0;
+        }
+
+        company.var_85DE = 0;
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return 2;
+        }
+        if (thought.trackObjId & (1U << 7))
+        {
+            // Road
+            // 0x00486C98
+            if (company.var_85C2 == 0xFFU)
+            {
+                return setupNextAiStationAiAllocationReplacement(company, thought, false);
+            }
+            else
+            {
+                // 0x00486D3E
+                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep);
+                const auto tad = company.var_85D5;
+                const auto queryMods = 0U;
+                const auto requiredMods = 0U;
+                const auto roadObjId = thought.trackObjId & ~(1U << 7);
+                auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+                auto compatRoadObjId = roadObj->hasFlags(RoadObjectFlags::unk_03) ? 0xFFU : roadObjId;
+
+                auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(pos, tad);
+                auto rc = Track::getRoadConnectionsAiAllocated(nextPos, nextRotation, company.id(), compatRoadObjId, requiredMods, queryMods);
+                if (rc.connections.empty())
+                {
+                    advanceAiStationAiAllocationReplacementState(company, thought);
+                    return 0;
+                }
+                else
+                {
+                    auto replaceTad = rc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+                    auto replacePos = nextPos;
+
+                    company.var_85D0 = replacePos;
+                    company.var_85D4 = replacePos.z / World::kSmallZStep;
+                    company.var_85D5 = replaceTad;
+
+                    // This is completely wrong but it matches vanilla
+                    // TODO: Remove and replace with 'apply' when we want to diverge
+                    uint8_t flags = enumValue(company.id()) & 0b1;
+
+                    if (replaceTad & (1U << 2))
+                    {
+                        auto& roadSize = TrackData::getUnkRoad(replaceTad);
+                        replacePos += roadSize.pos;
+
+                        // Again completely wrong but it matches vanilla
+                        flags = roadSize.rotationEnd & 0b1;
+
+                        replacePos.x -= kRotationOffset[roadSize.rotationEnd].x;
+                        replacePos.y -= kRotationOffset[roadSize.rotationEnd].y;
+                        replaceTad ^= (1U << 2);
+                    }
+
+                    const auto roadId = (replaceTad >> 3) & 0xF;
+                    const auto rotation = replaceTad & 0x3;
+                    replacePos.z += TrackData::getRoadPiece(roadId)[0].z;
+                    const auto noStations = true;
+
+                    const auto success = replaceAiAllocatedRoad(replacePos, rotation, roadObjId, roadId, 0, noStations, flags) != GameCommands::FAILURE;
+                    return success ? 0 : 2;
+                }
+            }
+        }
+        else
+        {
+            // Rail
+            // 0x00486A37
+            if (company.var_85C2 == 0xFFU)
+            {
+                return setupNextAiStationAiAllocationReplacement(company, thought, true);
+            }
+            else
+            {
+                // 0x00486AFC
+                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep);
+                const auto tad = company.var_85D5;
+                const auto queryMods = 0U;
+                const auto requiredMods = 0U;
+                const auto trackObjId = thought.trackObjId;
+
+                auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(pos, tad);
+                auto tc = Track::getTrackConnectionsAi(nextPos, nextRotation, company.id(), trackObjId, requiredMods, queryMods);
+                if (tc.connections.empty())
+                {
+                    advanceAiStationAiAllocationReplacementState(company, thought);
+                    return 0;
+                }
+                else
+                {
+                    auto replaceTad = tc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+                    auto replacePos = nextPos;
+
+                    company.var_85D0 = replacePos;
+                    company.var_85D4 = replacePos.z / World::kSmallZStep;
+                    company.var_85D5 = replaceTad;
+
+                    if (replaceTad & (1U << 2))
+                    {
+                        auto& trackSize = TrackData::getUnkTrack(replaceTad);
+                        replacePos += trackSize.pos;
+                        if (trackSize.rotationEnd <= 12)
+                        {
+                            replacePos.x -= kRotationOffset[trackSize.rotationEnd].x;
+                            replacePos.y -= kRotationOffset[trackSize.rotationEnd].y;
+                        }
+                        replaceTad ^= (1U << 2);
+                    }
+
+                    const auto trackId = (replaceTad >> 3) & 0x3F;
+                    const auto rotation = replaceTad & 0x3;
+                    replacePos.z += TrackData::getTrackPiece(trackId)[0].z;
+
+                    GameCommands::AiTrackReplacementArgs args{};
+                    args.pos = replacePos;
+                    args.rotation = rotation;
+                    args.trackObjectId = trackObjId;
+                    args.trackId = trackId;
+                    args.sequenceIndex = 0;
+
+                    const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    if (!success)
+                    {
+                        if (GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                        {
+                            return 2;
+                        }
+                    }
+                    return 0;
+                }
+            }
+        }
     }
 
     // 0x0043109A
     static void sub_43109A(Company& company, AiThought& thought)
     {
-        const auto res = sub_4869F7(company, thought);
+        const auto res = replaceAiAllocatedTrackRoad(company, thought);
         if (res == 2)
         {
             company.var_4A4 = AiThinkState::unk6;
