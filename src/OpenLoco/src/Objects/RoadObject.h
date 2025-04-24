@@ -24,7 +24,7 @@ namespace OpenLoco
     enum class RoadObjectFlags : uint16_t
     {
         none = 0U,
-        unk_00 = 1U << 0,
+        isOneWay = 1U << 0,
         unk_01 = 1U << 1,
         unk_02 = 1U << 2,
         unk_03 = 1U << 3, // Likely isTram

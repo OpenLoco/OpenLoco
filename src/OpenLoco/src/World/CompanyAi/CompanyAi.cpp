@@ -134,7 +134,7 @@ namespace OpenLoco
     };
 
     // 0x004FE770
-    static constexpr std::array<uint8_t, kAiThoughtTypeCount> kThoughtTypeEstimatedCostMultiplier = {
+    static constexpr std::array<uint8_t, kAiThoughtTypeCount> kThoughtTypeNumStations = {
         4,
         2,
         4,
@@ -190,6 +190,22 @@ namespace OpenLoco
     static bool thoughtTypeHasFlags(AiThoughtType type, ThoughtTypeFlags flags)
     {
         return (kThoughtTypeFlags[enumValue(type)] & flags) != ThoughtTypeFlags::none;
+    }
+
+    struct DestinationPositions
+    {
+        Pos2 posA;
+        std::optional<Pos2> posB;
+    };
+    static DestinationPositions getDestinationPositions(const AiThought& thought)
+    {
+        DestinationPositions destPos;
+        destPos.posA = thought.getDestinationPositionA();
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
+        {
+            destPos.posB = thought.getDestinationPositionB();
+        }
+        return destPos;
     }
 
     // 0x00483778
@@ -600,27 +616,733 @@ namespace OpenLoco
         return thought.var_84 < val2;
     }
 
+    struct VehiclePurchaseObjects
+    {
+        uint16_t cargoObjId;
+        uint16_t frontObjId;
+        uint16_t secondObjId;
+    };
+
+    // 0x00480CD5
+    static std::optional<VehiclePurchaseObjects> getAirBasedIdealObjects(const Company& company, const AiThought& thought)
+    {
+        Speed16 bestSpeed = 0_mph;
+        uint16_t bestDesignedYear = 0;
+        uint16_t bestVehicleObjId = 0xFFFF;
+        auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+        for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+            if (vehicleObj == nullptr)
+            {
+                continue;
+            }
+            if (vehicleObj->mode != TransportMode::air)
+            {
+                continue;
+            }
+            if (vehicleObj->hasFlags(VehicleObjectFlags::aircraftIsHelicopter))
+            {
+                continue;
+            }
+            bool compatibleCargo = false;
+            for (auto j = 0U; j < 2; ++j)
+            {
+                if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                {
+                    compatibleCargo = true;
+                    break;
+                }
+            }
+            if (!compatibleCargo)
+            {
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::refittable) || !cargoObj->hasFlags(CargoObjectFlags::refit))
+                {
+                    continue;
+                }
+            }
+            if (!company.unlockedVehicles[i])
+            {
+                continue;
+            }
+            if (vehicleObj->speed >= bestSpeed)
+            {
+                if (vehicleObj->speed == bestSpeed)
+                {
+                    if (bestDesignedYear > vehicleObj->designed)
+                    {
+                        continue;
+                    }
+                }
+                bestSpeed = vehicleObj->speed;
+                bestDesignedYear = vehicleObj->designed;
+                bestVehicleObjId = i;
+            }
+        }
+        if (bestSpeed == 0_mph)
+        {
+            return std::nullopt;
+        }
+        return VehiclePurchaseObjects{ bestVehicleObjId, 0xFFFFU, 0xFFFFU };
+    }
+
+    // 0x00480DC6
+    static std::optional<VehiclePurchaseObjects> getWaterBasedIdealObjects(const Company& company, const AiThought& thought)
+    {
+        Speed16 bestSpeed = 0_mph;
+        uint16_t bestDesignedYear = 0;
+        uint16_t bestVehicleObjId = 0xFFFF;
+        auto* cargoObj = ObjectManager::get<CargoObject>(thought.cargoType);
+        for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+            if (vehicleObj == nullptr)
+            {
+                continue;
+            }
+            if (vehicleObj->mode != TransportMode::water)
+            {
+                continue;
+            }
+            bool compatibleCargo = false;
+            for (auto j = 0U; j < 2; ++j)
+            {
+                if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                {
+                    compatibleCargo = true;
+                    break;
+                }
+            }
+            if (!compatibleCargo)
+            {
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::refittable) || !cargoObj->hasFlags(CargoObjectFlags::refit))
+                {
+                    continue;
+                }
+            }
+            if (!company.unlockedVehicles[i])
+            {
+                continue;
+            }
+            if (vehicleObj->speed >= bestSpeed)
+            {
+                if (vehicleObj->speed == bestSpeed)
+                {
+                    if (bestDesignedYear > vehicleObj->designed)
+                    {
+                        continue;
+                    }
+                }
+                bestSpeed = vehicleObj->speed;
+                bestDesignedYear = vehicleObj->designed;
+                bestVehicleObjId = i;
+            }
+        }
+        if (bestSpeed == 0_mph)
+        {
+            return std::nullopt;
+        }
+        return VehiclePurchaseObjects{ bestVehicleObjId, 0xFFFFU, 0xFFFFU };
+    }
+
+    // 0x004802F7
+    static std::optional<VehiclePurchaseObjects> getTrackAndRoadIdealObjects(const Company& company, const AiThought& thought)
+    {
+        uint8_t unk112C5A6 = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7) ? 3 : 6;
+        uint8_t trackType = thought.trackObjId;
+        TransportMode mode = TransportMode::rail;
+        if (trackType & (1U << 7))
+        {
+            trackType &= ~(1U << 7);
+            mode = TransportMode::road;
+            auto* roadObj = ObjectManager::get<RoadObject>(trackType);
+            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            {
+                trackType = 0xFFU;
+            }
+        }
+
+        Speed16 bestSpeed = 0_mph;
+        uint16_t bestDesignedYear = 0;
+        uint16_t bestVehicleObjId = 0xFFFF;
+        for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+            if (vehicleObj == nullptr)
+            {
+                continue;
+            }
+
+            if (vehicleObj->mode != mode)
+            {
+                continue;
+            }
+
+            if (vehicleObj->trackType != trackType)
+            {
+                continue;
+            }
+
+            bool compatibleCargo = false;
+            for (auto j = 0U; j < 2; ++j)
+            {
+                if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                {
+                    compatibleCargo = true;
+                    break;
+                }
+            }
+
+            if (!compatibleCargo)
+            {
+                continue;
+            }
+
+            auto speed = vehicleObj->speed;
+            if (vehicleObj->power != 0)
+            {
+                speed -= 1_mph;
+                if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+                {
+                    speed = (speed + 1_mph) * 4;
+                    const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
+                    speed += speedRand;
+                }
+            }
+
+            if (!company.unlockedVehicles[i])
+            {
+                continue;
+            }
+
+            if (speed >= bestSpeed)
+            {
+                if (speed == bestSpeed)
+                {
+                    if (bestDesignedYear > vehicleObj->designed)
+                    {
+                        continue;
+                    }
+                }
+                if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+                {
+                    if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
+                    {
+                        continue;
+                    }
+                }
+                bestSpeed = speed;
+                bestDesignedYear = vehicleObj->designed;
+                bestVehicleObjId = i;
+            }
+        }
+
+        if (bestSpeed == 0_mph)
+        {
+            return std::nullopt;
+        }
+        VehiclePurchaseObjects chosenObjects{ 0xFFFFU, 0xFFFFU, 0xFFFFU };
+        chosenObjects.cargoObjId = bestVehicleObjId;
+
+        auto* cargoCarriageObj = ObjectManager::get<VehicleObject>(chosenObjects.cargoObjId);
+        auto minSpeed = cargoCarriageObj->speed;
+        if (cargoCarriageObj->power == 0)
+        {
+            bool longDistane = false;
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6 | ThoughtTypeFlags::singleDestination))
+            {
+                const auto posA = thought.getDestinationPositionA();
+                const auto posB = thought.getDestinationPositionB();
+                const auto distance = Math::Vector::distance2D(posA, posB);
+                longDistane = distance > 40 * 32;
+            }
+
+            if (longDistane)
+            {
+                // 0x004806A9
+                int16_t bestScore = 0;
+                uint16_t bestDesignedYearObj2 = 0;
+                uint16_t bestVehicleObjIdObj2 = 0xFFFF;
+                for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+                {
+                    auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+                    if (vehicleObj == nullptr)
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObj->mode != mode)
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObj->trackType != trackType)
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObj->power == 0)
+                    {
+                        continue;
+                    }
+
+                    if (!Vehicles::canVehiclesCouple(chosenObjects.cargoObjId, i))
+                    {
+                        continue;
+                    }
+
+                    const auto adjustedPower = vehicleObj->power >> unk112C5A6;
+                    const auto adjustedSpeed = std::min(minSpeed, vehicleObj->speed);
+                    const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
+                    auto score = (adjustedSpeed + speedRand).getRaw() + adjustedPower;
+                    if (score < bestScore)
+                    {
+                        continue;
+                    }
+                    if (score == bestScore)
+                    {
+                        if (bestDesignedYearObj2 > vehicleObj->designed)
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (!company.unlockedVehicles[i])
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+                    {
+                        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
+                        {
+                            continue;
+                        }
+                    }
+                    bestScore = score;
+                    bestDesignedYearObj2 = vehicleObj->designed;
+                    bestVehicleObjIdObj2 = i;
+                }
+
+                if (bestScore == 0)
+                {
+                    return std::nullopt;
+                }
+                chosenObjects.frontObjId = bestVehicleObjIdObj2;
+            }
+            else
+            {
+                // 0x00480551
+                uint16_t bestScore = 0x8300;
+                uint16_t bestDesignedYearObj2 = 0;
+                uint16_t bestVehicleObjIdObj2 = 0xFFFF;
+                for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+                {
+                    auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+                    if (vehicleObj == nullptr)
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObj->mode != mode)
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObj->trackType != trackType)
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObj->power == 0)
+                    {
+                        continue;
+                    }
+
+                    if (!Vehicles::canVehiclesCouple(chosenObjects.cargoObjId, i))
+                    {
+                        continue;
+                    }
+
+                    auto adjustedPower = vehicleObj->power >> unk112C5A6;
+                    auto adjustedSpeed = std::min(minSpeed, vehicleObj->speed);
+                    auto speed = Speed16((adjustedPower + adjustedSpeed.getRaw()) / 2);
+                    const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
+                    speed += speedRand;
+                    const auto score = vehicleObj->getLength() - speed.getRaw();
+                    if (score > bestScore)
+                    {
+                        continue;
+                    }
+
+                    if (score == bestScore)
+                    {
+                        if (bestDesignedYearObj2 > vehicleObj->designed)
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (!company.unlockedVehicles[i])
+                    {
+                        continue;
+                    }
+
+                    if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+                    {
+                        if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
+                        {
+                            continue;
+                        }
+                    }
+                    bestScore = score;
+                    bestDesignedYearObj2 = vehicleObj->designed;
+                    bestVehicleObjIdObj2 = i;
+                }
+
+                if (bestScore == 0x8300)
+                {
+                    return std::nullopt;
+                }
+                chosenObjects.frontObjId = bestVehicleObjIdObj2;
+            }
+        }
+        // 0x004807E5
+        auto requiresFurtherVehicle = [](uint16_t objId) {
+            if (objId == 0xFFFFU)
+            {
+                return true;
+            }
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(objId);
+            if (vehicleObj == nullptr)
+            {
+                return true;
+            }
+            if (vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+            {
+                return false;
+            }
+            if (vehicleObj->power == 0)
+            {
+                return true;
+            }
+            return vehicleObj->hasFlags(VehicleObjectFlags::centerPosition);
+        };
+        if (requiresFurtherVehicle(chosenObjects.cargoObjId) && requiresFurtherVehicle(chosenObjects.frontObjId))
+        {
+            Speed16 bestScore = 0_mph;
+            uint16_t bestDesignedYearObj3 = 0;
+            uint16_t bestVehicleObjIdObj3 = 0xFFFF;
+            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+                if (vehicleObj == nullptr)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->mode != mode)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->trackType != trackType)
+                {
+                    continue;
+                }
+
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+                {
+                    continue;
+                }
+
+                if (!Vehicles::canVehiclesCouple(chosenObjects.cargoObjId, i))
+                {
+                    continue;
+                }
+
+                const auto score = vehicleObj->speed;
+                if (score < bestScore)
+                {
+                    continue;
+                }
+                if (score == bestScore)
+                {
+                    if (bestDesignedYearObj3 > vehicleObj->designed)
+                    {
+                        continue;
+                    }
+                }
+
+                if (!company.unlockedVehicles[i])
+                {
+                    continue;
+                }
+
+                if (vehicleObj->power != 0 && !vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+                {
+                    if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
+                    {
+                        continue;
+                    }
+                }
+                bestScore = score;
+                bestDesignedYearObj3 = vehicleObj->designed;
+                bestVehicleObjIdObj3 = i;
+            }
+
+            if (bestScore == 0_mph)
+            {
+                return std::nullopt;
+            }
+            chosenObjects.secondObjId = bestVehicleObjIdObj3;
+        }
+
+        if (chosenObjects.secondObjId != 0xFFFFU)
+        {
+            return chosenObjects;
+        }
+
+        auto isTopAndTailVehicle = [](uint16_t objId) {
+            if (objId == 0xFFFFU)
+            {
+                return false;
+            }
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(objId);
+            if (vehicleObj == nullptr)
+            {
+                return false;
+            }
+            return !vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition);
+        };
+        if (!isTopAndTailVehicle(chosenObjects.cargoObjId) && !isTopAndTailVehicle(chosenObjects.frontObjId))
+        {
+            Speed16 bestScore = 0_mph;
+            uint16_t bestDesignedYearObj3 = 0;
+            uint16_t bestVehicleObjIdObj3 = 0xFFFF;
+            for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(i);
+                if (vehicleObj == nullptr)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->mode != mode)
+                {
+                    continue;
+                }
+
+                if (vehicleObj->trackType != trackType)
+                {
+                    continue;
+                }
+
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+                {
+                    continue;
+                }
+
+                if (vehicleObj->power != 0)
+                {
+                    continue;
+                }
+
+                if (!Vehicles::canVehiclesCouple(chosenObjects.cargoObjId, i))
+                {
+                    continue;
+                }
+
+                bool compatibleCargo = false;
+                for (auto j = 0U; j < 2; ++j)
+                {
+                    if (vehicleObj->maxCargo[j] != 0 && (vehicleObj->compatibleCargoCategories[j] & (1U << thought.cargoType)))
+                    {
+                        compatibleCargo = true;
+                        break;
+                    }
+                }
+
+                if (!compatibleCargo)
+                {
+                    continue;
+                }
+
+                const auto score = vehicleObj->speed;
+                if (score < bestScore)
+                {
+                    continue;
+                }
+                if (score == bestScore)
+                {
+                    if (bestDesignedYearObj3 > vehicleObj->designed)
+                    {
+                        continue;
+                    }
+                }
+
+                if (!company.unlockedVehicles[i])
+                {
+                    continue;
+                }
+
+                bestScore = score;
+                bestDesignedYearObj3 = vehicleObj->designed;
+                bestVehicleObjIdObj3 = i;
+            }
+
+            if (bestScore != 0_mph)
+            {
+                chosenObjects.secondObjId = bestVehicleObjIdObj3;
+            }
+        }
+
+        return chosenObjects;
+    }
+
     struct VehiclePurchaseRequest
     {
         uint8_t numVehicleObjects; // cl
         uint8_t dl;                // dl
-        currency32_t ebx;          // ebx
-        currency32_t eax;          // eax
+        currency32_t trainRunCost; // ebx
+        currency32_t trainCost;    // eax
     };
 
     // 0x004802D0
-    static VehiclePurchaseRequest aiGenerateVehiclePurchaseRequest(AiThought& thought, uint16_t* requestBuffer)
+    static VehiclePurchaseRequest aiGenerateVehiclePurchaseRequest(const Company& company, AiThought& thought, uint16_t* requestBuffer)
     {
-        registers regs;
-        regs.esi = X86Pointer(requestBuffer);
-        regs.edi = X86Pointer(&thought);
-        call(0x004802D0, regs);
-        VehiclePurchaseRequest res{};
-        res.numVehicleObjects = regs.cl;
-        res.dl = regs.dl;
-        res.ebx = regs.ebx;
-        res.eax = regs.eax;
-        return res;
+        sfl::static_vector<uint16_t, 16> requests;
+        std::optional<VehiclePurchaseObjects> chosenObjects;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            chosenObjects = getAirBasedIdealObjects(company, thought);
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            chosenObjects = getWaterBasedIdealObjects(company, thought);
+        }
+        else
+        {
+            chosenObjects = getTrackAndRoadIdealObjects(company, thought);
+        }
+        // 0x00480A74
+        if (!chosenObjects.has_value())
+        {
+            return VehiclePurchaseRequest{};
+        }
+
+        // Build a train from the chosen objects
+
+        int32_t targetLengthWorld = 0;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+        {
+            targetLengthWorld = 44;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::tramBased))
+        {
+            targetLengthWorld = 64;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased | ThoughtTypeFlags::airBased))
+        {
+            targetLengthWorld = 1;
+        }
+        else
+        {
+            targetLengthWorld = thought.stationLength * 32 - 2;
+        }
+        auto targetLength = targetLengthWorld * 4;
+        currency32_t totalCost = 0;
+        uint8_t numVehicleObjects = 0;
+        if (chosenObjects->frontObjId != 0xFFFFU)
+        {
+            auto* vehObj = ObjectManager::get<VehicleObject>(chosenObjects->frontObjId);
+            const auto length = vehObj->getLength();
+            targetLength -= length;
+            requests.push_back(chosenObjects->frontObjId);
+            totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+            numVehicleObjects++;
+            if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
+            {
+                targetLength -= length;
+                totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+                requests.push_back(chosenObjects->frontObjId);
+                numVehicleObjects++;
+            }
+        }
+
+        if (chosenObjects->secondObjId != 0xFFFFU)
+        {
+            auto* vehObj = ObjectManager::get<VehicleObject>(chosenObjects->secondObjId);
+            const auto length = vehObj->getLength();
+            targetLength -= length;
+            requests.push_back(chosenObjects->secondObjId);
+            totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+            numVehicleObjects++;
+            if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
+            {
+                targetLength -= length;
+                totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+                requests.push_back(chosenObjects->secondObjId);
+                numVehicleObjects++;
+            }
+        }
+
+        const auto* vehObj = ObjectManager::get<VehicleObject>(chosenObjects->cargoObjId);
+        const int32_t length = vehObj->getLength();
+        targetLength -= length;
+        requests.push_back(chosenObjects->cargoObjId);
+        totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+        numVehicleObjects++;
+        if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
+        {
+            targetLength -= length;
+            totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+            requests.push_back(chosenObjects->cargoObjId);
+            numVehicleObjects++;
+        }
+
+        if (Vehicles::canVehiclesCouple(chosenObjects->cargoObjId, chosenObjects->cargoObjId))
+        {
+            while (targetLength - length >= 0)
+            {
+                targetLength -= length;
+                if (numVehicleObjects >= 16)
+                {
+                    break;
+                }
+                if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
+                {
+                    if (targetLength - length < 0)
+                    {
+                        break;
+                    }
+                    targetLength -= length;
+                    if (numVehicleObjects >= 15)
+                    {
+                        break;
+                    }
+                }
+                requests.push_back(chosenObjects->cargoObjId);
+                totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+                numVehicleObjects++;
+                if (vehObj->hasFlags(VehicleObjectFlags::mustHavePair))
+                {
+                    totalCost += Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+                    requests.push_back(chosenObjects->cargoObjId);
+                    numVehicleObjects++;
+                }
+            }
+        }
+
+        currency32_t totalRunCost = 0;
+        for (auto requestObjId : requests)
+        {
+            *requestBuffer++ = requestObjId;
+            auto* tempObj = ObjectManager::get<VehicleObject>(requestObjId);
+            totalRunCost += Economy::getInflationAdjustedCost(tempObj->runCostFactor, tempObj->runCostIndex, 10);
+        }
+
+        return VehiclePurchaseRequest{ .numVehicleObjects = static_cast<uint8_t>(requests.size()), .dl = kThoughtTypeMinMaxNumVehicles[enumValue(thought.type)].min, .trainRunCost = totalRunCost, .trainCost = totalCost };
     }
 
     // 0x004883D4
@@ -842,7 +1564,7 @@ namespace OpenLoco
                 const auto reliability = car.front->reliability;
                 if (vehicleObj->power != 0 && (getCurrentYear() >= vehicleObj->obsolete || (reliability != 0 && reliability < 0x1900)))
                 {
-                    const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+                    const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(company, thought, thought.var_46);
                     if (purchaseRequest.numVehicleObjects == 0)
                     {
                         return false;
@@ -949,7 +1671,7 @@ namespace OpenLoco
             return false;
         }
 
-        const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+        const auto purchaseRequest = aiGenerateVehiclePurchaseRequest(company, thought, thought.var_46);
         if (purchaseRequest.numVehicleObjects == 0)
         {
             return false;
@@ -2155,54 +2877,592 @@ namespace OpenLoco
         company.var_4A5 = 2;
     }
 
+    // 0x00480FC3
+    static bool applyPlaystyleRestrictions(Company& company, AiThought& thought)
+    {
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk0) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk1) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk12))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk2) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk13))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk3) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk14))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::noAir) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::noWater) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk7) != AiPlaystyleFlags::none
+            && thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::unk6) != AiPlaystyleFlags::none
+            && !thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk7))
+        {
+            return true;
+        }
+
+        if ((company.aiPlaystyleFlags & AiPlaystyleFlags::townIdSet) != AiPlaystyleFlags::none)
+        {
+            // The first thought of this play style must be located near to the home town chosen for the company
+            // this ensures that the company is based around that town
+            bool noOtherThoughts = true;
+            for (auto& otherThought : company.aiThoughts)
+            {
+                if (&otherThought == &thought)
+                {
+                    continue;
+                }
+                if (otherThought.type != AiThoughtType::null)
+                {
+                    noOtherThoughts = false;
+                    break;
+                }
+            }
+            if (noOtherThoughts)
+            {
+                auto destinationReferenceHomeTown = [&company](bool isIndustry, uint8_t destination) {
+                    if (isIndustry)
+                    {
+                        const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
+                        const auto* homeTown = TownManager::get(static_cast<TownId>(company.aiPlaystyleTownId));
+                        const auto distance = Math::Vector::manhattanDistance2D(Pos2{ industry->x, industry->y }, Pos2{ homeTown->x, homeTown->y });
+                        return distance < 33 * kTileSize;
+                    }
+                    else
+                    {
+                        return destination == company.aiPlaystyleTownId;
+                    }
+                };
+                const bool destAReferencesHomeTown = destinationReferenceHomeTown(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry), thought.destinationA);
+
+                if (!destAReferencesHomeTown)
+                {
+                    if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
+                    {
+                        return true;
+                    }
+                    const bool destBReferencesHomeTown = destinationReferenceHomeTown(thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry), thought.destinationB);
+                    if (!destBReferencesHomeTown)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // Thoughts from a company must all be located nearby to at least one other thought from the same company
+        // nearby is defined as within 60 tiles
+
+        const auto destPositions = getDestinationPositions(thought);
+        const auto destAPos = destPositions.posA;
+        const auto destBPos = destPositions.posB.value_or(destAPos);
+
+        bool otherThoughts = false;
+        bool otherThoughtNearby = false;
+        for (auto& otherThought : company.aiThoughts)
+        {
+            if (&otherThought == &thought)
+            {
+                continue;
+            }
+            if (otherThought.type == AiThoughtType::null)
+            {
+                continue;
+            }
+            otherThoughts = true;
+            const auto otherDestPositions = getDestinationPositions(otherThought);
+            const auto otherDestAPos = otherDestPositions.posA;
+            const auto distAA = Math::Vector::distance2D(destAPos, otherDestAPos);
+            if (distAA <= 60 * kTileSize)
+            {
+                otherThoughtNearby = true;
+                break;
+            }
+            const auto distBA = Math::Vector::distance2D(destBPos, otherDestAPos);
+            if (distBA <= 60 * kTileSize)
+            {
+                otherThoughtNearby = true;
+                break;
+            }
+            if (!otherDestPositions.posB.has_value())
+            {
+                continue;
+            }
+            const auto otherDestBPos = otherDestPositions.posB.value();
+            const auto distAB = Math::Vector::distance2D(destAPos, otherDestBPos);
+            if (distAB <= 60 * kTileSize)
+            {
+                otherThoughtNearby = true;
+                break;
+            }
+            const auto distBB = Math::Vector::distance2D(destBPos, otherDestBPos);
+            if (distBB <= 60 * kTileSize)
+            {
+                otherThoughtNearby = true;
+                break;
+            }
+        }
+        if (otherThoughts && !otherThoughtNearby)
+        {
+            return true;
+        }
+
+        auto* competitorObj = ObjectManager::get<CompetitorObject>(company.competitorId);
+        if (competitorObj->competitiveness < 5)
+        {
+            return getSimilarThoughtsInAllCompanies(company, thought).total != 0;
+        }
+        return false;
+    }
+
     // 0x00430BAB
     static void sub_430BAB(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430BAB, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        if (applyPlaystyleRestrictions(company, thought))
+        {
+            company.var_25BE = AiThoughtType::null;
+            state2ClearActiveThought(company);
+            return;
+        }
+        company.var_4A5 = 3;
+    }
+
+    // 0x00481433
+    static int32_t distanceBetweenDestinations(AiThought& thought)
+    {
+        const auto posA = thought.getDestinationPositionA();
+        const auto posB = thought.getDestinationPositionB();
+        return Math::Vector::distance2D(posA, posB);
+    }
+
+    // 0x0048137F
+    static void setupStationCountAndLength(AiThought& thought)
+    {
+        thought.numStations = kThoughtTypeNumStations[enumValue(thought.type)];
+        for (auto i = 0U; i < thought.numStations; ++i)
+        {
+            auto& aiStation = thought.stations[i];
+            aiStation.var_02 = AiThoughtStationFlags::none;
+        }
+
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
+        {
+            thought.stationLength = 1;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+        {
+            if (getCurrentYear() < 1945)
+            {
+                thought.stationLength = 5;
+            }
+            else if (getCurrentYear() < 1991)
+            {
+                thought.stationLength = 6;
+            }
+            else
+            {
+                thought.stationLength = 7;
+            }
+        }
+        else
+        {
+            const auto distance = distanceBetweenDestinations(thought);
+            auto baseStationLength = (std::max(0, distance - 32 * 28) / 1024) + 5;
+            auto yearAdditionalLength = 0;
+            if (getCurrentYear() >= 1925 && getCurrentYear() < 1955)
+            {
+                yearAdditionalLength = 1;
+            }
+            else if (getCurrentYear() < 1985)
+            {
+                yearAdditionalLength = 2;
+            }
+            else
+            {
+                yearAdditionalLength = 3;
+            }
+            const auto minLength = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17) ? 7 : 0;
+            thought.stationLength = std::clamp(baseStationLength + yearAdditionalLength, minLength, 11);
+        }
+    }
+
+    // 0x00481D6F
+    // If there are less than 4 buildings in the area (5x5) then the station can be placed there
+    static bool isSuitableForStation(const World::Pos2& pos)
+    {
+        auto tilePosA = toTileSpace(pos) - TilePos2{ 2, 2 };
+        auto tilePosB = toTileSpace(pos) + TilePos2{ 2, 2 };
+        auto numBuildings = 0U;
+        for (const auto& tilePos : TilePosRangeView(tilePosA, tilePosB))
+        {
+            auto tile = World::TileManager::get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elBuilding = el.as<World::BuildingElement>();
+                if (elBuilding != nullptr)
+                {
+                    numBuildings++;
+                }
+            }
+        }
+        return numBuildings < 4;
+    }
+
+    // 0x00503CBC 3bit yaw to rotation offset
+    static constexpr std::array<World::Pos2, 8> kYaw0RotationOffsets = {
+        World::Pos2{ -32, 0 },
+        World::Pos2{ -32, 32 },
+        World::Pos2{ 0, 32 },
+        World::Pos2{ 32, 32 },
+        World::Pos2{ 32, 0 },
+        World::Pos2{ 32, -32 },
+        World::Pos2{ 0, -32 },
+        World::Pos2{ -32, -32 },
+    };
+
+    // 0x00481A2D
+    static bool setupIntraCityUnk6Stations(AiThought& thought)
+    {
+        // 0x00112C5A4
+        // 2bit rotation
+        auto randDirection = gPrng1().randNext() & 0b10;
+
+        const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
+        const auto townPos = World::Pos2{ town->x, town->y };
+
+        auto& aiStation0 = thought.stations[0];
+        if (!aiStation0.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto pos0 = kRotationOffset[randDirection] * 3 + townPos;
+            for (auto i = 0U; i < 18; ++i)
+            {
+                if (isSuitableForStation(pos0))
+                {
+                    break;
+                }
+                pos0 += kRotationOffset[randDirection];
+                if (i == 17)
+                {
+                    return true;
+                }
+            }
+            pos0 -= kRotationOffset[randDirection];
+            aiStation0.pos = pos0;
+            aiStation0.rotation = 1;
+            aiStation0.var_9 = 3;
+            aiStation0.var_A = 1;
+            aiStation0.var_B = 0;
+            aiStation0.var_C = 0;
+        }
+        auto& aiStation1 = thought.stations[1];
+        if (!aiStation1.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto pos1 = kRotationOffset[1] * 3 + townPos;
+            for (auto i = 0U; i < 18; ++i)
+            {
+                if (isSuitableForStation(pos1))
+                {
+                    break;
+                }
+                pos1 += kRotationOffset[1];
+                if (i == 17)
+                {
+                    return true;
+                }
+            }
+            pos1 -= kRotationOffset[1];
+            aiStation1.pos = pos1;
+            aiStation1.rotation = 0b10 ^ randDirection;
+            aiStation1.var_9 = 0;
+            aiStation1.var_A = 2;
+            aiStation1.var_B = 0;
+            aiStation1.var_C = 0;
+        }
+        auto& aiStation2 = thought.stations[2];
+        if (!aiStation2.hasFlags(AiThoughtStationFlags::operational))
+        {
+            const auto stationRot = randDirection ^ 0b10;
+            auto pos1 = kRotationOffset[stationRot] * 3 + townPos;
+            for (auto i = 0U; i < 18; ++i)
+            {
+                if (isSuitableForStation(pos1))
+                {
+                    break;
+                }
+                pos1 += kRotationOffset[stationRot];
+                if (i == 17)
+                {
+                    return true;
+                }
+            }
+            pos1 -= kRotationOffset[stationRot];
+            aiStation2.pos = pos1;
+            aiStation2.rotation = 3;
+            aiStation2.var_9 = 1;
+            aiStation2.var_A = 3;
+            aiStation2.var_B = 0;
+            aiStation2.var_C = 0;
+        }
+        auto& aiStation3 = thought.stations[3];
+        if (!aiStation3.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto pos1 = kRotationOffset[3] * 3 + townPos;
+            for (auto i = 0U; i < 18; ++i)
+            {
+                if (isSuitableForStation(pos1))
+                {
+                    break;
+                }
+                pos1 += kRotationOffset[3];
+                if (i == 17)
+                {
+                    return true;
+                }
+            }
+            pos1 -= kRotationOffset[3];
+            aiStation3.pos = pos1;
+            aiStation3.rotation = randDirection;
+            aiStation3.var_9 = 2;
+            aiStation3.var_A = 0;
+            aiStation3.var_B = 0;
+            aiStation3.var_C = 0;
+        }
+
+        auto minBaseZ = std::numeric_limits<SmallZ>::max();
+        auto maxBaseZ = std::numeric_limits<SmallZ>::min();
+        for (auto& aiStation : thought.stations)
+        {
+            auto* elSurface = World::TileManager::get(aiStation.pos).surface();
+            minBaseZ = std::min(elSurface->baseZ(), minBaseZ);
+            maxBaseZ = std::max(elSurface->baseZ(), maxBaseZ);
+        }
+        return (maxBaseZ - minBaseZ > 20);
+    }
+
+    // 0x004816D9
+    static bool setupIntraCityBasicStations(AiThought& thought)
+    {
+        // 3bit yaw rotation
+        auto randDirection = gPrng1().randNext() & 0b111;
+
+        const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
+        const auto townPos = World::Pos2{ town->x, town->y };
+
+        auto& aiStation0 = thought.stations[0];
+        if (!aiStation0.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto pos0 = kYaw0RotationOffsets[randDirection] * 3 + townPos;
+            for (auto i = 0U; i < 15; ++i)
+            {
+                if (isSuitableForStation(pos0))
+                {
+                    break;
+                }
+                pos0 += kYaw0RotationOffsets[randDirection];
+                if (i == 14)
+                {
+                    return true;
+                }
+            }
+            pos0 -= kYaw0RotationOffsets[randDirection] * 2;
+            aiStation0.pos = pos0;
+            aiStation0.rotation = randDirection;
+            aiStation0.var_9 = 0xFFU;
+            aiStation0.var_A = 1;
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+            {
+                aiStation0.var_9 = 0;
+            }
+            aiStation0.var_B = 0;
+            aiStation0.var_C = 0;
+        }
+        auto& aiStation1 = thought.stations[1];
+        if (!aiStation1.hasFlags(AiThoughtStationFlags::operational))
+        {
+            const auto direction = randDirection ^ 0b100;
+            auto pos1 = kYaw0RotationOffsets[direction] * 3 + townPos;
+            for (auto i = 0U; i < 15; ++i)
+            {
+                if (isSuitableForStation(pos1))
+                {
+                    break;
+                }
+                pos1 += kYaw0RotationOffsets[direction];
+                if (i == 14)
+                {
+                    return true;
+                }
+            }
+            pos1 -= kYaw0RotationOffsets[direction] * 2;
+            aiStation1.pos = pos1;
+            aiStation1.var_9 = 0xFFU;
+            aiStation1.var_A = 0;
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+            {
+                aiStation1.var_9 = 1;
+            }
+            aiStation1.var_B = 0;
+            aiStation1.var_C = 0;
+        }
+        if (thought.numStations > 2)
+        {
+            auto& aiStation2 = thought.stations[2];
+            if (!aiStation2.hasFlags(AiThoughtStationFlags::operational))
+            {
+                const auto direction = (randDirection + 0b10) & 0x7;
+                auto pos2 = kYaw0RotationOffsets[direction] * 3 + townPos;
+                for (auto i = 0U; i < 9; ++i)
+                {
+                    if (isSuitableForStation(pos2))
+                    {
+                        break;
+                    }
+                    pos2 += kYaw0RotationOffsets[direction];
+                }
+                pos2 -= kYaw0RotationOffsets[direction] * 3;
+                aiStation2.pos = pos2;
+                aiStation2.var_9 = 0;
+                aiStation2.var_A = 3;
+                aiStation2.var_B = 0;
+                aiStation2.var_C = 0;
+
+                aiStation0.var_A = 2;
+                aiStation1.var_A = 3;
+            }
+            auto& aiStation3 = thought.stations[3];
+            if (!aiStation3.hasFlags(AiThoughtStationFlags::operational))
+            {
+                const auto direction = (randDirection - 0b10) & 0x7;
+                auto pos3 = kYaw0RotationOffsets[direction] * 3 + townPos;
+                for (auto i = 0U; i < 9; ++i)
+                {
+                    if (isSuitableForStation(pos3))
+                    {
+                        break;
+                    }
+                    pos3 += kYaw0RotationOffsets[direction];
+                }
+                pos3 -= kYaw0RotationOffsets[direction] * 3;
+                aiStation3.pos = pos3;
+                aiStation3.var_9 = 2;
+                aiStation3.var_A = 1;
+                aiStation3.var_B = 0;
+                aiStation3.var_C = 0;
+            }
+        }
+        return false;
+    }
+
+    // 0x004816D9
+    static bool setupPointToPointStations(AiThought& thought)
+    {
+        auto& aiStationA = thought.stations[0];
+        if (!aiStationA.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto posA = thought.getDestinationPositionA();
+            aiStationA.pos = posA;
+            aiStationA.var_9 = 1;
+            aiStationA.var_A = 0xFFU;
+            aiStationA.var_B = 0;
+            aiStationA.var_C = 0;
+            aiStationA.var_B |= thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17) ? (1U << 0) : 0;
+        }
+        auto& aiStationB = thought.stations[1];
+        if (!aiStationB.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto posB = thought.getDestinationPositionB();
+            aiStationB.pos = posB;
+            aiStationB.var_9 = 0;
+            aiStationB.var_A = 0xFFU;
+            aiStationB.var_B = 0;
+            aiStationB.var_C = 0;
+            aiStationB.var_B |= thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17) ? (1U << 0) : 0;
+        }
+
+        if (!aiStationA.hasFlags(AiThoughtStationFlags::operational))
+        {
+            const auto posDiff1 = toTileSpace(aiStationB.pos - aiStationA.pos);
+            const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
+
+            aiStationA.pos += kYaw0RotationOffsets[rotation1] * 4;
+
+            const auto posDiff2 = aiStationB.pos - aiStationA.pos;
+            const auto rotation2 = (Vehicles::calculateYaw0FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
+            aiStationA.rotation = rotation2;
+        }
+        if (!aiStationB.hasFlags(AiThoughtStationFlags::operational))
+        {
+            const auto posDiff1 = toTileSpace(aiStationA.pos - aiStationB.pos);
+            const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
+
+            aiStationB.pos += kYaw0RotationOffsets[rotation1] * 4;
+
+            const auto posDiff2 = aiStationA.pos - aiStationB.pos;
+            const auto rotation2 = (Vehicles::calculateYaw0FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
+            aiStationB.rotation = rotation2;
+        }
+        return false;
+    }
+
+    // 0x004814D6
+    static bool setupAiStations(AiThought& thought)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
+        {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+            {
+                return setupIntraCityUnk6Stations(thought);
+            }
+            else
+            {
+                return setupIntraCityBasicStations(thought);
+            }
+        }
+        else
+        {
+            return setupPointToPointStations(thought);
+        }
     }
 
     // 0x00430BDA
     static void sub_430BDA(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430BDA, regs);
-    }
-
-    struct DestinationPositions
-    {
-        Pos2 posA;
-        std::optional<Pos2> posB;
-    };
-    static DestinationPositions getDestinationPositions(const AiThought& thought)
-    {
-        DestinationPositions destPos{};
-        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        setupStationCountAndLength(thought);
+        if (setupAiStations(thought))
         {
-            const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationA));
-            destPos.posA = { industry->x, industry->y };
+            state2ClearActiveThought(company);
+            return;
         }
-        else
-        {
-            const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
-            destPos.posA = { town->x, town->y };
-        }
-        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
-        {
-            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry))
-            {
-                const auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.destinationB));
-                destPos.posB = { industry->x, industry->y };
-            }
-            else
-            {
-                const auto* town = TownManager::get(static_cast<TownId>(thought.destinationB));
-                destPos.posB = { town->x, town->y };
-            }
-        }
-        return destPos;
+        company.var_4A5 = 4;
     }
 
     // 0x0047FE3A
@@ -2280,7 +3540,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (roadObj->hasFlags(unk_00))
+            if (roadObj->hasFlags(isOneWay))
             {
                 continue;
             }
@@ -2318,7 +3578,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if (roadObj->hasFlags(unk_07 | isRoad | unk_03 | unk_00))
+            if (roadObj->hasFlags(unk_07 | isRoad | unk_03 | isOneWay))
             {
                 continue;
             }
@@ -2379,7 +3639,7 @@ namespace OpenLoco
     static void sub_430C2D(Company& company)
     {
         auto& thought = company.aiThoughts[company.activeThoughtId];
-        const auto request = aiGenerateVehiclePurchaseRequest(thought, thought.var_46);
+        const auto request = aiGenerateVehiclePurchaseRequest(company, thought, thought.var_46);
         if (request.numVehicleObjects == 0)
         {
             state2ClearActiveThought(company);
@@ -2387,9 +3647,9 @@ namespace OpenLoco
         }
         thought.var_45 = request.numVehicleObjects;
         thought.var_43 = request.dl;
-        thought.var_7C = request.dl * request.ebx;
-        thought.var_76 += request.eax;
-        company.var_85F2 = request.eax;
+        thought.var_7C = request.dl * request.trainRunCost;
+        thought.var_76 += request.trainCost;
+        company.var_85F2 = request.trainCost;
         company.var_4A5 = 6;
     }
 
@@ -2411,7 +3671,7 @@ namespace OpenLoco
     static currency32_t estimateStationCost(const AiThought& thought)
     {
         currency32_t baseCost = 0;
-        uint8_t costMultiplier = kThoughtTypeEstimatedCostMultiplier[enumValue(thought.type)];
+        uint8_t costMultiplier = kThoughtTypeNumStations[enumValue(thought.type)];
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
@@ -2427,7 +3687,7 @@ namespace OpenLoco
         {
             if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::tramBased | ThoughtTypeFlags::roadBased))
             {
-                costMultiplier *= thought.var_04;
+                costMultiplier *= thought.stationLength;
             }
 
             if (thought.trackObjId & (1U << 7))
@@ -3366,7 +4626,7 @@ namespace OpenLoco
         args.rotation = aiStation.rotation;
         args.roadObjectId = thought.trackObjId & ~(1U << 7);
         args.stationObjectId = thought.stationObjId;
-        args.stationLength = thought.var_04;
+        args.stationLength = thought.stationLength;
         if (aiStation.var_9 != 0xFFU)
         {
             args.unk1 |= (1U << 1);
@@ -3517,7 +4777,7 @@ namespace OpenLoco
         args.rotation = aiStation.rotation;
         args.trackObjectId = thought.trackObjId;
         args.stationObjectId = thought.stationObjId;
-        args.stationLength = thought.var_04;
+        args.stationLength = thought.stationLength;
         if (aiStation.var_9 != 0xFFU)
         {
             args.unk1 |= (1U << 1);
@@ -3562,7 +4822,7 @@ namespace OpenLoco
         auto& aiStation = thought.stations[aiStationIdx];
         const auto randStationTilePos = World::toTileSpace(aiStation.pos) + randTileOffset;
 
-        const auto length = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased) ? thought.var_04 : 1;
+        const auto length = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased) ? thought.stationLength : 1;
         const auto newStationTilePos = randStationTilePos - toTileSpace(kRotationOffset[aiStation.rotation]) * (length / 2);
 
         auto checkLength = length;
@@ -3923,7 +5183,7 @@ namespace OpenLoco
             {
                 if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
                 {
-                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
+                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.stationLength - 1);
                     pos += stationEndDiff;
                 }
                 rotation ^= (1U << 1);
@@ -3950,7 +5210,7 @@ namespace OpenLoco
             {
                 if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
                 {
-                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
+                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.stationLength - 1);
                     pos += stationEndDiff;
                 }
                 rotation ^= (1U << 1);
@@ -4132,7 +5392,7 @@ namespace OpenLoco
         const uint8_t trackObjId = thought.trackObjId;
         const uint8_t signalType = thought.signalObjId;
         // At least the length of the station (which is also the max length of the vehicles)
-        const uint16_t minSignalSpacing = thought.var_04 * 32;
+        const uint16_t minSignalSpacing = thought.stationLength * 32;
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
         {
@@ -4145,7 +5405,7 @@ namespace OpenLoco
             const auto& aiStation = thought.stations[company.var_85C2];
 
             const auto stationEnd = World::Pos3(
-                aiStation.pos + World::Pos3{ kRotationOffset[aiStation.rotation], 0 } * (thought.var_04 - 1),
+                aiStation.pos + World::Pos3{ kRotationOffset[aiStation.rotation], 0 } * (thought.stationLength - 1),
                 aiStation.baseZ * World::kSmallZStep);
 
             const uint8_t signalSide = (1U << 0);
@@ -4764,7 +6024,7 @@ namespace OpenLoco
                 placeArgs.unk = 0;
                 placeArgs.pos = pos;
 
-                for (auto j = 0U; j < thought.var_04; ++j)
+                for (auto j = 0U; j < thought.stationLength; ++j)
                 {
                     if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
                     {
@@ -5294,7 +6554,7 @@ namespace OpenLoco
             }
             else
             {
-                removeAiAllocatedTrainStation(pos, aiStation.rotation, thought.trackObjId, thought.var_04);
+                removeAiAllocatedTrainStation(pos, aiStation.rotation, thought.trackObjId, thought.stationLength);
             }
             // Ai assumes removal was a success!
             aiStation.var_02 &= ~AiThoughtStationFlags::aiAllocated;
@@ -5848,5 +7108,29 @@ namespace OpenLoco
         }
 
         removeEntityFromThought(thought, std::distance(std::begin(thought.vehicles), iter));
+    }
+
+    static Pos2 getDestinationPosition(bool isIndustry, uint8_t destination)
+    {
+        if (isIndustry)
+        {
+            const auto* industry = IndustryManager::get(static_cast<IndustryId>(destination));
+            return Pos2{ industry->x, industry->y };
+        }
+        else
+        {
+            auto* town = TownManager::get(static_cast<TownId>(destination));
+            return Pos2{ town->x, town->y };
+        }
+    }
+
+    Pos2 AiThought::getDestinationPositionA() const
+    {
+        return getDestinationPosition(thoughtTypeHasFlags(type, ThoughtTypeFlags::destinationAIsIndustry), destinationA);
+    }
+
+    Pos2 AiThought::getDestinationPositionB() const
+    {
+        return getDestinationPosition(thoughtTypeHasFlags(type, ThoughtTypeFlags::destinationBIsIndustry), destinationB);
     }
 }

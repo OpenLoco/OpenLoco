@@ -33,6 +33,12 @@ namespace OpenLoco::Gfx
         _rowCount = (height / blockHeight) + 1;
         _screenWidth = width;
         _screenHeight = height;
+
+        _blocks.resize(_columnCount * _rowCount);
+        _blocks.shrink_to_fit();
+
+        // Clear the grid.
+        std::ranges::fill(_blocks, 0x00);
     }
 
     void InvalidationGrid::invalidate(int32_t left, int32_t top, int32_t right, int32_t bottom) noexcept
@@ -67,7 +73,7 @@ namespace OpenLoco::Gfx
             const auto yOffset = y * _columnCount;
 
             // Mark row by column size as invalidated.
-            std::memset(blocks + yOffset + left, 0xFF, columnSize);
+            std::fill_n(blocks.begin() + yOffset + left, columnSize, 0xFF);
         }
     }
 

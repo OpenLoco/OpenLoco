@@ -1,6 +1,10 @@
 25.03+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2703, #2704, #3033] Set currently playing track correctly after clicking "Next music track" button and after unchecking "Play Music".
 - Fix: [#3038] Music changing when unpausing the game.
+- Fix: [#3067] Prevent pixel artifacts from incomplete redraws when shifting the viewport.
+- Fix: [#3068] The construction button is missing a border around it.
+- Fix: [#3075] The top toolbar menu can default to showing airports when they are unavailable.
 
 25.03 (2025-03-31)
 ------------------------------------------------------------------------

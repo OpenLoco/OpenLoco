@@ -47,6 +47,8 @@ namespace OpenLoco::World::Track
     //
     // queryMods sets AdditionalTaDFlags::hasMods of connection if connection has the queryMods
     RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods);
+    RoadConnections getRoadConnectionsOneWay(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods);
+    RoadConnections getRoadConnectionsAiAllocated(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods);
 
     struct ConnectionEnd
     {

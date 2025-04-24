@@ -50,10 +50,6 @@ namespace OpenLoco::Ui::Windows::Options
     static void sub_4C13BE(Window* w);
     static void setPreferredCurrencyNameBuffer();
 
-    static loco_global<uint32_t, 0x0050D430> _songProgress;
-    static loco_global<int8_t, 0x0050D434> _currentSong;
-    static loco_global<uint8_t, 0x0050D435> _lastSong;
-
     // Pointer to an array of SelectedObjectsFlags
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
@@ -1076,11 +1072,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
             {
-                StringId songName = StringIds::music_none;
-                if (_currentSong != -1)
-                {
-                    songName = Jukebox::getMusicInfo(_currentSong).titleId;
-                }
+                StringId songName = Jukebox::getSelectedTrackTitleId();
 
                 auto args = FormatArguments(w.widgets[Widx::currently_playing].textArgs);
                 args.push(songName);
@@ -1101,13 +1093,10 @@ namespace OpenLoco::Ui::Windows::Options
 
             w.activatedWidgets &= ~((1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_play));
             w.activatedWidgets |= (1ULL << Widx::music_controls_stop);
-            if (_currentSong != -1)
+            if (Jukebox::isMusicPlaying())
             {
-                if (Config::get().old.musicPlaying)
-                {
-                    w.activatedWidgets &= ~((1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_play));
-                    w.activatedWidgets |= (1ULL << Widx::music_controls_play);
-                }
+                w.activatedWidgets &= ~((1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_play));
+                w.activatedWidgets |= (1ULL << Widx::music_controls_play);
             }
 
             w.disabledWidgets |= (1ULL << Widx::edit_selection);
@@ -1218,50 +1207,28 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0778
         static void stopMusic(Window* w)
         {
-            if (Config::get().old.musicPlaying == 0)
+            if (Jukebox::disableMusic())
             {
-                return;
+                w->invalidate();
             }
-
-            auto& cfg = Config::get().old;
-            cfg.musicPlaying = 0;
-            Config::write();
-
-            Audio::stopMusic();
-
-            _currentSong = -1;
-
-            w->invalidate();
         }
 
         // 0x004C07A4
         static void playMusic(Window* w)
         {
-            if (Config::get().old.musicPlaying != 0)
+            if (Jukebox::enableMusic())
             {
-                return;
+                w->invalidate();
             }
-
-            auto& cfg = Config::get().old;
-            cfg.musicPlaying = 1;
-            Config::write();
-
-            w->invalidate();
         }
 
         // 0x004C07C4
         static void playNextSong(Window* w)
         {
-            if (Config::get().old.musicPlaying == 0)
+            if (Jukebox::skipCurrentTrack())
             {
-                return;
+                w->invalidate();
             }
-
-            Audio::stopMusic();
-
-            _currentSong = -1;
-
-            w->invalidate();
         }
 
 #pragma mark - Widget 17
@@ -1313,7 +1280,7 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 index++;
                 Dropdown::add(index, StringIds::dropdown_stringid, Jukebox::getMusicInfo(track).titleId);
-                if (track == _currentSong)
+                if (track == Jukebox::getCurrentTrack())
                 {
                     Dropdown::setItemSelected(index);
                 }
@@ -1328,20 +1295,11 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            auto tracks = Jukebox::makeSelectedPlaylist();
-            int track = tracks.at(ax);
-            if (track == _currentSong)
+            auto track = Jukebox::makeSelectedPlaylist().at(ax);
+            if (Jukebox::requestTrack(track))
             {
-                return;
+                w->invalidate();
             }
-
-            Audio::stopMusic();
-
-            _currentSong = track;
-            _lastSong = track;
-            _songProgress = 0;
-
-            w->invalidate();
         }
 
         // 0x004C0A37
