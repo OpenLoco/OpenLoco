@@ -954,9 +954,8 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 Audio::setDevice(itemIndex);
 
-                // the above function reinitialises the audio channels and samples,
-                // which means the title music needs to be resumed (if it is currently meant to be playing).
-                if (isTitleMode())
+                // Start playing the title screen music again if applicable (Fix for #2689)
+                if (SceneManager::isTitleMode())
                 {
                     auto& cfg = Config::get();
                     if (cfg.audio.playTitleMusic)
