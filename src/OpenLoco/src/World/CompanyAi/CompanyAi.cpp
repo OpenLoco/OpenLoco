@@ -1248,7 +1248,7 @@ namespace OpenLoco
         }
         else
         {
-            targetLengthWorld = thought.var_04 * 32 - 2;
+            targetLengthWorld = thought.stationLength * 32 - 2;
         }
         auto targetLength = targetLengthWorld * 4;
         currency32_t totalCost = 0;
