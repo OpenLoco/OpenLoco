@@ -6233,7 +6233,7 @@ namespace OpenLoco
                         company.var_85C2 = i;
                         company.var_85C3 |= 1U << 0;
                         // This line is different to road
-                        company.var_85D0 = thought.stations[i].pos + kRotationOffset[thought.stations[i].rotation] * (thought.var_04 - 1);
+                        company.var_85D0 = thought.stations[i].pos + kRotationOffset[thought.stations[i].rotation] * (thought.stationLength - 1);
                         company.var_85D4 = thought.stations[i].baseZ;
                         company.var_85D5 = thought.stations[i].rotation;
                         return 0;
