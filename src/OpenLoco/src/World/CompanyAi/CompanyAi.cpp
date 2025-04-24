@@ -6702,7 +6702,7 @@ namespace OpenLoco
         else
         {
             removeTrainStationAndTrack(
-                World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep), aiStation.rotation, thought.trackObjId, thought.var_04);
+                World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep), aiStation.rotation, thought.trackObjId, thought.stationLength);
         }
         aiStation.var_02 &= ~AiThoughtStationFlags::operational;
         return false;
@@ -6909,7 +6909,7 @@ namespace OpenLoco
                 {
                     if (aiStation.var_A != 0xFFU)
                     {
-                        const auto stationLength = kRotationOffset[aiStation.rotation] * (thought.var_04 - 1);
+                        const auto stationLength = kRotationOffset[aiStation.rotation] * (thought.stationLength - 1);
                         stationPos = World::Pos3(aiStation.pos + stationLength, aiStation.baseZ * kSmallZStep);
                         rotation = aiStation.rotation;
                     }
