@@ -983,4 +983,6 @@ namespace OpenLoco::Vehicles
      */
     void insertCarBefore(VehicleBogie& source, VehicleBase& dest);
     void registerHooks();
+
+    bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId);
 }
