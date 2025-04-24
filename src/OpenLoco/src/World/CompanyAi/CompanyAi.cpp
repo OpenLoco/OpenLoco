@@ -6078,6 +6078,65 @@ namespace OpenLoco
         }
     }
 
+    // 0x00486E63 & 0x00486C2C
+    static void advanceAiStationAiAllocationReplacementState(Company& company, AiThought& thought)
+    {
+        const auto aiStationIndex = company.var_85C2;
+        auto& aiStation = thought.stations[aiStationIndex];
+
+        auto advanceStationSide = [](uint8_t& stationSide) {
+            if (stationSide & (1U << 1))
+            {
+                stationSide &= ~(1U << 1);
+                stationSide |= (1U << 2);
+            }
+            else
+            {
+                stationSide &= ~(1U << 3);
+                stationSide |= (1U << 4);
+            }
+        };
+
+        if (company.var_85C3 & (1U << 0))
+        {
+            advanceStationSide(aiStation.var_C);
+        }
+        else
+        {
+            advanceStationSide(aiStation.var_B);
+        }
+        company.var_85C2 = 0xFFU;
+    }
+
+    // 0x00486C98 & 0x00486A37
+    // Returns 0 on aiStation found requiring replacement and 1 if no stations found
+    static uint8_t setupNextAiStationAiAllocationReplacement(Company& company, AiThought& thought, bool isRoad)
+    {
+        for (auto i = 0U; i < thought.numStations; ++i)
+        {
+            if (thought.stations[i].var_B & 0b1010)
+            {
+                company.var_85C2 = i;
+                company.var_85C3 &= ~(1U << 0);
+                company.var_85D0 = thought.stations[i].pos;
+                company.var_85D4 = thought.stations[i].baseZ;
+                company.var_85D5 = thought.stations[i].rotation ^ (1U << 1);
+                return 0;
+            }
+            else if (thought.stations[i].var_C & 0b1010)
+            {
+                company.var_85C2 = i;
+                company.var_85C3 |= 1U << 0;
+                const auto stationOffset = isRoad ? World::Pos2{ 0, 0 } : kRotationOffset[thought.stations[i].rotation] * (thought.stationLength - 1);
+                company.var_85D0 = thought.stations[i].pos + stationOffset;
+                company.var_85D4 = thought.stations[i].baseZ;
+                company.var_85D5 = thought.stations[i].rotation;
+                return 0;
+            }
+        }
+        return 1;
+    }
+
     // 0x004869F7
     // Replaces AiAllocated track / road assets with real assets
     static uint8_t replaceAiAllocatedTrackRoad(Company& company, AiThought& thought)
@@ -6105,28 +6164,7 @@ namespace OpenLoco
             // 0x00486C98
             if (company.var_85C2 == 0xFFU)
             {
-                for (auto i = 0U; i < thought.numStations; ++i)
-                {
-                    if (thought.stations[i].var_B & 0b1010)
-                    {
-                        company.var_85C2 = i;
-                        company.var_85C3 &= ~(1U << 0);
-                        company.var_85D0 = thought.stations[i].pos;
-                        company.var_85D4 = thought.stations[i].baseZ;
-                        company.var_85D5 = thought.stations[i].rotation ^ (1U << 1);
-                        return 0;
-                    }
-                    else if (thought.stations[i].var_C & 0b1010)
-                    {
-                        company.var_85C2 = i;
-                        company.var_85C3 |= 1U << 0;
-                        company.var_85D0 = thought.stations[i].pos;
-                        company.var_85D4 = thought.stations[i].baseZ;
-                        company.var_85D5 = thought.stations[i].rotation;
-                        return 0;
-                    }
-                }
-                return 1;
+                return setupNextAiStationAiAllocationReplacement(company, thought, false);
             }
             else
             {
@@ -6143,36 +6181,7 @@ namespace OpenLoco
                 auto rc = Track::getRoadConnectionsAiAllocated(nextPos, nextRotation, company.id(), compatRoadObjId, requiredMods, queryMods);
                 if (rc.connections.empty())
                 {
-                    // 0x00486E63
-                    const auto aiStationIndex = company.var_85C2;
-                    auto& aiStation = thought.stations[aiStationIndex];
-                    if (company.var_85C3 & (1U << 0))
-                    {
-                        if (aiStation.var_C & (1U << 1))
-                        {
-                            aiStation.var_C &= ~(1U << 1);
-                            aiStation.var_C |= (1U << 2);
-                        }
-                        else
-                        {
-                            aiStation.var_C &= ~(1U << 3);
-                            aiStation.var_C |= (1U << 4);
-                        }
-                    }
-                    else
-                    {
-                        if (aiStation.var_B & (1U << 1))
-                        {
-                            aiStation.var_B &= ~(1U << 1);
-                            aiStation.var_B |= (1U << 2);
-                        }
-                        else
-                        {
-                            aiStation.var_B &= ~(1U << 3);
-                            aiStation.var_B |= (1U << 4);
-                        }
-                    }
-                    company.var_85C2 = 0xFFU;
+                    advanceAiStationAiAllocationReplacementState(company, thought);
                     return 0;
                 }
                 else
@@ -6217,29 +6226,7 @@ namespace OpenLoco
             // 0x00486A37
             if (company.var_85C2 == 0xFFU)
             {
-                for (auto i = 0U; i < thought.numStations; ++i)
-                {
-                    if (thought.stations[i].var_B & 0b1010)
-                    {
-                        company.var_85C2 = i;
-                        company.var_85C3 &= ~(1U << 0);
-                        company.var_85D0 = thought.stations[i].pos;
-                        company.var_85D4 = thought.stations[i].baseZ;
-                        company.var_85D5 = thought.stations[i].rotation ^ (1U << 1);
-                        return 0;
-                    }
-                    else if (thought.stations[i].var_C & 0b1010)
-                    {
-                        company.var_85C2 = i;
-                        company.var_85C3 |= 1U << 0;
-                        // This line is different to road
-                        company.var_85D0 = thought.stations[i].pos + kRotationOffset[thought.stations[i].rotation] * (thought.stationLength - 1);
-                        company.var_85D4 = thought.stations[i].baseZ;
-                        company.var_85D5 = thought.stations[i].rotation;
-                        return 0;
-                    }
-                }
-                return 1;
+                return setupNextAiStationAiAllocationReplacement(company, thought, true);
             }
             else
             {
@@ -6254,37 +6241,7 @@ namespace OpenLoco
                 auto tc = Track::getTrackConnectionsAi(nextPos, nextRotation, company.id(), trackObjId, requiredMods, queryMods);
                 if (tc.connections.empty())
                 {
-                    // 0x00486C2C
-                    // Identical to road
-                    const auto aiStationIndex = company.var_85C2;
-                    auto& aiStation = thought.stations[aiStationIndex];
-                    if (company.var_85C3 & (1U << 0))
-                    {
-                        if (aiStation.var_C & (1U << 1))
-                        {
-                            aiStation.var_C &= ~(1U << 1);
-                            aiStation.var_C |= (1U << 2);
-                        }
-                        else
-                        {
-                            aiStation.var_C &= ~(1U << 3);
-                            aiStation.var_C |= (1U << 4);
-                        }
-                    }
-                    else
-                    {
-                        if (aiStation.var_B & (1U << 1))
-                        {
-                            aiStation.var_B &= ~(1U << 1);
-                            aiStation.var_B |= (1U << 2);
-                        }
-                        else
-                        {
-                            aiStation.var_B &= ~(1U << 3);
-                            aiStation.var_B |= (1U << 4);
-                        }
-                    }
-                    company.var_85C2 = 0xFFU;
+                    advanceAiStationAiAllocationReplacementState(company, thought);
                     return 0;
                 }
                 else
