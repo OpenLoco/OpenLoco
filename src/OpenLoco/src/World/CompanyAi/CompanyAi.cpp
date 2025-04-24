@@ -134,7 +134,7 @@ namespace OpenLoco
     };
 
     // 0x004FE770
-    static constexpr std::array<uint8_t, kAiThoughtTypeCount> kThoughtTypeEstimatedCostMultiplier = {
+    static constexpr std::array<uint8_t, kAiThoughtTypeCount> kThoughtTypeNumStations = {
         4,
         2,
         4,
@@ -2349,12 +2349,414 @@ namespace OpenLoco
         company.var_4A5 = 3;
     }
 
+    // 0x00481433
+    static int32_t distanceBetweenDestinations(AiThought& thought)
+    {
+        const auto posA = thought.getDestinationPositionA();
+        const auto posB = thought.getDestinationPositionB();
+        return Math::Vector::distance2D(posA, posB);
+    }
+
+    // 0x0048137F
+    static void setupStationCountAndLength(AiThought& thought)
+    {
+        thought.numStations = kThoughtTypeNumStations[enumValue(thought.type)];
+        for (auto i = 0U; i < thought.numStations; ++i)
+        {
+            auto& aiStation = thought.stations[i];
+            aiStation.var_02 = AiThoughtStationFlags::none;
+        }
+
+        if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk11))
+        {
+            thought.stationLength = 1;
+        }
+        else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+        {
+            if (getCurrentYear() < 1945)
+            {
+                thought.stationLength = 5;
+            }
+            else if (getCurrentYear() < 1991)
+            {
+                thought.stationLength = 6;
+            }
+            else
+            {
+                thought.stationLength = 7;
+            }
+        }
+        else
+        {
+            const auto distance = distanceBetweenDestinations(thought);
+            auto baseStationLength = (std::max(0, distance - 32 * 28) / 1024) + 5;
+            auto yearAdditionalLength = 0;
+            if (getCurrentYear() >= 1925 && getCurrentYear() < 1955)
+            {
+                yearAdditionalLength = 1;
+            }
+            else if (getCurrentYear() < 1985)
+            {
+                yearAdditionalLength = 2;
+            }
+            else
+            {
+                yearAdditionalLength = 3;
+            }
+            const auto minLength = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17) ? 7 : 0;
+            thought.stationLength = std::clamp(baseStationLength + yearAdditionalLength, minLength, 11);
+        }
+    }
+
+    // 0x00481D6F
+    // If there are less than 4 buildings in the area (5x5) then the station can be placed there
+    static bool isSuitableForStation(const World::Pos2& pos)
+    {
+        auto tilePosA = toTileSpace(pos) - TilePos2{ 2, 2 };
+        auto tilePosB = toTileSpace(pos) + TilePos2{ 2, 2 };
+        auto numBuildings = 0U;
+        for (const auto& tilePos : TilePosRangeView(tilePosA, tilePosB))
+        {
+            auto tile = World::TileManager::get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elBuilding = el.as<World::BuildingElement>();
+                if (elBuilding != nullptr)
+                {
+                    numBuildings++;
+                }
+            }
+        }
+        return numBuildings < 4;
+    }
+
+    // 0x00503CBC 3bit yaw to rotation offset
+    static constexpr std::array<World::Pos2, 8> kYaw0RotationOffsets = {
+        World::Pos2{ -32, 0 },
+        World::Pos2{ -32, 32 },
+        World::Pos2{ 0, 32 },
+        World::Pos2{ 32, 32 },
+        World::Pos2{ 32, 0 },
+        World::Pos2{ 32, -32 },
+        World::Pos2{ 0, -32 },
+        World::Pos2{ -32, -32 },
+    };
+
+    // 0x00481A2D
+    static bool setupIntraCityUnk6Stations(AiThought& thought)
+    {
+        // 0x00112C5A4
+        // 2bit rotation
+        auto randDirection = gPrng1().randNext() & 0b10;
+
+        const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
+        const auto townPos = World::Pos2{ town->x, town->y };
+
+        auto& aiStation0 = thought.stations[0];
+        if (!aiStation0.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto pos0 = kRotationOffset[randDirection] * 3 + townPos;
+            for (auto i = 0U; i < 18; ++i)
+            {
+                if (isSuitableForStation(pos0))
+                {
+                    break;
+                }
+                pos0 += kRotationOffset[randDirection];
+                if (i == 17)
+                {
+                    return true;
+                }
+            }
+            pos0 -= kRotationOffset[randDirection];
+            aiStation0.pos = pos0;
+            aiStation0.rotation = 1;
+            aiStation0.var_9 = 3;
+            aiStation0.var_A = 1;
+            aiStation0.var_B = 0;
+            aiStation0.var_C = 0;
+        }
+        auto& aiStation1 = thought.stations[1];
+        if (!aiStation1.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto pos1 = kRotationOffset[1] * 3 + townPos;
+            for (auto i = 0U; i < 18; ++i)
+            {
+                if (isSuitableForStation(pos1))
+                {
+                    break;
+                }
+                pos1 += kRotationOffset[1];
+                if (i == 17)
+                {
+                    return true;
+                }
+            }
+            pos1 -= kRotationOffset[1];
+            aiStation1.pos = pos1;
+            aiStation1.rotation = 0b10 ^ randDirection;
+            aiStation1.var_9 = 0;
+            aiStation1.var_A = 2;
+            aiStation1.var_B = 0;
+            aiStation1.var_C = 0;
+        }
+        auto& aiStation2 = thought.stations[2];
+        if (!aiStation2.hasFlags(AiThoughtStationFlags::operational))
+        {
+            const auto stationRot = randDirection ^ 0b10;
+            auto pos1 = kRotationOffset[stationRot] * 3 + townPos;
+            for (auto i = 0U; i < 18; ++i)
+            {
+                if (isSuitableForStation(pos1))
+                {
+                    break;
+                }
+                pos1 += kRotationOffset[stationRot];
+                if (i == 17)
+                {
+                    return true;
+                }
+            }
+            pos1 -= kRotationOffset[stationRot];
+            aiStation2.pos = pos1;
+            aiStation2.rotation = 3;
+            aiStation2.var_9 = 1;
+            aiStation2.var_A = 3;
+            aiStation2.var_B = 0;
+            aiStation2.var_C = 0;
+        }
+        auto& aiStation3 = thought.stations[3];
+        if (!aiStation3.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto pos1 = kRotationOffset[3] * 3 + townPos;
+            for (auto i = 0U; i < 18; ++i)
+            {
+                if (isSuitableForStation(pos1))
+                {
+                    break;
+                }
+                pos1 += kRotationOffset[3];
+                if (i == 17)
+                {
+                    return true;
+                }
+            }
+            pos1 -= kRotationOffset[3];
+            aiStation3.pos = pos1;
+            aiStation3.rotation = randDirection;
+            aiStation3.var_9 = 2;
+            aiStation3.var_A = 0;
+            aiStation3.var_B = 0;
+            aiStation3.var_C = 0;
+        }
+
+        auto minBaseZ = std::numeric_limits<SmallZ>::max();
+        auto maxBaseZ = std::numeric_limits<SmallZ>::min();
+        for (auto& aiStation : thought.stations)
+        {
+            auto* elSurface = World::TileManager::get(aiStation.pos).surface();
+            minBaseZ = std::min(elSurface->baseZ(), minBaseZ);
+            maxBaseZ = std::max(elSurface->baseZ(), maxBaseZ);
+        }
+        return (maxBaseZ - minBaseZ > 20);
+    }
+
+    // 0x004816D9
+    static bool setupIntraCityBasicStations(AiThought& thought)
+    {
+        // 3bit yaw rotation
+        auto randDirection = gPrng1().randNext() & 0b111;
+
+        const auto* town = TownManager::get(static_cast<TownId>(thought.destinationA));
+        const auto townPos = World::Pos2{ town->x, town->y };
+
+        auto& aiStation0 = thought.stations[0];
+        if (!aiStation0.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto pos0 = kYaw0RotationOffsets[randDirection] * 3 + townPos;
+            for (auto i = 0U; i < 15; ++i)
+            {
+                if (isSuitableForStation(pos0))
+                {
+                    break;
+                }
+                pos0 += kYaw0RotationOffsets[randDirection];
+                if (i == 14)
+                {
+                    return true;
+                }
+            }
+            pos0 -= kYaw0RotationOffsets[randDirection] * 2;
+            aiStation0.pos = pos0;
+            aiStation0.rotation = randDirection;
+            aiStation0.var_9 = 0xFFU;
+            aiStation0.var_A = 1;
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+            {
+                aiStation0.var_9 = 0;
+            }
+            aiStation0.var_B = 0;
+            aiStation0.var_C = 0;
+        }
+        auto& aiStation1 = thought.stations[1];
+        if (!aiStation1.hasFlags(AiThoughtStationFlags::operational))
+        {
+            const auto direction = randDirection ^ 0b100;
+            auto pos1 = kYaw0RotationOffsets[direction] * 3 + townPos;
+            for (auto i = 0U; i < 15; ++i)
+            {
+                if (isSuitableForStation(pos1))
+                {
+                    break;
+                }
+                pos1 += kYaw0RotationOffsets[direction];
+                if (i == 14)
+                {
+                    return true;
+                }
+            }
+            pos1 -= kYaw0RotationOffsets[direction] * 2;
+            aiStation1.pos = pos1;
+            aiStation1.var_9 = 0xFFU;
+            aiStation1.var_A = 0;
+            if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::roadBased))
+            {
+                aiStation1.var_9 = 1;
+            }
+            aiStation1.var_B = 0;
+            aiStation1.var_C = 0;
+        }
+        if (thought.numStations > 2)
+        {
+            auto& aiStation2 = thought.stations[2];
+            if (!aiStation2.hasFlags(AiThoughtStationFlags::operational))
+            {
+                const auto direction = (randDirection + 0b10) & 0x7;
+                auto pos2 = kYaw0RotationOffsets[direction] * 3 + townPos;
+                for (auto i = 0U; i < 9; ++i)
+                {
+                    if (isSuitableForStation(pos2))
+                    {
+                        break;
+                    }
+                    pos2 += kYaw0RotationOffsets[direction];
+                }
+                pos2 -= kYaw0RotationOffsets[direction] * 3;
+                aiStation2.pos = pos2;
+                aiStation2.var_9 = 0;
+                aiStation2.var_A = 3;
+                aiStation2.var_B = 0;
+                aiStation2.var_C = 0;
+
+                aiStation0.var_A = 2;
+                aiStation1.var_A = 3;
+            }
+            auto& aiStation3 = thought.stations[3];
+            if (!aiStation3.hasFlags(AiThoughtStationFlags::operational))
+            {
+                const auto direction = (randDirection - 0b10) & 0x7;
+                auto pos3 = kYaw0RotationOffsets[direction] * 3 + townPos;
+                for (auto i = 0U; i < 9; ++i)
+                {
+                    if (isSuitableForStation(pos3))
+                    {
+                        break;
+                    }
+                    pos3 += kYaw0RotationOffsets[direction];
+                }
+                pos3 -= kYaw0RotationOffsets[direction] * 3;
+                aiStation3.pos = pos3;
+                aiStation3.var_9 = 2;
+                aiStation3.var_A = 1;
+                aiStation3.var_B = 0;
+                aiStation3.var_C = 0;
+            }
+        }
+        return false;
+    }
+
+    // 0x004816D9
+    static bool setupPointToPointStations(AiThought& thought)
+    {
+        auto& aiStationA = thought.stations[0];
+        if (!aiStationA.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto posA = thought.getDestinationPositionA();
+            aiStationA.pos = posA;
+            aiStationA.var_9 = 1;
+            aiStationA.var_A = 0xFFU;
+            aiStationA.var_B = 0;
+            aiStationA.var_C = 0;
+            aiStationA.var_B |= thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17) ? (1U << 0) : 0;
+        }
+        auto& aiStationB = thought.stations[1];
+        if (!aiStationB.hasFlags(AiThoughtStationFlags::operational))
+        {
+            auto posB = thought.getDestinationPositionB();
+            aiStationB.pos = posB;
+            aiStationB.var_9 = 0;
+            aiStationB.var_A = 0xFFU;
+            aiStationB.var_B = 0;
+            aiStationB.var_C = 0;
+            aiStationB.var_B |= thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17) ? (1U << 0) : 0;
+        }
+
+        if (!aiStationA.hasFlags(AiThoughtStationFlags::operational))
+        {
+            const auto posDiff1 = toTileSpace(aiStationB.pos - aiStationA.pos);
+            const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
+
+            aiStationA.pos += kYaw0RotationOffsets[rotation1] * 4;
+
+            const auto posDiff2 = aiStationB.pos - aiStationA.pos;
+            const auto rotation2 = (Vehicles::calculateYaw0FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
+            aiStationA.rotation = rotation2;
+        }
+        if (!aiStationB.hasFlags(AiThoughtStationFlags::operational))
+        {
+            const auto posDiff1 = toTileSpace(aiStationA.pos - aiStationB.pos);
+            const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
+
+            aiStationB.pos += kYaw0RotationOffsets[rotation1] * 4;
+
+            const auto posDiff2 = aiStationA.pos - aiStationB.pos;
+            const auto rotation2 = (Vehicles::calculateYaw0FromVector(posDiff2.x, posDiff2.y) / 16) ^ (1U << 1);
+            aiStationB.rotation = rotation2;
+        }
+        return false;
+    }
+
+    // 0x004814D6
+    static bool setupAiStations(AiThought& thought)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::singleDestination))
+        {
+            if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
+            {
+                return setupIntraCityUnk6Stations(thought);
+            }
+            else
+            {
+                return setupIntraCityBasicStations(thought);
+            }
+        }
+        else
+        {
+            return setupPointToPointStations(thought);
+        }
+    }
+
     // 0x00430BDA
     static void sub_430BDA(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00430BDA, regs);
+        auto& thought = company.aiThoughts[company.activeThoughtId];
+        setupStationCountAndLength(thought);
+        if (setupAiStations(thought))
+        {
+            state2ClearActiveThought(company);
+            return;
+        }
+        company.var_4A5 = 4;
     }
 
     // 0x0047FE3A
@@ -2563,7 +2965,7 @@ namespace OpenLoco
     static currency32_t estimateStationCost(const AiThought& thought)
     {
         currency32_t baseCost = 0;
-        uint8_t costMultiplier = kThoughtTypeEstimatedCostMultiplier[enumValue(thought.type)];
+        uint8_t costMultiplier = kThoughtTypeNumStations[enumValue(thought.type)];
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
         {
@@ -2579,7 +2981,7 @@ namespace OpenLoco
         {
             if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::tramBased | ThoughtTypeFlags::roadBased))
             {
-                costMultiplier *= thought.var_04;
+                costMultiplier *= thought.stationLength;
             }
 
             if (thought.trackObjId & (1U << 7))
@@ -3518,7 +3920,7 @@ namespace OpenLoco
         args.rotation = aiStation.rotation;
         args.roadObjectId = thought.trackObjId & ~(1U << 7);
         args.stationObjectId = thought.stationObjId;
-        args.stationLength = thought.var_04;
+        args.stationLength = thought.stationLength;
         if (aiStation.var_9 != 0xFFU)
         {
             args.unk1 |= (1U << 1);
@@ -3669,7 +4071,7 @@ namespace OpenLoco
         args.rotation = aiStation.rotation;
         args.trackObjectId = thought.trackObjId;
         args.stationObjectId = thought.stationObjId;
-        args.stationLength = thought.var_04;
+        args.stationLength = thought.stationLength;
         if (aiStation.var_9 != 0xFFU)
         {
             args.unk1 |= (1U << 1);
@@ -3714,7 +4116,7 @@ namespace OpenLoco
         auto& aiStation = thought.stations[aiStationIdx];
         const auto randStationTilePos = World::toTileSpace(aiStation.pos) + randTileOffset;
 
-        const auto length = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased) ? thought.var_04 : 1;
+        const auto length = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased) ? thought.stationLength : 1;
         const auto newStationTilePos = randStationTilePos - toTileSpace(kRotationOffset[aiStation.rotation]) * (length / 2);
 
         auto checkLength = length;
@@ -4075,7 +4477,7 @@ namespace OpenLoco
             {
                 if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
                 {
-                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
+                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.stationLength - 1);
                     pos += stationEndDiff;
                 }
                 rotation ^= (1U << 1);
@@ -4102,7 +4504,7 @@ namespace OpenLoco
             {
                 if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
                 {
-                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.var_04 - 1);
+                    const auto stationEndDiff = kRotationOffset[rotation] * (thought.stationLength - 1);
                     pos += stationEndDiff;
                 }
                 rotation ^= (1U << 1);
@@ -4284,7 +4686,7 @@ namespace OpenLoco
         const uint8_t trackObjId = thought.trackObjId;
         const uint8_t signalType = thought.signalObjId;
         // At least the length of the station (which is also the max length of the vehicles)
-        const uint16_t minSignalSpacing = thought.var_04 * 32;
+        const uint16_t minSignalSpacing = thought.stationLength * 32;
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
         {
@@ -4297,7 +4699,7 @@ namespace OpenLoco
             const auto& aiStation = thought.stations[company.var_85C2];
 
             const auto stationEnd = World::Pos3(
-                aiStation.pos + World::Pos3{ kRotationOffset[aiStation.rotation], 0 } * (thought.var_04 - 1),
+                aiStation.pos + World::Pos3{ kRotationOffset[aiStation.rotation], 0 } * (thought.stationLength - 1),
                 aiStation.baseZ * World::kSmallZStep);
 
             const uint8_t signalSide = (1U << 0);
@@ -4916,7 +5318,7 @@ namespace OpenLoco
                 placeArgs.unk = 0;
                 placeArgs.pos = pos;
 
-                for (auto j = 0U; j < thought.var_04; ++j)
+                for (auto j = 0U; j < thought.stationLength; ++j)
                 {
                     if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
                     {
@@ -5446,7 +5848,7 @@ namespace OpenLoco
             }
             else
             {
-                removeAiAllocatedTrainStation(pos, aiStation.rotation, thought.trackObjId, thought.var_04);
+                removeAiAllocatedTrainStation(pos, aiStation.rotation, thought.trackObjId, thought.stationLength);
             }
             // Ai assumes removal was a success!
             aiStation.var_02 &= ~AiThoughtStationFlags::aiAllocated;
