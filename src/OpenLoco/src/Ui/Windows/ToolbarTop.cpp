@@ -597,7 +597,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        Dropdown::setHighlightedItem(getGameState().lastBuildVehiclesOption);
+        Dropdown::setHighlightedItem(enumValue(getGameState().lastBuildVehiclesOption));
     }
 
     // 0x0043ADC7
@@ -614,9 +614,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         itemIndex = _menuOptions[itemIndex];
-        getGameState().lastBuildVehiclesOption = itemIndex;
+        const auto vehicleType = static_cast<VehicleType>(itemIndex);
+        getGameState().lastBuildVehiclesOption = vehicleType;
 
-        BuildVehicle::open(itemIndex, 1U << 31);
+        BuildVehicle::open(enumValue(vehicleType), 1U << 31);
     }
 
     // 0x0043ABCB
@@ -894,7 +895,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t x = window.widgets[Common::Widx::build_vehicles_menu].left + window.x;
             uint32_t y = window.widgets[Common::Widx::build_vehicles_menu].top + window.y;
 
-            static constexpr uint32_t build_vehicle_images[] = {
+            static constexpr uint32_t kBuildVehicleImages[] = {
                 InterfaceSkin::ImageIds::toolbar_build_vehicle_train,
                 InterfaceSkin::ImageIds::toolbar_build_vehicle_bus,
                 InterfaceSkin::ImageIds::toolbar_build_vehicle_truck,
@@ -905,7 +906,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             // Figure out what icon to show on the button face.
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[getGameState().lastBuildVehiclesOption], companyColour);
+            uint32_t fg_image = Gfx::recolour(interface->img + kBuildVehicleImages[enumValue(getGameState().lastBuildVehiclesOption)], companyColour);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::Widx::build_vehicles_menu))
             {
