@@ -6632,7 +6632,7 @@ namespace OpenLoco
         auto regs = static_cast<registers>(args);
         regs.bl = GameCommands::Flags::apply;
         GameCommands::removeRoadStation(regs);
-        if (regs.ebx != GameCommands::FAILURE)
+        if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
         {
             args.rotation ^= (1u << 1);
             auto regs2 = static_cast<registers>(args);
