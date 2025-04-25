@@ -6626,10 +6626,18 @@ namespace OpenLoco
         args.roadId = 0;
         args.roadObjectId = roadObjId;
         args.rotation = rotation;
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+
+        // Calling GC directly to match vanilla.
+        // TODO change to use GameCommands::doCommand as this isn't handling costs
+        auto regs = static_cast<registers>(args);
+        regs.bl = GameCommands::Flags::apply;
+        GameCommands::removeRoadStation(regs);
+        if (regs.ebx != GameCommands::FAILURE)
         {
             args.rotation ^= (1u << 1);
-            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            auto regs2 = static_cast<registers>(args);
+            regs2.bl = GameCommands::Flags::apply;
+            GameCommands::removeRoadStation(regs2);
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
@@ -6661,7 +6669,11 @@ namespace OpenLoco
             args.rotation = rotation;
             args.trackId = 0;
             args.trackObjectId = trackObjId;
-            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            // Calling GC directly to match vanilla.
+            // TODO change to use GameCommands::doCommand as this isn't handling costs
+            auto regs = static_cast<registers>(args);
+            regs.bl = GameCommands::Flags::apply;
+            GameCommands::removeTrack(regs);
 
             piecePos += World::Pos3{ kRotationOffset[rotation], 0 };
         }
@@ -6712,7 +6724,7 @@ namespace OpenLoco
     static bool sub_48715C(Company& company, AiThought& thought)
     {
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased)
-            || !(company.var_85C3 & (1U << 2)))
+            || (company.var_85C3 & (1U << 2)))
         {
             return sub_4836EB(thought, company.id());
         }
