@@ -96,7 +96,7 @@ namespace OpenLoco::GameCommands
         const auto* roadObj = ObjectManager::get<RoadObject>(roadElPiece->roadObjectId());
         {
             const auto trackBaseCost = Economy::getInflationAdjustedCost(roadObj->sellCostFactor, roadObj->costIndex, 10);
-            const auto cost = (trackBaseCost * World::TrackData::getTrackMiscData(args.roadId).costFactor) / 256;
+            const auto cost = (trackBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
             totalRemovalCost += cost;
         }
 
@@ -107,7 +107,7 @@ namespace OpenLoco::GameCommands
             {
                 const auto* trackExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[i]);
                 const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->sellCostFactor, trackExtraObj->costIndex, 10);
-                const auto cost = (trackExtraBaseCost * World::TrackData::getTrackMiscData(args.roadId).costFactor) / 256;
+                const auto cost = (trackExtraBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
                 totalRemovalCost += cost;
             }
         }
@@ -236,7 +236,7 @@ namespace OpenLoco::GameCommands
             {
                 const auto* bridgeObj = ObjectManager::get<BridgeObject>(roadBridgeId);
                 const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->sellCostFactor, bridgeObj->costIndex, 10);
-                totalRemovalCost += (bridgeBaseCost * World::TrackData::getTrackMiscData(args.roadId).costFactor) / 256;
+                totalRemovalCost += (bridgeBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
             }
         }
 
