@@ -6434,15 +6434,546 @@ namespace OpenLoco
         }
     }
 
+    enum class TrackRoadRemoveQueryFlags : uint8_t
+    {
+        none = 0,
+        roadTypeShouldNotBeRemoved = 1U << 0,
+        // if there is an element missing from road/track
+        // perhaps a user with cheats removed a different companies road
+        malformed = 1U << 1,
+        hasStation = 1U << 2,
+        isRoadJunction = 1U << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackRoadRemoveQueryFlags);
+
+    // 0x0046C1E0
+    static TrackRoadRemoveQueryFlags queryRoadForRemoval(World::Pos3 pos, uint16_t tad, uint8_t roadObjId, CompanyId companyId)
+    {
+        using enum TrackRoadRemoveQueryFlags;
+        auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+        if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+        {
+            return roadTypeShouldNotBeRemoved;
+        }
+
+        auto roadStart = pos;
+        if (tad & (1U << 2))
+        {
+            auto& roadSize = TrackData::getUnkRoad(tad);
+            roadStart = pos + roadSize.pos;
+            tad ^= (1U << 2);
+            if (roadSize.rotationEnd < 12)
+            {
+                roadStart -= World::Pos3{ kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+        }
+
+        const auto rotation = tad & 0x3;
+        const auto roadId = (tad >> 3) & 0xF;
+
+        TrackRoadRemoveQueryFlags flags = none;
+        auto& roadPieces = TrackData::getRoadPiece(roadObjId);
+        for (auto& piece : roadPieces)
+        {
+            const auto rotatedPiece = World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            const auto piecePos = roadStart + rotatedPiece;
+            auto* elRoad = [piecePos, rotation, &piece, &flags, roadId, roadObjId, companyId]() -> const World::RoadElement* {
+                const auto tile = World::TileManager::get(piecePos);
+                for (const auto& el : tile)
+                {
+                    auto* elRoad = el.as<RoadElement>();
+                    if (elRoad == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elRoad->baseHeight() != piecePos.z)
+                    {
+                        continue;
+                    }
+                    if (elRoad->isGhost() || elRoad->isAiAllocated())
+                    {
+                        continue;
+                    }
+                    if (elRoad->roadObjectId() != roadObjId)
+                    {
+                        continue;
+                    }
+
+                    if (elRoad->rotation() != rotation)
+                    {
+                        flags |= isRoadJunction;
+                        continue;
+                    }
+                    if (elRoad->sequenceIndex() != piece.index)
+                    {
+                        flags |= isRoadJunction;
+                        continue;
+                    }
+                    if (elRoad->owner() != companyId)
+                    {
+                        flags |= isRoadJunction;
+                        continue;
+                    }
+                    if (elRoad->roadId() != roadId)
+                    {
+                        flags |= isRoadJunction;
+                        continue;
+                    }
+                    return elRoad;
+                }
+                return nullptr;
+            }();
+
+            if (elRoad == nullptr)
+            {
+                return malformed;
+            }
+            if (elRoad->hasStationElement())
+            {
+                flags |= hasStation;
+            }
+        }
+        return flags;
+    }
+
+    // 0x004A83C0
+    static TrackRoadRemoveQueryFlags queryTrackForRemoval(World::Pos3 pos, uint16_t tad, uint8_t trackObjId, CompanyId companyId)
+    {
+        using enum TrackRoadRemoveQueryFlags;
+
+        auto trackStart = pos;
+        if (tad & (1U << 2))
+        {
+            auto& trackSize = TrackData::getUnkTrack(tad);
+            trackStart = pos + trackSize.pos;
+            tad ^= (1U << 2);
+            if (trackSize.rotationEnd < 12)
+            {
+                trackStart -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+        }
+
+        const auto rotation = tad & 0x3;
+        const auto trackId = (tad >> 3) & 0xF;
+
+        TrackRoadRemoveQueryFlags flags = none;
+        auto& trackPieces = TrackData::getTrackPiece(trackId);
+        for (auto& piece : trackPieces)
+        {
+            const auto rotatedPiece = World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            const auto piecePos = trackStart + rotatedPiece;
+            auto* elTrack = [piecePos, rotation, &piece, trackId, trackObjId, companyId]() -> const World::TrackElement* {
+                const auto tile = World::TileManager::get(piecePos);
+                for (const auto& el : tile)
+                {
+                    auto* elTrack = el.as<TrackElement>();
+                    if (elTrack == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elTrack->baseHeight() != piecePos.z)
+                    {
+                        continue;
+                    }
+                    if (elTrack->isAiAllocated()) // Why no ghost?
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackObjectId() != trackObjId)
+                    {
+                        continue;
+                    }
+
+                    if (elTrack->rotation() != rotation)
+                    {
+                        continue;
+                    }
+                    if (elTrack->sequenceIndex() != piece.index)
+                    {
+                        continue;
+                    }
+                    if (elTrack->owner() != companyId)
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackId() != trackId)
+                    {
+                        continue;
+                    }
+                    return elTrack;
+                }
+                return nullptr;
+            }();
+
+            if (elTrack == nullptr)
+            {
+                return malformed;
+            }
+            if (elTrack->hasStationElement())
+            {
+                flags |= hasStation;
+            }
+        }
+        return flags;
+    }
+
+    // 0x0047B238
+    static void removeRoadStationAndRoad(World::Pos3 pos, uint8_t rotation, uint8_t roadObjId, CompanyId companyId)
+    {
+        auto args = GameCommands::RoadStationRemovalArgs{};
+        args.index = 0;
+        args.pos = pos;
+        args.roadId = 0;
+        args.roadObjectId = roadObjId;
+        args.rotation = rotation;
+
+        // Calling GC directly to match vanilla.
+        // TODO change to use GameCommands::doCommand as this isn't handling costs
+        auto regs = static_cast<registers>(args);
+        regs.bl = GameCommands::Flags::apply;
+        GameCommands::removeRoadStation(regs);
+        if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
+        {
+            args.rotation ^= (1u << 1);
+            auto regs2 = static_cast<registers>(args);
+            regs2.bl = GameCommands::Flags::apply;
+            GameCommands::removeRoadStation(regs2);
+        }
+
+        auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        {
+            using enum TrackRoadRemoveQueryFlags;
+            if ((queryRoadForRemoval(pos, (0 << 3) | rotation, roadObjId, companyId) & (malformed | roadTypeShouldNotBeRemoved)) == none)
+            {
+                auto roadArgs = GameCommands::RoadRemovalArgs{};
+                roadArgs.pos = pos;
+                roadArgs.objectId = roadObjId;
+                roadArgs.roadId = 0;
+                roadArgs.rotation = rotation;
+                roadArgs.sequenceIndex = 0;
+                GameCommands::doCommand(roadArgs, GameCommands::Flags::apply);
+            }
+        }
+    }
+
+    // 0x004A7E07
+    static void removeTrainStationAndTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjId, uint8_t stationLength)
+    {
+        auto piecePos = pos;
+        for (auto i = 0U; i < stationLength; ++i)
+        {
+            auto args = GameCommands::TrackRemovalArgs{};
+            args.index = 0;
+            args.pos = piecePos;
+            args.rotation = rotation;
+            args.trackId = 0;
+            args.trackObjectId = trackObjId;
+            // Calling GC directly to match vanilla.
+            // TODO change to use GameCommands::doCommand as this isn't handling costs
+            auto regs = static_cast<registers>(args);
+            regs.bl = GameCommands::Flags::apply;
+            GameCommands::removeTrack(regs);
+
+            piecePos += World::Pos3{ kRotationOffset[rotation], 0 };
+        }
+    }
+
+    // 0x004836EB
+    static bool sub_4836EB(AiThought& thought, CompanyId companyId)
+    {
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
+        {
+            return true;
+        }
+
+        auto operationalStationIdx = [&thought]() {
+            for (auto i = 0; i < thought.numStations; ++i)
+            {
+                auto& aiStation = thought.stations[i];
+                if (aiStation.hasFlags(AiThoughtStationFlags::operational))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }();
+        if (operationalStationIdx == -1)
+        {
+            return true;
+        }
+
+        auto& aiStation = thought.stations[operationalStationIdx];
+        if (thought.trackObjId & (1U << 7))
+        {
+            const auto roadObjId = thought.trackObjId & ~(1U << 7);
+
+            removeRoadStationAndRoad(
+                World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep), aiStation.rotation, roadObjId, companyId);
+        }
+        else
+        {
+            removeTrainStationAndTrack(
+                World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep), aiStation.rotation, thought.trackObjId, thought.stationLength);
+        }
+        aiStation.var_02 &= ~AiThoughtStationFlags::operational;
+        return false;
+    }
+
     // 0x0048715C
     static bool sub_48715C(Company& company, AiThought& thought)
     {
-        // fair amount of logic
-        // removes roads/tracks
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        return call(0x0048715C, regs) & X86_FLAG_CARRY;
+        if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased)
+            || (company.var_85C3 & (1U << 2)))
+        {
+            return sub_4836EB(thought, company.id());
+        }
+        // 0x00487183
+        company.var_85F0++;
+        if (company.var_85F0 >= 1600)
+        {
+            company.var_85C3 |= (1U << 2);
+            return false;
+        }
+        using enum TrackRoadRemoveQueryFlags;
+        if (thought.trackObjId & (1U << 7))
+        {
+            const auto roadObjId = thought.trackObjId & ~(1U << 7);
+            // 0x00487432
+            if (company.var_85C3 & (1U << 1))
+            {
+                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * kSmallZStep);
+                const auto tad = company.var_85D5;
+                const auto roadFlags = queryRoadForRemoval(pos, tad, roadObjId, company.id());
+
+                if ((roadFlags & (malformed | roadTypeShouldNotBeRemoved | isRoadJunction)) != none)
+                {
+                    company.var_85C3 &= ~(1U << 1);
+                    return false;
+                }
+
+                // Get the next road (will be used after the removal)
+                auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(pos, tad);
+                const auto rc = Track::getRoadConnections(nextPos, nextRotation, company.id(), roadObjId, 0, 0);
+
+                auto roadStart = pos;
+                auto roadStartTad = tad;
+                if (roadStartTad & (1U << 2))
+                {
+                    auto& roadSize = TrackData::getUnkRoad(roadStartTad);
+                    roadStart = pos + roadSize.pos;
+                    roadStartTad ^= (1U << 2);
+                    if (roadSize.rotationEnd < 12)
+                    {
+                        roadStart -= World::Pos3{ kRotationOffset[roadSize.rotationEnd], 0 };
+                    }
+                }
+
+                const auto roadId = (roadStartTad >> 3) & 0xF;
+                const auto rotation = roadStartTad & 0x3;
+                roadStart.z += TrackData::getRoadPiece(roadId)[0].z;
+
+                auto args = GameCommands::RoadRemovalArgs{};
+                args.pos = roadStart;
+                args.objectId = roadObjId;
+                args.roadId = roadId;
+                args.rotation = rotation;
+                args.sequenceIndex = 0;
+                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                // If we fail for some reason or we are at the end of the road
+                // we progress to the next phase of road removal
+                if (!success || rc.connections.empty())
+                {
+                    company.var_85C3 &= ~(1U << 1);
+                    return false;
+                }
+
+                company.var_85D0 = nextPos;
+                company.var_85D4 = nextPos.z / kSmallZStep;
+                company.var_85D5 = rc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+                return false;
+            }
+            else
+            {
+                auto stationIdx = company.var_85C2;
+                auto& aiStation = thought.stations[stationIdx];
+                std::optional<World::Pos3> stationPos;
+                uint8_t rotation = 0U;
+                if (company.var_85C3 & (1U << 0))
+                {
+                    if (aiStation.var_A != 0xFFU)
+                    {
+                        stationPos = World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep);
+                        rotation = aiStation.rotation;
+                    }
+                }
+                else
+                {
+                    if (aiStation.var_9 != 0xFFU)
+                    {
+                        stationPos = World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep);
+                        rotation = aiStation.rotation ^ (1U << 1);
+                    }
+                }
+                if (stationPos.has_value())
+                {
+                    uint16_t tad = rotation | (0U << 3);
+                    auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(stationPos.value(), tad);
+                    const auto rc = Track::getRoadConnections(nextPos, nextRotation, company.id(), roadObjId, 0, 0);
+                    for (const auto connection : rc.connections)
+                    {
+                        const auto tadConnection = connection & Track::AdditionalTaDFlags::basicTaDMask;
+
+                        const auto roadFlags = queryRoadForRemoval(nextPos, tadConnection, roadObjId, company.id());
+
+                        if ((roadFlags & (roadTypeShouldNotBeRemoved | malformed | hasStation | isRoadJunction)) != none)
+                        {
+                            continue;
+                        }
+
+                        company.var_85D0 = nextPos;
+                        company.var_85D4 = nextPos.z / kSmallZStep;
+                        company.var_85D5 = tadConnection;
+                        company.var_85C3 |= (1U << 1);
+                        return false;
+                    }
+                }
+                // 0x00487504
+                if (company.var_85C3 & (1U << 0))
+                {
+                    company.var_85C3 &= ~(1U << 0);
+                    company.var_85C2++;
+                    if (company.var_85C2 >= thought.numStations)
+                    {
+                        company.var_85C3 |= (1U << 2); // All stations removed
+                    }
+                }
+                else
+                {
+                    company.var_85C3 |= (1U << 0);
+                }
+                return false;
+            }
+        }
+        else
+        {
+            // 0x0048718D
+            if (company.var_85C3 & (1U << 1))
+            {
+                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * kSmallZStep);
+                const auto tad = company.var_85D5;
+                const auto roadFlags = queryTrackForRemoval(pos, tad, thought.trackObjId, company.id());
+
+                if ((roadFlags & (malformed | hasStation)) != none)
+                {
+                    company.var_85C3 &= ~(1U << 1);
+                    return false;
+                }
+
+                // Get the next track (will be used after the removal)
+                auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(pos, tad);
+                const auto tc = Track::getTrackConnections(nextPos, nextRotation, company.id(), thought.trackObjId, 0, 0);
+
+                auto trackStart = pos;
+                auto trackStartTad = tad;
+                if (trackStartTad & (1U << 2))
+                {
+                    auto& trackSize = TrackData::getUnkTrack(trackStartTad);
+                    trackStart = pos + trackSize.pos;
+                    trackStartTad ^= (1U << 2);
+                    if (trackSize.rotationEnd < 12)
+                    {
+                        trackStart -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+                    }
+                }
+
+                const auto trackId = (trackStartTad >> 3) & 0xF;
+                const auto rotation = trackStartTad & 0x3;
+                trackStart.z += TrackData::getTrackPiece(trackId)[0].z;
+
+                auto args = GameCommands::TrackRemovalArgs{};
+                args.pos = trackStart;
+                args.trackObjectId = thought.trackObjId;
+                args.trackId = trackId;
+                args.rotation = rotation;
+                args.index = 0;
+                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                // If we fail for some reason or we are at the end of the track
+                // we progress to the next phase of track removal
+                if (!success || tc.connections.empty())
+                {
+                    company.var_85C3 &= ~(1U << 1);
+                    return false;
+                }
+
+                company.var_85D0 = nextPos;
+                company.var_85D4 = nextPos.z / kSmallZStep;
+                company.var_85D5 = tc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+                return false;
+            }
+            else
+            {
+                auto stationIdx = company.var_85C2;
+                auto& aiStation = thought.stations[stationIdx];
+                std::optional<World::Pos3> stationPos;
+                uint8_t rotation = 0U;
+                if (company.var_85C3 & (1U << 0))
+                {
+                    if (aiStation.var_A != 0xFFU)
+                    {
+                        const auto stationLength = kRotationOffset[aiStation.rotation] * (thought.stationLength - 1);
+                        stationPos = World::Pos3(aiStation.pos + stationLength, aiStation.baseZ * kSmallZStep);
+                        rotation = aiStation.rotation;
+                    }
+                }
+                else
+                {
+                    if (aiStation.var_9 != 0xFFU)
+                    {
+                        stationPos = World::Pos3(aiStation.pos, aiStation.baseZ * kSmallZStep);
+                        rotation = aiStation.rotation ^ (1U << 1);
+                    }
+                }
+                if (stationPos.has_value())
+                {
+                    uint16_t tad = rotation | (0U << 3);
+                    auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(stationPos.value(), tad);
+                    const auto tc = Track::getTrackConnections(nextPos, nextRotation, company.id(), thought.trackObjId, 0, 0);
+                    for (const auto connection : tc.connections)
+                    {
+                        const auto tadConnection = connection & Track::AdditionalTaDFlags::basicTaDMask;
+
+                        const auto trackFlags = queryTrackForRemoval(nextPos, tadConnection, thought.trackObjId, company.id());
+
+                        if ((trackFlags & (malformed | hasStation)) != none)
+                        {
+                            continue;
+                        }
+
+                        company.var_85D0 = nextPos;
+                        company.var_85D4 = nextPos.z / kSmallZStep;
+                        company.var_85D5 = tadConnection;
+                        company.var_85C3 |= (1U << 1);
+                        return false;
+                    }
+                }
+                // 0x0048727C
+                if (company.var_85C3 & (1U << 0))
+                {
+                    company.var_85C3 &= ~(1U << 0);
+                    company.var_85C2++;
+                    if (company.var_85C2 >= thought.numStations)
+                    {
+                        company.var_85C3 |= (1U << 2); // All stations removed
+                    }
+                }
+                else
+                {
+                    company.var_85C3 |= (1U << 0);
+                }
+                return false;
+            }
+        }
     }
 
     // 0x0043112D
