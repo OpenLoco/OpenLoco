@@ -959,6 +959,17 @@ namespace OpenLoco::Ui::Windows::Options
             if (itemIndex != -1)
             {
                 Audio::setDevice(itemIndex);
+
+                // Start playing the title screen music again if applicable (Fix for #2689)
+                if (SceneManager::isTitleMode())
+                {
+                    auto& cfg = Config::get();
+                    if (cfg.audio.playTitleMusic)
+                    {
+                        Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
+                    }
+                }
+
                 WindowManager::invalidateWidget(w->type, w->number, Widx::audio_device);
             }
         }
