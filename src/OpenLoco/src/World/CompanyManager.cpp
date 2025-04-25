@@ -797,8 +797,7 @@ namespace OpenLoco::CompanyManager
         gameState.lastRailroadOption = tracks.empty() ? 0xFFU : tracks[0];
 
         auto vehicleTypeInt = Numerics::bitScanForward(playerCompany->availableVehicles);
-        const auto vehicleType =
-            vehicleTypeInt == -1 ? VehicleType::train : static_cast<VehicleType>(vehicleTypeInt);
+        const auto vehicleType = vehicleTypeInt == -1 ? VehicleType::train : static_cast<VehicleType>(vehicleTypeInt);
 
         gameState.lastVehicleType = vehicleType;
         gameState.lastBuildVehiclesOption = vehicleType;
