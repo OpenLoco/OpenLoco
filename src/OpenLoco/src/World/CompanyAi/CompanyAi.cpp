@@ -6441,8 +6441,8 @@ namespace OpenLoco
         // if there is an element missing from road/track
         // perhaps a user with cheats removed a different companies road
         malformed = 1U << 1,
-        isRoadJunction = 1U << 2,
-        hasBridge = 1U << 3,
+        hasStation = 1U << 2,
+        isRoadJunction = 1U << 3,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrackRoadRemoveQueryFlags);
 
@@ -6528,9 +6528,9 @@ namespace OpenLoco
             {
                 return malformed;
             }
-            if (elRoad->hasBridge())
+            if (elRoad->hasStationElement())
             {
-                flags |= hasBridge;
+                flags |= hasStation;
             }
         }
         return flags;
@@ -6609,9 +6609,9 @@ namespace OpenLoco
             {
                 return malformed;
             }
-            if (elTrack->hasBridge())
+            if (elTrack->hasStationElement())
             {
-                flags |= hasBridge;
+                flags |= hasStation;
             }
         }
         return flags;
@@ -6746,7 +6746,7 @@ namespace OpenLoco
                 const auto tad = company.var_85D5;
                 const auto roadFlags = queryRoadForRemoval(pos, tad, roadObjId, company.id());
 
-                if ((roadFlags & (malformed | roadTypeShouldNotBeRemoved | hasBridge)) != none)
+                if ((roadFlags & (malformed | roadTypeShouldNotBeRemoved | isRoadJunction)) != none)
                 {
                     company.var_85C3 &= ~(1U << 1);
                     return false;
@@ -6826,7 +6826,7 @@ namespace OpenLoco
 
                         const auto roadFlags = queryRoadForRemoval(nextPos, tadConnection, roadObjId, company.id());
 
-                        if ((roadFlags & (roadTypeShouldNotBeRemoved | malformed | isRoadJunction | hasBridge)) != none)
+                        if ((roadFlags & (roadTypeShouldNotBeRemoved | malformed | hasStation | isRoadJunction)) != none)
                         {
                             continue;
                         }
@@ -6864,7 +6864,7 @@ namespace OpenLoco
                 const auto tad = company.var_85D5;
                 const auto roadFlags = queryTrackForRemoval(pos, tad, thought.trackObjId, company.id());
 
-                if ((roadFlags & (malformed | isRoadJunction)) != none)
+                if ((roadFlags & (malformed | hasStation)) != none)
                 {
                     company.var_85C3 &= ~(1U << 1);
                     return false;
@@ -6945,7 +6945,7 @@ namespace OpenLoco
 
                         const auto trackFlags = queryTrackForRemoval(nextPos, tadConnection, thought.trackObjId, company.id());
 
-                        if ((trackFlags & (malformed | isRoadJunction)) != none)
+                        if ((trackFlags & (malformed | hasStation)) != none)
                         {
                             continue;
                         }
