@@ -6889,7 +6889,7 @@ namespace OpenLoco
 
                 const auto trackId = (trackStartTad >> 3) & 0xF;
                 const auto rotation = trackStartTad & 0x3;
-                trackStart.z += TrackData::getRoadPiece(trackId)[0].z;
+                trackStart.z += TrackData::getTrackPiece(trackId)[0].z;
 
                 auto args = GameCommands::TrackRemovalArgs{};
                 args.pos = trackStart;
