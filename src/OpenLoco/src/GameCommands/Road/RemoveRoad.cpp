@@ -12,6 +12,7 @@
 #include "Objects/RoadObject.h"
 #include "Random.h"
 #include "RemoveRoadStation.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "World/TownManager.h"
 
@@ -225,6 +226,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(roadElPiece));
+                Scenario::getOptions().madeAnyChanges = 1;
                 World::TileManager::setLevelCrossingFlags(roadLoc);
             }
 
