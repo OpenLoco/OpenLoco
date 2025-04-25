@@ -136,7 +136,7 @@ namespace OpenLoco::GameCommands
             // This part was made redundant by a no-op write in Hooks.cpp:
             // writeNop(0x004776DD, 6);
             // TODO: turn this into a setting?
-            if (companyId != CompanyId::neutral && roadEl->hasUnk7_40() || roadEl->hasUnk7_80())
+            if (companyId != CompanyId::neutral && (roadEl->hasUnk7_40() || roadEl->hasUnk7_80()))
             {
                 setErrorText(StringIds::empty);
 
