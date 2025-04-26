@@ -116,11 +116,8 @@ namespace OpenLoco::Ui::Windows::Options
             miscellaneous,
         };
 
-        static void drawTabs(Window* w, Gfx::DrawingContext& drawingCtx)
+        static void prepareDraw(Window& w)
         {
-            Widget::drawTab(w, drawingCtx, ImageIds::tab_display, Widx::tab_display);
-            Widget::drawTab(w, drawingCtx, ImageIds::tab_sound, Widx::tab_sound);
-
             static constexpr uint32_t music_tab_ids[] = {
                 ImageIds::tab_music_0,
                 ImageIds::tab_music_1,
@@ -143,11 +140,11 @@ namespace OpenLoco::Ui::Windows::Options
             // Music tab
             {
                 auto imageId = music_tab_ids[0];
-                if (w->currentTab == tab::music)
+                if (w.currentTab == tab::music)
                 {
-                    imageId = music_tab_ids[(w->frameNo / 4) % 16];
+                    imageId = music_tab_ids[(w.frameNo / 4) % 16];
                 }
-                Widget::drawTab(w, drawingCtx, imageId, Widx::tab_music);
+                w.widgets[Widx::tab_music].image = imageId;
             }
 
             static constexpr uint32_t globe_tab_ids[] = {
@@ -188,21 +185,18 @@ namespace OpenLoco::Ui::Windows::Options
             // Regional tab
             {
                 auto imageId = ImageIds::tab_globe_0;
-                if (w->currentTab == tab::regional)
+                if (w.currentTab == tab::regional)
                 {
-                    imageId = globe_tab_ids[(w->frameNo / 2) % 32];
+                    imageId = globe_tab_ids[(w.frameNo / 2) % 32];
                 }
-                Widget::drawTab(w, drawingCtx, imageId, Widx::tab_regional);
+                w.widgets[Widx::tab_regional].image = imageId;
             }
-
-            Widget::drawTab(w, drawingCtx, ImageIds::tab_control, Widx::tab_controls);
-            Widget::drawTab(w, drawingCtx, ImageIds::tab_miscellaneous, Widx::tab_miscellaneous);
 
             // Company tab
             {
                 auto skin = ObjectManager::get<InterfaceSkinObject>();
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
-                Widget::drawTab(w, drawingCtx, imageId, Widx::tab_company);
+                w.widgets[Widx::tab_company].image = imageId;
             }
         }
 
@@ -219,13 +213,13 @@ namespace OpenLoco::Ui::Windows::Options
                 Widgets::Caption({ 1, 1 }, { (uint16_t)(windowSize.width - 2), 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { windowSize.width, 102 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_display_options),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_sound_options),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_music_options),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_regional_options),
-                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_control_options),
+                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_display, StringIds::tooltip_display_options),
+                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_sound, StringIds::tooltip_sound_options),
+                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_music_0, StringIds::tooltip_music_options),
+                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_globe_0, StringIds::tooltip_regional_options),
+                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_control, StringIds::tooltip_control_options),
                 Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
-                Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_miscellaneous_options));
+                Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_miscellaneous, StringIds::tooltip_miscellaneous_options));
         }
 
         static constexpr int tabWidgets = (1ULL << Widx::tab_display)
@@ -766,6 +760,8 @@ namespace OpenLoco::Ui::Windows::Options
 #endif
 
             sub_4C13BE(&w);
+
+            Common::prepareDraw(w);
         }
 
         // 0x004BFAF9
@@ -773,8 +769,6 @@ namespace OpenLoco::Ui::Windows::Options
         {
             // Draw widgets.
             w.draw(drawingCtx);
-
-            Common::drawTabs(&w, drawingCtx);
         }
 
         static void applyScreenModeRestrictions(Window* w)
@@ -874,6 +868,8 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             sub_4C13BE(&w);
+
+            Common::prepareDraw(w);
         }
 
         // 0x004C02F5
@@ -881,8 +877,6 @@ namespace OpenLoco::Ui::Windows::Options
         {
             // Draw widgets.
             w.draw(drawingCtx);
-
-            Common::drawTabs(&w, drawingCtx);
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
@@ -1106,6 +1100,8 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             sub_4C13BE(&w);
+
+            Common::prepareDraw(w);
         }
 
         // 0x004C05F9
@@ -1113,8 +1109,6 @@ namespace OpenLoco::Ui::Windows::Options
         {
             // Draw widgets.
             w.draw(drawingCtx);
-
-            Common::drawTabs(&w, drawingCtx);
 
             // TODO: Move this in Slider widget.
             drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
@@ -1473,6 +1467,8 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             sub_4C13BE(&w);
+
+            Common::prepareDraw(w);
         }
 
         // 0x004C0B5B
@@ -1480,8 +1476,6 @@ namespace OpenLoco::Ui::Windows::Options
         {
             // Draw widgets.
             w.draw(drawingCtx);
-
-            Common::drawTabs(&w, drawingCtx);
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
@@ -1896,13 +1890,14 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             sub_4C13BE(&w);
+
+            Common::prepareDraw(w);
         }
 
         // 0x004C113F
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
             w.draw(drawingCtx);
-            Common::drawTabs(&w, drawingCtx);
         }
 
         // 0x004C114A
@@ -2132,7 +2127,7 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push(StringIds::buffer_2039);
             }
 
-            // Set preffered owner face.
+            // Set preferred owner face.
             if (w.object != nullptr)
             {
                 const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(w.object);
@@ -2147,12 +2142,13 @@ namespace OpenLoco::Ui::Windows::Options
 
             sub_4C13BE(&w);
             loadPreferredFace(w);
+
+            Common::prepareDraw(w);
         }
 
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
             w.draw(drawingCtx);
-            Common::drawTabs(&w, drawingCtx);
         }
 
         // 0x004C1319
@@ -2446,6 +2442,8 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             sub_4C13BE(&w);
+
+            Common::prepareDraw(w);
         }
 
         static void drawDropdownContent(Window* w, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
@@ -2465,7 +2463,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
             w.draw(drawingCtx);
-            Common::drawTabs(&w, drawingCtx);
 
             // Value for autosave frequency
             auto freq = Config::get().autosaveFrequency;
