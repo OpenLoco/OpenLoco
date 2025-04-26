@@ -14,6 +14,7 @@
 #include <cstdint>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
@@ -131,46 +132,43 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
         _vehicleUpdate_backBogie = X86Pointer(this);
 
-        uint32_t speed = this->var_5A & 0x7FFFFFFF;
-        uint32_t var_5A_msb_flag_temp = this->var_5A & 0x80000000;
+        Speed32 speed = Speed32(var_5A & 0x7FFFFFFF);
+        bool isComponentDestroyed = this->var_5A & (1U << 31);
         speed = speed - (speed / 64);
-        if (speed <= 8192)
+        if (speed <= 2.0_mph)
         {
-            speed = 0;
+            speed = 0.0_mph;
         }
 
-        this->var_5A = speed | var_5A_msb_flag_temp;
-        _vehicleUpdate_var_113612C = speed / 128;
-        _vehicleUpdate_var_1136130 = speed / 128;
+        this->var_5A = speed.getRaw() | (isComponentDestroyed ? (1U << 31) : 0);
+        _vehicleUpdate_var_113612C = speed.getRaw() / 128;
+        _vehicleUpdate_var_1136130 = speed.getRaw() / 128;
 
         this->updateRoll();
 
-        if ((this->var_5A & 0x80000000) == 0x80000000)
+        if (isComponentDestroyed)
         {
-            int32_t distance = this->var_5A & 0x7FFFFFFF;
-
-            if (distance >= 0x10000)
+            if (speed >= 1.0_mph)
             {
-                int32_t cos_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].x;
-                int32_t sin_angle = Math::Trigonometry::kYawToDirectionVector[this->spriteYaw].y;
-                int32_t x_distance = (distance * cos_angle) / 4096;
-                int32_t y_distance = (distance * sin_angle) / 4096;
+                const auto distanceTravelled = speed.getRaw() / 16;
+                auto xyDistance = Math::Trigonometry::computeXYVector(distanceTravelled, spriteYaw);
 
-                int16_t x_distance_low = x_distance & 0x0000FFFF;
-                int16_t y_distance_low = y_distance & 0x0000FFFF;
-                int16_t x_distance_hi = x_distance / 65536;
-                int16_t y_distance_hi = y_distance / 65536;
-                int32_t newTileX = this->tileX + x_distance_low;
+                int16_t xDistanceLow = xyDistance.x & 0x0000FFFF;
+                int16_t yDistanceLow = xyDistance.y & 0x0000FFFF;
+                World::Pos2 distanceWorld(xyDistance.x / 65536, xyDistance.y / 65536);
+                // We are storing the lower precision in tileX and tileY they aren't actually being used
+                // as tileX and tileY.
+                int32_t newTileX = this->tileX + xDistanceLow;
                 if (newTileX >= 0x00010000)
                 {
-                    x_distance_hi += 1; // carry bit
+                    distanceWorld.x++;
                 }
                 this->tileX = newTileX & 0x0000FFFF;
 
-                int32_t newTileY = this->tileY + y_distance_low;
+                int32_t newTileY = this->tileY + yDistanceLow;
                 if (newTileY >= 0x00010000)
                 {
-                    y_distance_hi += 1; // carry bit
+                    distanceWorld.y++;
                 }
                 this->tileY = newTileY & 0x0000FFFF;
 
@@ -178,22 +176,22 @@ namespace OpenLoco::Vehicles
                 int16_t zDistance = this->tileBaseZ / 32;
 
                 // Calculate new position - but don't update yet!! This is pushed to the stack.
-                World::Pos3 newPosition{ this->position.x + x_distance_hi, this->position.y + y_distance_hi, this->position.z - zDistance };
+                World::Pos3 newPosition{ position + World::Pos3(distanceWorld, -zDistance) };
 
                 if (!sub_4AA959(this->position))
                 {
-                    World::Pos3 position_to_test = { newPosition.x, newPosition.y, this->position.z };
-                    if (sub_4AA959(position_to_test))
+                    World::Pos3 positionToTest = { newPosition.x, newPosition.y, this->position.z };
+                    if (sub_4AA959(positionToTest))
                     {
                         newPosition.x = this->position.x;
                         newPosition.y = this->position.y;
 
-                        if (this->var_5A >= 0x50000)
+                        if (speed >= 5.0_mph)
                         {
                             rotateAndExplodeIfNotAlreadyExploded();
                         }
 
-                        this->var_5A = ((this->var_5A & 0x7FFFFFFF) / 2) | 0x80000000;
+                        this->var_5A = ((speed / 2).getRaw() | (1U << 31));
                     }
 
                     if (sub_4AA959(newPosition))
@@ -209,27 +207,26 @@ namespace OpenLoco::Vehicles
                 }
 
                 World::Pos2 currentPosition2D{ newPosition.x, newPosition.y };
-                auto newTileHeight = World::TileManager::getHeight(currentPosition2D);
+                const auto newTileHeight = World::TileManager::getHeight(currentPosition2D);
                 if (newTileHeight.landHeight >= this->position.z
                     || newTileHeight.landHeight >= newPosition.z)
                 {
                     if (newTileHeight.landHeight < this->position.z
                         && newTileHeight.landHeight >= newPosition.z)
                     {
-                        newTileHeight.landHeight = this->position.z;
-                        newPosition.z = newTileHeight.landHeight;
+                        newPosition.z = this->position.z;
                         this->tileBaseZ = 0;
                     }
 
                     newPosition.x = this->position.x;
                     newPosition.y = this->position.y;
 
-                    if (this->var_5A >= 0x50000)
+                    if (speed >= 5.0_mph)
                     {
                         rotateAndExplodeIfNotAlreadyExploded();
                     }
 
-                    this->var_5A = ((this->var_5A & 0x7FFFFFFF) / 2) | 0x80000000;
+                    this->var_5A = ((speed / 2).getRaw() | (1U << 31));
                 }
 
                 if (newTileHeight.waterHeight != 0
@@ -240,7 +237,7 @@ namespace OpenLoco::Vehicles
                     {
                         World::Pos3 splashPos{ this->position.x, this->position.y, newTileHeight.waterHeight };
                         Splash::create(splashPos);
-                        Audio::playSound(Audio::SoundId::splash2, splashPos, 0x8001); // TODO: use kPlayAtLocation instead of hex literal for 0x8001
+                        Audio::playSound(Audio::SoundId::splash2, splashPos);
                     }
                 }
 
@@ -256,7 +253,7 @@ namespace OpenLoco::Vehicles
                 this->updateTrackMotion(_vehicleUpdate_var_113612C);
                 if ((_vehicleUpdate_var_1136114 & 0x3) != 0)
                 {
-                    this->var_5A |= 0x80000000;
+                    this->var_5A |= 1U << 31;
                 }
             }
         }

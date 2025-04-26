@@ -3653,15 +3653,13 @@ namespace OpenLoco::Vehicles
     // 0x004AA625
     void VehicleHead::landCrashedUpdate()
     {
-        VehicleBase* currentVehicle = reinterpret_cast<VehicleBase*>(this);
-        EntityId nextVehicleId = currentVehicle->id;
-
-        while (currentVehicle)
+        VehicleBase* currentVehicle = this;
+        while (currentVehicle != nullptr)
         {
             switch (currentVehicle->getSubType())
             {
                 case VehicleEntityType::head:
-                    reinterpret_cast<VehicleHead*>(currentVehicle)->updateSegmentCrashed();
+                    currentVehicle->asVehicleHead()->updateSegmentCrashed();
                     break;
                 case VehicleEntityType::vehicle_1:
                     // calls nullsub_21: empty subroutine
@@ -3670,11 +3668,11 @@ namespace OpenLoco::Vehicles
                     // calls nullsub_22: empty subroutine
                     break;
                 case VehicleEntityType::bogie:
-                    reinterpret_cast<VehicleBogie*>(currentVehicle)->updateSegmentCrashed();
+                    currentVehicle->asVehicleBogie()->updateSegmentCrashed();
                     break;
                 case VehicleEntityType::body_start:
                 case VehicleEntityType::body_continued:
-                    reinterpret_cast<VehicleBody*>(currentVehicle)->updateSegmentCrashed();
+                    currentVehicle->asVehicleBody()->updateSegmentCrashed();
                     break;
                 case VehicleEntityType::tail:
                     // calls nullsub_23: empty subroutine
@@ -3683,28 +3681,20 @@ namespace OpenLoco::Vehicles
                     break;
             }
 
-            nextVehicleId = currentVehicle->getNextCar();
-            if (nextVehicleId == EntityId::null)
-            {
-                return;
-            }
-            else
-            {
-                currentVehicle = EntityManager::get<VehicleBase>(nextVehicleId);
-            }
+            currentVehicle = currentVehicle->nextVehicleComponent();
         }
     }
 
     // 0x004AA64B
     void VehicleHead::updateSegmentCrashed()
     {
-        _vehicleUpdate_head = X86Pointer(this);
+        Vehicle train(head);
+        _vehicleUpdate_head = this;
         _vehicleUpdate_frontBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
         _vehicleUpdate_backBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
 
-        VehicleBase* nextCar = EntityManager::get<VehicleBase>(this->getNextCar());
-        _vehicleUpdate_1 = reinterpret_cast<Vehicle1*>(nextCar);
-        _vehicleUpdate_2 = EntityManager::get<Vehicle2>(nextCar->getNextCar());
+        _vehicleUpdate_1 = train.veh1;
+        _vehicleUpdate_2 = train.veh2;
     }
 
     // 0x004ACEE7
