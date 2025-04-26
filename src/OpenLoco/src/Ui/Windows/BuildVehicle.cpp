@@ -742,9 +742,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.rowHeight = _scrollRowHeight[newTab];
                 window.frameNo = 0;
                 window.currentSecondaryTab = 0;
-                if (newTab != getGameState().lastBuildVehiclesOption)
+                if (newTab != enumValue(getGameState().lastBuildVehiclesOption))
                 {
-                    getGameState().lastBuildVehiclesOption = newTab;
+                    getGameState().lastBuildVehiclesOption = static_cast<VehicleType>(newTab);
                     WindowManager::invalidate(WindowType::topToolbar, 0);
                 }
 

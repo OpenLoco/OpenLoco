@@ -784,7 +784,27 @@ namespace OpenLoco::CompanyManager
 
     static void sub_4A6DA9()
     {
-        call(0x004A6DA9);
+        auto* playerCompany = getPlayerCompany();
+        auto& gameState = getGameState();
+        auto roadType = gameState.lastTrackTypeOption;
+        if (roadType == 0xFFU)
+        {
+            const auto roads = companyGetAvailableRoads(playerCompany->id());
+            roadType = roads.empty() ? 0xFFU : roads[0];
+        }
+        gameState.lastRoadOption = roadType;
+        const auto tracks = companyGetAvailableRailTracks(playerCompany->id());
+        gameState.lastRailroadOption = tracks.empty() ? 0xFFU : tracks[0];
+
+        auto vehicleTypeInt = Numerics::bitScanForward(playerCompany->availableVehicles);
+        const auto vehicleType = vehicleTypeInt == -1 ? VehicleType::train : static_cast<VehicleType>(vehicleTypeInt);
+
+        gameState.lastVehicleType = vehicleType;
+        gameState.lastBuildVehiclesOption = vehicleType;
+        gameState.lastAirport = 0xFFU;
+        gameState.lastShipPort = 0xFFU;
+
+        Ui::Windows::Construction::updateAvailableAirportAndDockOptions();
     }
 
     // 0x0042F863
