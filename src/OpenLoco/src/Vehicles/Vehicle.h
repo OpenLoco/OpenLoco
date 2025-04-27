@@ -686,7 +686,6 @@ namespace OpenLoco::Vehicles
         bool sub_4AA959(World::Pos3& pos);
         void updateRoll();
         void collision();
-        bool rotateAndExplodeIfNotAlreadyExploded();
     };
     static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
