@@ -296,6 +296,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicleComponent();
         VehicleBase* previousVehicleComponent();
         bool updateComponent();
+        void explodeComponent();
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
         int32_t updateTrackMotion(int32_t unk1);
@@ -399,6 +400,8 @@ namespace OpenLoco::Vehicles
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void sub_4AF7A4();
+        void landCrashedUpdate();
+        void updateSegmentCrashed();
         uint32_t getVehicleTotalLength() const;
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -453,7 +456,6 @@ namespace OpenLoco::Vehicles
         void produceLeavingDockSound();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
-        void sub_4AA625();
         std::tuple<uint8_t, uint8_t, StationId> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
@@ -605,6 +607,7 @@ namespace OpenLoco::Vehicles
         const VehicleObject* getObject() const;
         bool update();
         void secondaryAnimationUpdate();
+        void updateSegmentCrashed();
         void sub_4AAB0B();
         void updateCargoSprite();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
@@ -672,6 +675,7 @@ namespace OpenLoco::Vehicles
     public:
         AirportObjectFlags getCompatibleAirportType();
         bool update();
+        void updateSegmentCrashed();
         bool isOnRackRail();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -679,6 +683,7 @@ namespace OpenLoco::Vehicles
         }
 
     private:
+        bool sub_4AA959(World::Pos3& pos);
         void updateRoll();
         void collision();
     };
