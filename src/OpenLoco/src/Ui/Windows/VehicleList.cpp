@@ -329,7 +329,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(self->number));
 
-        static std::pair<WidgetIndex_t, std::array<uint32_t, 8>> tabAnimations[] = {
+        static constexpr std::pair<WidgetIndex_t, std::array<uint32_t, 8>> tabAnimations[] = {
             { Widx::tab_trains, {
                                     InterfaceSkin::ImageIds::vehicle_train_frame_0,
                                     InterfaceSkin::ImageIds::vehicle_train_frame_1,
@@ -525,7 +525,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             args.push(company->name);
         }
 
-        static constexpr StringId typeToCaption[] = {
+        static constexpr StringId kTypeToCaption[] = {
             StringIds::stringid_trains,
             StringIds::stringid_buses,
             StringIds::stringid_trucks,
@@ -542,7 +542,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[Widx::panel].bottom = self.height - 1;
 
         self.widgets[Widx::caption].right = self.width - 2;
-        self.widgets[Widx::caption].text = typeToCaption[self.currentTab];
+        self.widgets[Widx::caption].text = kTypeToCaption[self.currentTab];
 
         self.widgets[Widx::close_button].left = self.width - 15;
         self.widgets[Widx::close_button].right = self.width - 3;
@@ -605,7 +605,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         Widget::leftAlignTabs(self, Widx::tab_trains, Widx::tab_ships);
 
-        static constexpr std::pair<StringId, StringId> typeToFooterStringIds[]{
+        static constexpr std::pair<StringId, StringId> kTypeToFooterStringIds[]{
             { StringIds::num_trains_singular, StringIds::num_trains_plural },
             { StringIds::num_buses_singular, StringIds::num_buses_plural },
             { StringIds::num_trucks_singular, StringIds::num_trucks_plural },
@@ -622,12 +622,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             // Set status bar
             FormatArguments args{ widget.textArgs };
-            auto& footerStringPair = typeToFooterStringIds[self.currentTab];
+            auto& footerStringPair = kTypeToFooterStringIds[self.currentTab];
             args.push(self.var_83C == 1 ? footerStringPair.first : footerStringPair.second);
             args.push(self.var_83C);
         }
 
-        static constexpr std::array<StringId, 2> typeToFilterStringIds{
+        static constexpr std::array<StringId, 2> kTypeToFilterStringIds{
             StringIds::all_vehicles,
             StringIds::transporting_cargo,
         };
@@ -636,7 +636,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             // Set current filter type
             auto& widget = self.widgets[Widx::filter_type];
             FormatArguments args{ widget.textArgs };
-            args.push(typeToFilterStringIds[self.var_88A]);
+            args.push(kTypeToFilterStringIds[self.var_88A]);
         }
 
         auto& widget = self.widgets[Widx::cargo_type];

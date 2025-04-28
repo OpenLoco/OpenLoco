@@ -976,7 +976,7 @@ namespace OpenLoco::Ui::Windows::Station
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
 
-            static constexpr std::pair<StringId, StringId> typeToFooterStringIds[]{
+            static constexpr std::pair<StringId, StringId> kTypeToFooterStringIds[]{
                 { StringIds::num_trains_singular, StringIds::num_trains_plural },
                 { StringIds::num_buses_singular, StringIds::num_buses_plural },
                 { StringIds::num_trucks_singular, StringIds::num_trucks_plural },
@@ -993,7 +993,7 @@ namespace OpenLoco::Ui::Windows::Station
 
                 // Set status bar
                 FormatArguments args{ widget.textArgs };
-                auto& footerStringPair = typeToFooterStringIds[enumValue(currentVehicleType)];
+                auto& footerStringPair = kTypeToFooterStringIds[enumValue(currentVehicleType)];
                 args.push(self.var_83C == 1 ? footerStringPair.first : footerStringPair.second);
                 args.push(self.var_83C);
             }
@@ -1520,7 +1520,7 @@ namespace OpenLoco::Ui::Windows::Station
             }
 
             // clang-format off
-            static std::pair<WidgetIndex_t, std::array<uint32_t, 8>> tabAnimations[] = {
+            static constexpr std::pair<WidgetIndex_t, std::array<uint32_t, 8>> kTabAnimations[] = {
                 { Common::widx::tab_vehicles_trains, {
                     InterfaceSkin::ImageIds::vehicle_train_frame_0,
                     InterfaceSkin::ImageIds::vehicle_train_frame_1,
@@ -1584,7 +1584,7 @@ namespace OpenLoco::Ui::Windows::Station
             };
             // clang-format on
 
-            for (auto [tab, frames] : tabAnimations)
+            for (auto [tab, frames] : kTabAnimations)
             {
                 if (self->isDisabled(tab))
                 {
