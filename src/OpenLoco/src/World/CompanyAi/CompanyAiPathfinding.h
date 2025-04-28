@@ -1,4 +1,5 @@
 #pragma once
+#include <sfl/static_vector.hpp>
 
 namespace OpenLoco
 {
@@ -8,5 +9,5 @@ namespace OpenLoco
 
 namespace OpenLoco::CompanyAi
 {
-    void sub_483A7E(Company& company, AiThought& thought);
+    sfl::static_vector<uint8_t, 64> sub_483A7E(Company& company, AiThought& thought);
 }
