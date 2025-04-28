@@ -298,7 +298,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
     }
 
-    namespace VehiclesCalling
+    namespace VehiclesStopping
     {
         static void refreshVehicleList(Window* self);
     }
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows::Station
         window->invalidate();
 
         // We'll need the vehicle list to determine what vehicle tabs to show
-        VehiclesCalling::refreshVehicleList(window);
+        VehiclesStopping::refreshVehicleList(window);
 
         window->setWidgets(Station::widgets);
         window->holdableWidgets = 0;
@@ -784,7 +784,7 @@ namespace OpenLoco::Ui::Windows::Station
 
     // NB: This namespace shares a fair bit of code with the VehicleList window.
     // We should look into sharing some of these functions.
-    namespace VehiclesCalling
+    namespace VehiclesStopping
     {
         static constexpr Ui::Size32 kWindowSize = { 400, 200 };
 
@@ -1285,12 +1285,12 @@ namespace OpenLoco::Ui::Windows::Station
             { widx::tab_station,           Station::widgets,         Station::getEvents(),          0 },
             { widx::tab_cargo,             Cargo::widgets,           Cargo::getEvents(),            0 },
             { widx::tab_cargo_ratings,     CargoRatings::widgets,    CargoRatings::getEvents(),     0 },
-            { widx::tab_vehicles_trains,   VehiclesCalling::widgets, VehiclesCalling::getEvents(), 28 },
-            { widx::tab_vehicles_buses,    VehiclesCalling::widgets, VehiclesCalling::getEvents(), 28 },
-            { widx::tab_vehicles_trucks,   VehiclesCalling::widgets, VehiclesCalling::getEvents(), 28 },
-            { widx::tab_vehicles_trams,    VehiclesCalling::widgets, VehiclesCalling::getEvents(), 28 },
-            { widx::tab_vehicles_aircraft, VehiclesCalling::widgets, VehiclesCalling::getEvents(), 48 },
-            { widx::tab_vehicles_ships,    VehiclesCalling::widgets, VehiclesCalling::getEvents(), 36 },
+            { widx::tab_vehicles_trains,   VehiclesStopping::widgets, VehiclesStopping::getEvents(), 28 },
+            { widx::tab_vehicles_buses,    VehiclesStopping::widgets, VehiclesStopping::getEvents(), 28 },
+            { widx::tab_vehicles_trucks,   VehiclesStopping::widgets, VehiclesStopping::getEvents(), 28 },
+            { widx::tab_vehicles_trams,    VehiclesStopping::widgets, VehiclesStopping::getEvents(), 28 },
+            { widx::tab_vehicles_aircraft, VehiclesStopping::widgets, VehiclesStopping::getEvents(), 48 },
+            { widx::tab_vehicles_ships,    VehiclesStopping::widgets, VehiclesStopping::getEvents(), 36 },
         };
         // clang-format on
 
@@ -1446,7 +1446,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->rowHeight = tabInfo.rowHeight;
 
             // We'll need the vehicle list to determine what vehicle tabs to show
-            VehiclesCalling::refreshVehicleList(self);
+            VehiclesStopping::refreshVehicleList(self);
             self->rowCount = 0;
             self->var_83C = 0;
             self->rowHover = -1;

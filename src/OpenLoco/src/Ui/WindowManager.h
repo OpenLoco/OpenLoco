@@ -339,7 +339,7 @@ namespace OpenLoco::Ui::Windows
         void showStationCatchment(StationId id);
         void sub_491BC6();
 
-        namespace VehiclesCalling
+        namespace VehiclesStopping
         {
             void removeTrainFromList(Window& self, EntityId head);
         }
