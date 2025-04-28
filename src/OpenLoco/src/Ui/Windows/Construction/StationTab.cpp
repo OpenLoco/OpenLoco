@@ -824,19 +824,21 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
     {
-        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::roadAndTram);
+        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::roadAndTram | ViewportInteraction::InteractionItemFlags::station));
         const auto& interaction = res.first;
-        if (interaction.type != ViewportInteraction::InteractionItem::road)
+        if (interaction.type != ViewportInteraction::InteractionItem::road && interaction.type != ViewportInteraction::InteractionItem::roadStation)
         {
             return std::nullopt;
         }
 
         auto* elRoad = reinterpret_cast<const TileElement*>(interaction.object)->as<RoadElement>();
-        if (elRoad == nullptr)
+        auto* elStation = reinterpret_cast<const TileElement*>(interaction.object)->as<StationElement>();
+        if (elRoad == nullptr && elStation == nullptr)
         {
             return std::nullopt;
         }
 
+        // Deliberately always passing road and not station element, even if nullptr
         return getRoadStationPlacementArgs(interaction.pos, elRoad);
     }
 
@@ -895,19 +897,21 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
     {
-        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::track);
+        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track | ViewportInteraction::InteractionItemFlags::station));
         const auto& interaction = res.first;
-        if (interaction.type != ViewportInteraction::InteractionItem::track)
+        if (interaction.type != ViewportInteraction::InteractionItem::track && interaction.type != ViewportInteraction::InteractionItem::trainStation)
         {
             return std::nullopt;
         }
 
         auto* elTrack = reinterpret_cast<const TileElement*>(interaction.object)->as<TrackElement>();
-        if (elTrack == nullptr)
+        auto* elStation = reinterpret_cast<const TileElement*>(interaction.object)->as<StationElement>();
+        if (elTrack == nullptr && elStation == nullptr)
         {
             return std::nullopt;
         }
 
+        // Deliberately always passing track and not station element, even if nullptr
         return getTrainStationPlacementArgs(interaction.pos, elTrack);
     }
 

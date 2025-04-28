@@ -273,21 +273,6 @@ namespace OpenLoco::GameCommands
                 setErrorText(StringIds::empty);
                 return FAILURE;
             }
-
-            if (initialElRoad->hasStationElement())
-            {
-                auto* elStation = getStationElement(args.pos);
-                // Will happen if its an aiAllocated station
-                if (elStation == nullptr)
-                {
-                    setErrorText(StringIds::empty);
-                }
-                else
-                {
-                    setErrorText(StringIds::station_in_the_way);
-                }
-                return FAILURE;
-            }
         }
         auto& roadPieces = World::TrackData::getRoadPiece(args.roadId);
         auto& argPiece = roadPieces[index];
@@ -511,7 +496,8 @@ namespace OpenLoco::GameCommands
             if (piece.index == 0)
             {
                 bool calculateCost = true;
-                // Why?? we already blocked this from occurring???
+
+                // Replace station if it already exists
                 if (!unk112C7F3 && elRoads[1]->hasStationElement())
                 {
                     auto* elStation = elRoads[1]->next()->as<World::StationElement>();
@@ -531,6 +517,7 @@ namespace OpenLoco::GameCommands
                         totalCost += cost;
                     }
                 }
+
                 if (calculateCost)
                 {
                     auto placementCostBase = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
@@ -660,6 +647,7 @@ namespace OpenLoco::GameCommands
             newStationElement->setOwner(getUpdatingCompanyId());
             Ui::ViewportManager::invalidate(roadLoc, newStationElement->baseHeight(), newStationElement->clearHeight());
         }
+
         if (!(flags & Flags::ghost) && (flags & Flags::apply))
         {
             if (_112C7A9)
