@@ -828,7 +828,6 @@ namespace OpenLoco::Ui::Windows::Station
             return static_cast<VehicleType>(self->currentTab - (Common::widx::tab_vehicles_trains - Common::widx::tab_station));
         }
 
-        // 0x004C1D4F
         static void refreshVehicleList(Window* self)
         {
             auto currentVehicleType = getCurrentVehicleType(self);
@@ -852,7 +851,6 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        // 0x004C1E4F
         static bool orderByName(const VehicleHead& lhs, const VehicleHead& rhs)
         {
             char lhsString[256] = { 0 };
@@ -872,7 +870,6 @@ namespace OpenLoco::Ui::Windows::Station
             return Utility::strlogicalcmp(lhsString, rhsString) < 0;
         }
 
-        // 0x004C1D92
         static void updateVehicleList(Window* self)
         {
             auto currentVehicleType = getCurrentVehicleType(self);
@@ -947,7 +944,6 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        // 0x004C1D19
         void removeTrainFromList(Window& self, EntityId head)
         {
             for (auto i = 0; i < self.var_83C; ++i)
@@ -960,7 +956,6 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        // 0x004C1F88
         static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
@@ -1004,14 +999,12 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        // 0x004C211C
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
         }
 
-        // 0x004C21CD
         static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
         {
             const auto& rt = drawingCtx.currentRenderTarget();
@@ -1082,7 +1075,6 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        // 0x004C24CA
         static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
@@ -1090,7 +1082,6 @@ namespace OpenLoco::Ui::Windows::Station
             return args;
         }
 
-        // 0x004C260B
         static void onUpdate(Window& self)
         {
             self.frameNo++;
@@ -1103,13 +1094,11 @@ namespace OpenLoco::Ui::Windows::Station
             self.invalidate();
         }
 
-        // 0x004C2640
         static void event_08(Window& self)
         {
             self.flags |= WindowFlags::notScrollView;
         }
 
-        // 0x004C2648
         static void event_09(Window& self)
         {
             if (self.hasFlags(WindowFlags::notScrollView))
@@ -1118,13 +1107,11 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        // 0x004C265B
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = self.var_83C * self.rowHeight;
         }
 
-        // 0x004C266D
         static CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
@@ -1141,7 +1128,6 @@ namespace OpenLoco::Ui::Windows::Station
             return fallback;
         }
 
-        // 0x004C26A4
         static void onScrollMouseOver(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             self.flags &= ~WindowFlags::notScrollView;
@@ -1157,7 +1143,6 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        // 0x004C27C0
         static void onScrollMouseDown(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             uint16_t currentRow = y / self.rowHeight;
@@ -1188,7 +1173,6 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        // 0x004C2820
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
