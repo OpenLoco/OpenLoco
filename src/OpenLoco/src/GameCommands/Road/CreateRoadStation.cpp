@@ -273,6 +273,18 @@ namespace OpenLoco::GameCommands
                 setErrorText(StringIds::empty);
                 return FAILURE;
             }
+
+            if (initialElRoad->hasStationElement())
+            {
+                auto* elStation = getStationElement(args.pos);
+                // Will happen if its an aiAllocated station
+                if (elStation == nullptr)
+                {
+                    setErrorText(StringIds::empty);
+                    return FAILURE;
+                }
+                // Otherwise, allow replacement
+            }
         }
         auto& roadPieces = World::TrackData::getRoadPiece(args.roadId);
         auto& argPiece = roadPieces[index];
