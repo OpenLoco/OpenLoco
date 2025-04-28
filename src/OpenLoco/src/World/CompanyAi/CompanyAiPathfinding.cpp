@@ -22,9 +22,10 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint8_t, 0x0112C59F> _createTrackRoadCommandBridge0;
     static Interop::loco_global<uint8_t, 0x0112C5A0> _createTrackRoadCommandBridge1;
     static Interop::loco_global<uint8_t, 0x0112C5A1> _createTrackRoadCommandBridge2;
+    static Interop::loco_global<uint8_t[65], 0x0112C51A> _validTrackRoadIds;
 
     // 0x00483A7E
-    sfl::static_vector<uint8_t, 64> sub_483A7E(Company& company, AiThought& thought)
+    static sfl::static_vector<uint8_t, 64> sub_483A7E(const Company& company, const AiThought& thought)
     {
         // 0x0112C384
         bool allowSteepSlopes = false;
@@ -155,6 +156,7 @@ namespace OpenLoco::CompanyAi
                     validRoadIds.push_back(8U); // straightSteepSlopeDown
                 }
             }
+            return validRoadIds;
         }
         else
         {
@@ -220,6 +222,29 @@ namespace OpenLoco::CompanyAi
                     validTrackIds.push_back(17U); // straightSteepSlopeDown
                 }
             }
+            return validTrackIds;
         }
+    }
+
+    void registerHooks()
+    {
+        Interop::registerHook(
+            0x00483A7E,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+
+                auto& company = *Interop::X86Pointer<Company>(regs.esi);
+                auto& thought = *Interop::X86Pointer<AiThought>(regs.edi);
+                const auto validTrackRoadIds = sub_483A7E(company, thought);
+                auto* ptr = &_validTrackRoadIds[0];
+                for (auto id : validTrackRoadIds)
+                {
+                    *ptr++ = id;
+                }
+                *ptr = 0xFFU;
+
+                regs = backup;
+                return 0;
+            });
     }
 }
