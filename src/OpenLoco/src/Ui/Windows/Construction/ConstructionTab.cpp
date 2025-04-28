@@ -54,6 +54,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
     static loco_global<uint8_t[18], 0x0050A006> _availableObjects;   // top toolbar
 
+    // TODO: move to ConstructionState when no longer a loco_global?
+    static bool _isDragging = false;
+    static World::TilePos2 _toolPosDrag;
+    static World::TilePos2 _toolPosInitial;
+
     namespace TrackPiece
     {
         enum
@@ -315,7 +320,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049F92D
-    static void constructTrack([[maybe_unused]] Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static void constructTrackOrRoad([[maybe_unused]] Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         if (_cState->trackType & (1 << 7))
         {
@@ -520,7 +525,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 break;
 
             case widx::construct:
-                constructTrack(&self, widgetIndex);
+                constructTrackOrRoad(&self, widgetIndex);
                 break;
 
             case widx::remove:
@@ -1866,7 +1871,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 if (Input::getClickRepeatTicks() >= 40)
                 {
-                    constructTrack(&self, widgetIndex);
+                    constructTrackOrRoad(&self, widgetIndex);
                 }
                 break;
             }
@@ -2090,7 +2095,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             activateSelectedConstructionWidgets();
             auto window = WindowManager::find(WindowType::construction);
 
-            // Attempt to place track piece -- in silent
+            // Attempt to place track piece -- in silence
             _suppressErrorSound = true;
             onMouseUp(*window, widx::construct, WidgetId::none);
             _suppressErrorSound = false;
@@ -2468,7 +2473,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     // 0x004A1968
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece, typename GetPlacementArgsFunc, typename PlaceGhostFunc>
-    static void onToolUpdateTrack(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
+    static void onToolUpdateSingle(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
         World::mapInvalidateMapSelectionTiles();
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
@@ -2543,18 +2548,64 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
 
+        if (_isDragging)
+        {
+            mapInvalidateMapSelectionTiles();
+            removeConstructionGhosts();
+            return;
+        }
+
         if (_cState->trackType & (1 << 7))
         {
-            onToolUpdateTrack(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
+            onToolUpdateSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
         }
         else
         {
-            onToolUpdateTrack(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
+            onToolUpdateSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
         }
     }
 
+    static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+    {
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+        auto& interaction = res.first;
+        if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
+        {
+            return;
+        }
+
+        _toolPosInitial = World::toTileSpace(interaction.pos);
+        _isDragging = false;
+    }
+
+    static void onToolDrag([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
+    {
+        mapInvalidateSelectionRect();
+        removeConstructionGhosts();
+
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+        auto& interaction = res.first;
+        if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
+        {
+            return;
+        }
+
+        _toolPosDrag = World::toTileSpace(interaction.pos);
+        _isDragging = _toolPosInitial != _toolPosDrag;
+        if (!_isDragging)
+        {
+            return;
+        }
+
+        setMapSelectionFlags(MapSelectionFlags::enable);
+        setMapSelectionCorner(MapSelectionType::full);
+
+        setMapSelectionArea(toWorldSpace(_toolPosInitial), toWorldSpace(_toolPosDrag));
+        mapInvalidateSelectionRect();
+    }
+
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
-    static void onToolDownT(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece)
+    static void onToolUpSingle(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece)
     {
         mapInvalidateMapSelectionTiles();
         removeConstructionGhosts();
@@ -2622,22 +2673,82 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         constructionLoop(constructPos, maxRetries, constructHeight);
     }
 
+    static void onToolUpMultiple(Window& self, const WidgetIndex_t widgetIndex)
+    {
+        mapInvalidateMapSelectionTiles();
+        removeConstructionGhosts();
+
+        auto rotation = _cState->constructionRotation;
+        auto piece = _cState->lastSelectedTrackPiece;
+
+        auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
+        auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;
+
+        bool builtAnything = false;
+
+        for (auto yPos = _toolPosInitial.y; yPos != _toolPosDrag.y + dirY; yPos += dirY)
+        {
+            for (auto xPos = _toolPosInitial.x; xPos != _toolPosDrag.x + dirX; xPos += dirX)
+            {
+                auto pos = World::toWorldSpace({ xPos, yPos });
+                _cState->x = pos.x;
+                _cState->y = pos.y;
+
+                auto height = TileManager::getHeight(pos);
+                _cState->constructionZ = height.landHeight;
+
+                // Try placing the track at this location, ignoring errors if they occur
+                _suppressErrorSound = true;
+                constructTrackOrRoad(&self, widgetIndex);
+                _suppressErrorSound = false;
+
+                builtAnything |= _cState->dword_1135F42 != GameCommands::FAILURE;
+
+                // Prevent automatic track advancement when constructing track
+                _cState->constructionRotation = rotation;
+                _cState->lastSelectedTrackPiece = piece;
+            }
+        }
+
+        if (builtAnything)
+        {
+            WindowManager::close(WindowType::error);
+        }
+
+        // Leave the tool active, but make ghost piece visible for the next round
+        _isDragging = false;
+    }
+
     // 0x0049DC97
-    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+    static void onToolUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::construct)
         {
             return;
         }
 
-        if (_cState->trackType & (1 << 7))
+        if (_isDragging)
         {
-            onToolDownT(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
+            onToolUpMultiple(self, widgetIndex);
+        }
+        else if (_cState->trackType & (1 << 7))
+        {
+            onToolUpSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
         }
         else
         {
-            onToolDownT(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
+            onToolUpSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
         }
+    }
+
+    static void onToolAbort([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    {
+        if (widgetIndex != widx::construct)
+        {
+            return;
+        }
+
+        _isDragging = false;
     }
 
     // 0x0049D4F5
@@ -3134,6 +3245,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         .onUpdate = onUpdate,
         .onToolUpdate = onToolUpdate,
         .onToolDown = onToolDown,
+        .toolDrag = onToolDrag,
+        .toolUp = onToolUp,
+        .onToolAbort = onToolAbort,
         .tooltip = tooltip,
         .cursor = cursor,
         .prepareDraw = prepareDraw,

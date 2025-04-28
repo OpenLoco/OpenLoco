@@ -37,7 +37,7 @@ namespace OpenLoco::World
         edge3,
     };
 
-    uint16_t setMapSelectionTiles(const Pos2& loc, const MapSelectionType selectionType);
+    uint16_t setMapSelectionTiles(const Pos2& loc, const MapSelectionType selectionType, uint16_t toolSize);
     uint16_t setMapSelectionSingleTile(const Pos2& loc, bool setQuadrant = false);
     void mapInvalidateSelectionRect();
     void mapInvalidateMapSelectionTiles();

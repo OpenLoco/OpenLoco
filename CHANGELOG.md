@@ -1,5 +1,6 @@
 25.03+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3073] Track/road/station construction can now be done by dragging the construction marker.
 - Fix: [#2703, #2704, #3033] Set currently playing track correctly after clicking "Next music track" button and after unchecking "Play Music".
 - Fix: [#3038] Music changing when unpausing the game.
 - Fix: [#3067] Prevent pixel artifacts from incomplete redraws when shifting the viewport.

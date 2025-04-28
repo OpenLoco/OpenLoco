@@ -37,7 +37,6 @@ namespace OpenLoco::Ui::Windows::Construction
 
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
-    static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
 #pragma pack(push, 1)
     struct ConstructionState
