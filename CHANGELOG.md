@@ -1,4 +1,4 @@
-25.03+ (???)
+25.04 (2025-04-28)
 ------------------------------------------------------------------------
 - Feature: [#3073] Track/road/station construction can now be done by dragging the construction marker.
 - Feature: [#3080] The station window can now list vehicles stopping at the station by vehicle type.
