@@ -3661,12 +3661,6 @@ namespace OpenLoco::Vehicles
                 case VehicleEntityType::head:
                     currentVehicle->asVehicleHead()->updateSegmentCrashed();
                     break;
-                case VehicleEntityType::vehicle_1:
-                    // calls nullsub_21: empty subroutine
-                    break;
-                case VehicleEntityType::vehicle_2:
-                    // calls nullsub_22: empty subroutine
-                    break;
                 case VehicleEntityType::bogie:
                     currentVehicle->asVehicleBogie()->updateSegmentCrashed();
                     break;
@@ -3674,10 +3668,9 @@ namespace OpenLoco::Vehicles
                 case VehicleEntityType::body_continued:
                     currentVehicle->asVehicleBody()->updateSegmentCrashed();
                     break;
+                case VehicleEntityType::vehicle_1:
+                case VehicleEntityType::vehicle_2:
                 case VehicleEntityType::tail:
-                    // calls nullsub_23: empty subroutine
-                    break;
-                default:
                     break;
             }
 
