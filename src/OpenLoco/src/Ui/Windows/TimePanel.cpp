@@ -410,7 +410,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
-        .event_03 = onMouseDown,
+        .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,

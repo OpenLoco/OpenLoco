@@ -52,11 +52,7 @@ namespace OpenLoco::Audio
     [[maybe_unused]] constexpr int32_t kPlayAtLocation = 0x8001;
     [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
-    static constexpr Jukebox::MusicId kNoSong = 0xFF;
-
     static loco_global<uint32_t, 0x0050D1EC> _audioInitialised;
-    static loco_global<uint8_t, 0x0050D434> _currentSong;
-    static loco_global<uint8_t, 0x0050D435> _lastSong;
     static loco_global<bool, 0x0050D554> _audioIsPaused;
     static loco_global<bool, 0x0050D555> _audioIsEnabled;
     // 0x0050D5B0
@@ -339,7 +335,7 @@ namespace OpenLoco::Audio
         // Do not stop title screen music
         if (!SceneManager::isTitleMode())
         {
-            stopMusic();
+            pauseMusic();
         }
     }
 
@@ -347,6 +343,7 @@ namespace OpenLoco::Audio
     void unpauseSound()
     {
         _audioIsPaused = false;
+        unpauseMusic();
     }
 
     static const SoundObject* getSoundObject(SoundId id)
@@ -1004,7 +1001,9 @@ namespace OpenLoco::Audio
         using MusicPlaylistType = Config::MusicPlaylistType;
         const auto& cfg = Config::get().old;
 
-        if (_currentSong == kNoSong)
+        const auto currentTrack = Jukebox::getCurrentTrack();
+
+        if (currentTrack == Jukebox::kNoSong)
         {
             return;
         }
@@ -1015,7 +1014,7 @@ namespace OpenLoco::Audio
             case MusicPlaylistType::currentEra:
             {
                 auto currentYear = getCurrentYear();
-                const auto& info = Jukebox::getMusicInfo(_currentSong);
+                const auto& info = Jukebox::getMusicInfo(currentTrack);
                 if (currentYear < info.startYear || currentYear > info.endYear)
                 {
                     trackStillApplies = false;
@@ -1027,7 +1026,7 @@ namespace OpenLoco::Audio
                 return;
 
             case MusicPlaylistType::custom:
-                if (!cfg.enabledMusic[_currentSong])
+                if (!cfg.enabledMusic[currentTrack])
                 {
                     trackStillApplies = false;
                 }
@@ -1037,8 +1036,7 @@ namespace OpenLoco::Audio
         if (!trackStillApplies)
         {
             stopMusic();
-            _currentSong = kNoSong;
-            _lastSong = kNoSong;
+            Jukebox::resetJukebox();
         }
     }
 
@@ -1059,23 +1057,9 @@ namespace OpenLoco::Audio
 
         if (!channel->isPlaying())
         {
-            // Not playing, but the 'current song' is last song? It's been requested manually!
-            bool requestedSong = _lastSong != kNoSong && _lastSong == _currentSong;
+            // Set the next song to play and load its info
+            const auto& mi = Jukebox::changeTrack();
 
-            // Choose a track to play, unless we have requested one track in particular.
-            if (_currentSong == kNoSong || !requestedSong)
-            {
-                _lastSong = _currentSong;
-                _currentSong = Jukebox::chooseNextMusicTrack(_lastSong);
-            }
-            else
-            {
-                // We're choosing this one, but the next one should be decided automatically again.
-                _lastSong = kNoSong;
-            }
-
-            // Load info on the song to play.
-            const auto& mi = Jukebox::getMusicInfo(_currentSong);
             playMusic(mi.pathId, cfg.volume, false);
 
             WindowManager::invalidate(WindowType::options);
@@ -1106,8 +1090,7 @@ namespace OpenLoco::Audio
     void resetMusic()
     {
         stopMusic();
-        _currentSong = kNoSong;
-        _lastSong = kNoSong;
+        Jukebox::resetJukebox();
     }
 
     // 0x0048AAE8
@@ -1119,9 +1102,27 @@ namespace OpenLoco::Audio
     void stopMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && channel->isPlaying())
+        if (_audioInitialised && channel != nullptr && (channel->isPlaying() || channel->isPaused()))
         {
             channel->stop();
+        }
+    }
+
+    void pauseMusic()
+    {
+        auto* channel = getChannel(ChannelId::music);
+        if (_audioInitialised && channel != nullptr && channel->isPlaying())
+        {
+            channel->pause();
+        }
+    }
+
+    void unpauseMusic()
+    {
+        auto* channel = getChannel(ChannelId::music);
+        if (_audioInitialised && channel != nullptr && channel->isPaused())
+        {
+            channel->unpause();
         }
     }
 
@@ -1156,7 +1157,7 @@ namespace OpenLoco::Audio
         {
             return;
         }
-        if (_audioInitialised && _currentSong != kNoSong)
+        if (_audioInitialised && Jukebox::getCurrentTrack() != Jukebox::kNoSong)
         {
             channel->setVolume(volume);
         }

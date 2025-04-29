@@ -74,7 +74,7 @@ namespace OpenLoco::GameCommands
         return true;
     }
 
-    // 0x0048D2AC
+    // 0x00494570
     static currency32_t removePort(const PortRemovalArgs& args, const uint8_t flags)
     {
         setExpenditureType(ExpenditureType::Construction);

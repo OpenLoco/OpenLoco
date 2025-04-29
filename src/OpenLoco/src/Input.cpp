@@ -49,8 +49,8 @@ namespace OpenLoco::Input
         _state = state;
     }
 
-    // Cursor drag start
-    void sub_407218()
+    // 0x00407218
+    void startCursorDrag()
     {
         if (_cursorDragState == 0)
         {
@@ -71,8 +71,8 @@ namespace OpenLoco::Input
         }
     }
 
-    // Cursor drag release
-    void sub_407231()
+    // 0x00407231
+    void stopCursorDrag()
     {
         if (_cursorDragState != 0)
         {

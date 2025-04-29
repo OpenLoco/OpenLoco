@@ -20,6 +20,7 @@ namespace OpenAL
         {
         }
 
+        void pause();
         void play();
         void stop();
         void setBuffer(uint32_t bufferId);
@@ -31,6 +32,7 @@ namespace OpenAL
         // value to be of the range -0.5f -> 0.5f
         void setPan(float value);
         void setLooping(bool value);
+        bool isPaused() const;
         bool isPlaying() const;
         uint32_t getId() const { return _id; }
     };

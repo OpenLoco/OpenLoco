@@ -153,15 +153,11 @@ namespace OpenLoco::GameCommands
         newBogie->var_38 = Flags38::none;
 
         int32_t reliability = vehObject.reliability * 256;
-        if (getCurrentYear() + 2 > vehObject.designed)
+        if (vehObject.designed + 2 > getCurrentYear())
         {
-            // Reduce reliability by an eighth after 2 years past design
+            // Vanilla intended to reduce reliability by 1/8th twice for the first two years after the year designed, then reduce reliability by 1/8th once for the third year. However, a bug meant that the two 1/8th reductions were always applied.
             reliability -= reliability / 8;
-            if (getCurrentYear() + 3 > vehObject.designed)
-            {
-                // Reduce reliability by a further eighth (quarter total) after 3 years past design
-                reliability -= reliability / 8;
-            }
+            reliability -= reliability / 8;
         }
         if (reliability != 0)
         {
@@ -243,8 +239,8 @@ namespace OpenLoco::GameCommands
         auto& prng = gPrng1();
         newBody->var_44 = prng.randNext();
         newBody->creationDay = getCurrentDay();
-        newBody->var_46 = 0;
-        newBody->var_47 = 0;
+        newBody->animationFrame = 0;
+        newBody->cargoFrame = 0;
         newBody->primaryCargo.acceptedTypes = 0;
         newBody->primaryCargo.type = 0xFF;
         newBody->primaryCargo.qty = 0;
@@ -278,10 +274,10 @@ namespace OpenLoco::GameCommands
         auto spriteType = vehObject.carComponents[bodyNumber].bodySpriteInd;
         if (spriteType != SpriteIndex::null)
         {
-            if (spriteType & SpriteIndex::flag_unk7)
+            if (spriteType & SpriteIndex::isReversed)
             {
                 newBody->var_38 |= Flags38::isReversed;
-                spriteType &= ~SpriteIndex::flag_unk7;
+                spriteType &= ~SpriteIndex::isReversed;
             }
         }
         newBody->objectSpriteType = spriteType;
@@ -431,7 +427,7 @@ namespace OpenLoco::GameCommands
         newHead->stationId = StationId::null;
         newHead->breakdownFlags = BreakdownFlags::none;
         newHead->aiThoughtId = 0xFFU;
-        newHead->var_61 = -1;
+        newHead->aiPlacementPos.x = -1;
         newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0_mph;
         newHead->restartStoppedCarsTimeout = 0;
@@ -491,7 +487,7 @@ namespace OpenLoco::GameCommands
         newVeh2->var_38 = Flags38::none;
         newVeh2->currentSpeed = 0.0_mph;
         newVeh2->motorState = MotorState::stopped;
-        newVeh2->var_5B = 0;
+        newVeh2->brakeLightTimeout = 0;
         newVeh2->drivingSoundId = SoundObjectId::null;
         newVeh2->objectId = 0xFFFFU;
         newVeh2->soundFlags = Vehicles::SoundFlags::none;

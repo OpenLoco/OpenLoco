@@ -139,6 +139,28 @@ namespace OpenLoco::Vehicles
         secondaryAnimationUpdate();
     }
 
+    // 0x004AA904
+    void VehicleBody::updateSegmentCrashed()
+    {
+        invalidateSprite();
+        sub_4AC255(_vehicleUpdate_backBogie, _vehicleUpdate_frontBogie);
+        invalidateSprite();
+        animationUpdate();
+        sub_4AAB0B();
+        if (!hasVehicleFlags(VehicleFlags::unk_5))
+        {
+            VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
+            VehicleBogie* backBogie = _vehicleUpdate_backBogie;
+
+            if (frontBogie->hasVehicleFlags(VehicleFlags::unk_5)
+                || backBogie->hasVehicleFlags(VehicleFlags::unk_5))
+            {
+                explodeComponent();
+                this->vehicleFlags |= VehicleFlags::unk_5;
+            }
+        }
+    }
+
     // 0x004AAB0B
     void VehicleBody::sub_4AAB0B()
     {
@@ -155,86 +177,87 @@ namespace OpenLoco::Vehicles
         }
 
         const auto* vehicleObj = getObject();
-        uint8_t al = 0;
+        uint8_t targetAnimationFrame = 0;
         if (vehicleObj->bodySprites[objectSpriteType].hasFlags(BodySpriteFlags::hasSpeedAnimation))
         {
             Vehicle2* veh3 = _vehicleUpdate_2;
-            al = veh3->currentSpeed / (vehicleObj->speed / vehicleObj->bodySprites[objectSpriteType].numAnimationFrames);
-            al = std::min<uint8_t>(al, vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
+            targetAnimationFrame = veh3->currentSpeed / (vehicleObj->speed / vehicleObj->bodySprites[objectSpriteType].numAnimationFrames);
+            targetAnimationFrame = std::min<uint8_t>(targetAnimationFrame, vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
         }
         else if (vehicleObj->bodySprites[objectSpriteType].numRollFrames != 1)
         {
             VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
             Vehicle2* veh3 = _vehicleUpdate_2;
-            al = var_46;
-            int8_t ah = 0;
+            targetAnimationFrame = animationFrame;
+            int8_t targetTiltFrame = 0;
             if (veh3->currentSpeed < 35.0_mph)
             {
-                ah = 0;
+                targetTiltFrame = 0;
             }
             else
             {
-                ah = _vehicle_arr_4F865C[frontBogie->trackAndDirection.track._data >> 2];
+                targetTiltFrame = _vehicle_arr_4F865C[frontBogie->trackAndDirection.track._data >> 2];
+                // S-bend
                 if ((frontBogie->trackAndDirection.track.id() == 12) || (frontBogie->trackAndDirection.track.id() == 13))
                 {
                     if (frontBogie->subPosition >= 48)
                     {
-                        ah = -ah;
+                        targetTiltFrame = -targetTiltFrame;
                     }
                 }
 
-                if (ah < 0)
+                if (targetTiltFrame < 0)
                 {
                     if (has38Flags(Flags38::isReversed))
                     {
-                        ah = 2;
-                        if (al != 0 && al != ah)
+                        targetTiltFrame = 2;
+                        if (targetAnimationFrame != 0 && targetAnimationFrame != targetTiltFrame)
                         {
-                            ah = 0;
+                            targetTiltFrame = 0;
                         }
                     }
                     else
                     {
-                        ah = 1;
-                        if (al != 0 && al != ah)
+                        targetTiltFrame = 1;
+                        if (targetAnimationFrame != 0 && targetAnimationFrame != targetTiltFrame)
                         {
-                            ah = 0;
+                            targetTiltFrame = 0;
                         }
                     }
                 }
-                else if (ah > 0)
+                else if (targetTiltFrame > 0)
                 {
                     if (has38Flags(Flags38::isReversed))
                     {
-                        ah = 1;
-                        if (al != 0 && al != ah)
+                        targetTiltFrame = 1;
+                        if (targetAnimationFrame != 0 && targetAnimationFrame != targetTiltFrame)
                         {
-                            ah = 0;
+                            targetTiltFrame = 0;
                         }
                     }
                     else
                     {
-                        ah = 2;
-                        if (al != 0 && al != ah)
+                        targetTiltFrame = 2;
+                        if (targetAnimationFrame != 0 && targetAnimationFrame != targetTiltFrame)
                         {
-                            ah = 0;
+                            targetTiltFrame = 0;
                         }
                     }
                 }
                 else
                 {
-                    ah = 0;
+                    targetTiltFrame = 0;
                 }
             }
-            al = ah;
+            targetAnimationFrame = targetTiltFrame;
         }
         else
         {
-            al = (var_44 >> 12) & (vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
+            targetAnimationFrame = (var_44 >> 12) & (vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
         }
-        if (var_46 != al)
+        if (animationFrame != targetAnimationFrame)
         {
-            var_46 = al;
+            animationFrame = targetAnimationFrame;
             invalidateSprite();
         }
     }
@@ -1395,9 +1418,9 @@ namespace OpenLoco::Vehicles
             spriteIndex += vehicleObj->cargoTypeSpriteOffsets[primaryCargo.type];
         }
         spriteIndex *= bodySprite.numAnimationFrames;
-        if (spriteIndex != var_47)
+        if (spriteIndex != cargoFrame)
         {
-            var_47 = spriteIndex;
+            cargoFrame = spriteIndex;
             invalidateSprite();
         }
     }

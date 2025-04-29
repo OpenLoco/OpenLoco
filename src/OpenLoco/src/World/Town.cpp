@@ -280,7 +280,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (roadObj->hasFlags(RoadObjectFlags::unk_00))
+            if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
             {
                 continue;
             }
@@ -1701,7 +1701,7 @@ namespace OpenLoco
                 if (curRoadInfo.roadObjId != idealRoadId.value())
                 {
                     const auto* curRoadObj = ObjectManager::get<RoadObject>(curRoadInfo.roadObjId);
-                    if (!curRoadObj->hasFlags(RoadObjectFlags::unk_00))
+                    if (!curRoadObj->hasFlags(RoadObjectFlags::isOneWay))
                     {
                         const auto* idealRoadObj = ObjectManager::get<RoadObject>(idealRoadId.value());
 

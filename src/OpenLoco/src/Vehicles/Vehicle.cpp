@@ -1,4 +1,6 @@
 #include "Vehicle.h"
+#include "Effects/ExplosionEffect.h"
+#include "Effects/VehicleCrashEffect.h"
 #include "Entities/EntityManager.h"
 #include "GameState.h"
 #include "Map/RoadElement.h"
@@ -136,6 +138,25 @@ namespace OpenLoco::Vehicles
     {
         const auto* ent = reinterpret_cast<const EntityBase*>(this);
         return (ent->vehicleFlags & flagsToTest) != VehicleFlags::none;
+    }
+
+    // 0x004AA407
+    void VehicleBase::explodeComponent()
+    {
+        auto subType = getSubType();
+        assert(subType == VehicleEntityType::bogie || subType == VehicleEntityType::body_start || subType == VehicleEntityType::body_continued);
+
+        const auto pos = position + World::Pos3{ 0, 0, 22 };
+        Audio::playSound(Audio::SoundId::crash, pos);
+
+        ExplosionCloud::create(pos);
+
+        const auto numParticles = std::min(spriteWidth / 4, 7);
+        for (auto i = 0; i < numParticles; ++i)
+        {
+            ColourScheme colourScheme = (subType == VehicleEntityType::bogie) ? reinterpret_cast<VehicleBogie*>(this)->colourScheme : reinterpret_cast<VehicleBody*>(this)->colourScheme;
+            VehicleCrashParticle::create(pos, colourScheme);
+        }
     }
 
     // 0x004AA464
@@ -880,6 +901,52 @@ namespace OpenLoco::Vehicles
                 insertCarBefore(*source, *dest);
 
                 regs = backup;
+                return 0;
+            });
+
+        registerHook(
+            0x00478CE9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const uint16_t tad = regs.bp;
+                const auto companyId = CompanyId(regs.bl);
+                const uint8_t roadObjId = regs.bh;
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+                auto& legacyConnections = *X86Pointer<World::Track::LegacyTrackConnections>(regs.edi - 4);
+                legacyConnections.size = 0;
+                const auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, tad);
+                const auto connections = World::Track::getRoadConnectionsOneWay(nextPos, nextRot, companyId, roadObjId, requiredMods, queryMods);
+                World::Track::toLegacyConnections(connections, legacyConnections);
+                regs = backup;
+                regs.ax = nextPos.x;
+                regs.cx = nextPos.y;
+                regs.dx = nextPos.z;
+                return 0;
+            });
+
+        registerHook(
+            0x00478AC9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const uint16_t tad = regs.bp;
+                const auto companyId = CompanyId(regs.bl);
+                const uint8_t roadObjId = regs.bh;
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+                auto& legacyConnections = *X86Pointer<World::Track::LegacyTrackConnections>(regs.edi - 4);
+                legacyConnections.size = 0;
+                const auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, tad);
+                const auto connections = World::Track::getRoadConnectionsAiAllocated(nextPos, nextRot, companyId, roadObjId, requiredMods, queryMods);
+                World::Track::toLegacyConnections(connections, legacyConnections);
+                regs = backup;
+                regs.ax = nextPos.x;
+                regs.cx = nextPos.y;
+                regs.dx = nextPos.z;
                 return 0;
             });
     }
