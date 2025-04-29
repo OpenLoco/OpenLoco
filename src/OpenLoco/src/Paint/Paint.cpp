@@ -3,6 +3,7 @@
 #include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
@@ -163,9 +164,11 @@ namespace OpenLoco::Paint
         }
         psString->stringId = stringId;
         psString->next = nullptr;
-        std::memcpy(&psString->args[0], &amount, sizeof(amount));
         psString->yOffsets = yOffsets;
         psString->colour = colour;
+
+        FormatArguments fmtArgs{ psString->argsBuf };
+        fmtArgs.push(amount);
 
         const auto& vpPos = World::gameToScreen(World::Pos3(getSpritePosition(), z), currentRotation);
         psString->vpPos.x = vpPos.x + xOffset;
@@ -1009,6 +1012,22 @@ namespace OpenLoco::Paint
         }
     }
 
+    static void drawAllAttachedStructs(const Gfx::RenderTarget& rt, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const Ui::ViewportFlags viewFlags)
+    {
+        for (const auto* attachPs = ps.attachedPS; attachPs != nullptr; attachPs = attachPs->next)
+        {
+            const bool shouldCullAttach = shouldTryCullPaintStruct(ps, viewFlags);
+            if (shouldCullAttach)
+            {
+                if (cullPaintStructImage(attachPs->imageId, viewFlags))
+                {
+                    continue;
+                }
+            }
+            drawAttachStruct(rt, drawingCtx, ps, *attachPs, shouldCullAttach);
+        }
+    }
+
     // 0x0045EA23
     void PaintSession::drawStructs(Gfx::DrawingContext& drawingCtx)
     {
@@ -1031,7 +1050,6 @@ namespace OpenLoco::Paint
             // Draw any children this might have
             for (const auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
             {
-                // assert(childPs->attachedPS == nullptr); Children can have attachments but we are skipping them to be investigated!
                 const bool shouldCullChild = shouldTryCullPaintStruct(*childPs, _viewFlags);
 
                 if (shouldCullChild)
@@ -1043,21 +1061,12 @@ namespace OpenLoco::Paint
                 }
 
                 drawStruct(rt, drawingCtx, *childPs, shouldCullChild);
+
+                drawAllAttachedStructs(rt, drawingCtx, *childPs, _viewFlags);
             }
 
             // Draw any attachments to the struct
-            for (const auto* attachPs = ps->attachedPS; attachPs != nullptr; attachPs = attachPs->next)
-            {
-                const bool shouldCullAttach = shouldTryCullPaintStruct(*ps, _viewFlags);
-                if (shouldCullAttach)
-                {
-                    if (cullPaintStructImage(attachPs->imageId, _viewFlags))
-                    {
-                        continue;
-                    }
-                }
-                drawAttachStruct(rt, drawingCtx, *ps, *attachPs, shouldCullAttach);
-            }
+            drawAllAttachedStructs(rt, drawingCtx, *ps, _viewFlags);
         }
     }
 
@@ -1088,11 +1097,8 @@ namespace OpenLoco::Paint
 
         for (; psString != nullptr; psString = psString->next)
         {
-            // FIXME: Modify psString->args to be a buffer.
-            FormatArguments args{ reinterpret_cast<std::byte*>(psString->args), sizeof(psString->args) };
-
             Ui::Point loc(psString->vpPos.x >> zoom, psString->vpPos.y >> zoom);
-            StringManager::formatString(buffer, psString->stringId, args);
+            StringManager::formatString(buffer, psString->stringId, psString->argsBuf);
 
             Ui::WindowManager::setWindowColours(Ui::WindowColour::primary, AdvancedColour(static_cast<Colour>(psString->colour)));
             Ui::WindowManager::setWindowColours(Ui::WindowColour::secondary, AdvancedColour(static_cast<Colour>(psString->colour)));
@@ -1272,6 +1278,22 @@ namespace OpenLoco::Paint
         return true;
     }
 
+    static std::optional<InteractionArg> getAttachedInteractionInfo(const Gfx::RenderTarget& rt, const InteractionItemFlags flags, const PaintStruct& ps)
+    {
+        std::optional<InteractionArg> info = std::nullopt;
+        for (auto* attachedPS = ps.attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
+        {
+            if (isSpriteInteractedWith(&rt, attachedPS->imageId, attachedPS->vpPos + ps.vpPos))
+            {
+                if (isPSSpriteTypeInFilter(ps.type, flags))
+                {
+                    info = { ps };
+                }
+            }
+        }
+        return info;
+    }
+
     // 0x0045ED91
     [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const InteractionItemFlags flags)
     {
@@ -1298,18 +1320,19 @@ namespace OpenLoco::Paint
                         info = { *childPs };
                     }
                 }
+
+                auto attachedInfo = getAttachedInteractionInfo(*getRenderTarget(), flags, *childPs);
+                if (attachedInfo.has_value())
+                {
+                    info = attachedInfo.value();
+                }
             }
 
             // Check attached to main paint struct
-            for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
+            auto attachedInfo = getAttachedInteractionInfo(*getRenderTarget(), flags, *ps);
+            if (attachedInfo.has_value())
             {
-                if (isSpriteInteractedWith(getRenderTarget(), attachedPS->imageId, attachedPS->vpPos + ps->vpPos))
-                {
-                    if (isPSSpriteTypeInFilter(ps->type, flags))
-                    {
-                        info = { *ps };
-                    }
-                }
+                info = attachedInfo.value();
             }
         }
         return info;
@@ -1378,7 +1401,9 @@ namespace OpenLoco::Paint
     {
         auto* lastChild = &ps;
         for (; lastChild->children != nullptr; lastChild = lastChild->children)
+        {
             ;
+        }
         return lastChild;
     }
 

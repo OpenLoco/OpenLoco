@@ -6,12 +6,14 @@
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/RemoveTrackMod.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
+#include "Map/Track/TrackModSection.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
@@ -24,6 +26,8 @@
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "World/CompanyManager.h"
 
 using namespace OpenLoco::Interop;
@@ -38,8 +42,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         Widgets::Checkbox({ 3, 57 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         Widgets::Checkbox({ 3, 69 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         Widgets::Checkbox({ 3, 81 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 35, 110 }, { 66, 66 }, WidgetType::wt_3, WindowColour::secondary),
-        makeDropdownWidgets({ 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
+        Widgets::Wt3Widget({ 35, 110 }, { 66, 66 }, WindowColour::secondary),
+        Widgets::dropdownWidgets({ 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
 
     std::span<const Widget> getWidgets()
     {
@@ -49,7 +53,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     WindowEventList events;
 
     // 0x0049EBD1
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -83,7 +87,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EBFC
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -103,7 +107,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 Dropdown::add(1, StringIds::block_section);
                 Dropdown::add(2, StringIds::all_connected_track);
 
-                Dropdown::setHighlightedItem(_cState->lastSelectedTrackModSection);
+                Dropdown::setHighlightedItem(enumValue(_cState->lastSelectedTrackModSection));
                 break;
             }
 
@@ -117,7 +121,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC09
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex != widx::track_dropdown)
         {
@@ -126,7 +130,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         if (itemIndex != -1)
         {
-            _cState->lastSelectedTrackModSection = itemIndex;
+            _cState->lastSelectedTrackModSection = static_cast<Track::ModSection>(itemIndex);
             self.invalidate();
         }
     }
@@ -259,7 +263,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC15
-    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::image)
         {
@@ -339,7 +343,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC20
-    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::image)
         {
@@ -395,7 +399,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, StringId name)
     {
         auto widgetIndex = checkboxIndex + widx::checkbox_1;
-        self->widgets[widgetIndex].type = WidgetType::checkbox;
+        self->widgets[widgetIndex].hidden = false;
         self->widgets[widgetIndex].text = name;
 
         if (_cState->lastSelectedMods & (1 << checkboxIndex))
@@ -411,10 +415,10 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         self.activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 
-        self.widgets[widx::checkbox_1].type = WidgetType::none;
-        self.widgets[widx::checkbox_2].type = WidgetType::none;
-        self.widgets[widx::checkbox_3].type = WidgetType::none;
-        self.widgets[widx::checkbox_4].type = WidgetType::none;
+        self.widgets[widx::checkbox_1].hidden = true;
+        self.widgets[widx::checkbox_2].hidden = true;
+        self.widgets[widx::checkbox_3].hidden = true;
+        self.widgets[widx::checkbox_4].hidden = true;
 
         if (_cState->trackType & (1 << 7))
         {
@@ -452,21 +456,21 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         // self->activatedWidgets = activatedWidgets;
 
-        self.widgets[widx::image].type = WidgetType::none;
-        self.widgets[widx::track].type = WidgetType::none;
-        self.widgets[widx::track_dropdown].type = WidgetType::none;
+        self.widgets[widx::image].hidden = true;
+        self.widgets[widx::track].hidden = true;
+        self.widgets[widx::track_dropdown].hidden = true;
 
         self.widgets[widx::image].tooltip = StringIds::null;
 
         if (_cState->lastSelectedMods & 0xF)
         {
-            self.widgets[widx::image].type = WidgetType::wt_3;
-            self.widgets[widx::track].type = WidgetType::combobox;
-            self.widgets[widx::track_dropdown].type = WidgetType::button;
+            self.widgets[widx::image].hidden = false;
+            self.widgets[widx::track].hidden = false;
+            self.widgets[widx::track_dropdown].hidden = false;
 
             self.widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
 
-            if (isNetworkHost())
+            if (SceneManager::isNetworkHost())
             {
                 if (ToolManager::getToolWindowType() == WindowType::construction)
                 {
@@ -481,7 +485,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             StringIds::all_connected_track,
         };
 
-        self.widgets[widx::track].text = modString[_cState->lastSelectedTrackModSection];
+        self.widgets[widx::track].text = modString[enumValue(_cState->lastSelectedTrackModSection)];
 
         Common::repositionTabs(&self);
     }
@@ -548,7 +552,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
     void tabReset(Window* self)
     {
-        self->callOnMouseDown(Overhead::widx::image);
+        self->callOnMouseDown(Overhead::widx::image, self->widgets[Overhead::widx::image].id);
     }
 
     static constexpr WindowEventList kEvents = {
@@ -558,7 +562,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
         .onToolUpdate = onToolUpdate,
-        .onToolDown = onToolDown,
+        .toolUp = onToolUp,
         .prepareDraw = prepareDraw,
         .draw = draw,
     };

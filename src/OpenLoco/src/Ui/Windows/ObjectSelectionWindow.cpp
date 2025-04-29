@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -46,9 +47,13 @@
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
@@ -216,8 +221,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // _tabObjectCounts can be integrated after implementing sub_473A95
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
 
-    // 0x0112C21C
-    static std::vector<TabPosition> _tabPositions;
     static std::vector<TabObjectEntry> _tabObjectList;
     static uint16_t _numVisibleObjectsListed;
     static bool _filterByVehicleType = false;
@@ -233,11 +236,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         caption,
         closeButton,
         panel,
-        tabArea,
+
+        primaryTab1,
+        primaryTab2,
+        primaryTab3,
+        primaryTab4,
+        primaryTab5,
+        primaryTab6,
+        primaryTab7,
+        primaryTab8,
+        primaryTab9,
+        primaryTab10,
+        primaryTab11,
+        primaryTab12,
+
         filterLabel,
         filterDropdown,
         textInput,
         clearButton,
+
         secondaryTab1,
         secondaryTab2,
         secondaryTab3,
@@ -246,40 +263,53 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         secondaryTab6,
         secondaryTab7,
         secondaryTab8,
+
         scrollviewFrame,
         scrollview,
         objectImage,
     };
 
+    static constexpr uint8_t kMaxNumPrimaryTabs = 12;
     static constexpr uint8_t kMaxNumSecondaryTabs = 8;
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_object_selection),
+        Widgets::Caption({ 1, 1 }, { 598, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_object_selection),
         Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 42 }, { 600, 356 }, WindowColour::secondary),
 
         // Primary tab area
-        makeWidget({ 3, 15 }, { 589, 27 }, WidgetType::wt_6, WindowColour::secondary),
+        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 220, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 251, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 282, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 313, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Filter options
-        makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
+        Widgets::dropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
         Widgets::TextBox({ 4, 45 }, { 246, 14 }, WindowColour::secondary),
         Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 
         // Secondary tabs
-        makeWidget({ 3, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 34, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 65, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 96, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 127, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 158, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 189, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
-        makeWidget({ 220, 62 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 3, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 34, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 65, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 96, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 127, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 158, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 189, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab({ 220, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
-        makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::ScrollView({ 4, 85 }, { 288, 300 }, WindowColour::secondary, Scrollbars::vertical),
         Widgets::ImageButton({ 391, 45 }, { 114, 114 }, WindowColour::secondary)
 
     );
@@ -318,12 +348,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return false;
         }
 
-        if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
+        if (SceneManager::isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
         {
             return false;
         }
 
-        if (!isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+        if (!SceneManager::isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
         {
             return false;
         }
@@ -344,16 +374,23 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00473154
     static void assignTabPositions(Window* self)
     {
-        _tabPositions.clear();
+        auto xPos = 3;
         for (auto i = 0U; i < kMainTabInfo.size(); i++)
         {
-            if (!shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
+            auto widgetIndex = widx::primaryTab1 + i;
+            if (shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
             {
-                continue;
+                self->disabledWidgets &= ~(1ULL << widgetIndex);
+                self->widgets[widgetIndex].hidden = false;
+                self->widgets[widgetIndex].left = xPos;
+                self->widgets[widgetIndex].right = xPos + 31;
+                xPos = self->widgets[widgetIndex].right;
             }
-
-            // Assign tab position
-            _tabPositions.emplace_back(i);
+            else
+            {
+                self->disabledWidgets |= (1ULL << widgetIndex);
+                self->widgets[widgetIndex].hidden = true;
+            }
         }
     }
 
@@ -486,11 +523,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, getEvents());
         window->setWidgets(widgets);
-        window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::clearButton);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
-        window->filterLevel = enumValue(isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced);
+        window->filterLevel = enumValue(SceneManager::isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced);
         window->var_858 = enumValue(FilterFlags::vanilla | FilterFlags::openLoco | FilterFlags::custom);
         window->currentSecondaryTab = 0;
         window->object = nullptr;
@@ -510,8 +546,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, skin->colour_0B);
-        window->setColour(WindowColour::secondary, skin->colour_0C);
+        window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, skin->windowColour);
 
         inputSession = Ui::TextInput::InputSession();
         inputSession.calculateTextOffset(widgets[widx::textInput].width());
@@ -534,14 +570,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004733AC
     static void prepareDraw(Ui::Window& self)
     {
-        self.activatedWidgets |= (1 << widx::objectImage);
-        self.widgets[widx::closeButton].type = WidgetType::buttonWithImage;
+        self.activatedWidgets = (1 << widx::objectImage);
 
-        if (isEditorMode())
+        self.widgets[widx::closeButton].hidden = false;
+        if (SceneManager::isEditorMode())
         {
-            self.widgets[widx::closeButton].type = WidgetType::none;
+            self.widgets[widx::closeButton].hidden = true;
         }
 
+        self.activatedWidgets |= 1ULL << (widx::primaryTab1 + self.currentTab);
         const auto& currentTab = kMainTabInfo[self.currentTab];
         const auto& subTabs = currentTab.subTabs;
         const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
@@ -563,22 +600,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             const auto widgetIndex = i + widx::secondaryTab1;
 
             const bool subTabIsVisible = showSecondaryTabs && i < subTabs.size() && shouldShowSubTab(subTabs, i, FilterLevel(self.filterLevel));
-            if (!subTabIsVisible)
-            {
-                self.disabledWidgets |= 1ULL << widgetIndex;
-            }
-            else
+            if (subTabIsVisible)
             {
                 self.disabledWidgets &= ~(1ULL << widgetIndex);
             }
-
-            if (subTabIsVisible)
-            {
-                self.enabledWidgets |= 1ULL << widgetIndex;
-            }
             else
             {
-                self.enabledWidgets &= ~(1ULL << widgetIndex);
+                self.disabledWidgets |= (1ULL << widgetIndex);
             }
 
             if (self.currentSecondaryTab == i)
@@ -596,13 +624,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (showSecondaryTabs)
         {
             self.widgets[widx::scrollview].top = 62 + 28;
-            self.widgets[widx::scrollviewFrame].type = WidgetType::panel;
+            self.widgets[widx::scrollviewFrame].hidden = false;
             self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
         }
         else
         {
             self.widgets[widx::scrollview].top = 62;
-            self.widgets[widx::scrollviewFrame].type = WidgetType::none;
+            self.widgets[widx::scrollviewFrame].hidden = true;
         }
     }
 
@@ -612,31 +640,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0047328D
     static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
     {
-        auto yPos = self->y + self->widgets[widx::tabArea].top;
-        auto xPos = self->x + 3;
-
-        for (auto index : _tabPositions)
+        for (auto i = 0U; i < kMaxNumPrimaryTabs; i++)
         {
-            auto image = Gfx::recolour(ImageIds::tab, self->getColour(WindowColour::secondary).c());
-            if (self->currentTab == index)
+            auto widgetIndex = i + widx::primaryTab1;
+            if (self->widgets[widgetIndex].hidden)
             {
-                image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
-                drawingCtx.drawImage(xPos, yPos, image);
-
-                image = Gfx::recolour(kMainTabInfo[index].image, Colour::mutedSeaGreen);
-                drawingCtx.drawImage(xPos, yPos, image);
+                continue;
             }
-            else
-            {
-                drawingCtx.drawImage(xPos, yPos, image);
 
-                image = Gfx::recolour(kMainTabInfo[index].image, Colour::mutedSeaGreen);
-                drawingCtx.drawImage(xPos, yPos, image);
-
-                image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
-                drawingCtx.drawImage(xPos, yPos, image);
-            }
-            xPos += 31;
+            auto image = Gfx::recolour(kMainTabInfo[i].image, Colour::mutedSeaGreen);
+            Widget::drawTab(self, drawingCtx, image, widgetIndex);
         }
     }
 
@@ -655,7 +668,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto i = 0U; i < subTabs.size(); i++)
         {
             auto widgetIndex = i + widx::secondaryTab1;
-            if (self->widgets[widgetIndex].type == WidgetType::none)
+            if (self->widgets[widgetIndex].hidden)
             {
                 continue;
             }
@@ -1176,13 +1189,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         auto targetTab = 0;
         auto targetSubTab = 0;
-        auto targetType = kMainTabInfo[_tabPositions[0]].objectType;
+        auto targetType = ObjectType::region;
 
-        for (auto i = 0U; i < std::size(_tabPositions); i++)
+        for (auto i = 0U; i < kMaxNumPrimaryTabs; i++)
         {
-            auto mainIndex = _tabPositions[i];
-            auto& mainTabInfo = kMainTabInfo[mainIndex];
+            if (!shouldShowPrimaryTab(i, FilterLevel(self.filterLevel)))
+            {
+                continue;
+            }
 
+            auto& mainTabInfo = kMainTabInfo[i];
             if (objectType == mainTabInfo.objectType)
             {
                 targetTab = i;
@@ -1303,40 +1319,29 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004737BA
-    static void onMouseUp(Window& self, WidgetIndex_t w)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        switch (w)
+        switch (widgetIndex)
         {
             case widx::closeButton:
                 tryCloseWindow();
                 break;
 
-            case widx::tabArea:
+            case widx::primaryTab1:
+            case widx::primaryTab2:
+            case widx::primaryTab3:
+            case widx::primaryTab4:
+            case widx::primaryTab5:
+            case widx::primaryTab6:
+            case widx::primaryTab7:
+            case widx::primaryTab8:
+            case widx::primaryTab9:
+            case widx::primaryTab10:
+            case widx::primaryTab11:
+            case widx::primaryTab12:
             {
-                int clickedTab = -1;
-                int yPos = self.y + widgets[widx::tabArea].top;
-                int xPos = self.x + 3;
-                auto mousePos = Input::getCursorPressedLocation();
-
-                for (auto index : _tabPositions)
-                {
-                    if (mousePos.x >= xPos && mousePos.y >= yPos)
-                    {
-                        if (mousePos.x < xPos + 31 && yPos + 27 > mousePos.y)
-                        {
-                            clickedTab = index;
-                            break;
-                        }
-                    }
-
-                    xPos += 31;
-                }
-
-                if (clickedTab != -1 && self.currentTab != clickedTab)
-                {
-                    switchPrimaryTab(self, clickedTab);
-                }
-
+                auto clickedTab = widgetIndex - widx::primaryTab1;
+                switchPrimaryTab(self, clickedTab);
                 break;
             }
 
@@ -1361,7 +1366,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto& subTabs = kMainTabInfo[self.currentTab].subTabs;
                 auto previousSubType = subTabs[self.currentSecondaryTab].objectType;
 
-                self.currentSecondaryTab = w - widx::secondaryTab1;
+                self.currentSecondaryTab = widgetIndex - widx::secondaryTab1;
                 auto currentSubType = subTabs[self.currentSecondaryTab].objectType;
                 _currentVehicleType = static_cast<VehicleType>(self.currentSecondaryTab);
 
@@ -1379,7 +1384,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         if (widgetIndex == widx::filterDropdown)
         {
@@ -1417,7 +1422,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex != widx::filterDropdown)
         {
@@ -1477,7 +1482,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473900
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_object_list);
@@ -1599,7 +1604,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         ObjectManager::reloadAll();
         ObjectManager::freeTemporaryObject();
 
-        if (!isEditorMode())
+        if (!SceneManager::isEditorMode())
         {
             // Make new selection available in-game.
             ObjectManager::updateYearly2();
@@ -1607,6 +1612,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             Gfx::loadCurrency();
             Gfx::loadDefaultPalette();
             Gfx::invalidateScreen();
+            CompanyManager::determineAvailableVehicles();
+            WindowManager::invalidate(WindowType::buildVehicle);
         }
         ObjectManager::freeSelectionList();
     }

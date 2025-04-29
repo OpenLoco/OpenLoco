@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -17,10 +18,15 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -28,7 +34,6 @@
 #include "Vehicles/VehicleDraw.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
-#include "World/StationManager.h"
 #include <OpenLoco/Utility/String.hpp>
 #include <stdexcept>
 #include <utility>
@@ -57,6 +62,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         sort_age,
         sort_reliability,
         scrollview,
+        status_bar,
         filter_type,
         filter_type_btn,
         cargo_type,
@@ -65,7 +71,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 550, 213 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 548, 13 }, WidgetType::caption_24, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 548, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
         Widgets::ImageButton({ 535, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 550, 172 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trains),
@@ -75,21 +81,19 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_aircraft),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ships),
         Widgets::ImageButton({ 0, 14 }, { 26, 26 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_select_company),
-        makeWidget({ 4, 43 }, { 310, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-        makeWidget({ 314, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_profit),
-        makeWidget({ 414, 43 }, { 65, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
-        makeWidget({ 479, 43 }, { 67, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
-        makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeDropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::empty),
-        makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::empty)
+        Widgets::TableHeader({ 4, 43 }, { 310, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+        Widgets::TableHeader({ 314, 43 }, { 100, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_profit),
+        Widgets::TableHeader({ 414, 43 }, { 65, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
+        Widgets::TableHeader({ 479, 43 }, { 67, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
+        Widgets::ScrollView({ 3, 56 }, { 544, 138 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::Label({ 3, kWindowSize.height - 13 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
+        Widgets::dropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid),
+        Widgets::dropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid)
 
     );
 
     // clang-format off
     constexpr uint16_t _tabWidgets = (1 << Widx::tab_trains) | (1 << Widx::tab_buses) | (1 << Widx::tab_trucks) | (1 << Widx::tab_trams) | (1 << Widx::tab_aircraft) | (1 << Widx::tab_ships);
-    constexpr uint64_t _enabledWidgets = (1ULL << Widx::close_button) | _tabWidgets | (1ULL << Widx::company_select) |
-        (1ULL << Widx::sort_name) | (1ULL << Widx::sort_profit) | (1ULL << Widx::sort_age) | (1ULL << Widx::sort_reliability) |
-        (1ULL << Widx::scrollview) | (1ULL << Widx::filter_type) | (1ULL << Widx::filter_type_btn) | (1ULL << Widx::cargo_type) | (1ULL << Widx::cargo_type_btn);
     // clang-format on
 
     enum SortMode : uint16_t
@@ -103,7 +107,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
     enum FilterMode : uint8_t
     {
         allVehicles,
-        stoppingAt,
         transportingCargo,
     };
 
@@ -118,57 +121,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     static Widx getTabFromType(VehicleType type);
 
-    constexpr bool isStationFilterActive(const Window* self, bool checkSelection = true)
-    {
-        return self->var_88A == static_cast<int16_t>(FilterMode::stoppingAt) && (!checkSelection || self->var_88C != -1);
-    }
-
     constexpr bool isCargoFilterActive(const Window* self, bool checkSelection = true)
     {
         return self->var_88A == static_cast<int16_t>(FilterMode::transportingCargo) && (!checkSelection || self->var_88C != -1);
     }
 
-    static bool refreshActiveStation(Window* self)
-    {
-        if (!isStationFilterActive(self, false))
-        {
-            return false;
-        }
-
-        auto stationWindow = WindowManager::find(WindowType::station);
-        if (stationWindow != nullptr)
-        {
-            self->var_88C = stationWindow->number;
-            return true;
-        }
-        else
-        {
-            self->var_88C = -1;
-            return false;
-        }
-    }
-
     using Vehicles::VehicleHead;
-
-    static bool vehicleStopsAtActiveStation(const VehicleHead* head, StationId filterStationId)
-    {
-        auto orders = Vehicles::OrderRingView(head->orderTableOffset);
-        for (auto& order : orders)
-        {
-            auto* stationOrder = order.as<Vehicles::OrderStation>();
-            if (stationOrder == nullptr)
-            {
-                continue;
-            }
-
-            const auto stationId = stationOrder->getStation();
-            if (stationId == filterStationId)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
 
     static bool vehicleIsTransportingCargo(const VehicleHead* head, int16_t filterCargoId)
     {
@@ -197,7 +155,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1D4F
     static void refreshVehicleList(Window* self)
     {
-        refreshActiveStation(self);
         self->rowCount = 0;
         for (auto* vehicle : VehicleManager::VehicleList())
         {
@@ -207,11 +164,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
 
             if (vehicle->owner != CompanyId(self->number))
-            {
-                continue;
-            }
-
-            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
             {
                 continue;
             }
@@ -314,11 +266,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
-            {
-                continue;
-            }
-
             if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
             {
                 continue;
@@ -382,7 +329,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(self->number));
 
-        static std::pair<WidgetIndex_t, std::array<uint32_t, 8>> tabAnimations[] = {
+        static constexpr std::pair<WidgetIndex_t, std::array<uint32_t, 8>> tabAnimations[] = {
             { Widx::tab_trains, {
                                     InterfaceSkin::ImageIds::vehicle_train_frame_0,
                                     InterfaceSkin::ImageIds::vehicle_train_frame_1,
@@ -482,13 +429,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
             getEvents());
 
         self->setWidgets(_widgets);
-        self->enabledWidgets = _enabledWidgets;
         self->number = enumValue(companyId);
         self->owner = companyId;
         self->frameNo = 0;
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        self->setColour(WindowColour::secondary, skin->colour_0A);
+        self->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
         disableUnavailableVehicleTypes(self);
 
@@ -501,7 +447,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Window* self = WindowManager::bringToFront(WindowType::vehicleList, enumValue(companyId));
         if (self != nullptr)
         {
-            self->callOnMouseUp(VehicleList::getTabFromType(type));
+            const auto tabWidx = getTabFromType(type);
+            self->callOnMouseUp(tabWidx, self->widgets[tabWidx].id);
             return self;
         }
 
@@ -572,11 +519,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         auto company = CompanyManager::get(CompanyId(self.number));
 
-        // Set company in title.
-        auto args = FormatArguments(self.widgets[Widx::caption].textArgs);
-        args.push(company->name);
+        {
+            // Set company in title
+            auto args = FormatArguments(self.widgets[Widx::caption].textArgs);
+            args.push(company->name);
+        }
 
-        static constexpr StringId typeToCaption[] = {
+        static constexpr StringId kTypeToCaption[] = {
             StringIds::stringid_trains,
             StringIds::stringid_buses,
             StringIds::stringid_trucks,
@@ -593,7 +542,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[Widx::panel].bottom = self.height - 1;
 
         self.widgets[Widx::caption].right = self.width - 2;
-        self.widgets[Widx::caption].text = typeToCaption[self.currentTab];
+        self.widgets[Widx::caption].text = kTypeToCaption[self.currentTab];
 
         self.widgets[Widx::close_button].left = self.width - 15;
         self.widgets[Widx::close_button].right = self.width - 3;
@@ -655,13 +604,68 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[Widx::cargo_type_btn].tooltip = kFilterTooltipByType[self.var_88A];
 
         Widget::leftAlignTabs(self, Widx::tab_trains, Widx::tab_ships);
+
+        static constexpr std::pair<StringId, StringId> kTypeToFooterStringIds[]{
+            { StringIds::num_trains_singular, StringIds::num_trains_plural },
+            { StringIds::num_buses_singular, StringIds::num_buses_plural },
+            { StringIds::num_trucks_singular, StringIds::num_trucks_plural },
+            { StringIds::num_trams_singular, StringIds::num_trams_plural },
+            { StringIds::num_aircrafts_singular, StringIds::num_aircrafts_plural },
+            { StringIds::num_ships_singular, StringIds::num_ships_plural },
+        };
+
+        {
+            // Reposition status bar
+            auto& widget = self.widgets[Widx::status_bar];
+            widget.top = self.height - 13;
+            widget.bottom = self.height - 3;
+
+            // Set status bar
+            FormatArguments args{ widget.textArgs };
+            auto& footerStringPair = kTypeToFooterStringIds[self.currentTab];
+            args.push(self.var_83C == 1 ? footerStringPair.first : footerStringPair.second);
+            args.push(self.var_83C);
+        }
+
+        static constexpr std::array<StringId, 2> kTypeToFilterStringIds{
+            StringIds::all_vehicles,
+            StringIds::transporting_cargo,
+        };
+
+        {
+            // Set current filter type
+            auto& widget = self.widgets[Widx::filter_type];
+            FormatArguments args{ widget.textArgs };
+            args.push(kTypeToFilterStringIds[self.var_88A]);
+        }
+
+        auto& widget = self.widgets[Widx::cargo_type];
+        bool filterActive = false;
+        FormatArguments args{ widget.textArgs };
+
+        if (isCargoFilterActive(&self, false))
+        {
+            filterActive = true;
+            if (self.var_88C != -1)
+            {
+                // Show current cargo
+                auto cargoObj = ObjectManager::get<CargoObject>(self.var_88C);
+                args.push(StringIds::carrying_cargoid_sprite);
+                args.push(cargoObj->name);
+                args.push(cargoObj->unitInlineSprite);
+            }
+            else
+            {
+                args.push(StringIds::no_cargo_selected);
+            }
+        }
+
+        widget.text = filterActive ? StringIds::wcolour2_stringid : StringIds::empty;
     }
 
     // 0x004C211C
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
         self.draw(drawingCtx);
         drawTabs(&self, drawingCtx);
 
@@ -672,90 +676,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         uint16_t x = self.x + self.widgets[Widx::company_select].left + 1;
         uint16_t y = self.y + self.widgets[Widx::company_select].top + 1;
         drawingCtx.drawImage(x, y, image);
-
-        static constexpr std::pair<StringId, StringId> typeToFooterStringIds[]{
-            { StringIds::num_trains_singular, StringIds::num_trains_plural },
-            { StringIds::num_buses_singular, StringIds::num_buses_plural },
-            { StringIds::num_trucks_singular, StringIds::num_trucks_plural },
-            { StringIds::num_trams_singular, StringIds::num_trams_plural },
-            { StringIds::num_aircrafts_singular, StringIds::num_aircrafts_plural },
-            { StringIds::num_ships_singular, StringIds::num_ships_plural },
-        };
-
-        {
-            auto& footerStringPair = typeToFooterStringIds[self.currentTab];
-            StringId footerStringId = self.var_83C == 1 ? footerStringPair.first : footerStringPair.second;
-
-            FormatArguments args{};
-            args.push(footerStringId);
-            args.push(self.var_83C);
-
-            auto point = Point(self.x + 3, self.y + self.height - 13);
-            tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
-        }
-
-        static constexpr std::array<StringId, 3> typeToFilterStringIds{
-            StringIds::all_vehicles,
-            StringIds::stopping_at_station,
-            StringIds::transporting_cargo,
-        };
-
-        {
-            // Show current filter type
-            FormatArguments args{};
-            args.push(typeToFilterStringIds[self.var_88A]);
-            auto* widget = &self.widgets[Widx::filter_type];
-
-            auto point = Point(self.x + widget->left + 1, self.y + widget->top);
-            tr.drawStringLeftClipped(point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
-        }
-
-        auto* widget = &self.widgets[Widx::cargo_type];
-        auto xPos = self.x + widget->left + 1;
-        bool filterActive = false;
-        FormatArguments args{};
-
-        if (isStationFilterActive(&self, false))
-        {
-            filterActive = true;
-            if (self.var_88C != -1)
-            {
-                auto station = StationManager::get(StationId(self.var_88C));
-                args.push(station->name);
-                args.push(station->town);
-            }
-            else
-            {
-                args.push(StringIds::no_station_selected);
-            }
-        }
-
-        else if (isCargoFilterActive(&self, false))
-        {
-            filterActive = true;
-            if (self.var_88C != -1)
-            {
-                // Show current cargo
-                auto cargoObj = ObjectManager::get<CargoObject>(self.var_88C);
-                args.push(StringIds::carrying_cargoid_sprite);
-                args.push(cargoObj->name);
-                args.push(cargoObj->unitInlineSprite);
-
-                // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
-                xPos = self.x + widget->left - 9;
-            }
-            else
-            {
-                args.push(StringIds::no_cargo_selected);
-            }
-        }
-
-        if (filterActive)
-        {
-            // Draw filter text as prepared
-            auto point = Point(xPos, self.y + widget->top);
-            tr.drawStringLeftClipped(point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
-        }
     }
 
     // 0x004C21CD
@@ -909,7 +829,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2409
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -949,7 +869,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2434
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         if (widgetIndex == Widx::company_select)
         {
@@ -959,11 +879,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         else if (widgetIndex == Widx::filter_type_btn)
         {
             Widget dropdown = self.widgets[Widx::filter_type];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::stopping_at_station);
-            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::transporting_cargo);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::transporting_cargo);
             Dropdown::setItemSelected(self.var_88A);
         }
         else if (widgetIndex == Widx::cargo_type_btn)
@@ -1042,7 +961,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->invalidate();
     }
 
-    static void onDropdown(Ui::Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex == Widx::company_select)
         {
@@ -1065,7 +984,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C24CA
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_vehicle_list);
@@ -1110,7 +1029,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C266D
-    static CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, CursorId fallback)
+    static CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, CursorId fallback)
     {
         if (widgetIdx != Widx::scrollview)
         {

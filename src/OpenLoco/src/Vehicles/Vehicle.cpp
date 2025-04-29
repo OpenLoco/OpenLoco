@@ -1,4 +1,6 @@
 #include "Vehicle.h"
+#include "Effects/ExplosionEffect.h"
+#include "Effects/VehicleCrashEffect.h"
 #include "Entities/EntityManager.h"
 #include "GameState.h"
 #include "Map/RoadElement.h"
@@ -56,6 +58,16 @@ namespace OpenLoco::Vehicles
         return EntityManager::get<VehicleBase>(veh->nextCarId);
     }
 
+    VehicleBase* VehicleBase::previousVehicleComponent()
+    {
+        auto head = EntityManager::get<VehicleBase>(this->getHead());
+        while (head->nextVehicleComponent() != this)
+        {
+            head = head->nextVehicleComponent();
+        }
+        return head;
+    }
+
     TransportMode VehicleBase::getTransportMode() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
@@ -110,6 +122,12 @@ namespace OpenLoco::Vehicles
         veh->nextCarId = newNextCar;
     }
 
+    EntityId VehicleBase::getNextCar() const
+    {
+        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
+        return veh->nextCarId;
+    }
+
     bool VehicleBase::has38Flags(Flags38 flagsToTest) const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
@@ -120,6 +138,25 @@ namespace OpenLoco::Vehicles
     {
         const auto* ent = reinterpret_cast<const EntityBase*>(this);
         return (ent->vehicleFlags & flagsToTest) != VehicleFlags::none;
+    }
+
+    // 0x004AA407
+    void VehicleBase::explodeComponent()
+    {
+        auto subType = getSubType();
+        assert(subType == VehicleEntityType::bogie || subType == VehicleEntityType::body_start || subType == VehicleEntityType::body_continued);
+
+        const auto pos = position + World::Pos3{ 0, 0, 22 };
+        Audio::playSound(Audio::SoundId::crash, pos);
+
+        ExplosionCloud::create(pos);
+
+        const auto numParticles = std::min(spriteWidth / 4, 7);
+        for (auto i = 0; i < numParticles; ++i)
+        {
+            ColourScheme colourScheme = (subType == VehicleEntityType::bogie) ? reinterpret_cast<VehicleBogie*>(this)->colourScheme : reinterpret_cast<VehicleBody*>(this)->colourScheme;
+            VehicleCrashParticle::create(pos, colourScheme);
+        }
     }
 
     // 0x004AA464
@@ -236,7 +273,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
+    static constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
     {
         uint8_t nibble = 0;
         if (pos1.x != pos2.x)
@@ -255,7 +292,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00500120
-    constexpr std::array<uint32_t, 8> movementNibbleToDistance = {
+    static constexpr std::array<uint32_t, 8> movementNibbleToDistance = {
         0,
         0x220C,
         0x220C,
@@ -267,7 +304,7 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x00500244
-    constexpr std::array<World::TilePos2, 9> kNearbyTiles = {
+    static constexpr std::array<World::TilePos2, 9> kNearbyTiles = {
         World::TilePos2{ 0, 0 },
         World::TilePos2{ 0, 1 },
         World::TilePos2{ 1, 1 },
@@ -279,70 +316,43 @@ namespace OpenLoco::Vehicles
         World::TilePos2{ -1, 1 },
     };
 
-    static bool checkTrainForSelfCollision(const EntityId sourceVehicleId, const VehicleBase& candidateVehicle)
+    // If candidate within 8 vehicle components of src we ignore a self collision
+    // TODO: If we stored the car index this could be simplified
+    static bool ignoreSelfCollision(VehicleBase& sourceVehicleId, const VehicleBase& candidateVehicleId)
     {
-        bool noSelfCollision = false;
-        Vehicle collideTrain(candidateVehicle.getHead());
-        bool carFound = false;
-        uint32_t numCarsToCheck = 0;
-        for (auto& car : collideTrain.cars)
+        auto* src = &sourceVehicleId;
+        for (uint32_t i = 0; i < 8; ++i)
         {
-            for (auto& carComponent : car)
+            src = src->nextVehicleComponent();
+            if (src == nullptr)
             {
-
-                if (!carFound)
-                {
-                    carComponent.applyToComponents([&carFound, &numCarsToCheck, targetId = candidateVehicle.id](auto& c) {
-                        if (c.id == targetId)
-                        {
-                            carFound = true;
-                            numCarsToCheck = 3;
-                        }
-                    });
-                }
-                if (carFound)
-                {
-                    carComponent.applyToComponents([&noSelfCollision, targetId = sourceVehicleId](auto& c) {
-                        if (c.id == targetId)
-                        {
-                            noSelfCollision = true;
-                        }
-                    });
-                }
+                return false;
             }
-            if (noSelfCollision)
+            if (src == &candidateVehicleId)
             {
                 return true;
-            }
-            if (carFound)
-            {
-                numCarsToCheck--;
-                if (numCarsToCheck == 0)
-                {
-                    break;
-                }
             }
         }
         return false;
     }
 
     // 0x004B1876
-    static std::optional<EntityId> checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
+    static EntityId checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
     {
         if (bogie.mode != TransportMode::rail)
         {
-            return std::nullopt;
+            return EntityId::null;
         }
 
         Vehicle srcTrain(bogie.head);
 
-        for (auto& nearby : kNearbyTiles)
+        for (const auto& nearby : kNearbyTiles)
         {
             const auto inspectionPos = World::toTileSpace(loc) + nearby;
             for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
             {
                 auto* vehicleBase = entity->asBase<VehicleBase>();
-                if (vehicleBase == nullptr)
+                if (vehicleBase == nullptr || vehicleBase == &bogie)
                 {
                     continue;
                 }
@@ -382,18 +392,18 @@ namespace OpenLoco::Vehicles
                     return vehicleBase->id;
                 }
 
-                if (checkTrainForSelfCollision(bogie.id, *vehicleBase))
+                if (ignoreSelfCollision(bogie, *vehicleBase))
                 {
                     continue;
                 }
-                if (checkTrainForSelfCollision(vehicleBase->id, bogie))
+                if (ignoreSelfCollision(*vehicleBase, bogie))
                 {
                     continue;
                 }
                 return vehicleBase->id;
             }
         }
-        return std::nullopt;
+        return EntityId::null;
     }
 
     // 0x0047C7FA
@@ -435,10 +445,10 @@ namespace OpenLoco::Vehicles
             {
                 // collision checks
                 auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
-                if (collideResult.has_value())
+                if (collideResult != EntityId::null)
                 {
                     _vehicleUpdate_var_1136114 |= (1U << 2);
-                    _vehicleUpdate_collisionCarComponent = collideResult.value();
+                    _vehicleUpdate_collisionCarComponent = collideResult;
                 }
             }
         }
@@ -495,10 +505,10 @@ namespace OpenLoco::Vehicles
                 {
                     // collision checks
                     auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
-                    if (collideResult.has_value())
+                    if (collideResult != EntityId::null)
                     {
                         _vehicleUpdate_var_1136114 |= (1U << 2);
-                        _vehicleUpdate_collisionCarComponent = collideResult.value();
+                        _vehicleUpdate_collisionCarComponent = collideResult;
                     }
                 }
             }
@@ -702,7 +712,7 @@ namespace OpenLoco::Vehicles
     AirportObjectFlags VehicleBogie::getCompatibleAirportType()
     {
         auto* vehObj = ObjectManager::get<VehicleObject>(objectId);
-        if (vehObj->hasFlags(VehicleObjectFlags::isHelicopter))
+        if (vehObj->hasFlags(VehicleObjectFlags::aircraftIsHelicopter))
         {
             return AirportObjectFlags::acceptsHelicopter;
         }
@@ -733,6 +743,125 @@ namespace OpenLoco::Vehicles
         carComponent.body->updateCargoSprite();
     }
 
+    // 0x004AFFF3
+    // esi: frontBogie
+    // returns new front bogie as esi
+    VehicleBogie* flipCar(VehicleBogie& frontBogie)
+    {
+        Vehicle train(frontBogie.head);
+        auto precedingVehicleComponent = frontBogie.previousVehicleComponent();
+        CarComponent oldFirstComponent;
+        sfl::static_vector<CarComponent, VehicleObject::kMaxCarComponents> components;
+
+        for (auto& car : train.cars)
+        {
+            if (car.front->id != frontBogie.id)
+            {
+                continue;
+            }
+            oldFirstComponent = car;
+            for (CarComponent& component : car)
+            {
+                std::swap(component.front->objectSpriteType, component.back->objectSpriteType);
+                component.body->var_38 ^= Flags38::isReversed;
+                components.push_back(component);
+            }
+            break;
+        }
+
+        // if the Car is only one CarComponent we don't have to swap any values
+        if (components.size() == 1)
+        {
+            return &frontBogie;
+        }
+        CarComponent& newFirstComponent = components.back();
+        newFirstComponent.body->setSubType(VehicleEntityType::body_start);
+        precedingVehicleComponent->setNextCar(newFirstComponent.front->id);
+        // set the new last component to point to the next car
+
+        if (oldFirstComponent.body == nullptr)
+        {
+            throw Exception::RuntimeError("oldFirstComponent.body was nullptr");
+        }
+        oldFirstComponent.body->setNextCar(newFirstComponent.body->nextCarId);
+
+        for (int i = components.size() - 2; i >= 0; i--)
+        {
+            components[i].body->setSubType(VehicleEntityType::body_continued);
+            if (components[i + 1].body != nullptr)
+            {
+                components[i + 1].body->setNextCar(components[i].front->id);
+            }
+        }
+
+        newFirstComponent.body->primaryCargo = oldFirstComponent.body->primaryCargo;
+        newFirstComponent.body->breakdownFlags = oldFirstComponent.body->breakdownFlags;
+        newFirstComponent.body->breakdownTimeout = oldFirstComponent.body->breakdownTimeout;
+        newFirstComponent.front->secondaryCargo = oldFirstComponent.front->secondaryCargo;
+        newFirstComponent.front->breakdownFlags = oldFirstComponent.front->breakdownFlags;
+        newFirstComponent.front->breakdownTimeout = oldFirstComponent.front->breakdownTimeout;
+        newFirstComponent.front->var_52 = oldFirstComponent.front->var_52;
+        newFirstComponent.front->reliability = oldFirstComponent.front->reliability;
+        newFirstComponent.front->timeoutToBreakdown = oldFirstComponent.front->timeoutToBreakdown;
+
+        // vanilla does not reset every value
+        oldFirstComponent.body->primaryCargo.acceptedTypes = 0;
+        oldFirstComponent.body->primaryCargo.type = 0xFF;
+        oldFirstComponent.body->primaryCargo.maxQty = 0;
+        oldFirstComponent.body->primaryCargo.qty = 0;
+        oldFirstComponent.body->primaryCargo.numDays = 0;
+        oldFirstComponent.front->secondaryCargo.acceptedTypes = 0;
+        oldFirstComponent.front->secondaryCargo.type = 0xFF;
+        oldFirstComponent.front->secondaryCargo.maxQty = 0;
+        oldFirstComponent.front->secondaryCargo.qty = 0;
+        oldFirstComponent.front->secondaryCargo.numDays = 0;
+
+        oldFirstComponent.body->breakdownFlags = BreakdownFlags::none;
+        oldFirstComponent.body->breakdownTimeout = 0;
+        oldFirstComponent.front->breakdownFlags = BreakdownFlags::none;
+        oldFirstComponent.front->breakdownTimeout = 0;
+
+        return newFirstComponent.front;
+    }
+
+    // 0x004AF4D6
+    // source: esi
+    // dest: edi
+    // returns nothing
+    void insertCarBefore(VehicleBogie& source, VehicleBase& dest)
+    {
+        if (source.id == dest.id)
+        {
+            return;
+        }
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(source.head));
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(dest.getHead()));
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicleList);
+
+        Vehicle sourceTrain(source.head);
+        auto precedingSourceComponent = source.previousVehicleComponent();
+        for (auto& car : sourceTrain.cars)
+        {
+            if (car.front->id != source.id)
+            {
+                continue;
+            }
+            auto* lastBody = car.body;
+            for (auto& component : car)
+            {
+                component.front->head = dest.getHead();
+                component.back->head = dest.getHead();
+                component.body->head = dest.getHead();
+                lastBody = component.body;
+            }
+            precedingSourceComponent->setNextCar(lastBody->nextCarId);
+            lastBody->nextCarId = dest.id;
+            break;
+        }
+        auto precedingDestComponent = dest.previousVehicleComponent();
+        precedingDestComponent->setNextCar(source.id);
+    }
+
     void registerHooks()
     {
         registerHook(
@@ -747,6 +876,77 @@ namespace OpenLoco::Vehicles
 
                 regs = backup;
                 regs.eax = res;
+                return 0;
+            });
+
+        registerHook(
+            0x004AFFF3,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                VehicleBogie* component = X86Pointer<VehicleBogie>(regs.esi);
+                VehicleBogie* newComponent = flipCar(*component);
+                regs = backup;
+                regs.esi = X86Pointer(newComponent);
+                return 0;
+            });
+
+        registerHook(
+            0x004AF4D6,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                VehicleBogie* source = X86Pointer<VehicleBogie>(regs.esi);
+                VehicleBase* dest = X86Pointer<VehicleBase>(regs.edi);
+
+                insertCarBefore(*source, *dest);
+
+                regs = backup;
+                return 0;
+            });
+
+        registerHook(
+            0x00478CE9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const uint16_t tad = regs.bp;
+                const auto companyId = CompanyId(regs.bl);
+                const uint8_t roadObjId = regs.bh;
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+                auto& legacyConnections = *X86Pointer<World::Track::LegacyTrackConnections>(regs.edi - 4);
+                legacyConnections.size = 0;
+                const auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, tad);
+                const auto connections = World::Track::getRoadConnectionsOneWay(nextPos, nextRot, companyId, roadObjId, requiredMods, queryMods);
+                World::Track::toLegacyConnections(connections, legacyConnections);
+                regs = backup;
+                regs.ax = nextPos.x;
+                regs.cx = nextPos.y;
+                regs.dx = nextPos.z;
+                return 0;
+            });
+
+        registerHook(
+            0x00478AC9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const uint16_t tad = regs.bp;
+                const auto companyId = CompanyId(regs.bl);
+                const uint8_t roadObjId = regs.bh;
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+                auto& legacyConnections = *X86Pointer<World::Track::LegacyTrackConnections>(regs.edi - 4);
+                legacyConnections.size = 0;
+                const auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, tad);
+                const auto connections = World::Track::getRoadConnectionsAiAllocated(nextPos, nextRot, companyId, roadObjId, requiredMods, queryMods);
+                World::Track::toLegacyConnections(connections, legacyConnections);
+                regs = backup;
+                regs.ax = nextPos.x;
+                regs.cx = nextPos.y;
+                regs.dx = nextPos.z;
                 return 0;
             });
     }

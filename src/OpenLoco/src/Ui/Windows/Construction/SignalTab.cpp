@@ -19,6 +19,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 
 using namespace OpenLoco::Interop;
@@ -29,7 +30,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 {
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 167, StringIds::stringid_2),
-        makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
+        Widgets::dropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
         Widgets::ImageButton({ 27, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
         Widgets::ImageButton({ 71, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction));
 
@@ -41,7 +42,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     WindowEventList events;
 
     // 0x0049E64E
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -59,7 +60,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E669
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -113,7 +114,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E67C
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex != widx::signal_dropdown)
         {
@@ -216,7 +217,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E745
-    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::single_direction && widgetIndex != widx::both_directions)
         {
@@ -261,7 +262,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E75A
-    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::single_direction && widgetIndex != widx::both_directions)
         {
@@ -357,7 +358,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
     void tabReset(Window* self)
     {
-        self->callOnMouseDown(Signal::widx::both_directions);
+        self->callOnMouseDown(Signal::widx::both_directions, self->widgets[Signal::widx::both_directions].id);
     }
 
     static constexpr WindowEventList kEvents = {
@@ -367,7 +368,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
         .onToolUpdate = onToolUpdate,
-        .onToolDown = onToolDown,
+        .toolUp = onToolUp,
         .prepareDraw = prepareDraw,
         .draw = draw,
     };

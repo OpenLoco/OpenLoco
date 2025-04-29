@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Tile.h"
+#include "TileClearance.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstdint>
 #include <set>
@@ -12,6 +13,7 @@ namespace OpenLoco::World
     struct BuildingElement;
     struct TreeElement;
     struct SurfaceElement;
+    struct RoadElement;
     enum class ElementType : uint8_t;
 }
 
@@ -67,6 +69,10 @@ namespace OpenLoco::World::TileManager
     {
         return insertElementAfterNoReorg(after, TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
     }
+
+    // Special road element insert
+    World::RoadElement* insertElementRoad(const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
+
     TileHeight getHeight(const Pos2& pos);
     SmallZ getSurfaceCornerHeight(const SurfaceElement& surface);
     SmallZ getSurfaceCornerDownHeight(const SurfaceElement& surface, const uint8_t cornerMask);
@@ -98,6 +104,6 @@ namespace OpenLoco::World::TileManager
     void removeAllWallsOnTileBelow(const World::TilePos2& pos, SmallZ baseZ);
     void setTerrainStyleAsCleared(const Pos2& pos);
     void setTerrainStyleAsClearedAtHeight(const Pos3& pos);
-    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags);
-    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags);
+    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
+    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
 }

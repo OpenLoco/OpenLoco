@@ -5,6 +5,7 @@
 #include "Gui.h"
 #include "Localisation/StringIds.h"
 #include "Scenario.h"
+#include "SceneManager.h"
 #include "Ui.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -168,7 +169,7 @@ namespace OpenLoco::Tutorial
         if (_tutorialIt == _tutorialData.end())
         {
             stop();
-            addr<0x00508F12, uint16_t>() = 0; // screen_age
+            SceneManager::resetSceneAge();
         }
 
         return next;

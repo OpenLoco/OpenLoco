@@ -4,6 +4,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
@@ -16,9 +17,12 @@
 #include "SceneManager.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Diagnostics;
@@ -46,15 +50,15 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 610, 412 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::select_scenario_for_new_game),
+        Widgets::Caption({ 1, 1 }, { 608, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::select_scenario_for_new_game),
         Widgets::ImageButton({ 595, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 48 }, { 610, 364 }, WidgetType::wt_3, WindowColour::secondary),
+        Widgets::Wt3Widget({ 0, 48 }, { 610, 364 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
         Widgets::Tab({ 94, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
         Widgets::Tab({ 185, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
         Widgets::Tab({ 276, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
         Widgets::Tab({ 367, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::ScrollView({ 3, 52 }, { 431, 356 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
 
@@ -70,14 +74,14 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             Widget& widget = self->widgets[widx::tab0 + i];
             if (ScenarioManager::hasScenariosForCategory(i))
             {
-                widget.type = WidgetType::tab;
+                widget.hidden = false;
                 widget.left = xPos;
                 widget.right = xPos + 90;
                 xPos += 91;
             }
             else
             {
-                widget.type = WidgetType::none;
+                widget.hidden = true;
             }
         }
     }
@@ -121,7 +125,6 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             getEvents());
 
         self->setWidgets(_widgets);
-        self->enabledWidgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
         self->initScrollWidgets();
 
         self->setColour(WindowColour::primary, Colour::black);
@@ -134,12 +137,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         // Select the last tab used, or the first available one.
         uint8_t selectedTab = Config::get().old.scenarioSelectedTab;
-        if (self->widgets[widx::tab0 + selectedTab].type == WidgetType::none)
+        if (self->widgets[widx::tab0 + selectedTab].hidden)
         {
             selectedTab = 0;
             for (int i = 0; i < 5; i++)
             {
-                if (self->widgets[widx::tab0 + i].type == WidgetType::none)
+                if (self->widgets[widx::tab0 + i].hidden)
                 {
                     selectedTab = i;
                     break;
@@ -183,7 +186,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         for (int i = 0; i < 5; i++)
         {
             Widget& widget = self.widgets[widx::tab0 + i];
-            if (widget.type == WidgetType::none)
+            if (widget.hidden)
             {
                 continue;
             }
@@ -442,7 +445,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443E9B
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -453,7 +456,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443EA6
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -514,7 +517,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Mouse click sound
         Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
 
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             GameCommands::do_67(scenarioInfo->filename);
         }
@@ -550,7 +553,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00444001
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_scenario_list);

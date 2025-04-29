@@ -20,11 +20,13 @@
 #include "SceneManager.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
@@ -49,13 +51,11 @@ namespace OpenLoco::Ui::Windows::Industry
             tab_transported,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_2) | (1 << widx::tab_transported);
-
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 95 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industry),
@@ -66,14 +66,14 @@ namespace OpenLoco::Ui::Windows::Industry
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window& self);
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input);
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
         static void update(Window& self);
         static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
         static void setDisabledWidgets(Window* self);
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx);
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id);
     }
 
     namespace Industry
@@ -94,14 +94,12 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(223, 137, StringIds::title_town),
-            makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
-            Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::Center),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry)
+            Widgets::Viewport({ 3, 44 }, { 195, 80 }, WindowColour::secondary, Widget::kContentUnk),
+            Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::center),
+            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
+            Widgets::ImageButton({ 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry)
 
         );
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport) | (1 << demolish_industry);
 
         // 0x00455ADD
         static void prepareDraw(Window& self)
@@ -118,13 +116,13 @@ namespace OpenLoco::Ui::Windows::Industry
             self.widgets[widx::demolish_industry].right = self.width - 2;
             self.widgets[widx::demolish_industry].left = self.width - 25;
 
-            if (isEditorMode() || isSandboxMode())
+            if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
-                self.widgets[widx::demolish_industry].type = WidgetType::buttonWithImage;
+                self.widgets[widx::demolish_industry].hidden = false;
             }
             else
             {
-                self.widgets[widx::demolish_industry].type = WidgetType::none;
+                self.widgets[widx::demolish_industry].hidden = true;
                 self.widgets[widx::viewport].right += 22;
             }
 
@@ -158,7 +156,7 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00455C86
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -210,7 +208,7 @@ namespace OpenLoco::Ui::Windows::Industry
             if (self.viewports[0] != nullptr)
             {
                 uint16_t newWidth = self.width - 30;
-                if (!isEditorMode() && !isSandboxMode())
+                if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
                 {
                     newWidth += 22;
                 }
@@ -338,8 +336,8 @@ namespace OpenLoco::Ui::Windows::Industry
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
             {
-                window->setColour(WindowColour::primary, skin->colour_0B);
-                window->setColour(WindowColour::secondary, skin->colour_0C);
+                window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+                window->setColour(WindowColour::secondary, skin->windowColour);
             }
             // 0x00456DBC end
 
@@ -350,7 +348,6 @@ namespace OpenLoco::Ui::Windows::Industry
         window->invalidate();
 
         window->setWidgets(Industry::widgets);
-        window->enabledWidgets = Industry::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Industry::getEvents();
         window->activatedWidgets = 0;
@@ -568,14 +565,13 @@ namespace OpenLoco::Ui::Windows::Industry
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t* enabledWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { Industry::widgets, widx::tab_industry, Industry::getEvents(), &Industry::enabledWidgets },
-            { Production2::widgets, widx::tab_production, Production::getEvents(), &Common::enabledWidgets },
-            { Production2::widgets, widx::tab_production_2, Production2::getEvents(), &Common::enabledWidgets },
-            { Transported::widgets, widx::tab_transported, Transported::getEvents(), &Common::enabledWidgets }
+            { Industry::widgets, widx::tab_industry, Industry::getEvents() },
+            { Production2::widgets, widx::tab_production, Production::getEvents() },
+            { Production2::widgets, widx::tab_production_2, Production2::getEvents() },
+            { Transported::widgets, widx::tab_transported, Transported::getEvents() }
         };
 
         static void setDisabledWidgets(Window* self)
@@ -696,7 +692,7 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x004565B5, 0x00456505
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -744,7 +740,7 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00455CBC
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget != Common::widx::caption)
             {
@@ -786,7 +782,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto industry = IndustryManager::get(IndustryId(self->number));
-            if (!isEditorMode() && !isSandboxMode())
+            if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
             {
                 if (!industry->hasFlags(IndustryFlags::flag_04))
                 {
@@ -825,7 +821,6 @@ namespace OpenLoco::Ui::Windows::Industry
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry];
 
-            self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

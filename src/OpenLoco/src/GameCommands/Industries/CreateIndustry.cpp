@@ -22,7 +22,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "Objects/TreeObject.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
@@ -165,11 +165,12 @@ namespace OpenLoco::GameCommands
 
         // Workout clearance height of building (including scaffolding if required)
         const auto buildingParts = indObj->getBuildingParts(buildingType);
+        const auto partHeights = indObj->getBuildingPartHeights();
         // 0x00E0C3BC (note this is bigZ and does not include the base height)
         auto clearHeight = 0;
         for (auto part : buildingParts)
         {
-            clearHeight += indObj->buildingPartHeights[part];
+            clearHeight += partHeights[part];
         }
         if (!buildImmediate && indObj->scaffoldingSegmentType != 0xFF)
         {
@@ -317,7 +318,7 @@ namespace OpenLoco::GameCommands
                         surface->setClearZ(highestBaseZ);
                         surface->setSlope(0);
                         surface->setSnowCoverage(0);
-                        surface->setVar6SLR5(0);
+                        surface->setGrowthStage(0);
                     }
                 }
             }
@@ -440,7 +441,7 @@ namespace OpenLoco::GameCommands
         {
             newIndustry->flags |= IndustryFlags::isGhost;
         }
-        if (!isEditorMode() && getUpdatingCompanyId() != CompanyId::neutral)
+        if (!SceneManager::isEditorMode() && getUpdatingCompanyId() != CompanyId::neutral)
         {
             newIndustry->flags |= IndustryFlags::flag_04;
             newIndustry->owner = getUpdatingCompanyId();
@@ -458,27 +459,28 @@ namespace OpenLoco::GameCommands
         auto prodRateRand = randVal;
         for (auto i = 0; i < 2; ++i)
         {
-            newIndustry->var_17D[i] = 0;
+            newIndustry->dailyProduction[i] = 0;
 
             const auto& initalRate = indObj->initialProductionRate[i];
-            newIndustry->productionRate[i] = (((initalRate.max - initalRate.min) * prodRateRand) / 256) + initalRate.min;
+            newIndustry->dailyProductionTarget[i] = (((initalRate.max - initalRate.min) * prodRateRand) / 256) + initalRate.min;
 
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
-                newIndustry->var_17D[i] = newIndustry->productionRate[i];
-                newIndustry->producedCargoQuantityPreviousMonth[i] = newIndustry->var_17D[i] * 30;
+                newIndustry->dailyProduction[i] = newIndustry->dailyProductionTarget[i];
+                newIndustry->producedCargoQuantityPreviousMonth[i] = newIndustry->dailyProduction[i] * 30;
             }
             // This is odd but follows vanilla
-            prodRateRand = newIndustry->productionRate[i] & 0xFF;
+            prodRateRand = newIndustry->dailyProductionTarget[i] & 0xFF;
         }
 
         currency32_t totalCost = 0;
 
         // 0x00454552
         const auto numBuildings = (((indObj->maxNumBuildings - indObj->minNumBuildings + 1) * randVal) / 256) + indObj->minNumBuildings;
+        const auto buildings = indObj->getBuildings();
         for (auto i = 0U; i < numBuildings; ++i)
         {
-            const auto building = indObj->buildings[i];
+            const auto building = buildings[i];
             // 0x00E0C3D2 (bit 0)
             const bool isMultiTile = indObj->buildingSizeFlags & (1ULL << building);
 
@@ -543,7 +545,7 @@ namespace OpenLoco::GameCommands
                     {
                         continue;
                     }
-                    S5::getOptions().madeAnyChanges = 1;
+                    Scenario::getOptions().madeAnyChanges = 1;
                     // Why are we incrementing this even on test?
                     newIndustry->numTiles--;
                 }
@@ -592,7 +594,7 @@ namespace OpenLoco::GameCommands
         // 0x00454745
         if ((flags & Flags::apply) && !(flags & Flags::ghost) && newIndustry->numTiles != 0)
         {
-            if (indObj->var_EA != 0xFF)
+            if (indObj->farmTileGrowthStageNoProduction != 0xFF)
             {
                 uint32_t buildingWallEntranceMask = 0;
                 if (indObj->buildingWallEntrance != 0xFF)
@@ -612,7 +614,7 @@ namespace OpenLoco::GameCommands
                     const auto topRight = bottomLeft + (isMultiTile ? World::TilePos2{ 3, 3 } : World::TilePos2{ 2, 2 });
                     for (const auto& tilePos : World::TilePosRangeView(bottomLeft, topRight))
                     {
-                        claimSurfaceForIndustry(tilePos, newIndustry->id(), indObj->var_EA);
+                        claimSurfaceForIndustry(tilePos, newIndustry->id(), indObj->farmTileGrowthStageNoProduction, 0);
                         // TODO: This is very similar to expand grounds code
                         if (indObj->buildingWall != 0xFF)
                         {
@@ -661,14 +663,15 @@ namespace OpenLoco::GameCommands
             }
 
             // Expand grounds
-            if (indObj->var_EC != 0)
+            if (indObj->farmTileNumGrowthStages != 0)
             {
-                const auto numExpands = (((indObj->var_EB * newIndustry->prng.randNext(0xFF)) / 256) + 1) * 4;
+                const auto numExpands = (((indObj->farmNumFields * newIndustry->prng.randNext(0xFF)) / 256) + 1) * 4;
                 for (auto i = 0; i < numExpands; ++i)
                 {
                     const auto randExpandVal = newIndustry->prng.randNext();
                     // dl
-                    const auto surfaceUnk = (((randExpandVal & 0xFF) * indObj->var_EC) / 256) | (((randExpandVal >> 8) & 0x7) << 5);
+                    const auto growthStage = ((randExpandVal & 0xFF) * indObj->farmTileNumGrowthStages) / 256;
+                    const auto updateTimerVal = (randExpandVal >> 8) & 0x7;
 
                     const World::TilePos2 randOffset(
                         ((randExpandVal >> 11) & 0x1F) - 15,
@@ -680,7 +683,7 @@ namespace OpenLoco::GameCommands
 
                     const auto wallType = useSecondWallType ? indObj->wallTypes[2] : indObj->wallTypes[0];
                     const auto wallEntranceType = useSecondWallType ? indObj->wallTypes[3] : indObj->wallTypes[1];
-                    newIndustry->expandGrounds(randPos, wallType, wallEntranceType, surfaceUnk);
+                    newIndustry->expandGrounds(randPos, wallType, wallEntranceType, growthStage, updateTimerVal);
                 }
             }
         }

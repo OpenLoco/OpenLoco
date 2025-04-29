@@ -156,7 +156,7 @@ namespace OpenLoco::GameCommands
             auto reverseYaw = yaw ^ (1U << 5);
 
             auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-            const auto pitch = vehicleObj->hasFlags(VehicleObjectFlags::unk_08) ? Pitch::up12deg : Pitch::flat;
+            const auto pitch = vehicleObj->hasFlags(VehicleObjectFlags::aircraftIsTaildragger) ? Pitch::up12deg : Pitch::flat;
 
             head->movePlaneTo(*placePos, reverseYaw, pitch);
             head->status = Vehicles::Status::stopped;
@@ -169,7 +169,7 @@ namespace OpenLoco::GameCommands
             train.veh1->var_48 |= Vehicles::Flags48::flag2;
 
             train.veh2->currentSpeed = 0.0_mph;
-            train.veh2->var_5A = 0;
+            train.veh2->motorState = Vehicles::MotorState::stopped;
 
             if (flags & Flags::ghost)
             {

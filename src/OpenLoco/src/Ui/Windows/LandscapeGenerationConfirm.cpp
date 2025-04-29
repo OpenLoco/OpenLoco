@@ -10,6 +10,7 @@
 #include "Scenario.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 
@@ -28,7 +29,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Panel({ 0, 0 }, { 280, 92 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 278, 13 }, Widgets::Caption::Style::boxed, WindowColour::primary),
         Widgets::Button({ 267, 2 }, { 11, 11 }, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
         Widgets::Button({ 20, 77 }, { 100, 12 }, WindowColour::primary, StringIds::label_ok),
         Widgets::Button({ 160, 77 }, { 100, 12 }, WindowColour::primary, StringIds::label_button_cancel)
@@ -57,7 +58,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     }
 
     // 0x004C18E4
-    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -100,7 +101,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         {
             window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, kWindowSize, WindowFlags::none, getEvents());
             window->setWidgets(widgets);
-            window->enabledWidgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
             window->initScrollWidgets();
             window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedDarkRed).translucent());
             window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedDarkRed).translucent());

@@ -53,18 +53,21 @@ namespace OpenLoco::GameCommands
         return false;
     }
 
-    struct ClearFunctionArgs
+    namespace
     {
-        World::Pos3 pos;
-        uint8_t rotation;
-        uint8_t trackId;
-        uint8_t unkFlags;
-        uint8_t bridgeId;
-        uint8_t trackObjectId;
-        uint8_t index;
-        bool isLastIndex;
-        uint8_t flags;
-    };
+        struct ClearFunctionArgs
+        {
+            World::Pos3 pos;
+            uint8_t rotation;
+            uint8_t trackId;
+            uint8_t unkFlags;
+            uint8_t bridgeId;
+            uint8_t trackObjectId;
+            uint8_t index;
+            bool isLastIndex;
+            uint8_t flags;
+        };
+    }
 
     // 0x0049C4FF
     static World::TileClearance::ClearFuncResult clearTrack(World::TrackElement& elTrack, const ClearFunctionArgs& args)
@@ -269,7 +272,12 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0049C275
-    static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const ClearFunctionArgs& args)
+    static World::TileClearance::ClearFuncResult clearFunction(
+        World::TileElement& el,
+        currency32_t& totalCost,
+        bool& hasLevelCrossing,
+        World::TileClearance::RemovedBuildings& removedBuildings,
+        const ClearFunctionArgs& args)
     {
         switch (el.type())
         {
@@ -401,7 +409,7 @@ namespace OpenLoco::GameCommands
         }
 
         auto& trackPieces = World::TrackData::getTrackPiece(args.trackId);
-        std::set<World::Pos3, World::LessThanPos3> removedBuildings;
+        World::TileClearance::RemovedBuildings removedBuildings;
 
         for (auto& piece : trackPieces)
         {

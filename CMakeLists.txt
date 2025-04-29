@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.22)
 cmake_policy(VERSION 3.22)
 
+# IPO warning.
+cmake_policy(SET CMP0069 NEW) 
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
+
 set (PROJECT openloco)
 
 # Store the top level source directory in a variable to be passed down to targets.
@@ -34,7 +38,7 @@ if (WIN32)
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
-            GIT_TAG 1de2026f28ead93ff1773e6e680387643e914ea1)
+            GIT_TAG d5182f703b51d7b258f83f94d936ac03488dcdbe)
         FetchContent_MakeAvailable(vcpkg)
 
         set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
@@ -42,7 +46,19 @@ if (WIN32)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 24.12)
+project(${PROJECT} LANGUAGES CXX VERSION 25.04)
+
+# Enable IPO for all Release targets by default
+include(CheckIPOSupported)
+check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
+
+if(ipo_supported)
+    # Enable IPO globally for all Release builds
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
+    message(STATUS "IPO/LTO enabled for all Release targets.")
+else()
+    message(WARNING "IPO/LTO not supported: ${ipo_error}")
+endif()
 
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
@@ -147,8 +163,8 @@ if (UNIX)
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.0/objects.zip
-            URL_HASH SHA256=3fd5b10681d8f2f9842213d8fca98222485f509193894af15c290abd29a28126)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.3/objects.zip
+            URL_HASH SHA256=c08937691b9d7a956305864b535c6e4537a84b81a9dc5d4c9016edff83dcceb6)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)

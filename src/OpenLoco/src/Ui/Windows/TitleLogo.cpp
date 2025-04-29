@@ -3,6 +3,7 @@
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::Ui::Windows::TitleLogo
@@ -18,7 +19,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, kWindowSize, WindowColour::primary)
 
     );
 
@@ -34,8 +35,6 @@ namespace OpenLoco::Ui::Windows::TitleLogo
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = 1 << Widx::logo;
-
         window->initScrollWidgets();
 
         window->setColour(WindowColour::primary, AdvancedColour(Colour::grey).translucent());
@@ -51,7 +50,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     // 0x004392AD
-    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {

@@ -87,12 +87,12 @@ namespace OpenLoco::Ui
         }
     }
 
-    bool Window::isEnabled(int8_t widgetIndex)
+    bool Window::isEnabled(WidgetIndex_t widgetIndex)
     {
-        return (this->enabledWidgets & (1ULL << widgetIndex)) != 0;
+        return (this->disabledWidgets & (1ULL << widgetIndex)) == 0;
     }
 
-    bool Window::isDisabled(int8_t widgetIndex)
+    bool Window::isDisabled(WidgetIndex_t widgetIndex)
     {
         return (this->disabledWidgets & (1ULL << widgetIndex)) != 0;
     }
@@ -278,7 +278,6 @@ namespace OpenLoco::Ui
             {
                 continue;
             }
-            this->callOnResize();
 
             viewport_pos centre;
 
@@ -969,7 +968,7 @@ namespace OpenLoco::Ui
         {
             widgetIndex++;
 
-            if (widget.type == WidgetType::none)
+            if (widget.type == WidgetType::empty || widget.hidden)
             {
                 continue;
             }
@@ -1060,54 +1059,54 @@ namespace OpenLoco::Ui
         eventHandlers->event_09(*this);
     }
 
-    void Window::callToolUpdate(WidgetIndex_t widgetIndex, int16_t xPos, int16_t yPos)
+    void Window::callToolUpdate(WidgetIndex_t widgetIndex, const WidgetId id, int16_t xPos, int16_t yPos)
     {
         if (eventHandlers->onToolUpdate == nullptr)
         {
             return;
         }
 
-        eventHandlers->onToolUpdate(*this, widgetIndex, xPos, yPos);
+        eventHandlers->onToolUpdate(*this, widgetIndex, id, xPos, yPos);
     }
 
-    void Window::callToolDown(WidgetIndex_t widgetIndex, int16_t xPos, int16_t yPos)
+    void Window::callToolDown(WidgetIndex_t widgetIndex, const WidgetId id, int16_t xPos, int16_t yPos)
     {
         if (eventHandlers->onToolDown == nullptr)
         {
             return;
         }
 
-        eventHandlers->onToolDown(*this, widgetIndex, xPos, yPos);
+        eventHandlers->onToolDown(*this, widgetIndex, id, xPos, yPos);
     }
 
-    void Window::callToolDragContinue(const WidgetIndex_t widgetIndex, const int16_t xPos, const int16_t yPos)
+    void Window::callToolDrag(const WidgetIndex_t widgetIndex, const WidgetId id, const int16_t xPos, const int16_t yPos)
     {
-        if (eventHandlers->toolDragContinue == nullptr)
+        if (eventHandlers->toolDrag == nullptr)
         {
             return;
         }
 
-        eventHandlers->toolDragContinue(*this, widgetIndex, xPos, yPos);
+        eventHandlers->toolDrag(*this, widgetIndex, id, xPos, yPos);
     }
 
-    void Window::callToolDragEnd(const WidgetIndex_t widgetIndex)
+    void Window::callToolUp(const WidgetIndex_t widgetIndex, const WidgetId id, const int16_t xPos, const int16_t yPos)
     {
-        if (eventHandlers->toolDragEnd == nullptr)
+        if (eventHandlers->toolUp == nullptr)
         {
             return;
         }
 
-        eventHandlers->toolDragEnd(*this, widgetIndex);
+        eventHandlers->toolUp(*this, widgetIndex, id, xPos, yPos);
     }
 
-    void Window::callToolAbort(WidgetIndex_t widgetIndex)
+    void Window::callToolAbort(WidgetIndex_t widgetIndex, const WidgetId id)
     {
         if (eventHandlers->onToolAbort == nullptr)
         {
             return;
         }
 
-        eventHandlers->onToolAbort(*this, widgetIndex);
+        eventHandlers->onToolAbort(*this, widgetIndex, id);
     }
 
     Ui::CursorId Window::callToolCursor(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out)
@@ -1120,24 +1119,24 @@ namespace OpenLoco::Ui
         return eventHandlers->toolCursor(*this, xPos, yPos, fallback, *out);
     }
 
-    Ui::CursorId Window::callCursor(WidgetIndex_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    Ui::CursorId Window::callCursor(WidgetIndex_t widgetIdx, const WidgetId id, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (eventHandlers->cursor == nullptr)
         {
             return fallback;
         }
 
-        return eventHandlers->cursor(*this, widgetIdx, xPos, yPos, fallback);
+        return eventHandlers->cursor(*this, widgetIdx, id, xPos, yPos, fallback);
     }
 
-    void Window::callOnMouseUp(WidgetIndex_t widgetIndex)
+    void Window::callOnMouseUp(WidgetIndex_t widgetIndex, const WidgetId id)
     {
         if (eventHandlers->onMouseUp == nullptr)
         {
             return;
         }
 
-        eventHandlers->onMouseUp(*this, widgetIndex);
+        eventHandlers->onMouseUp(*this, widgetIndex, id);
     }
 
     Ui::Window* Window::callOnResize()
@@ -1151,34 +1150,34 @@ namespace OpenLoco::Ui
         return this;
     }
 
-    void Window::call_3(WidgetIndex_t widgetIndex)
+    void Window::callOnMouseHover(WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (eventHandlers->event_03 == nullptr)
+        if (eventHandlers->onMouseHover == nullptr)
         {
             return;
         }
 
-        eventHandlers->event_03(*this, widgetIndex);
+        eventHandlers->onMouseHover(*this, widgetIndex, id);
     }
 
-    void Window::callOnMouseDown(WidgetIndex_t widgetIndex)
+    void Window::callOnMouseDown(WidgetIndex_t widgetIndex, const WidgetId id)
     {
         if (eventHandlers->onMouseDown == nullptr)
         {
             return;
         }
 
-        eventHandlers->onMouseDown(*this, widgetIndex);
+        eventHandlers->onMouseDown(*this, widgetIndex, id);
     }
 
-    void Window::callOnDropdown(WidgetIndex_t widgetIndex, int16_t itemIndex)
+    void Window::callOnDropdown(WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
         if (eventHandlers->onDropdown == nullptr)
         {
             return;
         }
 
-        eventHandlers->onDropdown(*this, widgetIndex, itemIndex);
+        eventHandlers->onDropdown(*this, widgetIndex, id, itemIndex);
     }
 
     void Window::callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
@@ -1221,14 +1220,14 @@ namespace OpenLoco::Ui
         this->eventHandlers->scrollMouseOver(*this, xPos, yPos, scrollIndex);
     }
 
-    void Window::callTextInput(WidgetIndex_t caller, const char* buffer)
+    void Window::callTextInput(WidgetIndex_t caller, const WidgetId id, const char* buffer)
     {
         if (eventHandlers->textInput == nullptr)
         {
             return;
         }
 
-        this->eventHandlers->textInput(*this, caller, buffer);
+        this->eventHandlers->textInput(*this, caller, id, buffer);
     }
 
     void Window::callViewportRotate()
@@ -1241,7 +1240,7 @@ namespace OpenLoco::Ui
         this->eventHandlers->viewportRotate(*this);
     }
 
-    std::optional<FormatArguments> Window::callTooltip(WidgetIndex_t widgetIndex)
+    std::optional<FormatArguments> Window::callTooltip(WidgetIndex_t widgetIndex, const WidgetId id)
     {
         // We only return std::nullopt when required by the tooltip function
         if (eventHandlers->tooltip == nullptr)
@@ -1249,7 +1248,7 @@ namespace OpenLoco::Ui
             return FormatArguments();
         }
 
-        return eventHandlers->tooltip(*this, widgetIndex);
+        return eventHandlers->tooltip(*this, widgetIndex, id);
     }
 
     void Window::callOnMove(int16_t xPos, int16_t yPos)
@@ -1336,6 +1335,13 @@ namespace OpenLoco::Ui
         for (auto& widget : widgets)
         {
             widget.draw(drawingCtx, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
+
+            // FIXME: This is ugly and error prone, put the ScrollArea data in the widget,
+            //        previously it was passed as reference to draw where it incremented it.
+            if (widget.type == WidgetType::scrollview)
+            {
+                scrollviewIndex++;
+            }
         }
 
         if (this->hasFlags(WindowFlags::whiteBorderMask))
@@ -1381,7 +1387,7 @@ namespace OpenLoco::Ui
 
         for (WidgetIndex_t i = activeIndex; i >= minIndex; i--)
         {
-            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none)
+            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::empty || this->widgets[i].hidden)
             {
                 // Wrap around (while compensating for next iteration)
                 if (i == minIndex)
@@ -1414,7 +1420,7 @@ namespace OpenLoco::Ui
 
         for (WidgetIndex_t i = activeIndex; i <= maxIndex; i++)
         {
-            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none)
+            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::empty || this->widgets[i].hidden)
             {
                 // Wrap around (while compensating for next iteration)
                 if (i == maxIndex)

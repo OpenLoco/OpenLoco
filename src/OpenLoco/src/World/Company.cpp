@@ -1,5 +1,6 @@
 #include "Company.h"
 #include "CompanyManager.h"
+#include "Date.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/Company/ChangeLoan.h"
@@ -15,6 +16,7 @@
 #include "Map/TileManager.h"
 #include "MessageManager.h"
 #include "Objects/BuildingObject.h"
+#include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -33,7 +35,7 @@
 #include <algorithm>
 #include <array>
 #include <map>
-#include <unordered_set>
+#include <sfl/static_unordered_flat_set.hpp>
 
 using namespace OpenLoco::Interop;
 
@@ -147,7 +149,7 @@ namespace OpenLoco
     // 0x004387D0
     void Company::updateDailyPlayer()
     {
-        if (isEditorMode() || isTitleMode())
+        if (SceneManager::isEditorMode() || SceneManager::isTitleMode())
         {
             return;
         }
@@ -335,6 +337,139 @@ namespace OpenLoco
         company->observationTimeout = 5;
     }
 
+    /* 0x004A6841
+     * Creates a vector of all the available rail track (trains and trams) for a company
+     * Tram track is marked with a (1<<7) flag within the uint8_t
+     */
+    AvailableTracksAndRoads companyGetAvailableRailTracks(const CompanyId id)
+    {
+        AvailableTracksAndRoads result;
+        const auto* company = CompanyManager::get(id);
+        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxTrackObjects> tracks;
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (company->isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::rail)
+            {
+                tracks.insert(vehObj->trackType);
+            }
+        }
+
+        std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
+            const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
+            return !trackObj->hasFlags(TrackObjectFlags::unk_02);
+        });
+
+        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxRoadObjects> roads;
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (company->isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::road)
+            {
+                if (vehObj->trackType != 0xFF)
+                {
+                    roads.insert(vehObj->trackType | (1 << 7));
+                }
+            }
+        }
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::road); ++i)
+        {
+            const auto* roadObj = ObjectManager::get<RoadObject>(i);
+            if (roadObj == nullptr)
+            {
+                continue;
+            }
+
+            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            {
+                roads.insert(i | (1 << 7));
+            }
+        }
+
+        std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
+            const auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
+            return trackObj->hasFlags(RoadObjectFlags::unk_01);
+        });
+
+        return result;
+    }
+
+    /* 0x00478265
+     * Creates a vector of all the available road track (roads {no trams} and tracks with no rails??) for a company
+     * Roads are marked with a (1<<7) flag within the uint8_t
+     */
+    AvailableTracksAndRoads companyGetAvailableRoads(const CompanyId id)
+    {
+        AvailableTracksAndRoads result;
+
+        const auto* company = CompanyManager::get(id);
+        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxRoadObjects> roads;
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (company->isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::road && vehObj->trackType != 0xFFU)
+            {
+                roads.insert(vehObj->trackType | (1U << 7));
+            }
+        }
+
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::road); ++i)
+        {
+            const auto* roadObj = ObjectManager::get<RoadObject>(i);
+            if (roadObj == nullptr)
+            {
+                continue;
+            }
+
+            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            {
+                roads.insert(i | (1U << 7));
+            }
+        }
+
+        std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t roadId) {
+            const auto* roadObj = ObjectManager::get<RoadObject>(roadId & ~(1U << 7));
+            return !roadObj->hasFlags(RoadObjectFlags::unk_01);
+        });
+
+        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxTrackObjects> tracks;
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (company->isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::rail)
+            {
+                tracks.insert(vehObj->trackType);
+            }
+        }
+
+        std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
+            const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
+            return trackObj->hasFlags(TrackObjectFlags::unk_02);
+        });
+
+        return result;
+    }
+
     // 0x004312D2
     void updateYearly(Company& company)
     {
@@ -431,13 +566,8 @@ namespace OpenLoco
         return profitFactor + cargoFactor;
     }
 
-    struct ProfitAndValue
-    {
-        currency48_t vehicleProfit;
-        currency48_t companyValue;
-    };
     // 0x00437D79
-    static ProfitAndValue calculateCompanyValue(const Company& company)
+    ProfitAndValue calculateCompanyValue(const Company& company)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -622,12 +752,12 @@ namespace OpenLoco
                 {
                     if (numMonthsInTheRed == 3)
                     {
-                        MessageManager::post(MessageType::bankruptcyWarning3Months, id(), enumValue(id()), 0xFFFFU);
+                        MessageManager::post(MessageType::bankruptcyWarning6MonthsRemaining, id(), enumValue(id()), 0xFFFFU);
                         companyEmotionEvent(id(), Emotion::scared);
                     }
                     else if (numMonthsInTheRed == 6)
                     {
-                        MessageManager::post(MessageType::bankruptcyWarning6Months, id(), enumValue(id()), 0xFFFFU);
+                        MessageManager::post(MessageType::bankruptcyWarning3MonthsRemaining, id(), enumValue(id()), 0xFFFFU);
                         companyEmotionEvent(id(), Emotion::scared);
                     }
                 }
@@ -765,138 +895,6 @@ namespace OpenLoco
         Ui::WindowManager::invalidate(Ui::WindowType::companyList);
     }
 
-    /* 0x004A6841
-     * Creates a vector of all the available rail track (trains and trams) for a company
-     * Tram track is marked with a (1<<7) flag within the uint8_t
-     */
-    std::vector<uint8_t> Company::getAvailableRailTracks() const
-    {
-        std::vector<uint8_t> result;
-
-        std::unordered_set<uint8_t> tracks;
-        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
-        {
-            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
-            if (vehObj == nullptr)
-            {
-                continue;
-            }
-
-            if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::rail)
-            {
-                tracks.insert(vehObj->trackType);
-            }
-        }
-
-        std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
-            const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
-            return !trackObj->hasFlags(TrackObjectFlags::unk_02);
-        });
-
-        std::unordered_set<uint8_t> roads;
-        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
-        {
-            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
-            if (vehObj == nullptr)
-            {
-                continue;
-            }
-
-            if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::road)
-            {
-                if (vehObj->trackType != 0xFF)
-                {
-                    roads.insert(vehObj->trackType | (1 << 7));
-                }
-            }
-        }
-        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::road); ++i)
-        {
-            const auto* roadObj = ObjectManager::get<RoadObject>(i);
-            if (roadObj == nullptr)
-            {
-                continue;
-            }
-
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
-            {
-                roads.insert(i | (1 << 7));
-            }
-        }
-
-        std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
-            const auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
-            return trackObj->hasFlags(RoadObjectFlags::unk_01);
-        });
-
-        return result;
-    }
-
-    /* 0x00478265
-     * Creates a vector of all the available road track (roads {no trams} and tracks with no rails??) for a company
-     * Roads are marked with a (1<<7) flag within the uint8_t
-     */
-    std::vector<uint8_t> Company::getAvailableRoads() const
-    {
-        std::vector<uint8_t> result;
-
-        std::unordered_set<uint8_t> roads;
-        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
-        {
-            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
-            if (vehObj == nullptr)
-            {
-                continue;
-            }
-
-            if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::road && vehObj->trackType != 0xFFU)
-            {
-                roads.insert(vehObj->trackType | (1U << 7));
-            }
-        }
-
-        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::road); ++i)
-        {
-            const auto* roadObj = ObjectManager::get<RoadObject>(i);
-            if (roadObj == nullptr)
-            {
-                continue;
-            }
-
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
-            {
-                roads.insert(i | (1U << 7));
-            }
-        }
-
-        std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t roadId) {
-            const auto* roadObj = ObjectManager::get<RoadObject>(roadId & ~(1U << 7));
-            return !roadObj->hasFlags(RoadObjectFlags::unk_01);
-        });
-
-        std::unordered_set<uint8_t> tracks;
-        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
-        {
-            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
-            if (vehObj == nullptr)
-            {
-                continue;
-            }
-
-            if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::rail)
-            {
-                tracks.insert(vehObj->trackType);
-            }
-        }
-
-        std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
-            const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
-            return trackObj->hasFlags(TrackObjectFlags::unk_02);
-        });
-
-        return result;
-    }
-
     // 0x0042F042
     uint8_t Company::getHeadquarterPerformanceVariation() const
     {
@@ -957,13 +955,130 @@ namespace OpenLoco
         }
     }
 
+    // 0x00438747
+    static uint8_t applyBeTopProgressModifiers(const uint8_t progress, const Scenario::Objective& objective, const Company& company)
+    {
+        if ((objective.flags & (Scenario::ObjectiveFlags::beTopCompany | Scenario::ObjectiveFlags::beWithinTopThreeCompanies)) == Scenario::ObjectiveFlags::none)
+        {
+            return progress;
+        }
+
+        auto numCompaniesBetterPerforming = 0U;
+        for (auto& otherCompany : CompanyManager::companies())
+        {
+            if (otherCompany.id() == company.id())
+            {
+                continue;
+            }
+            if (company.performanceIndex < otherCompany.performanceIndex)
+            {
+                numCompaniesBetterPerforming++;
+            }
+        }
+
+        if ((objective.flags & Scenario::ObjectiveFlags::beTopCompany) != Scenario::ObjectiveFlags::none)
+        {
+            if (numCompaniesBetterPerforming != 0)
+            {
+                return std::max(progress - 10, 0);
+            }
+            return progress;
+        }
+        if ((objective.flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != Scenario::ObjectiveFlags::none)
+        {
+            if (numCompaniesBetterPerforming >= 3)
+            {
+                // Reduces progress by 10% for each company outside of top 3 better performing than the player
+                // Caps out at 30% reduction
+                const auto multiplier = std::min(numCompaniesBetterPerforming - 2, 3U);
+                return std::max(progress - 10 * multiplier, 0U);
+            }
+            return progress;
+        }
+        return progress;
+    }
+
     // 0x004385F6
     uint8_t Company::getNewChallengeProgress() const
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.ebx = enumValue(id());
-        call(0x004385F6, regs);
-        return regs.al;
+        if ((challengeFlags & CompanyFlags::challengeCompleted) != CompanyFlags::none)
+        {
+            return 100;
+        }
+
+        if ((challengeFlags & (CompanyFlags::challengeFailed | CompanyFlags::challengeBeatenByOpponent)) != CompanyFlags::none)
+        {
+            return 255;
+        }
+
+        auto& objectiveProgress = Scenario::getObjectiveProgress();
+        auto& objective = Scenario::getObjective();
+        if ((challengeFlags & CompanyFlags::unk2) != CompanyFlags::none)
+        {
+            if (objectiveProgress.timeLimitUntilYear < getCurrentYear() && getCurrentMonth() != MonthId::january)
+            {
+                return 255;
+            }
+        }
+
+        uint8_t progress = 0U;
+        switch (objective.type)
+        {
+            case Scenario::ObjectiveType::companyValue:
+            {
+                const auto curMonthValue = companyValueHistory[0];
+                if (curMonthValue >= currency32_t(objective.companyValue))
+                {
+                    return 100;
+                }
+                return curMonthValue.asInt64() / (objective.companyValue / 100);
+            }
+            case Scenario::ObjectiveType::vehicleProfit:
+            {
+                if (vehicleProfit <= 0)
+                {
+                    return 0;
+                }
+
+                if (vehicleProfit >= currency32_t(objective.monthlyVehicleProfit))
+                {
+                    progress = 100;
+                    break;
+                }
+                progress = vehicleProfit.asInt64() / (objective.monthlyVehicleProfit / 100);
+                break;
+            }
+            case Scenario::ObjectiveType::performanceIndex:
+            {
+                if (objective.performanceIndex * 10 <= performanceIndex)
+                {
+                    progress = 100;
+                    break;
+                }
+                progress = (performanceIndex * 10) / objective.performanceIndex;
+                break;
+            }
+            case Scenario::ObjectiveType::cargoDelivery:
+            {
+                if (objective.deliveredCargoType == 0xFFU)
+                {
+                    return 0;
+                }
+                auto* cargoObj = ObjectManager::get<CargoObject>(objective.deliveredCargoType);
+                if (cargoObj == nullptr)
+                {
+                    return 0;
+                }
+                const auto cargoQty = cargoDelivered[objective.deliveredCargoType];
+                if (cargoQty >= objective.deliveredCargoAmount)
+                {
+                    progress = 100;
+                    break;
+                }
+                progress = cargoQty / (objective.deliveredCargoAmount / 100);
+                break;
+            }
+        }
+        return applyBeTopProgressModifiers(progress, objective, *this);
     }
 }

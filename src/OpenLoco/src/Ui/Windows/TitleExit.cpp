@@ -43,8 +43,6 @@ namespace OpenLoco::Ui::Windows::TitleExit
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << Widx::exit_button);
-
         window->initScrollWidgets();
 
         window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());
@@ -55,12 +53,8 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
     static void prepareDraw(Ui::Window& self)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
         auto exitString = StringManager::getString(StringIds::title_exit_game);
-        tr.setCurrentFont(Gfx::Font::medium_bold);
-        self.width = tr.getStringWidthNewLined(exitString) + 10;
+        self.width = Gfx::TextRenderer::getStringWidthNewLined(Gfx::Font::medium_bold, exitString) + 10;
 
         self.x = Ui::width() - self.width;
         self.widgets[Widx::exit_button].right = self.width;
@@ -81,7 +75,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     // 0x00439268
-    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         if (Intro::isActive())
         {

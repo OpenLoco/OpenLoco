@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <fmt/core.h>
+#include <iterator>
 
 namespace OpenLoco
 {

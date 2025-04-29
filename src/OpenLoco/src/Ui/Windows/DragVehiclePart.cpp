@@ -1,7 +1,9 @@
 #include "Graphics/DrawingContext.h"
+#include "Graphics/RenderTarget.h"
 #include "Input.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleDraw.h"
@@ -18,7 +20,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
 
     // 0x00522504
     static constexpr auto widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, { 150, 60 }, WindowColour::primary)
 
     );
 
@@ -50,7 +52,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     }
 
     // 0x004B62FE
-    static Ui::CursorId cursor(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIdx, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y, [[maybe_unused]] const Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y, [[maybe_unused]] const Ui::CursorId fallback)
     {
         self.height = 0; // Set to zero so that skipped in window find
         Vehicle::Details::scrollDrag(Input::getScrollLastLocation());

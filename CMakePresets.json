@@ -16,10 +16,6 @@
                 "rhs": "Windows"
             },
             "cacheVariables": {
-                "VCPKG_ROOT": {
-                    "type": "PATH",
-                    "value": "$env{VCPKG_ROOT}"
-                },
                 "VCPKG_TARGET_TRIPLET": {
                     "type": "STRING",
                     "value": "x86-windows-static"

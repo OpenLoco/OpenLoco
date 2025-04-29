@@ -2,6 +2,7 @@
 
 #include "Localisation/StringManager.h"
 #include "Window.h"
+#include <Map/Track/TrackModSection.h>
 #include <OpenLoco/Engine/World.hpp>
 #include <cstddef>
 #include <functional>
@@ -62,13 +63,13 @@ namespace OpenLoco::Ui::WindowManager
     Window* findAt(Ui::Point point);
     Window* findAtAlt(int16_t x, int16_t y);
     Window* bringToFront(Window& window);
-    Window* bringToFront(WindowType type, uint16_t id = 0);
+    Window* bringToFront(WindowType type, WindowNumber_t id = 0);
     void invalidate(WindowType type);
     void invalidate(WindowType type, WindowNumber_t number);
-    void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widgetIndex);
+    void invalidateWidget(WindowType type, WindowNumber_t number, WidgetIndex_t widgetIndex);
     void invalidateAllWindowsAfterInput();
     void close(WindowType type);
-    void close(WindowType type, uint16_t id);
+    void close(WindowType type, WindowNumber_t id);
     void close(Window* window);
     Window* createWindow(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
     Window* createWindow(WindowType type, Ui::Point32 origin, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
@@ -161,6 +162,8 @@ namespace OpenLoco::Ui::Windows
         Window* openWithFlags(uint32_t flags);
         Window* openAtTrack(const Window& main, World::TrackElement* track, const World::Pos2 pos);
         Window* openAtRoad(const Window& main, World::RoadElement* track, const World::Pos2 pos);
+        void updateAvailableRoadAndRailOptions();
+        void updateAvailableAirportAndDockOptions();
         void sub_4A6FAC();
         bool isStationTabOpen();
         bool isOverheadTabOpen();
@@ -169,7 +172,7 @@ namespace OpenLoco::Ui::Windows
         void removeConstructionGhosts();
         void registerHooks();
         uint16_t getLastSelectedMods();
-        uint16_t getLastSelectedTrackModSection();
+        World::Track::ModSection getLastSelectedTrackModSection();
     }
 
     namespace DragVehiclePart
@@ -335,6 +338,11 @@ namespace OpenLoco::Ui::Windows
         void reset();
         void showStationCatchment(StationId id);
         void sub_491BC6();
+
+        namespace VehiclesStopping
+        {
+            void removeTrainFromList(Window& self, EntityId head);
+        }
     }
 
     namespace StationList

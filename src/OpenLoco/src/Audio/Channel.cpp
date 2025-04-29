@@ -22,6 +22,26 @@ namespace OpenLoco::Audio
         return true;
     }
 
+    bool Channel::pause()
+    {
+        if (_isLoaded == false)
+        {
+            return false;
+        }
+        _source.pause();
+        return true;
+    }
+
+    bool Channel::unpause()
+    {
+        if (_isLoaded == false)
+        {
+            return false;
+        }
+        _source.play();
+        return true;
+    }
+
     void Channel::stop()
     {
         _source.stop();
@@ -54,6 +74,11 @@ namespace OpenLoco::Audio
         {
             _source.setPitch(OpenAL::freqFromLoco(freq));
         }
+    }
+
+    bool Channel::isPaused() const
+    {
+        return _source.isPaused();
     }
 
     bool Channel::isPlaying() const

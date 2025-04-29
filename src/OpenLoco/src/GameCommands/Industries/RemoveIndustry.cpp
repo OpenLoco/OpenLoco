@@ -9,7 +9,7 @@
 #include "MessageManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/Industry.h"
@@ -111,7 +111,7 @@ namespace OpenLoco::GameCommands
                 continue;
             }
             surface->setIsIndustrialFlag(false);
-            surface->setVar6SLR5(0);
+            surface->setGrowthStage(0);
             surface->setVariation(0);
             Ui::ViewportManager::invalidate(World::toWorldSpace(pos), surface->baseHeight(), surface->baseHeight() + 32);
             World::TileManager::removeAllWallsOnTileAbove(pos, surface->baseZ());
@@ -144,7 +144,7 @@ namespace OpenLoco::GameCommands
                 removeIndustryElement(tile);
             }
 
-            S5::getOptions().madeAnyChanges = 1;
+            Scenario::getOptions().madeAnyChanges = 1;
             Ui::WindowManager::close(Ui::WindowType::industry, enumValue(id));
             StringManager::emptyUserString(industry->name);
             industry->name = StringIds::null;

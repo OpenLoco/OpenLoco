@@ -14,7 +14,7 @@
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "S5/Limits.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "Vehicles/OrderManager.h"
@@ -23,6 +23,7 @@
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 
+#include <sfl/static_vector.hpp>
 #include <sstream>
 
 using namespace OpenLoco::Diagnostics;
@@ -96,9 +97,12 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::Vehicles::OrderManager
 {
-    // TODO: Make this a fixed vector of size 63 (kMaxNumOrderPerVehicle) no need for it to be dynamic
-    std::vector<NumDisplayFrame> _displayFrames;
-    const std::vector<NumDisplayFrame>& displayFrames() { return _displayFrames; }
+    static sfl::static_vector<NumDisplayFrame, Limits::kMaxOrdersPerVehicle> _displayFrames;
+
+    std::span<const NumDisplayFrame> displayFrames()
+    {
+        return _displayFrames;
+    }
 
     Order* orders() { return reinterpret_cast<Order*>(getGameState().orders); }
     uint32_t& orderTableLength() { return getGameState().orderTableLength; }
@@ -385,8 +389,6 @@ namespace OpenLoco::Vehicles::OrderManager
         }
 
         i = 1;
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
         for (auto& unk : _displayFrames)
         {
             auto order = Vehicles::OrderRingView(unk.orderOffset, 0).begin();
@@ -397,7 +399,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
             auto [loc, str] = generateOrderUiStringAndLoc(order->getOffset(), i);
             const auto pos = World::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
-            auto stringWidth = tr.getStringWidth(str.c_str());
+            auto stringWidth = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, str.c_str());
             for (auto zoom = 0; zoom < 4; ++zoom)
             {
                 // The first line of the label will always be at the centre

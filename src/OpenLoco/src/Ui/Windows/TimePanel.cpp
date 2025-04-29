@@ -21,6 +21,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -50,14 +51,14 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void sendChatMessage(const char* str);
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
+        Widgets::Wt3Widget({ 0, 0 }, { 140, 29 }, WindowColour::primary),
+        Widgets::Wt3Widget({ 2, 2 }, { 136, 25 }, WindowColour::primary),
         Widgets::ImageButton({ 113, 1 }, { 26, 26 }, WindowColour::primary),
         Widgets::ImageButton({ 2, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
-        makeWidget({ 18, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
-        makeWidget({ 38, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),
-        makeWidget({ 58, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
-        makeWidget({ 78, 15 }, { 20, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
+        Widgets::ImageButton({ 18, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
+        Widgets::ImageButton({ 38, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),
+        Widgets::ImageButton({ 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
+        Widgets::ImageButton({ 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
 
@@ -72,7 +73,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);
         window->var_854 = 0;
         window->numTicksVisible = 0;
         window->initScrollWidgets();
@@ -80,8 +80,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->colour_17).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->colour_17).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->timeToolbarColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->timeToolbarColour).translucent());
         }
 
         return window;
@@ -90,33 +90,33 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004396A4
     static void prepareDraw([[maybe_unused]] Window& window)
     {
-        window.widgets[Widx::inner_frame].type = WidgetType::none;
+        window.widgets[Widx::inner_frame].hidden = true;
         window.widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
         window.widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
         window.widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
         window.widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward);
 
-        if (isPaused())
+        if (SceneManager::isPaused())
         {
             window.widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
         }
-        else if (getGameSpeed() == GameSpeed::Normal)
+        else if (SceneManager::getGameSpeed() == GameSpeed::Normal)
         {
             window.widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
         }
-        else if (getGameSpeed() == GameSpeed::FastForward)
+        else if (SceneManager::getGameSpeed() == GameSpeed::FastForward)
         {
             window.widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
         }
-        else if (getGameSpeed() == GameSpeed::ExtraFastForward)
+        else if (SceneManager::getGameSpeed() == GameSpeed::ExtraFastForward)
         {
             window.widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
         }
 
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
-            window.widgets[Widx::fast_forward_btn].type = WidgetType::none;
-            window.widgets[Widx::extra_fast_forward_btn].type = WidgetType::none;
+            window.widgets[Widx::fast_forward_btn].hidden = true;
+            window.widgets[Widx::extra_fast_forward_btn].hidden = true;
 
             window.widgets[Widx::pause_btn].left = 38;
             window.widgets[Widx::pause_btn].right = 57;
@@ -125,8 +125,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
         else
         {
-            window.widgets[Widx::fast_forward_btn].type = WidgetType::buttonWithImage;
-            window.widgets[Widx::extra_fast_forward_btn].type = WidgetType::buttonWithImage;
+            window.widgets[Widx::fast_forward_btn].hidden = false;
+            window.widgets[Widx::extra_fast_forward_btn].hidden = false;
 
             window.widgets[Widx::pause_btn].left = 18;
             window.widgets[Widx::pause_btn].right = 37;
@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         args.push<uint32_t>(getCurrentDay());
 
         StringId format = StringIds::date_daymonthyear;
-        if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
         {
             if (self.numTicksVisible >= 30)
             {
@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x004398FB
-    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -216,7 +216,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
 
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             Dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + InterfaceSkin::ImageIds::phone, StringIds::chat_send_message });
             Dropdown::add(1, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()], StringIds::menu_map });
@@ -249,7 +249,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             itemIndex = Dropdown::getHighlightedItem();
         }
 
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             switch (itemIndex)
             {
@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x043992E
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -284,7 +284,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x439939
-    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index)
+    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t item_index)
     {
         switch (widgetIndex)
         {
@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439944
-    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIdx)
         {
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439955
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         switch (widgetIndex)
@@ -361,7 +361,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439A15
-    static void textInput([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, const char* str)
+    static void textInput([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const char* str)
     {
         switch (widgetIndex)
         {
@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
 
-        if (isPaused())
+        if (SceneManager::isPaused())
         {
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
@@ -410,7 +410,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
-        .event_03 = onMouseDown,
+        .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,

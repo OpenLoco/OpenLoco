@@ -99,7 +99,7 @@ namespace OpenLoco
     // amount : ebx
     MoneyEffect* MoneyEffect::create(const World::Pos3& loc, const CompanyId company, const currency32_t amount)
     {
-        if (isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return nullptr;
         }
@@ -124,10 +124,7 @@ namespace OpenLoco
             args.push(amount);
             StringManager::formatString(buffer, strFormat, args);
 
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            auto tr = Gfx::TextRenderer(drawingCtx);
-            tr.setCurrentFont(Gfx::Font::medium_bold);
-            m->offsetX = -tr.getStringWidth(buffer) / 2;
+            m->offsetX = -Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, buffer) / 2;
             m->wiggle = 0;
         }
         return m;

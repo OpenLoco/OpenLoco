@@ -91,5 +91,10 @@ namespace OpenLoco
         {
             return std::distance(begin(), end());
         }
+
+        [[nodiscard]] constexpr size_t capacity() const
+        {
+            return Count;
+        }
     };
 }

@@ -6,6 +6,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -192,9 +193,8 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 const char* buffer = (const char*)regs.esi;
-                auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-                auto tr = Gfx::TextRenderer(drawingCtx);
-                uint16_t width = tr.getStringWidth(buffer);
+                const auto font = *loco_global<Gfx::Font, 0x0112C876>();
+                uint16_t width = Gfx::TextRenderer::getStringWidth(font, buffer);
                 regs = backup;
                 regs.cx = width;
 
@@ -751,7 +751,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004CB966
-    void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widgetIndex)
+    void invalidateWidget(WindowType type, WindowNumber_t number, WidgetIndex_t widgetIndex)
     {
         for (auto&& w : _windows)
         {
@@ -781,7 +781,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9984
     void invalidateAllWindowsAfterInput()
     {
-        if (isPaused())
+        if (SceneManager::isPaused())
         {
             _523508++;
         }
@@ -871,7 +871,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004CD3A9
-    Window* bringToFront(WindowType type, uint16_t id)
+    Window* bringToFront(WindowType type, WindowNumber_t id)
     {
         auto window = find(type, id);
         if (window == nullptr)
@@ -1300,7 +1300,7 @@ namespace OpenLoco::Ui::WindowManager
             }
         }
 
-        if (isProgressBarActive() && w->type != WindowType::progressBar)
+        if (SceneManager::isProgressBarActive() && w->type != WindowType::progressBar)
         {
             return;
         }
@@ -1612,6 +1612,11 @@ namespace OpenLoco::Ui::WindowManager
             return false;
         }
 
+        if (static_cast<size_t>(index + 2) >= widgets.size())
+        {
+            return false;
+        }
+
         if (widgets[index + 1].type != buttonType)
         {
             return false;
@@ -1688,7 +1693,7 @@ namespace OpenLoco::Ui::WindowManager
             return false;
         }
 
-        w.callOnMouseDown(targetWidgetIndex);
+        w.callOnMouseDown(targetWidgetIndex, w.widgets[targetWidgetIndex].id);
         return true;
     }
 
@@ -1727,7 +1732,7 @@ namespace OpenLoco::Ui::WindowManager
         {
             if (window->type == WindowType::main)
             {
-                if (OpenLoco::isTitleMode())
+                if (SceneManager::isTitleMode())
                 {
                     return;
                 }
@@ -1939,52 +1944,6 @@ namespace OpenLoco::Ui::WindowManager
         viewportRedrawAfterShift(window, viewport, dX, dY);
     }
 
-    // 0x00451DCB
-    static void copyRect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t dx, int16_t dy)
-    {
-        if (dx == 0 && dy == 0)
-        {
-            return;
-        }
-
-        auto _width = Ui::width();
-        auto _height = Ui::height();
-        Gfx::RenderTarget& rt = _screenRT;
-
-        // Adjust for move off screen
-        // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the
-        // screen; hence the checks. This code should ultimately not be called when
-        // zooming because this function is specific to updating the screen on move
-        int32_t lmargin = std::min(x - dx, 0);
-        int32_t rmargin = std::min((int32_t)_width - (x - dx + width), 0);
-        int32_t tmargin = std::min(y - dy, 0);
-        int32_t bmargin = std::min((int32_t)_height - (y - dy + height), 0);
-        x -= lmargin;
-        y -= tmargin;
-        width += lmargin + rmargin;
-        height += tmargin + bmargin;
-
-        int32_t stride = rt.width + rt.pitch;
-        uint8_t* to = rt.bits + y * stride + x;
-        uint8_t* from = rt.bits + (y - dy) * stride + x - dx;
-
-        if (dy > 0)
-        {
-            // If positive dy, reverse directions
-            to += (height - 1) * stride;
-            from += (height - 1) * stride;
-            stride = -stride;
-        }
-
-        // Move bytes
-        for (int32_t i = 0; i < height; i++)
-        {
-            memmove(to, from, width);
-            to += stride;
-            from += stride;
-        }
-    }
-
     /**
      * 0x004C6B09
      *
@@ -1995,15 +1954,19 @@ namespace OpenLoco::Ui::WindowManager
      */
     void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y)
     {
-        if (window != nullptr)
+        while (window != nullptr)
         {
             // skip current window and non-intersecting windows
-            if (viewport == window->viewports[0] || viewport == window->viewports[1] || viewport->x + viewport->width <= window->x || viewport->x >= window->x + window->width || viewport->y + viewport->height <= window->y || viewport->y >= window->y + window->height)
+            if (viewport == window->viewports[0]
+                || viewport == window->viewports[1]
+                || viewport->x + viewport->width <= window->x
+                || viewport->x >= window->x + window->width
+                || viewport->y + viewport->height <= window->y
+                || viewport->y >= window->y + window->height)
             {
                 size_t nextWindowIndex = WindowManager::indexOf(*window) + 1;
-                auto nextWindow = nextWindowIndex >= count() ? nullptr : get(nextWindowIndex);
-                viewportRedrawAfterShift(nextWindow, viewport, x, y);
-                return;
+                window = nextWindowIndex >= count() ? nullptr : WindowManager::get(nextWindowIndex);
+                continue;
             }
 
             // save viewport
@@ -2036,76 +1999,75 @@ namespace OpenLoco::Ui::WindowManager
             else if (viewport->y < window->y)
             {
                 viewport->height = window->y - viewport->y;
-                viewport->viewWidth = viewport->width << viewport->zoom;
+                viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->viewY += viewport->height << viewport->zoom;
                 viewport->height = viewCopy.height - viewport->height;
-                viewport->viewWidth = viewport->width << viewport->zoom;
+                viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
             else if (viewport->y + viewport->height > window->y + window->height)
             {
                 viewport->height = window->y + window->height - viewport->y;
-                viewport->viewWidth = viewport->width << viewport->zoom;
+                viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->viewY += viewport->height << viewport->zoom;
                 viewport->height = viewCopy.height - viewport->height;
-                viewport->viewWidth = viewport->width << viewport->zoom;
+                viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
 
             // restore viewport
             *viewport = viewCopy;
+            return;
+        }
+
+        int16_t left = viewport->x;
+        int16_t top = viewport->y;
+        int16_t right = left + viewport->width;
+        int16_t bottom = top + viewport->height;
+
+        // if moved more than the viewport size
+        if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->height)
+        {
+            // redraw whole viewport
+            Gfx::render(left, top, right, bottom);
         }
         else
         {
-            int16_t left = viewport->x;
-            int16_t top = viewport->y;
-            int16_t right = left + viewport->width;
-            int16_t bottom = top + viewport->height;
+            // update whole block
+            Gfx::movePixelsOnScreen(left, top, viewport->width, viewport->height, x, y);
 
-            // if moved more than the viewport size
-            if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->width)
+            if (x > 0)
             {
-                // redraw whole viewport
+                // draw left
+                int16_t _right = left + x;
+                Gfx::render(left, top, _right, bottom);
+                left += x;
+            }
+            else if (x < 0)
+            {
+                // draw right
+                int16_t _left = right + x;
+                Gfx::render(_left, top, right, bottom);
+                right += x;
+            }
+
+            if (y > 0)
+            {
+                // draw top
+                bottom = top + y;
                 Gfx::render(left, top, right, bottom);
             }
-            else
+            else if (y < 0)
             {
-                // update whole block ?
-                copyRect(left, top, viewport->width, viewport->height, x, y);
-
-                if (x > 0)
-                {
-                    // draw left
-                    int16_t _right = left + x;
-                    Gfx::render(left, top, _right, bottom);
-                    left += x;
-                }
-                else if (x < 0)
-                {
-                    // draw right
-                    int16_t _left = right + x;
-                    Gfx::render(_left, top, right, bottom);
-                    right += x;
-                }
-
-                if (y > 0)
-                {
-                    // draw top
-                    bottom = top + y;
-                    Gfx::render(left, top, right, bottom);
-                }
-                else if (y < 0)
-                {
-                    // draw bottom
-                    top = bottom + y;
-                    Gfx::render(left, top, right, bottom);
-                }
+                // draw bottom
+                top = bottom + y;
+                Gfx::render(left, top, right, bottom);
             }
         }
     }

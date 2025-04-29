@@ -14,7 +14,7 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
@@ -148,31 +148,11 @@ namespace OpenLoco::GameCommands
         return std::make_pair(NearbyStationValidation::okay, nearbyStation.id);
     }
 
-    // 0x004FEBD0
-    // Where:
-    // - P is the port
-    // - X represents the border offsets
-    //
-    //    X X
-    //  X P P X
-    //  X P P X
-    //    X X
-    static constexpr std::array<World::Pos2, 8> kPortBorderOffsets = {
-        World::Pos2{ -32, 0 },
-        World::Pos2{ -32, 32 },
-        World::Pos2{ 0, 64 },
-        World::Pos2{ 32, 64 },
-        World::Pos2{ 64, 32 },
-        World::Pos2{ 64, 0 },
-        World::Pos2{ 32, -32 },
-        World::Pos2{ 0, -32 },
-    };
-
     static bool isValidWaterIndustryPort(World::Pos2 pos)
     {
         for (auto& offset : kPortBorderOffsets)
         {
-            const auto testPos = pos + offset;
+            const auto testPos = pos + World::toWorldSpace(offset);
             if (!World::validCoords(testPos))
             {
                 continue;
@@ -202,7 +182,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00493F0E
-    static uint32_t createBuilding(const PortPlacementArgs& args, const uint8_t flags, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const uint8_t buildingType)
+    static uint32_t createBuilding(const PortPlacementArgs& args, const uint8_t flags, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t buildingType)
     {
         // 0x00112C80B
         bool isWaterIndustryPort = false;
@@ -346,7 +326,7 @@ namespace OpenLoco::GameCommands
                             surface->setClearZ(args.pos.z / World::kSmallZStep);
                             surface->setSlope(0);
                             surface->setSnowCoverage(0);
-                            surface->setVar6SLR5(0);
+                            surface->setGrowthStage(0);
                         }
                     }
                 }
@@ -390,7 +370,7 @@ namespace OpenLoco::GameCommands
                     World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                 }
 
-                S5::getOptions().madeAnyChanges = 1;
+                Scenario::getOptions().madeAnyChanges = 1;
             }
         }
         return totalCost;
@@ -522,7 +502,7 @@ namespace OpenLoco::GameCommands
         auto* dockObj = ObjectManager::get<DockObject>(args.type);
         currency32_t totalCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 7);
 
-        std::set<World::Pos3, World::LessThanPos3> removedBuildings{};
+        World::TileClearance::RemovedBuildings removedBuildings{};
         const auto buildingCost = createBuilding(args, flags, removedBuildings, 0);
         if (buildingCost == FAILURE)
         {

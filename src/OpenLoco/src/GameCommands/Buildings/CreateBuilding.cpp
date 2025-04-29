@@ -16,7 +16,7 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "ViewportManager.h"
 #include "World/Industry.h"
 #include "World/Station.h"
@@ -69,7 +69,7 @@ namespace OpenLoco::GameCommands
         clearHeight += 3;
         clearHeight &= ~3;
 
-        std::set<World::Pos3, World::LessThanPos3> removedBuildings;
+        World::TileClearance::RemovedBuildings removedBuildings;
 
         const auto buildingFootprint = getBuildingTileOffsets(buildingObj->hasFlags(BuildingObjectFlags::largeTile));
 
@@ -214,7 +214,7 @@ namespace OpenLoco::GameCommands
                         surface->setClearZ(args.pos.z / World::kSmallZStep);
                         surface->setSlope(0);
                         surface->setSnowCoverage(0);
-                        surface->setVar6SLR5(0);
+                        surface->setGrowthStage(0);
                     }
                 }
             }
@@ -262,7 +262,7 @@ namespace OpenLoco::GameCommands
 
                 elBuilding->setGhost(flags & Flags::ghost);
                 Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elBuilding->baseHeight(), elBuilding->clearHeight());
-                S5::getOptions().madeAnyChanges = 1;
+                Scenario::getOptions().madeAnyChanges = 1;
             }
         }
 

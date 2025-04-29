@@ -17,6 +17,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
@@ -48,8 +49,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     // 0x00509d08
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
+        Widgets::Wt3Widget({ 0, 0 }, { 140, 29 }, WindowColour::primary),
+        Widgets::Wt3Widget({ 2, 2 }, { 136, 25 }, WindowColour::primary),
         Widgets::ImageButton({ 1, 1 }, { 26, 26 }, WindowColour::primary),
         Widgets::ImageButton({ 27, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_company_value),
         Widgets::ImageButton({ 27, 14 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_performance_index)
@@ -163,15 +164,14 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << Widx::player) | (1 << Widx::company_value) | (1 << Widx::performanceIndex);
         window->var_854 = 0;
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->colour_16).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->colour_16).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->playerInfoToolbarColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->playerInfoToolbarColour).translucent());
         }
 
         return window;
@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     // 0x004393E7
     static void prepareDraw(Window& window)
     {
-        window.widgets[Widx::inner_frame].type = WidgetType::none;
+        window.widgets[Widx::inner_frame].hidden = true;
     }
 
     // 0x43944B
@@ -256,7 +256,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395A4
-    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395B1
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -281,7 +281,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395BC
-    static void onDropdown([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, int16_t item_index)
+    static void onDropdown([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t item_index)
     {
         switch (widgetIndex)
         {
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395DE
-    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIndex)
         {
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395F5
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         switch (widgetIndex)
@@ -371,7 +371,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
-        .event_03 = onMouseDown,
+        .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,

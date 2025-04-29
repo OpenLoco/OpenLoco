@@ -17,6 +17,8 @@ struct SDL_PixelFormat;
 
 namespace OpenLoco::Gfx
 {
+    struct RenderTarget;
+
 #pragma pack(push, 1)
     struct PaletteEntry
     {
@@ -34,8 +36,6 @@ namespace OpenLoco::Gfx
         ~SoftwareDrawingEngine();
 
         void initialize(SDL_Window* window);
-
-        bool isInitialized() const;
 
         void resize(int32_t width, int32_t height);
 
@@ -58,6 +58,19 @@ namespace OpenLoco::Gfx
         DrawingContext& getDrawingContext();
 
         const RenderTarget& getScreenRT();
+
+        // Moves the pixels in the specified render target.
+        void movePixels(
+            const RenderTarget& rt,
+            int16_t dstX,
+            int16_t dstY,
+            int16_t width,
+            int16_t height,
+            int16_t srcX,
+            int16_t srcY);
+
+    private:
+        void renderDirtyRegions();
 
     private:
         SDL_Renderer* _renderer{};

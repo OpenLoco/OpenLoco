@@ -6,7 +6,7 @@
 #include "Map/BuildingElement.h"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
@@ -56,11 +56,12 @@ namespace OpenLoco::GameCommands
             }
 
             const auto* buildingObj = elBuilding->getObject();
-            if (!isEditorMode())
+            if (!SceneManager::isEditorMode())
             {
                 if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::flag_7)) == 0)
                 {
-                    if (!isSandboxMode() && buildingObj->hasFlags(BuildingObjectFlags::indestructible))
+                    bool isPlayerCompany = CompanyManager::isPlayerCompany(GameCommands::getUpdatingCompanyId());
+                    if (!(SceneManager::isSandboxMode() && isPlayerCompany) && buildingObj->hasFlags(BuildingObjectFlags::indestructible))
                     {
                         GameCommands::setErrorText(StringIds::demolition_not_allowed);
                         return GameCommands::FAILURE;
@@ -103,7 +104,7 @@ namespace OpenLoco::GameCommands
                     if (flags & GameCommands::Flags::apply)
                     {
                         World::TileManager::removeBuildingElement(subElBuilding->get<World::BuildingElement>(), subTilePos);
-                        auto& options = S5::getOptions();
+                        auto& options = Scenario::getOptions();
                         options.madeAnyChanges = 1;
                     }
                 }

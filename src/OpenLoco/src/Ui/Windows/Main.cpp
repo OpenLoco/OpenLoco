@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Map/Tile.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 
@@ -16,7 +17,7 @@ namespace OpenLoco::Ui::Windows::Main
     }
 
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 0, 0 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk)
+        Widgets::Viewport({ 0, 0 }, { 0, 0 }, WindowColour::primary, Widget::kContentUnk)
 
     );
 

@@ -14,16 +14,8 @@ namespace OpenLoco::Ui::ProgressBar
 
     void begin(std::string_view caption)
     {
-        if (isInitialised())
-        {
-            _isInternalWindow = true;
-            Windows::ProgressBar::open(caption);
-        }
-        else
-        {
-            // Used to be the native progress bar
-            assert(false);
-        }
+        _isInternalWindow = true;
+        Windows::ProgressBar::open(caption);
     }
 
     // 0x004CF5C5

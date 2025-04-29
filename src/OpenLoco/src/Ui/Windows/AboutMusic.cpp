@@ -1,6 +1,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
@@ -8,9 +9,11 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::Ui::Windows::AboutMusic
@@ -34,10 +37,10 @@ namespace OpenLoco::Ui::Windows::AboutMusic
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::music_acknowledgements_caption),
+        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_acknowledgements_caption),
         Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 297 }, WindowColour::secondary),
-        makeWidget({ 4, 18 }, { kWindowSize.width - 8, 289 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical));
+        Widgets::ScrollView({ 4, 18 }, { kWindowSize.width - 8, 289 }, WindowColour::secondary, Ui::Scrollbars::vertical));
 
     static const WindowEventList& getEvents();
 
@@ -56,16 +59,15 @@ namespace OpenLoco::Ui::Windows::AboutMusic
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = 1 << Widx::close;
         window->initScrollWidgets();
 
         const auto interface = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, interface->colour_0B);
-        window->setColour(WindowColour::secondary, interface->colour_10);
+        window->setColour(WindowColour::primary, interface->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, interface->windowOptionsColour);
     }
 
     // 0x0043BFB0
-    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -82,7 +84,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043BFC0
-    static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_credits_list);

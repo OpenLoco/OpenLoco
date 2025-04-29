@@ -5,12 +5,11 @@
 #include <OpenLoco/Engine/World.hpp>
 #include <optional>
 #include <string>
-#include <tuple>
 #include <vector>
 
 namespace OpenLoco::Vehicles
 {
-    struct Vehicle2or6;
+    struct VehicleSoundPlayer;
 }
 
 namespace OpenLoco::Environment
@@ -97,7 +96,7 @@ namespace OpenLoco::Audio
     void toggleSound();
     void pauseSound();
     void unpauseSound();
-    void playSound(Vehicles::Vehicle2or6* t);
+    void playSound(Vehicles::VehicleSoundPlayer* t);
     void playSound(SoundId id, const World::Pos3& loc);
 
     // FOR HOOKS ONLY DO NOT USE THIS FUNCTION FOR OPENLOCO CODE
@@ -122,6 +121,8 @@ namespace OpenLoco::Audio
     void resetMusic();
     void playBackgroundMusic();
     void stopMusic();
+    void pauseMusic();
+    void unpauseMusic();
     void playMusic(Environment::PathId sample, int32_t volume, bool loop);
 
     void resetSoundObjects();

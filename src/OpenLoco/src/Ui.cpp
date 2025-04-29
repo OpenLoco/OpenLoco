@@ -77,7 +77,7 @@ namespace OpenLoco::Ui
     bool _resolutionsAllowAnyAspectRatio = false;
     std::vector<Resolution> _fsResolutions;
 
-    static SDL_Window* window;
+    static SDL_Window* _window;
     static std::map<CursorId, SDL_Cursor*> _cursors;
     static CursorId _currentCursor = CursorId::pointer;
     static bool _exitRequested = false;
@@ -102,20 +102,21 @@ namespace OpenLoco::Ui
     }
 #endif // _WIN32
 
+    // Returns the width of the game screen, which is scaled by the window scale factor.
     int32_t width()
     {
         return _screenInfo->width;
     }
 
+    // Returns the height of the game screen, which is scaled by the window scale factor.
     int32_t height()
     {
         return _screenInfo->height;
     }
 
-    // TODO: Rename misleading name.
-    bool dirtyBlocksInitialised()
+    bool isInitialized()
     {
-        return Gfx::getDrawingEngine().isInitialized();
+        return _window != nullptr;
     }
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
@@ -154,8 +155,8 @@ namespace OpenLoco::Ui
 
         // Create the window
         auto desc = getWindowDesc(cfg);
-        window = SDL_CreateWindow("OpenLoco", desc.x, desc.y, desc.width, desc.height, desc.flags);
-        if (window == nullptr)
+        _window = SDL_CreateWindow("OpenLoco", desc.x, desc.y, desc.width, desc.height, desc.flags);
+        if (_window == nullptr)
         {
             throw Exception::RuntimeError("Unable to create SDL2 window.");
         }
@@ -164,7 +165,7 @@ namespace OpenLoco::Ui
         // Grab the HWND
         SDL_SysWMinfo wmInfo;
         SDL_VERSION(&wmInfo.version);
-        if (SDL_GetWindowWMInfo(window, &wmInfo) == SDL_FALSE)
+        if (SDL_GetWindowWMInfo(_window, &wmInfo) == SDL_FALSE)
         {
             throw Exception::RuntimeError("Unable to fetch SDL2 window system handle.");
         }
@@ -175,7 +176,7 @@ namespace OpenLoco::Ui
 
         // Create a palette for the window
         auto& drawingEngine = Gfx::getDrawingEngine();
-        drawingEngine.initialize(window);
+        drawingEngine.initialize(_window);
         drawingEngine.resize(desc.width, desc.height);
     }
 
@@ -201,7 +202,7 @@ namespace OpenLoco::Ui
     // 0x0045235D
     void initialise()
     {
-        SDL_RestoreWindow(window);
+        SDL_RestoreWindow(_window);
     }
 
     static SDL_Cursor* loadCursor(Cursor& cursor)
@@ -320,7 +321,7 @@ namespace OpenLoco::Ui
 
     void setCursorPos(int32_t x, int32_t y)
     {
-        SDL_WarpMouseInWindow(window, x, y);
+        SDL_WarpMouseInWindow(_window, x, y);
     }
 
     void hideCursor()
@@ -340,7 +341,7 @@ namespace OpenLoco::Ui
 
     static void positionChanged([[maybe_unused]] int32_t x, [[maybe_unused]] int32_t y)
     {
-        auto displayIndex = SDL_GetWindowDisplayIndex(window);
+        auto displayIndex = SDL_GetWindowDisplayIndex(_window);
 
         auto& cfg = Config::get().display;
         if (cfg.index != displayIndex)
@@ -359,7 +360,7 @@ namespace OpenLoco::Ui
         Gfx::invalidateScreen();
 
         // Save window size to config if NOT maximized
-        auto wf = SDL_GetWindowFlags(window);
+        auto wf = SDL_GetWindowFlags(_window);
         if (!(wf & SDL_WINDOW_MAXIMIZED) && !(wf & SDL_WINDOW_FULLSCREEN))
         {
             auto& cfg = Config::get().display;
@@ -371,25 +372,23 @@ namespace OpenLoco::Ui
     void triggerResize()
     {
         int width, height;
-        SDL_GetWindowSize(window, &width, &height);
+        SDL_GetWindowSize(_window, &width, &height);
         resize(width, height);
     }
 
     void render()
     {
-        if (window == nullptr)
+        if (_window == nullptr)
         {
             return;
         }
 
         auto& drawingEngine = Gfx::getDrawingEngine();
 
-        if (!Ui::dirtyBlocksInitialised())
+        if (!Ui::isInitialized())
         {
             return;
         }
-
-        WindowManager::updateViewports();
 
         if (!Intro::isActive())
         {
@@ -589,7 +588,7 @@ namespace OpenLoco::Ui
 
     void showMessageBox(const std::string& title, const std::string& message)
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), _window);
     }
 
     static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode)
@@ -623,7 +622,7 @@ namespace OpenLoco::Ui
 
     Config::Resolution getDesktopResolution()
     {
-        int32_t displayIndex = SDL_GetWindowDisplayIndex(window);
+        int32_t displayIndex = SDL_GetWindowDisplayIndex(_window);
         SDL_DisplayMode desktopDisplayMode;
         SDL_GetDesktopDisplayMode(displayIndex, &desktopDisplayMode);
 
@@ -645,7 +644,7 @@ namespace OpenLoco::Ui
 
         // *HACK* Set window to non fullscreen before switching resolution.
         // This fixes issues with high dpi and Windows scaling affecting the GUI size.
-        SDL_SetWindowFullscreen(window, 0);
+        SDL_SetWindowFullscreen(_window, 0);
 
         // Set the new dimensions of the screen.
         if (mode == Config::ScreenMode::window)
@@ -653,9 +652,9 @@ namespace OpenLoco::Ui
             auto desktopResolution = getDesktopResolution();
             auto x = (desktopResolution.width - newResolution.width) / 2;
             auto y = (desktopResolution.height - newResolution.height) / 2;
-            SDL_SetWindowPosition(window, x, y);
+            SDL_SetWindowPosition(_window, x, y);
         }
-        SDL_SetWindowSize(window, newResolution.width, newResolution.height);
+        SDL_SetWindowSize(_window, newResolution.width, newResolution.height);
 
         SDL_DisplayMode dpMode;
         // NOTE: Should use the value from the enumeration but we are not really dealing with such systems.
@@ -664,14 +663,14 @@ namespace OpenLoco::Ui
         dpMode.h = newResolution.height;
         dpMode.refresh_rate = 0;
         dpMode.driverdata = nullptr;
-        if (SDL_SetWindowDisplayMode(window, &dpMode) != 0)
+        if (SDL_SetWindowDisplayMode(_window, &dpMode) != 0)
         {
             Logging::error("SDL_SetWindowDisplayMode failed: {}", SDL_GetError());
             return false;
         }
 
         // Set the window fullscreen mode.
-        if (SDL_SetWindowFullscreen(window, flags) != 0)
+        if (SDL_SetWindowFullscreen(_window, flags) != 0)
         {
             Logging::error("SDL_SetWindowFullscreen failed: {}", SDL_GetError());
             return false;
@@ -711,7 +710,7 @@ namespace OpenLoco::Ui
     void updateFullscreenResolutions()
     {
         // Query number of display modes
-        int32_t displayIndex = SDL_GetWindowDisplayIndex(window);
+        int32_t displayIndex = SDL_GetWindowDisplayIndex(_window);
         int32_t numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
 
         // Get desktop aspect ratio
@@ -796,7 +795,7 @@ namespace OpenLoco::Ui
 #if !(defined(__APPLE__) && defined(__MACH__))
     static void toggleFullscreenDesktop()
     {
-        auto flags = SDL_GetWindowFlags(window);
+        auto flags = SDL_GetWindowFlags(_window);
         if (flags & SDL_WINDOW_FULLSCREEN)
         {
             setDisplayMode(Config::ScreenMode::window);
@@ -819,7 +818,8 @@ namespace OpenLoco::Ui
         auto toolWindow = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
         if (toolWindow != nullptr)
         {
-            toolWindow->callToolUpdate(ToolManager::getToolWidgetIndex(), x, y);
+            // TODO: Use widget ids properly for tools.
+            toolWindow->callToolUpdate(ToolManager::getToolWidgetIndex(), WidgetId::none, x, y);
         }
         else
         {
@@ -837,7 +837,7 @@ namespace OpenLoco::Ui
 
         if (Game::hasFlags(GameStateFlags::preferredOwnerName))
         {
-            if (!isTitleMode() && !isEditorMode())
+            if (!SceneManager::isTitleMode() && !SceneManager::isEditorMode())
             {
                 if (Tutorial::state() == Tutorial::State::none)
                 {
@@ -891,7 +891,7 @@ namespace OpenLoco::Ui
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
-        if (Ui::dirtyBlocksInitialised())
+        if (Ui::isInitialized())
         {
             WindowManager::callEvent8OnAllWindows();
 
@@ -903,7 +903,7 @@ namespace OpenLoco::Ui
             Input::MouseButton state;
             while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
             {
-                if (isTitleMode() && Intro::isActive() && state == Input::MouseButton::leftPressed)
+                if (SceneManager::isTitleMode() && Intro::isActive() && state == Input::MouseButton::leftPressed)
                 {
                     if (Intro::state() == Intro::State::displayNotice)
                     {
@@ -1001,7 +1001,7 @@ namespace OpenLoco::Ui
 
     bool hasInputFocus()
     {
-        const uint32_t windowFlags = SDL_GetWindowFlags(window);
+        const uint32_t windowFlags = SDL_GetWindowFlags(_window);
         return (windowFlags & SDL_WINDOW_INPUT_FOCUS) != 0;
     }
 

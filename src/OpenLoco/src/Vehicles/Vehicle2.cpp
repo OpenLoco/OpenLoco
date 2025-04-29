@@ -18,6 +18,8 @@ namespace OpenLoco::Vehicles
     static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
     static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
 
+    constexpr const uint8_t kBrakeLightTimeout = 7;
+
     // values are pre *256 for maths
     // Lateral force due to gravity due to Pitch possibly SIN(angle) * 256 * 256
     static constexpr std::array<int32_t, 13> _500170{
@@ -40,18 +42,17 @@ namespace OpenLoco::Vehicles
     static bool shouldStartWheelSlipping(const Vehicle& train, VehicleBogie& frontBogie)
     {
         const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie.objectId);
+        if (!vehObject->hasFlags(VehicleObjectFlags::canWheelslip) || vehObject->power == 0)
+        {
+            return false;
+        }
+
         if (train.head->status != Status::travelling)
         {
             return false;
         }
 
-        if (train.veh2->var_5A == 2 || train.veh2->currentSpeed > 10.0_mph)
-        {
-            return false;
-        }
-
-        // In the vanilla vehicle objects, this flag is set exclusively for vehicles that are steam engines (and helicopters, but no aircraft reach this code)
-        if (vehObject->power == 0 || !vehObject->hasFlags(VehicleObjectFlags::isHelicopter))
+        if (train.veh2->motorState == MotorState::coasting || train.veh2->currentSpeed > 10.0_mph)
         {
             return false;
         }
@@ -131,11 +132,11 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        var_5A = 1;
+        motorState = MotorState::accelerating;
         const auto speedDiff = currentSpeed - *_vehicleUpdate_var_1136134;
         if (speedDiff > 0.0_mph)
         {
-            var_5A = 3;
+            motorState = MotorState::braking;
             const auto newSpeed = currentSpeed - (currentSpeed / 64 + 0.18311_mph);
             currentSpeed = std::max(newSpeed, std::max(*_vehicleUpdate_var_1136134, 5.0_mph));
             return sub_4A9F20();
@@ -145,11 +146,11 @@ namespace OpenLoco::Vehicles
         {
             if (speedDiff >= -1.5_mph)
             {
-                var_5A = 2;
+                motorState = MotorState::coasting;
             }
             if (currentSpeed == 0.0_mph)
             {
-                var_5A = 0;
+                motorState = MotorState::stopped;
             }
         }
 
@@ -199,7 +200,7 @@ namespace OpenLoco::Vehicles
             ebp /= 2;
             if (!train.head->hasVehicleFlags(VehicleFlags::unk_0))
             {
-                var_5A = 4;
+                motorState = MotorState::stoppedOnIncline;
                 if (currentSpeed <= 3.0_mph && train.head->owner == CompanyManager::getControllingId())
                 {
                     MessageManager::post(MessageType::vehicleSlipped, train.head->owner, enumValue(train.head->id), 0xFFFF);
@@ -218,22 +219,22 @@ namespace OpenLoco::Vehicles
                 {
                     if (manualSpeed <= -10)
                     {
-                        var_5A = 3;
+                        motorState = MotorState::braking;
                     }
                     else
                     {
-                        var_5A = 2;
+                        motorState = MotorState::coasting;
                     }
                 }
                 else
                 {
                     if (manualSpeed >= 10)
                     {
-                        var_5A = 1;
+                        motorState = MotorState::accelerating;
                     }
                     else
                     {
-                        var_5A = 2;
+                        motorState = MotorState::coasting;
                     }
                 }
                 ebp += ((power * 2048) * manualSpeed) / (totalWeight * 40);
@@ -305,11 +306,11 @@ namespace OpenLoco::Vehicles
             if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {
                 currentSpeed = 0.0_mph;
-                var_5A = 0;
+                motorState = MotorState::stopped;
             }
         }
 
-        if (var_5A == 4)
+        if (motorState == MotorState::stoppedOnIncline)
         {
             _vehicleUpdate_var_1136130 = _vehicleUpdate_var_113612C + 0x1388;
         }
@@ -317,9 +318,9 @@ namespace OpenLoco::Vehicles
         train.head->var_3C -= _vehicleUpdate_var_113612C;
         train.veh1->var_3C -= _vehicleUpdate_var_113612C;
 
-        if (var_5A == 3)
+        if (motorState == MotorState::braking)
         {
-            if (var_5B == 0)
+            if (brakeLightTimeout == 0)
             {
                 invalidateSprite();
                 train.veh1->invalidateSprite();
@@ -327,17 +328,17 @@ namespace OpenLoco::Vehicles
                 train.cars.applyToComponents([](auto& component) { component.invalidateSprite(); });
             }
 
-            var_5B = 7;
+            brakeLightTimeout = kBrakeLightTimeout;
             return true;
         }
         else
         {
-            if (var_5B == 0)
+            if (brakeLightTimeout == 0)
             {
                 return true;
             }
-            var_5B--;
-            if (var_5B == 0)
+            brakeLightTimeout--;
+            if (brakeLightTimeout == 0)
             {
                 invalidateSprite();
                 train.veh1->invalidateSprite();

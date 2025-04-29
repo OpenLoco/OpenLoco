@@ -99,7 +99,6 @@ namespace OpenLoco::GameCommands
 {
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
     static loco_global<uint8_t, 0x00508F08> _gameCommandNestLevel;
-    static loco_global<uint8_t, 0x00508F17> _pausedState;
 
     static uint16_t _gameCommandFlags;
 
@@ -161,7 +160,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleOrderInsert,           vehicleOrderInsert,        0x0047036E, false },
         { GameCommand::vehicleOrderDelete,           vehicleOrderDelete,        0x0047057A, false },
         { GameCommand::vehicleOrderSkip,             vehicleOrderSkip,          0x0047071A, false },
-        { GameCommand::createRoad,                   nullptr,                   0x00475FBC, true  },
+        { GameCommand::createRoad,                   createRoad,                0x00475FBC, true  },
         { GameCommand::removeRoad,                   nullptr,                   0x004775A5, true  },
         { GameCommand::createRoadMod,                nullptr,                   0x0047A21E, true  },
         { GameCommand::removeRoadMod,                nullptr,                   0x0047A42F, true  },
@@ -175,7 +174,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::createTown,                   createTown,                0x00496C22, true  },
         { GameCommand::removeTown,                   removeTown,                0x0049711F, true  },
         { GameCommand::gc_unk_51,                    nullptr,                   0x004A6FDC, true  },
-        { GameCommand::gc_unk_52,                    nullptr,                   0x004A734F, true  },
+        { GameCommand::aiTrackReplacement,           nullptr,                   0x004A734F, true  },
         { GameCommand::gc_unk_53,                    nullptr,                   0x0047AF0B, true  },
         { GameCommand::buildCompanyHeadquarters,     buildCompanyHeadquarters,  0x0042ECFC, true  },
         { GameCommand::removeCompanyHeadquarters,    removeCompanyHeadquarters, 0x0042EEAF, true  },
@@ -258,6 +257,15 @@ namespace OpenLoco::GameCommands
             regs = backup;
             return 0;
         });
+
+        // Used by a gc_unk_53 and sub_485849 ai function instead of going via doCommand
+        registerHook(0x00475FBC, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createRoad(backup);
+
+            regs = backup;
+            return 0;
+        });
     }
 
     static uint32_t loc_4314EA();
@@ -271,7 +279,7 @@ namespace OpenLoco::GameCommands
         }
 
         auto& gameCommand = kGameCommandDefinitions[static_cast<uint32_t>(command)];
-        if (!gameCommand.unpausesGame || isPauseOverrideEnabled())
+        if (!gameCommand.unpausesGame || SceneManager::isPauseOverrideEnabled())
         {
             return false;
         }
@@ -321,28 +329,28 @@ namespace OpenLoco::GameCommands
 
         if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == CompanyManager::getControllingId())
         {
-            if (getPauseFlags() & 1)
+            if (SceneManager::getPauseFlags() & 1)
             {
-                _pausedState = _pausedState ^ 1;
+                SceneManager::unsetPauseFlag(1);
                 WindowManager::invalidate(WindowType::timeToolbar);
                 Audio::unpauseSound();
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
             }
 
-            if (getGameSpeed() != GameSpeed::Normal)
+            if (SceneManager::getGameSpeed() != GameSpeed::Normal)
             {
                 // calling the command setGameSpeed will cause infinite recursion here, so just call the real function
-                OpenLoco::setGameSpeed(GameSpeed::Normal);
+                SceneManager::setGameSpeed(GameSpeed::Normal);
             }
 
-            if (isPaused())
+            if (SceneManager::isPaused())
             {
                 _gGameCommandErrorText = StringIds::empty;
                 return GameCommands::FAILURE;
             }
         }
 
-        if (_updatingCompanyId == CompanyManager::getControllingId() && isNetworked())
+        if (_updatingCompanyId == CompanyManager::getControllingId() && SceneManager::isNetworked())
         {
             // assert(false);
             // registers fnRegs = regs;
@@ -381,7 +389,7 @@ namespace OpenLoco::GameCommands
 
         if (ebx != static_cast<int32_t>(GameCommands::FAILURE))
         {
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 ebx = 0;
             }
@@ -430,7 +438,7 @@ namespace OpenLoco::GameCommands
             return loc_4314EA();
         }
 
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             ebx = 0;
         }

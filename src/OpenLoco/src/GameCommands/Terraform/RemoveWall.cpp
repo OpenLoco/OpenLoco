@@ -3,7 +3,7 @@
 #include "GameCommands/GameCommands.h"
 #include "Map/TileManager.h"
 #include "Map/WallElement.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "ViewportManager.h"
 
 using namespace OpenLoco::Interop;
@@ -64,7 +64,7 @@ namespace OpenLoco::GameCommands
 
             TileManager::removeElement(tileElement);
 
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
             options.madeAnyChanges = 1;
 
             return 0;

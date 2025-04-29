@@ -1,6 +1,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -35,10 +36,14 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
@@ -80,18 +85,18 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
+        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::tile_inspector),
         Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
-        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WindowColour::secondary),
-        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WindowColour::secondary),
+        Widgets::stepperWidgets({ 19, 24 }, { 55, 12 }, WindowColour::secondary),
+        Widgets::stepperWidgets({ 92, 24 }, { 55, 12 }, WindowColour::secondary),
         Widgets::ImageButton({ kWindowSize.width - 26, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
-        makeWidget({ 4, 46 }, { kWindowSize.width - 98, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderNameType, StringIds::tileInspectorHeaderNameTypeTip), // name
-        makeWidget({ kWindowSize.width - 109, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderBaseHeight, StringIds::tileInspectorHeaderBaseHeightTip),
-        makeWidget({ kWindowSize.width - 79, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderClearHeight, StringIds::tileInspectorHeaderClearHeightTip),
-        makeWidget({ kWindowSize.width - 49, 46 }, { 15, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderDirection, StringIds::tileInspectorHeaderDirectionTip),
-        makeWidget({ kWindowSize.width - 34, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderGhost, StringIds::tileInspectorHeaderGhostTip),
-        makeWidget({ 4, 60 }, { kWindowSize.width - 8, 103 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
+        Widgets::TableHeader({ 4, 46 }, { kWindowSize.width - 98, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderNameType, StringIds::tileInspectorHeaderNameTypeTip), // name
+        Widgets::TableHeader({ kWindowSize.width - 109, 46 }, { 30, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderBaseHeight, StringIds::tileInspectorHeaderBaseHeightTip),
+        Widgets::TableHeader({ kWindowSize.width - 79, 46 }, { 30, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderClearHeight, StringIds::tileInspectorHeaderClearHeightTip),
+        Widgets::TableHeader({ kWindowSize.width - 49, 46 }, { 15, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderDirection, StringIds::tileInspectorHeaderDirectionTip),
+        Widgets::TableHeader({ kWindowSize.width - 34, 46 }, { 30, 12 }, WindowColour::secondary, StringIds::tileInspectorHeaderGhost, StringIds::tileInspectorHeaderGhostTip),
+        Widgets::ScrollView({ 4, 60 }, { kWindowSize.width - 8, 103 }, WindowColour::secondary, Ui::Scrollbars::vertical),
         Widgets::GroupBox({ 4, 165 }, { kWindowSize.width - 8, 30 }, WindowColour::secondary, StringIds::tile_element_data)
 
     );
@@ -119,15 +124,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
         window->rowCount = 0;
         window->rowHeight = 10;
-        window->var_842 = -1;
+        window->selectedTileIndex = -1;
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, skin->colour_0B);
-        window->setColour(WindowColour::secondary, skin->colour_0C);
+        window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, skin->windowColour);
 
         activateMapSelectionTool(window);
 
@@ -185,9 +189,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
 
         // Selected element details
-        if (self.var_842 != -1)
+        if (self.selectedTileIndex != -1)
         {
-            auto tile = TileManager::get(_currentPosition)[self.var_842];
+            auto tile = TileManager::get(_currentPosition)[self.selectedTileIndex];
             const auto data = tile->rawData();
 
             char buffer[32]{};
@@ -363,7 +367,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             }
 
             StringId formatString;
-            if (self.var_842 == rowNum)
+            if (self.selectedTileIndex == rowNum)
             {
                 drawingCtx.fillRect(0, yPos, self.width, yPos + self.rowHeight, PaletteIndex::black0, Gfx::RectFlags::none);
                 formatString = StringIds::white_stringid;
@@ -450,9 +454,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
         }
 
-        if (self.var_842 != index)
+        if (self.selectedTileIndex != index)
         {
-            self.var_842 = index;
+            self.selectedTileIndex = index;
             self.invalidate();
             return;
         }
@@ -473,7 +477,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -487,7 +491,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void onMouseDown(Ui::Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -524,7 +528,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         *scrollHeight = self.rowCount * self.rowHeight;
     }
 
-    static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::panel)
         {
@@ -540,7 +544,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::panel || !World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
         {
@@ -557,7 +561,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
         self.rowCount = static_cast<uint16_t>(tile.size());
         self.rowHover = -1;
-        self.var_842 = 0;
+        self.selectedTileIndex = 0;
         self.invalidate();
     }
 

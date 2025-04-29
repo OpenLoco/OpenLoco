@@ -7,6 +7,7 @@
 #include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -25,10 +26,16 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
+#include "Ui/Widgets/ColourButtonWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/Town.h"
 #include "World/TownManager.h"
@@ -63,13 +70,11 @@ namespace OpenLoco::Ui::Windows::TownList
             tab_build_misc_buildings,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_town_list) | (1 << widx::tab_build_town) | (1 << widx::tab_build_buildings) | (1 << widx::tab_build_misc_buildings);
-
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 155 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_list),
@@ -99,17 +104,17 @@ namespace OpenLoco::Ui::Windows::TownList
             sort_town_population,
             sort_town_stations,
             scrollview,
+            status_bar,
         };
-
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_town_name) | (1 << sort_town_type) | (1 << sort_town_population) | (1 << sort_town_stations) | (1 << scrollview);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(600, 197, StringIds::title_towns),
-            makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-            makeWidget({ 204, 43 }, { 80, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
-            makeWidget({ 284, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
-            makeWidget({ 354, 43 }, { 70, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
-            makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2)
+            Widgets::TableHeader({ 4, 43 }, { 200, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+            Widgets::TableHeader({ 204, 43 }, { 80, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
+            Widgets::TableHeader({ 284, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
+            Widgets::TableHeader({ 354, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
+            Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, 2),
+            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -148,6 +153,16 @@ namespace OpenLoco::Ui::Windows::TownList
             self.widgets[widx::sort_town_stations].text = self.sortMode == SortMode::Stations ? StringIds::table_header_stations_desc : StringIds::table_header_stations;
 
             Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings);
+
+            // Reposition status bar
+            auto& widget = self.widgets[widx::status_bar];
+            widget.top = self.height - 12;
+            widget.bottom = self.height - 2;
+
+            // Set status bar text
+            FormatArguments args{ widget.textArgs };
+            args.push(self.var_83C == 1 ? StringIds::status_towns_singular : StringIds::status_towns_plural);
+            args.push(self.var_83C);
         }
 
         // 0x0049A0F8
@@ -228,28 +243,12 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A0A7
         static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
-
-            FormatArguments args{};
-            if (self.var_83C == 1)
-            {
-                args.push(StringIds::status_towns_singular);
-            }
-            else
-            {
-                args.push(StringIds::status_towns_plural);
-            }
-            args.push(self.var_83C);
-
-            auto point = Point(self.x + 4, self.y + self.height - 12);
-            tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x0049A27F
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -499,7 +498,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00491841
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_town_list);
@@ -507,7 +506,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x004919A4
-        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
             {
@@ -565,7 +564,7 @@ namespace OpenLoco::Ui::Windows::TownList
         auto window = WindowManager::bringToFront(WindowType::townList, 0);
         if (window != nullptr)
         {
-            window->callOnMouseUp(Common::widx::tab_town_list);
+            window->callOnMouseUp(Common::widx::tab_town_list, window->widgets[Common::widx::tab_town_list].id);
         }
         else
         {
@@ -597,8 +596,8 @@ namespace OpenLoco::Ui::Windows::TownList
             window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::primary, skin->colour_0B);
-            window->setColour(WindowColour::secondary, skin->colour_0C);
+            window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+            window->setColour(WindowColour::secondary, skin->windowColour);
 
             // 0x00499CFC end
 
@@ -607,9 +606,8 @@ namespace OpenLoco::Ui::Windows::TownList
             window->invalidate();
 
             window->setWidgets(TownList::widgets);
-            window->enabledWidgets = TownList::enabledWidgets;
 
-            if (isEditorMode() || isSandboxMode())
+            if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
                 window->disabledWidgets = 0;
             }
@@ -665,11 +663,9 @@ namespace OpenLoco::Ui::Windows::TownList
             select_size,
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << current_size) | (1 << select_size);
-
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(220, 87, StringIds::title_build_new_towns),
-            makeDropdownWidgets({ 100, 45 }, { 117, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size)
+            Widgets::dropdownWidgets({ 100, 45 }, { 117, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size)
 
         );
 
@@ -710,7 +706,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A675
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -740,7 +736,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A697
-        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex != widx::select_size)
             {
@@ -755,13 +751,13 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A7C1
-        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             Ui::Windows::Main::hideGridlines();
         }
 
         // 0x0049A710
-        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -777,7 +773,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A75E
-        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
             if (mapPos)
@@ -809,7 +805,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A690
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == widx::select_size)
             {
@@ -879,13 +875,11 @@ namespace OpenLoco::Ui::Windows::TownList
             object_colour,
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour);
-
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(640, 172, StringIds::title_build_new_buildings),
-            makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, WindowColour::secondary, 2),
+            Widgets::ScrollView({ 2, 45 }, { 573, 112 }, WindowColour::secondary, 2),
             Widgets::ImageButton({ 575, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
-            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
+            Widgets::ColourButton({ 579, 91 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
 
         );
 
@@ -893,14 +887,14 @@ namespace OpenLoco::Ui::Windows::TownList
         static void prepareDraw(Ui::Window& self)
         {
             self.widgets[widx::object_colour].image = Widget::kImageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_buildingColour);
-            self.widgets[widx::object_colour].type = WidgetType::none;
+            self.widgets[widx::object_colour].hidden = true;
 
             if (self.rowHover != -1)
             {
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.rowHover);
                 if (buildingObj->colours != 0)
                 {
-                    self.widgets[widx::object_colour].type = WidgetType::buttonWithColour;
+                    self.widgets[widx::object_colour].hidden = false;
                 }
             }
 
@@ -954,7 +948,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB31
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1054,7 +1048,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB59
-        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
             {
@@ -1082,7 +1076,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AD46
-        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             removeBuildingGhost();
             Ui::Windows::Main::hideGridlines();
@@ -1146,7 +1140,7 @@ namespace OpenLoco::Ui::Windows::TownList
             args.pos = World::Pos3(pos->x, pos->y, z);
             args.type = townListWnd->rowHover;   // dl
             args.variation = _buildingVariation; // dh
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 args.buildImmediately = true; // bh
             }
@@ -1154,7 +1148,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ABF0
-        static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -1193,7 +1187,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ACBD
-        static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             removeBuildingGhost();
             auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
@@ -1217,7 +1211,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB52
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == widx::object_colour)
             {
@@ -1279,7 +1273,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ABBB
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_building_list);
@@ -1576,9 +1570,9 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             if (!self.isDisabled(BuildBuildings::widx::rotate_object))
             {
-                if (self.widgets[BuildBuildings::widx::rotate_object].type != WidgetType::none)
+                if (!self.widgets[BuildBuildings::widx::rotate_object].hidden)
                 {
-                    self.callOnMouseUp(BuildBuildings::widx::rotate_object);
+                    self.callOnMouseUp(BuildBuildings::widx::rotate_object, self.widgets[BuildBuildings::widx::rotate_object].id);
                     return true;
                 }
             }
@@ -1594,15 +1588,14 @@ namespace OpenLoco::Ui::Windows::TownList
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t enabledWidgets;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { TownList::widgets,       widx::tab_town_list,            TownList::getEvents(),       TownList::enabledWidgets },
-            { BuildTowns::widgets,     widx::tab_build_town,           BuildTowns::getEvents(),     BuildTowns::enabledWidgets },
-            { BuildBuildings::widgets, widx::tab_build_buildings,      BuildBuildings::getEvents(), BuildBuildings::enabledWidgets },
-            { BuildBuildings::widgets, widx::tab_build_misc_buildings, BuildBuildings::getEvents(), BuildBuildings::enabledWidgets },
+            { TownList::widgets,       widx::tab_town_list,            TownList::getEvents()       },
+            { BuildTowns::widgets,     widx::tab_build_town,           BuildTowns::getEvents()     },
+            { BuildBuildings::widgets, widx::tab_build_buildings,      BuildBuildings::getEvents() },
+            { BuildBuildings::widgets, widx::tab_build_misc_buildings, BuildBuildings::getEvents() },
         };
         // clang-format on
 
@@ -1753,13 +1746,12 @@ namespace OpenLoco::Ui::Windows::TownList
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town_list];
 
-            self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->setWidgets(tabInfo.widgets);
 
-            if (isEditorMode() || isSandboxMode())
+            if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
                 self->disabledWidgets = 0;
             }

@@ -326,6 +326,52 @@ namespace OpenLoco::World::TileManager
         return insertElementEnd(type, baseZ, occupiedQuads, source, dest, lastFound);
     }
 
+    // 0x0046166C
+    RoadElement* insertElementRoad(const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
+    {
+        checkFreeElementsAndReorganise();
+
+        auto [source, dest] = insertElementPrepareDest(toTileSpace(pos));
+        if (source == nullptr)
+        {
+            return nullptr;
+        }
+
+        bool lastFound = false;
+        auto isRoadStation = [](const TileElement* source, SmallZ baseZ) {
+            if (baseZ != source->baseZ())
+            {
+                return false;
+            }
+            auto* srcStation = source->as<StationElement>();
+            if (srcStation == nullptr)
+            {
+                return false;
+            }
+            return srcStation->stationType() == StationType::roadStation;
+        };
+
+        // Copy all of the elements that are underneath the new tile (or till end)
+        while (baseZ >= source->baseZ() && !isRoadStation(source, baseZ))
+        {
+            *dest = *source;
+            source->setBaseZ(0xFFU);
+            source++;
+            if (dest->isLast())
+            {
+                // The new element will become the last
+                // so we are clearing the flag
+                dest->setLastFlag(false);
+                dest++;
+                lastFound = true;
+                break;
+            }
+            dest++;
+        }
+
+        return insertElementEnd(ElementType::road, baseZ, occupiedQuads, source, dest, lastFound)->as<RoadElement>();
+    }
+
     // 0x00461578
     TileElement* insertElementAfterNoReorg(TileElement* after, ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
     {
@@ -661,8 +707,7 @@ namespace OpenLoco::World::TileManager
         }
         catch (const std::bad_alloc&)
         {
-            Ui::showMessageBox("Bad Alloc", "Bad memory allocation, exiting");
-            exitWithError(4370, StringIds::null);
+            exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
         }
 
         // Note: original implementation did not revert the cursor
@@ -1199,9 +1244,9 @@ namespace OpenLoco::World::TileManager
         {
             return;
         }
-        if (surface.var_6_SLR5() > 0)
+        if (surface.getGrowthStage() > 0)
         {
-            surface.setVar6SLR5(0);
+            surface.setGrowthStage(0);
             surface.setSnowCoverage(0);
 
             Ui::ViewportManager::invalidate(pos, surface.baseHeight(), surface.baseHeight() + 32, ZoomLevel::eighth);
@@ -1249,7 +1294,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00468651
-    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags)
+    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags)
     {
         if (!validCoords(pos))
         {
@@ -1276,7 +1321,7 @@ namespace OpenLoco::World::TileManager
         {
             removeSurfaceIndustry(pos);
 
-            if (!isEditorMode())
+            if (!SceneManager::isEditorMode())
             {
                 setTerrainStyleAsCleared(pos);
             }
@@ -1400,7 +1445,7 @@ namespace OpenLoco::World::TileManager
         }
 
         surface = tileIt.surface();
-        if (!isEditorMode())
+        if (!SceneManager::isEditorMode())
         {
             // Reset terrain growth when not in editor
             surface->setTerrain(surface->terrain());
@@ -1411,7 +1456,7 @@ namespace OpenLoco::World::TileManager
         surface->setSlope(slopeFlags);
 
         landObj = ObjectManager::get<LandObject>(surface->terrain());
-        if (landObj->hasFlags(LandObjectFlags::unk1) && !isEditorMode())
+        if (landObj->hasFlags(LandObjectFlags::unk1) && !SceneManager::isEditorMode())
         {
             surface->setTerrain(landObj->cliffEdgeHeader2);
         }
@@ -1426,7 +1471,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x004C4C28
-    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags)
+    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         GameCommands::setPosition(World::Pos3(pos.x + World::kTileSize / 2, pos.y + World::kTileSize / 2, targetHeight * kMicroToSmallZStep));
@@ -1449,7 +1494,7 @@ namespace OpenLoco::World::TileManager
         {
             removeSurfaceIndustry(pos);
 
-            if (!isEditorMode())
+            if (!SceneManager::isEditorMode())
             {
                 setTerrainStyleAsCleared(pos);
             }

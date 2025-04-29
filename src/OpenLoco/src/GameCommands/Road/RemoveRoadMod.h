@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameCommands/GameCommands.h"
+#include "Map/Track/TrackModSection.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -16,7 +17,7 @@ namespace OpenLoco::GameCommands
             , index(regs.dh & 0x3)
             , type((regs.edi >> 16) & 0xF)
             , roadObjType(regs.ebp & 0xFF)
-            , modSection((regs.ebp >> 16) & 0xFF)
+            , modSection(static_cast<World::Track::ModSection>((regs.ebp >> 16) & 0xFF))
         {
         }
 
@@ -26,7 +27,7 @@ namespace OpenLoco::GameCommands
         uint8_t index;
         uint8_t type;
         uint8_t roadObjType;
-        uint8_t modSection;
+        World::Track::ModSection modSection;
 
         explicit operator registers() const
         {
@@ -37,7 +38,7 @@ namespace OpenLoco::GameCommands
             regs.dl = roadId;
             regs.dh = index;
             regs.edi = pos.z | (type << 16);
-            regs.ebp = roadObjType | (modSection << 16);
+            regs.ebp = roadObjType | (enumValue(modSection) << 16);
             return regs;
         }
     };

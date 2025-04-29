@@ -8,6 +8,7 @@
 #include "Objects/ObjectManager.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 
@@ -23,7 +24,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
     // 0x005234F4
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 200, 30 }, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, { 200, 30 }, WindowColour::primary)
 
     );
 
@@ -80,8 +81,8 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             window = WindowManager::createWindow(WindowType::mapTooltip, { x, y }, { width, height }, WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground, getEvents());
             window->setWidgets(_widgets);
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, skin->colour_06);
-            window->setColour(WindowColour::tertiary, skin->colour_07);
+            window->setColour(WindowColour::secondary, skin->mapTooltipObjectColour);
+            window->setColour(WindowColour::tertiary, skin->mapTooltipCargoColour);
         }
     }
 
@@ -128,10 +129,10 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         else
         {
             Ui::Point origin(self.x + self.width / 2 + 13, self.y + self.height / 2 - 5);
-            tr.drawStringCentredWrapped(origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, args);
+            auto basePoint = tr.drawStringCentredWrapped(origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, args);
 
-            auto left = self.width / 2 + self.x + 13 - self.width / 2 - 28;
-            auto top = self.height / 2 - 13 + self.y;
+            auto left = basePoint.x - 28;
+            auto top = self.y + self.height / 2 - 13;
             auto right = left + 25;
             auto bottom = top + 25;
 

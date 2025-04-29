@@ -8,6 +8,7 @@
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
+#include "Map/Track/TrackModSection.h"
 #include "Map/TrackElement.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
@@ -16,11 +17,13 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <sfl/static_vector.hpp>
 
 namespace OpenLoco::Vehicles
 {
     using namespace OpenLoco::Interop;
     using namespace OpenLoco::World;
+    using namespace OpenLoco::World::Track;
 
     enum class TrackNetworkSearchFlags : uint16_t
     {
@@ -109,7 +112,7 @@ namespace OpenLoco::Vehicles
         };
 
     public:
-        std::vector<LocationOfInterest> locs;
+        sfl::static_vector<LocationOfInterest, 4096> locs;
         size_t count;
         uint16_t mapSize;
         uint16_t mapSizeMask;
@@ -121,6 +124,7 @@ namespace OpenLoco::Vehicles
             , mapSizeMask(_maxSize - 1)
             , maxEntries(_maxSize - kMinFreeSlots)
         {
+            assert(_maxSize <= locs.static_capacity);
             assert((mapSize & (mapSizeMask)) == 0); // Only works with powers of 2
             locs.resize(mapSize);
             std::fill(std::begin(locs), std::end(locs), LocationOfInterest{ World::Pos3{ -1, -1, 0 }, 0, CompanyId::null, 0 });
@@ -491,13 +495,16 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
+    // The hash map can have a maximum of 4096 entries so the queue can't be larger than that.
+    using LocationOfInterestQueue = sfl::static_vector<LocationOfInterest, 4096>;
+
     template<typename FilterFunction>
-    static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
+    static void findAllUsableTrackInNetwork(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
 
     // 0x004A313B & 0x004A35B7
     // Iterates all individual tiles of a track piece to find tracks that need inspection
     template<typename FilterFunction>
-    static void findAllUsableTrackPieces(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableTrackPieces(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
         if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
         {
@@ -593,7 +600,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004A2FE6 & 0x004A3462
     template<typename FilterFunction>
-    static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableTrackInNetwork(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
         const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(initialInterest.loc, initialInterest.tad()._data);
         auto tc = World::Track::getTrackConnections(trackEndLoc, trackEndRotation, initialInterest.company, initialInterest.trackType, 0, 0);
@@ -664,7 +671,7 @@ namespace OpenLoco::Vehicles
 
         // Note: This function and its call chain findAllUsableTrackInNetwork and findAllUsableTrackPieces have been modified
         // to not be recursive anymore.
-        std::vector<LocationOfInterest> trackToCheck{ LocationOfInterest{ loc, trackAndDirection._data, company, trackType } };
+        LocationOfInterestQueue trackToCheck{ LocationOfInterest{ loc, trackAndDirection._data, company, trackType } };
         while (!trackToCheck.empty())
         {
             const auto interest = trackToCheck.back();
@@ -716,7 +723,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A5D94
-    static bool applyTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    static bool applyTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the hashmap to prevent it being visited.
@@ -870,7 +877,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (modSelection == 1)
+        if (modSelection == ModSection::block)
         {
             return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
         }
@@ -878,7 +885,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A6136
-    static bool removeTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    static bool removeTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the hashmap to prevent it being visited.
@@ -1007,21 +1014,21 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (modSelection == 1)
+        if (modSelection == ModSection::block)
         {
             return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
         }
         return false;
     }
 
-    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, ModSection modSelection, uint8_t trackModObjIds)
     {
         ApplyTrackModsResult result{};
         result.cost = 0;
         result.allPlacementsFailed = true;
         result.networkTooComplex = false;
 
-        if (modSelection == 0)
+        if (modSelection == Track::ModSection::single)
         {
             LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
             applyTrackModToTrack(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
@@ -1038,10 +1045,10 @@ namespace OpenLoco::Vehicles
         return result;
     }
 
-    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, ModSection modSelection, uint8_t trackModObjIds)
     {
         currency32_t cost = 0;
-        if (modSelection == 0)
+        if (modSelection == Track::ModSection::single)
         {
             LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
             removeTrackModToTrack(interest, flags, nullptr, modSelection, trackType, trackModObjIds, cost, company);

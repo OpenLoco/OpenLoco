@@ -1,6 +1,7 @@
 #include "Config.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
@@ -9,9 +10,12 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include <fmt/format.h>
 
@@ -37,13 +41,13 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::objectErrorWindowTitle),
+        Widgets::Caption({ 1, 1 }, { 358, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::objectErrorWindowTitle),
         Widgets::ImageButton({ 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 360, 223 }, WindowColour::secondary),
-        makeWidget({ 4, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectId),
-        makeWidget({ 104, 43 }, { 152, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectType),
-        makeWidget({ 256, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
-        makeWidget({ 4, 57 }, { 352, 176 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::TableHeader({ 4, 43 }, { 100, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectId),
+        Widgets::TableHeader({ 104, 43 }, { 152, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectType),
+        Widgets::TableHeader({ 256, 43 }, { 100, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
+        Widgets::ScrollView({ 4, 57 }, { 352, 176 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
 
@@ -68,12 +72,11 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = 1 << Widx::close;
         window->initScrollWidgets();
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, interface->colour_0B);
-        window->setColour(WindowColour::secondary, interface->colour_10);
+        window->setColour(WindowColour::primary, interface->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, interface->windowOptionsColour);
 
         window->rowCount = static_cast<uint16_t>(_loadErrorObjectsList.size());
         window->rowHover = -1;
@@ -245,7 +248,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         *scrollHeight = kRowHeight * window.rowCount;
     }
 
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -267,7 +270,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         window.invalidate();
     }
 
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_object_list);

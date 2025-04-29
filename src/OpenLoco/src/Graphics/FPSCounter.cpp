@@ -57,6 +57,6 @@ namespace OpenLoco::Gfx
         tr.drawString(point, Colour::black, buffer);
 
         // Make area dirty so the text doesn't get drawn over the last
-        invalidateRegion(point.x - 16, point.y - 4, point.x + 16, 16);
+        invalidateRegion(point.x, point.y, point.x + stringWidth, point.y + 16);
     }
 }

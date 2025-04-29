@@ -6,8 +6,8 @@
 #include <OpenLoco/Engine/World.hpp>
 
 #include <cstdint>
+#include <span>
 #include <string>
-#include <vector>
 
 namespace OpenLoco::Vehicles
 {
@@ -134,7 +134,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
     std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);
     void generateNumDisplayFrames(Vehicles::VehicleHead* head);
-    const std::vector<NumDisplayFrame>& displayFrames();
+    std::span<const NumDisplayFrame> displayFrames();
     uint16_t reverseVehicleOrderTable(uint16_t tableOffset, uint16_t orderOfInterest);
     uint8_t swapAdjacentOrders(Order& a, Order& b);
     void removeOrdersForStation(const StationId stationId);

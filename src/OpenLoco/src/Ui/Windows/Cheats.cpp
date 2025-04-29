@@ -6,7 +6,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
-#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -18,11 +17,15 @@
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
@@ -56,7 +59,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, frameHeight - 41 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
@@ -64,8 +67,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
                 Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab));
         }
-
-        constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
 
         static void drawTabs(Ui::Window* const self, Gfx::DrawingContext& drawingCtx)
         {
@@ -161,20 +162,25 @@ namespace OpenLoco::Ui::Windows::Cheats
             enum
             {
                 cash_step_group = Common::Widx::nextWidx,
+                cash_step_label,
                 cash_step_value,
                 cash_step_decrease,
                 cash_step_increase,
                 cash_step_apply,
                 loan_group,
+                loan_label,
                 loan_value,
                 loan_clear,
                 time_group,
+                year_label,
                 year_step_value,
                 year_step_decrease,
                 year_step_increase,
+                month_label,
                 month_step_value,
                 month_step_decrease,
                 month_step_increase,
+                day_label,
                 day_step_value,
                 day_step_decrease,
                 day_step_increase,
@@ -186,34 +192,25 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::financial_cheats),
             // money
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_increase_funds),
-            makeStepperWidgets({ 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::Label({ 10, 62 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_amount),
+            Widgets::stepperWidgets({ 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_loan_value),
             Widgets::Button({ 180, 62 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_add),
             // loan
             Widgets::GroupBox({ 4, 86 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_clear_loan),
-            Widgets::TextBox({ 80, 100 }, { 95, 12 }, WindowColour::secondary),
+            Widgets::Label({ 10, 100 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::company_current_loan),
+            Widgets::TextBox({ 80, 100 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_loan_value),
             Widgets::Button({ 180, 100 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_clear),
             // date/time
             Widgets::GroupBox({ 4, 124 }, { kWindowSize.width - 8, 80 }, WindowColour::secondary, StringIds::cheat_date_change_apply),
-            makeStepperWidgets({ 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::Label({ 10, 138 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_year),
+            Widgets::stepperWidgets({ 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_year_value),
+            Widgets::Label({ 10, 154 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_month),
+            Widgets::stepperWidgets({ 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::black_stringid),
+            Widgets::Label({ 10, 170 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_day),
+            Widgets::stepperWidgets({ 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_day_value),
             Widgets::Button({ 10, 186 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_date_change_apply)
 
         );
-
-        static uint64_t enabledWidgets
-            = Common::enabledWidgets
-            | (1 << Widx::loan_clear)
-            | (1 << Widx::cash_step_decrease)
-            | (1 << Widx::cash_step_increase)
-            | (1 << Widx::cash_step_apply)
-            | (1 << Widx::year_step_decrease)
-            | (1 << Widx::year_step_increase)
-            | (1 << Widx::month_step_decrease)
-            | (1 << Widx::month_step_increase)
-            | (1 << Widx::day_step_decrease)
-            | (1 << Widx::day_step_increase)
-            | (1 << Widx::date_change_apply);
 
         const uint64_t holdableWidgets
             = (1 << Widx::cash_step_decrease)
@@ -231,125 +228,52 @@ namespace OpenLoco::Ui::Windows::Cheats
         static void prepareDraw(Window& self)
         {
             self.activatedWidgets = (1 << Common::Widx::tab_finances);
-        }
-
-        static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
-        {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
-            // Draw widgets and tabs.
-            self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
 
             // Add cash step label and value
             {
                 auto& widget = self.widgets[Widx::cash_step_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_amount);
-
-                FormatArguments args{};
+                FormatArguments args{ widget.textArgs };
                 args.push(_cashIncreaseStep);
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_loan_value,
-                    args);
             }
 
             // Loan label and value
             {
                 auto& widget = self.widgets[Widx::loan_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::company_current_loan);
-
+                FormatArguments args{ widget.textArgs };
                 auto company = CompanyManager::getPlayerCompany();
-
-                FormatArguments args{};
                 args.push(company->currentLoan);
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_loan_value,
-                    args);
             }
 
             // Add year label and value
             {
                 auto& widget = self.widgets[Widx::year_step_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_year);
-
-                FormatArguments args{};
+                FormatArguments args{ widget.textArgs };
                 args.push(_date.year);
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_year_value,
-                    args);
             }
 
             // Add month label and value
             {
                 auto& widget = self.widgets[Widx::month_step_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_month);
-
-                FormatArguments args{};
-                args.push((StringId)StringManager::monthToString(_date.month).second);
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::black_stringid,
-                    args);
+                FormatArguments args{ widget.textArgs };
+                args.push(StringManager::monthToString(_date.month).second);
             }
 
             // Add day label and value
             {
                 auto& widget = self.widgets[Widx::day_step_value];
-                auto point = Point(self.x + 10, self.y + widget.top);
-
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_day);
-
-                FormatArguments args{};
+                FormatArguments args{ widget.textArgs };
                 args.push(_date.day + 1); // +1 since days in game are 0-based, but IRL they are 1-based
-
-                point = Point(self.x + widget.left + 1, self.y + widget.top);
-                tr.drawStringLeft(
-                    point,
-                    Colour::black,
-                    StringIds::cheat_day_value,
-                    args);
             }
         }
 
-        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+        static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
+        {
+            // Draw widgets and tabs.
+            self.draw(drawingCtx);
+            Common::drawTabs(&self, drawingCtx);
+        }
+
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -405,7 +329,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             return std::max<int32_t>(0, std::min<int32_t>(getMonthTotalDay(date.year, date.month) - 1, date.day));
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             currency32_t cashStepSize{};
             int32_t timeStepSize{};
@@ -522,7 +446,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::company_cheats),
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_select_target_company),
-            makeDropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::black_stringid),
             Widgets::GroupBox({ 4, 86 }, { kWindowSize.width - 8, 96 }, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
             Widgets::Button({ 10, 100 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_switch_to_company),
             Widgets::Button({ 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
@@ -531,8 +455,6 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::Button({ 10, 164 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::completeChallenge)
 
         );
-
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button) | (1 << Widx::toggle_bankruptcy_button) | (1 << Widx::toggle_jail_status_button) | (1 << Widx::complete_challenge_button);
 
         static CompanyId _targetCompanyId{};
 
@@ -557,33 +479,23 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 self.disabledWidgets &= ~(1 << Widx::complete_challenge_button);
             }
+
+            // Current company name
+            auto& widget = self.widgets[Widx::target_company_dropdown];
+            auto args = FormatArguments(widget.textArgs);
+
+            auto company = CompanyManager::get(_targetCompanyId);
+            args.push(company->name);
         }
 
         static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             // Draw widgets and tabs.
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
-
-            // Draw current company name
-            auto company = CompanyManager::get(_targetCompanyId);
-
-            auto argsBuf = FormatArgumentsBuffer();
-            auto args = FormatArguments(argsBuf);
-            args.push(company->name);
-
-            auto& widget = self.widgets[Widx::target_company_dropdown];
-            auto point = Point(self.x + widget.left, self.y + widget.top);
-            tr.drawStringLeft(
-                point,
-                Colour::black,
-                StringIds::black_stringid,
-                args);
         }
 
-        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -655,15 +567,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Widx::target_company_dropdown_btn)
             {
-                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex - 1]);
             }
         }
 
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (itemIndex == -1)
             {
@@ -727,8 +639,6 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         );
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred) | (1 << Widx::checkbox_display_locked_vehicles) | (1 << Widx::checkbox_build_locked_vehicles);
-
         static void prepareDraw(Window& self)
         {
             self.activatedWidgets = (1 << Common::Widx::tab_vehicles);
@@ -761,7 +671,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(&self, drawingCtx);
         }
 
-        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -880,8 +790,6 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         );
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::ratings_all_min_10pct) | (1 << Widx::ratings_all_plus_10pct) | (1 << Widx::ratings_all_to_min) | (1 << Widx::ratings_all_to_max);
-
         static void prepareDraw(Window& self)
         {
             self.activatedWidgets = (1 << Common::Widx::tab_towns);
@@ -894,7 +802,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(&self, drawingCtx);
         }
 
-        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -997,13 +905,12 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         window->setWidgets(Finances::_widgets);
         window->currentTab = Common::Widx::tab_finances - Common::Widx::tab_finances;
-        window->enabledWidgets = Finances::enabledWidgets;
         window->holdableWidgets = Finances::holdableWidgets;
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, skin->colour_0B);
-        window->setColour(WindowColour::secondary, skin->colour_0C);
+        window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, skin->windowColour);
 
         return window;
     }
@@ -1015,17 +922,16 @@ namespace OpenLoco::Ui::Windows::Cheats
             std::span<const Widget> widgets;
             WidgetIndex_t widgetIndex;
             const WindowEventList& events;
-            const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
             Ui::Size32 kWindowSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Finances::_widgets,  Widx::tab_finances,  Finances::getEvents(),  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::kWindowSize  },
-            { Companies::_widgets, Widx::tab_companies, Companies::getEvents(), &Companies::enabledWidgets, nullptr,                    Companies::kWindowSize },
-            { Vehicles::_widgets,  Widx::tab_vehicles,  Vehicles::getEvents(),  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::kWindowSize  },
-            { Towns::_widgets,     Widx::tab_towns,     Towns::getEvents(),     &Towns::enabledWidgets,     nullptr,                    Towns::kWindowSize     },
+            { Finances::_widgets,  Widx::tab_finances,  Finances::getEvents(),  &Finances::holdableWidgets, Finances::kWindowSize  },
+            { Companies::_widgets, Widx::tab_companies, Companies::getEvents(), nullptr,                    Companies::kWindowSize },
+            { Vehicles::_widgets,  Widx::tab_vehicles,  Vehicles::getEvents(),  nullptr,                    Vehicles::kWindowSize  },
+            { Towns::_widgets,     Widx::tab_towns,     Towns::getEvents(),     nullptr,                    Towns::kWindowSize     },
         };
         // clang-format on
 
@@ -1036,7 +942,6 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             auto tabInfo = tabInformationByTabOffset[self->currentTab];
 
-            self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

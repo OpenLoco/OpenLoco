@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Graphics/Colour.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -10,11 +11,12 @@
 #include "News.h"
 #include "SceneManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {
     static constexpr auto widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 111, 26 }, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, { 111, 26 }, WindowColour::primary)
 
     );
 
@@ -24,7 +26,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429EA2
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         if (widgetIndex != 0)
         {
@@ -78,7 +80,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         if (self.var_852 != 0)
         {
-            if (!isPaused())
+            if (!SceneManager::isPaused())
             {
                 self.var_852--;
             }
@@ -86,7 +88,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         self.invalidate();
 
-        if (self.var_852 == 0 && !isPaused())
+        if (self.var_852 == 0 && !SceneManager::isPaused())
         {
             _nState.numCharsToDisplay = _nState.numCharsToDisplay + 2;
 
@@ -165,7 +167,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             return;
         }
 
-        if (getPauseFlags() & (1 << 2))
+        if (SceneManager::getPauseFlags() & (1 << 2))
         {
             return;
         }

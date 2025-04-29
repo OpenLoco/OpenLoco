@@ -22,33 +22,6 @@ namespace OpenLoco::Scenario
     struct Objective;
     struct ObjectiveProgress;
 
-    enum class ScenarioFlags : uint16_t
-    {
-        none = 0U,
-        landscapeGenerationDone = (1U << 0),
-        hillsEdgeOfMap = (1U << 1),
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(ScenarioFlags);
-
-    enum class ObjectiveFlags : uint8_t
-    {
-        none = 0U,
-        beTopCompany = (1U << 0),
-        beWithinTopThreeCompanies = (1U << 1),
-        withinTimeLimit = (1U << 2),
-        flag_3 = (1U << 3),
-        flag_4 = (1U << 4),
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(ObjectiveFlags);
-
-    enum class ObjectiveType : uint8_t
-    {
-        companyValue,
-        vehicleProfit,
-        performanceIndex,
-        cargoDelivery,
-    };
-
     enum class Season : uint8_t
     {
         autumn = 0,

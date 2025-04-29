@@ -124,8 +124,8 @@ namespace OpenLoco::MessageManager
                 {
                     break;
                 }
-                args.push(head->ordinalNumber);
                 args.push(head->name);
+                args.push(head->ordinalNumber);
 
                 auto* station = StationManager::get(static_cast<StationId>(message.itemSubjects[1]));
                 args.push(station->name);
@@ -153,8 +153,8 @@ namespace OpenLoco::MessageManager
                 {
                     break;
                 }
-                args.push(head->ordinalNumber);
                 args.push(head->name);
+                args.push(head->ordinalNumber);
                 StringManager::formatString(tempBuffer, StringIds::message_has_slipped_to_a_halt_on_incline, args);
             }
             break;
@@ -211,8 +211,8 @@ namespace OpenLoco::MessageManager
                 {
                     break;
                 }
-                args.push(head->ordinalNumber);
                 args.push(head->name);
+                args.push(head->ordinalNumber);
                 auto* station = StationManager::get(static_cast<StationId>(message.itemSubjects[1]));
                 args.push(station->name);
                 args.push(station->town);
@@ -328,22 +328,22 @@ namespace OpenLoco::MessageManager
                 StringManager::formatString(tempBuffer, StringIds::message_beaten_has_completed, args);
             }
             break;
-            case MessageType::bankruptcyWarning6Months:
+            case MessageType::bankruptcyWarning6MonthsRemaining:
             {
                 // 0x00428BDF
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->name);
-                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_6_month, args);
+                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_6_months_remaining, args);
             }
             break;
-            case MessageType::bankruptcyWarning3Months:
+            case MessageType::bankruptcyWarning3MonthsRemaining:
             {
                 // 0x00428C0F
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->name);
-                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_3_month, args);
+                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_3_months_remaining, args);
             }
             break;
             case MessageType::bankruptcyDeclared:
@@ -373,8 +373,8 @@ namespace OpenLoco::MessageManager
                 {
                     break;
                 }
-                args.push(head->ordinalNumber);
                 args.push(head->name);
+                args.push(head->ordinalNumber);
                 StringManager::formatString(tempBuffer, StringIds::message_has_crashed, args);
             }
             break;
@@ -535,7 +535,7 @@ namespace OpenLoco::MessageManager
     // 0x00428E47
     void sub_428E47()
     {
-        if (isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             return;
         }
@@ -592,7 +592,7 @@ namespace OpenLoco::MessageManager
                     break;
             }
             uint16_t time2 = std::numeric_limits<uint16_t>::max();
-            if (getGameSpeed() != GameSpeed::Normal)
+            if (SceneManager::getGameSpeed() != GameSpeed::Normal)
             {
                 if (numWaitingMessages > 0)
                 {

@@ -1,6 +1,7 @@
 #include "Config.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
@@ -10,9 +11,11 @@
 #include "Objects/ObjectManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <SDL2/SDL.h>
@@ -26,10 +29,10 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::keyboard_shortcuts),
+        Widgets::Caption({ 1, 1 }, { 358, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::keyboard_shortcuts),
         Widgets::ImageButton({ 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 360, 223 }, WindowColour::secondary),
-        makeWidget({ 4, 19 }, { 352, 202 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
+        Widgets::ScrollView({ 4, 19 }, { 352, 202 }, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
         Widgets::Button({ 4, 223 }, { 150, 12 }, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip)
 
     );
@@ -65,12 +68,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, WindowFlags::none, getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << Widx::close_button) | (1 << Widx::reset_keys_btn);
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, skin->colour_0B);
-        window->setColour(WindowColour::secondary, skin->colour_10);
+        window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, skin->windowOptionsColour);
 
         window->rowCount = static_cast<uint16_t>(ShortcutManager::getList().size());
         window->rowHover = -1;
@@ -204,7 +206,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE821
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -226,7 +228,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE844
-    static std::optional<FormatArguments> tooltip(Window&, WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip(Window&, WidgetIndex_t, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);

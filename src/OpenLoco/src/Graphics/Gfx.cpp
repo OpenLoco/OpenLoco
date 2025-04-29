@@ -4,6 +4,7 @@
 #include "Environment.h"
 #include "Font.h"
 #include "Graphics/DrawSprite.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
 #include "Input.h"
@@ -14,6 +15,7 @@
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
 #include "PaletteMap.h"
+#include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
@@ -256,9 +258,19 @@ namespace OpenLoco::Gfx
     // TODO: Split this into two functions, one for rendering and one for processing messages.
     void renderAndUpdate()
     {
-        if (Ui::dirtyBlocksInitialised())
+        if (Ui::isInitialized())
         {
             auto& drawingEngine = Gfx::getDrawingEngine();
+
+            // Clear the screen if the scene hasn't been initialised yet, since the game doesn't clear
+            // the screen each frame it relies on overdrawing but with no tile elements or entities loaded
+            // there is nothing to draw.
+            if (!SceneManager::isSceneInitialised())
+            {
+                auto& ctx = drawingEngine.getDrawingContext();
+                ctx.clearSingle(PaletteIndex::black0);
+            }
+
             drawingEngine.render();
             drawingEngine.present();
         }
@@ -489,4 +501,12 @@ namespace OpenLoco::Gfx
         return ImageId(imageId);
     }
 
+    // 0x00451DCB
+    void movePixelsOnScreen(int16_t dstX, int16_t dstY, int16_t width, int16_t height, int16_t srcX, int16_t srcY)
+    {
+        auto& drawingEngine = getDrawingEngine();
+        auto& screenRT = drawingEngine.getScreenRT();
+
+        drawingEngine.movePixels(screenRT, dstX, dstY, width, height, srcX, srcY);
+    }
 }

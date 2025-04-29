@@ -1,5 +1,6 @@
 #include "PaintTrack.h"
 #include "Graphics/Colour.h"
+#include "Graphics/RenderTarget.h"
 #include "Logging.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
@@ -23,11 +24,6 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Paint
 {
-    static loco_global<uint32_t, 0x001135F26> _trackBaseImageId;
-    static loco_global<uint32_t, 0x001135F2E> _trackExtraImageId;
-    static loco_global<uint32_t, 0x001135F32> _trackImageId1;
-    static loco_global<uint32_t, 0x001135F36> _trackImageId2;
-    static loco_global<uint8_t, 0x00113605E> _trackTunnel;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
     namespace Style0
@@ -277,21 +273,17 @@ namespace OpenLoco::Paint
 
         session.setItemType(Ui::ViewportInteraction::InteractionItem::track);
         const auto* trackObj = ObjectManager::get<TrackObject>(elTrack.trackObjectId());
-        _trackBaseImageId = trackObj->image;
-        _trackTunnel = trackObj->tunnel;
 
-        _trackImageId1 = Gfx::recolour(0, CompanyManager::getCompanyColour(elTrack.owner()));
-        _trackImageId2 = _trackImageId1;
+        // This is an ImageId but it has no image index set!
+        auto baseTrackImageColour = ImageId(0, CompanyManager::getCompanyColour(elTrack.owner()));
 
         if (elTrack.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            _trackImageId1 = Gfx::applyGhostToImage(_trackImageId1).toUInt32();
-            _trackImageId2 = Gfx::applyGhostToImage(_trackImageId2).toUInt32();
+            baseTrackImageColour = Gfx::applyGhostToImage(0);
         }
 
-        _trackBaseImageId |= _trackImageId1;
-        TrackPaintCommon trackSession{ ImageId::fromUInt32(_trackBaseImageId), ImageId::fromUInt32(_trackImageId2), _trackTunnel };
+        TrackPaintCommon trackSession{ baseTrackImageColour.withIndex(trackObj->image), baseTrackImageColour, trackObj->tunnel };
 
         if (!(*_byte_522095 & (1 << 0)))
         {
@@ -318,19 +310,19 @@ namespace OpenLoco::Paint
         for (auto mod = 0; mod < 4; ++mod)
         {
             const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
+            ImageId trackExtraBaseImage{};
             if (elTrack.hasMod(mod))
             {
-                _trackExtraImageId = _trackImageId1 + trackExtraObj->image;
+                trackExtraBaseImage = baseTrackImageColour.withIndex(trackExtraObj->image);
             }
             else if (elTrack.hasGhostMods() && ghostMods & (1 << mod))
             {
-                _trackExtraImageId = Gfx::applyGhostToImage(trackExtraObj->image).toUInt32();
+                trackExtraBaseImage = Gfx::applyGhostToImage(trackExtraObj->image);
             }
             else
             {
                 continue;
             }
-            const auto trackExtraBaseImage = ImageId::fromUInt32(_trackExtraImageId);
 
             session.setTrackModId(mod);
 

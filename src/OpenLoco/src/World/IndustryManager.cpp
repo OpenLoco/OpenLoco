@@ -85,7 +85,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453234
     void update()
     {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             GameCommands::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
@@ -109,7 +109,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x0047EA42
-    size_t getMostCommonBuildingCargoType()
+    uint8_t getMostCommonBuildingCargoType()
     {
         // First generate a count of all the different cargo based on what building could generate
         std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)> cargoCounts{};
@@ -134,7 +134,7 @@ namespace OpenLoco::IndustryManager
         }
 
         // If none are common pick any valid cargo object
-        for (size_t cargoObjId = 0; cargoObjId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoObjId)
+        for (uint8_t cargoObjId = 0; cargoObjId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoObjId)
         {
             const auto* cargoObj = ObjectManager::get<CargoObject>(cargoObjId);
             if (cargoObj == nullptr)
@@ -590,17 +590,17 @@ namespace OpenLoco::IndustryManager
             industry->numTiles = 0;
             industry->under_construction = 0;
             industry->tileLoop = World::TileLoop{};
-            industry->var_DB = 0;
-            industry->var_DD = 0;
-            industry->var_DF = 25;
+            industry->numFarmTiles = 0;
+            industry->numIdleFarmTiles = 0;
+            industry->productionRate = 25;
             industry->foundingYear = getCurrentYear();
-            industry->var_E1 = {};
+            industry->stationsInRange = {};
             for (auto& stats : industry->producedCargoStatsStation)
             {
                 std::fill(std::begin(stats), std::end(stats), StationId::null);
             }
-            std::fill(std::begin(industry->var_17D), std::end(industry->var_17D), 0);
-            std::fill(std::begin(industry->var_181), std::end(industry->var_181), 0);
+            std::fill(std::begin(industry->dailyProduction), std::end(industry->dailyProduction), 0);
+            std::fill(std::begin(industry->outputBuffer), std::end(industry->outputBuffer), 0);
             std::fill(std::begin(industry->producedCargoQuantityMonthlyTotal), std::end(industry->producedCargoQuantityMonthlyTotal), 0);
             std::fill(std::begin(industry->producedCargoQuantityPreviousMonth), std::end(industry->producedCargoQuantityPreviousMonth), 0);
             std::fill(std::begin(industry->receivedCargoQuantityMonthlyTotal), std::end(industry->receivedCargoQuantityMonthlyTotal), 0);

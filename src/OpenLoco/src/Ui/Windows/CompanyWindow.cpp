@@ -33,12 +33,17 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/CheckboxWidget.h"
+#include "Ui/Widgets/ColourButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
@@ -68,13 +73,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             company_select,
         };
 
-        constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_status) | (1 << widx::tab_details) | (1 << widx::tab_colour_scheme) | (1 << widx::tab_finances) | (1 << widx::tab_cargo_delivered) | (1 << widx::tab_challenge);
-
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),
+                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),
@@ -99,13 +102,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00431E9B
         static void enableRenameByCaption(Window* self)
         {
-            if (isEditorMode() || CompanyId(self->number) == CompanyManager::getControllingId())
+            if (SceneManager::isEditorMode() || CompanyId(self->number) == CompanyManager::getControllingId())
             {
-                self->enabledWidgets |= (1 << caption);
+                self->disabledWidgets &= ~(1ULL << caption);
             }
             else
             {
-                self->enabledWidgets &= ~(1 << caption);
+                self->disabledWidgets |= (1ULL << caption);
             }
         }
 
@@ -134,15 +137,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(270, 182, StringIds::title_company),
-            Widgets::Label({ 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::Center),
-            makeWidget({ 3, 44 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
+            Widgets::Label({ 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::center),
+            Widgets::Viewport({ 3, 44 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
+            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
             Widgets::ImageButton({ 178, 57 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull),
             Widgets::ImageButton({ 154, 124 }, { 112, 22 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name)
 
         );
-
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
 
         // 0x00431EBB
         static void prepareDraw(Window& self)
@@ -163,7 +164,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             // No changing other player's faces, unless we're editing a scenario.
-            if (CompanyId(self.number) != CompanyManager::getControllingId() && !isEditorMode())
+            if (CompanyId(self.number) != CompanyManager::getControllingId() && !SceneManager::isEditorMode())
             {
                 self.disabledWidgets |= (1 << widx::face);
             }
@@ -195,14 +196,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
-            if (CompanyId(self.number) == CompanyManager::getControllingId())
-            {
-                self.widgets[widx::change_owner_name].type = WidgetType::buttonWithImage;
-            }
-            else
-            {
-                self.widgets[widx::change_owner_name].type = WidgetType::none;
-            }
+            self.widgets[widx::change_owner_name].hidden = CompanyId(self.number) != CompanyManager::getControllingId();
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
@@ -288,7 +282,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432244
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -327,7 +321,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432283
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -336,7 +330,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043228E
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -399,7 +393,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x004322F6
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -625,7 +619,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->savedView.clear();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::secondary, skin->colour_0A);
+        window->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
         window->flags |= WindowFlags::resizable;
 
@@ -656,7 +650,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->invalidate();
 
         window->setWidgets(Status::widgets);
-        window->enabledWidgets = Status::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Status::getEvents();
         window->activatedWidgets = 0;
@@ -677,7 +670,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // Allow setting company owner name if no preferred owner name has been set.
         if (!Config::get().usePreferredOwnerName)
         {
-            Status::onMouseUp(*self, Status::widx::change_owner_name);
+            Status::onMouseUp(*self, Status::widx::change_owner_name, WidgetId::none);
         }
 
         return self;
@@ -704,13 +697,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(340, 194, StringIds::title_company_details),
-            makeWidget({ 219, 54 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
+            Widgets::Viewport({ 219, 54 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
             Widgets::ImageButton({ 315, 92 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this)
+            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
-
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
 
         // 0x004327CF
         static void prepareDraw(Window& self)
@@ -750,14 +741,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
-            if (CompanyId(self.number) == CompanyManager::getControllingId())
-            {
-                self.widgets[widx::build_hq].type = WidgetType::buttonWithImage;
-            }
-            else
-            {
-                self.widgets[widx::build_hq].type = WidgetType::none;
-            }
+            self.widgets[widx::build_hq].hidden = CompanyId(self.number) != CompanyManager::getControllingId();
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
@@ -899,7 +883,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432BDD
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -927,7 +911,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C08
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -943,7 +927,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C19
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -962,7 +946,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C24
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -1032,7 +1016,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 z += 16;
             }
             args.pos = World::Pos3(pos->x, pos->y, z);
-            if (isEditorMode())
+            if (SceneManager::isEditorMode())
             {
                 args.buildImmediately = true; // bh
             }
@@ -1040,7 +1024,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432CA1
-        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
@@ -1079,7 +1063,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.dx = widgetIndex;
         // regs.ax = mouseX;
         // regs.bx = mouseY;
-        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t mouseX, const int16_t mouseY)
+        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t mouseX, const int16_t mouseY)
         {
             removeHeadquarterGhost();
 
@@ -1099,7 +1083,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432D7A
-        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             removeHeadquarterGhost();
             Ui::Windows::Main::hideGridlines();
@@ -1332,32 +1316,30 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Widgets::Checkbox({ 15, 200 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_trucks, StringIds::tooltip_toggle_vehicle_colour_scheme),
             Widgets::Checkbox({ 15, 217 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_aircraft, StringIds::tooltip_toggle_vehicle_colour_scheme),
             Widgets::Checkbox({ 15, 234 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_ships, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 221, 48 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 78 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 95 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 112 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 129 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 146 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 163 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 180 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 197 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 214 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 221, 231 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            makeWidget({ 239, 48 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 78 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 95 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 112 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 129 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 146 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 163 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 180 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 197 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 214 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            makeWidget({ 239, 231 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour)
+            Widgets::ColourButton({ 221, 48 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 78 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 95 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 112 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 129 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 146 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 163 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 180 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 197 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 214 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 221, 231 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton({ 239, 48 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 78 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 95 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 112 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 129 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 146 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 163 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 180 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 197 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 214 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton({ 239, 231 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour)
 
         );
-
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | allMainColours | allSecondaryColours | allColourChecks;
 
         // 0x00432E0F
         static void prepareDraw(Window& self)
@@ -1424,25 +1406,25 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     self.widgets[tuples[i].primary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].primary);
                     self.widgets[tuples[i].secondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].secondary);
 
-                    self.widgets[tuples[i].primary].type = WidgetType::buttonWithColour;
-                    self.widgets[tuples[i].secondary].type = WidgetType::buttonWithColour;
+                    self.widgets[tuples[i].primary].hidden = false;
+                    self.widgets[tuples[i].secondary].hidden = false;
                 }
                 else
                 {
                     self.activatedWidgets &= ~(1ULL << tuples[i].checkbox);
 
-                    self.widgets[tuples[i].primary].type = WidgetType::none;
-                    self.widgets[tuples[i].secondary].type = WidgetType::none;
+                    self.widgets[tuples[i].primary].hidden = true;
+                    self.widgets[tuples[i].secondary].hidden = true;
                 }
             }
 
             if (CompanyId(self.number) == CompanyManager::getControllingId())
             {
-                self.enabledWidgets |= allColourChecks | allMainColours | allSecondaryColours;
+                self.disabledWidgets &= ~(allColourChecks | allMainColours | allSecondaryColours);
             }
             else
             {
-                self.enabledWidgets &= ~(allColourChecks | allMainColours | allSecondaryColours);
+                self.disabledWidgets |= (allColourChecks | allMainColours | allSecondaryColours);
             }
         }
 
@@ -1473,7 +1455,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433032
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1525,7 +1507,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433067
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -1594,7 +1576,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433092
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -1603,7 +1585,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043309D
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -1731,13 +1713,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(636, 319, StringIds::title_company_finances),
-            makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
-            makeStepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
+            Widgets::ScrollView({ 133, 45 }, { 499, 215 }, WindowColour::secondary, Scrollbars::horizontal),
+            Widgets::stepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
             Widgets::Checkbox({ 320, 264 }, { 204, 12 }, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
 
         );
-
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase) | (1 << widx::loan_autopay);
 
         const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase);
 
@@ -1774,13 +1754,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
-            if (company->id() == CompanyManager::getControllingId())
-            {
-                self.widgets[widx::currentLoan].type = WidgetType::textbox;
-                self.widgets[widx::loan_decrease].type = WidgetType::button;
-                self.widgets[widx::loan_increase].type = WidgetType::button;
-                self.widgets[widx::loan_autopay].type = WidgetType::checkbox;
+            const auto isControllingCompany = company->id() == CompanyManager::getControllingId();
+            self.widgets[widx::currentLoan].hidden = !isControllingCompany;
+            self.widgets[widx::loan_decrease].hidden = !isControllingCompany;
+            self.widgets[widx::loan_increase].hidden = !isControllingCompany;
+            self.widgets[widx::loan_autopay].hidden = !isControllingCompany;
 
+            if (isControllingCompany)
+            {
                 if ((company->challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none)
                 {
                     self.activatedWidgets |= (1ULL << Finances::widx::loan_autopay);
@@ -1789,13 +1770,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     self.activatedWidgets &= ~(1ULL << Finances::widx::loan_autopay);
                 }
-            }
-            else
-            {
-                self.widgets[widx::currentLoan].type = WidgetType::none;
-                self.widgets[widx::loan_decrease].type = WidgetType::none;
-                self.widgets[widx::loan_increase].type = WidgetType::none;
-                self.widgets[widx::loan_autopay].type = WidgetType::none;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
@@ -2055,7 +2029,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433819
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -2091,7 +2065,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043383E
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -2128,7 +2102,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043385D
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -2162,7 +2136,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433868
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -2180,7 +2154,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433887
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_list);
@@ -2246,7 +2220,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->invalidate();
 
         window->setWidgets(Finances::widgets);
-        window->enabledWidgets = Finances::enabledWidgets;
         window->holdableWidgets = Finances::holdableWidgets;
         window->eventHandlers = &Finances::getEvents();
         window->activatedWidgets = 0;
@@ -2267,8 +2240,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::makeCommonWidgets(240, 382, StringIds::title_company_cargo_delivered)
 
         );
-
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select);
 
         // 0x00433A22
         static void prepareDraw(Window& self)
@@ -2350,7 +2321,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433BE6
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -2374,7 +2345,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C0B
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -2383,7 +2354,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C16
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -2392,7 +2363,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C21
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
             {
@@ -2457,8 +2428,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         );
 
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets;
-
         // 0x00433D39
         static void prepareDraw(Window& self)
         {
@@ -2482,7 +2451,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.widgets[Common::widx::company_select].right = self.width - 3;
             self.widgets[Common::widx::company_select].left = self.width - 28;
-            self.widgets[Common::widx::company_select].type = WidgetType::none;
+            self.widgets[Common::widx::company_select].hidden = true;
 
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
         }
@@ -2575,7 +2544,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433FFE
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
@@ -2599,7 +2568,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00434023
-        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -2660,7 +2629,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->invalidate();
 
         window->setWidgets(Challenge::widgets);
-        window->enabledWidgets = Challenge::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Challenge::getEvents();
         window->activatedWidgets = 0;
@@ -2679,18 +2647,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const uint64_t* enabledWidgets;
             const Ui::Size32* kWindowSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Status::widgets,         widx::tab_status,          Status::getEvents(),         &Status::enabledWidgets,         &Status::kWindowSize },
-            { Details::widgets,        widx::tab_details,         Details::getEvents(),        &Details::enabledWidgets,        &Details::kWindowSize },
-            { ColourScheme::widgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   &ColourScheme::enabledWidgets,   &ColourScheme::kWindowSize },
-            { Finances::widgets,       widx::tab_finances,        Finances::getEvents(),       &Finances::enabledWidgets,       &Finances::kWindowSize },
-            { CargoDelivered::widgets, widx::tab_cargo_delivered, CargoDelivered::getEvents(), &CargoDelivered::enabledWidgets, &CargoDelivered::kWindowSize },
-            { Challenge::widgets,      widx::tab_challenge,       Challenge::getEvents(),      &Challenge::enabledWidgets,      &Challenge::kWindowSize }
+            { Status::widgets,         widx::tab_status,          Status::getEvents(),         &Status::kWindowSize },
+            { Details::widgets,        widx::tab_details,         Details::getEvents(),        &Details::kWindowSize },
+            { ColourScheme::widgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   &ColourScheme::kWindowSize },
+            { Finances::widgets,       widx::tab_finances,        Finances::getEvents(),       &Finances::kWindowSize },
+            { CargoDelivered::widgets, widx::tab_cargo_delivered, CargoDelivered::getEvents(), &CargoDelivered::kWindowSize },
+            { Challenge::widgets,      widx::tab_challenge,       Challenge::getEvents(),      &Challenge::kWindowSize }
         };
         // clang-format on
 
@@ -2773,7 +2740,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto tabIndex = widgetIndex - widx::tab_status;
             auto tabInfo = tabInformationByTabOffset[tabIndex];
 
-            self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;

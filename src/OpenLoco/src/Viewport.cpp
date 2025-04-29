@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -239,7 +240,7 @@ namespace OpenLoco::Ui
                 sess.drawStructs(drawingCtx);
                 // Climate code used to draw here.
 
-                if (!isTitleMode())
+                if (!SceneManager::isTitleMode())
                 {
                     if (!options.hasFlags(ViewportFlags::station_names_displayed))
                     {

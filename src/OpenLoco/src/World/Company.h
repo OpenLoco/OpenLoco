@@ -1,8 +1,9 @@
 #pragma once
 
-#include "CompanyAi.h"
+#include "CompanyAi/CompanyAi.h"
 #include "Economy/Currency.h"
 #include "Economy/Expenditures.h"
+#include "Engine/Limits.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -10,6 +11,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <sfl/static_vector.hpp>
 #include <vector>
 
 namespace OpenLoco
@@ -30,6 +32,21 @@ namespace OpenLoco
         autopayLoan = (1U << 31),              // 0x80000000 new for OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(CompanyFlags);
+
+    enum class AiPlaystyleFlags : uint32_t
+    {
+        none = 0U,
+        unk0 = (1U << 0),      // 0x01
+        unk1 = (1U << 1),      // 0x02
+        unk2 = (1U << 2),      // 0x04
+        unk3 = (1U << 3),      // 0x08
+        noAir = (1U << 4),     // 0x10
+        noWater = (1U << 5),   // 0x20
+        unk6 = (1U << 6),      // 0x40
+        unk7 = (1U << 7),      // 0x80
+        townIdSet = (1U << 8), // 0x100
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(AiPlaystyleFlags);
 
     enum class CorporateRating : uint8_t
     {
@@ -136,19 +153,20 @@ namespace OpenLoco
 
         StringId name;
         StringId ownerName;
-        CompanyFlags challengeFlags;      // 0x04
-        currency48_t cash;                // 0x08
-        currency32_t currentLoan;         // 0x0E
-        uint32_t updateCounter;           // 0x12
-        int16_t performanceIndex;         // 0x16
-        uint8_t competitorId;             // 0x18
-        Emotion ownerEmotion;             // 0x19
-        ColourScheme mainColours;         // 0x1A
-        ColourScheme vehicleColours[10];  // 0x1C
-        uint32_t customVehicleColoursSet; // 0x30
-        BitSet<224> unlockedVehicles;     // 0x34
-        uint16_t availableVehicles;       // 0x50
-        uint8_t pad_52[0x57 - 0x52];
+        CompanyFlags challengeFlags;                                                    // 0x04
+        currency48_t cash;                                                              // 0x08
+        currency32_t currentLoan;                                                       // 0x0E
+        uint32_t updateCounter;                                                         // 0x12
+        int16_t performanceIndex;                                                       // 0x16
+        uint8_t competitorId;                                                           // 0x18
+        Emotion ownerEmotion;                                                           // 0x19
+        ColourScheme mainColours;                                                       // 0x1A
+        ColourScheme vehicleColours[10];                                                // 0x1C
+        uint32_t customVehicleColoursSet;                                               // 0x30
+        BitSet<224> unlockedVehicles;                                                   // 0x34
+        uint16_t availableVehicles;                                                     // 0x50
+        AiPlaystyleFlags aiPlaystyleFlags;                                              // 0x52
+        uint8_t aiPlaystyleTownId;                                                      // 0x56
         uint8_t numExpenditureYears;                                                    // 0x57
         currency32_t expenditures[kExpenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
         uint32_t startedDate;                                                           // 0x0498
@@ -156,16 +174,28 @@ namespace OpenLoco
         uint32_t var_4A0;
         AiThinkState var_4A4; // 0x04A4
         uint8_t var_4A5;
-        uint8_t var_4A6;
+        AiPlaceVehicleState var_4A6;
         uint8_t var_4A7;
         AiThought aiThoughts[kMaxAiThoughts]; // 0x04A8
         uint8_t activeThoughtId;              // 0x2578
         World::SmallZ headquartersZ;          // 0x2579
         coord_t headquartersX;                // 0x257A -1 on no headquarter placed
         coord_t headquartersY;                // 0x257C
-        uint8_t pad_257E[0x259E - 0x257E];
-        uint32_t var_259E;
-        uint8_t pad_25A2[0x25BF - 0x25A2];
+        union
+        {
+            currency32_t activeThoughtRevenueEstimate; // 0x257E Also used for thoughtState2AiStationIdx in sub_430CEC TODO: Don't do this
+            uint32_t thoughtState2AiStationIdx;        // 0x257E Also used mostly for activeThoughtRevenueEstimate TODO: Don't do this
+        };
+        uint32_t var_2582;
+        uint8_t pad_2586[0x2596 - 0x2586];
+        uint32_t var_2596;
+        uint8_t var_259A;
+        uint8_t var_259B;
+        uint8_t var_259C;
+        uint8_t pad_259D;
+        uint32_t aiPlaceVehicleIndex;
+        uint8_t pad_25A2[0x25BE - 0x25A2];
+        AiThoughtType var_25BE;
         CorporateRating currentRating;          // 0x25BF
         Unk25C0HashTableEntry var_25C0[0x1000]; // 0x25C0 Hash table entries
         uint16_t var_25C0_length;               // 0x85C0 Hash table length
@@ -191,7 +221,7 @@ namespace OpenLoco
         uint8_t var_85EE;
         uint8_t var_85EF;
         uint16_t var_85F0;
-        uint8_t pad_85F2[0x85F6 - 0x85F2];
+        currency32_t var_85F2;
         uint16_t var_85F6;
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
@@ -235,8 +265,6 @@ namespace OpenLoco
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
-        std::vector<uint8_t> getAvailableRailTracks() const;
-        std::vector<uint8_t> getAvailableRoads() const;
         uint8_t getHeadquarterPerformanceVariation() const;
 
     private:
@@ -259,5 +287,20 @@ namespace OpenLoco
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
     void companyEmotionEvent(CompanyId companyId, Emotion emotion);
     void companySetObservation(CompanyId id, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object);
+
+    // This is kMaxRoadObjects + kMaxTrackObjects as tram tracks are roads but are tracks
+    // and vice versa there was capabilities for some unknown track type to be classed as a road
+    using AvailableTracksAndRoads = sfl::static_vector<uint8_t, Limits::kMaxRoadObjects + Limits::kMaxTrackObjects>;
+
+    AvailableTracksAndRoads companyGetAvailableRailTracks(const CompanyId id);
+    AvailableTracksAndRoads companyGetAvailableRoads(const CompanyId id);
     void updateYearly(Company& company);
+    struct ProfitAndValue
+    {
+        currency48_t vehicleProfit;
+        currency48_t companyValue;
+    };
+
+    // 0x00437D79
+    ProfitAndValue calculateCompanyValue(const Company& company);
 }

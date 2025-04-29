@@ -10,6 +10,7 @@
 #include "Objects/ObjectManager.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
@@ -39,7 +40,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     // 0x005234CC
     static constexpr auto _widgets = makeWidgets(
-        makeWidget({ 0, 0 }, { 200, 32 }, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, { 200, 32 }, WindowColour::primary)
 
     );
 
@@ -67,18 +68,13 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
         StringManager::formatString(_text, stringId, args);
 
-        tr.setCurrentFont(Gfx::Font::medium_bold);
-        int16_t strWidth = tr.getStringWidthNewLined(_text);
+        const auto font = Gfx::Font::medium_bold;
+        int16_t strWidth = Gfx::TextRenderer::getStringWidthNewLined(font, _text);
         strWidth = std::min<int16_t>(strWidth, 196);
 
-        tr.setCurrentFont(Gfx::Font::medium_bold);
-
-        auto [wrappedWidth, breakCount] = tr.wrapString(_text, strWidth + 1);
+        auto [wrappedWidth, breakCount] = Gfx::TextRenderer::wrapString(font, _text, strWidth + 1);
         _lineBreakCount = breakCount;
 
         int width = wrappedWidth + 3;
@@ -129,7 +125,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         _tooltipWindowNumber = window->number;
         _tooltipWidgetIndex = widgetIndex;
 
-        auto toolArgs = window->callTooltip(widgetIndex);
+        auto toolArgs = window->callTooltip(widgetIndex, window->widgets[widgetIndex].id);
         if (!toolArgs)
         {
             return;
@@ -155,7 +151,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         _tooltipWindowNumber = window->number;
         _tooltipWidgetIndex = widgetIndex;
 
-        auto toolArgs = window->callTooltip(widgetIndex);
+        auto toolArgs = window->callTooltip(widgetIndex, window->widgets[widgetIndex].id);
         if (!toolArgs)
         {
             return;

@@ -7,29 +7,32 @@
 
 #include <algorithm>
 #include <fstream>
+#include <ranges>
 
 namespace OpenLoco::Localisation
 {
-    std::vector<LanguageDescriptor> languageDescriptors;
+    static std::vector<LanguageDescriptor> _languageDescriptors;
 
     void enumerateLanguages()
     {
         // (Re-)initialise the languages table.
-        languageDescriptors.clear();
+        _languageDescriptors.clear();
         LanguageDescriptor undefinedLanguage = { "", "", "", LocoLanguageId::english_uk };
-        languageDescriptors.emplace_back(undefinedLanguage);
+        _languageDescriptors.emplace_back(undefinedLanguage);
 
         // Search the languages dir for YAML language files.
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
         for (auto& entry : fs::directory_iterator(languageDir))
         {
-            auto filename = entry.path().string();
-            if (filename.substr(filename.size() - 4, 4) != ".yml")
+            const auto filePath = entry.path();
+
+            const auto fileExt = filePath.extension();
+            if (fileExt != ".yml")
             {
                 continue;
             }
 
-            std::fstream stream(entry.path());
+            std::fstream stream(filePath);
             if (!stream.is_open())
             {
                 continue;
@@ -58,30 +61,26 @@ namespace OpenLoco::Localisation
             language.locoOriginalId = (LocoLanguageId)header["loco_original_id"].as<size_t>();
 
             // Store it in the languages map.
-            languageDescriptors.emplace_back(language);
+            _languageDescriptors.emplace_back(language);
         }
 
         // Sort by native name.
-        std::sort(languageDescriptors.begin(), languageDescriptors.end(), [](const LanguageDescriptor& a, const LanguageDescriptor& b) -> bool {
-            return a.nativeName < b.nativeName;
-        });
+        std::ranges::sort(_languageDescriptors, {}, &LanguageDescriptor::nativeName);
     }
 
-    std::vector<LanguageDescriptor>& getLanguageDescriptors()
+    std::span<const LanguageDescriptor> getLanguageDescriptors()
     {
-        return languageDescriptors;
+        return _languageDescriptors;
     }
 
     const LanguageDescriptor& getDescriptorForLanguage(std::string_view target_locale)
     {
-        for (auto& ld : languageDescriptors)
+        const auto it = std::ranges::find(_languageDescriptors, target_locale, &LanguageDescriptor::locale);
+        if (it != _languageDescriptors.end())
         {
-            if (ld.locale == target_locale)
-            {
-                return ld;
-            }
+            return *it;
         }
 
-        return languageDescriptors[0];
+        return _languageDescriptors[0];
     }
 }

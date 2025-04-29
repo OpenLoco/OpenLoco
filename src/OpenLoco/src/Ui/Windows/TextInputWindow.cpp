@@ -1,5 +1,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -11,6 +12,7 @@
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -51,7 +53,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 330, 90 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 328, 13 }, WidgetType::caption_25, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { 328, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary),
         Widgets::ImageButton({ 315, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 330, 75 }, WindowColour::secondary),
         Widgets::TextBox({ 4, 58 }, { 322, 14 }, WindowColour::secondary),
@@ -118,8 +120,6 @@ namespace OpenLoco::Ui::Windows::TextInput
             WindowFlags::stickToFront | WindowFlags::flag_12,
             getEvents());
         window->setWidgets(_widgets);
-        window->enabledWidgets |= 1ULL << Widx::close;
-        window->enabledWidgets |= 1ULL << Widx::ok;
         window->initScrollWidgets();
 
         memcpy(_formatArgs, _commonFormatArgs, 16);
@@ -141,23 +141,24 @@ namespace OpenLoco::Ui::Windows::TextInput
         if (caller->type == WindowType::titleMenu)
         {
             const InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::primary, interface->colour_0B);
-            window->setColour(WindowColour::secondary, interface->colour_0C);
+            window->setColour(WindowColour::primary, interface->windowTitlebarColour);
+            window->setColour(WindowColour::secondary, interface->windowColour);
             window->owner = CompanyId::null;
         }
 
         if (caller->type == WindowType::timeToolbar)
         {
             const InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, interface->colour_0A);
+            window->setColour(WindowColour::secondary, interface->windowPlayerColor);
             window->owner = CompanyManager::getControllingId();
         }
 
-        window->widgets[Widx::title].type = WidgetType::caption_25;
+        // TODO: Get the correct type and provide getter/setter.
+        window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::whiteText);
         if (window->owner != CompanyId::null)
         {
             window->flags |= WindowFlags::flag_11;
-            window->widgets[Widx::title].type = WidgetType::caption_24;
+            window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::colourText);
         }
 
         // Focus the textbox element
@@ -291,7 +292,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE8B6
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -303,7 +304,7 @@ namespace OpenLoco::Ui::Windows::TextInput
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
-                    caller->callTextInput(_callingWidget, inputSession.buffer.c_str());
+                    caller->callTextInput(_callingWidget, caller->widgets[_callingWidget].id, inputSession.buffer.c_str());
                 }
                 WindowManager::close(&window);
                 break;
@@ -325,12 +326,12 @@ namespace OpenLoco::Ui::Windows::TextInput
     {
         if (charCode == SDLK_RETURN)
         {
-            w.callOnMouseUp(Widx::ok);
+            w.callOnMouseUp(Widx::ok, w.widgets[Widx::ok].id);
             return true;
         }
         else if (charCode == SDLK_ESCAPE)
         {
-            w.callOnMouseUp(Widx::close);
+            w.callOnMouseUp(Widx::close, w.widgets[Widx::close].id);
             return true;
         }
         else if (!Input::isFocused(w.type, w.number, Widx::input) || !inputSession.handleInput(charCode, keyCode))

@@ -5,7 +5,7 @@
 #include "GameState.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Ui/Screenshot.h"
 #include "Ui/TextInput.h"
@@ -56,7 +56,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF0E6
     static void pauseUnpauseGame()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -292,7 +292,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF1C6
     static void adjustLand()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -303,7 +303,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF1E1
     static void adjustWater()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -314,7 +314,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF1FC
     static void plantTrees()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -325,7 +325,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF217
     static void bulldozeArea()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -336,7 +336,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF232
     static void buildTracks()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -352,7 +352,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF24F
     static void buildRoads()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -368,7 +368,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF276
     static void buildAirports()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -384,7 +384,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF295
     static void buildShipPorts()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -400,23 +400,24 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF2B4
     static void buildNewVehicles()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
 
-        if (getGameState().lastBuildVehiclesOption == 0xFF)
+        // This can't ever happen as nothing sets it to 0xFFU
+        if (enumValue(getGameState().lastBuildVehiclesOption) == 0xFF)
         {
             return;
         }
 
-        Windows::BuildVehicle::open(getGameState().lastBuildVehiclesOption, 1U << 31);
+        Windows::BuildVehicle::open(enumValue(getGameState().lastBuildVehiclesOption), 1U << 31);
     }
 
     // 0x004BF2D1
     static void showVehiclesList()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -427,7 +428,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF2F0
     static void showStationsList()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -438,7 +439,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF308
     static void showTownsList()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -449,7 +450,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF323
     static void showIndustriesList()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -460,7 +461,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF33E
     static void showMap()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+        if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             return;
         }
@@ -471,7 +472,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF359
     static void showCompaniesList()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -482,7 +483,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF36A
     static void showCompanyInformation()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -493,7 +494,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF382
     static void showFinances()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -504,7 +505,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF39A
     static void showAnnouncementsList()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -526,7 +527,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF3B3
     static void toggleLastAnnouncement()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
@@ -545,17 +546,17 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF3DC
     static void sendMessage()
     {
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             return;
         }
 
-        if (!isNetworked())
+        if (!SceneManager::isNetworked())
         {
             return;
         }
 
-        if (isTitleMode())
+        if (SceneManager::isTitleMode())
         {
             auto* caller = WindowManager::find(WindowType::titleMenu);
             if (caller == nullptr)

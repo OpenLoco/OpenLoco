@@ -17,53 +17,55 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        auto colour = widgetState.colour;
-        colour = colour.opaque();
+        auto colour = widgetState.colour.opaque();
         if (widgetState.disabled)
         {
             colour = colour.inset();
         }
 
         auto* window = widgetState.window;
+        const auto position = window->position() + widget.position();
+        const auto size = widget.size();
 
         auto formatArgs = FormatArguments(widget.textArgs);
         auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.setCurrentFont(widget.font);
 
-        const int16_t x = [&]() {
-            if (widget.contentAlign == ContentAlign::Left)
+        const auto x = [&]() -> int16_t {
+            if (widget.contentAlign == ContentAlign::left)
             {
-                return window->x + widget.left;
+                return position.x;
             }
-            else if (widget.contentAlign == ContentAlign::Center)
+            else if (widget.contentAlign == ContentAlign::center)
             {
-                return window->x + (widget.left + widget.right + 1) / 2 - 1;
+                return position.x + (size.width - 1) / 2;
             }
-            else if (widget.contentAlign == ContentAlign::Right)
+            else if (widget.contentAlign == ContentAlign::right)
             {
-                // TODO: This is not ideal, add drawStringRightClipped to TextRenderer.
                 char buffer[512]{};
                 StringManager::formatString(buffer, std::size(buffer), widget.text, formatArgs);
-
                 const auto stringWidth = tr.getStringWidthNewLined(buffer);
-
-                return window->x + widget.left + (widget.width() - stringWidth) - 1;
+                return position.x + size.width - stringWidth - 1;
             }
             assert(false);
-            return 0;
+            return {};
         }();
 
-        int16_t y = window->y + std::max<int16_t>(widget.top, (widget.top + widget.bottom) / 2 - 5);
-        int16_t width = widget.right - widget.left - 2;
+        const auto fontHeight = tr.getLineHeight(tr.getCurrentFont());
+        // NOTE: -1 is an ugly hack for buttons with inset border, remove that when all buttons have consistent height.
+        const int16_t yOffset = std::max<int16_t>(0, (size.height - fontHeight) / 2 - 1);
+        const int16_t y = position.y + yOffset;
+        const int16_t width = size.width - 2;
 
-        if (widget.contentAlign == ContentAlign::Left)
+        if (widget.contentAlign == ContentAlign::left)
         {
             tr.drawStringLeftClipped(Point(x, y), width, colour, widget.text, formatArgs);
         }
-        else if (widget.contentAlign == ContentAlign::Center)
+        else if (widget.contentAlign == ContentAlign::center)
         {
             tr.drawStringCentredClipped(Point(x, y), width, colour, widget.text, formatArgs);
         }
-        else if (widget.contentAlign == ContentAlign::Right)
+        else if (widget.contentAlign == ContentAlign::right)
         {
             tr.drawStringLeftClipped(Point(x, y), width, colour, widget.text, formatArgs);
         }

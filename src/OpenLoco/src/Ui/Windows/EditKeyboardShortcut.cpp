@@ -9,6 +9,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -27,7 +28,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::change_keyboard_shortcut),
+        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::change_keyboard_shortcut),
         Widgets::ImageButton({ 265, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 57 }, WindowColour::secondary));
 
@@ -53,12 +54,11 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, getEvents());
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = 1 << Widx::close;
         window->initScrollWidgets();
 
         const auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, skin->colour_0B);
-        window->setColour(WindowColour::secondary, skin->colour_10);
+        window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, skin->windowOptionsColour);
 
         return window;
     }
@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     }
 
     // 0x004BE821
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {

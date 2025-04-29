@@ -7,6 +7,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
+#include "Ui/Widgets/NewsPanelWidget.h"
 #include "World/CompanyManager.h"
 
 namespace OpenLoco::Ui::Windows::NewsWindow
@@ -19,7 +20,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         int16_t y = Ui::height() - _nState.slideInHeight;
 
-        if (getGameSpeed() != GameSpeed::Normal || isOld)
+        if (SceneManager::getGameSpeed() != GameSpeed::Normal || isOld)
         {
             y = Ui::height() - kWindowSize.height;
             _nState.slideInHeight = kWindowSize.height;
@@ -32,18 +33,16 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             { x, y },
             kWindowSize,
             flags,
-            News1::getEvents());
+            Common::getEvents());
 
         window->setWidgets(widgets);
-        window->enabledWidgets = Common::enabledWidgets;
-
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, colour);
 
         _nState.savedView[0].clear();
         _nState.savedView[1].clear();
 
-        News1::initViewports(*window);
+        Common::initViewports(*window);
     }
 
     // 0x00428F8B
@@ -56,7 +55,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             return;
         }
 
-        if ((news->timeActive != 0) && (getScreenAge() >= 10))
+        if ((news->timeActive != 0) && (SceneManager::getSceneAge() >= 10))
         {
             isOld = true;
         }
@@ -106,12 +105,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     Ticker::getEvents());
 
                 window->setWidgets(Ticker::getWidgets());
-                window->enabledWidgets = Ticker::enabledWidgets;
-
                 window->initScrollWidgets();
 
                 auto skin = ObjectManager::get<InterfaceSkinObject>();
-                window->setColour(WindowColour::primary, AdvancedColour(skin->colour_0C).translucent());
+                window->setColour(WindowColour::primary, AdvancedColour(skin->windowColour).translucent());
 
                 window->var_852 = 0;
 
@@ -186,6 +183,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     void close(Window* self)
     {
         // Only affects the newspaper view; the ticker ignores this widget
-        self->callOnMouseUp(1);
+        self->callOnMouseUp(Common::close_button, self->widgets[Common::close_button].id);
     }
 }

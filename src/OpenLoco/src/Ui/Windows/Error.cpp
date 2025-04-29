@@ -13,6 +13,7 @@
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -30,6 +31,7 @@ namespace OpenLoco::Ui::Windows::Error
     static constexpr auto kMinWidth = 70;
     static constexpr auto kMaxWidth = 250;
     static constexpr auto kPadding = 4;
+    static constexpr auto kCompetitorSize = 64;
 
     namespace Common
     {
@@ -44,7 +46,7 @@ namespace OpenLoco::Ui::Windows::Error
         };
 
         static constexpr auto widgets = makeWidgets(
-            makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::panel, WindowColour::primary)
+            Widgets::Panel({ 0, 0 }, { 200, 42 }, WindowColour::primary)
 
         );
     }
@@ -59,7 +61,7 @@ namespace OpenLoco::Ui::Windows::Error
 
         static constexpr auto widgets = makeWidgets(
             Widgets::Panel({ 0, 0 }, { 250, 70 }, WindowColour::primary),
-            makeWidget({ 3, 3 }, { 64, 64 }, WidgetType::wt_3, WindowColour::secondary)
+            Widgets::Wt3Widget({ 3, 3 }, { 64, 64 }, WindowColour::secondary)
 
         );
     }
@@ -101,33 +103,31 @@ namespace OpenLoco::Ui::Windows::Error
 
         if (buffer != &_errorText[0])
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             // How wide is the error string?
-            tr.setCurrentFont(Gfx::Font::medium_bold);
-            uint16_t strWidth = tr.getStringWidthNewLined(&_errorText[0]);
+            uint16_t strWidth = Gfx::TextRenderer::getStringWidthNewLined(Gfx::Font::medium_bold, &_errorText[0]);
             strWidth = std::clamp<uint16_t>(strWidth, kMinWidth, kMaxWidth);
 
             // How many linebreaks?
             {
-                tr.setCurrentFont(Gfx::Font::medium_bold);
                 uint16_t breakLineCount = 0;
-                std::tie(strWidth, breakLineCount) = tr.wrapString(&_errorText[0], strWidth + kPadding);
+                std::tie(strWidth, breakLineCount) = Gfx::TextRenderer::wrapString(Gfx::Font::medium_bold, &_errorText[0], strWidth + kPadding);
                 _linebreakCount = breakLineCount;
             }
 
-            // Calculate frame size
+            // Calculate window dimensions
             uint16_t width = strWidth + 2 * kPadding;
             uint16_t height = (_linebreakCount + 1) * 10 + 2 * kPadding;
-            uint16_t frameWidth = width - 1;
-            uint16_t frameHeight = height - 1;
 
+            // Add extra spacing for competitor image
             if (_errorCompetitorId != CompanyId::null)
             {
-                width = kMaxWidth;
-                height = 70;
+                width += kCompetitorSize + 22;
+                height += kCompetitorSize - 22;
             }
+
+            // Calculate frame size
+            uint16_t frameWidth = width - 1;
+            uint16_t frameHeight = height - 1;
 
             // Position error message around the cursor
             auto mousePos = Input::getMouseLocation();
@@ -232,8 +232,8 @@ namespace OpenLoco::Ui::Windows::Error
             }
             else
             {
-                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left + self.x + kPadding;
-                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top + self.y + kPadding;
+                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left + self.x;
+                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top + self.y;
 
                 auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);
@@ -249,7 +249,7 @@ namespace OpenLoco::Ui::Windows::Error
                     drawingCtx.drawImage(xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                auto point = Point(self.x + 156, self.y + 20);
+                auto point = Point(self.x + (self.width - kCompetitorSize) / 2 + kCompetitorSize + kPadding, self.y + 20);
                 tr.drawStringCentredRaw(point, _linebreakCount, colour, &_errorText[0]);
             }
         }

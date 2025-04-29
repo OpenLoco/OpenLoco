@@ -2,6 +2,7 @@
 
 #include "Audio/Audio.h"
 #include "Entities/Entity.h"
+#include "Map/Track/TrackModSection.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
@@ -26,6 +27,16 @@ namespace OpenLoco::Vehicles
     constexpr auto kMaxRoadVehicleLength = 176;    // TODO: Units?
     constexpr uint8_t kWheelSlippingDuration = 64; // In ticks
 
+    enum class MotorState : uint8_t
+    {
+        stopped = 0,
+        accelerating = 1,
+        coasting = 2,
+        braking = 3,
+        stoppedOnIncline = 4,
+        airplaneAtTaxiSpeed = 5,
+    };
+
     enum class Flags38 : uint8_t
     {
         none = 0U,
@@ -34,7 +45,7 @@ namespace OpenLoco::Vehicles
         unk_2 = 1U << 2,
         unk_3 = 1U << 3,
         isGhost = 1U << 4,
-        unk_5 = 1U << 5,
+        fasterAroundCurves = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags38);
 
@@ -100,7 +111,7 @@ namespace OpenLoco::Vehicles
     struct VehicleBody;
     struct VehicleTail;
 
-    struct Vehicle2or6;
+    struct VehicleSoundPlayer;
 
     enum class BreakdownFlags : uint8_t
     {
@@ -202,8 +213,8 @@ namespace OpenLoco::Vehicles
         bool networkTooComplex;
         bool allPlacementsFailed;
     };
-    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
-    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
 
     void playPickupSound(Vehicles::Vehicle2* veh2);
     void playPlacedownSound(const World::Pos3 pos);
@@ -257,15 +268,15 @@ namespace OpenLoco::Vehicles
 
             return as<VehicleBody, VehicleEntityType::body_continued>();
         }
-        bool isVehicle2Or6() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
-        Vehicle2or6* asVehicle2Or6() const
+        bool hasSoundPlayer() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
+        VehicleSoundPlayer* getSoundPlayer() const
         {
             if (is<VehicleEntityType::vehicle_2>())
             {
-                return as<Vehicle2or6, VehicleEntityType::vehicle_2>();
+                return as<VehicleSoundPlayer, VehicleEntityType::vehicle_2>();
             }
 
-            return as<Vehicle2or6, VehicleEntityType::tail>();
+            return as<VehicleSoundPlayer, VehicleEntityType::tail>();
         }
         bool isVehicleTail() const { return is<VehicleEntityType::tail>(); }
         VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
@@ -278,17 +289,20 @@ namespace OpenLoco::Vehicles
         EntityId getHead() const;
         int32_t getRemainingDistance() const;
         void setNextCar(const EntityId newNextCar);
+        EntityId getNextCar() const;
         bool has38Flags(Flags38 flagsToTest) const;
         bool hasVehicleFlags(VehicleFlags flagsToTest) const;
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
+        VehicleBase* previousVehicleComponent();
         bool updateComponent();
+        void explodeComponent();
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
         int32_t updateTrackMotion(int32_t unk1);
     };
 
-    struct Vehicle2or6 : VehicleBase
+    struct VehicleSoundPlayer : VehicleBase
     {
         uint8_t pad_24[0x44 - 0x24];
         SoundObjectId_t drivingSoundId;       // 0x44
@@ -303,7 +317,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_5A[0x73 - 0x5A];
         uint8_t var_73;
     };
-    static_assert(sizeof(Vehicle2or6) == 0x74); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleSoundPlayer) == 0x74); // Can't use offset_of change this to last field if more found
 
     struct VehicleCargo
     {
@@ -351,10 +365,9 @@ namespace OpenLoco::Vehicles
         VehicleType vehicleType;           // 0x5E
         BreakdownFlags breakdownFlags;     // 0x5F
         uint8_t aiThoughtId;               // 0x60 0xFFU for null
-        int16_t var_61;                    // 0x61 unkAiX
-        int16_t var_63;                    // 0x61 unkAiY
-        uint16_t var_65;                   // 0x61 unkAiRotation
-        uint8_t var_67;                    // 0x61 unkAiBaseZ
+        World::Pos2 aiPlacementPos;        // 0x61
+        uint16_t aiPlacementTaD;           // 0x65 for air/water this is just rotation
+        uint8_t aiPlacementBaseZ;          // 0x67
         uint8_t airportMovementEdge;       // 0x68
         uint32_t totalRefundCost;          // 0x69
         uint8_t crashedTimeout;            // 0x6D
@@ -387,6 +400,8 @@ namespace OpenLoco::Vehicles
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void sub_4AF7A4();
+        void landCrashedUpdate();
+        void updateSegmentCrashed();
         uint32_t getVehicleTotalLength() const;
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -397,11 +412,11 @@ namespace OpenLoco::Vehicles
 
     private:
         void updateDrivingSounds();
-        void updateDrivingSound(Vehicle2or6* vehType2or6);
-        void updateDrivingSoundNone(Vehicle2or6* vehType2or6);
-        void updateDrivingSoundFriction(Vehicle2or6* vehType2or6, const VehicleObjectFrictionSound* snd);
-        void updateDrivingSoundEngine1(Vehicle2or6* vehType2or6, const VehicleObjectEngine1Sound* snd);
-        void updateDrivingSoundEngine2(Vehicle2or6* vehType2or6, const VehicleObjectEngine2Sound* snd);
+        void updateDrivingSound(VehicleSoundPlayer* soundPlayer);
+        void updateDrivingSoundNone(VehicleSoundPlayer* soundPlayer);
+        void updateDrivingSoundFriction(VehicleSoundPlayer* soundPlayer, const VehicleObjectFrictionSound* snd);
+        void updateSimpleMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleSimpleMotorSound* snd);
+        void updateGearboxMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleGearboxMotorSound* snd);
         bool updateLand();
         bool sub_4A8DB7();
         bool sub_4A8F22();
@@ -439,10 +454,8 @@ namespace OpenLoco::Vehicles
         void advanceToNextRoutableOrder();
         Status sub_427BF2();
         void produceLeavingDockSound();
-        std::tuple<StationId, World::Pos2, World::Pos3> sub_427FC9();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
-        void sub_4AA625();
         std::tuple<uint8_t, uint8_t, StationId> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
@@ -538,8 +551,8 @@ namespace OpenLoco::Vehicles
         uint16_t totalWeight; // 0x52
         Speed16 maxSpeed;     // 0x54
         Speed32 currentSpeed; // 0x56
-        uint8_t var_5A;
-        uint8_t var_5B;
+        MotorState motorState;
+        uint8_t brakeLightTimeout;
         Speed16 rackRailMaxSpeed;     // 0x5C
         currency32_t curMonthRevenue; // 0x5E monthly revenue
         currency32_t profit[4];       // 0x62 last 4 months net profit
@@ -578,20 +591,23 @@ namespace OpenLoco::Vehicles
         TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44;
-        uint8_t var_46;            // 0x46 roll/animation sprite index
-        uint8_t var_47;            // 0x47 cargo sprite index
+        uint8_t animationFrame;    // 0x46 roll/animation sprite index
+        uint8_t cargoFrame;        // 0x47 cargo sprite index
         VehicleCargo primaryCargo; // 0x48
         uint8_t pad_52[0x54 - 0x52];
         uint8_t bodyIndex; // 0x54
-        int8_t var_55;
+        int8_t chuffSoundIndex;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
-        uint8_t wheelSlipping; // 0x5E timeout that counts up
-        BreakdownFlags breakdownFlags;
+        uint8_t wheelSlipping;         // 0x5E timeout that counts up
+        BreakdownFlags breakdownFlags; // 0x5F
+        uint8_t pad_60[0x6A - 0x60];
+        uint8_t breakdownTimeout; // 0x6A (likely unused)
 
         const VehicleObject* getObject() const;
         bool update();
         void secondaryAnimationUpdate();
+        void updateSegmentCrashed();
         void sub_4AAB0B();
         void updateCargoSprite();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
@@ -611,8 +627,9 @@ namespace OpenLoco::Vehicles
         Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
         Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
     };
-    static_assert(sizeof(VehicleBody) == 0x60); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleBody) == 0x6B); // Can't use offset_of change this to last field if more found
 
+    uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw1FromVectorPlane(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw1FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw4FromVector(int16_t xOffset, int16_t yOffset);
@@ -658,6 +675,7 @@ namespace OpenLoco::Vehicles
     public:
         AirportObjectFlags getCompatibleAirportType();
         bool update();
+        void updateSegmentCrashed();
         bool isOnRackRail();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -665,6 +683,7 @@ namespace OpenLoco::Vehicles
         }
 
     private:
+        bool sub_4AA959(World::Pos3& pos);
         void updateRoll();
         void collision();
     };
@@ -953,5 +972,22 @@ namespace OpenLoco::Vehicles
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
     void removeAllCargo(CarComponent& carComponent);
 
+    /* flipCar
+     * Reverses a Car in-place and returns the new front bogie
+     * frontBogie: front bogie of the Car
+     * returns new front bogie of the Car
+     */
+    VehicleBogie* flipCar(VehicleBogie& frontBogie);
+
+    /* insertCarBefore
+     * Takes source vehicle out of its train and puts it in front of the destination vehicle in the destination train.
+     * Source and destination trains can be the same.
+     * source: front bogie of the Car to move
+     * dest: VehicleBogie or VehicleTail to place Car before
+     * returns nothing
+     */
+    void insertCarBefore(VehicleBogie& source, VehicleBase& dest);
     void registerHooks();
+
+    bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId);
 }

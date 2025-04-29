@@ -1,5 +1,6 @@
 #include "PaintStation.h"
 #include "Graphics/Colour.h"
+#include "Graphics/RenderTarget.h"
 #include "Map/StationElement.h"
 #include "Map/TrackElement.h"
 #include "Objects/CargoObject.h"

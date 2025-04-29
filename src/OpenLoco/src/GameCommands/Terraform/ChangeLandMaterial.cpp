@@ -6,7 +6,7 @@
 #include "Map/TileManager.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "S5/S5.h"
+#include "ScenarioOptions.h"
 
 using namespace OpenLoco::Interop;
 
@@ -37,7 +37,7 @@ namespace OpenLoco::GameCommands
             surface->setTerrain(landType);
             if (!surface->isIndustrial())
             {
-                surface->setVar6SLR5(0);
+                surface->setGrowthStage(0);
             }
             const auto variation = World::MapGenerator::getRandomTerrainVariation(*surface);
             if (variation.has_value())
@@ -52,11 +52,11 @@ namespace OpenLoco::GameCommands
             {
                 if (!surface->isIndustrial())
                 {
-                    surface->setVar6SLR5(landObj->var_03 - 1);
+                    surface->setGrowthStage(landObj->numGrowthStages - 1);
                 }
             }
             World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
-            auto& options = S5::getOptions();
+            auto& options = Scenario::getOptions();
             options.madeAnyChanges = 1;
         }
         return 0;

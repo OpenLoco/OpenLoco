@@ -196,7 +196,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (hasFlags(VehicleObjectFlags::unk_09))
+        if (hasFlags(VehicleObjectFlags::anyRoadType))
         {
             if (numTrackExtras != 0)
             {
@@ -296,6 +296,13 @@ namespace OpenLoco
                     return false;
             }
         }
+
+        const auto startSoundCount = numStartSounds & NumStartSounds::kMask;
+        if (startSoundCount > kMaxStartSounds)
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -339,7 +346,7 @@ namespace OpenLoco
         remainingData = remainingData.subspan(strRes.tableLength);
 
         trackType = 0xFF;
-        if (!hasFlags(VehicleObjectFlags::unk_09) && (mode == TransportMode::rail || mode == TransportMode::road))
+        if (!hasFlags(VehicleObjectFlags::anyRoadType) && (mode == TransportMode::rail || mode == TransportMode::road))
         {
             ObjectHeader trackHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)
@@ -480,7 +487,8 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        for (auto i = 0; i < (numStartSounds & NumStartSounds::kMask); ++i)
+        const auto startSoundCount = std::min(kMaxStartSounds, numStartSounds & NumStartSounds::kMask);
+        for (auto i = 0; i < startSoundCount; ++i)
         {
             ObjectHeader soundHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)
@@ -531,13 +539,6 @@ namespace OpenLoco
                     const auto numSteepFrames = bodySprite.numSlopedRotationFrames * bodySprite.numFramesPerRotation * 2; // up/down deg25
                     offset += numSteepFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
                 }
-            }
-
-            if (bodySprite.hasFlags(BodySpriteFlags::hasUnkSprites))
-            {
-                bodySprite.unkImageId = offset + imgRes.imageOffset;
-                const auto numUnkFrames = bodySprite.numFlatRotationFrames * 3;
-                offset += numUnkFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
             }
 
             const auto numImages = imgRes.imageOffset + offset - bodySprite.flatImageId;
@@ -660,7 +661,7 @@ namespace OpenLoco
         }
 
         rackRailType = 0;
-        sound.engine1.soundObjectId = 0;
+        sound.simpleMotor.soundObjectId = 0;
 
         std::fill(std::begin(startSounds), std::end(startSounds), 0);
     }

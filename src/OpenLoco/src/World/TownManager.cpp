@@ -8,10 +8,13 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
+#include "Objects/ClimateObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RegionObject.h"
 #include "Objects/TownNamesObject.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
@@ -28,12 +31,50 @@ namespace OpenLoco::TownManager
     static loco_global<Town*, 0x01135C38> _dword_1135C38;
 
     // 0x0049B45F
-    static uint32_t calcCargoInfluenceFlags(Town* town)
+    static uint32_t calcCargoInfluenceFlags(const Town& town)
     {
-        registers regs;
-        regs.esi = X86Pointer(town);
-        call(0x0049B45F, regs);
-        return regs.eax;
+        uint32_t flags = 0;
+        const auto* regionObj = ObjectManager::get<RegionObject>();
+        for (auto i = 0U; i < regionObj->numCargoInflunceObjects; ++i)
+        {
+            bool hasInfluence = false;
+            switch (regionObj->cargoInfluenceTownFilter[i])
+            {
+                using enum CargoInfluenceTownFilterType;
+                case allTowns:
+                {
+
+                    hasInfluence = true;
+                }
+                break;
+
+                case maySnow:
+                {
+                    auto tile = TileManager::get(town.x, town.y);
+                    const auto* climageObj = ObjectManager::get<ClimateObject>();
+                    const auto* surface = tile.surface();
+                    hasInfluence = surface->baseZ() >= climageObj->summerSnowLine;
+                }
+                break;
+
+                case inDesert:
+                {
+                    hasInfluence = TileManager::countSurroundingDesertTiles({ town.x, town.y }) >= 100;
+                }
+                break;
+
+                default:
+                    assert(false);
+                    break;
+            }
+
+            if (hasInfluence)
+            {
+                flags |= (1U << regionObj->cargoInfluenceObjectIds[i]);
+            }
+        }
+
+        return flags;
     }
 
     enum class LocationFlags : uint8_t
@@ -83,7 +124,7 @@ namespace OpenLoco::TownManager
             uint16_t dx = category.count + category.bias;
             int16_t index = ((ax * dx) >> 16) - category.bias;
 
-            if (index > 0)
+            if (index >= 0)
             {
                 char* strEnd = const_cast<char*>(buffer + strlen(buffer));
                 locationFlags |= copyTownNameToBuffer(namesObj, category.offset, index, strEnd);
@@ -245,7 +286,7 @@ namespace OpenLoco::TownManager
 
         std::fill_n(&town->monthlyCargoDelivered[0], std::size(town->monthlyCargoDelivered), 0);
 
-        town->cargoInfluenceFlags = calcCargoInfluenceFlags(town);
+        town->cargoInfluenceFlags = calcCargoInfluenceFlags(*town);
         town->buildSpeed = 1;
 
         // Figure out a name for this town?
@@ -305,7 +346,7 @@ namespace OpenLoco::TownManager
             auto companyId = GameCommands::getUpdatingCompanyId();
             if (companyId != CompanyId::neutral)
             {
-                if (!isEditorMode())
+                if (!SceneManager::isEditorMode())
                 {
                     town->adjustCompanyRating(companyId, rating);
                     Ui::WindowManager::invalidate(Ui::WindowType::town, enumValue(town->id()));
@@ -410,7 +451,7 @@ namespace OpenLoco::TownManager
     // 0x00496B6D
     void update()
     {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             auto ticks = ScenarioManager::getScenarioTicks();
             if (ticks % 8 == 0)
@@ -487,39 +528,6 @@ namespace OpenLoco::TownManager
                 registers backup = regs;
                 resetBuildingsInfluence();
                 regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x00497FFC,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backupRegs = regs;
-                Town* town = X86Pointer<Town>(regs.esi);
-                auto res = town->findRoadExtent();
-                if (res.has_value())
-                {
-                    backupRegs.ax = res->roadStart.x;
-                    backupRegs.cx = res->roadStart.y;
-                    backupRegs.dx = res->roadStart.z;
-                    static loco_global<uint16_t, 0x001135C5A> _trackAndDirection;
-                    _trackAndDirection = res->tad | (res->isBridge ? 1 << 12 : 0);
-                    backupRegs.ebp = res->tad;
-                }
-                else
-                {
-                    backupRegs.ax = -1;
-                }
-                regs = backupRegs;
-                return 0;
-            });
-
-        registerHook(
-            0x00498101,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backupRegs = regs;
-                Town* town = X86Pointer<Town>(regs.esi);
-                town->buildInitialRoad();
-                regs = backupRegs;
                 return 0;
             });
     }

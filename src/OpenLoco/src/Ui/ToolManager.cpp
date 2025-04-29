@@ -105,7 +105,8 @@ namespace OpenLoco::ToolManager
                 Window* w = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                 if (w != nullptr)
                 {
-                    w->callToolAbort(ToolManager::getToolWidgetIndex());
+                    // TODO: Handle widget ids properly for tools.
+                    w->callToolAbort(ToolManager::getToolWidgetIndex(), WidgetId::none);
                 }
             }
         }

@@ -64,12 +64,17 @@ namespace OpenLoco::World
             _5 |= index & 0x3;
         }
         uint8_t levelCrossingObjectId() const { return (_5 >> 2) & 0x3; } // _5l 0b0000_1100 NOTE: Shared with streetlight style
-        void setLevelCrossingObjectId(uint8_t levelCrossingObjectId)
+        void setLevelCrossingObjectId(uint8_t levelCrossingObjectId)      // Shared with streetlight style
         {
             _5 &= ~0b1100;
             _5 |= (levelCrossingObjectId & 0x3) << 2;
         }
         uint8_t streetLightStyle() const { return (_5 >> 2) & 0x3; } // _5l 0b0000_1100 NOTE: Shared with level crossing object id 0 = no street light
+        void setStreetLightStyle(uint8_t style)                      // Shared with streetlight style
+        {
+            _5 &= ~0b1100;
+            _5 |= (style & 0x3) << 2;
+        }
         uint8_t unk6l() const { return _6 & 0xF; }
         void setUnk6l(uint8_t value)
         {
@@ -77,6 +82,11 @@ namespace OpenLoco::World
             _6 |= value & 0xF;
         } // _6u
         uint8_t bridge() const { return _6 >> 5; } // _6u
+        void setBridgeObjectId(const uint8_t bridge)
+        {
+            _6 &= ~0xE0;
+            _6 |= bridge << 5;
+        }
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         void setHasStationElement(bool state)
         {
@@ -118,6 +128,11 @@ namespace OpenLoco::World
         {
             _7 &= ~0xC0;
             _7 |= (mods & 0x3) << 6;
+        }
+        void setMod(uint8_t mod, bool value)
+        {
+            _7 &= ~(1U << (mod + 6));
+            _7 |= value ? (1U << (mod + 6)) : 0;
         }
         CompanyId owner() const { return CompanyId(_7 & 0xF); } // _7l
         void setOwner(CompanyId newOwner) { _7 = (_7 & 0xF0) | (enumValue(newOwner) & 0xF); }

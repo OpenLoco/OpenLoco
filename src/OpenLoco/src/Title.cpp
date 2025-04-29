@@ -99,15 +99,15 @@ namespace OpenLoco::Title
         {
             uint16_t backupWord = getGameState().var_014A;
             auto titlePath = Environment::getPath(Environment::PathId::title);
-            clearScreenFlag(ScreenFlags::networked);
+            SceneManager::removeSceneFlags(SceneManager::Flags::networked);
             S5::importSaveToGameState(titlePath, S5::LoadFlags::titleSequence);
 
             CompanyManager::setControllingId(CompanyId(0));
             CompanyManager::setSecondaryPlayerId(CompanyId::null);
-            if (!isNetworked())
+            if (!SceneManager::isNetworked())
             {
                 CompanyManager::setSecondaryPlayerId(CompanyId(1));
-                if (!isNetworkHost())
+                if (!SceneManager::isNetworkHost())
                 {
                     CompanyManager::setControllingId(CompanyId(1));
                     CompanyManager::setSecondaryPlayerId(CompanyId(0));
@@ -121,7 +121,7 @@ namespace OpenLoco::Title
     static void reload()
     {
         loadTitle();
-        resetScreenAge();
+        SceneManager::resetSceneAge();
         _50C19A = 55000;
         update();
     }
@@ -138,19 +138,19 @@ namespace OpenLoco::Title
     void start()
     {
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
-        if (isPaused())
+        if (SceneManager::isPaused())
         {
             registers regs;
             regs.bl = GameCommands::Flags::apply;
             GameCommands::togglePause(regs);
         }
 
-        auto currentScreenFlags = getScreenFlags();
-        clearScreenFlag(ScreenFlags::networked);
+        auto currentScreenFlags = SceneManager::getSceneFlags();
+        SceneManager::removeSceneFlags(SceneManager::Flags::networked);
         Ui::WindowManager::closeAllFloatingWindows();
-        setAllScreenFlags(currentScreenFlags);
-        setScreenFlag(ScreenFlags::title);
-        setGameSpeed(GameSpeed::Normal);
+        setSceneFlags(currentScreenFlags);
+        SceneManager::addSceneFlags(SceneManager::Flags::title);
+        SceneManager::setGameSpeed(GameSpeed::Normal);
         ObjectManager::unloadAll();
         ObjectManager::prepareSelectionList(false);
         ObjectManager::loadSelectionListObjects(getSelectedObjectFlags());
@@ -163,12 +163,14 @@ namespace OpenLoco::Title
         Gui::init();
         reset();
         Gfx::invalidateScreen();
-        resetScreenAge();
+        SceneManager::resetSceneAge();
 
         if (Config::get().audio.playTitleMusic)
         {
             Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
         }
+
+        SceneManager::addSceneFlags(SceneManager::Flags::initialised);
     }
 
     void stop()
@@ -224,12 +226,12 @@ namespace OpenLoco::Title
     // 0x00444387
     void update()
     {
-        if (!isTitleMode())
+        if (!SceneManager::isTitleMode())
         {
             return;
         }
 
-        resetScreenAge();
+        SceneManager::resetSceneAge();
 
         if (_waitCounter > 0)
         {

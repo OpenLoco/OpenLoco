@@ -109,13 +109,14 @@ namespace OpenLoco
         auto firstColour = Numerics::bitScanReverse(availableColours);
         Colour c = firstColour != -1 ? static_cast<Colour>(firstColour)
                                      : Colour::black;
-        ImageId baseImage(var_12, c);
+        ImageId baseImage(buildingImageIds, c);
         Ui::Point pos{ x, y };
+        const auto partHeights = getBuildingPartHeights();
         for (const auto part : getBuildingParts(0))
         {
             auto image = baseImage.withIndexOffset(part * 4 + 1);
             drawingCtx.drawImage(pos, image);
-            pos.y -= buildingPartHeights[part];
+            pos.y -= partHeights[part];
         }
     }
 
@@ -151,7 +152,7 @@ namespace OpenLoco
         {
             return false;
         }
-        switch (var_E9)
+        switch (farmTileNumImageAngles)
         {
             case 1:
             case 2:
@@ -161,12 +162,12 @@ namespace OpenLoco
                 return false;
         }
 
-        if (var_EA != 0xFF && var_EA > 7)
+        if (farmTileGrowthStageNoProduction != 0xFF && farmTileGrowthStageNoProduction > 7)
         {
             return false;
         }
 
-        if (var_EC > 8)
+        if (farmTileNumGrowthStages > 8)
         {
             return false;
         }
@@ -205,23 +206,24 @@ namespace OpenLoco
 
         // LOAD BUILDING VARIATION PARTS Start
         // Load variation heights
-        buildingPartHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        buildingPartHeightsOffset = remainingData.data() - data.data();
         remainingData = remainingData.subspan(numBuildingParts * sizeof(uint8_t));
 
         // Load Part Animations
-        buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
+        buildingPartAnimationsOffset = remainingData.data() - data.data();
         remainingData = remainingData.subspan(numBuildingParts * sizeof(BuildingPartAnimation));
 
         // Load Animations
-        for (auto& animSeq : animationSequences)
+        for (auto& animSeqOffset : animationSequenceOffsets)
         {
-            animSeq = reinterpret_cast<const uint8_t*>(remainingData.data());
+            animSeqOffset = remainingData.data() - data.data();
             // animationSequences comprises of a size then data. Size will always be a power of 2
-            remainingData = remainingData.subspan(*animSeq * sizeof(uint8_t) + 1);
+            const auto* ptr = reinterpret_cast<const uint8_t*>(remainingData.data());
+            remainingData = remainingData.subspan(*ptr * sizeof(uint8_t) + 1);
         }
 
         // Load unk Animation Related Structure
-        var_38 = reinterpret_cast<const IndustryObjectUnk38*>(remainingData.data());
+        var_38_Offset = remainingData.data() - data.data();
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
             remainingData = remainingData.subspan(sizeof(IndustryObjectUnk38));
@@ -231,8 +233,7 @@ namespace OpenLoco
         // Load Parts
         for (auto i = 0; i < numBuildingVariations; ++i)
         {
-            auto& part = buildingVariationParts[i];
-            part = reinterpret_cast<const uint8_t*>(remainingData.data());
+            buildingVariationPartOffsets[i] = remainingData.data() - data.data();
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 remainingData = remainingData.subspan(1);
@@ -242,7 +243,7 @@ namespace OpenLoco
         // LOAD BUILDING PARTS End
 
         // Load unk?
-        buildings = reinterpret_cast<const uint8_t*>(remainingData.data());
+        buildingsOffset = remainingData.data() - data.data();
         remainingData = remainingData.subspan(maxNumBuildings * sizeof(uint8_t));
 
         // Load Produced Cargo
@@ -343,15 +344,16 @@ namespace OpenLoco
 
         // Load Image Offsets
         auto imgRes = ObjectManager::loadImageTable(remainingData);
-        var_0E = imgRes.imageOffset;
+        shadowImageIds = imgRes.imageOffset;
         assert(remainingData.size() == imgRes.tableLength);
-        var_12 = var_0E;
+        buildingImageIds = shadowImageIds;
         if (hasFlags(IndustryObjectFlags::hasShadows))
         {
-            var_12 += numBuildingVariations * 4;
+            buildingImageIds += numBuildingVariations * 4;
         }
-        var_16 = numBuildingParts * 4 + var_12;
-        var_1A = var_E9 * 21;
+        fieldImageIds = numBuildingParts * 4 + buildingImageIds;
+        // 19 field images plus 1 tree image plus 1 snowy tree image
+        numImagesPerFieldGrowthStage = farmTileNumImageAngles * 21;
     }
 
     // 0x0045919D
@@ -365,16 +367,16 @@ namespace OpenLoco
         nameSingular = 0;
         namePlural = 0;
 
-        var_0E = 0;
-        var_12 = 0;
-        var_16 = 0;
-        var_1A = 0;
-        buildingPartHeights = nullptr;
-        buildingPartAnimations = nullptr;
-        std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
-        var_38 = nullptr;
-        std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);
-        buildings = nullptr;
+        shadowImageIds = 0;
+        buildingImageIds = 0;
+        fieldImageIds = 0;
+        numImagesPerFieldGrowthStage = 0;
+        buildingPartHeightsOffset = 0;
+        buildingPartAnimationsOffset = 0;
+        std::fill(std::begin(animationSequenceOffsets), std::end(animationSequenceOffsets), 0);
+        var_38_Offset = 0;
+        std::fill(std::begin(buildingVariationPartOffsets), std::end(buildingVariationPartOffsets), 0);
+        buildingsOffset = 0;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         std::fill(std::begin(wallTypes), std::end(wallTypes), 0);
@@ -384,7 +386,9 @@ namespace OpenLoco
 
     std::span<const std::uint8_t> IndustryObject::getBuildingParts(const uint8_t buildingType) const
     {
-        const auto* partsPointer = buildingVariationParts[buildingType];
+        const auto offset = buildingVariationPartOffsets[buildingType];
+
+        const auto* partsPointer = reinterpret_cast<const std::uint8_t*>(this) + offset;
         auto* end = partsPointer;
         while (*end != 0xFF)
         {
@@ -397,14 +401,35 @@ namespace OpenLoco
     std::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t unk) const
     {
         // animationSequences comprises of a size then data. Size will always be a power of 2
-        const auto* sequencePointer = animationSequences[unk];
+        const auto* base = reinterpret_cast<const std::uint8_t*>(this);
+        const auto* sequencePointer = base + animationSequenceOffsets[unk];
         const auto size = *sequencePointer++;
         return std::span<const std::uint8_t>(sequencePointer, size);
     }
 
+    std::span<const std::uint8_t> IndustryObject::getBuildingPartHeights() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        return std::span<const std::uint8_t>(base + buildingPartHeightsOffset, numBuildingParts);
+    }
+
+    std::span<const BuildingPartAnimation> IndustryObject::getBuildingPartAnimations() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + buildingPartAnimationsOffset);
+        return std::span<const BuildingPartAnimation>(ptr, numBuildingParts);
+    }
+
+    std::span<const std::uint8_t> IndustryObject::getBuildings() const
+    {
+        const auto* base = reinterpret_cast<const std::uint8_t*>(this);
+        return std::span<const std::uint8_t>(base + buildingsOffset, maxNumBuildings);
+    }
+
     std::span<const IndustryObjectUnk38> OpenLoco::IndustryObject::getUnk38() const
     {
-        const auto* unkPointer = var_38;
+        const auto* base = reinterpret_cast<const std::uint8_t*>(this);
+        const auto* unkPointer = reinterpret_cast<const IndustryObjectUnk38*>(base + var_38_Offset);
         auto* end = unkPointer;
         while (end->var_00 != 0xFF)
         {

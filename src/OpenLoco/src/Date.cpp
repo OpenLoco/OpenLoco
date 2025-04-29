@@ -8,8 +8,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static loco_global<int32_t, 0x0112C810> _currentDayInOlympiad;
-
     static std::pair<MonthId, uint8_t> getMonthDay(int32_t dayOfYear);
 
     bool isLeapYear(const int year)
@@ -105,7 +103,7 @@ namespace OpenLoco
     {
         constexpr auto kBaseYear = 1800;
         constexpr auto kDaysInYear = 365;
-        constexpr auto kDaysInOlympiad = (365 * 4) + 1;
+        constexpr auto kDaysInOlympiad = (365 * 4) + 1; // Useful because the calendar that Loco uses (Julian) has a 4-year cycle.
         constexpr auto kFeb29 = 31 + 28;
 
         int32_t years = ((totalDays / kDaysInOlympiad) & 0xFFFF) * 4;
@@ -128,13 +126,11 @@ namespace OpenLoco
             }
         }
 
-        _currentDayInOlympiad = day;
-
         const auto year = kBaseYear + years;
         const auto monthDay = getMonthDay(day);
 
         auto result = Date(year, monthDay.first, monthDay.second);
-        result.dayOfOlympiad = day;
+        result.dayOfYear = day;
         return result;
     }
 

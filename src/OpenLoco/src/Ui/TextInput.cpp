@@ -89,14 +89,11 @@ namespace OpenLoco::Ui::TextInput
     {
         std::string cursorStr = buffer.substr(0, cursorPosition);
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
+        const auto font = Gfx::Font::medium_bold;
+        const auto stringWidth = Gfx::TextRenderer::getStringWidth(font, buffer.c_str());
+        const auto cursorX = Gfx::TextRenderer::getStringWidth(font, cursorStr.c_str());
 
-        tr.setCurrentFont(Gfx::Font::medium_bold);
-        auto stringWidth = tr.getStringWidth(buffer.c_str());
-        auto cursorX = tr.getStringWidth(cursorStr.c_str());
-
-        int x = xOffset + cursorX;
+        const int x = xOffset + cursorX;
 
         if (x < textboxPadding)
         {
@@ -125,14 +122,11 @@ namespace OpenLoco::Ui::TextInput
     {
         std::string cursorStr = buffer.substr(0, cursorPosition);
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawingCtx);
+        const auto font = Gfx::Font::medium_bold;
+        const auto stringWidth = Gfx::TextRenderer::getStringWidth(font, buffer.c_str());
+        const auto cursorX = Gfx::TextRenderer::getStringWidth(font, cursorStr.c_str());
 
-        tr.setCurrentFont(Gfx::Font::medium_bold);
-        auto stringWidth = tr.getStringWidth(buffer.c_str());
-        auto cursorX = tr.getStringWidth(cursorStr.c_str());
-
-        auto midX = containerWidth / 2;
+        const auto midX = containerWidth / 2;
 
         // Prefer to centre cursor
         xOffset = -1 * (cursorX - midX);

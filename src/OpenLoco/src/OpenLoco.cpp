@@ -61,6 +61,7 @@
 #include "Random.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Title.h"
 #include "Tutorial.h"
@@ -121,23 +122,14 @@ namespace OpenLoco
     }
 
     // 0x004BE621
-    [[noreturn]] void exitWithError(StringId eax, StringId ebx)
+    [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)
     {
-        registers regs;
-        regs.eax = eax;
-        regs.ebx = ebx;
-        call(0x004BE621, regs);
-        exitCleanly();
-    }
+        char titleBuffer[256] = { 0 };
+        char messageBuffer[256] = { 0 };
+        StringManager::formatString(titleBuffer, 255, titleStringId);
+        StringManager::formatString(messageBuffer, 255, messageStringId);
+        Ui::showMessageBox(titleBuffer, messageBuffer);
 
-    // 0x004BE5EB
-    [[noreturn]] void exitWithError(StringId message, uint32_t errorCode)
-    {
-        // Saves the error code for later writing to error log 1.TMP.
-        registers regs;
-        regs.eax = errorCode;
-        regs.bx = message;
-        call(0x004BE5EB, regs);
         exitCleanly();
     }
 
@@ -225,8 +217,6 @@ namespace OpenLoco
 
         MessageManager::reset();
         Scenario::reset();
-
-        setScreenFlag(ScreenFlags::initialised);
 
         ObjectManager::loadIndex();
         ScenarioManager::loadIndex();
@@ -322,7 +312,7 @@ namespace OpenLoco
             _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
             _last_tick_time = time;
 
-            if (!isPaused())
+            if (!SceneManager::isPaused())
             {
                 addr<0x0050C1A2, uint32_t>() += _time_since_last_tick;
             }
@@ -334,11 +324,6 @@ namespace OpenLoco
             GameCommands::resetCommandNestLevel();
             Ui::update();
 
-            addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
-            addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
-            addr<0x0114084C, int32_t>() = 0;
-            addr<0x01140840, int32_t>() = 0;
-
             {
                 call(0x00440DEC); // install scenario from 0x0050C18C ptr??
 
@@ -349,6 +334,7 @@ namespace OpenLoco
                 }
 
                 Input::handleKeyboard();
+                Input::processMouseMovement();
                 Audio::updateSounds();
 
                 Network::update();
@@ -369,7 +355,7 @@ namespace OpenLoco
                     {
                         numUpdates = 1;
                     }
-                    if (isNetworked())
+                    if (SceneManager::isNetworked())
                     {
                         numUpdates = 1;
                     }
@@ -403,16 +389,16 @@ namespace OpenLoco
 
                     Ui::WindowManager::setVehiclePreviewRotationFrame(Ui::WindowManager::getVehiclePreviewRotationFrame() + numUpdates);
 
-                    if (isPaused())
+                    if (SceneManager::isPaused())
                     {
                         numUpdates = 0;
                     }
                     uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
-                    setScreenAge(std::min(0xFFFF, (int32_t)getScreenAge() + var_F253A0));
-                    if (getGameSpeed() != GameSpeed::Normal)
+                    SceneManager::setSceneAge(std::min(0xFFFF, (int32_t)SceneManager::getSceneAge() + var_F253A0));
+                    if (SceneManager::getGameSpeed() != GameSpeed::Normal)
                     {
                         numUpdates *= 3;
-                        if (getGameSpeed() != GameSpeed::FastForward)
+                        if (SceneManager::getGameSpeed() != GameSpeed::FastForward)
                         {
                             numUpdates *= 3;
                         }
@@ -428,7 +414,7 @@ namespace OpenLoco
                     tickLogic(numUpdates);
 
                     getGameState().var_014A++;
-                    if (isEditorMode())
+                    if (SceneManager::isEditorMode())
                     {
                         EditorController::tick();
                     }
@@ -491,7 +477,7 @@ namespace OpenLoco
 
         recordTickStartPrng();
         World::TileManager::defragmentTilePeriodic();
-        addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
+        addr<0x00F25374, uint8_t>() = Scenario::getOptions().madeAnyChanges;
         dateTick();
         World::TileManager::update();
         World::WaveManager::update();
@@ -506,7 +492,7 @@ namespace OpenLoco
         Audio::updateAmbientNoise();
         Title::update();
 
-        S5::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
+        Scenario::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
         if (_loadErrorCode != 0)
         {
             if (_loadErrorCode == -2)
@@ -614,7 +600,7 @@ namespace OpenLoco
     {
         _monthsSinceLastAutosave++;
 
-        if (!isTitleMode())
+        if (!SceneManager::isTitleMode())
         {
             auto freq = Config::get().autosaveFrequency;
             if (freq > 0 && _monthsSinceLastAutosave >= freq)
@@ -629,7 +615,7 @@ namespace OpenLoco
     // 0x004968C7
     static void dateTick()
     {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             if (updateDayCounter())
             {
@@ -642,7 +628,7 @@ namespace OpenLoco
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
                 setDate(today);
-                Scenario::updateSnowLine(today.dayOfOlympiad);
+                Scenario::updateSnowLine(today.dayOfYear);
                 Ui::Windows::TimePanel::invalidateFrame();
 
                 if (today.month != yesterday.month)

@@ -8,56 +8,80 @@
 
 namespace OpenLoco::Gfx
 {
-    // TODO: Move them into RenderContext once everything is implemented.
-    static loco_global<TextDrawFlags, 0x112C824> _currentFontFlags;
-    static loco_global<Font, 0x0112C876> _currentFontSpriteBase;
+    struct TextDrawingState
+    {
+        Font font;
+        TextDrawFlags fontFlags;
+        PaletteMap::Buffer<8> textColours{ 0 };
+    };
 
     namespace Impl
     {
 
-        // TODO: Store in drawing context.
-        static PaletteMap::Buffer<8> _textColours{ 0 };
-        static uint16_t getStringWidth(const char* str);
-        static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
-        static uint16_t wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters);
-        static int16_t clipString(int16_t width, char* string);
+        static uint16_t getStringWidth(Font font, const char* str);
+        static std::pair<uint16_t, uint16_t> wrapString(Font font, char* buffer, uint16_t stringWidth);
+        static uint16_t wrapStringTicker(Font font, char* buffer, uint16_t stringWidth, uint16_t numCharacters);
+        static int16_t clipString(Font font, int16_t width, char* string);
 
-        // 0x0112C876
-        static Font getCurrentFont()
+        static uint16_t getLineHeight(Font font)
         {
-            return _currentFontSpriteBase;
+            if (font == Font::medium_normal || font == Font::medium_bold)
+            {
+                return 10;
+            }
+            else if (font == Font::small)
+            {
+                return 6;
+            }
+            else if (font == Font::large)
+            {
+                return 18;
+            }
+            return 0;
         }
 
-        static void setCurrentFont(Font base)
+        static uint16_t getSmallerLineHeight(Font font)
         {
-            _currentFontSpriteBase = base;
+            if (font == Font::medium_normal || font == Font::medium_bold)
+            {
+                return 5;
+            }
+            else if (font == Font::small)
+            {
+                return 3;
+            }
+            else if (font == Font::large)
+            {
+                return 9;
+            }
+            return 0;
         }
 
-        static void setTextColours(PaletteIndex_t pal1, PaletteIndex_t pal2, PaletteIndex_t pal3)
+        static void setTextColours(TextDrawingState& drawState, PaletteIndex_t pal1, PaletteIndex_t pal2, PaletteIndex_t pal3)
         {
-            if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
+            if ((drawState.fontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
             {
                 return;
             }
 
-            _textColours[PaletteIndex::textRemap0] = pal1;
-            _textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
-            _textColours[PaletteIndex::textRemap2] = PaletteIndex::transparent;
-            if ((_currentFontFlags & TextDrawFlags::outline) != TextDrawFlags::none)
+            drawState.textColours[PaletteIndex::textRemap0] = pal1;
+            drawState.textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
+            drawState.textColours[PaletteIndex::textRemap2] = PaletteIndex::transparent;
+            if ((drawState.fontFlags & TextDrawFlags::outline) != TextDrawFlags::none)
             {
-                _textColours[PaletteIndex::textRemap1] = pal2;
-                _textColours[PaletteIndex::textRemap2] = pal3;
+                drawState.textColours[PaletteIndex::textRemap1] = pal2;
+                drawState.textColours[PaletteIndex::textRemap2] = pal3;
             }
         }
 
-        static void setTextColour(int colour)
+        static void setTextColour(TextDrawingState& drawState, int colour)
         {
             const auto* el = getG1Element(ImageIds::text_palette);
-            setTextColours(el->offset[colour * 4 + 0], el->offset[colour * 4 + 1], el->offset[colour * 4 + 2]);
+            setTextColours(drawState, el->offset[colour * 4 + 0], el->offset[colour * 4 + 1], el->offset[colour * 4 + 2]);
         }
 
         // 0x00451189
-        static Ui::Point loopNewline(DrawingContext& ctx, const RenderTarget* rt, Ui::Point origin, const char* str)
+        static Ui::Point loopNewline(TextDrawingState& drawState, DrawingContext& ctx, const RenderTarget* rt, Ui::Point origin, const char* str)
         {
             Ui::Point pos = origin;
             while (true)
@@ -89,34 +113,12 @@ namespace OpenLoco::Gfx
 
                     case ControlCodes::newlineSmaller:
                         pos.x = origin.x;
-                        if (getCurrentFont() == Font::medium_normal || getCurrentFont() == Font::medium_bold)
-                        {
-                            pos.y += 5;
-                        }
-                        else if (getCurrentFont() == Font::small)
-                        {
-                            pos.y += 3;
-                        }
-                        else if (getCurrentFont() == Font::large)
-                        {
-                            pos.y += 9;
-                        }
+                        pos.y += getSmallerLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::newline:
                         pos.x = origin.x;
-                        if (getCurrentFont() == Font::medium_normal || getCurrentFont() == Font::medium_bold)
-                        {
-                            pos.y += 10;
-                        }
-                        else if (getCurrentFont() == Font::small)
-                        {
-                            pos.y += 6;
-                        }
-                        else if (getCurrentFont() == Font::large)
-                        {
-                            pos.y += 18;
-                        }
+                        pos.y += getLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::moveX:
@@ -142,45 +144,45 @@ namespace OpenLoco::Gfx
                     }
 
                     case ControlCodes::Font::small:
-                        setCurrentFont(Font::small);
+                        drawState.font = Font::small;
                         break;
                     case ControlCodes::Font::large:
-                        setCurrentFont(Font::large);
+                        drawState.font = Font::large;
                         break;
                     case ControlCodes::Font::regular:
-                        setCurrentFont(Font::medium_normal);
+                        drawState.font = Font::medium_normal;
                         break;
                     case ControlCodes::Font::bold:
-                        setCurrentFont(Font::medium_bold);
+                        drawState.font = Font::medium_bold;
                         break;
                     case ControlCodes::Font::outline:
-                        _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
+                        drawState.fontFlags |= TextDrawFlags::outline;
                         break;
                     case ControlCodes::Font::outlineOff:
-                        _currentFontFlags = _currentFontFlags & ~TextDrawFlags::outline;
+                        drawState.fontFlags &= ~TextDrawFlags::outline;
                         break;
                     case ControlCodes::windowColour1:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::primary).c();
-                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 7), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour2:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::secondary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour3:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::tertiary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour4:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::quaternary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
 
@@ -190,10 +192,10 @@ namespace OpenLoco::Gfx
                         ImageId imageId{ image & 0x7FFFF };
                         str += 4;
 
-                        if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
+                        if ((drawState.fontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
                         {
-                            ctx.drawImageSolid(pos, imageId, _textColours[PaletteIndex::textRemap2]);
-                            ctx.drawImageSolid(pos + Ui::Point{ 1, 1 }, imageId, _textColours[PaletteIndex::textRemap0]);
+                            ctx.drawImageSolid(pos, imageId, drawState.textColours[PaletteIndex::textRemap2]);
+                            ctx.drawImageSolid(pos + Ui::Point{ 1, 1 }, imageId, drawState.textColours[PaletteIndex::textRemap0]);
                         }
                         else
                         {
@@ -205,59 +207,59 @@ namespace OpenLoco::Gfx
                     }
 
                     case ControlCodes::Colour::black:
-                        setTextColour(0);
+                        setTextColour(drawState, 0);
                         break;
 
                     case ControlCodes::Colour::grey:
-                        setTextColour(1);
+                        setTextColour(drawState, 1);
                         break;
 
                     case ControlCodes::Colour::white:
-                        setTextColour(2);
+                        setTextColour(drawState, 2);
                         break;
 
                     case ControlCodes::Colour::red:
-                        setTextColour(3);
+                        setTextColour(drawState, 3);
                         break;
 
                     case ControlCodes::Colour::green:
-                        setTextColour(4);
+                        setTextColour(drawState, 4);
                         break;
 
                     case ControlCodes::Colour::yellow:
-                        setTextColour(5);
+                        setTextColour(drawState, 5);
                         break;
 
                     case ControlCodes::Colour::topaz:
-                        setTextColour(6);
+                        setTextColour(drawState, 6);
                         break;
 
                     case ControlCodes::Colour::celadon:
-                        setTextColour(7);
+                        setTextColour(drawState, 7);
                         break;
 
                     case ControlCodes::Colour::babyBlue:
-                        setTextColour(8);
+                        setTextColour(drawState, 8);
                         break;
 
                     case ControlCodes::Colour::paleLavender:
-                        setTextColour(9);
+                        setTextColour(drawState, 9);
                         break;
 
                     case ControlCodes::Colour::paleGold:
-                        setTextColour(10);
+                        setTextColour(drawState, 10);
                         break;
 
                     case ControlCodes::Colour::lightPink:
-                        setTextColour(11);
+                        setTextColour(drawState, 11);
                         break;
 
                     case ControlCodes::Colour::pearlAqua:
-                        setTextColour(12);
+                        setTextColour(drawState, 12);
                         break;
 
                     case ControlCodes::Colour::paleSilver:
-                        setTextColour(13);
+                        setTextColour(drawState, 13);
                         break;
 
                     default:
@@ -266,10 +268,10 @@ namespace OpenLoco::Gfx
                             // When off-screen in the y dimension there is no requirement to keep pos.x correct
                             if (chr >= 32)
                             {
-                                const auto chrImage = getImageForCharacter(getCurrentFont(), chr);
+                                const auto chrImage = getImageForCharacter(drawState.font, chr);
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                ctx.drawImagePaletteSet(pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
-                                pos.x += Gfx::getCharacterWidth(getCurrentFont(), chr);
+                                ctx.drawImagePaletteSet(pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ drawState.textColours }, {});
+                                pos.x += Gfx::getCharacterWidth(drawState.font, chr);
                             }
                             else
                             {
@@ -293,18 +295,18 @@ namespace OpenLoco::Gfx
          * @param rt @<edi>
          * @param text @<esi>
          */
-        static Ui::Point drawString(DrawingContext& ctx, const RenderTarget& rt, Ui::Point origin, AdvancedColour colour, const char* str)
+        static Ui::Point drawString(TextDrawingState& drawState, DrawingContext& ctx, const RenderTarget& rt, Ui::Point origin, AdvancedColour colour, const char* str)
         {
             if (colour.isFE())
             {
-                return loopNewline(ctx, &rt, origin, str);
+                return loopNewline(drawState, ctx, &rt, origin, str);
             }
 
             if (colour.isFD())
             {
-                _currentFontFlags = TextDrawFlags::none;
-                setTextColour(0);
-                return loopNewline(ctx, &rt, origin, str);
+                drawState.fontFlags = TextDrawFlags::none;
+                setTextColour(drawState, 0);
+                return loopNewline(drawState, ctx, &rt, origin, str);
             }
 
             if (origin.x >= rt.x + rt.width)
@@ -329,66 +331,66 @@ namespace OpenLoco::Gfx
 
             if (colour.isFF())
             {
-                return loopNewline(ctx, &rt, origin, str);
+                return loopNewline(drawState, ctx, &rt, origin, str);
             }
 
-            _currentFontFlags = TextDrawFlags::none;
-            if (getCurrentFont() == Font::m1)
+            drawState.fontFlags = TextDrawFlags::none;
+            if (drawState.font == Font::m1)
             {
-                setCurrentFont(Font::medium_bold);
-                _currentFontFlags = _currentFontFlags | TextDrawFlags::dark;
+                drawState.font = Font::medium_bold;
+                drawState.fontFlags |= TextDrawFlags::dark;
             }
-            else if (getCurrentFont() == Font::m2)
+            else if (drawState.font == Font::m2)
             {
-                setCurrentFont(Font::medium_bold);
-                _currentFontFlags = _currentFontFlags | TextDrawFlags::dark;
-                _currentFontFlags = _currentFontFlags | TextDrawFlags::extraDark;
+                drawState.font = Font::medium_bold;
+                drawState.fontFlags |= TextDrawFlags::dark;
+                drawState.fontFlags |= TextDrawFlags::extraDark;
             }
 
-            _textColours[PaletteIndex::transparent] = PaletteIndex::transparent;
-            _textColours[PaletteIndex::textRemap0] = Colours::getShade(Colour::mutedDarkPurple, 5);
-            _textColours[PaletteIndex::textRemap1] = Colours::getShade(Colour::mutedRed, 5);
-            _textColours[PaletteIndex::textRemap2] = Colours::getShade(Colour::blue, 5);
+            drawState.textColours[PaletteIndex::transparent] = PaletteIndex::transparent;
+            drawState.textColours[PaletteIndex::textRemap0] = Colours::getShade(Colour::mutedDarkPurple, 5);
+            drawState.textColours[PaletteIndex::textRemap1] = Colours::getShade(Colour::mutedRed, 5);
+            drawState.textColours[PaletteIndex::textRemap2] = Colours::getShade(Colour::blue, 5);
 
             if (colour.isOutline())
             {
                 colour = colour.clearOutline();
-                _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
+                drawState.fontFlags |= TextDrawFlags::outline;
             }
 
             if (colour.isInset())
             {
                 colour = colour.clearInset();
-                _currentFontFlags = _currentFontFlags | TextDrawFlags::inset;
+                drawState.fontFlags |= TextDrawFlags::inset;
             }
 
-            if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
+            if ((drawState.fontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
             {
-                if ((_currentFontFlags & TextDrawFlags::dark) != TextDrawFlags::none && (_currentFontFlags & TextDrawFlags::extraDark) != TextDrawFlags::none)
+                if ((drawState.fontFlags & TextDrawFlags::dark) != TextDrawFlags::none && (drawState.fontFlags & TextDrawFlags::extraDark) != TextDrawFlags::none)
                 {
-                    _textColours[PaletteIndex::textRemap0] = Colours::getShade(colour.c(), 2);
-                    _textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
-                    _textColours[PaletteIndex::textRemap2] = Colours::getShade(colour.c(), 4);
+                    drawState.textColours[PaletteIndex::textRemap0] = Colours::getShade(colour.c(), 2);
+                    drawState.textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
+                    drawState.textColours[PaletteIndex::textRemap2] = Colours::getShade(colour.c(), 4);
                 }
-                else if ((_currentFontFlags & TextDrawFlags::dark) != TextDrawFlags::none)
+                else if ((drawState.fontFlags & TextDrawFlags::dark) != TextDrawFlags::none)
                 {
-                    _textColours[PaletteIndex::textRemap0] = Colours::getShade(colour.c(), 3);
-                    _textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
-                    _textColours[PaletteIndex::textRemap2] = Colours::getShade(colour.c(), 5);
+                    drawState.textColours[PaletteIndex::textRemap0] = Colours::getShade(colour.c(), 3);
+                    drawState.textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
+                    drawState.textColours[PaletteIndex::textRemap2] = Colours::getShade(colour.c(), 5);
                 }
                 else
                 {
-                    _textColours[PaletteIndex::textRemap0] = Colours::getShade(colour.c(), 4);
-                    _textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
-                    _textColours[PaletteIndex::textRemap2] = Colours::getShade(colour.c(), 6);
+                    drawState.textColours[PaletteIndex::textRemap0] = Colours::getShade(colour.c(), 4);
+                    drawState.textColours[PaletteIndex::textRemap1] = PaletteIndex::transparent;
+                    drawState.textColours[PaletteIndex::textRemap2] = Colours::getShade(colour.c(), 6);
                 }
             }
             else
             {
-                setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::black0, PaletteIndex::black0);
+                setTextColours(drawState, Colours::getShade(colour.c(), 9), PaletteIndex::black0, PaletteIndex::black0);
             }
 
-            return loopNewline(ctx, &rt, origin, str);
+            return loopNewline(drawState, ctx, &rt, origin, str);
         }
 
         // Use only with buffer mangled by wrapString
@@ -424,23 +426,6 @@ namespace OpenLoco::Gfx
             return nullptr;
         }
 
-        static uint16_t lineHeightFromFont(Font font)
-        {
-            if (font <= Font::medium_bold)
-            {
-                return 10;
-            }
-            else if (font == Font::small)
-            {
-                return 6;
-            }
-            else if (font == Font::large)
-            {
-                return 18;
-            }
-            return 0;
-        }
-
         // 0x00495224
         // al: colour
         // bp: width
@@ -450,6 +435,7 @@ namespace OpenLoco::Gfx
         // esi: args
         // edi: rt
         static Ui::Point drawStringLeftWrapped(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -461,25 +447,24 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
+            const auto curDrawState = drawState;
             char empty[1] = "";
-            drawString(ctx, rt, origin, colour, empty);
+            drawString(drawState, ctx, rt, origin, colour, empty);
+            drawState = curDrawState;
 
-            _currentFontSpriteBase = Font::medium_bold;
-            auto wrapResult = wrapString(buffer, width);
+            auto wrapResult = wrapString(drawState.font, buffer, width);
             auto breakCount = wrapResult.second + 1;
 
             // wrapString might change the font due to formatting codes
-            uint16_t lineHeight = lineHeightFromFont(_currentFontSpriteBase); // _112D404
+            uint16_t lineHeight = getLineHeight(drawState.font); // _112D404
 
-            _currentFontFlags = TextDrawFlags::none;
             auto point = origin;
 
             const char* ptr = buffer;
             for (auto i = 0; ptr != nullptr && i < breakCount; i++)
             {
-                drawString(ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
+                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
                 ptr = advanceToNextLineWrapped(ptr);
                 point.y += lineHeight;
             }
@@ -496,6 +481,7 @@ namespace OpenLoco::Gfx
          * @param args @<edi>
          */
         static Ui::Point drawStringLeft(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -506,8 +492,7 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            _currentFontSpriteBase = Font::medium_bold;
-            return drawString(ctx, rt, origin, colour, buffer);
+            return drawString(drawState, ctx, rt, origin, colour, buffer);
         }
 
         // 0x00494BBF
@@ -519,6 +504,7 @@ namespace OpenLoco::Gfx
         // edi: rt
         // bp: width
         static Ui::Point drawStringLeftClipped(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -530,10 +516,9 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            _currentFontSpriteBase = Font::medium_bold;
-            clipString(width, buffer);
+            clipString(drawState.font, width, buffer);
 
-            return drawString(ctx, rt, origin, colour, buffer);
+            return drawString(drawState, ctx, rt, origin, colour, buffer);
         }
 
         // 0x00494C78
@@ -544,6 +529,7 @@ namespace OpenLoco::Gfx
         // esi: args
         // edi: rt
         static Ui::Point drawStringRight(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -554,13 +540,12 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            _currentFontSpriteBase = Font::medium_bold;
-            uint16_t width = getStringWidth(buffer);
+            uint16_t width = getStringWidth(drawState.font, buffer);
 
             auto point = origin;
             point.x -= width;
 
-            return drawString(ctx, rt, point, colour, buffer);
+            return drawString(drawState, ctx, rt, point, colour, buffer);
         }
 
         // 0x00494CB2
@@ -571,6 +556,7 @@ namespace OpenLoco::Gfx
         // esi: args
         // edi: rt
         static Ui::Point drawStringRightUnderline(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -581,18 +567,17 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            _currentFontSpriteBase = Font::medium_bold;
-            uint16_t width = getStringWidth(buffer);
+            uint16_t width = getStringWidth(drawState.font, buffer);
             auto point = origin;
             point.x -= width;
 
-            drawString(ctx, rt, point, colour, buffer);
+            drawString(drawState, ctx, rt, point, colour, buffer);
 
             // Draw underline
-            ctx.drawRect(point.x, point.y + 11, width, 1, _textColours[PaletteIndex::textRemap0], RectFlags::none);
-            if (_textColours[PaletteIndex::textRemap1] != 0)
+            ctx.drawRect(point.x, point.y + 11, width, 1, drawState.textColours[PaletteIndex::textRemap0], RectFlags::none);
+            if (drawState.textColours[PaletteIndex::textRemap1] != 0)
             {
-                ctx.drawRect(point.x, point.y + 12, width, 1, _textColours[PaletteIndex::textRemap1], RectFlags::none);
+                ctx.drawRect(point.x, point.y + 12, width, 1, drawState.textColours[PaletteIndex::textRemap1], RectFlags::none);
             }
 
             return point;
@@ -606,6 +591,7 @@ namespace OpenLoco::Gfx
         // esi: args
         // edi: rt
         static Ui::Point drawStringLeftUnderline(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -616,16 +602,15 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            _currentFontSpriteBase = Font::medium_bold;
-            uint16_t width = getStringWidth(buffer);
+            uint16_t width = getStringWidth(drawState.font, buffer);
 
-            auto point = drawString(ctx, rt, origin, colour, buffer);
+            auto point = drawString(drawState, ctx, rt, origin, colour, buffer);
 
             // Draw underline
-            ctx.drawRect(origin.x, origin.y + 11, width, 1, _textColours[PaletteIndex::textRemap0], RectFlags::none);
-            if (_textColours[PaletteIndex::textRemap1] != 0)
+            ctx.drawRect(origin.x, origin.y + 11, width, 1, drawState.textColours[PaletteIndex::textRemap0], RectFlags::none);
+            if (drawState.textColours[PaletteIndex::textRemap1] != 0)
             {
-                ctx.drawRect(origin.x, origin.y + 12, width, 1, _textColours[PaletteIndex::textRemap1], RectFlags::none);
+                ctx.drawRect(origin.x, origin.y + 12, width, 1, drawState.textColours[PaletteIndex::textRemap1], RectFlags::none);
             }
 
             return point;
@@ -639,6 +624,7 @@ namespace OpenLoco::Gfx
         // esi: args
         // edi: rt
         static Ui::Point drawStringCentred(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -649,8 +635,7 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            _currentFontSpriteBase = Font::medium_bold;
-            uint16_t width = getStringWidth(buffer);
+            uint16_t width = getStringWidth(drawState.font, buffer);
 
             auto point = origin;
             point.x = origin.x - (width / 2);
@@ -660,7 +645,7 @@ namespace OpenLoco::Gfx
                 return origin;
             }
 
-            return drawString(ctx, rt, point, colour, buffer);
+            return drawString(drawState, ctx, rt, point, colour, buffer);
         }
 
         // 0x00494C36
@@ -672,6 +657,7 @@ namespace OpenLoco::Gfx
         // esi: args
         // edi: rt
         static Ui::Point drawStringCentredClipped(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -683,11 +669,10 @@ namespace OpenLoco::Gfx
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            _currentFontSpriteBase = Font::medium_bold;
-            width = clipString(width, buffer);
+            width = clipString(drawState.font, width, buffer);
 
             auto point = Ui::Point(origin.x - (width / 2), origin.y);
-            return drawString(ctx, rt, point, colour, buffer);
+            return drawString(drawState, ctx, rt, point, colour, buffer);
         }
 
         /**
@@ -702,6 +687,7 @@ namespace OpenLoco::Gfx
          * returns width @<ax>
          */
         static Ui::Point drawStringCentredWrapped(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -710,41 +696,43 @@ namespace OpenLoco::Gfx
             StringId stringId,
             FormatArgumentsView args)
         {
-            _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
+            auto curDrawState = drawState;
             char empty[1] = "";
-            drawString(ctx, rt, origin, colour, empty);
+            drawString(drawState, ctx, rt, origin, colour, empty);
+            drawState = curDrawState;
 
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-            _currentFontSpriteBase = Font::medium_bold;
-            auto wrapResult = wrapString(buffer, width);
+            auto wrapResult = wrapString(drawState.font, buffer, width);
             auto breakCount = wrapResult.second + 1;
 
             // wrapString might change the font due to formatting codes
-            uint16_t lineHeight = lineHeightFromFont(_currentFontSpriteBase); // _112D404
-
-            _currentFontFlags = TextDrawFlags::none;
+            uint16_t lineHeight = getLineHeight(drawState.font); // _112D404
 
             Ui::Point basePoint = origin;
             basePoint.y -= (lineHeight / 2) * (breakCount - 1);
 
             const char* ptr = buffer;
             uint16_t lineWidth{};
+            uint16_t maxLineWidth{};
 
             for (auto i = 0; ptr != nullptr && i < breakCount; i++)
             {
-                lineWidth = getStringWidth(ptr);
+                lineWidth = getStringWidth(drawState.font, ptr);
+                maxLineWidth = std::max(lineWidth, maxLineWidth);
 
                 auto point = basePoint;
                 point.x -= lineWidth / 2;
 
-                drawString(ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
+                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
                 ptr = advanceToNextLineWrapped(ptr);
 
                 basePoint.y += lineHeight;
             }
+
+            basePoint.x -= maxLineWidth / 2;
 
             return basePoint;
         }
@@ -758,6 +746,7 @@ namespace OpenLoco::Gfx
         // esi: args
         // edi: rt
         static Ui::Point drawStringCentredRaw(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -765,34 +754,31 @@ namespace OpenLoco::Gfx
             AdvancedColour colour,
             const char* wrappedStr)
         {
-            _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
             char empty[1] = "";
-            drawString(ctx, rt, origin, colour, empty);
-
-            _currentFontSpriteBase = Font::medium_bold;
-            _currentFontFlags = TextDrawFlags::none;
+            drawString(drawState, ctx, rt, origin, colour, empty);
 
             const char* ptr = wrappedStr;
             auto basePoint = origin;
 
             for (auto i = 0; i < linebreakCount + 1 && ptr != nullptr; ++i)
             {
-                uint16_t lineWidth = getStringWidth(ptr);
+                uint16_t lineWidth = getStringWidth(drawState.font, ptr);
 
                 auto point = basePoint;
                 point.x -= lineWidth / 2;
 
-                drawString(ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
+                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
 
                 ptr = advanceToNextLineWrapped(ptr);
-                basePoint.y += lineHeightFromFont(_currentFontSpriteBase);
+                basePoint.y += getLineHeight(drawState.font);
             }
 
             return basePoint;
         }
 
         static void drawStringYOffsets(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             const Ui::Point& loc,
@@ -827,9 +813,9 @@ namespace OpenLoco::Gfx
                 return;
             }
 
-            _currentFontFlags = TextDrawFlags::none;
+            drawState.fontFlags = TextDrawFlags::none;
 
-            setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::black0, PaletteIndex::black0);
+            setTextColours(drawState, Colours::getShade(colour.c(), 9), PaletteIndex::black0, PaletteIndex::black0);
 
             Ui::Point pos = loc;
             while (true)
@@ -862,34 +848,12 @@ namespace OpenLoco::Gfx
 
                     case ControlCodes::newlineSmaller:
                         pos.x = loc.x;
-                        if (getCurrentFont() == Font::medium_normal || getCurrentFont() == Font::medium_bold)
-                        {
-                            pos.y += 5;
-                        }
-                        else if (getCurrentFont() == Font::small)
-                        {
-                            pos.y += 3;
-                        }
-                        else if (getCurrentFont() == Font::large)
-                        {
-                            pos.y += 9;
-                        }
+                        pos.y += getSmallerLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::newline:
                         pos.x = loc.x;
-                        if (getCurrentFont() == Font::medium_normal || getCurrentFont() == Font::medium_bold)
-                        {
-                            pos.y += 10;
-                        }
-                        else if (getCurrentFont() == Font::small)
-                        {
-                            pos.y += 6;
-                        }
-                        else if (getCurrentFont() == Font::large)
-                        {
-                            pos.y += 18;
-                        }
+                        pos.y += getLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::moveX:
@@ -915,45 +879,45 @@ namespace OpenLoco::Gfx
                     }
 
                     case ControlCodes::Font::small:
-                        setCurrentFont(Font::small);
+                        drawState.font = Font::small;
                         break;
                     case ControlCodes::Font::large:
-                        setCurrentFont(Font::large);
+                        drawState.font = Font::large;
                         break;
                     case ControlCodes::Font::regular:
-                        setCurrentFont(Font::medium_normal);
+                        drawState.font = Font::medium_normal;
                         break;
                     case ControlCodes::Font::bold:
-                        setCurrentFont(Font::medium_bold);
+                        drawState.font = Font::medium_bold;
                         break;
                     case ControlCodes::Font::outline:
-                        _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
+                        drawState.fontFlags |= TextDrawFlags::outline;
                         break;
                     case ControlCodes::Font::outlineOff:
-                        _currentFontFlags = _currentFontFlags & ~TextDrawFlags::outline;
+                        drawState.fontFlags &= ~TextDrawFlags::outline;
                         break;
                     case ControlCodes::windowColour1:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::primary).c();
-                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 7), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour2:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::secondary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour3:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::tertiary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour4:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::quaternary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
 
@@ -966,59 +930,59 @@ namespace OpenLoco::Gfx
                     }
 
                     case ControlCodes::Colour::black:
-                        setTextColour(0);
+                        setTextColour(drawState, 0);
                         break;
 
                     case ControlCodes::Colour::grey:
-                        setTextColour(1);
+                        setTextColour(drawState, 1);
                         break;
 
                     case ControlCodes::Colour::white:
-                        setTextColour(2);
+                        setTextColour(drawState, 2);
                         break;
 
                     case ControlCodes::Colour::red:
-                        setTextColour(3);
+                        setTextColour(drawState, 3);
                         break;
 
                     case ControlCodes::Colour::green:
-                        setTextColour(4);
+                        setTextColour(drawState, 4);
                         break;
 
                     case ControlCodes::Colour::yellow:
-                        setTextColour(5);
+                        setTextColour(drawState, 5);
                         break;
 
                     case ControlCodes::Colour::topaz:
-                        setTextColour(6);
+                        setTextColour(drawState, 6);
                         break;
 
                     case ControlCodes::Colour::celadon:
-                        setTextColour(7);
+                        setTextColour(drawState, 7);
                         break;
 
                     case ControlCodes::Colour::babyBlue:
-                        setTextColour(8);
+                        setTextColour(drawState, 8);
                         break;
 
                     case ControlCodes::Colour::paleLavender:
-                        setTextColour(9);
+                        setTextColour(drawState, 9);
                         break;
 
                     case ControlCodes::Colour::paleGold:
-                        setTextColour(10);
+                        setTextColour(drawState, 10);
                         break;
 
                     case ControlCodes::Colour::lightPink:
-                        setTextColour(11);
+                        setTextColour(drawState, 11);
                         break;
 
                     case ControlCodes::Colour::pearlAqua:
-                        setTextColour(12);
+                        setTextColour(drawState, 12);
                         break;
 
                     case ControlCodes::Colour::paleSilver:
-                        setTextColour(13);
+                        setTextColour(drawState, 13);
                         break;
 
                     default:
@@ -1030,7 +994,7 @@ namespace OpenLoco::Gfx
                         {
                             if (pos.x + 26 < rt.x)
                             {
-                                pos.x += Gfx::getCharacterWidth(getCurrentFont(), chr);
+                                pos.x += Gfx::getCharacterWidth(drawState.font, chr);
                                 yOffsets++;
                             }
                             else
@@ -1038,9 +1002,9 @@ namespace OpenLoco::Gfx
                                 if (chr >= 32)
                                 {
                                     // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                    const auto chrImage = getImageForCharacter(getCurrentFont(), chr);
-                                    ctx.drawImagePaletteSet(pos + Ui::Point(0, *yOffsets), chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
-                                    pos.x += Gfx::getCharacterWidth(getCurrentFont(), chr);
+                                    const auto chrImage = getImageForCharacter(drawState.font, chr);
+                                    ctx.drawImagePaletteSet(pos + Ui::Point(0, *yOffsets), chrImage.withPrimary(Colour::black), PaletteMap::View{ drawState.textColours }, {});
+                                    pos.x += Gfx::getCharacterWidth(drawState.font, chr);
                                     yOffsets++;
                                 }
                                 else
@@ -1057,6 +1021,7 @@ namespace OpenLoco::Gfx
 
         // 0x00451582
         static int16_t drawStringMaxChars(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -1104,34 +1069,12 @@ namespace OpenLoco::Gfx
 
                     case ControlCodes::newlineSmaller:
                         pos.x = origin.x;
-                        if (getCurrentFont() == Font::medium_normal || getCurrentFont() == Font::medium_bold)
-                        {
-                            pos.y += 5;
-                        }
-                        else if (getCurrentFont() == Font::small)
-                        {
-                            pos.y += 3;
-                        }
-                        else if (getCurrentFont() == Font::large)
-                        {
-                            pos.y += 9;
-                        }
+                        pos.y += getSmallerLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::newline:
                         pos.x = origin.x;
-                        if (getCurrentFont() == Font::medium_normal || getCurrentFont() == Font::medium_bold)
-                        {
-                            pos.y += 10;
-                        }
-                        else if (getCurrentFont() == Font::small)
-                        {
-                            pos.y += 6;
-                        }
-                        else if (getCurrentFont() == Font::large)
-                        {
-                            pos.y += 18;
-                        }
+                        pos.y += getLineHeight(drawState.font);
                         break;
 
                     case ControlCodes::moveX:
@@ -1157,45 +1100,45 @@ namespace OpenLoco::Gfx
                     }
 
                     case ControlCodes::Font::small:
-                        setCurrentFont(Font::small);
+                        drawState.font = Font::small;
                         break;
                     case ControlCodes::Font::large:
-                        setCurrentFont(Font::large);
+                        drawState.font = Font::large;
                         break;
                     case ControlCodes::Font::regular:
-                        setCurrentFont(Font::medium_normal);
+                        drawState.font = Font::medium_normal;
                         break;
                     case ControlCodes::Font::bold:
-                        setCurrentFont(Font::medium_bold);
+                        drawState.font = Font::medium_bold;
                         break;
                     case ControlCodes::Font::outline:
-                        _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
+                        drawState.fontFlags |= TextDrawFlags::outline;
                         break;
                     case ControlCodes::Font::outlineOff:
-                        _currentFontFlags = _currentFontFlags & ~TextDrawFlags::outline;
+                        drawState.fontFlags &= ~TextDrawFlags::outline;
                         break;
                     case ControlCodes::windowColour1:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::primary).c();
-                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 7), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour2:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::secondary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour3:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::tertiary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
                     case ControlCodes::windowColour4:
                     {
                         auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::quaternary).c();
-                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
+                        setTextColours(drawState, Colours::getShade(hue, 9), PaletteIndex::black0, PaletteIndex::black0);
                         break;
                     }
 
@@ -1214,59 +1157,59 @@ namespace OpenLoco::Gfx
                     }
 
                     case ControlCodes::Colour::black:
-                        setTextColour(0);
+                        setTextColour(drawState, 0);
                         break;
 
                     case ControlCodes::Colour::grey:
-                        setTextColour(1);
+                        setTextColour(drawState, 1);
                         break;
 
                     case ControlCodes::Colour::white:
-                        setTextColour(2);
+                        setTextColour(drawState, 2);
                         break;
 
                     case ControlCodes::Colour::red:
-                        setTextColour(3);
+                        setTextColour(drawState, 3);
                         break;
 
                     case ControlCodes::Colour::green:
-                        setTextColour(4);
+                        setTextColour(drawState, 4);
                         break;
 
                     case ControlCodes::Colour::yellow:
-                        setTextColour(5);
+                        setTextColour(drawState, 5);
                         break;
 
                     case ControlCodes::Colour::topaz:
-                        setTextColour(6);
+                        setTextColour(drawState, 6);
                         break;
 
                     case ControlCodes::Colour::celadon:
-                        setTextColour(7);
+                        setTextColour(drawState, 7);
                         break;
 
                     case ControlCodes::Colour::babyBlue:
-                        setTextColour(8);
+                        setTextColour(drawState, 8);
                         break;
 
                     case ControlCodes::Colour::paleLavender:
-                        setTextColour(9);
+                        setTextColour(drawState, 9);
                         break;
 
                     case ControlCodes::Colour::paleGold:
-                        setTextColour(10);
+                        setTextColour(drawState, 10);
                         break;
 
                     case ControlCodes::Colour::lightPink:
-                        setTextColour(11);
+                        setTextColour(drawState, 11);
                         break;
 
                     case ControlCodes::Colour::pearlAqua:
-                        setTextColour(12);
+                        setTextColour(drawState, 12);
                         break;
 
                     case ControlCodes::Colour::paleSilver:
-                        setTextColour(13);
+                        setTextColour(drawState, 13);
                         break;
 
                     default:
@@ -1280,9 +1223,9 @@ namespace OpenLoco::Gfx
                             if (chr >= 32)
                             {
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                const auto chrImage = getImageForCharacter(getCurrentFont(), chr);
-                                ctx.drawImagePaletteSet(pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
-                                pos.x += Gfx::getCharacterWidth(getCurrentFont(), chr);
+                                const auto chrImage = getImageForCharacter(drawState.font, chr);
+                                ctx.drawImagePaletteSet(pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ drawState.textColours }, {});
+                                pos.x += Gfx::getCharacterWidth(drawState.font, chr);
                             }
                             else
                             {
@@ -1299,6 +1242,7 @@ namespace OpenLoco::Gfx
 
         // 0x004950EF
         static void drawStringTicker(
+            TextDrawingState& drawState,
             DrawingContext& ctx,
             const RenderTarget& rt,
             Ui::Point origin,
@@ -1308,22 +1252,21 @@ namespace OpenLoco::Gfx
             uint16_t numCharactersToDisplay,
             uint16_t width)
         {
-            _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
+            const auto curDrawState = drawState;
             char empty[1] = "";
-            drawString(ctx, rt, origin, colour, empty);
+            drawString(drawState, ctx, rt, origin, colour, empty);
+            drawState = curDrawState;
 
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId);
 
-            _currentFontSpriteBase = Font::medium_bold;
-            const auto numLinesToDisplayAllChars = wrapStringTicker(buffer, width, numCharactersToDisplay);
+            const auto numLinesToDisplayAllChars = wrapStringTicker(drawState.font, buffer, width, numCharactersToDisplay);
             const auto lineToDisplayFrom = numLinesToDisplayAllChars - numLinesToDisplay;
 
             // wrapString might change the font due to formatting codes
-            uint16_t lineHeight = lineHeightFromFont(_currentFontSpriteBase); // _112D404
+            uint16_t lineHeight = getLineHeight(drawState.font); // _112D404
 
-            _currentFontFlags = TextDrawFlags::none;
             Ui::Point point = origin;
             if (lineToDisplayFrom > 0)
             {
@@ -1334,10 +1277,10 @@ namespace OpenLoco::Gfx
             auto numChars = numCharactersToDisplay;
             for (auto i = 0; ptr != nullptr && i < numLinesToDisplayAllChars; i++)
             {
-                uint16_t lineWidth = getStringWidth(ptr);
+                uint16_t lineWidth = getStringWidth(drawState.font, ptr);
 
                 // special drawstring
-                numChars = drawStringMaxChars(ctx, rt, point - Ui::Point(lineWidth / 2, 0), AdvancedColour::FE(), reinterpret_cast<uint8_t*>(const_cast<char*>(ptr)), numChars);
+                numChars = drawStringMaxChars(drawState, ctx, rt, point - Ui::Point(lineWidth / 2, 0), AdvancedColour::FE(), reinterpret_cast<uint8_t*>(const_cast<char*>(ptr)), numChars);
                 ptr = advanceToNextLineWrapped(ptr);
                 point.y += lineHeight;
             }
@@ -1346,11 +1289,10 @@ namespace OpenLoco::Gfx
         // 0x00495301
         // Note: Returned break count is -1. TODO: Refactor out this -1.
         // @return maxWidth @<cx> (numLinesToDisplayAllChars-1) @<di>
-        static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth)
+        static std::pair<uint16_t, uint16_t> wrapString(Font font, char* buffer, uint16_t stringWidth)
         {
             // std::vector<const char*> wrap; TODO: refactor to return pointers to line starts
             uint16_t wrapCount = 0;
-            auto font = *_currentFontSpriteBase;
             uint16_t maxWidth = 0;
 
             for (auto* ptr = buffer; *ptr != '\0';)
@@ -1464,19 +1406,15 @@ namespace OpenLoco::Gfx
                 }
             }
 
-            // Note that this is always the font used in the last line.
-            // TODO: refactor to pair up with each line, and to not use a global.
-            _currentFontSpriteBase = font;
             return std::make_pair(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0));
         }
 
         // 0x0049544E
         // Vanilla would also return maxWidth @<cx> (breakCount-1) @<di>
         // @return numLinesToDisplayAllChars @<ax>
-        static uint16_t wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters)
+        static uint16_t wrapStringTicker(Font font, char* buffer, uint16_t stringWidth, uint16_t numCharacters)
         {
             // std::vector<const char*> wrap; TODO: refactor to return pointers to line starts
-            auto font = *_currentFontSpriteBase;
             uint16_t numLinesToDisplayAllChars = 1;
 
             int16_t charNum = numCharacters;
@@ -1597,14 +1535,11 @@ namespace OpenLoco::Gfx
                 }
             }
 
-            // Note that this is always the font used in the last line.
-            // TODO: refactor to pair up with each line, and to not use a global.
-            _currentFontSpriteBase = font;
             return numLinesToDisplayAllChars;
         }
 
         // 0x004957C4
-        static int16_t clipString(int16_t width, char* string)
+        static int16_t clipString(Font font, int16_t width, char* string)
         {
             if (width < 6)
             {
@@ -1613,7 +1548,7 @@ namespace OpenLoco::Gfx
             }
 
             // If width of the full string is less than allowed width then we don't need to clip
-            auto clippedWidth = getStringWidth(string);
+            auto clippedWidth = getStringWidth(font, string);
             if (clippedWidth <= width)
             {
                 return clippedWidth;
@@ -1683,7 +1618,7 @@ namespace OpenLoco::Gfx
                 auto ellipseString = curString;
                 ellipseString.append("...");
 
-                auto ellipsedWidth = getStringWidth(ellipseString.c_str());
+                auto ellipsedWidth = getStringWidth(font, ellipseString.c_str());
                 if (ellipsedWidth < width)
                 {
                     // Keep best string with ellipse
@@ -1692,10 +1627,10 @@ namespace OpenLoco::Gfx
                 else
                 {
                     StringManager::locoStrcpy(string, bestString.c_str());
-                    return getStringWidth(string);
+                    return getStringWidth(font, string);
                 }
             }
-            return getStringWidth(string);
+            return getStringWidth(font, string);
         }
 
         /**
@@ -1704,11 +1639,9 @@ namespace OpenLoco::Gfx
          * @param buffer @<esi>
          * @return width @<cx>
          */
-        static uint16_t getStringWidth(const char* str)
+        static uint16_t getStringWidth(Font font, const char* str)
         {
             uint16_t width = 0;
-            auto fontSpriteBase = getCurrentFont();
-
             while (*str != '\0')
             {
                 const auto chr = static_cast<uint8_t>(*str);
@@ -1716,7 +1649,7 @@ namespace OpenLoco::Gfx
 
                 if (chr >= 32)
                 {
-                    width += Gfx::getCharacterWidth(fontSpriteBase, chr);
+                    width += Gfx::getCharacterWidth(font, chr);
                     continue;
                 }
 
@@ -1738,19 +1671,19 @@ namespace OpenLoco::Gfx
                         break;
 
                     case ControlCodes::Font::small:
-                        fontSpriteBase = Font::small;
+                        font = Font::small;
                         break;
 
                     case ControlCodes::Font::large:
-                        fontSpriteBase = Font::large;
+                        font = Font::large;
                         break;
 
                     case ControlCodes::Font::bold:
-                        fontSpriteBase = Font::medium_bold;
+                        font = Font::medium_bold;
                         break;
 
                     case ControlCodes::Font::regular:
-                        fontSpriteBase = Font::medium_normal;
+                        font = Font::medium_normal;
                         break;
 
                     case ControlCodes::Font::outline:
@@ -1862,9 +1795,8 @@ namespace OpenLoco::Gfx
         // 0x00495715
         // @param buffer @<esi>
         // @return width @<cx>
-        static uint16_t getStringWidthNewLined(const char* buffer)
+        static uint16_t getStringWidthNewLined(Font font, const char* buffer)
         {
-            auto font = *_currentFontSpriteBase;
             uint16_t maxWidth = 0;
 
             for (auto* ptr = buffer; *ptr != '\0'; ++ptr)
@@ -1883,11 +1815,10 @@ namespace OpenLoco::Gfx
          * @param buffer @<esi>
          * @return width @<cx>
          */
-        static uint16_t getMaxStringWidth(const char* str)
+        static uint16_t getMaxStringWidth(Font font, const char* str)
         {
             uint16_t width = 0;
             uint16_t maxWidth = 0;
-            auto fontSpriteBase = getCurrentFont();
 
             while (*str != '\0')
             {
@@ -1896,7 +1827,7 @@ namespace OpenLoco::Gfx
 
                 if (chr >= 32)
                 {
-                    width += Gfx::getCharacterWidth(fontSpriteBase, chr);
+                    width += Gfx::getCharacterWidth(font, chr);
                     continue;
                 }
 
@@ -1919,19 +1850,19 @@ namespace OpenLoco::Gfx
                         continue;
 
                     case ControlCodes::Font::small:
-                        fontSpriteBase = Font::small;
+                        font = Font::small;
                         break;
 
                     case ControlCodes::Font::large:
-                        fontSpriteBase = Font::large;
+                        font = Font::large;
                         break;
 
                     case ControlCodes::Font::bold:
-                        fontSpriteBase = Font::medium_bold;
+                        font = Font::medium_bold;
                         break;
 
                     case ControlCodes::Font::regular:
-                        fontSpriteBase = Font::medium_normal;
+                        font = Font::medium_normal;
                         break;
 
                     case ControlCodes::Font::outline:
@@ -1980,123 +1911,217 @@ namespace OpenLoco::Gfx
     {
     }
 
-    Font TextRenderer::getCurrentFont()
+    Font TextRenderer::getCurrentFont() const
     {
-        return Impl::getCurrentFont();
+        return _currentFontSpriteBase;
     }
 
     void TextRenderer::setCurrentFont(Font base)
     {
-        Impl::setCurrentFont(base);
+        _currentFontSpriteBase = base;
     }
 
-    int16_t TextRenderer::clipString(int16_t width, char* string)
+    int16_t TextRenderer::clipString(int16_t width, char* string) const
     {
-        return Impl::clipString(width, string);
+        return Impl::clipString(_currentFontSpriteBase, width, string);
     }
 
-    uint16_t TextRenderer::getStringWidth(const char* buffer)
+    int16_t TextRenderer::clipString(Font font, int16_t width, char* string)
     {
-        return Impl::getStringWidth(buffer);
+        return Impl::clipString(font, width, string);
+    }
+
+    uint16_t TextRenderer::getStringWidth(const char* buffer) const
+    {
+        return Impl::getStringWidth(_currentFontSpriteBase, buffer);
     }
 
     uint16_t TextRenderer::getStringWidth(const Font base, const char* buffer)
     {
-        Impl::setCurrentFont(base);
-        return Impl::getStringWidth(buffer);
+        return Impl::getStringWidth(base, buffer);
     }
 
-    uint16_t TextRenderer::getMaxStringWidth(const char* buffer)
+    uint16_t TextRenderer::getMaxStringWidth(const char* buffer) const
     {
-        return Impl::getMaxStringWidth(buffer);
+        return Impl::getMaxStringWidth(_currentFontSpriteBase, buffer);
+    }
+
+    uint16_t TextRenderer::getMaxStringWidth(Font font, const char* buffer)
+    {
+        return Impl::getMaxStringWidth(font, buffer);
     }
 
     Ui::Point TextRenderer::drawString(Ui::Point origin, AdvancedColour colour, const char* str)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawString(_ctx, rt, origin, colour, str);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawString(drawState, _ctx, rt, origin, colour, str);
     }
 
     Ui::Point TextRenderer::drawStringLeft(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringLeft(_ctx, rt, origin, colour, stringId, args);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringLeft(drawState, _ctx, rt, origin, colour, stringId, args);
     }
 
     Ui::Point TextRenderer::drawStringLeftClipped(Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringLeftClipped(_ctx, rt, origin, width, colour, stringId, args);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringLeftClipped(drawState, _ctx, rt, origin, width, colour, stringId, args);
     }
 
     Ui::Point TextRenderer::drawStringLeftUnderline(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringLeftUnderline(_ctx, rt, origin, colour, stringId, args);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringLeftUnderline(drawState, _ctx, rt, origin, colour, stringId, args);
     }
 
     Ui::Point TextRenderer::drawStringLeftWrapped(Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringLeftWrapped(_ctx, rt, origin, width, colour, stringId, args);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringLeftWrapped(drawState, _ctx, rt, origin, width, colour, stringId, args);
     }
 
     Ui::Point TextRenderer::drawStringCentred(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringCentred(_ctx, rt, origin, colour, stringId, args);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringCentred(drawState, _ctx, rt, origin, colour, stringId, args);
     }
 
     Ui::Point TextRenderer::drawStringCentredClipped(Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringCentredClipped(_ctx, rt, origin, width, colour, stringId, args);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringCentredClipped(drawState, _ctx, rt, origin, width, colour, stringId, args);
     }
 
     Ui::Point TextRenderer::drawStringCentredRaw(Ui::Point origin, uint16_t linebreakCount, AdvancedColour colour, const char* wrappedStr)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringCentredRaw(_ctx, rt, origin, linebreakCount, colour, wrappedStr);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringCentredRaw(drawState, _ctx, rt, origin, linebreakCount, colour, wrappedStr);
     }
 
     Ui::Point TextRenderer::drawStringCentredWrapped(Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringCentredWrapped(_ctx, rt, origin, width, colour, stringId, args);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringCentredWrapped(drawState, _ctx, rt, origin, width, colour, stringId, args);
     }
 
     Ui::Point TextRenderer::drawStringRight(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringRight(_ctx, rt, origin, colour, stringId, args);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringRight(drawState, _ctx, rt, origin, colour, stringId, args);
     }
 
     Ui::Point TextRenderer::drawStringRightUnderline(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringRightUnderline(_ctx, rt, origin, colour, stringId, args);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringRightUnderline(drawState, _ctx, rt, origin, colour, stringId, args);
     }
 
     void TextRenderer::drawStringYOffsets(Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets)
     {
         auto& rt = _ctx.currentRenderTarget();
-        return Impl::drawStringYOffsets(_ctx, rt, loc, colour, str, yOffsets);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        return Impl::drawStringYOffsets(drawState, _ctx, rt, loc, colour, str, yOffsets);
     }
 
     void TextRenderer::drawStringTicker(Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
     {
         auto& rt = _ctx.currentRenderTarget();
-        Impl::drawStringTicker(_ctx, rt, origin, stringId, colour, numLinesToDisplay, numCharactersToDisplay, width);
+
+        TextDrawingState drawState;
+        drawState.font = _currentFontSpriteBase;
+        drawState.fontFlags = _currentFontFlags;
+
+        Impl::drawStringTicker(drawState, _ctx, rt, origin, stringId, colour, numLinesToDisplay, numCharactersToDisplay, width);
     }
 
-    uint16_t TextRenderer::getStringWidthNewLined(const char* buffer)
+    uint16_t TextRenderer::getStringWidthNewLined(const char* buffer) const
     {
-        return Impl::getStringWidthNewLined(buffer);
+        return Impl::getStringWidthNewLined(_currentFontSpriteBase, buffer);
     }
 
-    std::pair<uint16_t, uint16_t> TextRenderer::wrapString(char* buffer, uint16_t stringWidth)
+    uint16_t TextRenderer::getStringWidthNewLined(Font font, const char* buffer)
     {
-        return Impl::wrapString(buffer, stringWidth);
+        return Impl::getStringWidthNewLined(font, buffer);
+    }
+
+    std::pair<uint16_t, uint16_t> TextRenderer::wrapString(char* buffer, uint16_t stringWidth) const
+    {
+        return Impl::wrapString(_currentFontSpriteBase, buffer, stringWidth);
+    }
+
+    std::pair<uint16_t, uint16_t> TextRenderer::wrapString(Font font, char* buffer, uint16_t stringWidth)
+    {
+        return Impl::wrapString(font, buffer, stringWidth);
+    }
+
+    uint16_t TextRenderer::getLineHeight(Font font)
+    {
+        return Impl::getLineHeight(font);
+    }
+
+    uint16_t TextRenderer::getSmallerLineHeight(Font font)
+    {
+        return Impl::getSmallerLineHeight(font);
     }
 
 }

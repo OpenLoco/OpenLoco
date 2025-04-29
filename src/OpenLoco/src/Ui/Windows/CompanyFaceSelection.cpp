@@ -4,6 +4,7 @@
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -16,9 +17,12 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -52,11 +56,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x509680
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 398, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::company_face_selection_title),
+        Widgets::Caption({ 1, 1 }, { 398, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, StringIds::company_face_selection_title),
         Widgets::ImageButton({ 385, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 400, 257 }, WindowColour::secondary),
-        makeWidget({ 4, 19 }, { 188, 248 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
-        makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_6, WindowColour::secondary)
+        Widgets::ScrollView({ 4, 19 }, { 188, 248 }, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
+        Widgets::Tab({ 265, 23 }, { 66, 66 }, WindowColour::secondary)
 
     );
 
@@ -84,13 +88,12 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         {
             self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, WindowFlags::none, getEvents());
             self->setWidgets(widgets);
-            self->enabledWidgets = (1 << widx::close_button);
             self->initScrollWidgets();
             _9C68F2 = id;
             self->owner = id;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
-            self->setColour(WindowColour::secondary, skin->colour_0A);
+            self->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
             self->rowCount = static_cast<uint16_t>(_competitorList.size());
             self->rowHover = -1;
@@ -135,7 +138,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x435299
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -235,7 +238,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352B1
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, const WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, const WidgetIndex_t, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);

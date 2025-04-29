@@ -2,10 +2,12 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/StringIds.h"
 #include "SceneManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Window.h"
@@ -28,7 +30,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 47 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::buffer_1250),
+        Widgets::Caption({ 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::buffer_1250),
         Widgets::Panel({ 0, 15 }, { 350, 32 }, WindowColour::secondary)
 
     );
@@ -44,7 +46,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     Window* open(std::string_view captionString)
     {
         _captionString = captionString;
-        setScreenFlag(ScreenFlags::progressBarActive);
+        SceneManager::addSceneFlags(SceneManager::Flags::progressBarActive);
         _progressBarValue = 0xFF;
 
         auto window = WindowManager::createWindowCentred(
@@ -65,7 +67,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     // 0x004CF74E
     void close()
     {
-        clearScreenFlag(ScreenFlags::progressBarActive);
+        SceneManager::removeSceneFlags(SceneManager::Flags::progressBarActive);
         WindowManager::close(WindowType::progressBar);
         Gfx::invalidateScreen();
         _progressBarStyle ^= 1;

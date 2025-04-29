@@ -1,6 +1,7 @@
 #include "Conversion.h"
 #include "Unicode.h"
-#include <OpenLoco/Utility/Collection.hpp>
+#include <algorithm>
+#include <array>
 #include <cstdlib>
 #include <string>
 
@@ -12,7 +13,7 @@ namespace OpenLoco::Localisation
         uint8_t locoCode;
     };
 
-    static constexpr EncodingConvertEntry kUnicodeToLocoTable[] = {
+    static constexpr auto kUnicodeToLocoTable = std::to_array<EncodingConvertEntry>({
         { UnicodeChar::a_ogonek_uc, LocoChar::a_ogonek_uc },
         { UnicodeChar::a_ogonek, LocoChar::a_ogonek },
         { UnicodeChar::c_acute_uc, LocoChar::c_acute_uc },
@@ -42,22 +43,10 @@ namespace OpenLoco::Localisation
         { UnicodeChar::water, LocoChar::water },
         { UnicodeChar::road, LocoChar::road },
         { UnicodeChar::railway, LocoChar::railway },
-    };
+    });
 
-    static int32_t searchCompare(const void* pKey, const void* pEntry)
-    {
-        utf32_t key = *((utf32_t*)pKey);
-        EncodingConvertEntry* entry = (EncodingConvertEntry*)pEntry;
-        if (key < entry->unicode)
-        {
-            return -1;
-        }
-        if (key > entry->unicode)
-        {
-            return 1;
-        }
-        return 0;
-    }
+    // Ensure that the table is sorted by Unicode point.
+    static_assert(std::ranges::is_sorted(kUnicodeToLocoTable, {}, &EncodingConvertEntry::unicode));
 
     utf32_t convertLocoToUnicode(uint8_t locoCode)
     {
@@ -74,19 +63,23 @@ namespace OpenLoco::Localisation
 
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
-        EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, kUnicodeToLocoTable, Utility::length(kUnicodeToLocoTable), sizeof(EncodingConvertEntry), searchCompare);
-        if (entry != nullptr)
+        const auto it = std::ranges::lower_bound(
+            kUnicodeToLocoTable,
+            unicode,
+            {},
+            &EncodingConvertEntry::unicode);
+
+        if (it != kUnicodeToLocoTable.end() && it->unicode == unicode)
         {
-            return entry->locoCode;
+            return it->locoCode;
         }
-        else if (unicode < 256)
+
+        if (unicode < 256)
         {
-            return unicode;
+            return static_cast<uint8_t>(unicode);
         }
-        else
-        {
-            return '?';
-        }
+
+        return '?';
     }
 
     std::string convertUnicodeToLoco(const std::string& unicodeString)

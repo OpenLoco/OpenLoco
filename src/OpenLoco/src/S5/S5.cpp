@@ -3,12 +3,14 @@
 #include "S5.h"
 
 #include "Audio/Audio.h"
+#include "EditorController.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
 #include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Graphics/DrawingContext.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
 #include "Localisation/Formatting.h"
@@ -24,6 +26,7 @@
 #include "OpenLoco.h"
 #include "SawyerStream.h"
 #include "ScenarioManager.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
@@ -37,7 +40,6 @@
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Exception.hpp>
 #include <fstream>
 #include <iomanip>
 
@@ -55,7 +57,6 @@ namespace OpenLoco::S5
     static loco_global<Options, 0x009C8714> _activeOptions;
     static loco_global<Header, 0x009CCA34> _header;
     static loco_global<char[512], 0x0112CE04> _savePath;
-    static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
     static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
     static loco_global<StringId, 0x0050C198> _loadErrorMessage;
 
@@ -72,11 +73,6 @@ namespace OpenLoco::S5
     constexpr bool hasLoadFlags(LoadFlags flags, LoadFlags flagsToTest)
     {
         return (flags & flagsToTest) != LoadFlags::none;
-    }
-
-    Options& getOptions()
-    {
-        return _activeOptions;
     }
 
     static Header prepareHeader(SaveFlags flags, size_t numPackedObjects)
@@ -174,7 +170,7 @@ namespace OpenLoco::S5
     // 0x0046DB4C
     void drawScenarioPreviewImage()
     {
-        auto& options = S5::getOptions();
+        auto& options = *_activeOptions;
         const auto kPreviewSize = sizeof(options.preview[0]);
         const auto kMapSkipFactor = kMapRows / kPreviewSize;
 
@@ -287,7 +283,7 @@ namespace OpenLoco::S5
         file->header = prepareHeader(flags, packedObjects.size());
         if (file->header.type == S5Type::scenario || file->header.type == S5Type::landscape)
         {
-            file->landscapeOptions = std::make_unique<Options>(_activeOptions);
+            file->scenarioOptions = std::make_unique<Options>(_activeOptions);
         }
         if (file->header.hasFlags(HeaderFlags::hasSaveDetails))
         {
@@ -313,7 +309,7 @@ namespace OpenLoco::S5
         return (flags & SaveFlags::raw) == SaveFlags::none
             && (flags & SaveFlags::dump) == SaveFlags::none
             && (flags & SaveFlags::packCustomObjects) != SaveFlags::none
-            && !isNetworked();
+            && !SceneManager::isNetworked();
     }
 
     // 0x00441C26
@@ -388,7 +384,7 @@ namespace OpenLoco::S5
             Gfx::invalidateScreen();
             if ((flags & SaveFlags::raw) == SaveFlags::none)
             {
-                resetScreenAge();
+                SceneManager::resetSceneAge();
             }
 
             return true;
@@ -405,7 +401,7 @@ namespace OpenLoco::S5
             fs.writeChunk(SawyerEncoding::rotate, file.header);
             if (file.header.type == S5Type::scenario || file.header.type == S5Type::landscape)
             {
-                fs.writeChunk(SawyerEncoding::rotate, *file.landscapeOptions);
+                fs.writeChunk(SawyerEncoding::rotate, *file.scenarioOptions);
             }
             if (file.header.hasFlags(HeaderFlags::hasSaveDetails))
             {
@@ -508,8 +504,8 @@ namespace OpenLoco::S5
         }
         if (file->header.type == S5Type::scenario)
         {
-            file->landscapeOptions = std::make_unique<S5::Options>();
-            fs.readChunk(&*file->landscapeOptions, sizeof(S5::Options));
+            file->scenarioOptions = std::make_unique<S5::Options>();
+            fs.readChunk(&*file->scenarioOptions, sizeof(S5::Options));
         }
         // Read packed objects
         if (file->header.numPackedObjects > 0)
@@ -623,7 +619,7 @@ namespace OpenLoco::S5
 
     bool importSaveToGameState(Stream& stream, LoadFlags flags)
     {
-        _gameSpeed = 0;
+        SceneManager::setGameSpeed(GameSpeed::Normal);
         if ((flags & LoadFlags::titleSequence) == LoadFlags::none
             && (flags & LoadFlags::twoPlayer) == LoadFlags::none)
         {
@@ -670,9 +666,9 @@ namespace OpenLoco::S5
                     Ui::ProgressBar::end();
                     return false;
                 }
-                if (file->landscapeOptions->editorStep == EditorController::Step::null)
+                if (static_cast<EditorController::Step>(file->scenarioOptions->editorStep) == EditorController::Step::null)
                 {
-                    file->landscapeOptions->editorStep = EditorController::Step::landscapeEditor;
+                    file->scenarioOptions->editorStep = enumValue(EditorController::Step::landscapeEditor);
                 }
             }
 
@@ -681,8 +677,10 @@ namespace OpenLoco::S5
             // Any packed objects to install?
             if (!file->packedObjects.empty())
             {
-                const auto progressStep = 50 / file->packedObjects.size();
-                auto currentProgress = 100;
+                // For now installing objects can't be done with a progress bar
+                // revert this when objects do not change the current game state
+                Ui::ProgressBar::end();
+
                 bool objectInstalled = false;
 
                 for (auto [object, data] : file->packedObjects)
@@ -691,15 +689,15 @@ namespace OpenLoco::S5
                     {
                         objectInstalled = true;
                     }
-
-                    currentProgress += progressStep;
-                    Ui::ProgressBar::setProgress(currentProgress);
                 }
 
                 if (objectInstalled)
                 {
                     ObjectManager::loadIndex();
                 }
+
+                // See above. restart progress bar
+                Ui::ProgressBar::begin(StringIds::loading);
             }
 
             Ui::ProgressBar::setProgress(150);
@@ -769,7 +767,7 @@ namespace OpenLoco::S5
             _gameState = file->gameState;
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
-                _activeOptions = *file->landscapeOptions;
+                _activeOptions = *file->scenarioOptions;
             }
             if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
@@ -809,7 +807,7 @@ namespace OpenLoco::S5
                     ObjectManager::unload(header);
                     ObjectManager::reloadAll();
                     ObjectManager::sub_4748FA();
-                    _activeOptions->editorStep = EditorController::Step::landscapeEditor;
+                    _activeOptions->editorStep = enumValue(EditorController::Step::landscapeEditor);
                     _activeOptions->difficulty = 3;
                     StringManager::formatString(_activeOptions->scenarioDetails, StringIds::no_details_yet);
                     _activeOptions->scenarioName[0] = '\0';
@@ -825,12 +823,12 @@ namespace OpenLoco::S5
             }
             if (!hasLoadFlags(flags, LoadFlags::titleSequence))
             {
-                clearScreenFlag(ScreenFlags::title);
+                SceneManager::removeSceneFlags(SceneManager::Flags::title);
                 initialiseViewports();
                 Audio::resetMusic();
                 if (hasLoadFlags(flags, LoadFlags::landscape))
                 {
-                    setScreenFlag(ScreenFlags::editor);
+                    SceneManager::addSceneFlags(SceneManager::Flags::editor);
                     EditorController::showEditor();
                 }
                 else
@@ -877,7 +875,7 @@ namespace OpenLoco::S5
 
             if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
-                resetScreenAge();
+                SceneManager::resetSceneAge();
                 throw GameException::Interrupt;
             }
 
@@ -937,7 +935,7 @@ namespace OpenLoco::S5
     }
 
     // 0x00442AFC
-    std::unique_ptr<Options> readScenarioOptions(const fs::path& path)
+    std::unique_ptr<Scenario::Options> readScenarioOptions(const fs::path& path)
     {
         FileStream stream(path, StreamMode::read);
         SawyerStreamReader fs(stream);
@@ -960,7 +958,11 @@ namespace OpenLoco::S5
         {
             // 0x009DA285 = 1
             // 0x009CCA54 _previewOptions
-            auto ret = std::make_unique<Options>();
+
+            // TODO: For now OpenLoco::Options and S5::Options are identical in the future
+            // there should be an import and validation step that converts from one to the
+            // other
+            auto ret = std::make_unique<Scenario::Options>();
             fs.readChunk(ret.get(), sizeof(*ret));
             return ret;
         }

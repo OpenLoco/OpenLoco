@@ -13,6 +13,7 @@
 #include "Objects/ObjectIndex.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
+#include "ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Title.h"
 #include "Ui/ProgressBar.h"
@@ -41,7 +42,7 @@ namespace OpenLoco::Game
     static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
     {
         Audio::pauseSound();
-        setPauseFlag(1 << 2);
+        SceneManager::setPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
 
@@ -49,7 +50,7 @@ namespace OpenLoco::Game
 
         Audio::unpauseSound();
         Ui::processMessagesMini();
-        unsetPauseFlag(1 << 2);
+        SceneManager::unsetPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
 
@@ -59,7 +60,7 @@ namespace OpenLoco::Game
     // 0x004416FF
     bool loadSaveGameOpen()
     {
-        if (!isNetworked())
+        if (!SceneManager::isNetworked())
         {
             strncpy(&_savePath[0], &_pathSavesSinglePlayer[0], std::size(_savePath));
         }
@@ -100,7 +101,7 @@ namespace OpenLoco::Game
     // 0x004418DB
     bool saveScenarioOpen()
     {
-        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / S5::getOptions().scenarioName;
+        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / Scenario::getOptions().scenarioName;
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
@@ -110,14 +111,14 @@ namespace OpenLoco::Game
     // 0x00441993
     bool saveLandscapeOpen()
     {
-        S5::getOptions().scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
+        Scenario::getOptions().scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
         if (hasFlags(GameStateFlags::tileManagerLoaded))
         {
-            S5::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
+            Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
             S5::drawScenarioPreviewImage();
         }
 
-        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / S5::getOptions().scenarioName;
+        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / Scenario::getOptions().scenarioName;
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
@@ -134,7 +135,7 @@ namespace OpenLoco::Game
 
         ToolManager::toolCancel();
 
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             if (Game::loadLandscapeOpen())
             {
@@ -145,12 +146,12 @@ namespace OpenLoco::Game
                 // 0x004424CE
                 if (S5::importSaveToGameState(path, S5::LoadFlags::landscape))
                 {
-                    resetScreenAge();
+                    SceneManager::resetSceneAge();
                     throw GameException::Interrupt;
                 }
             }
         }
-        else if (!isNetworked())
+        else if (!SceneManager::isNetworked())
         {
             if (Game::loadSaveGameOpen())
             {
@@ -160,12 +161,12 @@ namespace OpenLoco::Game
 
                 if (S5::importSaveToGameState(path, S5::LoadFlags::none))
                 {
-                    resetScreenAge();
+                    SceneManager::resetSceneAge();
                     throw GameException::Interrupt;
                 }
             }
         }
-        else if (isNetworked())
+        else if (SceneManager::isNetworked())
         {
             // 0x0043C0DB
             if (CompanyManager::getControllingId() == GameCommands::getUpdatingCompanyId())
@@ -185,9 +186,9 @@ namespace OpenLoco::Game
         GameCommands::resetCommandNestLevel();
 
         // Path for networked games; untested.
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
-            clearScreenFlag(ScreenFlags::networked);
+            SceneManager::removeSceneFlags(SceneManager::Flags::networked);
             auto playerCompanyId = CompanyManager::getControllingId();
             auto previousUpdatingId = GameCommands::getUpdatingCompanyId();
             GameCommands::setUpdatingCompanyId(playerCompanyId);
@@ -195,15 +196,15 @@ namespace OpenLoco::Game
             Ui::WindowManager::closeAllFloatingWindows();
 
             GameCommands::setUpdatingCompanyId(previousUpdatingId);
-            setScreenFlag(ScreenFlags::networked);
+            SceneManager::addSceneFlags(SceneManager::Flags::networked);
 
             // If the other party is leaving the game, go back to the title screen.
             if (playerCompanyId != previousUpdatingId)
             {
                 // 0x0043C1CD
                 addr<0x00F25428, uint32_t>() = 0;
-                clearScreenFlag(ScreenFlags::networked);
-                clearScreenFlag(ScreenFlags::networkHost);
+                SceneManager::removeSceneFlags(SceneManager::Flags::networked);
+                SceneManager::removeSceneFlags(SceneManager::Flags::networkHost);
                 addr<0x00508F0C, uint32_t>() = 0;
                 CompanyManager::setControllingId(CompanyId(0));
                 CompanyManager::setSecondaryPlayerId(CompanyId::null);
@@ -215,13 +216,13 @@ namespace OpenLoco::Game
                 Ui::WindowManager::close(Ui::WindowType::companyFaceSelection);
                 Ui::WindowManager::close(Ui::WindowType::objectSelection);
 
-                clearScreenFlag(ScreenFlags::editor);
+                SceneManager::removeSceneFlags(SceneManager::Flags::editor);
                 Audio::pauseSound();
                 Audio::unpauseSound();
 
                 if (Input::hasFlag(Input::Flags::rightMousePressed))
                 {
-                    Input::sub_407231();
+                    Input::stopCursorDrag();
                     Input::resetFlag(Input::Flags::rightMousePressed);
                 }
 
@@ -240,7 +241,7 @@ namespace OpenLoco::Game
     // 0x0043C0FD
     void returnToTitle()
     {
-        if (isNetworked())
+        if (SceneManager::isNetworked())
         {
             Ui::WindowManager::closeAllFloatingWindows();
         }
@@ -250,13 +251,13 @@ namespace OpenLoco::Game
         Ui::WindowManager::close(Ui::WindowType::objectSelection);
         Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
 
-        clearScreenFlag(ScreenFlags::editor);
+        SceneManager::removeSceneFlags(SceneManager::Flags::editor);
         Audio::pauseSound();
         Audio::unpauseSound();
 
         if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
-            Input::sub_407231();
+            Input::stopCursorDrag();
             Input::resetFlag(Input::Flags::rightMousePressed);
         }
 
@@ -270,7 +271,7 @@ namespace OpenLoco::Game
     {
         ToolManager::toolCancel();
 
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             if (Game::saveLandscapeOpen())
             {
@@ -284,7 +285,7 @@ namespace OpenLoco::Game
                 }
             }
         }
-        else if (!isNetworked())
+        else if (!SceneManager::isNetworked())
         {
             if (Game::saveSaveGameOpen())
             {

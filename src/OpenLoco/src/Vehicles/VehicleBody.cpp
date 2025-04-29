@@ -100,13 +100,13 @@ namespace OpenLoco::Vehicles
         }
 
         const auto* vehicleObject = getObject();
-        int32_t var_05 = vehicleObject->carComponents[bodyIndex].var_05;
-        if (var_05 == 0)
+        int32_t emitterHorizontalPos = vehicleObject->carComponents[bodyIndex].emitterHorizontalPos;
+        if (emitterHorizontalPos == 0)
         {
             return;
         }
 
-        var_05 -= 0x80;
+        emitterHorizontalPos -= 0x80;
 
         switch (vehicleObject->animation[0].type)
         {
@@ -115,28 +115,50 @@ namespace OpenLoco::Vehicles
             case SimpleAnimationType::steam_puff1:
             case SimpleAnimationType::steam_puff2:
             case SimpleAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(0, var_05);
+                steamPuffsAnimationUpdate(0, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::diesel_exhaust1:
-                dieselExhaust1AnimationUpdate(0, var_05);
+                dieselExhaust1AnimationUpdate(0, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(0, var_05);
+                electricSpark1AnimationUpdate(0, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(0, var_05);
+                electricSpark2AnimationUpdate(0, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::diesel_exhaust2:
-                dieselExhaust2AnimationUpdate(0, var_05);
+                dieselExhaust2AnimationUpdate(0, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::ship_wake:
-                shipWakeAnimationUpdate(0, var_05);
+                shipWakeAnimationUpdate(0, emitterHorizontalPos);
                 break;
             default:
                 assert(false);
                 break;
         }
         secondaryAnimationUpdate();
+    }
+
+    // 0x004AA904
+    void VehicleBody::updateSegmentCrashed()
+    {
+        invalidateSprite();
+        sub_4AC255(_vehicleUpdate_backBogie, _vehicleUpdate_frontBogie);
+        invalidateSprite();
+        animationUpdate();
+        sub_4AAB0B();
+        if (!hasVehicleFlags(VehicleFlags::unk_5))
+        {
+            VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
+            VehicleBogie* backBogie = _vehicleUpdate_backBogie;
+
+            if (frontBogie->hasVehicleFlags(VehicleFlags::unk_5)
+                || backBogie->hasVehicleFlags(VehicleFlags::unk_5))
+            {
+                explodeComponent();
+                this->vehicleFlags |= VehicleFlags::unk_5;
+            }
+        }
     }
 
     // 0x004AAB0B
@@ -155,91 +177,91 @@ namespace OpenLoco::Vehicles
         }
 
         const auto* vehicleObj = getObject();
-        uint8_t al = 0;
+        uint8_t targetAnimationFrame = 0;
         if (vehicleObj->bodySprites[objectSpriteType].hasFlags(BodySpriteFlags::hasSpeedAnimation))
         {
             Vehicle2* veh3 = _vehicleUpdate_2;
-            al = veh3->currentSpeed / (vehicleObj->speed / vehicleObj->bodySprites[objectSpriteType].numAnimationFrames);
-            al = std::min<uint8_t>(al, vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
+            targetAnimationFrame = veh3->currentSpeed / (vehicleObj->speed / vehicleObj->bodySprites[objectSpriteType].numAnimationFrames);
+            targetAnimationFrame = std::min<uint8_t>(targetAnimationFrame, vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
         }
         else if (vehicleObj->bodySprites[objectSpriteType].numRollFrames != 1)
         {
             VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
             Vehicle2* veh3 = _vehicleUpdate_2;
-            al = var_46;
-            int8_t ah = 0;
+            targetAnimationFrame = animationFrame;
+            int8_t targetTiltFrame = 0;
             if (veh3->currentSpeed < 35.0_mph)
             {
-                ah = 0;
+                targetTiltFrame = 0;
             }
             else
             {
-                ah = _vehicle_arr_4F865C[frontBogie->trackAndDirection.track._data >> 2];
+                targetTiltFrame = _vehicle_arr_4F865C[frontBogie->trackAndDirection.track._data >> 2];
+                // S-bend
                 if ((frontBogie->trackAndDirection.track.id() == 12) || (frontBogie->trackAndDirection.track.id() == 13))
                 {
                     if (frontBogie->subPosition >= 48)
                     {
-                        ah = -ah;
+                        targetTiltFrame = -targetTiltFrame;
                     }
                 }
 
-                if (ah < 0)
+                if (targetTiltFrame < 0)
                 {
                     if (has38Flags(Flags38::isReversed))
                     {
-                        ah = 2;
-                        if (al != 0 && al != ah)
+                        targetTiltFrame = 2;
+                        if (targetAnimationFrame != 0 && targetAnimationFrame != targetTiltFrame)
                         {
-                            ah = 0;
+                            targetTiltFrame = 0;
                         }
                     }
                     else
                     {
-                        ah = 1;
-                        if (al != 0 && al != ah)
+                        targetTiltFrame = 1;
+                        if (targetAnimationFrame != 0 && targetAnimationFrame != targetTiltFrame)
                         {
-                            ah = 0;
+                            targetTiltFrame = 0;
                         }
                     }
                 }
-                else if (ah > 0)
+                else if (targetTiltFrame > 0)
                 {
                     if (has38Flags(Flags38::isReversed))
                     {
-                        ah = 1;
-                        if (al != 0 && al != ah)
+                        targetTiltFrame = 1;
+                        if (targetAnimationFrame != 0 && targetAnimationFrame != targetTiltFrame)
                         {
-                            ah = 0;
+                            targetTiltFrame = 0;
                         }
                     }
                     else
                     {
-                        ah = 2;
-                        if (al != 0 && al != ah)
+                        targetTiltFrame = 2;
+                        if (targetAnimationFrame != 0 && targetAnimationFrame != targetTiltFrame)
                         {
-                            ah = 0;
+                            targetTiltFrame = 0;
                         }
                     }
                 }
                 else
                 {
-                    ah = 0;
+                    targetTiltFrame = 0;
                 }
             }
-            al = ah;
+            targetAnimationFrame = targetTiltFrame;
         }
         else
         {
-            al = (var_44 >> 12) & (vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
+            targetAnimationFrame = (var_44 >> 12) & (vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
         }
-        if (var_46 != al)
+        if (animationFrame != targetAnimationFrame)
         {
-            var_46 = al;
+            animationFrame = targetAnimationFrame;
             invalidateSprite();
         }
     }
 
-    static uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff);
     static uint8_t calculateYaw2FromVector(int16_t xDiff, int16_t yDiff);
     static uint8_t calculateYaw3FromVector(int16_t xDiff, int16_t yDiff);
 
@@ -366,7 +388,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF52B For yaw of 3 bits
-    static uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff)
+    uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff)
     {
         uint32_t i = 0;
 
@@ -873,13 +895,13 @@ namespace OpenLoco::Vehicles
     {
         const auto* vehicleObject = getObject();
 
-        uint8_t var_05 = vehicleObject->carComponents[bodyIndex].var_05;
-        if (var_05 == 0)
+        uint8_t emitterHorizontalPos = vehicleObject->carComponents[bodyIndex].emitterHorizontalPos;
+        if (emitterHorizontalPos == 0)
         {
             return;
         }
 
-        var_05 -= 0x80;
+        emitterHorizontalPos -= 0x80;
 
         switch (vehicleObject->animation[1].type)
         {
@@ -888,22 +910,22 @@ namespace OpenLoco::Vehicles
             case SimpleAnimationType::steam_puff1:
             case SimpleAnimationType::steam_puff2:
             case SimpleAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(1, var_05);
+                steamPuffsAnimationUpdate(1, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::diesel_exhaust1:
-                dieselExhaust1AnimationUpdate(1, var_05);
+                dieselExhaust1AnimationUpdate(1, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(1, var_05);
+                electricSpark1AnimationUpdate(1, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(1, var_05);
+                electricSpark2AnimationUpdate(1, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::diesel_exhaust2:
-                dieselExhaust2AnimationUpdate(1, var_05);
+                dieselExhaust2AnimationUpdate(1, emitterHorizontalPos);
                 break;
             case SimpleAnimationType::ship_wake:
-                shipWakeAnimationUpdate(1, var_05);
+                shipWakeAnimationUpdate(1, emitterHorizontalPos);
                 break;
             default:
                 assert(false);
@@ -912,7 +934,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB688, 0x004AACA5
-    void VehicleBody::steamPuffsAnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::steamPuffsAnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         const auto* vehicleObject = getObject();
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
@@ -924,12 +946,12 @@ namespace OpenLoco::Vehicles
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
         bool soundCode = false;
-        if (veh_2->var_5A == 1 || veh_2->var_5A == 4)
+        if (veh_2->motorState == MotorState::accelerating || veh_2->motorState == MotorState::stoppedOnIncline)
         {
             soundCode = true;
         }
         bool tickCalc = true;
-        if (veh_2->var_5A != 0 && veh_2->currentSpeed >= 1.0_mph)
+        if (veh_2->motorState != MotorState::stopped && veh_2->currentSpeed >= 1.0_mph)
         {
             tickCalc = false;
         }
@@ -938,7 +960,7 @@ namespace OpenLoco::Vehicles
         // Reversing
         if (has38Flags(Flags38::isReversed))
         {
-            var_05 = -var_05;
+            emitterHorizontalPos = -emitterHorizontalPos;
             _var_44 = -_var_44;
         }
 
@@ -957,13 +979,13 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        var_05 += 64;
+        emitterHorizontalPos += 64;
 
-        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
         auto bogieDifference = backBogie->position - frontBogie->position;
 
-        auto smokeLoc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+        auto smokeLoc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
         Exhaust::create(smokeLoc, vehicleObject->animation[num].objectId | (soundCode ? 0 : 0x80));
         if (soundCode == false)
@@ -971,17 +993,22 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        var_55++;
+        chuffSoundIndex++;
         const SteamObject* steamObj = ObjectManager::get<SteamObject>(vehicleObject->animation[num].objectId);
-        if (var_55 >= ((uint8_t)vehicleObject->animation[num].type) + 1)
+        if (chuffSoundIndex >= ((uint8_t)vehicleObject->animation[num].type) + 1)
         {
-            var_55 = 0;
+            chuffSoundIndex = 0;
+        }
+
+        if (veh_2->currentSpeed > 15.0_mph)
+        {
+            return;
         }
 
         bool stationFound = false;
 
-        // Looking for a station
-        if (steamObj->hasFlags(SteamObjectFlags::unk2))
+        // play tunnel sounds if the locomotive is in a station below a bridge
+        if (steamObj->hasFlags(SteamObjectFlags::hasTunnelSounds))
         {
             auto tile = World::TileManager::get(frontBogie->tileX, frontBogie->tileY);
 
@@ -1026,12 +1053,7 @@ namespace OpenLoco::Vehicles
 
         if (stationFound)
         {
-            auto soundId = steamObj->soundEffects[var_55 + (steamObj->numSoundEffects >> 1)];
-
-            if (veh_2->currentSpeed > 15.0_mph)
-            {
-                return;
-            }
+            auto soundId = steamObj->soundEffects[chuffSoundIndex + (steamObj->numSoundEffects / 2)];
 
             int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
@@ -1046,18 +1068,13 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            auto soundModifier = steamObj->numSoundEffects >> 1;
-            if (!steamObj->hasFlags(SteamObjectFlags::unk2))
+            auto soundModifier = steamObj->numSoundEffects / 2;
+            if (!steamObj->hasFlags(SteamObjectFlags::hasTunnelSounds))
             {
                 soundModifier = 0;
             }
-            auto underSoundId = steamObj->soundEffects[soundModifier + var_55];
-            auto soundId = steamObj->soundEffects[var_55];
-
-            if (veh_2->currentSpeed > 15.0_mph)
-            {
-                return;
-            }
+            auto underSoundId = steamObj->soundEffects[soundModifier + chuffSoundIndex];
+            auto soundId = steamObj->soundEffects[chuffSoundIndex];
 
             int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
@@ -1079,7 +1096,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB9DD & 0x004AAFFA
-    void VehicleBody::dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::dieselExhaust1AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
@@ -1101,7 +1118,7 @@ namespace OpenLoco::Vehicles
 
             if (has38Flags(Flags38::isReversed))
             {
-                var_05 = -var_05;
+                emitterHorizontalPos = -emitterHorizontalPos;
             }
 
             if (ScenarioManager::getScenarioTicks() & 3)
@@ -1109,23 +1126,23 @@ namespace OpenLoco::Vehicles
                 return;
             }
 
-            auto positionFactor = vehicleObject->bodySprites[0].halfLength * var_05 / 256;
+            auto positionFactor = vehicleObject->bodySprites[0].halfLength * emitterHorizontalPos / 256;
             auto invertedDirection = spriteYaw ^ (1 << 5);
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
-            World::Pos3 loc = position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+            World::Pos3 loc = position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
             Exhaust::create(loc, vehicleObject->animation[num].objectId);
         }
         else
         {
-            if (veh_2->var_5A != 1)
+            if (veh_2->motorState != MotorState::accelerating)
             {
                 return;
             }
 
             if (has38Flags(Flags38::isReversed))
             {
-                var_05 = -var_05;
+                emitterHorizontalPos = -emitterHorizontalPos;
             }
 
             if (ScenarioManager::getScenarioTicks() & 3)
@@ -1138,18 +1155,18 @@ namespace OpenLoco::Vehicles
                 return;
             }
 
-            var_05 += 64;
+            emitterHorizontalPos += 64;
             auto bogieDifference = backBogie->position - frontBogie->position;
-            auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
+            auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
-            auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+            auto loc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
             Exhaust::create(loc, vehicleObject->animation[num].objectId);
         }
     }
 
     // 0x004ABB5A & 0x004AB177
-    void VehicleBody::dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::dieselExhaust2AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
@@ -1161,7 +1178,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != 1)
+        if (veh_2->motorState != MotorState::accelerating)
         {
             return;
         }
@@ -1173,7 +1190,7 @@ namespace OpenLoco::Vehicles
 
         if (has38Flags(Flags38::isReversed))
         {
-            var_05 = -var_05;
+            emitterHorizontalPos = -emitterHorizontalPos;
         }
 
         if (ScenarioManager::getScenarioTicks() & 7)
@@ -1181,12 +1198,12 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        var_05 += 64;
+        emitterHorizontalPos += 64;
 
         auto bogieDifference = backBogie->position - frontBogie->position;
-        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
-        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+        auto loc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;
@@ -1205,7 +1222,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABDAD & 0x004AB3CA
-    void VehicleBody::electricSpark1AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::electricSpark1AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
@@ -1217,7 +1234,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
+        if (veh_2->motorState != MotorState::coasting && veh_2->motorState != MotorState::accelerating)
         {
             return;
         }
@@ -1225,7 +1242,7 @@ namespace OpenLoco::Vehicles
         auto _var_44 = var_44;
         if (has38Flags(Flags38::isReversed))
         {
-            var_05 = -var_05;
+            emitterHorizontalPos = -emitterHorizontalPos;
             _var_44 = -var_44;
         }
 
@@ -1234,7 +1251,7 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        var_05 += 64;
+        emitterHorizontalPos += 64;
 
         if (gPrng1().randNext(std::numeric_limits<uint16_t>::max()) > 819)
         {
@@ -1242,15 +1259,15 @@ namespace OpenLoco::Vehicles
         }
 
         auto bogieDifference = backBogie->position - frontBogie->position;
-        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
-        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+        auto loc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
         Exhaust::create(loc, vehicleObject->animation[num].objectId);
     }
 
     // 0x004ABEC3 & 0x004AB4E0
-    void VehicleBody::electricSpark2AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::electricSpark2AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
@@ -1262,7 +1279,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
+        if (veh_2->motorState != MotorState::coasting && veh_2->motorState != MotorState::accelerating)
         {
             return;
         }
@@ -1270,7 +1287,7 @@ namespace OpenLoco::Vehicles
         auto _var_44 = var_44;
         if (has38Flags(Flags38::isReversed))
         {
-            var_05 = -var_05;
+            emitterHorizontalPos = -emitterHorizontalPos;
             _var_44 = -var_44;
         }
 
@@ -1279,7 +1296,7 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        var_05 += 64;
+        emitterHorizontalPos += 64;
 
         if (gPrng1().randNext(std::numeric_limits<uint16_t>::max()) > 936)
         {
@@ -1287,9 +1304,9 @@ namespace OpenLoco::Vehicles
         }
 
         auto bogieDifference = backBogie->position - frontBogie->position;
-        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].emitterVerticalPos, spritePitch, spriteYaw);
 
-        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+        auto loc = bogieDifference * emitterHorizontalPos / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].emitterVerticalPos);
 
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;
@@ -1318,7 +1335,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh_2 = _vehicleUpdate_2;
         const auto* vehicleObject = getObject();
 
-        if (veh_2->var_5A == 0)
+        if (veh_2->motorState == MotorState::stopped)
         {
             return;
         }
@@ -1401,9 +1418,9 @@ namespace OpenLoco::Vehicles
             spriteIndex += vehicleObj->cargoTypeSpriteOffsets[primaryCargo.type];
         }
         spriteIndex *= bodySprite.numAnimationFrames;
-        if (spriteIndex != var_47)
+        if (spriteIndex != cargoFrame)
         {
-            var_47 = spriteIndex;
+            cargoFrame = spriteIndex;
             invalidateSprite();
         }
     }

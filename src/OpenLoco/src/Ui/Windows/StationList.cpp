@@ -1,6 +1,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -15,10 +16,14 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TabWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
@@ -50,11 +55,12 @@ namespace OpenLoco::Ui::Windows::StationList
         sort_total_waiting,
         sort_accepts,
         scrollview,
+        status_bar,
     };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 600, 197 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::stringid_all_stations),
+        Widgets::Caption({ 1, 1 }, { 598, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, StringIds::stringid_all_stations),
         Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 600, 155 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_all_stations),
@@ -63,11 +69,12 @@ namespace OpenLoco::Ui::Windows::StationList
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_airports),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ship_ports),
         Widgets::ImageButton({ 0, 14 }, { 26, 26 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_select_company),
-        makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-        makeWidget({ 204, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_station_status),
-        makeWidget({ 404, 43 }, { 90, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
-        makeWidget({ 494, 43 }, { 120, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
-        makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::TableHeader({ 4, 43 }, { 200, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+        Widgets::TableHeader({ 204, 43 }, { 200, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_station_status),
+        Widgets::TableHeader({ 404, 43 }, { 90, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
+        Widgets::TableHeader({ 494, 43 }, { 120, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
+        Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::Label({ 4, kWindowSize.height - 12 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
     );
 
@@ -333,15 +340,13 @@ namespace OpenLoco::Ui::Windows::StationList
             window->flags |= WindowFlags::resizable;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            window->setColour(WindowColour::secondary, interface->colour_0A);
+            window->setColour(WindowColour::secondary, interface->windowPlayerColor);
         }
 
         window->currentTab = 0;
         window->invalidate();
 
         window->setWidgets(_widgets);
-        window->enabledWidgets = (1 << close_button) | (1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports) | (1 << company_select) | (1 << sort_name) | (1 << sort_status) | (1 << sort_total_waiting) | (1 << sort_accepts) | (1 << scrollview);
-
         window->activatedWidgets = 0;
         window->holdableWidgets = 0;
 
@@ -361,13 +366,13 @@ namespace OpenLoco::Ui::Windows::StationList
 
         Window* stationList = open(companyId);
         widx target = tabInformationByType[type].widgetIndex;
-        stationList->callOnMouseUp(target);
+        stationList->callOnMouseUp(target, stationList->widgets[target].id);
 
         return stationList;
     }
 
     // 0x004919A4
-    static Ui::CursorId cursor(Window& window, WidgetIndex_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& window, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview)
         {
@@ -413,10 +418,12 @@ namespace OpenLoco::Ui::Windows::StationList
         window.activatedWidgets &= ~((1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports));
         window.activatedWidgets |= (1ULL << tabInformationByType[window.currentTab].widgetIndex);
 
-        // Set company name.
-        auto company = CompanyManager::get(CompanyId(window.number));
-        auto args = FormatArguments(window.widgets[widx::caption].textArgs);
-        args.push(company->name);
+        {
+            // Set company name
+            auto company = CompanyManager::get(CompanyId(window.number));
+            auto args = FormatArguments(window.widgets[widx::caption].textArgs);
+            args.push(company->name);
+        }
 
         // Set window title.
         window.widgets[widx::caption].text = tabInformationByType[window.currentTab].windowTitleId;
@@ -460,6 +467,16 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Reposition tabs
         Widget::leftAlignTabs(window, widx::tab_all_stations, widx::tab_ship_ports);
+
+        // Reposition status label
+        auto& widget = window.widgets[widx::status_bar];
+        widget.top = window.height - 12;
+        widget.bottom = window.height - 2;
+
+        // TODO: locale-based pluralisation.
+        auto args = FormatArguments{ widget.textArgs };
+        args.push(window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural);
+        args.push<uint16_t>(window.var_83C);
     }
 
     // 0x0049157F
@@ -587,8 +604,6 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x004914D8
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
         // Draw widgets and tabs.
         window.draw(drawingCtx);
         drawTabs(&window, drawingCtx);
@@ -600,26 +615,10 @@ namespace OpenLoco::Ui::Windows::StationList
         uint16_t x = window.x + window.widgets[widx::company_select].left + 1;
         uint16_t y = window.y + window.widgets[widx::company_select].top + 1;
         drawingCtx.drawImage(x, y, image);
-
-        // TODO: locale-based pluralisation.
-        auto args = FormatArguments{};
-        if (window.var_83C == 1)
-        {
-            args.push(StringIds::status_num_stations_singular);
-        }
-        else
-        {
-            args.push(StringIds::status_num_stations_plural);
-        }
-        args.push<uint16_t>(window.var_83C);
-
-        // Draw number of stations.
-        auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
-        tr.drawStringLeft(origin, Colour::black, StringIds::black_stringid, args);
     }
 
     // 0x004917BB
-    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex != widx::company_select)
         {
@@ -664,7 +663,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004917B0
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         if (widgetIndex == widx::company_select)
         {
@@ -673,7 +672,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491785
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -792,7 +791,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491841
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_station_list);

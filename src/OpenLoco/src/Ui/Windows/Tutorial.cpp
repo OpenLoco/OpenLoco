@@ -10,6 +10,7 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::Ui::Windows::Tutorial
@@ -22,7 +23,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
     static constexpr Ui::Size32 kWindowSize = { 140, 29 };
 
     static constexpr auto widgets = makeWidgets(
-        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary)
+        Widgets::Wt3Widget({ 0, 0 }, kWindowSize, WindowColour::primary)
 
     );
 
@@ -44,8 +45,8 @@ namespace OpenLoco::Ui::Windows::Tutorial
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->colour_06).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->colour_07).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->mapTooltipObjectColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->mapTooltipCargoColour).translucent());
         }
 
         return window;

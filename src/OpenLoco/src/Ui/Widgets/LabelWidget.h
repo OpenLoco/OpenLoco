@@ -4,15 +4,20 @@
 
 namespace OpenLoco::Ui::Widgets
 {
-    // NOTE: This is currently a label that always centers the text.
-    // TODO: Add an align option.
     struct Label : public Widget
     {
-        constexpr Label(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, ContentAlign align, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
-            : Widget(origin, size, WidgetType::wt_13, colour, content, tooltip)
+        static constexpr auto kWidgetType = WidgetType::label;
+
+        constexpr Label(WidgetId id, Point32 origin, Size32 size, WindowColour colour, ContentAlign align, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
+            : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
         {
             events.draw = &draw;
             contentAlign = align;
+        }
+
+        constexpr Label(Point32 origin, Size32 size, WindowColour colour, ContentAlign align, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
+            : Label(WidgetId::none, origin, size, colour, align, content, tooltip)
+        {
         }
 
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);

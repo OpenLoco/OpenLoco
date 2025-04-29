@@ -6,6 +6,7 @@
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
@@ -29,7 +30,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 441, 91 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 439, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::empty),
+        Widgets::Caption({ 1, 1 }, { 439, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::empty),
         Widgets::ImageButton({ 426, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 441, 76 }, WindowColour::secondary)
 
@@ -52,8 +53,6 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
             getEvents());
 
         window->setWidgets(widgets);
-        window->enabledWidgets = (1 << Widx::closeBtn);
-
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, Colour::black);
         window->setColour(WindowColour::secondary, Colour::black);
@@ -88,7 +87,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         }
     }
 
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {

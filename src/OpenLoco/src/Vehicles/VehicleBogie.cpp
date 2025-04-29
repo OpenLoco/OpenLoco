@@ -1,4 +1,5 @@
 #include "Effects/ExplosionEffect.h"
+#include "Effects/SplashEffect.h"
 #include "Effects/VehicleCrashEffect.h"
 #include "Entities/EntityManager.h"
 #include "Map/RoadElement.h"
@@ -9,8 +10,11 @@
 #include "Random.h"
 #include "Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Trigonometry.hpp>
+#include <cstdint>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
@@ -23,28 +27,10 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
-    // 0x004AA407
-    template<typename T>
-    void explodeComponent(T& component)
-    {
-        assert(component.getSubType() == VehicleEntityType::bogie || component.getSubType() == VehicleEntityType::body_start || component.getSubType() == VehicleEntityType::body_continued);
-
-        const auto pos = component.position + World::Pos3{ 0, 0, 22 };
-        Audio::playSound(Audio::SoundId::crash, pos);
-
-        ExplosionCloud::create(pos);
-
-        const auto numParticles = std::min(component.spriteWidth / 4, 7);
-        for (auto i = 0; i < numParticles; ++i)
-        {
-            VehicleCrashParticle::create(pos, component.colourScheme);
-        }
-    }
-
     template<typename T>
     void applyDestructionToComponent(T& component)
     {
-        explodeComponent(component);
+        component.explodeComponent();
         component.var_5A &= ~(1u << 31);
         component.var_5A >>= 3;
         component.var_5A |= (1u << 31);
@@ -119,6 +105,163 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // To replace several instances of the same exact code in
+    // VehicleBogie::updateSegmentCrashed(). Returns true if the
+    // vehicle crashed in the process.
+    static bool rotateAndExplodeIfNotAlreadyExploded(VehicleBogie& bogie, bool direction)
+    {
+        const auto slightlyRotated = direction ? 4 : -4;
+        bogie.spriteYaw = (bogie.spriteYaw + slightlyRotated) & 0x3F;
+
+        // explode, if we haven't already
+        if (!bogie.hasVehicleFlags(VehicleFlags::unk_5))
+        {
+            bogie.explodeComponent();
+            bogie.vehicleFlags |= VehicleFlags::unk_5;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // 0x004AA68E
+    void VehicleBogie::updateSegmentCrashed()
+    {
+        _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
+        _vehicleUpdate_backBogie = this;
+
+        Speed32 speed = Speed32(var_5A & 0x7FFFFFFF);
+        bool isComponentDestroyed = this->var_5A & (1U << 31);
+        speed = speed - (speed / 64);
+        if (speed <= 2.0_mph)
+        {
+            speed = 0.0_mph;
+        }
+
+        this->var_5A = speed.getRaw() | (isComponentDestroyed ? (1U << 31) : 0);
+        _vehicleUpdate_var_113612C = speed.getRaw() / 128;
+        _vehicleUpdate_var_1136130 = speed.getRaw() / 128;
+
+        this->updateRoll();
+
+        if (isComponentDestroyed)
+        {
+            if (speed >= 1.0_mph)
+            {
+                const auto distanceTravelled = speed.getRaw() / 16;
+                auto xyDistance = Math::Trigonometry::computeXYVector(distanceTravelled, spriteYaw);
+
+                uint16_t xDistanceLow = xyDistance.x & 0x0000FFFF;
+                uint16_t yDistanceLow = xyDistance.y & 0x0000FFFF;
+                // This is being casted to uint32_t as we want a negative value to round away from zero
+                // this is due to splitting the precision of the distance into two parts
+                World::Pos2 distanceWorld(static_cast<uint32_t>(xyDistance.x) / 65536, static_cast<uint32_t>(xyDistance.y) / 65536);
+                // We are storing the lower precision in tileX and tileY they aren't actually being used as tileX and tileY.
+                // Yay reusing fields for different purposes means we need to be careful with the sign of the type
+                int32_t newTileX = static_cast<uint16_t>(this->tileX) + xDistanceLow;
+                if (newTileX >= 0x00010000)
+                {
+                    distanceWorld.x++;
+                }
+                this->tileX = newTileX & 0x0000FFFF;
+
+                int32_t newTileY = static_cast<uint16_t>(this->tileY) + yDistanceLow;
+                if (newTileY >= 0x00010000)
+                {
+                    distanceWorld.y++;
+                }
+                this->tileY = newTileY & 0x0000FFFF;
+
+                this->tileBaseZ++;
+                int16_t zDistance = this->tileBaseZ / 32;
+
+                // Calculate new position - but don't update yet!! This is pushed to the stack.
+                World::Pos3 newPosition{ position + World::Pos3(distanceWorld, -zDistance) };
+
+                if (!sub_4AA959(this->position))
+                {
+                    World::Pos3 positionToTest = { newPosition.x, newPosition.y, this->position.z };
+                    if (sub_4AA959(positionToTest))
+                    {
+                        newPosition.x = this->position.x;
+                        newPosition.y = this->position.y;
+
+                        if (speed >= 5.0_mph)
+                        {
+                            rotateAndExplodeIfNotAlreadyExploded(*this, true);
+                        }
+
+                        this->var_5A = ((speed / 2).getRaw() | (1U << 31));
+                    }
+
+                    if (sub_4AA959(newPosition))
+                    {
+                        newPosition.z = this->position.z;
+                        if (this->tileBaseZ >= 0x0A)
+                        {
+                            rotateAndExplodeIfNotAlreadyExploded(*this, false);
+                        }
+
+                        this->tileBaseZ = 0;
+                    }
+                }
+
+                const auto newTileHeight = World::TileManager::getHeight(newPosition);
+                if (newTileHeight.landHeight >= this->position.z
+                    || newTileHeight.landHeight >= newPosition.z)
+                {
+                    if (newTileHeight.landHeight < this->position.z
+                        && newTileHeight.landHeight >= newPosition.z)
+                    {
+                        newPosition.z = this->position.z;
+                        this->tileBaseZ = 0;
+                    }
+
+                    newPosition.x = this->position.x;
+                    newPosition.y = this->position.y;
+
+                    if (speed >= 5.0_mph)
+                    {
+                        rotateAndExplodeIfNotAlreadyExploded(*this, true);
+                    }
+
+                    this->var_5A = ((speed / 2).getRaw() | (1U << 31));
+                }
+
+                if (newTileHeight.waterHeight != 0
+                    && newTileHeight.waterHeight < this->position.z
+                    && newTileHeight.waterHeight >= newPosition.z)
+                {
+                    this->spriteYaw = (this->spriteYaw + 4) & 0x3F;
+                    if (!this->hasVehicleFlags(VehicleFlags::unk_5))
+                    {
+                        World::Pos3 splashPos{ this->position.x, this->position.y, newTileHeight.waterHeight };
+                        Splash::create(splashPos);
+                        Audio::playSound(Audio::SoundId::splash2, splashPos);
+                        this->vehicleFlags |= VehicleFlags::unk_5;
+                    }
+                }
+
+                this->moveTo(newPosition);
+                this->invalidateSprite();
+            }
+        }
+        else
+        {
+            _vehicleUpdate_var_1136114 = 0;
+            if (this->mode != TransportMode::road)
+            {
+                this->updateTrackMotion(_vehicleUpdate_var_113612C);
+                if ((_vehicleUpdate_var_1136114 & 0x3) != 0)
+                {
+                    this->var_5A |= 1U << 31;
+                }
+            }
+        }
+    }
+
     // 0x004AA0DF
     void VehicleBogie::collision()
     {
@@ -177,6 +320,18 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
+    }
+
+    // 0x0004AA959
+    // Returns true when original subroutine sets carry flag (not yet reversed)
+    bool VehicleBogie::sub_4AA959(World::Pos3& pos)
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dx = pos.z;
+        return ((call(0x0004AA959, regs) & X86_FLAG_CARRY) == X86_FLAG_CARRY);
     }
 
     // 0x004AA984

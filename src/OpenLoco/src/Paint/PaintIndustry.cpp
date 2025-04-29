@@ -1,4 +1,5 @@
 #include "PaintIndustry.h"
+#include "Graphics/RenderTarget.h"
 #include "Map/IndustryElement.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
@@ -42,6 +43,8 @@ namespace OpenLoco::Paint
 
         uint32_t buildingType = elIndustry.buildingType();
         const auto buildingParts = indObj.getBuildingParts(buildingType);
+        const auto partHeights = indObj.getBuildingPartHeights();
+        const auto buildingPartAnims = indObj.getBuildingPartAnimations();
 
         // 0x00525D4F
         uint8_t totalSectionHeight = 0;
@@ -50,7 +53,7 @@ namespace OpenLoco::Paint
             int8_t sectionCount = numSections;
             for (const auto buildingPart : buildingParts)
             {
-                totalSectionHeight += indObj.buildingPartHeights[buildingPart];
+                totalSectionHeight += partHeights[buildingPart];
                 sectionCount--;
                 if (sectionCount == -1)
                 {
@@ -94,7 +97,7 @@ namespace OpenLoco::Paint
             {
                 break;
             }
-            auto& buildingAnimation = indObj.buildingPartAnimations[buildingPart];
+            auto& buildingAnimation = buildingPartAnims[buildingPart];
             auto adjustedBuildingPart = buildingPart;
             if (buildingAnimation.numFrames)
             {
@@ -117,8 +120,8 @@ namespace OpenLoco::Paint
                     adjustedBuildingPart += animationSequence[tickThing];
                 }
             }
-            const auto sectionHeight = indObj.buildingPartHeights[adjustedBuildingPart];
-            const uint32_t imageIdx = adjustedBuildingPart * 4 + indObj.var_12 + rotation;
+            const auto sectionHeight = partHeights[adjustedBuildingPart];
+            const uint32_t imageIdx = adjustedBuildingPart * 4 + indObj.buildingImageIds + rotation;
             ImageId image = baseColour.withIndex(imageIdx);
             if (sectionCount == 0 && !baseColour.isBlended())
             {
@@ -189,7 +192,7 @@ namespace OpenLoco::Paint
         {
             if (session.getRenderTarget()->zoomLevel <= 1)
             {
-                const auto shadowImageOffset = buildingType * 4 + indObj->var_0E + rotation;
+                const auto shadowImageOffset = buildingType * 4 + indObj->shadowImageIds + rotation;
                 const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.var_6_F800()));
                 if (isMultiTile)
                 {

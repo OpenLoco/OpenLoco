@@ -26,6 +26,7 @@
 
 #include <bitset>
 #include <numeric>
+#include <sfl/static_vector.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -65,7 +66,7 @@ namespace OpenLoco::StationManager
     // 0x0048B1FA
     void update()
     {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             const auto id = StationId(ScenarioManager::getScenarioTicks() & 0x3FF);
             auto station = get(id);
@@ -255,7 +256,7 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FA41
-        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::oilfield))
+        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::oilfieldStationName))
         {
             if (!realNamesInUse.test(StationName::townOilfield))
             {
@@ -263,7 +264,7 @@ namespace OpenLoco::StationManager
             }
         }
 
-        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::mines))
+        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::minesStationName))
         {
             if (!realNamesInUse.test(StationName::townMines))
             {
@@ -469,49 +470,14 @@ namespace OpenLoco::StationManager
         }
     }
 
-    static uint16_t deliverCargoToStations(const std::vector<std::pair<StationId, uint8_t>>& foundStations, const uint8_t cargoType, const uint8_t cargoQty)
-    {
-        if (foundStations.empty())
-        {
-            return 0;
-        }
+    using CargoStations = sfl::static_vector<std::pair<StationId, uint8_t>, 16>;
 
-        const auto ratingTotal = std::accumulate(foundStations.begin(), foundStations.end(), 0, [](const int32_t a, const std::pair<StationId, uint8_t>& b) { return a + b.second * b.second; });
-        if (ratingTotal == 0)
-        {
-            return 0;
-        }
-
-        uint16_t cargoQtyDelivered = 0;
-        for (const auto& [stationId, rating] : foundStations)
-        {
-            auto* station = get(stationId);
-            if (station == nullptr)
-            {
-                continue;
-            }
-
-            const auto defaultShare = (rating * rating * cargoQty) / ratingTotal;
-            const auto alternateShare = (rating * cargoQty) / 256;
-            auto share = std::min(defaultShare, alternateShare);
-            if (rating > 66)
-            {
-                share++;
-            }
-            cargoQtyDelivered += share;
-            station->deliverCargoToStation(cargoType, share);
-        }
-
-        return std::min<uint16_t>(cargoQtyDelivered, cargoQty);
-    }
-
-    // 0x0042F2FE
-    uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const World::Pos2& pos, const World::TilePos2& size)
+    static CargoStations findStationsForCargoType(const uint8_t cargoType, const World::Pos2& pos, const World::TilePos2& size)
     {
         const auto initialLoc = World::toTileSpace(pos) - TilePos2(4, 4);
         const auto catchmentSize = size + TilePos2(8, 8);
-        // TODO: Use a fixed size array (max size 15)
-        std::vector<std::pair<StationId, uint8_t>> foundStations;
+
+        CargoStations foundStations;
         for (TilePos2 searchOffset{ 0, 0 }; searchOffset.y < catchmentSize.y; ++searchOffset.y)
         {
             for (; searchOffset.x < catchmentSize.x; ++searchOffset.x)
@@ -561,13 +527,56 @@ namespace OpenLoco::StationManager
             searchOffset.x = 0;
         }
 
+        return foundStations;
+    }
+
+    static uint16_t deliverCargoToStations(const CargoStations& foundStations, const uint8_t cargoType, const uint8_t cargoQty)
+    {
+        const auto ratingTotal = std::accumulate(foundStations.begin(), foundStations.end(), 0, [](const int32_t a, const std::pair<StationId, uint8_t>& b) { return a + b.second * b.second; });
+        if (ratingTotal == 0)
+        {
+            return 0;
+        }
+
+        uint16_t cargoQtyDelivered = 0;
+        for (const auto& [stationId, rating] : foundStations)
+        {
+            auto* station = get(stationId);
+            if (station == nullptr)
+            {
+                continue;
+            }
+
+            const auto defaultShare = (rating * rating * cargoQty) / ratingTotal;
+            const auto alternateShare = (rating * cargoQty) / 256;
+            auto share = std::min(defaultShare, alternateShare);
+            if (rating > 66)
+            {
+                share++;
+            }
+            cargoQtyDelivered += share;
+            station->deliverCargoToStation(cargoType, share);
+        }
+
+        return std::min<uint16_t>(cargoQtyDelivered, cargoQty);
+    }
+
+    // 0x0042F2FE
+    uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const World::Pos2& pos, const World::TilePos2& size)
+    {
+        const auto foundStations = findStationsForCargoType(cargoType, pos, size);
+        if (foundStations.empty())
+        {
+            return 0;
+        }
+
         return deliverCargoToStations(foundStations, cargoType, cargoQty);
     }
 
     // 0x0042F2BF
-    uint16_t deliverCargoToStations(const std::vector<StationId>& stations, const uint8_t cargoType, const uint8_t cargoQty)
+    uint16_t deliverCargoToStations(std::span<const StationId> stations, const uint8_t cargoType, const uint8_t cargoQty)
     {
-        std::vector<std::pair<StationId, uint8_t>> foundStations;
+        CargoStations foundStations;
         for (auto stationId : stations)
         {
             auto* station = get(stationId);
@@ -576,6 +585,11 @@ namespace OpenLoco::StationManager
                 continue;
             }
             foundStations.push_back(std::make_pair(stationId, station->cargoStats[cargoType].rating));
+        }
+
+        if (foundStations.empty())
+        {
+            return 0;
         }
 
         return deliverCargoToStations(foundStations, cargoType, cargoQty);
@@ -698,6 +712,43 @@ namespace OpenLoco::StationManager
         station->name = StringIds::null;
     }
 
+    StationId findNearbyEmptyStation(const World::Pos3 pos, const CompanyId companyId, const int16_t currentMinDistanceStation)
+    {
+        // After removing a station the station is still available for a time but left empty
+        // this function will find these empty stations so that a new station can reuse the
+        // empty station and its name.
+        auto minDistanceStation = StationId::null;
+        auto minDistance = currentMinDistanceStation;
+        for (const auto& station : StationManager::stations())
+        {
+            if (station.stationTileSize != 0)
+            {
+                continue;
+            }
+            if (station.owner != companyId)
+            {
+                continue;
+            }
+            const auto distance = Math::Vector::chebyshevDistance2D(World::Pos2{ station.x, station.y }, pos);
+
+            auto distDiffZ = std::abs(station.z - pos.z);
+            if (distDiffZ > kMaxStationNearbyDistance)
+            {
+                continue;
+            }
+            if (distance > kMaxStationNearbyDistance)
+            {
+                continue;
+            }
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                minDistanceStation = station.id();
+            }
+        }
+        return minDistanceStation;
+    }
+
     // 0x004901B0
     NearbyStation findNearbyStation(World::Pos3 pos, CompanyId companyId)
     {
@@ -707,10 +758,10 @@ namespace OpenLoco::StationManager
         auto minDistanceStation = StationId::null;
         auto minDistance = std::numeric_limits<int16_t>::max();
         bool isPhysicallyAttached = false;
-        for (const auto tilePos : World::getClampedRange(tilePosA, tilePosB))
+        for (const auto& tilePos : World::getClampedRange(tilePosA, tilePosB))
         {
             const auto tile = World::TileManager::get(tilePos);
-            for (auto& el : tile)
+            for (const auto& el : tile)
             {
                 auto* elStation = el.as<World::StationElement>();
                 if (elStation == nullptr)
@@ -731,12 +782,12 @@ namespace OpenLoco::StationManager
                 if (distance < minDistance)
                 {
                     auto distDiffZ = std::abs(elStation->baseHeight() - pos.z);
-                    if (distDiffZ > 64)
+                    if (distDiffZ > kMaxStationNearbyDistance)
                     {
                         continue;
                     }
                     minDistance = distance + distDiffZ / 2;
-                    if (minDistance <= 64)
+                    if (minDistance <= kMaxStationNearbyDistance)
                     {
                         isPhysicallyAttached = true;
                     }
@@ -745,30 +796,15 @@ namespace OpenLoco::StationManager
             }
         }
 
-        for (auto& station : StationManager::stations())
+        const auto nearbyEmptyStation = findNearbyEmptyStation(pos, companyId, minDistance);
+        if (nearbyEmptyStation != StationId::null)
         {
-            if (station.owner != companyId)
-            {
-                continue;
-            }
-            const auto distance = Math::Vector::chebyshevDistance2D(World::Pos2{ station.x, station.y }, pos);
-
-            auto distDiffZ = std::abs(station.z - pos.z);
-            if (distDiffZ > 64)
-            {
-                continue;
-            }
-            if (distance > 64)
-            {
-                continue;
-            }
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                minDistanceStation = station.id();
-            }
+            return NearbyStation{ nearbyEmptyStation, isPhysicallyAttached };
         }
-        return NearbyStation{ minDistanceStation, isPhysicallyAttached };
+        else
+        {
+            return NearbyStation{ minDistanceStation, isPhysicallyAttached };
+        }
     }
 
     void registerHooks()

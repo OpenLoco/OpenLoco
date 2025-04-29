@@ -31,10 +31,13 @@
 #include "Ui/LastMapWindowAttributes.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
+#include "Ui/Widgets/ScrollViewWidget.h"
+#include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -100,20 +103,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
         statusBar,
     };
 
-    const uint64_t enabledWidgets = (1 << closeButton) | (1 << tabOverall) | (1 << tabVehicles) | (1 << tabIndustries) | (1 << tabRoutes) | (1 << tabOwnership);
-
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 272 }, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_map),
+        Widgets::Caption({ 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_map),
         Widgets::ImageButton({ 335, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 350, 230 }, WindowColour::secondary),
-        makeWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
-        makeWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_vehicles),
-        makeWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_industries),
-        makeWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
-        makeWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
-        makeWidget({ 3, 44 }, { 240, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
-        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::Center)
+        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
+        Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_vehicles),
+        Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_industries),
+        Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
+        Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
+        Widgets::ScrollView({ 3, 44 }, { 240, 215 }, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
+        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::center)
 
     );
 
@@ -181,7 +182,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B8CF
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         switch (widgetIndex)
         {
@@ -1147,7 +1148,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B946
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_map);
@@ -1191,7 +1192,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto disabledWidgets = 0;
 
-        if (isEditorMode())
+        if (SceneManager::isEditorMode())
         {
             disabledWidgets |= (1 << widx::tabVehicles) | (1 << widx::tabRoutes) | (1 << widx::tabOwnership);
         }
@@ -1247,7 +1248,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 auto colour = Colour::black;
 
-                if (!isEditorMode() && !isSandboxMode())
+                if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
                 {
                     auto company = CompanyManager::getPlayerCompany();
                     colour = company->mainColours.primary;
@@ -2341,8 +2342,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         availableColours = checkIndustryColours(PaletteIndex::black0, availableColours);
         availableColours = checkIndustryColours(PaletteIndex::blackB, availableColours);
 
-        auto availableTracks = CompanyManager::getPlayerCompany()->getAvailableRailTracks();
-        auto availableRoads = CompanyManager::getPlayerCompany()->getAvailableRoads();
+        auto availableTracks = companyGetAvailableRailTracks(CompanyManager::getControllingId());
+        auto availableRoads = companyGetAvailableRoads(CompanyManager::getControllingId());
 
         auto i = 0U;
         auto assignColour = [&i, &availableColours](uint8_t id) {
@@ -2418,8 +2419,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, getEvents());
         window->setWidgets(widgets);
-        window->enabledWidgets |= enabledWidgets;
-
         window->initScrollWidgets();
         window->frameNo = 0;
 
@@ -2431,8 +2430,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->setColour(WindowColour::primary, skin->colour_0B);
-        window->setColour(WindowColour::secondary, skin->colour_0F);
+        window->setColour(WindowColour::primary, skin->windowTitlebarColour);
+        window->setColour(WindowColour::secondary, skin->windowMapColour);
 
         window->var_846 = getCurrentRotation();
 

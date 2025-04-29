@@ -26,7 +26,7 @@ namespace OpenLoco::VehicleManager
     // 0x004A8826
     void update()
     {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             for (auto* v : VehicleList())
             {
@@ -47,7 +47,7 @@ namespace OpenLoco::VehicleManager
     // 0x004B94CF
     void updateDaily()
     {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             for (auto* v : VehicleList())
             {
@@ -58,7 +58,7 @@ namespace OpenLoco::VehicleManager
     }
 
     // 0x004C39D4
-    static uint16_t determineAvailableVehicleTypes(const Company& company)
+    uint16_t determineAvailableVehicleTypes(const Company& company)
     {
         uint16_t availableTypes = 0;
 
