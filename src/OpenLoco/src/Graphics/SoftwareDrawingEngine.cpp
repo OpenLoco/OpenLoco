@@ -157,22 +157,21 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        // Determine if interpolation should be applied.
-        // It makes the game look better at scales between 1.0 and 2.0.
+        // Determine if interpolation should be applied: it makes the game look less bad at fractional scaleFactor valuess.
 
         // We don't need interpolation when the scaling is 1:1.
-        // True when scaleFactor is close enough to 1.0 for the scaled values to not be different.
         const bool scalingIsNot1 = (windowWidth != downscaledWidth || windowHeight != downscaledHeight);
 
-        // Interpolation has no benefit needed when the scaling is 2 or greater.
+        // Interpolation only makes the game look worse when the scaling is 2, and barely makes a difference at higher scales.
         const bool scalingIsLessThan2 = (windowWidth < downscaledWidth * 2 || windowHeight < downscaledHeight * 2);
 
         if (scalingIsNot1 && scalingIsLessThan2)
         {
-            // Use linear interpolation
+            // Use linear interpolation when scaling the following texture to the canvas size
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-            // We need a texture bigger than the actual screen canvas width & height for there to be interpolation.
-            _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width * 2, height * 2);
+
+            // Create a texture with a larger resolution than the canvas
+            _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, downscaledWidth * 2, downscaledHeight * 2);
             if (_scaledScreenTexture == nullptr)
             {
                 Logging::error("SDL_CreateTexture (_scaledScreenTexture) failed: {}", SDL_GetError());
