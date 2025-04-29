@@ -1261,7 +1261,7 @@ namespace OpenLoco::ObjectManager
                         freeTemporaryObject();
                         return false;
                     }
-                    if (roadObj->hasFlags(RoadObjectFlags::unk_00))
+                    if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
                     {
                         freeTemporaryObject();
                         return false;

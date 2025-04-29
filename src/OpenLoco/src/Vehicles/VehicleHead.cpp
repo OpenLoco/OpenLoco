@@ -484,7 +484,7 @@ namespace OpenLoco::Vehicles
     // 0x004B90F0
     // eax : newVehicleTypeId
     // ebx : sourceVehicleTypeId;
-    static bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
+    bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
     {
         auto newObject = ObjectManager::get<VehicleObject>(newVehicleTypeId);       // edi
         auto sourceObject = ObjectManager::get<VehicleObject>(sourceVehicleTypeId); // esi
@@ -1090,7 +1090,7 @@ namespace OpenLoco::Vehicles
         }
         else if (status == Status::crashed)
         {
-            sub_4AA625();
+            landCrashedUpdate();
 
             return false;
         }
@@ -3651,11 +3651,43 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA625
-    void VehicleHead::sub_4AA625()
+    void VehicleHead::landCrashedUpdate()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AA625, regs);
+        VehicleBase* currentVehicle = this;
+        while (currentVehicle != nullptr)
+        {
+            switch (currentVehicle->getSubType())
+            {
+                case VehicleEntityType::head:
+                    currentVehicle->asVehicleHead()->updateSegmentCrashed();
+                    break;
+                case VehicleEntityType::bogie:
+                    currentVehicle->asVehicleBogie()->updateSegmentCrashed();
+                    break;
+                case VehicleEntityType::body_start:
+                case VehicleEntityType::body_continued:
+                    currentVehicle->asVehicleBody()->updateSegmentCrashed();
+                    break;
+                case VehicleEntityType::vehicle_1:
+                case VehicleEntityType::vehicle_2:
+                case VehicleEntityType::tail:
+                    break;
+            }
+
+            currentVehicle = currentVehicle->nextVehicleComponent();
+        }
+    }
+
+    // 0x004AA64B
+    void VehicleHead::updateSegmentCrashed()
+    {
+        Vehicle train(head);
+        _vehicleUpdate_head = this;
+        _vehicleUpdate_frontBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
+        _vehicleUpdate_backBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
+
+        _vehicleUpdate_1 = train.veh1;
+        _vehicleUpdate_2 = train.veh2;
     }
 
     // 0x004ACEE7

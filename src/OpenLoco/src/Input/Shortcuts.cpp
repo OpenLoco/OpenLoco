@@ -405,12 +405,13 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().lastBuildVehiclesOption == 0xFF)
+        // This can't ever happen as nothing sets it to 0xFFU
+        if (enumValue(getGameState().lastBuildVehiclesOption) == 0xFF)
         {
             return;
         }
 
-        Windows::BuildVehicle::open(getGameState().lastBuildVehiclesOption, 1U << 31);
+        Windows::BuildVehicle::open(enumValue(getGameState().lastBuildVehiclesOption), 1U << 31);
     }
 
     // 0x004BF2D1

@@ -162,6 +162,8 @@ namespace OpenLoco::Ui::Windows
         Window* openWithFlags(uint32_t flags);
         Window* openAtTrack(const Window& main, World::TrackElement* track, const World::Pos2 pos);
         Window* openAtRoad(const Window& main, World::RoadElement* track, const World::Pos2 pos);
+        void updateAvailableRoadAndRailOptions();
+        void updateAvailableAirportAndDockOptions();
         void sub_4A6FAC();
         bool isStationTabOpen();
         bool isOverheadTabOpen();
@@ -336,6 +338,11 @@ namespace OpenLoco::Ui::Windows
         void reset();
         void showStationCatchment(StationId id);
         void sub_491BC6();
+
+        namespace VehiclesStopping
+        {
+            void removeTrainFromList(Window& self, EntityId head);
+        }
     }
 
     namespace StationList

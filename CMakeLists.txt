@@ -38,7 +38,7 @@ if (WIN32)
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
-            GIT_TAG c63619856b89f0af4d77ba2049396039e4985418)
+            GIT_TAG d5182f703b51d7b258f83f94d936ac03488dcdbe)
         FetchContent_MakeAvailable(vcpkg)
 
         set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
@@ -46,7 +46,7 @@ if (WIN32)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.03)
+project(${PROJECT} LANGUAGES CXX VERSION 25.04)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)

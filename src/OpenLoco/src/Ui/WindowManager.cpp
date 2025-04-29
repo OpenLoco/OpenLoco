@@ -1954,15 +1954,19 @@ namespace OpenLoco::Ui::WindowManager
      */
     void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y)
     {
-        if (window != nullptr)
+        while (window != nullptr)
         {
             // skip current window and non-intersecting windows
-            if (viewport == window->viewports[0] || viewport == window->viewports[1] || viewport->x + viewport->width <= window->x || viewport->x >= window->x + window->width || viewport->y + viewport->height <= window->y || viewport->y >= window->y + window->height)
+            if (viewport == window->viewports[0]
+                || viewport == window->viewports[1]
+                || viewport->x + viewport->width <= window->x
+                || viewport->x >= window->x + window->width
+                || viewport->y + viewport->height <= window->y
+                || viewport->y >= window->y + window->height)
             {
                 size_t nextWindowIndex = WindowManager::indexOf(*window) + 1;
-                auto nextWindow = nextWindowIndex >= count() ? nullptr : get(nextWindowIndex);
-                viewportRedrawAfterShift(nextWindow, viewport, x, y);
-                return;
+                window = nextWindowIndex >= count() ? nullptr : WindowManager::get(nextWindowIndex);
+                continue;
             }
 
             // save viewport
@@ -1995,76 +1999,75 @@ namespace OpenLoco::Ui::WindowManager
             else if (viewport->y < window->y)
             {
                 viewport->height = window->y - viewport->y;
-                viewport->viewWidth = viewport->width << viewport->zoom;
+                viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->viewY += viewport->height << viewport->zoom;
                 viewport->height = viewCopy.height - viewport->height;
-                viewport->viewWidth = viewport->width << viewport->zoom;
+                viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
             else if (viewport->y + viewport->height > window->y + window->height)
             {
                 viewport->height = window->y + window->height - viewport->y;
-                viewport->viewWidth = viewport->width << viewport->zoom;
+                viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->viewY += viewport->height << viewport->zoom;
                 viewport->height = viewCopy.height - viewport->height;
-                viewport->viewWidth = viewport->width << viewport->zoom;
+                viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
 
             // restore viewport
             *viewport = viewCopy;
+            return;
+        }
+
+        int16_t left = viewport->x;
+        int16_t top = viewport->y;
+        int16_t right = left + viewport->width;
+        int16_t bottom = top + viewport->height;
+
+        // if moved more than the viewport size
+        if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->height)
+        {
+            // redraw whole viewport
+            Gfx::render(left, top, right, bottom);
         }
         else
         {
-            int16_t left = viewport->x;
-            int16_t top = viewport->y;
-            int16_t right = left + viewport->width;
-            int16_t bottom = top + viewport->height;
+            // update whole block
+            Gfx::movePixelsOnScreen(left, top, viewport->width, viewport->height, x, y);
 
-            // if moved more than the viewport size
-            if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->width)
+            if (x > 0)
             {
-                // redraw whole viewport
+                // draw left
+                int16_t _right = left + x;
+                Gfx::render(left, top, _right, bottom);
+                left += x;
+            }
+            else if (x < 0)
+            {
+                // draw right
+                int16_t _left = right + x;
+                Gfx::render(_left, top, right, bottom);
+                right += x;
+            }
+
+            if (y > 0)
+            {
+                // draw top
+                bottom = top + y;
                 Gfx::render(left, top, right, bottom);
             }
-            else
+            else if (y < 0)
             {
-                // update whole block ?
-                Gfx::movePixelsOnScreen(left, top, viewport->width, viewport->height, x, y);
-
-                if (x > 0)
-                {
-                    // draw left
-                    int16_t _right = left + x;
-                    Gfx::render(left, top, _right, bottom);
-                    left += x;
-                }
-                else if (x < 0)
-                {
-                    // draw right
-                    int16_t _left = right + x;
-                    Gfx::render(_left, top, right, bottom);
-                    right += x;
-                }
-
-                if (y > 0)
-                {
-                    // draw top
-                    bottom = top + y;
-                    Gfx::render(left, top, right, bottom);
-                }
-                else if (y < 0)
-                {
-                    // draw bottom
-                    top = bottom + y;
-                    Gfx::render(left, top, right, bottom);
-                }
+                // draw bottom
+                top = bottom + y;
+                Gfx::render(left, top, right, bottom);
             }
         }
     }

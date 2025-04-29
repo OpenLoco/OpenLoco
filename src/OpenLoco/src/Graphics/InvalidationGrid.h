@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <vector>
 
 namespace OpenLoco::Gfx
 {
@@ -12,7 +13,7 @@ namespace OpenLoco::Gfx
         uint32_t _columnCount{};
         uint32_t _rowCount{};
 
-        uint8_t _blocks[7500]{};
+        std::vector<uint8_t> _blocks;
         uint32_t _screenWidth{};
         uint32_t _screenHeight{};
 

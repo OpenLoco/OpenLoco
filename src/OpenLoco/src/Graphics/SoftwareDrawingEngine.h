@@ -70,6 +70,9 @@ namespace OpenLoco::Gfx
             int16_t srcY);
 
     private:
+        void renderDirtyRegions();
+
+    private:
         SDL_Renderer* _renderer{};
         SDL_Window* _window{};
         SDL_Palette* _palette{};

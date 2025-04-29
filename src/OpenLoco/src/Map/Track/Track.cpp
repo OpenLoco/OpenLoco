@@ -5,6 +5,8 @@
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
 #include "TrackData.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -37,7 +39,8 @@ namespace OpenLoco::World::Track
     }
 
     // 0x004788C8
-    RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    template<bool checkOneWay, bool aiAllocated>
+    static RoadConnections getRoadConnectionsImpl(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
         RoadConnections result{};
 
@@ -78,9 +81,19 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (elRoad->isGhost() || elRoad->isAiAllocated())
+            if constexpr (aiAllocated)
             {
-                continue;
+                if (!elRoad->isAiAllocated())
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                if (elRoad->isGhost() || elRoad->isAiAllocated())
+                {
+                    continue;
+                }
             }
 
             if (elRoad->sequenceIndex() == 0)
@@ -137,6 +150,16 @@ namespace OpenLoco::World::Track
             {
                 continue;
             }
+
+            if constexpr (checkOneWay)
+            {
+                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
+                {
+                    continue;
+                }
+            }
+
             if (elRoad->hasBridge())
             {
                 trackAndDirection2 |= elRoad->bridge() << 9;
@@ -168,6 +191,26 @@ namespace OpenLoco::World::Track
         return result;
     }
 
+    // 0x004788C8
+    RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        return getRoadConnectionsImpl<false, false>(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods);
+    }
+
+    // 0x00478D16
+    // For 0x00478CE9 call getRoadConnectionEnd followed by this
+    RoadConnections getRoadConnectionsOneWay(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        return getRoadConnectionsImpl<true, false>(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods);
+    }
+
+    // 0x00478AF6
+    // For 0x00478AC9 call getRoadConnectionEnd followed by this
+    RoadConnections getRoadConnectionsAiAllocated(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        return getRoadConnectionsImpl<false, true>(nextTrackPos, nextRotation, company, roadObjectId, requiredMods, queryMods);
+    }
+
     // Part of 0x004A2604
     // For 0x004A2604 call this followed by getTrackConnections
     ConnectionEnd getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
@@ -183,6 +226,7 @@ namespace OpenLoco::World::Track
         {
             data.push_back(c);
         }
+        data.data[data.size] = 0xFFFF;
         _1135FAE = src.stationId;
         _113607D = src.hasLevelCrossing ? 1 : 0;
     }
@@ -193,6 +237,7 @@ namespace OpenLoco::World::Track
         {
             data.push_back(c);
         }
+        data.data[data.size] = 0xFFFF;
         _1135FAE = src.stationId;
         _112C2ED = src.roadObjectId;
         _1136087 = src.stationObjectId;

@@ -519,6 +519,20 @@ namespace OpenLoco::Ui::Windows::Construction
         return createTrackConstructionWindow();
     }
 
+    // 0x004A6E2B
+    void updateAvailableRoadAndRailOptions()
+    {
+        // update available road and rail for player company
+        call(0x004A6E2B);
+    }
+
+    // 0x004A6E9B
+    void updateAvailableAirportAndDockOptions()
+    {
+        // update available airports and docks for player company
+        call(0x004A6E9B);
+    }
+
     // 0x004A6FAC
     void sub_4A6FAC()
     {

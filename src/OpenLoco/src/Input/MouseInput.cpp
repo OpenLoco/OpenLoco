@@ -469,7 +469,7 @@ namespace OpenLoco::Input
                         if (tool != nullptr)
                         {
                             // TODO: Handle widget id properly for tools.
-                            tool->callToolDragContinue(ToolManager::getToolWidgetIndex(), WidgetId::none, x, y);
+                            tool->callToolDrag(ToolManager::getToolWidgetIndex(), WidgetId::none, x, y);
                         }
                     }
                 }
@@ -491,7 +491,7 @@ namespace OpenLoco::Input
                     if (tool != nullptr)
                     {
                         // TODO: Handle widget id properly for tools.
-                        tool->callToolDragEnd(ToolManager::getToolWidgetIndex(), WidgetId::none);
+                        tool->callToolUp(ToolManager::getToolWidgetIndex(), WidgetId::none, x, y);
                     }
                 }
                 else if (!hasFlag(Flags::leftMousePressed))

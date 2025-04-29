@@ -42,7 +42,7 @@ jobs:
         uses: lukka/run-vcpkg@v11.5
         with:
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-          vcpkgGitCommitId: c63619856b89f0af4d77ba2049396039e4985418
+          vcpkgGitCommitId: d5182f703b51d7b258f83f94d936ac03488dcdbe
       - name: Build OpenLoco
         shell: cmd
         run: |

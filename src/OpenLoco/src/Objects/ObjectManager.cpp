@@ -24,6 +24,7 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
+#include "MessageManager.h"
 #include "ObjectImageTable.h"
 #include "ObjectIndex.h"
 #include "ObjectStringTable.h"
@@ -47,9 +48,12 @@
 #include "TunnelObject.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include "Ui/WindowManager.h"
 #include "VehicleObject.h"
+#include "Vehicles/VehicleManager.h"
 #include "WallObject.h"
 #include "WaterObject.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Core/Stream.hpp>
@@ -983,8 +987,50 @@ namespace OpenLoco::ObjectManager
     // 0x004C3A9E
     void updateYearly2()
     {
-        // update available vehicles/roads/airports/etc.
-        call(0x004C3A9E);
+        const auto currentYear = getCurrentYear();
+        for (uint16_t vehicleObjId = 0; vehicleObjId < ObjectManager::getMaxObjects(ObjectType::vehicle); vehicleObjId++)
+        {
+            const auto* vehicleObject = ObjectManager::get<VehicleObject>(vehicleObjId);
+            if (vehicleObject == nullptr)
+            {
+                continue;
+            }
+            if (currentYear == vehicleObject->designed)
+            {
+                for (Company& company : CompanyManager::companies())
+                {
+                    const auto forbiddenVehicles = CompanyManager::isPlayerCompany(company.id()) ? getGameState().forbiddenVehiclesPlayers : getGameState().forbiddenVehiclesCompetitors;
+                    if (forbiddenVehicles & (1U << enumValue(vehicleObject->type)))
+                    {
+                        continue;
+                    }
+                    if (company.unlockedVehicles[vehicleObjId])
+                    {
+                        continue;
+                    }
+                    company.unlockedVehicles.set(vehicleObjId, true);
+                    company.availableVehicles = VehicleManager::determineAvailableVehicleTypes(company);
+                    if (CompanyManager::getControllingId() != company.id())
+                    {
+                        continue;
+                    }
+                    if (vehicleObject->hasFlags(VehicleObjectFlags::quietInvention))
+                    {
+                        continue;
+                    }
+                    MessageManager::post(MessageType::newVehicle, CompanyId::null, vehicleObjId, 0xFFFF);
+                }
+            }
+            if (currentYear == vehicleObject->obsolete)
+            {
+                for (Company& company : CompanyManager::companies())
+                {
+                    company.unlockedVehicles.set(vehicleObjId, false);
+                }
+            }
+        }
+        Ui::Windows::Construction::updateAvailableRoadAndRailOptions();
+        Ui::Windows::Construction::updateAvailableAirportAndDockOptions();
     }
 
     // TODO: Refactor this, variable is also defined in PaintSurface.cpp.

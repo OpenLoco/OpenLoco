@@ -477,7 +477,7 @@ namespace OpenLoco::Paint
         if (((session.getViewFlags() & Ui::ViewportFlags::one_way_direction_arrows) != Ui::ViewportFlags::none)
             && session.getRenderTarget()->zoomLevel == 0
             && !elRoad.isGhost()
-            && roadObj->hasFlags(RoadObjectFlags::unk_00))
+            && roadObj->hasFlags(RoadObjectFlags::isOneWay))
         {
             const bool isLast = elRoad.isFlag6();
             const bool isFirstTile = elRoad.sequenceIndex() == 0;
