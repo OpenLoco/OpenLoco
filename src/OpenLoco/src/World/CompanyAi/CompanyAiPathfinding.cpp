@@ -1,5 +1,7 @@
 #include "CompanyAiPathfinding.h"
 #include "CompanyAi.h"
+#include "Map/Tile.h"
+#include "Map/Track/TrackData.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -9,7 +11,7 @@
 
 namespace OpenLoco::CompanyAi
 {
-    static Interop::loco_global<uint8_t, 0x0112C519> _trackType112C519;
+    static Interop::loco_global<uint8_t, 0x0112C519> _trackRoadObjType112C519;
     static Interop::loco_global<World::Pos2, 0x0112C3C2> _unk1Pos112C3C2;
     static Interop::loco_global<World::SmallZ, 0x0112C515> _unk1PosBaseZ112C515;
     static Interop::loco_global<World::Pos2, 0x0112C3C6> _unk2Pos112C3C6;
@@ -30,7 +32,7 @@ namespace OpenLoco::CompanyAi
         // 0x0112C384
         bool allowSteepSlopes = false;
 
-        _trackType112C519 = thought.trackObjId;
+        _trackRoadObjType112C519 = thought.trackObjId;
         const bool isRoad = thought.trackObjId & (1U << 7);
         uint32_t unkMods = 0U;
         uint32_t unkRackRail = 0U;
@@ -226,6 +228,52 @@ namespace OpenLoco::CompanyAi
         }
     }
 
+    // 0x00483EF2
+    static bool sub_483EF2(const Company& company)
+    {
+        const auto& road0Size = World::TrackData::getUnkRoad(company.var_85D5);
+        const auto connectPos0 = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep) + road0Size.pos - World::Pos3(World::kRotationOffset[road0Size.rotationEnd], 0);
+        const auto rotationConnect0 = road0Size.rotationEnd ^ (1U << 1);
+
+        const auto& road1Size = World::TrackData::getUnkRoad(company.var_85DC);
+        const auto connectPos1 = World::Pos3(company.var_85D7, company.var_85DB * World::kSmallZStep) + road1Size.pos;
+        const auto roationConnect1 = road1Size.rotationBegin;
+
+        return connectPos0 == connectPos1 && rotationConnect0 == roationConnect1;
+    }
+
+    // 0x00483E2D
+    static bool sub_483E2D(const Company& company)
+    {
+        const auto& track0Size = World::TrackData::getUnkTrack(company.var_85D5);
+        auto connectPos0 = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep) + track0Size.pos;
+        if (track0Size.rotationEnd < 12)
+        {
+            connectPos0 -= World::Pos3(World::kRotationOffset[track0Size.rotationEnd], 0);
+        }
+        const auto rotationConnect0 = track0Size.rotationEnd ^ (1U << 1);
+
+        const auto& track1Size = World::TrackData::getUnkTrack(company.var_85DC);
+        const auto connectPos1 = World::Pos3(company.var_85D7, company.var_85DB * World::kSmallZStep) + track1Size.pos;
+        const auto roationConnect1 = track1Size.rotationBegin;
+
+        return connectPos0 == connectPos1 && rotationConnect0 == roationConnect1;
+    }
+
+    // 0x00483E20
+    static bool sub_483E20(const Company& company)
+    {
+        const bool isRoad = _trackRoadObjType112C519 & (1U << 7);
+        if (isRoad)
+        {
+            return sub_483EF2(company);
+        }
+        else
+        {
+            return sub_483E2D(company);
+        }
+    }
+
     void registerHooks()
     {
         Interop::registerHook(
@@ -245,6 +293,18 @@ namespace OpenLoco::CompanyAi
 
                 regs = backup;
                 return 0;
+            });
+
+        Interop::registerHook(
+            0x00483E20,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+
+                auto& company = *Interop::X86Pointer<Company>(regs.esi);
+                const auto hasConnection = sub_483E20(company);
+
+                regs = backup;
+                return hasConnection ? Interop::X86_FLAG_CARRY : 0;
             });
     }
 }
