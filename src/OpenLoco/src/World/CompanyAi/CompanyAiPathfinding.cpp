@@ -237,9 +237,9 @@ namespace OpenLoco::CompanyAi
 
         const auto& road1Size = World::TrackData::getUnkRoad(company.var_85DC);
         const auto connectPos1 = World::Pos3(company.var_85D7, company.var_85DB * World::kSmallZStep) + road1Size.pos;
-        const auto roationConnect1 = road1Size.rotationEnd;
+        const auto rotationConnect1 = road1Size.rotationEnd;
 
-        return connectPos0 == connectPos1 && rotationConnect0 == roationConnect1;
+        return connectPos0 == connectPos1 && rotationConnect0 == rotationConnect1;
     }
 
     // 0x00483E2D
@@ -255,9 +255,9 @@ namespace OpenLoco::CompanyAi
 
         const auto& track1Size = World::TrackData::getUnkTrack(company.var_85DC);
         const auto connectPos1 = World::Pos3(company.var_85D7, company.var_85DB * World::kSmallZStep) + track1Size.pos;
-        const auto roationConnect1 = track1Size.rotationEnd;
+        const auto rotationConnect1 = track1Size.rotationEnd;
 
-        return connectPos0 == connectPos1 && rotationConnect0 == roationConnect1;
+        return connectPos0 == connectPos1 && rotationConnect0 == rotationConnect1;
     }
 
     // 0x00483E20
