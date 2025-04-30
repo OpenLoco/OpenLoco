@@ -1025,8 +1025,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static void onToolUpMultiple()
     {
-        mapInvalidateMapSelectionTiles();
+        mapInvalidateSelectionRect();
         removeConstructionGhosts();
+        World::resetMapSelectionFlags();
 
         auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
         auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;

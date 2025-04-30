@@ -2675,8 +2675,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void onToolUpMultiple(Window& self, const WidgetIndex_t widgetIndex)
     {
-        mapInvalidateMapSelectionTiles();
+        mapInvalidateSelectionRect();
         removeConstructionGhosts();
+        World::resetMapSelectionFlags();
 
         auto rotation = _cState->constructionRotation;
         auto piece = _cState->lastSelectedTrackPiece;
