@@ -75,12 +75,14 @@ namespace OpenLoco::Gfx
         createPalette();
     }
 
-    void SoftwareDrawingEngine::resize(const int32_t width, const int32_t height)
+    // windowWidth: width of the game window, e.g. 1920
+    // windowHeight: height of the game window, e.g. 1080
+    void SoftwareDrawingEngine::resize(const int32_t windowWidth, const int32_t windowHeight)
     {
-        // Scale the width and height by configured scale factor
+        // Downscale the width and height by configured scale factor
         const auto scaleFactor = Config::get().scaleFactor;
-        const auto scaledWidth = (int32_t)(width / scaleFactor);
-        const auto scaledHeight = (int32_t)(height / scaleFactor);
+        const auto downscaledWidth = (int32_t)(windowWidth / scaleFactor);
+        const auto downscaledHeight = (int32_t)(windowHeight / scaleFactor);
 
         // Release old resources.
         if (_screenSurface != nullptr)
@@ -111,14 +113,14 @@ namespace OpenLoco::Gfx
         }
 
         // Surfaces.
-        _screenSurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 8, 0, 0, 0, 0);
+        _screenSurface = SDL_CreateRGBSurface(0, downscaledWidth, downscaledHeight, 8, 0, 0, 0, 0);
         if (_screenSurface == nullptr)
         {
             Logging::error("SDL_CreateRGBSurface (_screenSurface) failed: {}", SDL_GetError());
             return;
         }
 
-        _screenRGBASurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 32, 0, 0, 0, 0);
+        _screenRGBASurface = SDL_CreateRGBSurface(0, downscaledWidth, downscaledHeight, 32, 0, 0, 0, 0);
         if (_screenRGBASurface == nullptr)
         {
             Logging::error("SDL_CreateRGBSurface (_screenRGBASurface) failed: {}", SDL_GetError());
@@ -148,19 +150,28 @@ namespace OpenLoco::Gfx
         }
 
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-        _screenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
+        _screenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_STREAMING, downscaledWidth, downscaledHeight);
         if (_screenTexture == nullptr)
         {
             Logging::error("SDL_CreateTexture (_screenTexture) failed: {}", SDL_GetError());
             return;
         }
 
-        if (scaleFactor > 1.0f)
+        // Determine if interpolation should be applied: it makes the game look less bad at fractional scaleFactor valuess.
+
+        // We don't need interpolation when the scaling is 1:1.
+        const bool scalingIsNot1 = (windowWidth != downscaledWidth || windowHeight != downscaledHeight);
+
+        // Interpolation only makes the game look worse when the scaling is 2, and barely makes a difference at higher scales.
+        const bool scalingIsLessThan2 = (windowWidth < downscaledWidth * 2 || windowHeight < downscaledHeight * 2);
+
+        if (scalingIsNot1 && scalingIsLessThan2)
         {
-            const auto scale = std::ceil(scaleFactor);
-            // We only need this texture when we have a scale above 1x, this texture uses the actual canvas size.
+            // Use linear interpolation when scaling the following texture to the canvas size
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-            _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width * scale, height * scale);
+
+            // Create a texture with a larger resolution than the canvas
+            _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, downscaledWidth * 2, downscaledHeight * 2);
             if (_scaledScreenTexture == nullptr)
             {
                 Logging::error("SDL_CreateTexture (_scaledScreenTexture) failed: {}", SDL_GetError());
@@ -179,24 +190,24 @@ namespace OpenLoco::Gfx
         {
             delete[] rt.bits;
         }
-        rt.bits = new uint8_t[pitch * scaledHeight];
-        rt.width = scaledWidth;
-        rt.height = scaledHeight;
-        rt.pitch = pitch - scaledWidth;
+        rt.bits = new uint8_t[pitch * downscaledHeight];
+        rt.width = downscaledWidth;
+        rt.height = downscaledHeight;
+        rt.pitch = pitch - downscaledWidth;
 
-        _screenInfo->width = scaledWidth;
-        _screenInfo->height = scaledHeight;
-        _screenInfo->width_2 = scaledWidth;
-        _screenInfo->height_2 = scaledHeight;
-        _screenInfo->width_3 = scaledWidth;
-        _screenInfo->height_3 = scaledHeight;
+        _screenInfo->width = downscaledWidth;
+        _screenInfo->height = downscaledHeight;
+        _screenInfo->width_2 = downscaledWidth;
+        _screenInfo->height_2 = downscaledHeight;
+        _screenInfo->width_3 = downscaledWidth;
+        _screenInfo->height_3 = downscaledHeight;
 
         int32_t widthShift = 6;
         int16_t blockWidth = 1 << widthShift;
         int32_t heightShift = 3;
         int16_t blockHeight = 1 << heightShift;
 
-        _invalidationGrid.reset(scaledWidth, scaledHeight, blockWidth, blockHeight);
+        _invalidationGrid.reset(downscaledWidth, downscaledHeight, blockWidth, blockHeight);
 
         // Reset the drawing context, this holds the old screen render target.
         _ctx.reset();
