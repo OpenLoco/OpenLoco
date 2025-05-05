@@ -166,7 +166,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleOrderSkip,             vehicleOrderSkip,          0x0047071A, false },
         { GameCommand::createRoad,                   createRoad,                0x00475FBC, true  },
         { GameCommand::removeRoad,                   removeRoad,                0x004775A5, true  },
-        { GameCommand::createRoadMod,                nullptr,                   0x0047A21E, true  },
+        { GameCommand::createRoadMod,                createRoadMod,             0x0047A21E, true  },
         { GameCommand::removeRoadMod,                nullptr,                   0x0047A42F, true  },
         { GameCommand::createRoadStation,            createRoadStation,         0x0048C708, true  },
         { GameCommand::removeRoadStation,            removeRoadStation,         0x0048D2AC, true  },
