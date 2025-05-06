@@ -849,7 +849,7 @@ namespace OpenLoco::Ui::Windows::Construction
             // Overhead tab
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
-                if (!self->isDisabled(widx::tab_station))
+                if (!self->isDisabled(widx::tab_overhead))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
                     auto y = self->widgets[widx::tab_overhead].top + self->y + 2;
@@ -1012,7 +1012,7 @@ namespace OpenLoco::Ui::Windows::Construction
             // Overhead Tab
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
-                if (!self->isDisabled(widx::tab_station))
+                if (!self->isDisabled(widx::tab_overhead))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
                     auto y = self->widgets[widx::tab_overhead].top + self->y + 2;
