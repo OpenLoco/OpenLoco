@@ -240,12 +240,6 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (initialElTrack->hasStationElement())
-            {
-                setErrorText(StringIds::station_in_the_way);
-                return FAILURE;
-            }
-
             if (!sub_431E6A(initialElTrack->owner(), reinterpret_cast<World::TileElement*>(initialElTrack)))
             {
                 return FAILURE;
@@ -405,7 +399,8 @@ namespace OpenLoco::GameCommands
                 if (piece.index == 0)
                 {
                     bool calculateCost = true;
-                    // Why?? we already blocked this from occurring???
+
+                    // Replace station if it already exists
                     if (elTrack->hasStationElement())
                     {
                         auto* elStation = elTrack->next()->as<World::StationElement>();
@@ -425,6 +420,7 @@ namespace OpenLoco::GameCommands
                             totalCost += cost;
                         }
                     }
+
                     if (calculateCost)
                     {
                         auto placementCostBase = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
@@ -523,6 +519,7 @@ namespace OpenLoco::GameCommands
                 Ui::ViewportManager::invalidate(trackLoc, newStationElement->baseHeight(), newStationElement->clearHeight());
             }
         }
+
         if (!(flags & Flags::ghost) && (flags & Flags::apply))
         {
             if (updateStationTileRegistration)
