@@ -28,7 +28,7 @@ namespace OpenLoco::Vehicles
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
     struct VehicleCommon : VehicleBase
     {
-        uint8_t pad_24[0x24 - 0x22];
+        ColourScheme colourScheme;           // 0x24
         EntityId head;                       // 0x26
         int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
@@ -46,6 +46,18 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(VehicleCommon) == 0x43); // Can't use offset_of change this to last field if more found
 #pragma pack(pop)
+
+    ColourScheme VehicleBase::getColourScheme()
+    {
+        auto* veh = reinterpret_cast<VehicleCommon*>(this);
+        return veh->colourScheme;
+    }
+
+    void VehicleBase::setColourScheme(ColourScheme colourScheme)
+    {
+        auto* veh = reinterpret_cast<VehicleCommon*>(this);
+        veh->colourScheme = colourScheme;
+    }
 
     VehicleBase* VehicleBase::nextVehicle()
     {
