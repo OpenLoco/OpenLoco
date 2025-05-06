@@ -224,15 +224,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     static void mapGenerationMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::landscape_generation_options);
-        auto count = 1;
+        auto numItems = 1;
 
         if (Config::get().cheatsMenuEnabled)
         {
             Dropdown::add(1, StringIds::tile_inspector);
-            count += 1;
+            numItems += 1;
         }
 
-        Dropdown::showBelow(window, widgetIndex, count, 0);
+        Dropdown::showBelow(window, widgetIndex, numItems, 0);
         Dropdown::setHighlightedItem(0);
     }
 
