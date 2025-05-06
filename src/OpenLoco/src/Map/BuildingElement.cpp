@@ -8,6 +8,7 @@
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "ScenarioManager.h"
+#include "SceneManager.h"
 #include "Tile.h"
 #include "TileManager.h"
 #include "Ui/WindowManager.h"
@@ -126,7 +127,7 @@ namespace OpenLoco::World
             });
         }
 
-        if (isMiscBuilding())
+        if (isMiscBuilding() || SceneManager::isEditorMode())
         {
             return true;
         }
