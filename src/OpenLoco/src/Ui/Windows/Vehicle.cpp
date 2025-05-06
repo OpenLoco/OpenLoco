@@ -2138,8 +2138,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         unk ^= 1U << 5;
                     }
 
-                    auto rollIndex = isAnimated ? carComponent.body->var_46 : 0;
-                    rollIndex += carComponent.body->var_47;
+                    auto rollIndex = isAnimated ? carComponent.body->animationFrame : 0;
+                    rollIndex += carComponent.body->cargoFrame;
 
                     auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, 0);
                     bodyItems.items.push_back(BodyItem{ spriteIndex, getScreenDistance(bodyDist, yaw), carComponent.body->id });
