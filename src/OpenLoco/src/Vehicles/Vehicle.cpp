@@ -28,7 +28,7 @@ namespace OpenLoco::Vehicles
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
     struct VehicleCommon : VehicleBase
     {
-        ColourScheme colourScheme;
+        ColourScheme colourScheme;           // 0x24
         EntityId head;                       // 0x26
         int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
