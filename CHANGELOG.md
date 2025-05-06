@@ -1,8 +1,8 @@
 25.04+ (???)
 ------------------------------------------------------------------------
 - Feature: [#3087] Allow replacing existing station elements directly in the station construction tool.
-- Fix: [#3096] Buildings are removed over time in the scenario editor (original bug).
 - Fix: [#3092] Drag selection area is not correctly removed after dragging station elements.
+- Fix: [#3096] Buildings are removed over time in the scenario editor (original bug).
 
 25.04 (2025-04-28)
 ------------------------------------------------------------------------
