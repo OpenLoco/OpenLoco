@@ -36,9 +36,9 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t vehicleRepaint(EntityId headId, const QuadraColour colours, const VehicleRepaintFlags paintFlags, const uint8_t flags)
+    static uint32_t vehicleRepaint(const VehicleRepaintArgs& args, const uint8_t flags)
     {
-        auto entity = EntityManager::get<EntityBase>(headId);
+        auto entity = EntityManager::get<EntityBase>(args.head);
         auto veh = entity->asBase<Vehicles::VehicleBase>();
         if (veh == nullptr)
         {
@@ -59,22 +59,22 @@ namespace OpenLoco::GameCommands
 
         for (auto& car : train.cars)
         {
-            if (paintFlags && VehicleRepaintFlags::applyToEntireTrain)
+            if ((args.paintFlags & VehicleRepaintFlags::applyToEntireTrain) != VehicleRepaintFlags::none)
             {
-                paintEntireCar(car, colours, paintFlags);
+                paintEntireCar(car, args.colours, args.paintFlags);
                 continue;
             }
             for (auto& carComponent : car)
             {
                 if (carComponent.front == veh || carComponent.back == veh || carComponent.body == veh)
                 {
-                    if (paintFlags && VehicleRepaintFlags::applyToEntireCar)
+                    if ((args.paintFlags & VehicleRepaintFlags::applyToEntireCar) != VehicleRepaintFlags::none)
                     {
-                        paintEntireCar(car, colours, paintFlags);
+                        paintEntireCar(car, args.colours, args.paintFlags);
                     }
                     else
                     {
-                        paintComponent(carComponent, colours, paintFlags);
+                        paintComponent(carComponent, args.colours, args.paintFlags);
                     }
                     return 0;
                 }
@@ -85,6 +85,6 @@ namespace OpenLoco::GameCommands
 
     void vehicleRepaint(registers& regs)
     {
-        regs.ebx = vehicleRepaint(EntityId(regs.ebp), { ColourScheme(regs.cx), ColourScheme(regs.ecx >> 16), ColourScheme(regs.dx), ColourScheme(regs.edx >> 16) }, VehicleRepaintFlags(regs.ax), regs.bl);
+        regs.ebx = vehicleRepaint(VehicleRepaintArgs(regs), regs.bl);
     }
 }
