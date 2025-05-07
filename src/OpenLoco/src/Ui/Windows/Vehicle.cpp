@@ -4917,8 +4917,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (widgetIndex == Common::tabDetails)
             {
                 auto company = CompanyManager::get(self->owner);
-                self->widgets[Details::widx::paintColourPrimary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
-                self->widgets[Details::widx::paintColourSecondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
+                self->widgets[Details::widx::paintColourPrimary].image = Widget::kImageIdColourSet | ImageId::fromUInt32(ImageIds::colour_swatch_recolourable).withPrimary(company->mainColours.primary).toUInt32();
+                self->widgets[Details::widx::paintColourSecondary].image = Widget::kImageIdColourSet | ImageId::fromUInt32(ImageIds::colour_swatch_recolourable).withPrimary(company->mainColours.secondary).toUInt32();
             }
         }
 
