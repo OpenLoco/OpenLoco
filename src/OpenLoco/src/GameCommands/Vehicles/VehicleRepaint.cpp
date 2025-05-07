@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    static void PaintComponent(Vehicles::CarComponent component, QuadraColour colours, VehicleRepaintFlags paintFlags)
+    static void paintComponent(Vehicles::CarComponent component, QuadraColour colours, VehicleRepaintFlags paintFlags)
     {
         if (paintFlags && VehicleRepaintFlags::bodyColour && component.body != nullptr)
         {
@@ -28,11 +28,11 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static void PaintEntireCar(Vehicles::Car& car, QuadraColour colours, VehicleRepaintFlags paintFlags)
+    static void paintEntireCar(Vehicles::Car& car, QuadraColour colours, VehicleRepaintFlags paintFlags)
     {
         for (Vehicles::CarComponent& component : car)
         {
-            PaintComponent(component, colours, paintFlags);
+            paintComponent(component, colours, paintFlags);
         }
     }
 
@@ -61,7 +61,7 @@ namespace OpenLoco::GameCommands
         {
             if (paintFlags && VehicleRepaintFlags::applyToEntireTrain)
             {
-                PaintEntireCar(car, colours, paintFlags);
+                paintEntireCar(car, colours, paintFlags);
                 continue;
             }
             for (auto& carComponent : car)
@@ -70,11 +70,11 @@ namespace OpenLoco::GameCommands
                 {
                     if (paintFlags && VehicleRepaintFlags::applyToEntireCar)
                     {
-                        PaintEntireCar(car, colours, paintFlags);
+                        paintEntireCar(car, colours, paintFlags);
                     }
                     else
                     {
-                        PaintComponent(carComponent, colours, paintFlags);
+                        paintComponent(carComponent, colours, paintFlags);
                     }
                     return 0;
                 }
