@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widgets::ImageButton({ 240, 44 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_new_vehicle_for),
             Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
             Widgets::ImageButton({ 240, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
-            Widgets::ImageButton({ 240, 122 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::vehicleRepaintTooltip),
+            Widgets::ImageButton({ 240, 122 }, { 24, 24 }, WindowColour::secondary, ImageIds::paintbrush, StringIds::vehicleRepaintTooltip),
             Widgets::Frame({ 0, 0 }, { 0, 0 }, WindowColour::secondary, Widget::kContentNull, StringIds::null),
             Widgets::ColourButton({ 240, 150 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
             Widgets::ColourButton({ 258, 150 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
@@ -1624,38 +1624,29 @@ namespace OpenLoco::Ui::Windows::Vehicle
             alignToRightBar(self, widx::remove);
             alignToRightBar(self, widx::paintBrush);
 
-            self.widgets[widx::buildNew].hidden = false;
-            self.widgets[widx::pickup].hidden = false;
-            self.widgets[widx::remove].hidden = false;
-
-            self.widgets[widx::paintBrush].hidden = false;
-            self.widgets[widx::paintBrush].content = ImageIds::paintbrush;
-
-            self.widgets[widx::paintBrush].bottom = self.height - kVehicleDetailsTextHeight3Lines;
-            self.widgets[widx::paintBrush].top = self.height - kVehicleDetailsTextHeight3Lines - 24;
-
-            self.widgets[widx::paintColourPrimary].hidden = false;
-            self.widgets[widx::paintColourSecondary].hidden = false;
-
-            // self.activatedWidgets &= ~(1U << widx::paintBrush);
-
             if (isPaintToolActive(self))
             {
-                // self.activatedWidgets |= (1U << widx::paintBrush);
+                self.activatedWidgets |= (1U << widx::paintBrush);
                 self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight3Lines;
 
-                self.widgets[widx::paintColourPrimary].type = WidgetType::buttonWithColour;
-                self.widgets[widx::paintColourSecondary].type = WidgetType::buttonWithColour;
-
+                self.widgets[widx::paintColourPrimary].hidden = false;
                 self.widgets[widx::paintColourPrimary].right = self.width - 23;
                 self.widgets[widx::paintColourPrimary].left = self.width - 39;
                 self.widgets[widx::paintColourPrimary].bottom = self.height - 17;
                 self.widgets[widx::paintColourPrimary].top = self.height - 33;
 
+                self.widgets[widx::paintColourSecondary].hidden = false;
                 self.widgets[widx::paintColourSecondary].right = self.width - 5;
                 self.widgets[widx::paintColourSecondary].left = self.width - 21;
                 self.widgets[widx::paintColourSecondary].bottom = self.height - 17;
                 self.widgets[widx::paintColourSecondary].top = self.height - 33;
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1U << widx::paintBrush);
+
+                self.widgets[widx::paintColourPrimary].hidden = true;
+                self.widgets[widx::paintColourSecondary].hidden = true;
             }
 
             // Differs to main tab! Unsure why.
@@ -1676,6 +1667,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.widgets[widx::carList].right = self.width - 4;
                 self.widgets[widx::paintBrush].hidden = true;
                 self.widgets[widx::paintBrush].content = Widget::kContentNull;
+            }
+            else
+            {
+                self.widgets[widx::buildNew].hidden = false;
+                self.widgets[widx::pickup].hidden = false;
+                self.widgets[widx::remove].hidden = false;
+
+                self.widgets[widx::paintBrush].bottom = self.height - kVehicleDetailsTextHeight3Lines;
+                self.widgets[widx::paintBrush].top = self.height - kVehicleDetailsTextHeight3Lines - 24;
             }
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
