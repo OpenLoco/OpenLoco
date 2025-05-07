@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    static void paintComponent(Vehicles::CarComponent component, const VehicleRepaintArgs& args)
+    static void paintComponent(Vehicles::CarComponent& component, const VehicleRepaintArgs& args)
     {
         if (args.hasRepaintFlags(VehicleRepaintFlags::bodyColour) && component.body != nullptr)
         {
