@@ -1728,7 +1728,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 GameCommands::VehicleRepaintArgs args{};
                 args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi;
-
                 if (Input::hasKeyModifier(Input::KeyModifier::control))
                 {
                     args.paintFlags ^= GameCommands::VehicleRepaintFlags::applyToEntireCar;
@@ -1748,9 +1747,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void paintToolDownScroll(Window& self, Vehicles::Car car, const int16_t x)
         {
-
             GameCommands::VehicleRepaintArgs args{};
-            args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi | GameCommands::VehicleRepaintFlags::applyToEntireCar;
+            args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi;
             args.setColours(getPaintToolColour(self));
             args.head = car.front->id;
 

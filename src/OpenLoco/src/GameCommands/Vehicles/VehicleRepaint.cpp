@@ -64,6 +64,7 @@ namespace OpenLoco::GameCommands
                 paintEntireCar(car, args);
                 continue;
             }
+
             for (auto& carComponent : car)
             {
                 if (carComponent.front == veh || carComponent.back == veh || carComponent.body == veh)
