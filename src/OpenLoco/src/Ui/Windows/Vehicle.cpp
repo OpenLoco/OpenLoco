@@ -1759,7 +1759,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.paintFlags |= GameCommands::VehicleRepaintFlags::applyToEntireTrain;
             }
 
-            if (Input::hasKeyModifier(Input::KeyModifier::control) && (args.paintFlags & GameCommands::VehicleRepaintFlags::applyToEntireTrain) == GameCommands::VehicleRepaintFlags::none)
+            if (Input::hasKeyModifier(Input::KeyModifier::control) && !args.hasRepaintFlags(GameCommands::VehicleRepaintFlags::applyToEntireTrain))
             {
                 auto obj = ObjectManager::get<VehicleObject>(car.front->objectId);
 
