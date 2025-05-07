@@ -9,30 +9,30 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    static void paintComponent(Vehicles::CarComponent component, QuadraColour colours, VehicleRepaintFlags paintFlags)
+    static void paintComponent(Vehicles::CarComponent component, const VehicleRepaintArgs& args)
     {
-        if (paintFlags && VehicleRepaintFlags::bodyColour && component.body != nullptr)
+        if (args.hasRepaintFlags(VehicleRepaintFlags::bodyColour) && component.body != nullptr)
         {
-            component.body->colourScheme = colours[kBodyColour];
+            component.body->colourScheme = args.colours[kBodyColour];
             component.body->invalidateSprite();
         }
-        if (paintFlags && VehicleRepaintFlags::frontBogieColour && component.front != nullptr)
+        if (args.hasRepaintFlags(VehicleRepaintFlags::frontBogieColour) && component.front != nullptr)
         {
-            component.front->colourScheme = colours[kFrontBogieColour];
+            component.front->colourScheme = args.colours[kFrontBogieColour];
             component.front->invalidateSprite();
         }
-        if (paintFlags && VehicleRepaintFlags::backBogieColour && component.back != nullptr)
+        if (args.hasRepaintFlags(VehicleRepaintFlags::backBogieColour) && component.back != nullptr)
         {
-            component.back->colourScheme = colours[kBackBogieColour];
+            component.back->colourScheme = args.colours[kBackBogieColour];
             component.back->invalidateSprite();
         }
     }
 
-    static void paintEntireCar(Vehicles::Car& car, QuadraColour colours, VehicleRepaintFlags paintFlags)
+    static void paintEntireCar(Vehicles::Car& car, const VehicleRepaintArgs& args)
     {
         for (Vehicles::CarComponent& component : car)
         {
-            paintComponent(component, colours, paintFlags);
+            paintComponent(component, args);
         }
     }
 
@@ -59,22 +59,22 @@ namespace OpenLoco::GameCommands
 
         for (auto& car : train.cars)
         {
-            if ((args.paintFlags & VehicleRepaintFlags::applyToEntireTrain) != VehicleRepaintFlags::none)
+            if (args.hasRepaintFlags(VehicleRepaintFlags::applyToEntireTrain))
             {
-                paintEntireCar(car, args.colours, args.paintFlags);
+                paintEntireCar(car, args);
                 continue;
             }
             for (auto& carComponent : car)
             {
                 if (carComponent.front == veh || carComponent.back == veh || carComponent.body == veh)
                 {
-                    if ((args.paintFlags & VehicleRepaintFlags::applyToEntireCar) != VehicleRepaintFlags::none)
+                    if (args.hasRepaintFlags(VehicleRepaintFlags::applyToEntireCar))
                     {
-                        paintEntireCar(car, args.colours, args.paintFlags);
+                        paintEntireCar(car, args);
                     }
                     else
                     {
-                        paintComponent(carComponent, args.colours, args.paintFlags);
+                        paintComponent(carComponent, args);
                     }
                     return 0;
                 }

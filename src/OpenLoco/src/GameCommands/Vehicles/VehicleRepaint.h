@@ -35,17 +35,22 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        void setColours(ColourScheme colour, VehicleRepaintFlags flags)
+        bool hasRepaintFlags(VehicleRepaintFlags flags) const
         {
-            if (flags && VehicleRepaintFlags::bodyColour)
+            return (paintFlags & flags) != VehicleRepaintFlags::none;
+        }
+
+        void setColours(ColourScheme colour)
+        {
+            if (hasRepaintFlags(VehicleRepaintFlags::bodyColour))
             {
                 colours[kBodyColour] = colour;
             }
-            if (flags && VehicleRepaintFlags::frontBogieColour)
+            if (hasRepaintFlags(VehicleRepaintFlags::frontBogieColour))
             {
                 colours[kFrontBogieColour] = colour;
             }
-            if (flags && VehicleRepaintFlags::backBogieColour)
+            if (hasRepaintFlags(VehicleRepaintFlags::backBogieColour))
             {
                 colours[kBackBogieColour] = colour;
             }

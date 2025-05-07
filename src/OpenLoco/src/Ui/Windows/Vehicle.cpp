@@ -1703,7 +1703,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::VehicleRepaintArgs args{};
             args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi | GameCommands::VehicleRepaintFlags::applyToEntireTrain;
             args.head = EntityId(self.number);
-            args.setColours(getPaintToolColour(self), args.paintFlags);
+            args.setColours(getPaintToolColour(self));
             GameCommands::doCommand(args, GameCommands::Flags::apply);
             self.invalidate();
         }
@@ -1738,7 +1738,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     args.paintFlags |= GameCommands::VehicleRepaintFlags::applyToEntireTrain;
                 }
 
-                args.setColours(getPaintToolColour(self), args.paintFlags);
+                args.setColours(getPaintToolColour(self));
                 args.head = veh->id;
 
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -1751,7 +1751,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             GameCommands::VehicleRepaintArgs args{};
             args.paintFlags = GameCommands::VehicleRepaintFlags::paintFromVehicleUi | GameCommands::VehicleRepaintFlags::applyToEntireCar;
-            args.setColours(getPaintToolColour(self), args.paintFlags);
+            args.setColours(getPaintToolColour(self));
             args.head = car.front->id;
 
             if (Input::hasKeyModifier(Input::KeyModifier::shift))
@@ -1759,7 +1759,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.paintFlags |= GameCommands::VehicleRepaintFlags::applyToEntireTrain;
             }
 
-            if (Input::hasKeyModifier(Input::KeyModifier::control) && !(args.paintFlags && GameCommands::VehicleRepaintFlags::applyToEntireTrain))
+            if (Input::hasKeyModifier(Input::KeyModifier::control) && args.hasPaintFlags(GameCommands::VehicleRepaintFlags::applyToEntireTrain))
             {
                 auto obj = ObjectManager::get<VehicleObject>(car.front->objectId);
 
