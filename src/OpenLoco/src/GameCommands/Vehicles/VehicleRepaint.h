@@ -31,7 +31,7 @@ namespace OpenLoco::GameCommands
         explicit VehicleRepaintArgs(const registers& regs)
             : head(EntityId(regs.ebp))
             , colours{ ColourScheme(regs.cx), ColourScheme(regs.ecx >> 16), ColourScheme(regs.dx), ColourScheme(regs.edx >> 16) }
-            , paintFlags(VehicleRepaintFlags(regs.bl))
+            , paintFlags(VehicleRepaintFlags(regs.ax))
         {
         }
 
