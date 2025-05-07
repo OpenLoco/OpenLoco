@@ -1207,7 +1207,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (widgetIndex == widx::paintColourPrimary || widgetIndex == widx::paintColourSecondary)
             {
                 auto availableColours = 0x7FFFFFFF;
-                Colour selectedColour = Gfx::getPrimaryColour(self.widgets[widgetIndex].image);
+                Colour selectedColour = ImageId::fromUInt32(self.widgets[widgetIndex].image).getPrimary();
                 Dropdown::showColour(&self, &self.widgets[widgetIndex], availableColours, selectedColour, self.getColour(WindowColour::secondary));
                 return;
             }
@@ -1254,7 +1254,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     return;
                 }
                 Colour selectedColour = static_cast<Colour>(Dropdown::getItemArgument(itemIndex, 2));
-                self.widgets[widgetIndex].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, selectedColour);
+                self.widgets[widgetIndex].image = Widget::kImageIdColourSet | ImageId::fromUInt32(ImageIds::colour_swatch_recolourable).withPrimary(selectedColour).toUInt32();
                 self.invalidate();
                 return;
             }
@@ -1759,7 +1759,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.paintFlags |= GameCommands::VehicleRepaintFlags::applyToEntireTrain;
             }
 
-            if (Input::hasKeyModifier(Input::KeyModifier::control) && args.hasPaintFlags(GameCommands::VehicleRepaintFlags::applyToEntireTrain))
+            if (Input::hasKeyModifier(Input::KeyModifier::control) && (args.paintFlags & GameCommands::VehicleRepaintFlags::applyToEntireTrain) == GameCommands::VehicleRepaintFlags::none)
             {
                 auto obj = ObjectManager::get<VehicleObject>(car.front->objectId);
 
@@ -1811,7 +1811,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static ColourScheme getPaintToolColour(Window& self)
         {
-            return { Gfx::getPrimaryColour(self.widgets[widx::paintColourPrimary].image), Gfx::getPrimaryColour(self.widgets[widx::paintColourSecondary].image) };
+            return { ImageId(self.widgets[widx::paintColourPrimary].image).getPrimary(), ImageId(self.widgets[widx::paintColourSecondary].image).getPrimary() };
         }
 
         // 0x004B3542
