@@ -1190,12 +1190,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
                 Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
 
-                Widget* widget = &self.widgets[widx::buildNew];
+                auto& widget = self.widgets[widx::buildNew];
                 Dropdown::showText(
-                    self.x + widget->left,
-                    self.y + widget->top,
-                    widget->width(),
-                    widget->height(),
+                    self.x + widget.left,
+                    self.y + widget.top,
+                    widget.width(),
+                    widget.height(),
                     self.getColour(WindowColour::secondary),
                     2,
                     0);
@@ -1216,12 +1216,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 Dropdown::add(0, StringIds::dropdown_stringid, StringIds::vehicleRepaintTool);
                 Dropdown::add(1, StringIds::dropdown_stringid, StringIds::vehicleRepaintEntireVehicle);
 
-                Widget* widget = &self.widgets[widx::paintBrush];
+                auto& widget = self.widgets[widx::paintBrush];
                 Dropdown::showText(
-                    self.x + widget->left,
-                    self.y + widget->top,
-                    widget->width(),
-                    widget->height(),
+                    self.x + widget.left,
+                    self.y + widget.top,
+                    widget.width(),
+                    widget.height(),
                     self.getColour(WindowColour::secondary),
                     2,
                     0);
