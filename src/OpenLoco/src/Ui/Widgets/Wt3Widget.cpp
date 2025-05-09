@@ -6,9 +6,7 @@ namespace OpenLoco::Ui::Widgets
 {
     static void sub_4CADE8(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
-        const auto position = window->position() + widget.position();
+        const auto position = widget.position();
 
         const bool isColourSet = widget.image & Widget::kImageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
@@ -60,7 +58,7 @@ namespace OpenLoco::Ui::Widgets
     {
         auto* window = widgetState.window;
 
-        const auto position = window->position() + widget.position();
+        const auto position = widget.position();
         const auto size = widget.size();
 
         int16_t t, l, b, r;

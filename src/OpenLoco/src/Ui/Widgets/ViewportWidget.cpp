@@ -24,8 +24,7 @@ namespace OpenLoco::Ui::Widgets
         }
 
         auto formatArgs = FormatArguments(widget.textArgs);
-        auto* window = widgetStated.window;
-        auto point = Point(window->x + widget.left + 1, window->y + widget.top);
+        auto point = Point(widget.left + 1, widget.top);
         int width = widget.right - widget.left - 2;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
