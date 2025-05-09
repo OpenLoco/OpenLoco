@@ -1281,22 +1281,6 @@ namespace OpenLoco::Ui
     // 0x004CA4DF
     void Window::draw(Gfx::DrawingContext& drawingCtx)
     {
-        // Clip render target to window rect.
-        const auto windowRect = Ui::Rect{
-            x,
-            y,
-            width,
-            height,
-        };
-
-        auto windowRT = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), windowRect);
-        if (!windowRT.has_value())
-        {
-            return;
-        }
-
-        drawingCtx.pushRenderTarget(*windowRT);
-
         if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
         {
             drawingCtx.fillRect(0, 0, this->width - 1, this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
@@ -1347,8 +1331,6 @@ namespace OpenLoco::Ui
                 Colour::white,
                 Gfx::RectInsetFlags::fillNone);
         }
-
-        drawingCtx.popRenderTarget();
     }
 
     WidgetIndex_t Window::firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)

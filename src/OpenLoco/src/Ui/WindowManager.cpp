@@ -1320,7 +1320,21 @@ namespace OpenLoco::Ui::WindowManager
         setWindowColours(WindowColour::tertiary, w->getColour(WindowColour::tertiary).opaque());
         setWindowColours(WindowColour::quaternary, w->getColour(WindowColour::quaternary).opaque());
 
-        drawingCtx.pushRenderTarget(rt);
+        // Clip render target to window rect.
+        const auto windowRect = Ui::Rect{
+            w->x,
+            w->y,
+            w->width,
+            w->height,
+        };
+
+        auto windowRT = Gfx::clipRenderTarget(rt, windowRect);
+        if (!windowRT.has_value())
+        {
+            return;
+        }
+
+        drawingCtx.pushRenderTarget(*windowRT);
 
         w->callPrepareDraw();
         w->callDraw(drawingCtx);
