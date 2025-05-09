@@ -26,15 +26,22 @@ endif (CCache_FOUND)
 
 include(FetchContent)
 
-# On windows VCPKG is used to get all dependencies other platforms can use it as well by specifying it
-# in the CMAKE_TOOLCHAIN_FILE
 if (WIN32)
+    set(OPENLOCO_USE_VCPKG_DEFAULT YES)
+else()
+    set(OPENLOCO_USE_VCPKG_DEFAULT NO)
+endif()
+option(OPENLOCO_USE_VCPKG "Use vcpkg for dependencies and toolchain" ${OPENLOCO_USE_VCPKG_DEFAULT})
+
+
+# On windows VCPKG is used to get all dependencies other platforms can use it as well by setting OPENLOCO_USE_VCPKG
+if (OPENLOCO_USE_VCPKG)
     if (EXISTS ${VCPKG_ROOT})
         set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
     else()
         # Provide a message for first time invocations
         if (NOT CMAKE_TOOLCHAIN_FILE)
-            message("VCPKG not installed on windows fetching and building VCPKG. Warning may take a while on slow connections.")
+            message("VCPKG not installed, fetching and building VCPKG. Warning may take a while on slow connections.")
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
