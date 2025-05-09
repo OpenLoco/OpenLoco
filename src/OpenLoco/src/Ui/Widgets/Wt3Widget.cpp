@@ -62,10 +62,10 @@ namespace OpenLoco::Ui::Widgets
         const auto size = widget.size();
 
         int16_t t, l, b, r;
-        t = window->y + widget.top;
-        l = window->x + widget.left;
-        r = window->x + widget.right;
-        b = window->y + widget.bottom;
+        t = widget.top;
+        l = widget.left;
+        r = widget.right;
+        b = widget.bottom;
 
         auto flags = widgetState.flags;
         if (widgetState.activated)
