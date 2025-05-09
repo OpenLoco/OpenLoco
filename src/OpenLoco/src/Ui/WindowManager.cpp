@@ -1426,26 +1426,11 @@ namespace OpenLoco::Ui::WindowManager
             if (extendsX || extendsY)
             {
                 // Calculate the new locations
-                int16_t oldX = w.x;
-                int16_t oldY = w.y;
                 w.x = newLocation;
                 w.y = newLocation + 28;
 
                 // Move the next new location so windows are not directly on top
                 newLocation += 8;
-
-                // Adjust the viewports if required.
-                if (w.viewports[0] != nullptr)
-                {
-                    w.viewports[0]->x -= oldX - w.x;
-                    w.viewports[0]->y -= oldY - w.y;
-                }
-
-                if (w.viewports[1] != nullptr)
-                {
-                    w.viewports[1]->x -= oldX - w.x;
-                    w.viewports[1]->y -= oldY - w.y;
-                }
             }
         }
     }

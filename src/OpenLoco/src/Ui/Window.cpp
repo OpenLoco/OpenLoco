@@ -874,18 +874,6 @@ namespace OpenLoco::Ui
         this->x += dx;
         this->y += dy;
 
-        if (this->viewports[0] != nullptr)
-        {
-            this->viewports[0]->x += dx;
-            this->viewports[0]->y += dy;
-        }
-
-        if (this->viewports[1] != nullptr)
-        {
-            this->viewports[1]->x += dx;
-            this->viewports[1]->y += dy;
-        }
-
         this->invalidate();
 
         return true;
@@ -933,18 +921,6 @@ namespace OpenLoco::Ui
         this->x += offset.x;
         this->y += offset.y;
         this->invalidate();
-
-        if (this->viewports[0] != nullptr)
-        {
-            this->viewports[0]->x += offset.x;
-            this->viewports[0]->y += offset.y;
-        }
-
-        if (this->viewports[1] != nullptr)
-        {
-            this->viewports[1]->x += offset.x;
-            this->viewports[1]->y += offset.y;
-        }
     }
 
     bool Window::moveToCentre()
