@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
 
-        auto origin = Ui::Point(self.x + self.width / 2, self.y + 41);
+        auto origin = Ui::Point(self.width / 2, 41);
         tr.drawStringCentredWrapped(origin, self.width, Colour::black, StringIds::wcolour2_stringid, args);
     }
 
