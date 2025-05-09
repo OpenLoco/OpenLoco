@@ -90,7 +90,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         self.draw(drawingCtx);
 
         // Draw explanatory text
-        auto point = Point(self.x + 3, self.y + 19);
+        auto point = Point(3, 19);
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.drawStringLeftWrapped(point, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
     }
