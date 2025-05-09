@@ -1501,16 +1501,6 @@ namespace OpenLoco::Ui::WindowManager
                 int dY = bottom + 3 - w.y;
                 w.y += dY;
                 w.invalidate();
-
-                if (w.viewports[0] != nullptr)
-                {
-                    w.viewports[0]->y += dY;
-                }
-
-                if (w.viewports[1] != nullptr)
-                {
-                    w.viewports[1]->y += dY;
-                }
             }
         }
     }
