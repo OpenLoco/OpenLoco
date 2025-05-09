@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
             args.push(StringIds::prompt_confirm_random_landscape);
         }
 
-        auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
+        auto origin = Ui::Point((window.width / 2), 41);
         tr.drawStringCentredWrapped(origin, window.width, Colour::black, StringIds::wcolour2_stringid, args);
     }
 
