@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         tr.drawStringCentredWrapped(position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, FormatArguments::common());
 
         auto widget = &_widgets[Widx::input];
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget->left + 1, widget->top + 1, widget->width() - 2, widget->height() - 2));
         if (!clipped)
         {
             return;
@@ -271,7 +271,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             args.push<uint16_t>(maxNumCharacters);
 
             widget = &_widgets[Widx::ok];
-            auto point = Point(window.x + widget->left - 5, window.y + widget->top + 1);
+            auto point = Point(widget->left - 5, widget->top + 1);
             tr.drawStringRight(point, Colour::black, StringIds::num_characters_left_int_int, args);
         }
 
