@@ -698,10 +698,10 @@ namespace OpenLoco::Ui::Windows::TownList
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
 
-            auto point = Point(self.x + 3, self.y + self.widgets[widx::current_size].top + 1);
+            auto point = Point(3, self.widgets[widx::current_size].top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::town_size_label);
 
-            point = Point(self.x + 3, self.y + self.height - 13);
+            point = Point(3, self.height - 13);
             tr.drawStringLeft(point, Colour::black, StringIds::select_town_size);
         }
 
@@ -943,7 +943,7 @@ namespace OpenLoco::Ui::Windows::TownList
             FormatArguments args{};
             args.push(buildingObj->name);
 
-            auto point = Point(self.x + 3, self.y + self.height - 13);
+            auto point = Point(3, self.height - 13);
             tr.drawStringLeftClipped(point, self.width - 19, Colour::black, StringIds::black_stringid, args);
         }
 

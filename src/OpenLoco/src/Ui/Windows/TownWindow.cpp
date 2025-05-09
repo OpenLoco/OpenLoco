@@ -310,7 +310,7 @@ namespace OpenLoco::Ui::Windows::Town
             {
                 auto widget = &self.widgets[widx::viewport];
                 auto tile = World::Pos3({ town->x, town->y, tileZ });
-                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
+                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
                 self.invalidate();

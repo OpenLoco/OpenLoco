@@ -101,8 +101,8 @@ namespace OpenLoco::Ui
         auto widget = &w->widgets[index];
 
         Ui::Point pos = {};
-        pos.x = widget->left + w->x;
-        pos.y = widget->top + w->y;
+        pos.x = widget->left;
+        pos.y = widget->top;
 
         if (w->isDisabled(index))
         {

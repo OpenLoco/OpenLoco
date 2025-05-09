@@ -1238,7 +1238,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         strncpy(textBuffer, inputSession.buffer.c_str(), 256);
 
         auto& widget = _widgets[widx::searchBox];
-        auto clipped = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), Ui::Rect(self.x + widget.left, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
+        auto clipped = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), Ui::Rect(widget.left, widget.top + 1, widget.width() - 2, widget.height() - 2));
         if (!clipped)
         {
             return;
@@ -1293,7 +1293,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            auto point = Point(window.x + 2, window.y + window.height - 13);
+            auto point = Point(2, window.height - 13);
             tr.drawStringLeftClipped(point, window.width - 186, Colour::black, bottomLeftMessage, args);
         }
 
@@ -1307,7 +1307,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(cargoObj->unitInlineSprite);
 
             auto& widget = window.widgets[widx::cargoLabel];
-            auto point = Point(window.x + widget.left + 2, window.y + widget.top);
+            auto point = Point(widget.left + 2, widget.top);
             tr.drawStringLeftClipped(point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
@@ -1432,8 +1432,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         vehicleObj->getCargoString(buffer);
 
-        auto x = window.widgets[widx::scrollview_vehicle_selection].right + window.x + 2;
-        auto y = window.widgets[widx::scrollview_vehicle_preview].bottom + window.y + 2;
+        auto x = window.widgets[widx::scrollview_vehicle_selection].right + 2;
+        auto y = window.widgets[widx::scrollview_vehicle_preview].bottom + 2;
         tr.drawStringLeftWrapped(Point(x, y), 180, Colour::black, StringIds::buffer_1250);
     }
 
@@ -1744,14 +1744,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));
 
-        auto left = window->x;
-        auto top = window->y + 69;
+        auto left = 0;
+        auto top = 69;
         auto right = left + window->width - 187;
         auto bottom = top;
         drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
 
-        left = window->x + window->width - 187;
-        top = window->y + 41;
+        left = window->width - 187;
+        top = 41;
         right = left;
         bottom = top + 27;
         drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
@@ -1761,8 +1761,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             const auto widget = window->widgets[tab + widx::tab_track_type_0];
             if (window->currentSecondaryTab == tab)
             {
-                left = widget.left + window->x + 1;
-                top = widget.top + window->y + 26;
+                left = widget.left + 1;
+                top = widget.top + 26;
                 right = left + 29;
                 bottom = top;
                 drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 5), Gfx::RectFlags::none);

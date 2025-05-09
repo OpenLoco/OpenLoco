@@ -9,9 +9,7 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CADE8
     static void drawTabBackground(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
 
         ImageId imageId = ImageId{ ImageIds::tab };
 
@@ -59,7 +57,7 @@ namespace OpenLoco::Ui::Widgets
     {
         auto* window = widgetState.window;
 
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
 
         if (widgetState.disabled)
         {

@@ -161,14 +161,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             FormatArguments args{};
             args.push(StringIds::tile_inspector_x_coord);
             auto& widget = self.widgets[widx::xPos];
-            auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
+            auto point = Point(widget.left - 15, widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::wcolour2_stringid, args);
         }
         {
             FormatArguments args{};
             args.push(StringIds::tile_inspector_y_coord);
             auto& widget = self.widgets[widx::yPos];
-            auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
+            auto point = Point(widget.left - 15, widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
@@ -177,14 +177,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             FormatArguments args{};
             args.push<int16_t>(_currentPosition.x);
             auto& widget = self.widgets[widx::xPos];
-            auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
+            auto point = Point(widget.left + 2, widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::tile_inspector_coord, args);
         }
         {
             FormatArguments args{};
             args.push<int16_t>(_currentPosition.y);
             auto& widget = self.widgets[widx::yPos];
-            auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
+            auto point = Point(widget.left + 2, widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::tile_inspector_coord, args);
         }
 
@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
             auto widget = self.widgets[widx::detailsGroup];
-            auto point = Point(self.x + widget.left + 7, self.y + widget.top + 14);
+            auto point = Point(widget.left + 7, widget.top + 14);
             tr.drawString(point, Colour::black, buffer);
         }
     }

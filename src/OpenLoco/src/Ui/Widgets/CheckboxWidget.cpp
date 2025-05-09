@@ -12,9 +12,7 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CB00B
     static void drawCheckBox(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
 
         drawingCtx.fillRectInset(
             pos,
@@ -55,12 +53,11 @@ namespace OpenLoco::Ui::Widgets
         }
 
         auto formatArgs = FormatArguments(widget.textArgs);
-        auto* window = widgetState.window;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(widget.font);
 
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
         tr.drawStringLeft(pos + Point{ kCheckMarkSize.width + kLabelMarginLeft, 0 }, colour, widget.text, formatArgs);
     }
 

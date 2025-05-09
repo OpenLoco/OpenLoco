@@ -187,19 +187,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self.invalidate();
                 self.y += height;
                 self.x += width;
-
-                if (self.viewports[0] != nullptr)
-                {
-                    self.viewports[0]->x += width;
-                    self.viewports[0]->y += height;
-                }
-
-                if (self.viewports[1] != nullptr)
-                {
-                    self.viewports[1]->x += width;
-                    self.viewports[1]->y += height;
-                }
-
                 self.invalidate();
             }
         }
@@ -376,8 +363,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 if (!view.isEmpty())
                 {
-                    int16_t x = self.widgets[Common::widx::viewport1].left + 1 + self.x;
-                    int16_t y = self.widgets[Common::widx::viewport1].top + 1 + self.y;
+                    int16_t x = self.widgets[Common::widx::viewport1].left + 1;
+                    int16_t y = self.widgets[Common::widx::viewport1].top + 1;
                     Ui::Point origin = { x, y };
 
                     uint16_t viewportWidth = self.widgets[Common::widx::viewport1].width();
@@ -386,8 +373,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     if (mtd.hasFlag(MessageTypeFlags::unk1))
                     {
-                        x = self.widgets[Common::widx::viewport1].left + self.x;
-                        y = self.widgets[Common::widx::viewport1].top + self.y;
+                        x = self.widgets[Common::widx::viewport1].left;
+                        y = self.widgets[Common::widx::viewport1].top;
                         origin = { x, y };
 
                         viewportWidth = self.widgets[Common::widx::viewport1].width() + 2;
@@ -463,8 +450,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 if (!view.isEmpty())
                 {
-                    int16_t x = self.widgets[Common::widx::viewport2].left + 1 + self.x;
-                    int16_t y = self.widgets[Common::widx::viewport2].top + 1 + self.y;
+                    int16_t x = self.widgets[Common::widx::viewport2].left + 1;
+                    int16_t y = self.widgets[Common::widx::viewport2].top + 1;
                     Ui::Point origin = { x, y };
 
                     uint16_t viewportWidth = self.widgets[Common::widx::viewport2].width();
@@ -473,8 +460,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     if (mtd.hasFlag(MessageTypeFlags::unk1))
                     {
-                        x = self.widgets[Common::widx::viewport2].left + self.x;
-                        y = self.widgets[Common::widx::viewport2].top + self.y;
+                        x = self.widgets[Common::widx::viewport2].left;
+                        y = self.widgets[Common::widx::viewport2].top;
                         origin = { x, y };
 
                         viewportWidth = self.widgets[Common::widx::viewport2].width() + 2;
@@ -863,8 +850,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 if (news->itemSubjects[0] != 0xFFFF)
                 {
                     auto x = (self.widgets[Common::widx::viewport1Button].left + self.widgets[Common::widx::viewport1Button].right) / 2;
-                    x += self.x;
-                    auto y = self.widgets[Common::widx::viewport1Button].bottom - 7 + self.y;
+                    auto y = self.widgets[Common::widx::viewport1Button].bottom - 7;
                     auto width = self.widgets[Common::widx::viewport1Button].width() - 1;
                     auto point = Point(x, y);
 
@@ -876,8 +862,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 if (news->itemSubjects[1] != 0xFFFF)
                 {
                     auto x = (self.widgets[Common::widx::viewport2Button].left + self.widgets[Common::widx::viewport2Button].right) / 2;
-                    x += self.x;
-                    auto y = self.widgets[Common::widx::viewport2Button].bottom - 7 + self.y;
+                    auto y = self.widgets[Common::widx::viewport2Button].bottom - 7;
                     auto width = self.widgets[Common::widx::viewport2Button].width() - 1;
                     auto point = Point(x, y);
 

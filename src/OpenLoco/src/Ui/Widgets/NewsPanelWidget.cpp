@@ -8,11 +8,9 @@
 
 namespace OpenLoco::Ui::Widgets
 {
-    void NewsPanel::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    void NewsPanel::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, [[maybe_unused]] const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
         const auto centerPos = pos + Point(widget.width() / 2, 0);
 
         const auto style = static_cast<Style>(widget.styleData);

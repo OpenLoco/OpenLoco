@@ -12,11 +12,9 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CA6AE
     static void drawBoxed(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
         const auto size = widget.size();
 
         drawingCtx.fillRectInset(
@@ -75,9 +73,7 @@ namespace OpenLoco::Ui::Widgets
 
         StringManager::formatString(&stringBuffer[1], widget.text, formatArgs);
 
-        auto* window = widgetState.window;
-
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
         const auto size = widget.size();
 
         int16_t width = size.width - 4 - 14;

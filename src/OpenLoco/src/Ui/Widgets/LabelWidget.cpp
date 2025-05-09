@@ -23,8 +23,7 @@ namespace OpenLoco::Ui::Widgets
             colour = colour.inset();
         }
 
-        auto* window = widgetState.window;
-        const auto position = window->position() + widget.position();
+        const auto position = widget.position();
         const auto size = widget.size();
 
         auto formatArgs = FormatArguments(widget.textArgs);
