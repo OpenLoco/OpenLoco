@@ -850,8 +850,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 if (news->itemSubjects[0] != 0xFFFF)
                 {
                     auto x = (self.widgets[Common::widx::viewport1Button].left + self.widgets[Common::widx::viewport1Button].right) / 2;
-                    x += self.x;
-                    auto y = self.widgets[Common::widx::viewport1Button].bottom - 7 + self.y;
+                    auto y = self.widgets[Common::widx::viewport1Button].bottom - 7;
                     auto width = self.widgets[Common::widx::viewport1Button].width() - 1;
                     auto point = Point(x, y);
 
@@ -863,8 +862,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 if (news->itemSubjects[1] != 0xFFFF)
                 {
                     auto x = (self.widgets[Common::widx::viewport2Button].left + self.widgets[Common::widx::viewport2Button].right) / 2;
-                    x += self.x;
-                    auto y = self.widgets[Common::widx::viewport2Button].bottom - 7 + self.y;
+                    auto y = self.widgets[Common::widx::viewport2Button].bottom - 7;
                     auto width = self.widgets[Common::widx::viewport2Button].width() - 1;
                     auto point = Point(x, y);
 
