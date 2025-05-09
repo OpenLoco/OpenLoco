@@ -2811,8 +2811,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw company owner face.
             const uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
-            const uint16_t x = self->x + self->widgets[Common::widx::company_select].left + 1;
-            const uint16_t y = self->y + self->widgets[Common::widx::company_select].top + 1;
+            const uint16_t x = self->widgets[Common::widx::company_select].left + 1;
+            const uint16_t y = self->widgets[Common::widx::company_select].top + 1;
             drawingCtx.drawImage(x, y, image);
         }
 
