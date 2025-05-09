@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -1304,9 +1305,25 @@ namespace OpenLoco::Ui
     // 0x004CA4DF
     void Window::draw(Gfx::DrawingContext& drawingCtx)
     {
+        // Clip render target to window rect.
+        const auto windowRect = Ui::Rect{
+            x,
+            y,
+            width,
+            height,
+        };
+
+        auto windowRT = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), windowRect);
+        if (!windowRT.has_value())
+        {
+            return;
+        }
+
+        drawingCtx.pushRenderTarget(*windowRT);
+
         if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect(0, 0, this->width - 1, this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;
@@ -1347,13 +1364,15 @@ namespace OpenLoco::Ui
         if (this->hasFlags(WindowFlags::whiteBorderMask))
         {
             drawingCtx.fillRectInset(
-                this->x,
-                this->y,
-                this->x + this->width - 1,
-                this->y + this->height - 1,
+                0,
+                0,
+                this->width - 1,
+                this->height - 1,
                 Colour::white,
                 Gfx::RectInsetFlags::fillNone);
         }
+
+        drawingCtx.popRenderTarget();
     }
 
     WidgetIndex_t Window::firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
