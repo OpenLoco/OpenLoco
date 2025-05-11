@@ -18,7 +18,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
 #include "ScenarioOptions.h"
-#include "ToolbarTopCommon.h"
+#include "Common.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Screenshot.h"
 #include "Ui/ToolManager.h"
