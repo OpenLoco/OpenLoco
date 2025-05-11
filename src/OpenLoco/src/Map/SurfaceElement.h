@@ -8,41 +8,42 @@ namespace OpenLoco::World
     {
         constexpr uint8_t flat = 0x00;
 
-        namespace CornerUp
+        namespace CornerRaised
         {
             constexpr uint8_t all = 0x0F;
-            constexpr uint8_t north = (1 << 0);
-            constexpr uint8_t east = (1 << 1);
-            constexpr uint8_t south = (1 << 2);
-            constexpr uint8_t west = (1 << 3);
+            constexpr uint8_t south = (1 << 0);
+            constexpr uint8_t west = (1 << 1);
+            constexpr uint8_t north = (1 << 2);
+            constexpr uint8_t east = (1 << 3);
         }
 
-        constexpr uint8_t doubleHeight = (1 << 4);
+        constexpr uint8_t doubleHeight = (1 << 4); // Full diagonal slope
         constexpr uint8_t requiresHeightAdjustment = (1 << 5);
 
+        // All but one corner raised
         namespace CornerDown
         {
 
-            constexpr uint8_t west = CornerUp::all & ~CornerUp::west;
-            constexpr uint8_t south = CornerUp::all & ~CornerUp::south;
-            constexpr uint8_t east = CornerUp::all & ~CornerUp::east;
-            constexpr uint8_t north = CornerUp::all & ~CornerUp::north;
+            constexpr uint8_t east = CornerRaised::all & ~CornerRaised::east;
+            constexpr uint8_t north = CornerRaised::all & ~CornerRaised::north;
+            constexpr uint8_t west = CornerRaised::all & ~CornerRaised::west;
+            constexpr uint8_t south = CornerRaised::all & ~CornerRaised::south;
         }
 
-        namespace SideUp
+        namespace EdgeRaised
         {
 
-            constexpr uint8_t northeast = CornerUp::north | CornerUp::east;
-            constexpr uint8_t southeast = CornerUp::south | CornerUp::east;
-            constexpr uint8_t northwest = CornerUp::north | CornerUp::west;
-            constexpr uint8_t southwest = CornerUp::south | CornerUp::west;
+            constexpr uint8_t southwest = CornerRaised::south | CornerRaised::west;
+            constexpr uint8_t northwest = CornerRaised::north | CornerRaised::west;
+            constexpr uint8_t southeast = CornerRaised::south | CornerRaised::east;
+            constexpr uint8_t northeast = CornerRaised::north | CornerRaised::east;
         }
 
         namespace Valley
         {
 
-            constexpr uint8_t westeast = CornerUp::east | CornerUp::west;
-            constexpr uint8_t northsouth = CornerUp::north | CornerUp::south;
+            constexpr uint8_t northsouth = CornerRaised::west | CornerRaised::east;
+            constexpr uint8_t eastwest = CornerRaised::south | CornerRaised::north;
         }
     }
 

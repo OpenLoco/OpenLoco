@@ -287,34 +287,34 @@ namespace OpenLoco::World::TileClearance
             auto southZ = northZ;
             auto westZ = northZ;
             const auto slope = elSurface.slope();
-            if (slope & SurfaceSlope::CornerUp::north)
+            if (slope & SurfaceSlope::CornerRaised::south)
             {
                 northZ += kSmallZStep;
-                if (slope == (SurfaceSlope::CornerDown::south | SurfaceSlope::doubleHeight))
+                if (slope == (SurfaceSlope::CornerDown::north | SurfaceSlope::doubleHeight))
                 {
                     northZ += kSmallZStep;
                 }
             }
-            if (slope & SurfaceSlope::CornerUp::east)
+            if (slope & SurfaceSlope::CornerRaised::west)
             {
                 eastZ += kSmallZStep;
-                if (slope == (SurfaceSlope::CornerDown::west | SurfaceSlope::doubleHeight))
+                if (slope == (SurfaceSlope::CornerDown::east | SurfaceSlope::doubleHeight))
                 {
                     eastZ += kSmallZStep;
                 }
             }
-            if (slope & SurfaceSlope::CornerUp::south)
+            if (slope & SurfaceSlope::CornerRaised::north)
             {
                 southZ += kSmallZStep;
-                if (slope == (SurfaceSlope::CornerDown::north | SurfaceSlope::doubleHeight))
+                if (slope == (SurfaceSlope::CornerDown::south | SurfaceSlope::doubleHeight))
                 {
                     southZ += kSmallZStep;
                 }
             }
-            if (slope & SurfaceSlope::CornerUp::west)
+            if (slope & SurfaceSlope::CornerRaised::east)
             {
                 westZ += kSmallZStep;
-                if (slope == (SurfaceSlope::CornerDown::east | SurfaceSlope::doubleHeight))
+                if (slope == (SurfaceSlope::CornerDown::west | SurfaceSlope::doubleHeight))
                 {
                     westZ += kSmallZStep;
                 }

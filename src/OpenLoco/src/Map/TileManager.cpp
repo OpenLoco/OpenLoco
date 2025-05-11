@@ -410,16 +410,16 @@ namespace OpenLoco::World::TileManager
         int16_t quad = 0;
         switch (slope)
         {
-            case SurfaceSlope::CornerUp::north:
+            case SurfaceSlope::CornerRaised::south:
                 quad = xl + yl - kTileSize;
                 break;
-            case SurfaceSlope::CornerUp::east:
+            case SurfaceSlope::CornerRaised::west:
                 quad = xl - yl;
                 break;
-            case SurfaceSlope::CornerUp::south:
+            case SurfaceSlope::CornerRaised::north:
                 quad = kTileSize - yl - xl;
                 break;
-            case SurfaceSlope::CornerUp::west:
+            case SurfaceSlope::CornerRaised::east:
                 quad = yl - xl;
                 break;
         }
@@ -436,16 +436,16 @@ namespace OpenLoco::World::TileManager
         int16_t edge = 0;
         switch (slope)
         {
-            case SurfaceSlope::SideUp::northeast:
+            case SurfaceSlope::EdgeRaised::southwest:
                 edge = xl / 2 + 1;
                 break;
-            case SurfaceSlope::SideUp::southeast:
+            case SurfaceSlope::EdgeRaised::northwest:
                 edge = (kTileSize - yl) / 2;
                 break;
-            case SurfaceSlope::SideUp::northwest:
+            case SurfaceSlope::EdgeRaised::southeast:
                 edge = yl / 2 + 1;
                 break;
-            case SurfaceSlope::SideUp::southwest:
+            case SurfaceSlope::EdgeRaised::northeast:
                 edge = (kTileSize - xl) / 2;
                 break;
         }
@@ -460,19 +460,19 @@ namespace OpenLoco::World::TileManager
 
         switch (slope)
         {
-            case SurfaceSlope::CornerDown::west:
+            case SurfaceSlope::CornerDown::east:
                 quadExtra = xl + kTileSize - yl;
                 quad = xl - yl;
                 break;
-            case SurfaceSlope::CornerDown::south:
+            case SurfaceSlope::CornerDown::north:
                 quadExtra = xl + yl;
                 quad = xl + yl - kTileSize - 1;
                 break;
-            case SurfaceSlope::CornerDown::east:
+            case SurfaceSlope::CornerDown::west:
                 quadExtra = kTileSize - xl + yl;
                 quad = yl - xl;
                 break;
-            case SurfaceSlope::CornerDown::north:
+            case SurfaceSlope::CornerDown::south:
                 quadExtra = (kTileSize - xl) + (kTileSize - yl);
                 quad = kTileSize - yl - xl - 1;
                 break;
@@ -495,13 +495,13 @@ namespace OpenLoco::World::TileManager
         int16_t quad = 0;
         switch (slope)
         {
-            case SurfaceSlope::Valley::westeast:
+            case SurfaceSlope::Valley::northsouth:
                 if (xl + yl > kTileSize + 1)
                 {
                     quad = kTileSize - xl - yl;
                 }
                 break;
-            case SurfaceSlope::Valley::northsouth:
+            case SurfaceSlope::Valley::eastwest:
                 quad = xl - yl;
                 break;
         }
@@ -563,29 +563,29 @@ namespace OpenLoco::World::TileManager
                 // Flat surface requires no further calculations.
                 break;
 
-            case SurfaceSlope::CornerUp::north:
-            case SurfaceSlope::CornerUp::east:
-            case SurfaceSlope::CornerUp::south:
-            case SurfaceSlope::CornerUp::west:
+            case SurfaceSlope::CornerRaised::south:
+            case SurfaceSlope::CornerRaised::west:
+            case SurfaceSlope::CornerRaised::north:
+            case SurfaceSlope::CornerRaised::east:
                 height.landHeight += getOneCornerUpLandHeight(xl, yl, slope);
                 break;
 
-            case SurfaceSlope::SideUp::northeast:
-            case SurfaceSlope::SideUp::southeast:
-            case SurfaceSlope::SideUp::northwest:
-            case SurfaceSlope::SideUp::southwest:
+            case SurfaceSlope::EdgeRaised::southwest:
+            case SurfaceSlope::EdgeRaised::northwest:
+            case SurfaceSlope::EdgeRaised::southeast:
+            case SurfaceSlope::EdgeRaised::northeast:
                 height.landHeight += getOneSideUpLandHeight(xl, yl, slope);
                 break;
 
-            case SurfaceSlope::CornerDown::north:
-            case SurfaceSlope::CornerDown::east:
             case SurfaceSlope::CornerDown::south:
             case SurfaceSlope::CornerDown::west:
+            case SurfaceSlope::CornerDown::north:
+            case SurfaceSlope::CornerDown::east:
                 height.landHeight += getOneCornerDownLandHeight(xl, yl, slope, surfaceEl->isSlopeDoubleHeight());
                 break;
 
+            case SurfaceSlope::Valley::eastwest:
             case SurfaceSlope::Valley::northsouth:
-            case SurfaceSlope::Valley::westeast:
                 height.landHeight += getValleyLandHeight(xl, yl, slope);
                 break;
         }
@@ -596,17 +596,17 @@ namespace OpenLoco::World::TileManager
     {
         switch (cornerUp)
         {
-            case SurfaceSlope::CornerUp::north:
-                return SurfaceSlope::CornerDown::south;
-
-            case SurfaceSlope::CornerUp::south:
+            case SurfaceSlope::CornerRaised::south:
                 return SurfaceSlope::CornerDown::north;
 
-            case SurfaceSlope::CornerUp::west:
-                return SurfaceSlope::CornerDown::east;
+            case SurfaceSlope::CornerRaised::north:
+                return SurfaceSlope::CornerDown::south;
 
-            case SurfaceSlope::CornerUp::east:
+            case SurfaceSlope::CornerRaised::east:
                 return SurfaceSlope::CornerDown::west;
+
+            case SurfaceSlope::CornerRaised::west:
+                return SurfaceSlope::CornerDown::east;
         }
         return SurfaceSlope::flat;
     }

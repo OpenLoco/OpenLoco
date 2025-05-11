@@ -1246,7 +1246,7 @@ namespace OpenLoco
             if (heightDiff == 4 && !surface->isSlopeDoubleHeight())
             {
                 const auto normalisedCorners = Numerics::rotr4bit(surface->slopeCorners(), rotation);
-                if (normalisedCorners == SurfaceSlope::SideUp::northeast)
+                if (normalisedCorners == SurfaceSlope::EdgeRaised::southwest)
                 {
                     // Create straightSteepSlopeDown
 
@@ -1292,7 +1292,7 @@ namespace OpenLoco
         if (surface->slope() && heightDiff == 0)
         {
             const auto normalisedCorners = Numerics::rotr4bit(surface->slopeCorners(), rotation);
-            if (!surface->isSlopeDoubleHeight() && normalisedCorners == SurfaceSlope::SideUp::southwest)
+            if (!surface->isSlopeDoubleHeight() && normalisedCorners == SurfaceSlope::EdgeRaised::northeast)
             {
                 // Create straightSteepSlopeUp
 
