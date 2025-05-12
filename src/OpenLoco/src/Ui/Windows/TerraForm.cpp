@@ -90,8 +90,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_walls));
         }
 
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
         static void prepareDraw(Window& self);
         static void onUpdate(Window& self);
         static void onResize(Window& self, uint8_t height);
@@ -261,16 +261,16 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBC7D
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            ToolManager::toolSet(self, Common::widx::panel, CursorId::plantTree);
+            ToolManager::toolSet(&self, Common::widx::panel, CursorId::plantTree);
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             _lastTreeCost = 0x80000000;
-            self->var_83C = 0;
-            self->rowHover = -1;
-            refreshTreeList(self);
-            updateTreeColours(self);
+            self.var_83C = 0;
+            self.rowHover = -1;
+            refreshTreeList(&self);
+            updateTreeColours(&self);
         }
 
         // 0x004BBAB5
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case Common::widx::tab_build_walls:
                 case Common::widx::tab_clear_area:
                 case Common::widx::tab_plant_trees:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::rotate_object:
@@ -758,7 +758,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto treeId = self.var_846;
             if (treeId == 0xFFFF)
@@ -992,9 +992,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBBC7
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            ToolManager::toolSet(self, Common::widx::panel, CursorId::bulldozerTool);
+            ToolManager::toolSet(&self, Common::widx::panel, CursorId::bulldozerTool);
             Input::setFlag(Input::Flags::flag6);
             _raiseLandCost = 0x80000000;
             _adjustToolSize = _clearAreaToolSize;
@@ -1144,7 +1144,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto& toolArea = self.widgets[widx::tool_area];
 
@@ -1236,19 +1236,19 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBBF7
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
             if (isPaintMode)
             {
-                ToolManager::toolSet(self, widx::paint_mode, CursorId::landTool);
+                ToolManager::toolSet(&self, widx::paint_mode, CursorId::landTool);
             }
             else if (isMountainMode)
             {
-                ToolManager::toolSet(self, widx::mountain_mode, CursorId::landTool);
+                ToolManager::toolSet(&self, widx::mountain_mode, CursorId::landTool);
             }
             else
             {
-                ToolManager::toolSet(self, Common::widx::panel, CursorId::landTool);
+                ToolManager::toolSet(&self, Common::widx::panel, CursorId::landTool);
             }
 
             Input::setFlag(Input::Flags::flag6);
@@ -1377,14 +1377,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case Common::widx::tab_build_walls:
                 case Common::widx::tab_clear_area:
                 case Common::widx::tab_plant_trees:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::mountain_mode:
                 {
                     isMountainMode = !isMountainMode;
                     isPaintMode = false;
-                    tabReset(&self);
+                    tabReset(self);
                     self.invalidate();
                     break;
                 }
@@ -1393,7 +1393,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     isMountainMode = false;
                     isPaintMode = !isPaintMode;
-                    tabReset(&self);
+                    tabReset(self);
                     self.invalidate();
                     break;
                 }
@@ -1787,7 +1787,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self.draw(drawingCtx);
 
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto& toolArea = self.widgets[widx::tool_area];
 
@@ -1914,9 +1914,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBC46
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            ToolManager::toolSet(self, Common::widx::panel, CursorId::waterTool);
+            ToolManager::toolSet(&self, Common::widx::panel, CursorId::waterTool);
             Input::setFlag(Input::Flags::flag6);
             _raiseWaterCost = 0x80000000;
             _lowerWaterCost = 0x80000000;
@@ -2167,7 +2167,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto& toolArea = self.widgets[widx::tool_area];
 
@@ -2329,14 +2329,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBCBF
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            ToolManager::toolSet(self, Common::widx::panel, CursorId::placeFence);
+            ToolManager::toolSet(&self, Common::widx::panel, CursorId::placeFence);
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
-            self->var_83C = 0;
-            self->rowHover = -1;
-            refreshWallList(self);
+            self.var_83C = 0;
+            self.rowHover = -1;
+            refreshWallList(&self);
         }
 
         // 0x004BC44B
@@ -2641,7 +2641,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto wallId = self.var_846;
             if (wallId == 0xFFFF)
@@ -2800,7 +2800,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case Common::widx::tab_build_walls:
                 case Common::widx::tab_clear_area:
                 case Common::widx::tab_plant_trees:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -2824,7 +2824,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCF7F
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+        void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -2846,9 +2846,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto waterObj = ObjectManager::get<WaterObject>();
                 uint32_t imageId = waterObj->image + Water::ImageIds::kToolbarTerraformWater;
-                if (self->currentTab == widx::tab_adjust_water - widx::tab_clear_area)
+                if (self.currentTab == widx::tab_adjust_water - widx::tab_clear_area)
                 {
-                    imageId += (self->frameNo / 2) % 16;
+                    imageId += (self.frameNo / 2) % 16;
                 }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_adjust_water);
@@ -2870,24 +2870,24 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBB2B
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(self->type, self->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            self->currentTab = widgetIndex - widx::tab_clear_area;
-            self->frameNo = 0;
+            self.currentTab = widgetIndex - widx::tab_clear_area;
+            self.frameNo = 0;
 
-            self->viewportRemove(0);
+            self.viewportRemove(0);
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_clear_area];
 
-            self->holdableWidgets = tabInfo.holdableWidgets;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
+            self.holdableWidgets = tabInfo.holdableWidgets;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
 
             auto disabledWidgets = 0;
 
@@ -2895,8 +2895,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             /*if (!isEditorMode() && !isSandboxMode())
                 disabledWidgets |= common::widx::tab_build_walls;*/
 
-            self->disabledWidgets = disabledWidgets;
-            self->invalidate();
+            self.disabledWidgets = disabledWidgets;
+            self.invalidate();
 
             switch (widgetIndex)
             {
@@ -2921,11 +2921,11 @@ namespace OpenLoco::Ui::Windows::Terraform
                     break;
             }
 
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
 
         // 0x004A69DD

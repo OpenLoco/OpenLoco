@@ -324,10 +324,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2A6E
-    static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+    static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(CompanyId(self->number));
+        auto companyColour = CompanyManager::getCompanyColour(CompanyId(self.number));
 
         static constexpr std::pair<WidgetIndex_t, std::array<uint32_t, 8>> tabAnimations[] = {
             { Widx::tab_trains, {
@@ -394,13 +394,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         for (auto [tab, frames] : tabAnimations)
         {
-            if (self->isDisabled(tab))
+            if (self.isDisabled(tab))
             {
                 continue;
             }
 
-            auto isActive = tab == self->currentTab + Widx::tab_trains;
-            auto imageId = isActive ? frames[self->frameNo / 2 % 8] : frames[0];
+            auto isActive = tab == self.currentTab + Widx::tab_trains;
+            auto imageId = isActive ? frames[self.frameNo / 2 % 8] : frames[0];
 
             uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
             Widget::drawTab(self, drawingCtx, image, tab);
@@ -667,7 +667,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         self.draw(drawingCtx);
-        drawTabs(&self, drawingCtx);
+        drawTabs(self, drawingCtx);
 
         // Draw company owner image.
         auto company = CompanyManager::get(CompanyId(self.number));
@@ -785,19 +785,19 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C24F7
-    static void switchTab(Window* self, VehicleType type)
+    static void switchTab(Window& self, VehicleType type)
     {
-        if (ToolManager::isToolActive(self->type, self->number))
+        if (ToolManager::isToolActive(self.type, self.number))
         {
             ToolManager::toolCancel();
         }
 
         auto tabIndex = static_cast<uint8_t>(type);
-        self->currentTab = tabIndex;
-        self->rowHeight = row_heights[tabIndex];
-        self->frameNo = 0;
+        self.currentTab = tabIndex;
+        self.rowHeight = row_heights[tabIndex];
+        self.frameNo = 0;
 
-        if (CompanyManager::getControllingId() == CompanyId(self->number) && getGameState().lastVehicleType != type)
+        if (CompanyManager::getControllingId() == CompanyId(self.number) && getGameState().lastVehicleType != type)
         {
             getGameState().lastVehicleType = type;
             WindowManager::invalidate(WindowType::topToolbar);
@@ -806,26 +806,26 @@ namespace OpenLoco::Ui::Windows::VehicleList
         // The original game was setting viewports and (enabled/disabled) widgets here.
         // As all tabs are the same, we've simplified this.
 
-        disableUnavailableVehicleTypes(self);
-        self->invalidate();
+        disableUnavailableVehicleTypes(&self);
+        self.invalidate();
 
-        if (self->width < 220)
+        if (self.width < 220)
         {
-            self->width = 220;
+            self.width = 220;
         }
 
-        self->rowCount = 0;
-        refreshVehicleList(self);
+        self.rowCount = 0;
+        refreshVehicleList(&self);
 
-        self->var_83C = 0;
-        self->rowHover = -1;
+        self.var_83C = 0;
+        self.rowHover = -1;
 
-        self->callOnResize();
-        self->callOnPeriodicUpdate();
-        self->callPrepareDraw();
-        self->initScrollWidgets();
-        self->invalidate();
-        self->moveInsideScreenEdges();
+        self.callOnResize();
+        self.callOnPeriodicUpdate();
+        self.callPrepareDraw();
+        self.initScrollWidgets();
+        self.invalidate();
+        self.moveInsideScreenEdges();
     }
 
     // 0x004C2409
@@ -845,7 +845,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             case Widx::tab_ships:
             {
                 auto vehicleType = VehicleType(widgetIndex - Widx::tab_trains);
-                switchTab(&self, vehicleType);
+                switchTab(self, vehicleType);
                 break;
             }
 

@@ -74,9 +74,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         static void refreshIndustryList(Window* self);
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
         static void prepareDraw(Window& self);
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
     }
 
     namespace IndustryList
@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         // 0x00457EC4
@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 case Common::widx::tab_industry_list:
                 case Common::widx::tab_new_industry:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::sort_industry_name:
@@ -579,18 +579,18 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457FCA
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            self->invalidate();
-            self->minWidth = kMinDimensions.width;
-            self->minHeight = kMinDimensions.height;
-            self->maxWidth = kMaxDimensions.width;
-            self->maxHeight = kMaxDimensions.height;
-            self->width = kWindowSize.width;
-            self->height = kWindowSize.height;
-            self->var_83C = 0;
-            self->rowHover = -1;
-            Common::refreshIndustryList(self);
+            self.invalidate();
+            self.minWidth = kMinDimensions.width;
+            self.minHeight = kMinDimensions.height;
+            self.maxWidth = kMaxDimensions.width;
+            self.maxHeight = kMaxDimensions.height;
+            self.width = kWindowSize.width;
+            self.height = kWindowSize.height;
+            self.var_83C = 0;
+            self.rowHover = -1;
+            Common::refreshIndustryList(&self);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -743,7 +743,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             if (self.var_83C == 0)
             {
@@ -813,7 +813,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 case Common::widx::tab_industry_list:
                 case Common::widx::tab_new_industry:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -1304,24 +1304,24 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457FFE
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            self->minWidth = NewIndustries::kWindowSize.width;
-            self->minHeight = NewIndustries::kWindowSize.height;
-            self->maxWidth = NewIndustries::kWindowSize.width;
-            self->maxHeight = NewIndustries::kWindowSize.height;
-            ToolManager::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
+            self.minWidth = NewIndustries::kWindowSize.width;
+            self.minHeight = NewIndustries::kWindowSize.height;
+            self.maxWidth = NewIndustries::kWindowSize.width;
+            self.maxHeight = NewIndustries::kWindowSize.height;
+            ToolManager::toolSet(&self, Common::widx::tab_new_industry, CursorId::placeFactory);
 
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
             _industryGhostPlaced = false;
             _dword_E0C39C = 0x80000000;
 
-            self->var_83C = 0;
-            self->rowHover = -1;
-            self->var_846 = 0xFFFFU;
+            self.var_83C = 0;
+            self.rowHover = -1;
+            self.var_846 = 0xFFFFU;
 
-            updateBuildableIndustries(self);
+            updateBuildableIndustries(&self);
 
             gPrng2().randNext();
             _placementPrng = gPrng2();
@@ -1398,44 +1398,44 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457F27
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(self->type, self->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            self->currentTab = widgetIndex - widx::tab_industry_list;
-            self->frameNo = 0;
-            self->flags &= ~(WindowFlags::flag_16);
+            self.currentTab = widgetIndex - widx::tab_industry_list;
+            self.frameNo = 0;
+            self.flags &= ~(WindowFlags::flag_16);
 
-            self->viewportRemove(0);
+            self.viewportRemove(0);
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry_list];
 
-            self->holdableWidgets = 0;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
+            self.holdableWidgets = 0;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
 
-            if (self->currentTab == widx::tab_industry_list - widx::tab_industry_list)
+            if (self.currentTab == widx::tab_industry_list - widx::tab_industry_list)
             {
                 IndustryList::tabReset(self);
             }
-            if (self->currentTab == widx::tab_new_industry - widx::tab_industry_list)
+            if (self.currentTab == widx::tab_new_industry - widx::tab_industry_list)
             {
                 NewIndustries::tabReset(self);
             }
 
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
 
         // 0x00458A57
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+        void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -1468,9 +1468,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     InterfaceSkin::ImageIds::build_industry_frame_15,
                 };
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_new_industry - widx::tab_industry_list)
+                if (self.currentTab == widx::tab_new_industry - widx::tab_industry_list)
                 {
-                    imageId += fundNewIndustriesImageIds[(self->frameNo / 2) % std::size(fundNewIndustriesImageIds)];
+                    imageId += fundNewIndustriesImageIds[(self.frameNo / 2) % std::size(fundNewIndustriesImageIds)];
                 }
                 else
                 {

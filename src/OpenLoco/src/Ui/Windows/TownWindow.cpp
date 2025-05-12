@@ -69,8 +69,8 @@ namespace OpenLoco::Ui::Windows::Town
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
         static void update(Window& self);
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
     }
 
     namespace Town
@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::Town
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto town = TownManager::get(TownId(self.number));
 
@@ -168,7 +168,7 @@ namespace OpenLoco::Ui::Windows::Town
                 case Common::widx::tab_town:
                 case Common::widx::tab_population:
                 case Common::widx::tab_company_ratings:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 // 0x0049932D
@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::Town
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(0, 44, self.width, self.height - 44));
             if (!clipped)
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::Town
                 case Common::widx::tab_town:
                 case Common::widx::tab_population:
                 case Common::widx::tab_company_ratings:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -554,7 +554,7 @@ namespace OpenLoco::Ui::Windows::Town
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto point = Point(4, 46);
             tr.drawStringLeft(point, Colour::black, StringIds::local_authority_ratings_transport_companies);
@@ -620,7 +620,7 @@ namespace OpenLoco::Ui::Windows::Town
                 case Common::widx::tab_town:
                 case Common::widx::tab_population:
                 case Common::widx::tab_company_ratings:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -741,42 +741,42 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004991BC
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(self->type, self->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            TextInput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self.type, self.number);
 
-            self->currentTab = widgetIndex - widx::tab_town;
-            self->frameNo = 0;
-            self->flags &= ~(WindowFlags::flag_16);
-            self->var_85C = -1;
+            self.currentTab = widgetIndex - widx::tab_town;
+            self.frameNo = 0;
+            self.flags &= ~(WindowFlags::flag_16);
+            self.var_85C = -1;
 
-            self->viewportRemove(0);
+            self.viewportRemove(0);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town];
 
-            self->holdableWidgets = 0;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
-            self->disabledWidgets = 0;
+            self.holdableWidgets = 0;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
+            self.disabledWidgets = 0;
 
-            self->invalidate();
+            self.invalidate();
 
-            self->setSize(kWindowSize);
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.setSize(kWindowSize);
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
 
         // 0x004999E1
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+        void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -799,10 +799,10 @@ namespace OpenLoco::Ui::Windows::Town
                     InterfaceSkin::ImageIds::tab_population_frame7,
                 };
 
-                uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
-                if (self->currentTab == widx::tab_population - widx::tab_town)
+                uint32_t imageId = Gfx::recolour(skin->img, self.getColour(WindowColour::secondary).c());
+                if (self.currentTab == widx::tab_population - widx::tab_town)
                 {
-                    imageId += populationTabImageIds[(self->frameNo / 4) % std::size(populationTabImageIds)];
+                    imageId += populationTabImageIds[(self.frameNo / 4) % std::size(populationTabImageIds)];
                 }
                 else
                 {
@@ -834,9 +834,9 @@ namespace OpenLoco::Ui::Windows::Town
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_company_ratings - widx::tab_town)
+                if (self.currentTab == widx::tab_company_ratings - widx::tab_town)
                 {
-                    imageId += ratingsTabImageIds[(self->frameNo / 4) % std::size(ratingsTabImageIds)];
+                    imageId += ratingsTabImageIds[(self.frameNo / 4) % std::size(ratingsTabImageIds)];
                 }
                 else
                 {

@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(&self, widgetIndex);
+                Common::switchTab(self, widgetIndex);
                 break;
 
             case widx::rotate:
@@ -1152,7 +1152,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         self.draw(drawingCtx);
-        Common::drawTabs(&self, drawingCtx);
+        Common::drawTabs(self, drawingCtx);
 
         auto company = CompanyManager::getPlayerCompany();
         auto companyColour = company->mainColours.primary;
@@ -1305,9 +1305,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
-    void tabReset(Window* self)
+    void tabReset(Window& self)
     {
-        self->callOnMouseDown(Station::widx::image, self->widgets[Station::widx::image].id);
+        self.callOnMouseDown(Station::widx::image, self.widgets[Station::widx::image].id);
     }
 
     static constexpr WindowEventList kEvents = {

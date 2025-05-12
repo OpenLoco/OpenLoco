@@ -66,5 +66,5 @@ namespace OpenLoco::Ui
         uint16_t itemId[kMaxLines];           // 0x0113DD9A
     };
 
-    void drawGraph(GraphSettings& gs, Window* self, Gfx::DrawingContext& drawingCtx);
+    void drawGraph(GraphSettings& gs, Window& self, Gfx::DrawingContext& drawingCtx);
 }

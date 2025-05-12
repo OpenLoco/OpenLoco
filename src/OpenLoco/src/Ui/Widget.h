@@ -216,7 +216,7 @@ namespace OpenLoco::Ui
         }
 
         // TODO: Make tabs actual widgets.
-        static void drawTab(Window* w, Gfx::DrawingContext& drawingCtx, uint32_t imageId, WidgetIndex_t index);
+        static void drawTab(Window& w, Gfx::DrawingContext& drawingCtx, uint32_t imageId, WidgetIndex_t index);
 
         // typical tab width, to be used in most (all?) cases
         static constexpr uint16_t kDefaultTabWidth = 30;

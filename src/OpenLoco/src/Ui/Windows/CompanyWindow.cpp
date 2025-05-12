@@ -116,10 +116,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void renameCompanyPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void renameCompany(Window* self, const char* input);
         static void switchCompany(Window* self, int16_t itemIndex);
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void switchTabWidgets(Window* self);
         static void drawCompanySelect(const Window* const self, Gfx::DrawingContext& drawingCtx);
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
     }
 
     namespace Status
@@ -212,7 +212,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
             Common::drawCompanySelect(&self, drawingCtx);
             const auto company = CompanyManager::get(CompanyId(self.number));
             const auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::centre_on_viewport:
@@ -802,7 +802,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
             Common::drawCompanySelect(&self, drawingCtx);
 
             auto company = CompanyManager::get(CompanyId(self.number));
@@ -901,7 +901,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::centre_on_viewport:
@@ -1434,7 +1434,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
             Common::drawCompanySelect(&self, drawingCtx);
 
             const auto& widget = self.widgets[widx::main_colour_scheme];
@@ -1473,7 +1473,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::check_steam_locomotives:
@@ -1781,7 +1781,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
             Common::drawCompanySelect(&self, drawingCtx);
 
             const auto company = CompanyManager::get(CompanyId(self.number));
@@ -2047,7 +2047,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::loan_autopay:
@@ -2271,7 +2271,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             uint16_t y = 47;
 
@@ -2339,7 +2339,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -2462,7 +2462,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *buffer_2039++ = static_cast<char>(ControlCodes::Colour::black);
@@ -2562,7 +2562,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -2722,42 +2722,42 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043230B
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(self->type, self->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            TextInput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self.type, self.number);
 
-            self->currentTab = widgetIndex - widx::tab_status;
-            self->frameNo = 0;
-            self->flags &= ~(WindowFlags::flag_16);
+            self.currentTab = widgetIndex - widx::tab_status;
+            self.frameNo = 0;
+            self.flags &= ~(WindowFlags::flag_16);
 
-            self->viewportRemove(0);
+            self.viewportRemove(0);
 
             auto tabIndex = widgetIndex - widx::tab_status;
             auto tabInfo = tabInformationByTabOffset[tabIndex];
 
-            self->holdableWidgets = 0;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
+            self.holdableWidgets = 0;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
 
             if (tabInfo.widgetIndex == widx::tab_finances)
             {
-                self->holdableWidgets = Finances::holdableWidgets;
+                self.holdableWidgets = Finances::holdableWidgets;
             }
 
-            Common::disableChallengeTab(self);
-            self->invalidate();
-            self->setSize(*tabInfo.kWindowSize);
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            Common::disableChallengeTab(&self);
+            self.invalidate();
+            self.setSize(*tabInfo.kWindowSize);
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
 
             if (tabInfo.widgetIndex == widx::tab_details)
             {
@@ -2766,7 +2766,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if (tabInfo.widgetIndex == widx::tab_finances)
             {
-                Finances::scrollToLatestData(self);
+                Finances::scrollToLatestData(&self);
             }
         }
 
@@ -2817,7 +2817,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00434413
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+        void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -2829,7 +2829,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Details tab
             {
-                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, self->getColour(WindowColour::primary).c());
+                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, self.getColour(WindowColour::primary).c());
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_details);
             }
 
@@ -2847,9 +2847,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_colour_scheme - widx::tab_status)
+                if (self.currentTab == widx::tab_colour_scheme - widx::tab_status)
                 {
-                    imageId += colourSchemeTabImageIds[(self->frameNo / 4) % std::size(colourSchemeTabImageIds)];
+                    imageId += colourSchemeTabImageIds[(self.frameNo / 4) % std::size(colourSchemeTabImageIds)];
                 }
                 else
                 {
@@ -2881,9 +2881,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_finances - widx::tab_status)
+                if (self.currentTab == widx::tab_finances - widx::tab_status)
                 {
-                    imageId += financesTabImageIds[(self->frameNo / 2) % std::size(financesTabImageIds)];
+                    imageId += financesTabImageIds[(self.frameNo / 2) % std::size(financesTabImageIds)];
                 }
                 else
                 {
@@ -2903,9 +2903,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_cargo_delivered - widx::tab_status)
+                if (self.currentTab == widx::tab_cargo_delivered - widx::tab_status)
                 {
-                    imageId += cargoDeliveredTabImageIds[(self->frameNo / 4) % std::size(cargoDeliveredTabImageIds)];
+                    imageId += cargoDeliveredTabImageIds[(self.frameNo / 4) % std::size(cargoDeliveredTabImageIds)];
                 }
                 else
                 {
@@ -2937,9 +2937,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_challenge - widx::tab_status)
+                if (self.currentTab == widx::tab_challenge - widx::tab_status)
                 {
-                    imageId += challengeTabImageIds[(self->frameNo / 4) % std::size(challengeTabImageIds)];
+                    imageId += challengeTabImageIds[(self.frameNo / 4) % std::size(challengeTabImageIds)];
                 }
                 else
                 {

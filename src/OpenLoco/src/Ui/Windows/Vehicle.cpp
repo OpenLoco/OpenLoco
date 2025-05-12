@@ -132,13 +132,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void setActiveTabs(Window* const self);
         static void textInput(Window& self, const WidgetIndex_t callingWidget, const WidgetId id, const char* const input);
         static void renameVehicle(Window* const self, const WidgetIndex_t widgetIndex);
-        static void switchTab(Window* const self, const WidgetIndex_t widgetIndex);
+        static void switchTab(Window& self, const WidgetIndex_t widgetIndex);
         static void setCaptionEnableState(Window* const self);
         static void onPickup(Window* const self, const WidgetIndex_t pickupWidx);
         static void event8(Window& self);
         static void event9(Window& self);
         static size_t getNumCars(Ui::Window* const self);
-        static void drawTabs(Window* const window, Gfx::DrawingContext& drawingCtx);
+        static void drawTabs(Window& window, Gfx::DrawingContext& drawingCtx);
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y);
         static void pickupToolDown(Window& self, const int16_t x, const int16_t y);
         static void pickupToolAbort(Window& self);
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
                 case widx::pickup:
                     Common::onPickup(&self, widx::pickup);
@@ -961,7 +961,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             Widget& pickupButton = self.widgets[widx::pickup];
             if (!pickupButton.hidden)
@@ -1106,7 +1106,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
                 case widx::pickup:
                     Common::onPickup(&self, widx::pickup);
@@ -1545,7 +1545,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             // TODO: identical to main tab (doesn't appear to do anything useful)
             if (!self.widgets[widx::pickup].hidden)
@@ -1889,7 +1889,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             // draw total cargo
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -2021,7 +2021,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(&self, i);
+                    Common::switchTab(self, i);
                     break;
 
                 case Common::widx::caption:
@@ -2304,7 +2304,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto pos = Ui::Point(4, 46);
 
@@ -2413,7 +2413,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -2603,7 +2603,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
                 case widx::orderDelete:
                 {
@@ -3477,7 +3477,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             if (ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
@@ -4551,33 +4551,33 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B2566
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            ToolManager::toolCancel(self->type, self->number);
-            TextInput::sub_4CE6C9(self->type, self->number);
+            ToolManager::toolCancel(self.type, self.number);
+            TextInput::sub_4CE6C9(self.type, self.number);
 
-            self->currentTab = widgetIndex - Common::widx::tabMain;
-            self->frameNo = 0;
-            self->flags &= ~WindowFlags::flag_16;
-            self->var_85C = -1;
-            self->viewportRemove(0);
+            self.currentTab = widgetIndex - Common::widx::tabMain;
+            self.frameNo = 0;
+            self.flags &= ~WindowFlags::flag_16;
+            self.var_85C = -1;
+            self.viewportRemove(0);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tabMain];
 
-            self->holdableWidgets = *tabInfo.holdableWidgets;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
-            self->disabledWidgets = 0;
-            Main::resetDisabledWidgets(self);
-            self->invalidate();
-            self->rowHover = -1;
-            self->orderTableIndex = -1;
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.holdableWidgets = *tabInfo.holdableWidgets;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
+            self.disabledWidgets = 0;
+            Main::resetDisabledWidgets(&self);
+            self.invalidate();
+            self.rowHover = -1;
+            self.orderTableIndex = -1;
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
 
         // 0x004B1E94
@@ -4726,11 +4726,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B5F0D
-        static void drawTabs(Window* const self, Gfx::DrawingContext& drawingCtx)
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
 
-            auto vehicle = Common::getVehicle(self);
+            auto vehicle = Common::getVehicle(&self);
             if (vehicle == nullptr)
             {
                 return;
@@ -4739,21 +4739,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto mainTab = tabIconByVehicleType.at(vehicleType);
             int frame = 0;
-            if (self->currentTab == 0)
+            if (self.currentTab == 0)
             {
-                frame = (self->frameNo >> mainTab.frameSpeed) & 0x7;
+                frame = (self.frameNo >> mainTab.frameSpeed) & 0x7;
             }
 
             Widget::drawTab(
                 self,
                 drawingCtx,
-                Gfx::recolour(skin->img + mainTab.image + frame, CompanyManager::getCompanyColour(self->owner)),
+                Gfx::recolour(skin->img + mainTab.image + frame, CompanyManager::getCompanyColour(self.owner)),
                 widx::tabMain);
 
             frame = 0;
-            if (self->currentTab == 1)
+            if (self.currentTab == 1)
             {
-                frame = (self->frameNo >> 1) & 0xF;
+                frame = (self.frameNo >> 1) & 0xF;
             }
             Widget::drawTab(
                 self,
@@ -4762,9 +4762,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 widx::tabDetails);
 
             frame = 0;
-            if (self->currentTab == 2)
+            if (self.currentTab == 2)
             {
-                frame = (self->frameNo >> 3) & 0x3;
+                frame = (self.frameNo >> 3) & 0x3;
             }
             Widget::drawTab(
                 self,
@@ -4773,9 +4773,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 widx::tabCargo);
 
             frame = 0;
-            if (self->currentTab == 4)
+            if (self.currentTab == 4)
             {
-                frame = (self->frameNo >> 4) & 0x3;
+                frame = (self.frameNo >> 4) & 0x3;
             }
             Widget::drawTab(
                 self,
@@ -4784,9 +4784,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 widx::tabRoute);
 
             frame = 0;
-            if (self->currentTab == 3)
+            if (self.currentTab == 3)
             {
-                frame = (self->frameNo >> 1) & 0xF;
+                frame = (self.frameNo >> 1) & 0xF;
             }
             Widget::drawTab(
                 self,

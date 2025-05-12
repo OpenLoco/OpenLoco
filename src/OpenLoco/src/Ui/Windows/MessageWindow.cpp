@@ -60,9 +60,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         static void prepareDraw(Window& self);
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void onUpdate(Window& self);
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
     }
 
     namespace Messages
@@ -93,7 +93,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 case Common::widx::tab_messages:
                 case Common::widx::tab_settings:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         // 0x0042A5D7
@@ -283,15 +283,15 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A7B9
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            self->minWidth = kMinWindowSize.width;
-            self->minHeight = kMinWindowSize.height;
-            self->maxWidth = kMaxWindowSize.width;
-            self->maxHeight = kMaxWindowSize.height;
-            self->width = kMinWindowSize.width;
-            self->height = kMinWindowSize.height;
-            self->rowHover = -1;
+            self.minWidth = kMinWindowSize.width;
+            self.minHeight = kMinWindowSize.height;
+            self.maxWidth = kMaxWindowSize.width;
+            self.maxHeight = kMaxWindowSize.height;
+            self.width = kMinWindowSize.width;
+            self.height = kMinWindowSize.height;
+            self.rowHover = -1;
         }
 
         static constexpr WindowEventList kEvents = {
@@ -461,7 +461,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 case Common::widx::tab_messages:
                 case Common::widx::tab_settings:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::playSoundEffects:
@@ -571,18 +571,18 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         // 0x0042A7E8
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            self->minWidth = kWindowSize.width;
-            self->minHeight = kWindowSize.height;
-            self->maxWidth = kWindowSize.width;
-            self->maxHeight = kWindowSize.height;
-            self->width = kWindowSize.width;
-            self->height = kWindowSize.height;
+            self.minWidth = kWindowSize.width;
+            self.minHeight = kWindowSize.height;
+            self.maxWidth = kWindowSize.width;
+            self.maxHeight = kWindowSize.height;
+            self.width = kWindowSize.width;
+            self.height = kWindowSize.height;
         }
 
         static constexpr WindowEventList kEvents = {
@@ -633,47 +633,47 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A716
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(self->type, self->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            self->currentTab = widgetIndex - widx::tab_messages;
-            self->frameNo = 0;
-            self->flags &= ~(WindowFlags::flag_16);
+            self.currentTab = widgetIndex - widx::tab_messages;
+            self.frameNo = 0;
+            self.flags &= ~(WindowFlags::flag_16);
 
-            self->viewportRemove(0);
+            self.viewportRemove(0);
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_messages];
 
-            self->holdableWidgets = 0;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
-            self->disabledWidgets = 0;
+            self.holdableWidgets = 0;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
+            self.disabledWidgets = 0;
 
-            self->invalidate();
+            self.invalidate();
 
-            if (self->currentTab == widx::tab_messages - widx::tab_messages)
+            if (self.currentTab == widx::tab_messages - widx::tab_messages)
             {
                 Messages::tabReset(self);
             }
-            if (self->currentTab == widx::tab_settings - widx::tab_messages)
+            if (self.currentTab == widx::tab_settings - widx::tab_messages)
             {
                 Settings::tabReset(self);
             }
 
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
 
         // 0x0042AB92
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 

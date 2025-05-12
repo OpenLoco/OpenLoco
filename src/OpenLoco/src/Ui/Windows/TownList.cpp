@@ -84,8 +84,8 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         static void prepareDraw(Window& self);
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void refreshTownList(Window* self);
     }
 
@@ -244,7 +244,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         // 0x0049A27F
@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 case Common::widx::tab_build_town:
                 case Common::widx::tab_build_buildings:
                 case Common::widx::tab_build_misc_buildings:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::sort_town_name:
@@ -523,18 +523,18 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A37E
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            self->minWidth = kMinDimensions.width;
-            self->minHeight = kMinDimensions.height;
-            self->maxWidth = kMaxDimensions.width;
-            self->maxHeight = kMaxDimensions.height;
-            self->width = kWindowSize.width;
-            self->height = kWindowSize.height;
-            self->var_83C = 0;
-            self->rowHover = -1;
+            self.minWidth = kMinDimensions.width;
+            self.minHeight = kMinDimensions.height;
+            self.maxWidth = kMaxDimensions.width;
+            self.maxHeight = kMaxDimensions.height;
+            self.width = kWindowSize.width;
+            self.height = kWindowSize.height;
+            self.var_83C = 0;
+            self.rowHover = -1;
 
-            Common::refreshTownList(self);
+            Common::refreshTownList(&self);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -696,7 +696,7 @@ namespace OpenLoco::Ui::Windows::TownList
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto point = Point(3, self.widgets[widx::current_size].top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::town_size_label);
@@ -718,7 +718,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 case Common::widx::tab_build_town:
                 case Common::widx::tab_build_buildings:
                 case Common::widx::tab_build_misc_buildings:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -829,15 +829,15 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A3BE
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            self->minWidth = kWindowSize.width;
-            self->minHeight = kWindowSize.height;
-            self->maxWidth = kWindowSize.width;
-            self->maxWidth = kWindowSize.height;
-            self->width = kWindowSize.width;
-            self->height = kWindowSize.height;
-            ToolManager::toolSet(self, Common::widx::tab_build_town, CursorId::placeTown);
+            self.minWidth = kWindowSize.width;
+            self.minHeight = kWindowSize.height;
+            self.maxWidth = kWindowSize.width;
+            self.maxWidth = kWindowSize.height;
+            self.width = kWindowSize.width;
+            self.height = kWindowSize.height;
+            ToolManager::toolSet(&self, Common::widx::tab_build_town, CursorId::placeTown);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
         }
@@ -925,7 +925,7 @@ namespace OpenLoco::Ui::Windows::TownList
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto buildingId = self.var_846;
 
@@ -960,7 +960,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 case Common::widx::tab_build_town:
                 case Common::widx::tab_build_buildings:
                 case Common::widx::tab_build_misc_buildings:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::rotate_object:
@@ -1506,34 +1506,34 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A3FF
-        static void tabReset(Window* self)
+        static void tabReset(Window& self)
         {
-            self->minWidth = kWindowSize.width;
-            self->minHeight = kWindowSize.height;
-            self->maxWidth = kWindowSize.width;
-            self->maxWidth = kWindowSize.height;
-            self->width = kWindowSize.width;
-            self->height = kWindowSize.height;
+            self.minWidth = kWindowSize.width;
+            self.minHeight = kWindowSize.height;
+            self.maxWidth = kWindowSize.width;
+            self.maxWidth = kWindowSize.height;
+            self.width = kWindowSize.width;
+            self.height = kWindowSize.height;
 
             auto tab = Common::widx::tab_build_buildings;
-            if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
+            if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
             {
                 tab = Common::widx::tab_build_misc_buildings;
             }
 
-            ToolManager::toolSet(self, tab, CursorId::placeBuilding);
+            ToolManager::toolSet(&self, tab, CursorId::placeBuilding);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
 
             static loco_global<uint8_t, 0x01135C60> _byte_1135C60;
             _byte_1135C60 = 0;
             _dword_1135C34 = GameCommands::FAILURE;
-            self->var_83C = 0;
-            self->rowHover = -1;
-            self->var_846 = 0xFFFFU;
+            self.var_83C = 0;
+            self.rowHover = -1;
+            self.var_846 = 0xFFFFU;
 
-            updateBuildingList(self);
-            updateBuildingColours(self);
+            updateBuildingList(&self);
+            updateBuildingColours(&self);
 
             _buildingVariation = 0;
         }
@@ -1618,7 +1618,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049B054
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+        void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -1651,9 +1651,9 @@ namespace OpenLoco::Ui::Windows::TownList
                     InterfaceSkin::ImageIds::build_town_frame_15,
                 };
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_build_town - widx::tab_town_list)
+                if (self.currentTab == widx::tab_build_town - widx::tab_town_list)
                 {
-                    imageId += buildNewTownsImageIds[(self->frameNo / 2) % std::size(buildNewTownsImageIds)];
+                    imageId += buildNewTownsImageIds[(self.frameNo / 2) % std::size(buildNewTownsImageIds)];
                 }
                 else
                 {
@@ -1684,9 +1684,9 @@ namespace OpenLoco::Ui::Windows::TownList
                     InterfaceSkin::ImageIds::build_buildings_frame_15,
                 };
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_build_buildings - widx::tab_town_list)
+                if (self.currentTab == widx::tab_build_buildings - widx::tab_town_list)
                 {
-                    imageId += buildBuildingsImageIds[(self->frameNo / 2) % std::size(buildBuildingsImageIds)];
+                    imageId += buildBuildingsImageIds[(self.frameNo / 2) % std::size(buildBuildingsImageIds)];
                 }
                 else
                 {
@@ -1717,9 +1717,9 @@ namespace OpenLoco::Ui::Windows::TownList
                     InterfaceSkin::ImageIds::build_misc_buildings_frame_15,
                 };
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_build_misc_buildings - widx::tab_town_list)
+                if (self.currentTab == widx::tab_build_misc_buildings - widx::tab_town_list)
                 {
-                    imageId += buildMiscBuildingsImageIds[(self->frameNo / 2) % std::size(buildMiscBuildingsImageIds)];
+                    imageId += buildMiscBuildingsImageIds[(self.frameNo / 2) % std::size(buildMiscBuildingsImageIds)];
                 }
                 else
                 {
@@ -1731,55 +1731,55 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A2E2
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(self->type, self->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            self->currentTab = widgetIndex - widx::tab_town_list;
-            self->frameNo = 0;
-            self->flags &= ~(WindowFlags::flag_16);
+            self.currentTab = widgetIndex - widx::tab_town_list;
+            self.frameNo = 0;
+            self.flags &= ~(WindowFlags::flag_16);
 
-            self->viewportRemove(0);
+            self.viewportRemove(0);
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town_list];
 
-            self->holdableWidgets = 0;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
+            self.holdableWidgets = 0;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
 
             if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
-                self->disabledWidgets = 0;
+                self.disabledWidgets = 0;
             }
             else
             {
-                self->disabledWidgets |= (1 << Common::widx::tab_build_town) | (1 << Common::widx::tab_build_buildings) | (1 << Common::widx::tab_build_misc_buildings);
+                self.disabledWidgets |= (1 << Common::widx::tab_build_town) | (1 << Common::widx::tab_build_buildings) | (1 << Common::widx::tab_build_misc_buildings);
             }
 
-            self->invalidate();
+            self.invalidate();
 
-            if (self->currentTab == widx::tab_town_list - widx::tab_town_list)
+            if (self.currentTab == widx::tab_town_list - widx::tab_town_list)
             {
                 TownList::tabReset(self);
             }
-            if (self->currentTab == widx::tab_build_town - widx::tab_town_list)
+            if (self.currentTab == widx::tab_build_town - widx::tab_town_list)
             {
                 BuildTowns::tabReset(self);
             }
-            if (self->currentTab == widx::tab_build_buildings - widx::tab_town_list || self->currentTab == widx::tab_build_misc_buildings - widx::tab_town_list)
+            if (self.currentTab == widx::tab_build_buildings - widx::tab_town_list || self.currentTab == widx::tab_build_misc_buildings - widx::tab_town_list)
             {
                 BuildBuildings::tabReset(self);
             }
 
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
 
         // 0x00499DDE

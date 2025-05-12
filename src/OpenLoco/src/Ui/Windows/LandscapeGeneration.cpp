@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         // Defined at the bottom of this file.
         static void switchTabWidgets(Window* window);
-        static void switchTab(Window* window, WidgetIndex_t widgetIndex);
+        static void switchTab(Window& window, WidgetIndex_t widgetIndex);
 
         static void confirmResetLandscape(int32_t promptType)
         {
@@ -109,12 +109,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             switch (widgetIndex)
             {
                 case widx::close_button:
-                    WindowManager::close(&window);
+                    WindowManager::close(&self);
                     break;
 
                 case widx::tab_options:
@@ -123,7 +123,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::tab_forests:
                 case widx::tab_towns:
                 case widx::tab_industries:
-                    switchTab(&window, widgetIndex);
+                    switchTab(self, widgetIndex);
                     break;
 
                 case widx::generate_now:
@@ -133,7 +133,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043ECA4
-        static void drawTabs(Window* window, Gfx::DrawingContext& drawingCtx)
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -147,60 +147,60 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 };
 
                 uint32_t imageId = skin->img;
-                if (window->currentTab == widx::tab_options - widx::tab_options)
+                if (self.currentTab == widx::tab_options - widx::tab_options)
                 {
-                    imageId += optionTabImageIds[(window->frameNo / 2) % std::size(optionTabImageIds)];
+                    imageId += optionTabImageIds[(self.frameNo / 2) % std::size(optionTabImageIds)];
                 }
                 else
                 {
                     imageId += optionTabImageIds[0];
                 }
 
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_options);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_options);
             }
 
             // Land tab
             {
                 auto land = ObjectManager::get<LandObject>(getGameState().lastLandOption);
                 const uint32_t imageId = land->mapPixelImage + OpenLoco::Land::ImageIds::toolbar_terraform_land;
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_land);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_land);
             }
 
             // Water tab
             {
                 const auto waterObj = ObjectManager::get<WaterObject>();
                 uint32_t imageId = waterObj->image + OpenLoco::Water::ImageIds::kToolbarTerraformWater;
-                if (window->currentTab == widx::tab_water - widx::tab_options)
+                if (self.currentTab == widx::tab_water - widx::tab_options)
                 {
-                    imageId += (window->frameNo / 2) % 16;
+                    imageId += (self.frameNo / 2) % 16;
                 }
 
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_water);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_water);
             }
 
             // Forest tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees;
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_forests);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_forests);
             }
 
             // Towns tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_towns);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_towns);
             }
 
             // Industries tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_industries;
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_industries);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_industries);
             }
         }
 
         static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
         {
             window.draw(drawingCtx);
-            drawTabs(&window, drawingCtx);
+            drawTabs(window, drawingCtx);
         }
 
         static void prepareDraw(Window& window)
@@ -1592,17 +1592,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043DC98
-        static void switchTab(Window* window, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(window->type, window->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            window->currentTab = widgetIndex - widx::tab_options;
-            window->frameNo = 0;
-            window->flags &= ~(WindowFlags::flag_16);
-            window->disabledWidgets = 0;
+            self.currentTab = widgetIndex - widx::tab_options;
+            self.frameNo = 0;
+            self.flags &= ~(WindowFlags::flag_16);
+            self.disabledWidgets = 0;
 
             static const uint64_t* holdableWidgetsByTab[] = {
                 &Options::holdable_widgets,
@@ -1613,7 +1613,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Industries::holdable_widgets,
             };
 
-            window->holdableWidgets = *holdableWidgetsByTab[window->currentTab];
+            self.holdableWidgets = *holdableWidgetsByTab[self.currentTab];
 
             static const WindowEventList* eventsByTab[] = {
                 &Options::getEvents(),
@@ -1624,11 +1624,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Industries::getEvents(),
             };
 
-            window->eventHandlers = eventsByTab[window->currentTab];
+            self.eventHandlers = eventsByTab[self.currentTab];
 
-            switchTabWidgets(window);
+            switchTabWidgets(&self);
 
-            window->invalidate();
+            self.invalidate();
 
             const auto newSize = [widgetIndex]() {
                 if (widgetIndex == widx::tab_land)
@@ -1641,13 +1641,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 }
             }();
 
-            window->setSize(newSize);
+            self.setSize(newSize);
 
-            window->callOnResize();
-            window->callPrepareDraw();
-            window->initScrollWidgets();
-            window->invalidate();
-            window->moveInsideScreenEdges();
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
     }
 }
