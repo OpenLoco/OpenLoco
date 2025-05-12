@@ -110,7 +110,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (y < scrollarea.contentOffsetY)
             {
                 scrollarea.contentOffsetY = y;
-                Ui::ScrollView::updateThumbs(&self, widx::scrollview);
+                Ui::ScrollView::updateThumbs(self, widx::scrollview);
                 self.invalidate();
             }
         }
@@ -387,7 +387,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         window->scrollAreas[0].contentOffsetY = scrollHeight;
 
-        Ui::ScrollView::updateThumbs(window, Messages::widx::scrollview);
+        Ui::ScrollView::updateThumbs(*window, Messages::widx::scrollview);
     }
 
     namespace Settings

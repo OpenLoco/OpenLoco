@@ -2114,24 +2114,24 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // For the finances the most recent data on the scroll view is the data
         // most off to the right of the scroll. This function moves to the last
         // page of data as far to the right of the scroll.
-        static void scrollToLatestData(Window* self)
+        static void scrollToLatestData(Window& self)
         {
-            self->initScrollWidgets();
-            self->scrollAreas[0].contentOffsetX = 0x7FFF;
-            self->scrollAreas[0].contentWidth = 0;
-            self->updateScrollWidgets();
+            self.initScrollWidgets();
+            self.scrollAreas[0].contentOffsetX = 0x7FFF;
+            self.scrollAreas[0].contentWidth = 0;
+            self.updateScrollWidgets();
 
-            const Ui::Widget& widget = self->widgets[widx::scrollview];
+            const Ui::Widget& widget = self.widgets[widx::scrollview];
 
-            const auto x = std::max<int16_t>(0, self->scrollAreas[0].contentOffsetX);
+            const auto x = std::max<int16_t>(0, self.scrollAreas[0].contentOffsetX);
             auto widgetWidth = widget.width() - 2;
-            if (self->scrollAreas[0].hasFlags(ScrollFlags::vscrollbarVisible))
+            if (self.scrollAreas[0].hasFlags(ScrollFlags::vscrollbarVisible))
             {
                 widgetWidth -= ScrollView::barWidth;
             }
             // This gets the offset of the last full page (widgetWidth) of the scroll view
-            const auto newOffset = std::max(0, self->scrollAreas[0].contentWidth - widgetWidth);
-            self->scrollAreas[0].contentOffsetX = std::min<int16_t>(x, newOffset);
+            const auto newOffset = std::max(0, self.scrollAreas[0].contentWidth - widgetWidth);
+            self.scrollAreas[0].contentOffsetX = std::min<int16_t>(x, newOffset);
             ScrollView::updateThumbs(self, widx::scrollview);
         }
 
@@ -2141,7 +2141,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (widgetIndex == Common::widx::company_select)
             {
                 Common::switchCompany(&self, itemIndex);
-                scrollToLatestData(&self);
+                scrollToLatestData(self);
                 self.invalidate();
             }
         }
@@ -2227,7 +2227,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         Common::disableChallengeTab(window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
-        Finances::scrollToLatestData(window);
+        Finances::scrollToLatestData(*window);
 
         return window;
     }
@@ -2766,7 +2766,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if (tabInfo.widgetIndex == widx::tab_finances)
             {
-                Finances::scrollToLatestData(&self);
+                Finances::scrollToLatestData(self);
             }
         }
 

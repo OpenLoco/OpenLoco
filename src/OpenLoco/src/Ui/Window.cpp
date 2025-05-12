@@ -459,7 +459,7 @@ namespace OpenLoco::Ui
 
             if (invalidate)
             {
-                Ui::ScrollView::updateThumbs(this, widx);
+                Ui::ScrollView::updateThumbs(*this, widx);
                 this->invalidate();
             }
 
@@ -499,7 +499,7 @@ namespace OpenLoco::Ui
                 this->scrollAreas[s].flags |= Ui::ScrollFlags::vscrollbarVisible;
             }
 
-            Ui::ScrollView::updateThumbs(this, widx);
+            Ui::ScrollView::updateThumbs(*this, widx);
             s++;
         }
     }

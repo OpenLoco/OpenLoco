@@ -1221,34 +1221,34 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458B51
-        static void updateActiveThumb(Window* self)
+        static void updateActiveThumb(Window& self)
         {
             uint16_t scrollHeight = 0;
-            self->callGetScrollSize(0, nullptr, &scrollHeight);
-            self->scrollAreas[0].contentHeight = scrollHeight;
+            self.callGetScrollSize(0, nullptr, &scrollHeight);
+            self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
-            for (; i <= self->var_83C; i++)
+            for (; i <= self.var_83C; i++)
             {
-                if (self->rowInfo[i] == self->rowHover)
+                if (self.rowInfo[i] == self.rowHover)
                 {
                     break;
                 }
             }
 
-            if (i >= self->var_83C)
+            if (i >= self.var_83C)
             {
                 i = 0;
             }
 
             i = (i / 5) * kRowHeight;
 
-            self->scrollAreas[0].contentOffsetY = i;
+            self.scrollAreas[0].contentOffsetY = i;
             Ui::ScrollView::updateThumbs(self, widx::scrollview);
         }
 
         // 0x00458AAF
-        static void updateBuildableIndustries(Window* self)
+        static void updateBuildableIndustries(Window& self)
         {
             auto industryCount = 0;
             for (uint16_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
@@ -1274,19 +1274,19 @@ namespace OpenLoco::Ui::Windows::IndustryList
                         continue;
                     }
                 }
-                self->rowInfo[industryCount] = i;
+                self.rowInfo[industryCount] = i;
                 industryCount++;
             }
 
-            self->var_83C = industryCount;
+            self.var_83C = industryCount;
             auto rowHover = -1;
 
             auto lastIndustryOption = getGameState().lastIndustryOption;
             if (lastIndustryOption != 0xFF)
             {
-                for (auto i = 0; i < self->var_83C; i++)
+                for (auto i = 0; i < self.var_83C; i++)
                 {
-                    if (lastIndustryOption == self->rowInfo[i])
+                    if (lastIndustryOption == self.rowInfo[i])
                     {
                         rowHover = lastIndustryOption;
                         break;
@@ -1294,12 +1294,12 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 }
             }
 
-            if (rowHover == -1 && self->var_83C != 0)
+            if (rowHover == -1 && self.var_83C != 0)
             {
-                rowHover = self->rowInfo[0];
+                rowHover = self.rowInfo[0];
             }
 
-            self->rowHover = rowHover;
+            self.rowHover = rowHover;
             updateActiveThumb(self);
         }
 
@@ -1321,7 +1321,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.rowHover = -1;
             self.var_846 = 0xFFFFU;
 
-            updateBuildableIndustries(&self);
+            updateBuildableIndustries(self);
 
             gPrng2().randNext();
             _placementPrng = gPrng2();
@@ -1336,7 +1336,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
             {
-                updateActiveThumb(&self);
+                updateActiveThumb(self);
             }
         }
 

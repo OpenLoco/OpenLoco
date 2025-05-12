@@ -2511,6 +2511,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         window->scrollAreas[0].contentOffsetX = x;
         window->scrollAreas[0].contentOffsetY = y;
 
-        Ui::ScrollView::updateThumbs(window, widx::scrollview);
+        Ui::ScrollView::updateThumbs(*window, widx::scrollview);
     }
 }

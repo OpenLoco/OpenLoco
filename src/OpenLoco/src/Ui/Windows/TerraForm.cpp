@@ -169,11 +169,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
 
         // 0x004BB6B2
-        static void updateTreeColours(Window* self)
+        static void updateTreeColours(Window& self)
         {
-            if (self->rowHover != -1)
+            if (self.rowHover != -1)
             {
-                auto treeObj = ObjectManager::get<TreeObject>(self->rowHover);
+                auto treeObj = ObjectManager::get<TreeObject>(self.rowHover);
                 if (treeObj->colours != 0)
                 {
                     auto bit = Numerics::bitScanReverse(treeObj->colours);
@@ -184,34 +184,34 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC4B7
-        static void updateActiveThumb(Window* self)
+        static void updateActiveThumb(Window& self)
         {
             uint16_t scrollHeight = 0;
-            self->callGetScrollSize(0, nullptr, &scrollHeight);
-            self->scrollAreas[0].contentHeight = scrollHeight;
+            self.callGetScrollSize(0, nullptr, &scrollHeight);
+            self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
-            for (; i <= self->var_83C; i++)
+            for (; i <= self.var_83C; i++)
             {
-                if (self->rowInfo[i] == self->rowHover)
+                if (self.rowInfo[i] == self.rowHover)
                 {
                     break;
                 }
             }
 
-            if (i >= self->var_83C)
+            if (i >= self.var_83C)
             {
                 i = 0;
             }
 
             i = (i / 9) * kRowHeight;
 
-            self->scrollAreas[0].contentOffsetY = i;
+            self.scrollAreas[0].contentOffsetY = i;
             Ui::ScrollView::updateThumbs(self, widx::scrollview);
         }
 
         // 0x004BB63F
-        static void refreshTreeList(Window* self)
+        static void refreshTreeList(Window& self)
         {
             auto treeCount = 0;
             for (uint16_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::tree); i++)
@@ -221,18 +221,18 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     continue;
                 }
-                self->rowInfo[treeCount] = i;
+                self.rowInfo[treeCount] = i;
                 treeCount++;
             }
 
-            self->var_83C = treeCount;
+            self.var_83C = treeCount;
             auto rowHover = -1;
 
             if (getGameState().lastTreeOption != 0xFF)
             {
-                for (auto i = 0; i < self->var_83C; i++)
+                for (auto i = 0; i < self.var_83C; i++)
                 {
-                    if (getGameState().lastTreeOption == self->rowInfo[i])
+                    if (getGameState().lastTreeOption == self.rowInfo[i])
                     {
                         rowHover = getGameState().lastTreeOption;
                         break;
@@ -240,12 +240,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            if (rowHover == -1 && self->var_83C != 0)
+            if (rowHover == -1 && self.var_83C != 0)
             {
-                rowHover = self->rowInfo[0];
+                rowHover = self.rowInfo[0];
             }
 
-            self->rowHover = rowHover;
+            self.rowHover = rowHover;
 
             updateActiveThumb(self);
             updateTreeColours(self);
@@ -269,8 +269,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             _lastTreeCost = 0x80000000;
             self.var_83C = 0;
             self.rowHover = -1;
-            refreshTreeList(&self);
-            updateTreeColours(&self);
+            refreshTreeList(self);
+            updateTreeColours(self);
         }
 
         // 0x004BBAB5
@@ -336,7 +336,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
             {
-                updateActiveThumb(&self);
+                updateActiveThumb(self);
             }
         }
 
@@ -659,7 +659,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.rowHover = rowInfo;
                     getGameState().lastTreeOption = static_cast<uint8_t>(rowInfo);
 
-                    updateTreeColours(&self);
+                    updateTreeColours(self);
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
@@ -957,7 +957,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->var_83C = 0;
             window->rowHover = -1;
 
-            PlantTrees::refreshTreeList(window);
+            PlantTrees::refreshTreeList(*window);
 
             ToolManager::toolSet(*window, Common::widx::panel, CursorId::landTool);
 
@@ -2253,34 +2253,34 @@ namespace OpenLoco::Ui::Windows::Terraform
         );
 
         // 0x004BC506
-        static void updateActiveThumb(Window* self)
+        static void updateActiveThumb(Window& self)
         {
             uint16_t scrollHeight = 0;
-            self->callGetScrollSize(0, nullptr, &scrollHeight);
-            self->scrollAreas[0].contentHeight = scrollHeight;
+            self.callGetScrollSize(0, nullptr, &scrollHeight);
+            self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
-            for (; i <= self->var_83C; i++)
+            for (; i <= self.var_83C; i++)
             {
-                if (self->rowInfo[i] == self->rowHover)
+                if (self.rowInfo[i] == self.rowHover)
                 {
                     break;
                 }
             }
 
-            if (i >= self->var_83C)
+            if (i >= self.var_83C)
             {
                 i = 0;
             }
 
             i = (i / 10) * kRowHeight;
 
-            self->scrollAreas[0].contentOffsetY = i;
+            self.scrollAreas[0].contentOffsetY = i;
             Ui::ScrollView::updateThumbs(self, widx::scrollview);
         }
 
         // 0x004BB6D5
-        static void refreshWallList(Window* self)
+        static void refreshWallList(Window& self)
         {
             auto wallCount = 0;
             for (uint16_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::wall); i++)
@@ -2290,18 +2290,18 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     continue;
                 }
-                self->rowInfo[wallCount] = i;
+                self.rowInfo[wallCount] = i;
                 wallCount++;
             }
 
-            self->var_83C = wallCount;
+            self.var_83C = wallCount;
             auto rowHover = -1;
 
             if (getGameState().lastWallOption != 0xFF)
             {
-                for (auto i = 0; i < self->var_83C; i++)
+                for (auto i = 0; i < self.var_83C; i++)
                 {
-                    if (getGameState().lastWallOption == self->rowInfo[i])
+                    if (getGameState().lastWallOption == self.rowInfo[i])
                     {
                         rowHover = getGameState().lastWallOption;
                         break;
@@ -2309,12 +2309,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            if (rowHover == -1 && self->var_83C != 0)
+            if (rowHover == -1 && self.var_83C != 0)
             {
-                rowHover = self->rowInfo[0];
+                rowHover = self.rowInfo[0];
             }
 
-            self->rowHover = rowHover;
+            self.rowHover = rowHover;
 
             updateActiveThumb(self);
         }
@@ -2336,7 +2336,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             self.var_83C = 0;
             self.rowHover = -1;
-            refreshWallList(&self);
+            refreshWallList(self);
         }
 
         // 0x004BC44B
@@ -2348,7 +2348,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
             {
-                updateActiveThumb(&self);
+                updateActiveThumb(self);
             }
         }
 

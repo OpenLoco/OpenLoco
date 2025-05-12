@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         static void onClose(Window& self);
-        static void setActiveTabs(Window* const self);
+        static void setActiveTabs(Window& self);
         static void textInput(Window& self, const WidgetIndex_t callingWidget, const WidgetId id, const char* const input);
         static void renameVehicle(Window& self, const WidgetIndex_t widgetIndex);
         static void switchTab(Window& self, const WidgetIndex_t widgetIndex);
@@ -291,9 +291,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t holdableWidgets = 1 << widx::speedControl;
 
         // 0x004B5D82
-        static void resetDisabledWidgets(Window* const self)
+        static void resetDisabledWidgets(Window& self)
         {
-            self->disabledWidgets = 0;
+            self.disabledWidgets = 0;
         }
 
         // 0x004B5D88
@@ -409,7 +409,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->rowHeight = rowHeights[static_cast<uint8_t>(vehicle->vehicleType)];
             self->currentTab = 0;
             self->frameNo = 0;
-            resetDisabledWidgets(self);
+            resetDisabledWidgets(*self);
             self->minWidth = kMinWindowSize.width;
             self->minHeight = kMinWindowSize.height;
             self->maxWidth = kMaxWindowSize.width;
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->holdableWidgets = holdableWidgets;
             self->eventHandlers = &getEvents();
             self->activatedWidgets = 0;
-            resetDisabledWidgets(self);
+            resetDisabledWidgets(*self);
             self->initScrollWidgets();
             createViewport(*self);
             return self;
@@ -805,7 +805,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B1EB5
         static void prepareDraw(Window& self)
         {
-            Common::setActiveTabs(&self);
+            Common::setActiveTabs(self);
             auto head = Common::getVehicle(self);
             if (head == nullptr)
             {
@@ -1469,7 +1469,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B3300
         static void prepareDraw(Window& self)
         {
-            Common::setActiveTabs(&self);
+            Common::setActiveTabs(self);
 
             auto head = Common::getVehicle(self);
             if (head == nullptr)
@@ -1705,7 +1705,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static Vehicles::VehicleBase* getCarFromScrollViewPos(Ui::Window& self, const Ui::Point& pos)
         {
             Input::setPressedWidgetIndex(widx::carList);
-            auto res = Ui::ScrollView::getPart(&self, &self.widgets[widx::carList], pos.x, pos.y);
+            auto res = Ui::ScrollView::getPart(self, &self.widgets[widx::carList], pos.x, pos.y);
             if (res.area != ScrollPart::view)
             {
                 return nullptr;
@@ -1762,11 +1762,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     // TODO: define constant for hot zone
                     if (pos.y < vehicleWindow->widgets[widx::carList].top + vehicleWindow->y + 5)
                     {
-                        Ui::ScrollView::verticalNudgeUp(vehicleWindow, vehicleWindow->getScrollDataIndex(widx::carList), widx::carList);
+                        Ui::ScrollView::verticalNudgeUp(*vehicleWindow, vehicleWindow->getScrollDataIndex(widx::carList), widx::carList);
                     }
                     else if (pos.y > vehicleWindow->widgets[widx::carList].bottom + vehicleWindow->y - 5)
                     {
-                        Ui::ScrollView::verticalNudgeDown(vehicleWindow, vehicleWindow->getScrollDataIndex(widx::carList), widx::carList);
+                        Ui::ScrollView::verticalNudgeDown(*vehicleWindow, vehicleWindow->getScrollDataIndex(widx::carList), widx::carList);
                     }
                     break;
                 }
@@ -1847,7 +1847,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B3DDE
         static void prepareDraw(Window& self)
         {
-            Common::setActiveTabs(&self);
+            Common::setActiveTabs(self);
 
             auto* headVehicle = Common::getVehicle(self);
             if (headVehicle == nullptr)
@@ -2272,7 +2272,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B56CE
         static void prepareDraw(Window& self)
         {
-            Common::setActiveTabs(&self);
+            Common::setActiveTabs(self);
 
             auto vehicle = Common::getVehicle(self);
             if (vehicle == nullptr)
@@ -3375,7 +3375,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B468C
         static void prepareDraw(Window& self)
         {
-            Common::setActiveTabs(&self);
+            Common::setActiveTabs(self);
             auto head = Common::getVehicle(self);
             if (head == nullptr)
             {
@@ -3732,10 +3732,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
         // clang-format on
 
-        static void setActiveTabs(Window* const self)
+        static void setActiveTabs(Window& self)
         {
-            self->activatedWidgets &= ~((1 << widx::tabMain) | (1 << widx::tabDetails) | (1 << widx::tabCargo) | (1 << widx::tabFinances) | (1 << widx::tabRoute));
-            self->activatedWidgets |= 1ULL << (widx::tabMain + self->currentTab);
+            self.activatedWidgets &= ~((1 << widx::tabMain) | (1 << widx::tabDetails) | (1 << widx::tabCargo) | (1 << widx::tabFinances) | (1 << widx::tabRoute));
+            self.activatedWidgets |= 1ULL << (widx::tabMain + self.currentTab);
         }
 
         static std::pair<uint32_t, StringId> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced)
@@ -4569,7 +4569,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.activatedWidgets = 0;
             self.setWidgets(tabInfo.widgets);
             self.disabledWidgets = 0;
-            Main::resetDisabledWidgets(&self);
+            Main::resetDisabledWidgets(self);
             self.invalidate();
             self.rowHover = -1;
             self.orderTableIndex = -1;

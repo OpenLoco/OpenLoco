@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Town
         static void prepareDraw(Window& self);
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
         static void update(Window& self);
-        static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
+        static void renameTownPrompt(Window& self, WidgetIndex_t widgetIndex);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
     }
@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::Windows::Town
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameTownPrompt(&self, widgetIndex);
+                    Common::renameTownPrompt(self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
@@ -497,7 +497,7 @@ namespace OpenLoco::Ui::Windows::Town
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameTownPrompt(&self, widgetIndex);
+                    Common::renameTownPrompt(self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::Windows::Town
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameTownPrompt(&self, widgetIndex);
+                    Common::renameTownPrompt(self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
@@ -728,16 +728,16 @@ namespace OpenLoco::Ui::Windows::Town
             WindowManager::invalidate(WindowType::town, self.number);
         }
 
-        static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex)
+        static void renameTownPrompt(Window& self, WidgetIndex_t widgetIndex)
         {
-            auto town = TownManager::get(TownId(self->number));
+            auto town = TownManager::get(TownId(self.number));
 
             FormatArguments args{};
             args.skip(4);
             args.push(town->name);
             args.push(town->name);
 
-            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &args);
+            TextInput::openTextInput(&self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &args);
         }
 
         // 0x004991BC
