@@ -3010,8 +3010,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto x = self->widgets[widx::construct].midX();
-        x += self->x;
-        auto y = self->widgets[widx::construct].bottom + self->y - 23;
+        auto y = self->widgets[widx::construct].bottom - 23;
 
         if (_cState->constructionHover != 1)
         {

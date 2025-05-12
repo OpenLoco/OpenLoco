@@ -96,8 +96,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 uint8_t modCount = 3;
 
                 auto widget = self.widgets[widx::track];
-                auto xPos = widget.left;
-                auto yPos = widget.top;
+                auto xPos = self.x + widget.left;
+                auto yPos = self.y + widget.top;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 

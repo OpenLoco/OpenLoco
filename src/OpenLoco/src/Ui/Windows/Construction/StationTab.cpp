@@ -127,8 +127,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 }
 
                 auto widget = self.widgets[widx::station];
-                auto xPos = widget.left;
-                auto yPos = widget.top;
+                auto xPos = self.x + widget.left;
+                auto yPos = self.y + widget.top;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
                 Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), stationCount, (1 << 7));

@@ -73,8 +73,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 }
 
                 auto widget = self.widgets[widx::signal];
-                auto xPos = widget.left;
-                auto yPos = widget.top;
+                auto xPos = self.x + widget.left;
+                auto yPos = self.y + widget.top;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
