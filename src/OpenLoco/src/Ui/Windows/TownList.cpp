@@ -837,7 +837,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self.maxWidth = kWindowSize.height;
             self.width = kWindowSize.width;
             self.height = kWindowSize.height;
-            ToolManager::toolSet(&self, Common::widx::tab_build_town, CursorId::placeTown);
+            ToolManager::toolSet(self, Common::widx::tab_build_town, CursorId::placeTown);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
         }
@@ -1521,7 +1521,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 tab = Common::widx::tab_build_misc_buildings;
             }
 
-            ToolManager::toolSet(&self, tab, CursorId::placeBuilding);
+            ToolManager::toolSet(self, tab, CursorId::placeBuilding);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
 

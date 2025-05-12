@@ -544,7 +544,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
                 removeConstructionGhosts();
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
-                ToolManager::toolSet(&self, widx::construct, CursorId::crosshair);
+                ToolManager::toolSet(self, widx::construct, CursorId::crosshair);
                 Input::setFlag(Input::Flags::flag6);
 
                 _cState->constructionHover = 1;

@@ -1310,7 +1310,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.minHeight = NewIndustries::kWindowSize.height;
             self.maxWidth = NewIndustries::kWindowSize.width;
             self.maxHeight = NewIndustries::kWindowSize.height;
-            ToolManager::toolSet(&self, Common::widx::tab_new_industry, CursorId::placeFactory);
+            ToolManager::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
 
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();

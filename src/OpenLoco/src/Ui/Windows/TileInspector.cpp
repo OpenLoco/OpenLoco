@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     );
 
-    static void activateMapSelectionTool(Window* const self)
+    static void activateMapSelectionTool(const Window& self)
     {
         ToolManager::toolSet(self, widx::panel, CursorId::crosshair);
         Input::setFlag(Input::Flags::flag6);
@@ -133,7 +133,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         window->setColour(WindowColour::primary, skin->windowTitlebarColour);
         window->setColour(WindowColour::secondary, skin->windowColour);
 
-        activateMapSelectionTool(window);
+        activateMapSelectionTool(*window);
 
         return window;
     }
@@ -486,7 +486,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 break;
 
             case widx::select:
-                activateMapSelectionTool(&self);
+                activateMapSelectionTool(self);
                 break;
         }
     }

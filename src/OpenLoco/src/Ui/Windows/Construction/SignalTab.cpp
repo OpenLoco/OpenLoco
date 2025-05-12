@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _cState->isSignalBothDirections = 1;
                 ToolManager::toolCancel();
-                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
 
@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _cState->isSignalBothDirections = 0;
                 ToolManager::toolCancel();
-                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
         }
