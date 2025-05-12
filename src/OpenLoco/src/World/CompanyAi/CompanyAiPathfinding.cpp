@@ -20,6 +20,7 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<World::SmallZ, 0x0112C59C> _unk3PosBaseZ112C59C;
     static Interop::loco_global<uint32_t, 0x0112C388> _createTrackRoadCommandMods;
     static Interop::loco_global<uint32_t, 0x0112C38C> _createTrackRoadCommandRackRail;
+    static Interop::loco_global<Company*, 0x0112C390> _unk112C390;
     static Interop::loco_global<uint32_t, 0x0112C374> _createTrackRoadCommandAiUnkFlags;
     static Interop::loco_global<uint8_t, 0x0112C59F> _createTrackRoadCommandBridge0;
     static Interop::loco_global<uint8_t, 0x0112C5A0> _createTrackRoadCommandBridge1;
@@ -272,6 +273,80 @@ namespace OpenLoco::CompanyAi
         {
             return sub_483E2D(company);
         }
+    }
+
+    // 0x004854B2
+    // pos : ax, cx, dl
+    // tad : ebp
+    // company : _unk112C390
+    static void sub_4854B2(Company& company, const World::Pos3 pos, const uint16_t tad)
+    {
+        // bl
+        const auto direction = tad & 0x3;
+        // dh
+        const auto trackId = (tad >> 3) & 0x3F;
+
+        const auto hash1 = direction ^ (pos.z / World::kSmallZStep);
+        const auto hash2 = hash1 ^ ((pos.x / 32) * 8);
+        const auto hash3 = hash2 ^ (pos.y / 32);
+        const auto hash4 = hash3 ^ (trackId * 64);
+
+        uint32_t index = hash4;
+        while (company.var_25C0[index].var_00 != 0xFFFF)
+        {
+            auto& rhsEntry = company.var_25C0[index];
+            if (pos.x == rhsEntry.var_00
+                && (pos.z / World::kSmallZStep) == rhsEntry.var_04
+                && (trackId | (direction << 6)) == rhsEntry.var_05
+                && pos.y == (rhsEntry.var_02 & 0xFFFE))
+            {
+                return;
+            }
+
+            if (!(rhsEntry.var_02 & 0b1))
+            {
+                break;
+            }
+
+            index++;
+            if (index >= std::size(company.var_25C0))
+            {
+                index = 0;
+            }
+        }
+
+        _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags | (1U << 22);
+
+        if (company.var_85C3 & (1U << 3))
+        {
+            {
+                const auto diffZ = std::abs(_unk3PosBaseZ112C59C - (pos.z / World::kSmallZStep));
+
+                if (diffZ <= 4)
+                {
+                    const auto diffX = std::abs(_unk3Pos112C3CC->x - pos.x);
+                    const auto diffY = std::abs(_unk3Pos112C3CC->y - pos.y);
+                    if (diffX <= 3 * World::kTileSize && diffY <= 3 * World::kTileSize)
+                    {
+                        _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                    }
+                }
+            }
+            {
+                const auto diffZ = std::abs(_unk1PosBaseZ112C515 - (pos.z / World::kSmallZStep));
+
+                if (diffZ <= 4)
+                {
+                    const auto diffX = std::abs(_unk1Pos112C3C2->x - pos.x);
+                    const auto diffY = std::abs(_unk1Pos112C3C2->y - pos.y);
+                    if (diffX <= 3 * World::kTileSize && diffY <= 3 * World::kTileSize)
+                    {
+                        _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                    }
+                }
+            }
+        }
+        // 0x004855F9
     }
 
     void registerHooks()
