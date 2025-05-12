@@ -8,9 +8,7 @@ namespace OpenLoco::Ui::Widgets
 {
     void GroupBox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
-        const auto position = window->position() + widget.position();
+        const auto position = widget.position();
         const auto size = widget.size();
 
         auto colour = widgetState.colour.opaque();

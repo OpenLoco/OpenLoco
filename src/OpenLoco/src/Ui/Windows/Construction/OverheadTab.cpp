@@ -96,8 +96,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 uint8_t modCount = 3;
 
                 auto widget = self.widgets[widx::track];
-                auto xPos = widget.left + self.x;
-                auto yPos = widget.top + self.y;
+                auto xPos = self.x + widget.left;
+                auto yPos = self.y + widget.top;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
@@ -497,8 +497,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         Common::drawTabs(&self, drawingCtx);
         if (_cState->lastSelectedMods & 0xF)
         {
-            auto xPos = self.x + self.widgets[widx::image].left + 1;
-            auto yPos = self.y + self.widgets[widx::image].top + 1;
+            auto xPos = self.widgets[widx::image].left + 1;
+            auto yPos = self.widgets[widx::image].top + 1;
             auto width = self.widgets[widx::image].width();
             auto height = self.widgets[widx::image].height();
 
@@ -545,7 +545,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            auto point = Point(self.x + 69, self.widgets[widx::image].bottom + self.y + 4);
+            auto point = Point(69, self.widgets[widx::image].bottom + 4);
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
     }

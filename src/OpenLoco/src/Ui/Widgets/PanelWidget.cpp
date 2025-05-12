@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
         const auto size = widget.size();
 
         const auto resizeBarPos = pos + Ui::Point(size.width - 18, size.height - 18);
@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Widgets
     {
         auto* window = widgetState.window;
 
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
         const auto size = widget.size();
 
         drawingCtx.fillRectInset(

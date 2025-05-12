@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::About
         window.draw(drawingCtx);
 
         // Chris Sawyer logo
-        drawingCtx.drawImage(window.x + 92, window.y + 52, ImageIds::chris_sawyer_logo_small);
+        drawingCtx.drawImage(92, 52, ImageIds::chris_sawyer_logo_small);
     }
 
     static constexpr WindowEventList kEvents = {

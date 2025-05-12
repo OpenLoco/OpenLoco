@@ -17,8 +17,7 @@ namespace OpenLoco::Ui::Widgets
 
     static void drawHScroll(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const ScrollArea& scrollArea)
     {
-        auto* window = widgetState.window;
-        const auto position = window->position() + widget.position();
+        const auto position = widget.position();
         const auto size = widget.size();
         const auto colour = widgetState.colour;
 
@@ -94,8 +93,7 @@ namespace OpenLoco::Ui::Widgets
 
     static void drawVScroll(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const ScrollArea& scrollArea)
     {
-        auto* window = widgetState.window;
-        const auto position = window->position() + widget.position();
+        const auto position = widget.position();
         const auto size = widget.size();
         const auto colour = widgetState.colour;
 
@@ -172,7 +170,7 @@ namespace OpenLoco::Ui::Widgets
     void ScrollView::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
-        const auto position = window->position() + widget.position();
+        const auto position = widget.position();
         const auto size = widget.size();
 
         auto tr = Gfx::TextRenderer(drawingCtx);

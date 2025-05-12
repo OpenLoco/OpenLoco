@@ -174,13 +174,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         auto news = MessageManager::get(MessageManager::getActiveIndex());
 
-        auto x = self.x;
-        auto y = self.y;
         auto width = self.width;
         auto height = self.height;
 
         const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, { x, y, width, height });
+        auto clipped = Gfx::clipRenderTarget(rt, { 0, 0, width, height });
 
         if (!clipped)
         {
