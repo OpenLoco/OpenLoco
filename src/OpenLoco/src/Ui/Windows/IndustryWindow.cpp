@@ -609,7 +609,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 FormatArguments args{};
                 args.push(cargoObj->unitsAndCargoName);
 
-                auto point = Point(2, 24 + 68);
+                auto point = Point(2, 44);
                 tr.drawStringLeft(point, Colour::black, StringIds::production_graph_label, args);
             }
 
