@@ -1316,7 +1316,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(&self, drawingCtx);
 
-            auto y = self.y + 47;
+            auto y = 47;
 
             for (auto i = 0; i < 3; i++)
             {
