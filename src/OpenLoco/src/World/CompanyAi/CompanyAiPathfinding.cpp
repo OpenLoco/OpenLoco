@@ -1,5 +1,6 @@
 #include "CompanyAiPathfinding.h"
 #include "CompanyAi.h"
+#include "GameCommands/Track/CreateTrack.h"
 #include "Map/Tile.h"
 #include "Map/Track/TrackData.h"
 #include "Objects/ObjectManager.h"
@@ -22,10 +23,16 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint32_t, 0x0112C38C> _createTrackRoadCommandRackRail;
     static Interop::loco_global<Company*, 0x0112C390> _unk112C390;
     static Interop::loco_global<uint32_t, 0x0112C374> _createTrackRoadCommandAiUnkFlags;
+    static Interop::loco_global<uint32_t, 0x0112C378> _unk112C378;
+    static Interop::loco_global<uint32_t, 0x0112C37C> _unk112C37C;
+    static Interop::loco_global<uint32_t, 0x0112C380> _numBuildingRequiredDestroyed112C380;
+    static Interop::loco_global<uint8_t, 0x0112C59B> _unk112C59B;
     static Interop::loco_global<uint8_t, 0x0112C59F> _createTrackRoadCommandBridge0;
     static Interop::loco_global<uint8_t, 0x0112C5A0> _createTrackRoadCommandBridge1;
     static Interop::loco_global<uint8_t, 0x0112C5A1> _createTrackRoadCommandBridge2;
     static Interop::loco_global<uint8_t[65], 0x0112C51A> _validTrackRoadIds;
+    static Interop::loco_global<uint8_t, 0x01136073> _byte_1136073;
+    static Interop::loco_global<World::MicroZ, 0x01136074> _byte_1136074;
 
     // 0x00483A7E
     static sfl::static_vector<uint8_t, 64> sub_483A7E(const Company& company, const AiThought& thought)
@@ -277,9 +284,10 @@ namespace OpenLoco::CompanyAi
 
     // 0x004854B2
     // pos : ax, cx, dl
-    // tad : ebp
+    // tad : bp
+    // unkFlag : ebp & (1U << 31)
     // company : _unk112C390
-    static void sub_4854B2(Company& company, const World::Pos3 pos, const uint16_t tad)
+    static void sub_4854B2(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -347,6 +355,54 @@ namespace OpenLoco::CompanyAi
             }
         }
         // 0x004855F9
+        {
+            using enum World::Track::CommonTraitFlags;
+            if (!(_createTrackRoadCommandAiUnkFlags & (1U << 22))
+                || (World::TrackData::getTrackMiscData(trackId).flags & slope | steepSlope) != none)
+            {
+                return;
+            }
+        }
+
+        GameCommands::TrackPlacementArgs args;
+
+        args.rotation = direction;
+        if (unkFlag)
+        {
+            args.rotation += 12;
+        }
+        args.trackId = trackId;
+        args.trackObjectId = _trackRoadObjType112C519;
+        args.bridge = _createTrackRoadCommandBridge0;
+        args.pos = pos;
+        args.mods = 0;
+        args.unk = false;
+        args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 20;
+
+        {
+            auto regs = static_cast<Interop::registers>(args);
+            GameCommands::createTrack(regs);
+            if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
+            {
+                return;
+            }
+        }
+
+        _unk112C59B = _unk112C59B | (1U << 0);
+        _unk112C378 += World::TrackData::getTrackMiscData(trackId).unkWeighting;
+        // Place track attempt required a bridge
+        if (_byte_1136073 & (1U << 0))
+        {
+            // _byte_1136074 is the bridge height
+            const auto unkFactor = (_byte_1136074 * World::TrackData::getTrackMiscData(trackId).unkWeighting) / 2;
+            _unk112C37C += unkFactor;
+        }
+        // Place track attempt requires removing a building
+        if (_byte_1136073 & (1U << 4))
+        {
+            _numBuildingRequiredDestroyed112C380++;
+        }
+        // 0x004856AB
     }
 
     void registerHooks()
