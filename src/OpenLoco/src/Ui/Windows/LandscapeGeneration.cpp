@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             generate_now,
         };
 
-        enum ResetLandscapeMode
+        enum class ResetLandscapeMode
         {
             generate_now = 0, // Regenerates the landscape in the scenario editor.
             use_random_landscape = 1, // Delete the current landscape; generate when the scenario is played.
@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 // 'Are you sure?' confirmation prompt
                 StringId titleId;
                 FormatArguments args{};
-                if (promptType == generate_now)
+                if (promptType == ResetLandscapeMode::generate_now)
                 {
                     titleId = StringIds::title_generate_new_landscape;
                     args.push(StringIds::prompt_confirm_generate_landscape);
@@ -118,7 +118,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
 
             // Reset the landscape
-            if (promptType == generate_now)
+            if (promptType == ResetLandscapeMode::generate_now)
             {
                 Scenario::generateLandscape();
             }
