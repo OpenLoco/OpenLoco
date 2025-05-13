@@ -215,11 +215,6 @@ namespace OpenLoco::Ui::Windows
         Window* open();
     }
 
-    namespace LandscapeGenerationConfirm
-    {
-        Window* open(int32_t prompt_type);
-    }
-
     namespace Main
     {
         void open();
