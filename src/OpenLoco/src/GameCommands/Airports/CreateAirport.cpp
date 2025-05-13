@@ -149,9 +149,10 @@ namespace OpenLoco::GameCommands
         // This is identical to createIndustry, createDock but with an airportObject
         // TODO: look into making some sort of common version
         auto clearHeight = 0;
+        const auto heights = airportObj->getBuildingPartHeights();
         for (auto part : airportObj->getBuildingParts(variation))
         {
-            clearHeight += airportObj->buildingPartHeights[part];
+            clearHeight += heights[part];
         }
         // ceil to 4
         clearHeight += 3;
