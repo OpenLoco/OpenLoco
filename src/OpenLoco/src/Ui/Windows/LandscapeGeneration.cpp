@@ -68,6 +68,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             generate_now,
         };
 
+        enum ResetLandscapeMode
+        {
+            generate_now = 0, // Regenerates the landscape in the scenario editor.
+            use_random_landscape = 1, // Delete the current landscape; generate when the scenario is played.
+        };
+
         static constexpr auto makeCommonWidgets(int32_t frame_height, StringId window_caption_id)
         {
             return makeWidgets(
@@ -88,14 +94,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void switchTabWidgets(Window* window);
         static void switchTab(Window& window, WidgetIndex_t widgetIndex);
 
-        static void confirmResetLandscape(int32_t promptType)
+        static void confirmResetLandscape(ResetLandscapeMode promptType)
         {
             if (Scenario::getOptions().madeAnyChanges)
             {
                 // 'Are you sure?' confirmation prompt
                 StringId titleId;
                 FormatArguments args{};
-                if (promptType == 0)
+                if (promptType == generate_now)
                 {
                     titleId = StringIds::title_generate_new_landscape;
                     args.push(StringIds::prompt_confirm_generate_landscape);
@@ -112,7 +118,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
 
             // Reset the landscape
-            if (promptType == 0)
+            if (promptType == generate_now)
             {
                 Scenario::generateLandscape();
             }
@@ -140,7 +146,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::generate_now:
-                    confirmResetLandscape(0);
+                    confirmResetLandscape(ResetLandscapeMode::generate_now);
                     break;
             }
         }
@@ -499,7 +505,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     else
                     {
                         WindowManager::closeConstructionWindows();
-                        Common::confirmResetLandscape(1);
+                        Common::confirmResetLandscape(Common::ResetLandscapeMode::use_random_landscape);
                     }
                     break;
 
