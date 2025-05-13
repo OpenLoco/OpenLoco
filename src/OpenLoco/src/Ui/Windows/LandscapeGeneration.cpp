@@ -70,8 +70,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         enum class ResetLandscapeMode
         {
-            generate_now = 0, // Regenerates the landscape in the scenario editor.
-            use_random_landscape = 1, // Delete the current landscape; generate when the scenario is played.
+            generate_now = 0,
+            use_random_landscape = 1,
         };
 
         static constexpr auto makeCommonWidgets(int32_t frame_height, StringId window_caption_id)
