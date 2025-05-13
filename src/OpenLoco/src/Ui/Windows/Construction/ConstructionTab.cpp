@@ -521,7 +521,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(&self, widgetIndex);
+                Common::switchTab(self, widgetIndex);
                 break;
 
             case widx::construct:
@@ -544,7 +544,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
                 removeConstructionGhosts();
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
-                ToolManager::toolSet(&self, widx::construct, CursorId::crosshair);
+                ToolManager::toolSet(self, widx::construct, CursorId::crosshair);
                 Input::setFlag(Input::Flags::flag6);
 
                 _cState->constructionHover = 1;
@@ -3094,7 +3094,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         self.draw(drawingCtx);
-        Common::drawTabs(&self, drawingCtx);
+        Common::drawTabs(self, drawingCtx);
 
         if (!self.widgets[widx::bridge].hidden)
         {
@@ -3226,13 +3226,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    void tabReset(Window* self)
+    void tabReset(Window& self)
     {
         if (_cState->constructionHover != 0)
         {
             _cState->constructionHover = 0;
             _cState->byte_113607E = 1;
-            self->callOnMouseUp(widx::rotate_90, self->widgets[widx::rotate_90].id);
+            self.callOnMouseUp(widx::rotate_90, self.widgets[widx::rotate_90].id);
         }
     }
 
@@ -3259,73 +3259,73 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return kEvents;
     }
 
-    void previousTrackPiece(Window* self)
+    void previousTrackPiece(Window& self)
     {
-        WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        WidgetIndex_t prev = self.prevAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
         if (prev != -1)
         {
-            self->callOnMouseDown(prev, self->widgets[prev].id);
+            self.callOnMouseDown(prev, self.widgets[prev].id);
         }
     }
 
-    void nextTrackPiece(Window* self)
+    void nextTrackPiece(Window& self)
     {
-        WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        WidgetIndex_t next = self.nextAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
         if (next != -1)
         {
-            self->callOnMouseDown(next, self->widgets[next].id);
+            self.callOnMouseDown(next, self.widgets[next].id);
         }
     }
 
-    void previousSlope(Window* self)
+    void previousSlope(Window& self)
     {
-        WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
+        WidgetIndex_t prev = self.prevAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
         if (prev != -1)
         {
-            self->callOnMouseDown(prev, self->widgets[prev].id);
+            self.callOnMouseDown(prev, self.widgets[prev].id);
         }
     }
 
-    void nextSlope(Window* self)
+    void nextSlope(Window& self)
     {
-        WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
+        WidgetIndex_t next = self.nextAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
         if (next != -1)
         {
-            self->callOnMouseDown(next, self->widgets[next].id);
+            self.callOnMouseDown(next, self.widgets[next].id);
         }
     }
 
-    void buildAtCurrentPos(Window* self)
+    void buildAtCurrentPos(Window& self)
     {
-        if (self->currentTab != Common::widx::tab_construction - Common::widx::tab_construction)
+        if (self.currentTab != Common::widx::tab_construction - Common::widx::tab_construction)
         {
             return;
         }
 
         if (_cState->constructionHover == 0)
         {
-            self->callOnMouseUp(widx::construct, self->widgets[widx::construct].id);
+            self.callOnMouseUp(widx::construct, self.widgets[widx::construct].id);
         }
     }
 
-    void removeAtCurrentPos(Window* self)
+    void removeAtCurrentPos(Window& self)
     {
-        if (self->currentTab == Common::widx::tab_construction - Common::widx::tab_construction)
+        if (self.currentTab == Common::widx::tab_construction - Common::widx::tab_construction)
         {
-            self->callOnMouseUp(widx::remove, self->widgets[widx::remove].id);
+            self.callOnMouseUp(widx::remove, self.widgets[widx::remove].id);
         }
     }
 
-    void selectPosition(Window* self)
+    void selectPosition(Window& self)
     {
-        if (self->currentTab != Common::widx::tab_construction - Common::widx::tab_construction)
+        if (self.currentTab != Common::widx::tab_construction - Common::widx::tab_construction)
         {
             return;
         }
 
         if (_cState->constructionHover == 0)
         {
-            self->callOnMouseUp(widx::rotate_90, self->widgets[widx::rotate_90].id);
+            self.callOnMouseUp(widx::rotate_90, self.widgets[widx::rotate_90].id);
         }
     }
 }

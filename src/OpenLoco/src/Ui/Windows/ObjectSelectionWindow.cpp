@@ -638,12 +638,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint32_t, 0x0112C209> _112C209;
 
     // 0x0047328D
-    static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+    static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         for (auto i = 0U; i < kMaxNumPrimaryTabs; i++)
         {
             auto widgetIndex = i + widx::primaryTab1;
-            if (self->widgets[widgetIndex].hidden)
+            if (self.widgets[widgetIndex].hidden)
             {
                 continue;
             }
@@ -653,9 +653,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static void drawSecondaryTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+    static void drawSecondaryTabs(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        const auto& currentTab = kMainTabInfo[self->currentTab];
+        const auto& currentTab = kMainTabInfo[self.currentTab];
         const auto& subTabs = currentTab.subTabs;
         const bool showSecondaryTabs = !subTabs.empty();
         if (!showSecondaryTabs)
@@ -668,16 +668,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto i = 0U; i < subTabs.size(); i++)
         {
             auto widgetIndex = i + widx::secondaryTab1;
-            if (self->widgets[widgetIndex].hidden)
+            if (self.widgets[widgetIndex].hidden)
             {
                 continue;
             }
 
             auto& tabData = subTabs[i];
             auto frame = 0;
-            if (self->currentSecondaryTab == i)
+            if (self.currentSecondaryTab == i)
             {
-                frame = (self->frameNo >> tabData.animationDivisor) % tabData.animationLength;
+                frame = (self.frameNo >> tabData.animationDivisor) % tabData.animationLength;
             }
 
             auto baseImage = currentTab.objectType == ObjectType::vehicle ? skin->img : 0;
@@ -977,8 +977,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         drawingCtx.fillRectInset(0, 20, self.width - 1, 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
         self.draw(drawingCtx);
 
-        drawTabs(&self, drawingCtx);
-        drawSecondaryTabs(&self, drawingCtx);
+        drawTabs(self, drawingCtx);
+        drawSecondaryTabs(self, drawingCtx);
         drawSearchBox(self, drawingCtx);
 
         {

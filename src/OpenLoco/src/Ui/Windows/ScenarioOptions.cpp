@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x004400A4
-        static void drawTabs(Window* window, Gfx::DrawingContext& drawingCtx)
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -99,22 +99,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 };
 
                 uint32_t imageId = skin->img;
-                if (window->currentTab == widx::tab_challenge - widx::tab_challenge)
+                if (self.currentTab == widx::tab_challenge - widx::tab_challenge)
                 {
-                    imageId += challengeTabImageIds[(window->frameNo / 4) % std::size(challengeTabImageIds)];
+                    imageId += challengeTabImageIds[(self.frameNo / 4) % std::size(challengeTabImageIds)];
                 }
                 else
                 {
                     imageId += challengeTabImageIds[0];
                 }
 
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_challenge);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_challenge);
             }
 
             // Companies tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_companies;
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_companies);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_companies);
             }
 
             // Finances tab
@@ -139,35 +139,35 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 };
 
                 uint32_t imageId = skin->img;
-                if (window->currentTab == widx::tab_finances - widx::tab_challenge)
+                if (self.currentTab == widx::tab_finances - widx::tab_challenge)
                 {
-                    imageId += financesTabImageIds[(window->frameNo / 2) % std::size(financesTabImageIds)];
+                    imageId += financesTabImageIds[(self.frameNo / 2) % std::size(financesTabImageIds)];
                 }
                 else
                 {
                     imageId += financesTabImageIds[0];
                 }
 
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_finances);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_finances);
             }
 
             // Scenario details tab
-            if (!window->widgets[widx::tab_scenario].hidden)
+            if (!self.widgets[widx::tab_scenario].hidden)
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
-                Widget::drawTab(window, drawingCtx, imageId, widx::tab_scenario);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_scenario);
             }
         }
 
         static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
         {
             window.draw(drawingCtx);
-            drawTabs(&window, drawingCtx);
+            drawTabs(window, drawingCtx);
         }
 
         static void prepareDraw(Window& self);
 
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
     }
 
     namespace Challenge
@@ -430,7 +430,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
                 case Common::widx::tab_scenario:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case check_be_top_company:
@@ -785,7 +785,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
                 case Common::widx::tab_scenario:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::competitor_forbid_trains:
@@ -976,7 +976,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
                 case Common::widx::tab_scenario:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -1157,7 +1157,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
                 case Common::widx::tab_scenario:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::change_name_btn:
@@ -1284,28 +1284,28 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F16B
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(self->type, self->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            TextInput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self.type, self.number);
 
-            self->currentTab = widgetIndex - widx::tab_challenge;
-            self->frameNo = 0;
-            self->flags &= ~(WindowFlags::flag_16);
-            self->disabledWidgets = 0;
+            self.currentTab = widgetIndex - widx::tab_challenge;
+            self.frameNo = 0;
+            self.flags &= ~(WindowFlags::flag_16);
+            self.disabledWidgets = 0;
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];
 
-            self->holdableWidgets = *tabInfo.holdableWidgets;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
+            self.holdableWidgets = *tabInfo.holdableWidgets;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
 
-            self->invalidate();
+            self.invalidate();
 
             const auto newSize = [widgetIndex]() {
                 if (widgetIndex == widx::tab_challenge)
@@ -1322,12 +1322,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 }
             }();
 
-            self->setSize(newSize);
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.setSize(newSize);
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
     }
 }

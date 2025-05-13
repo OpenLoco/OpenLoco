@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(&self, widgetIndex);
+                Common::switchTab(self, widgetIndex);
                 break;
         }
     }
@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _cState->isSignalBothDirections = 1;
                 ToolManager::toolCancel();
-                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
 
@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _cState->isSignalBothDirections = 0;
                 ToolManager::toolCancel();
-                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
         }
@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         self.draw(drawingCtx);
-        Common::drawTabs(&self, drawingCtx);
+        Common::drawTabs(self, drawingCtx);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_cState->lastSelectedSignal);
 
@@ -356,9 +356,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         }
     }
 
-    void tabReset(Window* self)
+    void tabReset(Window& self)
     {
-        self->callOnMouseDown(Signal::widx::both_directions, self->widgets[Signal::widx::both_directions].id);
+        self.callOnMouseDown(Signal::widx::both_directions, self.widgets[Signal::widx::both_directions].id);
     }
 
     static constexpr WindowEventList kEvents = {

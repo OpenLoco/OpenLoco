@@ -304,8 +304,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void setTrackTypeTabs(Ui::Window* window);
     static void resetTrackTypeTabSelection(Ui::Window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
-    static void drawTransportTypeTabs(Ui::Window* window, Gfx::DrawingContext& drawingCtx);
-    static void drawTrackTypeTabs(Ui::Window* window, Gfx::DrawingContext& drawingCtx);
+    static void drawTransportTypeTabs(Ui::Window& window, Gfx::DrawingContext& drawingCtx);
+    static void drawTrackTypeTabs(Ui::Window& window, Gfx::DrawingContext& drawingCtx);
 
     static const WindowEventList& getEvents();
 
@@ -981,7 +981,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (scrollPosition < scrollArea.contentOffsetY)
         {
             scrollArea.contentOffsetY = scrollPosition;
-            Ui::ScrollView::updateThumbs(&window, widx::scrollview_vehicle_selection);
+            Ui::ScrollView::updateThumbs(window, widx::scrollview_vehicle_selection);
         }
 
         if (window.rowHover != -1)
@@ -1269,15 +1269,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2F23
-    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
+    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        window.draw(drawingCtx);
+        self.draw(drawingCtx);
 
-        drawTransportTypeTabs(&window, drawingCtx);
-        drawTrackTypeTabs(&window, drawingCtx);
-        drawSearchBox(window, drawingCtx);
+        drawTransportTypeTabs(self, drawingCtx);
+        drawTrackTypeTabs(self, drawingCtx);
+        drawSearchBox(self, drawingCtx);
 
         {
             auto bottomLeftMessage = StringIds::select_new_vehicle;
@@ -1293,8 +1293,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            auto point = Point(2, window.height - 13);
-            tr.drawStringLeftClipped(point, window.width - 186, Colour::black, bottomLeftMessage, args);
+            auto point = Point(2, self.height - 13);
+            tr.drawStringLeftClipped(point, self.width - 186, Colour::black, bottomLeftMessage, args);
         }
 
         if (_cargoSupportedFilter != 0xFF && _cargoSupportedFilter != 0xFE)
@@ -1306,17 +1306,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(cargoObj->name);
             args.push(cargoObj->unitInlineSprite);
 
-            auto& widget = window.widgets[widx::cargoLabel];
+            auto& widget = self.widgets[widx::cargoLabel];
             auto point = Point(widget.left + 2, widget.top);
             tr.drawStringLeftClipped(point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
-        if (window.rowHover == -1)
+        if (self.rowHover == -1)
         {
             return;
         }
 
-        auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);
+        auto vehicleObj = ObjectManager::get<VehicleObject>(self.rowHover);
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
 
         {
@@ -1339,7 +1339,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(vehicleObj->designed);
 
             const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-            auto unlocked = company->isVehicleIndexUnlocked(window.rowHover);
+            auto unlocked = company->isVehicleIndexUnlocked(self.rowHover);
             buffer = StringManager::formatString(
                 buffer,
                 unlocked ? StringIds::stats_designed : StringIds::stats_proposed_design,
@@ -1432,8 +1432,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         vehicleObj->getCargoString(buffer);
 
-        auto x = window.widgets[widx::scrollview_vehicle_selection].right + 2;
-        auto y = window.widgets[widx::scrollview_vehicle_preview].bottom + 2;
+        auto x = self.widgets[widx::scrollview_vehicle_selection].right + 2;
+        auto y = self.widgets[widx::scrollview_vehicle_preview].bottom + 2;
         tr.drawStringLeftWrapped(Point(x, y), 180, Colour::black, StringIds::buffer_1250);
     }
 
@@ -1721,17 +1721,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2BFD
-    static void drawTransportTypeTabs(Ui::Window* window, Gfx::DrawingContext& drawingCtx)
+    static void drawTransportTypeTabs(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));
+        auto companyColour = CompanyManager::getCompanyColour(CompanyId(window.number));
 
         for (const auto& tab : _transportTypeTabInformation)
         {
             auto frameNo = 0;
-            if (_transportTypeTabInformation[window->currentTab].type == tab.type)
+            if (_transportTypeTabInformation[window.currentTab].type == tab.type)
             {
-                frameNo = (window->frameNo / 2) & 0xF;
+                frameNo = (window.frameNo / 2) & 0xF;
             }
             uint32_t image = Gfx::recolour(skin->img + tab.imageIds[frameNo], companyColour);
             Widget::drawTab(window, drawingCtx, image, tab.widgetIndex);
@@ -1739,40 +1739,40 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C28F1
-    static void drawTrackTypeTabs(Ui::Window* window, Gfx::DrawingContext& drawingCtx)
+    static void drawTrackTypeTabs(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));
+        auto companyColour = CompanyManager::getCompanyColour(CompanyId(window.number));
 
         auto left = 0;
         auto top = 69;
-        auto right = left + window->width - 187;
+        auto right = left + window.width - 187;
         auto bottom = top;
-        drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
 
-        left = window->width - 187;
+        left = window.width - 187;
         top = 41;
         right = left;
         bottom = top + 27;
-        drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
 
         for (uint32_t tab = 0; tab < _numTrackTypeTabs; ++tab)
         {
-            const auto widget = window->widgets[tab + widx::tab_track_type_0];
-            if (window->currentSecondaryTab == tab)
+            const auto widget = window.widgets[tab + widx::tab_track_type_0];
+            if (window.currentSecondaryTab == tab)
             {
                 left = widget.left + 1;
                 top = widget.top + 26;
                 right = left + 29;
                 bottom = top;
-                drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 5), Gfx::RectFlags::none);
+                drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window.getColour(WindowColour::secondary).c(), 5), Gfx::RectFlags::none);
             }
 
             auto img = 0;
             auto type = _trackTypesForTab[tab];
             if (type == 0xFF)
             {
-                if (window->currentTab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains))
+                if (window.currentTab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains))
                 {
                     img = skin->img + InterfaceSkin::ImageIds::toolbar_menu_airport;
                 }
@@ -1787,9 +1787,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 type &= ~(1 << 7);
                 auto roadObj = ObjectManager::get<RoadObject>(type);
                 img = roadObj->image;
-                if (window->currentSecondaryTab == tab)
+                if (window.currentSecondaryTab == tab)
                 {
-                    img += (window->frameNo / 4) & 0x1F;
+                    img += (window.frameNo / 4) & 0x1F;
                 }
                 img = Gfx::recolour(img, companyColour);
             }
@@ -1797,10 +1797,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 auto trackObj = ObjectManager::get<TrackObject>(type);
                 img = trackObj->image + TrackObj::ImageIds::kUiPreviewImage0;
-                if (window->currentSecondaryTab == tab)
+                if (window.currentSecondaryTab == tab)
                 {
                     // TODO: Use array from Construction/Common.cpp
-                    img += (window->frameNo / 4) & 0xF;
+                    img += (window.frameNo / 4) & 0xF;
                 }
                 img = Gfx::recolour(img, companyColour);
             }

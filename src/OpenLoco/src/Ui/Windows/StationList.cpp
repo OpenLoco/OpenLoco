@@ -589,31 +589,31 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 00491A76
-    static void drawTabs(Ui::Window* window, Gfx::DrawingContext& drawingCtx)
+    static void drawTabs(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));
+        auto companyColour = CompanyManager::getCompanyColour(CompanyId(self.number));
 
         for (const auto& tab : tabInformationByType)
         {
             uint32_t image = Gfx::recolour(skin->img + tab.imageId, companyColour);
-            Widget::drawTab(window, drawingCtx, image, tab.widgetIndex);
+            Widget::drawTab(self, drawingCtx, image, tab.widgetIndex);
         }
     }
 
     // 0x004914D8
-    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
+    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
         // Draw widgets and tabs.
-        window.draw(drawingCtx);
-        drawTabs(&window, drawingCtx);
+        self.draw(drawingCtx);
+        drawTabs(self, drawingCtx);
 
         // Draw company owner image.
-        auto company = CompanyManager::get(CompanyId(window.number));
+        auto company = CompanyManager::get(CompanyId(self.number));
         auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
         uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
-        uint16_t x = window.widgets[widx::company_select].left + 1;
-        uint16_t y = window.widgets[widx::company_select].top + 1;
+        uint16_t x = self.widgets[widx::company_select].left + 1;
+        uint16_t y = self.widgets[widx::company_select].top + 1;
         drawingCtx.drawImage(x, y, image);
     }
 

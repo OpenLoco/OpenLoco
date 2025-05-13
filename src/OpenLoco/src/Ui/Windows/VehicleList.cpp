@@ -121,9 +121,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     static Widx getTabFromType(VehicleType type);
 
-    constexpr bool isCargoFilterActive(const Window* self, bool checkSelection = true)
+    constexpr bool isCargoFilterActive(const Window& self, bool checkSelection = true)
     {
-        return self->var_88A == static_cast<int16_t>(FilterMode::transportingCargo) && (!checkSelection || self->var_88C != -1);
+        return self.var_88A == static_cast<int16_t>(FilterMode::transportingCargo) && (!checkSelection || self.var_88C != -1);
     }
 
     using Vehicles::VehicleHead;
@@ -153,22 +153,22 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C1D4F
-    static void refreshVehicleList(Window* self)
+    static void refreshVehicleList(Window& self)
     {
-        self->rowCount = 0;
+        self.rowCount = 0;
         for (auto* vehicle : VehicleManager::VehicleList())
         {
-            if (vehicle->vehicleType != static_cast<VehicleType>(self->currentTab))
+            if (vehicle->vehicleType != static_cast<VehicleType>(self.currentTab))
             {
                 continue;
             }
 
-            if (vehicle->owner != CompanyId(self->number))
+            if (vehicle->owner != CompanyId(self.number))
             {
                 continue;
             }
 
-            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
+            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_88C))
             {
                 continue;
             }
@@ -245,18 +245,18 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C1D92
-    static void updateVehicleList(Window* self)
+    static void updateVehicleList(Window& self)
     {
         EntityId insertId = EntityId::null;
 
         for (auto* vehicle : VehicleManager::VehicleList())
         {
-            if (vehicle->vehicleType != static_cast<VehicleType>(self->currentTab))
+            if (vehicle->vehicleType != static_cast<VehicleType>(self.currentTab))
             {
                 continue;
             }
 
-            if (vehicle->owner != CompanyId(self->number))
+            if (vehicle->owner != CompanyId(self.number))
             {
                 continue;
             }
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
+            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_88C))
             {
                 continue;
             }
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             {
                 continue;
             }
-            if (getOrder(SortMode(self->sortMode), *vehicle, *insertVehicle))
+            if (getOrder(SortMode(self.sortMode), *vehicle, *insertVehicle))
             {
                 insertId = vehicle->id;
                 continue;
@@ -294,29 +294,29 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto vehicle = EntityManager::get<VehicleHead>(insertId);
             if (vehicle == nullptr)
             {
-                self->var_83C = self->rowCount;
+                self.var_83C = self.rowCount;
                 refreshVehicleList(self);
                 return;
             }
             vehicle->vehicleFlags |= VehicleFlags::sorted;
 
-            if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
+            if (vehicle->id != EntityId(self.rowInfo[self.rowCount]))
             {
-                self->rowInfo[self->rowCount] = enumValue(vehicle->id);
+                self.rowInfo[self.rowCount] = enumValue(vehicle->id);
             }
 
-            self->rowCount++;
+            self.rowCount++;
 
-            if (self->rowCount > self->var_83C)
+            if (self.rowCount > self.var_83C)
             {
-                self->var_83C = self->rowCount;
+                self.var_83C = self.rowCount;
             }
         }
         else
         {
-            if (self->var_83C != self->rowCount)
+            if (self.var_83C != self.rowCount)
             {
-                self->var_83C = self->rowCount;
+                self.var_83C = self.rowCount;
             }
 
             refreshVehicleList(self);
@@ -324,10 +324,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2A6E
-    static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+    static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(CompanyId(self->number));
+        auto companyColour = CompanyManager::getCompanyColour(CompanyId(self.number));
 
         static constexpr std::pair<WidgetIndex_t, std::array<uint32_t, 8>> tabAnimations[] = {
             { Widx::tab_trains, {
@@ -394,13 +394,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         for (auto [tab, frames] : tabAnimations)
         {
-            if (self->isDisabled(tab))
+            if (self.isDisabled(tab))
             {
                 continue;
             }
 
-            auto isActive = tab == self->currentTab + Widx::tab_trains;
-            auto imageId = isActive ? frames[self->frameNo / 2 % 8] : frames[0];
+            auto isActive = tab == self.currentTab + Widx::tab_trains;
+            auto imageId = isActive ? frames[self.frameNo / 2 % 8] : frames[0];
 
             uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
             Widget::drawTab(self, drawingCtx, image, tab);
@@ -408,13 +408,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C28A5
-    static void disableUnavailableVehicleTypes(Window* self)
+    static void disableUnavailableVehicleTypes(Window& self)
     {
         // The original game looks at all companies here. We only look at the current company instead.
-        auto company = CompanyManager::get(CompanyId(self->number));
+        auto* company = CompanyManager::get(CompanyId(self.number));
 
         // Disable the tabs for the vehicles that are _not_ available for this company.
-        self->disabledWidgets = (static_cast<uint64_t>(company->availableVehicles ^ 0x3F)) << Widx::tab_trains;
+        self.disabledWidgets = (static_cast<uint64_t>(company->availableVehicles ^ 0x3F)) << Widx::tab_trains;
     }
 
     static const WindowEventList& getEvents();
@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         self->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
-        disableUnavailableVehicleTypes(self);
+        disableUnavailableVehicleTypes(*self);
 
         return self;
     }
@@ -465,7 +465,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->var_88A = static_cast<int16_t>(FilterMode::allVehicles);
         self->var_88C = -1;
 
-        refreshVehicleList(self);
+        refreshVehicleList(*self);
 
         self->invalidate();
 
@@ -511,7 +511,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1F88
     static void prepareDraw(Window& self)
     {
-        disableUnavailableVehicleTypes(&self);
+        disableUnavailableVehicleTypes(self);
 
         // The original game was setting widget sets here. As all tabs are the same, this has been omitted.
         self.activatedWidgets &= ~_tabWidgets;
@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         bool filterActive = false;
         FormatArguments args{ widget.textArgs };
 
-        if (isCargoFilterActive(&self, false))
+        if (isCargoFilterActive(self, false))
         {
             filterActive = true;
             if (self.var_88C != -1)
@@ -667,7 +667,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         self.draw(drawingCtx);
-        drawTabs(&self, drawingCtx);
+        drawTabs(self, drawingCtx);
 
         // Draw company owner image.
         auto company = CompanyManager::get(CompanyId(self.number));
@@ -785,19 +785,19 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C24F7
-    static void switchTab(Window* self, VehicleType type)
+    static void switchTab(Window& self, VehicleType type)
     {
-        if (ToolManager::isToolActive(self->type, self->number))
+        if (ToolManager::isToolActive(self.type, self.number))
         {
             ToolManager::toolCancel();
         }
 
         auto tabIndex = static_cast<uint8_t>(type);
-        self->currentTab = tabIndex;
-        self->rowHeight = row_heights[tabIndex];
-        self->frameNo = 0;
+        self.currentTab = tabIndex;
+        self.rowHeight = row_heights[tabIndex];
+        self.frameNo = 0;
 
-        if (CompanyManager::getControllingId() == CompanyId(self->number) && getGameState().lastVehicleType != type)
+        if (CompanyManager::getControllingId() == CompanyId(self.number) && getGameState().lastVehicleType != type)
         {
             getGameState().lastVehicleType = type;
             WindowManager::invalidate(WindowType::topToolbar);
@@ -807,25 +807,25 @@ namespace OpenLoco::Ui::Windows::VehicleList
         // As all tabs are the same, we've simplified this.
 
         disableUnavailableVehicleTypes(self);
-        self->invalidate();
+        self.invalidate();
 
-        if (self->width < 220)
+        if (self.width < 220)
         {
-            self->width = 220;
+            self.width = 220;
         }
 
-        self->rowCount = 0;
+        self.rowCount = 0;
         refreshVehicleList(self);
 
-        self->var_83C = 0;
-        self->rowHover = -1;
+        self.var_83C = 0;
+        self.rowHover = -1;
 
-        self->callOnResize();
-        self->callOnPeriodicUpdate();
-        self->callPrepareDraw();
-        self->initScrollWidgets();
-        self->invalidate();
-        self->moveInsideScreenEdges();
+        self.callOnResize();
+        self.callOnPeriodicUpdate();
+        self.callPrepareDraw();
+        self.initScrollWidgets();
+        self.invalidate();
+        self.moveInsideScreenEdges();
     }
 
     // 0x004C2409
@@ -845,7 +845,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             case Widx::tab_ships:
             {
                 auto vehicleType = VehicleType(widgetIndex - Widx::tab_trains);
-                switchTab(&self, vehicleType);
+                switchTab(self, vehicleType);
                 break;
             }
 
@@ -862,7 +862,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 self.sortMode = sortMode;
                 self.invalidate();
-                refreshVehicleList(&self);
+                refreshVehicleList(self);
                 break;
             }
         }
@@ -921,7 +921,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C243F
-    static void onCompanyDropdown(Ui::Window* self, int16_t itemIndex)
+    static void onCompanyDropdown(Ui::Window& self, int16_t itemIndex)
     {
         if (itemIndex == -1)
         {
@@ -944,28 +944,28 @@ namespace OpenLoco::Ui::Windows::VehicleList
             return;
         }
 
-        self->number = enumValue(companyId);
-        self->owner = companyId;
+        self.number = enumValue(companyId);
+        self.owner = companyId;
 
         disableUnavailableVehicleTypes(self);
 
-        self->rowCount = 0;
+        self.rowCount = 0;
         refreshVehicleList(self);
 
-        self->var_83C = 0;
-        self->rowHover = -1;
+        self.var_83C = 0;
+        self.rowHover = -1;
 
-        self->callOnResize();
-        self->callPrepareDraw();
-        self->initScrollWidgets();
-        self->invalidate();
+        self.callOnResize();
+        self.callPrepareDraw();
+        self.initScrollWidgets();
+        self.invalidate();
     }
 
     static void onDropdown(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
         if (widgetIndex == Widx::company_select)
         {
-            return onCompanyDropdown(&self, itemIndex);
+            return onCompanyDropdown(self, itemIndex);
         }
 
         if (widgetIndex == filter_type_btn && itemIndex != -1)
@@ -1000,9 +1000,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto widgetIndex = getTabFromType(static_cast<VehicleType>(self.currentTab));
         WindowManager::invalidateWidget(WindowType::vehicleList, self.number, widgetIndex);
 
-        updateVehicleList(&self);
-        updateVehicleList(&self);
-        updateVehicleList(&self);
+        // It adds 3 vehicles per update, this is not an accident.
+        updateVehicleList(self);
+        updateVehicleList(self);
+        updateVehicleList(self);
 
         self.invalidate();
     }

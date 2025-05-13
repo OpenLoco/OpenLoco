@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(&self, widgetIndex);
+                Common::switchTab(self, widgetIndex);
                 break;
 
             case widx::checkbox_1:
@@ -114,7 +114,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             case widx::image:
             {
                 ToolManager::toolCancel();
-                ToolManager::toolSet(&self, widgetIndex, CursorId::crosshair);
+                ToolManager::toolSet(self, widgetIndex, CursorId::crosshair);
                 break;
             }
         }
@@ -494,7 +494,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         self.draw(drawingCtx);
-        Common::drawTabs(&self, drawingCtx);
+        Common::drawTabs(self, drawingCtx);
         if (_cState->lastSelectedMods & 0xF)
         {
             auto xPos = self.widgets[widx::image].left + 1;
@@ -550,9 +550,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
     }
 
-    void tabReset(Window* self)
+    void tabReset(Window& self)
     {
-        self->callOnMouseDown(Overhead::widx::image, self->widgets[Overhead::widx::image].id);
+        self.callOnMouseDown(Overhead::widx::image, self.widgets[Overhead::widx::image].id);
     }
 
     static constexpr WindowEventList kEvents = {

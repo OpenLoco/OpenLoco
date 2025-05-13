@@ -96,27 +96,27 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CF194
-    void Widget::drawTab(Window* w, Gfx::DrawingContext& drawingCtx, uint32_t imageId, WidgetIndex_t index)
+    void Widget::drawTab(Window& w, Gfx::DrawingContext& drawingCtx, uint32_t imageId, WidgetIndex_t index)
     {
-        auto widget = &w->widgets[index];
+        auto& widget = w.widgets[index];
 
         Ui::Point pos = {};
-        pos.x = widget->left;
-        pos.y = widget->top;
+        pos.x = widget.left;
+        pos.y = widget.top;
 
-        if (w->isDisabled(index))
+        if (w.isDisabled(index))
         {
             return; // 0x8000
         }
 
         bool isActivated = false;
-        if (w->isActivated(index))
+        if (w.isActivated(index))
         {
             isActivated = true;
         }
         else if (Input::state() == Input::State::widgetPressed)
         {
-            isActivated = Input::isPressed(w->type, w->number, index);
+            isActivated = Input::isPressed(w.type, w.number, index);
         }
 
         if (imageId == kContentNull)
@@ -139,7 +139,7 @@ namespace OpenLoco::Ui
             }
 
             drawingCtx.drawImage(pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
-            drawingCtx.drawRect(pos.x, pos.y + 26, 31, 1, Colours::getShade(w->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
+            drawingCtx.drawRect(pos.x, pos.y + 26, 31, 1, Colours::getShade(w.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
         }
     }
 

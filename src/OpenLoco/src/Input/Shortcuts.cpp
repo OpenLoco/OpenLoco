@@ -601,7 +601,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::Construction::previousTrackPiece(window);
+            Ui::Windows::Construction::Construction::previousTrackPiece(*window);
         }
     }
 
@@ -610,7 +610,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::Construction::nextTrackPiece(window);
+            Ui::Windows::Construction::Construction::nextTrackPiece(*window);
         }
     }
 
@@ -619,7 +619,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::Construction::previousSlope(window);
+            Ui::Windows::Construction::Construction::previousSlope(*window);
         }
     }
 
@@ -628,7 +628,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::Construction::nextSlope(window);
+            Ui::Windows::Construction::Construction::nextSlope(*window);
         }
     }
 
@@ -637,7 +637,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::Construction::buildAtCurrentPos(window);
+            Ui::Windows::Construction::Construction::buildAtCurrentPos(*window);
         }
     }
 
@@ -646,7 +646,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::Construction::removeAtCurrentPos(window);
+            Ui::Windows::Construction::Construction::removeAtCurrentPos(*window);
         }
     }
 
@@ -655,7 +655,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::Construction::selectPosition(window);
+            Ui::Windows::Construction::Construction::selectPosition(*window);
         }
     }
 
