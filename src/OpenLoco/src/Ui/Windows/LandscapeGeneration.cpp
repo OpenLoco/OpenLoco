@@ -92,11 +92,36 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             if (Scenario::getOptions().madeAnyChanges)
             {
-                LandscapeGenerationConfirm::open(promptType);
+                //LandscapeGenerationConfirm::open(promptType);
+
+                StringId titleId;
+                FormatArguments args{};
+                if (promptType == 0)
+                {
+                    titleId = StringIds::title_generate_new_landscape;
+                    args.push(StringIds::prompt_confirm_generate_landscape);
+                }
+                else
+                {
+                    titleId = StringIds::title_random_landscape_option;
+                    args.push(StringIds::prompt_confirm_random_landscape);
+                }
+
+                if (Windows::PromptOkCancel::open(titleId, StringIds::stringid, args, StringIds::label_ok))
+                {
+                    if (promptType == 0)
+                    {
+                        Scenario::generateLandscape();
+                    }
+                    else
+                    {
+                        Scenario::eraseLandscape();
+                    }
+                }
             }
             else
             {
-                WindowManager::close(WindowType::landscapeGenerationConfirm, 0);
+                WindowManager::close(WindowType::confirmationPrompt, 0);
 
                 if (promptType == 0)
                 {
