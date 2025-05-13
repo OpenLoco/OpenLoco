@@ -20,6 +20,7 @@
 #include <SDL2/SDL.h>
 #include <cstdint>
 #include <functional>
+#include <Localisation/Unicode.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -168,11 +169,13 @@ namespace OpenLoco::Input
 
     void enqueueText(const char* text)
     {
-        if (text != nullptr && text[0] != '\0')
+        if (text == nullptr || text[0] == '\0')
         {
-            uint32_t index = _keyQueueLastWrite;
-            _keyQueue[index].charCode = text[0];
+            return;
         }
+
+        uint32_t index = _keyQueueLastWrite;
+        _keyQueue[index].charCode = Localisation::readCodePoint((unsigned char**)&text);
     }
 
     // 0x00407028
