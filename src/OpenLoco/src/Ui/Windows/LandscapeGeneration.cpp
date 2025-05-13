@@ -92,8 +92,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             if (Scenario::getOptions().madeAnyChanges)
             {
-                //LandscapeGenerationConfirm::open(promptType);
-
+                // 'Are you sure?' confirmation prompt
                 StringId titleId;
                 FormatArguments args{};
                 if (promptType == 0)
@@ -106,31 +105,20 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     titleId = StringIds::title_random_landscape_option;
                     args.push(StringIds::prompt_confirm_random_landscape);
                 }
-
-                if (Windows::PromptOkCancel::open(titleId, StringIds::stringid, args, StringIds::label_ok))
+                if (!Windows::PromptOkCancel::open(titleId, StringIds::stringid, args, StringIds::label_ok))
                 {
-                    if (promptType == 0)
-                    {
-                        Scenario::generateLandscape();
-                    }
-                    else
-                    {
-                        Scenario::eraseLandscape();
-                    }
+                    return;
                 }
+            }
+
+            // Reset the landscape
+            if (promptType == 0)
+            {
+                Scenario::generateLandscape();
             }
             else
             {
-                WindowManager::close(WindowType::confirmationPrompt, 0);
-
-                if (promptType == 0)
-                {
-                    Scenario::generateLandscape();
-                }
-                else
-                {
-                    Scenario::eraseLandscape();
-                }
+                Scenario::eraseLandscape();
             }
         }
 
