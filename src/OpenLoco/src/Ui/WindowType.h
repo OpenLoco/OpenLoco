@@ -51,7 +51,7 @@ namespace OpenLoco::Ui
         musicSelection = 41,
         companyFaceSelection = 42,
         landscapeGeneration = 43,
-        landscapeGenerationConfirm = 44,
+        // 44 was landscapeGenerationConfirm, which is no longer used
         scenarioOptions = 45,
 
         progressBar = 47,
