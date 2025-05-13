@@ -1000,7 +1000,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto widgetIndex = getTabFromType(static_cast<VehicleType>(self.currentTab));
         WindowManager::invalidateWidget(WindowType::vehicleList, self.number, widgetIndex);
 
-        // Why is this called 3 times? Accident? What?!
+        // It adds 3 vehicles per update, this is not an accident.
         updateVehicleList(self);
         updateVehicleList(self);
         updateVehicleList(self);
