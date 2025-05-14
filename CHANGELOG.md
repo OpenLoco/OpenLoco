@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#3087] Allow replacing existing station elements directly in the station construction tool.
 - Change: [#3095] The Tile Inspector can now be accessed in the Scenario Editor when the cheats menu is enabled.
+- Change: [#3104] The confirmation prompt to generate a new landscape in the Scenario Editor now prevents you from clicking other windows until you make a choice.
 - Fix: [#3092] Drag selection area is not correctly removed after dragging station elements.
 - Fix: [#3096] Buildings are removed over time in the scenario editor (original bug).
 
