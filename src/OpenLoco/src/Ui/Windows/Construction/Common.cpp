@@ -520,10 +520,37 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A6E2B
+    // Update available road and rail for player company
     void updateAvailableRoadAndRailOptions()
     {
-        // update available road and rail for player company
-        call(0x004A6E2B);
+        auto playerCompanyId = CompanyManager::getControllingId(); // 004A6E2B
+        auto previousUpdatingId = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(playerCompanyId); // 004A6E30
+
+        if (getGameState().lastRoadOption == 0xFF) // 004A6E37-004A6E3E
+        {
+            uint8_t lastRoadOption = getGameState().lastTrackTypeOption; // 004A6E40
+            if (lastRoadOption == 0xFF)                                  // 004A6E45-004A6E47
+            {
+                const auto availableObjects = companyGetAvailableRoads(playerCompanyId); // 004A6E52 (we skip 004A6E4D, copying to global buffer)
+                lastRoadOption = availableObjects[0];                                    // 004A6E57
+            }
+            else
+            {
+                lastRoadOption |= 1 << 7; // 004A6E49-004A6E4B
+            }
+            getGameState().lastRoadOption = lastRoadOption;           // 004A6E5C
+            WindowManager::invalidate(Ui::WindowType::topToolbar, 0); // 004A6E5C-004A6E67
+        }
+
+        if (getGameState().lastRailroadOption == 0xFF) // 004A6E6C-004A6E73
+        {
+            const auto availableObjects = companyGetAvailableRailTracks(playerCompanyId); // 004A6E75 (we skip 004A6E75, copying to global buffer)
+            getGameState().lastRailroadOption = availableObjects[0];                      // 004A6E7F-004A6E84
+            WindowManager::invalidate(Ui::WindowType::topToolbar, 0);                     // 004A6E89-004A6E8F
+        }
+
+        GameCommands::setUpdatingCompanyId(previousUpdatingId); // 004A6E95
     }
 
     // 0x004A6E9B
