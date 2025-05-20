@@ -16,14 +16,14 @@ namespace OpenLoco::Paint::Style1
 
     consteval RoadPaintPiece rotateRoadPP(const RoadPaintPiece& reference, const std::array<uint8_t, 4>& rotationTable)
     {
-        return RoadPaintPiece{
-            std::array<std::array<uint32_t, 3>, 4>{
-                reference.imageIndexOffsets[rotationTable[0]],
-                reference.imageIndexOffsets[rotationTable[1]],
-                reference.imageIndexOffsets[rotationTable[2]],
-                reference.imageIndexOffsets[rotationTable[3]],
-            }
+        // MSVC 14.44.35207 will ICE if we don't create a temporary array here
+        const auto intermediateArray = std::array<std::array<uint32_t, 3>, 4>{
+            reference.imageIndexOffsets[rotationTable[0]],
+            reference.imageIndexOffsets[rotationTable[1]],
+            reference.imageIndexOffsets[rotationTable[2]],
+            reference.imageIndexOffsets[rotationTable[3]],
         };
+        return RoadPaintPiece{ intermediateArray };
     }
 
     // 0x0040D9AD, 0x0040DADE, 0x0040D9AD, 0x0040DADE
