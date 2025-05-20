@@ -51,6 +51,18 @@ namespace OpenLoco
 
     struct ColourScheme
     {
+        ColourScheme() = default;
+        ColourScheme(Colour primary, Colour secondary)
+            : primary(primary)
+            , secondary(secondary)
+        {
+        }
+        ColourScheme(uint16_t val)
+            : primary(Colour(val & 0x1F))
+            , secondary(Colour((val >> 8) & 0x1F))
+        {
+        }
+
         Colour primary;
         Colour secondary;
     };
