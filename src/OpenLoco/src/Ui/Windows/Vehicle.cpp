@@ -1710,7 +1710,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void paintToolDown(Window& self, const int16_t x, const int16_t y)
         {
-            auto* head = Common::getVehicle(&self);
+            auto* head = Common::getVehicle(self);
             if (head == nullptr)
             {
                 return;
@@ -1794,7 +1794,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void paintToolBegin(Window& self)
         {
-            bool active = ToolManager::toolSet(&self, widx::paintBrush, CursorId::brush);
+            bool active = ToolManager::toolSet(self, widx::paintBrush, CursorId::brush);
             self.activatedWidgets &= ~(1U << widx::paintBrushProxy);
             self.activatedWidgets |= (1U << widx::paintBrushProxy) * active;
             self.invalidate();
