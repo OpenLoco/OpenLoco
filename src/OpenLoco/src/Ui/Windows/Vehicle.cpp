@@ -4897,7 +4897,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.viewportRemove(0);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tabMain];
-
             self.holdableWidgets = *tabInfo.holdableWidgets;
             self.eventHandlers = &tabInfo.events;
             self.activatedWidgets = 0;
@@ -4913,13 +4912,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.initScrollWidgets();
             self.invalidate();
             self.moveInsideScreenEdges();
+
             if (widgetIndex == Common::tabDetails)
             {
                 auto company = CompanyManager::get(self.owner);
                 self.widgets[Details::widx::paintColourPrimary].image = Widget::kImageIdColourSet | ImageId::fromUInt32(ImageIds::colour_swatch_recolourable).withPrimary(company->mainColours.primary).toUInt32();
                 self.widgets[Details::widx::paintColourSecondary].image = Widget::kImageIdColourSet | ImageId::fromUInt32(ImageIds::colour_swatch_recolourable).withPrimary(company->mainColours.secondary).toUInt32();
             }
-
         }
 
         // 0x004B1E94
