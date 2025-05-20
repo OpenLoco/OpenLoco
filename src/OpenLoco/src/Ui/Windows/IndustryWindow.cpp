@@ -68,10 +68,10 @@ namespace OpenLoco::Ui::Windows::Industry
         static void prepareDraw(Window& self);
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
         static void update(Window& self);
-        static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex);
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
-        static void setDisabledWidgets(Window* self);
+        static void renameIndustryPrompt(Window& self, WidgetIndex_t widgetIndex);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
+        static void setDisabledWidgets(Window& self);
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx);
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id);
     }
@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
             auto industry = IndustryManager::get(IndustryId(self.number));
@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::Industry
             args.push(StringIds::buffer_1250);
 
             auto widget = &self.widgets[widx::status_bar];
-            auto point = Point(self.x + widget->left - 1, self.y + widget->top - 1);
+            auto point = Point(widget->left - 1, widget->top - 1);
             auto width = widget->width();
             tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
         }
@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::Industry
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameIndustryPrompt(&self, widgetIndex);
+                    Common::renameIndustryPrompt(self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
@@ -172,7 +172,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 case Common::widx::tab_production:
                 case Common::widx::tab_production_2:
                 case Common::widx::tab_transported:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 // 0x00455EA2
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 auto widget = &self.widgets[widx::viewport];
                 auto tile = World::Pos3({ industry->x, industry->y, tileZ });
-                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
+                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
                 self.invalidate();
@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::Industry
         window->eventHandlers = &Industry::getEvents();
         window->activatedWidgets = 0;
 
-        Common::setDisabledWidgets(window);
+        Common::setDisabledWidgets(*window);
 
         window->initScrollWidgets();
         Industry::initViewport(*window);
@@ -463,11 +463,11 @@ namespace OpenLoco::Ui::Windows::Industry
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto industry = IndustryManager::get(IndustryId(self.number));
             const auto* industryObj = industry->getObject();
-            auto origin = Point(self.x + 3, self.y + 45);
+            auto origin = Point(3, 45);
 
             // Draw Last Months received cargo stats
             if (industry->canReceiveCargo())
@@ -574,9 +574,9 @@ namespace OpenLoco::Ui::Windows::Industry
             { Transported::widgets, widx::tab_transported, Transported::getEvents() }
         };
 
-        static void setDisabledWidgets(Window* self)
+        static void setDisabledWidgets(Window& self)
         {
-            auto industryObj = ObjectManager::get<IndustryObject>(IndustryManager::get(IndustryId(self->number))->objectId);
+            auto industryObj = ObjectManager::get<IndustryObject>(IndustryManager::get(IndustryId(self.number))->objectId);
             auto disabledWidgets = 0;
 
             if (industryObj->producedCargoType[0] == kCargoTypeNull)
@@ -589,7 +589,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 disabledWidgets |= (1 << Common::widx::tab_production_2);
             }
 
-            self->disabledWidgets = disabledWidgets;
+            self.disabledWidgets = disabledWidgets;
         }
 
         // 0x00456079
@@ -598,7 +598,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             // Draw Units of Cargo sub title
             const auto industry = IndustryManager::get(IndustryId(self.number));
@@ -609,21 +609,21 @@ namespace OpenLoco::Ui::Windows::Industry
                 FormatArguments args{};
                 args.push(cargoObj->unitsAndCargoName);
 
-                auto point = Point(self.x + 2, self.y - 24 + 68);
+                auto point = Point(2, 44);
                 tr.drawStringLeft(point, Colour::black, StringIds::production_graph_label, args);
             }
 
             // Draw Y label and grid lines.
-            const uint16_t graphBottom = self.y + self.height - 7;
+            const uint16_t graphBottom = self.height - 7;
             int32_t yTick = 0;
-            for (int16_t yPos = graphBottom; yPos >= self.y + 68; yPos -= 20)
+            for (int16_t yPos = graphBottom; yPos >= 68; yPos -= 20)
             {
                 FormatArguments args{};
                 args.push(yTick);
 
-                drawingCtx.drawRect(self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
+                drawingCtx.drawRect(41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
 
-                auto point = Point(self.x + 39, yPos - 6);
+                auto point = Point(39, yPos - 6);
                 tr.drawStringRight(point, Colour::black, StringIds::population_graph_people, args);
 
                 yTick += 1000;
@@ -638,8 +638,8 @@ namespace OpenLoco::Ui::Windows::Industry
             const uint8_t productionNum = productionTabWidx - widx::tab_production;
             for (uint8_t i = industry->producedCargoMonthlyHistorySize[productionNum] - 1; i > 0; i--)
             {
-                const uint16_t xPos = self.x + 41 + i;
-                const uint16_t yPos = self.y + 56;
+                const uint16_t xPos = 41 + i;
+                const uint16_t yPos = 56;
 
                 // Draw horizontal year and vertical grid lines.
                 if (month == MonthId::january)
@@ -697,7 +697,7 @@ namespace OpenLoco::Ui::Windows::Industry
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameIndustryPrompt(&self, widgetIndex);
+                    Common::renameIndustryPrompt(self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
@@ -708,7 +708,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 case Common::widx::tab_production:
                 case Common::widx::tab_production_2:
                 case Common::widx::tab_transported:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -779,9 +779,9 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00455D81
-        static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex)
+        static void renameIndustryPrompt(Window& self, WidgetIndex_t widgetIndex)
         {
-            auto industry = IndustryManager::get(IndustryId(self->number));
+            auto industry = IndustryManager::get(IndustryId(self.number));
             if (!SceneManager::isEditorMode() && !SceneManager::isSandboxMode())
             {
                 if (!industry->hasFlags(IndustryFlags::flag_04))
@@ -799,46 +799,46 @@ namespace OpenLoco::Ui::Windows::Industry
             args.push(industry->name);
             args.push(industry->town);
 
-            TextInput::openTextInput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
+            TextInput::openTextInput(&self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
         }
 
         // 0x00455CC7
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (ToolManager::isToolActive(self->type, self->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            TextInput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self.type, self.number);
 
-            self->currentTab = widgetIndex - widx::tab_industry;
-            self->frameNo = 0;
-            self->flags &= ~(WindowFlags::flag_16);
-            self->var_85C = -1;
+            self.currentTab = widgetIndex - widx::tab_industry;
+            self.frameNo = 0;
+            self.flags &= ~(WindowFlags::flag_16);
+            self.var_85C = -1;
 
-            self->viewportRemove(0);
+            self.viewportRemove(0);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry];
 
-            self->holdableWidgets = 0;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
+            self.holdableWidgets = 0;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
 
             Common::setDisabledWidgets(self);
 
-            self->invalidate();
+            self.invalidate();
 
-            self->setSize(Industry::kWindowSize);
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.setSize(Industry::kWindowSize);
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
 
-        static void drawProductionTab(Window* self, Gfx::DrawingContext& drawingCtx, uint8_t productionTabNumber)
+        static void drawProductionTab(Window& self, Gfx::DrawingContext& drawingCtx, uint8_t productionTabNumber)
         {
             static constexpr uint32_t productionTabImageIds[] = {
                 InterfaceSkin::ImageIds::tab_production_frame0,
@@ -851,7 +851,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 InterfaceSkin::ImageIds::tab_production_frame7,
             };
 
-            auto industry = IndustryManager::get(IndustryId(self->number));
+            auto industry = IndustryManager::get(IndustryId(self.number));
             auto industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -863,23 +863,23 @@ namespace OpenLoco::Ui::Windows::Industry
             auto tab = productionTabIds[productionTabNumber];
 
             uint32_t imageId = 0xFFFFFFFF;
-            auto widget = self->widgets[tab];
+            auto widget = self.widgets[tab];
 
             if (industryObj->producedCargoType[productionTabNumber] != kCargoTypeNull)
             {
-                imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
+                imageId = Gfx::recolour(skin->img, self.getColour(WindowColour::secondary).c());
 
-                if (self->currentTab == tab - widx::tab_industry)
+                if (self.currentTab == tab - widx::tab_industry)
                 {
-                    imageId += productionTabImageIds[(self->frameNo / 4) % std::size(productionTabImageIds)];
+                    imageId += productionTabImageIds[(self.frameNo / 4) % std::size(productionTabImageIds)];
                 }
                 else
                 {
                     imageId += productionTabImageIds[0];
                 }
 
-                auto xPos = widget.left + self->x;
-                auto yPos = widget.top + self->y;
+                auto xPos = widget.left;
+                auto yPos = widget.top;
                 drawingCtx.drawImage(xPos, yPos, imageId);
 
                 auto caroObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[productionTabNumber]);
@@ -890,7 +890,7 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00456A98
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -924,9 +924,9 @@ namespace OpenLoco::Ui::Windows::Industry
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_transported - widx::tab_industry)
+                if (self.currentTab == widx::tab_transported - widx::tab_industry)
                 {
-                    imageId += transportedTabImageIds[(self->frameNo / 4) % std::size(transportedTabImageIds)];
+                    imageId += transportedTabImageIds[(self.frameNo / 4) % std::size(transportedTabImageIds)];
                 }
                 else
                 {

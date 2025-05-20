@@ -47,8 +47,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         if (!self.widgets[Widx::road_menu].hidden && lastRoadOption != 0xFF)
         {
-            uint32_t x = self.widgets[Widx::road_menu].left + self.x;
-            uint32_t y = self.widgets[Widx::road_menu].top + self.y;
+            uint32_t x = self.widgets[Widx::road_menu].left;
+            uint32_t y = self.widgets[Widx::road_menu].top;
             uint32_t fgImage = 0;
 
             // Figure out what icon to show on the button face.
@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             drawingCtx.drawImage(x, y, fgImage);
 
-            y = self.widgets[Widx::road_menu].top + self.y;
+            y = self.widgets[Widx::road_menu].top;
             drawingCtx.drawImage(x, y, bgImage);
         }
     }

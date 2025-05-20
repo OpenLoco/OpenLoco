@@ -107,8 +107,8 @@ namespace OpenLoco::Ui::Windows::Station
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
         static void update(Window& self);
         static void renameStationPrompt(Window* self, WidgetIndex_t widgetIndex);
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
+        static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
         static void enableRenameByCaption(Window* self);
     }
 
@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::Windows::Station
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto station = StationManager::get(StationId(self.number));
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
@@ -169,7 +169,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             const auto& widget = self.widgets[widx::status_bar];
             const auto width = widget.width() - 1;
-            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
+            auto point = Point(widget.left - 1, widget.top - 1);
             tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
         }
 
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 auto widget = &self.widgets[widx::viewport];
                 auto tile = World::Pos3({ station->x, station->y, station->z });
-                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
+                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
                 self.invalidate();
@@ -406,7 +406,7 @@ namespace OpenLoco::Ui::Windows::Station
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
 
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             buffer = StringManager::formatString(buffer, StringIds::accepted_cargo_separator);
@@ -440,7 +440,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             const auto& widget = self.widgets[widx::status_bar];
             const auto width = widget.width();
-            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
+            auto point = Point(widget.left - 1, widget.top - 1);
 
             tr.drawStringLeftClipped(point, width, Colour::black, StringIds::buffer_1250);
         }
@@ -661,7 +661,7 @@ namespace OpenLoco::Ui::Windows::Station
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         // 0x0048EE97
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Ui::Windows::Station
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
@@ -1299,7 +1299,7 @@ namespace OpenLoco::Ui::Windows::Station
                 case widx::tab_vehicles_trams:
                 case widx::tab_vehicles_aircraft:
                 case widx::tab_vehicles_ships:
-                    switchTab(&self, widgetIndex);
+                    switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -1396,58 +1396,58 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E520
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex != widx::tab_cargo)
             {
-                if (StationId(self->number) == _lastSelectedStation)
+                if (StationId(self.number) == _lastSelectedStation)
                 {
                     showStationCatchment(StationId::null);
                 }
             }
 
-            if (ToolManager::isToolActive(self->type, self->number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 ToolManager::toolCancel();
             }
 
-            TextInput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self.type, self.number);
 
-            self->currentTab = widgetIndex - widx::tab_station;
-            self->frameNo = 0;
-            self->flags &= ~(WindowFlags::flag_16);
-            self->var_85C = -1;
+            self.currentTab = widgetIndex - widx::tab_station;
+            self.frameNo = 0;
+            self.flags &= ~(WindowFlags::flag_16);
+            self.var_85C = -1;
 
-            self->viewportRemove(0);
+            self.viewportRemove(0);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_station];
 
-            self->holdableWidgets = 0;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
-            self->disabledWidgets = 0;
-            self->rowHeight = tabInfo.rowHeight;
+            self.holdableWidgets = 0;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
+            self.disabledWidgets = 0;
+            self.rowHeight = tabInfo.rowHeight;
 
             // We'll need the vehicle list to determine what vehicle tabs to show
-            VehiclesStopping::refreshVehicleList(self);
-            self->rowCount = 0;
-            self->var_83C = 0;
-            self->rowHover = -1;
+            VehiclesStopping::refreshVehicleList(&self);
+            self.rowCount = 0;
+            self.var_83C = 0;
+            self.rowHover = -1;
 
-            self->invalidate();
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.invalidate();
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
 
         // 0x0048EFBC
-        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+        void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
             auto companyColour = CompanyManager::getCompanyColour(station->owner);
 
             // Station tab
@@ -1467,9 +1467,9 @@ namespace OpenLoco::Ui::Windows::Station
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tab_cargo - widx::tab_station)
+                if (self.currentTab == widx::tab_cargo - widx::tab_station)
                 {
-                    imageId += cargoTabImageIds[(self->frameNo / 8) % std::size(cargoTabImageIds)];
+                    imageId += cargoTabImageIds[(self.frameNo / 8) % std::size(cargoTabImageIds)];
                 }
                 else
                 {
@@ -1484,9 +1484,9 @@ namespace OpenLoco::Ui::Windows::Station
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_cargo_ratings;
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_cargo_ratings);
 
-                auto widget = self->widgets[widx::tab_cargo_ratings];
-                auto yOffset = widget.top + self->y + 14;
-                auto xOffset = widget.left + self->x + 4;
+                auto widget = self.widgets[widx::tab_cargo_ratings];
+                auto yOffset = widget.top + 14;
+                auto xOffset = widget.left + 4;
                 auto totalRatingBars = 0;
 
                 for (const auto& cargoStats : station->cargoStats)
@@ -1586,13 +1586,13 @@ namespace OpenLoco::Ui::Windows::Station
 
             for (auto [tab, frames] : kTabAnimations)
             {
-                if (self->isDisabled(tab))
+                if (self.isDisabled(tab))
                 {
                     continue;
                 }
 
-                auto isActive = tab == self->currentTab + Common::widx::tab_station;
-                auto imageId = isActive ? frames[self->frameNo / 2 % 8] : frames[0];
+                auto isActive = tab == self.currentTab + Common::widx::tab_station;
+                auto imageId = isActive ? frames[self.frameNo / 2 % 8] : frames[0];
 
                 uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
                 Widget::drawTab(self, drawingCtx, image, tab);

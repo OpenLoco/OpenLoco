@@ -11,7 +11,7 @@ namespace OpenLoco::ToolManager
 
     bool isToolActive(Ui::WindowType, Ui::WindowNumber_t);
     bool isToolActive(Ui::WindowType, Ui::WindowNumber_t, int16_t);
-    bool toolSet(Ui::Window* w, int16_t widgetIndex, Ui::CursorId cursorId);
+    bool toolSet(const Ui::Window& w, int16_t widgetIndex, Ui::CursorId cursorId);
     void toolCancel();
     void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
 

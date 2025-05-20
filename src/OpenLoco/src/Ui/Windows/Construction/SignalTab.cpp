@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(&self, widgetIndex);
+                Common::switchTab(self, widgetIndex);
                 break;
         }
     }
@@ -73,8 +73,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 }
 
                 auto widget = self.widgets[widx::signal];
-                auto xPos = widget.left + self.x;
-                auto yPos = widget.top + self.y;
+                auto xPos = self.x + widget.left;
+                auto yPos = self.y + widget.top;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _cState->isSignalBothDirections = 1;
                 ToolManager::toolCancel();
-                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
 
@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _cState->isSignalBothDirections = 0;
                 ToolManager::toolCancel();
-                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
         }
@@ -316,12 +316,12 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         self.draw(drawingCtx);
-        Common::drawTabs(&self, drawingCtx);
+        Common::drawTabs(self, drawingCtx);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_cState->lastSelectedSignal);
 
-        auto xPos = self.x + 3;
-        auto yPos = self.y + 63;
+        auto xPos = 3;
+        auto yPos = 63;
         auto width = 130;
 
         {
@@ -334,15 +334,15 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto imageId = trainSignalObject->image;
 
-        xPos = self.widgets[widx::both_directions].midX() + self.x;
-        yPos = self.widgets[widx::both_directions].bottom + self.y - 4;
+        xPos = self.widgets[widx::both_directions].midX();
+        yPos = self.widgets[widx::both_directions].bottom - 4;
 
         drawingCtx.drawImage(xPos - 8, yPos, imageId);
 
         drawingCtx.drawImage(xPos + 8, yPos, imageId + 4);
 
-        xPos = self.widgets[widx::single_direction].midX() + self.x;
-        yPos = self.widgets[widx::single_direction].bottom + self.y - 4;
+        xPos = self.widgets[widx::single_direction].midX();
+        yPos = self.widgets[widx::single_direction].bottom - 4;
 
         drawingCtx.drawImage(xPos, yPos, imageId);
 
@@ -351,14 +351,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             FormatArguments args{};
             args.push<uint32_t>(_cState->signalCost);
 
-            auto point = Point(self.x + 69, self.widgets[widx::single_direction].bottom + self.y + 5);
+            auto point = Point(69, self.widgets[widx::single_direction].bottom + 5);
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
     }
 
-    void tabReset(Window* self)
+    void tabReset(Window& self)
     {
-        self->callOnMouseDown(Signal::widx::both_directions, self->widgets[Signal::widx::both_directions].id);
+        self.callOnMouseDown(Signal::widx::both_directions, self.widgets[Signal::widx::both_directions].id);
     }
 
     static constexpr WindowEventList kEvents = {

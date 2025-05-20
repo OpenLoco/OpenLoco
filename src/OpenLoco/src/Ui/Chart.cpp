@@ -65,7 +65,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CFA49
-    static void graphDrawAxesAndLabels(const GraphSettings& gs, Window* self, Gfx::DrawingContext& drawingCtx)
+    static void graphDrawAxesAndLabels(const GraphSettings& gs, Window& self, Gfx::DrawingContext& drawingCtx)
     {
         auto xAxisLabelValue = gs.xAxisRange;
         if ((gs.flags & GraphFlags::dataFrontToBack) != GraphFlags::none)
@@ -83,7 +83,7 @@ namespace OpenLoco::Ui
                 auto xPos = xTickPos * gs.xAxisTickIncrement + gs.left + gs.xOffset;
                 auto height = gs.canvasHeight + (remainder == 0 ? 3 : 0);
 
-                auto colour = self->getColour(WindowColour::secondary).c();
+                auto colour = self.getColour(WindowColour::secondary).c();
                 auto paletteIndex = Colours::getShade(colour, remainder == 0 ? 6 : 4);
 
                 drawingCtx.drawRect(xPos, gs.top, 1, height, paletteIndex, Gfx::RectFlags::none);
@@ -112,7 +112,7 @@ namespace OpenLoco::Ui
         {
             // Draw horizontal lines for each of the vertical axis labels
             {
-                auto colour = self->getColour(WindowColour::secondary).c();
+                auto colour = self.getColour(WindowColour::secondary).c();
                 auto paletteIndex = Colours::getShade(colour, 6);
 
                 auto xPos = gs.left + gs.xOffset - 2;
@@ -244,7 +244,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CF824
-    void drawGraph(GraphSettings& gs, Window* self, Gfx::DrawingContext& drawingCtx)
+    void drawGraph(GraphSettings& gs, Window& self, Gfx::DrawingContext& drawingCtx)
     {
         gs.canvasLeft = gs.xOffset + gs.left;
         gs.canvasHeight = gs.height - gs.yOffset;

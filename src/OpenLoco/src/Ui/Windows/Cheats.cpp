@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab));
         }
 
-        static void drawTabs(Ui::Window* const self, Gfx::DrawingContext& drawingCtx)
+        static void drawTabs(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -94,9 +94,9 @@ namespace OpenLoco::Ui::Windows::Cheats
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == Widx::tab_finances - Widx::tab_finances)
+                if (self.currentTab == Widx::tab_finances - Widx::tab_finances)
                 {
-                    imageId += financesTabImageIds[(self->frameNo / 2) % std::size(financesTabImageIds)];
+                    imageId += financesTabImageIds[(self.frameNo / 2) % std::size(financesTabImageIds)];
                 }
                 else
                 {
@@ -126,9 +126,9 @@ namespace OpenLoco::Ui::Windows::Cheats
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == Widx::tab_vehicles - Widx::tab_finances)
+                if (self.currentTab == Widx::tab_vehicles - Widx::tab_finances)
                 {
-                    imageId += vehiclesTabImageIds[(self->frameNo / 2) % std::size(vehiclesTabImageIds)];
+                    imageId += vehiclesTabImageIds[(self.frameNo / 2) % std::size(vehiclesTabImageIds)];
                 }
                 else
                 {
@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
     }
 
     namespace Finances
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             // Draw widgets and tabs.
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
@@ -285,7 +285,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case Widx::cash_step_apply:
@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             // Draw widgets and tabs.
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case Widx::acquire_company_assets_button:
@@ -668,7 +668,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             // Draw widgets and tabs.
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
@@ -683,7 +683,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case Widx::reliablity_all_to_zero:
@@ -799,7 +799,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             // Draw widgets and tabs.
             self.draw(drawingCtx);
-            Common::drawTabs(&self, drawingCtx);
+            Common::drawTabs(self, drawingCtx);
         }
 
         static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
@@ -814,7 +814,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(&self, widgetIndex);
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case Widx::ratings_all_min_10pct:
@@ -935,27 +935,27 @@ namespace OpenLoco::Ui::Windows::Cheats
         };
         // clang-format on
 
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            self->currentTab = widgetIndex - Widx::tab_finances;
-            self->frameNo = 0;
+            self.currentTab = widgetIndex - Widx::tab_finances;
+            self.frameNo = 0;
 
-            auto tabInfo = tabInformationByTabOffset[self->currentTab];
+            auto tabInfo = tabInformationByTabOffset[self.currentTab];
 
-            self->holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
-            self->eventHandlers = &tabInfo.events;
-            self->activatedWidgets = 0;
-            self->setWidgets(tabInfo.widgets);
-            self->disabledWidgets = 0;
+            self.holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
+            self.eventHandlers = &tabInfo.events;
+            self.activatedWidgets = 0;
+            self.setWidgets(tabInfo.widgets);
+            self.disabledWidgets = 0;
 
-            self->invalidate();
+            self.invalidate();
 
-            self->setSize(tabInfo.kWindowSize);
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.setSize(tabInfo.kWindowSize);
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
     }
 }

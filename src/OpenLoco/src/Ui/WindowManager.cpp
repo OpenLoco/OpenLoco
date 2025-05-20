@@ -1320,7 +1320,21 @@ namespace OpenLoco::Ui::WindowManager
         setWindowColours(WindowColour::tertiary, w->getColour(WindowColour::tertiary).opaque());
         setWindowColours(WindowColour::quaternary, w->getColour(WindowColour::quaternary).opaque());
 
-        drawingCtx.pushRenderTarget(rt);
+        // Clip render target to window rect.
+        const auto windowRect = Ui::Rect{
+            w->x,
+            w->y,
+            w->width,
+            w->height,
+        };
+
+        auto windowRT = Gfx::clipRenderTarget(rt, windowRect);
+        if (!windowRT.has_value())
+        {
+            return;
+        }
+
+        drawingCtx.pushRenderTarget(*windowRT);
 
         w->callPrepareDraw();
         w->callDraw(drawingCtx);
@@ -1426,26 +1440,11 @@ namespace OpenLoco::Ui::WindowManager
             if (extendsX || extendsY)
             {
                 // Calculate the new locations
-                int16_t oldX = w.x;
-                int16_t oldY = w.y;
                 w.x = newLocation;
                 w.y = newLocation + 28;
 
                 // Move the next new location so windows are not directly on top
                 newLocation += 8;
-
-                // Adjust the viewports if required.
-                if (w.viewports[0] != nullptr)
-                {
-                    w.viewports[0]->x -= oldX - w.x;
-                    w.viewports[0]->y -= oldY - w.y;
-                }
-
-                if (w.viewports[1] != nullptr)
-                {
-                    w.viewports[1]->x -= oldX - w.x;
-                    w.viewports[1]->y -= oldY - w.y;
-                }
             }
         }
     }
@@ -1502,16 +1501,6 @@ namespace OpenLoco::Ui::WindowManager
                 int dY = bottom + 3 - w.y;
                 w.y += dY;
                 w.invalidate();
-
-                if (w.viewports[0] != nullptr)
-                {
-                    w.viewports[0]->y += dY;
-                }
-
-                if (w.viewports[1] != nullptr)
-                {
-                    w.viewports[1]->y += dY;
-                }
             }
         }
     }
@@ -1599,7 +1588,7 @@ namespace OpenLoco::Ui::WindowManager
             scroll->contentOffsetX = std::clamp(scroll->contentOffsetX + wheel, 0, size);
         }
 
-        Ui::ScrollView::updateThumbs(&window, widgetIndex);
+        Ui::ScrollView::updateThumbs(window, widgetIndex);
         invalidateWidget(window.type, window.number, widgetIndex);
     }
 

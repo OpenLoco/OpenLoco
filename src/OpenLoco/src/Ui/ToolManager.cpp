@@ -60,11 +60,11 @@ namespace OpenLoco::ToolManager
     // tool (al)
     // widgetIndex (dx)
     // w (esi)
-    bool toolSet(Ui::Window* w, int16_t widgetIndex, CursorId cursorId)
+    bool toolSet(const Ui::Window& w, int16_t widgetIndex, CursorId cursorId)
     {
         if (Input::hasFlag(Input::Flags::toolActive))
         {
-            if (w->type == _toolWindowType && w->number == _toolWindowNumber && widgetIndex == _toolWidgetIndex)
+            if (w.type == _toolWindowType && w.number == _toolWindowNumber && widgetIndex == _toolWidgetIndex)
             {
                 toolCancel();
                 return false;
@@ -78,8 +78,8 @@ namespace OpenLoco::ToolManager
         Input::setFlag(Input::Flags::toolActive);
         Input::resetFlag(Input::Flags::flag6);
         ToolManager::setToolCursor(cursorId);
-        ToolManager::setToolWindowType(w->type);
-        ToolManager::setToolWindowNumber(w->number);
+        ToolManager::setToolWindowType(w.type);
+        ToolManager::setToolWindowNumber(w.number);
         ToolManager::setToolWidgetIndex(widgetIndex);
         return true;
     }

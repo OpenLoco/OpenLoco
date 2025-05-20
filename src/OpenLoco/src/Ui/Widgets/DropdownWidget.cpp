@@ -26,9 +26,7 @@ namespace OpenLoco::Ui::Widgets
             colour = colour.FD();
         }
 
-        auto* window = widgetStated.window;
-
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
         const auto size = widget.size();
 
         auto tr = Gfx::TextRenderer(drawingCtx);
@@ -39,9 +37,7 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CB164
     void ComboBox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        const auto* window = widgetState.window;
-
-        const auto pos = window->position() + widget.position();
+        const auto pos = widget.position();
         const auto size = widget.size();
 
         const auto flags = widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker;

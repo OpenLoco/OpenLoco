@@ -1203,7 +1203,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D0E0
-    static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
+    static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -1223,7 +1223,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         // tabVehicles,
         {
-            if (!(self->disabledWidgets & (1 << widx::tabVehicles)))
+            if (!(self.disabledWidgets & (1 << widx::tabVehicles)))
             {
                 static constexpr uint32_t vehicleImageIds[] = {
                     InterfaceSkin::ImageIds::vehicle_train_frame_0,
@@ -1237,9 +1237,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tabVehicles - widx::tabOverall)
+                if (self.currentTab == widx::tabVehicles - widx::tabOverall)
                 {
-                    imageId += vehicleImageIds[(self->frameNo / 2) % std::size(vehicleImageIds)];
+                    imageId += vehicleImageIds[(self.frameNo / 2) % std::size(vehicleImageIds)];
                 }
                 else
                 {
@@ -1270,7 +1270,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         // tabRoutes,
         {
-            if (!(self->disabledWidgets & (1 << widx::tabRoutes)))
+            if (!(self.disabledWidgets & (1 << widx::tabRoutes)))
             {
                 static constexpr uint32_t routeImageIds[] = {
                     InterfaceSkin::ImageIds::tab_routes_frame_0,
@@ -1280,9 +1280,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == widx::tabRoutes - widx::tabOverall)
+                if (self.currentTab == widx::tabRoutes - widx::tabOverall)
                 {
-                    imageId += routeImageIds[(self->frameNo / 16) % std::size(routeImageIds)];
+                    imageId += routeImageIds[(self.frameNo / 16) % std::size(routeImageIds)];
                 }
                 else
                 {
@@ -1295,7 +1295,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         // tabOwnership,
         {
-            if (!(self->disabledWidgets & (1 << widx::tabOwnership)))
+            if (!(self.disabledWidgets & (1 << widx::tabOwnership)))
             {
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_companies;
@@ -1662,11 +1662,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         self.draw(drawingCtx);
-        drawTabs(&self, drawingCtx);
+        drawTabs(self, drawingCtx);
 
         {
-            auto x = self.x + self.width - 104;
-            uint16_t y = self.y + 44;
+            auto x = self.width - 104;
+            uint16_t y = 44;
 
             switch (self.currentTab + widx::tabOverall)
             {
@@ -1718,7 +1718,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         auto& widget = self.widgets[widx::statusBar];
-        auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
+        auto point = Point(widget.left - 1, widget.top - 1);
         auto width = widget.width();
 
         tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
@@ -2511,6 +2511,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         window->scrollAreas[0].contentOffsetX = x;
         window->scrollAreas[0].contentOffsetY = y;
 
-        Ui::ScrollView::updateThumbs(window, widx::scrollview);
+        Ui::ScrollView::updateThumbs(*window, widx::scrollview);
     }
 }
