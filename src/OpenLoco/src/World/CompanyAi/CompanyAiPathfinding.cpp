@@ -362,7 +362,7 @@ namespace OpenLoco::CompanyAi
         {
             using enum World::Track::CommonTraitFlags;
             if (!(_createTrackRoadCommandAiUnkFlags & (1U << 22))
-                || (World::TrackData::getTrackMiscData(trackId).flags & slope | steepSlope) != none)
+                && (World::TrackData::getTrackMiscData(trackId).flags & slope | steepSlope) != none)
             {
                 return;
             }
