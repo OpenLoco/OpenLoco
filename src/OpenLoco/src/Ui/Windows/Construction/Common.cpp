@@ -529,7 +529,10 @@ namespace OpenLoco::Ui::Windows::Construction
             if (lastRoadOption == 0xFF)
             {
                 const auto availableObjects = companyGetAvailableRoads(CompanyManager::getControllingId());
-                lastRoadOption = availableObjects[0];
+                if (!availableObjects.empty())
+                {
+                    lastRoadOption = availableObjects[0];
+                }
             }
             else
             {
@@ -542,7 +545,10 @@ namespace OpenLoco::Ui::Windows::Construction
         if (getGameState().lastRailroadOption == 0xFF)
         {
             const auto availableObjects = companyGetAvailableRailTracks(CompanyManager::getControllingId());
-            getGameState().lastRailroadOption = availableObjects[0];
+            if (!availableObjects.empty())
+            {
+                getGameState().lastRailroadOption = availableObjects[0];
+            }
             WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
         }
     }
