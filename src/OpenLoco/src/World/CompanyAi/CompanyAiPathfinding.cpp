@@ -22,6 +22,7 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint32_t, 0x0112C388> _createTrackRoadCommandMods;
     static Interop::loco_global<uint32_t, 0x0112C38C> _createTrackRoadCommandRackRail;
     static Interop::loco_global<Company*, 0x0112C390> _unk112C390;
+    static Interop::loco_global<uint32_t, 0x0112C358> _unk112C358;
     static Interop::loco_global<uint32_t, 0x0112C374> _createTrackRoadCommandAiUnkFlags;
     static Interop::loco_global<uint32_t, 0x0112C378> _unk112C378;
     static Interop::loco_global<uint32_t, 0x0112C37C> _unk112C37C;
@@ -30,6 +31,9 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint8_t, 0x0112C59F> _createTrackRoadCommandBridge0;
     static Interop::loco_global<uint8_t, 0x0112C5A0> _createTrackRoadCommandBridge1;
     static Interop::loco_global<uint8_t, 0x0112C5A1> _createTrackRoadCommandBridge2;
+    static Interop::loco_global<uint16_t, 0x0112C4D4> _unkTad112C4D4;
+    static Interop::loco_global<uint16_t, 0x0112C3D0> _unk112C3D0;
+    static Interop::loco_global<uint16_t, 0x0112C3D2> _unk112C3D2;
     static Interop::loco_global<uint8_t[65], 0x0112C51A> _validTrackRoadIds;
     static Interop::loco_global<uint8_t, 0x01136073> _byte_1136073;
     static Interop::loco_global<World::MicroZ, 0x01136074> _byte_1136074;
@@ -381,6 +385,7 @@ namespace OpenLoco::CompanyAi
 
         {
             auto regs = static_cast<Interop::registers>(args);
+            regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
             GameCommands::createTrack(regs);
             if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
             {
@@ -403,6 +408,72 @@ namespace OpenLoco::CompanyAi
             _numBuildingRequiredDestroyed112C380++;
         }
         // 0x004856AB
+
+        const auto& trackSize = World::TrackData::getUnkTrack(tad);
+        const auto nextPos = pos + trackSize.pos;
+        const auto nextRotation = trackSize.rotationEnd & 0x3U;
+        const auto newUnkFlag = trackSize.rotationEnd >= 12;
+        {
+            const auto diffZ = std::abs(_unk3PosBaseZ112C59C - (nextPos.z / World::kSmallZStep));
+            const auto diffX = std::abs(_unk3Pos112C3CC->x - nextPos.x) / 8;
+            const auto diffY = std::abs(_unk3Pos112C3CC->y - nextPos.y) / 8;
+
+            const auto squareHypot = diffX * diffX + diffY * diffY + diffZ * diffZ;
+            const auto distScore = Math::Vector::fastSquareRoot(squareHypot);
+
+            if (distScore == 0)
+            {
+                if (newUnkFlag)
+                {
+                    return;
+                }
+                if ((nextRotation ^ (1U << 1)) != (_unkTad112C4D4 & 0x3U))
+                {
+                    return;
+                }
+                _unk112C3D0 = 0;
+                if ((_unk112C378 & 0xFFFFU) < _unk112C3D2)
+                {
+                    _unk112C3D2 = _unk112C378 & 0xFFFFU;
+                }
+                return;
+            }
+
+            if (_unk112C358 <= _unk112C378)
+            {
+                const auto newScore = _unk112C37C / 32 + distScore * 4 + _numBuildingRequiredDestroyed112C380;
+                _unk112C3D0 = std::min<uint16_t>(newScore, _unk112C3D0);
+            }
+            else
+            {
+                for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+                {
+                    const auto newTad = (*ptr << 3) | nextRotation;
+                    const auto rotBegin = World::TrackData::getUnkTrack(newTad).rotationBegin;
+                    if (newUnkFlag)
+                    {
+                        if (rotBegin < 12)
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        if (rotBegin >= 12)
+                        {
+                            continue;
+                        }
+                    }
+                    const auto stash112C378 = *_unk112C378;
+                    const auto stash112C37C = *_unk112C37C;
+                    const auto stashNumBuildingRequiredDestroyed = *_numBuildingRequiredDestroyed112C380;
+                    sub_4854B2(company, nextPos, newTad, newUnkFlag);
+                    _unk112C378 = stash112C378;
+                    _unk112C37C = stash112C37C;
+                    _numBuildingRequiredDestroyed112C380 = stashNumBuildingRequiredDestroyed;
+                }
+            }
+        }
     }
 
     void registerHooks()
@@ -436,6 +507,22 @@ namespace OpenLoco::CompanyAi
 
                 regs = backup;
                 return hasConnection ? Interop::X86_FLAG_CARRY : 0;
+            });
+
+        Interop::registerHook(
+            0x004854B2,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dl * World::kSmallZStep);
+                const auto tad = regs.bp & 0x3FFU;
+                const auto unkFlag = (regs.ebp & (1U << 31)) != 0;
+                auto& company = **_unk112C390;
+
+                sub_4854B2(company, pos, tad, unkFlag);
+
+                regs = backup;
+                return 0;
             });
     }
 }
