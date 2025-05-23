@@ -286,11 +286,25 @@ namespace OpenLoco::CompanyAi
         }
     }
 
+    static void originalSub_4854B2(Company&, const World::Pos3 pos, const uint16_t tad, const bool unkFlag)
+    {
+        Interop::registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dl = pos.z / World::kSmallZStep;
+        regs.ebp = 0;
+        regs.bp = tad & 0x3FFU;
+        regs.ebp |= (unkFlag ? (1U << 31) : 0);
+        call(0x004854B2, regs);
+    }
+
     // 0x004854B2
     // pos : ax, cx, dl
     // tad : bp
     // unkFlag : ebp & (1U << 31)
     // company : _unk112C390
+    //
+    // return : _unk112C59B, _unk112C3D0, _unk112C3D2
     static void sub_4854B2(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag)
     {
         // bl
@@ -362,7 +376,7 @@ namespace OpenLoco::CompanyAi
         {
             using enum World::Track::CommonTraitFlags;
             if (!(_createTrackRoadCommandAiUnkFlags & (1U << 22))
-                && (World::TrackData::getTrackMiscData(trackId).flags & slope | steepSlope) != none)
+                && (World::TrackData::getTrackMiscData(trackId).flags & (slope | steepSlope)) != none)
             {
                 return;
             }
@@ -467,10 +481,37 @@ namespace OpenLoco::CompanyAi
                     const auto stash112C378 = *_unk112C378;
                     const auto stash112C37C = *_unk112C37C;
                     const auto stashNumBuildingRequiredDestroyed = *_numBuildingRequiredDestroyed112C380;
+
+                    const auto stashC59B = *_unk112C59B;
+                    const auto stashC3D0 = *_unk112C3D0;
+                    const auto stashC3D2 = *_unk112C3D2;
+
+                    originalSub_4854B2(company, nextPos, newTad, newUnkFlag);
+
+                    [[maybe_unused]] const auto origC59B = *_unk112C59B;
+                    [[maybe_unused]] const auto origC3D0 = *_unk112C3D0;
+                    [[maybe_unused]] const auto origC3D2 = *_unk112C3D2;
+
+                    _unk112C59B = stashC59B;
+                    _unk112C3D0 = stashC3D0;
+                    _unk112C3D2 = stashC3D2;
+
+                    _unk112C378 = stash112C378;
+                    _unk112C37C = stash112C37C;
+                    _numBuildingRequiredDestroyed112C380 = stashNumBuildingRequiredDestroyed;
+
                     sub_4854B2(company, nextPos, newTad, newUnkFlag);
                     _unk112C378 = stash112C378;
                     _unk112C37C = stash112C37C;
                     _numBuildingRequiredDestroyed112C380 = stashNumBuildingRequiredDestroyed;
+
+                    if (origC3D0 != *_unk112C3D0 || origC3D2 != *_unk112C3D2)
+                    {
+                        assert(false);
+                    }
+                    assert(origC59B == *_unk112C59B);
+                    assert(origC3D0 == *_unk112C3D0);
+                    assert(origC3D2 == *_unk112C3D2);
                 }
             }
         }
@@ -509,8 +550,12 @@ namespace OpenLoco::CompanyAi
                 return hasConnection ? Interop::X86_FLAG_CARRY : 0;
             });
 
+        // 0x004854B2
+        Interop::writeLocoCall(0x004847DD, 0x00437FC5);
+
+        // 0x004854B2
         Interop::registerHook(
-            0x004854B2,
+            0x00437FC5,
             [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 Interop::registers backup = regs;
 
