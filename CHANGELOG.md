@@ -6,6 +6,7 @@
 - Change: [#3098] Automatically detect Steam installation of Locomotion.
 - Fix: [#2689] Title screen music not playing after switching audio device.
 - Fix: [#3092] Drag selection area is not correctly removed after dragging station elements.
+- Fix: [#3093] The background of the construction window acts like a button.
 - Fix: [#3096] Buildings are removed over time in the scenario editor (original bug).
 
 25.04 (2025-04-28)
