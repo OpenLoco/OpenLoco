@@ -777,6 +777,7 @@ target_link_libraries(OpenLoco
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
+    ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
 
@@ -808,10 +809,6 @@ elseif (MSVC)
             _USE_MATH_DEFINES
             SDL_MAIN_HANDLED
             _WINSOCK_DEPRECATED_NO_WARNINGS)
-
-    target_link_libraries(OpenLoco
-        ZLIB::ZLIB) # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
-
 else ()
     target_compile_definitions(OpenLoco
         PRIVATE
