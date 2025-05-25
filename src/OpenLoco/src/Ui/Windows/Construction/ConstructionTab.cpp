@@ -33,6 +33,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
 
