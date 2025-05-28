@@ -53,7 +53,7 @@ namespace OpenLoco
         remainingData = remainingData.subspan(numBuildingParts);
 
         buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
-        remainingData = remainingData.subspan(numBuildingParts * sizeof(uint16_t));
+        remainingData = remainingData.subspan(numBuildingParts * sizeof(BuildingPartAnimation));
 
         // Load building variation parts
         for (auto i = 0U; i < numBuildingVariations; ++i)
@@ -99,4 +99,10 @@ namespace OpenLoco
 
         return std::span<const std::uint8_t>(partsPointer, end);
     }
+
+    std::span<const BuildingPartAnimation> DockObject::getBuildingPartAnimations() const
+    {
+        return std::span<const BuildingPartAnimation>(buildingPartAnimations, numBuildingParts);
+    }
+
 }
