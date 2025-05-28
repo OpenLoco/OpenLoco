@@ -300,12 +300,12 @@ namespace OpenLoco::CompanyAi
         // dh
         const auto trackId = (tad >> 3) & 0x3F;
 
-        const auto hash1 = direction ^ (pos.z / World::kSmallZStep);
+        const auto hash1 = direction ^ ((pos.z / World::kSmallZStep) & 0xFF);
         const auto hash2 = hash1 ^ ((pos.x / 32) * 8);
         const auto hash3 = hash2 ^ (pos.y / 32);
         const auto hash4 = hash3 ^ (trackId * 64);
 
-        uint32_t index = hash4;
+        uint32_t index = hash4 & 0xFFFU;
         while (company.var_25C0[index].var_00 != 0xFFFF)
         {
             auto& rhsEntry = company.var_25C0[index];
@@ -519,7 +519,7 @@ namespace OpenLoco::CompanyAi
             [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 Interop::registers backup = regs;
 
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dl * World::kSmallZStep);
+                const auto pos = World::Pos3(regs.ax, regs.cx, static_cast<uint8_t>(regs.dl) * World::kSmallZStep);
                 const auto tad = regs.bp & 0x3FFU;
                 const auto unkFlag = (regs.ebp & (1U << 31)) != 0;
                 auto& company = **_unk112C390;
