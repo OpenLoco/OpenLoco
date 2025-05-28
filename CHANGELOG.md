@@ -1,4 +1,4 @@
-25.04+ (???)
+25.05 (2025-05-28)
 ------------------------------------------------------------------------
 - Feature: [#2897] Individual vehicle components can now be repainted from the Vehicle Details tab.
 - Feature: [#3087] Allow replacing existing station elements directly in the station construction tool.

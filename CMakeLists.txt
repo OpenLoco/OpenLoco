@@ -46,7 +46,7 @@ if (WIN32)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.04)
+project(${PROJECT} LANGUAGES CXX VERSION 25.05)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
