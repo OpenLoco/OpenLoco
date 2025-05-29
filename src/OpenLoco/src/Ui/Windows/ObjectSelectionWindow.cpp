@@ -844,8 +844,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void drawDescription(const ObjectHeader& header, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object& objectPtr)
     {
-        int16_t width = self->x + self->width - x;
-        int16_t height = self->y + self->height - y;
+        int16_t width = self->width - x;
+        int16_t height = self->height - y;
 
         // Clip the draw area to simplify image draw
         const auto& rt = drawingCtx.currentRenderTarget();
@@ -901,8 +901,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
     {
-        int16_t width = self->x + self->width - x;
-        int16_t height = self->y + self->height - y;
+        int16_t width = self->width - x;
+        int16_t height = self->height - y;
 
         // Clip the draw area to simplify image draw
         const auto& rt = drawingCtx.currentRenderTarget();
