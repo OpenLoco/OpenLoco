@@ -933,7 +933,7 @@ namespace OpenLoco
             else
             {
                 // 0x00480551
-                uint16_t bestScore = 0x8300;
+                int16_t bestScore = -32000;
                 uint16_t bestDesignedYearObj2 = 0;
                 uint16_t bestVehicleObjIdObj2 = 0xFFFF;
                 for (auto i = 0U; i < Limits::kMaxVehicleObjects; ++i)
@@ -969,8 +969,8 @@ namespace OpenLoco
                     auto speed = Speed16((adjustedPower + adjustedSpeed.getRaw()) / 2);
                     const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
                     speed += speedRand;
-                    const auto score = speed.getRaw() - vehicleObj->getLength();
-                    if (score > bestScore)
+                    const auto score = static_cast<int16_t>(speed.getRaw()) - static_cast<int16_t>(vehicleObj->getLength());
+                    if (score < bestScore)
                     {
                         continue;
                     }
