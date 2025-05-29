@@ -969,7 +969,7 @@ namespace OpenLoco
                     auto speed = Speed16((adjustedPower + adjustedSpeed.getRaw()) / 2);
                     const auto speedRand = Speed16(gPrng1().randNext() & 0x3F);
                     speed += speedRand;
-                    const auto score = vehicleObj->getLength() - speed.getRaw();
+                    const auto score = speed.getRaw() - vehicleObj->getLength();
                     if (score > bestScore)
                     {
                         continue;
