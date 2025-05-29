@@ -1,5 +1,6 @@
 #include "CompanyAiPathfinding.h"
 #include "CompanyAi.h"
+#include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Track/CreateTrack.h"
 #include "Map/Tile.h"
 #include "Map/Track/TrackData.h"
@@ -37,6 +38,8 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint8_t[65], 0x0112C51A> _validTrackRoadIds;
     static Interop::loco_global<uint8_t, 0x01136073> _byte_1136073;
     static Interop::loco_global<World::MicroZ, 0x01136074> _byte_1136074;
+    static Interop::loco_global<uint8_t, 0x01136075> _byte_1136075;           // bridgeType of any overlapping track
+    static Interop::loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
 
     // 0x00483A7E
     static sfl::static_vector<uint8_t, 64> sub_483A7E(const Company& company, const AiThought& thought)
@@ -310,7 +313,7 @@ namespace OpenLoco::CompanyAi
         {
             auto& rhsEntry = company.var_25C0[index];
             if (pos.x == rhsEntry.var_00
-                && (pos.z / World::kSmallZStep) == rhsEntry.var_04
+                && ((pos.z / World::kSmallZStep) & 0xFFU) == rhsEntry.var_04
                 && (trackId | (direction << 6)) == rhsEntry.var_05
                 && pos.y == (rhsEntry.var_02 & 0xFFFE))
             {
@@ -480,6 +483,156 @@ namespace OpenLoco::CompanyAi
         }
     }
 
+    // 0x00485849
+    // pos : ax, cx, dl
+    // tad : bp
+    // company : _unk112C390
+    //
+    // return : _unk112C59B, _unk112C3D0, _unk112C3D2
+    static void sub_485849(Company& company, const World::Pos3 pos, const uint16_t tad)
+    {
+        // bl
+        const auto direction = tad & 0x3;
+        // dh
+        const auto roadId = (tad >> 3) & 0xF;
+
+        const auto hash1 = direction ^ ((pos.z / World::kSmallZStep) & 0xFF);
+        const auto hash2 = hash1 ^ ((pos.x / 32) * 8);
+        const auto hash3 = hash2 ^ (pos.y / 32);
+        const auto hash4 = hash3 ^ (roadId * 64);
+
+        uint32_t index = hash4 & 0xFFFU;
+        while (company.var_25C0[index].var_00 != 0xFFFF)
+        {
+            auto& rhsEntry = company.var_25C0[index];
+            if (pos.x == rhsEntry.var_00
+                && ((pos.z / World::kSmallZStep) & 0xFFU) == rhsEntry.var_04
+                && (roadId | (direction << 6)) == rhsEntry.var_05
+                && pos.y == (rhsEntry.var_02 & 0xFFFE))
+            {
+                return;
+            }
+
+            if (!(rhsEntry.var_02 & 0b1))
+            {
+                break;
+            }
+
+            index++;
+            if (index >= std::size(company.var_25C0))
+            {
+                index = 0;
+            }
+        }
+
+        GameCommands::RoadPlacementArgs args;
+
+        args.rotation = direction;
+        args.roadId = roadId;
+        args.roadObjectId = _trackRoadObjType112C519 & ~(1U << 7);
+        args.bridge = _createTrackRoadCommandBridge0;
+        args.pos = pos;
+        args.mods = 0;
+        args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 16;
+
+        {
+            auto regs = static_cast<Interop::registers>(args);
+            regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
+            GameCommands::createRoad(regs);
+            if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
+            {
+                if ((_createTrackRoadCommandAiUnkFlags & (1U << 20)) && _alternateTrackObjectId != 0xFFU)
+                {
+                    args.roadObjectId = _alternateTrackObjectId;
+                }
+                if (_byte_1136075 != 0xFFU)
+                {
+                    args.bridge = _byte_1136075;
+                }
+                regs = static_cast<Interop::registers>(args);
+                regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
+                GameCommands::createRoad(regs);
+                if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
+                {
+                    return;
+                }
+            }
+        }
+
+        _unk112C59B = _unk112C59B | (1U << 0);
+        auto placementWeighting = World::TrackData::getRoadMiscData(roadId).unkWeighting;
+
+        // Place road attempt overlayed an existing road
+        if (_byte_1136073 & (1U << 5))
+        {
+            placementWeighting -= placementWeighting / 4;
+        }
+        _unk112C378 += placementWeighting;
+
+        // Place road attempt required a bridge
+        if (_byte_1136073 & (1U << 0))
+        {
+            // _byte_1136074 is the bridge height
+            const auto unkFactor = (_byte_1136074 * placementWeighting) / 2;
+            _unk112C37C += unkFactor;
+        }
+        // Place road attempt requires removing a building
+        if (_byte_1136073 & (1U << 4))
+        {
+            _numBuildingRequiredDestroyed112C380++;
+        }
+        // 0x00485A01
+
+        const auto& roadSize = World::TrackData::getUnkRoad(tad);
+        const auto nextPos = pos + roadSize.pos;
+        const auto nextRotation = roadSize.rotationEnd & 0x3U;
+        {
+            const auto diffZ = std::abs(_unk3PosBaseZ112C59C - (nextPos.z / World::kSmallZStep));
+            const auto diffX = std::abs(_unk3Pos112C3CC->x - nextPos.x) / 8;
+            const auto diffY = std::abs(_unk3Pos112C3CC->y - nextPos.y) / 8;
+
+            const auto squareHypot = diffX * diffX + diffY * diffY + diffZ * diffZ;
+            const auto distScore = Math::Vector::fastSquareRoot(squareHypot);
+
+            if (distScore == 0)
+            {
+                if ((nextRotation ^ (1U << 1)) != (_unkTad112C4D4 & 0x3U))
+                {
+                    return;
+                }
+                _unk112C3D0 = 0;
+                if ((_unk112C378 & 0xFFFFU) < _unk112C3D2)
+                {
+                    _unk112C3D2 = _unk112C378 & 0xFFFFU;
+                }
+                return;
+            }
+
+            if (_unk112C358 <= _unk112C378)
+            {
+                const auto newScore = _unk112C37C / 32 + distScore * 4 + _numBuildingRequiredDestroyed112C380;
+                _unk112C3D0 = std::min<uint16_t>(newScore, _unk112C3D0);
+            }
+            else
+            {
+                for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+                {
+                    const auto newTad = (*ptr << 3) | nextRotation;
+
+                    const auto stash112C378 = *_unk112C378;
+                    const auto stash112C37C = *_unk112C37C;
+                    const auto stashNumBuildingRequiredDestroyed = *_numBuildingRequiredDestroyed112C380;
+
+                    sub_485849(company, nextPos, newTad);
+
+                    _unk112C378 = stash112C378;
+                    _unk112C37C = stash112C37C;
+                    _numBuildingRequiredDestroyed112C380 = stashNumBuildingRequiredDestroyed;
+                }
+            }
+        }
+    }
+
     void registerHooks()
     {
         Interop::registerHook(
@@ -525,6 +678,22 @@ namespace OpenLoco::CompanyAi
                 auto& company = **_unk112C390;
 
                 sub_4854B2(company, pos, tad, unkFlag);
+
+                regs = backup;
+                return 0;
+            });
+
+        // 0x00485849
+        Interop::registerHook(
+            0x00485849,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, static_cast<uint8_t>(regs.dl) * World::kSmallZStep);
+                const auto tad = regs.bp & 0x3FFU;
+                auto& company = **_unk112C390;
+
+                sub_485849(company, pos, tad);
 
                 regs = backup;
                 return 0;
