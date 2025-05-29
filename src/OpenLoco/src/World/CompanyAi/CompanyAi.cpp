@@ -1000,7 +1000,7 @@ namespace OpenLoco
                     bestVehicleObjIdObj2 = i;
                 }
 
-                if (bestScore == 0x8300)
+                if (bestScore == -32000)
                 {
                     return std::nullopt;
                 }
