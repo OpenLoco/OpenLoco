@@ -296,7 +296,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return : _unk112C59B, _unk112C3D0, _unk112C3D2
-    static void sub_4854B2(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag)
+    static void queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -473,7 +473,7 @@ namespace OpenLoco::CompanyAi
                     const auto stash112C37C = *_unk112C37C;
                     const auto stashNumBuildingRequiredDestroyed = *_numBuildingRequiredDestroyed112C380;
 
-                    sub_4854B2(company, nextPos, newTad, newUnkFlag);
+                    queryTrackPlacementScore(company, nextPos, newTad, newUnkFlag);
 
                     _unk112C378 = stash112C378;
                     _unk112C37C = stash112C37C;
@@ -489,7 +489,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return : _unk112C59B, _unk112C3D0, _unk112C3D2
-    static void sub_485849(Company& company, const World::Pos3 pos, const uint16_t tad)
+    static void queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -623,7 +623,7 @@ namespace OpenLoco::CompanyAi
                     const auto stash112C37C = *_unk112C37C;
                     const auto stashNumBuildingRequiredDestroyed = *_numBuildingRequiredDestroyed112C380;
 
-                    sub_485849(company, nextPos, newTad);
+                    queryRoadPlacementScore(company, nextPos, newTad);
 
                     _unk112C378 = stash112C378;
                     _unk112C37C = stash112C37C;
@@ -677,7 +677,7 @@ namespace OpenLoco::CompanyAi
                 const auto unkFlag = (regs.ebp & (1U << 31)) != 0;
                 auto& company = **_unk112C390;
 
-                sub_4854B2(company, pos, tad, unkFlag);
+                queryTrackPlacementScore(company, pos, tad, unkFlag);
 
                 regs = backup;
                 return 0;
@@ -693,7 +693,7 @@ namespace OpenLoco::CompanyAi
                 const auto tad = regs.bp & 0x3FFU;
                 auto& company = **_unk112C390;
 
-                sub_485849(company, pos, tad);
+                queryRoadPlacementScore(company, pos, tad);
 
                 regs = backup;
                 return 0;
