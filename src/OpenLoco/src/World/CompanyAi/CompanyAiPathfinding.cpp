@@ -23,18 +23,18 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint32_t, 0x0112C388> _createTrackRoadCommandMods;
     static Interop::loco_global<uint32_t, 0x0112C38C> _createTrackRoadCommandRackRail;
     static Interop::loco_global<Company*, 0x0112C390> _unk112C390;
-    static Interop::loco_global<uint32_t, 0x0112C358> _unk112C358;
+    static Interop::loco_global<uint32_t, 0x0112C358> _maxTrackRoadWeightingLimit; // Limits the extent of the track/road placement search
     static Interop::loco_global<uint32_t, 0x0112C374> _createTrackRoadCommandAiUnkFlags;
-    static Interop::loco_global<uint32_t, 0x0112C378> _unk112C378;
-    static Interop::loco_global<uint32_t, 0x0112C37C> _unk112C37C;
+    static Interop::loco_global<uint32_t, 0x0112C378> _trackRoadPlacementCurrentWeighting;
+    static Interop::loco_global<uint32_t, 0x0112C37C> _trackRoadPlacementBridgeWeighting;
     static Interop::loco_global<uint32_t, 0x0112C380> _numBuildingRequiredDestroyed112C380;
-    static Interop::loco_global<uint8_t, 0x0112C59B> _unk112C59B;
+    static Interop::loco_global<uint8_t, 0x0112C59B> _queryTrackRoadPlacementFlags;
     static Interop::loco_global<uint8_t, 0x0112C59F> _createTrackRoadCommandBridge0;
     static Interop::loco_global<uint8_t, 0x0112C5A0> _createTrackRoadCommandBridge1;
     static Interop::loco_global<uint8_t, 0x0112C5A1> _createTrackRoadCommandBridge2;
     static Interop::loco_global<uint16_t, 0x0112C4D4> _unkTad112C4D4;
-    static Interop::loco_global<uint16_t, 0x0112C3D0> _unk112C3D0;
-    static Interop::loco_global<uint16_t, 0x0112C3D2> _unk112C3D2;
+    static Interop::loco_global<uint16_t, 0x0112C3D0> _queryTrackRoadPlacementMinScore;
+    static Interop::loco_global<uint16_t, 0x0112C3D2> _queryTrackRoadPlacementMinWeighting;
     static Interop::loco_global<uint8_t[65], 0x0112C51A> _validTrackRoadIds;
     static Interop::loco_global<uint8_t, 0x01136073> _byte_1136073;
     static Interop::loco_global<World::MicroZ, 0x01136074> _byte_1136074;
@@ -289,14 +289,28 @@ namespace OpenLoco::CompanyAi
         }
     }
 
+    struct QueryTrackRoadPlacementResult
+    {
+        uint8_t flags;         // 0x0112C59B
+        uint16_t minScore;     // 0x0112C3D0 if score is 0 has made to destination, if score is 0xFFFF no track placement possible, else min score after max weighting limit reached
+        uint16_t minWeighting; // 0x0112C3D2 only the min weighting if score is 0 otherwise 0xFFFF
+    };
+
+    struct QueryTrackRoadPlacementState
+    {
+        uint32_t numBuildingsRequiredDestroyed; // 0x0112C380
+        uint32_t currentWeighting;              // 0x0112C378
+        uint32_t bridgeWeighting;               // 0x0112C37C
+    };
+
     // 0x004854B2
     // pos : ax, cx, dl
     // tad : bp
     // unkFlag : ebp & (1U << 31)
     // company : _unk112C390
     //
-    // return : _unk112C59B, _unk112C3D0, _unk112C3D2
-    static void queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag)
+    // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
+    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -398,19 +412,19 @@ namespace OpenLoco::CompanyAi
             }
         }
 
-        _unk112C59B = _unk112C59B | (1U << 0);
-        _unk112C378 += World::TrackData::getTrackMiscData(trackId).unkWeighting;
+        totalResult.flags |= (1U << 0);
+        state.currentWeighting += World::TrackData::getTrackMiscData(trackId).unkWeighting;
         // Place track attempt required a bridge
         if (_byte_1136073 & (1U << 0))
         {
             // _byte_1136074 is the bridge height
             const auto unkFactor = (_byte_1136074 * World::TrackData::getTrackMiscData(trackId).unkWeighting) / 2;
-            _unk112C37C += unkFactor;
+            state.bridgeWeighting += unkFactor;
         }
         // Place track attempt requires removing a building
         if (_byte_1136073 & (1U << 4))
         {
-            _numBuildingRequiredDestroyed112C380++;
+            state.numBuildingsRequiredDestroyed++;
         }
         // 0x004856AB
 
@@ -436,18 +450,18 @@ namespace OpenLoco::CompanyAi
                 {
                     return;
                 }
-                _unk112C3D0 = 0;
-                if ((_unk112C378 & 0xFFFFU) < _unk112C3D2)
+                totalResult.minScore = 0;
+                if ((state.currentWeighting & 0xFFFFU) < totalResult.minWeighting)
                 {
-                    _unk112C3D2 = _unk112C378 & 0xFFFFU;
+                    totalResult.minWeighting = state.currentWeighting & 0xFFFFU;
                 }
                 return;
             }
 
-            if (_unk112C358 <= _unk112C378)
+            if (_maxTrackRoadWeightingLimit <= state.currentWeighting)
             {
-                const auto newScore = _unk112C37C / 32 + distScore * 4 + _numBuildingRequiredDestroyed112C380;
-                _unk112C3D0 = std::min<uint16_t>(newScore, _unk112C3D0);
+                const auto newScore = state.bridgeWeighting / 32 + distScore * 4 + state.numBuildingsRequiredDestroyed;
+                totalResult.minScore = std::min<uint16_t>(newScore, totalResult.minScore);
             }
             else
             {
@@ -469,18 +483,31 @@ namespace OpenLoco::CompanyAi
                             continue;
                         }
                     }
-                    const auto stash112C378 = *_unk112C378;
-                    const auto stash112C37C = *_unk112C37C;
-                    const auto stashNumBuildingRequiredDestroyed = *_numBuildingRequiredDestroyed112C380;
 
-                    queryTrackPlacementScore(company, nextPos, newTad, newUnkFlag);
+                    // Make a copy of the state as each track needs to be evaluated independently
+                    auto tempState = state;
 
-                    _unk112C378 = stash112C378;
-                    _unk112C37C = stash112C37C;
-                    _numBuildingRequiredDestroyed112C380 = stashNumBuildingRequiredDestroyed;
+                    queryTrackPlacementScoreRecurse(company, nextPos, newTad, newUnkFlag, totalResult, tempState);
                 }
             }
         }
+    }
+
+    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag)
+    {
+        QueryTrackRoadPlacementResult result{};
+        result.flags = 1U << 7;
+        result.minScore = 0xFFFFU;
+        result.minWeighting = 0xFFFFU;
+
+        QueryTrackRoadPlacementState state{};
+        state.numBuildingsRequiredDestroyed = 0U;
+        state.currentWeighting = 0U;
+        state.bridgeWeighting = 0U;
+
+        queryTrackPlacementScoreRecurse(company, pos, tad, unkFlag, result, state);
+
+        return result;
     }
 
     // 0x00485849
@@ -488,8 +515,8 @@ namespace OpenLoco::CompanyAi
     // tad : bp
     // company : _unk112C390
     //
-    // return : _unk112C59B, _unk112C3D0, _unk112C3D2
-    static void queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad)
+    // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
+    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -559,7 +586,7 @@ namespace OpenLoco::CompanyAi
             }
         }
 
-        _unk112C59B = _unk112C59B | (1U << 0);
+        totalResult.flags |= (1U << 0);
         auto placementWeighting = World::TrackData::getRoadMiscData(roadId).unkWeighting;
 
         // Place road attempt overlayed an existing road
@@ -567,19 +594,19 @@ namespace OpenLoco::CompanyAi
         {
             placementWeighting -= placementWeighting / 4;
         }
-        _unk112C378 += placementWeighting;
+        state.currentWeighting += placementWeighting;
 
         // Place road attempt required a bridge
         if (_byte_1136073 & (1U << 0))
         {
             // _byte_1136074 is the bridge height
             const auto unkFactor = (_byte_1136074 * placementWeighting) / 2;
-            _unk112C37C += unkFactor;
+            state.bridgeWeighting += unkFactor;
         }
         // Place road attempt requires removing a building
         if (_byte_1136073 & (1U << 4))
         {
-            _numBuildingRequiredDestroyed112C380++;
+            state.numBuildingsRequiredDestroyed++;
         }
         // 0x00485A01
 
@@ -600,18 +627,18 @@ namespace OpenLoco::CompanyAi
                 {
                     return;
                 }
-                _unk112C3D0 = 0;
-                if ((_unk112C378 & 0xFFFFU) < _unk112C3D2)
+                totalResult.minScore = 0;
+                if ((state.currentWeighting & 0xFFFFU) < totalResult.minWeighting)
                 {
-                    _unk112C3D2 = _unk112C378 & 0xFFFFU;
+                    totalResult.minWeighting = state.currentWeighting & 0xFFFFU;
                 }
                 return;
             }
 
-            if (_unk112C358 <= _unk112C378)
+            if (_maxTrackRoadWeightingLimit <= state.currentWeighting)
             {
-                const auto newScore = _unk112C37C / 32 + distScore * 4 + _numBuildingRequiredDestroyed112C380;
-                _unk112C3D0 = std::min<uint16_t>(newScore, _unk112C3D0);
+                const auto newScore = state.bridgeWeighting / 32 + distScore * 4 + state.numBuildingsRequiredDestroyed;
+                totalResult.minScore = std::min<uint16_t>(newScore, totalResult.minScore);
             }
             else
             {
@@ -619,18 +646,30 @@ namespace OpenLoco::CompanyAi
                 {
                     const auto newTad = (*ptr << 3) | nextRotation;
 
-                    const auto stash112C378 = *_unk112C378;
-                    const auto stash112C37C = *_unk112C37C;
-                    const auto stashNumBuildingRequiredDestroyed = *_numBuildingRequiredDestroyed112C380;
+                    // Make a copy of the state as each track needs to be evaluated independently
+                    auto tempState = state;
 
-                    queryRoadPlacementScore(company, nextPos, newTad);
-
-                    _unk112C378 = stash112C378;
-                    _unk112C37C = stash112C37C;
-                    _numBuildingRequiredDestroyed112C380 = stashNumBuildingRequiredDestroyed;
+                    queryRoadPlacementScoreRecurse(company, nextPos, newTad, totalResult, tempState);
                 }
             }
         }
+    }
+
+    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad)
+    {
+        QueryTrackRoadPlacementResult result{};
+        result.flags = 1U << 7;
+        result.minScore = 0xFFFFU;
+        result.minWeighting = 0xFFFFU;
+
+        QueryTrackRoadPlacementState state{};
+        state.numBuildingsRequiredDestroyed = 0U;
+        state.currentWeighting = 0U;
+        state.bridgeWeighting = 0U;
+
+        queryRoadPlacementScoreRecurse(company, pos, tad, result, state);
+
+        return result;
     }
 
     void registerHooks()
@@ -677,7 +716,10 @@ namespace OpenLoco::CompanyAi
                 const auto unkFlag = (regs.ebp & (1U << 31)) != 0;
                 auto& company = **_unk112C390;
 
-                queryTrackPlacementScore(company, pos, tad, unkFlag);
+                const auto res = queryTrackPlacementScore(company, pos, tad, unkFlag);
+                _queryTrackRoadPlacementFlags = res.flags;
+                _queryTrackRoadPlacementMinScore = res.minScore;
+                _queryTrackRoadPlacementMinWeighting = res.minWeighting;
 
                 regs = backup;
                 return 0;
@@ -693,7 +735,10 @@ namespace OpenLoco::CompanyAi
                 const auto tad = regs.bp & 0x3FFU;
                 auto& company = **_unk112C390;
 
-                queryRoadPlacementScore(company, pos, tad);
+                const auto res = queryRoadPlacementScore(company, pos, tad);
+                _queryTrackRoadPlacementFlags = res.flags;
+                _queryTrackRoadPlacementMinScore = res.minScore;
+                _queryTrackRoadPlacementMinWeighting = res.minWeighting;
 
                 regs = backup;
                 return 0;
