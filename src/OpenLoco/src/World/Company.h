@@ -145,10 +145,10 @@ namespace OpenLoco
     {
         struct Unk25C0HashTableEntry
         {
-            uint16_t var_00;
-            uint16_t var_02;
-            uint8_t var_04;
-            uint8_t var_05;
+            uint16_t var_00; // x
+            uint16_t var_02; // y + flags
+            uint8_t var_04;  // z
+            uint8_t var_05;  // trackId | (direction << 6)
         };
 
         StringId name;
