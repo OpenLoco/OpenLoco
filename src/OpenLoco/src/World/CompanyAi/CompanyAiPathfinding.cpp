@@ -13,6 +13,8 @@
 
 namespace OpenLoco::CompanyAi
 {
+    static Interop::loco_global<uint8_t, 0x0112C518> _112C518;  // company 0x85EE
+    static Interop::loco_global<uint32_t, 0x0112C398> _112C398; // company 0x85DE
     static Interop::loco_global<uint8_t, 0x0112C519> _trackRoadObjType112C519;
     static Interop::loco_global<World::Pos2, 0x0112C3C2> _unk1Pos112C3C2;
     static Interop::loco_global<World::SmallZ, 0x0112C515> _unk1PosBaseZ112C515;
@@ -20,6 +22,7 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<World::SmallZ, 0x0112C517> _unk2PosBaseZ112C517;
     static Interop::loco_global<World::Pos2, 0x0112C3CC> _unk3Pos112C3CC;
     static Interop::loco_global<World::SmallZ, 0x0112C59C> _unk3PosBaseZ112C59C;
+    static Interop::loco_global<uint8_t, 0x0112C59E> _unk3Rot112C59E;
     static Interop::loco_global<uint32_t, 0x0112C388> _createTrackRoadCommandMods;
     static Interop::loco_global<uint32_t, 0x0112C38C> _createTrackRoadCommandRackRail;
     static Interop::loco_global<Company*, 0x0112C390> _unk112C390;
@@ -33,6 +36,7 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint8_t, 0x0112C5A0> _createTrackRoadCommandBridge1;
     static Interop::loco_global<uint8_t, 0x0112C5A1> _createTrackRoadCommandBridge2;
     static Interop::loco_global<uint16_t, 0x0112C4D4> _unkTad112C4D4;
+    static Interop::loco_global<uint16_t, 0x0112C3CA> _unkTad112C3CA;
     static Interop::loco_global<uint16_t, 0x0112C3D0> _queryTrackRoadPlacementMinScore;
     static Interop::loco_global<uint16_t, 0x0112C3D2> _queryTrackRoadPlacementMinWeighting;
     static Interop::loco_global<uint8_t[65], 0x0112C51A> _validTrackRoadIds;
@@ -670,6 +674,133 @@ namespace OpenLoco::CompanyAi
         queryRoadPlacementScoreRecurse(company, pos, tad, result, state);
 
         return result;
+    }
+
+    // 0x00484648
+    // company : _unk112C390
+    static void sub_484648(Company& company)
+    {
+        if (_trackRoadObjType112C519 & (1U << 7))
+        {
+            // 0x00484D76
+        }
+        else
+        {
+            // 0x00484655
+            if (_112C518 == 0)
+            {
+                // 0x00484662
+                if (_112C398 >= company.var_85EA)
+                {
+                    company.var_85F0 = 0xF000U;
+                    return;
+                }
+                // 0x00484813
+                _maxTrackRoadWeightingLimit = (company.var_85C3 & ((1U << 4) | (1U << 2))) ? 224 : 138;
+
+                {
+                    auto pos = World::Pos3(_unk3Pos112C3CC, _unk3PosBaseZ112C59C * World::kSmallZStep);
+                    auto tad = _unkTad112C4D4 & 0x3FFU;
+                    auto& trackSize = World::TrackData::getUnkTrack(tad);
+                    pos += trackSize.pos;
+                    auto rotation = trackSize.rotationEnd;
+                    if (rotation < 12)
+                    {
+                        pos -= World::Pos3(World::kRotationOffset[rotation], 0);
+                    }
+                    rotation ^= (1U << 1);
+                    _unk3Pos112C3CC = pos;
+                    _unk3PosBaseZ112C59C = pos.z / World::kSmallZStep;
+                    _unk3Rot112C59E = rotation;
+                }
+
+                auto pos = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
+                auto tad = _unkTad112C3CA & 0x3FFU;
+                auto& trackSize = World::TrackData::getUnkTrack(tad);
+                pos += trackSize.pos;
+                auto rotation = trackSize.rotationEnd;
+                bool diagFlag = rotation >= 12;
+
+                rotation &= 0x3U;
+                tad &= 0x3FCU;
+                tad |= rotation;
+                // 0x0112C55B, 0x0112C3D4, 0x00112C454
+                sfl::static_vector<QueryTrackRoadPlacementResult, 64> placementResults;
+                for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+                {
+                    const auto rotationBegin = World::TrackData::getUnkTrack(*ptr << 3).rotationBegin;
+                    if (diagFlag)
+                    {
+                        if (rotationBegin < 12)
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        if (rotationBegin >= 12)
+                        {
+                            continue;
+                        }
+                    }
+                    const auto newTad = (*ptr << 3) | rotation;
+                    placementResults.push_back(queryTrackPlacementScore(company, pos, newTad, diagFlag));
+                }
+                // 0x00484813
+                uint16_t unkBp = 0xFFFFU;
+                uint16_t unkCx = 0xFFFFU;
+                for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+                {
+                }
+
+                if (unkBp != 0xFFFFU)
+                {
+                    // 0x00484927
+                }
+                else
+                {
+                    // ax, cx, dl
+                    auto pos2 = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
+                    // dh
+                    auto trackIdStart = (_unkTad112C3CA >> 3) & 0x3F;
+                    auto rot = _unkTad112C3CA & 0x3U;
+                    if (company.var_25C0_length < 2048)
+                    {
+                        const auto hash1 = rot ^ ((pos2.z / World::kSmallZStep) & 0xFF);
+                        const auto hash2 = hash1 ^ ((pos2.x / 32) * 8);
+                        const auto hash3 = hash2 ^ (pos2.y / 32);
+                        const auto hash4 = hash3 ^ (trackIdStart * 64);
+                        uint32_t index = hash4 & 0xFFFU;
+
+                        while (company.var_25C0[index].var_00 != 0xFFFF)
+                        {
+                            auto& entry = company.var_25C0[index];
+                            entry.var_02 |= 1U << 0; // mark as hash collision
+
+                            index++;
+                            if (index >= std::size(company.var_25C0))
+                            {
+                                index = 0;
+                            }
+                        }
+                        const auto newEntry = Company::Unk25C0HashTableEntry{
+                            .var_00 = static_cast<uint16_t>(pos2.x),
+                            .var_02 = static_cast<uint16_t>(pos2.y),
+                            .var_04 = static_cast<uint8_t>(pos2.z / World::kSmallZStep),
+                            .var_05 = static_cast<uint8_t>(trackIdStart | (rot << 6))
+                        };
+                        company.var_25C0[index] = newEntry;
+                        company.var_25C0_length++;
+                    }
+                    _112C518 = 1;
+                    return;
+                }
+            }
+            else
+            {
+                // 0x00484B5C
+            }
+        }
     }
 
     void registerHooks()
