@@ -725,7 +725,7 @@ namespace OpenLoco::CompanyAi
                 tad &= 0x3FCU;
                 tad |= rotation;
                 // 0x0112C55B, 0x0112C3D4, 0x00112C454
-                sfl::static_vector<QueryTrackRoadPlacementResult, 64> placementResults;
+                sfl::static_vector<std::pair<uint8_t, QueryTrackRoadPlacementResult>, 64> placementResults;
                 for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
                 {
                     const auto rotationBegin = World::TrackData::getUnkTrack(*ptr << 3).rotationBegin;
@@ -743,19 +743,72 @@ namespace OpenLoco::CompanyAi
                             continue;
                         }
                     }
-                    const auto newTad = (*ptr << 3) | rotation;
-                    placementResults.push_back(queryTrackPlacementScore(company, pos, newTad, diagFlag));
+                    const auto trackId = *ptr;
+                    const auto newTad = (trackId << 3) | rotation;
+                    placementResults.push_back(std::make_pair(trackId, queryTrackPlacementScore(company, pos, newTad, diagFlag)));
                 }
                 // 0x00484813
-                uint16_t unkBp = 0xFFFFU;
-                uint16_t unkCx = 0xFFFFU;
-                for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+                uint16_t bestMinScore = 0xFFFFU;
+                uint16_t bestMinWeighting = 0xFFFFU;
+                // edi
+                uint8_t bestTrackId = 0xFFU;
+                for (auto& [trackId, result] : placementResults)
                 {
+                    if ((result.flags & ((1U << 0) | (1U << 7))) != ((1U << 0) | (1U << 7)))
+                    {
+                        continue;
+                    }
+                    if (bestMinScore < result.minScore)
+                    {
+                        continue;
+                    }
+                    else if (bestMinScore == result.minScore && bestMinWeighting <= result.minWeighting)
+                    {
+                        continue;
+                    }
+                    bestMinScore = result.minScore;
+                    bestMinWeighting = result.minWeighting;
+                    bestTrackId = trackId;
                 }
 
-                if (unkBp != 0xFFFFU)
+                if (bestMinScore != 0xFFFFU)
                 {
                     // 0x00484927
+                    GameCommands::TrackPlacementArgs args;
+                    args.trackId = bestTrackId;
+                    args.pos = pos;
+                    args.rotation = trackSize.rotationEnd;
+                    args.trackObjectId = _trackRoadObjType112C519;
+                    args.bridge = _createTrackRoadCommandBridge0;
+                    if (_createTrackRoadCommandAiUnkFlags & (1U << 22))
+                    {
+                        args.bridge = _createTrackRoadCommandBridge1;
+                        if (args.trackId != 0)
+                        {
+                            args.bridge = _createTrackRoadCommandBridge0;
+                        }
+                    }
+                    args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 20;
+                    args.mods = _createTrackRoadCommandMods >> 16;
+                    if ((World::TrackData::getTrackMiscData(args.trackId).flags & World::Track::CommonTraitFlags::steepSlope) != World::Track::CommonTraitFlags::none)
+                    {
+                        args.mods |= _createTrackRoadCommandRackRail >> 16;
+                    }
+                    args.unk = false;
+                    auto argsNoBridge = args;
+                    argsNoBridge.bridge = 0xFFU; // no bridge
+                    auto res = GameCommands::doCommand(argsNoBridge, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+                    if (res == GameCommands::FAILURE)
+                    {
+                        // Try with bridge
+                        res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+                        if (res == GameCommands::FAILURE)
+                        {
+                            // 0x00484AB6
+                            // Insert a hash entry for the failed track placement
+                        }
+                    }
+                    // 0x00484A05
                 }
                 else
                 {
