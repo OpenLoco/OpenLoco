@@ -239,7 +239,7 @@ namespace OpenLoco
         uint16_t var_85DC;
         uint32_t var_85DE;
         uint32_t var_85E2;
-        uint8_t pad_85E6[0x85E8 - 0x85E6];
+        uint16_t var_85E6;
         uint16_t var_85E8;
         uint32_t var_85EA;
         uint8_t var_85EE;

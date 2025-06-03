@@ -759,10 +759,24 @@ namespace OpenLoco::CompanyAi
                         if (res == GameCommands::FAILURE)
                         {
                             // 0x00484AB6
-                            // Insert a hash entry for the failed track placement
+                            const auto entry = Company::Unk25C0HashTableEntry(args.pos, args.trackId, args.rotation & 0x3);
+                            company.addHashTableEntry(entry);
+
+                            _112C518 = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
+                            return;
                         }
                     }
                     // 0x00484A05
+                    if (_112C398 == 0)
+                    {
+                        company.var_85E6 = (bestTrackId << 3) | (args.rotation & 0x3U);
+                    }
+
+                    _unk2Pos112C3C6 = pos;
+                    _unk2PosBaseZ112C517 = pos.z / World::kSmallZStep;
+                    _unkTad112C3CA = (bestTrackId << 3) | (args.rotation & 0x3U);
+                    _112C398 += World::TrackData::getTrackMiscData(bestTrackId).unkWeighting;
+                    return;
                 }
                 else
                 {
