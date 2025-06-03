@@ -149,6 +149,30 @@ namespace OpenLoco
             uint16_t var_02; // y + flags
             uint8_t var_04;  // z
             uint8_t var_05;  // trackId | (direction << 6)
+
+            Unk25C0HashTableEntry() = default;
+            Unk25C0HashTableEntry(World::Pos3 pos, uint8_t trackRoadId, uint8_t direction);
+
+            constexpr World::Pos3 getPosition() const
+            {
+                return World::Pos3(var_00, var_02 & 0xFFFE, var_04 * 4 /*World::kSmallZStep*/);
+            }
+            constexpr uint8_t getTrackRoadId() const
+            {
+                return var_05 & 0x3F;
+            }
+            constexpr uint8_t getDirection() const
+            {
+                return (var_05 >> 6) & 0x03;
+            }
+
+            // When looking up the hash table entry if there is a hash collision check the next entries in
+            // the table as well for matches until no hash collision or match is found
+            constexpr bool hasHashCollision() const
+            {
+                return (var_02 & (1U << 0)) != 0;
+            }
+            constexpr uint16_t calculateHash() const;
         };
 
         StringId name;
@@ -266,6 +290,9 @@ namespace OpenLoco
         void updateHeadquartersColour();
         void updateOwnerEmotion();
         uint8_t getHeadquarterPerformanceVariation() const;
+
+        bool hashTableContains(const Unk25C0HashTableEntry& entry) const;
+        bool addHashTableEntry(const Unk25C0HashTableEntry& entry);
 
     private:
         void setHeadquartersVariation(const uint8_t variation);
