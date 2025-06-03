@@ -110,71 +110,58 @@ namespace OpenLoco::Ui
 
     struct SavedView
     {
-        union
-        {
-            coord_t mapX;
-            EntityId entityId;
-        };
-        union
-        {
-            coord_t mapY;
-            uint16_t flags;
-        };
-        ZoomLevel zoomLevel;
-        int8_t rotation;
-        int16_t surfaceZ;
+        coord_t mapX{ -1 };
+        coord_t mapY{ -1 };
+        EntityId entityId{ EntityId::null };
+        uint16_t flags{};
+        ZoomLevel zoomLevel{};
+        int8_t rotation{};
+        int16_t surfaceZ{};
 
-        SavedView() = default;
+        constexpr SavedView() = default;
 
-        SavedView(coord_t mapX, coord_t mapY, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
+        constexpr SavedView(coord_t mapX, coord_t mapY, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
             : mapX(mapX)
             , mapY(mapY)
             , zoomLevel(zoomLevel)
             , rotation(rotation)
             , surfaceZ(surfaceZ) {};
 
-        SavedView(EntityId entityId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
+        constexpr SavedView(EntityId entityId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
             : entityId(entityId)
             , flags(flags)
             , zoomLevel(zoomLevel)
             , rotation(rotation)
             , surfaceZ(surfaceZ) {};
 
-        bool isEmpty() const
+        constexpr bool isEmpty() const
         {
-            return mapX == -1 && mapY == -1;
+            return mapX == -1 && mapY == -1 && entityId == EntityId::null;
         }
 
-        bool hasUnkFlag15() const
-        {
-            return (flags & (1 << 14)) != 0;
-        }
-
-        bool isEntityView() const
+        constexpr bool isEntityView() const
         {
             return (flags & (1 << 15)) != 0;
         }
 
-        World::Pos3 getPos() const
+        constexpr World::Pos3 getPos() const
         {
             if (isEntityView())
             {
                 return {};
             }
 
-            return { mapX, static_cast<coord_t>(mapY & 0x3FFF), surfaceZ };
+            return { mapX, mapY, surfaceZ };
         }
 
-        void clear()
+        constexpr void clear()
         {
             mapX = -1;
             mapY = -1;
+            entityId = EntityId::null;
         }
 
-        bool operator==(const SavedView& rhs) const
-        {
-            return mapX == rhs.mapX && mapY == rhs.mapY && zoomLevel == rhs.zoomLevel && rotation == rhs.rotation && surfaceZ == rhs.surfaceZ;
-        }
+        auto operator<=>(const SavedView& other) const = default;
     };
 
     struct Window
