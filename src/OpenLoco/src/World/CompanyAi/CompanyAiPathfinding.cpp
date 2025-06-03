@@ -321,33 +321,10 @@ namespace OpenLoco::CompanyAi
         // dh
         const auto trackId = (tad >> 3) & 0x3F;
 
-        const auto hash1 = direction ^ ((pos.z / World::kSmallZStep) & 0xFF);
-        const auto hash2 = hash1 ^ ((pos.x / 32) * 8);
-        const auto hash3 = hash2 ^ (pos.y / 32);
-        const auto hash4 = hash3 ^ (trackId * 64);
-
-        uint32_t index = hash4 & 0xFFFU;
-        while (company.var_25C0[index].var_00 != 0xFFFF)
+        const auto entry = Company::Unk25C0HashTableEntry(pos, trackId, direction);
+        if (company.hashTableContains(entry))
         {
-            auto& rhsEntry = company.var_25C0[index];
-            if (pos.x == rhsEntry.var_00
-                && ((pos.z / World::kSmallZStep) & 0xFFU) == rhsEntry.var_04
-                && (trackId | (direction << 6)) == rhsEntry.var_05
-                && pos.y == (rhsEntry.var_02 & 0xFFFE))
-            {
-                return;
-            }
-
-            if (!(rhsEntry.var_02 & 0b1))
-            {
-                break;
-            }
-
-            index++;
-            if (index >= std::size(company.var_25C0))
-            {
-                index = 0;
-            }
+            return;
         }
 
         _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags | (1U << 22);
@@ -527,33 +504,10 @@ namespace OpenLoco::CompanyAi
         // dh
         const auto roadId = (tad >> 3) & 0xF;
 
-        const auto hash1 = direction ^ ((pos.z / World::kSmallZStep) & 0xFF);
-        const auto hash2 = hash1 ^ ((pos.x / 32) * 8);
-        const auto hash3 = hash2 ^ (pos.y / 32);
-        const auto hash4 = hash3 ^ (roadId * 64);
-
-        uint32_t index = hash4 & 0xFFFU;
-        while (company.var_25C0[index].var_00 != 0xFFFF)
+        const auto entry = Company::Unk25C0HashTableEntry(pos, roadId, direction);
+        if (company.hashTableContains(entry))
         {
-            auto& rhsEntry = company.var_25C0[index];
-            if (pos.x == rhsEntry.var_00
-                && ((pos.z / World::kSmallZStep) & 0xFFU) == rhsEntry.var_04
-                && (roadId | (direction << 6)) == rhsEntry.var_05
-                && pos.y == (rhsEntry.var_02 & 0xFFFE))
-            {
-                return;
-            }
-
-            if (!(rhsEntry.var_02 & 0b1))
-            {
-                break;
-            }
-
-            index++;
-            if (index >= std::size(company.var_25C0))
-            {
-                index = 0;
-            }
+            return;
         }
 
         GameCommands::RoadPlacementArgs args;
@@ -817,34 +771,8 @@ namespace OpenLoco::CompanyAi
                     // dh
                     auto trackIdStart = (_unkTad112C3CA >> 3) & 0x3F;
                     auto rot = _unkTad112C3CA & 0x3U;
-                    if (company.var_25C0_length < 2048)
-                    {
-                        const auto hash1 = rot ^ ((pos2.z / World::kSmallZStep) & 0xFF);
-                        const auto hash2 = hash1 ^ ((pos2.x / 32) * 8);
-                        const auto hash3 = hash2 ^ (pos2.y / 32);
-                        const auto hash4 = hash3 ^ (trackIdStart * 64);
-                        uint32_t index = hash4 & 0xFFFU;
-
-                        while (company.var_25C0[index].var_00 != 0xFFFF)
-                        {
-                            auto& entry = company.var_25C0[index];
-                            entry.var_02 |= 1U << 0; // mark as hash collision
-
-                            index++;
-                            if (index >= std::size(company.var_25C0))
-                            {
-                                index = 0;
-                            }
-                        }
-                        const auto newEntry = Company::Unk25C0HashTableEntry{
-                            .var_00 = static_cast<uint16_t>(pos2.x),
-                            .var_02 = static_cast<uint16_t>(pos2.y),
-                            .var_04 = static_cast<uint8_t>(pos2.z / World::kSmallZStep),
-                            .var_05 = static_cast<uint8_t>(trackIdStart | (rot << 6))
-                        };
-                        company.var_25C0[index] = newEntry;
-                        company.var_25C0_length++;
-                    }
+                    const auto entry = Company::Unk25C0HashTableEntry(pos2, trackIdStart, rot);
+                    company.addHashTableEntry(entry);
                     _112C518 = 1;
                     return;
                 }

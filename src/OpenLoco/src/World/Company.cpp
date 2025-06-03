@@ -901,6 +901,58 @@ namespace OpenLoco
         return std::min(performanceIndex / 200, 4);
     }
 
+    bool Company::hashTableContains(const Unk25C0HashTableEntry& entry) const
+    {
+        auto index = entry.calculateHash();
+        while (var_25C0[index].var_00 != 0xFFFF)
+        {
+            auto& rhsEntry = var_25C0[index];
+            if (rhsEntry.getPosition() == entry.getPosition()
+                && rhsEntry.getDirection() == entry.getDirection()
+                && rhsEntry.getTrackRoadId() == entry.getTrackRoadId())
+            {
+                return true;
+            }
+
+            if (!(rhsEntry.hasHashCollision()))
+            {
+                break;
+            }
+
+            index++;
+            if (index >= std::size(var_25C0))
+            {
+                index = 0;
+            }
+        }
+        return false;
+    }
+
+    bool Company::addHashTableEntry(const Unk25C0HashTableEntry& entry)
+    {
+        if (var_25C0_length >= 2048)
+        {
+            return false; // Hash table is full
+        }
+        auto index = entry.calculateHash();
+
+        while (var_25C0[index].var_00 != 0xFFFF)
+        {
+            auto& rhsEntry = var_25C0[index];
+            rhsEntry.var_02 |= 1U << 0; // mark as hash collision
+
+            index++;
+            if (index >= std::size(var_25C0))
+            {
+                index = 0;
+            }
+        }
+
+        var_25C0[index] = entry;
+        var_25C0_length++;
+        return true;
+    }
+
     // 0x0042F0FC
     void Company::setHeadquartersVariation(const uint8_t variation)
     {
@@ -1080,5 +1132,27 @@ namespace OpenLoco
             }
         }
         return applyBeTopProgressModifiers(progress, objective, *this);
+    }
+
+    Company::Unk25C0HashTableEntry::Unk25C0HashTableEntry(World::Pos3 pos, uint8_t trackRoadId, uint8_t direction)
+    {
+        var_00 = pos.x;
+        var_02 = pos.y;
+        var_04 = pos.z / World::kSmallZStep;
+        var_05 = (trackRoadId & 0x3F) | (direction << 6);
+    }
+
+    constexpr uint16_t Company::Unk25C0HashTableEntry::calculateHash() const
+    {
+        const auto direction = getDirection();
+        const auto pos = getPosition();
+        const auto trackRoadId = getTrackRoadId();
+
+        const auto hash1 = direction ^ ((pos.z / World::kSmallZStep) & 0xFF);
+        const auto hash2 = hash1 ^ ((pos.x / 32) * 8);
+        const auto hash3 = hash2 ^ (pos.y / 32);
+        const auto hash4 = hash3 ^ (trackRoadId * 64);
+
+        return hash4 & 0xFFFU;
     }
 }
