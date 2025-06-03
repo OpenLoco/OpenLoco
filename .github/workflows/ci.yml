@@ -42,23 +42,32 @@ jobs:
         uses: lukka/run-vcpkg@v11.5
         with:
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-          vcpkgGitCommitId: d5182f703b51d7b258f83f94d936ac03488dcdbe
+          vcpkgGitCommitId: 89dc8be6dbcf18482a5a1bf86a2f4615c939b0fb
       - name: Build OpenLoco
         shell: cmd
         run: |
           cmake --preset windows-msvc
           cmake --build --preset windows-msvc-release
-      - name: Build artifacts
+      - name: Build release
         run: |
           mkdir artifacts | Out-Null
           Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE artifacts
           Copy-Item build\windows-msvc\Release\* artifacts -Recurse
-      - name: Upload artifacts
+      - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OpenLoco-${{ runner.os }}-Win32-cmake
-          path: artifacts
+          name: OpenLoco-${{ runner.os }}-Win32
+          path: |
+            artifacts/
+            !artifacts/*.pdb
           if-no-files-found: error
+      - name: Upload symbols artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenLoco-${{ runner.os }}-Win32-symbols
+          path: |
+            artifacts/*.pdb
+          if-no-files-found: warn
       - name: Checkout Assets
         if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }} 
         uses: actions/checkout@v4

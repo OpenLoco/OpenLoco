@@ -38,7 +38,7 @@ if (WIN32)
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
-            GIT_TAG d5182f703b51d7b258f83f94d936ac03488dcdbe)
+            GIT_TAG 89dc8be6dbcf18482a5a1bf86a2f4615c939b0fb)
         FetchContent_MakeAvailable(vcpkg)
 
         set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
