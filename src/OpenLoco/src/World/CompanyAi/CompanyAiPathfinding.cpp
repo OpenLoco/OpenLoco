@@ -641,6 +641,7 @@ namespace OpenLoco::CompanyAi
         if (_trackRoadObjType112C519 & (1U << 7))
         {
             // 0x00484D76
+            call(0x00484D76);
         }
         else
         {
@@ -648,13 +649,13 @@ namespace OpenLoco::CompanyAi
             if (_112C518 == 0)
             {
                 // 0x00484662
-                if (_112C398 >= company.var_85EA)
+                if (_112C398 >= static_cast<int32_t>(company.var_85EA))
                 {
                     company.var_85F0 = 0xF000U;
                     return;
                 }
                 // 0x00484813
-                _maxTrackRoadWeightingLimit = (company.var_85C3 & ((1U << 4) | (1U << 2))) ? 224 : 138;
+                _maxTrackRoadWeightingLimit = (company.var_85C3 & ((1U << 4) | (1U << 2))) ? 138 : 224;
 
                 {
                     auto pos = World::Pos3(_unk3Pos112C3CC, _unk3PosBaseZ112C59C * World::kSmallZStep);
@@ -977,6 +978,20 @@ namespace OpenLoco::CompanyAi
                 _queryTrackRoadPlacementFlags = res.flags;
                 _queryTrackRoadPlacementMinScore = res.minScore;
                 _queryTrackRoadPlacementMinWeighting = res.minWeighting;
+
+                regs = backup;
+                return 0;
+            });
+
+        // 0x00484648
+        Interop::registerHook(
+            0x00484648,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+
+                auto& company = **_unk112C390;
+
+                sub_484648(company);
 
                 regs = backup;
                 return 0;
