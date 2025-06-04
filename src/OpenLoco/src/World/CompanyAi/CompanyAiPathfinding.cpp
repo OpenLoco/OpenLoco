@@ -2,8 +2,12 @@
 #include "CompanyAi.h"
 #include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Track/CreateTrack.h"
+#include "GameCommands/Track/RemoveTrack.h"
 #include "Map/Tile.h"
+#include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
+#include "Map/TrackElement.h"
+#include "Map/Track/Track.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -13,8 +17,8 @@
 
 namespace OpenLoco::CompanyAi
 {
-    static Interop::loco_global<uint8_t, 0x0112C518> _112C518;  // company 0x85EE
-    static Interop::loco_global<uint32_t, 0x0112C398> _112C398; // company 0x85DE
+    static Interop::loco_global<uint8_t, 0x0112C518> _112C518; // company 0x85EE
+    static Interop::loco_global<int32_t, 0x0112C398> _112C398; // company 0x85DE
     static Interop::loco_global<uint8_t, 0x0112C519> _trackRoadObjType112C519;
     static Interop::loco_global<World::Pos2, 0x0112C3C2> _unk1Pos112C3C2;
     static Interop::loco_global<World::SmallZ, 0x0112C515> _unk1PosBaseZ112C515;
@@ -775,7 +779,7 @@ namespace OpenLoco::CompanyAi
                     _unk2Pos112C3C6 = pos;
                     _unk2PosBaseZ112C517 = pos.z / World::kSmallZStep;
                     _unkTad112C3CA = (bestTrackId << 3) | (args.rotation & 0x3U);
-                    _112C398 += World::TrackData::getTrackMiscData(bestTrackId).unkWeighting;
+                    _112C398 += static_cast<int32_t>(World::TrackData::getTrackMiscData(bestTrackId).unkWeighting);
                     return;
                 }
                 else
@@ -794,6 +798,114 @@ namespace OpenLoco::CompanyAi
             else
             {
                 // 0x00484B5C
+                if (_112C398 <= 0)
+                {
+                    _112C518 = 0;
+                    return;
+                }
+
+                const auto trackId = (_unkTad112C3CA >> 3) & 0x3F;
+                _112C398 -= static_cast<int32_t>(World::TrackData::getTrackMiscData(trackId).unkWeighting);
+                _112C518--;
+
+                const auto rotation = (_unkTad112C3CA & 0x3U);
+                auto& trackPiece0 = World::TrackData::getTrackPiece(trackId)[0];
+                const auto pos = World::Pos3(_unk2Pos112C3C6, (_unk2PosBaseZ112C517 * World::kSmallZStep) + trackPiece0.z);
+
+                const auto hasAiAllocatedElTrack = [&pos, rotation, trackId]() {
+                    auto tile = World::TileManager::get(pos);
+                    for (auto& el : tile)
+                    {
+                        auto* elTrack = el.as<World::TrackElement>();
+                        if (elTrack == nullptr)
+                        {
+                            continue;
+                        }
+                        if (elTrack->baseZ() != pos.z / World::kSmallZStep)
+                        {
+                            continue;
+                        }
+                        if (elTrack->rotation() != rotation)
+                        {
+                            continue;
+                        }
+                        if (!elTrack->isAiAllocated())
+                        {
+                            continue;
+                        }
+                        if (elTrack->hasStationElement())
+                        {
+                            continue;
+                        }
+                        if (elTrack->trackId() != trackId)
+                        {
+                            continue;
+                        }
+                        if (elTrack->sequenceIndex() != 0)
+                        {
+                            continue;
+                        }
+                        if (elTrack->trackObjectId() != _trackRoadObjType112C519)
+                        {
+                            continue;
+                        }
+                        return true;
+                    }
+                    return false;
+                }();
+
+                if (!hasAiAllocatedElTrack)
+                {
+                    company.var_85F0 = 0xF000U;
+                    return;
+                }
+
+                GameCommands::TrackRemovalArgs args;
+                args.pos = pos;
+                args.rotation = rotation;
+                args.trackId = trackId;
+                args.index = 0U;
+                args.trackObjectId = _trackRoadObjType112C519;
+                GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+                // No check of failure!
+
+                auto nextPos = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
+                const auto rot = World::TrackData::getUnkTrack(_unkTad112C3CA & 0x3FFU).rotationBegin;
+                if (rot < 12)
+                {
+                    nextPos -= World::Pos3(World::kRotationOffset[rot], 0);
+                }
+                const auto nextRot = World::kReverseRotation[rot];
+                const auto tc = World::Track::getTrackConnectionsAi(nextPos, nextRot, company.id(), _trackRoadObjType112C519, 0, 0);
+
+                if (tc.connections.empty())
+                {
+                    company.var_85F0 = 0xF000U;
+                    return;
+                }
+
+                {
+                    auto newTad = tc.connections[0] & 0x1FFU;
+                    auto newPos = nextPos + World::TrackData::getUnkTrack(newTad).pos;
+                    const auto rotEnd = World::TrackData::getUnkTrack(newTad).rotationEnd;
+                    if (rotEnd < 12)
+                    {
+                        newPos -= World::Pos3(World::kRotationOffset[rotEnd], 0);
+                    }
+
+                    // Odd??
+                    newTad ^= (1U << 2);
+                    if (newTad & (1U << 2))
+                    {
+                        newTad &= 0x3;
+                        newTad ^= (1U << 2);
+                    }
+
+                    _unkTad112C3CA = newTad;
+                    _unk2Pos112C3C6 = newPos;
+                    _unk2PosBaseZ112C517 = newPos.z / World::kSmallZStep;
+                    return;
+                }
             }
         }
     }
