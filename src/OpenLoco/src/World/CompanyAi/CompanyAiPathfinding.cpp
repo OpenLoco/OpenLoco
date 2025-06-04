@@ -23,7 +23,7 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<World::Pos2, 0x0112C3C2> _unk1Pos112C3C2;
     static Interop::loco_global<World::SmallZ, 0x0112C515> _unk1PosBaseZ112C515;
     static Interop::loco_global<World::Pos2, 0x0112C3C6> _unk2Pos112C3C6;
-    static Interop::loco_global<World::SmallZ, 0x0112C3C6> _unk2PosBaseZ112C517;
+    static Interop::loco_global<World::SmallZ, 0x0112C517> _unk2PosBaseZ112C517;
     static Interop::loco_global<World::Pos2, 0x0112C3CC> _unk3Pos112C3CC;
     static Interop::loco_global<World::SmallZ, 0x0112C59C> _unk3PosBaseZ112C59C;
     static Interop::loco_global<uint8_t, 0x0112C59E> _unk3Rot112C59E;
@@ -641,6 +641,7 @@ namespace OpenLoco::CompanyAi
         if (_trackRoadObjType112C519 & (1U << 7))
         {
             // 0x00484D76
+            call(0x00484D76);
         }
         else
         {
@@ -648,13 +649,13 @@ namespace OpenLoco::CompanyAi
             if (_112C518 == 0)
             {
                 // 0x00484662
-                if (_112C398 >= company.var_85EA)
+                if (_112C398 >= static_cast<int32_t>(company.var_85EA))
                 {
                     company.var_85F0 = 0xF000U;
                     return;
                 }
                 // 0x00484813
-                _maxTrackRoadWeightingLimit = (company.var_85C3 & ((1U << 4) | (1U << 2))) ? 224 : 138;
+                _maxTrackRoadWeightingLimit = (company.var_85C3 & ((1U << 4) | (1U << 2))) ? 138 : 224;
 
                 {
                     auto pos = World::Pos3(_unk3Pos112C3CC, _unk3PosBaseZ112C59C * World::kSmallZStep);
@@ -977,6 +978,20 @@ namespace OpenLoco::CompanyAi
                 _queryTrackRoadPlacementFlags = res.flags;
                 _queryTrackRoadPlacementMinScore = res.minScore;
                 _queryTrackRoadPlacementMinWeighting = res.minWeighting;
+
+                regs = backup;
+                return 0;
+            });
+
+        // 0x00484648
+        Interop::registerHook(
+            0x00484648,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+
+                auto& company = **_unk112C390;
+
+                sub_484648(company);
 
                 regs = backup;
                 return 0;
