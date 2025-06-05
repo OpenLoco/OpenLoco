@@ -5,9 +5,9 @@
 #include "GameCommands/Track/RemoveTrack.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
-#include "Map/Track/Track.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -894,12 +894,12 @@ namespace OpenLoco::CompanyAi
                         newPos -= World::Pos3(World::kRotationOffset[rotEnd], 0);
                     }
 
-                    // Odd??
+                    // Normalise the rotation (remove the reverse bit and reverse the rotation if required)
                     newTad ^= (1U << 2);
                     if (newTad & (1U << 2))
                     {
                         newTad &= 0x3;
-                        newTad ^= (1U << 2);
+                        newTad ^= (1U << 1);
                     }
 
                     _unkTad112C3CA = newTad;
