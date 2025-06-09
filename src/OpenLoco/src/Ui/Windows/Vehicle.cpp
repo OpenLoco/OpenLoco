@@ -4974,8 +4974,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            auto main = WindowManager::getMainWindow();
-            main->viewportUnfocusFromEntity();
+            Vehicles::Vehicle train(*head);
+            EntityId viewportFollowEntity = train.veh2->id;
+            auto main = Ui::WindowManager::getMainWindow();
+            if (main->viewportIsFocusedOnEntity(viewportFollowEntity))
+            {
+                main->viewportUnfocusFromEntity();
+            }
 
             GameCommands::setErrorTitle(StringIds::cant_remove_string_id);
             FormatArguments args{};
