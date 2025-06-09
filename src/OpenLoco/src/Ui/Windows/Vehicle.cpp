@@ -4974,6 +4974,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
+            auto main = WindowManager::getMainWindow();
+            main->viewportFocusOnEntity(EntityId::null);
+
             GameCommands::setErrorTitle(StringIds::cant_remove_string_id);
             FormatArguments args{};
             args.skip(10);
