@@ -223,7 +223,7 @@ namespace OpenLoco::VehicleManager
     void deleteTrain(Vehicles::VehicleHead& head)
     {
         auto main = Ui::WindowManager::getMainWindow();
-        main->viewportFocusOnEntity(EntityId::null);
+        main->viewportUnfocusFromEntity();
 
         Ui::WindowManager::close(Ui::WindowType::vehicle, enumValue(head.id));
         auto* vehListWnd = Ui::WindowManager::find(Ui::WindowType::vehicleList, enumValue(head.owner));
