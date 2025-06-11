@@ -222,6 +222,14 @@ namespace OpenLoco::VehicleManager
     // 0x004AF06E
     void deleteTrain(Vehicles::VehicleHead& head)
     {
+        Vehicles::Vehicle train(head);
+        EntityId viewportFollowEntity = train.veh2->id;
+        auto main = Ui::WindowManager::getMainWindow();
+        if (main->viewportIsFocusedOnEntity(viewportFollowEntity))
+        {
+            main->viewportUnfocusFromEntity();
+        }
+
         Ui::WindowManager::close(Ui::WindowType::vehicle, enumValue(head.id));
         auto* vehListWnd = Ui::WindowManager::find(Ui::WindowType::vehicleList, enumValue(head.owner));
         if (vehListWnd != nullptr)
@@ -267,7 +275,6 @@ namespace OpenLoco::VehicleManager
             }
         }
 
-        Vehicles::Vehicle train(head);
         auto* nextVeh = train.veh2->nextVehicleComponent();
         while (nextVeh != nullptr && !nextVeh->isVehicleTail())
         {

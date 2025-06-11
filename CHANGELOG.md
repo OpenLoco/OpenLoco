@@ -1,5 +1,6 @@
 25.05+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2817] Deleting a vehicle that is followed on the main viewport crashes the game.
 - Fix: [#3114] Details in the Object Selection window not drawing depending on the window position.
 
 25.05 (2025-05-28)
