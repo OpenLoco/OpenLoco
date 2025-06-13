@@ -20,10 +20,9 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        const auto pos = widget.position();
         const auto size = widget.size();
 
-        const auto resizeBarPos = pos + Ui::Point(size.width - 18, size.height - 18);
+        const auto resizeBarPos = Ui::Point(size.width - 18, size.height - 18);
 
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
         drawingCtx.drawImage(resizeBarPos, image);
@@ -34,11 +33,10 @@ namespace OpenLoco::Ui::Widgets
     {
         auto* window = widgetState.window;
 
-        const auto pos = widget.position();
         const auto size = widget.size();
 
         drawingCtx.fillRectInset(
-            pos,
+            {},
             size,
             widgetState.colour,
             widgetState.flags);

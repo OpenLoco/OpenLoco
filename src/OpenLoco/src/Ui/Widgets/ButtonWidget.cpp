@@ -17,7 +17,7 @@ namespace OpenLoco::Ui::Widgets
             flags |= Gfx::RectInsetFlags::borderInset;
         }
 
-        drawingCtx.fillRectInset(widget.position(), widget.size(), widgetState.colour, flags);
+        drawingCtx.fillRectInset({}, widget.size(), widgetState.colour, flags);
 
         Label::draw(drawingCtx, widget, widgetState);
     }

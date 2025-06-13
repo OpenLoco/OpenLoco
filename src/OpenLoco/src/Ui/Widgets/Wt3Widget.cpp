@@ -6,8 +6,6 @@ namespace OpenLoco::Ui::Widgets
 {
     static void sub_4CADE8(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        const auto position = widget.position();
-
         const bool isColourSet = widget.image & Widget::kImageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
 
@@ -26,16 +24,16 @@ namespace OpenLoco::Ui::Widgets
             if (colour.isTranslucent())
             {
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid(position + Ui::Point{ 1, 1 }, pureImage, c);
+                drawingCtx.drawImageSolid(Ui::Point{ 1, 1 }, pureImage, c);
                 c = Colours::getShade(colour.c(), 2);
-                drawingCtx.drawImageSolid(position, pureImage, c);
+                drawingCtx.drawImageSolid({}, pureImage, c);
             }
             else
             {
                 c = Colours::getShade(colour.c(), 6);
-                drawingCtx.drawImageSolid(position + Ui::Point{ 1, 1 }, pureImage, c);
+                drawingCtx.drawImageSolid(Ui::Point{ 1, 1 }, pureImage, c);
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid(position, pureImage, c);
+                drawingCtx.drawImageSolid({}, pureImage, c);
             }
 
             return;
@@ -51,21 +49,14 @@ namespace OpenLoco::Ui::Widgets
             imageId = imageId.withPrimary(colour.c());
         }
 
-        drawingCtx.drawImage(position, imageId);
+        drawingCtx.drawImage({}, imageId);
     }
 
     void Wt3Widget::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
 
-        const auto position = widget.position();
         const auto size = widget.size();
-
-        int16_t t, l, b, r;
-        t = widget.top;
-        l = widget.left;
-        r = widget.right;
-        b = widget.bottom;
 
         auto flags = widgetState.flags;
         if (widgetState.activated)
@@ -76,16 +67,16 @@ namespace OpenLoco::Ui::Widgets
         if (widget.content == Widget::kContentUnk)
         {
             flags |= Gfx::RectInsetFlags::fillNone;
-            drawingCtx.fillRectInset(position, size, widgetState.colour, flags);
+            drawingCtx.fillRectInset({}, size, widgetState.colour, flags);
             return;
         }
 
         if (window->hasFlags(WindowFlags::flag_6))
         {
-            drawingCtx.fillRect(position, size, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect({}, size, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
-        drawingCtx.fillRectInset(l, t, r, b, widgetState.colour, flags);
+        drawingCtx.fillRectInset({ 0, 0 }, size, widgetState.colour, flags);
 
         if (widget.content == Widget::kContentNull)
         {
