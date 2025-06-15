@@ -679,7 +679,8 @@ namespace OpenLoco::Ui
             return false;
         }
 
-        if (targetEntity != EntityId::null && viewportConfigurations[0].viewportTargetSprite == EntityId::null)
+        // If the argument provided is not EntityId::null check for a match.
+        if (targetEntity != EntityId::null && viewportConfigurations[0].viewportTargetSprite != targetEntity)
         {
             return false;
         }
