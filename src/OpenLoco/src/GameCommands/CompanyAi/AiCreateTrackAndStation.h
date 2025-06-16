@@ -2,12 +2,12 @@
 
 namespace OpenLoco::GameCommands
 {
-    struct Unk51Args
+    struct AiTrackAndStationPlacementArgs
     {
-        static constexpr auto command = GameCommand::gc_unk_51;
+        static constexpr auto command = GameCommand::aiCreateTrackAndStation;
 
-        Unk51Args() = default;
-        explicit Unk51Args(const registers& regs)
+        AiTrackAndStationPlacementArgs() = default;
+        explicit AiTrackAndStationPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , trackObjectId(regs.dl)

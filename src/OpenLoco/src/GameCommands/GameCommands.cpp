@@ -174,9 +174,9 @@ namespace OpenLoco::GameCommands
         { GameCommand::removeIndustry,               removeIndustry,            0x00455943, true  },
         { GameCommand::createTown,                   createTown,                0x00496C22, true  },
         { GameCommand::removeTown,                   removeTown,                0x0049711F, true  },
-        { GameCommand::gc_unk_51,                    nullptr,                   0x004A6FDC, true  },
+        { GameCommand::aiCreateTrackAndStation,      nullptr,                   0x004A6FDC, true  },
         { GameCommand::aiTrackReplacement,           nullptr,                   0x004A734F, true  },
-        { GameCommand::gc_unk_53,                    nullptr,                   0x0047AF0B, true  },
+        { GameCommand::aiCreateRoadAndStation,       nullptr,                   0x0047AF0B, true  },
         { GameCommand::buildCompanyHeadquarters,     buildCompanyHeadquarters,  0x0042ECFC, true  },
         { GameCommand::removeCompanyHeadquarters,    removeCompanyHeadquarters, 0x0042EEAF, true  },
         { GameCommand::createAirport,                createAirport,             0x00492C41, true  },
@@ -233,7 +233,7 @@ namespace OpenLoco::GameCommands
             return 0;
         });
 
-        // Used by a gc_unk_51 instead of going via doCommand
+        // Used by a aiCreateTrackAndStation instead of going via doCommand
         registerHook(0x0048BB20, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             createTrainStation(backup);
@@ -242,7 +242,7 @@ namespace OpenLoco::GameCommands
             return 0;
         });
 
-        // Used by a gc_unk_51 and sub_4854B2 ai function instead of going via doCommand
+        // Used by a aiCreateTrackAndStation and sub_4854B2 ai function instead of going via doCommand
         registerHook(0x0049BB98, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             createTrack(backup);
@@ -251,7 +251,7 @@ namespace OpenLoco::GameCommands
             return 0;
         });
 
-        // Used by a gc_unk_53 instead of going via doCommand
+        // Used by a aiCreateRoadAndStation instead of going via doCommand
         registerHook(0x0048C708, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             createRoadStation(backup);
@@ -260,7 +260,7 @@ namespace OpenLoco::GameCommands
             return 0;
         });
 
-        // Used by a gc_unk_53 and queryRoadPlacementScore ai function instead of going via doCommand
+        // Used by a aiCreateRoadAndStation and queryRoadPlacementScore ai function instead of going via doCommand
         registerHook(0x00475FBC, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             createRoad(backup);

@@ -2,12 +2,12 @@
 
 namespace OpenLoco::GameCommands
 {
-    struct Unk53Args
+    struct AiRoadAndStationPlacementArgs
     {
-        static constexpr auto command = GameCommand::gc_unk_53;
+        static constexpr auto command = GameCommand::aiCreateRoadAndStation;
 
-        Unk53Args() = default;
-        explicit Unk53Args(const registers& regs)
+        AiRoadAndStationPlacementArgs() = default;
+        explicit AiRoadAndStationPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , roadObjectId(regs.dl)
