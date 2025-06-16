@@ -4624,7 +4624,7 @@ namespace OpenLoco
     {
         auto& aiStation = thought.stations[aiStationIdx];
 
-        GameCommands::Unk53Args args{};
+        GameCommands::AiRoadAndStationPlacementArgs args{};
         args.pos = newStationPos;
         args.rotation = aiStation.rotation;
         args.roadObjectId = thought.trackObjId & ~(1U << 7);
@@ -4775,7 +4775,7 @@ namespace OpenLoco
     {
         auto& aiStation = thought.stations[aiStationIdx];
 
-        GameCommands::Unk51Args args{};
+        GameCommands::AiTrackAndStationPlacementArgs args{};
         args.pos = newStationPos;
         args.rotation = aiStation.rotation;
         args.trackObjectId = thought.trackObjId;
