@@ -35,4 +35,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void aiTrackReplacement(registers& regs);
 }
