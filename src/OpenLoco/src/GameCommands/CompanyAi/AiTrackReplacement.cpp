@@ -369,7 +369,7 @@ namespace OpenLoco::GameCommands
             auto clearFunc = [&totalCost, &hasLevelCrossing, &removedBuildings, &clearArgs](World::TileElement& el) {
                 return clearFunction(el, totalCost, hasLevelCrossing, removedBuildings, clearArgs);
             };
-            if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, elTrack->baseZ(), elTrack->clearZ(), World::QuarterTile(0xF, 0), clearFunc))
+            if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, elTrack->baseZ(), elTrack->clearZ(), World::QuarterTile(elTrack->occupiedQuarter(), 0), clearFunc))
             {
                 return GameCommands::FAILURE;
             }
