@@ -269,6 +269,15 @@ namespace OpenLoco::GameCommands
             regs = backup;
             return 0;
         });
+
+        // Used by sub_485B68 ai function instead of going via doCommand
+        registerHook(0x004A734F, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            aiTrackReplacement(backup);
+
+            regs = backup;
+            return 0;
+        });
     }
 
     static uint32_t loc_4314EA();
