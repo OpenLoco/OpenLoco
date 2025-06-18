@@ -8,6 +8,7 @@
 #include "Map/Track/SubpositionData.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
+#include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
 #include "RoutingManager.h"
@@ -174,9 +175,126 @@ namespace OpenLoco::Vehicles
     // 0x004AA464
     void VehicleBase::sub_4AA464()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AA464, regs);
+        // esi = this
+        // edi = nextCar
+
+        VehicleHead* head = EntityManager::get<VehicleHead>(this->getHead());
+        if (head->status != Status::crashed && head->status != Status::stuck)
+        {
+            // 0x004AA47E
+
+            head->status = Status::crashed;
+            head->crashedTimeout = 0;
+
+            if (head->owner == getGameState().playerCompanies[0])
+            {
+                // 0x004AA491
+
+                MessageManager::post(
+                    MessageType::vehicleCrashed,
+                    head->owner,
+                    (uint16_t)head->id,
+                    0xFFFF,
+                    0xFFFF);
+            }
+        }
+
+        // loc_4AA4A6
+        VehicleBogie* nextCar = EntityManager::get<VehicleBogie>(head->getNextCar());
+        nextCar = EntityManager::get<VehicleBogie>(nextCar->getNextCar());
+        nextCar = EntityManager::get<VehicleBogie>(nextCar->getNextCar()); // not a typo: do this thrice
+
+        while (nextCar->getSubType() != VehicleEntityType::tail)
+        {
+            // 0x004AA4D3
+            nextCar->refundCost = 0;
+
+            // loc_4AA4C0
+            nextCar = EntityManager::get<VehicleBogie>(nextCar->getNextCar());
+        }
+
+        // loc_4AA4DC
+        head->totalRefundCost = 0;
+        nextCar = EntityManager::get<VehicleBogie>(head->getNextCar());
+        nextCar = EntityManager::get<VehicleBogie>(nextCar->getNextCar());
+
+        uint32_t creationDay = nextCar->creationDay; // eax
+        // Original instruction:
+        // mov byte ptr [edi+5Ah], 0
+        // This apparently treats var_5A as a byte
+        nextCar->var_5A &= 0xFFFFFF00;
+
+        nextCar = EntityManager::get<VehicleBogie>(nextCar->getNextCar());
+        while (nextCar->getSubType() != VehicleEntityType::tail)
+        {
+            // 0x004AA517
+
+            nextCar->var_5A = creationDay;
+            nextCar = EntityManager::get<VehicleBogie>(nextCar->getNextCar());
+            nextCar->var_5A = creationDay;
+            nextCar = EntityManager::get<VehicleBogie>(nextCar->getNextCar());
+            nextCar = EntityManager::get<VehicleBogie>(nextCar->getNextCar());
+        }
+
+        // loc_4AA546
+        // At this point, 'this' pointer is restored to esi;
+        // There are no further writes to esi
+
+        if (this->getSubType() == VehicleEntityType::vehicle_2)
+        {
+            // loc_4AA5BA
+            nextCar = EntityManager::get<VehicleBogie>(this->getNextCar());
+
+            if (nextCar->getSubType() != VehicleEntityType::tail)
+            {
+                nextCar->var_5A |= 0x80000000;
+                nextCar->tileX = 0;
+                nextCar->tileY = 0;
+                nextCar->tileBaseZ = 0;
+            }
+        }
+        else
+        {
+            // 0x004AA54F
+
+            if (this->getSubType() == VehicleEntityType::bogie)
+            {
+                // loc_4AA59F
+
+                VehicleBogie* bogie = this->asVehicleBogie();
+                bogie->var_5A |= 0x80000000;
+                bogie->tileX = 0;
+                bogie->tileY = 0;
+                bogie->tileBaseZ = 0;
+            }
+            else
+            {
+                // 0x004AA555
+
+                // The original code checks to see if this is a tail,
+                // then splits into two paths, starting at 0x004AA55F
+                // and 0x004AA5E8; however, both paths are identical,
+                // and the check has no side effects, so we can skip it.
+
+                // 0x004AA55F / 0x004AA5E8
+                nextCar = head->asVehicleBogie();
+
+                while (EntityManager::get<VehicleBogie>(nextCar->getNextCar()) != this)
+                {
+                    // loc_4AA56C / loc_4AA5F5
+                    nextCar = EntityManager::get<VehicleBogie>(nextCar->getNextCar());
+                }
+
+                // 0x004AA581 / 0x004AA60A
+                nextCar->var_5A |= 0x80000000;
+                nextCar->tileX = 0;
+                nextCar->tileY = 0;
+                nextCar->tileBaseZ = 0;
+            }
+        }
+
+        // loc_4AA623
+        // (return)
     }
 
     static bool updateRoadMotionNewRoadPiece(VehicleCommon& component)
