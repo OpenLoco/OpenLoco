@@ -83,7 +83,7 @@ namespace OpenLoco::World::TileManager
                 return;
             }
             // If quite high in the air
-            if (pos.z - elSurface->baseHeight() > 12 * World::kSmallZStep)
+            if (pos.z - elSurface->baseHeight() >= 12 * World::kSmallZStep)
             {
                 return;
             }
@@ -1285,7 +1285,7 @@ namespace OpenLoco::World::TileManager
             return;
         }
         // If quite high in the air
-        if (pos.z - elSurface->baseHeight() > 12 * World::kSmallZStep)
+        if (pos.z - elSurface->baseHeight() >= 12 * World::kSmallZStep)
         {
             return;
         }

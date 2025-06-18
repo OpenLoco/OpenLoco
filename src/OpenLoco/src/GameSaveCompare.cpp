@@ -622,7 +622,7 @@ namespace OpenLoco::GameSaveCompare
                         }
                         if (divergentBytesTotal == 0 || displayAllDivergences)
                         {
-                            Logging::info("TILE ELEMENT[{}] x:{}, y:{}", elementCount, x, y);
+                            Logging::info("TILE ELEMENT[{}] TYPE[{}] x:{}, y:{}", elementCount, (t1s[i].type & 0x3C) >> 2, x, y);
                         }
                         divergentBytesTotal = bitWiseLogDivergence("Elements[" + std::to_string(elementCount) + "] x:" + std::to_string(x) + ", y:" + std::to_string(y), t1s[i], t2s[i], displayAllDivergences, divergentBytesTotal);
                     }
