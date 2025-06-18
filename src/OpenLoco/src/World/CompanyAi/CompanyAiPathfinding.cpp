@@ -48,7 +48,7 @@ namespace OpenLoco::CompanyAi
                 {
                     continue;
                 }
-                if (thought.mods & (1U << i))
+                if (thought.mods & (1U << roadObj->mods[i]))
                 {
                     unkMods |= (1U << (16 + i));
                 }
@@ -70,7 +70,7 @@ namespace OpenLoco::CompanyAi
                 {
                     continue;
                 }
-                if (thought.mods & (1U << i))
+                if (thought.mods & (1U << trackObj->mods[i]))
                 {
                     unkMods |= (1U << (16 + i));
                 }
