@@ -231,31 +231,28 @@ namespace OpenLoco::Vehicles
                 currentVehicle->tileBaseZ = 0;
             }
         }
+        else if (this->getSubType() == VehicleEntityType::bogie)
+        {
+            VehicleBogie* bogie = this->asVehicleBogie();
+            bogie->var_5A |= (1U << 31);
+            bogie->tileX = 0;
+            bogie->tileY = 0;
+            bogie->tileBaseZ = 0;
+        }
         else
         {
-            if (this->getSubType() == VehicleEntityType::bogie)
-            {
-                VehicleBogie* bogie = this->asVehicleBogie();
-                bogie->var_5A |= (1U << 31);
-                bogie->tileX = 0;
-                bogie->tileY = 0;
-                bogie->tileBaseZ = 0;
-            }
-            else
-            {
-                // The disassembled code splits into two identical paths, here.
-                currentVehicle = head->asVehicleBogie();
+            // The disassembled code splits into two identical paths, here.
+            currentVehicle = head->asVehicleBogie();
 
-                while (EntityManager::get<VehicleBogie>(currentVehicle->getNextCar()) != this)
-                {
-                    currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
-                }
-
-                currentVehicle->var_5A |= (1U << 31);
-                currentVehicle->tileX = 0;
-                currentVehicle->tileY = 0;
-                currentVehicle->tileBaseZ = 0;
+            while (EntityManager::get<VehicleBogie>(currentVehicle->getNextCar()) != this)
+            {
+                currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
             }
+
+            currentVehicle->var_5A |= (1U << 31);
+            currentVehicle->tileX = 0;
+            currentVehicle->tileY = 0;
+            currentVehicle->tileBaseZ = 0;
         }
     }
 
