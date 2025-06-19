@@ -60,10 +60,10 @@ namespace OpenLoco::GameCommands
             auto roadRegs = static_cast<registers>(roadArgs);
             roadRegs.bl = flags;
             createRoad(roadRegs);
-            const auto roadRes = roadRegs.ebx;
+            const auto roadRes = static_cast<currency32_t>(roadRegs.ebx);
             if (!(flags & GameCommands::Flags::apply))
             {
-                if (roadRes == GameCommands::FAILURE)
+                if (static_cast<uint32_t>(roadRes) == GameCommands::FAILURE)
                 {
                     return GameCommands::FAILURE;
                 }
@@ -88,10 +88,10 @@ namespace OpenLoco::GameCommands
             auto stationRegs = static_cast<registers>(stationArgs);
             stationRegs.bl = flags;
             createRoadStation(stationRegs);
-            const auto stationRes = stationRegs.ebx;
+            const auto stationRes = static_cast<currency32_t>(stationRegs.ebx);
             if (!(flags & GameCommands::Flags::apply))
             {
-                if (stationRes == GameCommands::FAILURE)
+                if (static_cast<uint32_t>(stationRes) == GameCommands::FAILURE)
                 {
                     return GameCommands::FAILURE;
                 }
