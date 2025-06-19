@@ -4638,7 +4638,7 @@ namespace OpenLoco
         {
             args.unk1 |= (1U << 0);
         }
-        args.unk2 = company.var_259A;
+        args.bridge = company.var_259A;
 
         auto* roadObj = ObjectManager::get<RoadObject>(args.roadObjectId);
         for (auto i = 0U; i < 2; ++i)
