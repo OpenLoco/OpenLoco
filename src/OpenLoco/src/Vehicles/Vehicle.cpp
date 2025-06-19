@@ -173,7 +173,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA464
-    void VehicleBase::sub_4AA464()
+    void VehicleBase::destroyTrain()
     {
         VehicleHead* head = EntityManager::get<VehicleHead>(this->getHead());
         if (head->status != Status::crashed && head->status != Status::stuck)

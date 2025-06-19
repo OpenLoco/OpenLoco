@@ -70,7 +70,7 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_var_1136130 = stash1136130;
         if (_vehicleUpdate_var_1136114 & (1 << 1))
         {
-            sub_4AA464();
+            destroyTrain();
             return false;
         }
         else if (!(_vehicleUpdate_var_1136114 & (1 << 2)))
@@ -265,7 +265,7 @@ namespace OpenLoco::Vehicles
     // 0x004AA0DF
     void VehicleBogie::collision()
     {
-        sub_4AA464();
+        destroyTrain();
         applyDestructionToComponent(*this);
         vehicleFlags |= VehicleFlags::unk_5;
 
@@ -297,7 +297,7 @@ namespace OpenLoco::Vehicles
             Vehicle collideTrain(collideCarComponent->getHead());
             if (collideTrain.head->status != Status::crashed)
             {
-                collideCarComponent->sub_4AA464();
+                collideCarComponent->destroyTrain();
             }
 
             for (auto& car : train.cars)
