@@ -8,6 +8,7 @@
 #include "Map/Track/SubpositionData.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
+#include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
 #include "RoutingManager.h"
@@ -172,11 +173,87 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA464
-    void VehicleBase::sub_4AA464()
+    void VehicleBase::destroyTrain()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AA464, regs);
+        VehicleHead* head = EntityManager::get<VehicleHead>(this->getHead());
+        if (head->status != Status::crashed && head->status != Status::stuck)
+        {
+            head->status = Status::crashed;
+            head->crashedTimeout = 0;
+
+            if (head->owner == getGameState().playerCompanies[0])
+            {
+                MessageManager::post(
+                    MessageType::vehicleCrashed,
+                    head->owner,
+                    (uint16_t)head->id,
+                    0xFFFF,
+                    0xFFFF);
+            }
+        }
+
+        VehicleBogie* currentVehicle = EntityManager::get<VehicleBogie>(head->getNextCar());
+        currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+        currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+
+        while (currentVehicle->getSubType() != VehicleEntityType::tail)
+        {
+            currentVehicle->refundCost = 0;
+            currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+        }
+
+        head->totalRefundCost = 0;
+        currentVehicle = EntityManager::get<VehicleBogie>(head->getNextCar());
+        currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+
+        uint32_t creationDay = currentVehicle->creationDay;
+        currentVehicle->var_5A &= 0xFFFFFF00;
+
+        currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+        while (currentVehicle->getSubType() != VehicleEntityType::tail)
+        {
+            currentVehicle->var_5A = creationDay;
+            currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+            currentVehicle->var_5A = creationDay;
+            currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+            currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+        }
+
+        if (this->getSubType() == VehicleEntityType::vehicle_2)
+        {
+            currentVehicle = EntityManager::get<VehicleBogie>(this->getNextCar());
+
+            if (currentVehicle->getSubType() != VehicleEntityType::tail)
+            {
+                currentVehicle->var_5A |= (1U << 31);
+                currentVehicle->tileX = 0;
+                currentVehicle->tileY = 0;
+                currentVehicle->tileBaseZ = 0;
+            }
+        }
+        else if (this->getSubType() == VehicleEntityType::bogie)
+        {
+            VehicleBogie* bogie = this->asVehicleBogie();
+            bogie->var_5A |= (1U << 31);
+            bogie->tileX = 0;
+            bogie->tileY = 0;
+            bogie->tileBaseZ = 0;
+        }
+        else
+        {
+            // The disassembled code splits into two identical paths, here.
+            currentVehicle = head->asVehicleBogie();
+
+            while (EntityManager::get<VehicleBogie>(currentVehicle->getNextCar()) != this)
+            {
+                currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+            }
+
+            currentVehicle->var_5A |= (1U << 31);
+            currentVehicle->tileX = 0;
+            currentVehicle->tileY = 0;
+            currentVehicle->tileBaseZ = 0;
+        }
     }
 
     static bool updateRoadMotionNewRoadPiece(VehicleCommon& component)
