@@ -88,9 +88,9 @@ namespace OpenLoco::GameCommands
         removeIndustry = 48,
         createTown = 49,
         removeTown = 50,
-        gc_unk_51 = 51,
+        aiCreateTrackAndStation = 51,
         aiTrackReplacement = 52,
-        gc_unk_53 = 53,
+        aiCreateRoadAndStation = 53,
         buildCompanyHeadquarters = 54,
         removeCompanyHeadquarters = 55,
         createAirport = 56,
@@ -138,116 +138,6 @@ namespace OpenLoco::GameCommands
         regs.bl = flags;
         return doCommand(T::command, regs);
     }
-
-    struct AiTrackReplacementArgs
-    {
-        static constexpr auto command = GameCommand::aiTrackReplacement;
-
-        AiTrackReplacementArgs() = default;
-        explicit AiTrackReplacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
-            , rotation(regs.bh & 0x3)
-            , trackId(regs.dl)
-            , sequenceIndex(regs.dh)
-            , trackObjectId(regs.bp)
-        {
-        }
-
-        World::Pos3 pos;
-        uint8_t rotation;
-        uint8_t trackId;
-        uint8_t sequenceIndex;
-        uint8_t trackObjectId;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.di = pos.z;
-            regs.bh = rotation;
-            regs.dl = trackId;
-            regs.dh = sequenceIndex;
-            regs.bp = trackObjectId;
-            return regs;
-        }
-    };
-
-    struct Unk51Args
-    {
-        static constexpr auto command = GameCommand::gc_unk_51;
-
-        Unk51Args() = default;
-        explicit Unk51Args(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
-            , rotation(regs.bh & 0x3)
-            , trackObjectId(regs.dl)
-            , stationObjectId(regs.dh)
-            , stationLength((regs.edi >> 24) & 0xFFU)
-            , mods((regs.edi >> 16) & 0xFU)
-            , unk1((regs.edx >> 16) & 0xFFU)
-            , unk2((regs.edx >> 24) & 0xFFU)
-        {
-        }
-
-        World::Pos3 pos;
-        uint8_t rotation;
-        uint8_t trackObjectId;
-        uint8_t stationObjectId;
-        uint8_t stationLength;
-        uint8_t mods;
-        uint8_t unk1;
-        uint8_t unk2;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.bh = rotation;
-            regs.edx = (trackObjectId & 0xFFU) | ((stationObjectId & 0xFFU) << 8) | ((unk1 & 0xFFU) << 16) | ((unk2 & 0xFFU) << 24);
-            regs.edi = (pos.z & 0xFFFFFU) | ((mods & 0xFU) << 16) | ((stationLength & 0xFFU) << 24);
-            return regs;
-        }
-    };
-
-    struct Unk53Args
-    {
-        static constexpr auto command = GameCommand::gc_unk_53;
-
-        Unk53Args() = default;
-        explicit Unk53Args(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
-            , rotation(regs.bh & 0x3)
-            , roadObjectId(regs.dl)
-            , stationObjectId(regs.dh)
-            , stationLength((regs.edi >> 24) & 0xFFU)
-            , mods((regs.edi >> 16) & 0xFU)
-            , unk1((regs.edx >> 16) & 0xFFU)
-            , unk2((regs.edx >> 24) & 0xFFU)
-        {
-        }
-
-        World::Pos3 pos;
-        uint8_t rotation;
-        uint8_t roadObjectId;
-        uint8_t stationObjectId;
-        uint8_t stationLength;
-        uint8_t mods;
-        uint8_t unk1;
-        uint8_t unk2;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.bh = rotation;
-            regs.edx = (roadObjectId & 0xFFU) | ((stationObjectId & 0xFFU) << 8) | ((unk1 & 0xFFU) << 16) | ((unk2 & 0xFFU) << 24);
-            regs.edi = (pos.z & 0xFFFFFU) | ((mods & 0xFU) << 16) | ((stationLength & 0xFFU) << 24);
-            return regs;
-        }
-    };
 
     // Load multiplayer map
     inline void do_67(const char* filename)
