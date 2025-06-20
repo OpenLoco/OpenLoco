@@ -43,7 +43,7 @@ namespace OpenLoco::GameCommands
             return GameCommands::FAILURE;
         }
         currency32_t totalCost = 0;
-        int32_t numTrackOrRoadUnderneath = 0;
+        int32_t numTilesTrackOrRoadUnderneath = 0;
         auto trackPos = args.pos;
         for (auto i = 0U; i < args.stationLength; ++i, trackPos += World::Pos3(World::kRotationOffset[args.rotation], 0))
         {
@@ -71,7 +71,7 @@ namespace OpenLoco::GameCommands
                         }
                         if ((type == World::ElementType::road) || (type == World::ElementType::track))
                         {
-                            ++numTrackOrRoadUnderneath;
+                            ++numTilesTrackOrRoadUnderneath;
                             break;
                         }
                     }
@@ -161,7 +161,7 @@ namespace OpenLoco::GameCommands
         }
         if (!(flags & Flags::apply))
         {
-            if (numTrackOrRoadUnderneath >= args.stationLength - 2)
+            if (numTilesTrackOrRoadUnderneath >= args.stationLength - 2)
             {
                 return GameCommands::FAILURE;
             }
