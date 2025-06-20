@@ -72,6 +72,7 @@ namespace OpenLoco::GameCommands
                         if ((type == World::ElementType::road) || (type == World::ElementType::track))
                         {
                             ++numTrackOrRoadUnderneath;
+                            break;
                         }
                     }
                 }
