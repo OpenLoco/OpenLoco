@@ -1118,7 +1118,6 @@ namespace OpenLoco::CompanyAi
                         if (_byte_1136075 != 0xFFU)
                         {
                             argsUnk.bridge = _byte_1136075;
-                            argsUnk.unkFlags = 0;
                         }
                         if (_createTrackRoadCommandAiUnkFlags & (1U << 20) && _alternateTrackObjectId != 0xFFU)
                         {
