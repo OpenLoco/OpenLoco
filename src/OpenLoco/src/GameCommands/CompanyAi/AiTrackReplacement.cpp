@@ -180,7 +180,7 @@ namespace OpenLoco::GameCommands
                 {
                     return World::TileClearance::ClearFuncResult::noCollision;
                 }
-                return World::TileClearance::clearBuildingCollision(*elBuilding, args.pos, removedBuildings, args.flags, totalCost);
+                return World::TileClearance::clearBuildingCollision(*elBuilding, args.pos, removedBuildings, args.flags | Flags::flag_7, totalCost);
             }
             case World::ElementType::tree:
             {
