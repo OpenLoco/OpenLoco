@@ -39,6 +39,7 @@ namespace OpenLoco::World
             _5 &= ~0xF;
             _5 |= unk & 0xF;
         }
+        uint8_t unk5h() const { return (_5 >> 4) & 0xF; }
         void setUnk5h(uint8_t unk)
         {
             _5 &= ~0xF0;
@@ -77,4 +78,6 @@ namespace OpenLoco::World
     };
 #pragma pack(pop)
     static_assert(sizeof(TreeElement) == kTileElementSize);
+
+    bool updateTreeElement(TreeElement& elTree, const World::Pos2 loc);
 }

@@ -200,6 +200,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/Track.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/TrackData.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Tree.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TreeElement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/WaveManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Message.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/MessageManager.cpp"
