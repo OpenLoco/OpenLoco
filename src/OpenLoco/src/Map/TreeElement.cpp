@@ -201,13 +201,13 @@ namespace OpenLoco::World
             const auto oldClearZ = elTree.clearZ();
             elTree.setClearZ(elTree.baseZ());
 
-            auto length = (treeObj->height - treeObj->initialHeight) * newGrowth;
+            auto length = (treeObj->height - treeObj->initialHeight) * (newGrowth + 1);
             const auto divisor = treeObj->growth - 1;
             if (divisor != 0)
             {
                 length /= divisor;
             }
-            const World::SmallZ newHeight = treeObj->initialHeight + length;
+            const World::SmallZ newHeight = (treeObj->initialHeight + length) / kSmallZStep;
             const auto newClearZ = elTree.baseZ() + newHeight;
             const auto occupiedQuad = 1U << ((elTree.quadrant() + 2) & 0x3);
             const auto qt = World::QuarterTile(occupiedQuad, 0b1111);
@@ -240,16 +240,17 @@ namespace OpenLoco::World
         }
 
         auto& prng = gPrng1();
-        const auto rand = prng.randNext() & 0x3F;
-        if (rand < 52)
+        const auto rand = prng.randNext();
+        const auto randDecisions = rand & 0x3F;
+        if (randDecisions < 52)
         {
             return true;
         }
-        else if (rand < 58)
+        else if (randDecisions < 58)
         {
             World::Pos2 randOffset{};
             const auto rand2 = prng.randNext();
-            const auto offsetDistance = rand == 57 ? 31 : 7;
+            const auto offsetDistance = randDecisions == 57 ? 31 : 7;
             randOffset.x = ((rand2 >> 16) & (offsetDistance * kTileSize)) - (offsetDistance / 2 * kTileSize);
             randOffset.y = ((rand2 & 0xFFFFU) & (offsetDistance * kTileSize)) - (offsetDistance / 2 * kTileSize);
 
