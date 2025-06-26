@@ -1,27 +1,109 @@
 #include "TreeElement.h"
+#include "GameCommands/Terraform/CreateTree.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
+#include "Random.h"
+#include "RoadElement.h"
 #include "Scenario.h"
 #include "SceneManager.h"
 #include "SurfaceElement.h"
 #include "TileClearance.h"
 #include "TileManager.h"
+#include "TrackElement.h"
+#include "Tree.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::World
 {
     static constexpr std::array<uint8_t, 6> kSeasonToNextSeason = { 1, 4, 3, 0, 5, 0xFFU };
 
     // 0x004BDA17
-    static TileClearance::ClearFuncResult clearFunc(World::TileElement& el)
+    static TileClearance::ClearFuncResult clearFunction(World::TileElement& el, bool& hasBridge)
     {
         if (el.isAiAllocated() || el.isGhost())
         {
             return TileClearance::ClearFuncResult::noCollision;
         }
-        //...
+        auto* elRoad = el.as<RoadElement>();
+        auto* elTrack = el.as<TrackElement>();
+        if (elRoad != nullptr)
+        {
+            if (elRoad->hasBridge())
+            {
+                hasBridge = true;
+            }
+        }
+        else if (elTrack != nullptr)
+        {
+            if (elTrack->hasBridge())
+            {
+                hasBridge = true;
+            }
+        }
+
+        return TileClearance::ClearFuncResult::noCollision;
+    }
+
+    // 0x004BD64A
+    static bool hasBridgeTooNear(World::Pos2 loc, uint8_t quadrant, uint8_t baseZ, uint8_t clearZ)
+    {
+        const auto topLeft = loc + World::kOffsets[quadrant] / 2 - World::Pos2{ 16, 16 };
+        auto pos = topLeft;
+        bool hasBridge = false;
+        for (auto i = 0; i < 3; ++i)
+        {
+            for (auto j = 0; j < 3; ++j)
+            {
+                auto checkPos = pos;
+                QuarterTile qt(0, 0);
+                if (pos.x & 0x1F)
+                {
+                    checkPos.x &= ~0x1F;
+                    qt = World::QuarterTile(1U << 1, 0b1111);
+                    if (pos.y & 0x1F)
+                    {
+                        checkPos.y &= ~0x1F;
+                        qt = World::QuarterTile(1U << 0, 0b1111);
+                    }
+                }
+                else
+                {
+                    qt = World::QuarterTile(1U << 2, 0b1111);
+                    if (pos.y & 0x1F)
+                    {
+                        checkPos.y &= ~0x1F;
+                        qt = World::QuarterTile(1U << 3, 0b1111);
+                    }
+                }
+
+                auto clearFunc = [&hasBridge](World::TileElement& el) -> TileClearance::ClearFuncResult {
+                    return clearFunction(el, hasBridge);
+                };
+
+                TileClearance::applyClearAtStandardHeight(checkPos, baseZ, clearZ, qt, clearFunc);
+                pos.x += 16;
+            }
+
+            pos.x = topLeft.x;
+            pos.y += 16;
+        }
+        return hasBridge;
+    }
+
+    static void killTree(TreeElement& elTree)
+    {
+        if (!SceneManager::isEditorMode())
+        {
+            elTree.setUnk6_80(true);
+        }
+    }
+
+    static void invalidateTree(TreeElement& elTree, const World::Pos2 loc)
+    {
+        Ui::ViewportManager::invalidate(loc, elTree.baseHeight(), elTree.clearHeight(), ZoomLevel::eighth, 56);
     }
 
     // 0x004BD52B
@@ -30,7 +112,7 @@ namespace OpenLoco::World
         if (elTree.unk7l() != 7)
         {
             elTree.setUnk7l(elTree.unk7l() + 1);
-            Ui::ViewportManager::invalidate(loc, elTree.baseHeight(), elTree.clearHeight(), ZoomLevel::eighth, 56);
+            invalidateTree(elTree, loc);
             return true;
         }
 
@@ -40,14 +122,14 @@ namespace OpenLoco::World
             const auto unk = kSeasonToNextSeason[elTree.season()];
             if (unk == 0xFFU)
             {
-                Ui::ViewportManager::invalidate(loc, elTree.baseHeight(), elTree.clearHeight(), ZoomLevel::eighth, 56);
+                invalidateTree(elTree, loc);
                 TileManager::removeElement(reinterpret_cast<TileElement&>(elTree));
                 return false;
             }
             else
             {
                 elTree.setSeason(unk);
-                Ui::ViewportManager::invalidate(loc, elTree.baseHeight(), elTree.clearHeight(), ZoomLevel::eighth, 56);
+                invalidateTree(elTree, loc);
                 return true;
             }
         }
@@ -57,7 +139,7 @@ namespace OpenLoco::World
             elTree.setUnk5h(elTree.unk5h() + 1);
             if (elTree.unk5h() != 0)
             {
-                return;
+                return true;
             }
         }
 
@@ -67,7 +149,7 @@ namespace OpenLoco::World
             if (elTree.hasSnow())
             {
                 elTree.setSnow(false);
-                Ui::ViewportManager::invalidate(loc, elTree.baseHeight(), elTree.clearHeight(), ZoomLevel::eighth, 56);
+                invalidateTree(elTree, loc);
             }
         }
         else
@@ -77,16 +159,12 @@ namespace OpenLoco::World
                 if (!elTree.hasSnow())
                 {
                     elTree.setSnow(true);
-                    Ui::ViewportManager::invalidate(loc, elTree.baseHeight(), elTree.clearHeight(), ZoomLevel::eighth, 56);
+                    invalidateTree(elTree, loc);
                 }
             }
             else
             {
-                // kill tree
-                if (!SceneManager::isEditorMode())
-                {
-                    elTree.setUnk6_80(true);
-                }
+                killTree(elTree);
                 return true;
             }
         }
@@ -98,11 +176,7 @@ namespace OpenLoco::World
             auto* industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
             if (industryObj->hasFlags(IndustryObjectFlags::killsTrees))
             {
-                // kill tree
-                if (!SceneManager::isEditorMode())
-                {
-                    elTree.setUnk6_80(true);
-                }
+                killTree(elTree);
                 return true;
             }
         }
@@ -110,7 +184,7 @@ namespace OpenLoco::World
         if (elTree.season() != enumValue(Scenario::getCurrentSeason()))
         {
             elTree.setSeason((elTree.season() + 1) & 0x3);
-            Ui::ViewportManager::invalidate(loc, elTree.baseHeight(), elTree.clearHeight(), ZoomLevel::eighth, 56);
+            invalidateTree(elTree, loc);
             return true;
         }
 
@@ -120,7 +194,7 @@ namespace OpenLoco::World
         {
             if (SceneManager::isEditorMode())
             {
-                return;
+                return true;
             }
             const auto oldClearZ = elTree.clearZ();
             elTree.setClearZ(elTree.baseZ());
@@ -140,56 +214,101 @@ namespace OpenLoco::World
             if (!canConstruct)
             {
                 elTree.setClearZ(oldClearZ);
-                // kill tree
-                if (!SceneManager::isEditorMode())
-                {
-                    elTree.setUnk6_80(true);
-                }
+                killTree(elTree);
                 return true;
             }
             elTree.setClearZ(newClearZ);
             elTree.setUnk5l(newGrowth);
-            Ui::ViewportManager::invalidate(loc, elTree.baseHeight(), elTree.clearHeight(), ZoomLevel::eighth, 56);
+            invalidateTree(elTree, loc);
             return true;
         }
 
         if (treeObj->var_05 > 34)
         {
-            const auto quad = elTree.quadrant();
-            const auto topLeft = loc + World::kOffsets[quad] / 2 - World::Pos2{ 16, 16 };
-            auto pos = topLeft;
-            for (auto i = 0; i < 3; ++i)
+            bool hasBridge = hasBridgeTooNear(loc, elTree.quadrant(), elTree.baseZ(), elTree.clearZ());
+            if (hasBridge)
             {
-                for (auto j = 0; j < 3; ++j)
-                {
-                    auto checkPos = pos;
-                    QuarterTile qt(0, 0);
-                    if (pos.x & 0x1F)
-                    {
-                        checkPos.x &= ~0x1F;
-                        qt = World::QuarterTile(1U << 1, 0b1111);
-                        if (pos.y & 0x1F)
-                        {
-                            checkPos.y &= ~0x1F;
-                            qt = World::QuarterTile(1U << 0, 0b1111);
-                        }
-                    }
-                    else
-                    {
-                        qt = World::QuarterTile(1U << 2, 0b1111);
-                        if (pos.y & 0x1F)
-                        {
-                            checkPos.y &= ~0x1F;
-                            qt = World::QuarterTile(1U << 3, 0b1111);
-                        }
-                    }
-
-                    TileClearance::applyClearAtStandardHeight(checkPos, elTree.baseZ(), elTree.clearZ(), qt, clearFunc);
-                    pos.x += 16;
-                }
-
-                pos.x = topLeft.x;
-                pos.y += 16;
+                killTree(elTree);
+                return true;
             }
         }
+        if (SceneManager::isEditorMode())
+        {
+            return true;
+        }
+
+        auto& prng = gPrng1();
+        const auto rand = prng.randNext() & 0x3F;
+        if (rand < 52)
+        {
+            return true;
+        }
+        else if (rand < 58)
+        {
+            World::Pos2 randOffset{};
+            const auto rand2 = prng.randNext();
+            const auto offsetDistance = rand == 57 ? 31 : 7;
+            randOffset.x = ((rand2 >> 16) & (offsetDistance * kTileSize)) - (offsetDistance / 2 * kTileSize);
+            randOffset.y = ((rand2 & 0xFFFFU) & (offsetDistance * kTileSize)) - (offsetDistance / 2 * kTileSize);
+
+            if (Scenario::getCurrentSeason() == Scenario::Season::winter)
+            {
+                return true;
+            }
+
+            const auto newTreePos = loc + randOffset;
+            if (!validCoords(newTreePos))
+            {
+                return true;
+            }
+
+            auto newTreeObjId = elTree.treeObjectId();
+            if (!(rand & 0xF000'0000))
+            {
+                const auto randTreeObjId = getRandomTreeTypeFromSurface(toTileSpace(newTreePos), true);
+                if (!randTreeObjId.has_value())
+                {
+                    return true;
+                }
+                newTreeObjId = randTreeObjId.value();
+            }
+            auto* newTreeObj = ObjectManager::get<TreeObject>(newTreeObjId);
+            const auto newQuadrant = (rand >> 5) & 0x3;
+
+            if (newTreeObj->var_05 > 34)
+            {
+                const auto heights = TileManager::getHeight(newTreePos);
+                const auto baseZ = heights.landHeight / World::kSmallZStep;
+                const auto clearZ = newTreeObj->height / World::kSmallZStep + baseZ;
+                bool hasBridge = hasBridgeTooNear(loc, newQuadrant, baseZ, clearZ);
+                if (hasBridge)
+                {
+                    return true;
+                }
+            }
+            GameCommands::TreePlacementArgs args;
+            args.pos = newTreePos;
+            args.quadrant = newQuadrant;
+            args.rotation = (rand >> 16) & 0x3;
+            const auto randNumRotations = (rand >> 19) & 0x1F;
+            auto randColoursRot = std::rotr(newTreeObj->colours, randNumRotations);
+            const auto randColour = Numerics::bitScanForward(randColoursRot);
+            args.colour = randColour == -1 ? Colour::black : static_cast<Colour>((randColour + randNumRotations) & 0x1F);
+            args.buildImmediately = false;
+            args.requiresFullClearance = true;
+            args.type = newTreeObjId;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            return true;
+        }
+        else
+        {
+            if (Scenario::getCurrentSeason() == Scenario::Season::autumn || Scenario::getCurrentSeason() == Scenario::Season::winter)
+            {
+                killTree(elTree);
+                return true;
+            }
+            return true;
+        }
     }
+}
