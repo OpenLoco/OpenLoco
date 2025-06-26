@@ -1,9 +1,15 @@
 #include "CompanyAiPathfinding.h"
 #include "CompanyAi.h"
 #include "GameCommands/Road/CreateRoad.h"
+#include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Track/CreateTrack.h"
+#include "GameCommands/Track/RemoveTrack.h"
+#include "Map/RoadElement.h"
 #include "Map/Tile.h"
+#include "Map/TileManager.h"
+#include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
+#include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -13,6 +19,8 @@
 
 namespace OpenLoco::CompanyAi
 {
+    static Interop::loco_global<uint8_t, 0x0112C518> _pathFindUndoCount112C518;        // company 0x85EE
+    static Interop::loco_global<int32_t, 0x0112C398> _pathFindTotalTrackRoadWeighting; // company 0x85DE
     static Interop::loco_global<uint8_t, 0x0112C519> _trackRoadObjType112C519;
     static Interop::loco_global<World::Pos2, 0x0112C3C2> _unk1Pos112C3C2;
     static Interop::loco_global<World::SmallZ, 0x0112C515> _unk1PosBaseZ112C515;
@@ -20,6 +28,7 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<World::SmallZ, 0x0112C517> _unk2PosBaseZ112C517;
     static Interop::loco_global<World::Pos2, 0x0112C3CC> _unk3Pos112C3CC;
     static Interop::loco_global<World::SmallZ, 0x0112C59C> _unk3PosBaseZ112C59C;
+    static Interop::loco_global<uint8_t, 0x0112C59E> _unk3Rot112C59E;
     static Interop::loco_global<uint32_t, 0x0112C388> _createTrackRoadCommandMods;
     static Interop::loco_global<uint32_t, 0x0112C38C> _createTrackRoadCommandRackRail;
     static Interop::loco_global<Company*, 0x0112C390> _unk112C390;
@@ -33,6 +42,7 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint8_t, 0x0112C5A0> _createTrackRoadCommandBridge1;
     static Interop::loco_global<uint8_t, 0x0112C5A1> _createTrackRoadCommandBridge2;
     static Interop::loco_global<uint16_t, 0x0112C4D4> _unkTad112C4D4;
+    static Interop::loco_global<uint16_t, 0x0112C3CA> _unkTad112C3CA;
     static Interop::loco_global<uint16_t, 0x0112C3D0> _queryTrackRoadPlacementMinScore;
     static Interop::loco_global<uint16_t, 0x0112C3D2> _queryTrackRoadPlacementMinWeighting;
     static Interop::loco_global<uint8_t[65], 0x0112C51A> _validTrackRoadIds;
@@ -317,33 +327,10 @@ namespace OpenLoco::CompanyAi
         // dh
         const auto trackId = (tad >> 3) & 0x3F;
 
-        const auto hash1 = direction ^ ((pos.z / World::kSmallZStep) & 0xFF);
-        const auto hash2 = hash1 ^ ((pos.x / 32) * 8);
-        const auto hash3 = hash2 ^ (pos.y / 32);
-        const auto hash4 = hash3 ^ (trackId * 64);
-
-        uint32_t index = hash4 & 0xFFFU;
-        while (company.var_25C0[index].var_00 != 0xFFFF)
+        const auto entry = Company::Unk25C0HashTableEntry(pos, trackId, direction);
+        if (company.hashTableContains(entry))
         {
-            auto& rhsEntry = company.var_25C0[index];
-            if (pos.x == rhsEntry.var_00
-                && ((pos.z / World::kSmallZStep) & 0xFFU) == rhsEntry.var_04
-                && (trackId | (direction << 6)) == rhsEntry.var_05
-                && pos.y == (rhsEntry.var_02 & 0xFFFE))
-            {
-                return;
-            }
-
-            if (!(rhsEntry.var_02 & 0b1))
-            {
-                break;
-            }
-
-            index++;
-            if (index >= std::size(company.var_25C0))
-            {
-                index = 0;
-            }
+            return;
         }
 
         _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags | (1U << 22);
@@ -523,33 +510,10 @@ namespace OpenLoco::CompanyAi
         // dh
         const auto roadId = (tad >> 3) & 0xF;
 
-        const auto hash1 = direction ^ ((pos.z / World::kSmallZStep) & 0xFF);
-        const auto hash2 = hash1 ^ ((pos.x / 32) * 8);
-        const auto hash3 = hash2 ^ (pos.y / 32);
-        const auto hash4 = hash3 ^ (roadId * 64);
-
-        uint32_t index = hash4 & 0xFFFU;
-        while (company.var_25C0[index].var_00 != 0xFFFF)
+        const auto entry = Company::Unk25C0HashTableEntry(pos, roadId, direction);
+        if (company.hashTableContains(entry))
         {
-            auto& rhsEntry = company.var_25C0[index];
-            if (pos.x == rhsEntry.var_00
-                && ((pos.z / World::kSmallZStep) & 0xFFU) == rhsEntry.var_04
-                && (roadId | (direction << 6)) == rhsEntry.var_05
-                && pos.y == (rhsEntry.var_02 & 0xFFFE))
-            {
-                return;
-            }
-
-            if (!(rhsEntry.var_02 & 0b1))
-            {
-                break;
-            }
-
-            index++;
-            if (index >= std::size(company.var_25C0))
-            {
-                index = 0;
-            }
+            return;
         }
 
         GameCommands::RoadPlacementArgs args;
@@ -672,6 +636,550 @@ namespace OpenLoco::CompanyAi
         return result;
     }
 
+    // 0x00484B5C
+    static void pathFindTrackUndoSection(Company& company)
+    {
+        if (_pathFindTotalTrackRoadWeighting <= 0)
+        {
+            _pathFindUndoCount112C518 = 0;
+            return;
+        }
+
+        const auto trackId = (_unkTad112C3CA >> 3) & 0x3F;
+        _pathFindTotalTrackRoadWeighting -= static_cast<int32_t>(World::TrackData::getTrackMiscData(trackId).unkWeighting);
+        _pathFindUndoCount112C518--;
+
+        const auto rotation = (_unkTad112C3CA & 0x3U);
+        auto& trackPiece0 = World::TrackData::getTrackPiece(trackId)[0];
+        const auto pos = World::Pos3(_unk2Pos112C3C6, (_unk2PosBaseZ112C517 * World::kSmallZStep) + trackPiece0.z);
+
+        const auto hasAiAllocatedElTrack = [&pos, rotation, trackId]() {
+            auto tile = World::TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elTrack->baseZ() != pos.z / World::kSmallZStep)
+                {
+                    continue;
+                }
+                if (elTrack->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (!elTrack->isAiAllocated())
+                {
+                    continue;
+                }
+                if (elTrack->hasStationElement())
+                {
+                    continue;
+                }
+                if (elTrack->trackId() != trackId)
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != 0)
+                {
+                    continue;
+                }
+                if (elTrack->trackObjectId() != _trackRoadObjType112C519)
+                {
+                    continue;
+                }
+                return true;
+            }
+            return false;
+        }();
+
+        if (!hasAiAllocatedElTrack)
+        {
+            company.var_85F0 = 0xF000U;
+            return;
+        }
+
+        GameCommands::TrackRemovalArgs args;
+        args.pos = pos;
+        args.rotation = rotation;
+        args.trackId = trackId;
+        args.index = 0U;
+        args.trackObjectId = _trackRoadObjType112C519;
+        GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+        // No check of failure!
+
+        auto nextPos = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
+        const auto rot = World::TrackData::getUnkTrack(_unkTad112C3CA & 0x3FFU).rotationBegin;
+        if (rot < 12)
+        {
+            nextPos -= World::Pos3(World::kRotationOffset[rot], 0);
+        }
+        const auto nextRot = World::kReverseRotation[rot];
+        const auto tc = World::Track::getTrackConnectionsAi(nextPos, nextRot, company.id(), _trackRoadObjType112C519, 0, 0);
+
+        if (tc.connections.empty())
+        {
+            company.var_85F0 = 0xF000U;
+            return;
+        }
+
+        {
+            auto newTad = tc.connections[0] & 0x1FFU;
+            auto newPos = nextPos + World::TrackData::getUnkTrack(newTad).pos;
+            const auto rotEnd = World::TrackData::getUnkTrack(newTad).rotationEnd;
+            if (rotEnd < 12)
+            {
+                newPos -= World::Pos3(World::kRotationOffset[rotEnd], 0);
+            }
+
+            // Normalise the rotation (remove the reverse bit and reverse the rotation if required)
+            newTad ^= (1U << 2);
+            if (newTad & (1U << 2))
+            {
+                newTad &= 0x3;
+                newTad ^= (1U << 1);
+            }
+
+            _unkTad112C3CA = newTad;
+            _unk2Pos112C3C6 = newPos;
+            _unk2PosBaseZ112C517 = newPos.z / World::kSmallZStep;
+        }
+    }
+
+    // 0x00484655
+    static void pathFindTrackSection(Company& company)
+    {
+        if (_pathFindUndoCount112C518 == 0)
+        {
+            // 0x00484662
+            if (_pathFindTotalTrackRoadWeighting >= static_cast<int32_t>(company.var_85EA))
+            {
+                company.var_85F0 = 0xF000U;
+                return;
+            }
+            // 0x00484813
+            _maxTrackRoadWeightingLimit = (company.var_85C3 & ((1U << 4) | (1U << 2))) ? 138 : 224;
+
+            {
+                auto pos = World::Pos3(_unk3Pos112C3CC, _unk3PosBaseZ112C59C * World::kSmallZStep);
+                auto tad = _unkTad112C4D4 & 0x3FFU;
+                auto& trackSize = World::TrackData::getUnkTrack(tad);
+                pos += trackSize.pos;
+                auto rotation = trackSize.rotationEnd;
+                if (rotation < 12)
+                {
+                    pos -= World::Pos3(World::kRotationOffset[rotation], 0);
+                }
+                rotation ^= (1U << 1);
+                _unk3Pos112C3CC = pos;
+                _unk3PosBaseZ112C59C = pos.z / World::kSmallZStep;
+                _unk3Rot112C59E = rotation;
+            }
+
+            auto pos = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
+            auto tad = _unkTad112C3CA & 0x3FFU;
+            auto& trackSize = World::TrackData::getUnkTrack(tad);
+            pos += trackSize.pos;
+            auto rotation = trackSize.rotationEnd;
+            bool diagFlag = rotation >= 12;
+
+            rotation &= 0x3U;
+            tad &= 0x3FCU;
+            tad |= rotation;
+            // 0x0112C55B, 0x0112C3D4, 0x00112C454
+            sfl::static_vector<std::pair<uint8_t, QueryTrackRoadPlacementResult>, 64> placementResults;
+            for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+            {
+                const auto rotationBegin = World::TrackData::getUnkTrack(*ptr << 3).rotationBegin;
+                if (diagFlag)
+                {
+                    if (rotationBegin < 12)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (rotationBegin >= 12)
+                    {
+                        continue;
+                    }
+                }
+                const auto trackId = *ptr;
+                const auto newTad = (trackId << 3) | rotation;
+                placementResults.push_back(std::make_pair(trackId, queryTrackPlacementScore(company, pos, newTad, diagFlag)));
+            }
+            // 0x00484813
+            uint16_t bestMinScore = 0xFFFFU;
+            uint16_t bestMinWeighting = 0xFFFFU;
+            // edi
+            uint8_t bestTrackId = 0xFFU;
+            for (auto& [trackId, result] : placementResults)
+            {
+                if ((result.flags & ((1U << 0) | (1U << 7))) != ((1U << 0) | (1U << 7)))
+                {
+                    continue;
+                }
+                if (bestMinScore < result.minScore)
+                {
+                    continue;
+                }
+                else if (bestMinScore == result.minScore && bestMinWeighting <= result.minWeighting)
+                {
+                    continue;
+                }
+                bestMinScore = result.minScore;
+                bestMinWeighting = result.minWeighting;
+                bestTrackId = trackId;
+            }
+
+            if (bestMinScore != 0xFFFFU)
+            {
+                // 0x00484927
+                GameCommands::TrackPlacementArgs args;
+                args.trackId = bestTrackId;
+                args.pos = pos;
+                args.rotation = trackSize.rotationEnd;
+                args.trackObjectId = _trackRoadObjType112C519;
+                args.bridge = _createTrackRoadCommandBridge0;
+                if (_createTrackRoadCommandAiUnkFlags & (1U << 22))
+                {
+                    args.bridge = _createTrackRoadCommandBridge1;
+                    if (args.trackId != 0)
+                    {
+                        args.bridge = _createTrackRoadCommandBridge0;
+                    }
+                }
+                args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 20;
+                args.mods = _createTrackRoadCommandMods >> 16;
+                if ((World::TrackData::getTrackMiscData(args.trackId).flags & World::Track::CommonTraitFlags::steepSlope) != World::Track::CommonTraitFlags::none)
+                {
+                    args.mods |= _createTrackRoadCommandRackRail >> 16;
+                }
+                args.unk = false;
+                auto argsNoBridge = args;
+                argsNoBridge.bridge = 0xFFU; // no bridge
+                auto res = GameCommands::doCommand(argsNoBridge, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+                if (res == GameCommands::FAILURE)
+                {
+                    // Try with bridge
+                    res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+                    if (res == GameCommands::FAILURE)
+                    {
+                        // 0x00484AB6
+                        const auto entry = Company::Unk25C0HashTableEntry(args.pos, args.trackId, args.rotation & 0x3);
+                        company.addHashTableEntry(entry);
+
+                        _pathFindUndoCount112C518 = 15;
+                        return;
+                    }
+                }
+                // 0x00484A05
+                if (_pathFindTotalTrackRoadWeighting == 0)
+                {
+                    company.var_85E6 = (bestTrackId << 3) | (args.rotation & 0x3U);
+                }
+
+                _unk2Pos112C3C6 = pos;
+                _unk2PosBaseZ112C517 = pos.z / World::kSmallZStep;
+                _unkTad112C3CA = (bestTrackId << 3) | (args.rotation & 0x3U);
+                _pathFindTotalTrackRoadWeighting += static_cast<int32_t>(World::TrackData::getTrackMiscData(bestTrackId).unkWeighting);
+                return;
+            }
+            else
+            {
+                // ax, cx, dl
+                auto pos2 = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
+                // dh
+                auto trackIdStart = (_unkTad112C3CA >> 3) & 0x3F;
+                auto rot = _unkTad112C3CA & 0x3U;
+                const auto entry = Company::Unk25C0HashTableEntry(pos2, trackIdStart, rot);
+                company.addHashTableEntry(entry);
+                _pathFindUndoCount112C518 = 1;
+                return;
+            }
+        }
+        else
+        {
+            pathFindTrackUndoSection(company);
+        }
+    }
+
+    // 0x00485283
+    static void pathFindRoadUndoSection(Company& company)
+    {
+        if (_pathFindTotalTrackRoadWeighting <= 0)
+        {
+            _pathFindUndoCount112C518 = 0;
+            return;
+        }
+
+        const auto roadId = (_unkTad112C3CA >> 3) & 0xF;
+        _pathFindTotalTrackRoadWeighting -= static_cast<int32_t>(World::TrackData::getRoadMiscData(roadId).unkWeighting);
+        _pathFindUndoCount112C518--;
+
+        const auto rotation = (_unkTad112C3CA & 0x3U);
+        auto& roadPiece0 = World::TrackData::getRoadPiece(roadId)[0];
+        const auto pos = World::Pos3(_unk2Pos112C3C6, (_unk2PosBaseZ112C517 * World::kSmallZStep) + roadPiece0.z);
+
+        const auto aiAllocatedElRoad = [&pos, rotation, roadId, companyId = company.id()]() -> World::RoadElement* {
+            auto tile = World::TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->baseZ() != pos.z / World::kSmallZStep)
+                {
+                    continue;
+                }
+                if (elRoad->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (!elRoad->isAiAllocated())
+                {
+                    continue;
+                }
+                if (elRoad->hasStationElement())
+                {
+                    continue;
+                }
+                if (elRoad->roadId() != roadId)
+                {
+                    continue;
+                }
+                if (elRoad->sequenceIndex() != 0)
+                {
+                    continue;
+                }
+                if (elRoad->owner() != companyId)
+                {
+                    continue;
+                }
+
+                return elRoad;
+            }
+            return nullptr;
+        }();
+
+        if (aiAllocatedElRoad == nullptr)
+        {
+            company.var_85F0 = 0xF000U;
+            return;
+        }
+
+        GameCommands::RoadRemovalArgs args;
+        args.pos = pos;
+        args.rotation = rotation;
+        args.roadId = roadId;
+        args.sequenceIndex = 0U;
+        args.objectId = aiAllocatedElRoad->roadObjectId();
+        GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+        // No check of failure!
+
+        auto nextPos = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
+        const auto rot = World::TrackData::getUnkRoad(_unkTad112C3CA & 0x3FFU).rotationBegin;
+        nextPos -= World::Pos3(World::kRotationOffset[rot], 0);
+
+        const auto nextRot = World::kReverseRotation[rot];
+        auto roadObjId = _trackRoadObjType112C519 & ~(1U << 7);
+        auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+        if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+        {
+            roadObjId = 0xFFU;
+        }
+        const auto rc = World::Track::getRoadConnectionsAiAllocated(nextPos, nextRot, company.id(), roadObjId, 0, 0);
+
+        {
+            auto newTad = rc.connections.empty() ? (nextRot | (0U << 3)) : rc.connections[0] & 0x1FFU;
+            auto newPos = nextPos + World::TrackData::getUnkRoad(newTad).pos;
+            const auto rotEnd = World::TrackData::getUnkRoad(newTad).rotationEnd;
+            newPos -= World::Pos3(World::kRotationOffset[rotEnd], 0);
+
+            // Normalise the rotation (remove the reverse bit and reverse the rotation if required)
+            newTad ^= (1U << 2);
+            if (newTad & (1U << 2))
+            {
+                newTad &= 0x3;
+                newTad ^= (1U << 1);
+            }
+
+            _unkTad112C3CA = newTad;
+            _unk2Pos112C3C6 = newPos;
+            _unk2PosBaseZ112C517 = newPos.z / World::kSmallZStep;
+        }
+    }
+
+    // 0x00484D76
+    static void pathFindRoadSection(Company& company)
+    {
+        if (_pathFindUndoCount112C518 == 0)
+        {
+            // 0x00484D83
+            if (_pathFindTotalTrackRoadWeighting >= static_cast<int32_t>(company.var_85EA))
+            {
+                company.var_85F0 = 0xF000U;
+                return;
+            }
+            // 0x00484D9A
+            _maxTrackRoadWeightingLimit = 138;
+
+            {
+                auto pos = World::Pos3(_unk3Pos112C3CC, _unk3PosBaseZ112C59C * World::kSmallZStep);
+                auto tad = _unkTad112C4D4 & 0x3FFU;
+                const auto& roadSize = World::TrackData::getUnkRoad(tad);
+                pos += roadSize.pos;
+                auto rotation = roadSize.rotationEnd;
+                pos -= World::Pos3(World::kRotationOffset[rotation], 0);
+
+                rotation ^= (1U << 1);
+                _unk3Pos112C3CC = pos;
+                _unk3PosBaseZ112C59C = pos.z / World::kSmallZStep;
+                _unk3Rot112C59E = rotation;
+            }
+
+            auto pos = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
+            auto tad = _unkTad112C3CA & 0x3FFU;
+            auto& roadSize = World::TrackData::getUnkRoad(tad);
+            pos += roadSize.pos;
+            auto rotation = roadSize.rotationEnd & 0x3U;
+
+            tad &= 0x3FCU;
+            tad |= rotation;
+
+            // 0x0112C55B, 0x0112C3D4, 0x00112C454
+            sfl::static_vector<std::pair<uint8_t, QueryTrackRoadPlacementResult>, 64> placementResults;
+            for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+            {
+                const auto roadId = *ptr;
+                const auto newTad = (roadId << 3) | rotation;
+                placementResults.push_back(std::make_pair(roadId, queryRoadPlacementScore(company, pos, newTad)));
+            }
+            // 0x00484EF0
+            uint16_t bestMinScore = 0xFFFFU;
+            uint16_t bestMinWeighting = 0xFFFFU;
+            // edi
+            uint8_t bestRoadId = 0xFFU;
+            for (auto& [roadId, result] : placementResults)
+            {
+                if ((result.flags & ((1U << 0) | (1U << 7))) != ((1U << 0) | (1U << 7)))
+                {
+                    continue;
+                }
+                if (bestMinScore < result.minScore)
+                {
+                    continue;
+                }
+                else if (bestMinScore == result.minScore && bestMinWeighting <= result.minWeighting)
+                {
+                    continue;
+                }
+                bestMinScore = result.minScore;
+                bestMinWeighting = result.minWeighting;
+                bestRoadId = roadId;
+            }
+
+            if (bestMinScore != 0xFFFFU)
+            {
+                // 0x00485004
+                GameCommands::RoadPlacementArgs args;
+                args.roadId = bestRoadId;
+                args.pos = pos;
+                args.rotation = roadSize.rotationEnd;
+                args.roadObjectId = _trackRoadObjType112C519 & ~(1U << 7);
+                args.bridge = _createTrackRoadCommandBridge1;
+
+                if (args.roadId != 0)
+                {
+                    args.bridge = _createTrackRoadCommandBridge0;
+                }
+                args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 16;
+                args.mods = _createTrackRoadCommandMods >> 16;
+                if ((World::TrackData::getRoadMiscData(args.roadId).flags & World::Track::CommonTraitFlags::steepSlope) != World::Track::CommonTraitFlags::none)
+                {
+                    args.mods |= _createTrackRoadCommandRackRail >> 16;
+                }
+                auto argsNoBridge = args;
+                argsNoBridge.bridge = 0xFFU; // no bridge
+                auto res = GameCommands::doCommand(argsNoBridge, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+                if (res == GameCommands::FAILURE)
+                {
+                    // Try with bridge
+                    res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+                    if (res == GameCommands::FAILURE)
+                    {
+                        auto argsUnk = args;
+                        argsUnk.bridge = 0xFFU;
+                        if (_byte_1136075 != 0xFFU)
+                        {
+                            argsUnk.bridge = _byte_1136075;
+                        }
+                        if (_createTrackRoadCommandAiUnkFlags & (1U << 20) && _alternateTrackObjectId != 0xFFU)
+                        {
+                            argsUnk.roadObjectId = _alternateTrackObjectId;
+                        }
+                        res = GameCommands::doCommand(argsUnk, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
+                        if (res == GameCommands::FAILURE)
+                        {
+                            // 0x004851DD
+                            const auto entry = Company::Unk25C0HashTableEntry(args.pos, args.roadId, args.rotation & 0x3);
+                            company.addHashTableEntry(entry);
+
+                            _pathFindUndoCount112C518 = 15;
+                            return;
+                        }
+                    }
+                }
+                // 0x0048512C
+                if (_pathFindTotalTrackRoadWeighting == 0)
+                {
+                    company.var_85E6 = (bestRoadId << 3) | (args.rotation & 0x3U);
+                }
+
+                _unk2Pos112C3C6 = pos;
+                _unk2PosBaseZ112C517 = pos.z / World::kSmallZStep;
+                _unkTad112C3CA = (bestRoadId << 3) | (args.rotation & 0x3U);
+                _pathFindTotalTrackRoadWeighting += static_cast<int32_t>(World::TrackData::getRoadMiscData(bestRoadId).unkWeighting);
+                return;
+            }
+            else
+            {
+                // ax, cx, dl
+                auto pos2 = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
+                // dh
+                auto roadIdStart = (_unkTad112C3CA >> 3) & 0xF;
+                auto rot = _unkTad112C3CA & 0x3U;
+                const auto entry = Company::Unk25C0HashTableEntry(pos2, roadIdStart, rot);
+                company.addHashTableEntry(entry);
+                _pathFindUndoCount112C518 = 1;
+                return;
+            }
+        }
+        else
+        {
+            pathFindRoadUndoSection(company);
+        }
+    }
+
+    // 0x00484648
+    // company : _unk112C390
+    static void sub_484648(Company& company)
+    {
+        if (_trackRoadObjType112C519 & (1U << 7))
+        {
+            pathFindRoadSection(company);
+        }
+        else
+        {
+            pathFindTrackSection(company);
+        }
+    }
+
     void registerHooks()
     {
         Interop::registerHook(
@@ -739,6 +1247,20 @@ namespace OpenLoco::CompanyAi
                 _queryTrackRoadPlacementFlags = res.flags;
                 _queryTrackRoadPlacementMinScore = res.minScore;
                 _queryTrackRoadPlacementMinWeighting = res.minWeighting;
+
+                regs = backup;
+                return 0;
+            });
+
+        // 0x00484648
+        Interop::registerHook(
+            0x00484648,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+
+                auto& company = **_unk112C390;
+
+                sub_484648(company);
 
                 regs = backup;
                 return 0;
