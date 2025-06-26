@@ -129,6 +129,7 @@ namespace OpenLoco::World
             else
             {
                 elTree.setSeason(unk);
+                elTree.setUnk7l(0);
                 invalidateTree(elTree, loc);
                 return true;
             }
@@ -143,7 +144,7 @@ namespace OpenLoco::World
             }
         }
 
-        const auto isBelowSnowLine = elTree.baseZ() - 4 < Scenario::getCurrentSnowLine();
+        const auto isBelowSnowLine = elTree.baseZ() - 4 <= Scenario::getCurrentSnowLine();
         if (isBelowSnowLine)
         {
             if (elTree.hasSnow())
