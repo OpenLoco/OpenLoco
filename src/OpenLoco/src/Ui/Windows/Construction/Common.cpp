@@ -520,10 +520,37 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A6E2B
+    // Update available road and rail for player company
     void updateAvailableRoadAndRailOptions()
     {
-        // update available road and rail for player company
-        call(0x004A6E2B);
+        if (getGameState().lastRoadOption == 0xFF)
+        {
+            uint8_t lastRoadOption = getGameState().lastTrackTypeOption;
+            if (lastRoadOption == 0xFF)
+            {
+                const auto availableObjects = companyGetAvailableRoads(CompanyManager::getControllingId());
+                if (!availableObjects.empty())
+                {
+                    lastRoadOption = availableObjects[0];
+                }
+            }
+            else
+            {
+                lastRoadOption |= 1 << 7;
+            }
+            getGameState().lastRoadOption = lastRoadOption;
+            WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
+        }
+
+        if (getGameState().lastRailroadOption == 0xFF)
+        {
+            const auto availableObjects = companyGetAvailableRailTracks(CompanyManager::getControllingId());
+            if (!availableObjects.empty())
+            {
+                getGameState().lastRailroadOption = availableObjects[0];
+            }
+            WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
+        }
     }
 
     // 0x004A6E9B

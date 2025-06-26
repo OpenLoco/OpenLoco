@@ -6554,7 +6554,7 @@ namespace OpenLoco
         }
 
         const auto rotation = tad & 0x3;
-        const auto trackId = (tad >> 3) & 0xF;
+        const auto trackId = (tad >> 3) & 0x3F;
 
         TrackRoadRemoveQueryFlags flags = none;
         auto& trackPieces = TrackData::getTrackPiece(trackId);
@@ -6887,7 +6887,7 @@ namespace OpenLoco
                     }
                 }
 
-                const auto trackId = (trackStartTad >> 3) & 0xF;
+                const auto trackId = (trackStartTad >> 3) & 0x3F;
                 const auto rotation = trackStartTad & 0x3;
                 trackStart.z += TrackData::getTrackPiece(trackId)[0].z;
 

@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
         explicit TrainStationPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
-            , trackId(regs.dl & 0xF)
+            , trackId(regs.dl & 0x3F)
             , index(regs.dh & 0x3)
             , trackObjectId(regs.bp)
             , type(regs.edi >> 16)
