@@ -184,6 +184,7 @@ namespace OpenLoco::World
         if (elTree.season() != enumValue(Scenario::getCurrentSeason()))
         {
             elTree.setSeason((elTree.season() + 1) & 0x3);
+            elTree.setUnk7l(0);
             invalidateTree(elTree, loc);
             return true;
         }
