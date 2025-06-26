@@ -13,6 +13,8 @@
 #include "Company/RenameCompanyName.h"
 #include "Company/RenameCompanyOwner.h"
 #include "Company/UpdateOwnerStatus.h"
+#include "CompanyAi/AiCreateRoadAndStation.h"
+#include "CompanyAi/AiCreateTrackAndStation.h"
 #include "CompanyAi/AiTrackReplacement.h"
 #include "Docks/CreatePort.h"
 #include "Docks/RemovePort.h"
@@ -175,9 +177,9 @@ namespace OpenLoco::GameCommands
         { GameCommand::removeIndustry,               removeIndustry,            0x00455943, true  },
         { GameCommand::createTown,                   createTown,                0x00496C22, true  },
         { GameCommand::removeTown,                   removeTown,                0x0049711F, true  },
-        { GameCommand::aiCreateTrackAndStation,      nullptr,                   0x004A6FDC, true  },
+        { GameCommand::aiCreateTrackAndStation,      aiCreateTrackAndStation,   0x004A6FDC, true  },
         { GameCommand::aiTrackReplacement,           aiTrackReplacement,        0x004A734F, true  },
-        { GameCommand::aiCreateRoadAndStation,       nullptr,                   0x0047AF0B, true  },
+        { GameCommand::aiCreateRoadAndStation,       aiCreateRoadAndStation,    0x0047AF0B, true  },
         { GameCommand::buildCompanyHeadquarters,     buildCompanyHeadquarters,  0x0042ECFC, true  },
         { GameCommand::removeCompanyHeadquarters,    removeCompanyHeadquarters, 0x0042EEAF, true  },
         { GameCommand::createAirport,                createAirport,             0x00492C41, true  },
