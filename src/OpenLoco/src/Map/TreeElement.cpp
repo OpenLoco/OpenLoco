@@ -290,7 +290,7 @@ namespace OpenLoco::World
             }
 
             auto newTreeObjId = elTree.treeObjectId();
-            if (!(rand & 0xF000'0000))
+            if (!(rand & 0x0F00'0000))
             {
                 const auto randTreeObjId = getRandomTreeTypeFromSurface(toTileSpace(newTreePos), true);
                 if (!randTreeObjId.has_value())
