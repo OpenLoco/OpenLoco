@@ -21,38 +21,61 @@ namespace OpenLoco::World
     static constexpr std::array<uint8_t, 6> kSeasonToNextSeason = { 1, 4, 3, 0, 5, 0xFFU };
 
     // 0x004BDA17
-    static TileClearance::ClearFuncResult clearFunction(World::TileElement& el, bool& hasBridge)
+    static TileClearance::ClearFuncResult clearFunction(World::TileElement& el, bool& noTrees)
     {
         if (el.isAiAllocated() || el.isGhost())
         {
             return TileClearance::ClearFuncResult::noCollision;
         }
-        auto* elRoad = el.as<RoadElement>();
-        auto* elTrack = el.as<TrackElement>();
-        if (elRoad != nullptr)
+        switch (el.type())
         {
-            if (elRoad->hasBridge())
+            case ElementType::tree:
+            case ElementType::building:
+            case ElementType::industry:
+                break;
+
+            case ElementType::road:
             {
-                hasBridge = true;
+                auto* elRoad = el.as<RoadElement>();
+                if (elRoad != nullptr)
+                {
+                    if (elRoad->hasBridge())
+                    {
+                        noTrees = true;
+                    }
+                }
+                break;
             }
-        }
-        else if (elTrack != nullptr)
-        {
-            if (elTrack->hasBridge())
+            case ElementType::track:
             {
-                hasBridge = true;
+                auto* elTrack = el.as<TrackElement>();
+                if (elTrack != nullptr)
+                {
+                    if (elTrack->hasBridge())
+                    {
+                        noTrees = true;
+                    }
+                }
+                break;
             }
+
+            case ElementType::signal:
+            case ElementType::station:
+            case ElementType::surface:
+            case ElementType::wall:
+                noTrees = true;
+                break;
         }
 
         return TileClearance::ClearFuncResult::noCollision;
     }
 
     // 0x004BD64A
-    static bool hasBridgeTooNear(World::Pos2 loc, uint8_t quadrant, uint8_t baseZ, uint8_t clearZ)
+    static bool hasObstructionsTooNear(World::Pos2 loc, uint8_t quadrant, uint8_t baseZ, uint8_t clearZ)
     {
         const auto topLeft = loc + World::kOffsets[quadrant] / 2 - World::Pos2{ 16, 16 };
         auto pos = topLeft;
-        bool hasBridge = false;
+        bool noTrees = false;
         for (auto i = 0; i < 3; ++i)
         {
             for (auto j = 0; j < 3; ++j)
@@ -79,8 +102,8 @@ namespace OpenLoco::World
                     }
                 }
 
-                auto clearFunc = [&hasBridge](World::TileElement& el) -> TileClearance::ClearFuncResult {
-                    return clearFunction(el, hasBridge);
+                auto clearFunc = [&noTrees](World::TileElement& el) -> TileClearance::ClearFuncResult {
+                    return clearFunction(el, noTrees);
                 };
 
                 TileClearance::applyClearAtStandardHeight(checkPos, baseZ, clearZ, qt, clearFunc);
@@ -90,7 +113,7 @@ namespace OpenLoco::World
             pos.x = topLeft.x;
             pos.y += 16;
         }
-        return hasBridge;
+        return noTrees;
     }
 
     static void killTree(TreeElement& elTree)
@@ -221,14 +244,15 @@ namespace OpenLoco::World
             }
             elTree.setClearZ(newClearZ);
             elTree.setUnk5l(newGrowth);
+            elTree.setUnk5h(0);
             invalidateTree(elTree, loc);
             return true;
         }
 
         if (treeObj->var_05 > 34)
         {
-            bool hasBridge = hasBridgeTooNear(loc, elTree.quadrant(), elTree.baseZ(), elTree.clearZ());
-            if (hasBridge)
+            bool hasObstruction = hasObstructionsTooNear(loc, elTree.quadrant(), elTree.baseZ(), elTree.clearZ());
+            if (hasObstruction)
             {
                 killTree(elTree);
                 return true;
@@ -283,7 +307,7 @@ namespace OpenLoco::World
                 const auto heights = TileManager::getHeight(newTreePos);
                 const auto baseZ = heights.landHeight / World::kSmallZStep;
                 const auto clearZ = newTreeObj->height / World::kSmallZStep + baseZ;
-                bool hasBridge = hasBridgeTooNear(loc, newQuadrant, baseZ, clearZ);
+                bool hasBridge = hasObstructionsTooNear(loc, newQuadrant, baseZ, clearZ);
                 if (hasBridge)
                 {
                     return true;
@@ -302,7 +326,7 @@ namespace OpenLoco::World
             args.type = newTreeObjId;
 
             GameCommands::doCommand(args, GameCommands::Flags::apply);
-            return true;
+            return false;
         }
         else
         {
