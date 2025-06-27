@@ -44,7 +44,7 @@ namespace OpenLoco::World
         {
             mustTreeFlags |= TreeObjectFlags::veryHighAltitude;
         }
-        if (surface->baseZ() > 48)
+        if (surface->baseZ() <= 48)
         {
             mustTreeFlags |= TreeObjectFlags::highAltitude;
         }
@@ -94,7 +94,9 @@ namespace OpenLoco::World
         }
 
         auto& rng = gPrng1();
-        return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
+        const auto randVal = rng.randNext();
+        const auto selected = ((randVal & 0xFFFF) * selectableTrees.size()) / 65536;
+        return { selectableTrees[selected] };
     }
 
     bool placeRandomTree(const World::Pos2& pos, std::optional<uint8_t> treeType)
