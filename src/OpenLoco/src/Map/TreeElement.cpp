@@ -20,6 +20,13 @@ namespace OpenLoco::World
 {
     static constexpr std::array<uint8_t, 6> kSeasonToNextSeason = { 1, 4, 3, 0, 5, 0xFFU };
 
+    // TODO: Deduplicate copied from PaintTree
+    constexpr std::array<World::Pos2, 4> kTreeQuadrantOffset = {
+        World::Pos2{ 7, 7 },
+        World::Pos2{ 7, 23 },
+        World::Pos2{ 23, 23 },
+        World::Pos2{ 23, 7 },
+    };
     // 0x004BDA17
     static TileClearance::ClearFuncResult clearFunction(World::TileElement& el, bool& noTrees)
     {
@@ -304,11 +311,12 @@ namespace OpenLoco::World
 
             if (newTreeObj->var_05 > 34)
             {
-                const auto heights = TileManager::getHeight(newTreePos);
+                const auto newTreeQuadPos = newTreePos + kTreeQuadrantOffset[newQuadrant] - World::Pos2{ 1, 1 };
+                const auto heights = TileManager::getHeight(newTreeQuadPos);
                 const auto baseZ = heights.landHeight / World::kSmallZStep;
                 const auto clearZ = newTreeObj->height / World::kSmallZStep + baseZ;
-                bool hasBridge = hasObstructionsTooNear(loc, newQuadrant, baseZ, clearZ);
-                if (hasBridge)
+                bool hasObstruction = hasObstructionsTooNear(newTreePos, newQuadrant, baseZ, clearZ);
+                if (hasObstruction)
                 {
                     return true;
                 }
