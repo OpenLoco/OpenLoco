@@ -674,7 +674,7 @@ namespace OpenLoco::Ui
 
     bool Window::viewportIsFocusedOnEntity(EntityId targetEntity) const
     {
-        if (targetEntity == EntityId::null || viewports[0] == nullptr || savedView.isEmpty())
+        if (viewports[0] == nullptr || savedView.isEmpty())
         {
             return false;
         }
