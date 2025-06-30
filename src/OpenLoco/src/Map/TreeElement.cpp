@@ -18,7 +18,7 @@
 
 namespace OpenLoco::World
 {
-    static constexpr std::array<uint8_t, 6> kSeasonToNextSeason = { 1, 4, 3, 0, 5, 0xFFU };
+    static constexpr std::array<uint8_t, 6> kSeasonDeathSequence = { 1, 4, 3, 0, 5, 0xFFU };
 
     // TODO: Deduplicate copied from PaintTree
     constexpr std::array<World::Pos2, 4> kTreeQuadrantOffset = {
@@ -127,7 +127,7 @@ namespace OpenLoco::World
     {
         if (!SceneManager::isEditorMode())
         {
-            elTree.setUnk6_80(true);
+            elTree.setIsDying(true);
         }
     }
 
@@ -147,9 +147,9 @@ namespace OpenLoco::World
         }
 
         auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
-        if (elTree.unk6_80())
+        if (elTree.isDying())
         {
-            const auto unk = kSeasonToNextSeason[elTree.season()];
+            const auto unk = kSeasonDeathSequence[elTree.season()];
             if (unk == 0xFFU)
             {
                 invalidateTree(elTree, loc);
@@ -220,7 +220,7 @@ namespace OpenLoco::World
             return true;
         }
 
-        const auto newGrowth = elTree.unk5l() + 1;
+        const auto newGrowth = elTree.growth() + 1;
 
         if (newGrowth < treeObj->growth)
         {
@@ -250,7 +250,7 @@ namespace OpenLoco::World
                 return true;
             }
             elTree.setClearZ(newClearZ);
-            elTree.setUnk5l(newGrowth);
+            elTree.setGrowth(newGrowth);
             elTree.setUnk5h(0);
             invalidateTree(elTree, loc);
             return true;
