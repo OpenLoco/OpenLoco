@@ -1,4 +1,4 @@
-25.05+ (???)
+25.06 (2025-06-30)
 ------------------------------------------------------------------------
 - Fix: [#2817] Deleting a vehicle that is followed on the main viewport crashes the game.
 - Fix: [#3113] Crash when having an on open company window with the viewport being near the map edge.
