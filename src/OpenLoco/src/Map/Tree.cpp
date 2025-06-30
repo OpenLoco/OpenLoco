@@ -30,7 +30,7 @@ namespace OpenLoco::World
         }
 
         TreeObjectFlags mustNotTreeFlags = TreeObjectFlags::none;
-        if (unk)
+        if (!unk)
         {
             mustNotTreeFlags |= TreeObjectFlags::unk1;
         }

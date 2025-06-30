@@ -80,7 +80,7 @@ namespace OpenLoco::GameCommands
         }
 
         const auto baseZ = quadrantHeight.landHeight / World::kSmallZStep;
-        auto clearanceZ = baseZ + treeObj->initialHeight;
+        auto clearanceZ = baseZ + treeObj->initialHeight / World::kSmallZStep;
         if (args.requiresFullClearance)
         {
             clearanceZ = std::numeric_limits<uint8_t>::max();
