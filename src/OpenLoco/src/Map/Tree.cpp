@@ -40,7 +40,7 @@ namespace OpenLoco::World
         {
             mustTreeFlags |= TreeObjectFlags::hasSnowVariation;
         }
-        if (surface->baseZ() > 68)
+        if (surface->baseZ() >= 68)
         {
             mustTreeFlags |= TreeObjectFlags::veryHighAltitude;
         }
