@@ -676,6 +676,10 @@ namespace OpenLoco::Ui
     {
         if (viewports[0] == nullptr || savedView.isEmpty())
         {
+            if (targetEntity == EntityId::null)
+            {
+                return true;
+            }
             return false;
         }
 
