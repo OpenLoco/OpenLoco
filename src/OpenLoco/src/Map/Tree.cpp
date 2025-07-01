@@ -46,7 +46,7 @@ namespace OpenLoco::World
         }
         if (surface->baseZ() <= 48)
         {
-            mustTreeFlags |= TreeObjectFlags::highAltitude;
+            mustTreeFlags |= TreeObjectFlags::lowAltitude;
         }
 
         auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
