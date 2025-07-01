@@ -1361,10 +1361,7 @@ namespace OpenLoco::CompanyAi
                 auto clearFunc = [&totalCost, &hasLevelCrossing](World::TileElement& el) {
                     return clearFunction(el, totalCost, hasLevelCrossing);
                 };
-                if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, elRoad->baseZ(), elRoad->clearZ(), World::QuarterTile(elRoad->occupiedQuarter(), 0), clearFunc))
-                {
-                    return GameCommands::FAILURE;
-                }
+                World::TileClearance::applyClearAtStandardHeight(roadLoc, elRoad->baseZ(), elRoad->clearZ(), World::QuarterTile(elRoad->occupiedQuarter(), 0), clearFunc);
 
                 if (hasLevelCrossing)
                 {
