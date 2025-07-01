@@ -1,19 +1,32 @@
 #include "CompanyAiPathfinding.h"
 #include "CompanyAi.h"
+#include "Economy/Economy.h"
 #include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Track/CreateTrack.h"
 #include "GameCommands/Track/RemoveTrack.h"
+#include "GameState.h"
+#include "Map/BuildingElement.h"
 #include "Map/RoadElement.h"
+#include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/Tile.h"
+#include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Map/TreeElement.h"
+#include "Objects/BridgeObject.h"
+#include "Objects/BuildingObject.h"
+#include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
+#include "Objects/TreeObject.h"
 #include "World/Company.h"
+#include "World/Station.h"
 
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -1180,6 +1193,212 @@ namespace OpenLoco::CompanyAi
         }
     }
 
+    namespace RoadReplacePrice
+    {
+        static const World::RoadElement* getRoadElement(const World::Pos3 pos, const uint8_t rotation, const uint8_t roadId, const uint8_t sequenceIndex, const CompanyId companyId)
+        {
+
+            auto tile = World::TileManager::get(pos);
+            for (const auto& el : tile)
+            {
+                if (el.baseHeight() != pos.z)
+                {
+                    continue;
+                }
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (elRoad->sequenceIndex() != sequenceIndex)
+                {
+                    continue;
+                }
+                if (elRoad->owner() != companyId)
+                {
+                    continue;
+                }
+                if (!elRoad->isAiAllocated())
+                {
+                    continue;
+                }
+                if (elRoad->roadId() != roadId)
+                {
+                    continue;
+                }
+                return elRoad;
+            }
+            return nullptr;
+        }
+
+        // 0x0047C159
+        static World::TileClearance::ClearFuncResult clearFunction(
+            World::TileElement& el,
+            currency32_t& totalCost,
+            bool& hasLevelCrossing)
+        {
+            switch (el.type())
+            {
+                case World::ElementType::track:
+                {
+                    hasLevelCrossing = true;
+                    return World::TileClearance::ClearFuncResult::noCollision;
+                }
+                case World::ElementType::station:
+                {
+                    auto* elStation = el.as<World::StationElement>();
+                    if (elStation->stationType() == StationType::roadStation)
+                    {
+                        return World::TileClearance::ClearFuncResult::noCollision;
+                    }
+                    return World::TileClearance::ClearFuncResult::collision;
+                }
+                case World::ElementType::building:
+                {
+                    auto* elBuilding = el.as<World::BuildingElement>();
+                    if (elBuilding == nullptr)
+                    {
+                        return World::TileClearance::ClearFuncResult::noCollision;
+                    }
+                    auto* buildingObj = ObjectManager::get<BuildingObject>(elBuilding->objectId());
+                    totalCost += Economy::getInflationAdjustedCost(buildingObj->clearCostFactor, buildingObj->clearCostIndex, 8);
+
+                    return World::TileClearance::ClearFuncResult::noCollision;
+                }
+                case World::ElementType::tree:
+                {
+                    auto* elTree = el.as<World::TreeElement>();
+                    if (elTree == nullptr)
+                    {
+                        return World::TileClearance::ClearFuncResult::noCollision;
+                    }
+                    auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
+                    totalCost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
+
+                    return World::TileClearance::ClearFuncResult::noCollision;
+                }
+                case World::ElementType::road:
+                    return World::TileClearance::ClearFuncResult::noCollision;
+
+                case World::ElementType::signal:
+                case World::ElementType::surface:
+                case World::ElementType::wall:
+                case World::ElementType::industry:
+                    return World::TileClearance::ClearFuncResult::collision;
+            }
+            return World::TileClearance::ClearFuncResult::collision;
+        }
+
+        // 0x0047BD6D
+        // pos: ax, cx, di
+        // rotation: bh
+        // index: dh
+        // roadId: dl
+        // roadObjId: bp (unused)
+        static currency32_t aiRoadReplacementCost(const World::Pos3 pos, uint8_t rotation, uint8_t index, uint8_t roadId, CompanyId companyId)
+        {
+            auto* elRoadSeq = getRoadElement(pos, rotation, roadId, index, companyId);
+            if (elRoadSeq == nullptr)
+            {
+                return 0;
+            }
+            bool isOnWater = World::TileManager::get(pos).surface()->water() != 0;
+
+            auto* roadObj = ObjectManager::get<RoadObject>(elRoadSeq->roadObjectId());
+
+            currency32_t totalCost = 0;
+            const auto roadIdCostFactor = World::TrackData::getRoadMiscData(roadId).costFactor;
+
+            {
+                const auto roadBaseCost = Economy::getInflationAdjustedCost(roadObj->buildCostFactor, roadObj->costIndex, 10);
+                const auto cost = (roadBaseCost * roadIdCostFactor) / 256;
+                totalCost += cost;
+            }
+            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            {
+                for (auto i = 0U; i < 2; ++i)
+                {
+                    if (elRoadSeq->hasMod(i))
+                    {
+                        auto* extraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[i]);
+                        const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(extraObj->buildCostFactor, extraObj->costIndex, 10);
+                        const auto cost = (trackExtraBaseCost * roadIdCostFactor) / 256;
+                        totalCost += cost;
+                    }
+                }
+            }
+
+            const auto& roadPieces = World::TrackData::getRoadPiece(roadId);
+            const auto& roadPieceSeq = roadPieces[index];
+            const auto roadLoc0 = pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPieceSeq.x, roadPieceSeq.y }, rotation), roadPieceSeq.z };
+
+            bool hasBridge = false;
+            uint8_t bridgeType = 0xFFU;
+            // bool overWater = false;
+
+            for (auto& piece : roadPieces)
+            {
+                const auto roadLoc = roadLoc0 + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+
+                auto* elRoad = getRoadElement(roadLoc, rotation, roadId, piece.index, companyId);
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->hasBridge())
+                {
+                    hasBridge = true;
+                    bridgeType = elRoad->bridge();
+                }
+
+                bool hasLevelCrossing = false;
+                // As all level crossings will be new its always going to be currentDefaultLevelCrossingType
+                const auto levelCrossingObjId = getGameState().currentDefaultLevelCrossingType;
+
+                auto clearFunc = [&totalCost, &hasLevelCrossing](World::TileElement& el) {
+                    return clearFunction(el, totalCost, hasLevelCrossing);
+                };
+                if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, elRoad->baseZ(), elRoad->clearZ(), World::QuarterTile(elRoad->occupiedQuarter(), 0), clearFunc))
+                {
+                    return GameCommands::FAILURE;
+                }
+
+                if (hasLevelCrossing)
+                {
+                    auto* levelCrossingObj = ObjectManager::get<LevelCrossingObject>(levelCrossingObjId);
+                    totalCost += Economy::getInflationAdjustedCost(levelCrossingObj->costFactor, levelCrossingObj->costIndex, 10);
+                }
+            }
+
+            if (hasBridge)
+            {
+                auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
+                const auto heightCost = 0 * bridgeObj->heightCostFactor; // Why 0 probably a bug
+                const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->baseCostFactor + heightCost, bridgeObj->costIndex, 10);
+                auto cost = (bridgeBaseCost * roadIdCostFactor) / 256;
+                if (isOnWater)
+                {
+                    cost *= 2;
+                }
+                totalCost += cost;
+            }
+
+            if (0) // Likely another bug
+            {
+                const auto tunnelBaseCost = Economy::getInflationAdjustedCost(roadObj->tunnelCostFactor, 2, 8);
+                auto cost = (tunnelBaseCost * roadIdCostFactor) / 256;
+
+                totalCost += cost;
+            }
+
+            return totalCost;
+        }
+    }
+
     void registerHooks()
     {
         Interop::registerHook(
@@ -1263,6 +1482,24 @@ namespace OpenLoco::CompanyAi
                 sub_484648(company);
 
                 regs = backup;
+                return 0;
+            });
+
+        Interop::registerHook(
+            0x0047BD6D,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
+                const auto rotation = static_cast<uint8_t>(regs.bh);
+                const auto index = static_cast<uint8_t>(regs.dh);
+                // const auto roadObjId = static_cast<uint8_t>(regs.bp); unused
+                const auto roadId = static_cast<uint8_t>(regs.dl);
+                const auto companyId = GameCommands::getUpdatingCompanyId();
+
+                const auto totalCost = RoadReplacePrice::aiRoadReplacementCost(pos, rotation, index, roadId, companyId);
+
+                regs = backup;
+                regs.ebx = totalCost;
                 return 0;
             });
     }
