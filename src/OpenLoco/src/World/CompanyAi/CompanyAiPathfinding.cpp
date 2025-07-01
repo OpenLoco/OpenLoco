@@ -1318,15 +1318,15 @@ namespace OpenLoco::CompanyAi
                 const auto cost = (roadBaseCost * roadIdCostFactor) / 256;
                 totalCost += cost;
             }
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
             {
                 for (auto i = 0U; i < 2; ++i)
                 {
                     if (elRoadSeq->hasMod(i))
                     {
                         auto* extraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[i]);
-                        const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(extraObj->buildCostFactor, extraObj->costIndex, 10);
-                        const auto cost = (trackExtraBaseCost * roadIdCostFactor) / 256;
+                        const auto roadExtraBaseCost = Economy::getInflationAdjustedCost(extraObj->buildCostFactor, extraObj->costIndex, 10);
+                        const auto cost = (roadExtraBaseCost * roadIdCostFactor) / 256;
                         totalCost += cost;
                     }
                 }
@@ -1338,7 +1338,6 @@ namespace OpenLoco::CompanyAi
 
             bool hasBridge = false;
             uint8_t bridgeType = 0xFFU;
-            // bool overWater = false;
 
             for (auto& piece : roadPieces)
             {
