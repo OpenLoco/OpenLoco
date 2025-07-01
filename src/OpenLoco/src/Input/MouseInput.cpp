@@ -611,7 +611,11 @@ namespace OpenLoco::Input
                 {
                     _ticksSinceDragStart = 1000;
 
-                    if (!window->viewportIsFocusedOnAnyEntity())
+                    if (window->viewportIsFocusedOnAnyEntity())
+                    {
+                        window->viewportUnfocusFromEntity();
+                    }
+                    else
                     {
                         auto invert = Config::get().invertRightMouseViewPan ? -1 : 1;
                         auto offsetX = dragOffset.x << (vp->zoom + 1);
@@ -619,10 +623,6 @@ namespace OpenLoco::Input
 
                         window->viewportConfigurations[0].savedViewX += offsetX * invert;
                         window->viewportConfigurations[0].savedViewY += offsetY * invert;
-                    }
-                    else
-                    {
-                        window->viewportUnfocusFromEntity();
                     }
                 }
 
