@@ -193,8 +193,6 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        VehicleBogie* currentVehicle = EntityManager::get<VehicleBogie>(train.head->getNextCar());
-
         train.cars.applyToComponents([](auto& carComponent) { carComponent.refundCost = 0; });
 
         train.head->totalRefundCost = 0;
@@ -203,26 +201,28 @@ namespace OpenLoco::Vehicles
         train.veh2->motorState = MotorState::stopped;
 
         train.cars.applyToComponents([&](auto& carComponent) {
-            if(carComponent.isVehicleBogie()) {
+            if (carComponent.isVehicleBogie())
+            {
                 carComponent.asVehicleBogie()->var_5A = currentSpeed.getRaw();
             }
         });
 
         if (this->getSubType() == VehicleEntityType::vehicle_2)
         {
-            currentVehicle = EntityManager::get<VehicleBogie>(this->getNextCar());
+            auto* bogie = train.cars.firstCar.front;
 
-            if (currentVehicle->getSubType() != VehicleEntityType::tail)
+            if (!train.cars.empty())
             {
-                currentVehicle->var_5A |= (1U << 31);
-                currentVehicle->tileX = 0;
-                currentVehicle->tileY = 0;
-                currentVehicle->tileBaseZ = 0;
+                bogie->var_5A |= (1U << 31);
+                bogie->tileX = 0;
+                bogie->tileY = 0;
+                bogie->tileBaseZ = 0;
             }
         }
         else if (this->getSubType() == VehicleEntityType::bogie)
         {
             VehicleBogie* bogie = this->asVehicleBogie();
+
             bogie->var_5A |= (1U << 31);
             bogie->tileX = 0;
             bogie->tileY = 0;
@@ -230,18 +230,25 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            // The disassembled code splits into two identical paths, here.
-            currentVehicle = train.head->asVehicleBogie();
-
-            while (EntityManager::get<VehicleBogie>(currentVehicle->getNextCar()) != this)
+            VehicleBogie* explodeBogie = nullptr;
+            for (auto& car : train.cars)
             {
-                currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+                for (auto& carComponent : car)
+                {
+                    explodeBogie = carComponent.back;
+                    if (carComponent.body == this)
+                    {
+                        break;
+                    }
+                }
             }
-
-            currentVehicle->var_5A |= (1U << 31);
-            currentVehicle->tileX = 0;
-            currentVehicle->tileY = 0;
-            currentVehicle->tileBaseZ = 0;
+            if (explodeBogie != nullptr)
+            {
+                explodeBogie->var_5A |= (1U << 31);
+                explodeBogie->tileX = 0;
+                explodeBogie->tileY = 0;
+                explodeBogie->tileBaseZ = 0;
+            }
         }
     }
 
