@@ -603,7 +603,9 @@ namespace OpenLoco::Vehicles
         uint32_t var_5A;
         uint8_t wheelSlipping;         // 0x5E timeout that counts up
         BreakdownFlags breakdownFlags; // 0x5F
-        uint8_t pad_60[0x6A - 0x60];
+        uint16_t pad_60;               // 0x60
+        uint32_t refundCost;           // 0x62
+        uint8_t pad_66[0x6A - 0x66];
         uint8_t breakdownTimeout; // 0x6A (likely unused)
 
         const VehicleObject* getObject() const;
