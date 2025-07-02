@@ -1383,12 +1383,12 @@ namespace OpenLoco::CompanyAi
                 totalCost += cost;
             }
 
-            //if (0) // Likely another bug
+            // if (0) // Likely another bug
             //{
-            //    const auto tunnelBaseCost = Economy::getInflationAdjustedCost(roadObj->tunnelCostFactor, 2, 8);
-            //    auto cost = (tunnelBaseCost * roadIdCostFactor) / 256;
-            //    totalCost += cost;
-            //}
+            //     const auto tunnelBaseCost = Economy::getInflationAdjustedCost(roadObj->tunnelCostFactor, 2, 8);
+            //     auto cost = (tunnelBaseCost * roadIdCostFactor) / 256;
+            //     totalCost += cost;
+            // }
 
             return totalCost;
         }
