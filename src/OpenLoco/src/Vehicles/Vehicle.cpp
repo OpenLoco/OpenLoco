@@ -175,49 +175,38 @@ namespace OpenLoco::Vehicles
     // 0x004AA464
     void VehicleBase::destroyTrain()
     {
-        VehicleHead* head = EntityManager::get<VehicleHead>(this->getHead());
-        if (head->status != Status::crashed && head->status != Status::stuck)
-        {
-            head->status = Status::crashed;
-            head->crashedTimeout = 0;
+        Vehicle train(this->getHead());
 
-            if (head->owner == getGameState().playerCompanies[0])
+        if (train.head->status != Status::crashed && train.head->status != Status::stuck)
+        {
+            train.head->status = Status::crashed;
+            train.head->crashedTimeout = 0;
+
+            if (train.head->owner == getGameState().playerCompanies[0])
             {
                 MessageManager::post(
                     MessageType::vehicleCrashed,
-                    head->owner,
-                    (uint16_t)head->id,
+                    train.head->owner,
+                    (uint16_t)train.head->id,
                     0xFFFF,
                     0xFFFF);
             }
         }
 
-        VehicleBogie* currentVehicle = EntityManager::get<VehicleBogie>(head->getNextCar());
-        currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
-        currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+        VehicleBogie* currentVehicle = EntityManager::get<VehicleBogie>(train.head->getNextCar());
 
-        while (currentVehicle->getSubType() != VehicleEntityType::tail)
-        {
-            currentVehicle->refundCost = 0;
-            currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
-        }
+        train.cars.applyToComponents([](auto& carComponent) { carComponent.refundCost = 0; });
 
-        head->totalRefundCost = 0;
-        currentVehicle = EntityManager::get<VehicleBogie>(head->getNextCar());
-        currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
+        train.head->totalRefundCost = 0;
 
-        uint32_t creationDay = currentVehicle->creationDay;
-        currentVehicle->var_5A &= 0xFFFFFF00;
+        Speed32 currentSpeed = train.veh2->currentSpeed;
+        train.veh2->motorState = MotorState::stopped;
 
-        currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
-        while (currentVehicle->getSubType() != VehicleEntityType::tail)
-        {
-            currentVehicle->var_5A = creationDay;
-            currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
-            currentVehicle->var_5A = creationDay;
-            currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
-            currentVehicle = EntityManager::get<VehicleBogie>(currentVehicle->getNextCar());
-        }
+        train.cars.applyToComponents([&](auto& carComponent) {
+            if(carComponent.isVehicleBogie()) {
+                carComponent.asVehicleBogie()->var_5A = currentSpeed.getRaw();
+            }
+        });
 
         if (this->getSubType() == VehicleEntityType::vehicle_2)
         {
@@ -242,7 +231,7 @@ namespace OpenLoco::Vehicles
         else
         {
             // The disassembled code splits into two identical paths, here.
-            currentVehicle = head->asVehicleBogie();
+            currentVehicle = train.head->asVehicleBogie();
 
             while (EntityManager::get<VehicleBogie>(currentVehicle->getNextCar()) != this)
             {
