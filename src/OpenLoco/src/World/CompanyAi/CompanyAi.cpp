@@ -3263,6 +3263,10 @@ namespace OpenLoco
         auto maxBaseZ = std::numeric_limits<SmallZ>::min();
         for (auto& aiStation : thought.stations)
         {
+            if (!World::validCoords(aiStation.pos))
+            {
+                continue;
+            }
             auto* elSurface = World::TileManager::get(aiStation.pos).surface();
             minBaseZ = std::min(elSurface->baseZ(), minBaseZ);
             maxBaseZ = std::max(elSurface->baseZ(), maxBaseZ);
