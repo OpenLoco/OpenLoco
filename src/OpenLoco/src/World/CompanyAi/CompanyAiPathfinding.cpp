@@ -1396,6 +1396,225 @@ namespace OpenLoco::CompanyAi
         }
     }
 
+    // 0x0047B336
+    // pos: ax, cx, di
+    // rotation: bh
+    // sequenceIndex: dh
+    // roadId: dl
+    // roadObjId : bp (unused)
+    static bool sub_47B336(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t roadId, CompanyId companyId)
+    {
+        const auto traitFlags = World::TrackData::getRoadMiscData(roadId).flags;
+        using enum World::Track::CommonTraitFlags;
+        // 0x1136088
+        const bool unk = (traitFlags & (slope | steepSlope | verySmallCurve)) != none;
+        {
+            auto elRoad = [pos, rotation, sequenceIndex, roadId, companyId]() -> const World::RoadElement* {
+                auto tile = World::TileManager::get(pos);
+                for (const auto& el : tile)
+                {
+                    if (el.baseHeight() != pos.z)
+                    {
+                        continue;
+                    }
+                    auto* elRoad = el.as<World::RoadElement>();
+                    if (elRoad == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elRoad->rotation() != rotation)
+                    {
+                        continue;
+                    }
+                    if (elRoad->sequenceIndex() != sequenceIndex)
+                    {
+                        continue;
+                    }
+                    if (elRoad->owner() != companyId)
+                    {
+                        continue;
+                    }
+                    if (!elRoad->isAiAllocated())
+                    {
+                        continue;
+                    }
+                    if (elRoad->roadId() != roadId)
+                    {
+                        continue;
+                    }
+                    return elRoad;
+                }
+                return nullptr;
+            }();
+            if (elRoad == nullptr)
+            {
+                return false;
+            }
+            if (!elRoad->hasBridge())
+            {
+                return false;
+            }
+        }
+
+        auto& roadPieces = World::TrackData::getRoadPiece(roadId);
+        auto& roadPiece = roadPieces[sequenceIndex];
+        const auto roadPos0 = pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece.x, roadPiece.y }, rotation), roadPiece.z };
+        for (auto& piece : roadPieces)
+        {
+            const auto roadPos = roadPos0 + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            auto tile = World::TileManager::get(roadPos);
+            auto* elSurface = tile.surface();
+            // ah
+            const auto bridgeZ = roadPos.z / World::kSmallZStep - elSurface->baseZ();
+            if (elSurface->water() != 0)
+            {
+                // 0x0047B57B
+                if (unk)
+                {
+                    if (bridgeZ > 16)
+                    {
+                        continue;
+                    }
+                    return false;
+                }
+                else
+                {
+                    if (roadId != 0)
+                    {
+                        return false;
+                    }
+                    bool passedSurface = false;
+                    bool shouldContinue = false;
+                    for (auto& el : tile)
+                    {
+                        if (el.type() == World::ElementType::surface)
+                        {
+                            passedSurface = true;
+                        }
+                        if (!passedSurface)
+                        {
+                            continue;
+                        }
+                        if (roadPos.z <= el.baseHeight())
+                        {
+                            return false;
+                        }
+                        auto* elTrack = el.as<World::TrackElement>();
+                        if (elTrack != nullptr)
+                        {
+                            if (elTrack->trackId() != 0)
+                            {
+                                continue;
+                            }
+                            if (elTrack->rotation() == rotation
+                                || (elTrack->rotation() ^ (1U << 1)) == rotation)
+                            {
+                                shouldContinue = true;
+                                break;
+                            }
+                        }
+                        auto* elRoad = el.as<World::RoadElement>();
+                        if (elRoad != nullptr)
+                        {
+                            if (elRoad->roadId() != 0)
+                            {
+                                continue;
+                            }
+                            if (elRoad->rotation() == rotation
+                                || (elRoad->rotation() ^ (1U << 1)) == rotation)
+                            {
+                                shouldContinue = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (shouldContinue)
+                    {
+                        continue;
+                    }
+                    return false;
+                }
+            }
+            else
+            {
+                // 0x0047B4DD
+                bool passedSurface = false;
+                const auto surfaceSlope = elSurface->slope();
+                // TODO: This is all a bit silly we should just return false
+                // instead of setting the unk flag as nothing clears the flag.
+                bool unk = false;
+                for (auto& el : tile)
+                {
+                    if (el.type() == World::ElementType::surface)
+                    {
+                        passedSurface = true;
+                    }
+                    if (!passedSurface)
+                    {
+                        continue;
+                    }
+                    if (roadPos.z <= el.baseHeight())
+                    {
+                        break;
+                    }
+                    auto* elTrack = el.as<World::TrackElement>();
+                    if (elTrack != nullptr)
+                    {
+                        if (roadId != 0)
+                        {
+                            unk = true;
+                            continue;
+                        }
+                        if (elTrack->trackId() != 0)
+                        {
+                            unk = true;
+                            continue;
+                        }
+                        if (elTrack->rotation() == rotation
+                            || (elTrack->rotation() ^ (1U << 1)) == rotation)
+                        {
+                            break;
+                        }
+                        unk = true;
+                    }
+                    auto* elRoad = el.as<World::RoadElement>();
+                    if (elRoad != nullptr)
+                    {
+                        if (roadId != 0)
+                        {
+                            unk = true;
+                            continue;
+                        }
+                        if (elRoad->roadId() != 0)
+                        {
+                            unk = true;
+                            continue;
+                        }
+                        if (elRoad->rotation() == rotation
+                            || (elRoad->rotation() ^ (1U << 1)) == rotation)
+                        {
+                            break;
+                        }
+                        unk = true;
+                    }
+                }
+                if (bridgeZ > 16)
+                {
+                    return false;
+                }
+                if (surfaceSlope != 0)
+                {
+                    return false;
+                }
+                if (unk)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     void registerHooks()
     {
         Interop::registerHook(
