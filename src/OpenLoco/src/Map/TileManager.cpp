@@ -1017,12 +1017,6 @@ namespace OpenLoco::World::TileManager
 
     static bool update(TileElement& el, const World::Pos2& loc)
     {
-        registers regs;
-        regs.ax = loc.x;
-        regs.cx = loc.y;
-        regs.esi = X86Pointer(&el);
-        regs.bl = el.data()[0] & 0x3F;
-
         switch (el.type())
         {
             case ElementType::surface:
@@ -1036,8 +1030,10 @@ namespace OpenLoco::World::TileManager
                 return elBuilding.update(loc);
             }
             case ElementType::tree:
-                call(0x004BD52B, regs);
-                break;
+            {
+                auto& elTree = el.get<TreeElement>();
+                return updateTreeElement(elTree, loc);
+            }
             case ElementType::road:
             {
                 auto& elRoad = el.get<RoadElement>();
@@ -1053,7 +1049,7 @@ namespace OpenLoco::World::TileManager
             case ElementType::signal: break;
             case ElementType::wall: break;
         }
-        return regs.esi != 0;
+        return true;
     }
 
     // 0x00463ABA
