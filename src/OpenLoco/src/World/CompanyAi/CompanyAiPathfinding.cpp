@@ -1407,7 +1407,7 @@ namespace OpenLoco::CompanyAi
         const auto traitFlags = World::TrackData::getRoadMiscData(roadId).flags;
         using enum World::Track::CommonTraitFlags;
         // 0x1136088
-        const bool unk = (traitFlags & (slope | steepSlope | verySmallCurve)) != none;
+        const bool allowWaterBridge = (traitFlags & (slope | steepSlope | verySmallCurve)) != none;
         {
             auto elRoad = [pos, rotation, sequenceIndex, roadId, companyId]() -> const World::RoadElement* {
                 auto tile = World::TileManager::get(pos);
@@ -1469,7 +1469,7 @@ namespace OpenLoco::CompanyAi
             if (elSurface->water() != 0)
             {
                 // 0x0047B57B
-                if (unk)
+                if (allowWaterBridge)
                 {
                     if (bridgeZ > 16)
                     {
@@ -1537,12 +1537,16 @@ namespace OpenLoco::CompanyAi
             }
             else
             {
+                if (bridgeZ > 16)
+                {
+                    return false;
+                }
+                if (elSurface->slope() != 0)
+                {
+                    return false;
+                }
                 // 0x0047B4DD
                 bool passedSurface = false;
-                const auto surfaceSlope = elSurface->slope();
-                // TODO: This is all a bit silly we should just return false
-                // instead of setting the unk flag as nothing clears the flag.
-                bool retFalse = false;
                 for (auto& el : tile)
                 {
                     if (el.type() == World::ElementType::surface)
@@ -1562,53 +1566,37 @@ namespace OpenLoco::CompanyAi
                     {
                         if (roadId != 0)
                         {
-                            retFalse = true;
-                            continue;
+                            return false;
                         }
                         if (elTrack->trackId() != 0)
                         {
-                            retFalse = true;
-                            continue;
+                            return false;
                         }
                         if (elTrack->rotation() == rotation
                             || (elTrack->rotation() ^ (1U << 1)) == rotation)
                         {
                             break;
                         }
-                        retFalse = true;
+                        return false;
                     }
                     auto* elRoad = el.as<World::RoadElement>();
                     if (elRoad != nullptr)
                     {
                         if (roadId != 0)
                         {
-                            retFalse = true;
-                            continue;
+                            return false;
                         }
                         if (elRoad->roadId() != 0)
                         {
-                            retFalse = true;
-                            continue;
+                            return false;
                         }
                         if (elRoad->rotation() == rotation
                             || (elRoad->rotation() ^ (1U << 1)) == rotation)
                         {
                             break;
                         }
-                        retFalse = true;
+                        return false;
                     }
-                }
-                if (bridgeZ > 16)
-                {
-                    return false;
-                }
-                if (surfaceSlope != 0)
-                {
-                    return false;
-                }
-                if (retFalse)
-                {
-                    return false;
                 }
             }
         }
