@@ -1720,7 +1720,7 @@ namespace OpenLoco::CompanyAi
             });
 
         Interop::registerHook(
-            0x0047BD6D,
+            0x0047B336,
             [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 Interop::registers backup = regs;
                 const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
