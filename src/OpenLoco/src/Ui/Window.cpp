@@ -674,12 +674,22 @@ namespace OpenLoco::Ui
 
     bool Window::viewportIsFocusedOnEntity(EntityId targetEntity) const
     {
-        if (viewports[0] == nullptr || savedView.isEmpty())
+        if (targetEntity == EntityId::null || viewports[0] == nullptr || savedView.isEmpty())
         {
             return false;
         }
 
         return viewportConfigurations[0].viewportTargetSprite == targetEntity;
+    }
+
+    bool Window::viewportIsFocusedOnAnyEntity() const
+    {
+        if (viewports[0] == nullptr || savedView.isEmpty())
+        {
+            return false;
+        }
+
+        return viewportConfigurations[0].viewportTargetSprite != EntityId::null;
     }
 
     void Window::viewportUnfocusFromEntity()

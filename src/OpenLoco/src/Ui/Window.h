@@ -343,6 +343,7 @@ namespace OpenLoco::Ui
         void viewportCentreTileAroundCursor(int16_t mapX, int16_t mapY, int16_t offsetX, int16_t offsetY);
         void viewportFocusOnEntity(EntityId targetEntity);
         bool viewportIsFocusedOnEntity(EntityId targetEntity) const;
+        bool viewportIsFocusedOnAnyEntity() const;
         void viewportUnfocusFromEntity();
         void viewportZoomSet(int8_t zoomLevel, bool toCursor);
         void viewportZoomIn(bool toCursor);
