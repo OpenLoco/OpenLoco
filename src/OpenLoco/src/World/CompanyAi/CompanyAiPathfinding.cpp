@@ -1542,7 +1542,7 @@ namespace OpenLoco::CompanyAi
                 const auto surfaceSlope = elSurface->slope();
                 // TODO: This is all a bit silly we should just return false
                 // instead of setting the unk flag as nothing clears the flag.
-                bool unk = false;
+                bool retFalse = false;
                 for (auto& el : tile)
                 {
                     if (el.type() == World::ElementType::surface)
@@ -1562,12 +1562,12 @@ namespace OpenLoco::CompanyAi
                     {
                         if (roadId != 0)
                         {
-                            unk = true;
+                            retFalse = true;
                             continue;
                         }
                         if (elTrack->trackId() != 0)
                         {
-                            unk = true;
+                            retFalse = true;
                             continue;
                         }
                         if (elTrack->rotation() == rotation
@@ -1575,19 +1575,19 @@ namespace OpenLoco::CompanyAi
                         {
                             break;
                         }
-                        unk = true;
+                        retFalse = true;
                     }
                     auto* elRoad = el.as<World::RoadElement>();
                     if (elRoad != nullptr)
                     {
                         if (roadId != 0)
                         {
-                            unk = true;
+                            retFalse = true;
                             continue;
                         }
                         if (elRoad->roadId() != 0)
                         {
-                            unk = true;
+                            retFalse = true;
                             continue;
                         }
                         if (elRoad->rotation() == rotation
@@ -1595,7 +1595,7 @@ namespace OpenLoco::CompanyAi
                         {
                             break;
                         }
-                        unk = true;
+                        retFalse = true;
                     }
                 }
                 if (bridgeZ > 16)
@@ -1606,7 +1606,7 @@ namespace OpenLoco::CompanyAi
                 {
                     return false;
                 }
-                if (unk)
+                if (retFalse)
                 {
                     return false;
                 }
@@ -1717,6 +1717,23 @@ namespace OpenLoco::CompanyAi
                 regs = backup;
                 regs.ebx = totalCost;
                 return 0;
+            });
+
+        Interop::registerHook(
+            0x0047BD6D,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
+                const auto rotation = static_cast<uint8_t>(regs.bh);
+                const auto index = static_cast<uint8_t>(regs.dh);
+                // const auto roadObjId = static_cast<uint8_t>(regs.bp); unused
+                const auto roadId = static_cast<uint8_t>(regs.dl);
+                const auto companyId = GameCommands::getUpdatingCompanyId();
+
+                const auto flag = sub_47B336(pos, rotation, index, roadId, companyId);
+
+                regs = backup;
+                return flag ? X86_FLAG_CARRY : 0;
             });
     }
 }
