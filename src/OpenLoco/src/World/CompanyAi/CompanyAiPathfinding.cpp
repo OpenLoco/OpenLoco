@@ -1840,6 +1840,101 @@ namespace OpenLoco::CompanyAi
         return true;
     }
 
+    // 0x004A7E86
+    // pos: ax, cx, di
+    // rotation: bh
+    // sequenceIndex: dh
+    // trackId: dl
+    // trackObjId : bp
+    static bool sub_4A7E86(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t trackId, uint8_t trackObjId)
+    {
+        auto getElTrack = [rotation, trackId, trackObjId](World::Pos3 pos, uint8_t sequenceIndex) -> const World::TrackElement* {
+            auto tile = World::TileManager::get(pos);
+            for (const auto& el : tile)
+            {
+                if (el.baseHeight() != pos.z)
+                {
+                    continue;
+                }
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elTrack->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != sequenceIndex)
+                {
+                    continue;
+                }
+                if (elTrack->trackObjectId() != trackObjId)
+                {
+                    continue;
+                }
+                if (!elTrack->isAiAllocated() || elTrack->isGhost())
+                {
+                    continue;
+                }
+                if (elTrack->trackId() != trackId)
+                {
+                    continue;
+                }
+                return elTrack;
+            }
+            return nullptr;
+        };
+        auto* elTrackSeq = getElTrack(pos, sequenceIndex);
+        if (elTrackSeq == nullptr)
+        {
+            return false;
+        }
+
+         auto& trackPieces = World::TrackData::getTrackPiece(trackId);
+        auto& trackPiece = trackPieces[sequenceIndex];
+        const auto trackPos0 = pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, rotation), trackPiece.z };
+        for (auto& piece : trackPieces)
+        {
+            const auto trackPos = trackPos0 + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            auto tile = World::TileManager::get(trackPos);
+            auto* elTrack = getElTrack(trackPos, piece.index);
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+            for (auto& el : tile)
+            {
+                auto* elConnectTrack = el.as<World::TrackElement>();
+                if (elConnectTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elConnectTrack == elTrack)
+                {
+                    continue;
+                }
+                if (elConnectTrack->baseHeight() != trackPos.z)
+                {
+                    continue;
+                }
+                if (elConnectTrack->occupiedQuarter() == elTrack->occupiedQuarter())
+                {
+                    continue;
+                }
+
+                const auto connectFlags1 = piece.connectFlags[rotation];
+                auto& piece2 = World::TrackData::getTrackPiece(elConnectTrack->trackId())[elConnectTrack->sequenceIndex()];
+                const auto connectFlags2 = piece2.connectFlags[elConnectTrack->rotation()];
+                if ((connectFlags1 & connectFlags2) != 0)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     void registerHooks()
     {
         Interop::registerHook(
