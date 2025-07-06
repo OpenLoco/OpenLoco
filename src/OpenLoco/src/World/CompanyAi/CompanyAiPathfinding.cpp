@@ -2070,5 +2070,21 @@ namespace OpenLoco::CompanyAi
                 regs = backup;
                 return flag ? X86_FLAG_CARRY : 0;
             });
+
+        Interop::registerHook(
+            0x004A7E86,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
+                const auto rotation = static_cast<uint8_t>(regs.bh);
+                const auto index = static_cast<uint8_t>(regs.dh);
+                const auto trackObjId = static_cast<uint8_t>(regs.bp);
+                const auto trackId = static_cast<uint8_t>(regs.dl);
+
+                const auto flag = sub_4A7E86(pos, rotation, index, trackId, trackObjId);
+
+                regs = backup;
+                return flag ? X86_FLAG_CARRY : 0;
+            });
     }
 }
