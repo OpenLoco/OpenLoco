@@ -1617,20 +1617,6 @@ namespace OpenLoco::CompanyAi
         return true;
     }
 
-    static bool sub_4A80E1Orig(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t trackId, uint8_t trackObjId)
-    {
-        Interop::registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.di = pos.z;
-        regs.bh = rotation;
-        regs.dh = sequenceIndex;
-        regs.dl = trackId;
-        regs.bp = trackObjId;
-        regs.bl = 0x10;
-        return Interop::call(0x004A80E1, regs) & X86_FLAG_CARRY;
-    }
-
     // 0x004A80E1
     // pos: ax, cx, di
     // rotation: bh
@@ -1975,10 +1961,8 @@ namespace OpenLoco::CompanyAi
                 return flag ? X86_FLAG_CARRY : 0;
             });
 
-        // 0x004A80E1
-        Interop::writeLocoCall(0x00485C93, 0x00430BDA);
         Interop::registerHook(
-            0x00430BDA,
+            0x004A80E1,
             [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 Interop::registers backup = regs;
                 const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
@@ -1988,11 +1972,6 @@ namespace OpenLoco::CompanyAi
                 const auto trackId = static_cast<uint8_t>(regs.dl);
 
                 const auto flag = sub_4A80E1(pos, rotation, index, trackId, trackObjId);
-                const auto origFlag = sub_4A80E1Orig(pos, rotation, index, trackId, trackObjId);
-                if (flag != origFlag)
-                {
-                    throw std::runtime_error("sub_4A80E1: Original and new function return different results");
-                }
                 regs = backup;
                 return flag ? X86_FLAG_CARRY : 0;
             });
