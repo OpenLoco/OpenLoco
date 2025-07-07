@@ -1891,7 +1891,7 @@ namespace OpenLoco::CompanyAi
             return false;
         }
 
-         auto& trackPieces = World::TrackData::getTrackPiece(trackId);
+        auto& trackPieces = World::TrackData::getTrackPiece(trackId);
         auto& trackPiece = trackPieces[sequenceIndex];
         const auto trackPos0 = pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, rotation), trackPiece.z };
         for (auto& piece : trackPieces)
@@ -1926,6 +1926,105 @@ namespace OpenLoco::CompanyAi
                 const auto connectFlags1 = piece.connectFlags[rotation];
                 auto& piece2 = World::TrackData::getTrackPiece(elConnectTrack->trackId())[elConnectTrack->sequenceIndex()];
                 const auto connectFlags2 = piece2.connectFlags[elConnectTrack->rotation()];
+                if ((connectFlags1 & connectFlags2) != 0)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // 0x0047B7CC
+    // pos: ax, cx, di
+    // rotation: bh
+    // sequenceIndex: dh
+    // roadId: dl
+    // roadObjId : bp (unused)
+    static bool sub_47B7CC(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t roadId, CompanyId companyId)
+    {
+        auto getElRoad = [rotation, roadId, companyId](World::Pos3 pos, uint8_t sequenceIndex) -> const World::RoadElement* {
+            auto tile = World::TileManager::get(pos);
+            for (const auto& el : tile)
+            {
+                if (el.baseHeight() != pos.z)
+                {
+                    continue;
+                }
+                auto* elTrack = el.as<World::RoadElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elTrack->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != sequenceIndex)
+                {
+                    continue;
+                }
+                if (elTrack->owner() != companyId)
+                {
+                    continue;
+                }
+                if (elTrack->roadId() != roadId)
+                {
+                    continue;
+                }
+                if (!elTrack->isAiAllocated() || elTrack->isGhost())
+                {
+                    continue;
+                }
+                return elTrack;
+            }
+            return nullptr;
+        };
+        auto* elRoadSeq = getElRoad(pos, sequenceIndex);
+        if (elRoadSeq == nullptr)
+        {
+            return false;
+        }
+
+        auto& roadPieces = World::TrackData::getRoadPiece(roadId);
+        auto& roadPiece = roadPieces[sequenceIndex];
+        const auto roadPos0 = pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece.x, roadPiece.y }, rotation), roadPiece.z };
+        for (auto& piece : roadPieces)
+        {
+            const auto roadPos = roadPos0 + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            auto tile = World::TileManager::get(roadPos);
+            auto* elRoad = getElRoad(roadPos, piece.index);
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+            for (auto& el : tile)
+            {
+                auto* elConnectRoad = el.as<World::RoadElement>();
+                if (elConnectRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elConnectRoad == elRoad)
+                {
+                    continue;
+                }
+                if (elConnectRoad->isAiAllocated())
+                {
+                    continue;
+                }
+                if (elConnectRoad->baseHeight() != roadPos.z)
+                {
+                    continue;
+                }
+                if (elConnectRoad->occupiedQuarter() == elRoad->occupiedQuarter())
+                {
+                    continue;
+                }
+
+                const auto connectFlags1 = piece.connectFlags[rotation];
+                auto& piece2 = World::TrackData::getRoadPiece(elConnectRoad->roadId())[elConnectRoad->sequenceIndex()];
+                const auto connectFlags2 = piece2.connectFlags[elConnectRoad->rotation()];
                 if ((connectFlags1 & connectFlags2) != 0)
                 {
                     return true;
@@ -2082,6 +2181,22 @@ namespace OpenLoco::CompanyAi
                 const auto trackId = static_cast<uint8_t>(regs.dl);
 
                 const auto flag = sub_4A7E86(pos, rotation, index, trackId, trackObjId);
+
+                regs = backup;
+                return flag ? X86_FLAG_CARRY : 0;
+            });
+
+        Interop::registerHook(
+            0x0047B7CC,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
+                const auto rotation = static_cast<uint8_t>(regs.bh);
+                const auto index = static_cast<uint8_t>(regs.dh);
+                const auto roadId = static_cast<uint8_t>(regs.dl);
+                const auto companyId = GameCommands::getUpdatingCompanyId();
+
+                const auto flag = sub_47B7CC(pos, rotation, index, roadId, companyId);
 
                 regs = backup;
                 return flag ? X86_FLAG_CARRY : 0;
