@@ -1,6 +1,7 @@
 #include "CompanyAiPathfinding.h"
 #include "CompanyAi.h"
 #include "Economy/Economy.h"
+#include "GameCommands/CompanyAi/AiTrackReplacement.h"
 #include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Track/CreateTrack.h"
@@ -41,6 +42,9 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<World::SmallZ, 0x0112C517> _unk2PosBaseZ112C517;
     static Interop::loco_global<World::Pos2, 0x0112C3CC> _unk3Pos112C3CC;
     static Interop::loco_global<World::SmallZ, 0x0112C59C> _unk3PosBaseZ112C59C;
+    static Interop::loco_global<uint32_t, 0x0112C36C> _unk112C36C;
+    static Interop::loco_global<uint32_t, 0x0112C35C> _unk112C35C;
+    static Interop::loco_global<uint32_t, 0x0112C34C> _unk112C34C;
     static Interop::loco_global<uint8_t, 0x0112C59E> _unk3Rot112C59E;
     static Interop::loco_global<uint32_t, 0x0112C388> _createTrackRoadCommandMods;
     static Interop::loco_global<uint32_t, 0x0112C38C> _createTrackRoadCommandRackRail;
@@ -2121,6 +2125,48 @@ namespace OpenLoco::CompanyAi
             }
         }
         return false;
+    }
+
+    // 0x00485B75
+    // startPos.x: 0x0112C3C6
+    // startPos.y: 0x0112C3C8
+    // startPos.z: 0x0112C517 * World::kSmallZStep
+    // startTad: 0x0112C3CA
+    // targetPos.x: 0x0112C3C2
+    // targetPos.y: 0x0112C3C4
+    // targetPos.z: 0x0112C515 * World::kSmallZStep
+    // trackObjId: 0x0112C519
+    // tad : 0x0112C3CA
+    static uint32_t sub_485B75(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t trackObjId)
+    {
+        _unk112C36C = 0U;
+        _unk112C35C = 0U;
+        bool unk112C368 = false;
+        _unk112C34C = 0U;
+        uint32_t unk112C360 = _pathFindTotalTrackRoadWeighting;
+        World::Pos3 pos = startPos;
+        uint16_t tad = startTad;
+        for (auto i = 0U; i < 400; ++i)
+        {
+            if (pos == targetPos)
+            {
+                // 0x00485DBD
+            }
+
+            const uint8_t trackId = (tad >> 3U) & 0x3F;
+            const auto unkWeighting = World::TrackData::getTrackMiscData(trackId).unkWeighting;
+            _unk112C36C += unkWeighting;
+            unk112C360 -= unkWeighting;
+
+            GameCommands::AiTrackReplacementArgs args{};
+            args.pos = pos;
+            args.pos.z += World::TrackData::getTrackPiece(trackId)[0].z;
+            args.rotation = tad & 0x3U;
+            args.sequenceIndex = 0;
+            args.trackId = trackId;
+            args.trackObjectId = trackObjId;
+        }
+        return 1;
     }
 
     void registerHooks()
