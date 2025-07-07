@@ -2007,7 +2007,7 @@ namespace OpenLoco::CompanyAi
                 {
                     continue;
                 }
-                if (elConnectRoad->isAiAllocated())
+                if (!elConnectRoad->isAiAllocated())
                 {
                     continue;
                 }
