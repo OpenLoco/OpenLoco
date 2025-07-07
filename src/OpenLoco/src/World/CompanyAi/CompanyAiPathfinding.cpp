@@ -1951,32 +1951,32 @@ namespace OpenLoco::CompanyAi
                 {
                     continue;
                 }
-                auto* elTrack = el.as<World::RoadElement>();
-                if (elTrack == nullptr)
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
                 {
                     continue;
                 }
-                if (elTrack->rotation() != rotation)
+                if (elRoad->rotation() != rotation)
                 {
                     continue;
                 }
-                if (elTrack->sequenceIndex() != sequenceIndex)
+                if (elRoad->sequenceIndex() != sequenceIndex)
                 {
                     continue;
                 }
-                if (elTrack->owner() != companyId)
+                if (elRoad->owner() != companyId)
                 {
                     continue;
                 }
-                if (elTrack->roadId() != roadId)
+                if (elRoad->roadId() != roadId)
                 {
                     continue;
                 }
-                if (!elTrack->isAiAllocated() || elTrack->isGhost())
+                if (!elRoad->isAiAllocated() || elRoad->isGhost())
                 {
                     continue;
                 }
-                return elTrack;
+                return elRoad;
             }
             return nullptr;
         };
@@ -2029,6 +2029,95 @@ namespace OpenLoco::CompanyAi
                 {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    // 0x0047B615
+    // pos: ax, cx, di
+    // rotation: bh
+    // sequenceIndex: dh
+    // roadId: dl
+    // roadObjId : bp (unused)
+    static bool willRoadDestroyABuilding(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t roadId, CompanyId companyId)
+    {
+        auto getElRoad = [rotation, roadId, companyId](World::Pos3 pos, uint8_t sequenceIndex) -> const World::RoadElement* {
+            auto tile = World::TileManager::get(pos);
+            for (const auto& el : tile)
+            {
+                if (el.baseHeight() != pos.z)
+                {
+                    continue;
+                }
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (elRoad->sequenceIndex() != sequenceIndex)
+                {
+                    continue;
+                }
+                if (elRoad->owner() != companyId)
+                {
+                    continue;
+                }
+                if (elRoad->roadId() != roadId)
+                {
+                    continue;
+                }
+                if (!elRoad->isAiAllocated() || elRoad->isGhost())
+                {
+                    continue;
+                }
+                return elRoad;
+            }
+            return nullptr;
+        };
+        auto* elRoadSeq = getElRoad(pos, sequenceIndex);
+        if (elRoadSeq == nullptr)
+        {
+            return false;
+        }
+
+        auto& roadPieces = World::TrackData::getRoadPiece(roadId);
+        auto& roadPiece = roadPieces[sequenceIndex];
+        const auto roadPos0 = pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece.x, roadPiece.y }, rotation), roadPiece.z };
+        for (auto& piece : roadPieces)
+        {
+            const auto roadPos = roadPos0 + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            auto tile = World::TileManager::get(roadPos);
+            bool passedSurface = false;
+            for (auto& el : tile)
+            {
+                if (el.type() == World::ElementType::surface)
+                {
+                    passedSurface = true;
+                    continue;
+                }
+                if (!passedSurface)
+                {
+                    continue;
+                }
+                auto* elBuilding = el.as<World::BuildingElement>();
+                if (elBuilding == nullptr)
+                {
+                    continue;
+                }
+                if (roadPos.z >= elBuilding->clearHeight())
+                {
+                    continue;
+                }
+                if (roadPos.z + 8 * World::kSmallZStep <= elBuilding->baseHeight())
+                {
+                    continue;
+                }
+                return true;
             }
         }
         return false;
@@ -2197,6 +2286,22 @@ namespace OpenLoco::CompanyAi
                 const auto companyId = GameCommands::getUpdatingCompanyId();
 
                 const auto flag = sub_47B7CC(pos, rotation, index, roadId, companyId);
+
+                regs = backup;
+                return flag ? X86_FLAG_CARRY : 0;
+            });
+
+        Interop::registerHook(
+            0x0047B615,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
+                const auto rotation = static_cast<uint8_t>(regs.bh);
+                const auto index = static_cast<uint8_t>(regs.dh);
+                const auto roadId = static_cast<uint8_t>(regs.dl);
+                const auto companyId = GameCommands::getUpdatingCompanyId();
+
+                const auto flag = willRoadDestroyABuilding(pos, rotation, index, roadId, companyId);
 
                 regs = backup;
                 return flag ? X86_FLAG_CARRY : 0;
