@@ -8,11 +8,10 @@ namespace OpenLoco::Ui::Widgets
 {
     void GroupBox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        const auto position = widget.position();
         const auto size = widget.size();
 
         auto colour = widgetState.colour.opaque();
-        int16_t textEndPos = position.x + 5;
+        int16_t textEndPos = 5;
 
         // Draw label text if present
         if (widget.text != StringIds::null)
@@ -23,13 +22,13 @@ namespace OpenLoco::Ui::Widgets
             char buffer[512] = { 0 };
             StringManager::formatString(buffer, sizeof(buffer), widget.text);
 
-            auto point = Point(position.x + 5, position.y);
+            auto point = Point(5, 0);
             tr.drawString(point, colour, buffer);
-            textEndPos = position.x + 5 + tr.getStringWidth(buffer) + 1;
+            textEndPos = 5 + tr.getStringWidth(buffer) + 1;
         }
 
         // Prepare border position and size
-        const auto borderPos = position + Ui::Point{ 0, 4 };
+        const auto borderPos = Ui::Point{ 0, 4 };
         const auto borderSize = Ui::Size{ size.width + 0, size.height - 4 };
 
         // Border left of text

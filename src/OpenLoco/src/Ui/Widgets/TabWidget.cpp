@@ -9,8 +9,6 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CADE8
     static void drawTabBackground(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        const auto pos = widget.position();
-
         ImageId imageId = ImageId{ ImageIds::tab };
 
         // TODO: Separate content image and background image.
@@ -33,16 +31,16 @@ namespace OpenLoco::Ui::Widgets
             if (colour.isTranslucent())
             {
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid(pos + Ui::Point{ 1, 1 }, imageId, c);
+                drawingCtx.drawImageSolid(Ui::Point{ 1, 1 }, imageId, c);
                 c = Colours::getShade(colour.c(), 2);
-                drawingCtx.drawImageSolid(pos, imageId, c);
+                drawingCtx.drawImageSolid({}, imageId, c);
             }
             else
             {
                 c = Colours::getShade(colour.c(), 6);
-                drawingCtx.drawImageSolid(pos + Ui::Point{ 1, 1 }, imageId, c);
+                drawingCtx.drawImageSolid(Ui::Point{ 1, 1 }, imageId, c);
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid(pos, imageId, c);
+                drawingCtx.drawImageSolid({}, imageId, c);
             }
 
             return;
@@ -50,14 +48,12 @@ namespace OpenLoco::Ui::Widgets
 
         imageId = imageId.withPrimary(colour.c());
 
-        drawingCtx.drawImage(pos, imageId);
+        drawingCtx.drawImage({}, imageId);
     }
 
     static void drawTabContent(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
-
-        const auto pos = widget.position();
 
         if (widgetState.disabled)
         {
@@ -75,18 +71,18 @@ namespace OpenLoco::Ui::Widgets
         {
             if (widget.image != Widget::kContentNull)
             {
-                drawingCtx.drawImage(pos.x, pos.y, widget.image);
+                drawingCtx.drawImage(0, 0, widget.image);
             }
         }
         else
         {
             if (widget.image != Widget::kContentUnk)
             {
-                drawingCtx.drawImage(pos.x, pos.y + 1, widget.image);
+                drawingCtx.drawImage(0, 1, widget.image);
             }
 
-            drawingCtx.drawImage(pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
-            drawingCtx.drawRect(pos.x, pos.y + 26, 31, 1, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
+            drawingCtx.drawImage(0, 0, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
+            drawingCtx.drawRect(0, 26, 31, 1, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
         }
     }
 

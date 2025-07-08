@@ -1,4 +1,5 @@
 #include "ViewportWidget.h"
+#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "TextBoxWidget.h"
@@ -24,7 +25,7 @@ namespace OpenLoco::Ui::Widgets
         }
 
         auto formatArgs = FormatArguments(widget.textArgs);
-        auto point = Point(widget.left + 1, widget.top);
+        auto point = Point(1, 0);
         int width = widget.right - widget.left - 2;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
@@ -39,14 +40,33 @@ namespace OpenLoco::Ui::Widgets
         // TODO: Move viewports into the Widget
         auto& viewports = window->viewports;
 
-        if (viewports[0] != nullptr)
+        auto* vp0 = viewports[0];
+        auto* vp1 = viewports[1];
+        auto hasViewport = vp0 != nullptr || vp1 != nullptr;
+
+        // TODO: This is a hack, we need to step back in the render target stack to render the viewports,
+        // viewports currently store their position which is used to render in screen space coordinates
+        // also relative to the current invalidated region, it's a bit of a mess.
+        Gfx::RenderTarget savedRT;
+        if (hasViewport)
         {
-            viewports[0]->render(drawingCtx);
+            savedRT = drawingCtx.currentRenderTarget();
+            drawingCtx.popRenderTarget();
         }
 
-        if (viewports[1] != nullptr)
+        if (vp0 != nullptr)
         {
-            viewports[1]->render(drawingCtx);
+            vp0->render(drawingCtx);
+        }
+
+        if (vp1 != nullptr)
+        {
+            vp1->render(drawingCtx);
+        }
+
+        if (hasViewport)
+        {
+            drawingCtx.pushRenderTarget(savedRT);
         }
     }
 
