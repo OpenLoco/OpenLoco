@@ -38,10 +38,12 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint8_t, 0x0112C519> _trackRoadObjType112C519;
     static Interop::loco_global<World::Pos2, 0x0112C3C2> _unk1Pos112C3C2;
     static Interop::loco_global<World::SmallZ, 0x0112C515> _unk1PosBaseZ112C515;
+    static Interop::loco_global<uint8_t, 0x0112C516> _unk1Rot112C516;
     static Interop::loco_global<World::Pos2, 0x0112C3C6> _unk2Pos112C3C6;
     static Interop::loco_global<World::SmallZ, 0x0112C517> _unk2PosBaseZ112C517;
     static Interop::loco_global<World::Pos2, 0x0112C3CC> _unk3Pos112C3CC;
     static Interop::loco_global<World::SmallZ, 0x0112C59C> _unk3PosBaseZ112C59C;
+    static Interop::loco_global<uint32_t, 0x0112C364> _unk112C364;
     static Interop::loco_global<uint32_t, 0x0112C36C> _unk112C36C;
     static Interop::loco_global<uint32_t, 0x0112C35C> _unk112C35C;
     static Interop::loco_global<uint32_t, 0x0112C34C> _unk112C34C;
@@ -2135,9 +2137,9 @@ namespace OpenLoco::CompanyAi
     // targetPos.x: 0x0112C3C2
     // targetPos.y: 0x0112C3C4
     // targetPos.z: 0x0112C515 * World::kSmallZStep
+    // targetRot: 0x0112C516
     // trackObjId: 0x0112C519
-    // tad : 0x0112C3CA
-    static uint32_t sub_485B75(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t trackObjId)
+    static uint32_t sub_485B75(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t trackObjId, const CompanyId companyId)
     {
         _unk112C36C = 0U;
         _unk112C35C = 0U;
@@ -2151,20 +2153,74 @@ namespace OpenLoco::CompanyAi
             if (pos == targetPos)
             {
                 // 0x00485DBD
+                const auto posA = startPos + World::TrackData::getUnkTrack(startTad).pos;
+                const auto posB = targetPos + World::Pos3(World::kRotationOffset[targetRot], 0);
+                _unk112C364 = Math::Vector::distance3D(posA, posB);
+                return unk112C368 ? (1U << 1) : 0U;
             }
 
             const uint8_t trackId = (tad >> 3U) & 0x3F;
+            const uint8_t rotation = tad & 0x3U;
             const auto unkWeighting = World::TrackData::getTrackMiscData(trackId).unkWeighting;
             _unk112C36C += unkWeighting;
             unk112C360 -= unkWeighting;
 
-            GameCommands::AiTrackReplacementArgs args{};
-            args.pos = pos;
-            args.pos.z += World::TrackData::getTrackPiece(trackId)[0].z;
-            args.rotation = tad & 0x3U;
-            args.sequenceIndex = 0;
-            args.trackId = trackId;
-            args.trackObjectId = trackObjId;
+            auto posAdjusted = pos;
+            posAdjusted.z += World::TrackData::getTrackPiece(trackId)[0].z;
+
+            {
+                GameCommands::AiTrackReplacementArgs args{};
+                args.pos = posAdjusted;
+                args.rotation = tad & 0x3U;
+                args.sequenceIndex = 0;
+                args.trackId = trackId;
+                args.trackObjectId = trackObjId;
+
+                auto regs(static_cast<Interop::registers>(args));
+                regs.bl = 0;
+                GameCommands::aiTrackReplacement(regs);
+                if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
+                {
+                    _unk112C34C += static_cast<uint32_t>(regs.ebx);
+                }
+            }
+            if (sub_4A80E1(posAdjusted, rotation, 0, trackId, trackObjId))
+            {
+                _unk112C35C += unkWeighting;
+            }
+            if (_unk112C36C > 128 && unk112C360 > 64)
+            {
+                if (sub_4A7E86(posAdjusted, rotation, 0, trackId, trackObjId))
+                {
+                    unk112C368 = true;
+                }
+            }
+            const auto rotationBegin = World::TrackData::getUnkTrack(tad).rotationBegin;
+            auto nextPos = pos;
+            if (rotationBegin < 12)
+            {
+                nextPos -= World::Pos3(World::kRotationOffset[rotationBegin], 0);
+            }
+            const auto nextRot = World::kReverseRotation[rotationBegin];
+            const auto tc = World::Track::getTrackConnectionsAi(nextPos, nextRot, companyId, trackObjId, 0, 0);
+            if (tc.connections.empty() || tc.connections.size() > 1)
+            {
+                return 1;
+            }
+
+            tad = tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask;
+            const auto& trackSize = World::TrackData::getUnkTrack(tad);
+            pos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                pos -= World::Pos3(World::kRotationOffset[trackSize.rotationEnd], 0);
+            }
+            tad ^= (1U << 2);
+            if (tad & (1U << 2))
+            {
+                // Odd? what is this doing
+                tad = (tad & 0x3) | (0U << 3);
+            }
         }
         return 1;
     }
