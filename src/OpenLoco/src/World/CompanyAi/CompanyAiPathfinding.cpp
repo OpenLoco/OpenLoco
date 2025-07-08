@@ -2225,6 +2225,28 @@ namespace OpenLoco::CompanyAi
         return 1;
     }
 
+    static uint32_t sub_485B68()
+    {
+        const auto startPos = World::Pos3{ _unk2Pos112C3C6->x, _unk2Pos112C3C6->y, _unk2PosBaseZ112C517 * World::kSmallZStep };
+        const auto startTad = *_unkTad112C3CA;
+        const auto targetPos = World::Pos3{ _unk1Pos112C3C2->x, _unk1Pos112C3C2->y, _unk1PosBaseZ112C515 * World::kSmallZStep };
+        const auto targetRot = *_unk1Rot112C516;
+        const auto companyId = GameCommands::getUpdatingCompanyId();
+        const auto trackRoadObjId = *_trackRoadObjType112C519;
+        if (trackRoadObjId & (1U << 7))
+        {
+            [[maybe_unused]] const auto roadObjId = trackRoadObjId & ~(1U << 7);
+            Interop::registers regs{};
+            call(0x00485E6A, regs);
+            return regs.eax;
+        }
+        else
+        {
+            const auto trackObjId = trackRoadObjId;
+            return sub_485B75(startPos, startTad, targetPos, targetRot, trackObjId, companyId);
+        }
+    }
+
     void registerHooks()
     {
         Interop::registerHook(
@@ -2407,6 +2429,18 @@ namespace OpenLoco::CompanyAi
 
                 regs = backup;
                 return flag ? X86_FLAG_CARRY : 0;
+            });
+
+        Interop::registerHook(
+            0x00485B68,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+
+                const auto flags = sub_485B68();
+
+                regs = backup;
+                regs.eax = flags;
+                return 0;
             });
     }
 }
