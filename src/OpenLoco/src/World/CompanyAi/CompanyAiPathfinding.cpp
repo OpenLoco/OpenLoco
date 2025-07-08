@@ -2210,7 +2210,7 @@ namespace OpenLoco::CompanyAi
 
             tad = tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask;
             const auto& trackSize = World::TrackData::getUnkTrack(tad);
-            pos += trackSize.pos;
+            pos = nextPos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
                 pos -= World::Pos3(World::kRotationOffset[trackSize.rotationEnd], 0);
