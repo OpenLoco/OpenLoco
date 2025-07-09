@@ -2347,10 +2347,283 @@ namespace OpenLoco::CompanyAi
         }
     }
 
+    // 0x004845FF
+    static void aiPathfindNextState(Company& company)
+    {
+        company.var_85E8++;
+        company.var_85F0 = 0;
+        company.var_85EE = 0;
+        company.var_85EF = 0;
+        // TODO: When diverging just set this all to a fixed value rather than only first entry
+        for (auto& htEntry : company.var_25C0)
+        {
+            htEntry.var_00 = 0xFFFFU;
+        }
+        company.var_25C0_length = 0;
+    }
+
+    // 0x00484508
+    static bool evaluatePathfound(Company& company, AiThought& thought)
+    {
+        const auto flags = sub_485B68();
+        if (flags & (1U << 0))
+        {
+            return true;
+        }
+        if (flags & (1U << 1))
+        {
+            // 0x004845FF
+            aiPathfindNextState(company);
+            return false;
+        }
+        else
+        {
+            const auto weighting = std::min<uint32_t>(_unk112C364, 256);
+            // 1.75 x weighting
+            const auto adjustedWeighting = weighting + weighting / 2 + weighting / 4;
+            if (adjustedWeighting < _unk112C36C)
+            {
+                // 0x004845FF
+                aiPathfindNextState(company);
+                return false;
+            }
+            if (_unk112C35C * 5 >= _unk112C36C)
+            {
+                // 0x004845FF
+                aiPathfindNextState(company);
+                return false;
+            }
+            auto& aiStation = thought.stations[company.var_85C2];
+            uint8_t nextStationIdx = 0xFFU;
+            if (company.var_85C3 & (1U << 0))
+            {
+                nextStationIdx = aiStation.var_A;
+                if (aiStation.var_C & ((1U << 2) | (1U << 1)))
+                {
+                    aiStation.var_C |= (1U << 3);
+                }
+                else
+                {
+                    aiStation.var_C |= (1U << 1);
+                }
+            }
+            else
+            {
+                nextStationIdx = aiStation.var_9;
+                if (aiStation.var_B & ((1U << 2) | (1U << 1)))
+                {
+                    aiStation.var_B |= (1U << 3);
+                }
+                else
+                {
+                    aiStation.var_B |= (1U << 1);
+                }
+            }
+            auto& aiStation2 = thought.stations[nextStationIdx];
+            if (aiStation2.var_9 != company.var_85C2)
+            {
+                if (aiStation2.var_C & ((1U << 2) | (1U << 1)))
+                {
+                    aiStation2.var_C |= (1U << 3);
+                }
+                else
+                {
+                    aiStation2.var_C |= (1U << 1);
+                }
+            }
+            else
+            {
+                if (aiStation2.var_B & ((1U << 2) | (1U << 1)))
+                {
+                    aiStation2.var_B |= (1U << 3);
+                }
+                else
+                {
+                    aiStation2.var_B |= (1U << 1);
+                }
+            }
+            company.var_85C2 = 0xFFU;
+            thought.var_76 += _unk112C34C;
+            return false;
+        }
+    }
+
     // 0x00483FBA
     bool aiPathfind(Company& company, AiThought& thought)
     {
-        return false;
+        _unk1Pos112C3C2 = company.var_85C4;
+        _unk1PosBaseZ112C515 = company.var_85C8;
+        _unk1Rot112C516 = company.var_85CE;
+
+        _unk2Pos112C3C6 = company.var_85D0;
+        _unk2PosBaseZ112C517 = company.var_85D4;
+        _unkTad112C3CA = company.var_85D5;
+
+        _unk3Pos112C3CC = company.var_85D7;
+        _unk3PosBaseZ112C59C = company.var_85DB;
+        _unkTad112C4D4 = company.var_85DC;
+
+        _pathFindTotalTrackRoadWeighting = company.var_85DE;
+        _pathFindUndoCount112C518 = company.var_85EE;
+
+        switch (company.var_85E8)
+        {
+            case 0:
+            {
+                _unk1Pos112C3C2 = company.var_85C4;
+                _unk1PosBaseZ112C515 = company.var_85C8;
+                _unk1Rot112C516 = company.var_85CE;
+
+                _unk2Pos112C3C6 = company.var_85D0;
+                _unk2PosBaseZ112C517 = company.var_85D4;
+                _unkTad112C3CA = company.var_85D5;
+
+                _unk3Pos112C3CC = company.var_85D7;
+                _unk3PosBaseZ112C59C = company.var_85DB;
+                _unkTad112C4D4 = company.var_85DC;
+
+                _pathFindTotalTrackRoadWeighting = company.var_85DE;
+                _pathFindUndoCount112C518 = company.var_85EE;
+
+                const auto validTrackRoadIds = sub_483A7E(company, thought);
+
+                if (sub_483E20(company))
+                {
+                    // 0x00484508
+                    return evaluatePathfound(company, thought);
+                }
+                else
+                {
+                    // 0x004850A0
+                    company.var_85F0++;
+                    if (company.var_85F0 > 384)
+                    {
+                        // 0x004845EF
+
+                        const auto flags = sub_485B68();
+                        if (flags & (1U << 0))
+                        {
+                            return true;
+                        }
+
+                        // 0x004845FF
+                        aiPathfindNextState(company);
+                        return false;
+                    }
+
+                    sub_484648(company);
+                    company.var_85DE = _pathFindTotalTrackRoadWeighting;
+                    company.var_85EE = _pathFindUndoCount112C518;
+                    company.var_85D0 = _unk2Pos112C3C6;
+                    company.var_85D4 = _unk2PosBaseZ112C517;
+                    company.var_85D5 = _unkTad112C3CA;
+                    return false;
+                }
+            }
+            case 1:
+            {
+                _unk1Pos112C3C2 = company.var_85C4;
+                _unk1PosBaseZ112C515 = company.var_85C8;
+                _unk1Rot112C516 = company.var_85CE;
+
+                _unk2Pos112C3C6 = company.var_85D0;
+                _unk2PosBaseZ112C517 = company.var_85D4;
+                _unkTad112C3CA = company.var_85D5;
+
+                _unk3Pos112C3CC = company.var_85D7;
+                _unk3PosBaseZ112C59C = company.var_85DB;
+                _unkTad112C4D4 = company.var_85DC;
+
+                _pathFindTotalTrackRoadWeighting = company.var_85DE;
+                _pathFindUndoCount112C518 = company.var_85EE;
+
+                const auto validTrackRoadIds = sub_483A7E(company, thought);
+
+                if (_pathFindTotalTrackRoadWeighting == 0)
+                {
+                    // 0x004845FF
+                    aiPathfindNextState(company);
+                    return false;
+                }
+                else
+                {
+                    // 0x00484338
+                    company.var_85F0++;
+                    if (company.var_85F0 > 384)
+                    {
+                        return true;
+                    }
+
+                    _pathFindUndoCount112C518 = 1;
+                    sub_484648(company);
+                    company.var_85DE = _pathFindTotalTrackRoadWeighting;
+                    company.var_85EE = _pathFindUndoCount112C518;
+                    company.var_85D0 = _unk2Pos112C3C6;
+                    company.var_85D4 = _unk2PosBaseZ112C517;
+                    company.var_85D5 = _unkTad112C3CA;
+                    return false;
+                }
+            }
+            case 2:
+            {
+                // Different to case 0 and 1
+                _unk1Pos112C3C2 = company.var_85C9;
+                _unk1PosBaseZ112C515 = company.var_85CD;
+                _unk1Rot112C516 = company.var_85CF;
+
+                _unk2Pos112C3C6 = company.var_85D7;
+                _unk2PosBaseZ112C517 = company.var_85DB;
+                _unkTad112C3CA = company.var_85DC;
+
+                _unk3Pos112C3CC = company.var_85D0;
+                _unk3PosBaseZ112C59C = company.var_85D4;
+                _unkTad112C4D4 = company.var_85D5;
+
+                _pathFindTotalTrackRoadWeighting = company.var_85E2;
+                _pathFindUndoCount112C518 = company.var_85EF;
+
+                const auto validTrackRoadIds = sub_483A7E(company, thought);
+
+                if (sub_483E20(company))
+                {
+                    // 0x00484508
+                    return evaluatePathfound(company, thought);
+                }
+                else
+                {
+                    // 0x004841EE
+
+                    company.var_85F0++;
+                    if (company.var_85F0 > 384)
+                    {
+                        // 0x004845EF duplicate
+
+                        const auto flags = sub_485B68();
+                        if (flags & (1U << 0))
+                        {
+                            return true;
+                        }
+
+                        // 0x004845FF
+                        aiPathfindNextState(company);
+                        return false;
+                    }
+
+                    sub_484648(company);
+                    company.var_85E2 = _pathFindTotalTrackRoadWeighting;
+                    company.var_85EF = _pathFindUndoCount112C518;
+                    company.var_85D7 = _unk2Pos112C3C6;
+                    company.var_85DB = _unk2PosBaseZ112C517;
+                    company.var_85DC = _unkTad112C3CA;
+                    return false;
+                }
+            }
+            case 3:
+                return false;
+            default:
+                assert(false);
+                return false;
+        }
     }
 
     void registerHooks()
