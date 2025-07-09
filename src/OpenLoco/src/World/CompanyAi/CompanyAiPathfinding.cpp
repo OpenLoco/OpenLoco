@@ -2345,6 +2345,12 @@ namespace OpenLoco::CompanyAi
         }
     }
 
+    // 0x00483FBA
+    bool aiPathfind(Company& company, AiThought& thought)
+    {
+        return false;
+    }
+
     void registerHooks()
     {
         Interop::registerHook(
