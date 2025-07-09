@@ -64,7 +64,6 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint16_t, 0x0112C3CA> _unkTad112C3CA;
     static Interop::loco_global<uint16_t, 0x0112C3D0> _queryTrackRoadPlacementMinScore;
     static Interop::loco_global<uint16_t, 0x0112C3D2> _queryTrackRoadPlacementMinWeighting;
-    static Interop::loco_global<uint8_t[65], 0x0112C51A> _validTrackRoadIds;
     static Interop::loco_global<uint8_t, 0x01136073> _byte_1136073;
     static Interop::loco_global<World::MicroZ, 0x01136074> _byte_1136074;
     static Interop::loco_global<uint8_t, 0x01136075> _byte_1136075;           // bridgeType of any overlapping track
@@ -339,7 +338,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
-    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
+    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const sfl::static_vector<uint8_t, 64>& validTrackIds, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -471,9 +470,9 @@ namespace OpenLoco::CompanyAi
             }
             else
             {
-                for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+                for (auto newTrackId : validTrackIds)
                 {
-                    const auto newTad = (*ptr << 3) | nextRotation;
+                    const auto newTad = (newTrackId << 3) | nextRotation;
                     const auto rotBegin = World::TrackData::getUnkTrack(newTad).rotationBegin;
                     if (newUnkFlag)
                     {
@@ -493,13 +492,13 @@ namespace OpenLoco::CompanyAi
                     // Make a copy of the state as each track needs to be evaluated independently
                     auto tempState = state;
 
-                    queryTrackPlacementScoreRecurse(company, nextPos, newTad, newUnkFlag, totalResult, tempState);
+                    queryTrackPlacementScoreRecurse(company, nextPos, newTad, newUnkFlag, validTrackIds, totalResult, tempState);
                 }
             }
         }
     }
 
-    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag)
+    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const sfl::static_vector<uint8_t, 64>& validTrackIds)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -511,7 +510,7 @@ namespace OpenLoco::CompanyAi
         state.currentWeighting = 0U;
         state.bridgeWeighting = 0U;
 
-        queryTrackPlacementScoreRecurse(company, pos, tad, unkFlag, result, state);
+        queryTrackPlacementScoreRecurse(company, pos, tad, unkFlag, validTrackIds, result, state);
 
         return result;
     }
@@ -522,7 +521,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
-    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
+    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const sfl::static_vector<uint8_t, 64>& validRoadIds, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -625,20 +624,20 @@ namespace OpenLoco::CompanyAi
             }
             else
             {
-                for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+                for (const auto newRoadId : validRoadIds)
                 {
-                    const auto newTad = (*ptr << 3) | nextRotation;
+                    const auto newTad = (newRoadId << 3) | nextRotation;
 
                     // Make a copy of the state as each track needs to be evaluated independently
                     auto tempState = state;
 
-                    queryRoadPlacementScoreRecurse(company, nextPos, newTad, totalResult, tempState);
+                    queryRoadPlacementScoreRecurse(company, nextPos, newTad, validRoadIds, totalResult, tempState);
                 }
             }
         }
     }
 
-    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad)
+    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const sfl::static_vector<uint8_t, 64>& validRoadIds)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -650,7 +649,7 @@ namespace OpenLoco::CompanyAi
         state.currentWeighting = 0U;
         state.bridgeWeighting = 0U;
 
-        queryRoadPlacementScoreRecurse(company, pos, tad, result, state);
+        queryRoadPlacementScoreRecurse(company, pos, tad, validRoadIds, result, state);
 
         return result;
     }
@@ -768,7 +767,7 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00484655
-    static void pathFindTrackSection(Company& company)
+    static void pathFindTrackSection(Company& company, const sfl::static_vector<uint8_t, 64>& validTrackIds)
     {
         if (_pathFindUndoCount112C518 == 0)
         {
@@ -809,9 +808,9 @@ namespace OpenLoco::CompanyAi
             tad |= rotation;
             // 0x0112C55B, 0x0112C3D4, 0x00112C454
             sfl::static_vector<std::pair<uint8_t, QueryTrackRoadPlacementResult>, 64> placementResults;
-            for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+            for (const auto trackId : validTrackIds)
             {
-                const auto rotationBegin = World::TrackData::getUnkTrack(*ptr << 3).rotationBegin;
+                const auto rotationBegin = World::TrackData::getUnkTrack(trackId).rotationBegin;
                 if (diagFlag)
                 {
                     if (rotationBegin < 12)
@@ -826,9 +825,8 @@ namespace OpenLoco::CompanyAi
                         continue;
                     }
                 }
-                const auto trackId = *ptr;
                 const auto newTad = (trackId << 3) | rotation;
-                placementResults.push_back(std::make_pair(trackId, queryTrackPlacementScore(company, pos, newTad, diagFlag)));
+                placementResults.push_back(std::make_pair(trackId, queryTrackPlacementScore(company, pos, newTad, diagFlag, validTrackIds)));
             }
             // 0x00484813
             uint16_t bestMinScore = 0xFFFFU;
@@ -1035,7 +1033,7 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00484D76
-    static void pathFindRoadSection(Company& company)
+    static void pathFindRoadSection(Company& company, const sfl::static_vector<uint8_t, 64>& validRoadIds)
     {
         if (_pathFindUndoCount112C518 == 0)
         {
@@ -1073,11 +1071,10 @@ namespace OpenLoco::CompanyAi
 
             // 0x0112C55B, 0x0112C3D4, 0x00112C454
             sfl::static_vector<std::pair<uint8_t, QueryTrackRoadPlacementResult>, 64> placementResults;
-            for (auto* ptr = &_validTrackRoadIds[0]; *ptr != 0xFFU; ++ptr)
+            for (const auto roadId : validRoadIds)
             {
-                const auto roadId = *ptr;
                 const auto newTad = (roadId << 3) | rotation;
-                placementResults.push_back(std::make_pair(roadId, queryRoadPlacementScore(company, pos, newTad)));
+                placementResults.push_back(std::make_pair(roadId, queryRoadPlacementScore(company, pos, newTad, validRoadIds)));
             }
             // 0x00484EF0
             uint16_t bestMinScore = 0xFFFFU;
@@ -1187,15 +1184,15 @@ namespace OpenLoco::CompanyAi
 
     // 0x00484648
     // company : _unk112C390
-    static void sub_484648(Company& company)
+    static void sub_484648(Company& company, const sfl::static_vector<uint8_t, 64>& validTrackRoadIds)
     {
         if (_trackRoadObjType112C519 & (1U << 7))
         {
-            pathFindRoadSection(company);
+            pathFindRoadSection(company, validTrackRoadIds);
         }
         else
         {
-            pathFindTrackSection(company);
+            pathFindTrackSection(company, validTrackRoadIds);
         }
     }
 
@@ -2511,7 +2508,7 @@ namespace OpenLoco::CompanyAi
                         return false;
                     }
 
-                    sub_484648(company);
+                    sub_484648(company, validTrackRoadIds);
                     company.var_85DE = _pathFindTotalTrackRoadWeighting;
                     company.var_85EE = _pathFindUndoCount112C518;
                     company.var_85D0 = _unk2Pos112C3C6;
@@ -2555,7 +2552,7 @@ namespace OpenLoco::CompanyAi
                     }
 
                     _pathFindUndoCount112C518 = 1;
-                    sub_484648(company);
+                    sub_484648(company, validTrackRoadIds);
                     company.var_85DE = _pathFindTotalTrackRoadWeighting;
                     company.var_85EE = _pathFindUndoCount112C518;
                     company.var_85D0 = _unk2Pos112C3C6;
@@ -2609,7 +2606,7 @@ namespace OpenLoco::CompanyAi
                         return false;
                     }
 
-                    sub_484648(company);
+                    sub_484648(company, validTrackRoadIds);
                     company.var_85E2 = _pathFindTotalTrackRoadWeighting;
                     company.var_85EF = _pathFindUndoCount112C518;
                     company.var_85D7 = _unk2Pos112C3C6;
@@ -2624,202 +2621,5 @@ namespace OpenLoco::CompanyAi
                 assert(false);
                 return false;
         }
-    }
-
-    void registerHooks()
-    {
-        Interop::registerHook(
-            0x00483A7E,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-
-                auto& company = *Interop::X86Pointer<Company>(regs.esi);
-                auto& thought = *Interop::X86Pointer<AiThought>(regs.edi);
-                const auto validTrackRoadIds = sub_483A7E(company, thought);
-                auto* ptr = &_validTrackRoadIds[0];
-                for (auto id : validTrackRoadIds)
-                {
-                    *ptr++ = id;
-                }
-                *ptr = 0xFFU;
-
-                regs = backup;
-                return 0;
-            });
-
-        Interop::registerHook(
-            0x00483E20,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-
-                auto& company = *Interop::X86Pointer<Company>(regs.esi);
-                const auto hasConnection = sub_483E20(company);
-
-                regs = backup;
-                return hasConnection ? Interop::X86_FLAG_CARRY : 0;
-            });
-
-        // 0x004854B2
-        Interop::registerHook(
-            0x004854B2,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-
-                const auto pos = World::Pos3(regs.ax, regs.cx, static_cast<uint8_t>(regs.dl) * World::kSmallZStep);
-                const auto tad = regs.bp & 0x3FFU;
-                const auto unkFlag = (regs.ebp & (1U << 31)) != 0;
-                auto& company = **_unk112C390;
-
-                const auto res = queryTrackPlacementScore(company, pos, tad, unkFlag);
-                _queryTrackRoadPlacementFlags = res.flags;
-                _queryTrackRoadPlacementMinScore = res.minScore;
-                _queryTrackRoadPlacementMinWeighting = res.minWeighting;
-
-                regs = backup;
-                return 0;
-            });
-
-        // 0x00485849
-        Interop::registerHook(
-            0x00485849,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-
-                const auto pos = World::Pos3(regs.ax, regs.cx, static_cast<uint8_t>(regs.dl) * World::kSmallZStep);
-                const auto tad = regs.bp & 0x3FFU;
-                auto& company = **_unk112C390;
-
-                const auto res = queryRoadPlacementScore(company, pos, tad);
-                _queryTrackRoadPlacementFlags = res.flags;
-                _queryTrackRoadPlacementMinScore = res.minScore;
-                _queryTrackRoadPlacementMinWeighting = res.minWeighting;
-
-                regs = backup;
-                return 0;
-            });
-
-        // 0x00484648
-        Interop::registerHook(
-            0x00484648,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-
-                auto& company = **_unk112C390;
-
-                sub_484648(company);
-
-                regs = backup;
-                return 0;
-            });
-
-        Interop::registerHook(
-            0x0047BD6D,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
-                const auto rotation = static_cast<uint8_t>(regs.bh);
-                const auto index = static_cast<uint8_t>(regs.dh);
-                // const auto roadObjId = static_cast<uint8_t>(regs.bp); unused
-                const auto roadId = static_cast<uint8_t>(regs.dl);
-                const auto companyId = GameCommands::getUpdatingCompanyId();
-
-                const auto totalCost = RoadReplacePrice::aiRoadReplacementCost(pos, rotation, index, roadId, companyId);
-
-                regs = backup;
-                regs.ebx = totalCost;
-                return 0;
-            });
-
-        Interop::registerHook(
-            0x0047B336,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
-                const auto rotation = static_cast<uint8_t>(regs.bh);
-                const auto index = static_cast<uint8_t>(regs.dh);
-                // const auto roadObjId = static_cast<uint8_t>(regs.bp); unused
-                const auto roadId = static_cast<uint8_t>(regs.dl);
-                const auto companyId = GameCommands::getUpdatingCompanyId();
-
-                const auto flag = sub_47B336(pos, rotation, index, roadId, companyId);
-
-                regs = backup;
-                return flag ? X86_FLAG_CARRY : 0;
-            });
-
-        Interop::registerHook(
-            0x004A80E1,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
-                const auto rotation = static_cast<uint8_t>(regs.bh);
-                const auto index = static_cast<uint8_t>(regs.dh);
-                const auto trackObjId = static_cast<uint8_t>(regs.bp);
-                const auto trackId = static_cast<uint8_t>(regs.dl);
-
-                const auto flag = sub_4A80E1(pos, rotation, index, trackId, trackObjId);
-                regs = backup;
-                return flag ? X86_FLAG_CARRY : 0;
-            });
-
-        Interop::registerHook(
-            0x004A7E86,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
-                const auto rotation = static_cast<uint8_t>(regs.bh);
-                const auto index = static_cast<uint8_t>(regs.dh);
-                const auto trackObjId = static_cast<uint8_t>(regs.bp);
-                const auto trackId = static_cast<uint8_t>(regs.dl);
-
-                const auto flag = sub_4A7E86(pos, rotation, index, trackId, trackObjId);
-
-                regs = backup;
-                return flag ? X86_FLAG_CARRY : 0;
-            });
-
-        Interop::registerHook(
-            0x0047B7CC,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
-                const auto rotation = static_cast<uint8_t>(regs.bh);
-                const auto index = static_cast<uint8_t>(regs.dh);
-                const auto roadId = static_cast<uint8_t>(regs.dl);
-                const auto companyId = GameCommands::getUpdatingCompanyId();
-
-                const auto flag = sub_47B7CC(pos, rotation, index, roadId, companyId);
-
-                regs = backup;
-                return flag ? X86_FLAG_CARRY : 0;
-            });
-
-        Interop::registerHook(
-            0x0047B615,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
-                const auto rotation = static_cast<uint8_t>(regs.bh);
-                const auto index = static_cast<uint8_t>(regs.dh);
-                const auto roadId = static_cast<uint8_t>(regs.dl);
-                const auto companyId = GameCommands::getUpdatingCompanyId();
-
-                const auto flag = willRoadDestroyABuilding(pos, rotation, index, roadId, companyId);
-
-                regs = backup;
-                return flag ? X86_FLAG_CARRY : 0;
-            });
-
-        Interop::registerHook(
-            0x00485B68,
-            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Interop::registers backup = regs;
-
-                const auto flags = sub_485B68();
-
-                regs = backup;
-                regs.eax = flags;
-                return 0;
-            });
     }
 }
