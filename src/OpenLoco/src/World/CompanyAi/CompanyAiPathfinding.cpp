@@ -2241,7 +2241,6 @@ namespace OpenLoco::CompanyAi
         _unk112C35C = 0U;
         bool unk112C368 = false;
         _unk112C34C = 0U;
-        uint32_t unk112C360 = _pathFindTotalTrackRoadWeighting;
         World::Pos3 pos = startPos;
         uint16_t tad = startTad;
         bool targetReached = false;
@@ -2257,7 +2256,6 @@ namespace OpenLoco::CompanyAi
             const uint8_t rotation = tad & 0x3U;
             const auto unkWeighting = World::TrackData::getRoadMiscData(roadId).unkWeighting;
             _unk112C36C += unkWeighting;
-            unk112C360 -= unkWeighting;
 
             auto posAdjusted = pos;
             posAdjusted.z += World::TrackData::getRoadPiece(roadId)[0].z;
