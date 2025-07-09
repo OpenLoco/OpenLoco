@@ -9,6 +9,4 @@ namespace OpenLoco
 namespace OpenLoco::CompanyAi
 {
     bool aiPathfind(Company& company, AiThought& thought);
-
-    void registerHooks();
 }

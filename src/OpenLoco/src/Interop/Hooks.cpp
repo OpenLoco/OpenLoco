@@ -39,7 +39,6 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
-#include "World/CompanyAi/CompanyAiPathfinding.h"
 #include "World/IndustryManager.h"
 #include "World/Station.h"
 #include "World/StationManager.h"
@@ -822,7 +821,6 @@ void OpenLoco::Interop::registerHooks()
     Config::registerHooks();
     ObjectManager::registerHooks();
     Vehicles::registerHooks();
-    CompanyAi::registerHooks();
 
     // Part of 0x004691FA
     registerHook(
