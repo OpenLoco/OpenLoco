@@ -30,7 +30,7 @@ namespace OpenLoco::Paint
 
         const auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
         const uint8_t viewableRotation = (session.getRotation() + elTree.rotation()) & 0x3;
-        const uint32_t treeFrameNum = (viewableRotation % treeObj->numRotations) + elTree.unk5l() * treeObj->numRotations;
+        const uint32_t treeFrameNum = (viewableRotation % treeObj->numRotations) + elTree.growth() * treeObj->numRotations;
 
         uint8_t season = elTree.season();
         bool hasImage2 = false;
