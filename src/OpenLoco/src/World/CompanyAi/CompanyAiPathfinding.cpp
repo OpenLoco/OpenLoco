@@ -810,7 +810,7 @@ namespace OpenLoco::CompanyAi
             sfl::static_vector<std::pair<uint8_t, QueryTrackRoadPlacementResult>, 64> placementResults;
             for (const auto trackId : validTrackIds)
             {
-                const auto rotationBegin = World::TrackData::getUnkTrack(trackId).rotationBegin;
+                const auto rotationBegin = World::TrackData::getUnkTrack(trackId << 3).rotationBegin;
                 if (diagFlag)
                 {
                     if (rotationBegin < 12)
@@ -2448,21 +2448,6 @@ namespace OpenLoco::CompanyAi
     // 0x00483FBA
     bool aiPathfind(Company& company, AiThought& thought)
     {
-        _unk1Pos112C3C2 = company.var_85C4;
-        _unk1PosBaseZ112C515 = company.var_85C8;
-        _unk1Rot112C516 = company.var_85CE;
-
-        _unk2Pos112C3C6 = company.var_85D0;
-        _unk2PosBaseZ112C517 = company.var_85D4;
-        _unkTad112C3CA = company.var_85D5;
-
-        _unk3Pos112C3CC = company.var_85D7;
-        _unk3PosBaseZ112C59C = company.var_85DB;
-        _unkTad112C4D4 = company.var_85DC;
-
-        _pathFindTotalTrackRoadWeighting = company.var_85DE;
-        _pathFindUndoCount112C518 = company.var_85EE;
-
         switch (company.var_85E8)
         {
             case 0:
