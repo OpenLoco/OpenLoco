@@ -2373,7 +2373,7 @@ namespace OpenLoco::CompanyAi
         }
         else
         {
-            const auto weighting = std::min<uint32_t>(_unk112C364, 256);
+            const auto weighting = std::max<uint32_t>(_unk112C364, 256);
             // 1.75 x weighting
             const auto adjustedWeighting = weighting + weighting / 2 + weighting / 4;
             if (adjustedWeighting < _unk112C36C)
@@ -2599,10 +2599,10 @@ namespace OpenLoco::CompanyAi
                 }
             }
             case 3:
-                return false;
+                return true;
             default:
                 assert(false);
-                return false;
+                return true;
         }
     }
 }
