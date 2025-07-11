@@ -31,6 +31,7 @@
 #include "OrderManager.h"
 #include "Orders.h"
 #include "Random.h"
+#include "RoutingManager.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
@@ -4278,9 +4279,37 @@ namespace OpenLoco::Vehicles
     // 0x004B08DD
     void VehicleHead::liftUpVehicle()
     {
-        registers regs{};
-        regs.esi = X86Pointer(this);
-        call(0x004B08DD, regs);
+        if (tileX == -1)
+        {
+            return;
+        }
+
+        sub_4AD778();
+        Vehicle train(head);
+        train.applyToComponents([](auto& vehicle) {
+            vehicle.var_38 |= Flags38::unk_2;
+        });
+
+        liftUpTail(*train.tail);
+
+        // 0x004B0A9A
+        train.applyToComponents([](auto& veh) {
+            veh.var_38 &= ~Flags38::unk_2;
+            veh.tileX = -1;
+            veh.moveTo(World::Pos3(static_cast<int16_t>(0x8000), 0, 0));
+        });
+
+        for (auto& car : train.cars)
+        {
+            for (auto& component : car)
+            {
+                removeAllCargo(component);
+            }
+        }
+
+        train.veh1->var_3C = 0;
+        status = Status::unk_0;
+        stationId = StationId::null;
     }
 
     // 0x004C3BA6

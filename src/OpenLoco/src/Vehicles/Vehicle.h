@@ -727,6 +727,8 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(VehicleTail) == 0x51); // Can't use offset_of change this to last field if more found
 
+    void liftUpTail(VehicleTail& tail);
+
 #pragma pack(pop)
 
     struct CarComponent
