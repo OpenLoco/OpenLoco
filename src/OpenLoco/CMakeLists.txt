@@ -88,6 +88,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Company/RenameCompanyName.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Company/RenameCompanyOwner.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Company/UpdateOwnerStatus.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/CompanyAi/AiCreateRoadAndStation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/CompanyAi/AiTrackReplacement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Docks/CreatePort.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Docks/RemovePort.cpp"
