@@ -4793,7 +4793,7 @@ namespace OpenLoco
         {
             args.unk1 |= (1U << 0);
         }
-        args.unk2 = company.var_259A;
+        args.bridge = company.var_259A;
 
         auto* trackObj = ObjectManager::get<TrackObject>(thought.trackObjId);
         for (auto i = 0U; i < 4; ++i)
