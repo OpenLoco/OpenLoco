@@ -8,6 +8,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
+#include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -27,6 +28,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
+#include "Objects/TrackObject.h"
 #include "Objects/VehicleObject.h"
 #include "OrderManager.h"
 #include "Orders.h"
@@ -4201,9 +4203,110 @@ namespace OpenLoco::Vehicles
     // 0x004B7CC3
     void VehicleHead::sub_4B7CC3()
     {
-        registers regs{};
-        regs.esi = X86Pointer(this);
-        call(0x004B7CC3, regs);
+        Vehicle train(head);
+        if (mode == TransportMode::road)
+        {
+            // 0x004B7E01
+            uint8_t roadObjId = trackType;
+            if (roadObjId == 0xFF)
+            {
+                roadObjId = getGameState().lastTrackTypeOption;
+            }
+            auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+
+            bool canRoll = true;
+            uint32_t roadMods = 0;
+            uint32_t rackRailMods = 0;
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (vehicleObj->bodySprites[0].numRollFrames == 1)
+                {
+                    canRoll = false;
+                }
+                if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+                {
+                    for (auto i = 0U; i < roadObj->numMods; ++i)
+                    {
+                        if (roadObj->mods[i] == vehicleObj->rackRailType)
+                        {
+                            rackRailMods |= (1U << i);
+                            break;
+                        }
+                    }
+                }
+
+                for (auto i = 0U; i < vehicleObj->numTrackExtras; ++i)
+                {
+                    const auto mod = vehicleObj->requiredTrackExtras[i];
+                    for (auto j = 0U; j < roadObj->numMods; ++j)
+                    {
+                        if (roadObj->mods[j] == mod)
+                        {
+                            roadMods |= (1U << j);
+                            break;
+                        }
+                    }
+                }
+            }
+            var_53 = roadMods;
+            train.veh1->var_49 = rackRailMods;
+            var_38 &= ~Flags38::fasterAroundCurves;
+            if (canRoll)
+            {
+                var_38 |= Flags38::fasterAroundCurves;
+            }
+        }
+        else
+        {
+            // 0x004B7CCE
+            auto* trackObj = ObjectManager::get<TrackObject>(trackType);
+
+            bool canRoll = true;
+            uint32_t trackMods = 0;
+            uint32_t rackRailMods = 0;
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (vehicleObj->bodySprites[0].numRollFrames == 1)
+                {
+                    canRoll = false;
+                }
+                if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+                {
+                    for (auto i = 0U; i < trackObj->numMods; ++i)
+                    {
+                        if (trackObj->mods[i] == vehicleObj->rackRailType)
+                        {
+                            rackRailMods |= (1U << i);
+                            break;
+                        }
+                    }
+                }
+
+                for (auto i = 0U; i < vehicleObj->numTrackExtras; ++i)
+                {
+                    const auto mod = vehicleObj->requiredTrackExtras[i];
+                    for (auto j = 0U; j < trackObj->numMods; ++j)
+                    {
+                        if (trackObj->mods[j] == mod)
+                        {
+                            trackMods |= (1U << j);
+                            break;
+                        }
+                    }
+                }
+            }
+            var_53 = trackMods;
+            train.veh1->var_49 = rackRailMods;
+            var_38 &= ~Flags38::fasterAroundCurves;
+            if (canRoll)
+            {
+                var_38 |= Flags38::fasterAroundCurves;
+            }
+        }
+
+        // 0x004B7F3B
     }
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const
