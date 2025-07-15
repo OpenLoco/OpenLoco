@@ -1,4 +1,4 @@
-25.06+ (???)
+25.07 (2025-07-15)
 ------------------------------------------------------------------------
 - Fix: [#3133] Right mouse dragging no longer works on main viewport.
 - Fix: [#3141] Crash when AI setting up intracity networks.
