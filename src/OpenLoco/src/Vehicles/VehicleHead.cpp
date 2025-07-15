@@ -1202,7 +1202,7 @@ namespace OpenLoco::Vehicles
         else
         {
             Vehicle train(head);
-            train.veh2->sub_4AA464();
+            train.veh2->destroyTrain();
             return false;
         }
     }
@@ -1460,7 +1460,7 @@ namespace OpenLoco::Vehicles
                     }
 
                     // Crash
-                    vehType2->sub_4AA464();
+                    vehType2->destroyTrain();
                     return false;
                 }
 

@@ -8,6 +8,7 @@
 #include "Map/Track/SubpositionData.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
+#include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
 #include "RoutingManager.h"
@@ -172,11 +173,83 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA464
-    void VehicleBase::sub_4AA464()
+    void VehicleBase::destroyTrain()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AA464, regs);
+        Vehicle train(this->getHead());
+
+        if (train.head->status != Status::crashed && train.head->status != Status::stuck)
+        {
+            train.head->status = Status::crashed;
+            train.head->crashedTimeout = 0;
+
+            if (train.head->owner == getGameState().playerCompanies[0])
+            {
+                MessageManager::post(
+                    MessageType::vehicleCrashed,
+                    train.head->owner,
+                    (uint16_t)train.head->id,
+                    0xFFFF,
+                    0xFFFF);
+            }
+        }
+
+        train.cars.applyToComponents([](auto& carComponent) { carComponent.refundCost = 0; });
+
+        train.head->totalRefundCost = 0;
+
+        Speed32 currentSpeed = train.veh2->currentSpeed;
+        train.veh2->motorState = MotorState::stopped;
+
+        train.cars.applyToComponents([&](auto& carComponent) {
+            if (carComponent.isVehicleBogie())
+            {
+                carComponent.asVehicleBogie()->var_5A = currentSpeed.getRaw();
+            }
+        });
+
+        if (this->getSubType() == VehicleEntityType::vehicle_2)
+        {
+            auto* bogie = train.cars.firstCar.front;
+
+            if (!train.cars.empty())
+            {
+                bogie->var_5A |= (1U << 31);
+                bogie->tileX = 0;
+                bogie->tileY = 0;
+                bogie->tileBaseZ = 0;
+            }
+        }
+        else if (this->getSubType() == VehicleEntityType::bogie)
+        {
+            VehicleBogie* bogie = this->asVehicleBogie();
+
+            bogie->var_5A |= (1U << 31);
+            bogie->tileX = 0;
+            bogie->tileY = 0;
+            bogie->tileBaseZ = 0;
+        }
+        else
+        {
+            VehicleBogie* explodeBogie = nullptr;
+            for (auto& car : train.cars)
+            {
+                for (auto& carComponent : car)
+                {
+                    explodeBogie = carComponent.back;
+                    if (carComponent.body == this)
+                    {
+                        break;
+                    }
+                }
+            }
+            if (explodeBogie != nullptr)
+            {
+                explodeBogie->var_5A |= (1U << 31);
+                explodeBogie->tileX = 0;
+                explodeBogie->tileY = 0;
+                explodeBogie->tileBaseZ = 0;
+            }
+        }
     }
 
     static bool updateRoadMotionNewRoadPiece(VehicleCommon& component)

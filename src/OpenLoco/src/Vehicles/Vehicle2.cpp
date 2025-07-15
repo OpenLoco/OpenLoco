@@ -297,7 +297,7 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res;
         if (_vehicleUpdate_var_1136114 & (1 << 1))
         {
-            sub_4AA464();
+            destroyTrain();
             return false;
         }
 
