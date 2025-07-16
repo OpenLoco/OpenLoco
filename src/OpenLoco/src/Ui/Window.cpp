@@ -606,7 +606,8 @@ namespace OpenLoco::Ui
         moveWindowToLocation(pos);
     }
 
-    void Window::viewportCentreMain()
+    // Centres the main viewport on this window's saved view.
+    void Window::viewportCentreMain() const
     {
         if (viewports[0] == nullptr || savedView.isEmpty())
         {
@@ -632,7 +633,7 @@ namespace OpenLoco::Ui
 
     void Window::viewportFocusOnEntity(EntityId targetEntity)
     {
-        if (viewports[0] == nullptr || savedView.isEmpty())
+        if (viewports[0] == nullptr)
         {
             return;
         }
@@ -642,7 +643,7 @@ namespace OpenLoco::Ui
 
     bool Window::viewportIsFocusedOnEntity(EntityId targetEntity) const
     {
-        if (targetEntity == EntityId::null || viewports[0] == nullptr || savedView.isEmpty())
+        if (targetEntity == EntityId::null || viewports[0] == nullptr)
         {
             return false;
         }
@@ -652,7 +653,7 @@ namespace OpenLoco::Ui
 
     bool Window::viewportIsFocusedOnAnyEntity() const
     {
-        if (viewports[0] == nullptr || savedView.isEmpty())
+        if (viewports[0] == nullptr)
         {
             return false;
         }
@@ -660,9 +661,10 @@ namespace OpenLoco::Ui
         return viewportConfigurations[0].viewportTargetSprite != EntityId::null;
     }
 
+    // Stop following the followed entity, leaving the viewport centred on it.
     void Window::viewportUnfocusFromEntity()
     {
-        if (viewports[0] == nullptr || savedView.isEmpty())
+        if (viewports[0] == nullptr)
         {
             return;
         }
