@@ -4271,12 +4271,12 @@ namespace OpenLoco::Vehicles
         }
 
         // 0x004B7F3B
-        uint32_t ecx = 0;
+        uint32_t totalTrainPower = 0;
         // edx
         uint32_t totalTrainWeight = 0;
-        Speed16 edi = kSpeed16Max;
-        Speed16 unk11360F8 = kSpeed16Max;
-        uint32_t unk113613C = 0;
+        Speed16 maxTrainSpeed = kSpeed16Max;
+        Speed16 rackMaxTrainSpeed = kSpeed16Max;
+        uint32_t trainAcceptedCargoTypes = 0;
         // 0x011360F0
         uint32_t earliestPoweredCreationDay = 0xFFFF'FFFF;
         // 0x011360F4
@@ -4284,7 +4284,7 @@ namespace OpenLoco::Vehicles
         for (auto& car : train.cars)
         {
             auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-            ecx += vehicleObj->power;
+            totalTrainPower += vehicleObj->power;
             if (vehicleObj->power != 0)
             {
                 earliestPoweredCreationDay = std::min(earliestPoweredCreationDay, car.front->creationDay);
@@ -4292,7 +4292,7 @@ namespace OpenLoco::Vehicles
             earliestCreationDay = std::min(earliestCreationDay, car.front->creationDay);
 
             uint16_t totalCarWeight = vehicleObj->weight;
-            unk113613C |= car.front->secondaryCargo.acceptedTypes;
+            trainAcceptedCargoTypes |= car.front->secondaryCargo.acceptedTypes;
             if (car.front->secondaryCargo.type != 0xFFU)
             {
                 auto* cargoObj = ObjectManager::get<CargoObject>(car.front->secondaryCargo.type);
@@ -4300,14 +4300,14 @@ namespace OpenLoco::Vehicles
             }
 
             // Back doesn't have cargo but lets match vanilla
-            unk113613C |= car.back->secondaryCargo.acceptedTypes;
+            trainAcceptedCargoTypes |= car.back->secondaryCargo.acceptedTypes;
             if (car.back->secondaryCargo.type != 0xFFU)
             {
                 auto* cargoObj = ObjectManager::get<CargoObject>(car.back->secondaryCargo.type);
                 totalCarWeight += (cargoObj->var_2 * car.back->secondaryCargo.qty) / 256;
             }
 
-            unk113613C |= car.body->primaryCargo.acceptedTypes;
+            trainAcceptedCargoTypes |= car.body->primaryCargo.acceptedTypes;
             if (car.body->primaryCargo.type != 0xFFU)
             {
                 auto* cargoObj = ObjectManager::get<CargoObject>(car.body->primaryCargo.type);
@@ -4317,18 +4317,18 @@ namespace OpenLoco::Vehicles
             car.front->var_52 = totalCarWeight;
             totalTrainWeight += totalCarWeight;
 
-            edi = std::min(edi, vehicleObj->speed);
-            unk11360F8 = std::min(unk11360F8, vehicleObj->speed);
+            maxTrainSpeed = std::min(maxTrainSpeed, vehicleObj->speed);
+            rackMaxTrainSpeed = std::min(rackMaxTrainSpeed, vehicleObj->speed);
             if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
             {
-                unk11360F8 = std::min(unk11360F8, vehicleObj->rackSpeed);
+                rackMaxTrainSpeed = std::min(rackMaxTrainSpeed, vehicleObj->rackSpeed);
             }
             if (vehicleObj->mode == TransportMode::air)
             {
-                unk11360F8 = vehicleObj->rackSpeed;
+                rackMaxTrainSpeed = vehicleObj->rackSpeed;
             }
         }
-        var_4E = unk113613C;
+        var_4E = trainAcceptedCargoTypes;
         auto createDay = earliestPoweredCreationDay;
         if (earliestPoweredCreationDay == 0xFFFF'FFFF)
         {
@@ -4339,10 +4339,10 @@ namespace OpenLoco::Vehicles
             }
         }
         train.veh1->dayCreated = createDay;
-        train.veh2->totalPower = std::min(ecx, 0xFFFFU);
+        train.veh2->totalPower = std::min(totalTrainPower, 0xFFFFU);
         train.veh2->totalWeight = std::min(totalTrainWeight, 0xFFFFU);
-        train.veh2->maxSpeed = edi;
-        train.veh2->rackRailMaxSpeed = unk11360F8;
+        train.veh2->maxSpeed = maxTrainSpeed;
+        train.veh2->rackRailMaxSpeed = rackMaxTrainSpeed;
         train.veh2->var_4F = 0xFFU;
 
         uint16_t frontSoundingObjId = 0xFFFFU;
