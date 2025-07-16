@@ -365,7 +365,7 @@ namespace OpenLoco::GameCommands
             return false;
         }
         lastVeh->setNextCar(train.tail->id);
-        head->sub_4B7CC3();
+        head->updateTrainProperties();
         return true;
     }
 
@@ -587,7 +587,7 @@ namespace OpenLoco::GameCommands
 
         createVehicleTail(head->id, lastVeh);
 
-        head->sub_4B7CC3();
+        head->updateTrainProperties();
         return { head };
     }
 

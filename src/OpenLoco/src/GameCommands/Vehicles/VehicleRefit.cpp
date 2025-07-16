@@ -81,7 +81,7 @@ namespace OpenLoco::GameCommands
             }
             car.body->primaryCargo.acceptedTypes = acceptedTypes;
 
-            head->sub_4B7CC3();
+            head->updateTrainProperties();
             Ui::WindowManager::invalidate(Ui::WindowType::vehicle, static_cast<Ui::WindowNumber_t>(head->id));
 
             return 0;

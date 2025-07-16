@@ -2991,7 +2991,7 @@ namespace OpenLoco::Vehicles
         auto* cargoObj = ObjectManager::get<CargoObject>(cargo.type);
         cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->cargoTransferTime * cargo.qty * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
         cargo.qty = 0;
-        sub_4B7CC3();
+        updateTrainProperties();
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
         return true;
     }
@@ -3235,7 +3235,7 @@ namespace OpenLoco::Vehicles
 
         auto* company = CompanyManager::get(owner);
         company->var_49C |= 1 << cargo.type;
-        sub_4B7CC3();
+        updateTrainProperties();
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
         return true;
     }
@@ -4248,7 +4248,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B7CC3
-    void VehicleHead::sub_4B7CC3()
+    void VehicleHead::updateTrainProperties()
     {
         Vehicle train(head);
         if (mode == TransportMode::road)
@@ -4278,9 +4278,9 @@ namespace OpenLoco::Vehicles
         Speed16 rackMaxTrainSpeed = kSpeed16Max;
         uint32_t totalTrainAcceptedCargoTypes = 0;
         // 0x011360F0
-        uint32_t earliestPoweredCreationDay = 0xFFFF'FFFF;
+        uint32_t earliestPoweredCreationDay = 0xFFFF'FFFFU;
         // 0x011360F4
-        uint32_t earliestCreationDay = 0xFFFF'FFFF;
+        uint32_t earliestCreationDay = 0xFFFF'FFFFU;
         for (auto& car : train.cars)
         {
             auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
@@ -4339,8 +4339,8 @@ namespace OpenLoco::Vehicles
             }
         }
         train.veh1->dayCreated = createDay;
-        train.veh2->totalPower = std::min(totalTrainPower, 0xFFFFU);
-        train.veh2->totalWeight = std::min(totalTrainWeight, 0xFFFFU);
+        train.veh2->totalPower = static_cast<uint16_t>(std::min<uint32_t>(totalTrainPower, 0xFFFFU));
+        train.veh2->totalWeight = static_cast<uint16_t>(std::min<uint32_t>(totalTrainWeight, 0xFFFFU));
         train.veh2->maxSpeed = maxTrainSpeed;
         train.veh2->rackRailMaxSpeed = rackMaxTrainSpeed;
         train.veh2->var_4F = 0xFFU;

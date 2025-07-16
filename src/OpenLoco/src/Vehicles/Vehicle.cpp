@@ -820,7 +820,7 @@ namespace OpenLoco::Vehicles
         {
             throw Exception::RuntimeError("Invalid Vehicle head");
         }
-        head->sub_4B7CC3();
+        head->updateTrainProperties();
 
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head->id));
 
