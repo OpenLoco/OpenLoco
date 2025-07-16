@@ -10,7 +10,7 @@ namespace OpenLoco
     // 0x0042F533
     bool CargoObject::validate() const
     {
-        if (var_2 > 3840)
+        if (unitWeight > 3840)
         {
             return false;
         }

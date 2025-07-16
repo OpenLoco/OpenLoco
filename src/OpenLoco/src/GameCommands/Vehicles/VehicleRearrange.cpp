@@ -145,11 +145,11 @@ namespace OpenLoco::GameCommands
             sourceTrain = Vehicles::Vehicle(*sourceHead);
 
             destHead->sub_4AF7A4();
-            destHead->sub_4B7CC3();
+            destHead->updateTrainProperties();
             if (sourceHead != destHead)
             {
                 sourceHead->sub_4AF7A4();
-                sourceHead->sub_4B7CC3();
+                sourceHead->updateTrainProperties();
             }
 
             if (sourcePlacement.has_value() && !sourceTrain.cars.empty())

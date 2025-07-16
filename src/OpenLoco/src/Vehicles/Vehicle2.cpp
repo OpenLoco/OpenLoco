@@ -74,7 +74,7 @@ namespace OpenLoco::Vehicles
         }
 
         const auto tot1 = 128ULL * vehObject->power * train.veh2->totalWeight;
-        const auto tot2 = frontBogie.var_52 * train.veh2->totalPower;
+        const auto tot2 = frontBogie.totalCarWeight * train.veh2->totalPower;
         auto fraction = tot2 == 0 ? tot1 : tot1 / tot2;
         fraction = std::min(fraction, 2'000ULL);
         if (fraction < static_cast<uint16_t>(gPrng1().randNext(0xFFFF)))
@@ -192,7 +192,7 @@ namespace OpenLoco::Vehicles
                     isOnRackRail &= frontBogie->isOnRackRail();
                 }
             }
-            ebp += (frontBogie->var_52 * _500170[enumValue(frontBogie->spritePitch)]) >> 8;
+            ebp += (frontBogie->totalCarWeight * _500170[enumValue(frontBogie->spritePitch)]) >> 8;
         }
 
         if (!isOnRackRail)

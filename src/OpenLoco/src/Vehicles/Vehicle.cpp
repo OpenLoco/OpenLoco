@@ -820,7 +820,7 @@ namespace OpenLoco::Vehicles
         {
             throw Exception::RuntimeError("Invalid Vehicle head");
         }
-        head->sub_4B7CC3();
+        head->updateTrainProperties();
 
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head->id));
 
@@ -885,7 +885,7 @@ namespace OpenLoco::Vehicles
         newFirstComponent.front->secondaryCargo = oldFirstComponent.front->secondaryCargo;
         newFirstComponent.front->breakdownFlags = oldFirstComponent.front->breakdownFlags;
         newFirstComponent.front->breakdownTimeout = oldFirstComponent.front->breakdownTimeout;
-        newFirstComponent.front->var_52 = oldFirstComponent.front->var_52;
+        newFirstComponent.front->totalCarWeight = oldFirstComponent.front->totalCarWeight;
         newFirstComponent.front->reliability = oldFirstComponent.front->reliability;
         newFirstComponent.front->timeoutToBreakdown = oldFirstComponent.front->timeoutToBreakdown;
 
