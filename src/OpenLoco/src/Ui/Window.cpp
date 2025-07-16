@@ -618,7 +618,7 @@ namespace OpenLoco::Ui
         moveWindowToLocation(pos);
     }
 
-    // Centres the main viewport on the saved view of this window's viewport.
+    // Centres the main viewport on this window's saved view.
     void Window::viewportCentreMain() const
     {
         if (viewports[0] == nullptr || savedView.isEmpty())
