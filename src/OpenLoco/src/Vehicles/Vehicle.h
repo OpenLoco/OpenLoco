@@ -352,11 +352,11 @@ namespace OpenLoco::Vehicles
         uint8_t pad_40[0x2]; // 0x40
         TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
-        int16_t ordinalNumber;     // 0x44
-        uint32_t orderTableOffset; // 0x46 offset into Order Table
-        uint16_t currentOrder;     // 0x4A offset, combine with orderTableOffset
-        uint16_t sizeOfOrderTable; // 0x4C size of Order Table
-        uint32_t var_4E;           // 0x4E
+        int16_t ordinalNumber;            // 0x44
+        uint32_t orderTableOffset;        // 0x46 offset into Order Table
+        uint16_t currentOrder;            // 0x4A offset, combine with orderTableOffset
+        uint16_t sizeOfOrderTable;        // 0x4C size of Order Table
+        uint32_t trainAcceptedCargoTypes; // 0x4E
         uint8_t var_52;
         uint8_t var_53;                // 0x53 mods?
         StationId stationId;           // 0x54
@@ -662,8 +662,8 @@ namespace OpenLoco::Vehicles
         uint8_t animationIndex;      // 0x46 animation index
         uint8_t var_47;              // 0x47 cargo sprite index (unused)
         VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
-        uint16_t var_52;
-        uint8_t bodyIndex; // 0x54
+        uint16_t totalCarWeight;     // 0x52 only valid for first bogie of car
+        uint8_t bodyIndex;           // 0x54
         uint8_t pad_55;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;

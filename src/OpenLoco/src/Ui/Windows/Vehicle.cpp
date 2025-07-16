@@ -3052,7 +3052,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto index = 0;
             for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
             {
-                if (!(head->var_4E & (1 << cargoId)))
+                if (!(head->trainAcceptedCargoTypes & (1 << cargoId)))
                 {
                     continue;
                 }
@@ -3757,7 +3757,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 self.disabledWidgets &= ~((1 << widx::orderSkip) | (1 << widx::orderDelete));
             }
-            if (head->var_4E != 0)
+            if (head->trainAcceptedCargoTypes != 0)
             {
                 self.disabledWidgets &= ~((1 << widx::orderWait) | (1 << widx::orderForceUnload));
             }

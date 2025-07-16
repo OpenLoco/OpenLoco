@@ -885,7 +885,7 @@ namespace OpenLoco::Vehicles
         newFirstComponent.front->secondaryCargo = oldFirstComponent.front->secondaryCargo;
         newFirstComponent.front->breakdownFlags = oldFirstComponent.front->breakdownFlags;
         newFirstComponent.front->breakdownTimeout = oldFirstComponent.front->breakdownTimeout;
-        newFirstComponent.front->var_52 = oldFirstComponent.front->var_52;
+        newFirstComponent.front->totalCarWeight = oldFirstComponent.front->totalCarWeight;
         newFirstComponent.front->reliability = oldFirstComponent.front->reliability;
         newFirstComponent.front->timeoutToBreakdown = oldFirstComponent.front->timeoutToBreakdown;
 

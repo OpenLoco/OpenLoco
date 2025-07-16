@@ -46,9 +46,9 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::cargo;
 
-        StringId name; // 0x0
-        uint16_t var_2;
-        uint16_t cargoTransferTime;
+        StringId name;                 // 0x0
+        uint16_t unitWeight;           // 0x2
+        uint16_t cargoTransferTime;    // 0x4
         StringId unitsAndCargoName;    // 0x6
         StringId unitNameSingular;     // 0x8
         StringId unitNamePlural;       // 0xA

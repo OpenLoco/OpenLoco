@@ -4276,7 +4276,7 @@ namespace OpenLoco::Vehicles
         uint32_t totalTrainWeight = 0;
         Speed16 maxTrainSpeed = kSpeed16Max;
         Speed16 rackMaxTrainSpeed = kSpeed16Max;
-        uint32_t trainAcceptedCargoTypes = 0;
+        uint32_t totalTrainAcceptedCargoTypes = 0;
         // 0x011360F0
         uint32_t earliestPoweredCreationDay = 0xFFFF'FFFF;
         // 0x011360F4
@@ -4292,29 +4292,29 @@ namespace OpenLoco::Vehicles
             earliestCreationDay = std::min(earliestCreationDay, car.front->creationDay);
 
             uint16_t totalCarWeight = vehicleObj->weight;
-            trainAcceptedCargoTypes |= car.front->secondaryCargo.acceptedTypes;
+            totalTrainAcceptedCargoTypes |= car.front->secondaryCargo.acceptedTypes;
             if (car.front->secondaryCargo.type != 0xFFU)
             {
                 auto* cargoObj = ObjectManager::get<CargoObject>(car.front->secondaryCargo.type);
-                totalCarWeight += (cargoObj->var_2 * car.front->secondaryCargo.qty) / 256;
+                totalCarWeight += (cargoObj->unitWeight * car.front->secondaryCargo.qty) / 256;
             }
 
             // Back doesn't have cargo but lets match vanilla
-            trainAcceptedCargoTypes |= car.back->secondaryCargo.acceptedTypes;
+            totalTrainAcceptedCargoTypes |= car.back->secondaryCargo.acceptedTypes;
             if (car.back->secondaryCargo.type != 0xFFU)
             {
                 auto* cargoObj = ObjectManager::get<CargoObject>(car.back->secondaryCargo.type);
-                totalCarWeight += (cargoObj->var_2 * car.back->secondaryCargo.qty) / 256;
+                totalCarWeight += (cargoObj->unitWeight * car.back->secondaryCargo.qty) / 256;
             }
 
-            trainAcceptedCargoTypes |= car.body->primaryCargo.acceptedTypes;
+            totalTrainAcceptedCargoTypes |= car.body->primaryCargo.acceptedTypes;
             if (car.body->primaryCargo.type != 0xFFU)
             {
                 auto* cargoObj = ObjectManager::get<CargoObject>(car.body->primaryCargo.type);
-                totalCarWeight += (cargoObj->var_2 * car.body->primaryCargo.qty) / 256;
+                totalCarWeight += (cargoObj->unitWeight * car.body->primaryCargo.qty) / 256;
             }
 
-            car.front->var_52 = totalCarWeight;
+            car.front->totalCarWeight = totalCarWeight;
             totalTrainWeight += totalCarWeight;
 
             maxTrainSpeed = std::min(maxTrainSpeed, vehicleObj->speed);
@@ -4328,7 +4328,7 @@ namespace OpenLoco::Vehicles
                 rackMaxTrainSpeed = vehicleObj->rackSpeed;
             }
         }
-        var_4E = trainAcceptedCargoTypes;
+        trainAcceptedCargoTypes = totalTrainAcceptedCargoTypes;
         auto createDay = earliestPoweredCreationDay;
         if (earliestPoweredCreationDay == 0xFFFF'FFFF)
         {
