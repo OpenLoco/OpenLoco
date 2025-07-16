@@ -118,4 +118,62 @@ namespace OpenLoco::Vehicles
         }
         return true;
     }
+
+    // 0x004B090F
+    void liftUpTail(VehicleTail& tail)
+    {
+        if (tail.mode == TransportMode::road)
+        {
+            const auto tailPos = World::Pos3(tail.tileX, tail.tileY, tail.tileBaseZ * World::kSmallZStep);
+
+            auto pos = tailPos;
+
+            RoutingManager::RingView ring(tail.routingHandle);
+            for (const auto& handle : ring)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+                auto tad = TrackAndDirection::_RoadAndDirection(0, 0);
+                tad._data = routing & Track::AdditionalTaDFlags::basicTaDMask;
+                tail.sub_47D959(pos, tad, false);
+
+                pos += World::TrackData::getUnkRoad(tad._data).pos;
+            }
+        }
+        else
+        {
+            const auto tailPos = World::Pos3(tail.tileX, tail.tileY, tail.tileBaseZ * World::kSmallZStep);
+            {
+                TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                tad._data = RoutingManager::getRouting(tail.routingHandle) & Track::AdditionalTaDFlags::basicTaDMask;
+                auto& trackSize = World::TrackData::getUnkTrack(tad._data);
+                auto pos = tailPos + trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    pos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                tad.setReversed(!tad.isReversed());
+                sub_4A2AD7(pos, tad, tail.owner, tail.trackType);
+            }
+
+            auto pos = tailPos;
+
+            RoutingManager::RingView ring(tail.routingHandle);
+            for (const auto& handle : ring)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+                auto tad = TrackAndDirection::_TrackAndDirection(0, 0);
+                tad._data = routing & Track::AdditionalTaDFlags::basicTaDMask;
+                sub_4A2AD7(pos, tad, tail.owner, tail.trackType);
+
+                if (routing & Track::AdditionalTaDFlags::hasSignal)
+                {
+                    setSignalState(pos, tad, tail.trackType, 0);
+                }
+
+                leaveLevelCrossing(pos, tad, 9);
+
+                pos += World::TrackData::getUnkTrack(tad._data).pos;
+            }
+        }
+    }
 }
