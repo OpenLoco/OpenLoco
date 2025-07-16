@@ -4201,7 +4201,8 @@ namespace OpenLoco::Vehicles
     }
 
     template<typename T>
-    static void setTrainModFlags(Vehicle& train, T& trackRoadObj) {
+    static void setTrainModFlags(Vehicle& train, T& trackRoadObj)
+    {
         bool canRoll = true;
         uint32_t roadMods = 0;
         uint32_t rackRailMods = 0;
@@ -4270,6 +4271,113 @@ namespace OpenLoco::Vehicles
         }
 
         // 0x004B7F3B
+        uint32_t ecx = 0;
+        // edx
+        uint32_t totalTrainWeight = 0;
+        Speed16 edi = kSpeed16Max;
+        Speed16 unk11360F8 = kSpeed16Max;
+        uint32_t unk113613C = 0;
+        // 0x011360F0
+        uint32_t earliestPoweredCreationDay = 0xFFFF'FFFF;
+        // 0x011360F4
+        uint32_t earliestCreationDay = 0xFFFF'FFFF;
+        for (auto& car : train.cars)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            ecx += vehicleObj->power;
+            if (vehicleObj->power != 0)
+            {
+                earliestPoweredCreationDay = std::min(earliestPoweredCreationDay, car.front->creationDay);
+            }
+            earliestCreationDay = std::min(earliestCreationDay, car.front->creationDay);
+
+            uint16_t totalCarWeight = vehicleObj->weight;
+            unk113613C |= car.front->secondaryCargo.acceptedTypes;
+            if (car.front->secondaryCargo.type != 0xFFU)
+            {
+                auto* cargoObj = ObjectManager::get<CargoObject>(car.front->secondaryCargo.type);
+                totalCarWeight += (cargoObj->var_2 * car.front->secondaryCargo.qty) / 256;
+            }
+
+            // Back doesn't have cargo but lets match vanilla
+            unk113613C |= car.back->secondaryCargo.acceptedTypes;
+            if (car.back->secondaryCargo.type != 0xFFU)
+            {
+                auto* cargoObj = ObjectManager::get<CargoObject>(car.back->secondaryCargo.type);
+                totalCarWeight += (cargoObj->var_2 * car.back->secondaryCargo.qty) / 256;
+            }
+
+            unk113613C |= car.body->primaryCargo.acceptedTypes;
+            if (car.body->primaryCargo.type != 0xFFU)
+            {
+                auto* cargoObj = ObjectManager::get<CargoObject>(car.body->primaryCargo.type);
+                totalCarWeight += (cargoObj->var_2 * car.body->primaryCargo.qty) / 256;
+            }
+
+            car.front->var_52 = totalCarWeight;
+            totalTrainWeight += totalCarWeight;
+
+            edi = std::min(edi, vehicleObj->speed);
+            unk11360F8 = std::min(unk11360F8, vehicleObj->speed);
+            if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
+            {
+                unk11360F8 = std::min(unk11360F8, vehicleObj->rackSpeed);
+            }
+            if (vehicleObj->mode == TransportMode::air)
+            {
+                unk11360F8 = vehicleObj->rackSpeed;
+            }
+        }
+        var_4E = unk113613C;
+        auto createDay = earliestPoweredCreationDay;
+        if (earliestPoweredCreationDay == 0xFFFF'FFFF)
+        {
+            createDay = earliestCreationDay;
+            if (earliestCreationDay == 0xFFFF'FFFF)
+            {
+                createDay = getCurrentDay();
+            }
+        }
+        train.veh1->dayCreated = createDay;
+        train.veh2->totalPower = std::min(ecx, 0xFFFFU);
+        train.veh2->totalWeight = std::min(totalTrainWeight, 0xFFFFU);
+        train.veh2->maxSpeed = edi;
+        train.veh2->rackRailMaxSpeed = unk11360F8;
+        train.veh2->var_4F = 0xFFU;
+
+        uint16_t frontSoundingObjId = 0xFFFFU;
+        uint16_t backSoundingObjId = 0xFFFFU;
+        for (const auto& car : train.cars)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.body->objectId);
+            if (vehicleObj->drivingSoundType == DrivingSoundType::none)
+            {
+                continue;
+            }
+            if (frontSoundingObjId == 0xFFFFU)
+            {
+                frontSoundingObjId = car.body->objectId;
+            }
+            if (frontSoundingObjId != car.body->objectId)
+            {
+                backSoundingObjId = car.body->objectId;
+            }
+        }
+
+        // This could happen if the train flips direction
+        if (frontSoundingObjId != train.veh2->objectId
+            && frontSoundingObjId == train.tail->objectId)
+        {
+            std::swap(train.veh2->drivingSoundId, train.tail->drivingSoundId);
+            std::swap(train.veh2->drivingSoundVolume, train.tail->drivingSoundVolume);
+            std::swap(train.veh2->drivingSoundFrequency, train.tail->drivingSoundFrequency);
+            std::swap(train.veh2->soundFlags, train.tail->soundFlags);
+        }
+        train.veh2->objectId = frontSoundingObjId;
+        train.tail->objectId = backSoundingObjId;
+
+        calculateRefundCost();
+        recalculateTrainMinReliability(*this);
     }
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const
