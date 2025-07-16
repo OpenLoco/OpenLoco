@@ -23,7 +23,7 @@ namespace OpenLoco
         hasSnowVariation = 1U << 0,
         unk1 = 1U << 1,
         veryHighAltitude = 1U << 2,
-        highAltitude = 1U << 3,
+        lowAltitude = 1U << 3,
         requiresWater = 1U << 4,
         unk5 = 1U << 5,
         droughtResistant = 1U << 6,

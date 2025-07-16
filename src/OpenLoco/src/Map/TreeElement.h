@@ -33,12 +33,13 @@ namespace OpenLoco::World
             _type &= ~0xC0;
             _type |= (quad & 0x3) << 6;
         }
-        uint8_t unk5l() const { return _5 & 0xF; }
-        void setUnk5l(uint8_t unk)
+        uint8_t growth() const { return _5 & 0xF; }
+        void setGrowth(uint8_t unk)
         {
             _5 &= ~0xF;
             _5 |= unk & 0xF;
         }
+        uint8_t unk5h() const { return (_5 >> 4) & 0xF; }
         void setUnk5h(uint8_t unk)
         {
             _5 &= ~0xF0;
@@ -56,8 +57,8 @@ namespace OpenLoco::World
             _6 &= ~0x40;
             _6 |= hasSnow ? 0x40 : 0;
         }
-        bool unk6_80() const { return _6 & 0x80; };
-        void setUnk6_80(bool unk)
+        bool isDying() const { return _6 & 0x80; };
+        void setIsDying(bool unk)
         {
             _6 &= ~0x80;
             _6 |= unk ? 0x80 : 0;
@@ -68,7 +69,7 @@ namespace OpenLoco::World
             _7 &= ~0x7;
             _7 |= unk & 0x7;
         }
-        uint8_t season() const { return (_7 >> 3) & 0x7; } // unsure of &0x7
+        uint8_t season() const { return (_7 >> 3) & 0x7; } // Not strictly a season its a super set of season
         void setSeason(uint8_t season)
         {
             _7 &= ~0xF8;
@@ -77,4 +78,6 @@ namespace OpenLoco::World
     };
 #pragma pack(pop)
     static_assert(sizeof(TreeElement) == kTileElementSize);
+
+    bool updateTreeElement(TreeElement& elTree, const World::Pos2 loc);
 }
