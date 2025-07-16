@@ -1,4 +1,5 @@
 #include "CompanyAi.h"
+#include "CompanyAiPathfinding.h"
 #include "CompanyAiPlaceVehicle.h"
 #include "Date.h"
 #include "Economy/Economy.h"
@@ -5119,15 +5120,6 @@ namespace OpenLoco
         }
     }
 
-    // 0x00483FBA
-    static bool sub_483FBA(Company& company, AiThought& thought)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        return call(0x00483FBA, regs) & X86_FLAG_CARRY;
-    }
-
     // 0x004837C2
     static bool sub_4837C2(Company& company, AiThought& thought)
     {
@@ -5291,7 +5283,7 @@ namespace OpenLoco
 
         if (company.var_85C2 != 0xFFU)
         {
-            if (sub_483FBA(company, thought))
+            if (aiPathfind(company, thought))
             {
                 company.var_4A4 = AiThinkState::unk6;
                 company.var_4A5 = 2;
