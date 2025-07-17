@@ -18,7 +18,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
 
     // 0x004794BC
-    static void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
+    void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
     {
         auto levelCrossingLoc = loc;
         if (trackAndDirection.isReversed())
