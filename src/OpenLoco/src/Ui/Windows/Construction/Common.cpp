@@ -554,10 +554,85 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A6E9B
+    // Update available airports and docks for player company
     void updateAvailableAirportAndDockOptions()
     {
-        // update available airports and docks for player company
-        call(0x004A6E9B);
+        CompanyId currentPlayerCompany = getGameState().playerCompanies[0]; // 004A6E9B
+        CompanyId oldUpdatingCompany = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(currentPlayerCompany); // 004A6EA0
+
+        if (getGameState().lastAirport != 0xFF) // 004A6EA7-004A6EAE
+        {
+            const auto* airportObj = ObjectManager::get<AirportObject>(getGameState().lastAirport); // 004A6EB0-004A6EB7
+            if (getGameState().currentYear > airportObj->obsoleteYear)                              // 004A6EBE-004A6ECB
+            {
+                getGameState().lastAirport = 0xFF; // 004A6ECD
+            }
+        }
+
+        if (getGameState().lastAirport == 0xFF) // 004A6ED4-004A6EDB
+        {
+            const auto availableObjects = getAvailableAirports(); // 004A6EDD-004A6EE2
+            if (!availableObjects.empty())                        // 004A6EE7-004A6EEB
+            {
+                getGameState().lastAirport = availableObjects[0]; // 004A6EED
+                bool found = false;
+                for (size_t vehicleIndex = 0; vehicleIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleIndex) // 004A6EF2, 004A6F27-004A6F2E
+                {
+                    const auto* vehicleObj = ObjectManager::get<VehicleObject>(vehicleIndex); // 004A6EF4
+                    if (vehicleObj == nullptr)                                                // 004A6EFB
+                    {
+                        continue; // 004A6EFE
+                    }
+                    if (vehicleObj->mode == TransportMode::air) // 004A6F00-004A6F04
+                    {
+                        const Company* company = CompanyManager::get(GameCommands::getUpdatingCompanyId()); // 004A6F06
+                        if (company->unlockedVehicles.get(vehicleIndex))                                    // 004A6F0D-004A6F1D
+                        {
+                            found = true;
+                            break; // 004A6F25
+                        }
+                    }
+                }
+                if (!found)
+                {
+                    getGameState().lastAirport = 0xFF; // 004A6F30
+                }
+            }
+        }
+
+        if (getGameState().lastShipPort == 0xFF) // 004A6F37-004A6F3E
+        {
+            const auto availableObjects = getAvailableDocks(); // 004A6F40-004A6F45
+            if (!availableObjects.empty())                     // 004A6F4A-004A6F4E
+            {
+                getGameState().lastShipPort = availableObjects[0]; // 004A6F50
+                bool found = false;
+                for (size_t vehicleIndex = 0; vehicleIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleIndex) // 004A6F55, 004A6F8A-004A6F91
+                {
+                    const auto* vehicleObj = ObjectManager::get<VehicleObject>(vehicleIndex); // 004A6F57
+                    if (vehicleObj == nullptr)                                                // 004A6F5E
+                    {
+                        continue; // 004A6F61
+                    }
+                    if (vehicleObj->mode == TransportMode::water) // 004A6F63-004A6F67
+                    {
+                        const Company* company = CompanyManager::get(GameCommands::getUpdatingCompanyId()); // 004A6F69
+                        if (company->unlockedVehicles.get(vehicleIndex))                                    // 004A6F70-004A6F80
+                        {
+                            found = true;
+                            break; // 004A6F88
+                        }
+                    }
+                }
+                if (!found)
+                {
+                    getGameState().lastShipPort = 0xFF; // 004A6F93
+                }
+            }
+        }
+        WindowManager::invalidate(Ui::WindowType::topToolbar, 0); // 004A6F9A-004A6FA0
+        GameCommands::setUpdatingCompanyId(oldUpdatingCompany);   // 004A6FA5-004A6FA6
     }
 
     // 0x004A6FAC
