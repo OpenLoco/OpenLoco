@@ -3915,6 +3915,17 @@ namespace OpenLoco::Vehicles
         uint16_t unkFlags;            // 0x0113642E
         uint32_t totalTrackWeighting; // 0x01136430
     };
+
+    // 0x004AC884
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    // state : see above
     static void sub_4AC884(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, Sub4AC884State& state)
     {
         if (state.recursionDepth >= 5)
@@ -3960,14 +3971,14 @@ namespace OpenLoco::Vehicles
                 break;
             }
             curPos = nextPos;
-            curTad._data = tc.connections.front() * World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
             if (tc.connections.size() == 1)
             {
                 continue;
             }
             for (auto& connection : tc.connections)
             {
-                const auto connectTad = connection * World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 auto recurseState = state;
                 recurseState.recursionDepth++;
                 sub_4AC884(curPos, connectTad, companyId, trackType, requiredMods, queryMods, recurseState);
@@ -4746,5 +4757,36 @@ namespace OpenLoco::Vehicles
             totalRunCost += runCost;
         }
         return totalRunCost;
+    }
+
+    void registerHeadHooks()
+    {
+        registerHook(
+            0x004AC884,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const uint16_t tad = regs.bp;
+                const auto companyId = CompanyId(regs.bl);
+                const uint8_t trackTypeId = regs.bh;
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+
+                Sub4AC884State state{};
+                state.recursionDepth = addr<0x0113642C, uint16_t>();
+                state.unkFlags = addr<0x0113642E, uint16_t>();
+                state.totalTrackWeighting = addr<0x01136430, uint32_t>();
+
+                sub_4AC884(pos, tad, companyId, trackTypeId, requiredMods, queryMods, state);
+
+                addr<0x0113642C, uint16_t>() = state.recursionDepth;
+                addr<0x0113642E, uint16_t>() = state.unkFlags;
+                addr<0x01136430, uint32_t>() = state.totalTrackWeighting;
+
+                regs = backup;
+
+                return 0;
+            });
     }
 }
