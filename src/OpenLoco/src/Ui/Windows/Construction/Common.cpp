@@ -575,12 +575,12 @@ namespace OpenLoco::Ui::Windows::Construction
                 bool found = false;
                 for (size_t vehicleObjectIndex = 0; vehicleObjectIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjectIndex)
                 {
-                    const auto* vehicleObj = ObjectManager::get<VehicleObject>(vehicleObjectIndex);
-                    if (vehicleObj == nullptr)
+                    const auto* vehicleObject = ObjectManager::get<VehicleObject>(vehicleObjectIndex);
+                    if (vehicleObject == nullptr)
                     {
                         continue;
                     }
-                    if (vehicleObj->mode == TransportMode::air)
+                    if (vehicleObject->mode == TransportMode::air)
                     {
                         const Company* company = CompanyManager::get(getGameState().playerCompanies[0]);
                         if (company->unlockedVehicles.get(vehicleObjectIndex))
@@ -606,12 +606,12 @@ namespace OpenLoco::Ui::Windows::Construction
                 bool found = false;
                 for (size_t vehicleObjectIndex = 0; vehicleObjectIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjectIndex)
                 {
-                    const auto* vehicleObj = ObjectManager::get<VehicleObject>(vehicleObjectIndex);
-                    if (vehicleObj == nullptr)
+                    const auto* vehicleObject = ObjectManager::get<VehicleObject>(vehicleObjectIndex);
+                    if (vehicleObject == nullptr)
                     {
                         continue;
                     }
-                    if (vehicleObj->mode == TransportMode::water)
+                    if (vehicleObject->mode == TransportMode::water)
                     {
                         const Company* company = CompanyManager::get(getGameState().playerCompanies[0]);
                         if (company->unlockedVehicles.get(vehicleObjectIndex))
