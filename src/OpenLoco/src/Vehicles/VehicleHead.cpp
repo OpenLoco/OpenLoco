@@ -3987,6 +3987,113 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    struct Sub4AC94FState
+    {
+        uint16_t recursionDepth;      // 0x0113642C
+        uint16_t unkFlags;            // 0x0113642E
+        uint32_t totalTrackWeighting; // 0x01136430
+        StationId targetStationId;    // 0x0113644A
+        Pos3 targetPos;               // 0x0113645A
+        uint16_t targetTad;           // 0x01136460
+        Pos3 reverseTargetPos;        // 0x01136462
+        uint16_t reverseTargetTad;    // 0x01136468
+    };
+
+    // 0x004AC94F
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    // state : see above
+    static void sub_4AC94F(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, Sub4AC94FState& state)
+    {
+        // 0x01135FAE (copy in from the tc)
+        StationId curStationId = StationId::null;
+        if (state.recursionDepth >= 5)
+        {
+            return;
+        }
+        auto curPos = pos;
+        TrackAndDirection::_TrackAndDirection curTad{ 0, 0 };
+        curTad._data = tad;
+        for (; true;)
+        {
+            if (state.targetStationId != StationId::null)
+            {
+                if (curStationId == state.targetStationId)
+                {
+                    // 0x004AC9FD
+                }
+            }
+            else
+            {
+                if (curPos == state.targetPos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == state.targetTad)
+                {
+                    // 0x004AC9FD
+                }
+                else if (curPos == state.reverseTargetPos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == state.reverseTargetTad)
+                {
+                    // 0x004AC9FD
+                }
+            }
+            // 0x004AC98B
+
+            const auto dist = Math::Vector::chebyshevDistance2D(curPos, state.targetPos) / 2 + std::abs(curPos.z - state.targetPos.z);
+
+            if (curTad._data & World::Track::AdditionalTaDFlags::hasSignal)
+            {
+                TrackAndDirection::_TrackAndDirection basicTad{ 0, 0 };
+                basicTad._data = curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask;
+                const auto sigState = getSignalState(curPos, basicTad, trackType, 0);
+
+                if (sigState & (1U << 1))
+                {
+                    state.unkFlags |= (1U << 0);
+                    break;
+                }
+                else if (sigState & (1U << 0))
+                {
+                    state.unkFlags |= (1U << 2);
+                    break;
+                }
+
+                state.unkFlags |= (1U << 1);
+            }
+
+            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
+
+            auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
+            auto tc = World::Track::getTrackConnections(nextPos, nextRotation, companyId, trackType, requiredMods, queryMods);
+
+            if (tc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            if (tc.connections.size() == 1)
+            {
+                continue;
+            }
+            for (auto& connection : tc.connections)
+            {
+                const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                sub_4AC884(curPos, connectTad, companyId, trackType, requiredMods, queryMods, recurseState);
+                state.unkFlags |= recurseState.unkFlags;
+            }
+        }
+    }
+
     // 0x004AC3D3
     static void sub_4AC3D3(VehicleHead& head, World::Pos3 pos, Track::LegacyTrackConnections& connections, bool unk)
     {
