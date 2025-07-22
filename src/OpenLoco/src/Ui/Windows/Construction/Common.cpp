@@ -554,10 +554,80 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A6E9B
+    // Update available airports and docks for player company
     void updateAvailableAirportAndDockOptions()
     {
-        // update available airports and docks for player company
-        call(0x004A6E9B);
+        if (getGameState().lastAirport != 0xFF)
+        {
+            const auto* airportObj = ObjectManager::get<AirportObject>(getGameState().lastAirport);
+            if (getGameState().currentYear > airportObj->obsoleteYear)
+            {
+                getGameState().lastAirport = 0xFF;
+            }
+        }
+
+        if (getGameState().lastAirport == 0xFF)
+        {
+            const auto availableObjects = getAvailableAirports();
+            if (!availableObjects.empty())
+            {
+                getGameState().lastAirport = availableObjects[0];
+                bool found = false;
+                for (size_t vehicleObjectIndex = 0; vehicleObjectIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjectIndex)
+                {
+                    const auto* vehicleObject = ObjectManager::get<VehicleObject>(vehicleObjectIndex);
+                    if (vehicleObject == nullptr)
+                    {
+                        continue;
+                    }
+                    if (vehicleObject->mode == TransportMode::air)
+                    {
+                        const Company* company = CompanyManager::get(getGameState().playerCompanies[0]);
+                        if (company->unlockedVehicles.get(vehicleObjectIndex))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found)
+                {
+                    getGameState().lastAirport = 0xFF;
+                }
+            }
+        }
+
+        if (getGameState().lastShipPort == 0xFF)
+        {
+            const auto availableObjects = getAvailableDocks();
+            if (!availableObjects.empty())
+            {
+                getGameState().lastShipPort = availableObjects[0];
+                bool found = false;
+                for (size_t vehicleObjectIndex = 0; vehicleObjectIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjectIndex)
+                {
+                    const auto* vehicleObject = ObjectManager::get<VehicleObject>(vehicleObjectIndex);
+                    if (vehicleObject == nullptr)
+                    {
+                        continue;
+                    }
+                    if (vehicleObject->mode == TransportMode::water)
+                    {
+                        const Company* company = CompanyManager::get(getGameState().playerCompanies[0]);
+                        if (company->unlockedVehicles.get(vehicleObjectIndex))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found)
+                {
+                    getGameState().lastShipPort = 0xFF;
+                }
+            }
+        }
+        WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
     }
 
     // 0x004A6FAC
