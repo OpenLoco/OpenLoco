@@ -514,15 +514,6 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x004AF4D6
-    void sub_4AF4D6(Vehicles::VehicleBogie& source, Vehicles::VehicleBase& dest)
-    {
-        registers regs{};
-        regs.esi = X86Pointer(&source);
-        regs.edi = X86Pointer(&dest);
-        call(0x004AF4D6, regs);
-    }
-
     // 0x004AF5E1
     static void sub_4AF5E1(Vehicles::VehicleHead& head)
     {
