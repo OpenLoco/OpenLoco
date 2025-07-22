@@ -42,6 +42,7 @@ namespace OpenLoco
         canDecreaseProduction = 1U << 19,
         requiresElectricityPylons = 1U << 20,
         hasShadows = 1U << 21,
+        killsTrees = 1U << 22,
         farmTilesGrowthStageDesynchronized = 1U << 23, // used by livestock farm, since it produces all the time. NOT used by regular farm, to keep the harvest roughly synchronized
         builtInDesert = 1U << 24,
         builtNearDesert = 1U << 25,

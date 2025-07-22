@@ -30,7 +30,7 @@ namespace OpenLoco::World
         }
 
         TreeObjectFlags mustNotTreeFlags = TreeObjectFlags::none;
-        if (unk)
+        if (!unk)
         {
             mustNotTreeFlags |= TreeObjectFlags::unk1;
         }
@@ -40,13 +40,13 @@ namespace OpenLoco::World
         {
             mustTreeFlags |= TreeObjectFlags::hasSnowVariation;
         }
-        if (surface->baseZ() > 68)
-        {
-            mustTreeFlags |= TreeObjectFlags::veryHighAltitude;
-        }
-        if (surface->baseZ() > 48)
+        if (surface->baseZ() >= 68)
         {
             mustTreeFlags |= TreeObjectFlags::highAltitude;
+        }
+        if (surface->baseZ() <= 48)
+        {
+            mustTreeFlags |= TreeObjectFlags::lowAltitude;
         }
 
         auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
@@ -94,7 +94,9 @@ namespace OpenLoco::World
         }
 
         auto& rng = gPrng1();
-        return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
+        const auto randVal = rng.randNext();
+        const auto selected = ((randVal & 0xFFFF) * selectableTrees.size()) / 65536;
+        return { selectableTrees[selected] };
     }
 
     bool placeRandomTree(const World::Pos2& pos, std::optional<uint8_t> treeType)

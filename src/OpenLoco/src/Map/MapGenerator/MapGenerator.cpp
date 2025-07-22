@@ -636,7 +636,7 @@ namespace OpenLoco::World::MapGenerator
                     continue;
                 }
 
-                if (treeEl->season() < 4 && !treeEl->unk6_80())
+                if (treeEl->season() < 4 && !treeEl->isDying())
                 {
                     treeEl->setSeason(enumValue(currentSeason));
                     treeEl->setUnk7l(0x7);
