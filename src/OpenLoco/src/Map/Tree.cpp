@@ -42,7 +42,7 @@ namespace OpenLoco::World
         }
         if (surface->baseZ() >= 68)
         {
-            mustTreeFlags |= TreeObjectFlags::veryHighAltitude;
+            mustTreeFlags |= TreeObjectFlags::highAltitude;
         }
         if (surface->baseZ() <= 48)
         {
