@@ -1396,6 +1396,450 @@ namespace OpenLoco::CompanyAi
         }
     }
 
+    // 0x0047B336
+    // pos: ax, cx, di
+    // rotation: bh
+    // sequenceIndex: dh
+    // roadId: dl
+    // roadObjId : bp (unused)
+    static bool sub_47B336(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t roadId, CompanyId companyId)
+    {
+        const auto traitFlags = World::TrackData::getRoadMiscData(roadId).flags;
+        using enum World::Track::CommonTraitFlags;
+        // 0x1136088
+        const bool allowWaterBridge = (traitFlags & (slope | steepSlope | verySmallCurve)) != none;
+        {
+            auto elRoad = [pos, rotation, sequenceIndex, roadId, companyId]() -> const World::RoadElement* {
+                auto tile = World::TileManager::get(pos);
+                for (const auto& el : tile)
+                {
+                    if (el.baseHeight() != pos.z)
+                    {
+                        continue;
+                    }
+                    auto* elRoad = el.as<World::RoadElement>();
+                    if (elRoad == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elRoad->rotation() != rotation)
+                    {
+                        continue;
+                    }
+                    if (elRoad->sequenceIndex() != sequenceIndex)
+                    {
+                        continue;
+                    }
+                    if (elRoad->owner() != companyId)
+                    {
+                        continue;
+                    }
+                    if (!elRoad->isAiAllocated() || elRoad->isGhost())
+                    {
+                        continue;
+                    }
+                    if (elRoad->roadId() != roadId)
+                    {
+                        continue;
+                    }
+                    return elRoad;
+                }
+                return nullptr;
+            }();
+            if (elRoad == nullptr)
+            {
+                return false;
+            }
+            if (!elRoad->hasBridge())
+            {
+                return false;
+            }
+        }
+
+        auto& roadPieces = World::TrackData::getRoadPiece(roadId);
+        auto& roadPiece = roadPieces[sequenceIndex];
+        const auto roadPos0 = pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece.x, roadPiece.y }, rotation), roadPiece.z };
+        for (auto& piece : roadPieces)
+        {
+            const auto roadPos = roadPos0 + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            auto tile = World::TileManager::get(roadPos);
+            auto* elSurface = tile.surface();
+            // ah
+            const auto bridgeZ = roadPos.z / World::kSmallZStep - elSurface->baseZ();
+            if (elSurface->water() != 0)
+            {
+                // 0x0047B57B
+                if (allowWaterBridge)
+                {
+                    if (bridgeZ > 16)
+                    {
+                        continue;
+                    }
+                    return false;
+                }
+                else
+                {
+                    if (roadId != 0)
+                    {
+                        return false;
+                    }
+                    bool passedSurface = false;
+                    bool shouldContinue = false;
+                    for (auto& el : tile)
+                    {
+                        if (el.type() == World::ElementType::surface)
+                        {
+                            passedSurface = true;
+                        }
+                        if (!passedSurface)
+                        {
+                            continue;
+                        }
+                        if (roadPos.z <= el.baseHeight())
+                        {
+                            return false;
+                        }
+                        auto* elTrack = el.as<World::TrackElement>();
+                        if (elTrack != nullptr)
+                        {
+                            if (elTrack->trackId() != 0)
+                            {
+                                continue;
+                            }
+                            if (elTrack->rotation() == rotation
+                                || (elTrack->rotation() ^ (1U << 1)) == rotation)
+                            {
+                                shouldContinue = true;
+                                break;
+                            }
+                        }
+                        auto* elRoad = el.as<World::RoadElement>();
+                        if (elRoad != nullptr)
+                        {
+                            if (elRoad->roadId() != 0)
+                            {
+                                continue;
+                            }
+                            if (elRoad->rotation() == rotation
+                                || (elRoad->rotation() ^ (1U << 1)) == rotation)
+                            {
+                                shouldContinue = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (shouldContinue)
+                    {
+                        continue;
+                    }
+                    return false;
+                }
+            }
+            else
+            {
+                // 0x0047B4DD
+                bool passedSurface = false;
+                bool shouldContinue = false;
+                bool shouldReturn = false; // May be overridden by a shouldContinue
+                for (auto& el : tile)
+                {
+                    if (el.type() == World::ElementType::surface)
+                    {
+                        passedSurface = true;
+                    }
+                    if (!passedSurface)
+                    {
+                        continue;
+                    }
+                    if (roadPos.z <= el.baseHeight())
+                    {
+                        break;
+                    }
+                    auto* elTrack = el.as<World::TrackElement>();
+                    if (elTrack != nullptr)
+                    {
+                        if (roadId != 0)
+                        {
+                            return false;
+                        }
+                        if (elTrack->trackId() != 0)
+                        {
+                            shouldReturn = true;
+                            continue;
+                        }
+                        if (elTrack->rotation() == rotation
+                            || (elTrack->rotation() ^ (1U << 1)) == rotation)
+                        {
+                            shouldContinue = true;
+                            break;
+                        }
+                        shouldReturn = true;
+                    }
+                    auto* elRoad = el.as<World::RoadElement>();
+                    if (elRoad != nullptr)
+                    {
+                        if (roadId != 0)
+                        {
+                            return false;
+                        }
+                        if (elRoad->roadId() != 0)
+                        {
+                            shouldReturn = true;
+                            continue;
+                        }
+                        if (elRoad->rotation() == rotation
+                            || (elRoad->rotation() ^ (1U << 1)) == rotation)
+                        {
+                            shouldContinue = true;
+                            break;
+                        }
+                        shouldReturn = true;
+                    }
+                }
+                if (shouldContinue)
+                {
+                    continue;
+                }
+                if (shouldReturn)
+                {
+                    return false;
+                }
+                if (bridgeZ > 16)
+                {
+                    return false;
+                }
+                if (elSurface->slope() != 0)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // 0x004A80E1
+    // pos: ax, cx, di
+    // rotation: bh
+    // sequenceIndex: dh
+    // trackId: dl
+    // trackObjId : bp
+    static bool sub_4A80E1(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t trackId, uint8_t trackObjId)
+    {
+        const auto traitFlags = World::TrackData::getTrackMiscData(trackId).flags;
+        using enum World::Track::CommonTraitFlags;
+        // 0x1136088
+        const bool allowWaterBridge = (traitFlags & (slope | steepSlope | verySmallCurve)) != none;
+        {
+            auto elTrack = [pos, rotation, sequenceIndex, trackId, trackObjId]() -> const World::TrackElement* {
+                auto tile = World::TileManager::get(pos);
+                for (const auto& el : tile)
+                {
+                    if (el.baseHeight() != pos.z)
+                    {
+                        continue;
+                    }
+                    auto* elTrack = el.as<World::TrackElement>();
+                    if (elTrack == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elTrack->rotation() != rotation)
+                    {
+                        continue;
+                    }
+                    if (elTrack->sequenceIndex() != sequenceIndex)
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackObjectId() != trackObjId)
+                    {
+                        continue;
+                    }
+                    if (!elTrack->isAiAllocated() || elTrack->isGhost())
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackId() != trackId)
+                    {
+                        continue;
+                    }
+                    return elTrack;
+                }
+                return nullptr;
+            }();
+            if (elTrack == nullptr)
+            {
+                return false;
+            }
+            if (!elTrack->hasBridge())
+            {
+                return false;
+            }
+        }
+
+        auto& trackPieces = World::TrackData::getTrackPiece(trackId);
+        auto& trackPiece = trackPieces[sequenceIndex];
+        const auto trackPos0 = pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, rotation), trackPiece.z };
+        for (auto& piece : trackPieces)
+        {
+            const auto trackPos = trackPos0 + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z };
+            auto tile = World::TileManager::get(trackPos);
+            auto* elSurface = tile.surface();
+            // ah
+            const auto bridgeZ = trackPos.z / World::kSmallZStep - elSurface->baseZ();
+            if (elSurface->water() != 0)
+            {
+                // 0x004A8326
+                if (allowWaterBridge)
+                {
+                    if (bridgeZ > 16)
+                    {
+                        continue;
+                    }
+                    return false;
+                }
+                else
+                {
+                    if (trackId != 0)
+                    {
+                        return false;
+                    }
+                    bool passedSurface = false;
+                    bool shouldContinue = false;
+                    for (auto& el : tile)
+                    {
+                        if (el.type() == World::ElementType::surface)
+                        {
+                            passedSurface = true;
+                            continue;
+                        }
+                        if (!passedSurface)
+                        {
+                            continue;
+                        }
+                        if (trackPos.z <= el.baseHeight())
+                        {
+                            return false;
+                        }
+                        auto* elTrack = el.as<World::TrackElement>();
+                        if (elTrack != nullptr)
+                        {
+                            if (elTrack->trackId() != 0)
+                            {
+                                continue;
+                            }
+                            if (elTrack->rotation() == rotation
+                                || (elTrack->rotation() ^ (1U << 1)) == rotation)
+                            {
+                                shouldContinue = true;
+                                break;
+                            }
+                        }
+                        auto* elRoad = el.as<World::RoadElement>();
+                        if (elRoad != nullptr)
+                        {
+                            if (elRoad->roadId() != 0)
+                            {
+                                continue;
+                            }
+                            if (elRoad->rotation() == rotation
+                                || (elRoad->rotation() ^ (1U << 1)) == rotation)
+                            {
+                                shouldContinue = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (shouldContinue)
+                    {
+                        continue;
+                    }
+                    return false;
+                }
+            }
+            else
+            {
+                // 0x004A8288
+                bool passedSurface = false;
+                bool shouldContinue = false;
+                bool shouldReturn = false; // May be overridden by a shouldContinue
+                for (auto& el : tile)
+                {
+                    if (el.type() == World::ElementType::surface)
+                    {
+                        passedSurface = true;
+                        continue;
+                    }
+                    if (!passedSurface)
+                    {
+                        continue;
+                    }
+                    if (trackPos.z <= el.baseHeight())
+                    {
+                        break;
+                    }
+                    auto* elTrack = el.as<World::TrackElement>();
+                    if (elTrack != nullptr)
+                    {
+                        if (trackId != 0)
+                        {
+                            return false;
+                        }
+                        if (elTrack->trackId() != 0)
+                        {
+                            shouldReturn = true;
+                            continue;
+                        }
+                        if (elTrack->rotation() == rotation
+                            || (elTrack->rotation() ^ (1U << 1)) == rotation)
+                        {
+                            shouldContinue = true;
+                            break;
+                        }
+                        shouldReturn = true;
+                    }
+                    auto* elRoad = el.as<World::RoadElement>();
+                    if (elRoad != nullptr)
+                    {
+                        if (trackId != 0)
+                        {
+                            return false;
+                        }
+                        if (elRoad->roadId() != 0)
+                        {
+                            shouldReturn = true;
+                            continue;
+                        }
+                        if (elRoad->rotation() == rotation
+                            || (elRoad->rotation() ^ (1U << 1)) == rotation)
+                        {
+                            shouldContinue = true;
+                            break;
+                        }
+                        shouldReturn = true;
+                    }
+                }
+                if (shouldContinue)
+                {
+                    continue;
+                }
+                if (shouldReturn)
+                {
+                    return false;
+                }
+                if (bridgeZ > 16)
+                {
+                    return false;
+                }
+                if (elSurface->slope() != 0)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     void registerHooks()
     {
         Interop::registerHook(
@@ -1498,6 +1942,38 @@ namespace OpenLoco::CompanyAi
                 regs = backup;
                 regs.ebx = totalCost;
                 return 0;
+            });
+
+        Interop::registerHook(
+            0x0047B336,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
+                const auto rotation = static_cast<uint8_t>(regs.bh);
+                const auto index = static_cast<uint8_t>(regs.dh);
+                // const auto roadObjId = static_cast<uint8_t>(regs.bp); unused
+                const auto roadId = static_cast<uint8_t>(regs.dl);
+                const auto companyId = GameCommands::getUpdatingCompanyId();
+
+                const auto flag = sub_47B336(pos, rotation, index, roadId, companyId);
+
+                regs = backup;
+                return flag ? X86_FLAG_CARRY : 0;
+            });
+
+        Interop::registerHook(
+            0x004A80E1,
+            [](Interop::registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                Interop::registers backup = regs;
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.di);
+                const auto rotation = static_cast<uint8_t>(regs.bh);
+                const auto index = static_cast<uint8_t>(regs.dh);
+                const auto trackObjId = static_cast<uint8_t>(regs.bp);
+                const auto trackId = static_cast<uint8_t>(regs.dl);
+
+                const auto flag = sub_4A80E1(pos, rotation, index, trackId, trackObjId);
+                regs = backup;
+                return flag ? X86_FLAG_CARRY : 0;
             });
     }
 }
