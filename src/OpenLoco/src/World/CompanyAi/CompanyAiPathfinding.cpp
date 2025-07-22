@@ -1373,6 +1373,7 @@ namespace OpenLoco::CompanyAi
             if (hasBridge)
             {
                 auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
+                // TODO: When we diverge reactivate this code see track version of function
                 const auto heightCost = 0 * bridgeObj->heightCostFactor; // Why 0 probably a bug
                 const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->baseCostFactor + heightCost, bridgeObj->costIndex, 10);
                 auto cost = (bridgeBaseCost * roadIdCostFactor) / 256;
@@ -1383,6 +1384,7 @@ namespace OpenLoco::CompanyAi
                 totalCost += cost;
             }
 
+            // TODO: When we diverge reactivate this code see track version of function
             // if (0) // Likely another bug
             //{
             //     const auto tunnelBaseCost = Economy::getInflationAdjustedCost(roadObj->tunnelCostFactor, 2, 8);
