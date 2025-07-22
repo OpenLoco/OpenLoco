@@ -515,7 +515,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AF5E1
-    static void sub_4AF5E1(Vehicles::VehicleHead& head)
+    static void connectJacobsBogies(Vehicles::VehicleHead& head)
     {
         registers regs{};
         regs.esi = X86Pointer(&head);
@@ -680,7 +680,7 @@ namespace OpenLoco::Vehicles
                 front ^= true;
             }
         }
-        sub_4AF5E1(*this);
+        connectJacobsBogies(*this);
     }
 
     // 0x004B90F0
