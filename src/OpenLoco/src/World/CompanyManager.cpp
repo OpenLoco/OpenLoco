@@ -782,6 +782,7 @@ namespace OpenLoco::CompanyManager
         return chosenCompanyId;
     }
 
+    // 0x004A6DA9
     static void sub_4A6DA9()
     {
         auto* playerCompany = getPlayerCompany();
