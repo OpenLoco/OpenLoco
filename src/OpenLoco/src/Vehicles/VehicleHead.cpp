@@ -685,7 +685,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
                 car.body->bodyIndex = front ? 0 : 1;
-                car.body->objectSpriteType = vehicleObj->carComponents[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::flag_unk7;
+                car.body->objectSpriteType = vehicleObj->carComponents[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::isReversed;
                 front ^= true;
             }
         }
