@@ -15,7 +15,6 @@ namespace OpenLoco::Vehicles
 {
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
-    static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
 
     // If distance travelled in one tick this is the speed
     constexpr Speed32 speedFromDistanceInATick(int32_t distance)
@@ -224,7 +223,7 @@ namespace OpenLoco::Vehicles
         const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
-        _vehicleUpdate_var_1136114 = enumValue(UpdateVar1136114Flags::none);
+        resetUpdateVar1136114Flags();
         var_3C += distance1 - updateTrackMotion(distance1);
 
         if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))

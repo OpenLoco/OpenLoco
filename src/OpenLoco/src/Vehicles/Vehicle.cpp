@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Vehicles
 {
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
-    static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
+    static loco_global<UpdateVar1136114Flags, 0x01136114> _vehicleUpdate_var_1136114;
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
 #pragma pack(push, 1)
@@ -1038,14 +1038,18 @@ namespace OpenLoco::Vehicles
 
     bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags)
     {
-        return _vehicleUpdate_var_1136114 & enumValue(flags);
+        return (*_vehicleUpdate_var_1136114 & flags) != UpdateVar1136114Flags::none;
+    }
+    void resetUpdateVar1136114Flags()
+    {
+        _vehicleUpdate_var_1136114 = UpdateVar1136114Flags::none;
     }
     void setUpdateVar1136114Flags(UpdateVar1136114Flags flags)
     {
-        _vehicleUpdate_var_1136114 |= enumValue(flags);
+        _vehicleUpdate_var_1136114 |= flags;
     }
     void unsetUpdateVar1136114Flags(UpdateVar1136114Flags flags)
     {
-        _vehicleUpdate_var_1136114 &= ~enumValue(flags);
+        _vehicleUpdate_var_1136114 &= ~flags;
     }
 }
