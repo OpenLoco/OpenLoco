@@ -3992,7 +3992,10 @@ namespace OpenLoco::Vehicles
         uint16_t recursionDepth;      // 0x0113642C
         uint16_t unkFlags;            // 0x0113642E
         uint32_t totalTrackWeighting; // 0x01136430
+        uint32_t unkDist1136444;      // 0x01136444
+        uint16_t unkDist1136448;      // 0x01136448
         StationId targetStationId;    // 0x0113644A
+        uint32_t unk113644C;          // 0x0113644C
         Pos3 targetPos;               // 0x0113645A
         uint16_t targetTad;           // 0x01136460
         Pos3 reverseTargetPos;        // 0x01136462
@@ -4027,6 +4030,18 @@ namespace OpenLoco::Vehicles
                 if (curStationId == state.targetStationId)
                 {
                     // 0x004AC9FD
+                    if (state.unkDist1136448 == 0 && state.totalTrackWeighting > state.unkDist1136444)
+                    {
+                        // 0x004ACAAD
+                    }
+
+                    state.unkDist1136448 = 0;
+                    state.unkDist1136444 = state.totalTrackWeighting;
+                    if (state.unk113644C == 0xFFFFFFFFU)
+                    {
+                        state.unk113644C = 1;
+                    }
+                    break;
                 }
             }
             else
@@ -4042,26 +4057,51 @@ namespace OpenLoco::Vehicles
             }
             // 0x004AC98B
 
-            const auto dist = Math::Vector::chebyshevDistance2D(curPos, state.targetPos) / 2 + std::abs(curPos.z - state.targetPos.z);
+            const auto zDiff = std::abs(curPos.z - state.targetPos.z);
+            const auto dist = Math::Vector::chebyshevDistance2D(curPos, state.targetPos) / 2 + zDiff;
+            if (dist <= state.unkDist1136448)
+            {
+                if (zDiff < state.totalTrackWeighting || zDiff <= state.unkDist1136444)
+                {
+                    state.unkDist1136448 = dist;
+                    state.unkDist1136444 = zDiff;
+                }
+            }
 
+            // 0x004ACAAD
             if (curTad._data & World::Track::AdditionalTaDFlags::hasSignal)
             {
                 TrackAndDirection::_TrackAndDirection basicTad{ 0, 0 };
-                basicTad._data = curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask;
+                // This looks so wrong! Why aren't we just doing basic tad mask?
+                basicTad._data = curTad._data & ~World::Track::AdditionalTaDFlags::hasSignal;
                 const auto sigState = getSignalState(curPos, basicTad, trackType, 0);
 
                 if (sigState & (1U << 1))
                 {
-                    state.unkFlags |= (1U << 0);
-                    break;
+                    if (state.unk113644C == 0xFFFFFFFFU)
+                    {
+                        state.unk113644C = 6;
+                        break;
+                    }
                 }
                 else if (sigState & (1U << 0))
                 {
-                    state.unkFlags |= (1U << 2);
-                    break;
+                    if (state.unk113644C == 0xFFFFFFFFU)
+                    {
+                        state.unk113644C = 4;
+                        if (sigState & (1U << 2))
+                        {
+                            state.unk113644C = 3;
+                        }
+                    }
                 }
-
-                state.unkFlags |= (1U << 1);
+                else
+                {
+                    if (state.unk113644C == 0xFFFFFFFFU)
+                    {
+                        state.unk113644C = 2;
+                    }
+                }
             }
 
             state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
@@ -4083,14 +4123,18 @@ namespace OpenLoco::Vehicles
             {
                 continue;
             }
+
+            uint32_t unk11360CC = state.unk113644C;
             for (auto& connection : tc.connections)
             {
                 const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 auto recurseState = state;
                 recurseState.recursionDepth++;
-                sub_4AC884(curPos, connectTad, companyId, trackType, requiredMods, queryMods, recurseState);
-                state.unkFlags |= recurseState.unkFlags;
+                sub_4AC94F(curPos, connectTad, companyId, trackType, requiredMods, queryMods, recurseState);
+                // TODO: May need to copy over results
+                unk11360CC = std::min(unk11360CC, recurseState.unk113644C);
             }
+            state.unk113644C = unk11360CC;
         }
     }
 
