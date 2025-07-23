@@ -33,6 +33,8 @@
 
 namespace OpenLoco::CompanyAi
 {
+    using ValidTrackRoadIds = sfl::static_vector<uint8_t, 64>;
+
     static Interop::loco_global<uint8_t, 0x0112C518> _pathFindUndoCount112C518;        // company 0x85EE
     static Interop::loco_global<int32_t, 0x0112C398> _pathFindTotalTrackRoadWeighting; // company 0x85DE
     static Interop::loco_global<uint8_t, 0x0112C519> _trackRoadObjType112C519;
@@ -70,7 +72,7 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
 
     // 0x00483A7E
-    static sfl::static_vector<uint8_t, 64> sub_483A7E(const Company& company, const AiThought& thought)
+    static ValidTrackRoadIds sub_483A7E(const Company& company, const AiThought& thought)
     {
         // 0x0112C384
         bool allowSteepSlopes = false;
@@ -172,7 +174,7 @@ namespace OpenLoco::CompanyAi
             // 0x00483DAA
             auto* roadObj = ObjectManager::get<RoadObject>(thought.trackObjId & ~(1U << 7));
 
-            sfl::static_vector<uint8_t, 64> validRoadIds;
+            ValidTrackRoadIds validRoadIds;
             validRoadIds.push_back(0U); // straight
 
             using enum World::Track::RoadTraitFlags;
@@ -208,7 +210,7 @@ namespace OpenLoco::CompanyAi
             // 0x00483CB6
             auto* trackObj = ObjectManager::get<TrackObject>(thought.trackObjId);
 
-            sfl::static_vector<uint8_t, 64> validTrackIds;
+            ValidTrackRoadIds validTrackIds;
             validTrackIds.push_back(0U); // straight
 
             using enum World::Track::TrackTraitFlags;
@@ -338,7 +340,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
-    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const sfl::static_vector<uint8_t, 64>& validTrackIds, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
+    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const ValidTrackRoadIds& validTrackIds, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -498,7 +500,7 @@ namespace OpenLoco::CompanyAi
         }
     }
 
-    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const sfl::static_vector<uint8_t, 64>& validTrackIds)
+    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const ValidTrackRoadIds& validTrackIds)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -521,7 +523,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
-    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const sfl::static_vector<uint8_t, 64>& validRoadIds, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
+    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const ValidTrackRoadIds& validRoadIds, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -637,7 +639,7 @@ namespace OpenLoco::CompanyAi
         }
     }
 
-    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const sfl::static_vector<uint8_t, 64>& validRoadIds)
+    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const ValidTrackRoadIds& validRoadIds)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -767,7 +769,7 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00484655
-    static void pathFindTrackSection(Company& company, const sfl::static_vector<uint8_t, 64>& validTrackIds)
+    static void pathFindTrackSection(Company& company, const ValidTrackRoadIds& validTrackIds)
     {
         if (_pathFindUndoCount112C518 == 0)
         {
@@ -1033,7 +1035,7 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00484D76
-    static void pathFindRoadSection(Company& company, const sfl::static_vector<uint8_t, 64>& validRoadIds)
+    static void pathFindRoadSection(Company& company, const ValidTrackRoadIds& validRoadIds)
     {
         if (_pathFindUndoCount112C518 == 0)
         {
@@ -1184,7 +1186,7 @@ namespace OpenLoco::CompanyAi
 
     // 0x00484648
     // company : _unk112C390
-    static void sub_484648(Company& company, const sfl::static_vector<uint8_t, 64>& validTrackRoadIds)
+    static void sub_484648(Company& company, const ValidTrackRoadIds& validTrackRoadIds)
     {
         if (_trackRoadObjType112C519 & (1U << 7))
         {
