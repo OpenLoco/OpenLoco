@@ -114,7 +114,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
                             }
                         }
 
-                        if (newsStringChar != -1)
+                        if (newsStringChar != static_cast<char>(-1))
                         {
                             cx--;
                             if (cx < 0)
@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
                 buffer++;
             }
 
-            if (newsStringChar == -1)
+            if (newsStringChar == static_cast<char>(-1))
             {
                 *buffer++ = *newsString++;
                 *buffer++ = *newsString++;
