@@ -381,7 +381,7 @@ namespace OpenLoco::Interop
         return gStoreInstance;
     }
 
-    void GlobalStore::addAddressRange(uint32_t begin, uint32_t size)
+    void GlobalStore::addAddressRange([[maybe_unused]] uint32_t begin, [[maybe_unused]] uint32_t size)
     {
 #ifdef _LOG_GLOBAL_STORE_
         auto& gs = getInstance();
