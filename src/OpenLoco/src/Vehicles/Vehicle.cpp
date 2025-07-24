@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Vehicles
 {
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
-    static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
+    static loco_global<UpdateVar1136114Flags, 0x01136114> _vehicleUpdate_var_1136114;
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
 #pragma pack(push, 1)
@@ -261,11 +261,11 @@ namespace OpenLoco::Vehicles
         if (routing != RoutingManager::kAllocatedButFreeRoutingStation)
         {
             Vehicle train(component.head);
-            if (_vehicleUpdate_var_1136114 & (1U << 15))
+            if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m15))
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    _vehicleUpdate_var_1136114 |= (1U << 3);
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03);
                     return false;
                 }
             }
@@ -285,7 +285,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                _vehicleUpdate_var_1136114 |= (1U << 1);
+                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -315,11 +315,11 @@ namespace OpenLoco::Vehicles
         if (routing != RoutingManager::kAllocatedButFreeRoutingStation)
         {
             Vehicle train(component.head);
-            if (_vehicleUpdate_var_1136114 & (1U << 15))
+            if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m15))
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    _vehicleUpdate_var_1136114 |= (1U << 3);
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03);
                     return false;
                 }
             }
@@ -329,7 +329,7 @@ namespace OpenLoco::Vehicles
             const auto tc = World::Track::getTrackConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
             if (tc.hasLevelCrossing)
             {
-                _vehicleUpdate_var_1136114 |= (1U << 4);
+                setUpdateVar1136114Flags(UpdateVar1136114Flags::approachingGradeCrossing);
             }
             bool routingFound = false;
             for (auto& connection : tc.connections)
@@ -342,7 +342,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                _vehicleUpdate_var_1136114 |= (1U << 1);
+                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -510,7 +510,7 @@ namespace OpenLoco::Vehicles
                 {
                     returnValue = component.remainingDistance - 0x3689;
                     component.remainingDistance = 0x3689;
-                    _vehicleUpdate_var_1136114 |= (1U << 0);
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
                     break;
                 }
                 else
@@ -532,7 +532,7 @@ namespace OpenLoco::Vehicles
                 auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                 if (collideResult != EntityId::null)
                 {
-                    _vehicleUpdate_var_1136114 |= (1U << 2);
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed);
                     _vehicleUpdate_collisionCarComponent = collideResult;
                 }
             }
@@ -570,7 +570,7 @@ namespace OpenLoco::Vehicles
                     {
                         returnValue = component.remainingDistance - 0x3689;
                         component.remainingDistance = 0x3689;
-                        _vehicleUpdate_var_1136114 |= (1U << 0);
+                        setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
                         break;
                     }
                     else
@@ -592,7 +592,7 @@ namespace OpenLoco::Vehicles
                     auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                     if (collideResult != EntityId::null)
                     {
-                        _vehicleUpdate_var_1136114 |= (1U << 2);
+                        setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed);
                         _vehicleUpdate_collisionCarComponent = collideResult;
                     }
                 }
@@ -1141,5 +1141,22 @@ namespace OpenLoco::Vehicles
                 regs = backup;
                 return 0;
             });
+    }
+
+    bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags)
+    {
+        return (*_vehicleUpdate_var_1136114 & flags) != UpdateVar1136114Flags::none;
+    }
+    void resetUpdateVar1136114Flags()
+    {
+        _vehicleUpdate_var_1136114 = UpdateVar1136114Flags::none;
+    }
+    void setUpdateVar1136114Flags(UpdateVar1136114Flags flags)
+    {
+        _vehicleUpdate_var_1136114 |= flags;
+    }
+    void unsetUpdateVar1136114Flags(UpdateVar1136114Flags flags)
+    {
+        _vehicleUpdate_var_1136114 &= ~flags;
     }
 }

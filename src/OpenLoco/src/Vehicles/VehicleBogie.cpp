@@ -23,8 +23,7 @@ namespace OpenLoco::Vehicles
     static loco_global<bool, 0x01136237> _vehicleUpdate_frontBogieHasMoved; // remainingDistance related?
     static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;  // remainingDistance related?
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C;     // Speed
-    static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
-    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
+    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130;     // Speed
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
     template<typename T>
@@ -48,7 +47,7 @@ namespace OpenLoco::Vehicles
         }
 
         const auto oldPos = position;
-        _vehicleUpdate_var_1136114 = 0;
+        resetUpdateVar1136114Flags();
         updateTrackMotion(_vehicleUpdate_var_113612C);
 
         const auto hasMoved = oldPos != position;
@@ -68,12 +67,12 @@ namespace OpenLoco::Vehicles
 
         updateRoll();
         _vehicleUpdate_var_1136130 = stash1136130;
-        if (_vehicleUpdate_var_1136114 & (1 << 1))
+        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
             return false;
         }
-        else if (!(_vehicleUpdate_var_1136114 & (1 << 2)))
+        else if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::crashed))
         {
             return true;
         }
@@ -250,11 +249,11 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            _vehicleUpdate_var_1136114 = 0;
+            resetUpdateVar1136114Flags();
             if (this->mode != TransportMode::road)
             {
                 this->updateTrackMotion(_vehicleUpdate_var_113612C);
-                if ((_vehicleUpdate_var_1136114 & 0x3) != 0)
+                if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::noRouteFound))
                 {
                     this->var_5A |= 1U << 31;
                 }
