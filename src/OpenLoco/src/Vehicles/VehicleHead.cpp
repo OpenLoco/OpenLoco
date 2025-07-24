@@ -3992,8 +3992,8 @@ namespace OpenLoco::Vehicles
         uint16_t recursionDepth;      // 0x0113642C
         uint16_t unkFlags;            // 0x0113642E
         uint32_t totalTrackWeighting; // 0x01136430
-        uint32_t unkDist1136444;      // 0x01136444
-        uint16_t unkDist1136448;      // 0x01136448
+        uint32_t bestTrackWeighting;  // 0x01136444
+        uint16_t bestDistToTarget;    // 0x01136448
         StationId targetStationId;    // 0x0113644A
         uint32_t unk113644C;          // 0x0113644C
         Pos3 targetPos;               // 0x0113645A
@@ -4003,16 +4003,16 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x004AC98B
-    static void updateTrackWeighting(Pos3 curPos, Sub4AC94FState& state)
+    static void updateDistanceToTarget(Pos3 curPos, Sub4AC94FState& state)
     {
         const uint32_t zDiff = std::abs(curPos.z - state.targetPos.z);
         const auto dist = Math::Vector::chebyshevDistance2D(curPos, state.targetPos) / 2 + zDiff;
-        if (dist <= state.unkDist1136448)
+        if (dist <= state.bestDistToTarget)
         {
-            if (zDiff < state.totalTrackWeighting || zDiff <= state.unkDist1136444)
+            if (dist < state.bestDistToTarget || state.totalTrackWeighting <= state.bestTrackWeighting)
             {
-                state.unkDist1136448 = dist;
-                state.unkDist1136444 = zDiff;
+                state.bestDistToTarget = dist;
+                state.bestTrackWeighting = state.totalTrackWeighting;
             }
         }
     }
@@ -4022,10 +4022,10 @@ namespace OpenLoco::Vehicles
     // Unsure why we continue processing the route if it is not the best route
     static bool processReachedTargetRouteEnd(Sub4AC94FState& state)
     {
-        if (state.unkDist1136448 != 0 || state.totalTrackWeighting <= state.unkDist1136444)
+        if (state.bestDistToTarget != 0 || state.totalTrackWeighting <= state.bestTrackWeighting)
         {
-            state.unkDist1136448 = 0;
-            state.unkDist1136444 = state.totalTrackWeighting;
+            state.bestDistToTarget = 0;
+            state.bestTrackWeighting = state.totalTrackWeighting;
             if (state.unk113644C == 0xFFFFFFFFU)
             {
                 state.unk113644C = 1;
@@ -4085,7 +4085,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 // 0x004AC98B
-                updateTrackWeighting(curPos, state);
+                updateDistanceToTarget(curPos, state);
             }
 
             // 0x004ACAAD
