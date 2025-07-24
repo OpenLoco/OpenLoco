@@ -47,8 +47,6 @@ namespace OpenLoco::ObjectManager
     static std::vector<ObjectIndexEntry> _installedObjectList;
 
     static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
-    static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
-    static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<int32_t, 0x0050D148> _50D144refCount;
