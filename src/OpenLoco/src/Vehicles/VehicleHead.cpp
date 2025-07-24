@@ -4002,6 +4002,39 @@ namespace OpenLoco::Vehicles
         uint16_t reverseTargetTad;    // 0x01136468
     };
 
+    // 0x004AC98B
+    static void updateTrackWeighting(Pos3 curPos, Sub4AC94FState& state)
+    {
+        const uint32_t zDiff = std::abs(curPos.z - state.targetPos.z);
+        const auto dist = Math::Vector::chebyshevDistance2D(curPos, state.targetPos) / 2 + zDiff;
+        if (dist <= state.unkDist1136448)
+        {
+            if (zDiff < state.totalTrackWeighting || zDiff <= state.unkDist1136444)
+            {
+                state.unkDist1136448 = dist;
+                state.unkDist1136444 = zDiff;
+            }
+        }
+    }
+
+    // 0x004AC9FD
+    // Returns true if this is the best route so far and we should stop processing this route.
+    // Unsure why we continue processing the route if it is not the best route
+    static bool processReachedTargetRouteEnd(Sub4AC94FState& state)
+    {
+        if (state.unkDist1136448 != 0 || state.totalTrackWeighting <= state.unkDist1136444)
+        {
+            state.unkDist1136448 = 0;
+            state.unkDist1136444 = state.totalTrackWeighting;
+            if (state.unk113644C == 0xFFFFFFFFU)
+            {
+                state.unk113644C = 1;
+            }
+            return true;
+        }
+        return false;
+    }
+
     // 0x004AC94F
     // pos.x : ax
     // pos.y : cx
@@ -4025,47 +4058,34 @@ namespace OpenLoco::Vehicles
         curTad._data = tad;
         for (; true;)
         {
+            bool hasReachedTarget = false;
             if (state.targetStationId != StationId::null)
             {
-                if (curStationId == state.targetStationId)
-                {
-                    // 0x004AC9FD
-                    if (state.unkDist1136448 == 0 && state.totalTrackWeighting > state.unkDist1136444)
-                    {
-                        // 0x004ACAAD
-                    }
-
-                    state.unkDist1136448 = 0;
-                    state.unkDist1136444 = state.totalTrackWeighting;
-                    if (state.unk113644C == 0xFFFFFFFFU)
-                    {
-                        state.unk113644C = 1;
-                    }
-                    break;
-                }
+                hasReachedTarget = (curStationId == state.targetStationId);
             }
             else
             {
                 if (curPos == state.targetPos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == state.targetTad)
                 {
-                    // 0x004AC9FD
+                    hasReachedTarget = true;
                 }
                 else if (curPos == state.reverseTargetPos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == state.reverseTargetTad)
                 {
-                    // 0x004AC9FD
+                    hasReachedTarget = true;
                 }
             }
-            // 0x004AC98B
-
-            const auto zDiff = std::abs(curPos.z - state.targetPos.z);
-            const auto dist = Math::Vector::chebyshevDistance2D(curPos, state.targetPos) / 2 + zDiff;
-            if (dist <= state.unkDist1136448)
+            if (hasReachedTarget)
             {
-                if (zDiff < state.totalTrackWeighting || zDiff <= state.unkDist1136444)
+                // 0x004AC9FD
+                if (processReachedTargetRouteEnd(state))
                 {
-                    state.unkDist1136448 = dist;
-                    state.unkDist1136444 = zDiff;
+                    break;
                 }
+            }
+            else
+            {
+                // 0x004AC98B
+                updateTrackWeighting(curPos, state);
             }
 
             // 0x004ACAAD
