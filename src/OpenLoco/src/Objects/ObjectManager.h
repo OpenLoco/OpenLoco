@@ -190,6 +190,7 @@ namespace OpenLoco::ObjectManager
 
     void drawGenericDescription(Gfx::DrawingContext& drawingCtx, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete);
 
+    void sub_47966E();
     void updateDefaultLevelCrossingType();
     void updateYearly2();
 

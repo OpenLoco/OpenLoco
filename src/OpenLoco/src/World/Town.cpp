@@ -886,6 +886,12 @@ namespace OpenLoco
         }();
     }
 
+    // 0047AC05
+    void sub_47AC05()
+    {
+        call(0x0047AC05);
+    }
+
     // 0x0047AC3E
     static RoadInformation getRoadInformation(const World::Pos3& loc, Vehicles::TrackAndDirection::_RoadAndDirection tad)
     {

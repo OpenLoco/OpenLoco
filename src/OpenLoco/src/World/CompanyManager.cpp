@@ -783,7 +783,7 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x004A6DA9
-    static void sub_4A6DA9()
+    void sub_4A6DA9()
     {
         auto* playerCompany = getPlayerCompany();
         auto& gameState = getGameState();
