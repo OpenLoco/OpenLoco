@@ -1295,8 +1295,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            auto xPos = self->widgets[widgetIndex].left;
-            auto yPos = self->widgets[widgetIndex].bottom;
+            auto xPos = self->x + self->widgets[widgetIndex].left;
+            auto yPos = self->y + self->widgets[widgetIndex].bottom;
             auto heightOffset = self->widgets[widgetIndex].height() - 18;
             auto colour = self->getColour(WindowColour::secondary).translucent();
             auto count = Dropdown::getItemsPerRow(landCount);
