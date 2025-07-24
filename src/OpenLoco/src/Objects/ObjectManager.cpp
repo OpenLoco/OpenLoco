@@ -93,8 +93,6 @@ namespace OpenLoco::ObjectManager
 
     loco_global<ObjectRepositoryItem[kMaxObjectTypes], 0x4FE0B8> _objectRepository;
 
-    static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
-    static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<uint8_t, 0x0050D160> _isTemporaryObject; // 0xFF or 0
     static loco_global<Object*, 0x0050D15C> _temporaryObject;
