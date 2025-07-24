@@ -152,6 +152,23 @@ namespace OpenLoco::Interop
     int32_t call(int32_t address);
     int32_t call(int32_t address, registers& registers);
 
+    struct GlobalStore
+    {
+    public:
+        static GlobalStore& getInstance();
+
+        static void addAddressRange(uint32_t begin, uint32_t size);
+
+    private:
+        GlobalStore() = default;
+
+        bool isAddressInRange(uint32_t address, uint32_t size) const;
+
+        std::vector<std::pair<uint32_t, uint32_t>> addressRanges; // Pairs of (begin, size)
+
+        static GlobalStore gStoreInstance;
+    };
+
     template<typename T, uintptr_t TAddress>
     struct loco_global
     {
@@ -168,6 +185,7 @@ namespace OpenLoco::Interop
         loco_global()
         {
             _Myptr = &(addr<TAddress, T>());
+            GlobalStore::addAddressRange(TAddress, sizeof(T));
         }
 
         loco_global(const loco_global<T, TAddress>&) = delete; // Do not copy construct a loco global
@@ -327,6 +345,7 @@ namespace OpenLoco::Interop
         {
             _Myfirst = get();
             _Mylast = _Myfirst + TCount;
+            GlobalStore::addAddressRange(TAddress, TCount * sizeof(T));
         }
 
         operator pointer()
