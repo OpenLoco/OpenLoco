@@ -514,14 +514,6 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x004AF5E1
-    static void connectJacobsBogies(Vehicles::VehicleHead& head)
-    {
-        registers regs{};
-        regs.esi = X86Pointer(&head);
-        call(0x004AF5E1, regs);
-    }
-
     struct CarMetaData
     {
         EntityId frontId;
