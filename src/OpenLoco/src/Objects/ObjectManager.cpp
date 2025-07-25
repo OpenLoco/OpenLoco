@@ -931,6 +931,12 @@ namespace OpenLoco::ObjectManager
         }
     }
 
+    // 0x0047966E
+    void sub_47966E()
+    {
+        call(0x0047966E);
+    }
+
     // 0x004796A9
     void updateDefaultLevelCrossingType()
     {
@@ -1099,6 +1105,12 @@ namespace OpenLoco::ObjectManager
         call(0x0047D9F2);
         updateWaterPalette();
         resetDefaultLandObject();
+    }
+
+    // 0x0047AC05
+    void sub_47AC05()
+    {
+        call(0x0047AC05);
     }
 
     void registerHooks()
