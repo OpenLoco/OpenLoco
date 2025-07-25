@@ -336,7 +336,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/IndustryWindow.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/KeyboardShortcuts.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/LandscapeGeneration.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/LandscapeGenerationConfirm.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MapToolTip.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MapWindow.cpp"

@@ -1,5 +1,6 @@
 25.07+ (???)
 ------------------------------------------------------------------------
+- Change: [#3104] Landscape generation confirmation prompts now prevent you from clicking other windows until a choice is made.
 - Fix: [#3167] Dropdown for terrain type selection is displayed at the wrong position.
 
 25.07 (2025-07-15)
