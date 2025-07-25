@@ -4034,7 +4034,7 @@ namespace OpenLoco::Vehicles
             state.bestTrackWeighting = state.totalTrackWeighting;
             if (state.unk113644C == 0xFFFFFFFFU)
             {
-                state.unk113644C = 1;
+                state.unk113644C = 1; // This is the No signals best root
             }
             return true;
         }
@@ -4104,17 +4104,19 @@ namespace OpenLoco::Vehicles
 
                 if (sigState & (1U << 1))
                 {
+                    // Root blocked by one way signal facing opposite direction
                     if (state.unk113644C == 0xFFFFFFFFU)
                     {
                         state.unk113644C = 6;
-                        break;
                     }
+                    break;
                 }
                 else if (sigState & (1U << 0))
                 {
                     if (state.unk113644C == 0xFFFFFFFFU)
                     {
                         state.unk113644C = 4;
+                        // Its a one way signal facing our direction
                         if (sigState & (1U << 2))
                         {
                             state.unk113644C = 3;
@@ -4123,6 +4125,7 @@ namespace OpenLoco::Vehicles
                 }
                 else
                 {
+                    // Has signal and signal is green
                     if (state.unk113644C == 0xFFFFFFFFU)
                     {
                         state.unk113644C = 2;
