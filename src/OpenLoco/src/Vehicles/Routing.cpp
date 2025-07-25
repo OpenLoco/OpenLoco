@@ -265,7 +265,7 @@ namespace OpenLoco::Vehicles
         {
             ret |= (1 << 0);
         }
-        if (signalSide.hasSignal())
+        if (!signalSide.hasSignal())
         {
             ret |= (1 << 1);
         }

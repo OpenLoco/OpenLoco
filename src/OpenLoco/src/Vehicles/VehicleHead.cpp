@@ -4008,13 +4008,16 @@ namespace OpenLoco::Vehicles
     // 0x004AC98B
     static void updateDistanceToTarget(const Pos3 curPos, const Sub4AC94FTarget& target, Sub4AC94FState& state)
     {
+        const uint32_t xDiff = std::abs(curPos.x - target.pos.x);
+        const uint32_t yDiff = std::abs(curPos.y - target.pos.y);
         const uint32_t zDiff = std::abs(curPos.z - target.pos.z);
-        const auto dist = Math::Vector::chebyshevDistance2D(curPos, target.pos) / 2 + zDiff;
+
+        const auto dist = std::min(xDiff, yDiff) / 4 + std::max(xDiff, yDiff) + zDiff;
         if (dist <= state.bestDistToTarget)
         {
             if (dist < state.bestDistToTarget || state.totalTrackWeighting <= state.bestTrackWeighting)
             {
-                state.bestDistToTarget = dist;
+                state.bestDistToTarget = static_cast<uint16_t>(dist);
                 state.bestTrackWeighting = state.totalTrackWeighting;
             }
         }
@@ -4142,6 +4145,7 @@ namespace OpenLoco::Vehicles
             }
             curPos = nextPos;
             curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            curStationId = tc.stationId;
             if (tc.connections.size() == 1)
             {
                 continue;
