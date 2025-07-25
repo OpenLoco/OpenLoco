@@ -1109,6 +1109,12 @@ namespace OpenLoco::ObjectManager
         resetDefaultLandObject();
     }
 
+    // 0x0047AC05
+    void sub_47AC05()
+    {
+        call(0x0047AC05);
+    }
+
     void registerHooks()
     {
         registerHook(

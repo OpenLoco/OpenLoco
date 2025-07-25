@@ -228,7 +228,7 @@ namespace OpenLoco::Scenario
     {
         ObjectManager::sub_47966E();
         ObjectManager::updateDefaultLevelCrossingType();
-        sub_47AC05();
+        ObjectManager::sub_47AC05();
         CompanyManager::sub_4A6DA9();
         Gfx::invalidateScreen();
         ObjectManager::sub_4748FA();

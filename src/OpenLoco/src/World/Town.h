@@ -93,6 +93,4 @@ namespace OpenLoco
     };
     static_assert(sizeof(Town) == 0x270);
 #pragma pack(pop)
-
-    void sub_47AC05();
 }
