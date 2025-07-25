@@ -3990,23 +3990,26 @@ namespace OpenLoco::Vehicles
     struct Sub4AC94FState
     {
         uint16_t recursionDepth;      // 0x0113642C
-        uint16_t unkFlags;            // 0x0113642E
         uint32_t totalTrackWeighting; // 0x01136430
         uint32_t bestTrackWeighting;  // 0x01136444
         uint16_t bestDistToTarget;    // 0x01136448
-        StationId targetStationId;    // 0x0113644A
         uint32_t unk113644C;          // 0x0113644C
-        Pos3 targetPos;               // 0x0113645A
-        uint16_t targetTad;           // 0x01136460
-        Pos3 reverseTargetPos;        // 0x01136462
-        uint16_t reverseTargetTad;    // 0x01136468
+    };
+
+    struct Sub4AC94FTarget
+    {
+        StationId stationId; // 0x0113644A
+        Pos3 pos;            // 0x0113645A
+        uint16_t tad;        // 0x01136460
+        Pos3 reversePos;     // 0x01136462
+        uint16_t reverseTad; // 0x01136468
     };
 
     // 0x004AC98B
-    static void updateDistanceToTarget(Pos3 curPos, Sub4AC94FState& state)
+    static void updateDistanceToTarget(const Pos3 curPos, const Sub4AC94FTarget& target, Sub4AC94FState& state)
     {
-        const uint32_t zDiff = std::abs(curPos.z - state.targetPos.z);
-        const auto dist = Math::Vector::chebyshevDistance2D(curPos, state.targetPos) / 2 + zDiff;
+        const uint32_t zDiff = std::abs(curPos.z - target.pos.z);
+        const auto dist = Math::Vector::chebyshevDistance2D(curPos, target.pos) / 2 + zDiff;
         if (dist <= state.bestDistToTarget)
         {
             if (dist < state.bestDistToTarget || state.totalTrackWeighting <= state.bestTrackWeighting)
@@ -4045,7 +4048,7 @@ namespace OpenLoco::Vehicles
     // requiredMods : 0x0113601A
     // queryMods : 0x0113601B
     // state : see above
-    static void sub_4AC94F(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, Sub4AC94FState& state)
+    static void sub_4AC94F(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, const Sub4AC94FTarget& target, Sub4AC94FState& state)
     {
         // 0x01135FAE (copy in from the tc)
         StationId curStationId = StationId::null;
@@ -4059,17 +4062,17 @@ namespace OpenLoco::Vehicles
         for (; true;)
         {
             bool hasReachedTarget = false;
-            if (state.targetStationId != StationId::null)
+            if (target.stationId != StationId::null)
             {
-                hasReachedTarget = (curStationId == state.targetStationId);
+                hasReachedTarget = (curStationId == target.stationId);
             }
             else
             {
-                if (curPos == state.targetPos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == state.targetTad)
+                if (curPos == target.pos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == target.tad)
                 {
                     hasReachedTarget = true;
                 }
-                else if (curPos == state.reverseTargetPos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == state.reverseTargetTad)
+                else if (curPos == target.reversePos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == target.reverseTad)
                 {
                     hasReachedTarget = true;
                 }
@@ -4085,7 +4088,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 // 0x004AC98B
-                updateDistanceToTarget(curPos, state);
+                updateDistanceToTarget(curPos, target, state);
             }
 
             // 0x004ACAAD
@@ -4150,9 +4153,11 @@ namespace OpenLoco::Vehicles
                 const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 auto recurseState = state;
                 recurseState.recursionDepth++;
-                sub_4AC94F(curPos, connectTad, companyId, trackType, requiredMods, queryMods, recurseState);
+                sub_4AC94F(curPos, connectTad, companyId, trackType, requiredMods, queryMods, target, recurseState);
                 // TODO: May need to copy over results
                 unk11360CC = std::min(unk11360CC, recurseState.unk113644C);
+                state.bestDistToTarget = recurseState.bestDistToTarget;
+                state.bestTrackWeighting = recurseState.bestTrackWeighting;
             }
             state.unk113644C = unk11360CC;
         }
@@ -4954,6 +4959,45 @@ namespace OpenLoco::Vehicles
                 addr<0x0113642C, uint16_t>() = state.recursionDepth;
                 addr<0x0113642E, uint16_t>() = state.unkFlags;
                 addr<0x01136430, uint32_t>() = state.totalTrackWeighting;
+
+                regs = backup;
+
+                return 0;
+            });
+
+        registerHook(
+            0x004AC94F,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const uint16_t tad = regs.bp;
+                const auto companyId = CompanyId(regs.bl);
+                const uint8_t trackTypeId = regs.bh;
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+
+                Sub4AC94FState state{};
+                state.recursionDepth = addr<0x0113642C, uint16_t>();
+                state.totalTrackWeighting = addr<0x01136430, uint32_t>();
+                state.bestTrackWeighting = addr<0x01136444, uint32_t>();
+                state.bestDistToTarget = addr<0x01136448, uint32_t>();
+                state.unk113644C = addr<0x0113644C, uint32_t>();
+
+                Sub4AC94FTarget target{};
+                target.stationId = addr<0x0113644A, StationId>();
+                target.pos = addr<0x0113645A, World::Pos3>();
+                target.tad = addr<0x01136460, uint16_t>();
+                target.reversePos = addr<0x01136462, World::Pos3>();
+                target.reverseTad = addr<0x01136468, uint16_t>();
+
+                sub_4AC94F(pos, tad, companyId, trackTypeId, requiredMods, queryMods, target, state);
+
+                addr<0x0113642C, uint16_t>() = state.recursionDepth;
+                addr<0x01136430, uint32_t>() = state.totalTrackWeighting;
+                addr<0x01136444, uint32_t>() = state.bestTrackWeighting;
+                addr<0x01136448, uint32_t>() = state.bestDistToTarget;
+                addr<0x0113644C, uint32_t>() = state.unk113644C;
 
                 regs = backup;
 
