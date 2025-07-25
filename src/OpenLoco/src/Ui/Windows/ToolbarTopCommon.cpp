@@ -44,6 +44,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
         auto lastRoadOption = getGameState().lastRoadOption;
+        auto lastRailRoadOption = getGameState().lastRailroadOption;
 
         if (!self.widgets[Widx::road_menu].hidden && lastRoadOption != 0xFF)
         {
@@ -60,7 +61,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             }
             else
             {
-                auto obj = ObjectManager::get<TrackObject>(lastRoadOption);
+                auto obj = ObjectManager::get<TrackObject>(lastRailRoadOption);
                 fgImage = Gfx::recolour(obj->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
             }
 
