@@ -914,7 +914,7 @@ namespace OpenLoco
         drawingCtx.drawImage(topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
         drawingCtx.drawImage(topLeft, ImageId(borderImages.left).withTranslucency(colour));
 
-        Ui::Point topRight = { static_cast<int16_t>(bottomRight.x - borderImages.width), topLeft.y };
+        Ui::Point topRight = { static_cast<int16_t>(bottomRight.x - borderImages.width) + 1, topLeft.y };
         drawingCtx.drawImage(topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
         drawingCtx.drawImage(topRight, ImageId(borderImages.right).withTranslucency(colour));
 
