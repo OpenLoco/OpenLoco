@@ -3912,7 +3912,7 @@ namespace OpenLoco::Vehicles
     struct Sub4AC884State
     {
         uint16_t recursionDepth;      // 0x0113642C
-        uint16_t unkFlags;            // 0x0113642E
+        uint16_t unkFlags;            // 0x0113642E this is a result
         uint32_t totalTrackWeighting; // 0x01136430
     };
 
@@ -3991,9 +3991,9 @@ namespace OpenLoco::Vehicles
     {
         uint16_t recursionDepth;      // 0x0113642C
         uint32_t totalTrackWeighting; // 0x01136430
-        uint32_t bestTrackWeighting;  // 0x01136444
-        uint16_t bestDistToTarget;    // 0x01136448
-        uint32_t unk113644C;          // 0x0113644C
+        uint32_t bestTrackWeighting;  // 0x01136444 this is a result
+        uint16_t bestDistToTarget;    // 0x01136448 this is a result
+        uint32_t unk113644C;          // 0x0113644C this is a result
     };
 
     struct Sub4AC94FTarget
@@ -4170,19 +4170,98 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    constexpr static std::array<uint16_t, 8> k500234 = {
+        10,
+        0,
+        70,
+        70,
+        40,
+        40,
+        70,
+        70,
+    };
+
     // 0x004AC3D3
-    static void sub_4AC3D3(VehicleHead& head, World::Pos3 pos, Track::LegacyTrackConnections& connections, bool unk)
+    static uint16_t sub_4AC3D3(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods, bool unk)
     {
         // TRACK only
-        static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
-        _113609C = connections;
+        // static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
+        //_113609C = connections;
 
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z | (unk ? 0x8000 : 0);
-        regs.esi = X86Pointer(&head);
-        call(0x004AC3D3, regs);
+        // registers regs;
+        // regs.ax = pos.x;
+        // regs.cx = pos.y;
+        // regs.dx = pos.z | (unk ? 0x8000 : 0);
+        // regs.esi = X86Pointer(&head);
+        // call(0x004AC3D3, regs);
+
+        // This should be returned from the call!
+        uint32_t unk1136450 = 0;
+        // unk is a first run flag
+        if (!unk)
+        {
+            unk1136450 = 0xFFFFFFFEU;
+        }
+
+        // 0x01136438
+        uint32_t randVal = 0U;
+        if (Tutorial::state() == Tutorial::State::none)
+        {
+            randVal = gPrng1().randNext();
+        }
+
+        const auto companyId = head.owner;
+        const auto trackType = head.trackType;
+
+        auto orders = head.getCurrentOrders();
+        auto curOrder = orders.begin();
+        auto* stationOrder = curOrder->as<OrderStation>();
+        auto* routeOrder = curOrder->as<OrderRouteWaypoint>();
+        if (stationOrder != nullptr || routeOrder != nullptr)
+        {
+            Sub4AC94FTarget target{};
+            if (stationOrder != nullptr)
+            {
+                // 0x004AC504
+                target.stationId = stationOrder->getStation();
+                auto* station = StationManager::get(target.stationId);
+                target.pos = World::Pos3{ station->x, station->y, station->z };
+            }
+            else
+            {
+                // 0x004AC441
+                target.stationId = StationId::null;
+                target.pos = routeOrder->getWaypoint();
+                target.tad = (routeOrder->getTrackId() << 3) | routeOrder->getDirection();
+                const auto& trackSize = TrackData::getUnkTrack(target.tad);
+                target.reversePos = target.pos + trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    target.reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                target.reverseTad = target.tad ^ (1U << 2); // Reverse
+            }
+            // 0x004AC5F5
+        }
+        else
+        {
+            std::array<uint16_t, 8> unkArray{};
+            // aimless wander pathing
+            for (auto i = 0U; i < tc.connections.size(); ++i)
+            {
+                const auto connection = tc.connections[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                Sub4AC884State state{};
+                sub_4AC884(pos, connection, companyId, trackType, requiredMods, queryMods, state);
+
+                unkArray[i] = k500234[state.unkFlags];
+                unkArray[i] += randVal & 0x7;
+                randVal = std::rotr(randVal, 3);
+            }
+
+            auto minIter = std::min_element(unkArray.begin(), unkArray.end());
+            auto minIndex = std::distance(unkArray.begin(), minIter);
+            return tc.connections[minIndex];
+        }
     }
 
     // 0x004ACCE6
@@ -4190,8 +4269,10 @@ namespace OpenLoco::Vehicles
     {
         auto train = Vehicle(head);
 
-        _113601A[0] = head.var_53;        // TODO: Remove after sub_4AC3D3
-        _113601A[1] = train.veh1->var_49; // TODO: Remove after sub_4AC3D3
+        const auto requiredMods = head.var_53;
+        const auto queryMods = train.veh1->var_49;
+        _113601A[0] = requiredMods; // TODO: Remove after sub_4AC3D3
+        _113601A[1] = queryMods;    // TODO: Remove after sub_4AC3D3
         {
             auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.track._data);
             auto tc = World::Track::getTrackConnections(nextPos, nextRotation, head.owner, head.trackType, head.var_53, train.veh1->var_49);
@@ -4199,9 +4280,7 @@ namespace OpenLoco::Vehicles
             {
                 return false;
             }
-            Track::LegacyTrackConnections legacyTc{};
-            Track::toLegacyConnections(tc, legacyTc);
-            sub_4AC3D3(head, nextPos, legacyTc, false);
+            sub_4AC3D3(head, nextPos, tc, requiredMods, queryMods, false);
         }
         {
             auto tailTaD = train.tail->trackAndDirection.track._data;
@@ -4221,9 +4300,7 @@ namespace OpenLoco::Vehicles
             }
 
             _1136458 = 0;
-            Track::LegacyTrackConnections legacyTc{};
-            Track::toLegacyConnections(tailTc, legacyTc);
-            sub_4AC3D3(head, nextTailPos, legacyTc, true);
+            sub_4AC3D3(head, nextTailPos, tailTc, requiredMods, queryMods, true);
             return _1136458 != 0;
         }
     }
@@ -4963,9 +5040,8 @@ namespace OpenLoco::Vehicles
 
                 sub_4AC884(pos, tad, companyId, trackTypeId, requiredMods, queryMods, state);
 
-                addr<0x0113642C, uint16_t>() = state.recursionDepth;
+                // Only copy state results
                 addr<0x0113642E, uint16_t>() = state.unkFlags;
-                addr<0x01136430, uint32_t>() = state.totalTrackWeighting;
 
                 regs = backup;
 
@@ -4988,7 +5064,7 @@ namespace OpenLoco::Vehicles
                 state.recursionDepth = addr<0x0113642C, uint16_t>();
                 state.totalTrackWeighting = addr<0x01136430, uint32_t>();
                 state.bestTrackWeighting = addr<0x01136444, uint32_t>();
-                state.bestDistToTarget = addr<0x01136448, uint32_t>();
+                state.bestDistToTarget = addr<0x01136448, uint16_t>();
                 state.unk113644C = addr<0x0113644C, uint32_t>();
 
                 Sub4AC94FTarget target{};
@@ -5000,10 +5076,9 @@ namespace OpenLoco::Vehicles
 
                 sub_4AC94F(pos, tad, companyId, trackTypeId, requiredMods, queryMods, target, state);
 
-                addr<0x0113642C, uint16_t>() = state.recursionDepth;
-                addr<0x01136430, uint32_t>() = state.totalTrackWeighting;
+                // Only copy state results
                 addr<0x01136444, uint32_t>() = state.bestTrackWeighting;
-                addr<0x01136448, uint32_t>() = state.bestDistToTarget;
+                addr<0x01136448, uint16_t>() = state.bestDistToTarget;
                 addr<0x0113644C, uint32_t>() = state.unk113644C;
 
                 regs = backup;
