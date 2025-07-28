@@ -4182,6 +4182,19 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x004AC3D3
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tc : 0x0113609C as legacy connections
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    // unk : dx & 0x8000
+    //
+    // 0x01136450
+    // 0x01136456
+    // 0x0113643C
+    // 0x01136458
+    // return ebx
     static uint16_t sub_4AC3D3(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods, bool unk)
     {
         // TRACK only
