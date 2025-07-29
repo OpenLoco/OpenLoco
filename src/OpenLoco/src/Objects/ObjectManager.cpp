@@ -537,7 +537,7 @@ namespace OpenLoco::ObjectManager
         _objectRepository[enumValue(preLoadObj->header.getType())].objects[id] = preLoadObj->object;
         auto& extendedHeader = _objectRepository[enumValue(preLoadObj->header.getType())].objectEntryExtendeds[id];
         extendedHeader = ObjectEntry2{
-            preLoadObj->header, preLoadObj->objectData.size()
+            preLoadObj->header, static_cast<uint32_t>(preLoadObj->objectData.size())
         };
 
         if (!*_isPartialLoaded)
@@ -646,7 +646,7 @@ namespace OpenLoco::ObjectManager
 
         auto* obj = reinterpret_cast<Object*>(objectData.data());
         getRepositoryItem(type).objects[index] = obj;
-        getRepositoryItem(type).objectEntryExtendeds[index] = ObjectEntry2(header, objectData.size());
+        getRepositoryItem(type).objectEntryExtendeds[index] = ObjectEntry2(header, static_cast<uint32_t>(objectData.size()));
         return true;
     }
 
