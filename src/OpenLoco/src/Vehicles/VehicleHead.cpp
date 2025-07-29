@@ -4181,6 +4181,14 @@ namespace OpenLoco::Vehicles
         70,
     };
 
+    struct Sub4AC3D3State
+    {
+        uint32_t unk1136450;         // 0x01136450
+        uint16_t bestDistToTarget;   // 0x01136456
+        uint32_t bestTrackWeighting; // 0x0113643C
+        uint16_t unk1136458;         // 0x01136458
+    };
+
     // 0x004AC3D3
     // pos.x : ax
     // pos.y : cx
@@ -4195,7 +4203,7 @@ namespace OpenLoco::Vehicles
     // 0x0113643C
     // 0x01136458
     // return ebx
-    static uint16_t sub_4AC3D3(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods, bool unk)
+    static uint16_t sub_4AC3D3(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods, bool unk, Sub4AC3D3State& state)
     {
         // TRACK only
         // static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
@@ -4255,6 +4263,120 @@ namespace OpenLoco::Vehicles
                 target.reverseTad = target.tad ^ (1U << 2); // Reverse
             }
             // 0x004AC5F5
+
+            uint32_t bestConnection = 0;
+            for (auto i = 0U; i < tc.connections.size(); ++i)
+            {
+                const auto connection = tc.connections[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                const auto connectionTad = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+                if ((pos == target.pos && connectionTad == target.tad)
+                    || (pos == target.reversePos && connectionTad == target.reverseTad))
+                {
+                    state.unk1136450 = 1;
+                    state.bestDistToTarget = 0;
+                    state.bestTrackWeighting = 0;
+                    state.unk1136458 = 1;
+                    return tc.connections[i];
+                }
+
+                Sub4AC94FState recurseState{};
+                recurseState.bestDistToTarget = std::numeric_limits<uint16_t>::max();
+                recurseState.bestTrackWeighting = std::numeric_limits<uint32_t>::max();
+                recurseState.unk113644C = std::numeric_limits<uint32_t>::max();
+                sub_4AC94F(pos, connection, companyId, trackType, requiredMods, queryMods, target, recurseState);
+                if (recurseState.unk113644C == 0xFFFFFFFFU)
+                {
+                    recurseState.unk113644C = 2;
+                }
+
+                if (unk1136450 != 0xFFFFFFFEU)
+                {
+                    bool eaxFlag = recurseState.bestDistToTarget != 0;
+                    bool ebxFlag = state.bestDistToTarget != 0;
+                    if (!eaxFlag && recurseState.unk113644C == 3)
+                    {
+                        if (state.unk1136450 <= 2 && state.bestTrackWeighting > 288)
+                        {
+                            const auto adjustedWeighting = recurseState.bestTrackWeighting * 5 / 4;
+                            if (adjustedWeighting <= state.bestTrackWeighting)
+                            {
+                                // 0x004AC807
+                            }
+                        }
+                    }
+                    if (!ebxFlag && state.bestDistToTarget == 3)
+                    {
+                        if (recurseState.unk113644C <= 2 && recurseState.bestTrackWeighting > 288)
+                        {
+                            const auto adjustedWeighting = state.bestTrackWeighting * 5 / 4;
+                            if (adjustedWeighting <= recurseState.bestTrackWeighting)
+                            {
+                                // 0x004AC807
+                            }
+                        }
+                    }
+                    if (eaxFlag && recurseState.unk113644C == 3)
+                    {
+                        if (ebxFlag && state.unk1136450 == 2)
+                        {
+                            const auto adjustedDist = recurseState.bestDistToTarget * 5 / 4;
+                            if (adjustedDist <= state.bestDistToTarget
+                                || recurseState.bestDistToTarget + 320 <= state.bestDistToTarget)
+                            {
+                                // 0x004AC807
+                            }
+                        }
+                    }
+                    if (ebxFlag && state.unk1136450 == 3)
+                    {
+                        if (eaxFlag && recurseState.unk113644C == 2)
+                        {
+                            const auto adjustedDist = state.bestDistToTarget * 5 / 4;
+                            if (adjustedDist <= recurseState.bestDistToTarget
+                                || state.bestDistToTarget + 320 <= recurseState.bestDistToTarget)
+                            {
+                                // 0x004AC83C ??? ODD
+                            }
+                        }
+                    }
+                    if (!eaxFlag && ebxFlag)
+                    {
+                        // 0x004AC807
+                    }
+                    if (eaxFlag && !ebxFlag)
+                    {
+                        // 0x004AC83C
+                    }
+                    if (recurseState.unk113644C < state.unk1136450)
+                    {
+                        // 0x004AC807
+                    }
+                    if (recurseState.unk113644C > state.unk1136450)
+                    {
+                        // 0x004AC83C
+                    }
+                    if (recurseState.bestDistToTarget < state.bestDistToTarget)
+                    {
+                        // 0x004AC807
+                    }
+                    else if (recurseState.bestDistToTarget == state.bestDistToTarget)
+                    {
+                        if (recurseState.bestTrackWeighting <= state.bestTrackWeighting)
+                        {
+                            // 0x004AC807
+                        }
+                    }
+                }
+                // 0x004AC807
+                state.unk1136450 = recurseState.unk113644C;
+                state.bestDistToTarget = recurseState.bestDistToTarget;
+                state.bestTrackWeighting = recurseState.bestTrackWeighting;
+                state.unk1136458 = 1;
+                bestConnection = i;
+                // 0x004AC83C
+            }
+            return tc.connections[bestConnection];
         }
         else
         {
@@ -4263,10 +4385,10 @@ namespace OpenLoco::Vehicles
             for (auto i = 0U; i < tc.connections.size(); ++i)
             {
                 const auto connection = tc.connections[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
-                Sub4AC884State state{};
-                sub_4AC884(pos, connection, companyId, trackType, requiredMods, queryMods, state);
+                Sub4AC884State recurseState{};
+                sub_4AC884(pos, connection, companyId, trackType, requiredMods, queryMods, recurseState);
 
-                unkArray[i] = k500234[state.unkFlags];
+                unkArray[i] = k500234[recurseState.unkFlags];
                 unkArray[i] += randVal & 0x7;
                 randVal = std::rotr(randVal, 3);
             }
