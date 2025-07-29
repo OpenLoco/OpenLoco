@@ -3987,13 +3987,28 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // In order of preference when finding a route
+    enum class RouteSignalState : uint32_t
+    {
+        noSignals = 1,
+        signalClear = 2,
+        signalBlockedOneWay = 3,
+        signalBlockedTwoWay = 4,
+        signalNoRoute = 6, // E.g. its a one way track and we are going the wrong way
+        null = 0xFFFFFFFFU,
+    };
+    static inline constexpr std::strong_ordering operator<=>(const RouteSignalState& a, const RouteSignalState& b) noexcept
+    {
+        return (static_cast<std::underlying_type_t<RouteSignalState>>(a) <=> static_cast<std::underlying_type_t<RouteSignalState>>(b));
+    }
+
     struct Sub4AC94FState
     {
         uint16_t recursionDepth;      // 0x0113642C
         uint32_t totalTrackWeighting; // 0x01136430
         uint32_t bestTrackWeighting;  // 0x01136444 this is a result
         uint16_t bestDistToTarget;    // 0x01136448 this is a result
-        uint32_t unk113644C;          // 0x0113644C this is a result
+        RouteSignalState unk113644C;  // 0x0113644C this is a result
     };
 
     struct Sub4AC94FTarget
@@ -4032,9 +4047,9 @@ namespace OpenLoco::Vehicles
         {
             state.bestDistToTarget = 0;
             state.bestTrackWeighting = state.totalTrackWeighting;
-            if (state.unk113644C == 0xFFFFFFFFU)
+            if (state.unk113644C == RouteSignalState::null)
             {
-                state.unk113644C = 1; // This is the No signals best root
+                state.unk113644C = RouteSignalState::noSignals; // This is the No signals best root
             }
             return true;
         }
@@ -4105,30 +4120,30 @@ namespace OpenLoco::Vehicles
                 if (sigState & (1U << 1))
                 {
                     // Root blocked by one way signal facing opposite direction
-                    if (state.unk113644C == 0xFFFFFFFFU)
+                    if (state.unk113644C == RouteSignalState::null)
                     {
-                        state.unk113644C = 6;
+                        state.unk113644C = RouteSignalState::signalNoRoute;
                     }
                     break;
                 }
                 else if (sigState & (1U << 0))
                 {
-                    if (state.unk113644C == 0xFFFFFFFFU)
+                    if (state.unk113644C == RouteSignalState::null)
                     {
-                        state.unk113644C = 4;
+                        state.unk113644C = RouteSignalState::signalBlockedTwoWay;
                         // Its a one way signal facing our direction
                         if (sigState & (1U << 2))
                         {
-                            state.unk113644C = 3;
+                            state.unk113644C = RouteSignalState::signalBlockedOneWay;
                         }
                     }
                 }
                 else
                 {
                     // Has signal and signal is green
-                    if (state.unk113644C == 0xFFFFFFFFU)
+                    if (state.unk113644C == RouteSignalState::null)
                     {
-                        state.unk113644C = 2;
+                        state.unk113644C = RouteSignalState::signalClear;
                     }
                 }
             }
@@ -4154,7 +4169,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            uint32_t unk11360CC = state.unk113644C;
+            auto unk11360CC = state.unk113644C;
             for (auto& connection : tc.connections)
             {
                 const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
@@ -4183,7 +4198,7 @@ namespace OpenLoco::Vehicles
 
     struct Sub4AC3D3State
     {
-        uint32_t unk1136450;         // 0x01136450
+        RouteSignalState unk1136450; // 0x01136450
         uint16_t bestDistToTarget;   // 0x01136456
         uint32_t bestTrackWeighting; // 0x0113643C
         uint16_t unk1136458;         // 0x01136458
@@ -4273,7 +4288,7 @@ namespace OpenLoco::Vehicles
                 if ((pos == target.pos && connectionTad == target.tad)
                     || (pos == target.reversePos && connectionTad == target.reverseTad))
                 {
-                    state.unk1136450 = 1;
+                    state.unk1136450 = RouteSignalState::noSignals;
                     state.bestDistToTarget = 0;
                     state.bestTrackWeighting = 0;
                     state.unk1136458 = 1;
@@ -4283,20 +4298,20 @@ namespace OpenLoco::Vehicles
                 Sub4AC94FState recurseState{};
                 recurseState.bestDistToTarget = std::numeric_limits<uint16_t>::max();
                 recurseState.bestTrackWeighting = std::numeric_limits<uint32_t>::max();
-                recurseState.unk113644C = std::numeric_limits<uint32_t>::max();
+                recurseState.unk113644C = RouteSignalState::null;
                 sub_4AC94F(pos, connection, companyId, trackType, requiredMods, queryMods, target, recurseState);
-                if (recurseState.unk113644C == 0xFFFFFFFFU)
+                if (recurseState.unk113644C == RouteSignalState::null)
                 {
-                    recurseState.unk113644C = 2;
+                    recurseState.unk113644C = RouteSignalState::signalClear;
                 }
 
                 if (unk1136450 != 0xFFFFFFFEU)
                 {
                     bool eaxFlag = recurseState.bestDistToTarget != 0;
                     bool ebxFlag = state.bestDistToTarget != 0;
-                    if (!eaxFlag && recurseState.unk113644C == 3)
+                    if (!eaxFlag && recurseState.unk113644C == RouteSignalState::signalBlockedOneWay)
                     {
-                        if (state.unk1136450 <= 2 && state.bestTrackWeighting > 288)
+                        if (state.unk1136450 <= RouteSignalState::signalClear && state.bestTrackWeighting > 288)
                         {
                             const auto adjustedWeighting = recurseState.bestTrackWeighting * 5 / 4;
                             if (adjustedWeighting <= state.bestTrackWeighting)
@@ -4305,9 +4320,9 @@ namespace OpenLoco::Vehicles
                             }
                         }
                     }
-                    if (!ebxFlag && state.bestDistToTarget == 3)
+                    if (!ebxFlag && state.unk1136450 == RouteSignalState::signalBlockedOneWay)
                     {
-                        if (recurseState.unk113644C <= 2 && recurseState.bestTrackWeighting > 288)
+                        if (recurseState.unk113644C <= RouteSignalState::signalClear && recurseState.bestTrackWeighting > 288)
                         {
                             const auto adjustedWeighting = state.bestTrackWeighting * 5 / 4;
                             if (adjustedWeighting <= recurseState.bestTrackWeighting)
@@ -4316,9 +4331,9 @@ namespace OpenLoco::Vehicles
                             }
                         }
                     }
-                    if (eaxFlag && recurseState.unk113644C == 3)
+                    if (eaxFlag && recurseState.unk113644C == RouteSignalState::signalBlockedOneWay)
                     {
-                        if (ebxFlag && state.unk1136450 == 2)
+                        if (ebxFlag && state.unk1136450 == RouteSignalState::signalClear)
                         {
                             const auto adjustedDist = recurseState.bestDistToTarget * 5 / 4;
                             if (adjustedDist <= state.bestDistToTarget
@@ -4328,9 +4343,9 @@ namespace OpenLoco::Vehicles
                             }
                         }
                     }
-                    if (ebxFlag && state.unk1136450 == 3)
+                    if (ebxFlag && state.unk1136450 == RouteSignalState::signalBlockedOneWay)
                     {
-                        if (eaxFlag && recurseState.unk113644C == 2)
+                        if (eaxFlag && recurseState.unk113644C == RouteSignalState::signalClear)
                         {
                             const auto adjustedDist = state.bestDistToTarget * 5 / 4;
                             if (adjustedDist <= recurseState.bestDistToTarget
@@ -5200,7 +5215,7 @@ namespace OpenLoco::Vehicles
                 state.totalTrackWeighting = addr<0x01136430, uint32_t>();
                 state.bestTrackWeighting = addr<0x01136444, uint32_t>();
                 state.bestDistToTarget = addr<0x01136448, uint16_t>();
-                state.unk113644C = addr<0x0113644C, uint32_t>();
+                state.unk113644C = static_cast<RouteSignalState>(addr<0x0113644C, uint32_t>());
 
                 Sub4AC94FTarget target{};
                 target.stationId = addr<0x0113644A, StationId>();
@@ -5214,7 +5229,7 @@ namespace OpenLoco::Vehicles
                 // Only copy state results
                 addr<0x01136444, uint32_t>() = state.bestTrackWeighting;
                 addr<0x01136448, uint16_t>() = state.bestDistToTarget;
-                addr<0x0113644C, uint32_t>() = state.unk113644C;
+                addr<0x0113644C, uint32_t>() = enumValue(state.unk113644C);
 
                 regs = backup;
 
