@@ -4307,9 +4307,9 @@ namespace OpenLoco::Vehicles
 
                 if (unk1136450 != 0xFFFFFFFEU)
                 {
-                    bool eaxFlag = recurseState.bestDistToTarget != 0;
-                    bool ebxFlag = state.bestDistToTarget != 0;
-                    if (!eaxFlag && recurseState.signalState == RouteSignalState::signalBlockedOneWay)
+                    bool reachedTarget = recurseState.bestDistToTarget == 0;
+                    bool ebxReachedTarget = state.bestDistToTarget == 0;
+                    if (reachedTarget && recurseState.signalState == RouteSignalState::signalBlockedOneWay)
                     {
                         if (state.signalState <= RouteSignalState::signalClear && state.bestTrackWeighting > 288)
                         {
@@ -4320,7 +4320,7 @@ namespace OpenLoco::Vehicles
                             }
                         }
                     }
-                    if (!ebxFlag && state.signalState == RouteSignalState::signalBlockedOneWay)
+                    if (ebxReachedTarget && state.signalState == RouteSignalState::signalBlockedOneWay)
                     {
                         if (recurseState.signalState <= RouteSignalState::signalClear && recurseState.bestTrackWeighting > 288)
                         {
@@ -4331,9 +4331,9 @@ namespace OpenLoco::Vehicles
                             }
                         }
                     }
-                    if (eaxFlag && recurseState.signalState == RouteSignalState::signalBlockedOneWay)
+                    if (!reachedTarget && recurseState.signalState == RouteSignalState::signalBlockedOneWay)
                     {
-                        if (ebxFlag && state.signalState == RouteSignalState::signalClear)
+                        if (!ebxReachedTarget && state.signalState == RouteSignalState::signalClear)
                         {
                             const auto adjustedDist = recurseState.bestDistToTarget * 5 / 4;
                             if (adjustedDist <= state.bestDistToTarget
@@ -4343,9 +4343,9 @@ namespace OpenLoco::Vehicles
                             }
                         }
                     }
-                    if (ebxFlag && state.signalState == RouteSignalState::signalBlockedOneWay)
+                    if (!ebxReachedTarget && state.signalState == RouteSignalState::signalBlockedOneWay)
                     {
-                        if (eaxFlag && recurseState.signalState == RouteSignalState::signalClear)
+                        if (!reachedTarget && recurseState.signalState == RouteSignalState::signalClear)
                         {
                             const auto adjustedDist = state.bestDistToTarget * 5 / 4;
                             if (adjustedDist <= recurseState.bestDistToTarget
@@ -4355,11 +4355,11 @@ namespace OpenLoco::Vehicles
                             }
                         }
                     }
-                    if (!eaxFlag && ebxFlag)
+                    if (reachedTarget && !ebxReachedTarget)
                     {
                         // 0x004AC807
                     }
-                    if (eaxFlag && !ebxFlag)
+                    if (!reachedTarget && ebxReachedTarget)
                     {
                         // 0x004AC83C
                     }
