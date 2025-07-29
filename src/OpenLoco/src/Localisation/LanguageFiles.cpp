@@ -55,6 +55,16 @@ namespace OpenLoco::Localisation
         { "GREEN", ControlCodes::Colour::green },
     };
 
+    static constexpr StringId kBufferIds[] = {
+        StringIds::buffer_337,
+        StringIds::buffer_338,
+        StringIds::buffer_1250,
+        StringIds::preferred_currency_buffer,
+        StringIds::buffer_1719,
+        StringIds::buffer_2039,
+        StringIds::buffer_2040,
+    };
+
     static std::unique_ptr<char[]> readString(const char* value, size_t size)
     {
         // Take terminating NULL character in account
@@ -233,19 +243,14 @@ namespace OpenLoco::Localisation
 
     static bool stringIsBuffer(int id)
     {
-        switch (id)
+        for (auto bufferId : kBufferIds)
         {
-            case StringIds::buffer_337:
-            case StringIds::buffer_338:
-            case StringIds::buffer_1250:
-            case StringIds::preferred_currency_buffer:
-            case StringIds::buffer_1719:
-            case StringIds::buffer_2039:
-            case StringIds::buffer_2040:
+            if (id == bufferId)
+            {
                 return true;
-            default:
-                return false;
+            }
         }
+        return false;
     }
 
     static bool loadLanguageStringTable(fs::path languageFile)
@@ -283,9 +288,28 @@ namespace OpenLoco::Localisation
         }
     }
 
+    static void allocateBufferStrings()
+    {
+        // Allocate memory for buffer strings that are used for temporary text storage
+        constexpr size_t kBufferSize = 512; // Size for each buffer string
+
+        for (auto bufferId : kBufferIds)
+        {
+            auto buffer = std::make_unique<char[]>(kBufferSize);
+            buffer[0] = '\0';
+
+            StringManager::swapString(bufferId, buffer.get());
+
+            _stringsOwner.emplace_back(std::move(buffer));
+        }
+    }
+
     void loadLanguageFile()
     {
-        // First, load en-GB for fallback strings.
+        // First, allocate buffer strings that are used for temporary storage
+        allocateBufferStrings();
+
+        // Load en-GB for fallback strings.
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
         fs::path languageFile = languageDir / "en-GB.yml";
         if (!loadLanguageStringTable(languageFile))
