@@ -4209,8 +4209,93 @@ namespace OpenLoco::Vehicles
         // uint16_t bestDistToTarget;    // 0x01136456
         // uint32_t bestTrackWeighting;  // 0x0113643C
 
-        uint16_t unk1136458; // 0x01136458
+        uint16_t hadNewResult; // 0x01136458
     };
+
+    // 0x004AC6DA
+    static bool isRoutingResultBetter(const RoutingResult& base, const RoutingResult& newResult)
+    {
+        if (base.signalState == RouteSignalState::null)
+        {
+            return true;
+        }
+        const bool newReachedTarget = newResult.bestDistToTarget == 0;
+        const bool baseReachedTarget = base.bestDistToTarget == 0;
+        if (newReachedTarget && newResult.signalState == RouteSignalState::signalBlockedOneWay)
+        {
+            if (base.signalState <= RouteSignalState::signalClear && base.bestTrackWeighting > 288)
+            {
+                const auto adjustedWeighting = newResult.bestTrackWeighting * 5 / 4;
+                if (adjustedWeighting <= base.bestTrackWeighting)
+                {
+                    return true;
+                }
+            }
+        }
+        if (baseReachedTarget && base.signalState == RouteSignalState::signalBlockedOneWay)
+        {
+            if (newResult.signalState <= RouteSignalState::signalClear && newResult.bestTrackWeighting > 288)
+            {
+                const auto adjustedWeighting = base.bestTrackWeighting * 5 / 4;
+                if (adjustedWeighting <= newResult.bestTrackWeighting)
+                {
+                    return false;
+                }
+            }
+        }
+        if (!newReachedTarget && newResult.signalState == RouteSignalState::signalBlockedOneWay)
+        {
+            if (!baseReachedTarget && base.signalState == RouteSignalState::signalClear)
+            {
+                const auto adjustedDist = newResult.bestDistToTarget * 5 / 4;
+                if (adjustedDist <= base.bestDistToTarget
+                    || newResult.bestDistToTarget + 320 <= base.bestDistToTarget)
+                {
+                    return true;
+                }
+            }
+        }
+        if (!baseReachedTarget && base.signalState == RouteSignalState::signalBlockedOneWay)
+        {
+            if (!newReachedTarget && newResult.signalState == RouteSignalState::signalClear)
+            {
+                const auto adjustedDist = base.bestDistToTarget * 5 / 4;
+                if (adjustedDist <= newResult.bestDistToTarget
+                    || base.bestDistToTarget + 320 <= newResult.bestDistToTarget)
+                {
+                    return false;
+                }
+            }
+        }
+        if (newReachedTarget && !baseReachedTarget)
+        {
+            return true;
+        }
+        if (!newReachedTarget && baseReachedTarget)
+        {
+            return false;
+        }
+        if (newResult.signalState < base.signalState)
+        {
+            return true;
+        }
+        if (newResult.signalState > base.signalState)
+        {
+            return false;
+        }
+        if (newResult.bestDistToTarget < base.bestDistToTarget)
+        {
+            return true;
+        }
+        else if (newResult.bestDistToTarget == base.bestDistToTarget)
+        {
+            if (newResult.bestTrackWeighting <= base.bestTrackWeighting)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // 0x004AC3D3
     // pos.x : ax
@@ -4239,6 +4324,7 @@ namespace OpenLoco::Vehicles
         // regs.esi = X86Pointer(&head);
         // call(0x004AC3D3, regs);
 
+        state.hadNewResult = 0;
         // unk is a second run flag
         if (!unk)
         {
@@ -4297,7 +4383,7 @@ namespace OpenLoco::Vehicles
                     state.result.signalState = RouteSignalState::noSignals;
                     state.result.bestDistToTarget = 0;
                     state.result.bestTrackWeighting = 0;
-                    state.unk1136458 = 1;
+                    state.hadNewResult = 1;
                     return tc.connections[i];
                 }
 
@@ -4311,90 +4397,15 @@ namespace OpenLoco::Vehicles
                     recurseState.result.signalState = RouteSignalState::signalClear;
                 }
 
-                if (state.result.signalState != RouteSignalState::null)
+                if (isRoutingResultBetter(state.result, recurseState.result))
                 {
-                    bool reachedTarget = recurseState.result.bestDistToTarget == 0;
-                    bool ebxReachedTarget = state.result.bestDistToTarget == 0;
-                    if (reachedTarget && recurseState.result.signalState == RouteSignalState::signalBlockedOneWay)
-                    {
-                        if (state.result.signalState <= RouteSignalState::signalClear && state.result.bestTrackWeighting > 288)
-                        {
-                            const auto adjustedWeighting = recurseState.result.bestTrackWeighting * 5 / 4;
-                            if (adjustedWeighting <= state.result.bestTrackWeighting)
-                            {
-                                // 0x004AC807
-                            }
-                        }
-                    }
-                    if (ebxReachedTarget && state.result.signalState == RouteSignalState::signalBlockedOneWay)
-                    {
-                        if (recurseState.result.signalState <= RouteSignalState::signalClear && recurseState.result.bestTrackWeighting > 288)
-                        {
-                            const auto adjustedWeighting = state.result.bestTrackWeighting * 5 / 4;
-                            if (adjustedWeighting <= recurseState.result.bestTrackWeighting)
-                            {
-                                // 0x004AC807
-                            }
-                        }
-                    }
-                    if (!reachedTarget && recurseState.result.signalState == RouteSignalState::signalBlockedOneWay)
-                    {
-                        if (!ebxReachedTarget && state.result.signalState == RouteSignalState::signalClear)
-                        {
-                            const auto adjustedDist = recurseState.result.bestDistToTarget * 5 / 4;
-                            if (adjustedDist <= state.result.bestDistToTarget
-                                || recurseState.result.bestDistToTarget + 320 <= state.result.bestDistToTarget)
-                            {
-                                // 0x004AC807
-                            }
-                        }
-                    }
-                    if (!ebxReachedTarget && state.result.signalState == RouteSignalState::signalBlockedOneWay)
-                    {
-                        if (!reachedTarget && recurseState.result.signalState == RouteSignalState::signalClear)
-                        {
-                            const auto adjustedDist = state.result.bestDistToTarget * 5 / 4;
-                            if (adjustedDist <= recurseState.result.bestDistToTarget
-                                || state.result.bestDistToTarget + 320 <= recurseState.result.bestDistToTarget)
-                            {
-                                // 0x004AC83C ??? ODD
-                            }
-                        }
-                    }
-                    if (reachedTarget && !ebxReachedTarget)
-                    {
-                        // 0x004AC807
-                    }
-                    if (!reachedTarget && ebxReachedTarget)
-                    {
-                        // 0x004AC83C
-                    }
-                    if (recurseState.result.signalState < state.result.signalState)
-                    {
-                        // 0x004AC807
-                    }
-                    if (recurseState.result.signalState > state.result.signalState)
-                    {
-                        // 0x004AC83C
-                    }
-                    if (recurseState.result.bestDistToTarget < state.result.bestDistToTarget)
-                    {
-                        // 0x004AC807
-                    }
-                    else if (recurseState.result.bestDistToTarget == state.result.bestDistToTarget)
-                    {
-                        if (recurseState.result.bestTrackWeighting <= state.result.bestTrackWeighting)
-                        {
-                            // 0x004AC807
-                        }
-                    }
+                    // 0x004AC807
+                    state.result.signalState = recurseState.result.signalState;
+                    state.result.bestDistToTarget = recurseState.result.bestDistToTarget;
+                    state.result.bestTrackWeighting = recurseState.result.bestTrackWeighting;
+                    state.hadNewResult = 1;
+                    bestConnection = i;
                 }
-                // 0x004AC807
-                state.result.signalState = recurseState.result.signalState;
-                state.result.bestDistToTarget = recurseState.result.bestDistToTarget;
-                state.result.bestTrackWeighting = recurseState.result.bestTrackWeighting;
-                state.unk1136458 = 1;
-                bestConnection = i;
                 // 0x004AC83C
             }
             return tc.connections[bestConnection];
@@ -4427,8 +4438,7 @@ namespace OpenLoco::Vehicles
 
         const auto requiredMods = head.var_53;
         const auto queryMods = train.veh1->var_49;
-        _113601A[0] = requiredMods; // TODO: Remove after sub_4AC3D3
-        _113601A[1] = queryMods;    // TODO: Remove after sub_4AC3D3
+        Sub4AC3D3State state{};
         {
             auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.track._data);
             auto tc = World::Track::getTrackConnections(nextPos, nextRotation, head.owner, head.trackType, head.var_53, train.veh1->var_49);
@@ -4436,7 +4446,7 @@ namespace OpenLoco::Vehicles
             {
                 return false;
             }
-            sub_4AC3D3(head, nextPos, tc, requiredMods, queryMods, false);
+            sub_4AC3D3(head, nextPos, tc, requiredMods, queryMods, false, state);
         }
         {
             auto tailTaD = train.tail->trackAndDirection.track._data;
@@ -4455,9 +4465,8 @@ namespace OpenLoco::Vehicles
                 return false;
             }
 
-            _1136458 = 0;
-            sub_4AC3D3(head, nextTailPos, tailTc, requiredMods, queryMods, true);
-            return _1136458 != 0;
+            sub_4AC3D3(head, nextTailPos, tailTc, requiredMods, queryMods, true, state);
+            return state.hadNewResult != 0;
         }
     }
 
@@ -5219,9 +5228,9 @@ namespace OpenLoco::Vehicles
                 Sub4AC94FState state{};
                 state.recursionDepth = addr<0x0113642C, uint16_t>();
                 state.totalTrackWeighting = addr<0x01136430, uint32_t>();
-                state.bestTrackWeighting = addr<0x01136444, uint32_t>();
-                state.bestDistToTarget = addr<0x01136448, uint16_t>();
-                state.signalState = static_cast<RouteSignalState>(addr<0x0113644C, uint32_t>());
+                state.result.bestTrackWeighting = addr<0x01136444, uint32_t>();
+                state.result.bestDistToTarget = addr<0x01136448, uint16_t>();
+                state.result.signalState = static_cast<RouteSignalState>(addr<0x0113644C, uint32_t>());
 
                 Sub4AC94FTarget target{};
                 target.stationId = addr<0x0113644A, StationId>();
@@ -5233,11 +5242,48 @@ namespace OpenLoco::Vehicles
                 sub_4AC94F(pos, tad, companyId, trackTypeId, requiredMods, queryMods, target, state);
 
                 // Only copy state results
-                addr<0x01136444, uint32_t>() = state.bestTrackWeighting;
-                addr<0x01136448, uint16_t>() = state.bestDistToTarget;
-                addr<0x0113644C, uint32_t>() = enumValue(state.signalState);
+                addr<0x01136444, uint32_t>() = state.result.bestTrackWeighting;
+                addr<0x01136448, uint16_t>() = state.result.bestDistToTarget;
+                addr<0x0113644C, uint32_t>() = enumValue(state.result.signalState);
 
                 regs = backup;
+
+                return 0;
+            });
+
+        registerHook(
+            0x004AC3D3,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx & ~(0x8000U));
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+                const auto unk = (regs.dx & 0x8000U) != 0;
+                VehicleHead& head = *X86Pointer<VehicleHead>(regs.esi);
+                static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _legacyConnections;
+                Track::TrackConnections tc{};
+                for (auto i = 0U; i < _legacyConnections->size; ++i)
+                {
+                    tc.connections.push_back(_legacyConnections->data[i]);
+                }
+
+                Sub4AC3D3State state{};
+                state.result.bestTrackWeighting = addr<0x0113643C, uint32_t>();
+                state.result.bestDistToTarget = addr<0x01136456, uint16_t>();
+                state.result.signalState = static_cast<RouteSignalState>(addr<0x01136450, uint32_t>());
+                state.hadNewResult = addr<0x01136458, uint16_t>();
+
+                const auto connection = sub_4AC3D3(head, pos, tc, requiredMods, queryMods, unk, state);
+
+                // Only copy state results
+                addr<0x0113643C, uint32_t>() = state.result.bestTrackWeighting;
+                addr<0x01136456, uint16_t>() = state.result.bestDistToTarget;
+                addr<0x01136450, uint32_t>() = enumValue(state.result.signalState);
+                addr<0x01136458, uint16_t>() = state.hadNewResult;
+
+                regs = backup;
+                regs.bx = connection;
 
                 return 0;
             });
