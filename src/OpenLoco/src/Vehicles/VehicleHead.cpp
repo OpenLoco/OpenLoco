@@ -4318,25 +4318,16 @@ namespace OpenLoco::Vehicles
     // tc : 0x0113609C as legacy connections
     // requiredMods : 0x0113601A
     // queryMods : 0x0113601B
-    // unk : dx & 0x8000
+    // isSecondRun : dx & 0x8000
     // state : see above
     // return ebx
-    static uint16_t trackPathing(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods, bool unk, Sub4AC3D3State& state)
+    static uint16_t trackPathing(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods, bool isSecondRun, Sub4AC3D3State& state)
     {
         // TRACK only
-        // static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
-        //_113609C = connections;
-
-        // registers regs;
-        // regs.ax = pos.x;
-        // regs.cx = pos.y;
-        // regs.dx = pos.z | (unk ? 0x8000 : 0);
-        // regs.esi = X86Pointer(&head);
-        // call(0x004AC3D3, regs);
 
         state.hadNewResult = 0;
-        // unk is a second run flag
-        if (!unk)
+        // isSecondRun is a second run flag
+        if (!isSecondRun)
         {
             state.result.signalState = RouteSignalState::null;
         }
