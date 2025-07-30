@@ -230,7 +230,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0048963F but only when flags are 0xXXXX_XXXA
-    uint8_t getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
+    SignalStateFlags getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
     {
         auto trackStart = loc;
         if (trackAndDirection.isReversed())
@@ -253,44 +253,44 @@ namespace OpenLoco::Vehicles
 
         if (!res)
         {
-            return 0;
+            return SignalStateFlags::none;
         }
 
         auto* elSignal = res->first;
 
         // edx
         auto& signalSide = (flags & (1ULL << 31)) ? elSignal->getRight() : elSignal->getLeft();
-        uint8_t ret = 0;
-        if (signalSide.hasUnk4_40())
+        auto ret = SignalStateFlags::none;
+        if (signalSide.isOccupied())
         {
-            ret |= (1 << 0);
+            ret |= SignalStateFlags::occupied;
         }
         if (!signalSide.hasSignal())
         {
-            ret |= (1 << 1);
+            ret |= SignalStateFlags::blockedNoRoute;
         }
         if (flags & (1ULL << 31))
         {
             if (!elSignal->getLeft().hasSignal() || elSignal->isLeftGhost())
             {
-                ret |= (1 << 2);
+                ret |= SignalStateFlags::occupiedOneWay;
             }
 
             if (elSignal->isRightGhost() && elSignal->getLeft().hasSignal())
             {
-                ret |= (1 << 1);
+                ret |= SignalStateFlags::blockedNoRoute;
             }
         }
         else
         {
             if (!elSignal->getRight().hasSignal() || elSignal->isRightGhost())
             {
-                ret |= (1 << 2);
+                ret |= SignalStateFlags::occupiedOneWay;
             }
 
             if (elSignal->isLeftGhost() && elSignal->getRight().hasSignal())
             {
-                ret |= (1 << 1);
+                ret |= SignalStateFlags::blockedNoRoute;
             }
         }
         return ret;
@@ -370,11 +370,11 @@ namespace OpenLoco::Vehicles
             }
             else if (unk1 == 8)
             {
-                signalSide.setUnk4_40(true);
+                signalSide.setIsOccupied(true);
             }
             else if (unk1 > 8)
             {
-                signalSide.setUnk4_40(false);
+                signalSide.setIsOccupied(false);
             }
             else
             {
@@ -484,7 +484,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        if (getSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31)) & (1 << 0))
+        if ((getSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31)) & SignalStateFlags::occupied) != SignalStateFlags::none)
         {
             unk |= (1 << 0);
         }
