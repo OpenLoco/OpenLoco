@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Widgets
     {
         drawingCtx.drawImage(origin - Ui::Point{ 4, 0 }, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
         drawingCtx.drawImage(origin + Ui::Point(width, 0), Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
-        drawingCtx.fillRect(origin, Ui::Size{ width, 11 } - Ui::Size{ 1, 0 }, Colours::getShade(colour.c(), 5), Gfx::RectFlags::none);
+        drawingCtx.fillRect(origin, Ui::Size{ width, 11 }, Colours::getShade(colour.c(), 5), Gfx::RectFlags::none);
     }
 
     static void drawSimple(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const Caption::Style captionStyle)
