@@ -1062,7 +1062,7 @@ namespace OpenLoco::Vehicles
                 }
                 else if (bl == 2)
                 {
-                    return sub_4A8F22();
+                    return tryReverse();
                 }
             }
 
@@ -1192,7 +1192,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8F22
-    bool VehicleHead::sub_4A8F22()
+    bool VehicleHead::tryReverse()
     {
         if (isOnExpectedRoadOrTrack())
         {
@@ -1307,9 +1307,9 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        if (sub_4ACCDC())
+        if (pathingShouldReverse())
         {
-            return sub_4A8F22();
+            return tryReverse();
         }
 
         return true;
@@ -1341,7 +1341,7 @@ namespace OpenLoco::Vehicles
         }
         else if (bl == 2)
         {
-            return sub_4A8F22();
+            return tryReverse();
         }
         else if (al == 4)
         {
@@ -1356,7 +1356,7 @@ namespace OpenLoco::Vehicles
             {
                 return true;
             }
-            return sub_4A8F22();
+            return tryReverse();
         }
         else
         {
@@ -1486,7 +1486,7 @@ namespace OpenLoco::Vehicles
         {
             return true;
         }
-        return sub_4A8F22();
+        return tryReverse();
     }
 
     // 0x004A9051
@@ -3895,7 +3895,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047DFD0
-    static void sub_47DFD0(VehicleHead& head, World::Pos3 pos, Track::LegacyTrackConnections& connections, bool unk)
+    static void roadPathing(VehicleHead& head, World::Pos3 pos, Track::LegacyTrackConnections& connections, bool unk)
     {
         // ROAD only
         static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
@@ -4426,7 +4426,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ACCE6
-    static bool trackSub_4ACCE6(VehicleHead& head)
+    static bool trackPathingShouldReverse(VehicleHead& head)
     {
         auto train = Vehicle(head);
 
@@ -4465,7 +4465,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ACDE0
-    static bool roadSub_4ACDE0(VehicleHead& head)
+    static bool roadPathingShouldReverse(VehicleHead& head)
     {
         auto train = Vehicle(head);
         if (head.trackType != 0xFFU)
@@ -4477,8 +4477,8 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        _113601A[0] = head.var_53;        // TODO: Remove after sub_47DFD0
-        _113601A[1] = train.veh1->var_49; // TODO: Remove after sub_47DFD0
+        _113601A[0] = head.var_53;        // TODO: Remove after roadPathing
+        _113601A[1] = train.veh1->var_49; // TODO: Remove after roadPathing
         {
             auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
             const auto rc = World::Track::getRoadConnections(nextPos, nextRotation, head.owner, head.trackType, head.var_53, train.veh1->var_49);
@@ -4489,7 +4489,7 @@ namespace OpenLoco::Vehicles
             Track::LegacyTrackConnections connections{};
             Track::toLegacyConnections(rc, connections);
 
-            sub_47DFD0(head, nextPos, connections, false);
+            roadPathing(head, nextPos, connections, false);
         }
         {
             auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
@@ -4507,21 +4507,21 @@ namespace OpenLoco::Vehicles
             Track::LegacyTrackConnections tailConnections{};
             Track::toLegacyConnections(tailRc, tailConnections);
             _1136458 = 0;
-            sub_47DFD0(head, nextTailPos, tailConnections, true);
+            roadPathing(head, nextTailPos, tailConnections, true);
             return _1136458 != 0;
         }
     }
 
     // 0x004ACCDC
-    bool VehicleHead::sub_4ACCDC()
+    bool VehicleHead::pathingShouldReverse()
     {
         if (mode == TransportMode::rail)
         {
-            return trackSub_4ACCE6(*this);
+            return trackPathingShouldReverse(*this);
         }
         else
         {
-            return roadSub_4ACDE0(*this);
+            return roadPathingShouldReverse(*this);
         }
     }
 

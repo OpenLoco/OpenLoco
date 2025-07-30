@@ -449,7 +449,7 @@ namespace OpenLoco::Vehicles
         void updateGearboxMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleGearboxMotorSound* snd);
         bool updateLand();
         bool sub_4A8DB7();
-        bool sub_4A8F22();
+        bool tryReverse();
         bool sub_4A8CB6();
         bool sub_4A8C81();
         bool landTryBeginUnloading();
@@ -489,9 +489,8 @@ namespace OpenLoco::Vehicles
         std::tuple<uint8_t, uint8_t, StationId> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
-        bool sub_4ACCDC();
+        bool pathingShouldReverse();
         StationId manualFindTrainStationAtLocation();
-        bool sub_4BADE4();
         bool isOnExpectedRoadOrTrack();
         VehicleStatus getStatusTravelling() const;
         void getSecondStatus(VehicleStatus& vehStatus) const;
