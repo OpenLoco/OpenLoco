@@ -3933,12 +3933,12 @@ namespace OpenLoco::Vehicles
                 basicTad._data = curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask;
                 const auto sigState = getSignalState(curPos, basicTad, trackType, 0);
 
-                if (sigState & (1U << 1))
+                if ((sigState & SignalStateFlags::blockedNoRoute) != SignalStateFlags::none)
                 {
                     state.unkFlags |= (1U << 0);
                     break;
                 }
-                else if (sigState & (1U << 0))
+                else if ((sigState & SignalStateFlags::occupied) != SignalStateFlags::none)
                 {
                     state.unkFlags |= (1U << 2);
                     break;
@@ -4119,7 +4119,7 @@ namespace OpenLoco::Vehicles
                 basicTad._data = curTad._data & ~World::Track::AdditionalTaDFlags::hasSignal;
                 const auto sigState = getSignalState(curPos, basicTad, trackType, 0);
 
-                if (sigState & (1U << 1))
+                if ((sigState & SignalStateFlags::blockedNoRoute) != SignalStateFlags::none)
                 {
                     // Root blocked by one way signal facing opposite direction
                     if (state.result.signalState == RouteSignalState::null)
@@ -4128,13 +4128,13 @@ namespace OpenLoco::Vehicles
                     }
                     break;
                 }
-                else if (sigState & (1U << 0))
+                else if ((sigState & SignalStateFlags::occupied) != SignalStateFlags::none)
                 {
                     if (state.result.signalState == RouteSignalState::null)
                     {
                         state.result.signalState = RouteSignalState::signalBlockedTwoWay;
                         // Its a one way signal facing our direction
-                        if (sigState & (1U << 2))
+                        if ((sigState & SignalStateFlags::occupiedOneWay) != SignalStateFlags::none)
                         {
                             state.result.signalState = RouteSignalState::signalBlockedOneWay;
                         }
