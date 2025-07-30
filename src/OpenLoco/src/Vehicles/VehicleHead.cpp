@@ -4004,10 +4004,6 @@ namespace OpenLoco::Vehicles
         signalNoRoute = 6, // E.g. its a one way track and we are going the wrong way
         null = 0xFFFFFFFFU,
     };
-    static inline constexpr std::strong_ordering operator<=>(const RouteSignalState& a, const RouteSignalState& b) noexcept
-    {
-        return (static_cast<std::underlying_type_t<RouteSignalState>>(a) <=> static_cast<std::underlying_type_t<RouteSignalState>>(b));
-    }
 
     struct RoutingResult
     {
