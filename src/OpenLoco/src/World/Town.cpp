@@ -882,7 +882,7 @@ namespace OpenLoco
                     return i;
                 }
             }
-            return std::size(streetLightObj->designedYear);
+            return static_cast<uint32_t>(std::size(streetLightObj->designedYear));
         }();
     }
 

@@ -3333,7 +3333,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     if (!elStation->isAiAllocated() && !elStation->isGhost())
                     {
-                        return trainStationAdjustedInteraction(head, orderTableIndex, { interaction.pos, reinterpret_cast<uint32_t>(elStation), interaction.type, interaction.modId });
+                        ViewportInteraction::InteractionArg arg{ interaction.pos, 0, interaction.type, interaction.modId };
+                        arg.object = elStation;
+                        return trainStationAdjustedInteraction(head, orderTableIndex, arg);
                     }
                 }
             }

@@ -120,7 +120,7 @@ namespace OpenLoco
         if (len > spaceLeft)
         {
             constexpr auto kGrowthFactor = 2.0f;
-            constexpr auto kPageSize = 0x1000U;
+            constexpr std::size_t kPageSize = 0x1000;
 
             const auto newCapacity = _capacity + len;
             const auto finalCapacity = alignTo(static_cast<std::size_t>(newCapacity * kGrowthFactor), kPageSize);

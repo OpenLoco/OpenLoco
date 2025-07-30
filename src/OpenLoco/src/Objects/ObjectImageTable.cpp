@@ -20,7 +20,7 @@ namespace OpenLoco::ObjectManager
         const auto g1Header = *reinterpret_cast<const Gfx::G1Header*>(remainingData.data());
         remainingData = remainingData.subspan(sizeof(Gfx::G1Header));
 
-        const ImageTableResult res = { _totalNumImages, sizeof(Gfx::G1Header) + g1Header.numEntries * sizeof(Gfx::G1Element32) + g1Header.totalSize };
+        const ImageTableResult res = { _totalNumImages, static_cast<uint32_t>(sizeof(Gfx::G1Header) + g1Header.numEntries * sizeof(Gfx::G1Element32) + g1Header.totalSize) };
 
         if (remainingData.size() < sizeof(Gfx::G1Element32) * g1Header.numEntries)
         {
