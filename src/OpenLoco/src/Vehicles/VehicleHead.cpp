@@ -3960,6 +3960,7 @@ namespace OpenLoco::Vehicles
         roadAimlessWanderPathingRecurse(pos, tad, companyId, trackType, requiredMods, queryMods, state);
     }
 
+    // TODO: Move to TrackData
     static constexpr std::array<uint8_t, 10> k4F7338Lane0{
         0b0100'0001, // straight
         0b0100'0000, // leftCurveVerySmall
@@ -4001,6 +4002,11 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047D5D6
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dl * kWorld::kSmallZStep
+    // tad : bp (was ebp need to check high word is zero)
+    // return: dh
     static uint8_t sub_47D5D6(const World::Pos3 pos, TrackAndDirection::_RoadAndDirection tad)
     {
         if (World::TrackData::getRoadMiscData(tad.id()).reverseLane != 1)
@@ -4165,6 +4171,24 @@ namespace OpenLoco::Vehicles
                 {
                     if (allowedStationTypes & (1U << curStationObjId))
                     {
+                        const auto forwardRes = sub_47D5D6(curPos, curTad);
+                        if (forwardRes & (1U << 4))
+                        {
+                            if (!(forwardRes & (1U << 0)))
+                            {
+                                hasReachedTarget = true;
+                            }
+                            else
+                            {
+                                auto reverseTad = curTad;
+                                reverseTad.setReversed(!reverseTad.isReversed());
+                                const auto backwardRes = sub_47D5D6(curPos, reverseTad);
+                                if (!(backwardRes & (1U << 0)))
+                                {
+                                    hasReachedTarget = true;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -4179,54 +4203,55 @@ namespace OpenLoco::Vehicles
                     hasReachedTarget = true;
                 }
             }
-            // if (hasReachedTarget)
-            //{
-            //     // 0x0047E5E8
-            //     if (processReachedTargetRouteEnd(state))
-            //     {
-            //         break;
-            //     }
-            // }
-            // else
-            //{
-            //     // 0x004AC98B
-            //     updateDistanceToTarget(curPos, target, state);
-            // }
+            if (hasReachedTarget)
+            {
+                // 0x0047E5E8
+                if (processReachedTargetRouteEnd(state)) // TODO road versions
+                {
+                    break;
+                }
+            }
+            else
+            {
+                // 0x0047E582
+                updateDistanceToTarget(curPos, target, state); // TODO road versions
+            }
 
-            // state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
-            // if (state.totalTrackWeighting > 1280)
-            //{
-            //     break;
-            // }
+            // 0x0047E696
+            state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
 
-            // auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
-            // auto tc = World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, companyId, trackType, requiredMods, queryMods);
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(curPos, curTad._data & 0x7F);
+            auto rc = World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, companyId, trackType, requiredMods, queryMods);
 
-            // if (tc.connections.empty())
-            //{
-            //     break;
-            // }
-            // curPos = nextPos;
-            // curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
-            // curStationId = tc.stationId;
-            // if (tc.connections.size() == 1)
-            //{
-            //     continue;
-            // }
+            if (rc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = rc.connections.front() & 0x807FU;
+            curStationId = rc.stationId;
+            curStationObjId = rc.stationObjectId;
+            if (rc.connections.size() == 1)
+            {
+                continue;
+            }
 
-            // auto unk11360CC = state.result.signalState;
-            // for (auto& connection : tc.connections)
-            //{
-            //     const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
-            //     auto recurseState = state;
-            //     recurseState.recursionDepth++;
-            //     roadTargetedPathingRecurse(curPos, connectTad, companyId, trackType, requiredMods, queryMods, target, recurseState);
-            //     // TODO: May need to copy over results
-            //     unk11360CC = std::min(unk11360CC, recurseState.result.signalState);
-            //     state.result.bestDistToTarget = recurseState.result.bestDistToTarget;
-            //     state.result.bestTrackWeighting = recurseState.result.bestTrackWeighting;
-            // }
-            // state.result.signalState = unk11360CC;
+            for (auto& connection : rc.connections)
+            {
+                const auto connectTad = connection & 0x807FU;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                roadTargetedPathingRecurse(curPos, connectTad, companyId, trackType, requiredMods, queryMods, allowedStationTypes, target, recurseState);
+                // TODO: May need to copy over results
+                state.result.signalState = std::min(state.result.signalState, recurseState.result.signalState);
+                state.result.bestDistToTarget = recurseState.result.bestDistToTarget;
+                state.result.bestTrackWeighting = recurseState.result.bestTrackWeighting;
+            }
+            break;
         }
     }
 
@@ -4239,6 +4264,7 @@ namespace OpenLoco::Vehicles
     // trackType : bh
     // requiredMods : 0x0113601A
     // queryMods : 0x0113601B
+    // allowedStationTypes : 0x0112C30C
     // target : see above
     // state : see above
     static RoutingResult roadTargetedPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, const Sub4AC94FTarget& target)
