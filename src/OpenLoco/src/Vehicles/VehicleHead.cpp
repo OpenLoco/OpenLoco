@@ -3937,7 +3937,7 @@ namespace OpenLoco::Vehicles
                 const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 auto recurseState = state;
                 recurseState.recursionDepth++;
-                trackAimlessWanderPathingRecurse(curPos, connectTad, companyId, roadObjectId, requiredMods, queryMods, recurseState);
+                roadAimlessWanderPathingRecurse(curPos, connectTad, companyId, roadObjectId, requiredMods, queryMods, recurseState);
                 state.unkFlags |= recurseState.unkFlags;
             }
             break;
@@ -3954,7 +3954,7 @@ namespace OpenLoco::Vehicles
     // requiredMods : 0x0113601A
     // queryMods : 0x0113601B
     // state : see above
-    static void roadAimlessWanderPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods)
+    [[maybe_unused]] static void roadAimlessWanderPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods)
     {
         Sub4AC884State state{};
         roadAimlessWanderPathingRecurse(pos, tad, companyId, trackType, requiredMods, queryMods, state);
@@ -4150,6 +4150,72 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // In order of preference when finding a route
+    enum class RouteSignalState : uint32_t
+    {
+        noSignals = 1,
+        signalClear = 2,
+        signalBlockedOneWay = 3,
+        signalBlockedTwoWay = 4,
+        signalNoRoute = 6, // E.g. its a one way track and we are going the wrong way
+        null = 0xFFFFFFFFU,
+    };
+
+    struct RoutingResult
+    {
+        uint16_t bestDistToTarget;    // 0x01136448
+        uint32_t bestTrackWeighting;  // 0x01136444
+        RouteSignalState signalState; // 0x0113644C
+    };
+
+    struct Sub4AC94FState
+    {
+        uint16_t recursionDepth;      // 0x0113642C
+        uint32_t totalTrackWeighting; // 0x01136430
+        RoutingResult result;
+    };
+
+    struct Sub4AC94FTarget
+    {
+        StationId stationId; // 0x0113644A
+        Pos3 pos;            // 0x0113645A
+        uint16_t tad;        // 0x01136460
+        Pos3 reversePos;     // 0x01136462
+        uint16_t reverseTad; // 0x01136468
+    };
+
+    // 0x004AC9FD & 0x0047E5E8
+    // Returns true if this is the best route so far and we should stop processing this route.
+    // Unsure why we continue processing the route if it is not the best route
+    static bool processReachedTargetRouteEnd(Sub4AC94FState& state)
+    {
+        if (state.result.bestDistToTarget != 0 || state.totalTrackWeighting <= state.result.bestTrackWeighting)
+        {
+            state.result.bestDistToTarget = 0;
+            state.result.bestTrackWeighting = state.totalTrackWeighting;
+            if (state.result.signalState == RouteSignalState::null)
+            {
+                state.result.signalState = RouteSignalState::noSignals; // This is the No signals best root
+            }
+            return true;
+        }
+        return false;
+    }
+
+    // 0x0047E582
+    static void roadUpdateDistanceToTarget(const Pos3 curPos, const Sub4AC94FTarget& target, Sub4AC94FState& state)
+    {        
+        const auto dist = Math::Vector::manhattanDistance3D(curPos, target.pos);
+        if (dist <= state.result.bestDistToTarget)
+        {
+            if (dist < state.result.bestDistToTarget || state.totalTrackWeighting <= state.result.bestTrackWeighting)
+            {
+                state.result.bestDistToTarget = static_cast<uint16_t>(dist);
+                state.result.bestTrackWeighting = state.totalTrackWeighting;
+            }
+        }
+    }
+
     static void roadTargetedPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, const Sub4AC94FTarget& target, Sub4AC94FState& state)
     {
         // 0x01135FAE (copy in from the tc)
@@ -4205,16 +4271,14 @@ namespace OpenLoco::Vehicles
             }
             if (hasReachedTarget)
             {
-                // 0x0047E5E8
-                if (processReachedTargetRouteEnd(state)) // TODO road versions
+                if (processReachedTargetRouteEnd(state))
                 {
                     break;
                 }
             }
             else
             {
-                // 0x0047E582
-                updateDistanceToTarget(curPos, target, state); // TODO road versions
+                roadUpdateDistanceToTarget(curPos, target, state);
             }
 
             // 0x0047E696
@@ -4267,7 +4331,7 @@ namespace OpenLoco::Vehicles
     // allowedStationTypes : 0x0112C30C
     // target : see above
     // state : see above
-    static RoutingResult roadTargetedPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, const Sub4AC94FTarget& target)
+    [[maybe_unused]] static RoutingResult roadTargetedPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, const Sub4AC94FTarget& target)
     {
         Sub4AC94FState state{};
         state.result.bestDistToTarget = std::numeric_limits<uint16_t>::max();
@@ -4371,42 +4435,8 @@ namespace OpenLoco::Vehicles
         return state.unkFlags;
     }
 
-    // In order of preference when finding a route
-    enum class RouteSignalState : uint32_t
-    {
-        noSignals = 1,
-        signalClear = 2,
-        signalBlockedOneWay = 3,
-        signalBlockedTwoWay = 4,
-        signalNoRoute = 6, // E.g. its a one way track and we are going the wrong way
-        null = 0xFFFFFFFFU,
-    };
-
-    struct RoutingResult
-    {
-        uint16_t bestDistToTarget;    // 0x01136448
-        uint32_t bestTrackWeighting;  // 0x01136444
-        RouteSignalState signalState; // 0x0113644C
-    };
-
-    struct Sub4AC94FState
-    {
-        uint16_t recursionDepth;      // 0x0113642C
-        uint32_t totalTrackWeighting; // 0x01136430
-        RoutingResult result;
-    };
-
-    struct Sub4AC94FTarget
-    {
-        StationId stationId; // 0x0113644A
-        Pos3 pos;            // 0x0113645A
-        uint16_t tad;        // 0x01136460
-        Pos3 reversePos;     // 0x01136462
-        uint16_t reverseTad; // 0x01136468
-    };
-
     // 0x004AC98B
-    static void updateDistanceToTarget(const Pos3 curPos, const Sub4AC94FTarget& target, Sub4AC94FState& state)
+    static void trackUpdateDistanceToTarget(const Pos3 curPos, const Sub4AC94FTarget& target, Sub4AC94FState& state)
     {
         const uint32_t xDiff = std::abs(curPos.x - target.pos.x);
         const uint32_t yDiff = std::abs(curPos.y - target.pos.y);
@@ -4421,24 +4451,6 @@ namespace OpenLoco::Vehicles
                 state.result.bestTrackWeighting = state.totalTrackWeighting;
             }
         }
-    }
-
-    // 0x004AC9FD
-    // Returns true if this is the best route so far and we should stop processing this route.
-    // Unsure why we continue processing the route if it is not the best route
-    static bool processReachedTargetRouteEnd(Sub4AC94FState& state)
-    {
-        if (state.result.bestDistToTarget != 0 || state.totalTrackWeighting <= state.result.bestTrackWeighting)
-        {
-            state.result.bestDistToTarget = 0;
-            state.result.bestTrackWeighting = state.totalTrackWeighting;
-            if (state.result.signalState == RouteSignalState::null)
-            {
-                state.result.signalState = RouteSignalState::noSignals; // This is the No signals best root
-            }
-            return true;
-        }
-        return false;
     }
 
     static void trackTargetedPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, const Sub4AC94FTarget& target, Sub4AC94FState& state)
@@ -4481,7 +4493,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 // 0x004AC98B
-                updateDistanceToTarget(curPos, target, state);
+                trackUpdateDistanceToTarget(curPos, target, state);
             }
 
             // 0x004ACAAD
@@ -5644,6 +5656,23 @@ namespace OpenLoco::Vehicles
 
                 regs = backup;
                 regs.bx = connection;
+
+                return 0;
+            });
+
+        registerHook(
+            0x0047D5D6,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dl * kSmallZStep);
+                auto tad = TrackAndDirection::_RoadAndDirection{ 0, 0 };
+                tad._data = regs.bp;
+
+                const auto res = sub_47D5D6(pos, tad);
+
+                regs = backup;
+                regs.dh = res;
 
                 return 0;
             });
