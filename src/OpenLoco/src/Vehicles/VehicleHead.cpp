@@ -72,7 +72,8 @@ namespace OpenLoco::Vehicles
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
-    static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
+    static loco_global<uint8_t[2], 0x0113601A> _113601A;          // Track Connection mod global
+    static loco_global<uint32_t, 0x0112C30C> _allowedStationObjs; // Road pathing global
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
@@ -4352,19 +4353,182 @@ namespace OpenLoco::Vehicles
         return state.result;
     }
 
+    constexpr static std::array<uint16_t, 8> k500234 = {
+        10,
+        0,
+        70,
+        70,
+        40,
+        40,
+        70,
+        70,
+    };
+
+    struct Sub4AC3D3State
+    {
+        RoutingResult result;
+        // The following are now in result
+        // RouteSignalState signalState; // 0x01136450
+        // uint16_t bestDistToTarget;    // 0x01136456
+        // uint32_t bestTrackWeighting;  // 0x0113643C
+
+        uint16_t hadNewResult; // 0x01136458
+    };
+
+    // 0x0047E2B6
+    static bool isRoadRoutingResultBetter(const RoutingResult& base, const RoutingResult& newResult)
+    {
+        // Routing results for road only have two signal states: null and noSignals (route found to destination)
+        // Unfortunately vanilla copied over some logic from track which has more signal
+        // state and so the logic here is a bit convoluted.
+
+        const bool newReachedTarget = newResult.bestDistToTarget == 0;
+        const bool baseReachedTarget = base.bestDistToTarget == 0;
+
+        // None of this logic makes much sense but i think it matches vanilla
+        if (newReachedTarget && newResult.signalState != RouteSignalState::null)
+        {
+            return true;
+        }
+
+        if (baseReachedTarget && base.signalState != RouteSignalState::null)
+        {
+            return false;
+        }
+
+        if (newResult.signalState == RouteSignalState::null)
+        {
+            return base.signalState == RouteSignalState::null;
+        }
+        else
+        {
+            if (base.signalState == RouteSignalState::null)
+            {
+                return true;
+            }
+            if (newResult.bestDistToTarget < base.bestDistToTarget)
+            {
+                return true;
+            }
+            else if (newResult.bestDistToTarget == base.bestDistToTarget)
+            {
+                return newResult.bestTrackWeighting < base.bestTrackWeighting;
+            }
+        }
+
+        // TODO: Replace the above with the following when we want to diverge from vanilla
+        // if (newResult.signalState < base.signalState)
+        //{
+        //    return true;
+        //}
+
+        // if (newResult.bestDistToTarget < base.bestDistToTarget)
+        //{
+        //     return true;
+        // }
+        // else if (newResult.bestDistToTarget == base.bestDistToTarget)
+        //{
+        //     return newResult.bestTrackWeighting < base.bestTrackWeighting;
+        // }
+        // return false;
+    }
+
     // 0x0047DFD0
-    static void roadPathing(VehicleHead& head, World::Pos3 pos, Track::LegacyTrackConnections& connections, bool unk)
+    static uint16_t roadPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, bool isSecondRun, Sub4AC3D3State& state)
     {
         // ROAD only
-        static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
-        _113609C = connections;
 
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z | (unk ? 0x8000 : 0);
-        regs.esi = X86Pointer(&head);
-        call(0x0047DFD0, regs);
+        state.hadNewResult = 0;
+        // isSecondRun is a second run flag
+        if (!isSecondRun)
+        {
+            state.result.signalState = RouteSignalState::null;
+        }
+
+        // 0x01136438
+        uint32_t randVal = gPrng1().randNext();
+
+        const auto companyId = head.owner;
+        const auto roadObjId = head.trackType;
+
+        // TODO: Lots of similar code to track
+        auto orders = head.getCurrentOrders();
+        auto curOrder = orders.begin();
+        auto* stationOrder = curOrder->as<OrderStation>();
+        auto* routeOrder = curOrder->as<OrderRouteWaypoint>();
+        if (stationOrder != nullptr || routeOrder != nullptr)
+        {
+            Sub4AC94FTarget target{};
+            if (stationOrder != nullptr)
+            {
+                // 0x0047E0F3
+                target.stationId = stationOrder->getStation();
+                auto* station = StationManager::get(target.stationId);
+                target.pos = World::Pos3{ station->x, station->y, station->z };
+            }
+            else
+            {
+                // 0x0047E033
+                target.stationId = StationId::null;
+                target.pos = routeOrder->getWaypoint();
+                target.tad = (routeOrder->getTrackId() << 3) | routeOrder->getDirection();
+                const auto& trackSize = TrackData::getUnkTrack(target.tad);
+                target.reversePos = target.pos + trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    target.reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                target.reverseTad = target.tad ^ (1U << 2); // Reverse
+            }
+            // 0x004AC5F5
+
+            uint32_t bestConnection = 0;
+            for (auto i = 0U; i < rc.connections.size(); ++i)
+            {
+                const auto connection = rc.connections[i] & 0x807F;
+                const auto connectionTad = connection & 0x7F;
+
+                if ((pos == target.pos && connectionTad == target.tad)
+                    || (pos == target.reversePos && connectionTad == target.reverseTad))
+                {
+                    state.result.signalState = RouteSignalState::noSignals;
+                    state.result.bestDistToTarget = 0;
+                    state.result.bestTrackWeighting = 0;
+                    state.hadNewResult = 1;
+                    return rc.connections[i];
+                }
+
+                auto newResult = roadTargetedPathing(pos, connection, companyId, roadObjId, requiredMods, queryMods, allowedStationTypes, target);
+
+                if (state.hadNewResult == 0 || isRoadRoutingResultBetter(state.result, newResult))
+                {
+                    // 0x004AC807
+                    state.result = newResult;
+                    state.hadNewResult = 1;
+                    bestConnection = i;
+                }
+                // 0x004AC83C
+            }
+            return rc.connections[bestConnection];
+        }
+        else
+        {
+            std::array<uint16_t, 8> unkArray{};
+            // aimless wander pathing
+            for (auto i = 0U; i < rc.connections.size(); ++i)
+            {
+                const auto connection = rc.connections[i] & 0x807F;
+                const auto flags = roadAimlessWanderPathing(pos, connection, companyId, roadObjId, requiredMods, queryMods);
+
+                unkArray[i] = k500234[flags];
+                unkArray[i] += randVal & 0x7;
+                randVal = std::rotr(randVal, 3);
+            }
+
+            auto minIter = std::min_element(unkArray.begin(), unkArray.end());
+            auto minIndex = std::distance(unkArray.begin(), minIter);
+            return rc.connections[minIndex];
+        }
     }
 
     static void trackAimlessWanderPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, Sub4AC884State& state)
@@ -4605,30 +4769,8 @@ namespace OpenLoco::Vehicles
         return state.result;
     }
 
-    constexpr static std::array<uint16_t, 8> k500234 = {
-        10,
-        0,
-        70,
-        70,
-        40,
-        40,
-        70,
-        70,
-    };
-
-    struct Sub4AC3D3State
-    {
-        RoutingResult result;
-        // The following are now in result
-        // RouteSignalState signalState; // 0x01136450
-        // uint16_t bestDistToTarget;    // 0x01136456
-        // uint32_t bestTrackWeighting;  // 0x0113643C
-
-        uint16_t hadNewResult; // 0x01136458
-    };
-
     // 0x004AC6DA
-    static bool isRoutingResultBetter(const RoutingResult& base, const RoutingResult& newResult)
+    static bool isTrackRoutingResultBetter(const RoutingResult& base, const RoutingResult& newResult)
     {
         if (base.signalState == RouteSignalState::null)
         {
@@ -4795,7 +4937,7 @@ namespace OpenLoco::Vehicles
                     newResult.signalState = RouteSignalState::signalClear;
                 }
 
-                if (isRoutingResultBetter(state.result, newResult))
+                if (isTrackRoutingResultBetter(state.result, newResult))
                 {
                     // 0x004AC807
                     state.result = newResult;
@@ -4878,8 +5020,10 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        _113601A[0] = head.var_53;        // TODO: Remove after roadPathing
-        _113601A[1] = train.veh1->var_49; // TODO: Remove after roadPathing
+        const auto requiredMods = head.var_53;
+        const auto queryMods = train.veh1->var_49;
+        const auto allowedStationTypes = *_allowedStationObjs;
+        Sub4AC3D3State state{};
         {
             auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
             const auto rc = World::Track::getRoadConnections(nextPos, nextRotation, head.owner, head.trackType, head.var_53, train.veh1->var_49);
@@ -4887,10 +5031,8 @@ namespace OpenLoco::Vehicles
             {
                 return false;
             }
-            Track::LegacyTrackConnections connections{};
-            Track::toLegacyConnections(rc, connections);
 
-            roadPathing(head, nextPos, connections, false);
+            roadPathing(head, nextPos, rc, requiredMods, queryMods, allowedStationTypes, false, state);
         }
         {
             auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
@@ -4905,11 +5047,8 @@ namespace OpenLoco::Vehicles
                 return false;
             }
 
-            Track::LegacyTrackConnections tailConnections{};
-            Track::toLegacyConnections(tailRc, tailConnections);
-            _1136458 = 0;
-            roadPathing(head, nextTailPos, tailConnections, true);
-            return _1136458 != 0;
+            roadPathing(head, nextTailPos, tailRc, requiredMods, queryMods, allowedStationTypes, true, state);
+            return state.hadNewResult != 0;
         }
     }
 
