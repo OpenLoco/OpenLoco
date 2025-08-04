@@ -4388,7 +4388,16 @@ namespace OpenLoco::Vehicles
         // None of this logic makes much sense but i think it matches vanilla
         if (newReachedTarget && newResult.signalState != RouteSignalState::null)
         {
-            return true;
+            if (base.signalState == RouteSignalState::null)
+            {
+                return true;
+            }
+            if (!baseReachedTarget)
+            {
+                return true;
+            }
+
+            return newResult.bestTrackWeighting < base.bestTrackWeighting;
         }
 
         if (baseReachedTarget && base.signalState != RouteSignalState::null)
@@ -4398,7 +4407,15 @@ namespace OpenLoco::Vehicles
 
         if (newResult.signalState == RouteSignalState::null)
         {
-            return base.signalState == RouteSignalState::null;
+            if (newResult.bestDistToTarget < base.bestDistToTarget)
+            {
+                return true;
+            }
+            else if (newResult.bestDistToTarget == base.bestDistToTarget)
+            {
+                return newResult.bestTrackWeighting < base.bestTrackWeighting;
+            }
+            return false;
         }
         else
         {
@@ -4414,6 +4431,7 @@ namespace OpenLoco::Vehicles
             {
                 return newResult.bestTrackWeighting < base.bestTrackWeighting;
             }
+            return false;
         }
 
         // TODO: Replace the above with the following when we want to diverge from vanilla
@@ -4500,7 +4518,7 @@ namespace OpenLoco::Vehicles
 
                 auto newResult = roadTargetedPathing(pos, connection, companyId, roadObjId, requiredMods, queryMods, allowedStationTypes, target);
 
-                if (state.hadNewResult == 0 || isRoadRoutingResultBetter(state.result, newResult))
+                if ((state.hadNewResult == 0 && !isSecondRun) || isRoadRoutingResultBetter(state.result, newResult))
                 {
                     // 0x004AC807
                     state.result = newResult;
@@ -4513,21 +4531,24 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            std::array<uint16_t, 8> unkArray{};
+            uint16_t bestValue = 0;
+            uint16_t bestConnection = 0;
             // aimless wander pathing
             for (auto i = 0U; i < rc.connections.size(); ++i)
             {
                 const auto connection = rc.connections[i] & 0x807F;
                 const auto flags = roadAimlessWanderPathing(pos, connection, companyId, roadObjId, requiredMods, queryMods);
 
-                unkArray[i] = k500234[flags];
-                unkArray[i] += randVal & 0x7;
+                const auto newValue = k500234[flags] + (randVal & 0x7);
+                if (newValue >= bestValue)
+                {
+                    bestValue = newValue;
+                    bestConnection = i;
+                }
                 randVal = std::rotr(randVal, 3);
             }
 
-            auto minIter = std::min_element(unkArray.begin(), unkArray.end());
-            auto minIndex = std::distance(unkArray.begin(), minIter);
-            return rc.connections[minIndex];
+            return rc.connections[bestConnection];
         }
     }
 
@@ -4950,21 +4971,24 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            std::array<uint16_t, 8> unkArray{};
+            uint16_t bestValue = 0;
+            uint16_t bestConnection = 0;
             // aimless wander pathing
             for (auto i = 0U; i < tc.connections.size(); ++i)
             {
                 const auto connection = tc.connections[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 const auto flags = trackAimlessWanderPathing(pos, connection, companyId, trackType, requiredMods, queryMods);
 
-                unkArray[i] = k500234[flags];
-                unkArray[i] += randVal & 0x7;
+                const auto value = k500234[flags] + (randVal & 0x7);
+                if (value >= bestValue)
+                {
+                    bestValue = value;
+                    bestConnection = i;
+                }
                 randVal = std::rotr(randVal, 3);
             }
 
-            auto minIter = std::min_element(unkArray.begin(), unkArray.end());
-            auto minIndex = std::distance(unkArray.begin(), minIter);
-            return tc.connections[minIndex];
+            return tc.connections[bestConnection];
         }
     }
 
@@ -5887,6 +5911,44 @@ namespace OpenLoco::Vehicles
                 addr<0x0113644C, uint32_t>() = enumValue(result.signalState);
 
                 regs = backup;
+
+                return 0;
+            });
+
+        registerHook(
+            0x0047DFD0,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx & ~(0x8000U));
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+                const auto unk = (regs.dx & 0x8000U) != 0;
+                const auto allowedStationTypes = *_allowedStationObjs;
+                VehicleHead& head = *X86Pointer<VehicleHead>(regs.esi);
+                static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _legacyConnections;
+                Track::RoadConnections rc{};
+                for (auto i = 0U; i < _legacyConnections->size; ++i)
+                {
+                    rc.connections.push_back(_legacyConnections->data[i]);
+                }
+
+                Sub4AC3D3State state{};
+                state.result.bestTrackWeighting = addr<0x0113643C, uint32_t>();
+                state.result.bestDistToTarget = addr<0x01136456, uint16_t>();
+                state.result.signalState = static_cast<RouteSignalState>(addr<0x01136450, uint32_t>());
+                state.hadNewResult = addr<0x01136458, uint16_t>();
+
+                const auto connection = roadPathing(head, pos, rc, requiredMods, queryMods, allowedStationTypes, unk, state);
+
+                // Only copy state results
+                addr<0x0113643C, uint32_t>() = state.result.bestTrackWeighting;
+                addr<0x01136456, uint16_t>() = state.result.bestDistToTarget;
+                addr<0x01136450, uint32_t>() = enumValue(state.result.signalState);
+                addr<0x01136458, uint16_t>() = state.hadNewResult;
+
+                regs = backup;
+                regs.bx = connection;
 
                 return 0;
             });
