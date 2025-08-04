@@ -932,9 +932,29 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047966E
+    // Set road object ID flags
     void sub_47966E()
     {
-        call(0x0047966E);
+        uint32_t roadObjectIdIsNotTram = 0;
+        uint32_t roadObjectIdIsFlag7 = 0;
+
+        for (size_t index = 0; index < ObjectManager::getMaxObjects(ObjectType::road); ++index)
+        {
+            auto roadObject = ObjectManager::get<RoadObject>(index);
+            if (roadObject != nullptr)
+            {
+                if (roadObject->hasFlags(RoadObjectFlags::unk_03))
+                {
+                    roadObjectIdIsNotTram |= (1u << index);
+                }
+                if (roadObject->hasFlags(RoadObjectFlags::unk_07))
+                {
+                    roadObjectIdIsFlag7 |= (1u << index);
+                }
+            }
+        }
+        getGameState().roadObjectIdIsNotTram = roadObjectIdIsNotTram;
+        getGameState().roadObjectIdIsFlag7 = roadObjectIdIsFlag7;
     }
 
     // 0x004796A9
