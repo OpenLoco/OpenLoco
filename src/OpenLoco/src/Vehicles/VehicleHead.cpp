@@ -4002,17 +4002,6 @@ namespace OpenLoco::Vehicles
         return getGameState().trafficHandedness ? kRightHand4F7338 : k4F7338;
     }
 
-    static uint8_t vanillaSub_47D5D6(const World::Pos3 pos, TrackAndDirection::_RoadAndDirection tad)
-    {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dl = static_cast<uint8_t>(pos.z / World::kSmallZStep);
-        regs.ebp = tad._data;
-        call(0x0047D5D6, regs);
-        return regs.dh;
-    }
-
     // 0x0047D5D6
     // pos.x : ax
     // pos.y : cx
@@ -4097,7 +4086,17 @@ namespace OpenLoco::Vehicles
             // 0x0047D5EF
             const auto tile = TileManager::get(pos);
             const auto rotation = tad.cardinalDirection() * 2;
-            const auto dh = std::rotl(getRoadUnkThing()[tad.isBackToFront() ^ tad.isReversed()][tad.id()], rotation);
+
+            // TODO: This is definitely incorrect but it is to match vanilla
+            // The issue is that 0x1F8 will include a bit for isUnk8 which will then
+            // mean we walk off the end of the array which is 32 elements long (64 below as we want it to walk off the end)
+            // The memory it walks into is used for a variety of things including ai so will change depending on what the ai is doing
+            const auto offset = ((tad._data & 0x1F8) >> 3) ^ (tad.isReversed() ? (1 << 4) : 0);
+            const auto buggedValue = addr<0x112C32C, uint8_t[64]>()[offset];
+            const auto dh = std::rotl(buggedValue, rotation);
+
+            // Replace with the following when we want to diverge from vanilla
+            // const auto dh = std::rotl(getRoadUnkThing()[tad.isBackToFront() ^ tad.isReversed()][tad.id()], rotation);
 
             uint8_t res = 0U;
             for (auto& el : tile)
@@ -5691,16 +5690,7 @@ namespace OpenLoco::Vehicles
                 const auto pos = World::Pos3(regs.ax, regs.cx, regs.dl * kSmallZStep);
                 auto tad = TrackAndDirection::_RoadAndDirection{ 0, 0 };
                 tad._data = regs.bp;
-                if (regs.ebp & (1U << 30))
-                {
-                    throw std::runtime_error("Ah so it does need set");
-                }
                 const auto res = sub_47D5D6(pos, tad);
-                const auto vanillaRes = vanillaSub_47D5D6(pos, tad);
-                if (res != vanillaRes)
-                {
-                    throw std::runtime_error("Vanilla and new sub_47D5D6 results differ");
-                }
 
                 regs = backup;
                 regs.dh = res;
