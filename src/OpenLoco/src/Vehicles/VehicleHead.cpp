@@ -4490,7 +4490,7 @@ namespace OpenLoco::Vehicles
                 target.stationId = StationId::null;
                 target.pos = routeOrder->getWaypoint();
                 target.tad = (routeOrder->getTrackId() << 3) | routeOrder->getDirection();
-                const auto& trackSize = TrackData::getUnkTrack(target.tad);
+                const auto& trackSize = TrackData::getUnkRoad(target.tad);
                 target.reversePos = target.pos + trackSize.pos;
                 if (trackSize.rotationEnd < 12)
                 {
