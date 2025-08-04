@@ -1141,6 +1141,8 @@ namespace OpenLoco::Vehicles
                 regs = backup;
                 return 0;
             });
+
+        registerHeadHooks();
     }
 
     bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags)
