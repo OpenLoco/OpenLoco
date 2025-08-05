@@ -144,11 +144,11 @@ namespace OpenLoco::GameCommands
             // Vehicle has been invalidate so get it again
             sourceTrain = Vehicles::Vehicle(*sourceHead);
 
-            destHead->sub_4AF7A4();
+            destHead->autoLayoutTrain();
             destHead->updateTrainProperties();
             if (sourceHead != destHead)
             {
-                sourceHead->sub_4AF7A4();
+                sourceHead->autoLayoutTrain();
                 sourceHead->updateTrainProperties();
             }
 
