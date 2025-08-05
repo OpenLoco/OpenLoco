@@ -124,7 +124,7 @@ namespace OpenLoco::GameCommands
                             // even if a clear could succeed here. This is
                             // because if it did place a ghost the ghost cleanup
                             // function might remove the wrong building!
-                            if (flags & Flags::skipGhostPlacement)
+                            if (flags & Flags::preventBuildingClearing)
                             {
                                 return World::TileClearance::ClearFuncResult::collision;
                             }

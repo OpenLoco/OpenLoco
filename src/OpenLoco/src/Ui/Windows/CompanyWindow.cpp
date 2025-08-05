@@ -971,7 +971,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void placeHeadquarterGhost(const GameCommands::HeadquarterPlacementArgs& args)
         {
             removeHeadquarterGhost();
-            auto flags = GameCommands::Flags::apply | GameCommands::Flags::skipGhostPlacement | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
+            auto flags = GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
             if (GameCommands::doCommand(args, flags) != GameCommands::FAILURE)
             {
                 _headquarterGhostPlaced = true;
@@ -1074,7 +1074,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-            uint8_t flags = GameCommands::Flags::apply | GameCommands::Flags::skipGhostPlacement;
+            uint8_t flags = GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing;
             auto commandResult = GameCommands::doCommand(*placementArgs, flags);
             if (commandResult != GameCommands::FAILURE)
             {
