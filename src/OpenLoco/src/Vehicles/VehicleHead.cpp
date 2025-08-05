@@ -4003,13 +4003,24 @@ namespace OpenLoco::Vehicles
         return getGameState().trafficHandedness ? kRightHand4F7338 : k4F7338;
     }
 
+    enum class RoadOccupationFlags : uint8_t
+    {
+        none = 0U,
+        isLaneOccupied = 1U << 0,
+        isLevelCrossingClosed = 1U << 1,
+        hasLevelCrossing = 1U << 2,
+        hasStation = 1U << 3,
+        isOneWay = 1U << 4,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadOccupationFlags);
+
     // 0x0047D5D6
     // pos.x : ax
     // pos.y : cx
     // pos.z : dl * kWorld::kSmallZStep
     // tad : bp (was ebp need to check high word is zero)
     // return: dh
-    static uint8_t sub_47D5D6(const World::Pos3 pos, TrackAndDirection::_RoadAndDirection tad)
+    static RoadOccupationFlags getRoadOccupation(const World::Pos3 pos, const TrackAndDirection::_RoadAndDirection tad)
     {
         if (World::TrackData::getRoadMiscData(tad.id()).reverseLane != 1)
         {
@@ -4065,22 +4076,22 @@ namespace OpenLoco::Vehicles
                     auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
                     if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
                     {
-                        return (1U << 4) | (1U << 0);
+                        return RoadOccupationFlags::isOneWay | RoadOccupationFlags::isLaneOccupied;
                     }
-                    return (1U << 0);
+                    return RoadOccupationFlags::isLaneOccupied;
                 }
             }
 
             if (compatibleElRoad == nullptr)
             {
-                return 0;
+                return RoadOccupationFlags::none;
             }
             auto* roadObj = ObjectManager::get<RoadObject>(compatibleElRoad->roadObjectId());
             if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
             {
-                return (1U << 4);
+                return RoadOccupationFlags::isOneWay;
             }
-            return 0;
+            return RoadOccupationFlags::none;
         }
         else
         {
@@ -4099,7 +4110,7 @@ namespace OpenLoco::Vehicles
             // Replace with the following when we want to diverge from vanilla
             // const auto dh = std::rotl(getRoadUnkThing()[tad.isBackToFront() ^ tad.isReversed()][tad.id()], rotation);
 
-            uint8_t res = 0U;
+            RoadOccupationFlags res = RoadOccupationFlags::none;
             for (auto& el : tile)
             {
                 auto* elRoad = el.as<World::RoadElement>();
@@ -4113,27 +4124,27 @@ namespace OpenLoco::Vehicles
                 }
                 if (elRoad->hasStationElement())
                 {
-                    res |= 1U << 3;
+                    res |= RoadOccupationFlags::hasStation;
                 }
                 const auto al = std::rotl(getRoadUnkThing()[0][elRoad->roadId()], elRoad->rotation() * 2);
                 if (al & dh)
                 {
                     if (elRoad->hasLevelCrossing())
                     {
-                        res |= 1U << 2;
+                        res |= RoadOccupationFlags::hasLevelCrossing;
                         if (elRoad->hasUnk7_10())
                         {
-                            res |= 1U << 1;
+                            res |= RoadOccupationFlags::isLevelCrossingClosed;
                         }
                     }
                     if (elRoad->unk4u() & 0b01)
                     {
-                        res |= 1U << 0;
+                        res |= RoadOccupationFlags::isLaneOccupied;
                     }
                     const auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
                     if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
                     {
-                        res |= 1U << 4;
+                        res |= RoadOccupationFlags::isOneWay;
                     }
                 }
                 const auto al2 = std::rotl(getRoadUnkThing()[1][elRoad->roadId()], elRoad->rotation() * 2);
@@ -4141,20 +4152,20 @@ namespace OpenLoco::Vehicles
                 {
                     if (elRoad->hasLevelCrossing())
                     {
-                        res |= 1U << 2;
+                        res |= RoadOccupationFlags::hasLevelCrossing;
                         if (elRoad->hasUnk7_10())
                         {
-                            res |= 1U << 1;
+                            res |= RoadOccupationFlags::isLevelCrossingClosed;
                         }
                     }
                     if (elRoad->unk4u() & 0b10)
                     {
-                        res |= 1U << 0;
+                        res |= RoadOccupationFlags::isLaneOccupied;
                     }
                     const auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
                     if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
                     {
-                        res |= 1U << 4;
+                        res |= RoadOccupationFlags::isOneWay;
                     }
                 }
             }
@@ -4249,10 +4260,10 @@ namespace OpenLoco::Vehicles
                 {
                     if (allowedStationTypes & (1U << curStationObjId))
                     {
-                        const auto forwardRes = sub_47D5D6(curPos, curTad);
-                        if (forwardRes & (1U << 3))
+                        const auto forwardRes = getRoadOccupation(curPos, curTad);
+                        if ((forwardRes & RoadOccupationFlags::hasStation) != RoadOccupationFlags::none)
                         {
-                            if (!(forwardRes & (1U << 0)))
+                            if ((forwardRes & RoadOccupationFlags::isLaneOccupied) == RoadOccupationFlags::none)
                             {
                                 hasReachedTarget = true;
                             }
@@ -4260,8 +4271,8 @@ namespace OpenLoco::Vehicles
                             {
                                 auto reverseTad = curTad;
                                 reverseTad.setReversed(!reverseTad.isReversed());
-                                const auto backwardRes = sub_47D5D6(curPos, reverseTad);
-                                if (!(backwardRes & (1U << 0)))
+                                const auto backwardRes = getRoadOccupation(curPos, reverseTad);
+                                if ((backwardRes & RoadOccupationFlags::isLaneOccupied) == RoadOccupationFlags::none)
                                 {
                                     hasReachedTarget = true;
                                 }
@@ -4435,10 +4446,12 @@ namespace OpenLoco::Vehicles
         }
 
         // TODO: Replace the above with the following when we want to diverge from vanilla
+        //
         // if (newResult.signalState < base.signalState)
         //{
         //    return true;
         //}
+        //// Road only has two signal states so we don't need to consider > base.signalState
 
         // if (newResult.bestDistToTarget < base.bestDistToTarget)
         //{
@@ -5853,10 +5866,10 @@ namespace OpenLoco::Vehicles
                 const auto pos = World::Pos3(regs.ax, regs.cx, regs.dl * kSmallZStep);
                 auto tad = TrackAndDirection::_RoadAndDirection{ 0, 0 };
                 tad._data = regs.bp;
-                const auto res = sub_47D5D6(pos, tad);
+                const auto res = getRoadOccupation(pos, tad);
 
                 regs = backup;
-                regs.dh = res;
+                regs.dh = enumValue(res);
 
                 return 0;
             });
