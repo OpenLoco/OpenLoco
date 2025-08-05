@@ -15,6 +15,7 @@ namespace OpenLoco::Gfx
 namespace OpenLoco::Ui
 {
     struct SavedViewSimple;
+    struct Window;
 
     struct viewport_pos
     {
@@ -91,6 +92,7 @@ namespace OpenLoco::Ui
         uint8_t zoom;        // 0x10
         uint8_t pad_11;      // 0x11
         ViewportFlags flags; // 0x12
+        Window* owner;
 
         constexpr bool contains(const viewport_pos& vpos)
         {
@@ -195,7 +197,6 @@ namespace OpenLoco::Ui
     private:
         void paint(Gfx::DrawingContext& drawingCtx, const Ui::Rect& rect);
     };
-    static_assert(sizeof(Viewport) == 0x14);
 
     struct ViewportConfig
     {
