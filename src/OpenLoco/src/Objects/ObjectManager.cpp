@@ -1132,8 +1132,9 @@ namespace OpenLoco::ObjectManager
     void sub_47AC05()
     {
         static_assert(ObjectManager::getMaxObjects(ObjectType::road) <= 128); // protect against possible int8_t overflow in the future
-        int8_t largestTownSize = -1;                                          // 0047AC07
-        uint8_t lastIndex = 255;                                              // 0047AC09
+        TownSize largestTownSize = TownSize::hamlet;                          // 0047AC07
+        bool townSizeSet = false;
+        uint8_t lastIndex = 255; // 0047AC09
 
         for (size_t index = 0; index < ObjectManager::getMaxObjects(ObjectType::road); ++index) // 0047AC05, 0047AC31-0047AC35
         {
@@ -1142,10 +1143,11 @@ namespace OpenLoco::ObjectManager
             {
                 if (roadObject->hasFlags(RoadObjectFlags::unk_03) && !roadObject->hasFlags(RoadObjectFlags::isOneWay)) // 0047AC17-0047AC25
                 {
-                    if (largestTownSize <= static_cast<int8_t>(roadObject->targetTownSize)) // 0047AC27-0047AC2A
+                    if (!townSizeSet || largestTownSize <= roadObject->targetTownSize) // 0047AC27-0047AC2A
                     {
-                        largestTownSize = static_cast<int8_t>(roadObject->targetTownSize); // 0047AC2C
-                        lastIndex = static_cast<uint8_t>(index);                           // 0047AC2F
+                        townSizeSet = true;
+                        largestTownSize = roadObject->targetTownSize; // 0047AC2C
+                        lastIndex = static_cast<uint8_t>(index);      // 0047AC2F
                     }
                 }
             }
