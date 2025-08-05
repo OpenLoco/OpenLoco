@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::ViewportManager
         }
     }
 
-    static Viewport* initViewport(Ui::Point origin, Ui::Size size, ZoomLevel zoom)
+    static Viewport* initViewport(Ui::Point origin, Ui::Size size, ZoomLevel zoom, Window* owner)
     {
         // Viewports with 0 width are invalid.
         if (size.width == 0)
@@ -86,6 +86,7 @@ namespace OpenLoco::Ui::ViewportManager
         vp->viewHeight = size.height << static_cast<uint8_t>(zoom);
         vp->zoom = static_cast<uint8_t>(zoom);
         vp->flags = ViewportFlags::none;
+        vp->owner = owner;
 
         if (OpenLoco::Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
         {
@@ -172,7 +173,7 @@ namespace OpenLoco::Ui::ViewportManager
      */
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, EntityId entityId)
     {
-        Viewport* viewport = initViewport(origin, size, zoom);
+        Viewport* viewport = initViewport(origin, size, zoom, window);
 
         if (viewport == nullptr)
         {
@@ -202,7 +203,7 @@ namespace OpenLoco::Ui::ViewportManager
      */
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, World::Pos3 tile)
     {
-        Viewport* viewport = initViewport(origin, size, zoom);
+        Viewport* viewport = initViewport(origin, size, zoom, window);
 
         if (viewport == nullptr)
         {
@@ -256,6 +257,14 @@ namespace OpenLoco::Ui::ViewportManager
             top += viewport.y;
             bottom += viewport.y;
 
+            if (viewport.owner != nullptr)
+            {
+                left += viewport.owner->x;
+                right += viewport.owner->x;
+                top += viewport.owner->y;
+                bottom += viewport.owner->y;
+            }
+
             Gfx::invalidateRegion(left, top, right, bottom);
         }
     }
@@ -306,6 +315,14 @@ namespace OpenLoco::Ui::ViewportManager
             right += viewport.x;
             top += viewport.y;
             bottom += viewport.y;
+
+            if (viewport.owner != nullptr)
+            {
+                left += viewport.owner->x;
+                right += viewport.owner->x;
+                top += viewport.owner->y;
+                bottom += viewport.owner->y;
+            }
 
             Gfx::invalidateRegion(left, top, right, bottom);
         }
