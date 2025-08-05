@@ -1058,7 +1058,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                cost = GameCommands::doCommand(args, GameCommands::Flags::skipFundingCheck | GameCommands::Flags::ghost);
+                cost = GameCommands::doCommand(args, GameCommands::Flags::allowNegativeCashFlow | GameCommands::Flags::ghost);
             }
 
             if (cost != _raiseLandCost)
@@ -1519,7 +1519,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                cost = GameCommands::doCommand(args, GameCommands::Flags::skipFundingCheck | GameCommands::Flags::ghost);
+                cost = GameCommands::doCommand(args, GameCommands::Flags::allowNegativeCashFlow | GameCommands::Flags::ghost);
             }
 
             if (cost != _raiseLandCost)
@@ -1583,8 +1583,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                lowerCost = lowerLand(Flags::skipFundingCheck);
-                raiseCost = raiseLand(Flags::skipFundingCheck);
+                lowerCost = lowerLand(Flags::allowNegativeCashFlow);
+                raiseCost = raiseLand(Flags::allowNegativeCashFlow);
             }
             setAdjustCost(raiseCost, lowerCost);
         }

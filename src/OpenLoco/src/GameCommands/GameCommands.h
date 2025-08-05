@@ -27,7 +27,7 @@ namespace OpenLoco::GameCommands
     {
         constexpr uint8_t apply = 1 << 0;                   // 0x01
         constexpr uint8_t preventBuildingClearing = 1 << 1; // 0x02
-        constexpr uint8_t skipFundingCheck = 1 << 2;        // 0x04
+        constexpr uint8_t allowNegativeCashFlow = 1 << 2;   // 0x04
         constexpr uint8_t noErrorWindow = 1 << 3;           // 0x08 do not show an error window even on failure (use this with ghosts)
         constexpr uint8_t aiAllocated = 1 << 4;             // 0x10 ai can place down invisible ghosts with this that blocks players
         constexpr uint8_t noPayment = 1 << 5;               // 0x20 calculates cost but does not deduct it
