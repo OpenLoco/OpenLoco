@@ -117,7 +117,7 @@ namespace OpenLoco
     // 0x00407FFD
     static bool isAlreadyRunning(const char* mutexName)
     {
-        auto result = ((int32_t (*)(const char*))(0x00407FFD))(mutexName);
+        auto result = ((int32_t(*)(const char*))(0x00407FFD))(mutexName);
         return result != 0;
     }
 
@@ -400,7 +400,7 @@ namespace OpenLoco
                         numUpdates *= 3;
                         if (SceneManager::getGameSpeed() != GameSpeed::FastForward)
                         {
-                            numUpdates *= 9;
+                            numUpdates *= 3;
                         }
                     }
 
