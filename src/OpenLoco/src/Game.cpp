@@ -48,7 +48,6 @@ namespace OpenLoco::Game
 
         bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
 
-        Audio::unpauseSound();
         Ui::processMessagesMini();
         SceneManager::unsetPauseFlag(1 << 2);
         Gfx::invalidateScreen();

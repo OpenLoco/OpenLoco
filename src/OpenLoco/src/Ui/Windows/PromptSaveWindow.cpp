@@ -71,8 +71,6 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->flags |= Ui::WindowFlags::transparent;
 
             SceneManager::setPauseFlag(1 << 1);
-            Audio::pauseSound();
-            WindowManager::invalidate(WindowType::timeToolbar);
         }
 
         _savePromptType = savePromptType;
@@ -151,8 +149,6 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     static void onClose([[maybe_unused]] Window& self)
     {
         SceneManager::unsetPauseFlag(2);
-        Audio::unpauseSound();
-        WindowManager::invalidate(WindowType::timeToolbar);
     }
 
     static constexpr WindowEventList kEvents = {

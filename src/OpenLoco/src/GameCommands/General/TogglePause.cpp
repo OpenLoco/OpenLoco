@@ -20,16 +20,13 @@ namespace OpenLoco::GameCommands
 
         Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
 
-        if (SceneManager::isPaused())
+        if (SceneManager::getPauseFlags() & 1)
         {
             SceneManager::unsetPauseFlag(1 << 0);
-            Audio::unpauseSound();
         }
         else
         {
             SceneManager::setPauseFlag(1 << 0);
-            Audio::pauseSound();
-            Ui::Windows::TimePanel::invalidateFrame();
         }
 
         return 0;
