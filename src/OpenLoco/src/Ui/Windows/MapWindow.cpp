@@ -2450,27 +2450,30 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B5C0
     void centerOnViewPoint()
     {
-        auto mainWindow = WindowManager::getMainWindow();
+        auto* mainWindow = WindowManager::getMainWindow();
         if (mainWindow == nullptr)
         {
             return;
         }
 
-        auto viewport = mainWindow->viewports[0];
+        auto* viewport = mainWindow->viewports[0];
         if (viewport == nullptr)
         {
             return;
         }
 
-        auto window = WindowManager::find(WindowType::map, 0);
+        auto* window = WindowManager::find(WindowType::map, 0);
         if (window == nullptr)
         {
             return;
         }
 
+        auto centreX = ((viewport->viewWidth / 2) + viewport->viewX) / 32;
+        auto centreY = ((viewport->viewHeight / 2) + viewport->viewY) / 16;
+
         auto& offset = kViewFrameOffsetsByRotation[getCurrentRotation()];
-        auto centreX = ((viewport->viewWidth / 2) + viewport->viewX) / 32 + offset.x;
-        auto centreY = ((viewport->viewHeight / 2) + viewport->viewY) / 16 + offset.y;
+        centreX += offset.x;
+        centreY += offset.y;
 
         auto& widget = widgets[widx::scrollview];
         auto mapWidth = widget.width() - ScrollView::barWidth;
@@ -2482,12 +2485,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
         mapWidth = window->scrollAreas[0].contentWidth - mapWidth;
         mapHeight = window->scrollAreas[0].contentHeight - mapHeight;
 
-        if (mapWidth < 0 && (mapWidth - centreX) < 0)
+        if (mapWidth < 0)
         {
             centreX = 0;
         }
 
-        if (mapHeight < 0 && (mapHeight - centreY) < 0)
+        if (mapHeight < 0)
         {
             centreY = 0;
         }
