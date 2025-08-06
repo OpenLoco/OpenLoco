@@ -504,18 +504,32 @@ namespace OpenLoco::Ui
         }
     }
 
-    int8_t Window::getScrollDataIndex(WidgetIndex_t index)
+    int8_t Window::getScrollDataIndex(WidgetIndex_t targetIndex)
     {
-        int8_t scrollIndex = 0;
-        for (int i = 0; i < index; i++)
+        if (widgets[targetIndex].type != WidgetType::scrollview)
         {
-            if (this->widgets[i].type == Ui::WidgetType::scrollview)
+            assert(false);
+            return -1;
+        }
+
+        auto widgetIndex = 0;
+        auto scrollIndex = 0;
+        for (auto& widget : widgets)
+        {
+            widgetIndex++;
+            if (widgetIndex == targetIndex)
+            {
+                return scrollIndex;
+            }
+
+            if (widget.type == WidgetType::scrollview)
             {
                 scrollIndex++;
             }
         }
 
-        return scrollIndex;
+        assert(false);
+        return -2;
     }
 
     // 0x004CC7CB
