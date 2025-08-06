@@ -20,7 +20,7 @@ namespace OpenLoco::GameCommands
 
         Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
 
-        if (SceneManager::getPauseFlags() & 1)
+        if (SceneManager::isPaused())
         {
             SceneManager::unsetPauseFlag(1 << 0);
         }
