@@ -103,19 +103,19 @@ namespace OpenLoco::SceneManager
         return _pausedState != 0;
     }
 
-    uint8_t getPauseFlags()
+    PauseFlags getPauseFlags()
     {
-        return _pausedState;
+        return (PauseFlags)*_pausedState;
     }
 
-    void setPauseFlag(uint8_t value)
+    void setPauseFlag(PauseFlags value)
     {
-        _pausedState |= value;
+        _pausedState |= (uint8_t)value;
     }
 
-    void unsetPauseFlag(uint8_t value)
+    void unsetPauseFlag(PauseFlags value)
     {
-        _pausedState &= ~(value);
+        _pausedState &= ~((uint8_t)value);
     }
 
     GameSpeed getGameSpeed()
