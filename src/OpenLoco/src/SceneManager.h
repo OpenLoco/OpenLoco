@@ -13,6 +13,15 @@ namespace OpenLoco
         MAX = ExtraFastForward,
     };
 
+    enum class PauseState : uint8_t
+    {
+        none = 0,
+        standard = 1,   // Used when the player toggles paused
+        promptSave = 2, // Set when PromptSaveWindow is open
+        browsePrompt = 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(PauseState);
+
     namespace SceneManager
     {
         enum class Flags : uint16_t
@@ -48,9 +57,9 @@ namespace OpenLoco
         bool isSandboxMode();
         bool isPauseOverrideEnabled();
         bool isPaused();
-        uint8_t getPauseFlags();
-        void setPauseFlag(uint8_t value);
-        void unsetPauseFlag(uint8_t value);
+        PauseState getPauseState();
+        void setPauseState(PauseState value);
+        void unsetPauseState(PauseState value);
         GameSpeed getGameSpeed();
         void setGameSpeed(const GameSpeed speed);
     }

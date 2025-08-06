@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             return;
         }
 
-        if (SceneManager::getPauseFlags() & (1 << 2))
+        if (SceneManager::getPauseState() == PauseState::browsePrompt)
         {
             return;
         }
