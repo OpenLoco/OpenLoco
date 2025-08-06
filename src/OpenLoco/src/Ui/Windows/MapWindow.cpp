@@ -2392,7 +2392,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     void open()
     {
         auto window = WindowManager::bringToFront(WindowType::map, 0);
-
         if (window != nullptr)
         {
             return;
@@ -2452,63 +2451,49 @@ namespace OpenLoco::Ui::Windows::MapWindow
     void centerOnViewPoint()
     {
         auto mainWindow = WindowManager::getMainWindow();
-
         if (mainWindow == nullptr)
         {
             return;
         }
 
         auto viewport = mainWindow->viewports[0];
-
         if (viewport == nullptr)
         {
             return;
         }
 
         auto window = WindowManager::find(WindowType::map, 0);
-
         if (window == nullptr)
         {
             return;
         }
 
-        auto x = viewport->viewWidth / 2;
-        auto y = viewport->viewHeight / 2;
-        x += viewport->viewX;
-        y += viewport->viewY;
-        x /= 32;
-        y /= 16;
-        x += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
-        y += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
+        auto& offset = kViewFrameOffsetsByRotation[getCurrentRotation()];
+        auto centreX = ((viewport->viewWidth / 2) + viewport->viewX) / 32 + offset.x;
+        auto centreY = ((viewport->viewHeight / 2) + viewport->viewY) / 16 + offset.y;
 
-        auto width = widgets[widx::scrollview].width() - 10;
-        auto height = widgets[widx::scrollview].height() - 10;
-        x -= width / 2;
-        x = std::max(x, 0);
-        y -= height / 2;
-        y = std::max(y, 0);
+        auto& widget = widgets[widx::scrollview];
+        auto mapWidth = widget.width() - ScrollView::barWidth;
+        auto mapHeight = widget.height() - ScrollView::barWidth;
 
-        width = -width;
-        height = -height;
-        width += window->scrollAreas[0].contentWidth;
-        height += window->scrollAreas[0].contentHeight;
+        centreX = std::max(centreX - (mapWidth >> 1), 0);
+        centreY = std::max(centreY - (mapHeight >> 1), 0);
 
-        width -= x;
-        if (width < 0)
+        mapWidth = window->scrollAreas[0].contentWidth - mapWidth;
+        mapHeight = window->scrollAreas[0].contentHeight - mapHeight;
+
+        if (mapWidth < 0 && (mapWidth - centreX) < 0)
         {
-            x += width;
-            x = std::max(x, 0);
+            centreX = 0;
         }
 
-        height -= y;
-        if (height < 0)
+        if (mapHeight < 0 && (mapHeight - centreY) < 0)
         {
-            y += height;
-            y = std::max(y, 0);
+            centreY = 0;
         }
 
-        window->scrollAreas[0].contentOffsetX = x;
-        window->scrollAreas[0].contentOffsetY = y;
+        window->scrollAreas[0].contentOffsetX = centreX;
+        window->scrollAreas[0].contentOffsetY = centreY;
 
         Ui::ScrollView::updateThumbs(*window, widx::scrollview);
     }
