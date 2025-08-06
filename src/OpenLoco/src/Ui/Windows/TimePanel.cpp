@@ -165,7 +165,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         args.push<uint32_t>(getCurrentDay());
 
         StringId format = StringIds::date_daymonthyear;
-        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & PauseFlags::BrowsePrompt) == PauseFlags::none) // Is this the correct logic?
         {
             if (self.numTicksVisible >= kPausedStatusTextDuration)
             {
