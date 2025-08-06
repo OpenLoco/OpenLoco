@@ -8,7 +8,7 @@ namespace OpenLoco::SceneManager
 {
     loco_global<uint16_t, 0x00508F12> _sceneAge;
     loco_global<Flags, 0x00508F14> _sceneFlags;
-    loco_global<uint8_t, 0x00508F17> _pausedState;
+    loco_global<PauseState, 0x00508F17> _pausedState;
     loco_global<GameSpeed, 0x00508F1A> _gameSpeed;
 
     void resetSceneAge()
@@ -103,22 +103,28 @@ namespace OpenLoco::SceneManager
 
     bool isPaused()
     {
-        return _pausedState != 0;
+        return _pausedState != PauseState::none;
     }
 
-    uint8_t getPauseFlags()
+    PauseState getPauseState()
     {
         return _pausedState;
     }
 
-    void setPauseFlag(uint8_t value)
+    void setPauseState(PauseState value)
     {
-        *_pausedState |= value;
+        if (_pausedState == PauseState::none)
+        {
+            _pausedState = value;
+        }
     }
 
-    void unsetPauseFlag(uint8_t value)
+    void unsetPauseState(PauseState value)
     {
-        *_pausedState &= ~(value);
+        if (_pausedState == value)
+        {
+            _pausedState = PauseState::none;
+        }
     }
 
     GameSpeed getGameSpeed()
