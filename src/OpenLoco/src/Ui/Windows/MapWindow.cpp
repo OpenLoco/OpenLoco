@@ -60,9 +60,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     // 0x004FDC4C
     static std::array<Point, 4> kViewFrameOffsetsByRotation = { {
-        { kMapColumns - 2, 0 },
-        { kRenderedMapWidth - 6, kMapRows },
-        { kMapColumns - 2, kRenderedMapHeight },
+        { kMapColumns - 8, 0 },
+        { kRenderedMapWidth - 8, kMapRows },
+        { kMapColumns - 8, kRenderedMapHeight },
         { -8, kMapRows },
     } };
 
