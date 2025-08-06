@@ -18,14 +18,14 @@ namespace OpenLoco::GameCommands
 
         Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
 
-        if ((SceneManager::getPauseFlags() & PauseFlags::Standard) == PauseFlags::Standard)
+        if ((SceneManager::getPauseFlags() & PauseFlags::standard) == PauseFlags::standard)
         {
-            SceneManager::unsetPauseFlag(PauseFlags::Standard);
+            SceneManager::unsetPauseFlag(PauseFlags::standard);
             Audio::unpauseSound();
         }
         else
         {
-            SceneManager::setPauseFlag(PauseFlags::Standard);
+            SceneManager::setPauseFlag(PauseFlags::standard);
             Audio::pauseSound();
             Ui::Windows::TimePanel::invalidateFrame();
         }

@@ -16,9 +16,9 @@ namespace OpenLoco
     enum class PauseFlags : uint8_t
     {
         none = 0U,
-        Standard = 1 << 0,   // Used when the player toggles paused
-        PromptSave = 1 << 1, // Set when PromptSaveWindow is open
-        BrowsePrompt = 1 << 2,
+        standard = 1 << 0,   // Used when the player toggles paused
+        promptSave = 1 << 1, // Set when PromptSaveWindow is open
+        browsePrompt = 1 << 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(PauseFlags);
 
