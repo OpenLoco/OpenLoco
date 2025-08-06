@@ -1691,7 +1691,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     break;
             }
 
-            y -= self.y;
             y += 14;
             y = std::max(y, static_cast<uint16_t>(92));
 
