@@ -1,6 +1,7 @@
 25.07+ (???)
 ------------------------------------------------------------------------
 - Change: [#3104] Landscape generation confirmation prompts now prevent you from clicking other windows until a choice is made.
+- Change: [#] Reduced minimum width of map window.
 - Fix: [#3167] Dropdown for terrain type selection is displayed at the wrong position.
 - Fix: [#3171] Background of station labels have a visible gap due to being off by one pixel.
 

@@ -216,7 +216,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void onResize(Window& self)
     {
         self.flags |= WindowFlags::resizable;
-        self.minWidth = 350;
+        self.minWidth = 161;
         self.maxWidth = 800; // NB: frame background is only 800px :(
         self.maxHeight = 800;
 
