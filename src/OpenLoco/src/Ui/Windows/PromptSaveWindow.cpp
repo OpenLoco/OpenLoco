@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedDarkRed).translucent());
             window->flags |= Ui::WindowFlags::transparent;
 
-            SceneManager::setPauseFlag(PauseFlags::PromptSave);
+            SceneManager::setPauseFlag(PauseFlags::promptSave);
             Audio::pauseSound();
             WindowManager::invalidate(WindowType::timeToolbar);
         }
@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     // 0x0043C577
     static void onClose([[maybe_unused]] Window& self)
     {
-        SceneManager::unsetPauseFlag(PauseFlags::PromptSave);
+        SceneManager::unsetPauseFlag(PauseFlags::promptSave);
         Audio::unpauseSound();
         WindowManager::invalidate(WindowType::timeToolbar);
     }
