@@ -41,11 +41,15 @@ namespace OpenLoco::Game
 
     static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
     {
+        auto previousGameSpeed = SceneManager::getGameSpeed();
         SceneManager::setGameSpeed(GameSpeed::Paused);
+
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
 
         bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
+
+        SceneManager::setGameSpeed(previousGameSpeed);
 
         Ui::processMessagesMini();
         Gfx::invalidateScreen();
