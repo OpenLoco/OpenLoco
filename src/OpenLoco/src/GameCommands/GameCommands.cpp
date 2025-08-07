@@ -344,17 +344,8 @@ namespace OpenLoco::GameCommands
         {
             if (SceneManager::isPaused())
             {
-                SceneManager::setGameSpeed(GameSpeed::Normal);
-                WindowManager::invalidate(WindowType::timeToolbar);
-                Audio::unpauseSound();
-                Ui::Windows::PlayerInfoPanel::invalidateFrame();
-            }
-
-            if (SceneManager::getGameSpeed() != GameSpeed::Normal)
-            {
-                // calling the command setGameSpeed will cause infinite recursion here, so just call the real function
-                // SceneManager::setGameSpeed(GameSpeed::Normal);
                 GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);
+                Ui::Windows::PlayerInfoPanel::invalidateFrame();
             }
 
             if (SceneManager::isPaused())
