@@ -705,7 +705,6 @@ namespace OpenLoco::Vehicles
         }
 
     private:
-        bool sub_4AA959(World::Pos3& pos);
         void updateRoll();
         void collision();
     };
