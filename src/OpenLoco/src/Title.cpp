@@ -4,7 +4,7 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
-#include "GameCommands/General/TogglePause.h"
+#include "GameCommands/General/SetGameSpeed.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
@@ -140,9 +140,10 @@ namespace OpenLoco::Title
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
         if (SceneManager::isPaused())
         {
-            registers regs;
-            regs.bl = GameCommands::Flags::apply;
-            GameCommands::togglePause(regs);
+            GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Paused }, GameCommands::Flags::apply);
+            // registers regs;
+            // regs.bl = GameCommands::Flags::apply;
+            // GameCommands::togglePause(regs);
         }
 
         auto currentScreenFlags = SceneManager::getSceneFlags();

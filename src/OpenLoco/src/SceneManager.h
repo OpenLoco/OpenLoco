@@ -7,20 +7,12 @@ namespace OpenLoco
 {
     enum class GameSpeed : uint8_t
     {
-        Normal = 0,
-        FastForward = 1,
-        ExtraFastForward = 2,
+        Paused = 0,
+        Normal = 1,
+        FastForward = 2,
+        ExtraFastForward = 3,
         MAX = ExtraFastForward,
     };
-
-    enum class PauseState : uint8_t
-    {
-        none = 0,
-        standard = 1,   // Used when the player toggles paused
-        promptSave = 2, // Set when PromptSaveWindow is open
-        browsePrompt = 3,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(PauseState);
 
     namespace SceneManager
     {
@@ -57,9 +49,6 @@ namespace OpenLoco
         bool isSandboxMode();
         bool isPauseOverrideEnabled();
         bool isPaused();
-        PauseState getPauseState();
-        void setPauseState(PauseState value);
-        void unsetPauseState(PauseState value);
         GameSpeed getGameSpeed();
         void setGameSpeed(const GameSpeed speed);
     }
