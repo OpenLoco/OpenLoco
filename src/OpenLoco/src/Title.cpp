@@ -140,7 +140,7 @@ namespace OpenLoco::Title
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
         if (SceneManager::isPaused())
         {
-            GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Paused }, GameCommands::Flags::apply);
+            GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);
         }
 
         auto currentScreenFlags = SceneManager::getSceneFlags();
@@ -148,7 +148,6 @@ namespace OpenLoco::Title
         Ui::WindowManager::closeAllFloatingWindows();
         setSceneFlags(currentScreenFlags);
         SceneManager::addSceneFlags(SceneManager::Flags::title);
-        SceneManager::setGameSpeed(GameSpeed::Normal);
         ObjectManager::unloadAll();
         ObjectManager::prepareSelectionList(false);
         ObjectManager::loadSelectionListObjects(getSelectedObjectFlags());

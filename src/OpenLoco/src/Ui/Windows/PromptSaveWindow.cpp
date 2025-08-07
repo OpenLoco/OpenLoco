@@ -148,10 +148,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
     // 0x0043C577
     static void onClose([[maybe_unused]] Window& self)
-    {
-        Audio::unpauseSound();
-        WindowManager::invalidate(WindowType::timeToolbar);
-    }
+    { }
 
     static constexpr WindowEventList kEvents = {
         .onClose = onClose,
