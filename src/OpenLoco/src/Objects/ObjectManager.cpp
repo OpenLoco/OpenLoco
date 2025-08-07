@@ -1132,25 +1132,25 @@ namespace OpenLoco::ObjectManager
     void sub_47AC05()
     {
         static_assert(ObjectManager::getMaxObjects(ObjectType::road) <= 128); // protect against possible int8_t overflow in the future
-        TownSize largestTownSize = TownSize::hamlet;                          // 0047AC07
-        uint8_t lastIndex = 255;                                              // 0047AC09
+        TownSize largestTownSize = TownSize::hamlet;
+        uint8_t lastIndex = 255;
 
-        for (size_t index = 0; index < ObjectManager::getMaxObjects(ObjectType::road); ++index) // 0047AC05, 0047AC31-0047AC35
+        for (size_t index = 0; index < ObjectManager::getMaxObjects(ObjectType::road); ++index)
         {
-            auto roadObject = ObjectManager::get<RoadObject>(index); // 0047AC0B
-            if (roadObject != nullptr)                               // 0047AC12-0047AC15
+            auto roadObject = ObjectManager::get<RoadObject>(index);
+            if (roadObject != nullptr)
             {
-                if (roadObject->hasFlags(RoadObjectFlags::unk_03) && !roadObject->hasFlags(RoadObjectFlags::isOneWay)) // 0047AC17-0047AC25
+                if (roadObject->hasFlags(RoadObjectFlags::unk_03) && !roadObject->hasFlags(RoadObjectFlags::isOneWay))
                 {
-                    if (largestTownSize <= roadObject->targetTownSize) // 0047AC27-0047AC2A
+                    if (largestTownSize <= roadObject->targetTownSize)
                     {
-                        largestTownSize = roadObject->targetTownSize; // 0047AC2C
-                        lastIndex = static_cast<uint8_t>(index);      // 0047AC2F
+                        largestTownSize = roadObject->targetTownSize;
+                        lastIndex = static_cast<uint8_t>(index);
                     }
                 }
             }
         }
-        getGameState().lastTrackTypeOption = lastIndex; // 0047AC37
+        getGameState().lastTrackTypeOption = lastIndex;
     }
 
     void registerHooks()
