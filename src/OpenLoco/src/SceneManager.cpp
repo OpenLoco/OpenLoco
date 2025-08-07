@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include "Audio/Audio.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -6,10 +7,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::SceneManager
 {
-    loco_global<uint16_t, 0x00508F12> _sceneAge;
-    loco_global<Flags, 0x00508F14> _sceneFlags;
-    loco_global<PauseState, 0x00508F17> _pausedState;
-    loco_global<GameSpeed, 0x00508F1A> _gameSpeed;
+    static uint16_t _sceneAge;
+    static Flags _sceneFlags;
+    static GameSpeed _gameSpeed;
 
     void resetSceneAge()
     {
@@ -38,12 +38,12 @@ namespace OpenLoco::SceneManager
 
     void addSceneFlags(Flags value)
     {
-        *_sceneFlags |= value;
+        _sceneFlags |= value;
     }
 
     void removeSceneFlags(Flags value)
     {
-        *_sceneFlags &= ~value;
+        _sceneFlags &= ~value;
     }
 
     static inline bool hasSceneFlags(Flags value)
@@ -103,28 +103,7 @@ namespace OpenLoco::SceneManager
 
     bool isPaused()
     {
-        return _pausedState != PauseState::none;
-    }
-
-    PauseState getPauseState()
-    {
-        return _pausedState;
-    }
-
-    void setPauseState(PauseState value)
-    {
-        if (_pausedState == PauseState::none)
-        {
-            _pausedState = value;
-        }
-    }
-
-    void unsetPauseState(PauseState value)
-    {
-        if (_pausedState == value)
-        {
-            _pausedState = PauseState::none;
-        }
+        return _gameSpeed == GameSpeed::Paused;
     }
 
     GameSpeed getGameSpeed()
@@ -142,6 +121,15 @@ namespace OpenLoco::SceneManager
         {
             _gameSpeed = speed;
             Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
+
+            if (_gameSpeed == GameSpeed::Paused)
+            {
+                Audio::pauseSound();
+            }
+            else
+            {
+                Audio::unpauseSound();
+            }
         }
     }
 }
