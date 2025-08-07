@@ -21,7 +21,6 @@
 #include "General/LoadSaveQuit.h"
 #include "General/RenameStation.h"
 #include "General/SetGameSpeed.h"
-#include "General/TogglePause.h"
 #include "Industries/CreateIndustry.h"
 #include "Industries/RemoveIndustry.h"
 #include "Industries/RenameIndustry.h"
@@ -354,7 +353,7 @@ namespace OpenLoco::GameCommands
             if (SceneManager::getGameSpeed() != GameSpeed::Normal)
             {
                 // calling the command setGameSpeed will cause infinite recursion here, so just call the real function
-                //SceneManager::setGameSpeed(GameSpeed::Normal);
+                // SceneManager::setGameSpeed(GameSpeed::Normal);
                 GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);
             }
 

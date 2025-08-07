@@ -1,7 +1,6 @@
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
-#include "GameCommands/General/TogglePause.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"

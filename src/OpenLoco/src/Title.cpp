@@ -141,9 +141,6 @@ namespace OpenLoco::Title
         if (SceneManager::isPaused())
         {
             GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Paused }, GameCommands::Flags::apply);
-            // registers regs;
-            // regs.bl = GameCommands::Flags::apply;
-            // GameCommands::togglePause(regs);
         }
 
         auto currentScreenFlags = SceneManager::getSceneFlags();
