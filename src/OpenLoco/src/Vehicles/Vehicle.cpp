@@ -422,7 +422,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B1876
-    static EntityId checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
+    EntityId checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
     {
         if (bogie.mode != TransportMode::rail)
         {

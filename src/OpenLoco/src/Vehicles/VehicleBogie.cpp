@@ -125,6 +125,58 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x00462893
+    static bool checkForTileCollision(const World::Pos3 pos)
+    {
+        const auto xNibble = pos.x & 0x1F;
+        const auto yNibble = pos.y & 0x1F;
+        uint8_t occupiedQuarter = 0U;
+        if (xNibble < 16)
+        {
+            occupiedQuarter = 1U << 2;
+            if (yNibble >= 16)
+            {
+                occupiedQuarter = 1U << 3;
+            }
+        }
+        else
+        {
+            occupiedQuarter = 1U << 0;
+            if (yNibble < 16)
+            {
+                occupiedQuarter = 1U << 1;
+            }
+        }
+
+        const auto tile = World::TileManager::get(pos);
+        for (auto& el : tile)
+        {
+            if (pos.z < el.baseHeight())
+            {
+                continue;
+            }
+            if (pos.z >= el.clearHeight())
+            {
+                continue;
+            }
+            if (el.occupiedQuarter() & occupiedQuarter)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 0x0004AA959
+    static bool destroyedBogieCheckForCollision(VehicleBogie& bogie, World::Pos3& pos)
+    {
+        if (checkForTileCollision(pos))
+        {
+            return true;
+        }
+        return checkForCollisions(bogie, pos) != EntityId::null;
+    }
+
     // 0x004AA68E
     void VehicleBogie::updateSegmentCrashed()
     {
@@ -179,10 +231,10 @@ namespace OpenLoco::Vehicles
                 // Calculate new position - but don't update yet!! This is pushed to the stack.
                 World::Pos3 newPosition{ position + World::Pos3(distanceWorld, -zDistance) };
 
-                if (!sub_4AA959(this->position))
+                if (!destroyedBogieCheckForCollision(*this, position))
                 {
                     World::Pos3 positionToTest = { newPosition.x, newPosition.y, this->position.z };
-                    if (sub_4AA959(positionToTest))
+                    if (destroyedBogieCheckForCollision(*this, positionToTest))
                     {
                         newPosition.x = this->position.x;
                         newPosition.y = this->position.y;
@@ -195,7 +247,7 @@ namespace OpenLoco::Vehicles
                         this->var_5A = ((speed / 2).getRaw() | (1U << 31));
                     }
 
-                    if (sub_4AA959(newPosition))
+                    if (destroyedBogieCheckForCollision(*this, newPosition))
                     {
                         newPosition.z = this->position.z;
                         if (this->tileBaseZ >= 0x0A)
@@ -319,18 +371,6 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-    }
-
-    // 0x0004AA959
-    // Returns true when original subroutine sets carry flag (not yet reversed)
-    bool VehicleBogie::sub_4AA959(World::Pos3& pos)
-    {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        return ((call(0x0004AA959, regs) & X86_FLAG_CARRY) == X86_FLAG_CARRY);
     }
 
     // 0x004AA984
