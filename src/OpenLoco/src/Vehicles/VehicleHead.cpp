@@ -3820,6 +3820,111 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_2 = train.veh2;
     }
 
+    // 0x004A3EF6
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : ebp
+    //
+    // ebp clobbered, dl will have rotation, dh will have track id.
+    // return: pos : ax, cx, di
+    static World::Pos3 getTrackStartFromTad(World::Pos3 pos, uint16_t tad)
+    {
+        World::Pos3 adjustedPos = pos;
+        if (tad & (1U << 2))
+        {
+            auto& trackSize = World::TrackData::getUnkTrack(tad);
+            adjustedPos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                adjustedPos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+        }
+
+        return adjustedPos;
+    }
+
+    // 0x004A3EF6
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : ebp
+    // trackType : bh
+    static void bringTrackElementToFront(World::Pos3 pos, uint8_t trackType, uint16_t tad)
+    {
+        // TRACK only
+        const auto trackStart = getTrackStartFromTad(pos, tad);
+        const auto trackId = (tad >> 3) & 0x3F;
+        const auto rotation = tad & 0x3;
+
+        const auto& trackPieces = World::TrackData::getTrackPiece(trackId);
+        for (auto& piece : trackPieces)
+        {
+            const auto piecePos = trackStart + World::Pos3(Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z);
+
+            Ui::ViewportManager::invalidate(piecePos, piecePos.z, piecePos.z + 32);
+
+            auto tile = TileManager::get(piecePos);
+            World::TrackElement* beginTrackElement = nullptr;
+            World::TrackElement* lastTrackElement = nullptr;
+            for (auto& el : tile)
+            {
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    beginTrackElement = nullptr;
+                    continue;
+                }
+                if (elTrack->baseHeight() != piecePos.z)
+                {
+                    beginTrackElement = nullptr;
+                    continue;
+                }
+                if (beginTrackElement == nullptr)
+                {
+                    beginTrackElement = elTrack;
+                }
+                if (elTrack->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != piece.index)
+                {
+                    continue;
+                }
+                if (elTrack->trackObjectId() != trackType)
+                {
+                    continue;
+                }
+                if (elTrack->trackId() != trackId)
+                {
+                    continue;
+                }
+
+                if (elTrack->hasSignal() || elTrack->hasStationElement())
+                {
+                    break;
+                }
+                lastTrackElement = elTrack;
+                break;
+            }
+            if (lastTrackElement == nullptr || beginTrackElement == nullptr || beginTrackElement == lastTrackElement)
+            {
+                continue;
+            }
+            // Move the track element we are on to the front of the list of track elements
+            const bool isLastElement = lastTrackElement->isLast();
+            lastTrackElement->setLastFlag(false);
+            auto* iter = lastTrackElement;
+            while (iter >= beginTrackElement)
+            {
+                std::swap(*iter, *(iter - 1));
+                iter--;
+            }
+            lastTrackElement->setLastFlag(isLastElement);
+        }
+    }
+
     // 0x004ACEE7
     Sub4ACEE7Result VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
     {
