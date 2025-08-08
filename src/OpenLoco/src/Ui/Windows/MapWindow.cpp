@@ -54,7 +54,7 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
-    static constexpr uint16_t kMinimumWindowWidth = 229; // Chosen so that the map cannot be smaller than its key
+    static constexpr uint16_t kMinimumWindowWidth = 229;  // Chosen so that the map cannot be smaller than its key
     static constexpr uint16_t kMinimumWindowHeight = 176; // Chosen so that the minimum size makes the map square
 
     static constexpr int16_t kRenderedMapWidth = kMapColumns * 2;
