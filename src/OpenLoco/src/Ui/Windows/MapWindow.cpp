@@ -1118,9 +1118,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B9E7
-    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        self.callPrepareDraw();
         *scrollWidth = kRenderedMapWidth;
         *scrollHeight = kRenderedMapHeight;
     }
@@ -2468,31 +2467,31 @@ namespace OpenLoco::Ui::Windows::MapWindow
             return;
         }
 
-        auto centreX = ((viewport->viewWidth / 2) + viewport->viewX) / 32;
-        auto centreY = ((viewport->viewHeight / 2) + viewport->viewY) / 16;
+        // Ensure minimap/scroll widget has been resized
+        window->callPrepareDraw();
 
-        auto& offset = kViewFrameOffsetsByRotation[getCurrentRotation()];
-        centreX += offset.x;
-        centreY += offset.y;
+        const int16_t vpCentreX = ((viewport->viewWidth / 2) + viewport->viewX) / 32;
+        const int16_t vpCentreY = ((viewport->viewHeight / 2) + viewport->viewY) / 16;
 
         auto& widget = widgets[widx::scrollview];
-        auto mapWidth = widget.width() - ScrollView::barWidth;
-        auto mapHeight = widget.height() - ScrollView::barWidth;
+        const int16_t miniMapWidth = widget.width() - ScrollView::barWidth;
+        const int16_t miniMapHeight = widget.height() - ScrollView::barWidth;
 
-        centreX = std::max(centreX - (mapWidth >> 1), 0);
-        centreY = std::max(centreY - (mapHeight >> 1), 0);
+        const int16_t visibleMapWidth = window->scrollAreas[0].contentWidth - miniMapWidth;
+        const int16_t visibleMapHeight = window->scrollAreas[0].contentHeight - miniMapHeight;
 
-        mapWidth = window->scrollAreas[0].contentWidth - mapWidth;
-        mapHeight = window->scrollAreas[0].contentHeight - mapHeight;
+        auto& offset = kViewFrameOffsetsByRotation[getCurrentRotation()];
+        int16_t centreX = std::max(vpCentreX + offset.x - (miniMapWidth / 2), 0);
+        int16_t centreY = std::max(vpCentreY + offset.y - (miniMapHeight / 2), 0);
 
-        if (mapWidth < 0)
+        if (visibleMapWidth < centreX)
         {
-            centreX = 0;
+            centreX = std::max(centreX + (visibleMapWidth - centreX), 0);
         }
 
-        if (mapHeight < 0)
+        if (visibleMapHeight < centreY)
         {
-            centreY = 0;
+            centreY = std::max(centreY + (visibleMapHeight - centreY), 0);
         }
 
         window->scrollAreas[0].contentOffsetX = centreX;
