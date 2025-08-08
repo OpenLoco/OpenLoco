@@ -1128,9 +1128,29 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047AC05
+    // Initialise lastTrackTypeOption in game state
     void sub_47AC05()
     {
-        call(0x0047AC05);
+        static_assert(ObjectManager::getMaxObjects(ObjectType::road) <= 128); // protect against possible int8_t overflow in the future
+        TownSize largestTownSize = TownSize::hamlet;
+        uint8_t lastIndex = 255;
+
+        for (size_t index = 0; index < ObjectManager::getMaxObjects(ObjectType::road); ++index)
+        {
+            auto roadObject = ObjectManager::get<RoadObject>(index);
+            if (roadObject != nullptr)
+            {
+                if (roadObject->hasFlags(RoadObjectFlags::unk_03) && !roadObject->hasFlags(RoadObjectFlags::isOneWay))
+                {
+                    if (largestTownSize <= roadObject->targetTownSize)
+                    {
+                        largestTownSize = roadObject->targetTownSize;
+                        lastIndex = static_cast<uint8_t>(index);
+                    }
+                }
+            }
+        }
+        getGameState().lastTrackTypeOption = lastIndex;
     }
 
     void registerHooks()
