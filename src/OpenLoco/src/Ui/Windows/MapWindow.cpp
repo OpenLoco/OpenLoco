@@ -103,7 +103,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         statusBar,
     };
 
-    static constexpr auto widgets = makeWidgets(
+    static constexpr auto kWidgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 272 }, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_map),
         Widgets::ImageButton({ 335, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -2415,7 +2415,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, getEvents());
-        window->setWidgets(widgets);
+        window->setWidgets(kWidgets);
         window->initScrollWidgets();
         window->frameNo = 0;
 
@@ -2473,7 +2473,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         const int16_t vpCentreX = ((viewport->viewWidth / 2) + viewport->viewX) / 32;
         const int16_t vpCentreY = ((viewport->viewHeight / 2) + viewport->viewY) / 16;
 
-        auto& widget = widgets[widx::scrollview];
+        auto& widget = window->widgets[widx::scrollview];
         const int16_t miniMapWidth = widget.width() - ScrollView::barWidth;
         const int16_t miniMapHeight = widget.height() - ScrollView::barWidth;
 
