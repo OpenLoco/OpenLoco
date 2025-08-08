@@ -54,6 +54,9 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
+    static constexpr uint16_t kMinimumWindowWidth = 229; // Chosen so that the map cannot be smaller than its key
+    static constexpr uint16_t kMinimumWindowHeight = 176; // Chosen so that the minimum size makes the map square
+
     static constexpr int16_t kRenderedMapWidth = kMapColumns * 2;
     static constexpr int16_t kRenderedMapHeight = kRenderedMapWidth;
     static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
@@ -216,7 +219,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void onResize(Window& self)
     {
         self.flags |= WindowFlags::resizable;
-        self.minWidth = 350;
+        self.minWidth = kMinimumWindowWidth;
         self.maxWidth = 800; // NB: frame background is only 800px :(
         self.maxHeight = 800;
 
@@ -1691,7 +1694,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             y += 14;
-            y = std::max(y, static_cast<uint16_t>(92));
+            y = std::max(y, kMinimumWindowHeight);
 
             self.minHeight = y;
         }

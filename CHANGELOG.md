@@ -1,6 +1,7 @@
 25.07+ (???)
 ------------------------------------------------------------------------
 - Change: [#3104] Landscape generation confirmation prompts now prevent you from clicking other windows until a choice is made.
+- Change: [#3193] Changed minimum size of map window.
 - Fix: [#3019] Mouse getting stuck on edges of monitor when right mouse dragging scroll views.
 - Fix: [#3116] Visual artifacts when additional viewports are visible, most prominently with news message window.
 - Fix: [#3167] Dropdown for terrain type selection is displayed at the wrong position.
