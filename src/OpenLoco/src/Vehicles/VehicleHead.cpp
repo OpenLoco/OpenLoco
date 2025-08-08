@@ -72,8 +72,8 @@ namespace OpenLoco::Vehicles
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
-    static loco_global<uint8_t[2], 0x0113601A> _113601A;          // Track Connection mod global
-    static loco_global<uint32_t, 0x0112C30C> _allowedStationObjs; // Road pathing global
+    static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
+    static loco_global<uint32_t, 0x0112C30C> _vehicleUpdate_compatibleRoadStationTypes;
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
@@ -3928,6 +3928,65 @@ namespace OpenLoco::Vehicles
     // 0x004ACEE7
     Sub4ACEE7Result VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
     {
+        if (mode == TransportMode::road)
+        {
+            // 0x0047DA8D
+            uint32_t compatibleStations = 0U;
+            for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::roadStation); ++i)
+            {
+                auto* roadStationObj = ObjectManager::get<RoadStationObject>(i);
+                if (roadStationObj == nullptr)
+                {
+                    continue;
+                }
+                if (roadStationObj->hasFlags(RoadStationFlags::passenger | RoadStationFlags::freight))
+                {
+                    if (trainAcceptedCargoTypes & (1U << roadStationObj->cargoType))
+                    {
+                        compatibleStations |= (1U << i);
+                    }
+                }
+                else
+                {
+                    compatibleStations |= (1U << i);
+                }
+            }
+            _vehicleUpdate_compatibleRoadStationTypes = compatibleStations;
+
+            auto routings = RoutingManager::RingView(routingHandle);
+            auto iter = routings.begin();
+            if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result(1, 0, StationId::null);
+            }
+            if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result(1, 0, StationId::null);
+            }
+
+            resetUpdateVar1136114Flags();
+            if (var_52 == 1)
+            {
+                remainingDistance += updateTrackMotion(0);
+            }
+            else
+            {
+                const auto distance1 = unk1 - var_3C;
+                const auto distance2 = std::max(var_113612C * 4, 0xCC48U);
+                const auto distance = std::min(distance1, distance2);
+                remainingDistance += distance - updateTrackMotion(distance);
+            }
+
+            if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
+            {
+                return Sub4ACEE7Result(0, 0, StationId::null);
+            }
+        }
+        else
+        {
+            // 0x004ACEF1
+        }
+
         registers regs;
         regs.esi = X86Pointer(this);
         regs.eax = unk1;
@@ -6295,7 +6354,7 @@ namespace OpenLoco::Vehicles
                 const auto requiredMods = addr<0x0113601A, uint8_t>();
                 const auto queryMods = addr<0x0113601B, uint8_t>();
                 const auto unk = (regs.dx & 0x8000U) != 0;
-                const auto allowedStationTypes = *_allowedStationObjs;
+                const auto allowedStationTypes = *_vehicleUpdate_compatibleRoadStationTypes;
                 VehicleHead& head = *X86Pointer<VehicleHead>(regs.esi);
                 static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _legacyConnections;
                 Track::RoadConnections rc{};
