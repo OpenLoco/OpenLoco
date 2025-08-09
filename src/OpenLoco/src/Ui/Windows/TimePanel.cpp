@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Widgets::ImageButton({ 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
         Widgets::ImageButton({ 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
-    static loco_global<uint16_t, 0x0050A004> _50A004;
+    static bool frameInvalid; // 0x0050A004 (2nd byte)
 
     static const WindowEventList& getEvents();
 
@@ -378,7 +378,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     void invalidateFrame()
     {
-        _50A004 = _50A004 | (1 << 1);
+        frameInvalid = true;
     }
 
     // 0x00439AD9
@@ -396,14 +396,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
             w.numTicksVisible = 0;
         }
 
-        if (_50A004 & (1 << 1))
+        if (frameInvalid || (SceneManager::isPaused() && (w.numTicksVisible == 30 || w.numTicksVisible == 0)))
         {
-            _50A004 = _50A004 & ~(1 << 1);
-            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
-        }
-
-        if (SceneManager::isPaused())
-        {
+            frameInvalid = false;
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
     }
