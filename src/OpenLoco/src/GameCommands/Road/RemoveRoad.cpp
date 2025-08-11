@@ -96,6 +96,7 @@ namespace OpenLoco::GameCommands
         currency32_t totalRemovalCost = 0;
 
         const auto* roadObj = ObjectManager::get<RoadObject>(roadElPiece->roadObjectId());
+        if (roadElPiece->owner() != CompanyId::neutral)
         {
             const auto trackBaseCost = Economy::getInflationAdjustedCost(roadObj->sellCostFactor, roadObj->costIndex, 10);
             const auto cost = (trackBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
