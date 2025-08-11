@@ -4,6 +4,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
+#include "Map/StationElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Objects/BridgeObject.h"
@@ -159,27 +160,63 @@ namespace OpenLoco::GameCommands
         // 0x004776E3
         if (auto* roadEl = getRoadElement(tile, args, args.sequenceIndex, flags); roadEl != nullptr)
         {
-            auto* nextEl = roadEl->next();
-            auto* nextRoad = nextEl->as<World::RoadElement>();
-            if (nextRoad != nullptr)
+            if (roadEl->hasStationElement())
             {
-                auto* elStation = tile.roadStation(nextRoad->roadId(), nextRoad->rotation(), nextRoad->baseZ());
-                if (elStation != nullptr)
-                {
-                    RoadStationRemovalArgs srArgs = {};
-                    srArgs.pos = args.pos;
-                    srArgs.rotation = args.rotation;
-                    srArgs.roadId = args.roadId;
-                    srArgs.index = args.sequenceIndex;
-                    srArgs.roadObjectId = args.objectId;
-
-                    auto stationRemovalRes = GameCommands::doCommand(srArgs, flags);
-                    if (stationRemovalRes == FAILURE)
+                // Count the number of road station users as we only want to
+                // remove the road station if the target road element is the only
+                // user of the road station.
+                const auto numRoadStationUsers = [targetElRoad = roadEl, tile, &args, flags]() {
+                    const auto baseZ = args.pos.z / World::kSmallZStep;
+                    bool foundFirst = false;
+                    size_t count = 0U;
+                    for (auto& element : tile)
                     {
-                        return FAILURE;
+                        auto* elRoad = element.as<World::RoadElement>();
+                        if (elRoad == nullptr)
+                        {
+                            if (foundFirst)
+                            {
+                                break;
+                            }
+                            continue;
+                        }
+                        if (elRoad->baseZ() != baseZ)
+                        {
+                            if (foundFirst)
+                            {
+                                break;
+                            }
+                            continue;
+                        }
+                        foundFirst = true;
+                        if (elRoad->hasStationElement())
+                        {
+                            count++;
+                        }
                     }
+                    return count;
+                }();
 
-                    totalRemovalCost += stationRemovalRes;
+                if (numRoadStationUsers == 1)
+                {
+                    auto* elStation = tile.roadStation(roadEl->roadId(), roadEl->rotation(), roadEl->baseZ());
+                    if (elStation != nullptr && !elStation->isGhost())
+                    {
+                        RoadStationRemovalArgs srArgs = {};
+                        srArgs.pos = args.pos;
+                        srArgs.rotation = args.rotation;
+                        srArgs.roadId = args.roadId;
+                        srArgs.index = args.sequenceIndex;
+                        srArgs.roadObjectId = args.objectId;
+
+                        auto stationRemovalRes = GameCommands::doCommand(srArgs, flags);
+                        if (stationRemovalRes == FAILURE)
+                        {
+                            return FAILURE;
+                        }
+
+                        totalRemovalCost += stationRemovalRes;
+                    }
                 }
             }
         }
