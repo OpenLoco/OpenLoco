@@ -300,3 +300,5 @@ CMakeUserPresets.json
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+nbproject
+vgcore.*
