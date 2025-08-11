@@ -85,26 +85,26 @@ namespace OpenLoco
         int16_t sellCostFactor;  // 0x04
         uint8_t costIndex;       // 0x06
         uint8_t var_07;
-        uint32_t image;                                      // 0x08
-        uint32_t buildingImage;                              // 0x0C
-        AirportObjectFlags flags;                            // 0x10
-        uint8_t numSpriteSets;                               // 0x12
-        uint8_t numTiles;                                    // 0x13
-        const uint8_t* buildingPartHeights;                  // 0x14
-        const BuildingPartAnimation* buildingPartAnimations; // 0x18
-        const uint8_t* buildingVariationParts[32];           // 0x1C
-        const AirportBuilding* buildingPositions;            // 0x9C
-        uint32_t largeTiles;                                 // 0xA0
-        int8_t minX;                                         // 0xA4
-        int8_t minY;                                         // 0xA5
-        int8_t maxX;                                         // 0xA6
-        int8_t maxY;                                         // 0xA7
-        uint16_t designedYear;                               // 0xA8
-        uint16_t obsoleteYear;                               // 0xAA
-        uint8_t numMovementNodes;                            // 0xAC
-        uint8_t numMovementEdges;                            // 0xAD
-        const MovementNode* movementNodes;                   // 0xAE
-        const MovementEdge* movementEdges;                   // 0xB2
+        uint32_t image;                            // 0x08
+        uint32_t buildingImage;                    // 0x0C
+        AirportObjectFlags flags;                  // 0x10
+        uint8_t numSpriteSets;                     // 0x12
+        uint8_t numTiles;                          // 0x13
+        uint32_t buildingPartHeightsOffset;        // 0x14
+        uint32_t buildingPartAnimationsOffset;     // 0x18
+        uint32_t buildingVariationPartOffsets[32]; // 0x1C
+        uint32_t buildingPositionsOffset;          // 0x9C
+        uint32_t largeTiles;                       // 0xA0
+        int8_t minX;                               // 0xA4
+        int8_t minY;                               // 0xA5
+        int8_t maxX;                               // 0xA6
+        int8_t maxY;                               // 0xA7
+        uint16_t designedYear;                     // 0xA8
+        uint16_t obsoleteYear;                     // 0xAA
+        uint8_t numMovementNodes;                  // 0xAC
+        uint8_t numMovementEdges;                  // 0xAD
+        uint32_t movementNodesOffset;              // 0xAE
+        uint32_t movementEdgesOffset;              // 0xB2
         uint32_t var_B6;
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
@@ -116,6 +116,10 @@ namespace OpenLoco
         std::pair<World::TilePos2, World::TilePos2> getAirportExtents(const World::TilePos2& centrePos, const uint8_t rotation) const;
         std::span<const AirportBuilding> getBuildingPositions() const;
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
+        std::span<const uint8_t> getBuildingPartHeights() const;
+        std::span<const BuildingPartAnimation> getBuildingPartAnimations() const;
+        std::span<const MovementNode> getMovementNodes() const;
+        std::span<const MovementEdge> getMovementEdges() const;
 
         constexpr bool hasFlags(AirportObjectFlags flagsToTest) const
         {

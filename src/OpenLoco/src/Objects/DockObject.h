@@ -54,6 +54,7 @@ namespace OpenLoco
         void unload();
 
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
+        std::span<const BuildingPartAnimation> getBuildingPartAnimations() const;
 
         constexpr bool hasFlags(DockObjectFlags flagsToTest) const
         {
