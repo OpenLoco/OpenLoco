@@ -134,8 +134,9 @@ namespace OpenLoco::GameCommands
             }
 
             /*
-            // This part was made redundant by a no-op write in Hooks.cpp:
-            // writeNop(0x004776DD, 6);
+            // Remove check for is road in use when removing roads. It is
+            // quite annoying when it's sometimes only the player's own
+            // vehicles that are using it.
             // TODO: turn this into a setting?
             if (companyId != CompanyId::neutral && (roadEl->hasUnk7_40() || roadEl->hasUnk7_80()))
             {
@@ -147,8 +148,8 @@ namespace OpenLoco::GameCommands
                     auto* town = TownManager::get(nearest->first);
                     FormatArguments::common(town->name);
                     setErrorText(StringIds::stringid_local_authority_wont_allow_removal_in_use);
-                    return FAILURE;
                 }
+                return FAILURE;
             }
             */
         }

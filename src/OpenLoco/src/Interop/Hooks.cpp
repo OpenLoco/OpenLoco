@@ -932,11 +932,6 @@ void OpenLoco::Interop::registerHooks()
             return 0;
         });
 
-    // Remove check for is road in use when removing roads. It is
-    // quite annoying when it's sometimes only the player's own
-    // vehicles that are using it.
-    writeNop(0x004776DD, 6);
-
     registerHook(
         0x0047024A,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
