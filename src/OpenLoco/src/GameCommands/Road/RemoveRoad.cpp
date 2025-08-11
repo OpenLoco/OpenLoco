@@ -224,7 +224,7 @@ namespace OpenLoco::GameCommands
         // 0x004777EB
         if (auto* roadEl = getRoadElement(tile, args, args.sequenceIndex, flags); roadEl != nullptr)
         {
-            bool roadHadBridge = false; // 0x0112C2CD
+            bool removeRoadBridge = false; // 0x0112C2CD
             int8_t roadBridgeId = -1;   // 0x0112C2D0
 
             const auto& roadPieces = World::TrackData::getRoadPiece(roadEl->roadId());
@@ -254,7 +254,36 @@ namespace OpenLoco::GameCommands
                 // 0x004779B2
                 if (roadElPiece->hasBridge())
                 {
-                    roadHadBridge = true;
+                    const auto numOverlappingElRoads = [targetElRoad = roadElPiece, pos = roadLoc, tile = pieceTile]() {
+                        const auto baseZ = pos.z / World::kSmallZStep;
+                        bool foundFirst = false;
+                        size_t count = 0U;
+                        for (auto& element : tile)
+                        {
+                            auto* elRoad = element.as<World::RoadElement>();
+                            if (elRoad == nullptr)
+                            {
+                                if (foundFirst)
+                                {
+                                    break;
+                                }
+                                continue;
+                            }
+                            if (elRoad->baseZ() != baseZ)
+                            {
+                                if (foundFirst)
+                                {
+                                    break;
+                                }
+                                continue;
+                            }
+                            foundFirst = true;
+                            count++;
+                        }
+                        return count;
+                    }();
+                    // Bridge only removed if this is the only road piece
+                    removeRoadBridge = numOverlappingElRoads == 1;
                     roadBridgeId = roadElPiece->bridge();
                 }
 
@@ -272,7 +301,7 @@ namespace OpenLoco::GameCommands
             totalRemovalCost += pieceRemovalCost;
 
             // Seems to have been forgotten in vanilla
-            if (roadHadBridge)
+            if (removeRoadBridge)
             {
                 const auto* bridgeObj = ObjectManager::get<BridgeObject>(roadBridgeId);
                 const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->sellCostFactor, bridgeObj->costIndex, 10);
