@@ -103,17 +103,19 @@ namespace OpenLoco::GameCommands
         }
 
         // Check mod removal costs
-        for (auto i = 0U; i < 2; i++)
+        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
         {
-            if (roadElPiece->hasMod(i))
+            for (auto i = 0U; i < 2; i++)
             {
-                const auto* trackExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[i]);
-                const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->sellCostFactor, trackExtraObj->costIndex, 10);
-                const auto cost = (trackExtraBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
-                totalRemovalCost += cost;
+                if (roadElPiece->hasMod(i))
+                {
+                    const auto* trackExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[i]);
+                    const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->sellCostFactor, trackExtraObj->costIndex, 10);
+                    const auto cost = (trackExtraBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
+                    totalRemovalCost += cost;
+                }
             }
         }
-
         return totalRemovalCost;
     }
 
@@ -225,7 +227,7 @@ namespace OpenLoco::GameCommands
         if (auto* roadEl = getRoadElement(tile, args, args.sequenceIndex, flags); roadEl != nullptr)
         {
             bool removeRoadBridge = false; // 0x0112C2CD
-            int8_t roadBridgeId = -1;   // 0x0112C2D0
+            int8_t roadBridgeId = -1;      // 0x0112C2D0
 
             const auto& roadPieces = World::TrackData::getRoadPiece(roadEl->roadId());
             const auto& currentPart = roadPieces[roadEl->sequenceIndex()];
