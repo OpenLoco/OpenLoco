@@ -67,9 +67,10 @@ namespace OpenLoco::GameCommands
         World::RoadElement* end() const { return _end; }
     };
 
-    static World::RoadElement* getRoadElement(const World::Tile& tile, const RoadRemovalArgs& args, uint8_t sequenceIndex, uint8_t flags)
+    static World::RoadElement* getRoadElement(const World::Pos3 pos, const RoadRemovalArgs& args, uint8_t sequenceIndex, uint8_t flags)
     {
-        const auto baseZ = args.pos.z / World::kSmallZStep;
+        auto tile = World::TileManager::get(pos);
+        const auto baseZ = pos.z / World::kSmallZStep;
         const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
 
         for (auto& element : tile)
@@ -125,8 +126,7 @@ namespace OpenLoco::GameCommands
     {
         const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece0.x, roadPiece0.y }, args.rotation), roadPiece0.z };
 
-        auto tile = World::TileManager::get(roadLoc.x, roadLoc.y);
-        auto* roadElPiece = getRoadElement(tile, args, roadPiece0.index, flags);
+        auto* roadElPiece = getRoadElement(roadLoc, args, roadPiece0.index, flags);
         if (roadElPiece == nullptr)
         {
             return 0;
@@ -166,140 +166,138 @@ namespace OpenLoco::GameCommands
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
 
         // 0x0047762D
-        auto tile = World::TileManager::get(args.pos.x, args.pos.y);
-
-        if (auto* roadEl = getRoadElement(tile, args, args.sequenceIndex, flags); roadEl != nullptr)
+        auto* roadEl = getRoadElement(args.pos, args, args.sequenceIndex, flags);
+        if (roadEl == nullptr)
         {
-            const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
-            if (!sub_431E6A(companyId, reinterpret_cast<const World::TileElement*>(roadEl)))
-            {
-                return FAILURE;
-            }
-
-            /*
-            // Remove check for is road in use when removing roads. It is
-            // quite annoying when it's sometimes only the player's own
-            // vehicles that are using it.
-            // TODO: turn this into a setting?
-            if (companyId != CompanyId::neutral && (roadEl->hasUnk7_40() || roadEl->hasUnk7_80()))
-            {
-                setErrorText(StringIds::empty);
-
-                auto nearest = TownManager::getClosestTownAndDensity(args.pos);
-                if (nearest.has_value())
-                {
-                    auto* town = TownManager::get(nearest->first);
-                    FormatArguments::common(town->name);
-                    setErrorText(StringIds::stringid_local_authority_wont_allow_removal_in_use);
-                }
-                return FAILURE;
-            }
-            */
+            return FAILURE;
         }
+
+        const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
+        if (!sub_431E6A(companyId, reinterpret_cast<const World::TileElement*>(roadEl)))
+        {
+            return FAILURE;
+        }
+
+        /*
+        // Remove check for is road in use when removing roads. It is
+        // quite annoying when it's sometimes only the player's own
+        // vehicles that are using it.
+        // TODO: turn this into a setting?
+        if (companyId != CompanyId::neutral && (roadEl->hasUnk7_40() || roadEl->hasUnk7_80()))
+        {
+            setErrorText(StringIds::empty);
+
+            auto nearest = TownManager::getClosestTownAndDensity(args.pos);
+            if (nearest.has_value())
+            {
+                auto* town = TownManager::get(nearest->first);
+                FormatArguments::common(town->name);
+                setErrorText(StringIds::stringid_local_authority_wont_allow_removal_in_use);
+            }
+            return FAILURE;
+        }
+        */
 
         currency32_t totalRemovalCost = 0;
 
         // 0x004776E3
-        if (auto* roadEl = getRoadElement(tile, args, args.sequenceIndex, flags); roadEl != nullptr)
+
+        if (roadEl->hasStationElement())
         {
-            if (roadEl->hasStationElement())
-            {
-                // We only want to remove the road station if the target road element is the only
-                // user of the road station.
-                const auto overlaps = OverlapRoads(args.pos);
-                const auto hasOtherRoadStationUsers = std::ranges::any_of(overlaps, [roadEl](const World::RoadElement& el) {
-                    if (&el == roadEl)
-                    {
-                        return false;
-                    }
-                    return el.hasStationElement();
-                });
-
-                if (!hasOtherRoadStationUsers)
+            // We only want to remove the road station if the target road element is the only
+            // user of the road station.
+            const auto overlaps = OverlapRoads(args.pos);
+            const auto hasOtherRoadStationUsers = std::ranges::any_of(overlaps, [roadEl](const World::RoadElement& el) {
+                if (&el == roadEl)
                 {
-                    auto* elStation = tile.roadStation(roadEl->roadId(), roadEl->rotation(), roadEl->baseZ());
-                    if (elStation != nullptr && !elStation->isGhost())
+                    return false;
+                }
+                return el.hasStationElement();
+            });
+
+            if (!hasOtherRoadStationUsers)
+            {
+                auto tile = World::TileManager::get(args.pos);
+                auto* elStation = tile.roadStation(roadEl->roadId(), roadEl->rotation(), roadEl->baseZ());
+                if (elStation != nullptr && !elStation->isGhost())
+                {
+                    RoadStationRemovalArgs srArgs = {};
+                    srArgs.pos = args.pos;
+                    srArgs.rotation = args.rotation;
+                    srArgs.roadId = args.roadId;
+                    srArgs.index = args.sequenceIndex;
+                    srArgs.roadObjectId = args.objectId;
+
+                    auto stationRemovalRes = GameCommands::doCommand(srArgs, flags);
+                    if (stationRemovalRes == FAILURE)
                     {
-                        RoadStationRemovalArgs srArgs = {};
-                        srArgs.pos = args.pos;
-                        srArgs.rotation = args.rotation;
-                        srArgs.roadId = args.roadId;
-                        srArgs.index = args.sequenceIndex;
-                        srArgs.roadObjectId = args.objectId;
-
-                        auto stationRemovalRes = GameCommands::doCommand(srArgs, flags);
-                        if (stationRemovalRes == FAILURE)
-                        {
-                            return FAILURE;
-                        }
-
-                        totalRemovalCost += stationRemovalRes;
+                        return FAILURE;
                     }
+
+                    totalRemovalCost += stationRemovalRes;
                 }
             }
         }
+        // Road element pointer may be invalid after road station removal.
+        roadEl = nullptr;
 
         // 0x004777EB
-        if (auto* roadEl = getRoadElement(tile, args, args.sequenceIndex, flags); roadEl != nullptr)
+        bool removeRoadBridge = false; // 0x0112C2CD
+        int8_t roadBridgeId = -1;      // 0x0112C2D0
+
+        const auto& roadPieces = World::TrackData::getRoadPiece(args.roadId);
+        const auto& currentPart = roadPieces[args.sequenceIndex];
+        const auto roadStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ currentPart.x, currentPart.y }, args.rotation), currentPart.z };
+
+        // NB: moved out of the loop below (was at 0x00477A10)
+        const currency32_t pieceRemovalCost = roadRemoveCost(args, roadPieces[0], roadStart, flags);
+
+        for (auto& piece : roadPieces)
         {
-            bool removeRoadBridge = false; // 0x0112C2CD
-            int8_t roadBridgeId = -1;      // 0x0112C2D0
+            const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
-            const auto& roadPieces = World::TrackData::getRoadPiece(roadEl->roadId());
-            const auto& currentPart = roadPieces[roadEl->sequenceIndex()];
-            const auto roadStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ currentPart.x, currentPart.y }, args.rotation), currentPart.z };
-
-            // NB: moved out of the loop below (was at 0x00477A10)
-            const currency32_t pieceRemovalCost = roadRemoveCost(args, roadPieces[0], roadStart, flags);
-
-            for (auto& piece : roadPieces)
+            if (!(flags & Flags::aiAllocated))
             {
-                const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
-
-                if (!(flags & Flags::aiAllocated))
-                {
-                    World::TileManager::mapInvalidateTileFull(roadLoc);
-                }
-
-                // 0x00477934
-                auto pieceTile = World::TileManager::get(roadLoc.x, roadLoc.y);
-                auto* roadElPiece = getRoadElement(pieceTile, args, piece.index, flags);
-                if (roadElPiece == nullptr)
-                {
-                    continue;
-                }
-
-                // 0x004779B2
-                if (roadElPiece->hasBridge())
-                {
-                    const auto overlaps = OverlapRoads(args.pos);
-                    const auto numOverlappingElRoads = std::ranges::distance(overlaps);
-
-                    // Bridge only removed if this is the only road piece
-                    removeRoadBridge = numOverlappingElRoads == 1;
-                    roadBridgeId = roadElPiece->bridge();
-                }
-
-                if (!(flags & Flags::apply))
-                {
-                    continue;
-                }
-
-                World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(roadElPiece));
-                Scenario::getOptions().madeAnyChanges = 1;
-                World::TileManager::setLevelCrossingFlags(roadLoc);
+                World::TileManager::mapInvalidateTileFull(roadLoc);
             }
 
-            // 0x00477A10
-            totalRemovalCost += pieceRemovalCost;
-
-            // Seems to have been forgotten in vanilla
-            if (removeRoadBridge)
+            // 0x00477934
+            auto* roadElPiece = getRoadElement(roadLoc, args, piece.index, flags);
+            if (roadElPiece == nullptr)
             {
-                const auto* bridgeObj = ObjectManager::get<BridgeObject>(roadBridgeId);
-                const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->sellCostFactor, bridgeObj->costIndex, 10);
-                totalRemovalCost += (bridgeBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
+                continue;
             }
+
+            // 0x004779B2
+            if (roadElPiece->hasBridge())
+            {
+                const auto overlaps = OverlapRoads(args.pos);
+                const auto numOverlappingRoads = std::ranges::distance(overlaps);
+
+                // Bridge only removed if this is the only road piece
+                removeRoadBridge = numOverlappingRoads == 1;
+                roadBridgeId = roadElPiece->bridge();
+            }
+
+            if (!(flags & Flags::apply))
+            {
+                continue;
+            }
+
+            World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(roadElPiece));
+            Scenario::getOptions().madeAnyChanges = 1;
+            World::TileManager::setLevelCrossingFlags(roadLoc);
+        }
+
+        // 0x00477A10
+        totalRemovalCost += pieceRemovalCost;
+
+        // Seems to have been forgotten in vanilla
+        if (removeRoadBridge)
+        {
+            const auto* bridgeObj = ObjectManager::get<BridgeObject>(roadBridgeId);
+            const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->sellCostFactor, bridgeObj->costIndex, 10);
+            totalRemovalCost += (bridgeBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
         }
 
         // 0x00477B39
