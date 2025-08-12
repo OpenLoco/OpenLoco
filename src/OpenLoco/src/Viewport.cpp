@@ -235,6 +235,7 @@ namespace OpenLoco::Ui
             {
                 drawingCtx.clearSingle(fillColour);
                 auto sess = Paint::PaintSession(columnRt, options);
+                sess.setMaxClipHeight(getMaxClipHeight());
                 sess.generate();
                 sess.arrangeStructs();
                 sess.drawStructs(drawingCtx);
@@ -318,5 +319,17 @@ namespace OpenLoco::Ui
             return {};
         }
         return { res->first };
+    }
+    
+    static uint16_t __max_clip_height = 0x280;
+    
+    uint16_t getMaxClipHeight()
+    {
+        return __max_clip_height;
+    }
+
+    void setMaxClipHeight(uint16_t maxClipHeight)
+    {
+        __max_clip_height = maxClipHeight;
     }
 }

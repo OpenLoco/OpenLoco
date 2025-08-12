@@ -46,6 +46,8 @@ namespace OpenLoco::Input
         screenshot,
         toggleLastAnnouncement,
         sendMessage,
+        maxClipIncrement,
+        maxClipDecrement,
         constructionPreviousTab,
         constructionNextTab,
         constructionPreviousTrackPiece,
