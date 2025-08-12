@@ -577,7 +577,7 @@ namespace OpenLoco::Input::Shortcuts
             Windows::TimePanel::beginSendChatMessage(*caller);
         }
     }
-    
+
     static void maxClipIncrement()
     {
         setMaxClipHeight(getMaxClipHeight() + 0x10);
@@ -589,7 +589,7 @@ namespace OpenLoco::Input::Shortcuts
 
         window->invalidate();
     }
-    
+
     static void maxClipDecrement()
     {
         setMaxClipHeight(getMaxClipHeight() - 0x10);

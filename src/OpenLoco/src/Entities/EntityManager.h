@@ -55,7 +55,7 @@ namespace OpenLoco::EntityManager
     bool checkNumFreeEntities(const size_t numNewEntities);
     void zeroUnused();
 
-    template<typename TEntityType, EntityId EntityBase::*nextList>
+    template<typename TEntityType, EntityId EntityBase::* nextList>
     class ListIterator
     {
     private:

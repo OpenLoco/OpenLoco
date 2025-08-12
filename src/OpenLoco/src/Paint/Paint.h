@@ -430,7 +430,7 @@ namespace OpenLoco::Paint
          * @param offsetY @<cx>
          */
         AttachedPaintStruct* attachToPrevious(ImageId imageId, const Ui::Point& offset);
-        
+
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
         void finaliseOrdering(std::span<PaintStruct*> paintStructs);

@@ -320,9 +320,9 @@ namespace OpenLoco::Ui
         }
         return { res->first };
     }
-    
+
     static uint16_t __max_clip_height = 0x280;
-    
+
     uint16_t getMaxClipHeight()
     {
         return __max_clip_height;

@@ -44,7 +44,7 @@ namespace OpenLoco::Paint
 
         // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
-        
+
         _maxClipHeight = 0x83;
         _minClipHeight = 0x0;
     }
@@ -1039,12 +1039,12 @@ namespace OpenLoco::Paint
         for (const auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags);
-            
-            if((ps->bounds.mins.z < getMinClipHeight()) || (ps-> bounds.maxs.z > getMaxClipHeight()))
+
+            if ((ps->bounds.mins.z < getMinClipHeight()) || (ps->bounds.maxs.z > getMaxClipHeight()))
             {
                 continue;
             }
-            
+
             if (shouldCull)
             {
                 if (cullPaintStructImage(ps->imageId, _viewFlags))
