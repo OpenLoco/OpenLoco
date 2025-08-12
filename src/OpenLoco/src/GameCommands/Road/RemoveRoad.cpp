@@ -28,6 +28,45 @@ namespace OpenLoco::GameCommands
         Audio::playSound(Audio::SoundId::demolish, pos, 0, frequency);
     }
 
+    struct OverlapRoads
+    {
+        World::RoadElement* _begin = nullptr;
+        World::RoadElement* _end = nullptr;
+
+        OverlapRoads(World::Pos3 pos)
+        {
+            auto tile = World::TileManager::get(pos.x, pos.y);
+            for (auto& el : tile)
+            {
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    if (_begin != nullptr)
+                    {
+                        break;
+                    }
+                    continue;
+                }
+                if (elRoad->baseZ() != pos.z / World::kSmallZStep)
+                {
+                    if (_begin != nullptr)
+                    {
+                        break;
+                    }
+                    continue;
+                }
+                _end = elRoad + 1;
+                if (_begin == nullptr)
+                {
+                    _begin = elRoad;
+                }
+            }
+        }
+
+        World::RoadElement* begin() const { return _begin; }
+        World::RoadElement* end() const { return _end; }
+    };
+
     static World::RoadElement* getRoadElement(const World::Tile& tile, const RoadRemovalArgs& args, uint8_t sequenceIndex, uint8_t flags)
     {
         const auto baseZ = args.pos.z / World::kSmallZStep;
@@ -165,42 +204,18 @@ namespace OpenLoco::GameCommands
         {
             if (roadEl->hasStationElement())
             {
-                // Count the number of road station users as we only want to
-                // remove the road station if the target road element is the only
+                // We only want to remove the road station if the target road element is the only
                 // user of the road station.
-                const auto numRoadStationUsers = [targetElRoad = roadEl, tile, &args, flags]() {
-                    const auto baseZ = args.pos.z / World::kSmallZStep;
-                    bool foundFirst = false;
-                    size_t count = 0U;
-                    for (auto& element : tile)
+                const auto overlaps = OverlapRoads(args.pos);
+                const auto hasOtherRoadStationUsers = std::ranges::any_of(overlaps, [roadEl](const World::RoadElement& el) {
+                    if (&el == roadEl)
                     {
-                        auto* elRoad = element.as<World::RoadElement>();
-                        if (elRoad == nullptr)
-                        {
-                            if (foundFirst)
-                            {
-                                break;
-                            }
-                            continue;
-                        }
-                        if (elRoad->baseZ() != baseZ)
-                        {
-                            if (foundFirst)
-                            {
-                                break;
-                            }
-                            continue;
-                        }
-                        foundFirst = true;
-                        if (elRoad->hasStationElement())
-                        {
-                            count++;
-                        }
+                        return false;
                     }
-                    return count;
-                }();
+                    return el.hasStationElement();
+                });
 
-                if (numRoadStationUsers == 1)
+                if (!hasOtherRoadStationUsers)
                 {
                     auto* elStation = tile.roadStation(roadEl->roadId(), roadEl->rotation(), roadEl->baseZ());
                     if (elStation != nullptr && !elStation->isGhost())
@@ -257,34 +272,9 @@ namespace OpenLoco::GameCommands
                 // 0x004779B2
                 if (roadElPiece->hasBridge())
                 {
-                    const auto numOverlappingElRoads = [targetElRoad = roadElPiece, pos = roadLoc, tile = pieceTile]() {
-                        const auto baseZ = pos.z / World::kSmallZStep;
-                        bool foundFirst = false;
-                        size_t count = 0U;
-                        for (auto& element : tile)
-                        {
-                            auto* elRoad = element.as<World::RoadElement>();
-                            if (elRoad == nullptr)
-                            {
-                                if (foundFirst)
-                                {
-                                    break;
-                                }
-                                continue;
-                            }
-                            if (elRoad->baseZ() != baseZ)
-                            {
-                                if (foundFirst)
-                                {
-                                    break;
-                                }
-                                continue;
-                            }
-                            foundFirst = true;
-                            count++;
-                        }
-                        return count;
-                    }();
+                    const auto overlaps = OverlapRoads(args.pos);
+                    const auto numOverlappingElRoads = std::ranges::distance(overlaps);
+
                     // Bridge only removed if this is the only road piece
                     removeRoadBridge = numOverlappingElRoads == 1;
                     roadBridgeId = roadElPiece->bridge();
