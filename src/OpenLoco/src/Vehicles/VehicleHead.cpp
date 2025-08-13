@@ -3931,6 +3931,8 @@ namespace OpenLoco::Vehicles
         if (mode == TransportMode::road)
         {
             // 0x0047DA8D
+
+            // 0x0112C30C
             uint32_t compatibleStations = 0U;
             for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::roadStation); ++i)
             {
@@ -3981,6 +3983,76 @@ namespace OpenLoco::Vehicles
             {
                 return Sub4ACEE7Result(0, 0, StationId::null);
             }
+
+            const auto pos = World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep);
+            const auto roadId = trackAndDirection.road.id();
+            const auto rotation = trackAndDirection.road.cardinalDirection();
+            const auto tile = TileManager::get(pos);
+            const auto elStation = tile.roadStation(roadId, rotation, tileBaseZ);
+            // 0x011361F6
+            const auto tileStationId = elStation != nullptr ? elStation->stationId() : StationId::null;
+            // 0x0112C32B
+            const auto stationObjId = elStation != nullptr ? elStation->objectId() : 0xFF;
+
+            auto train = Vehicle(head);
+            const auto requiredMods = var_53;
+            const auto queryMods = train.veh1->var_49;
+
+            auto [nextPos, nextRotation] = World::Track::getRoadConnectionEnd(pos, trackAndDirection.road._data & 0x7F);
+            const bool isOneWay = var_5C == 0 && var_52 != 1;
+
+            auto tc = isOneWay ? World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, owner, trackType, requiredMods, queryMods)
+                               : World::Track::getRoadConnections(nextPos, nextRotation, owner, trackType, requiredMods, queryMods);
+
+            if (var_52 != 1
+                && tileStationId != StationId::null
+                && tileStationId != tc.stationId
+                && compatibleStations & (1U << stationObjId))
+            {
+                auto orders = OrderRingView(orderTableOffset, currentOrder);
+                auto curOrder = orders.begin();
+                auto* stationOrder = curOrder->as<OrderStation>();
+                bool stationProcessed = false;
+                if (stationOrder != nullptr)
+                {
+                    if (stationOrder->is<OrderStopAt>())
+                    {
+                        if (tileStationId == stationOrder->getStation())
+                        {
+                            return Sub4ACEE7Result(4, 0, tileStationId);
+                        }
+                    }
+                    else if (stationOrder->is<OrderRouteThrough>())
+                    {
+                        if (tileStationId == stationOrder->getStation())
+                        {
+                            curOrder++;
+                            currentOrder = curOrder->getOffset() - orderTableOffset;
+                            Ui::WindowManager::sub_4B93A5(enumValue(id));
+                            stationProcessed = true;
+                        }
+                    }
+                }
+                // Handles the non-express stop at any station we pass case
+                if (!stationProcessed)
+                {
+                    if (stationId != tileStationId
+                        && (train.veh1->var_48 & Flags48::expressMode) == Flags48::none)
+                    {
+                        auto* station = StationManager::get(tileStationId);
+                        if (station->owner == train.veh1->owner)
+                        {
+                            return Sub4ACEE7Result(4, 0, tileStationId);
+                        }
+                    }
+                }
+            }
+
+            if (tc.connections.empty())
+            {
+                return Sub4ACEE7Result(2, 0, StationId::null);
+            }
+            // 0x0047DD74
         }
         else
         {
@@ -5426,7 +5498,7 @@ namespace OpenLoco::Vehicles
 
         const auto requiredMods = head.var_53;
         const auto queryMods = train.veh1->var_49;
-        const auto allowedStationTypes = *_allowedStationObjs;
+        const auto allowedStationTypes = *_vehicleUpdate_compatibleRoadStationTypes;
         Sub4AC3D3State state{};
         {
             auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
