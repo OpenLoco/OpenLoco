@@ -3820,7 +3820,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ACEE7
-    std::tuple<uint8_t, uint8_t, StationId> VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
+    Sub4ACEE7Result VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
     {
         registers regs;
         regs.esi = X86Pointer(this);
@@ -3828,7 +3828,7 @@ namespace OpenLoco::Vehicles
         regs.ebx = var_113612C;
         call(0x004ACEE7, regs);
         // status, flags, stationId
-        return std::make_tuple(static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<StationId>(regs.bp));
+        return Sub4ACEE7Result{ static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<StationId>(regs.bp) };
     }
 
     // 0x004AC1C2

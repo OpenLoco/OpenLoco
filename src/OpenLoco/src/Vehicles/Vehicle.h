@@ -351,6 +351,13 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(VehicleCargo) == 0xA);
 
+    struct Sub4ACEE7Result
+    {
+        uint8_t status;
+        uint8_t flags;
+        StationId stationId;
+    };
+
     struct VehicleHead : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::head;
@@ -477,7 +484,7 @@ namespace OpenLoco::Vehicles
         void produceLeavingDockSound();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
-        std::tuple<uint8_t, uint8_t, StationId> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
+        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
         bool sub_4ACCDC();
