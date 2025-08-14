@@ -1309,6 +1309,11 @@ namespace OpenLoco::Paint
 
         for (auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
+            if ((ps->bounds.mins.z < getMinClipHeight()) || (ps->bounds.maxs.z > getMaxClipHeight()))
+            {
+                continue;
+            }
+
             // Check main paint struct
             if (isSpriteInteractedWith(getRenderTarget(), ps->imageId, ps->vpPos))
             {
