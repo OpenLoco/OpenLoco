@@ -3650,12 +3650,133 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x0047C722
+    static void sub_47C722(VehicleHead& head)
+    {
+        head.var_38 |= Flags38::unk_2;
+        auto train = Vehicle(head);
+        auto& veh1 = *train.veh1;
+
+        // Clear out all routings after the first one
+        RoutingManager::RingView ring(veh1.routingHandle);
+        for (auto& handle : ring)
+        {
+            if (handle != veh1.routingHandle)
+            {
+                RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+            }
+        }
+
+        head.tileX = veh1.tileX;
+        head.tileY = veh1.tileY;
+        head.tileBaseZ = veh1.tileBaseZ;
+        head.routingHandle = veh1.routingHandle;
+        head.remainingDistance = veh1.remainingDistance;
+        head.var_3C = veh1.var_3C;
+        head.var_38 &= ~Flags38::unk_2;
+        head.subPosition = veh1.subPosition;
+        head.trackAndDirection = veh1.trackAndDirection;
+        head.moveTo(veh1.position);
+    }
+
     // 0x004AD778
     void VehicleHead::sub_4AD778()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AD778, regs);
+        Vehicle train(head);
+        auto& veh1 = *train.veh1;
+        auto& veh2 = *train.veh2;
+        if (mode == TransportMode::road)
+        {
+            // 0x0047C5B0
+            sub_47C722(*this);
+            var_38 |= Flags38::unk_2;
+            veh1.var_38 |= Flags38::unk_2;
+
+            auto pos = World::Pos3(veh2.tileX, veh2.tileY, veh2.tileBaseZ * World::kSmallZStep);
+            auto ring = RoutingManager::RingView(veh2.routingHandle);
+            for (auto& handle : ring)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+
+                TrackAndDirection::_RoadAndDirection tad{ 0, 0 };
+                tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+                if (handle != veh2.routingHandle)
+                {
+                    veh2.sub_47D959(pos, tad, false);
+                }
+
+                pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                if (handle != veh2.routingHandle)
+                {
+                    RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+                }
+            }
+        }
+        else
+        {
+            // 0x004AD782
+            var_38 |= Flags38::unk_2;
+            veh1.var_38 |= Flags38::unk_2;
+
+            const auto companyId = veh2.owner;
+            const auto trackObjId = veh2.trackType;
+            auto pos = World::Pos3(veh2.tileX, veh2.tileY, veh2.tileBaseZ * World::kSmallZStep);
+
+            RoutingManager::RingView ring(veh2.routingHandle);
+            for (auto& handle : ring)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+
+                TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+                const auto hasSignal = routing & World::Track::AdditionalTaDFlags::hasSignal;
+                {
+                    TrackAndDirection::_TrackAndDirection signaledTad = tad;
+                    signaledTad._data |= (routing & World::Track::AdditionalTaDFlags::hasSignal);
+                    sub_4A2AD7(pos, signaledTad, companyId, trackObjId);
+                }
+                if (handle != veh2.routingHandle)
+                {
+                    if (hasSignal)
+                    {
+                        setSignalState(pos, tad, trackObjId, 0);
+                    }
+                    leaveLevelCrossing(pos, tad, 9);
+                }
+
+                pos += World::TrackData::getUnkTrack(tad._data).pos;
+
+                // Clear out all routings after the first one
+                if (handle != veh2.routingHandle)
+                {
+                    RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+                }
+            }
+        }
+
+        tileX = veh2.tileX;
+        tileY = veh2.tileY;
+        tileBaseZ = veh2.tileBaseZ;
+        routingHandle = veh2.routingHandle;
+        remainingDistance = veh2.remainingDistance;
+        var_3C = 0;
+        var_38 &= ~(Flags38::unk_2);
+        trackAndDirection = veh2.trackAndDirection;
+        subPosition = veh2.subPosition;
+        moveTo(veh2.position);
+
+        veh1.tileX = veh2.tileX;
+        veh1.tileY = veh2.tileY;
+        veh1.tileBaseZ = veh2.tileBaseZ;
+        veh1.routingHandle = veh2.routingHandle;
+        veh1.remainingDistance = veh2.remainingDistance;
+        veh1.var_3C = 0;
+        veh1.var_38 &= ~(Flags38::unk_2);
+        veh1.trackAndDirection = veh2.trackAndDirection;
+        veh1.subPosition = veh2.subPosition;
+        veh1.moveTo(veh2.position);
     }
 
     // 0x004AA625
@@ -3910,9 +4031,64 @@ namespace OpenLoco::Vehicles
     // 0x004AD93A
     void VehicleHead::sub_4AD93A()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AD93A, regs);
+        if (mode == TransportMode::road)
+        {
+            sub_47C722(*this);
+            return;
+        }
+
+        var_38 |= Flags38::unk_2;
+        auto train = Vehicle(*this);
+        auto& veh1 = *train.veh1;
+
+        const auto companyId = veh1.owner;
+        const auto trackObjId = veh1.trackType;
+        auto pos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
+
+        bool unk = false;
+        RoutingManager::RingView ring(veh1.routingHandle);
+        for (auto& handle : ring)
+        {
+            const auto routing = RoutingManager::getRouting(handle);
+
+            TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+            tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+            const auto hasSignal = routing & World::Track::AdditionalTaDFlags::hasSignal;
+            if (hasSignal || !unk)
+            {
+                TrackAndDirection::_TrackAndDirection signaledTad = tad;
+                signaledTad._data |= (routing & World::Track::AdditionalTaDFlags::hasSignal);
+                sub_4A2AD7(pos, signaledTad, companyId, trackObjId);
+            }
+            if (handle != veh1.routingHandle)
+            {
+                if (hasSignal)
+                {
+                    setSignalState(pos, tad, trackObjId, 0);
+                }
+                leaveLevelCrossing(pos, tad, 9);
+            }
+
+            pos += World::TrackData::getUnkTrack(tad._data).pos;
+
+            // Clear out all routings after the first one
+            if (handle != veh1.routingHandle)
+            {
+                RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+            }
+        }
+
+        tileX = veh1.tileX;
+        tileY = veh1.tileY;
+        tileBaseZ = veh1.tileBaseZ;
+        routingHandle = veh1.routingHandle;
+        remainingDistance = veh1.remainingDistance;
+        var_3C = veh1.var_3C;
+        var_38 &= ~Flags38::unk_2;
+        subPosition = veh1.subPosition;
+        trackAndDirection = veh1.trackAndDirection;
+        moveTo(veh1.position);
     }
 
     static StationId tryFindStationAt(VehicleBogie* bogie)
