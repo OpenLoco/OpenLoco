@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Widgets::ImageButton({ 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
         Widgets::ImageButton({ 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
-    static bool redrawScheduled; // 0x0050A004 (2nd bit)
+    static bool redrawScheduled = false; // 0x0050A004 (2nd bit)
 
     static const WindowEventList& getEvents();
 
