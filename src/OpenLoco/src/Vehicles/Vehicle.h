@@ -351,7 +351,7 @@ namespace OpenLoco::Vehicles
 
     struct Sub4ACEE7Result
     {
-        uint8_t al;
+        uint8_t status;
         uint8_t flags;
         StationId stationId;
     };
