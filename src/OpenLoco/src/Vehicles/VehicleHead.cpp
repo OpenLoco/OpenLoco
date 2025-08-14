@@ -3974,6 +3974,7 @@ namespace OpenLoco::Vehicles
                 trackAimlessWanderPathingRecurse(curPos, connectTad, companyId, trackType, requiredMods, queryMods, recurseState);
                 state.unkFlags |= recurseState.unkFlags;
             }
+            break;
         }
     }
 
@@ -4180,6 +4181,7 @@ namespace OpenLoco::Vehicles
                 state.result.bestTrackWeighting = recurseState.result.bestTrackWeighting;
             }
             state.result.signalState = unk11360CC;
+            break;
         }
     }
 
