@@ -3,7 +3,6 @@
 #include "Point.hpp"
 #include "Size.hpp"
 
-#include <algorithm>
 #include <cstddef>
 
 namespace OpenLoco::Ui

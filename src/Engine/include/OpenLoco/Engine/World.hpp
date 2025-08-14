@@ -2,7 +2,6 @@
 
 #include "Types.hpp"
 #include <OpenLoco/Math/Vector.hpp>
-#include <algorithm>
 
 namespace OpenLoco::World
 {
@@ -104,15 +103,5 @@ namespace OpenLoco::World
     constexpr Pos2 toWorldSpace(const TilePos2& coords)
     {
         return Pos2{ static_cast<coord_t>(coords.x * kTileSize), static_cast<coord_t>(coords.y * kTileSize) };
-    }
-
-    constexpr coord_t clampCoord(coord_t coord)
-    {
-        return std::clamp<coord_t>(coord, 0, kMapWidth - 1);
-    }
-
-    constexpr coord_t clampTileCoord(coord_t coord)
-    {
-        return std::clamp<coord_t>(coord, 0, kMapColumns - 1);
     }
 }
