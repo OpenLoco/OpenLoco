@@ -220,8 +220,17 @@ namespace OpenLoco::Vehicles
     static_assert(sizeof(TrackAndDirection) == 2);
 
     // TODO move to a different header
+    enum class SignalStateFlags : uint8_t
+    {
+        none = 0U,
+        occupied = 1U << 0,       // Signal occupied with a vehicle (can be one or two way)
+        blockedNoRoute = 1U << 1, // There is no route through the signal at any time (e.g. one way signal and we are going the wrong way)
+        occupiedOneWay = 1U << 2, // Signal occupied with a vehicle and signal is one way
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(SignalStateFlags);
+
     void setSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
-    uint8_t getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
+    SignalStateFlags getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
     void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     struct ApplyTrackModsResult
@@ -447,7 +456,7 @@ namespace OpenLoco::Vehicles
         void updateGearboxMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleGearboxMotorSound* snd);
         bool updateLand();
         bool sub_4A8DB7();
-        bool sub_4A8F22();
+        bool tryReverse();
         bool sub_4A8CB6();
         bool sub_4A8C81();
         bool landTryBeginUnloading();
@@ -487,9 +496,8 @@ namespace OpenLoco::Vehicles
         Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
-        bool sub_4ACCDC();
+        bool pathingShouldReverse();
         StationId manualFindTrainStationAtLocation();
-        bool sub_4BADE4();
         bool isOnExpectedRoadOrTrack();
         VehicleStatus getStatusTravelling() const;
         void getSecondStatus(VehicleStatus& vehStatus) const;
@@ -1019,6 +1027,7 @@ namespace OpenLoco::Vehicles
      */
     void insertCarBefore(VehicleBogie& source, VehicleBase& dest);
     void registerHooks();
+    void registerHeadHooks();
 
     bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId);
     void connectJacobsBogies(VehicleHead& head);

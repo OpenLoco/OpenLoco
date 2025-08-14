@@ -24,8 +24,8 @@ namespace OpenLoco::World
                 _4 &= ~0x80;
                 _4 |= state ? 0x80 : 0;
             }
-            bool hasUnk4_40() const { return _4 & (1 << 6); }
-            void setUnk4_40(bool newState)
+            bool isOccupied() const { return _4 & (1 << 6); }
+            void setIsOccupied(bool newState)
             {
                 _4 &= ~(1 << 6);
                 _4 |= newState ? (1 << 6) : 0;
