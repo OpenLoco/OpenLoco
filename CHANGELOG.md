@@ -7,6 +7,7 @@
 - Fix: [#3171] Background of station labels have a visible gap due to being off by one pixel.
 - Fix: [#3184] The minimum size of the map window is miscalculated when it is dragged past a certain point.
 - Fix: [#3190] The map window's minimap isn't centred correctly when it is first opened.
+- Fix: [#3198] Cannot write non-English letters in text boxes.
 
 25.07 (2025-07-15)
 ------------------------------------------------------------------------
