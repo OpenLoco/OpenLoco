@@ -15,12 +15,12 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
+#include <Localisation/Unicode.h>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <cstdint>
 #include <functional>
-#include <Localisation/Unicode.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
