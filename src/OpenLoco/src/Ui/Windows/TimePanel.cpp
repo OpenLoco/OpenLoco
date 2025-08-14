@@ -32,6 +32,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
 {
     static constexpr Ui::Size32 kWindowSize = { 140, 27 };
 
+    static constexpr auto kPausedStatusTextDuration = 30; // When paused, the time panel will alternate between displaying "* paused *" and the in-game date every this many ticks.
+
     namespace Widx
     {
         enum
@@ -60,7 +62,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Widgets::ImageButton({ 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
         Widgets::ImageButton({ 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
-    static bool frameInvalid; // 0x0050A004 (2nd bit)
+    static bool redrawScheduled; // 0x0050A004 (2nd bit)
 
     static const WindowEventList& getEvents();
 
@@ -166,7 +168,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         StringId format = StringIds::date_daymonthyear;
         if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
         {
-            if (self.numTicksVisible >= 30)
+            if (self.numTicksVisible >= kPausedStatusTextDuration)
             {
                 format = StringIds::toolbar_status_paused;
             }
@@ -378,7 +380,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     void invalidateFrame()
     {
-        frameInvalid = true;
+        redrawScheduled = true;
     }
 
     // 0x00439AD9
@@ -391,14 +393,25 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
 
         w.numTicksVisible += 1;
-        if (w.numTicksVisible >= 60)
+        if (w.numTicksVisible >= kPausedStatusTextDuration * 2)
         {
             w.numTicksVisible = 0;
         }
 
-        if (frameInvalid || (SceneManager::isPaused() && (w.numTicksVisible == 30 || w.numTicksVisible == 0)))
+        // Determine if the text needs to be updated
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
         {
-            frameInvalid = false;
+            if (w.numTicksVisible == 0 || w.numTicksVisible == kPausedStatusTextDuration)
+            {
+                redrawScheduled = true;
+            }
+        }
+
+        if (redrawScheduled)
+        {
+            redrawScheduled = false;
+
+            // Invalidating the inner frame widget effectively causes the entire time panel to be redrawn.
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
     }
