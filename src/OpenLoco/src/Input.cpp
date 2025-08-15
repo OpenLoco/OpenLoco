@@ -5,10 +5,12 @@
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Window.h"
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Input
 {
@@ -45,6 +47,7 @@ namespace OpenLoco::Input
 
     void state(State state)
     {
+        Logging::verbose("Input state change, old: {0}, new: {1}", *_state, state);
         _state = state;
     }
 
@@ -85,4 +88,5 @@ namespace OpenLoco::Input
 
         return { static_cast<int16_t>(delta.x), static_cast<int16_t>(delta.y) };
     }
+
 }
