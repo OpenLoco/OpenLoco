@@ -4,7 +4,6 @@
 #include "InvalidationGrid.h"
 #include "SoftwareDrawingContext.h"
 #include <OpenLoco/Engine/Ui/Rect.hpp>
-#include <algorithm>
 #include <cstddef>
 #include <memory>
 

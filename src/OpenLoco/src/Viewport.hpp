@@ -5,7 +5,6 @@
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/World.hpp>
-#include <algorithm>
 
 namespace OpenLoco::Gfx
 {

@@ -2,6 +2,16 @@
 
 namespace OpenLoco::World
 {
+    constexpr coord_t clampCoord(coord_t coord)
+    {
+        return std::clamp<coord_t>(coord, 0, kMapWidth - 1);
+    }
+
+    constexpr coord_t clampTileCoord(coord_t coord)
+    {
+        return std::clamp<coord_t>(coord, 0, kMapColumns - 1);
+    }
+
     TilePosRangeView getClampedRange(const TilePos2& posA, const TilePos2& posB)
     {
         auto clampedA = TilePos2(clampTileCoord(posA.x), clampTileCoord(posA.y));
