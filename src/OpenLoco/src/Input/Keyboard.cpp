@@ -170,13 +170,16 @@ namespace OpenLoco::Input
 
     void enqueueText(const char* text)
     {
+        using namespace Localisation;
+
         if (text == nullptr || text[0] == '\0')
         {
             return;
         }
 
         uint32_t index = _keyQueueLastWrite;
-        _keyQueue[index].charCode = Localisation::convertUnicodeToLoco(Localisation::readCodePoint((unsigned char**)&text));
+        auto unsignedText = reinterpret_cast<const unsigned char*>(text);
+        _keyQueue[index].charCode = convertUnicodeToLoco(readCodePoint(&unsignedText));
     }
 
     // 0x00407028
