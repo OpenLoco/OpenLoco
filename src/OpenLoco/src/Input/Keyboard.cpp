@@ -15,6 +15,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
+#include <Localisation/Conversion.h>
 #include <Localisation/Unicode.h>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -175,7 +176,7 @@ namespace OpenLoco::Input
         }
 
         uint32_t index = _keyQueueLastWrite;
-        _keyQueue[index].charCode = Localisation::readCodePoint((unsigned char**)&text);
+        _keyQueue[index].charCode = Localisation::convertUnicodeToLoco(Localisation::readCodePoint((unsigned char**)&text));
     }
 
     // 0x00407028
