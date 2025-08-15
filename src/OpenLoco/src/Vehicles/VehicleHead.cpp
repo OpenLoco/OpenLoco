@@ -3916,7 +3916,7 @@ namespace OpenLoco::Vehicles
             const bool isLastElement = lastTrackElement->isLast();
             lastTrackElement->setLastFlag(false);
             auto* iter = lastTrackElement;
-            while (iter >= beginTrackElement)
+            while (iter > beginTrackElement)
             {
                 std::swap(*iter, *(iter - 1));
                 iter--;
