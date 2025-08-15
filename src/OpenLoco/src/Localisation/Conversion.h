@@ -24,7 +24,7 @@ namespace OpenLoco::Localisation
 
         // Quotation marks
         constexpr uint8_t single_quote_open = 96;
-        constexpr uint8_t single_quote_close = 39; // Also the preferred character to use for apostrophe 
+        constexpr uint8_t single_quote_close = 39; // Also the preferred character to use for apostrophe
         constexpr uint8_t quote_open = 180;
         constexpr uint8_t quote_close = 34;
 
@@ -77,7 +77,7 @@ namespace OpenLoco::Localisation
 
         // Quotation marks
         constexpr utf32_t single_quote_open = 0x2018;
-        constexpr utf32_t single_quote_close = 0x2019; // Also the preferred character to use for apostrophe 
+        constexpr utf32_t single_quote_close = 0x2019; // Also the preferred character to use for apostrophe
         constexpr utf32_t quote_open = 0x201C;
         constexpr utf32_t quote_close = 0x201D;
 
