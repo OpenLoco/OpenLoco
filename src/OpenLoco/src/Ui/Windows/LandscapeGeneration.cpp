@@ -811,7 +811,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E421
         static int16_t scrollPosToLandIndex(int16_t xPos, int16_t yPos)
         {
-            if (xPos < 150)
+            if (xPos < 150 || xPos > 340)
             {
                 return -1;
             }
