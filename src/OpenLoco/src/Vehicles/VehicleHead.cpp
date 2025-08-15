@@ -6070,5 +6070,20 @@ namespace OpenLoco::Vehicles
 
                 return 0;
             });
+
+        registerHook(
+            0x004A3EF6,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const uint16_t tad = regs.ebp;
+                const uint8_t trackType = regs.bh;
+                bringTrackElementToFront(pos, trackType, tad);
+
+                regs = backup;
+
+                return 0;
+            });
     }
 }
