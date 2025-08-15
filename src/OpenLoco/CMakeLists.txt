@@ -166,6 +166,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/TextRenderer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Gui.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/InputFmt.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Keyboard.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/MouseInput.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Shortcuts.cpp"

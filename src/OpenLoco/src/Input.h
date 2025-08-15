@@ -16,6 +16,8 @@ namespace OpenLoco::Input
         rightReleased = 4,
     };
 
+    std::string_view format_as(MouseButton state);
+
     enum class State : uint8_t
     {
         reset,             // 0
@@ -29,6 +31,8 @@ namespace OpenLoco::Input
         resizing,          // 8
         scrollRight,       // 9
     };
+
+    std::string_view format_as(State state);
 
     enum class Flags : uint32_t
     {

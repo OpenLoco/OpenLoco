@@ -5,12 +5,17 @@
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Window.h"
+#include <OpenLoco/Diagnostics/Logging.h>
+#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 
 #include <SDL2/SDL.h>
 #pragma warning(disable : 4121) // alignment of a member was sensitive to packing
 #include <SDL2/SDL_syswm.h>
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
+
+using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Input
 {
@@ -48,6 +53,7 @@ namespace OpenLoco::Input
 
     void state(State state)
     {
+        Logging::verbose("Input state change, old: {0}, new: {1}", *_state, state);
         _state = state;
     }
 
@@ -222,5 +228,4 @@ namespace OpenLoco::Input
         readKeyboardState();
         return true;
     }
-
 }
