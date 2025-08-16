@@ -4689,7 +4689,10 @@ namespace OpenLoco::Vehicles
         curTad._data = tad;
         for (; true;)
         {
-            state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
+            // TODO: This is a vanilla mistake where it accesses the wrong data!
+            // CHANGE THIS WHEN WE DIVERGE FROM VANILLA
+            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
+            // state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
             if (state.totalTrackWeighting > 1280)
             {
                 break;
@@ -4698,7 +4701,7 @@ namespace OpenLoco::Vehicles
             state.bestTrackWeighting = std::max(state.bestTrackWeighting, state.totalTrackWeighting);
 
             auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
-            auto tc = World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, companyId, roadObjectId, requiredMods, queryMods);
+            auto tc = World::Track::getRoadConnections(nextPos, nextRotation, companyId, roadObjectId, requiredMods, queryMods);
 
             if (tc.connections.empty())
             {
