@@ -4053,6 +4053,86 @@ namespace OpenLoco::Vehicles
                 return Sub4ACEE7Result(2, 0, StationId::null);
             }
             // 0x0047DD74
+            uint16_t connection = tc.connections[0];
+            if (tc.connections.size() > 1)
+            {
+                if (var_52 == 1)
+                {
+                    connection = roadLongestPathing(*this, nextPos, tc, requiredMods, queryMods);
+                }
+                else
+                {
+                    Sub4AC3D3State state{};
+                    connection = roadPathing(*this, nextPos, tc, requiredMods, queryMods, compatibleStations, false, state);
+                }
+                connection |= (1U << 14);
+            }
+            if (trackAndDirection.road.isBackToFront())
+            {
+                if (!trackAndDirection.road.isUnk8())
+                {
+                    connection ^= (1U << 7);
+                    if (var_52 != 1 && trackType != 0xFFU)
+                    {
+                        auto* roadObj = ObjectManager::get<RoadObject>(trackType);
+                        if (roadObj->hasFlags(RoadObjectFlags::isRoad))
+                        {
+                            connection ^= (1U << 8);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (trackAndDirection.road.isUnk8())
+                {
+                    connection ^= (1U << 7);
+                    if (var_52 != 1 && trackType != 0xFFU)
+                    {
+                        auto* roadObj = ObjectManager::get<RoadObject>(trackType);
+                        if (roadObj->hasFlags(RoadObjectFlags::isRoad))
+                        {
+                            connection ^= (1U << 8);
+                        }
+                    }
+                }
+            }
+            // 0x0047DDFB
+            auto nextHandle = RoutingHandle(routingHandle.getVehicleRef(), (routingHandle.getIndex() + 1) % Limits::kMaxRoutingsPerVehicle);
+            RoutingManager::setRouting(nextHandle, connection);
+
+            if (var_52 == 1)
+            {
+                return Sub4ACEE7Result{ 0, 0, StationId::null };
+            }
+
+            auto curOrder = OrderRingView(orderTableOffset, currentOrder).begin();
+            auto* waypointOrder = curOrder->as<OrderRouteWaypoint>();
+            if (waypointOrder == nullptr)
+            {
+                return Sub4ACEE7Result{ 0, 0, StationId::null };
+            }
+
+            auto curPos = World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep);
+            curPos += World::TrackData::getUnkRoad(trackAndDirection.road._data & 0x7F).pos;
+
+            if (curPos != waypointOrder->getWaypoint())
+            {
+                auto& trackSize = World::TrackData::getUnkRoad(connection & 0x7F);
+                auto connectPos = curPos + trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    connectPos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                if (connectPos != waypointOrder->getWaypoint())
+                {
+                    return Sub4ACEE7Result{ 0, 0, StationId::null };
+                }
+            }
+            curOrder++;
+            currentOrder = curOrder->getOffset() - orderTableOffset;
+            Ui::WindowManager::sub_4B93A5(enumValue(id));
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
         }
         else
         {
@@ -4874,7 +4954,7 @@ namespace OpenLoco::Vehicles
 
     // 0x0047DF4A
     // Finds the longest road at a junction
-    static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t, bool, Sub4AC3D3State&)
+    static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods)
     {
         // ROAD only
 
@@ -6407,9 +6487,7 @@ namespace OpenLoco::Vehicles
                     rc.connections.push_back(_legacyConnections->data[i]);
                 }
 
-                Sub4AC3D3State state{};
-
-                const auto connection = roadLongestPathing(head, pos, rc, requiredMods, queryMods, 0, 0, state);
+                const auto connection = roadLongestPathing(head, pos, rc, requiredMods, queryMods);
 
                 regs = backup;
                 regs.bx = connection;
