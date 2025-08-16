@@ -224,8 +224,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static void prepareDraw(Window& window)
         {
-            switchTabWidgets(&window);
-
             window.widgets[widx::frame].right = window.width - 1;
             window.widgets[widx::frame].bottom = window.height - 1;
 
