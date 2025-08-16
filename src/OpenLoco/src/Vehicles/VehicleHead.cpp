@@ -3973,9 +3973,17 @@ namespace OpenLoco::Vehicles
                 {
                     continue;
                 }
-                if (roadStationObj->hasFlags(RoadStationFlags::passenger | RoadStationFlags::freight))
+                if (roadStationObj->hasFlags(RoadStationFlags::passenger))
                 {
                     if (trainAcceptedCargoTypes & (1U << roadStationObj->cargoType))
+                    {
+                        compatibleStations |= (1U << i);
+                    }
+                }
+                else if (roadStationObj->hasFlags(RoadStationFlags::freight))
+                {
+                    // Eh? is this a not accepted cargo type
+                    if (!(trainAcceptedCargoTypes & (1U << roadStationObj->cargoType)))
                     {
                         compatibleStations |= (1U << i);
                     }
@@ -3989,6 +3997,8 @@ namespace OpenLoco::Vehicles
 
             auto routings = RoutingManager::RingView(routingHandle);
             auto iter = routings.begin();
+            iter++;
+            iter++;
             if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
             {
                 return Sub4ACEE7Result(1, 0, StationId::null);
@@ -4008,7 +4018,7 @@ namespace OpenLoco::Vehicles
                 const auto distance1 = unk1 - var_3C;
                 const auto distance2 = std::max(var_113612C * 4, 0xCC48U);
                 const auto distance = std::min(distance1, distance2);
-                remainingDistance += distance - updateTrackMotion(distance);
+                var_3C += distance - updateTrackMotion(distance);
             }
 
             if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
@@ -4099,12 +4109,12 @@ namespace OpenLoco::Vehicles
                 }
                 connection |= (1U << 14);
             }
-            if (trackAndDirection.road.isBackToFront())
+            if (trackAndDirection.road.isBackToFront() ^ trackAndDirection.road.isUnk8())
             {
-                if (!trackAndDirection.road.isUnk8())
+                connection ^= (1U << 7);
+                if (var_52 != 1)
                 {
-                    connection ^= (1U << 7);
-                    if (var_52 != 1 && trackType != 0xFFU)
+                    if (trackType != 0xFFU)
                     {
                         auto* roadObj = ObjectManager::get<RoadObject>(trackType);
                         if (roadObj->hasFlags(RoadObjectFlags::isRoad))
@@ -4112,25 +4122,14 @@ namespace OpenLoco::Vehicles
                             connection ^= (1U << 8);
                         }
                     }
-                }
-            }
-            else
-            {
-                if (trackAndDirection.road.isUnk8())
-                {
-                    connection ^= (1U << 7);
-                    if (var_52 != 1 && trackType != 0xFFU)
+                    else
                     {
-                        auto* roadObj = ObjectManager::get<RoadObject>(trackType);
-                        if (roadObj->hasFlags(RoadObjectFlags::isRoad))
-                        {
-                            connection ^= (1U << 8);
-                        }
+                        connection ^= (1U << 8);
                     }
                 }
             }
             // 0x0047DDFB
-            auto nextHandle = RoutingHandle(routingHandle.getVehicleRef(), (routingHandle.getIndex() + 1) % Limits::kMaxRoutingsPerVehicle);
+            const auto& nextHandle = *++(routings.begin());
             RoutingManager::setRouting(nextHandle, connection);
 
             if (var_52 == 1)
