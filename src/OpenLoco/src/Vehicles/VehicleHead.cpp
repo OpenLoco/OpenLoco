@@ -4677,7 +4677,7 @@ namespace OpenLoco::Vehicles
         uint32_t bestTrackWeighting;  // 0x01136434
     };
 
-    static void roadNoTargetPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods, Sub47E72FState& state)
+    static void roadLongestPathingCalculateRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods, Sub47E72FState& state)
     {
         if (state.recursionDepth >= 5)
         {
@@ -4695,7 +4695,7 @@ namespace OpenLoco::Vehicles
                 break;
             }
 
-            state.bestTrackWeighting = std::min(state.bestTrackWeighting, state.totalTrackWeighting);
+            state.bestTrackWeighting = std::max(state.bestTrackWeighting, state.totalTrackWeighting);
 
             auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
             auto tc = World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, companyId, roadObjectId, requiredMods, queryMods);
@@ -4715,7 +4715,7 @@ namespace OpenLoco::Vehicles
                 const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 auto recurseState = state;
                 recurseState.recursionDepth++;
-                roadNoTargetPathingRecurse(curPos, connectTad, companyId, roadObjectId, requiredMods, queryMods, recurseState);
+                roadLongestPathingCalculateRecurse(curPos, connectTad, companyId, roadObjectId, requiredMods, queryMods, recurseState);
             }
             break;
         }
@@ -4730,15 +4730,16 @@ namespace OpenLoco::Vehicles
     // trackType : bh
     // requiredMods : 0x0113601A
     // queryMods : 0x0113601B
-    static uint16_t roadNoTargetPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    static uint16_t roadLongestPathingCalculate(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
         Sub47E72FState state{};
-        roadNoTargetPathingRecurse(pos, tad, companyId, roadObjectId, requiredMods, queryMods, state);
+        roadLongestPathingCalculateRecurse(pos, tad, companyId, roadObjectId, requiredMods, queryMods, state);
         return state.bestTrackWeighting;
     }
 
     // 0x0047DF4A
-    static uint16_t roadPathing2(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t, bool, Sub4AC3D3State&)
+    // Finds the longest road at a junction
+    static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t, bool, Sub4AC3D3State&)
     {
         // ROAD only
 
@@ -4751,7 +4752,7 @@ namespace OpenLoco::Vehicles
         for (auto i = 0U; i < rc.connections.size(); ++i)
         {
             const auto connection = rc.connections[i] & 0x807F;
-            const auto newValue = roadNoTargetPathing(pos, connection, companyId, roadObjId, requiredMods, queryMods);
+            const auto newValue = roadLongestPathingCalculate(pos, connection, companyId, roadObjId, requiredMods, queryMods);
 
             if (newValue >= bestValue)
             {
@@ -6144,7 +6145,7 @@ namespace OpenLoco::Vehicles
 
                 Sub4AC3D3State state{};
 
-                const auto connection = roadPathing2(head, pos, rc, requiredMods, queryMods, 0, 0, state);
+                const auto connection = roadLongestPathing(head, pos, rc, requiredMods, queryMods, 0, 0, state);
 
                 regs = backup;
                 regs.bx = connection;
