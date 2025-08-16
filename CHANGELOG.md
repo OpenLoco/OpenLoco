@@ -4,6 +4,7 @@
 - Change: [#3193] The minimum size of the map window was changed to accommodate all elements.
 - Fix: [#3019] Mouse getting stuck on edges of monitor when right mouse dragging scroll views.
 - Fix: [#3116] Visual artifacts when additional viewports are visible, most prominently with news message window.
+- Fix: [#3137] Viewport interaction is offset by window position.
 - Fix: [#3167] Dropdown for terrain type selection is displayed at the wrong position.
 - Fix: [#3171] Background of station labels have a visible gap due to being off by one pixel.
 - Fix: [#3184] The minimum size of the map window is miscalculated when it is dragged past a certain point.
