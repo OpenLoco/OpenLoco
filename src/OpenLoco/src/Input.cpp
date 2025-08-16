@@ -5,17 +5,14 @@
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Window.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Input
 {
-    loco_global<Flags, 0x00523368> _flags;
-    static loco_global<State, 0x0052336D> _state;
+    static Flags _flags;
+    static State _state;
     static Ui::Point32 _cursorDragStart;
-    loco_global<uint32_t, 0x00525374> _cursorDragState;
+    static uint32_t _cursorDragState;
 
     void init()
     {
@@ -40,7 +37,7 @@ namespace OpenLoco::Input
 
     State state()
     {
-        return *_state;
+        return _state;
     }
 
     void state(State state)
