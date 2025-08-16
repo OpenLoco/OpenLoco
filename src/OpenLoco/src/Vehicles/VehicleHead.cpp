@@ -4719,6 +4719,7 @@ namespace OpenLoco::Vehicles
                 auto recurseState = state;
                 recurseState.recursionDepth++;
                 roadLongestPathingCalculateRecurse(curPos, connectTad, companyId, roadObjectId, requiredMods, queryMods, recurseState);
+                state.bestTrackWeighting = recurseState.bestTrackWeighting;
             }
             break;
         }
