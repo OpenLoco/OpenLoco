@@ -178,7 +178,7 @@ namespace OpenLoco::Input
         }
 
         uint32_t index = _keyQueueLastWrite;
-        auto unsignedText = reinterpret_cast<const unsigned char*>(text);
+        auto unsignedText = reinterpret_cast<const uint8_t*>(text);
         _keyQueue[index].charCode = convertUnicodeToLoco(readCodePoint(&unsignedText));
     }
 
