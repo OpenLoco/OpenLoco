@@ -129,9 +129,9 @@ namespace OpenLoco::Ui
             return std::nullopt;
         }
 
-        if (vp->containsUi(mouse))
+        if (vp->containsUi(mouse - w->position()))
         {
-            viewport_pos vpos = vp->screenToViewport(mouse);
+            viewport_pos vpos = vp->screenToViewport(mouse - w->position());
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (World::validCoords(position))
             {
