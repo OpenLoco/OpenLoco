@@ -1872,7 +1872,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     cashFormat = StringIds::cash_bankrupt;
                 }
-                if (company->cash.var_04 < 0)
+                else if (company->cash.var_04 < 0)
                 {
                     cashFormat = StringIds::cash_negative;
                 }
