@@ -1252,7 +1252,7 @@ namespace OpenLoco::CompanyManager
 
         // Temporarily store the preferred name in buffer string 2039.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(buffer_2039, Config::get().old.preferredName, 256);
+        strncpy(buffer_2039, Config::get().preferredOwnerName.c_str(), 256);
 
         // Prepare '{NAME} Transport' in a buffer.
         {
