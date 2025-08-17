@@ -1038,8 +1038,6 @@ namespace OpenLoco::Paint
 
         for (const auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
-            ++id;
-
             const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags);
 
             if ((ps->bounds.mins.z < getMinClipHeight()) || (ps->bounds.maxs.z > getMaxClipHeight()))
