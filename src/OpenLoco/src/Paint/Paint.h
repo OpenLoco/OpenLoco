@@ -311,10 +311,10 @@ namespace OpenLoco::Paint
         void setWaterHeight2(int16_t height) { _waterHeight2 = height; }
         PaintStruct* getLastPS() { return _lastPS; }
         void setLastPS(PaintStruct* ps) { _lastPS = ps; }
-        void setMaxClipHeight(uint16_t height) { _maxClipHeight = height; }
-        void setMinClipHeight(uint16_t height) { _minClipHeight = height; }
-        uint16_t getMaxClipHeight() { return _maxClipHeight; }
-        uint16_t getMinClipHeight() { return _minClipHeight; }
+        void setMaxClipHeight(int16_t height) { _maxClipHeight = height; }
+        void setMinClipHeight(int16_t height) { _minClipHeight = height; }
+        int16_t getMaxClipHeight() { return _maxClipHeight; }
+        int16_t getMinClipHeight() { return _minClipHeight; }
 
         /*
          * @param amount    @<eax>

@@ -20,6 +20,7 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <Viewport.hpp>
 
 using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Paint
@@ -467,7 +468,7 @@ namespace OpenLoco::Paint
                 const auto markerHeight = height + getRoadDecorationHeightOffset(isFirstTile, elRoad.roadId()) + 8;
                 const auto imageId = ImageId{ getHeightMarkerImage(markerHeight), Colour::blue };
                 const World::Pos3 offset(16, 16, markerHeight);
-                const World::Pos3 bbOffset(1000, 1000, 1087);
+                const World::Pos3 bbOffset(1000, 1000, OpenLoco::Ui::getMaxClipHeight());
                 const World::Pos3 bbSize(1, 1, 0);
                 session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
             }
