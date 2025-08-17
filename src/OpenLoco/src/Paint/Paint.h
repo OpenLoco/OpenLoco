@@ -507,8 +507,8 @@ namespace OpenLoco::Paint
         uint32_t _roadMergeExits{};
         int16_t _roadMergeHeight{};
         uint16_t _roadMergeStreetlightType{};
-        uint16_t _minClipHeight{};
-        uint16_t _maxClipHeight{};
+        int16_t _minClipHeight{};
+        int16_t _maxClipHeight{};
 
         // From OpenRCT2 equivalent fields not found yet or new
         // AttachedPaintStruct* unkF1AD2C;              // no equivalent
