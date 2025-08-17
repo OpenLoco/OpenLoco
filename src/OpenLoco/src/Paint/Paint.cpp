@@ -45,8 +45,8 @@ namespace OpenLoco::Paint
         // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
 
-        _maxClipHeight = 0x7FFF;
-        _minClipHeight = -0x7FFE;
+        _maxClipHeight = static_cast<int16_t>(0x7FFF);
+        _minClipHeight = static_cast<int16_t>(-0x7FFE);
     }
 
     void PaintSession::setEntityPosition(const World::Pos2& pos)
