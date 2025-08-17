@@ -1036,8 +1036,6 @@ namespace OpenLoco::Paint
     {
         const Gfx::RenderTarget& rt = drawingCtx.currentRenderTarget();
 
-        uint64_t id = 0;
-
         for (const auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             ++id;
