@@ -34,6 +34,7 @@ namespace OpenLoco::Localisation
         { UnicodeChar::single_quote_close, LocoChar::single_quote_close },
         { UnicodeChar::quote_open, LocoChar::quote_open },
         { UnicodeChar::quote_close, LocoChar::quote_close },
+        { UnicodeChar::bullet, LocoChar::bullet },
         { UnicodeChar::up, LocoChar::up },
         { UnicodeChar::small_up, LocoChar::small_up },
         { UnicodeChar::right, LocoChar::right },
