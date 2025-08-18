@@ -14,7 +14,6 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
-
 #include <array>
 #include <cstring>
 
@@ -42,9 +41,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         Widgets::Label({ 2, 17 }, { 256, 12 }, WindowColour::primary, ContentAlign::center, StringIds::empty),
         Widgets::Button({ 8, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_save),
         Widgets::Button({ 91, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_dont_save),
-        Widgets::Button({ 174, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_cancel)
-
-    );
+        Widgets::Button({ 174, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_cancel));
 
     static const WindowEventList& getEvents();
 
@@ -148,7 +145,8 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
     // 0x0043C577
     static void onClose([[maybe_unused]] Window& self)
-    { }
+    {
+    }
 
     static constexpr WindowEventList kEvents = {
         .onClose = onClose,
