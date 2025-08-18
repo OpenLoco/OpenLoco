@@ -4013,9 +4013,9 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            const auto distance1 = unk1 - head.var_3C;
+            const int32_t distance1 = unk1 - head.var_3C;
             const auto distance2 = std::max(var_113612C * 4, 0xCC48U);
-            const auto distance = std::min(distance1, distance2);
+            const auto distance = std::min<int32_t>(distance1, distance2);
             head.var_3C += distance - head.updateTrackMotion(distance);
         }
 

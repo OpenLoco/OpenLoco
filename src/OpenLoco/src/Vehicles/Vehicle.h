@@ -383,7 +383,7 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
-        uint32_t var_3C;     // 0x3C
+        int32_t var_3C;      // 0x3C
         uint8_t pad_40[0x2]; // 0x40
         TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
