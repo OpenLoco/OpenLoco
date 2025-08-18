@@ -224,8 +224,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static void prepareDraw(Window& window)
         {
-            switchTabWidgets(&window);
-
             window.widgets[widx::frame].right = window.width - 1;
             window.widgets[widx::frame].bottom = window.height - 1;
 
@@ -636,6 +634,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             StringIds::land_distribution_around_cliffs,
         };
 
+        static constexpr auto kLandDropdownWidth = 190;
+        static constexpr auto kLandDropdownLeft = 150;
+        static constexpr auto kLandDropdownRight = kLandDropdownLeft + kLandDropdownWidth;
+
         // 0x0043E01C
         static void drawScroll(Ui::Window& window, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
         {
@@ -674,24 +676,24 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 }
 
                 // Draw rectangle.
-                drawingCtx.fillRectInset(150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
+                drawingCtx.fillRectInset(kLandDropdownLeft, yPos + 5, kLandDropdownRight, yPos + 16, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
 
                 // Draw current distribution setting.
                 {
                     FormatArguments args{};
                     const StringId distributionId = landDistributionLabelIds[enumValue(Scenario::getOptions().landDistributionPatterns[i])];
                     args.push(distributionId);
-                    auto point = Point(151, yPos + 5);
-                    tr.drawStringLeftClipped(point, 177, Colour::black, StringIds::black_stringid, args);
+                    auto point = Point(kLandDropdownLeft + 1, yPos + 5);
+                    tr.drawStringLeftClipped(point, kLandDropdownWidth - 3, Colour::black, StringIds::black_stringid, args);
                 }
 
                 // Draw rectangle (knob).
                 const Gfx::RectInsetFlags flags = window.rowHover == i ? Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker : Gfx::RectInsetFlags::none;
-                drawingCtx.fillRectInset(329, yPos + 6, 339, yPos + 15, window.getColour(WindowColour::secondary), flags);
+                drawingCtx.fillRectInset(kLandDropdownRight - 11, yPos + 6, kLandDropdownRight - 1, yPos + 15, window.getColour(WindowColour::secondary), flags);
 
                 // Draw triangle (knob).
                 {
-                    auto point = Point(330, yPos + 6);
+                    auto point = Point(kLandDropdownRight - 10, yPos + 6);
                     tr.drawStringLeft(point, Colour::black, StringIds::dropdown);
                 }
 
@@ -811,7 +813,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E421
         static int16_t scrollPosToLandIndex(int16_t xPos, int16_t yPos)
         {
-            if (xPos < 150)
+            if (xPos < kLandDropdownLeft || xPos > kLandDropdownRight)
             {
                 return -1;
             }
@@ -848,9 +850,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Audio::playSound(Audio::SoundId::clickDown, window.widgets[widx::scrollview].right);
 
             const Widget& target = window.widgets[widx::scrollview];
-            const int16_t dropdownX = window.x + target.left + 151;
+            const int16_t dropdownX = window.x + target.left + kLandDropdownLeft + 1;
             const int16_t dropdownY = window.y + target.top + 6 + landIndex * kRowHeight - window.scrollAreas[0].contentOffsetY;
-            Dropdown::show(dropdownX, dropdownY, 188, 12, window.getColour(WindowColour::secondary), std::size(landDistributionLabelIds), 0x80);
+            Dropdown::show(dropdownX, dropdownY, kLandDropdownWidth - 2, 12, window.getColour(WindowColour::secondary), std::size(landDistributionLabelIds), 0x80);
 
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
             {

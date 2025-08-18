@@ -3820,6 +3820,111 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_2 = train.veh2;
     }
 
+    // 0x004A3EF6
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : ebp
+    //
+    // ebp clobbered, dl will have rotation, dh will have track id.
+    // return: pos : ax, cx, di
+    static World::Pos3 getTrackStartFromTad(World::Pos3 pos, uint16_t tad)
+    {
+        World::Pos3 adjustedPos = pos;
+        if (tad & (1U << 2))
+        {
+            auto& trackSize = World::TrackData::getUnkTrack(tad);
+            adjustedPos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                adjustedPos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+        }
+
+        return adjustedPos;
+    }
+
+    // 0x004A3EF6
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : ebp
+    // trackType : bh
+    static void bringTrackElementToFront(World::Pos3 pos, uint8_t trackType, uint16_t tad)
+    {
+        // TRACK only
+        const auto trackStart = getTrackStartFromTad(pos, tad);
+        const auto trackId = (tad >> 3) & 0x3F;
+        const auto rotation = tad & 0x3;
+
+        const auto& trackPieces = World::TrackData::getTrackPiece(trackId);
+        for (auto& piece : trackPieces)
+        {
+            const auto piecePos = trackStart + World::Pos3(Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z);
+
+            Ui::ViewportManager::invalidate(piecePos, piecePos.z, piecePos.z + 32);
+
+            auto tile = TileManager::get(piecePos);
+            World::TrackElement* beginTrackElement = nullptr;
+            World::TrackElement* lastTrackElement = nullptr;
+            for (auto& el : tile)
+            {
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    beginTrackElement = nullptr;
+                    continue;
+                }
+                if (elTrack->baseHeight() != piecePos.z)
+                {
+                    beginTrackElement = nullptr;
+                    continue;
+                }
+                if (beginTrackElement == nullptr)
+                {
+                    beginTrackElement = elTrack;
+                }
+                if (elTrack->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != piece.index)
+                {
+                    continue;
+                }
+                if (elTrack->trackObjectId() != trackType)
+                {
+                    continue;
+                }
+                if (elTrack->trackId() != trackId)
+                {
+                    continue;
+                }
+
+                if (elTrack->hasSignal() || elTrack->hasStationElement())
+                {
+                    break;
+                }
+                lastTrackElement = elTrack;
+                break;
+            }
+            if (lastTrackElement == nullptr || beginTrackElement == nullptr || beginTrackElement == lastTrackElement)
+            {
+                continue;
+            }
+            // Move the track element we are on to the front of the list of track elements
+            const bool isLastElement = lastTrackElement->isLast();
+            lastTrackElement->setLastFlag(false);
+            auto* iter = lastTrackElement;
+            while (iter > beginTrackElement)
+            {
+                std::swap(*iter, *(iter - 1));
+                iter--;
+            }
+            lastTrackElement->setLastFlag(isLastElement);
+        }
+    }
+
     // 0x004ACEE7
     Sub4ACEE7Result VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
     {
@@ -4563,6 +4668,104 @@ namespace OpenLoco::Vehicles
 
             return rc.connections[bestConnection];
         }
+    }
+
+    struct Sub47E72FState
+    {
+        uint16_t recursionDepth;      // 0x0113642C
+        uint32_t totalTrackWeighting; // 0x01136430
+        uint32_t bestTrackWeighting;  // 0x01136434
+    };
+
+    static void roadLongestPathingCalculateRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods, Sub47E72FState& state)
+    {
+        if (state.recursionDepth >= 5)
+        {
+            return;
+        }
+
+        auto curPos = pos;
+        TrackAndDirection::_RoadAndDirection curTad{ 0, 0 };
+        curTad._data = tad;
+        for (; true;)
+        {
+            // TODO: This is a vanilla mistake where it accesses the wrong data!
+            // CHANGE THIS WHEN WE DIVERGE FROM VANILLA
+            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
+            // state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
+
+            state.bestTrackWeighting = std::max(state.bestTrackWeighting, state.totalTrackWeighting);
+
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
+            auto tc = World::Track::getRoadConnections(nextPos, nextRotation, companyId, roadObjectId, requiredMods, queryMods);
+
+            if (tc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            if (tc.connections.size() == 1)
+            {
+                continue;
+            }
+            for (auto& connection : tc.connections)
+            {
+                const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                roadLongestPathingCalculateRecurse(curPos, connectTad, companyId, roadObjectId, requiredMods, queryMods, recurseState);
+                state.bestTrackWeighting = recurseState.bestTrackWeighting;
+            }
+            break;
+        }
+    }
+
+    // 0x0047E72F
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    static uint16_t roadLongestPathingCalculate(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        Sub47E72FState state{};
+        roadLongestPathingCalculateRecurse(pos, tad, companyId, roadObjectId, requiredMods, queryMods, state);
+        return state.bestTrackWeighting;
+    }
+
+    // 0x0047DF4A
+    // Finds the longest road at a junction
+    static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t, bool, Sub4AC3D3State&)
+    {
+        // ROAD only
+
+        const auto companyId = head.owner;
+        const auto roadObjId = head.trackType;
+
+        uint16_t bestValue = 0;
+        uint16_t bestConnection = 0;
+        // No target pathing
+        for (auto i = 0U; i < rc.connections.size(); ++i)
+        {
+            const auto connection = rc.connections[i] & 0x807F;
+            const auto newValue = roadLongestPathingCalculate(pos, connection, companyId, roadObjId, requiredMods, queryMods);
+
+            if (newValue >= bestValue)
+            {
+                bestValue = newValue;
+                bestConnection = i;
+            }
+        }
+
+        return rc.connections[bestConnection];
     }
 
     static void trackAimlessWanderPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, Sub4AC884State& state)
@@ -5929,6 +6132,32 @@ namespace OpenLoco::Vehicles
             });
 
         registerHook(
+            0x0047DF4A,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx & ~(0x8000U));
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+                VehicleHead& head = *X86Pointer<VehicleHead>(regs.esi);
+                static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _legacyConnections;
+                Track::RoadConnections rc{};
+                for (auto i = 0U; i < _legacyConnections->size; ++i)
+                {
+                    rc.connections.push_back(_legacyConnections->data[i]);
+                }
+
+                Sub4AC3D3State state{};
+
+                const auto connection = roadLongestPathing(head, pos, rc, requiredMods, queryMods, 0, 0, state);
+
+                regs = backup;
+                regs.bx = connection;
+
+                return 0;
+            });
+
+        registerHook(
             0x0047DFD0,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -5962,6 +6191,21 @@ namespace OpenLoco::Vehicles
 
                 regs = backup;
                 regs.bx = connection;
+
+                return 0;
+            });
+
+        registerHook(
+            0x004A3EF6,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
+                const uint16_t tad = regs.ebp;
+                const uint8_t trackType = regs.bh;
+                bringTrackElementToFront(pos, trackType, tad);
+
+                regs = backup;
 
                 return 0;
             });

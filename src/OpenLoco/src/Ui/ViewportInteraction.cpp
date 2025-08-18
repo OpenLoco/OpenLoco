@@ -954,9 +954,10 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto w = WindowManager::findAt(screenPos);
         if (w != nullptr)
         {
+            const auto relPos = screenPos - w->position();
             for (auto vp : w->viewports)
             {
-                if (vp != nullptr && vp->containsUi({ screenPos.x, screenPos.y }))
+                if (vp != nullptr && vp->containsUi(relPos))
                 {
                     if (vp->hasFlags(ViewportFlags::seeThroughBuildings))
                     {
@@ -1495,13 +1496,14 @@ namespace OpenLoco::Ui::ViewportInteraction
                 continue;
             }
 
-            if (!vp->containsUi({ screenPos.x, screenPos.y }))
+            const auto relPos = screenPos - w->position();
+            if (!vp->containsUi(relPos))
             {
                 continue;
             }
 
             chosenV = vp;
-            auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });
+            auto vpPos = vp->screenToViewport(relPos);
             _rt1->zoomLevel = vp->zoom;
             _rt1->x = (0xFFFF << vp->zoom) & vpPos.x;
             _rt1->y = (0xFFFF << vp->zoom) & vpPos.y;
