@@ -1223,7 +1223,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458B51
         static void updateActiveThumb(Window& self)
         {
-           uint32_t scrollHeight = 0;
+            uint32_t scrollHeight = 0;
             self.callGetScrollSize(0, nullptr, &scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
