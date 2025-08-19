@@ -249,9 +249,10 @@ namespace OpenLoco::GameCommands
                 elBuilding->setIsMiscBuilding(buildingObj->hasFlags(BuildingObjectFlags::miscBuilding));
 
                 bool hasFrames = false;
+                const auto partAnimations = buildingObj->getBuildingPartAnimations();
                 for (auto part : buildingObj->getBuildingParts(args.variation))
                 {
-                    if (buildingObj->partAnimations[part].numFrames > 1)
+                    if (partAnimations[part].numFrames > 1)
                     {
                         hasFrames = true;
                     }

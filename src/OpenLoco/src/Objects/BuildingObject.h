@@ -42,32 +42,32 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::building;
 
-        StringId name;                               // 0x0
-        uint32_t image;                              // 0x2
-        uint8_t numParts;                            // 0x6
-        uint8_t numVariations;                       // 0x7
-        uint32_t partHeightsOffset;                  // 0x8
-        const BuildingPartAnimation* partAnimations; // 0xC
-        const uint8_t* variationParts[32];           // 0x10 Access with getBuildingParts helper method
-        uint32_t colours;                            // 0x90
-        uint16_t designedYear;                       // 0x94
-        uint16_t obsoleteYear;                       // 0x96
-        BuildingObjectFlags flags;                   // 0x98
-        uint8_t clearCostIndex;                      // 0x99
-        uint16_t clearCostFactor;                    // 0x9A
-        uint8_t scaffoldingSegmentType;              // 0x9C
-        Colour scaffoldingColour;                    // 0x9D
-        uint8_t generatorFunction;                   // 0x9E
-        uint8_t averageNumberOnMap;                  // 0x9F
-        uint8_t producedQuantity[2];                 // 0xA0
-        uint8_t producedCargoType[2];                // 0xA2
-        uint8_t requiredCargoType[2];                // 0xA4
-        uint8_t var_A6[2];                           // 0xA6
-        uint8_t var_A8[2];                           // 0xA8
-        int16_t demolishRatingReduction;             // 0XAA
-        uint8_t var_AC;                              // 0xAC
-        uint8_t numElevatorSequences;                // 0XAD
-        const uint8_t* elevatorHeightSequences[4];   // 0XAE Access with getElevatorHeightSequence helper method
+        StringId name;                             // 0x0
+        uint32_t image;                            // 0x2
+        uint8_t numParts;                          // 0x6
+        uint8_t numVariations;                     // 0x7
+        uint32_t partHeightsOffset;                // 0x8
+        uint32_t partAnimationsOffset;             // 0xC
+        const uint8_t* variationParts[32];         // 0x10 Access with getBuildingParts helper method
+        uint32_t colours;                          // 0x90
+        uint16_t designedYear;                     // 0x94
+        uint16_t obsoleteYear;                     // 0x96
+        BuildingObjectFlags flags;                 // 0x98
+        uint8_t clearCostIndex;                    // 0x99
+        uint16_t clearCostFactor;                  // 0x9A
+        uint8_t scaffoldingSegmentType;            // 0x9C
+        Colour scaffoldingColour;                  // 0x9D
+        uint8_t generatorFunction;                 // 0x9E
+        uint8_t averageNumberOnMap;                // 0x9F
+        uint8_t producedQuantity[2];               // 0xA0
+        uint8_t producedCargoType[2];              // 0xA2
+        uint8_t requiredCargoType[2];              // 0xA4
+        uint8_t var_A6[2];                         // 0xA6
+        uint8_t var_A8[2];                         // 0xA8
+        int16_t demolishRatingReduction;           // 0XAA
+        uint8_t var_AC;                            // 0xAC
+        uint8_t numElevatorSequences;              // 0XAD
+        const uint8_t* elevatorHeightSequences[4]; // 0XAE Access with getElevatorHeightSequence helper method
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawBuilding(Gfx::DrawingContext& drawingCtx, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const;
@@ -79,6 +79,7 @@ namespace OpenLoco
         std::span<const uint8_t> getBuildingPartHeights() const;
         std::span<const std::uint8_t> getBuildingParts(const uint8_t variation) const;
         std::span<const std::uint8_t> getElevatorHeightSequence(const uint8_t animIdx) const;
+        std::span<const BuildingPartAnimation> getBuildingPartAnimations() const;
 
         constexpr bool hasFlags(BuildingObjectFlags flagsToTest) const
         {

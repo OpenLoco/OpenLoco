@@ -83,13 +83,14 @@ namespace OpenLoco::Paint
         int8_t sectionCount = numSections;
         auto sectionImageOffset = imageOffset;
         const auto partHeights = buildingObj.getBuildingPartHeights();
+        const auto partAnimations = buildingObj.getBuildingPartAnimations();
         for (const auto part : parts)
         {
             if (sectionCount == -1)
             {
                 break;
             }
-            const auto partAnimation = buildingObj.partAnimations[part];
+            const auto partAnimation = partAnimations[part];
             auto adjustedPart = part;
 
             auto frameMask = partAnimation.numFrames - 1;
