@@ -517,7 +517,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void getScrollSize(Ui::Window& self, uint32_t, uint32_t*, uint32_t* const scrollHeight)
+    static void getScrollSize(Ui::Window& self, uint32_t, int32_t*, int32_t* const scrollHeight)
     {
         if (_currentPosition == TilePos2(0, 0))
         {

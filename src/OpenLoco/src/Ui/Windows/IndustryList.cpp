@@ -448,7 +448,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458108
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
         {
             *scrollHeight = kRowHeight * self.var_83C;
         }
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004586EA
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
         {
             *scrollHeight = (4 + self.var_83C) / 5;
             if (*scrollHeight == 0)
@@ -1223,7 +1223,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458B51
         static void updateActiveThumb(Window& self)
         {
-            uint32_t scrollHeight = 0;
+            int32_t scrollHeight = 0;
             self.callGetScrollSize(0, nullptr, &scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 

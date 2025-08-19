@@ -48,12 +48,12 @@ namespace OpenLoco::Ui
         ScrollFlags flags;      // 0x00
         int32_t contentOffsetX; // 0x02
         int32_t contentWidth;   // 0x04
-        uint32_t hThumbLeft;    // 0x06
-        uint32_t hThumbRight;   // 0x08
+        int32_t hThumbLeft;     // 0x06
+        int32_t hThumbRight;    // 0x08
         int32_t contentOffsetY; // 0x0A
         int32_t contentHeight;  // 0x0C
-        uint32_t vThumbTop;     // 0x0E
-        uint32_t vThumbBottom;  // 0x10
+        int32_t vThumbTop;      // 0x0E
+        int32_t vThumbBottom;   // 0x10
 
         constexpr bool hasFlags(ScrollFlags flagsToTest) const
         {

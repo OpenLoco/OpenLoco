@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A4FA
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
         {
             *scrollHeight = kRowHeight * self.var_83C;
         }
@@ -1223,7 +1223,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049B2B5
         static void updateActiveThumb(Window& self)
         {
-            uint32_t scrollHeight = 0;
+            int32_t scrollHeight = 0;
             self.callGetScrollSize(0, nullptr, &scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
@@ -1262,7 +1262,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AE83
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
         {
             *scrollHeight = (4 + self.var_83C) / 5;
             if (*scrollHeight == 0)

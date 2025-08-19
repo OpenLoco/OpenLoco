@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB64
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
         {
             auto station = StationManager::get(StationId(self.number));
             *scrollHeight = 0;
@@ -673,7 +673,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE4A
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
         {
             auto station = StationManager::get(StationId(self.number));
             *scrollHeight = 0;
@@ -1107,7 +1107,7 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
         {
             *scrollHeight = self.var_83C * self.rowHeight;
         }

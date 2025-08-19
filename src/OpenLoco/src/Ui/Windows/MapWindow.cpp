@@ -1121,7 +1121,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B9E7
-    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, uint32_t* scrollWidth, uint32_t* scrollHeight)
+    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, int32_t* scrollWidth, int32_t* scrollHeight)
     {
         *scrollWidth = kRenderedMapWidth;
         *scrollHeight = kRenderedMapHeight;

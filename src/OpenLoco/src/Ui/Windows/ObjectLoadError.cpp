@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         }
     }
 
-    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
     {
         *scrollHeight = kRowHeight * window.rowCount;
     }
