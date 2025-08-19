@@ -4768,6 +4768,111 @@ namespace OpenLoco::Vehicles
         return rc.connections[bestConnection];
     }
 
+    static void trackLongestPathingCalculateRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, Sub47E72FState& state)
+    {
+        if (state.recursionDepth >= 5)
+        {
+            return;
+        }
+
+        auto curPos = pos;
+        TrackAndDirection::_TrackAndDirection curTad{ 0, 0 };
+        curTad._data = tad;
+        for (; true;)
+        {
+            if (curTad._data & World::Track::AdditionalTaDFlags::hasSignal)
+            {
+                TrackAndDirection::_TrackAndDirection basicTad{ 0, 0 };
+                basicTad._data = curTad._data & ~World::Track::AdditionalTaDFlags::hasSignal;
+                const auto sigState = getSignalState(curPos, basicTad, trackType, 0);
+
+                if ((sigState & SignalStateFlags::occupied) != SignalStateFlags::none)
+                {
+                    break;
+                }
+                const auto reverseSigState = getSignalState(curPos, basicTad, trackType, 1U << 31);
+                if ((reverseSigState & SignalStateFlags::blockedNoRoute) != SignalStateFlags::none)
+                {
+                    break;
+                }
+            }
+
+            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
+
+            state.bestTrackWeighting = std::max(state.bestTrackWeighting, state.totalTrackWeighting);
+
+            auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
+            auto tc = World::Track::getTrackConnections(nextPos, nextRotation, companyId, trackType, requiredMods, queryMods);
+
+            if (tc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            if (tc.connections.size() == 1)
+            {
+                continue;
+            }
+            for (auto& connection : tc.connections)
+            {
+                const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                trackLongestPathingCalculateRecurse(curPos, connectTad, companyId, trackType, requiredMods, queryMods, recurseState);
+                state.bestTrackWeighting = recurseState.bestTrackWeighting;
+            }
+            break;
+        }
+    }
+
+    // 0x004ACBFF
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    static uint16_t trackLongestPathingCalculate(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        Sub47E72FState state{};
+        trackLongestPathingCalculateRecurse(pos, tad, companyId, trackType, requiredMods, queryMods, state);
+        return state.bestTrackWeighting;
+    }
+
+    // 0x004AC34D
+    // Finds the longest track at a junction
+    static uint16_t trackLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        // TRACK only
+
+        const auto companyId = head.owner;
+        const auto trackType = head.trackType;
+
+        uint16_t bestValue = 0;
+        uint16_t bestConnection = 0;
+        // No target pathing
+        for (auto i = 0U; i < tc.connections.size(); ++i)
+        {
+            const auto connection = tc.connections[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            const auto newValue = trackLongestPathingCalculate(pos, connection, companyId, trackType, requiredMods, queryMods);
+
+            if (newValue >= bestValue)
+            {
+                bestValue = newValue;
+                bestConnection = i;
+            }
+        }
+
+        return tc.connections[bestConnection];
+    }
+
     static void trackAimlessWanderPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, Sub4AC884State& state)
     {
         if (state.recursionDepth >= 5)
@@ -6009,6 +6114,30 @@ namespace OpenLoco::Vehicles
                 addr<0x0113644C, uint32_t>() = enumValue(result.signalState);
 
                 regs = backup;
+
+                return 0;
+            });
+
+        registerHook(
+            0x004AC34D,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx & ~(0x8000U));
+                const auto requiredMods = addr<0x0113601A, uint8_t>();
+                const auto queryMods = addr<0x0113601B, uint8_t>();
+                VehicleHead& head = *X86Pointer<VehicleHead>(regs.esi);
+                static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _legacyConnections;
+                Track::TrackConnections tc{};
+                for (auto i = 0U; i < _legacyConnections->size; ++i)
+                {
+                    tc.connections.push_back(_legacyConnections->data[i]);
+                }
+
+                const auto connection = trackLongestPathing(head, pos, tc, requiredMods, queryMods);
+
+                regs = backup;
+                regs.bx = connection;
 
                 return 0;
             });
