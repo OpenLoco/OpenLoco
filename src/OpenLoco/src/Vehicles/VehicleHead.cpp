@@ -74,6 +74,7 @@ namespace OpenLoco::Vehicles
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
     static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
     static loco_global<uint32_t, 0x0112C30C> _vehicleUpdate_compatibleRoadStationTypes;
+    static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C; // This is static move to TrackData
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
@@ -4301,14 +4302,65 @@ namespace OpenLoco::Vehicles
             // 0x004AD16E
             bringTrackElementToFront(nextPos, head.trackType, connection & World::Track::AdditionalTaDFlags::basicTaDMask);
 
-            if (RoutingManager::getRouting(*routings.begin()) != RoutingManager::kAllocatedButFreeRoutingStation)
+            const auto curRouting = RoutingManager::getRouting(*routings.begin());
+            if (curRouting != RoutingManager::kAllocatedButFreeRoutingStation)
             {
                 auto reversePos = pos;
-                if (connection & World::Track::AdditionalTaDFlags::hasSignal)
+                if (curRouting & World::Track::AdditionalTaDFlags::hasSignal)
                 {
                     // 0x004AD24C
+                    // curRouting here would be an input var for the other caller
+                    auto inputRouting = curRouting;
+                    TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                    tad._data = inputRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
+                    sfl::static_vector<int8_t, 16> unk113621F;
+                    for (const auto& otherConnection : tc.connections)
+                    {
+                        unk113621F.push_back(_vehicle_arr_4F865C[(otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2]);
+                    }
+
+                    // NOTE: not the inputRouting
+                    const auto curUnk = _vehicle_arr_4F865C[(curRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2];
+
+                    int8_t cl = unk113621F[0];
+                    int8_t ch = unk113621F[0];
+                    uint32_t ebp = 0;
+                    for (auto i = 1U; i < unk113621F.size(); ++i)
+                    {
+                        const auto unk = unk113621F[i];
+                        cl = std::min(cl, unk);
+                        ch = std::max(ch, unk);
+                        const auto absUnk = std::abs(unk);
+                        const auto absUnk2 = std::abs(unk113621F[ebp]);
+                        if (absUnk <= absUnk2)
+                        {
+                            ebp = i;
+                        }
+                    }
+                    const auto ah = unk113621F[ebp];
+                    uint32_t lightStateFlags = 0x10;
+                    if (ah != cl)
+                    {
+                        lightStateFlags |= 1U << 30;
+                        if (curUnk < ah)
+                        {
+                            lightStateFlags |= 1U << 28;
+                        }
+                    }
+                    if (ah != ch)
+                    {
+                        lightStateFlags |= 1U << 29;
+                        if (curUnk < ah)
+                        {
+                            lightStateFlags |= 1U << 27;
+                        }
+                    }
+
+                    setSignalState(reversePos, tad, head.trackType, lightStateFlags);
+
+                    // 0x004AD246
                 }
-                else if (!(connection & (1U << 14)))
+                else if (!(curRouting & (1U << 14)))
                 {
                     auto iter2 = routings.begin();
                     for (auto i = 0; i < 5; ++i, --iter2)
