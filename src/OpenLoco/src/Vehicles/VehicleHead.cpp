@@ -3999,11 +3999,11 @@ namespace OpenLoco::Vehicles
         iter++;
         if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
         {
-            return Sub4ACEE7Result(1, 0, StationId::null);
+            return Sub4ACEE7Result{ 1, 0, StationId::null };
         }
         if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRoutingStation)
         {
-            return Sub4ACEE7Result(1, 0, StationId::null);
+            return Sub4ACEE7Result{ 1, 0, StationId::null };
         }
 
         resetUpdateVar1136114Flags();
@@ -4021,7 +4021,7 @@ namespace OpenLoco::Vehicles
 
         if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
         {
-            return Sub4ACEE7Result(0, 0, StationId::null);
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
         }
 
         const auto pos = World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep);
@@ -4059,7 +4059,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (tileStationId == stationOrder->getStation())
                     {
-                        return Sub4ACEE7Result(4, 0, tileStationId);
+                        return Sub4ACEE7Result{ 4, 0, tileStationId };
                     }
                 }
                 else if (stationOrder->is<OrderRouteThrough>())
@@ -4082,7 +4082,7 @@ namespace OpenLoco::Vehicles
                     auto* station = StationManager::get(tileStationId);
                     if (station->owner == train.veh1->owner)
                     {
-                        return Sub4ACEE7Result(4, 0, tileStationId);
+                        return Sub4ACEE7Result{ 4, 0, tileStationId };
                     }
                 }
             }
@@ -4090,7 +4090,7 @@ namespace OpenLoco::Vehicles
 
         if (tc.connections.empty())
         {
-            return Sub4ACEE7Result(2, 0, StationId::null);
+            return Sub4ACEE7Result{ 2, 0, StationId::null };
         }
         // 0x0047DD74
         uint16_t connection = tc.connections[0];
