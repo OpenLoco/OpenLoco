@@ -5,8 +5,10 @@
 namespace OpenLoco::Ui::ScrollView
 {
     constexpr uint8_t thumbSize = 10;
-    constexpr uint8_t barWidth = 11;
+    constexpr uint8_t barThickness = 11;
+    constexpr uint8_t buttonSize = barThickness;
     constexpr uint8_t buttonClickStep = 3;
+    constexpr uint8_t minThumbSize = 20;
 
     struct GetPartResult
     {

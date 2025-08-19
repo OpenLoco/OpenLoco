@@ -423,7 +423,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
 
             // Draw checkmark to indicate completion
-            drawingCtx.drawImage(self.widgets[widx::list].width() - ScrollView::barWidth - 25, y + 1, ImageIds::scenario_completed_tick);
+            drawingCtx.drawImage(self.widgets[widx::list].width() - ScrollView::barThickness - 25, y + 1, ImageIds::scenario_completed_tick);
 
             // 'Completed by' info
             {
@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 args.push<uint16_t>(scenarioInfo->completedMonths / 12);
                 args.push<uint16_t>(scenarioInfo->completedMonths % 12);
 
-                auto point = Point((self.widgets[widx::list].width() - ScrollView::barWidth) / 2, y + 10);
+                auto point = Point((self.widgets[widx::list].width() - ScrollView::barThickness) / 2, y + 10);
                 tr.drawStringCentred(point, Colour::black, formatStringId, args);
             }
 

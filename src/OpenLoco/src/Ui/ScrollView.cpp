@@ -32,7 +32,7 @@ namespace OpenLoco::Ui::ScrollView
         uint16_t trackWidth = widget->width() - 2 - thumbSize - thumbSize;
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            trackWidth -= barWidth;
+            trackWidth -= barThickness;
         }
 
         if (trackWidth == 0)
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::ScrollView
         int frameWidth = widget->width() - 2;
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            frameWidth -= barWidth;
+            frameWidth -= barThickness;
         }
 
         int16_t maxOffset = scrollArea.contentWidth - frameWidth;
@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::ScrollView
         uint16_t trackHeight = widget->height() - 2 - thumbSize - thumbSize;
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            trackHeight -= barWidth;
+            trackHeight -= barThickness;
         }
 
         if (trackHeight == 0)
@@ -82,7 +82,7 @@ namespace OpenLoco::Ui::ScrollView
         int frameHeight = widget->height() - 2;
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            frameHeight -= barWidth;
+            frameHeight -= barThickness;
         }
 
         int16_t maxOffset = scrollArea.contentHeight - frameHeight;
@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::ScrollView
         uint16_t trackWidth = widget->width() - 2 - thumbSize - thumbSize;
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            trackWidth -= barWidth;
+            trackWidth -= barThickness;
         }
 
         if (trackWidth == 0)
@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::ScrollView
         int frameWidth = widget->width() - 2;
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            frameWidth -= barWidth;
+            frameWidth -= barThickness;
         }
 
         int16_t maxOffset = scrollArea.contentWidth - frameWidth;
@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::ScrollView
         uint16_t trackHeight = widget->height() - 2 - thumbSize - thumbSize;
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            trackHeight -= barWidth;
+            trackHeight -= barThickness;
         }
 
         if (trackHeight == 0)
@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::ScrollView
         int frameHeight = widget->height() - 2;
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            frameHeight -= barWidth;
+            frameHeight -= barThickness;
         }
 
         int16_t maxOffset = scrollArea.contentHeight - frameHeight;
@@ -202,9 +202,9 @@ namespace OpenLoco::Ui::ScrollView
         const bool needsHScroll = scroll.contentWidth > widget->width();
         const bool needsVScroll = scroll.contentHeight > widget->height();
 
-        if (needsHScroll && scroll.hasFlags(ScrollFlags::hscrollbarVisible) && y >= (bottom - barWidth))
+        if (needsHScroll && scroll.hasFlags(ScrollFlags::hscrollbarVisible) && y >= (bottom - barThickness))
         {
-            if (x < left + barWidth)
+            if (x < left + barThickness)
             {
                 res.area = ScrollPart::hscrollbarButtonLeft;
                 return res;
@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::ScrollView
             // If vertical is also visible then there is a deadzone in the corner
             if (scroll.hasFlags(ScrollFlags::vscrollbarVisible))
             {
-                right -= barWidth;
+                right -= barThickness;
             }
 
             // Within deadzone
@@ -243,9 +243,9 @@ namespace OpenLoco::Ui::ScrollView
 
             res.area = ScrollPart::hscrollbarThumb;
         }
-        else if (needsVScroll && scroll.hasFlags(ScrollFlags::vscrollbarVisible) && x >= (right - barWidth))
+        else if (needsVScroll && scroll.hasFlags(ScrollFlags::vscrollbarVisible) && x >= (right - barThickness))
         {
-            if (y < top + barWidth)
+            if (y < top + barThickness)
             {
                 res.area = ScrollPart::vscrollbarButtonTop;
                 return res;
@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::ScrollView
             // If horizontal is also visible then there is a deadzone in the corner
             if (scroll.hasFlags(ScrollFlags::hscrollbarVisible))
             {
-                bottom -= barWidth;
+                bottom -= barThickness;
             }
 
             // Within deadzone
@@ -306,88 +306,52 @@ namespace OpenLoco::Ui::ScrollView
         const auto& widget = window.widgets[widgetIndex];
         auto& scrollArea = window.scrollAreas[window.getScrollDataIndex(widgetIndex)];
 
+        // Horizontal scrollbar
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            int32_t viewWidth = widget.width() - 22;
-            if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
+            int32_t widgetWidth = widget.width();
+            int32_t scrollbarWidth = widget.width() - (buttonSize * 2);
+
+            if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
             {
-                viewWidth -= 11;
+                widgetWidth -= barThickness;
+                scrollbarWidth -= barThickness;
             }
 
-            int32_t newThumbPos = scrollArea.contentOffsetX * viewWidth;
-            if (scrollArea.contentWidth != 0)
-            {
-                newThumbPos /= scrollArea.contentWidth;
-            }
+            // Thumb size
+            float thumbRatio = widgetWidth / (float)scrollArea.contentWidth;
+            int32_t thumbLength = std::max<int32_t>(scrollbarWidth * thumbRatio, minThumbSize);
 
-            scrollArea.hThumbLeft = newThumbPos + 11;
+            // Thumb position
+            auto scrollableDistance = scrollbarWidth - thumbLength;
+            int32_t thumbPosition = scrollableDistance * (scrollArea.contentOffsetX / (float)(scrollArea.contentWidth - widgetWidth));
 
-            newThumbPos = widget.width() - 3;
-            if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
-            {
-                newThumbPos -= 11;
-            }
-
-            newThumbPos += scrollArea.contentOffsetX;
-            if (scrollArea.contentWidth != 0)
-            {
-                newThumbPos = (newThumbPos * viewWidth) / scrollArea.contentWidth;
-            }
-
-            newThumbPos += 11;
-            viewWidth += 10;
-            scrollArea.hThumbRight = std::min(newThumbPos, viewWidth);
-
-            // Ensure the scrollbar thumb does not fall below a minimum size
-            if (scrollArea.hThumbRight - scrollArea.hThumbLeft < 20)
-            {
-                int32_t barPosition = (scrollArea.hThumbRight * 1.0) / viewWidth;
-
-                scrollArea.hThumbLeft = scrollArea.hThumbLeft - (20 * barPosition);
-                scrollArea.hThumbRight = scrollArea.hThumbRight + (20 * (1 - barPosition));
-            }
+            scrollArea.hThumbLeft = thumbPosition + buttonSize;
+            scrollArea.hThumbRight = scrollArea.hThumbLeft + thumbLength - 1;
         }
 
+        // Vertical scrollbar
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            int32_t viewHeight = widget.height() - 22;
+            int32_t widgetHeight = widget.height();
+            int32_t scrollbarHeight = widget.height() - (buttonSize * 2);
+
             if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
             {
-                viewHeight -= 11;
+                widgetHeight -= barThickness;
+                scrollbarHeight -= barThickness;
             }
 
-            int32_t newThumbPos = scrollArea.contentOffsetY * viewHeight;
-            if (scrollArea.contentHeight != 0)
-            {
-                newThumbPos /= scrollArea.contentHeight;
-            }
+            // Thumb size
+            float thumbRatio = widgetHeight / (float)scrollArea.contentHeight;
+            int32_t thumbLength = std::max<int32_t>(scrollbarHeight * thumbRatio, minThumbSize);
 
-            scrollArea.vThumbTop = newThumbPos + 11;
+            // Thumb position
+            auto scrollableDistance = scrollbarHeight - thumbLength;
+            int32_t thumbPosition = scrollableDistance * (scrollArea.contentOffsetY / (float)(scrollArea.contentHeight - widgetHeight));
 
-            newThumbPos = widget.height() - 3;
-            if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
-            {
-                newThumbPos -= 11;
-            }
-
-            newThumbPos += scrollArea.contentOffsetY;
-            if (scrollArea.contentHeight != 0)
-            {
-                newThumbPos = (newThumbPos * viewHeight) / scrollArea.contentHeight;
-            }
-
-            newThumbPos += 11;
-            viewHeight += 10;
-            scrollArea.vThumbBottom = std::min(newThumbPos, viewHeight);
-
-            // Ensure the scrollbar thumb does not fall below a minimum size
-            if (scrollArea.vThumbBottom - scrollArea.vThumbTop < 20)
-            {
-                int32_t barPosition = scrollArea.vThumbBottom / viewHeight;
-
-                scrollArea.vThumbTop = scrollArea.vThumbTop - (20 * barPosition);
-                scrollArea.vThumbBottom = scrollArea.vThumbBottom + (20 * (1 - barPosition));
-            }
+            scrollArea.vThumbTop = thumbPosition + buttonSize;
+            scrollArea.vThumbBottom = scrollArea.vThumbTop + thumbLength - 1;
         }
     }
 
@@ -407,7 +371,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t trackWidth = window.widgets[widgetIndex].width() - 2;
         if (window.scrollAreas[scrollAreaIndex].hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            trackWidth -= barWidth;
+            trackWidth -= barThickness;
         }
         int16_t widgetContentWidth = std::max(window.scrollAreas[scrollAreaIndex].contentWidth - trackWidth, 0);
         window.scrollAreas[scrollAreaIndex].contentOffsetX = std::min<int16_t>(window.scrollAreas[scrollAreaIndex].contentOffsetX + buttonClickStep, widgetContentWidth);
@@ -421,7 +385,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t trackWidth = window.widgets[widgetIndex].width() - 2;
         if (window.scrollAreas[scrollAreaIndex].hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            trackWidth -= barWidth;
+            trackWidth -= barThickness;
         }
         window.scrollAreas[scrollAreaIndex].contentOffsetX = std::max(window.scrollAreas[scrollAreaIndex].contentOffsetX - trackWidth, 0);
         ScrollView::updateThumbs(window, widgetIndex);
@@ -434,7 +398,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t trackWidth = window.widgets[widgetIndex].width() - 2;
         if (window.scrollAreas[scrollAreaIndex].hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            trackWidth -= barWidth;
+            trackWidth -= barThickness;
         }
         int16_t widgetContentWidth = std::max(window.scrollAreas[scrollAreaIndex].contentWidth - trackWidth, 0);
         window.scrollAreas[scrollAreaIndex].contentOffsetX = std::min<int16_t>(window.scrollAreas[scrollAreaIndex].contentOffsetX + trackWidth, widgetContentWidth);
@@ -461,7 +425,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t trackHeight = window.widgets[widgetIndex].height() - 2;
         if (window.scrollAreas[scrollAreaIndex].hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            trackHeight -= barWidth;
+            trackHeight -= barThickness;
         }
         int16_t widgetContentHeight = std::max(window.scrollAreas[scrollAreaIndex].contentHeight - trackHeight, 0);
         window.scrollAreas[scrollAreaIndex].contentOffsetY = std::min<int16_t>(window.scrollAreas[scrollAreaIndex].contentOffsetY + buttonClickStep, widgetContentHeight);
@@ -482,7 +446,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t trackHeight = window.widgets[widgetIndex].height() - 2;
         if (window.scrollAreas[scrollAreaIndex].hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            trackHeight -= barWidth;
+            trackHeight -= barThickness;
         }
         window.scrollAreas[scrollAreaIndex].contentOffsetY = std::max(window.scrollAreas[scrollAreaIndex].contentOffsetY - trackHeight, 0);
         ScrollView::updateThumbs(window, widgetIndex);
@@ -495,7 +459,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t trackHeight = window.widgets[widgetIndex].height() - 2;
         if (window.scrollAreas[scrollAreaIndex].hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            trackHeight -= barWidth;
+            trackHeight -= barThickness;
         }
         int16_t widgetContentHeight = std::max(window.scrollAreas[scrollAreaIndex].contentHeight - trackHeight, 0);
         window.scrollAreas[scrollAreaIndex].contentOffsetY = std::min<int16_t>(window.scrollAreas[scrollAreaIndex].contentOffsetY + trackHeight, widgetContentHeight);
