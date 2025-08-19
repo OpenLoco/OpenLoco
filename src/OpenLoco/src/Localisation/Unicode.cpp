@@ -3,11 +3,11 @@
 
 namespace OpenLoco::Localisation
 {
-    utf32_t readCodePoint(utf8_t** string)
+    utf32_t readCodePoint(const utf8_t** string)
     {
         utf32_t read = 0;
 
-        utf8_t* ptr = *string;
+        const utf8_t* ptr = *string;
 
         if ((ptr[0] & 0b10000000) == 0)
         {

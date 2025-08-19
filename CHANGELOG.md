@@ -10,6 +10,7 @@
 - Fix: [#3184] The minimum size of the map window is miscalculated when it is dragged past a certain point.
 - Fix: [#3190] The map window's minimap isn't centred correctly when it is first opened.
 - Fix: [#3195] In the Landscape Generation window, UI state is reset each frame, preventing scrolling the land type list.
+- Fix: [#3198] Cannot write non-English letters in text boxes.
 - Fix: [#3202] Company name being set incorrectly when using preferred owner name.
 - Fix: [#3212] Competitor owner portraits are not positioned correctly in error windows.
 
