@@ -1,13 +1,18 @@
 25.07+ (???)
 ------------------------------------------------------------------------
 - Change: [#3104] Landscape generation confirmation prompts now prevent you from clicking other windows until a choice is made.
+- Change: [#3193] The minimum size of the map window was changed to accommodate all elements.
 - Fix: [#3019] Mouse getting stuck on edges of monitor when right mouse dragging scroll views.
 - Fix: [#3116] Visual artifacts when additional viewports are visible, most prominently with news message window.
+- Fix: [#3137] Viewport interaction is offset by window position.
 - Fix: [#3167] Dropdown for terrain type selection is displayed at the wrong position.
 - Fix: [#3171] Background of station labels have a visible gap due to being off by one pixel.
 - Fix: [#3184] The minimum size of the map window is miscalculated when it is dragged past a certain point.
 - Fix: [#3190] The map window's minimap isn't centred correctly when it is first opened.
+- Fix: [#3195] In the Landscape Generation window, UI state is reset each frame, preventing scrolling the land type list.
 - Fix: [#3198] Cannot write non-English letters in text boxes.
+- Fix: [#3202] Company name being set incorrectly when using preferred owner name.
+- Fix: [#3212] Competitor owner portraits are not positioned correctly in error windows.
 
 25.07 (2025-07-15)
 ------------------------------------------------------------------------
