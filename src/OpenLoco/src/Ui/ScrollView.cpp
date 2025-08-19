@@ -300,6 +300,26 @@ namespace OpenLoco::Ui::ScrollView
         return res;
     }
 
+    static std::tuple<uint16_t, uint16_t> calculateThumbSizeAndPosition(bool otherBarIsVisible, uint16_t widgetSize, int32_t contentSize, int32_t contentOffset)
+    {
+        uint16_t scrollbarSize = widgetSize - (buttonSize * 2);
+
+        if (otherBarIsVisible)
+        {
+            widgetSize -= barThickness;
+            scrollbarSize -= barThickness;
+        }
+
+        // Thumb size
+        uint16_t scrollThumbSize = std::max<uint16_t>(scrollbarSize * widgetSize / (float)contentSize, minThumbSize);
+
+        // Thumb position
+        auto scrollableDistance = scrollbarSize - scrollThumbSize;
+        uint16_t thumbPosition = scrollableDistance * (contentOffset / (float)(contentSize - widgetSize));
+
+        return std::make_tuple(thumbPosition + buttonSize, thumbPosition + buttonSize + scrollThumbSize - 1);
+    }
+
     // 0x004CA1ED
     void updateThumbs(Window& window, WidgetIndex_t widgetIndex)
     {
@@ -309,49 +329,13 @@ namespace OpenLoco::Ui::ScrollView
         // Horizontal scrollbar
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            int32_t widgetWidth = widget.width();
-            int32_t scrollbarWidth = widget.width() - (buttonSize * 2);
-
-            if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
-            {
-                widgetWidth -= barThickness;
-                scrollbarWidth -= barThickness;
-            }
-
-            // Thumb size
-            float thumbRatio = widgetWidth / (float)scrollArea.contentWidth;
-            int32_t thumbLength = std::max<int32_t>(scrollbarWidth * thumbRatio, minThumbSize);
-
-            // Thumb position
-            auto scrollableDistance = scrollbarWidth - thumbLength;
-            int32_t thumbPosition = scrollableDistance * (scrollArea.contentOffsetX / (float)(scrollArea.contentWidth - widgetWidth));
-
-            scrollArea.hThumbLeft = thumbPosition + buttonSize;
-            scrollArea.hThumbRight = scrollArea.hThumbLeft + thumbLength - 1;
+            std::tie(scrollArea.hThumbLeft, scrollArea.hThumbRight) = calculateThumbSizeAndPosition(scrollArea.hasFlags(ScrollFlags::vscrollbarVisible), widget.width(), scrollArea.contentWidth, scrollArea.contentOffsetX);
         }
 
         // Vertical scrollbar
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            int32_t widgetHeight = widget.height();
-            int32_t scrollbarHeight = widget.height() - (buttonSize * 2);
-
-            if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
-            {
-                widgetHeight -= barThickness;
-                scrollbarHeight -= barThickness;
-            }
-
-            // Thumb size
-            float thumbRatio = widgetHeight / (float)scrollArea.contentHeight;
-            int32_t thumbLength = std::max<int32_t>(scrollbarHeight * thumbRatio, minThumbSize);
-
-            // Thumb position
-            auto scrollableDistance = scrollbarHeight - thumbLength;
-            int32_t thumbPosition = scrollableDistance * (scrollArea.contentOffsetY / (float)(scrollArea.contentHeight - widgetHeight));
-
-            scrollArea.vThumbTop = thumbPosition + buttonSize;
-            scrollArea.vThumbBottom = scrollArea.vThumbTop + thumbLength - 1;
+            std::tie(scrollArea.vThumbTop, scrollArea.vThumbBottom) = calculateThumbSizeAndPosition(scrollArea.hasFlags(ScrollFlags::hscrollbarVisible), widget.height(), scrollArea.contentHeight, scrollArea.contentOffsetY);
         }
     }
 
