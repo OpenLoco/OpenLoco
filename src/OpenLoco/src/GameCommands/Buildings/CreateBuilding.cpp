@@ -53,9 +53,10 @@ namespace OpenLoco::GameCommands
         // This is identical to createIndustry but with a BuildingObject
         // TODO: look into making some sort of common version
         auto clearHeight = 0;
+        const auto partHeights = buildingObj->getBuildingPartHeights();
         for (auto part : buildingObj->getBuildingParts(args.variation))
         {
-            clearHeight += buildingObj->partHeights[part];
+            clearHeight += partHeights[part];
         }
         if (!args.buildImmediately && buildingObj->scaffoldingSegmentType != 0xFF)
         {

@@ -46,7 +46,7 @@ namespace OpenLoco
         uint32_t image;                              // 0x2
         uint8_t numParts;                            // 0x6
         uint8_t numVariations;                       // 0x7
-        const uint8_t* partHeights;                  // 0x8
+        uint32_t partHeightsOffset;                  // 0x8
         const BuildingPartAnimation* partAnimations; // 0xC
         const uint8_t* variationParts[32];           // 0x10 Access with getBuildingParts helper method
         uint32_t colours;                            // 0x90
@@ -76,6 +76,7 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
 
+        std::span<const uint8_t> getBuildingPartHeights() const;
         std::span<const std::uint8_t> getBuildingParts(const uint8_t variation) const;
         std::span<const std::uint8_t> getElevatorHeightSequence(const uint8_t animIdx) const;
 

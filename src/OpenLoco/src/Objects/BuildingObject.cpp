@@ -27,6 +27,7 @@ namespace OpenLoco
     {
         ImageId baseImage(image, colour);
         Ui::Point pos{ x, y };
+        const auto partHeights = getBuildingPartHeights();
         for (const auto part : getBuildingParts(0))
         {
             auto partImage = baseImage.withIndexOffset(part * 4 + buildingRotation);
@@ -65,7 +66,7 @@ namespace OpenLoco
 
         // LOAD BUILDING PARTS Start
         // Load Part Heights
-        partHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        partHeightsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numParts * sizeof(uint8_t));
 
         // Load Part Animations (probably)
@@ -145,12 +146,18 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        partHeights = nullptr;
+        partHeightsOffset = 0;
         partAnimations = nullptr;
         std::fill(std::begin(variationParts), std::end(variationParts), nullptr);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         std::fill(std::begin(elevatorHeightSequences), std::end(elevatorHeightSequences), nullptr);
+    }
+
+    std::span<const uint8_t> BuildingObject::getBuildingPartHeights() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        return std::span<const std::uint8_t>(base + partHeightsOffset, numParts);
     }
 
     std::span<const std::uint8_t> BuildingObject::getBuildingParts(const uint8_t variation) const

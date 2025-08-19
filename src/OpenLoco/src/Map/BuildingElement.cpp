@@ -94,9 +94,10 @@ namespace OpenLoco::World
                 else
                 {
                     auto totalHeight = 3;
+                    const auto partHeights = buildingObj->getBuildingPartHeights();
                     for (auto part : parts)
                     {
-                        totalHeight += buildingObj->partHeights[part];
+                        totalHeight += partHeights[part];
                     }
 
                     const auto newClearHeight = baseZ() + totalHeight / 4;
