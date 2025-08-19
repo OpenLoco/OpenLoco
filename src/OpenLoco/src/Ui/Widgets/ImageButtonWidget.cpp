@@ -86,8 +86,7 @@ namespace OpenLoco::Ui::Widgets
             drawingCtx.fillRect({}, size, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
-        // TODO: Add a setting to decide if it should be translucent or not, for now it seems all ImageButton's require this.
-        drawingCtx.fillRectInset({}, size, widgetState.colour.translucent(), flags);
+        drawingCtx.fillRectInset({}, size, widgetState.colour, flags);
 
         if (widget.content == Widget::kContentNull)
         {
