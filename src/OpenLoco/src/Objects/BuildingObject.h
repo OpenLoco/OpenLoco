@@ -48,7 +48,7 @@ namespace OpenLoco
         uint8_t numVariations;                     // 0x7
         uint32_t partHeightsOffset;                // 0x8
         uint32_t partAnimationsOffset;             // 0xC
-        const uint8_t* variationParts[32];         // 0x10 Access with getBuildingParts helper method
+        uint32_t variationPartsOffset[32];         // 0x10 Access with getBuildingParts helper method
         uint32_t colours;                          // 0x90
         uint16_t designedYear;                     // 0x94
         uint16_t obsoleteYear;                     // 0x96

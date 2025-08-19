@@ -76,8 +76,7 @@ namespace OpenLoco
         // Load Parts
         for (auto i = 0; i < numVariations; ++i)
         {
-            auto& part = variationParts[i];
-            part = reinterpret_cast<const uint8_t*>(remainingData.data());
+            variationPartsOffset[i] = remainingData.data() - data.data();
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 remainingData = remainingData.subspan(1);
@@ -148,7 +147,7 @@ namespace OpenLoco
         image = 0;
         partHeightsOffset = 0;
         partAnimationsOffset = 0;
-        std::fill(std::begin(variationParts), std::end(variationParts), nullptr);
+        std::fill(std::begin(variationPartsOffset), std::end(variationPartsOffset), 0);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         std::fill(std::begin(elevatorHeightSequences), std::end(elevatorHeightSequences), nullptr);
@@ -162,8 +161,8 @@ namespace OpenLoco
 
     std::span<const std::uint8_t> BuildingObject::getBuildingParts(const uint8_t variation) const
     {
-        const auto* partsPointer = variationParts[variation];
-        auto* end = partsPointer;
+        const auto* partsPointer = reinterpret_cast<const std::uint8_t*>(this) + variationPartsOffset[variation];
+        const auto* end = partsPointer;
         while (*end != 0xFF)
         {
             end++;
