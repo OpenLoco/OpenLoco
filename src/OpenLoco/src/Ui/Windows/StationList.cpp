@@ -785,7 +785,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491999
-    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
     {
         *scrollHeight = kRowHeight * window.var_83C;
     }

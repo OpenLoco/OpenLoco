@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443EF6
-    static void getScrollSize(Window& self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Window& self, uint32_t, uint32_t*, uint32_t* const scrollHeight)
     {
         *scrollHeight = ScenarioManager::getScenarioCountByCategory(self.currentTab) * kRowHeight;
     }

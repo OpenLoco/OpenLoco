@@ -84,8 +84,8 @@ namespace OpenLoco::Ui::Widgets
             f = Gfx::RectInsetFlags::borderInset;
         }
         drawingCtx.fillRectInset(
-            scrollPos + Point{ scrollArea.hThumbLeft, 0 },
-            { scrollArea.hThumbRight - scrollArea.hThumbLeft - kScrollbarMargin, +scrollSize.height },
+            scrollPos + Point{ static_cast<int32_t>(scrollArea.hThumbLeft), 0 },
+            { static_cast<int32_t>(scrollArea.hThumbRight - scrollArea.hThumbLeft - kScrollbarMargin), +scrollSize.height },
             colour,
             f);
     }
@@ -158,8 +158,8 @@ namespace OpenLoco::Ui::Widgets
             f = widgetState.flags | Gfx::RectInsetFlags::borderInset;
         }
         drawingCtx.fillRectInset(
-            scrollPos + Point{ 0, scrollArea.vThumbTop },
-            { +scrollSize.width, scrollArea.vThumbBottom - scrollArea.vThumbTop - kScrollbarMargin },
+            scrollPos + Point{ 0, static_cast<int32_t>(scrollArea.vThumbTop) },
+            { +scrollSize.width, static_cast<int32_t>(scrollArea.vThumbBottom - scrollArea.vThumbTop - kScrollbarMargin) },
             colour,
             f);
     }

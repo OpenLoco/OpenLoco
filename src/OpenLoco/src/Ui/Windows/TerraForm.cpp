@@ -186,7 +186,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC4B7
         static void updateActiveThumb(Window& self)
         {
-            uint16_t scrollHeight = 0;
+            uint32_t scrollHeight = 0;
             self.callGetScrollSize(0, nullptr, &scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBEC1
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
         {
             *scrollHeight = (self.var_83C + 8) / 9;
             if (*scrollHeight == 0)
@@ -2255,7 +2255,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC506
         static void updateActiveThumb(Window& self)
         {
-            uint16_t scrollHeight = 0;
+            uint32_t scrollHeight = 0;
             self.callGetScrollSize(0, nullptr, &scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
@@ -2554,7 +2554,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC359
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t* scrollWidth, uint32_t* scrollHeight)
         {
             *scrollHeight = (self.var_83C + 9) / 10;
             if (*scrollHeight == 0)
