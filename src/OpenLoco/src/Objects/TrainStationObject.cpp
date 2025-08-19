@@ -95,7 +95,7 @@ namespace OpenLoco
             {
                 cargoOffsetBytes[i][j] = static_cast<uint32_t>(remainingData.data() - data.data());
 
-                auto* bytes = reinterpret_cast<const int8_t*>(cargoOffsetBytes[i][j]);
+                auto* bytes = reinterpret_cast<const int8_t*>(remainingData.data());
                 bytes++; // z
                 auto length = 1;
                 while (*bytes != -1)
