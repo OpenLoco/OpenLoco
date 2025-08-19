@@ -1,5 +1,6 @@
 25.07+ (???)
 ------------------------------------------------------------------------
+- Change: [#1682, #3216] Scroll widgets now support much larger sizes.
 - Change: [#3104] Landscape generation confirmation prompts now prevent you from clicking other windows until a choice is made.
 - Change: [#3193] The minimum size of the map window was changed to accommodate all elements.
 - Fix: [#3019] Mouse getting stuck on edges of monitor when right mouse dragging scroll views.
