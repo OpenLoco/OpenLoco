@@ -4283,7 +4283,7 @@ namespace OpenLoco::Vehicles
         {
             return Sub4ACEE7Result{ 2, 0, StationId::null };
         }
-        // 0x0047DD74
+
         uint16_t connection = tc.connections[0];
         if (tc.connections.size() > 1)
         {
@@ -4299,6 +4299,41 @@ namespace OpenLoco::Vehicles
             connection |= (1U << 14);
 
             // 0x004AD16E
+            bringTrackElementToFront(nextPos, head.trackType, connection & World::Track::AdditionalTaDFlags::basicTaDMask);
+
+            if (RoutingManager::getRouting(*routings.begin()) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                auto reversePos = pos;
+                if (connection & World::Track::AdditionalTaDFlags::hasSignal)
+                {
+                    // 0x004AD24C
+                }
+                else if (!(connection & (1U << 14)))
+                {
+                    auto iter2 = routings.begin();
+                    for (auto i = 0; i < 5; ++i, --iter2)
+                    {
+                        if (RoutingManager::getRouting(*iter2) == RoutingManager::kAllocatedButFreeRoutingStation)
+                        {
+                            break;
+                        }
+
+                        const auto reverseRouting = RoutingManager::getRouting(*iter2);
+                        auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
+                        reversePos -= trackSize.pos;
+                        if (reverseRouting & World::Track::AdditionalTaDFlags::hasSignal)
+                        {
+                            // 0x004AD24C
+                        }
+                        else if (reverseRouting & (1U << 14))
+                        {
+                            break;
+                        }
+                    }
+                }
+                // 0x004AD246
+            }
+            // 0x004AD246
         }
         else
         {
