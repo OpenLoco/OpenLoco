@@ -129,8 +129,8 @@ namespace OpenLoco
         // Load Elevator Sequences
         for (auto i = 0; i < numElevatorSequences; ++i)
         {
-            elevatorHeightSequences[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
-            const auto size = *reinterpret_cast<const uint16_t*>(elevatorHeightSequences[i]);
+            elevatorHeightSequencesOffset[i] = static_cast<uint32_t>(remainingData.data() - data.data());
+            const auto size = *reinterpret_cast<const uint16_t*>(remainingData.data());
             remainingData = remainingData.subspan(sizeof(uint16_t) + size);
         }
 
@@ -150,7 +150,7 @@ namespace OpenLoco
         std::fill(std::begin(variationPartsOffset), std::end(variationPartsOffset), 0);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
-        std::fill(std::begin(elevatorHeightSequences), std::end(elevatorHeightSequences), nullptr);
+        std::fill(std::begin(elevatorHeightSequencesOffset), std::end(elevatorHeightSequencesOffset), 0);
     }
 
     std::span<const uint8_t> BuildingObject::getBuildingPartHeights() const
@@ -174,8 +174,10 @@ namespace OpenLoco
     std::span<const std::uint8_t> BuildingObject::getElevatorHeightSequence(const uint8_t animIdx) const
     {
         // elevatorHeightSequences comprises of a size (16bit) then data (8 bit). Size will always be a power of 2
-        const auto size = *reinterpret_cast<const uint16_t*>(elevatorHeightSequences[animIdx]);
-        const auto* sequencePointer = elevatorHeightSequences[animIdx] + sizeof(uint16_t);
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto offset = elevatorHeightSequencesOffset[animIdx];
+        const auto size = *reinterpret_cast<const uint16_t*>(base + offset);
+        const auto* sequencePointer = base + offset + sizeof(uint16_t);
         return std::span<const std::uint8_t>(sequencePointer, size);
     }
 

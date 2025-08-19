@@ -67,7 +67,7 @@ namespace OpenLoco
         int16_t demolishRatingReduction;           // 0XAA
         uint8_t var_AC;                            // 0xAC
         uint8_t numElevatorSequences;              // 0XAD
-        const uint8_t* elevatorHeightSequences[4]; // 0XAE Access with getElevatorHeightSequence helper method
+        uint32_t elevatorHeightSequencesOffset[4]; // 0XAE Access with getElevatorHeightSequence helper method
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawBuilding(Gfx::DrawingContext& drawingCtx, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const;
