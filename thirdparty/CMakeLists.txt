@@ -52,7 +52,4 @@ if ( NOT sfl_FOUND )
         GIT_SHALLOW         ON
     )
     FetchContent_MakeAvailable(sfl)
-    
-    # Group all the ThirdParty items under a ThirdParty folder in IDEs
-    set_target_properties(sfl PROPERTIES FOLDER "ThirdParty")
 endif()
