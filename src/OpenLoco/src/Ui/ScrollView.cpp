@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::ScrollView
         return res;
     }
 
-    static std::tuple<uint16_t, uint16_t> calculateThumbSizeAndPosition(bool otherBarIsVisible, uint16_t widgetSize, uint16_t buttonSize, int32_t contentSize, int32_t contentOffset)
+    static std::pair<uint16_t, uint16_t> calculateThumbSizeAndPosition(bool otherBarIsVisible, uint16_t widgetSize, uint16_t buttonSize, int32_t contentSize, int32_t contentOffset)
     {
         uint16_t scrollbarSize = widgetSize - (buttonSize * 2);
 
@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::ScrollView
         auto scrollThumbStart = buttonSize + thumbPosition;
         auto scrollThumbEnd = std::min(buttonSize + thumbPosition + scrollThumbSize, widgetSize - buttonSize - 1);
 
-        return std::make_tuple(scrollThumbStart, scrollThumbEnd);
+        return std::make_pair(scrollThumbStart, scrollThumbEnd);
     }
 
     // 0x004CA1ED
