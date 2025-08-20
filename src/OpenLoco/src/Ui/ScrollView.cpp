@@ -317,7 +317,10 @@ namespace OpenLoco::Ui::ScrollView
         auto scrollableDistance = scrollbarSize - scrollThumbSize;
         uint16_t thumbPosition = scrollableDistance * (contentOffset / (float)(contentSize - widgetSize));
 
-        return std::make_tuple(thumbPosition + buttonSize, thumbPosition + buttonSize + scrollThumbSize - 1);
+        auto scrollThumbStart = buttonSize + thumbPosition;
+        auto scrollThumbEnd = std::min(buttonSize + thumbPosition + scrollThumbSize, widgetSize - buttonSize - 1);
+
+        return std::make_tuple(scrollThumbStart, scrollThumbEnd);
     }
 
     // 0x004CA1ED
