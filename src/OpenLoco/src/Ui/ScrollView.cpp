@@ -29,7 +29,7 @@ namespace OpenLoco::Ui::ScrollView
         ScrollArea& scrollArea = window.scrollAreas[scrollIndex];
         scrollArea.flags |= ScrollFlags::hscrollbarThumbPressed;
 
-        uint16_t trackWidth = widget->width() - 2 - kThumbSize - kThumbSize;
+        uint16_t trackWidth = widget->width() - (kThumbSize * 2);
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
             trackWidth -= kScrollbarSize;
@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::ScrollView
 
         int16_t newOffset = scrollArea.contentOffsetX + contentDeltaX;
 
-        int frameWidth = widget->width() - 2;
+        int frameWidth = widget->width() - (kScrollbarMargin * 2);
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
             frameWidth -= kScrollbarSize;
@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::ScrollView
         ScrollArea& scrollArea = window.scrollAreas[scrollIndex];
         scrollArea.flags |= ScrollFlags::vscrollbarThumbPressed;
 
-        uint16_t trackHeight = widget->height() - 2 - kThumbSize - kThumbSize;
+        uint16_t trackHeight = widget->height() - (kThumbSize * 2);
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
             trackHeight -= kScrollbarSize;
@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::ScrollView
 
         int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
 
-        int frameHeight = widget->height() - 2;
+        int frameHeight = widget->height() - (kScrollbarMargin * 2);
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
             frameHeight -= kScrollbarSize;

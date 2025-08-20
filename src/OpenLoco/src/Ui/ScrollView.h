@@ -8,7 +8,7 @@ namespace OpenLoco::Ui::ScrollView
     static constexpr uint8_t kScrollbarSize = 11;
     static constexpr auto kScrollButtonSize = Ui::Size(kScrollbarSize, kScrollbarSize);
     static constexpr auto kScrollbarMargin = 1;
-    static constexpr uint8_t kThumbSize = 10;
+    static constexpr uint8_t kThumbSize = kScrollbarSize - kScrollbarMargin;
     static constexpr uint8_t kMinThumbSize = 20;
     static constexpr uint8_t kButtonClickStep = 3;
 
