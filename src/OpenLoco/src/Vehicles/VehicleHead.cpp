@@ -75,6 +75,8 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
     static loco_global<uint32_t, 0x0112C30C> _vehicleUpdate_compatibleRoadStationTypes;
     static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C; // This is static move to TrackData
+    static loco_global<SignalStateFlags, 0x005220BC> _vehicleManagerIgnoreSignalFlagsMasks;
+    static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B; // This shouldn't be used as it will be mangled but it is
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
@@ -4354,49 +4356,91 @@ namespace OpenLoco::Vehicles
             // 0x004AD16E
             bringTrackElementToFront(nextPos, head.trackType, connection & World::Track::AdditionalTaDFlags::basicTaDMask);
 
-            const auto curRouting = RoutingManager::getRouting(*routings.begin());
-            if (curRouting != RoutingManager::kAllocatedButFreeRoutingStation)
+            // Simplified from vanilla as I'm pretty sure its the same
+
+            // Walk backwards through the routings to find the previous signal
+            // so we can work set its signal lights
+            auto iter2 = routings.begin();
+            auto reversePos = pos;
+            for (auto i = 0; i < 6; ++i, --iter2)
             {
-                if (curRouting & World::Track::AdditionalTaDFlags::hasSignal)
+                if (RoutingManager::getRouting(*iter2) == RoutingManager::kAllocatedButFreeRoutingStation)
+                {
+                    break;
+                }
+
+                const auto reverseRouting = RoutingManager::getRouting(*iter2);
+                auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
+                reversePos -= trackSize.pos;
+                if (reverseRouting & World::Track::AdditionalTaDFlags::hasSignal)
                 {
                     // 0x004AD24C
-                    updateJunctionSignalLights(pos, curRouting, head.trackType, connection, tc);
+                    updateJunctionSignalLights(reversePos, reverseRouting, head.trackType, connection, tc);
+                    break;
                 }
-                else if (!(curRouting & (1U << 14)))
+                else if (reverseRouting & (1U << 14))
                 {
-                    // Walk backwards through the routings to find the previous signal
-                    // so we can work set its signal lights
-                    auto iter2 = routings.begin();
-                    auto reversePos = pos;
-                    for (auto i = 0; i < 5; ++i, --iter2)
-                    {
-                        if (RoutingManager::getRouting(*iter2) == RoutingManager::kAllocatedButFreeRoutingStation)
-                        {
-                            break;
-                        }
-
-                        const auto reverseRouting = RoutingManager::getRouting(*iter2);
-                        auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
-                        reversePos -= trackSize.pos;
-                        if (reverseRouting & World::Track::AdditionalTaDFlags::hasSignal)
-                        {
-                            // 0x004AD24C
-                            updateJunctionSignalLights(reversePos, reverseRouting, head.trackType, connection, tc);
-                            break;
-                        }
-                        else if (reverseRouting & (1U << 14))
-                        {
-                            break;
-                        }
-                    }
+                    break;
                 }
             }
-            // 0x004AD246
         }
         else
         {
             // 0x004AD347
+            if (tc.hasLevelCrossing)
+            {
+                TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                tad._data = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
+                leaveLevelCrossing(nextPos, tad, 8);
+            }
+
+            if (connection & World::Track::AdditionalTaDFlags::hasSignal)
+            {
+                // 0x004AD3A3
+
+                TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                tad._data = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
+                const auto signalState = getSignalState(nextPos, tad, head.trackType, 0U) & *_vehicleManagerIgnoreSignalFlagsMasks;
+
+                if ((signalState & SignalStateFlags::blockedNoRoute) != SignalStateFlags::none)
+                {
+                    return Sub4ACEE7Result{ 2, 0, StationId::null };
+                }
+                else if ((signalState & SignalStateFlags::occupied) != SignalStateFlags::none)
+                {
+                    // 0x004AD3F8
+                    const auto reverseSignalState = getSignalState(nextPos, tad, head.trackType, 1U << 31);
+                    _vehicleMangled_113623B = enumValue(reverseSignalState);
+                    if (head.var_5C == 0)
+                    {
+                        train.veh1->var_48 &= ~Flags48::passSignal;
+                        return Sub4ACEE7Result{ 3, enumValue(reverseSignalState), StationId::null };
+                    }
+                }
+                else
+                {
+                    // 0x004AD469
+                    if ((train.veh1->var_48 & Flags48::passSignal) != Flags48::none)
+                    {
+                        train.veh1->var_48 &= ~Flags48::passSignal;
+                        if (isBlockOccupied(nextPos, tad, head.owner, head.trackType))
+                        {
+                            setSignalState(nextPos, tad, head.trackType, 8);
+                            return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                        }
+                    }
+
+                    if ((signalState & SignalStateFlags::occupiedOneWay) != SignalStateFlags::none)
+                    {
+                        // 0x004AD490
+                    }
+
+                    // 0x004AD4B1
+                }
+                // 0x004AD4B1
+            }
         }
+        // 0x004AD5F1
     }
 
     // 0x004ACEE7
