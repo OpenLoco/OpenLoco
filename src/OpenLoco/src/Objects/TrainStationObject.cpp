@@ -93,9 +93,9 @@ namespace OpenLoco
         {
             for (size_t j = 0; j < 4; ++j)
             {
-                cargoOffsetBytes[i][j] = reinterpret_cast<const std::byte*>(remainingData.data());
+                cargoOffsetBytes[i][j] = static_cast<uint32_t>(remainingData.data() - data.data());
 
-                auto* bytes = reinterpret_cast<const int8_t*>(cargoOffsetBytes[i][j]);
+                auto* bytes = reinterpret_cast<const int8_t*>(remainingData.data());
                 bytes++; // z
                 auto length = 1;
                 while (*bytes != -1)
@@ -108,11 +108,11 @@ namespace OpenLoco
             }
         }
 
-        for (size_t i = 0; i < sizeof(manualPower) / sizeof(manualPower[0]); ++i)
+        for (size_t i = 0; i < sizeof(var_6E) / sizeof(var_6E[0]); ++i)
         {
-            manualPower[i] = reinterpret_cast<const std::byte*>(remainingData.data());
+            var_6E[i] = static_cast<uint32_t>(remainingData.data() - data.data());
 
-            auto* bytes = reinterpret_cast<const int8_t*>(manualPower[i]);
+            auto* bytes = reinterpret_cast<const int8_t*>(remainingData.data());
             bytes++; // z?
             auto length = 1;
             while (*bytes != -1)
@@ -144,15 +144,15 @@ namespace OpenLoco
         image = 0;
         std::fill(std::begin(var_12), std::end(var_12), 0);
         std::fill(std::begin(mods), std::end(mods), 0);
-        std::fill(&cargoOffsetBytes[0][0], &cargoOffsetBytes[0][0] + sizeof(cargoOffsetBytes) / sizeof(std::byte*), nullptr);
-        std::fill(std::begin(manualPower), std::end(manualPower), nullptr);
+        std::fill(&cargoOffsetBytes[0][0], &cargoOffsetBytes[0][0] + sizeof(cargoOffsetBytes) / sizeof(uint32_t), 0);
+        std::fill(std::begin(var_6E), std::end(var_6E), 0);
     }
 
     sfl::static_vector<TrainStationObject::CargoOffset, Limits::kMaxStationCargoDensity> TrainStationObject::getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const
     {
         assert(rotation < 4 && nibble < 4);
 
-        const auto* bytes = cargoOffsetBytes[rotation][nibble];
+        const auto* bytes = reinterpret_cast<const std::byte*>(this) + cargoOffsetBytes[rotation][nibble];
         uint8_t z = *reinterpret_cast<const uint8_t*>(bytes);
         bytes++;
         sfl::static_vector<CargoOffset, Limits::kMaxStationCargoDensity> result;

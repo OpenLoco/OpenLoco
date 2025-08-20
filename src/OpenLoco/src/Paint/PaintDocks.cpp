@@ -23,9 +23,11 @@ namespace OpenLoco::Paint
         const auto parts = dockObj.getBuildingParts(variation);
 
         auto sectionImageOffset = imageOffset;
+        const auto partHeights = dockObj.getBuildingPartHeights();
+        const auto partAnimations = dockObj.getBuildingPartAnimations();
         for (const auto part : parts)
         {
-            const auto partAnimation = dockObj.buildingPartAnimations[part];
+            const auto partAnimation = partAnimations[part];
 
             const auto frameMask = partAnimation.numFrames - 1;
             const auto cl = partAnimation.animationSpeed & 0x7F;
@@ -38,7 +40,7 @@ namespace OpenLoco::Paint
             }
             const auto adjustedPart = part + (frameMask & tickThing);
 
-            const auto sectionHeight = dockObj.partHeights[adjustedPart];
+            const auto sectionHeight = partHeights[adjustedPart];
             const uint32_t imageIdx = adjustedPart * 4 + dockObj.buildingImage + rotation;
             const auto image = baseColour.withIndex(imageIdx);
             session.addToPlotListAsChild(image, sectionImageOffset, bbOffset, bbSize);
