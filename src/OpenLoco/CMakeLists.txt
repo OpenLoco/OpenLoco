@@ -782,7 +782,7 @@ target_link_libraries(OpenLoco
     Engine
     ${SDL2_LIB}
     Threads::Threads
-    yaml-cpp
+    yaml-cpp::yaml-cpp
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
 
