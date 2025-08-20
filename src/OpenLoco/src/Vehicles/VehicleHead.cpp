@@ -4173,6 +4173,58 @@ namespace OpenLoco::Vehicles
         return Sub4ACEE7Result{ 0, 0, StationId::null };
     }
 
+    // 0x004AD24C
+    // Updates the target signal (targetPos, targetRouting, targetTrackType) to reflect
+    // the state of the signal based on newRouting (and the track connections, tc).
+    static void updateJunctionSignalLights(World::Pos3 targetPos, uint16_t targetRouting, uint8_t targetTrackType, uint16_t newRouting, const World::Track::TrackConnections& tc)
+    {
+        TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+        tad._data = targetRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
+        sfl::static_vector<int8_t, 16> unk113621F;
+        for (const auto& otherConnection : tc.connections)
+        {
+            unk113621F.push_back(_vehicle_arr_4F865C[(otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2]);
+        }
+
+        const auto curUnk = _vehicle_arr_4F865C[(newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2];
+
+        int8_t cl = unk113621F[0];
+        int8_t ch = unk113621F[0];
+        uint32_t ebp = 0;
+        for (auto i = 1U; i < unk113621F.size(); ++i)
+        {
+            const auto unk = unk113621F[i];
+            cl = std::min(cl, unk);
+            ch = std::max(ch, unk);
+            const auto absUnk = std::abs(unk);
+            const auto absUnk2 = std::abs(unk113621F[ebp]);
+            if (absUnk <= absUnk2)
+            {
+                ebp = i;
+            }
+        }
+        const auto ah = unk113621F[ebp];
+        uint32_t lightStateFlags = 0x10;
+        if (ah != cl)
+        {
+            lightStateFlags |= 1U << 30;
+            if (curUnk < ah)
+            {
+                lightStateFlags |= 1U << 28;
+            }
+        }
+        if (ah != ch)
+        {
+            lightStateFlags |= 1U << 29;
+            if (curUnk < ah)
+            {
+                lightStateFlags |= 1U << 27;
+            }
+        }
+
+        setSignalState(targetPos, tad, targetTrackType, lightStateFlags);
+    }
+
     // 0x004ACEF1
     static Sub4ACEE7Result sub_4ACEF1(VehicleHead& head, uint32_t unk1, uint32_t var_113612C)
     {
@@ -4305,64 +4357,17 @@ namespace OpenLoco::Vehicles
             const auto curRouting = RoutingManager::getRouting(*routings.begin());
             if (curRouting != RoutingManager::kAllocatedButFreeRoutingStation)
             {
-                auto reversePos = pos;
                 if (curRouting & World::Track::AdditionalTaDFlags::hasSignal)
                 {
                     // 0x004AD24C
-                    // curRouting here would be an input var for the other caller
-                    auto inputRouting = curRouting;
-                    TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
-                    tad._data = inputRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
-                    sfl::static_vector<int8_t, 16> unk113621F;
-                    for (const auto& otherConnection : tc.connections)
-                    {
-                        unk113621F.push_back(_vehicle_arr_4F865C[(otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2]);
-                    }
-
-                    // NOTE: not the inputRouting
-                    const auto curUnk = _vehicle_arr_4F865C[(curRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2];
-
-                    int8_t cl = unk113621F[0];
-                    int8_t ch = unk113621F[0];
-                    uint32_t ebp = 0;
-                    for (auto i = 1U; i < unk113621F.size(); ++i)
-                    {
-                        const auto unk = unk113621F[i];
-                        cl = std::min(cl, unk);
-                        ch = std::max(ch, unk);
-                        const auto absUnk = std::abs(unk);
-                        const auto absUnk2 = std::abs(unk113621F[ebp]);
-                        if (absUnk <= absUnk2)
-                        {
-                            ebp = i;
-                        }
-                    }
-                    const auto ah = unk113621F[ebp];
-                    uint32_t lightStateFlags = 0x10;
-                    if (ah != cl)
-                    {
-                        lightStateFlags |= 1U << 30;
-                        if (curUnk < ah)
-                        {
-                            lightStateFlags |= 1U << 28;
-                        }
-                    }
-                    if (ah != ch)
-                    {
-                        lightStateFlags |= 1U << 29;
-                        if (curUnk < ah)
-                        {
-                            lightStateFlags |= 1U << 27;
-                        }
-                    }
-
-                    setSignalState(reversePos, tad, head.trackType, lightStateFlags);
-
-                    // 0x004AD246
+                    updateJunctionSignalLights(pos, curRouting, head.trackType, connection, tc);
                 }
                 else if (!(curRouting & (1U << 14)))
                 {
+                    // Walk backwards through the routings to find the previous signal
+                    // so we can work set its signal lights
                     auto iter2 = routings.begin();
+                    auto reversePos = pos;
                     for (auto i = 0; i < 5; ++i, --iter2)
                     {
                         if (RoutingManager::getRouting(*iter2) == RoutingManager::kAllocatedButFreeRoutingStation)
@@ -4376,6 +4381,8 @@ namespace OpenLoco::Vehicles
                         if (reverseRouting & World::Track::AdditionalTaDFlags::hasSignal)
                         {
                             // 0x004AD24C
+                            updateJunctionSignalLights(reversePos, reverseRouting, head.trackType, connection, tc);
+                            break;
                         }
                         else if (reverseRouting & (1U << 14))
                         {
@@ -4383,7 +4390,6 @@ namespace OpenLoco::Vehicles
                         }
                     }
                 }
-                // 0x004AD246
             }
             // 0x004AD246
         }
