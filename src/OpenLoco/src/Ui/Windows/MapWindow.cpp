@@ -2477,8 +2477,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         const int16_t vpCentreY = ((viewport->viewHeight / 2) + viewport->viewY) / 16;
 
         auto& widget = window->widgets[widx::scrollview];
-        const int16_t miniMapWidth = widget.width() - ScrollView::barThickness;
-        const int16_t miniMapHeight = widget.height() - ScrollView::barThickness;
+        const int16_t miniMapWidth = widget.width() - ScrollView::kScrollbarSize;
+        const int16_t miniMapHeight = widget.height() - ScrollView::kScrollbarSize;
 
         const int16_t visibleMapWidth = window->scrollAreas[0].contentWidth - miniMapWidth;
         const int16_t visibleMapHeight = window->scrollAreas[0].contentHeight - miniMapHeight;

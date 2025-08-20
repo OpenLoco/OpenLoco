@@ -2127,7 +2127,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto widgetWidth = widget.width() - 2;
             if (self.scrollAreas[0].hasFlags(ScrollFlags::vscrollbarVisible))
             {
-                widgetWidth -= ScrollView::barThickness;
+                widgetWidth -= ScrollView::kScrollbarSize;
             }
             // This gets the offset of the last full page (widgetWidth) of the scroll view
             const auto newOffset = std::max(0, self.scrollAreas[0].contentWidth - widgetWidth);
