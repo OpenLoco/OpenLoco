@@ -78,9 +78,9 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043BFBB
-    static void getScrollSize(Ui::Window&, uint32_t, int32_t*, int32_t* const scrollHeight)
+    static void getScrollSize(Ui::Window&, uint32_t, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = numSongs * (kRowHeight * 3 + 4);
+        scrollHeight = numSongs * (kRowHeight * 3 + 4);
     }
 
     // 0x0043BFC0

@@ -139,9 +139,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A871
-        static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
+        static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = MessageManager::getNumMessages() * messageHeight;
+            scrollHeight = MessageManager::getNumMessages() * messageHeight;
         }
 
         // 0x0042A8B9
@@ -375,8 +375,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         window->callPrepareDraw();
         window->initScrollWidgets();
 
-        int32_t scrollHeight = 0;
-        window->callGetScrollSize(0, nullptr, &scrollHeight);
+        int32_t scrollWidth = 0, scrollHeight = 0;
+        window->callGetScrollSize(0, scrollWidth, scrollHeight);
 
         scrollHeight -= window->widgets[Messages::widx::scrollview].height();
 

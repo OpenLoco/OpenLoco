@@ -1024,9 +1024,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C265B
-    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
+    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = self.var_83C * self.rowHeight;
+        scrollHeight = self.var_83C * self.rowHeight;
     }
 
     // 0x004C266D

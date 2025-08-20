@@ -702,9 +702,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E2AC
-        static void getScrollSize([[maybe_unused]] Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
+        static void getScrollSize([[maybe_unused]] Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = 0;
+            scrollHeight = 0;
 
             for (uint16_t i = 0; i < kMaxLandObjects; i++)
             {
@@ -714,7 +714,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     continue;
                 }
 
-                *scrollHeight += kRowHeight;
+                scrollHeight += kRowHeight;
             }
         }
 

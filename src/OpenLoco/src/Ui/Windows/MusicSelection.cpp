@@ -145,9 +145,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C176C
-    static void getScrollSize([[maybe_unused]] Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t* scrollWidth, int32_t* scrollHeight)
+    static void getScrollSize([[maybe_unused]] Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = kRowHeight * Jukebox::kNumMusicTracks;
+        scrollHeight = kRowHeight * Jukebox::kNumMusicTracks;
     }
 
     // 0x004C1757
