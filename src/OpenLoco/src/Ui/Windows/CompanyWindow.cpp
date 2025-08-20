@@ -2147,10 +2147,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043386F
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, [[maybe_unused]] uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, int32_t& scrollWidth, [[maybe_unused]] int32_t& scrollHeight)
         {
             const auto& company = CompanyManager::get(CompanyId(self.number));
-            *scrollWidth = company->numExpenditureYears * expenditureColumnWidth;
+            scrollWidth = company->numExpenditureYears * expenditureColumnWidth;
         }
 
         // 0x00433887
