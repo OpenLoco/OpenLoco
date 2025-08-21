@@ -4357,6 +4357,7 @@ namespace OpenLoco::Vehicles
             bringTrackElementToFront(nextPos, head.trackType, connection & World::Track::AdditionalTaDFlags::basicTaDMask);
 
             // Simplified from vanilla as I'm pretty sure its the same
+            // NOT CONVINCED ITS THE SAME!
 
             // Walk backwards through the routings to find the previous signal
             // so we can work set its signal lights
@@ -4433,14 +4434,90 @@ namespace OpenLoco::Vehicles
                     if ((signalState & SignalStateFlags::occupiedOneWay) != SignalStateFlags::none)
                     {
                         // 0x004AD490
-                    }
+                        if (train.veh1->var_52 != 0)
+                        {
+                            _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
+                            train.veh1->var_52--;
+                        }
+                        else
+                        {
+                            if (!(sub_4A2A77(nextPos, tad, head.owner, head.trackType) & ((1U << 0) | (1U << 1))))
+                            {
+                                _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
+                                train.veh1->var_52 = 55;
+                            }
+                        }
 
-                    // 0x004AD4B1
+                        return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                    }
                 }
                 // 0x004AD4B1
+
+                setReverseSignalOccupiedInBlock(nextPos, tad, head.owner, head.trackType);
+                if (head.var_5C == 0)
+                {
+                    setSignalState(nextPos, tad, head.trackType, 1);
+                }
+                uint8_t edi = 2;
+                auto iter3 = routings.begin();
+                auto reversePos = pos;
+                for (auto i = 0; i < 6; ++i, --iter3)
+                {
+                    if (RoutingManager::getRouting(*iter3) == RoutingManager::kAllocatedButFreeRoutingStation)
+                    {
+                        break;
+                    }
+
+                    const auto reverseRouting = RoutingManager::getRouting(*iter3);
+                    if (iter3 != routings.begin())
+                    {
+                        auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
+                        reversePos -= trackSize.pos;
+                    }
+                    if (reverseRouting & World::Track::AdditionalTaDFlags::hasSignal)
+                    {
+                        setSignalState(reversePos, tad, head.trackType, edi);
+                        edi = std::min(edi + 1, 3);
+                    }
+                }
             }
         }
         // 0x004AD5F1
+        // Mostly the same as ROAD but with track equivalent functions
+        const auto& nextHandle = *++(routings.begin());
+        RoutingManager::setRouting(nextHandle, connection);
+
+        if (head.var_52 == 1)
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        auto curOrder = OrderRingView(head.orderTableOffset, head.currentOrder).begin();
+        auto* waypointOrder = curOrder->as<OrderRouteWaypoint>();
+        if (waypointOrder == nullptr)
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        auto curPos = nextPos;
+
+        if (curPos != waypointOrder->getWaypoint())
+        {
+            auto& trackSize = World::TrackData::getUnkTrack(connection & 0x1FF);
+            auto connectPos = curPos + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                connectPos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            if (connectPos != waypointOrder->getWaypoint())
+            {
+                return Sub4ACEE7Result{ 0, 0, StationId::null };
+            }
+        }
+        curOrder++;
+        head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
+        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+        return Sub4ACEE7Result{ 0, 0, StationId::null };
     }
 
     // 0x004ACEE7
