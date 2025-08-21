@@ -4371,8 +4371,11 @@ namespace OpenLoco::Vehicles
                 }
 
                 const auto reverseRouting = RoutingManager::getRouting(*iter2);
-                auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
-                reversePos -= trackSize.pos;
+                if (iter2 != routings.begin())
+                {
+                    auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
+                    reversePos -= trackSize.pos;
+                }
                 if (reverseRouting & World::Track::AdditionalTaDFlags::hasSignal)
                 {
                     // 0x004AD24C
