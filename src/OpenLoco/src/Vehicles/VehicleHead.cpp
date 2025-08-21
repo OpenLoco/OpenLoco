@@ -118,6 +118,8 @@ namespace OpenLoco::Vehicles
 
     static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods);
     static uint16_t roadPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, bool isSecondRun, Sub4AC3D3State& state);
+    static uint16_t trackLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods);
+    static uint16_t trackPathing(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods, bool isSecondRun, Sub4AC3D3State& state);
 
     struct WaterPathingResult
     {
@@ -4032,7 +4034,7 @@ namespace OpenLoco::Vehicles
         const auto rotation = head.trackAndDirection.road.cardinalDirection();
         const auto tile = TileManager::get(pos);
         auto elStation = tile.roadStation(roadId, rotation, head.tileBaseZ);
-        if (elStation->isGhost() || elStation->isAiAllocated())
+        if (elStation != nullptr && (elStation->isGhost() || elStation->isAiAllocated()))
         {
             elStation = nullptr;
         }
@@ -4267,15 +4269,13 @@ namespace OpenLoco::Vehicles
         const auto rotation = head.trackAndDirection.track.cardinalDirection();
         const auto tile = TileManager::get(pos);
         auto elStation = tile.trainStation(trackId, rotation, head.tileBaseZ);
-        if (elStation->isGhost() || elStation->isAiAllocated())
+        if (elStation != nullptr && (elStation->isGhost() || elStation->isAiAllocated()))
         {
             elStation = nullptr;
         }
 
         // 0x011361F6
         const auto tileStationId = elStation != nullptr ? elStation->stationId() : StationId::null;
-        // 0x0112C32B
-        const auto stationObjId = elStation != nullptr ? elStation->objectId() : 0xFF;
 
         auto train = Vehicle(head);
         const auto requiredMods = head.var_53;
