@@ -4464,15 +4464,9 @@ namespace OpenLoco::Vehicles
                     setSignalState(nextPos, tad, head.trackType, 1);
                 }
                 uint8_t edi = 2;
-                auto iter3 = routings.begin();
                 auto reversePos = pos;
-                for (auto i = 0; i < 6; ++i, --iter3)
+                for (auto iter3 = routings.begin(); RoutingManager::getRouting(*iter3) != RoutingManager::kAllocatedButFreeRoutingStation; --iter3)
                 {
-                    if (RoutingManager::getRouting(*iter3) == RoutingManager::kAllocatedButFreeRoutingStation)
-                    {
-                        break;
-                    }
-
                     const auto reverseRouting = RoutingManager::getRouting(*iter3);
                     if (*iter3 != *routings.begin())
                     {
