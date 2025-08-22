@@ -4371,7 +4371,7 @@ namespace OpenLoco::Vehicles
                 }
 
                 const auto reverseRouting = RoutingManager::getRouting(*iter2);
-                if (iter2 != routings.begin())
+                if (*iter2 != *routings.begin())
                 {
                     auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
                     reversePos -= trackSize.pos;
@@ -4441,6 +4441,8 @@ namespace OpenLoco::Vehicles
                         {
                             _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
                             train.veh1->var_52--;
+
+                            return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
                         }
                         else
                         {
@@ -4448,10 +4450,10 @@ namespace OpenLoco::Vehicles
                             {
                                 _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
                                 train.veh1->var_52 = 55;
+
+                                return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
                             }
                         }
-
-                        return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
                     }
                 }
                 // 0x004AD4B1
@@ -4472,14 +4474,16 @@ namespace OpenLoco::Vehicles
                     }
 
                     const auto reverseRouting = RoutingManager::getRouting(*iter3);
-                    if (iter3 != routings.begin())
+                    if (*iter3 != *routings.begin())
                     {
                         auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
                         reversePos -= trackSize.pos;
                     }
                     if (reverseRouting & World::Track::AdditionalTaDFlags::hasSignal)
                     {
-                        setSignalState(reversePos, tad, head.trackType, edi);
+                        auto reverseTad = TrackAndDirection::_TrackAndDirection{ 0, 0 };
+                        reverseTad._data = reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
+                        setSignalState(reversePos, reverseTad, head.trackType, edi);
                         edi = std::min(edi + 1, 3);
                     }
                 }
