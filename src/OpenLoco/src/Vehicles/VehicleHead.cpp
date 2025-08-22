@@ -4198,7 +4198,7 @@ namespace OpenLoco::Vehicles
             ch = std::max(ch, unk);
             const auto absUnk = std::abs(unk);
             const auto absUnk2 = std::abs(unk113621F[ebp]);
-            if (absUnk <= absUnk2)
+            if (absUnk < absUnk2)
             {
                 ebp = i;
             }
@@ -4216,7 +4216,7 @@ namespace OpenLoco::Vehicles
         if (ah != ch)
         {
             lightStateFlags |= 1U << 29;
-            if (curUnk < ah)
+            if (curUnk > ah)
             {
                 lightStateFlags |= 1U << 27;
             }
