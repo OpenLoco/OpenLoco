@@ -802,7 +802,7 @@ namespace OpenLoco::Vehicles
     uint8_t sub_4A2A77(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         uint16_t routingTransformData = 0;
-
+        _1136085 = 0;
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return sub_4A2AA1(interest, routingTransformData); };
 
         LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
