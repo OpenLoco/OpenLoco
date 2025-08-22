@@ -322,6 +322,8 @@ namespace OpenLoco::Vehicles
 
             if (!res)
             {
+                // This shouldn't happen i think. Eitherway useful in debug to know.
+                assert(false);
                 return;
             }
 
