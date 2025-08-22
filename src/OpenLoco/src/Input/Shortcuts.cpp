@@ -1,7 +1,6 @@
 #include "Shortcuts.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
-#include "GameCommands/General/TogglePause.h"
 #include "GameState.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
@@ -61,7 +60,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        GameCommands::doCommand(GameCommands::PauseGameArgs{}, GameCommands::Flags::apply);
+        GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Paused }, GameCommands::Flags::apply);
     }
 
     // 0x004BF0FE

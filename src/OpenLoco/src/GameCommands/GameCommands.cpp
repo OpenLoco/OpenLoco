@@ -21,7 +21,6 @@
 #include "General/LoadSaveQuit.h"
 #include "General/RenameStation.h"
 #include "General/SetGameSpeed.h"
-#include "General/TogglePause.h"
 #include "Industries/CreateIndustry.h"
 #include "Industries/RemoveIndustry.h"
 #include "Industries/RenameIndustry.h"
@@ -146,7 +145,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::createTrackMod,               createTrackMod,            0x004A6479, true  },
         { GameCommand::removeTrackMod,               removeTrackMod,            0x004A668A, true  },
         { GameCommand::changeCompanyColourScheme,    changeCompanyColour,       0x0043483D, false },
-        { GameCommand::pauseGame,                    togglePause,               0x00431E32, false },
+        { GameCommand::pauseGame,                    nullptr,                   0x00431E32, false }, // superseded by setGameSpeed
         { GameCommand::loadSaveQuitGame,             loadSaveQuit,              0x0043BFCB, false },
         { GameCommand::removeTree,                   removeTree,                0x004BB392, true  },
         { GameCommand::createTree,                   createTree,                0x004BB138, true  },
@@ -208,7 +207,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::renameIndustry,               renameIndustry,            0x00455029, false },
         { GameCommand::vehicleClone,                 cloneVehicle,              0,          true  },
         { GameCommand::cheat,                        cheat,                     0,          true  },
-        { GameCommand::setGameSpeed,                 setGameSpeed,              0,          true  },
+        { GameCommand::setGameSpeed,                 setGameSpeed,              0,          false },
         { GameCommand::vehicleOrderReverse,          vehicleOrderReverse,       0,          false },
         { GameCommand::vehicleRepaint,               vehicleRepaint,            0,          false },
     };
@@ -343,18 +342,10 @@ namespace OpenLoco::GameCommands
 
         if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == CompanyManager::getControllingId())
         {
-            if (SceneManager::getPauseFlags() & 1)
+            if (SceneManager::isPaused())
             {
-                SceneManager::unsetPauseFlag(1);
-                WindowManager::invalidate(WindowType::timeToolbar);
-                Audio::unpauseSound();
+                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
-            }
-
-            if (SceneManager::getGameSpeed() != GameSpeed::Normal)
-            {
-                // calling the command setGameSpeed will cause infinite recursion here, so just call the real function
-                SceneManager::setGameSpeed(GameSpeed::Normal);
             }
 
             if (SceneManager::isPaused())
