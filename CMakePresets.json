@@ -264,6 +264,21 @@
             "nativeToolOptions": [ "-k0" ]
         },
         {
+            "name": "linux-debug-static",
+            "configurePreset": "linux-vcpkg-static",
+            "displayName": "Debug",
+            "description": "Build Debug Ninja Configurations (static linkage)",
+            "configuration": "Debug",
+            "nativeToolOptions": [ "-k0" ]
+        },
+        {
+            "name": "linux-release-static",
+            "configurePreset": "linux-vcpkg-static",
+            "displayName": "Release",
+            "description": "Build Release Ninja Configurations (static linkage)",
+            "configuration": "Release",
+            "nativeToolOptions": [ "-k0" ]
+        },
             "name": "linux-arch-debug",
             "configurePreset": "linux-arch",
             "displayName": "Debug",
