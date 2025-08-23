@@ -337,9 +337,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436321
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = self.var_83C * kRowHeight;
+            scrollHeight = self.var_83C * kRowHeight;
         }
 
         // 0x004363A0

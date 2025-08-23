@@ -149,9 +149,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352BB
-    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const scrollWidth, uint16_t* const scrollHeight)
+    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = static_cast<uint16_t>(_competitorList.size()) * kRowHeight;
+        scrollHeight = _competitorList.size() * kRowHeight;
     }
 
     static bool isInUseCompetitor(const uint32_t objIndex)

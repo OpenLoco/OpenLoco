@@ -53,7 +53,7 @@ namespace OpenLoco
         uint16_t obsoleteYear;                   // 0x2A
         uint8_t cargoType;                       // 0x2C
         uint8_t pad_2D;
-        const std::byte* cargoOffsetBytes[4][4]; // 0x2E
+        uint32_t cargoOffsetBytes[4][4]; // 0x2E
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;

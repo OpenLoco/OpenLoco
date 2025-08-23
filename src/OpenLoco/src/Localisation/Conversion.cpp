@@ -85,7 +85,7 @@ namespace OpenLoco::Localisation
     std::string convertUnicodeToLoco(const std::string& unicodeString)
     {
         std::string out;
-        uint8_t* input = (uint8_t*)unicodeString.c_str();
+        const uint8_t* input = (uint8_t*)unicodeString.c_str();
         while (utf32_t unicodePoint = readCodePoint(&input))
         {
             out += convertUnicodeToLoco(unicodePoint);

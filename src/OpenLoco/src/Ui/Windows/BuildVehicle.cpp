@@ -1025,9 +1025,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37B9
-    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = window.var_83C * window.rowHeight;
+        scrollHeight = window.var_83C * window.rowHeight;
     }
 
     // 0x4C384B

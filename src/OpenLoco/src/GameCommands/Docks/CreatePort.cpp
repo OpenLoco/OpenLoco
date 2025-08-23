@@ -204,9 +204,10 @@ namespace OpenLoco::GameCommands
         // This is identical to createIndustry but with a DockObject
         // TODO: look into making some sort of common version
         auto clearHeight = 0;
+        const auto partHeights = dockObj->getBuildingPartHeights();
         for (auto part : dockObj->getBuildingParts(buildingType))
         {
-            clearHeight += dockObj->partHeights[part];
+            clearHeight += partHeights[part];
         }
         // ceil to 4
         clearHeight += 3;

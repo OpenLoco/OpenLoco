@@ -22,7 +22,7 @@ namespace OpenLoco
         remainingData = remainingData.subspan(numUnkStructs * 16);
 
         // Main pcm data structure
-        data = reinterpret_cast<const SoundObjectData*>(remainingData.data());
+        dataOffset = static_cast<uint32_t>(remainingData.data() - objData.data());
 
         assert(remainingData.size() == pcmDataLength);
     }
@@ -31,6 +31,16 @@ namespace OpenLoco
     void SoundObject::unload()
     {
         name = 0;
-        data = nullptr;
+        dataOffset = 0;
     }
+
+    const OpenLoco::SoundObjectData* SoundObject::getData() const
+    {
+        if (dataOffset == 0)
+        {
+            return nullptr;
+        }
+        return reinterpret_cast<const OpenLoco::SoundObjectData*>(reinterpret_cast<const uint8_t*>(this) + dataOffset);
+    }
+
 }

@@ -61,7 +61,7 @@ namespace OpenLoco::Localisation
         auto str = std::make_unique<char[]>(size + 1);
         char* out = str.get();
 
-        utf8_t* ptr = (utf8_t*)value;
+        const utf8_t* ptr = (utf8_t*)value;
         while (true)
         {
             utf32_t codepoint = readCodePoint(&ptr);

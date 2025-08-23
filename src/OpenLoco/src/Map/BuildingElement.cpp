@@ -94,9 +94,10 @@ namespace OpenLoco::World
                 else
                 {
                     auto totalHeight = 3;
+                    const auto partHeights = buildingObj->getBuildingPartHeights();
                     for (auto part : parts)
                     {
-                        totalHeight += buildingObj->partHeights[part];
+                        totalHeight += partHeights[part];
                     }
 
                     const auto newClearHeight = baseZ() + totalHeight / 4;
@@ -263,12 +264,13 @@ namespace OpenLoco::World
         }
 
         auto* buildingObj = elBuilding->getObject();
-        auto parts = buildingObj->getBuildingParts(elBuilding->variation());
+        const auto parts = buildingObj->getBuildingParts(elBuilding->variation());
+        const auto partAnimations = buildingObj->getBuildingPartAnimations();
         uint8_t slowestSpeed = 0xFF;
         uint8_t numFrames = 0;
         for (auto part : parts)
         {
-            auto& partAnim = buildingObj->partAnimations[part];
+            auto& partAnim = partAnimations[part];
             const uint8_t animSpeed = partAnim.animationSpeed & ~(1U << 7);
             if (partAnim.numFrames == 0)
             {

@@ -542,7 +542,8 @@ namespace OpenLoco::Audio
                 auto obj = getSoundObject(id);
                 if (obj != nullptr)
                 {
-                    auto* data = obj->data;
+                    const auto* data = obj->getData();
+                    assert(data != nullptr);
                     assert(data->offset == 8);
                     _objectSamples[static_cast<size_t>(id)] = loadSoundFromWaveMemory(data->pcmHeader, data->pcm(), data->length);
                     return _objectSamples[static_cast<size_t>(id)];

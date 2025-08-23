@@ -15,6 +15,8 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
+#include <Localisation/Conversion.h>
+#include <Localisation/Unicode.h>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
@@ -168,11 +170,16 @@ namespace OpenLoco::Input
 
     void enqueueText(const char* text)
     {
-        if (text != nullptr && text[0] != '\0')
+        using namespace Localisation;
+
+        if (text == nullptr || text[0] == '\0')
         {
-            uint32_t index = _keyQueueLastWrite;
-            _keyQueue[index].charCode = text[0];
+            return;
         }
+
+        uint32_t index = _keyQueueLastWrite;
+        auto unsignedText = reinterpret_cast<const uint8_t*>(text);
+        _keyQueue[index].charCode = convertUnicodeToLoco(readCodePoint(&unsignedText));
     }
 
     // 0x00407028

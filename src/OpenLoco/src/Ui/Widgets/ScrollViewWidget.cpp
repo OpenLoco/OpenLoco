@@ -4,15 +4,13 @@
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
+#include "Ui/ScrollView.h"
 #include "Ui/Window.h"
+
+using namespace OpenLoco::Ui::ScrollView;
 
 namespace OpenLoco::Ui::Widgets
 {
-    // For horizontal scrollbars its N wide, for vertical its N tall
-    static constexpr auto kScrollbarSize = 11;
-    static constexpr auto kScrollbarMargin = 1;
-
-    static constexpr auto kScrollButtonSize = Ui::Size(11, 11);
     static constexpr auto kArrowOffset = 2;
 
     static void drawHScroll(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const ScrollArea& scrollArea)

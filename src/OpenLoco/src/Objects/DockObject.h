@@ -35,17 +35,17 @@ namespace OpenLoco
         int16_t sellCostFactor;  // 0x04
         uint8_t costIndex;       // 0x06
         uint8_t var_07;
-        uint32_t image;                                      // 0x08
-        uint32_t buildingImage;                              // 0x0C
-        DockObjectFlags flags;                               // 0x10
-        uint8_t numBuildingParts;                            // 0x12
-        uint8_t numBuildingVariations;                       // 0x13 must be 1 or 0
-        const uint8_t* partHeights;                          // 0x14
-        const BuildingPartAnimation* buildingPartAnimations; // 0x18
-        const uint8_t* buildingVariationParts[1];            // 0x1C odd that this is size 1 but that is how its used
-        uint16_t designedYear;                               // 0x20
-        uint16_t obsoleteYear;                               // 0x22
-        World::Pos2 boatPosition;                            // 0x24
+        uint32_t image;                           // 0x08
+        uint32_t buildingImage;                   // 0x0C
+        DockObjectFlags flags;                    // 0x10
+        uint8_t numBuildingParts;                 // 0x12
+        uint8_t numBuildingVariations;            // 0x13 must be 1 or 0
+        uint32_t partHeightsOffset;               // 0x14
+        uint32_t buildingPartAnimationsOffset;    // 0x18
+        uint32_t buildingVariationPartsOffset[1]; // 0x1C odd that this is size 1 but that is how its used
+        uint16_t designedYear;                    // 0x20
+        uint16_t obsoleteYear;                    // 0x22
+        World::Pos2 boatPosition;                 // 0x24
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
@@ -55,6 +55,7 @@ namespace OpenLoco
 
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
         std::span<const BuildingPartAnimation> getBuildingPartAnimations() const;
+        std::span<const uint8_t> getBuildingPartHeights() const;
 
         constexpr bool hasFlags(DockObjectFlags flagsToTest) const
         {

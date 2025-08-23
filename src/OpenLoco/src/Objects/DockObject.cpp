@@ -49,16 +49,16 @@ namespace OpenLoco
         remainingData = remainingData.subspan(strRes.tableLength);
 
         // Load part heights
-        partHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        partHeightsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numBuildingParts);
 
-        buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
+        buildingPartAnimationsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numBuildingParts * sizeof(BuildingPartAnimation));
 
         // Load building variation parts
         for (auto i = 0U; i < numBuildingVariations; ++i)
         {
-            buildingVariationParts[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
+            buildingVariationPartsOffset[i] = static_cast<uint32_t>(remainingData.data() - data.data());
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 remainingData = remainingData.subspan(1);
@@ -83,15 +83,17 @@ namespace OpenLoco
         name = 0;
         image = 0;
         buildingImage = 0;
-        partHeights = nullptr;
-        buildingPartAnimations = nullptr;
-        std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);
+        partHeightsOffset = 0;
+        buildingPartAnimationsOffset = 0;
+        std::fill(std::begin(buildingVariationPartsOffset), std::end(buildingVariationPartsOffset), 0);
     }
 
     std::span<const std::uint8_t> DockObject::getBuildingParts(const uint8_t buildingType) const
     {
-        const auto* partsPointer = buildingVariationParts[buildingType];
-        auto* end = partsPointer;
+        const auto offset = buildingVariationPartsOffset[buildingType];
+
+        const auto* partsPointer = reinterpret_cast<const std::uint8_t*>(this) + offset;
+        const auto* end = partsPointer;
         while (*end != 0xFF)
         {
             end++;
@@ -102,7 +104,15 @@ namespace OpenLoco
 
     std::span<const BuildingPartAnimation> DockObject::getBuildingPartAnimations() const
     {
-        return std::span<const BuildingPartAnimation>(buildingPartAnimations, numBuildingParts);
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + buildingPartAnimationsOffset);
+        return std::span<const BuildingPartAnimation>(ptr, numBuildingParts);
+    }
+
+    std::span<const uint8_t> DockObject::getBuildingPartHeights() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        return std::span<const std::uint8_t>(base + partHeightsOffset, numBuildingParts);
     }
 
 }
