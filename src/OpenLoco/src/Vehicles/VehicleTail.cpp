@@ -17,6 +17,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
 
     // 0x004794BC
+    // This is enter level crossing if unk==8 and leave level crossing if unk==9
     void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
     {
         auto levelCrossingLoc = loc;
@@ -57,6 +58,7 @@ namespace OpenLoco::Vehicles
             {
                 continue;
             }
+            road->setUnk7_10(true);
 
             World::AnimationManager::createAnimation(1, levelCrossingLoc, levelCrossingLoc.z / 4);
         }
