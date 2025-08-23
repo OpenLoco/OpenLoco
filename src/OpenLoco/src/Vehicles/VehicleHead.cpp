@@ -7008,5 +7008,20 @@ namespace OpenLoco::Vehicles
 
                 return 0;
             });
+
+        registerHook(
+            0x004ACEE7,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto& head = *X86Pointer<VehicleHead>(regs.esi);
+                const auto unk1 = regs.eax;
+                const auto unk2 = regs.ebx;
+                head.sub_4ACEE7(unk1, unk2);
+
+                regs = backup;
+
+                return 0;
+            });
     }
 }
