@@ -4235,17 +4235,19 @@ namespace OpenLoco::Vehicles
         // TRACK only
 
         // Identical to ROAD
-        auto routings = RoutingManager::RingView(head.routingHandle);
-        auto iter = routings.begin();
-        iter++;
-        iter++;
-        if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
         {
-            return Sub4ACEE7Result{ 1, 0, StationId::null };
-        }
-        if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRoutingStation)
-        {
-            return Sub4ACEE7Result{ 1, 0, StationId::null };
+            auto routings = RoutingManager::RingView(head.routingHandle);
+            auto iter = routings.begin();
+            iter++;
+            iter++;
+            if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result{ 1, 0, StationId::null };
+            }
+            if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result{ 1, 0, StationId::null };
+            }
         }
 
         // Identical to ROAD
@@ -4261,6 +4263,7 @@ namespace OpenLoco::Vehicles
             const auto distance = std::min<int32_t>(distance1, distance2);
             head.var_3C += distance - head.updateTrackMotion(distance);
         }
+        // NOTE: head.routingHandle may have changed here due to updateTrackMotion
 
         if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
         {
@@ -4339,6 +4342,7 @@ namespace OpenLoco::Vehicles
             return Sub4ACEE7Result{ 2, 0, StationId::null };
         }
 
+        auto routings = RoutingManager::RingView(head.routingHandle);
         uint16_t connection = tc.connections[0];
         if (tc.connections.size() > 1)
         {
