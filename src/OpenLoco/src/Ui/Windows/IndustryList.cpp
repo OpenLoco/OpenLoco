@@ -839,7 +839,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
-                    self.savedView.mapX = -16;
+                    self.expandContentCounter = -16;
                     _dword_E0C39C = 0x80000000;
                     self.invalidate();
                     break;
@@ -944,8 +944,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self.savedView.mapX += 1;
-                            if (self.savedView.mapX >= 8)
+                            self.expandContentCounter += 1;
+                            if (self.expandContentCounter >= 8)
                             {
                                 auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
@@ -972,7 +972,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 }
                 else
                 {
-                    self.savedView.mapX = 0;
+                    self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
                         self.minWidth = kWindowSize.width;

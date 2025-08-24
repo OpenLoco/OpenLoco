@@ -2178,7 +2178,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         drawViewportPosition(drawingCtx);
 
-        if (self.savedView.mapX & (1 << 0))
+        if (self.showTownNames)
         {
             drawTownNames(drawingCtx);
         }
@@ -2440,7 +2440,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         centerOnViewPoint();
 
         window->currentTab = 0;
-        window->savedView.mapX = 1;
+        window->showTownNames = true;
         window->var_854 = 0;
 
         assignIndustryColours();
