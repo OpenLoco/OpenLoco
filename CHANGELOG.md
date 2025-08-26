@@ -1,4 +1,4 @@
-25.07+ (???)
+25.08 (2025-08-26)
 ------------------------------------------------------------------------
 - Change: [#1682, #3216] Scroll widgets now support much larger sizes.
 - Change: [#3104] Landscape generation confirmation prompts now prevent you from clicking other windows until a choice is made.
