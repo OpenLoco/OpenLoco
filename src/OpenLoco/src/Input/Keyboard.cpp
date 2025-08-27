@@ -52,6 +52,7 @@ namespace OpenLoco::Input
     static uint32_t _keyQueueWriteIndex;
     static std::array<uint8_t, 256> _keyboardState;
     static uint8_t _editingShortcutIndex;
+    static bool _hasKeyboardState = false;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
         { "DRIVER", loc_4BECDE },
@@ -157,7 +158,7 @@ namespace OpenLoco::Input
     // 0x0040477F
     void readKeyboardState()
     {
-        addr<0x005251CC, uint8_t>() = 0;
+        _hasKeyboardState = false;
 
         // Reset state.
         std::ranges::fill(_keyboardState, 0);
@@ -176,7 +177,7 @@ namespace OpenLoco::Input
 
                 _keyboardState[scanCode] = 0x80;
             }
-            addr<0x005251CC, uint8_t>() = 1;
+            _hasKeyboardState = 1;
         }
     }
 
@@ -614,7 +615,7 @@ namespace OpenLoco::Input
 
         _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::unknown);
 
-        if (addr<0x005251CC, uint8_t>() != 1)
+        if (!_hasKeyboardState)
         {
             return;
         }
