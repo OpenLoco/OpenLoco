@@ -21,6 +21,7 @@
 #include <SDL2/SDL.h>
 #include <cstdint>
 #include <functional>
+#include <optional>
 
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::GameCommands;
@@ -224,19 +225,22 @@ namespace OpenLoco::Input
     }
 
     // 0x00407028
-    static Key* getNextKey()
+    static std::optional<Key> getNextKey()
     {
         uint32_t readIndex = _keyQueueReadIndex;
         if (readIndex == _keyQueueWriteIndex)
         {
-            return nullptr;
+            return std::nullopt;
         }
-        auto* out = &_keyQueue[readIndex];
+
+        const auto nextKey = _keyQueue[readIndex];
         readIndex++;
+
         // Wrap around at _keyQueue size
         readIndex %= std::size(_keyQueue);
         _keyQueueReadIndex = readIndex;
-        return out;
+
+        return nextKey;
     }
 
     static bool tryShortcut(Shortcut sc, uint32_t keyCode, KeyModifier modifiers)
@@ -298,33 +302,33 @@ namespace OpenLoco::Input
         }
     }
 
-    static void editShortcut(Key* k)
+    static void editShortcut(const Key& k)
     {
-        if (k->keyCode == SDLK_UP)
+        if (k.keyCode == SDLK_UP)
         {
             return;
         }
-        if (k->keyCode == SDLK_DOWN)
+        if (k.keyCode == SDLK_DOWN)
         {
             return;
         }
-        if (k->keyCode == SDLK_LEFT)
+        if (k.keyCode == SDLK_LEFT)
         {
             return;
         }
-        if (k->keyCode == SDLK_RIGHT)
+        if (k.keyCode == SDLK_RIGHT)
         {
             return;
         }
-        if (k->keyCode == SDLK_NUMLOCKCLEAR)
+        if (k.keyCode == SDLK_NUMLOCKCLEAR)
         {
             return;
         }
-        if (k->keyCode == SDLK_LGUI)
+        if (k.keyCode == SDLK_LGUI)
         {
             return;
         }
-        if (k->keyCode == SDLK_RGUI)
+        if (k.keyCode == SDLK_RGUI)
         {
             return;
         }
@@ -334,7 +338,7 @@ namespace OpenLoco::Input
         // Unbind any shortcuts that may be using the current keycode.
         for (auto& [id, shortcut] : cfg.shortcuts)
         {
-            if (shortcut.keyCode == k->keyCode && shortcut.modifiers == _keyModifier)
+            if (shortcut.keyCode == k.keyCode && shortcut.modifiers == _keyModifier)
             {
                 shortcut.keyCode = 0xFFFFFFFF;
                 shortcut.modifiers = KeyModifier::invalid;
@@ -343,7 +347,7 @@ namespace OpenLoco::Input
 
         // Assign this keybinding to the shortcut we're currently rebinding.
         auto& shortcut = cfg.shortcuts.at(static_cast<Input::Shortcut>(_editingShortcutIndex));
-        shortcut.keyCode = k->keyCode;
+        shortcut.keyCode = k.keyCode;
         shortcut.modifiers = _keyModifier;
 
         WindowManager::close(WindowType::editKeyboardShortcut);
@@ -356,8 +360,8 @@ namespace OpenLoco::Input
     {
         while (true)
         {
-            auto* nextKey = getNextKey();
-            if (nextKey == nullptr)
+            auto nextKey = getNextKey();
+            if (!nextKey.has_value())
             {
                 loc_4BEFEF();
                 break;
@@ -391,7 +395,7 @@ namespace OpenLoco::Input
             auto ti = WindowManager::find(WindowType::editKeyboardShortcut);
             if (ti != nullptr)
             {
-                editShortcut(nextKey);
+                editShortcut(*nextKey);
                 continue;
             }
 
