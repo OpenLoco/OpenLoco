@@ -44,14 +44,14 @@ namespace OpenLoco::Input
     static void loc_4BED04();
     static void loc_4BED79();
 
-    static loco_global<KeyModifier, 0x00508F18> _keyModifier;
+    static KeyModifier _keyModifier;
     static std::string _cheatBuffer; // 0x0011364A5
-    static loco_global<Key[64], 0x0113E300> _keyQueue;
-    static loco_global<uint32_t, 0x00525388> _keyQueueLastWrite;
-    static loco_global<uint32_t, 0x00525384> _keyQueueReadIndex;
-    static loco_global<uint32_t, 0x00525380> _keyQueueWriteIndex;
-    static loco_global<uint8_t[256], 0x01140740> _keyboardState;
-    static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
+    static std::array<Key, 64> _keyQueue;
+    static uint32_t _keyQueueLastWrite;
+    static uint32_t _keyQueueReadIndex;
+    static uint32_t _keyQueueWriteIndex;
+    static std::array<uint8_t, 256> _keyboardState;
+    static uint8_t _editingShortcutIndex;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
         { "DRIVER", loc_4BECDE },
@@ -158,24 +158,23 @@ namespace OpenLoco::Input
     void readKeyboardState()
     {
         addr<0x005251CC, uint8_t>() = 0;
-        auto dstSize = _keyboardState.size();
-        auto dst = _keyboardState.get();
+
+        // Reset state.
+        std::ranges::fill(_keyboardState, 0);
 
         int numKeys;
-
-        std::fill_n(dst, dstSize, 0);
-        auto keyboardState = SDL_GetKeyboardState(&numKeys);
-        if (keyboardState != nullptr)
+        auto sdlKeyboardState = SDL_GetKeyboardState(&numKeys);
+        if (sdlKeyboardState != nullptr)
         {
             for (int scanCode = 0; scanCode < numKeys; scanCode++)
             {
-                bool isDown = keyboardState[scanCode] != 0;
+                bool isDown = sdlKeyboardState[scanCode] != 0;
                 if (!isDown)
                 {
                     continue;
                 }
 
-                dst[scanCode] = 0x80;
+                _keyboardState[scanCode] = 0x80;
             }
             addr<0x005251CC, uint8_t>() = 1;
         }
@@ -346,7 +345,7 @@ namespace OpenLoco::Input
         }
 
         // Assign this keybinding to the shortcut we're currently rebinding.
-        auto& shortcut = cfg.shortcuts.at(static_cast<Input::Shortcut>(*_editingShortcutIndex));
+        auto& shortcut = cfg.shortcuts.at(static_cast<Input::Shortcut>(_editingShortcutIndex));
         shortcut.keyCode = k->keyCode;
         shortcut.modifiers = _keyModifier;
 
