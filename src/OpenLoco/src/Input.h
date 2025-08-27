@@ -91,6 +91,8 @@ namespace OpenLoco::Input
 
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);
+    void readKeyboardState();
+    void handleKeyInput(uint32_t keycode);
     bool hasKeyModifier(KeyModifier modifier);
 
     StationId getHoveredStationId();

@@ -154,6 +154,33 @@ namespace OpenLoco::Input
         }
     }
 
+    // 0x0040477F
+    void readKeyboardState()
+    {
+        addr<0x005251CC, uint8_t>() = 0;
+        auto dstSize = _keyboardState.size();
+        auto dst = _keyboardState.get();
+
+        int numKeys;
+
+        std::fill_n(dst, dstSize, 0);
+        auto keyboardState = SDL_GetKeyboardState(&numKeys);
+        if (keyboardState != nullptr)
+        {
+            for (int scanCode = 0; scanCode < numKeys; scanCode++)
+            {
+                bool isDown = keyboardState[scanCode] != 0;
+                if (!isDown)
+                {
+                    continue;
+                }
+
+                dst[scanCode] = 0x80;
+            }
+            addr<0x005251CC, uint8_t>() = 1;
+        }
+    }
+
     // 0x00406FBA
     void enqueueKey(uint32_t keycode)
     {
@@ -166,6 +193,24 @@ namespace OpenLoco::Input
         _keyQueueLastWrite = writeIndex;
         _keyQueue[writeIndex] = { keycode, 0 };
         _keyQueueWriteIndex = nextWriteIndex;
+    }
+
+    // 0x00406FBA
+    void handleKeyInput(uint32_t keycode)
+    {
+        enqueueKey(keycode);
+
+        switch (keycode)
+        {
+            case SDLK_RETURN:
+            case SDLK_BACKSPACE:
+            case SDLK_DELETE:
+            {
+                char c[] = { (char)keycode, '\0' };
+                enqueueText(c);
+                break;
+            }
+        }
     }
 
     void enqueueText(const char* text)
