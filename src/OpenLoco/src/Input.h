@@ -64,6 +64,9 @@ namespace OpenLoco::Input
     State state();
     void state(State);
 
+    bool processMessages();
+    bool processMessagesMini();
+
     Ui::Point getMouseLocation();
     Ui::Point getMouseLocation2();
     bool isHovering(Ui::WindowType);

@@ -2,6 +2,7 @@
 #include "EditorController.h"
 #include "Environment.h"
 #include "GameState.h"
+#include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -295,7 +296,7 @@ namespace OpenLoco::ScenarioManager
     // 0x004447DF
     static void createIndex(const ScenarioFolderState& currentState)
     {
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
         Ui::ProgressBar::begin(StringIds::checkingScenarioFiles);
 
         auto indexAllocSize = _scenarioHeader->numScenarios;
@@ -348,7 +349,7 @@ namespace OpenLoco::ScenarioManager
                 continue;
             }
 
-            Ui::processMessagesMini();
+            Input::processMessagesMini();
 
             currentScenarioOffset++;
             auto currentScenarioProgress = currentScenarioOffset * 225 / numScenariosDetected;

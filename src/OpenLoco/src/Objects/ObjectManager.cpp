@@ -17,6 +17,7 @@
 #include "Graphics/TextRenderer.h"
 #include "HillShapesObject.h"
 #include "IndustryObject.h"
+#include "Input.h"
 #include "InterfaceSkinObject.h"
 #include "LandObject.h"
 #include "LevelCrossingObject.h"
@@ -716,7 +717,7 @@ namespace OpenLoco::ObjectManager
         strcat(str, objectname.c_str());
         Ui::ProgressBar::begin(caption);
         Ui::ProgressBar::setProgress(50);
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
 
         // Get new file path
         std::string filename = objectname;

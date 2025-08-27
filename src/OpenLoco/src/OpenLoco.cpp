@@ -117,7 +117,7 @@ namespace OpenLoco
     // 0x00407FFD
     static bool isAlreadyRunning(const char* mutexName)
     {
-        auto result = ((int32_t(*)(const char*))(0x00407FFD))(mutexName);
+        auto result = ((int32_t (*)(const char*))(0x00407FFD))(mutexName);
         return result != 0;
     }
 
@@ -688,7 +688,7 @@ namespace OpenLoco
         {
             _last_tick_time = Platform::getTime();
             _time_since_last_tick = 31;
-            if (!Ui::processMessages())
+            if (!Input::processMessages())
             {
                 return false;
             }
@@ -773,7 +773,7 @@ namespace OpenLoco
 #endif
         initialise();
 
-        while (Ui::processMessages())
+        while (Input::processMessages())
         {
             update();
         }

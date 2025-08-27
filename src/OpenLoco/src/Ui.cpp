@@ -72,7 +72,6 @@ namespace OpenLoco::Ui
 #endif // _WIN32
     // TODO: Move this into renderer.
     static loco_global<ScreenInfo, 0x0050B894> _screenInfo;
-    loco_global<uint8_t[256], 0x01140740> _keyboardState;
 
     bool _resolutionsAllowAnyAspectRatio = false;
     std::vector<Resolution> _fsResolutions;
@@ -80,15 +79,9 @@ namespace OpenLoco::Ui
     static SDL_Window* _window;
     static std::map<CursorId, SDL_Cursor*> _cursors;
     static CursorId _currentCursor = CursorId::pointer;
-    static bool _exitRequested = false;
 
     static void setWindowIcon();
-    static void resize(int32_t width, int32_t height);
     static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode);
-
-#if !(defined(__APPLE__) && defined(__MACH__))
-    static void toggleFullscreenDesktop();
-#endif
 
 #ifdef _WIN32
     void* hwnd()
@@ -339,7 +332,7 @@ namespace OpenLoco::Ui
     {
     }
 
-    static void positionChanged([[maybe_unused]] int32_t x, [[maybe_unused]] int32_t y)
+    void windowPositionChanged([[maybe_unused]] int32_t x, [[maybe_unused]] int32_t y)
     {
         auto displayIndex = SDL_GetWindowDisplayIndex(_window);
 
@@ -351,7 +344,7 @@ namespace OpenLoco::Ui
         }
     }
 
-    void resize(int32_t width, int32_t height)
+    void windowSizeChanged(int32_t width, int32_t height)
     {
         auto& drawingEngine = Gfx::getDrawingEngine();
         drawingEngine.resize(width, height);
@@ -373,7 +366,7 @@ namespace OpenLoco::Ui
     {
         int width, height;
         SDL_GetWindowSize(_window, &width, &height);
-        resize(width, height);
+        windowSizeChanged(width, height);
     }
 
     void render()
@@ -396,194 +389,6 @@ namespace OpenLoco::Ui
         }
 
         drawingEngine.present();
-    }
-
-    // 0x00406FBA
-    static void enqueueKey(uint32_t keycode)
-    {
-        Input::enqueueKey(keycode);
-
-        switch (keycode)
-        {
-            case SDLK_RETURN:
-            case SDLK_BACKSPACE:
-            case SDLK_DELETE:
-            {
-                char c[] = { (char)keycode, '\0' };
-                Input::enqueueText(c);
-                break;
-            }
-        }
-    }
-
-    // 0x0040477F
-    static void readKeyboardState()
-    {
-        addr<0x005251CC, uint8_t>() = 0;
-        auto dstSize = _keyboardState.size();
-        auto dst = _keyboardState.get();
-
-        int numKeys;
-
-        std::fill_n(dst, dstSize, 0);
-        auto keyboardState = SDL_GetKeyboardState(&numKeys);
-        if (keyboardState != nullptr)
-        {
-            for (int scanCode = 0; scanCode < numKeys; scanCode++)
-            {
-                bool isDown = keyboardState[scanCode] != 0;
-                if (!isDown)
-                {
-                    continue;
-                }
-
-                dst[scanCode] = 0x80;
-            }
-            addr<0x005251CC, uint8_t>() = 1;
-        }
-    }
-
-    // 0x004072EC
-    bool processMessagesMini()
-    {
-        using namespace Input;
-
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
-        {
-            switch (e.type)
-            {
-                case SDL_QUIT:
-                    return false;
-                case SDL_WINDOWEVENT:
-                    switch (e.window.event)
-                    {
-                        case SDL_WINDOWEVENT_MOVED:
-                            positionChanged(e.window.data1, e.window.data2);
-                            break;
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:
-                            resize(e.window.data1, e.window.data2);
-                            break;
-                    }
-                    break;
-            }
-        }
-        return false;
-    }
-
-    // 0x0040726D
-    bool processMessages()
-    {
-        using namespace Input;
-
-        // The game has more than one loop for processing messages, if the secondary loop receives
-        // SDL_QUIT then the message would be lost for the primary loop so we have to keep track of it.
-        if (_exitRequested)
-        {
-            return false;
-        }
-
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
-        {
-            switch (e.type)
-            {
-                case SDL_QUIT:
-                    _exitRequested = true;
-                    return false;
-                case SDL_WINDOWEVENT:
-                    switch (e.window.event)
-                    {
-                        case SDL_WINDOWEVENT_MOVED:
-                            positionChanged(e.window.data1, e.window.data2);
-                            break;
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:
-                            resize(e.window.data1, e.window.data2);
-                            break;
-                    }
-                    break;
-                case SDL_MOUSEMOTION:
-                {
-                    auto scaleFactor = Config::get().scaleFactor;
-                    auto x = static_cast<int32_t>(e.motion.x / scaleFactor);
-                    auto y = static_cast<int32_t>(e.motion.y / scaleFactor);
-                    auto xrel = static_cast<int32_t>(e.motion.xrel / scaleFactor);
-                    auto yrel = static_cast<int32_t>(e.motion.yrel / scaleFactor);
-                    Input::moveMouse(x, y, xrel, yrel);
-                    break;
-                }
-                case SDL_MOUSEWHEEL:
-                    Input::mouseWheel(e.wheel.y);
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                {
-                    auto scaleFactor = Config::get().scaleFactor;
-                    const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
-                    const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
-                    addr<0x00525324, int32_t>() = 1;
-                    switch (e.button.button)
-                    {
-                        case SDL_BUTTON_LEFT:
-                            Input::enqueueMouseButton({ { x, y }, 1 });
-                            addr<0x0113E8A0, int32_t>() = 1;
-                            break;
-                        case SDL_BUTTON_RIGHT:
-                            Input::enqueueMouseButton({ { x, y }, 2 });
-                            addr<0x0113E0C0, int32_t>() = 1;
-                            setRightMouseButtonDown(true);
-                            addr<0x01140845, uint8_t>() = 0x80;
-                            break;
-                    }
-                    break;
-                }
-                case SDL_MOUSEBUTTONUP:
-                {
-                    auto scaleFactor = Config::get().scaleFactor;
-                    const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
-                    const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
-                    addr<0x00525324, int32_t>() = 1;
-                    switch (e.button.button)
-                    {
-                        case SDL_BUTTON_LEFT:
-                            Input::enqueueMouseButton({ { x, y }, 3 });
-                            addr<0x0113E8A0, int32_t>() = 0;
-                            break;
-                        case SDL_BUTTON_RIGHT:
-                            Input::enqueueMouseButton({ { x, y }, 4 });
-                            addr<0x0113E0C0, int32_t>() = 0;
-                            setRightMouseButtonDown(false);
-                            addr<0x01140845, uint8_t>() = 0;
-                            break;
-                    }
-                    break;
-                }
-                case SDL_KEYDOWN:
-                {
-                    auto keycode = e.key.keysym.sym;
-
-#if !(defined(__APPLE__) && defined(__MACH__))
-                    // Toggle fullscreen when ALT+RETURN is pressed
-                    if (keycode == SDLK_RETURN)
-                    {
-                        if ((e.key.keysym.mod & KMOD_LALT) || (e.key.keysym.mod & KMOD_RALT))
-                        {
-                            toggleFullscreenDesktop();
-                        }
-                    }
-#endif
-
-                    enqueueKey(keycode);
-                    break;
-                }
-                case SDL_KEYUP:
-                    break;
-                case SDL_TEXTINPUT:
-                    enqueueText(e.text.text);
-                    break;
-            }
-        }
-        readKeyboardState();
-        return true;
     }
 
     void showMessageBox(const std::string& title, const std::string& message)
@@ -793,7 +598,7 @@ namespace OpenLoco::Ui
     }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-    static void toggleFullscreenDesktop()
+    void toggleFullscreenDesktop()
     {
         auto flags = SDL_GetWindowFlags(_window);
         if (flags & SDL_WINDOW_FULLSCREEN)
