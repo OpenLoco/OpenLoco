@@ -18,7 +18,7 @@
 #include <Localisation/Conversion.h>
 #include <Localisation/Unicode.h>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_keyboard.h>
 #include <cstdint>
 #include <functional>
 #include <optional>
