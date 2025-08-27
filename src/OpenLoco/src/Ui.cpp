@@ -47,7 +47,6 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco::Interop;
@@ -71,8 +70,8 @@ namespace OpenLoco::Ui
     static void* _hwnd;
 #endif // _WIN32
 
-    bool _resolutionsAllowAnyAspectRatio = false;
-    std::vector<Resolution> _fsResolutions;
+    static bool _resolutionsAllowAnyAspectRatio = false;
+    static std::vector<Resolution> _fsResolutions;
 
     static SDL_Window* _window;
     static std::map<CursorId, SDL_Cursor*> _cursors;
