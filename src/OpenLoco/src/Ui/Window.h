@@ -185,6 +185,8 @@ namespace OpenLoco::Ui
         };
         Ui::Viewport* viewports[2] = { nullptr, nullptr };
         SavedView savedView;
+        int16_t expandContentCounter = 0; // Used to delay content expand when hovering over expandable scroll content
+        bool showTownNames = false;       // Map window only
         WindowFlags flags;
         WindowNumber_t number = 0;
         int16_t x;
