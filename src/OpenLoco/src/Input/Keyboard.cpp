@@ -18,25 +18,21 @@
 #include <Localisation/Conversion.h>
 #include <Localisation/Unicode.h>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <cstdint>
 #include <functional>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Input
 {
 
-#pragma pack(push, 1)
     struct Key
     {
         uint32_t keyCode;
         uint32_t charCode;
     };
-#pragma pack(pop)
 
     static void normalKey();
     static void cheat();
