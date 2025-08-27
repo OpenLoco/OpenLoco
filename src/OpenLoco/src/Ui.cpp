@@ -55,8 +55,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui
 {
-#pragma pack(push, 1)
-    struct sdl_window_desc
+    struct WindowParams
     {
         int32_t x{};
         int32_t y{};
@@ -64,7 +63,6 @@ namespace OpenLoco::Ui
         int32_t height{};
         int32_t flags{};
     };
-#pragma pack(pop)
 
 #ifdef _WIN32
     static void* _hwnd;
@@ -111,9 +109,9 @@ namespace OpenLoco::Ui
         return _window != nullptr;
     }
 
-    static sdl_window_desc getWindowDesc(const Config::Display& cfg)
+    static WindowParams getWindowParams(const Config::Display& cfg)
     {
-        sdl_window_desc desc;
+        WindowParams desc;
         desc.x = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
         desc.y = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
         desc.width = std::max(640, cfg.windowResolution.width);
@@ -146,7 +144,7 @@ namespace OpenLoco::Ui
         }
 
         // Create the window
-        auto desc = getWindowDesc(cfg);
+        auto desc = getWindowParams(cfg);
         _window = SDL_CreateWindow("OpenLoco", desc.x, desc.y, desc.width, desc.height, desc.flags);
         if (_window == nullptr)
         {
