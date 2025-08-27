@@ -151,11 +151,11 @@ namespace OpenLoco::Input
                     auto y = static_cast<int32_t>(e.motion.y / scaleFactor);
                     auto xrel = static_cast<int32_t>(e.motion.xrel / scaleFactor);
                     auto yrel = static_cast<int32_t>(e.motion.yrel / scaleFactor);
-                    Input::moveMouse(x, y, xrel, yrel);
+                    moveMouse(x, y, xrel, yrel);
                     break;
                 }
                 case SDL_MOUSEWHEEL:
-                    Input::mouseWheel(e.wheel.y);
+                    mouseWheel(e.wheel.y);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 {
@@ -166,11 +166,11 @@ namespace OpenLoco::Input
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            Input::enqueueMouseButton({ { x, y }, 1 });
+                            enqueueMouseButton({ { x, y }, 1 });
                             addr<0x0113E8A0, int32_t>() = 1;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            Input::enqueueMouseButton({ { x, y }, 2 });
+                            enqueueMouseButton({ { x, y }, 2 });
                             addr<0x0113E0C0, int32_t>() = 1;
                             setRightMouseButtonDown(true);
                             addr<0x01140845, uint8_t>() = 0x80;
@@ -187,11 +187,11 @@ namespace OpenLoco::Input
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            Input::enqueueMouseButton({ { x, y }, 3 });
+                            enqueueMouseButton({ { x, y }, 3 });
                             addr<0x0113E8A0, int32_t>() = 0;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            Input::enqueueMouseButton({ { x, y }, 4 });
+                            enqueueMouseButton({ { x, y }, 4 });
                             addr<0x0113E0C0, int32_t>() = 0;
                             setRightMouseButtonDown(false);
                             addr<0x01140845, uint8_t>() = 0;
