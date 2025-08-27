@@ -68,10 +68,8 @@ namespace OpenLoco::Ui
 #pragma pack(pop)
 
 #ifdef _WIN32
-    loco_global<void*, 0x00525320> _hwnd;
+    static void* _hwnd;
 #endif // _WIN32
-    // TODO: Move this into renderer.
-    static loco_global<ScreenInfo, 0x0050B894> _screenInfo;
 
     bool _resolutionsAllowAnyAspectRatio = false;
     std::vector<Resolution> _fsResolutions;
@@ -98,13 +96,15 @@ namespace OpenLoco::Ui
     // Returns the width of the game screen, which is scaled by the window scale factor.
     int32_t width()
     {
-        return _screenInfo->width;
+        const auto& screenInfo = Gfx::getDrawingEngine().getScreenInfo();
+        return screenInfo.width;
     }
 
     // Returns the height of the game screen, which is scaled by the window scale factor.
     int32_t height()
     {
-        return _screenInfo->height;
+        const auto& screenInfo = Gfx::getDrawingEngine().getScreenInfo();
+        return screenInfo.height;
     }
 
     bool isInitialized()
@@ -182,7 +182,7 @@ namespace OpenLoco::Ui
             auto icon = LoadIconA(win32module, MAKEINTRESOURCEA(IDI_ICON));
             if (icon != nullptr)
             {
-                auto hwnd = (HWND)*_hwnd;
+                auto hwnd = (HWND)_hwnd;
                 if (hwnd != nullptr)
                 {
                     SendMessageA(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon);
