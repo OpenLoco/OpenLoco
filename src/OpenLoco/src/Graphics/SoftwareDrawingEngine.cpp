@@ -417,4 +417,9 @@ namespace OpenLoco::Gfx
         }
     }
 
+    const Ui::ScreenInfo& SoftwareDrawingEngine::getScreenInfo() const
+    {
+        return *_screenInfo;
+    }
+
 }

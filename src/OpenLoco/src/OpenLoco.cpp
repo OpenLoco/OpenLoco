@@ -688,7 +688,7 @@ namespace OpenLoco
         {
             _last_tick_time = Platform::getTime();
             _time_since_last_tick = 31;
-            if (!Ui::processMessages())
+            if (!Input::processMessages())
             {
                 return false;
             }
@@ -773,7 +773,7 @@ namespace OpenLoco
 #endif
         initialise();
 
-        while (Ui::processMessages())
+        while (Input::processMessages())
         {
             update();
         }
