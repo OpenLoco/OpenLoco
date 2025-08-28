@@ -734,15 +734,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        // Zooming to cursor? Remember where we're pointing at the moment.
-        int16_t savedMapX = 0;
-        int16_t savedMapY = 0;
-        int16_t offsetX = 0;
-        int16_t offsetY = 0;
-        if (toCursor && Config::get().zoomToCursor)
-        {
-            this->viewportGetMapCoordsByCursor(&savedMapX, &savedMapY, &offsetX, &offsetY);
-        }
+        const auto previousZoomLevel = v->zoom;
 
         // Zoom in
         while (v->zoom > zoomLevel)
@@ -764,11 +756,25 @@ namespace OpenLoco::Ui
             v->viewHeight *= 2;
         }
 
-        // Zooming to cursor? Centre around the tile we were hovering over just now.
         if (toCursor && Config::get().zoomToCursor)
         {
-            this->viewportCentreTileAroundCursor(savedMapX, savedMapY, offsetX, offsetY);
+            const auto mouseCoords = Ui::getCursorPosScaled() - Point32(v->x, v->y);
+            const int32_t diffX = mouseCoords.x - ((v->viewWidth >> zoomLevel) / 2);
+            const int32_t diffY = mouseCoords.y - ((v->viewHeight >> zoomLevel) / 2);
+            if (previousZoomLevel > zoomLevel)
+            {
+                vc->savedViewX += diffX << zoomLevel;
+                vc->savedViewY += diffY << zoomLevel;
+            }
+            else
+            {
+                vc->savedViewX -= diffX << previousZoomLevel;
+                vc->savedViewY -= diffY << previousZoomLevel;
+            }
         }
+
+        v->viewX = vc->savedViewX;
+        v->viewY = vc->savedViewY;
 
         this->invalidate();
     }
