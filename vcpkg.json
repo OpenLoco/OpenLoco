@@ -10,6 +10,8 @@
     "gtest",
     "libpng",
     "openal-soft",
+    "yaml-cpp",
+    "fmt",
     {
       "name": "sdl2",
       "default-features": false,
