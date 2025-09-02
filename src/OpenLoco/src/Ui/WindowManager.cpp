@@ -1977,9 +1977,9 @@ namespace OpenLoco::Ui::WindowManager
             // save viewport
             Ui::Viewport viewCopy = *viewport;
 
-            if (viewport->x < window->x)
+            if (vpX < window->x)
             {
-                viewport->width = window->x - viewport->x;
+                viewport->width = window->x - vpX;
                 viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
@@ -1989,9 +1989,9 @@ namespace OpenLoco::Ui::WindowManager
                 viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
-            else if (viewport->x + viewport->width > window->x + window->width)
+            else if (vpX + viewport->width > window->x + window->width)
             {
-                viewport->width = window->x + window->width - viewport->x;
+                viewport->width = window->x + window->width - vpX;
                 viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
@@ -2001,9 +2001,9 @@ namespace OpenLoco::Ui::WindowManager
                 viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
-            else if (viewport->y < window->y)
+            else if (vpY < window->y)
             {
-                viewport->height = window->y - viewport->y;
+                viewport->height = window->y - vpY;
                 viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
@@ -2013,9 +2013,9 @@ namespace OpenLoco::Ui::WindowManager
                 viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
-            else if (viewport->y + viewport->height > window->y + window->height)
+            else if (vpY + viewport->height > window->y + window->height)
             {
-                viewport->height = window->y + window->height - viewport->y;
+                viewport->height = window->y + window->height - vpY;
                 viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
