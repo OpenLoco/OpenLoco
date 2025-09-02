@@ -451,8 +451,6 @@ namespace OpenLoco::Vehicles
         void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
         Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
 
-        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
-
     private:
         void updateDrivingSounds();
         void updateDrivingSound(VehicleSoundPlayer* soundPlayer);
@@ -577,7 +575,8 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
-        uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
+        int32_t var_3C;              // 0x3C filed same in all vehicles unread for veh2
+        uint8_t pad_40[0x42 - 0x40]; // 0x40
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
         SoundObjectId_t drivingSoundId;       // 0x44
@@ -627,9 +626,9 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
-        uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t objectId;  // 0x40
-        TransportMode mode; // 0x42
+        int32_t var_3C;           // 0x3C filed same in all vehicles unread for body
+        uint16_t objectId;        // 0x40
+        TransportMode mode;       // 0x42
         uint8_t pad_43;
         int16_t var_44;
         uint8_t animationFrame;    // 0x46 roll/animation sprite index
@@ -693,9 +692,9 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
-        uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t objectId;  // 0x40
-        TransportMode mode; // 0x42 field same in all vehicles
+        int32_t var_3C;           // 0x3C filed same in all vehicles unread for bogie
+        uint16_t objectId;        // 0x40
+        TransportMode mode;       // 0x42 field same in all vehicles
         uint8_t pad_43;
         uint16_t var_44;
         uint8_t animationIndex;      // 0x46 animation index
@@ -749,7 +748,8 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
-        uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
+        int32_t var_3C;              // 0x3C filed same in all vehicles unread for tail
+        uint8_t pad_40[0x42 - 0x40]; // 0x40
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
         SoundObjectId_t drivingSoundId;       // 0x44
@@ -1038,4 +1038,18 @@ namespace OpenLoco::Vehicles
 
     bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId);
     void connectJacobsBogies(VehicleHead& head);
+
+    enum class RoadOccupationFlags : uint8_t
+    {
+        none = 0U,
+        isLaneOccupied = 1U << 0,
+        isLevelCrossingClosed = 1U << 1,
+        hasLevelCrossing = 1U << 2,
+        hasStation = 1U << 3,
+        isOneWay = 1U << 4,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadOccupationFlags);
+    RoadOccupationFlags getRoadOccupation(const World::Pos3 pos, const TrackAndDirection::_RoadAndDirection tad);
+    void applyVehicleObjectLength(Vehicle& train);
+    bool positionVehicleOnTrack(VehicleHead& head);
 }
