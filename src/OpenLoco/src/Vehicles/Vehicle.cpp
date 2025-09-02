@@ -1406,6 +1406,78 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x004B1C48
+    // Applies the vehicle object lengths to the bogies of the train
+    // with some specified starting distance. Bodies are not set as
+    // they are calculated later based on the positions of the bogies.
+    // returns the final distance
+    static int32_t applyVehicleObjectLengthToBogies(Vehicle& train, const int32_t startDistance)
+    {
+        auto distance = startDistance;
+        for (auto& car : train.cars)
+        {
+            const auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            assert(std::distance(car.begin(), car.end()) == vehicleObj->var_04);
+            if (car.body->has38Flags(Flags38::isReversed))
+            {
+                auto objCarIndex = vehicleObj->var_04 - 1;
+                for (auto& component : car)
+                {
+                    auto& objCar = vehicleObj->carComponents[objCarIndex];
+                    const auto frontLength = objCar.backBogiePosition * -2179;
+                    component.front->remainingDistance = distance + frontLength;
+
+                    if (objCar.bodySpriteInd != 0xFFU)
+                    {
+                        const auto bodyLength = vehicleObj->bodySprites[objCar.bodySpriteInd & 0x7F].halfLength * -(2179 * 2);
+                        distance += bodyLength;
+                    }
+                    const auto backLength = objCar.frontBogiePosition * 2179;
+                    component.back->remainingDistance = distance + backLength;
+
+                    objCarIndex--;
+                }
+            }
+            else
+            {
+                auto objCarIndex = 0;
+                for (auto& component : car)
+                {
+                    auto& objCar = vehicleObj->carComponents[objCarIndex];
+                    const auto frontLength = objCar.frontBogiePosition * -2179;
+                    component.front->remainingDistance = distance + frontLength;
+
+                    if (objCar.bodySpriteInd != 0xFFU)
+                    {
+                        const auto bodyLength = vehicleObj->bodySprites[objCar.bodySpriteInd & 0x7F].halfLength * -(2179 * 2);
+                        distance += bodyLength;
+                    }
+                    const auto backLength = objCar.backBogiePosition * 2179;
+                    component.back->remainingDistance = distance + backLength;
+
+                    objCarIndex++;
+                }
+            }
+        }
+        return distance;
+    }
+
+    // 0x004AE2AB
+    // head: esi
+    static void applyVehicleObjectLength(Vehicle& train)
+    {
+        // We want the tail to have a remaining distance of 0
+        // so we first apply the lengths from 0 then take the return
+        // length and set that as the negative start offset and reapply
+
+        const auto negStartDistance = -applyVehicleObjectLengthToBogies(train, 0);
+        train.head->remainingDistance = negStartDistance;
+        train.veh1->remainingDistance = negStartDistance;
+        train.veh2->remainingDistance = negStartDistance;
+        applyVehicleObjectLengthToBogies(train, negStartDistance);
+        train.tail->remainingDistance = 0;
+    }
+
     void registerHooks()
     {
         registerHook(
@@ -1559,6 +1631,17 @@ namespace OpenLoco::Vehicles
                 const auto res = vehicle1UpdateRoadMotionByPiecesNoMove(*veh1, numRoadPieces);
                 regs = backup;
                 regs.eax = res;
+                return 0;
+            });
+
+        registerHook(
+            0x004AE2AB,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
+                Vehicle train(*head);
+                applyVehicleObjectLength(train);
+                regs = backup;
                 return 0;
             });
 
