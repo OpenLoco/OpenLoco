@@ -1059,7 +1059,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004AE2AB
     // head: esi
-    static void applyVehicleObjectLength(Vehicle& train)
+    void applyVehicleObjectLength(Vehicle& train)
     {
         // We want the tail to have a remaining distance of 0
         // so we first apply the lengths from 0 then take the return
