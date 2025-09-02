@@ -18,6 +18,8 @@ namespace OpenLoco::Vehicles::RoutingManager
     uint16_t getRouting(const RoutingHandle handle);
     void setRouting(const RoutingHandle handle, uint16_t routing);
     void freeRouting(const RoutingHandle handle);
+    // Equivalent of calling freeRouting on all routings for a single vehicle
+    void resetRoutings(const RoutingHandle handle);
     bool isEmptyRoutingSlotAvailable();
     void resetRoutingTable();
 

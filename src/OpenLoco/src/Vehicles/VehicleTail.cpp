@@ -137,7 +137,7 @@ namespace OpenLoco::Vehicles
                 tad._data = routing & Track::AdditionalTaDFlags::basicTaDMask;
                 tail.sub_47D959(pos, tad, false);
 
-                pos += World::TrackData::getUnkRoad(tad._data).pos;
+                pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
             }
         }
         else
