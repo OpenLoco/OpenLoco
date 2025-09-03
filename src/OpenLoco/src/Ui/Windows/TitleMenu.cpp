@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         if (!window.widgets[Widx::multiplayer_toggle_btn].hidden)
         {
             auto& widget = window.widgets[Widx::multiplayer_toggle_btn];
-            auto point = Point(widget.top + 3, window.width / 2);
+            auto point = Point(window.width / 2, widget.top + 3);
 
             StringId string = StringIds::single_player_mode;
             FormatArguments args{};
