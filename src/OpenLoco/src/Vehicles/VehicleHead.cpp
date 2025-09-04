@@ -6377,14 +6377,158 @@ namespace OpenLoco::Vehicles
 
         if (mode == TransportMode::road)
         {
-            auto tailRoutingHandle = train.tail->routingHandle;
-            auto tailPos = World::Pos3{ train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep };
+            auto routingPos = World::Pos3{ train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep };
+            auto routingRing = RoutingManager::RingView(train.tail->routingHandle);
+            for (auto& handle : routingRing)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+                TrackAndDirection::_RoadAndDirection tad{ 0, 0 };
+                tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+                sub_47D959(routingPos, tad, false);
+                routingPos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+            }
+
+            // Routings are back to front with regard to walking the length of the train
+            // that is why we copy in reverse order
+            // copy all the routings from underneath the train (veh2.routingHandle to tail.routingHandle in reverse)
+            sfl::static_vector<uint16_t, 64> copiedRoutings{};
+            {
+                auto iterHandle = train.veh2->routingHandle;
+                auto endHandle = train.tail->routingHandle;
+                while (iterHandle.getIndex() != endHandle.getIndex())
+                {
+                    copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
+                    iterHandle.setIndex((iterHandle.getIndex() - 1) & 0x3F);
+                }
+            }
+            // paste the routings at the start of the table with some reverse adjustments
+            {
+                auto iterHandle = train.veh2->routingHandle;
+                iterHandle.setIndex(0);
+                for (auto& routing : copiedRoutings)
+                {
+                    // Reverse the routing and reverse the lane
+                    routing ^= (1 << 2 | 1 << 7);
+                    if (routing & (1 << 8))
+                    {
+                        routing ^= (1 << 7);
+                        if (!(routing & (1 << 7)))
+                        {
+                            routing ^= (1 << 8);
+                        }
+                    }
+                    // Clear ???
+                    routing &= ~(1 << 14);
+                    RoutingManager::setRouting(iterHandle, routing);
+                    iterHandle.setIndex(iterHandle.getIndex() + 1);
+                }
+                while (iterHandle.getIndex() != 0)
+                {
+                    RoutingManager::freeRouting(iterHandle);
+                    iterHandle.setIndex(iterHandle.getIndex() + 1);
+                }
+            }
         }
         else
         {
             // 0x4ADB84
+            auto routingPos = World::Pos3{ train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep };
+            auto routingRing = RoutingManager::RingView(train.tail->routingHandle);
+            for (auto& handle : routingRing)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+
+                TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+                if (routing & World::Track::AdditionalTaDFlags::hasSignal)
+                {
+                    setSignalState(routingPos, tad, train.tail->trackType, 0);
+                }
+                routingPos += World::TrackData::getUnkRoad(tad._data).pos;
+            }
+
+            // Routings are back to front with regard to walking the length of the train
+            // that is why we copy in reverse order
+            // copy all the routings from underneath the train (veh2.routingHandle to tail.routingHandle in reverse)
+            sfl::static_vector<uint16_t, 64> copiedRoutings{};
+            {
+                auto iterHandle = train.veh2->routingHandle;
+                auto endHandle = train.tail->routingHandle;
+                while (iterHandle.getIndex() != endHandle.getIndex())
+                {
+                    copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
+                    iterHandle.setIndex((iterHandle.getIndex() - 1) & 0x3F);
+                }
+            }
+            // paste the routings at the start of the table with some reverse adjustments
+            {
+                auto iterHandle = train.veh2->routingHandle;
+                iterHandle.setIndex(0);
+                for (auto& routing : copiedRoutings)
+                {
+                    // Reverse the routing
+                    routing ^= (1 << 2);
+                    // Clear ???
+                    routing &= ~(1 << 14);
+                    RoutingManager::setRouting(iterHandle, routing);
+                    iterHandle.setIndex(iterHandle.getIndex() + 1);
+                }
+                while (iterHandle.getIndex() != 0)
+                {
+                    RoutingManager::freeRouting(iterHandle);
+                    iterHandle.setIndex(iterHandle.getIndex() + 1);
+                }
+            }
         }
+        // Note: We should really at this point zero everyones routing handles on the train
+        // but we do it later on. Lets hope we don't exit early...
+
         // 0x4ADDBE
+
+        if (!unk)
+        {
+            if (hasVehicleFlags(VehicleFlags::shuntCheat) && hasVehicleFlags(VehicleFlags::manualControl))
+            {
+                // 0x004ADE36
+                // Hmm not sure how safe this is...
+                VehicleBase* dest = train.tail;
+                for (auto& car : train.cars)
+                {
+                    for (auto& carComponent : car)
+                    {
+                        if (dest == carComponent.front)
+                        {
+                            break;
+                        }
+                        auto* newFront = flipCar(*carComponent.front);
+                        insertCarBefore(*newFront, *dest);
+                        dest = newFront;
+                    }
+                }
+                // 0x004ADE8A
+            }
+            else
+            {
+                auto* tailObj = ObjectManager::get<VehicleObject>(train.tail->objectId);
+                if (tailObj->hasFlags(VehicleObjectFlags::flag_08))
+                {
+                    // 0x004ADE8A
+                }
+                if (tailObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+                {
+                    // 0x004ADE36
+                }
+                if (tailObj->power != 0)
+                {
+                    // 0x004ADE36
+                }
+                if (tailObj->hasFlags(VehicleObjectFlags::centerPosition))
+                {
+                    // 0x004ADE8A
+                }
+            }
+        }
+        // 0x004ADE8A
         registers regs;
         regs.esi = X86Pointer(this);
         regs.eax = unk ? 1 : 0;
