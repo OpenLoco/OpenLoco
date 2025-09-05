@@ -6175,7 +6175,7 @@ namespace OpenLoco::Vehicles
             }
         }
         sub_4AD778();
-        if (status != Status::approaching)
+        if (status == Status::approaching)
         {
             status = Status::travelling;
         }
@@ -6232,6 +6232,7 @@ namespace OpenLoco::Vehicles
                     RoutingManager::freeRouting(iterHandle);
                     iterHandle.setIndex(iterHandle.getIndex() + 1);
                 }
+                copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
             }
         }
         else
@@ -6264,6 +6265,7 @@ namespace OpenLoco::Vehicles
                     copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
                     iterHandle.setIndex((iterHandle.getIndex() - 1) & 0x3F);
                 }
+                copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
             }
             // paste the routings at the start of the table with some reverse adjustments
             {
@@ -6314,9 +6316,9 @@ namespace OpenLoco::Vehicles
                 {
                     return true;
                 }
-                if (lastObj->power != 0)
+                if (lastObj->power == 0)
                 {
-                    return true;
+                    return false;
                 }
                 return !lastObj->hasFlags(VehicleObjectFlags::centerPosition);
             }();
