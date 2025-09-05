@@ -17,6 +17,7 @@
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/SubpositionData.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
@@ -6444,7 +6445,7 @@ namespace OpenLoco::Vehicles
                 {
                     setSignalState(routingPos, tad, train.tail->trackType, 0);
                 }
-                routingPos += World::TrackData::getUnkRoad(tad._data).pos;
+                routingPos += World::TrackData::getUnkTrack(tad._data).pos;
             }
 
             // Routings are back to front with regard to walking the length of the train
@@ -6487,7 +6488,35 @@ namespace OpenLoco::Vehicles
 
         if (!unk)
         {
-            if (hasVehicleFlags(VehicleFlags::shuntCheat) && hasVehicleFlags(VehicleFlags::manualControl))
+            VehicleBody* lastBody = nullptr;
+            for (auto& car : train.cars)
+            {
+                for (auto& component : car)
+                {
+                    lastBody = component.body;
+                }
+            }
+            auto* lastObj = ObjectManager::get<VehicleObject>(lastBody->objectId);
+            bool shouldReverseTrainCars = [&lastObj, this]() {
+                if (hasVehicleFlags(VehicleFlags::shuntCheat) && hasVehicleFlags(VehicleFlags::manualControl))
+                {
+                    return true;
+                }
+                if (lastObj->hasFlags(VehicleObjectFlags::flag_08))
+                {
+                    return false;
+                }
+                if (lastObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+                {
+                    return true;
+                }
+                if (lastObj->power != 0)
+                {
+                    return true;
+                }
+                return !lastObj->hasFlags(VehicleObjectFlags::centerPosition);
+            }();
+            if (shouldReverseTrainCars)
             {
                 // 0x004ADE36
                 // Hmm not sure how safe this is...
@@ -6505,34 +6534,105 @@ namespace OpenLoco::Vehicles
                         dest = newFront;
                     }
                 }
-                // 0x004ADE8A
-            }
-            else
-            {
-                auto* tailObj = ObjectManager::get<VehicleObject>(train.tail->objectId);
-                if (tailObj->hasFlags(VehicleObjectFlags::flag_08))
-                {
-                    // 0x004ADE8A
-                }
-                if (tailObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
-                {
-                    // 0x004ADE36
-                }
-                if (tailObj->power != 0)
-                {
-                    // 0x004ADE36
-                }
-                if (tailObj->hasFlags(VehicleObjectFlags::centerPosition))
-                {
-                    // 0x004ADE8A
-                }
             }
         }
         // 0x004ADE8A
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.eax = unk ? 1 : 0;
-        call(0x004ADB47, regs);
+
+        applyVehicleObjectLength(train);
+        auto newTad = train.veh2->trackAndDirection;
+        auto newSubPos = 0;
+        auto newPos = World::Pos3{ train.veh2->tileX, train.veh2->tileY, train.veh2->tileBaseZ * World::kSmallZStep };
+
+        // Very similar to code in VehicleManager::placeDownVehicle
+        if (mode == TransportMode::road)
+        {
+            const auto subPositionLength = World::TrackData::getRoadSubPositon(newTad.road._data).size();
+            newSubPos = subPositionLength - 1 - train.veh2->subPosition;
+
+            const auto& roadSize = World::TrackData::getUnkRoad(newTad.road._data & 0x7F);
+            newPos += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                newPos -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+            newTad.road.setReversed(!newTad.road.isReversed());
+            newTad.road._data ^= (1U << 7);
+            if (newTad.road.isUnk8())
+            {
+                newTad.road._data ^= (1U << 7);
+                if (!newTad.road.isBackToFront())
+                {
+                    newTad.road._data ^= (1U << 8);
+                }
+            }
+        }
+        else
+        {
+            const auto subPositionLength = World::TrackData::getTrackSubPositon(newTad.track._data).size();
+            newSubPos = subPositionLength - 1 - train.veh2->subPosition;
+
+            const auto& trackSize = World::TrackData::getUnkTrack(newTad.track._data);
+            newPos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                newPos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            newTad.track.setReversed(!newTad.track.isReversed());
+        }
+
+        // Ahh great finally zeroing the routing handles
+        train.applyToComponents([newTad, newPos, newSubPos](auto& component) {
+            auto zeroedHandle = component.routingHandle;
+            zeroedHandle.setIndex(0);
+            component.routingHandle = zeroedHandle;
+            component.tileX = newPos.x;
+            component.tileY = newPos.y;
+            component.tileBaseZ = newPos.z / World::kSmallZStep;
+            component.subPosition = newSubPos;
+            component.trackAndDirection = newTad;
+        });
+
+        if (mode == TransportMode::road)
+        {
+            newTad.road._data &= World::Track::AdditionalTaDFlags::basicTaDMask;
+            sub_47D959(newPos, newTad.road, true);
+        }
+
+        auto& moveInfo = mode == TransportMode::road ? World::TrackData::getRoadSubPositon(trackAndDirection.road._data)[subPosition]
+                                                     : World::TrackData::getTrackSubPositon(trackAndDirection.track._data)[subPosition];
+
+        const auto newEntityPos = newPos + moveInfo.loc;
+
+        train.applyToComponents([newEntityPos, &moveInfo](auto& component) {
+            component.moveTo(newEntityPos);
+            component.spritePitch = moveInfo.pitch;
+            component.spriteYaw = moveInfo.yaw;
+        });
+
+        var_3C = -train.veh2->remainingDistance;
+        train.veh1->var_3C = -train.veh2->remainingDistance;
+
+        if (positionVehicleOnTrack(*this))
+        {
+            vehicleFlags |= VehicleFlags::commandStop;
+            liftUpVehicle();
+            return;
+        }
+
+        connectJacobsBogies(*this);
+        if (mode != TransportMode::road)
+        {
+            auto headPos = World::Pos3{ tileX, tileY, tileBaseZ * World::kSmallZStep };
+            auto simplifiedTad = trackAndDirection;
+            simplifiedTad.track._data &= World::Track::AdditionalTaDFlags::basicTaDMask;
+            leaveLevelCrossing(headPos, simplifiedTad.track, 8);
+        }
+
+        var_3C = 0;
+        train.veh1->var_3C = 0;
+        train.veh1->targetSpeed = 0_mph;
+        train.veh2->currentSpeed = 0_mph;
+        updateTrainProperties();
     }
 
     // 0x004BADE4
