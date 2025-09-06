@@ -6201,6 +6201,7 @@ namespace OpenLoco::Vehicles
                     copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
                     iterHandle.setIndex((iterHandle.getIndex() - 1) & 0x3F);
                 }
+                copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
             }
             // paste the routings at the start of the table with some reverse adjustments
             {
@@ -6228,7 +6229,6 @@ namespace OpenLoco::Vehicles
                     RoutingManager::freeRouting(iterHandle);
                     iterHandle.setIndex(iterHandle.getIndex() + 1);
                 }
-                copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
             }
         }
         else
