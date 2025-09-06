@@ -6521,21 +6521,23 @@ namespace OpenLoco::Vehicles
             if (shouldReverseTrainCars)
             {
                 // 0x004ADE36
-                // Hmm not sure how safe this is...
+                // Reverse the train and flip the cars
                 VehicleBase* dest = train.tail;
-                for (auto& car : train.cars)
+                // Can't use the train cars iterator as we are shuffling it about
+                // The front of the train will keep changing as we move the cars to the end
+                for (VehicleBase* vehicleComponent = EntityManager::get<VehicleBase>(train.veh2->nextCarId); vehicleComponent != dest; vehicleComponent = EntityManager::get<VehicleBase>(train.veh2->nextCarId))
                 {
-                    for (auto& carComponent : car)
+                    auto* bogie = vehicleComponent->asVehicleBogie();
+                    if (bogie == nullptr)
                     {
-                        if (dest == carComponent.front)
-                        {
-                            break;
-                        }
-                        auto* newFront = flipCar(*carComponent.front);
-                        insertCarBefore(*newFront, *dest);
-                        dest = newFront;
+                        break;
                     }
+                    auto* newFront = flipCar(*bogie);
+                    insertCarBefore(*newFront, *dest);
+                    dest = newFront;
                 }
+                // TRAIN invalid after this so re-get it
+                train = Vehicle(*this);
             }
         }
         // 0x004ADE8A
