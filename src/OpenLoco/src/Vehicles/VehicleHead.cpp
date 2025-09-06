@@ -4505,8 +4505,8 @@ namespace OpenLoco::Vehicles
         }
 
         auto curPos = nextPos;
-
-        if (curPos != waypointOrder->getWaypoint())
+        const auto waypointTaD = (waypointOrder->getTrackId() << 3) | waypointOrder->getDirection();
+        if (curPos != waypointOrder->getWaypoint() || (connection & World::Track::AdditionalTaDFlags::basicTaDMask) != waypointTaD)
         {
             auto& trackSize = World::TrackData::getUnkTrack(connection & 0x1FF);
             auto connectPos = curPos + trackSize.pos;
@@ -4514,7 +4514,11 @@ namespace OpenLoco::Vehicles
             {
                 connectPos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
             }
-            if (connectPos != waypointOrder->getWaypoint())
+            auto reverseTaD = (connection & World::Track::AdditionalTaDFlags::basicTaDMask);
+            reverseTaD ^= (1U << 2);
+            reverseTaD &= ~0x3;
+            reverseTaD |= World::kReverseRotation[trackSize.rotationEnd] & 0x3;
+            if (connectPos != waypointOrder->getWaypoint() || reverseTaD != waypointTaD)
             {
                 return Sub4ACEE7Result{ 0, 0, StationId::null };
             }
