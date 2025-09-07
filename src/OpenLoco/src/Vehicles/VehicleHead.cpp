@@ -582,13 +582,13 @@ namespace OpenLoco::Vehicles
 
         {
             // Alternate forward/backward if VehicleObjectFlags::alternatingDirection set
-            bool directionForward = true;
+            bool curIsReversed = false;
             for (auto& cd : carData)
             {
                 if (cd.hasFlags(VehicleObjectFlags::alternatingDirection))
                 {
-                    cd.isReversed = directionForward;
-                    directionForward ^= true;
+                    cd.isReversed = curIsReversed;
+                    curIsReversed ^= true;
                 }
             }
         }
