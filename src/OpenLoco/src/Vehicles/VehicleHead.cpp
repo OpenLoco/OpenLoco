@@ -519,7 +519,8 @@ namespace OpenLoco::Vehicles
         EntityId frontId;
         VehicleObjectFlags flags;
         uint16_t power;
-        bool isReversed;
+        bool isReversed; // At start matches wasReversed could be modified during the function
+        bool wasReversed;
         constexpr bool hasFlags(VehicleObjectFlags flagsToTest) const
         {
             return (flags & flagsToTest) != VehicleObjectFlags::none;
@@ -529,20 +530,21 @@ namespace OpenLoco::Vehicles
     // 0x004AF7A4
     void VehicleHead::autoLayoutTrain()
     {
+        Vehicle train(*this);
+        if (train.cars.empty())
         {
-            Vehicle train(*this);
-            if (train.cars.empty())
-            {
-                return;
-            }
+            return;
         }
 
-        Vehicle train(*this);
+        // This function has been modified from vanilla but it should
+        // produce the same results. Vanilla version performed a lot
+        // of flipping and inserting to reorder the cars. This version
+        // does the final flipping/inserting in one go at the end.
+
         // Pretty safe to assume this as its hard to exceed 30
         // you can do about ~200 if you use some tricks
         assert(train.cars.size() < 100);
 
-        sfl::static_vector<EntityId, 100> carPositions;
         sfl::static_vector<CarMetaData, 100> carData;
 
         for (auto& car : train.cars)
@@ -553,20 +555,26 @@ namespace OpenLoco::Vehicles
             data.flags = vehicleObj->flags;
             data.power = vehicleObj->power;
             data.isReversed = car.body->has38Flags(Flags38::isReversed);
+            data.wasReversed = car.body->has38Flags(Flags38::isReversed);
             carData.push_back(data);
-            carPositions.push_back(car.front->id);
         }
+        auto pushCarToFront = [&carData](const size_t index) {
+            std::rotate(carData.begin(), carData.begin() + index, carData.begin() + index + 1);
+        };
+        auto pushCarToBack = [&carData](const size_t index) {
+            std::rotate(carData.begin() + index, carData.begin() + index + 1, carData.end());
+        };
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
-            // Ensure first car is powered if any powered vehicles available
+            // Places first powered car at front of train
 
             for (auto i = 0U; i < carData.size(); ++i)
             {
                 auto& cd = carData[i];
                 if (cd.power != 0)
                 {
-                    std::rotate(carData.begin(), carData.begin() + i, carData.begin() + i + 1);
+                    pushCarToFront(i);
                     break;
                 }
             }
@@ -586,6 +594,9 @@ namespace OpenLoco::Vehicles
         }
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // Places first car with VehicleObjectFlags::topAndTailPosition to the front of train
+            // and all subsequent cars with VehicleObjectFlags::topAndTailPosition to the back of the train
+
             bool isFirst = true;
             for (auto i = 0U; i < carData.size(); ++i)
             {
@@ -597,7 +608,7 @@ namespace OpenLoco::Vehicles
                         if (cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
                         {
                             cd.isReversed = false;
-                            std::rotate(carData.begin(), carData.begin() + i, carData.begin() + i + 1);
+                            pushCarToFront(i);
                         }
                         isFirst = false;
                         continue;
@@ -605,7 +616,7 @@ namespace OpenLoco::Vehicles
                     if (cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
                     {
                         cd.isReversed = true;
-                        std::rotate(carData.begin() + i, carData.begin() + i + 1, carData.end());
+                        pushCarToBack(i);
                     }
                     break;
                 }
@@ -616,6 +627,7 @@ namespace OpenLoco::Vehicles
         // 0x004AFBC0
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // Places all cars with VehicleObjectFlags::centerPosition in the middle of the train
             const auto numMiddles = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::centerPosition); });
             const auto middle = (carData.size() / 2) + 1;
             if (middle < carData.size())
@@ -629,6 +641,8 @@ namespace OpenLoco::Vehicles
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // If there are at least 4 cars with VehicleObjectFlags::flag_04 places 2 of them in the middle of the train
+            // This flag is used to create train sets comprised of 2 double ended trains
             const auto numFlag4s = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::flag_04); });
             if (numFlag4s >= 4)
             {
@@ -656,9 +670,31 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
+
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
-            // Train is invalid after sub_4AF4D6
-            // Vehicle train(*this);
+            // Apply the reordering and flipping
+            VehicleBase* dest = train.tail;
+            for (auto i = carData.size(); i > 0; --i)
+            {
+                auto& cd = carData[i - 1];
+                auto* frontCar = EntityManager::get<VehicleBogie>(cd.frontId);
+                if (frontCar == nullptr)
+                {
+                    continue;
+                }
+                if (cd.isReversed != cd.wasReversed)
+                {
+                    frontCar = flipCar(*frontCar);
+                }
+                insertCarBefore(*frontCar, *dest);
+                dest = frontCar;
+            }
+        }
+
+        // Train is invalid after insertCarBefore
+        train = Vehicle(*this);
+        {
             bool front = true;
             for (auto& car : train.cars)
             {
