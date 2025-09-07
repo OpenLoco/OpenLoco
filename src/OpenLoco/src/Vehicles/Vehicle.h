@@ -446,6 +446,7 @@ namespace OpenLoco::Vehicles
         }
         void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
+        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
 
     private:
         void updateDrivingSounds();
@@ -493,7 +494,6 @@ namespace OpenLoco::Vehicles
         void produceLeavingDockSound();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
-        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
         bool pathingShouldReverse();
@@ -652,10 +652,10 @@ namespace OpenLoco::Vehicles
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
+        void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
 
     private:
         void animationUpdate();
-        void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
         void steamPuffsAnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05);

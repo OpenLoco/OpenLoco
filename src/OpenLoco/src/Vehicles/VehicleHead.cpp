@@ -6063,6 +6063,92 @@ namespace OpenLoco::Vehicles
         return totalRunCost;
     }
 
+    // 0x004AE133
+    // esi : head
+    //
+    // return eax : bool
+    static bool positionVehicleOnTrack(VehicleHead& head)
+    {
+        Vehicle train(head);
+        _vehicleUpdate_1 = train.veh1;
+        _vehicleUpdate_2 = train.veh2;
+        for (auto i = 0; i < 32; ++i)
+        {
+            const auto res = head.sub_4ACEE7(0, 0);
+            if (res.status != 0)
+            {
+                break;
+            }
+        }
+
+        bool unkFlag = false;
+        train.applyToComponents([&unkFlag](auto& veh) {
+            if ((veh.var_38 & Flags38::unk_0) != Flags38::none)
+            {
+                if (!veh.isVehicleBody())
+                {
+                    throw std::runtime_error("Expected body component");
+                }
+                auto* vehBody = veh.asVehicleBody();
+                vehBody->sub_4AC255(_vehicleUpdate_backBogie, _vehicleUpdate_frontBogie);
+            }
+            else
+            {
+                resetUpdateVar1136114Flags();
+                int32_t remainingDistance = 0;
+                if (veh.isVehicle1() && veh.mode == TransportMode::road)
+                {
+                    auto* veh1 = veh.asVehicle1();
+                    remainingDistance = veh1->updateRoadMotion(0);
+                }
+                else
+                {
+                    remainingDistance = veh.updateTrackMotion(0);
+                }
+
+                if (!veh.isVehicleHead())
+                {
+                    if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::unk_m03))
+                    {
+                        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03) || remainingDistance >= 2454)
+                        {
+                            unkFlag = true;
+                        }
+                    }
+                }
+                if (veh.isVehicleBogie())
+                {
+                    auto* vehBogie = veh.asVehicleBogie();
+                    _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
+                    _vehicleUpdate_backBogie = vehBogie;
+                }
+            }
+            veh.invalidateSprite();
+        });
+        // 0x004AE1E4
+
+        if (head.mode != TransportMode::road)
+        {
+            const auto pos = World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep);
+            const auto routing = RoutingManager::getRouting(head.routingHandle);
+            auto tad = TrackAndDirection::_TrackAndDirection(0, 0);
+            tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+            auto reverseTad = tad;
+            reverseTad.setReversed(!reverseTad.isReversed());
+            const auto& trackSize = TrackData::getUnkTrack(tad._data);
+            auto reversePos = pos + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+
+            sub_4A2AD7(reversePos, reverseTad, head.owner, head.trackType);
+            sub_4A2AD7(pos, tad, head.owner, head.trackType);
+        }
+        return unkFlag;
+    }
+
     void registerHeadHooks()
     {
         registerHook(
@@ -6335,6 +6421,20 @@ namespace OpenLoco::Vehicles
                 bringTrackElementToFront(pos, trackType, tad);
 
                 regs = backup;
+
+                return 0;
+            });
+
+        registerHook(
+            0x004AE133,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto& head = *X86Pointer<Vehicles::VehicleHead>(regs.esi);
+                const bool result = positionVehicleOnTrack(head);
+
+                regs = backup;
+                regs.eax = result ? 1 : 0;
 
                 return 0;
             });
