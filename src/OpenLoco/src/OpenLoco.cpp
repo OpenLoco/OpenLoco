@@ -136,8 +136,8 @@ namespace OpenLoco
     // 0x004BE65E
     [[noreturn]] void exitCleanly()
     {
-        Audio::disposeDSound();
         Audio::close();
+        Audio::disposeDSound();
         Ui::disposeCursors();
         Localisation::unloadLanguageFile();
 
