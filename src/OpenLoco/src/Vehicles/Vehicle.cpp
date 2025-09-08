@@ -516,7 +516,12 @@ namespace OpenLoco::Vehicles
             const auto inspectionPos = World::toTileSpace(pos) + nearby;
             for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
             {
-                auto* vehicleTail = entity->asBase<VehicleTail>();
+                auto* vehicleBase = entity->asBase<VehicleBase>();
+                if (vehicleBase == nullptr || !vehicleBase->isVehicleTail())
+                {
+                    continue;
+                }
+                auto* vehicleTail = vehicleBase->asVehicleTail();
                 if (vehicleTail == nullptr)
                 {
                     continue;
@@ -540,7 +545,7 @@ namespace OpenLoco::Vehicles
 
                 // Perhaps a little expensive to do this (we don't do it on rail vehicles for example)
                 Vehicle train(vehicleTail->head);
-                if (train.veh1->var_3C < 0x220C)
+                if (train.veh1->var_3C < 0x220C0)
                 {
                     continue;
                 }
