@@ -21,6 +21,8 @@
 
 namespace OpenLoco::Platform
 {
+    static constexpr auto kSingleInstanceMutexName = "OpenLoco.lock";
+
     uint32_t getTime()
     {
         struct timespec spec;
@@ -169,6 +171,40 @@ namespace OpenLoco::Platform
             argvStrs[i] = argv[i];
         }
         return argvStrs;
+    }
+
+    bool lockSingleInstance()
+    {
+        // We will never close this file manually. The operating system will
+        // take care of that, because flock keeps the lock as long as the
+        // file is open and closes it automatically on file close.
+        // This is intentional.
+        int32_t pidFile = open(kSingleInstanceMutexName, O_CREAT | O_RDWR, 0666);
+
+        if (pidFile == -1)
+        {
+            std::cerr << "Cannot open lock file for writing.";
+            return false;
+        }
+
+        struct flock lock;
+
+        lock.l_start = 0;
+        lock.l_len = 0;
+        lock.l_type = F_WRLCK;
+        lock.l_whence = SEEK_SET;
+
+        if (fcntl(pidFile, F_SETLK, &lock) == -1)
+        {
+            if (errno == EWOULDBLOCK)
+            {
+                std::cerr << "Another OpenLoco session has been found running.";
+                return false;
+            }
+            std::cerr << "flock returned an uncatched errno: " << errno;
+            return false;
+        }
+        return true;
     }
 }
 
