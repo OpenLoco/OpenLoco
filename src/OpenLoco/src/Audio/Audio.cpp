@@ -221,7 +221,16 @@ namespace OpenLoco::Audio
     // 0x00489BA1
     void close()
     {
-        call(0x00489BA1);
+        if (_audioInitialised)
+        {
+            stopAmbientNoise();
+            stopVehicleNoise();
+            stopMusic();
+            for (auto& channel : _soundFX)
+            {
+                channel.stop();
+            }
+        }
     }
 
 #ifdef __HAS_DEFAULT_DEVICE__

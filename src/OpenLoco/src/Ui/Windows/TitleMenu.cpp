@@ -139,7 +139,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void sub_43910A();
     static void showMultiplayer(Window* window);
     static void multiplayerConnect(std::string_view host);
-    static void sub_46E328();
     static const WindowEventList& getEvents();
 
     Window* open()
@@ -300,8 +299,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             return;
         }
 
-        sub_46E328();
-
         switch (widgetIndex)
         {
             case Widx::scenario_list_btn:
@@ -326,7 +323,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     // 0x004390D1
     static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        sub_46E328();
         switch (widgetIndex)
         {
             case Widx::tutorial_btn:
@@ -338,7 +334,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     // 0x004390DD
     static void onDropdown([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
-        sub_46E328();
         switch (widgetIndex)
         {
             case Widx::tutorial_btn:
@@ -451,11 +446,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
         args.option2 = LoadOrQuitMode::loadGamePrompt;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
-    }
-
-    static void sub_46E328()
-    {
-        call(0x0046e328);
     }
 
     // 0x004391F9
