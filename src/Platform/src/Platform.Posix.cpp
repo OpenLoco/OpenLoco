@@ -3,10 +3,10 @@
 #include "Platform.h"
 #include <cstdlib>
 #include <cstring>
+#include <fcntl.h>
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
-#include <fcntl.h>
 
 #ifdef __linux__
 #include <linux/limits.h>
