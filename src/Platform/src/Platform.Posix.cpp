@@ -6,6 +6,7 @@
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
+#include <fcntl.h>
 
 #ifdef __linux__
 #include <linux/limits.h>
