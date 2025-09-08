@@ -858,7 +858,6 @@ namespace OpenLoco
             const auto& cfg = Config::read();
             Environment::resolvePaths();
 
-            resetCmdline();
             registerHooks();
 
             Ui::createWindow(cfg.display);

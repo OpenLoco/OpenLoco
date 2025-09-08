@@ -146,7 +146,9 @@ namespace OpenLoco::Input
 
             case Tutorial::State::recording:
             {
-                call(0x004BF005);
+                // Vanilla had tutorial recording here at 0x004BF005
+                // as tutorials are fixed mouse position there isn't much
+                // point implementing this code as per vanilla.
                 break;
             }
         }
