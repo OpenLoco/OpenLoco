@@ -491,6 +491,82 @@ namespace OpenLoco::Vehicles
         return EntityId::null;
     }
 
+    enum class OvertakeResult
+    {
+        overtakeAvailble,
+        noOvertakeAvailble,
+        mayBeOvertaken,
+    };
+
+    // 0x0047CD78
+    // ax : pos.x
+    // cx : pos.y
+    // dl : pos.z / World::kSmallZStep
+    // ebp : tad
+    // esi : veh1
+    //
+    // return mayBeOvertaken == high carry flag
+    //        overtakeAvailable   0x0112C328 == 5
+    //        noOvertakeAvailable 0x0112C328 == 0
+    static OvertakeResult getRoadOvertakeAvailability(const Vehicle1& veh1, World::Pos3 pos, uint16_t tad)
+    {
+        OvertakeResult result = OvertakeResult::noOvertakeAvailble;
+        for (const auto& nearby : kNearbyTiles)
+        {
+            const auto inspectionPos = World::toTileSpace(pos) + nearby;
+            for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
+            {
+                auto* vehicleTail = entity->asBase<VehicleTail>();
+                if (vehicleTail == nullptr)
+                {
+                    continue;
+                }
+                if (vehicleTail->getTransportMode() != TransportMode::road)
+                {
+                    continue;
+                }
+                if (vehicleTail->tileBaseZ * World::kSmallZStep != pos.z)
+                {
+                    continue;
+                }
+                if (vehicleTail->tileX != pos.x || vehicleTail->tileY != pos.y)
+                {
+                    continue;
+                }
+                if ((vehicleTail->trackAndDirection.road._data & World::Track::AdditionalTaDFlags::basicTaDMask) != (tad & World::Track::AdditionalTaDFlags::basicTaDMask))
+                {
+                    continue;
+                }
+
+                // Perhaps a little expensive to do this (we don't do it on rail vehicles for example)
+                Vehicle train(vehicleTail->head);
+                if (train.veh1->var_3C < 0x220C)
+                {
+                    continue;
+                }
+                if ((train.veh2->var_73 & Flags73::isBrokenDown) != Flags73::none)
+                {
+                    continue;
+                }
+                if (veh1.var_3C < train.veh1->var_3C)
+                {
+                    return OvertakeResult::mayBeOvertaken;
+                }
+                auto* veh2 = EntityManager::get<Vehicle2>(veh1.nextCarId);
+                if (veh2 == nullptr)
+                {
+                    continue;
+                }
+                if (veh2->maxSpeed <= train.veh2->maxSpeed)
+                {
+                    return OvertakeResult::mayBeOvertaken;
+                }
+                result = OvertakeResult::overtakeAvailble;
+            }
+        }
+        return result;
+    }
+
     // 0x0047C7FA
     static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
     {
@@ -1140,6 +1216,23 @@ namespace OpenLoco::Vehicles
                 connectJacobsBogies(*head);
                 regs = backup;
                 return 0;
+            });
+
+        registerHook(
+            0x0047CD78,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
+                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dl * World::kSmallZStep);
+                const uint16_t tad = regs.bp;
+
+                const auto res = getRoadOvertakeAvailability(*veh1, pos, tad);
+
+                addr<0x0112C328, uint8_t>() = res == OvertakeResult::overtakeAvailble ? 5 : 0;
+
+                regs = backup;
+                return res == OvertakeResult::mayBeOvertaken ? X86_FLAG_CARRY : 0;
             });
 
         registerHeadHooks();
