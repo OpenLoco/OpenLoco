@@ -114,13 +114,6 @@ namespace OpenLoco
         return version;
     }
 
-    // 0x00407FFD
-    static bool isAlreadyRunning(const char* mutexName)
-    {
-        auto result = ((int32_t(*)(const char*))(0x00407FFD))(mutexName);
-        return result != 0;
-    }
-
     // 0x004BE621
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)
     {
@@ -161,7 +154,7 @@ namespace OpenLoco
     static void startupChecks()
     {
         const auto& config = Config::get();
-        if (!config.allowMultipleInstances && isAlreadyRunning("Locomotion"))
+        if (!config.allowMultipleInstances && !Platform::lockSingleInstance())
         {
             exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
         }
