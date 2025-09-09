@@ -243,6 +243,18 @@ namespace OpenLoco::Vehicles
     currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
     void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk);
 
+    enum class RoadOccupationFlags : uint8_t
+    {
+        none = 0U,
+        isLaneOccupied = 1U << 0,
+        isLevelCrossingClosed = 1U << 1,
+        hasLevelCrossing = 1U << 2,
+        hasStation = 1U << 3,
+        isOneWay = 1U << 4,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadOccupationFlags);
+    RoadOccupationFlags getRoadOccupation(const World::Pos3 pos, const TrackAndDirection::_RoadAndDirection tad);
+
     EntityId checkForCollisions(VehicleBogie& bogie, World::Pos3& loc);
     void playPickupSound(Vehicles::Vehicle2* veh2);
     void playPlacedownSound(const World::Pos3 pos);

@@ -572,6 +572,73 @@ namespace OpenLoco::Vehicles
         return result;
     }
 
+    // 0x0047CEB7
+    // veh1 : esi
+    // return : al, ah
+    static void sub_47CEB7(Vehicle1& veh1)
+    {
+        const auto startPos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
+        auto unk112C327 = 0;
+
+        auto pos = startPos + World::TrackData::getUnkRoad(veh1.trackAndDirection.road._data & 0x7F).pos;
+        unk112C327++;
+
+        auto routings = RoutingManager::RingView(veh1.routingHandle);
+        auto routingIter = routings.begin();
+        if (routingIter == routings.end())
+        {
+            return 0, 0;
+        }
+        routingIter++;
+        if (routingIter == routings.end())
+        {
+            return 0, 0;
+        }
+        auto routing = RoutingManager::getRouting(*routingIter);
+        TrackAndDirection::_RoadAndDirection tad(0, 0);
+        tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+        const auto occupationFlags = getRoadOccupation(pos, tad);
+
+        if ((occupationFlags & RoadOccupationFlags::hasLevelCrossing) != RoadOccupationFlags::none)
+        {
+            // 0x0047D0B9
+        }
+        else
+        {
+            if ((occupationFlags & RoadOccupationFlags::isLaneOccupied) != RoadOccupationFlags::none)
+            {
+                if (getRoadOvertakeAvailability(veh1, pos, tad._data) == OvertakeResult::mayBeOvertaken)
+                {
+                    return 0, 0;
+                }
+            }
+            else
+            {
+                // 0x0047CF32
+                auto nextRoutingIter = routingIter;
+                nextRoutingIter++;
+                const auto nextPos = pos + World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                if (nextRoutingIter == routings.end())
+                {
+                    return 0, 0;
+                }
+                auto nextRouting = RoutingManager::getRouting(*nextRoutingIter);
+                TrackAndDirection::_RoadAndDirection nextTad(0, 0);
+                nextTad._data = nextRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
+                const auto nextOccupationFlags = getRoadOccupation(nextPos, nextTad);
+                if ((nextOccupationFlags & RoadOccupationFlags::isLaneOccupied) == RoadOccupationFlags::none)
+                {
+                    return 0, 0;
+                }
+                if (getRoadOvertakeAvailability(veh1, nextPos, nextTad._data) == OvertakeResult::mayBeOvertaken)
+                {
+                    return 0, 0;
+                }
+            }
+            // 0x0047CFB5
+        }
+    }
+
     // 0x0047C7FA
     static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
     {
