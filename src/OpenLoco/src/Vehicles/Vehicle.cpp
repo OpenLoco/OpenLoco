@@ -389,7 +389,7 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x00500244
-    static constexpr std::array<World::TilePos2, 9> kNearbyTiles = {
+    static constexpr std::array<World::TilePos2, 9> kMooreNeighbourhood = {
         World::TilePos2{ 0, 0 },
         World::TilePos2{ 0, 1 },
         World::TilePos2{ 1, 1 },
@@ -431,7 +431,7 @@ namespace OpenLoco::Vehicles
 
         Vehicle srcTrain(bogie.head);
 
-        for (const auto& nearby : kNearbyTiles)
+        for (const auto& nearby : kMooreNeighbourhood)
         {
             const auto inspectionPos = World::toTileSpace(loc) + nearby;
             for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
@@ -511,7 +511,7 @@ namespace OpenLoco::Vehicles
     static OvertakeResult getRoadOvertakeAvailability(const Vehicle1& veh1, World::Pos3 pos, uint16_t tad)
     {
         OvertakeResult result = OvertakeResult::noOvertakeAvailble;
-        for (const auto& nearby : kNearbyTiles)
+        for (const auto& nearby : kMooreNeighbourhood)
         {
             const auto inspectionPos = World::toTileSpace(pos) + nearby;
             for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
