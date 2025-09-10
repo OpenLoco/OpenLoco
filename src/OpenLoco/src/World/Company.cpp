@@ -41,6 +41,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    // TODO change this to Company attribute when supported, this may not work for multiplayer
+    static currency32_t _LoanAutopayMinimumBalance = 0;
+
     bool Company::empty() const
     {
         return name == StringIds::empty;

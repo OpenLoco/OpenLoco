@@ -1,6 +1,7 @@
 25.08+ (???)
 ------------------------------------------------------------------------
 - Change: [#3227] The accuracy of cursor-relative zooming has been improved.
+- Change: [#3245] Improve automatic loan repayment by adding minimum balance for payments 
 
 25.08 (2025-08-26)
 ------------------------------------------------------------------------

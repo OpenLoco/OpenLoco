@@ -16,9 +16,6 @@
 
 namespace OpenLoco
 {
-    // TODO change this to Company attribute when supported, this may not work for multiplayer
-    static currency32_t _LoanAutopayMinimumBalance = 0;
-
     enum class CompanyFlags : uint32_t
     {
         none = 0U,
