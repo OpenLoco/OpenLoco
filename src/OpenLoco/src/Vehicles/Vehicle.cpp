@@ -585,7 +585,7 @@ namespace OpenLoco::Vehicles
     static Sub47CEB7Result sub_47CEB7(Vehicle1& veh1)
     {
         const auto startPos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
-        auto unk112C327 = 0;
+        uint8_t unk112C327 = 0;
 
         auto pos = startPos + World::TrackData::getUnkRoad(veh1.trackAndDirection.road._data & 0x7F).pos;
         unk112C327++;
@@ -613,7 +613,8 @@ namespace OpenLoco::Vehicles
             {
                 return Sub47CEB7Result{ 2, 0 };
             }
-            for (uint8_t numSteps = 1; numSteps < 255; ++numSteps)
+            ++unk112C327;
+            for (; unk112C327 < 255; ++unk112C327)
             {
                 pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
                 routingIter++;
@@ -630,7 +631,7 @@ namespace OpenLoco::Vehicles
                 }
                 if ((fwdOccupationFlags & RoadOccupationFlags::hasLevelCrossing) == RoadOccupationFlags::none)
                 {
-                    return Sub47CEB7Result{ 4, numSteps };
+                    return Sub47CEB7Result{ 4, unk112C327 };
                 }
             }
             return Sub47CEB7Result{ 2, 0 };
@@ -688,7 +689,9 @@ namespace OpenLoco::Vehicles
                 return Sub47CEB7Result{ 0, 0 };
             }
             const auto unkCount = overtakeResult == OvertakeResult::overtakeAvailble ? 5 : 0;
-            for (uint8_t numSteps = 1, i = 0; numSteps < 11; ++numSteps)
+            ++unk112C327;
+            auto i = 0;
+            for (; unk112C327 < 11; ++unk112C327)
             {
                 pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
                 routingIter++;
@@ -698,7 +701,7 @@ namespace OpenLoco::Vehicles
                     {
                         return Sub47CEB7Result{ 0, 0 };
                     }
-                    return Sub47CEB7Result{ 8, static_cast<uint8_t>(numSteps - 1) };
+                    return Sub47CEB7Result{ 8, static_cast<uint8_t>(unk112C327 - 1) };
                 }
                 tad._data = RoutingManager::getRouting(*routingIter) & World::Track::AdditionalTaDFlags::basicTaDMask;
 
@@ -720,7 +723,7 @@ namespace OpenLoco::Vehicles
                 {
                     continue;
                 }
-                return Sub47CEB7Result{ 1, numSteps };
+                return Sub47CEB7Result{ 1, unk112C327 };
             }
             return Sub47CEB7Result{ 0, 0 };
         }
