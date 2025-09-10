@@ -16,6 +16,9 @@
 
 namespace OpenLoco
 {
+    // TODO change this to Company attribute when supported, this may not work for multiplayer
+    static currency32_t _LoanAutopayMinimumBalance = 0;
+
     enum class CompanyFlags : uint32_t
     {
         none = 0U,
@@ -290,6 +293,8 @@ namespace OpenLoco
         void updateHeadquartersColour();
         void updateOwnerEmotion();
         uint8_t getHeadquarterPerformanceVariation() const;
+        currency32_t getLoanAutopayMinimumBalance() const;
+        void setLoanAutopayMinimumBalance(currency32_t newMinimumBalance);
 
         bool hashTableContains(const Unk25C0HashTableEntry& entry) const;
         bool addHashTableEntry(const Unk25C0HashTableEntry& entry);

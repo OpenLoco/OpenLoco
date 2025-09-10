@@ -2280,7 +2280,7 @@ strings:
   2225: "Construction: Remove at current position"
   2226: "Construction: Select position"
   2227: "Trains reverse at signals"
-  2228: Autopay
+  2228: "Autopay - Minimum Balance:"
   2229: "{SMALLFONT}{COLOUR BLACK}Once per day, any current funds you have will be used to pay off your loan, if you have one."
   2230: "{COLOUR WINDOW_2}Year:"
   2231: "{COLOUR WINDOW_2}Month:"
@@ -2413,3 +2413,6 @@ strings:
   2358: "Toggle paint tool"
   2359: "{SMALLFONT}{COLOUR BLACK}Repaint {POP16}{STRINGID} vehicles{NEWLINE}shift+click to paint all{NEWLINE}ctrl+click to paint sub-vehicles"
   2360: "Paint all connected"
+  2361: "{CURRENCY32}"
+  2362: "Can't raise autopay minimum balance anymore!"
+  2363: "Minimum balance cannot go higher!"

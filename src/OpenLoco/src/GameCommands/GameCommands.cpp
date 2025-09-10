@@ -6,6 +6,7 @@
 #include "Buildings/RemoveBuilding.h"
 #include "Cheats/Cheat.h"
 #include "Company/BuildCompanyHeadquarters.h"
+#include "Company/ChangeAutopayMinimumBalance.h"
 #include "Company/ChangeCompanyColour.h"
 #include "Company/ChangeCompanyFace.h"
 #include "Company/ChangeLoan.h"
@@ -125,7 +126,7 @@ namespace OpenLoco::GameCommands
     };
 
     // clang-format off
-    static constexpr GameCommandInfo kGameCommandDefinitions[85] = {
+    static constexpr GameCommandInfo kGameCommandDefinitions[86] = {
         { GameCommand::vehicleRearrange,             vehicleRearrange,          0x004AF1DF, true  },
         { GameCommand::vehiclePlace,                 vehiclePlace,              0x004B01B6, true  },
         { GameCommand::vehiclePickup,                vehiclePickup,             0x004B0826, true  },
@@ -211,6 +212,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::setGameSpeed,                 setGameSpeed,              0,          true  },
         { GameCommand::vehicleOrderReverse,          vehicleOrderReverse,       0,          false },
         { GameCommand::vehicleRepaint,               vehicleRepaint,            0,          false },
+        { GameCommand::changeAutopayMinBalance,      changeAutopayMinBalance,   0,          false },
     };
     // clang-format on
 

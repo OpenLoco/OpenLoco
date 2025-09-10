@@ -122,6 +122,7 @@ namespace OpenLoco::GameCommands
         setGameSpeed = 82,
         vehicleOrderReverse = 83,
         vehicleRepaint = 84,
+        changeAutopayMinBalance = 85,
     };
 
     constexpr uint32_t FAILURE = 0x80000000;
