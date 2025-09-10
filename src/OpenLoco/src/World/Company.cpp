@@ -41,6 +41,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    // TODO change this to Company attribute when supported, this may not work for multiplayer
+    static currency32_t _LoanAutopayMinimumBalance = 0;
+
     bool Company::empty() const
     {
         return name == StringIds::empty;
@@ -771,10 +774,10 @@ namespace OpenLoco
 
     void Company::updateLoanAutorepay()
     {
-        if (currentLoan > 0 && cash > 0 && ((challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none))
+        if (currentLoan > 0 && cash > _LoanAutopayMinimumBalance && ((challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none))
         {
             GameCommands::ChangeLoanArgs args{};
-            args.newLoan = currentLoan - std::max<currency32_t>(0, std::min<currency32_t>(currentLoan, cash.asInt64()));
+            args.newLoan = currentLoan - std::max<currency32_t>(0, std::min<currency32_t>(currentLoan, cash.asInt64() - _LoanAutopayMinimumBalance));
 
             GameCommands::setUpdatingCompanyId(id());
             GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -899,6 +902,16 @@ namespace OpenLoco
     uint8_t Company::getHeadquarterPerformanceVariation() const
     {
         return std::min(performanceIndex / 200, 4);
+    }
+
+    currency32_t Company::getLoanAutopayMinimumBalance() const
+    {
+        return _LoanAutopayMinimumBalance;
+    }
+
+    void Company::setLoanAutopayMinimumBalance(currency32_t newMinimumBalance)
+    {
+        _LoanAutopayMinimumBalance = newMinimumBalance;
     }
 
     bool Company::hashTableContains(const Unk25C0HashTableEntry& entry) const

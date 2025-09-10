@@ -2024,6 +2024,9 @@ namespace OpenLoco::StringIds
     constexpr StringId vehicleRepaintTool = 2358;
     constexpr StringId vehicleRepaintTooltip = 2359;
     constexpr StringId vehicleRepaintEntireVehicle = 2360;
+    constexpr StringId loan_autopay_min_balance = 2361;
+    constexpr StringId loan_autopay_min_balance_upper_limit_title = 2362;
+    constexpr StringId loan_autopay_min_balance_upper_limit_text = 2363;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

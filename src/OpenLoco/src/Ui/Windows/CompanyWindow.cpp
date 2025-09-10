@@ -3,6 +3,7 @@
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/Company/BuildCompanyHeadquarters.h"
+#include "GameCommands/Company/ChangeAutopayMinimumBalance.h"
 #include "GameCommands/Company/ChangeCompanyColour.h"
 #include "GameCommands/Company/ChangeLoan.h"
 #include "GameCommands/Company/RemoveCompanyHeadquarters.h"
@@ -1707,6 +1708,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             loan_decrease,
             loan_increase,
             loan_autopay,
+            loan_autopay_min_balance,
+            loan_autopay_min_balance_decrease,
+            loan_autopay_min_balance_increase,
         };
 
         constexpr uint16_t expenditureColumnWidth = 128;
@@ -1715,11 +1719,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::makeCommonWidgets(636, 319, StringIds::title_company_finances),
             Widgets::ScrollView({ 133, 45 }, { 499, 215 }, WindowColour::secondary, Scrollbars::horizontal),
             Widgets::stepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
-            Widgets::Checkbox({ 320, 264 }, { 204, 12 }, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
+            Widgets::Checkbox({ 320, 264 }, { 163, 12 }, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay), // loan_autopay
+            Widgets::stepperWidgets({ 483, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::loan_autopay_min_balance)
 
         );
 
-        const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase);
+        const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase)
+            | (1 << widx::loan_autopay_min_balance_decrease) | (1 << widx::loan_autopay_min_balance_increase);
 
         // 0x004332E4
         static void prepareDraw(Window& self)
@@ -1738,6 +1744,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 auto args = FormatArguments(self.widgets[widx::currentLoan].textArgs);
                 args.push(company->currentLoan);
+            }
+
+            // Set autopay minimum balance
+            {
+                auto args = FormatArguments(self.widgets[widx::loan_autopay_min_balance].textArgs);
+                args.push(company->getLoanAutopayMinimumBalance());
             }
 
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -1759,6 +1771,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[widx::loan_decrease].hidden = !isControllingCompany;
             self.widgets[widx::loan_increase].hidden = !isControllingCompany;
             self.widgets[widx::loan_autopay].hidden = !isControllingCompany;
+            self.widgets[widx::loan_autopay_min_balance].hidden = !isControllingCompany;
+            self.widgets[widx::loan_autopay_min_balance_decrease].hidden = !isControllingCompany;
+            self.widgets[widx::loan_autopay_min_balance_increase].hidden = !isControllingCompany;
 
             if (isControllingCompany)
             {
@@ -2097,6 +2112,23 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
+                }
+                case widx::loan_autopay_min_balance_decrease:
+                {
+                    auto company = CompanyManager::get(CompanyId(self.number));
+                    GameCommands::ChangeAutopayMinimumBalanceArgs args{};
+                    args.newMinimumBalance = company->getLoanAutopayMinimumBalance()
+                        - calculateStepSize(Input::getClickRepeatTicks());
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+                    break;
+                }
+                case widx::loan_autopay_min_balance_increase:
+                {
+                    auto company = CompanyManager::get(CompanyId(self.number));
+                    GameCommands::ChangeAutopayMinimumBalanceArgs args{};
+                    args.newMinimumBalance = company->getLoanAutopayMinimumBalance()
+                        + calculateStepSize(Input::getClickRepeatTicks());
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
             }
         }
