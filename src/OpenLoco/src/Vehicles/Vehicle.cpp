@@ -799,6 +799,63 @@ namespace OpenLoco::Vehicles
         return distanceMoved;
     }
 
+    // 0x0047D1B4
+    // Similar to the others but doesn't update the vehicle
+    // due to that it must take reference to all the variables
+    static bool veh1UpdateRoadMotionNewRoadPieceNoMove(World::Pos3& pos, RoutingHandle& handle, TrackAndDirection::_RoadAndDirection& rad)
+    {
+        auto newIndex = handle.getIndex() + 1;
+        handle.setIndex(newIndex);
+        const auto routing = RoutingManager::getRouting(handle);
+        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
+        {
+            return false;
+        }
+
+        pos += World::TrackData::getUnkRoad(rad._data & 0x7F).pos;
+
+        rad._data = routing & 0x1FFU;
+        return true;
+    }
+
+    // 0x0047D142
+    // veh1 : esi
+    // numRoadPieces : ah
+    // return eax
+    static int32_t vehicle1UpdateRoadMotionByPiecesNoMove(Vehicle1& veh1, const uint8_t numRoadPieces)
+    {
+        auto intermediatePosition = veh1.position;
+        auto distanceMoved = 0;
+        auto pos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
+        auto rad = veh1.trackAndDirection.road;
+        auto handle = veh1.routingHandle;
+        auto subPosition = veh1.subPosition;
+        for (auto i = 0; i < numRoadPieces;)
+        {
+            auto newSubPosition = subPosition + 1U;
+            const auto subPositionDataSize = World::TrackData::getRoadSubPositon(rad._data).size();
+            // This means we have moved forward by a road piece
+            if (newSubPosition >= subPositionDataSize)
+            {
+                if (!veh1UpdateRoadMotionNewRoadPieceNoMove(pos, handle, rad))
+                {
+                    return distanceMoved;
+                }
+                else
+                {
+                    newSubPosition = 0;
+                    i++;
+                }
+            }
+            subPosition = newSubPosition;
+            const auto& moveData = World::TrackData::getRoadSubPositon(rad._data)[newSubPosition];
+            const auto nextNewPosition = moveData.loc + pos;
+            distanceMoved += movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+            intermediatePosition = nextNewPosition;
+        }
+        return distanceMoved;
+    }
+
     // 0x0047C7FA
     static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
     {
@@ -1489,6 +1546,18 @@ namespace OpenLoco::Vehicles
                 Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
                 const uint8_t numRoadPieces = regs.ah;
                 const auto res = vehicle1UpdateRoadMotionByPieces(*veh1, numRoadPieces);
+                regs = backup;
+                regs.eax = res;
+                return 0;
+            });
+
+        registerHook(
+            0x0047D142,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
+                const uint8_t numRoadPieces = regs.ah;
+                const auto res = vehicle1UpdateRoadMotionByPiecesNoMove(*veh1, numRoadPieces);
                 regs = backup;
                 regs.eax = res;
                 return 0;
