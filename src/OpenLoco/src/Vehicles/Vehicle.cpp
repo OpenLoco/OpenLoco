@@ -856,6 +856,40 @@ namespace OpenLoco::Vehicles
         return distanceMoved;
     }
 
+    // 0x0047D46F
+    static void applyOvertakeToVehicle1(Vehicle1& veh1, uint8_t numRoadPieces)
+    {
+        const auto noOvertakeDistance = vehicle1UpdateRoadMotionByPiecesNoMove(veh1, numRoadPieces);
+        auto routingRing = RoutingManager::RingView(veh1.routingHandle);
+        auto iter = routingRing.begin()++;
+        constexpr uint16_t kResetRouting = ~((1 << 7) | (1 << 8));
+        for (auto i = 0; i < numRoadPieces; ++iter, ++i)
+        {
+            if (iter == routingRing.end())
+            {
+                break;
+            }
+            const auto routing = RoutingManager::getRouting(*iter);
+            if (i == 0)
+            {
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1 << 8));
+            }
+            else if (i == (numRoadPieces - 1))
+            {
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1 << 8) | (1 << 7));
+            }
+            else
+            {
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1 << 7));
+            }
+        }
+
+        const auto newDistance = vehicle1UpdateRoadMotionByPieces(veh1, numRoadPieces);
+        veh1.var_3C += newDistance;
+        auto* head = EntityManager::get<VehicleHead>(veh1.head);
+        head->var_3C += noOvertakeDistance;
+    }
+
     // 0x0047C7FA
     static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
     {
