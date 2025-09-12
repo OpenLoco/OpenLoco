@@ -729,6 +729,76 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x0047D308
+    static bool veh1UpdateRoadMotionNewRoadPiece(Vehicle1& veh1)
+    {
+        auto newRoutingHandle = veh1.routingHandle;
+        auto newIndex = newRoutingHandle.getIndex() + 1;
+        newRoutingHandle.setIndex(newIndex);
+        const auto routing = RoutingManager::getRouting(newRoutingHandle);
+        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
+        {
+            return false;
+        }
+
+        World::Pos3 pos(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
+        auto roadEnd = World::Track::getRoadConnectionEnd(pos, veh1.trackAndDirection.road._data & 0x7F);
+        TrackAndDirection::_RoadAndDirection rad(0, 0);
+        rad._data = routing & 0x1FFU;
+        veh1.sub_47D959(roadEnd.nextPos, rad, true);
+
+        veh1.routingHandle = newRoutingHandle;
+        const auto oldTaD = veh1.trackAndDirection.road._data;
+        veh1.trackAndDirection.road = rad;
+
+        pos += World::TrackData::getUnkRoad(oldTaD & 0x7F).pos;
+        veh1.tileX = pos.x;
+        veh1.tileY = pos.y;
+        veh1.tileBaseZ = pos.z / World::kSmallZStep;
+        return true;
+    }
+
+    // 0x0047D2D6
+    // veh1 : esi
+    // numRoadPieces : ah
+    // return eax
+    static int32_t vehicle1UpdateRoadMotionByPieces(Vehicle1& veh1, const uint8_t numRoadPieces)
+    {
+        auto intermediatePosition = veh1.position;
+        auto distanceMoved = 0;
+        for (auto i = 0; i < numRoadPieces;)
+        {
+            auto newSubPosition = veh1.subPosition + 1U;
+            const auto subPositionDataSize = World::TrackData::getRoadSubPositon(veh1.trackAndDirection.road._data).size();
+            // This means we have moved forward by a road piece
+            if (newSubPosition >= subPositionDataSize)
+            {
+                if (!veh1UpdateRoadMotionNewRoadPiece(veh1))
+                {
+                    // This seems wrong but its what vanilla does
+                    // Todo investigate if we should return 0 or actually move
+                    // the vehicle
+                    return distanceMoved;
+                }
+                else
+                {
+                    newSubPosition = 0;
+                    i++;
+                }
+            }
+            veh1.subPosition = newSubPosition;
+            const auto& moveData = World::TrackData::getRoadSubPositon(veh1.trackAndDirection.road._data)[newSubPosition];
+            const auto nextNewPosition = moveData.loc + World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
+            distanceMoved += movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+            intermediatePosition = nextNewPosition;
+            veh1.spriteYaw = moveData.yaw;
+            veh1.spritePitch = moveData.pitch;
+        }
+
+        veh1.moveTo(intermediatePosition);
+        return distanceMoved;
+    }
+
     // 0x0047C7FA
     static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
     {
@@ -1409,6 +1479,18 @@ namespace OpenLoco::Vehicles
                 regs = backup;
                 regs.al = res.al;
                 regs.ah = res.ah;
+                return 0;
+            });
+
+        registerHook(
+            0x0047D2D6,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
+                const uint8_t numRoadPieces = regs.ah;
+                const auto res = vehicle1UpdateRoadMotionByPieces(*veh1, numRoadPieces);
+                regs = backup;
+                regs.eax = res;
                 return 0;
             });
 
