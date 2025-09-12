@@ -741,20 +741,19 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        World::Pos3 pos(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
-        auto roadEnd = World::Track::getRoadConnectionEnd(pos, veh1.trackAndDirection.road._data & 0x7F);
-        TrackAndDirection::_RoadAndDirection rad(0, 0);
-        rad._data = routing & 0x1FFU;
-        veh1.sub_47D959(roadEnd.nextPos, rad, true);
+        const auto newPos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep)
+            + World::TrackData::getUnkRoad(veh1.trackAndDirection.road._data & 0x7F).pos;
+
+        TrackAndDirection::_RoadAndDirection newRad(0, 0);
+        newRad._data = routing & 0x1FFU;
+        veh1.sub_47D959(newPos, newRad, true);
 
         veh1.routingHandle = newRoutingHandle;
-        const auto oldTaD = veh1.trackAndDirection.road._data;
-        veh1.trackAndDirection.road = rad;
+        veh1.trackAndDirection.road = newRad;
 
-        pos += World::TrackData::getUnkRoad(oldTaD & 0x7F).pos;
-        veh1.tileX = pos.x;
-        veh1.tileY = pos.y;
-        veh1.tileBaseZ = pos.z / World::kSmallZStep;
+        veh1.tileX = newPos.x;
+        veh1.tileY = newPos.y;
+        veh1.tileBaseZ = newPos.z / World::kSmallZStep;
         return true;
     }
 
