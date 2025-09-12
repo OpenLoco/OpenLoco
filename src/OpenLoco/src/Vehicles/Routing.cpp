@@ -322,6 +322,8 @@ namespace OpenLoco::Vehicles
 
             if (!res)
             {
+                // This shouldn't happen I think. Either way useful in debug to know.
+                assert(false);
                 return;
             }
 
@@ -702,6 +704,58 @@ namespace OpenLoco::Vehicles
             transformFunction);
     }
 
+    // 0x004A2A39
+    bool isBlockOccupied(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    {
+        // 0x001135F88
+        uint16_t routingTransformData = 0;
+
+        auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
+
+        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
+
+        findAllTracksFilterTransform(
+            interestMap,
+            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            loc,
+            trackAndDirection,
+            company,
+            trackType,
+            filterFunction,
+            [](LocationOfInterestHashMap&) {});
+        return routingTransformData & 1;
+    }
+
+    // 0x004AC217
+    // Passes occupied state via _routingTransformData
+    // Returns true for signal block end
+    static bool setReverseSignalOccupied(const LocationOfInterest& interest)
+    {
+        if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
+        {
+            return false;
+        }
+
+        setSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31) | (8));
+
+        return true;
+    }
+
+    void setReverseSignalOccupiedInBlock(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    {
+        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
+
+        findAllTracksFilterTransform(
+            interestMap,
+            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            loc,
+            trackAndDirection,
+            company,
+            trackType,
+            setReverseSignalOccupied,
+            [](LocationOfInterestHashMap&) {});
+    }
+
     // 0x004A2A58
     uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
@@ -721,6 +775,53 @@ namespace OpenLoco::Vehicles
             kNullTransformFunction);
 
         return unk;
+    }
+
+    // 0x004A2AA1
+    // Passes state via _routingTransformData
+    static bool sub_4A2AA1(const LocationOfInterest& interest, uint16_t& routingTransformData)
+    {
+        if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
+        {
+            return false;
+        }
+        const auto signalState = getSignalState(interest.loc, interest.tad(), interest.trackType, 0);
+
+        const bool occupiedOneWay = (signalState & SignalStateFlags::occupiedOneWay) != SignalStateFlags::none;
+        // ??? Not sure why we are doing this
+        const bool clearRoute = ((signalState & SignalStateFlags::blockedNoRoute) == SignalStateFlags::none)
+            && ((signalState & SignalStateFlags::occupied) == SignalStateFlags::none);
+
+        if (occupiedOneWay || clearRoute)
+        {
+            routingTransformData |= (1 << 0);
+        }
+        return true;
+    }
+
+    uint8_t sub_4A2A77(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    {
+        uint16_t routingTransformData = 0;
+        _1136085 = 0;
+        auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return sub_4A2AA1(interest, routingTransformData); };
+
+        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
+
+        findAllTracksFilterTransform(
+            interestMap,
+            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk1,
+            loc,
+            trackAndDirection,
+            company,
+            trackType,
+            filterFunction,
+            [](LocationOfInterestHashMap&) {});
+
+        if (_1136085 & (1U << 0))
+        {
+            routingTransformData |= (1U << 1);
+        }
+        return routingTransformData;
     }
 
     // 0x004A5D94
