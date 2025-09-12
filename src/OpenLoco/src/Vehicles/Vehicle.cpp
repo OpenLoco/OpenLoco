@@ -25,6 +25,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
     static loco_global<UpdateVar1136114Flags, 0x01136114> _vehicleUpdate_var_1136114;
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
+    static constexpr int32_t kObjDistToHighPrecisionDistance = 2179;
 
 #pragma pack(push, 1)
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
@@ -1424,15 +1425,15 @@ namespace OpenLoco::Vehicles
                 for (auto& component : car)
                 {
                     auto& objCar = vehicleObj->carComponents[objCarIndex];
-                    const auto frontLength = objCar.backBogiePosition * -2179;
+                    const auto frontLength = objCar.backBogiePosition * -kObjDistToHighPrecisionDistance;
                     component.front->remainingDistance = distance + frontLength;
 
                     if (objCar.bodySpriteInd != 0xFFU)
                     {
-                        const auto bodyLength = vehicleObj->bodySprites[objCar.bodySpriteInd & 0x7F].halfLength * -(2179 * 2);
+                        const auto bodyLength = vehicleObj->bodySprites[objCar.bodySpriteInd & 0x7F].halfLength * -(kObjDistToHighPrecisionDistance * 2);
                         distance += bodyLength;
                     }
-                    const auto backLength = objCar.frontBogiePosition * 2179;
+                    const auto backLength = objCar.frontBogiePosition * kObjDistToHighPrecisionDistance;
                     component.back->remainingDistance = distance + backLength;
 
                     objCarIndex--;
@@ -1444,15 +1445,15 @@ namespace OpenLoco::Vehicles
                 for (auto& component : car)
                 {
                     auto& objCar = vehicleObj->carComponents[objCarIndex];
-                    const auto frontLength = objCar.frontBogiePosition * -2179;
+                    const auto frontLength = objCar.frontBogiePosition * -kObjDistToHighPrecisionDistance;
                     component.front->remainingDistance = distance + frontLength;
 
                     if (objCar.bodySpriteInd != 0xFFU)
                     {
-                        const auto bodyLength = vehicleObj->bodySprites[objCar.bodySpriteInd & 0x7F].halfLength * -(2179 * 2);
+                        const auto bodyLength = vehicleObj->bodySprites[objCar.bodySpriteInd & 0x7F].halfLength * -(kObjDistToHighPrecisionDistance * 2);
                         distance += bodyLength;
                     }
-                    const auto backLength = objCar.backBogiePosition * 2179;
+                    const auto backLength = objCar.backBogiePosition * kObjDistToHighPrecisionDistance;
                     component.back->remainingDistance = distance + backLength;
 
                     objCarIndex++;
