@@ -11,6 +11,7 @@
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
 #include "RoutingManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
@@ -570,6 +571,162 @@ namespace OpenLoco::Vehicles
             }
         }
         return result;
+    }
+
+    struct Sub47CEB7Result
+    {
+        uint8_t al;
+        uint8_t ah;
+    };
+
+    // 0x0047CEB7
+    // veh1 : esi
+    // return : al, ah
+    static Sub47CEB7Result sub_47CEB7(Vehicle1& veh1)
+    {
+        const auto startPos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
+        uint8_t unk112C327 = 0;
+
+        auto pos = startPos + World::TrackData::getUnkRoad(veh1.trackAndDirection.road._data & 0x7F).pos;
+        unk112C327++;
+
+        auto routings = RoutingManager::RingView(veh1.routingHandle);
+        auto routingIter = routings.begin();
+        if (routingIter == routings.end())
+        {
+            return Sub47CEB7Result{ 0, 0 };
+        }
+        routingIter++;
+        if (routingIter == routings.end())
+        {
+            return Sub47CEB7Result{ 0, 0 };
+        }
+        auto routing = RoutingManager::getRouting(*routingIter);
+        TrackAndDirection::_RoadAndDirection tad(0, 0);
+        tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+        const auto occupationFlags = getRoadOccupation(pos, tad);
+
+        if ((occupationFlags & RoadOccupationFlags::hasLevelCrossing) != RoadOccupationFlags::none)
+        {
+            // 0x0047D0B9
+            if ((occupationFlags & (RoadOccupationFlags::isLaneOccupied | RoadOccupationFlags::isLevelCrossingClosed)) != RoadOccupationFlags::none)
+            {
+                return Sub47CEB7Result{ 2, 0 };
+            }
+            ++unk112C327;
+            for (; unk112C327 < 255; ++unk112C327)
+            {
+                pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                routingIter++;
+                if (routingIter == routings.end())
+                {
+                    return Sub47CEB7Result{ 2, 0 };
+                }
+                tad._data = RoutingManager::getRouting(*routingIter) & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+                const auto fwdOccupationFlags = getRoadOccupation(pos, tad);
+                if ((fwdOccupationFlags & (RoadOccupationFlags::isLaneOccupied | RoadOccupationFlags::isLevelCrossingClosed)) != RoadOccupationFlags::none)
+                {
+                    return Sub47CEB7Result{ 2, 0 };
+                }
+                if ((fwdOccupationFlags & RoadOccupationFlags::hasLevelCrossing) == RoadOccupationFlags::none)
+                {
+                    return Sub47CEB7Result{ 4, unk112C327 };
+                }
+            }
+            return Sub47CEB7Result{ 2, 0 };
+        }
+        else
+        {
+            OvertakeResult overtakeResult = OvertakeResult::overtakeAvailble;
+            if ((occupationFlags & RoadOccupationFlags::isLaneOccupied) != RoadOccupationFlags::none)
+            {
+                overtakeResult = getRoadOvertakeAvailability(veh1, pos, tad._data);
+                if (overtakeResult == OvertakeResult::mayBeOvertaken)
+                {
+                    return Sub47CEB7Result{ 0, 0 };
+                }
+            }
+            else
+            {
+                // 0x0047CF32
+                auto nextRoutingIter = routingIter;
+                nextRoutingIter++;
+                const auto nextPos = pos + World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                if (nextRoutingIter == routings.end())
+                {
+                    return Sub47CEB7Result{ 0, 0 };
+                }
+                auto nextRouting = RoutingManager::getRouting(*nextRoutingIter);
+                TrackAndDirection::_RoadAndDirection nextTad(0, 0);
+                nextTad._data = nextRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
+                const auto nextOccupationFlags = getRoadOccupation(nextPos, nextTad);
+                if ((nextOccupationFlags & RoadOccupationFlags::isLaneOccupied) == RoadOccupationFlags::none)
+                {
+                    return Sub47CEB7Result{ 0, 0 };
+                }
+                overtakeResult = getRoadOvertakeAvailability(veh1, nextPos, nextTad._data);
+                if (overtakeResult == OvertakeResult::mayBeOvertaken)
+                {
+                    return Sub47CEB7Result{ 0, 0 };
+                }
+            }
+            // 0x0047CFB5
+            const auto& roadObj = ObjectManager::get<RoadObject>(veh1.trackType);
+            if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+            {
+                return Sub47CEB7Result{ 0, 0 };
+            }
+            if (tad.isUnk8() || tad.isBackToFront())
+            {
+                return Sub47CEB7Result{ 0, 0 };
+            }
+            auto backToFrontTad = tad;
+            backToFrontTad._data ^= (1U << 7);
+            auto btfOccupationFlags = getRoadOccupation(pos, backToFrontTad);
+            if ((btfOccupationFlags & (RoadOccupationFlags::hasLevelCrossing | RoadOccupationFlags::isLaneOccupied)) != RoadOccupationFlags::none)
+            {
+                return Sub47CEB7Result{ 0, 0 };
+            }
+            const auto unkCount = overtakeResult == OvertakeResult::overtakeAvailble ? 5 : 0;
+            ++unk112C327;
+            auto i = 0;
+            for (; unk112C327 < 11; ++unk112C327)
+            {
+                pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                routingIter++;
+                if (routingIter == routings.end())
+                {
+                    if ((btfOccupationFlags & RoadOccupationFlags::hasStation) == RoadOccupationFlags::none)
+                    {
+                        return Sub47CEB7Result{ 0, 0 };
+                    }
+                    return Sub47CEB7Result{ 8, static_cast<uint8_t>(unk112C327 - 1) };
+                }
+                tad._data = RoutingManager::getRouting(*routingIter) & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+                backToFrontTad = tad;
+                backToFrontTad._data ^= (1U << 7);
+                btfOccupationFlags = getRoadOccupation(pos, backToFrontTad);
+                if ((btfOccupationFlags & (RoadOccupationFlags::hasLevelCrossing | RoadOccupationFlags::isLaneOccupied)) != RoadOccupationFlags::none)
+                {
+                    return Sub47CEB7Result{ 0, 0 };
+                }
+                const auto fwdOccupationFlags = getRoadOccupation(pos, tad);
+                if ((fwdOccupationFlags & RoadOccupationFlags::isLaneOccupied) != RoadOccupationFlags::none)
+                {
+                    i = 0;
+                    continue;
+                }
+                i++;
+                if (i <= unkCount)
+                {
+                    continue;
+                }
+                return Sub47CEB7Result{ 1, unk112C327 };
+            }
+            return Sub47CEB7Result{ 0, 0 };
+        }
     }
 
     // 0x0047C7FA
@@ -1238,6 +1395,21 @@ namespace OpenLoco::Vehicles
 
                 regs = backup;
                 return res == OvertakeResult::mayBeOvertaken ? X86_FLAG_CARRY : 0;
+            });
+
+        registerHook(
+            0x0047CEB7,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
+
+                const auto res = sub_47CEB7(*veh1);
+
+                regs = backup;
+                regs.al = res.al;
+                regs.ah = res.ah;
+                return 0;
             });
 
         registerHeadHooks();
