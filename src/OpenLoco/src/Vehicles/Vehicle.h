@@ -383,7 +383,7 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
-        uint32_t var_3C;     // 0x3C
+        int32_t var_3C;      // 0x3C
         uint8_t pad_40[0x2]; // 0x40
         TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
@@ -1010,6 +1010,8 @@ namespace OpenLoco::Vehicles
     // TODO: move this?
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
     void removeAllCargo(CarComponent& carComponent);
+
+    struct VehicleCommon;
 
     /* flipCar
      * Reverses a Car in-place and returns the new front bogie

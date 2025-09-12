@@ -72,8 +72,8 @@ namespace OpenLoco::Vehicles
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
-    static loco_global<uint8_t[2], 0x0113601A> _113601A;          // Track Connection mod global
-    static loco_global<uint32_t, 0x0112C30C> _allowedStationObjs; // Road pathing global
+    static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
+    static loco_global<uint32_t, 0x0112C30C> _vehicleUpdate_compatibleRoadStationTypes;
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
@@ -83,6 +83,38 @@ namespace OpenLoco::Vehicles
     static constexpr uint8_t kRestartStoppedRoadVehiclesTimeout = 20; // Number of days before stopped road vehicle (bus and tram) is restarted
     static constexpr uint16_t kReliabilityLossPerDay = 4;
     static constexpr uint16_t kReliabilityLossPerDayObsolete = 10;
+
+    // In order of preference when finding a route
+    enum class RouteSignalState : uint32_t
+    {
+        noSignals = 1,
+        signalClear = 2,
+        signalBlockedOneWay = 3,
+        signalBlockedTwoWay = 4,
+        signalNoRoute = 6, // E.g. its a one way track and we are going the wrong way
+        null = 0xFFFFFFFFU,
+    };
+
+    struct RoutingResult
+    {
+        uint16_t bestDistToTarget;    // 0x01136448
+        uint32_t bestTrackWeighting;  // 0x01136444
+        RouteSignalState signalState; // 0x0113644C
+    };
+
+    struct Sub4AC3D3State
+    {
+        RoutingResult result;
+        // The following are now in result
+        // RouteSignalState signalState; // 0x01136450
+        // uint16_t bestDistToTarget;    // 0x01136456
+        // uint32_t bestTrackWeighting;  // 0x0113643C
+
+        uint16_t hadNewResult; // 0x01136458
+    };
+
+    static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods);
+    static uint16_t roadPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, bool isSecondRun, Sub4AC3D3State& state);
 
     struct WaterPathingResult
     {
@@ -3925,16 +3957,239 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x0047DA8D
+    static Sub4ACEE7Result sub_47DA8D(VehicleHead& head, uint32_t unk1, uint32_t var_113612C)
+    {
+        // ROAD only
+
+        // 0x0112C30C
+        uint32_t compatibleStations = 0U;
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::roadStation); ++i)
+        {
+            auto* roadStationObj = ObjectManager::get<RoadStationObject>(i);
+            if (roadStationObj == nullptr)
+            {
+                continue;
+            }
+            if (roadStationObj->hasFlags(RoadStationFlags::passenger))
+            {
+                if (head.trainAcceptedCargoTypes & (1U << roadStationObj->cargoType))
+                {
+                    compatibleStations |= (1U << i);
+                }
+            }
+            else if (roadStationObj->hasFlags(RoadStationFlags::freight))
+            {
+                // Eh? is this a not accepted cargo type
+                if (!(head.trainAcceptedCargoTypes & (1U << roadStationObj->cargoType)))
+                {
+                    compatibleStations |= (1U << i);
+                }
+            }
+            else
+            {
+                compatibleStations |= (1U << i);
+            }
+        }
+        _vehicleUpdate_compatibleRoadStationTypes = compatibleStations;
+
+        {
+            auto routings = RoutingManager::RingView(head.routingHandle);
+            auto iter = routings.begin();
+            iter++;
+            iter++;
+            if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result{ 1, 0, StationId::null };
+            }
+            if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result{ 1, 0, StationId::null };
+            }
+        }
+
+        resetUpdateVar1136114Flags();
+        if (head.var_52 == 1)
+        {
+            head.remainingDistance += head.updateTrackMotion(0);
+        }
+        else
+        {
+            const int32_t distance1 = unk1 - head.var_3C;
+            const auto distance2 = std::max(var_113612C * 4, 0xCC48U);
+            const auto distance = std::min<int32_t>(distance1, distance2);
+            head.var_3C += distance - head.updateTrackMotion(distance);
+        }
+        // NOTE: head.routingHandle can be modified by updateTrackMotion
+
+        if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        const auto pos = World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep);
+        const auto roadId = head.trackAndDirection.road.id();
+        const auto rotation = head.trackAndDirection.road.cardinalDirection();
+        const auto tile = TileManager::get(pos);
+        auto elStation = tile.roadStation(roadId, rotation, head.tileBaseZ);
+        if (elStation != nullptr && (elStation->isGhost() || elStation->isAiAllocated()))
+        {
+            elStation = nullptr;
+        }
+        // 0x011361F6
+        const auto tileStationId = elStation != nullptr ? elStation->stationId() : StationId::null;
+        // 0x0112C32B
+        const auto stationObjId = elStation != nullptr ? elStation->objectId() : 0xFF;
+
+        auto train = Vehicle(head);
+        const auto requiredMods = head.var_53;
+        const auto queryMods = train.veh1->var_49;
+
+        auto [nextPos, nextRotation] = World::Track::getRoadConnectionEnd(pos, head.trackAndDirection.road._data & 0x7F);
+        const bool isOneWay = head.var_5C == 0 && head.var_52 != 1;
+
+        auto tc = isOneWay ? World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, head.owner, head.trackType, requiredMods, queryMods)
+                           : World::Track::getRoadConnections(nextPos, nextRotation, head.owner, head.trackType, requiredMods, queryMods);
+
+        if (head.var_52 != 1
+            && tileStationId != StationId::null
+            && tileStationId != tc.stationId
+            && compatibleStations & (1U << stationObjId))
+        {
+            auto orders = OrderRingView(head.orderTableOffset, head.currentOrder);
+            auto curOrder = orders.begin();
+            auto* stationOrder = curOrder->as<OrderStation>();
+            bool stationProcessed = false;
+            if (stationOrder != nullptr)
+            {
+                if (stationOrder->is<OrderStopAt>())
+                {
+                    if (tileStationId == stationOrder->getStation())
+                    {
+                        return Sub4ACEE7Result{ 4, 0, tileStationId };
+                    }
+                }
+                else if (stationOrder->is<OrderRouteThrough>())
+                {
+                    if (tileStationId == stationOrder->getStation())
+                    {
+                        curOrder++;
+                        head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
+                        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+                        stationProcessed = true;
+                    }
+                }
+            }
+            // Handles the non-express stop at any station we pass case
+            if (!stationProcessed)
+            {
+                if (head.stationId != tileStationId
+                    && (train.veh1->var_48 & Flags48::expressMode) == Flags48::none)
+                {
+                    auto* station = StationManager::get(tileStationId);
+                    if (station->owner == train.veh1->owner)
+                    {
+                        return Sub4ACEE7Result{ 4, 0, tileStationId };
+                    }
+                }
+            }
+        }
+
+        if (tc.connections.empty())
+        {
+            return Sub4ACEE7Result{ 2, 0, StationId::null };
+        }
+        // 0x0047DD74
+        uint16_t connection = tc.connections[0];
+        if (tc.connections.size() > 1)
+        {
+            if (head.var_52 == 1)
+            {
+                connection = roadLongestPathing(head, nextPos, tc, requiredMods, queryMods);
+            }
+            else
+            {
+                Sub4AC3D3State state{};
+                connection = roadPathing(head, nextPos, tc, requiredMods, queryMods, compatibleStations, false, state);
+            }
+            connection |= (1U << 14);
+        }
+        if (head.trackAndDirection.road.isBackToFront() ^ head.trackAndDirection.road.isUnk8())
+        {
+            connection ^= (1U << 7);
+            if (head.var_52 != 1)
+            {
+                if (head.trackType != 0xFFU)
+                {
+                    auto* roadObj = ObjectManager::get<RoadObject>(head.trackType);
+                    if (roadObj->hasFlags(RoadObjectFlags::isRoad))
+                    {
+                        connection ^= (1U << 8);
+                    }
+                }
+                else
+                {
+                    connection ^= (1U << 8);
+                }
+            }
+        }
+        // 0x0047DDFB
+        auto routings = RoutingManager::RingView(head.routingHandle);
+        const auto& nextHandle = *++(routings.begin());
+        RoutingManager::setRouting(nextHandle, connection);
+
+        if (head.var_52 == 1)
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        auto curOrder = OrderRingView(head.orderTableOffset, head.currentOrder).begin();
+        auto* waypointOrder = curOrder->as<OrderRouteWaypoint>();
+        if (waypointOrder == nullptr)
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        auto curPos = World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep);
+        curPos += World::TrackData::getUnkRoad(head.trackAndDirection.road._data & 0x7F).pos;
+
+        if (curPos != waypointOrder->getWaypoint())
+        {
+            auto& trackSize = World::TrackData::getUnkRoad(connection & 0x7F);
+            auto connectPos = curPos + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                connectPos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            if (connectPos != waypointOrder->getWaypoint())
+            {
+                return Sub4ACEE7Result{ 0, 0, StationId::null };
+            }
+        }
+        curOrder++;
+        head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
+        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+        return Sub4ACEE7Result{ 0, 0, StationId::null };
+    }
+
     // 0x004ACEE7
     Sub4ACEE7Result VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.eax = unk1;
-        regs.ebx = var_113612C;
-        call(0x004ACEE7, regs);
-        // status, flags, stationId
-        return Sub4ACEE7Result{ static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<StationId>(regs.bp) };
+        if (mode == TransportMode::road)
+        {
+            return sub_47DA8D(*this, unk1, var_113612C);
+        }
+        else
+        {
+            // 0x004ACEF1
+            registers regs;
+            regs.esi = X86Pointer(this);
+            regs.eax = unk1;
+            regs.ebx = var_113612C;
+            call(0x004ACEE7, regs);
+            // status, flags, stationId
+            return Sub4ACEE7Result{ static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<StationId>(regs.bp) };
+        }
     }
 
     // 0x004AC1C2
@@ -4278,24 +4533,6 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // In order of preference when finding a route
-    enum class RouteSignalState : uint32_t
-    {
-        noSignals = 1,
-        signalClear = 2,
-        signalBlockedOneWay = 3,
-        signalBlockedTwoWay = 4,
-        signalNoRoute = 6, // E.g. its a one way track and we are going the wrong way
-        null = 0xFFFFFFFFU,
-    };
-
-    struct RoutingResult
-    {
-        uint16_t bestDistToTarget;    // 0x01136448
-        uint32_t bestTrackWeighting;  // 0x01136444
-        RouteSignalState signalState; // 0x0113644C
-    };
-
     struct Sub4AC94FState
     {
         uint16_t recursionDepth;      // 0x0113642C
@@ -4478,17 +4715,6 @@ namespace OpenLoco::Vehicles
         40,
         70,
         70,
-    };
-
-    struct Sub4AC3D3State
-    {
-        RoutingResult result;
-        // The following are now in result
-        // RouteSignalState signalState; // 0x01136450
-        // uint16_t bestDistToTarget;    // 0x01136456
-        // uint32_t bestTrackWeighting;  // 0x0113643C
-
-        uint16_t hadNewResult; // 0x01136458
     };
 
     // 0x0047E2B6
@@ -4743,7 +4969,7 @@ namespace OpenLoco::Vehicles
 
     // 0x0047DF4A
     // Finds the longest road at a junction
-    static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t, bool, Sub4AC3D3State&)
+    static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods)
     {
         // ROAD only
 
@@ -5367,7 +5593,7 @@ namespace OpenLoco::Vehicles
 
         const auto requiredMods = head.var_53;
         const auto queryMods = train.veh1->var_49;
-        const auto allowedStationTypes = *_allowedStationObjs;
+        const auto allowedStationTypes = *_vehicleUpdate_compatibleRoadStationTypes;
         Sub4AC3D3State state{};
         {
             auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
@@ -6362,9 +6588,7 @@ namespace OpenLoco::Vehicles
                     rc.connections.push_back(_legacyConnections->data[i]);
                 }
 
-                Sub4AC3D3State state{};
-
-                const auto connection = roadLongestPathing(head, pos, rc, requiredMods, queryMods, 0, 0, state);
+                const auto connection = roadLongestPathing(head, pos, rc, requiredMods, queryMods);
 
                 regs = backup;
                 regs.bx = connection;
@@ -6381,7 +6605,7 @@ namespace OpenLoco::Vehicles
                 const auto requiredMods = addr<0x0113601A, uint8_t>();
                 const auto queryMods = addr<0x0113601B, uint8_t>();
                 const auto unk = (regs.dx & 0x8000U) != 0;
-                const auto allowedStationTypes = *_allowedStationObjs;
+                const auto allowedStationTypes = *_vehicleUpdate_compatibleRoadStationTypes;
                 VehicleHead& head = *X86Pointer<VehicleHead>(regs.esi);
                 static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _legacyConnections;
                 Track::RoadConnections rc{};
