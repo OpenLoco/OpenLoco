@@ -857,12 +857,14 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047D46F
+    // veh1 : esi
+    // numRoadPieces : ah
     static void applyOvertakeToVehicle1(Vehicle1& veh1, uint8_t numRoadPieces)
     {
         const auto noOvertakeDistance = vehicle1UpdateRoadMotionByPiecesNoMove(veh1, numRoadPieces);
         auto routingRing = RoutingManager::RingView(veh1.routingHandle);
         auto iter = routingRing.begin()++;
-        constexpr uint16_t kResetRouting = ~((1 << 7) | (1 << 8));
+        constexpr auto kResetRouting = static_cast<uint16_t>(~((1U << 7) | (1U << 8)));
         for (auto i = 0; i < numRoadPieces; ++iter, ++i)
         {
             if (iter == routingRing.end())
@@ -872,11 +874,11 @@ namespace OpenLoco::Vehicles
             const auto routing = RoutingManager::getRouting(*iter);
             if (i == 0)
             {
-                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1 << 8));
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1U << 8));
             }
             else if (i == (numRoadPieces - 1))
             {
-                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1 << 8) | (1 << 7));
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1U << 8) | (1U << 7));
             }
             else
             {
@@ -1676,6 +1678,17 @@ namespace OpenLoco::Vehicles
                 VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
                 Vehicle train(*head);
                 applyVehicleObjectLength(train);
+                regs = backup;
+                return 0;
+            });
+
+        registerHook(
+            0x0047D46F,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
+                const uint8_t numRoadPieces = regs.ah;
+                applyOvertakeToVehicle1(*veh1, numRoadPieces);
                 regs = backup;
                 return 0;
             });
