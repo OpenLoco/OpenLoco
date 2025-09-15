@@ -9,6 +9,7 @@
 #include "Random.h"
 #include "RoutingManager.h"
 #include "Vehicle.h"
+#include "ViewportManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -679,14 +680,145 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    enum class RoadMotionNewPieceResult
+    {
+        // New piece processed and any left over distance to process should be processed by parent function
+        continueUpdate,
+
+        // We have reached the end of the update processing for some reason e.g. invalid route parent function
+        // should update the position and return left over distance
+        noFurther,
+
+        // When this happens parent function does not require any further processing and should return 0
+        performedLookahead,
+    };
+
+    // 0x0047CABF
+    static RoadMotionNewPieceResult updateRoadMotionNewRoadPiece(Vehicle1& component)
+    {
+        auto newRoutingHandle = component.routingHandle;
+        auto newIndex = newRoutingHandle.getIndex() + 1;
+        newRoutingHandle.setIndex(newIndex);
+        const auto routing = RoutingManager::getRouting(newRoutingHandle);
+        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
+        {
+            return RoadMotionNewPieceResult::noFurther;
+        }
+
+        auto* head = EntityManager::get<VehicleHead>(component.head);
+        if (head->var_52 != 1)
+        {
+            auto res = sub_47CEB7(component);
+            if (res.al & (1U << 1))
+            {
+                return RoadMotionNewPieceResult::noFurther;
+            }
+            else if (res.al & (1U << 0))
+            {
+                applyOvertakeToVehicle1(component, res.ah);
+                return RoadMotionNewPieceResult::performedLookahead;
+            }
+            else if (res.al & (1U << 3))
+            {
+                applyChangeLaneToVehicle1(component, res.ah);
+                return RoadMotionNewPieceResult::performedLookahead;
+            }
+            else if (res.al & (1U << 2))
+            {
+                component.var_3C += vehicle1UpdateRoadMotionByPieces(component, res.ah);
+                return RoadMotionNewPieceResult::performedLookahead;
+            }
+        }
+
+        World::Pos3 pos(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
+
+        auto basicRad = component.trackAndDirection.road;
+        basicRad._data = routing & 0x7F;
+        auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, basicRad._data);
+        const auto tc = World::Track::getRoadConnections(nextPos, nextRot, component.owner, head->trackType, head->var_53, 0);
+
+        bool routingFound = false;
+        for (auto& connection : tc.connections)
+        {
+            if ((connection & 0x7F) == (routing & 0x7F))
+            {
+                routingFound = true;
+                break;
+            }
+        }
+        if (!routingFound)
+        {
+            setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
+            return RoadMotionNewPieceResult::noFurther;
+        }
+
+        auto occupation = getRoadOccupation(nextPos, basicRad);
+        const auto invalidOccupationFlags = RoadOccupationFlags::isLaneOccupied | (head->var_52 != 1 ? RoadOccupationFlags::isLevelCrossingClosed : RoadOccupationFlags::none);
+        if ((occupation & invalidOccupationFlags) != RoadOccupationFlags::none)
+        {
+            return RoadMotionNewPieceResult::noFurther;
+        }
+
+        component.sub_47D959(nextPos, basicRad, true);
+
+        component.routingHandle = newRoutingHandle;
+        component.trackAndDirection.road._data = routing & 0x1FF;
+
+        component.tileX = nextPos.x;
+        component.tileY = nextPos.y;
+        component.tileBaseZ = nextPos.z / World::kSmallZStep;
+        return RoadMotionNewPieceResult::continueUpdate;
+    }
+
     // 0x0047CA71
     int32_t Vehicle1::updateRoadMotion(const int32_t distance)
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.eax = distance;
+        resetUpdateVar1136114Flags();
 
-        call(0x0047CA71, regs);
-        return regs.eax;
+        this->remainingDistance += distance;
+        bool hasMoved = false;
+        auto returnValue = 0;
+        auto intermediatePosition = this->position;
+        while (this->remainingDistance >= 0x368A)
+        {
+            hasMoved = true;
+            auto newSubPosition = this->subPosition + 1U;
+            const auto subPositionDataSize = World::TrackData::getRoadSubPositon(this->trackAndDirection.road._data).size();
+            // This means we have moved forward by a road piece
+            if (newSubPosition >= subPositionDataSize)
+            {
+                auto newPieceRes = updateRoadMotionNewRoadPiece(*this);
+                if (newPieceRes == RoadMotionNewPieceResult::noFurther)
+                {
+                    returnValue = this->remainingDistance - 0x3689;
+                    this->remainingDistance = 0x3689;
+                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
+                    break;
+                }
+                else if (newPieceRes == RoadMotionNewPieceResult::performedLookahead)
+                {
+                    return 0;
+                }
+                else
+                {
+                    newSubPosition = 0;
+                }
+            }
+            // 0x0047C95B
+            this->subPosition = newSubPosition;
+            const auto& moveData = World::TrackData::getRoadSubPositon(this->trackAndDirection.road._data)[newSubPosition];
+            const auto nextNewPosition = moveData.loc + World::Pos3(this->tileX, this->tileY, this->tileBaseZ * World::kSmallZStep);
+            this->remainingDistance -= kMovementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+            intermediatePosition = nextNewPosition;
+            this->spriteYaw = moveData.yaw;
+            this->spritePitch = moveData.pitch;
+        }
+        if (hasMoved)
+        {
+            Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
+            this->moveTo(intermediatePosition);
+            Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
+        }
+        return returnValue;
     }
 }
