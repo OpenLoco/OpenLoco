@@ -761,8 +761,9 @@ namespace OpenLoco::Vehicles
             return RoadMotionNewPieceResult::noFurther;
         }
 
-        component.sub_47D959(nextPos, newRad, true);
+        const auto newTrackType = component.sub_47D959(nextPos, newRad, true);
 
+        component.trackType = newTrackType;
         component.routingHandle = newRoutingHandle;
         component.trackAndDirection.road = newRad;
 
