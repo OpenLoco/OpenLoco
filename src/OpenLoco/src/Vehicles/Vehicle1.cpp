@@ -732,15 +732,17 @@ namespace OpenLoco::Vehicles
 
         World::Pos3 pos(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
 
-        auto basicRad = component.trackAndDirection.road;
-        basicRad._data = routing & 0x7F;
-        auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, basicRad._data);
+        auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, component.trackAndDirection.road._data & 0x7F);
         const auto tc = World::Track::getRoadConnections(nextPos, nextRot, component.owner, head->trackType, head->var_53, 0);
+
+        auto newRad = TrackAndDirection::_RoadAndDirection(0, 0);
+        newRad._data = routing & 0x1FFU;
+        const auto basicRad = routing & 0x7F;
 
         bool routingFound = false;
         for (auto& connection : tc.connections)
         {
-            if ((connection & 0x7F) == (routing & 0x7F))
+            if ((connection & 0x7F) == basicRad)
             {
                 routingFound = true;
                 break;
@@ -752,17 +754,17 @@ namespace OpenLoco::Vehicles
             return RoadMotionNewPieceResult::noFurther;
         }
 
-        auto occupation = getRoadOccupation(nextPos, basicRad);
+        auto occupation = getRoadOccupation(nextPos, newRad);
         const auto invalidOccupationFlags = RoadOccupationFlags::isLaneOccupied | (head->var_52 != 1 ? RoadOccupationFlags::isLevelCrossingClosed : RoadOccupationFlags::none);
         if ((occupation & invalidOccupationFlags) != RoadOccupationFlags::none)
         {
             return RoadMotionNewPieceResult::noFurther;
         }
 
-        component.sub_47D959(nextPos, basicRad, true);
+        component.sub_47D959(nextPos, newRad, true);
 
         component.routingHandle = newRoutingHandle;
-        component.trackAndDirection.road._data = routing & 0x1FF;
+        component.trackAndDirection.road = newRad;
 
         component.tileX = nextPos.x;
         component.tileY = nextPos.y;
