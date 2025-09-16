@@ -683,6 +683,185 @@ namespace OpenLoco::Vehicles
         transformFunction(interestMap);
     }
 
+    template<typename FilterFunction>
+    static void findAllUsableRoadInNetwork(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
+
+    // 0x00479EFA
+    // Iterates all individual tiles of a road piece to find roads that need inspection
+    template<typename FilterFunction>
+    static void findAllUsableRoadPieces(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    {
+        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
+        {
+            return;
+        }
+
+        const auto tad = interest.tad();
+        auto nextLoc = interest.loc;
+        if (tad.isReversed())
+        {
+            auto& roadSize = World::TrackData::getUnkRoad(tad._data);
+            nextLoc += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                nextLoc -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+        }
+
+        for (auto& piece : World::TrackData::getRoadPiece(tad.id()))
+        {
+            const auto connectFlags = piece.connectFlags[tad.cardinalDirection()];
+            const auto pieceLoc = nextLoc + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, tad.cardinalDirection()), piece.z };
+            auto tile = World::TileManager::get(pieceLoc);
+            for (auto& el : tile)
+            {
+                if (el.baseZ() != pieceLoc.z / 4)
+                {
+                    continue;
+                }
+
+                auto* elRoad = el.as<RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+
+                if (elRoad->isAiAllocated() || elRoad->isGhost())
+                {
+                    continue;
+                }
+
+                const auto& targetPiece = World::TrackData::getRoadPiece(elRoad->roadId())[elRoad->sequenceIndex()];
+                const auto targetConnectFlags = targetPiece.connectFlags[elRoad->rotation()];
+                if ((targetConnectFlags & connectFlags) == 0)
+                {
+                    continue;
+                }
+
+                // If identical then no need to keep checking
+                if (elRoad->rotation() == tad.cardinalDirection()
+                    && elRoad->sequenceIndex() == piece.index
+                    && elRoad->roadObjectId() == interest.trackType
+                    && elRoad->roadId() == tad.id())
+                {
+                    continue;
+                }
+
+                const auto startTargetPos2 = World::Pos2{ pieceLoc } - Math::Vector::rotate(World::Pos2{ targetPiece.x, targetPiece.y }, elRoad->rotation());
+                const auto startTargetPos = World::Pos3{ startTargetPos2, static_cast<int16_t>(elRoad->baseHeight() - targetPiece.z) };
+                TrackAndDirection::_RoadAndDirection tad2(elRoad->roadId(), elRoad->rotation());
+                LocationOfInterest newInterest{ startTargetPos, tad2._data, elRoad->owner(), elRoad->roadObjectId() };
+
+                if (hashMap.tryAdd(newInterest))
+                {
+                    if (!filterFunction(newInterest))
+                    {
+                        findAllUsableRoadPieces(additionalRoadToCheck, newInterest, filterFunction, hashMap);
+                        additionalRoadToCheck.push_back(newInterest);
+                    }
+                }
+
+                auto& roadSize = World::TrackData::getUnkRoad(tad2._data);
+                auto endTargetPos = startTargetPos + roadSize.pos;
+                if (roadSize.rotationEnd < 12)
+                {
+                    endTargetPos -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+                }
+
+                tad2.setReversed(!tad2.isReversed());
+                LocationOfInterest newInterestR{ endTargetPos, tad2._data, elRoad->owner(), elRoad->roadObjectId() };
+
+                if (hashMap.tryAdd(newInterestR))
+                {
+                    if (!filterFunction(newInterestR))
+                    {
+                        findAllUsableRoadPieces(additionalRoadToCheck, newInterestR, filterFunction, hashMap);
+                        additionalRoadToCheck.push_back(newInterestR);
+                    }
+                }
+            }
+        }
+    }
+
+    // 0x00479DB1
+    template<typename FilterFunction>
+    static void findAllUsableRoadInNetwork(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    {
+        const auto [roadEndLoc, roadEndRotation] = World::Track::getRoadConnectionEnd(initialInterest.loc, initialInterest.tad()._data);
+        auto tc = World::Track::getRoadConnections(roadEndLoc, roadEndRotation, initialInterest.company, initialInterest.trackType, 0, 0);
+
+        if (!tc.connections.empty())
+        {
+            for (auto c : tc.connections)
+            {
+                uint16_t trackAndDirection2 = c & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
+                LocationOfInterest interest{ roadEndLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
+                if (hashMap.tryAdd(interest))
+                {
+                    if (!filterFunction(interest))
+                    {
+                        findAllUsableRoadPieces(additionalRoadToCheck, interest, filterFunction, hashMap);
+                        additionalRoadToCheck.push_back(interest);
+                    }
+                }
+            }
+        }
+        else
+        {
+            _1136085 = *_1136085 | (1 << 0);
+        }
+
+        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk1) == TrackNetworkSearchFlags::none)
+        {
+            // odd logic here clearing a flag in a branch that can never hit
+            auto nextLoc = initialInterest.loc;
+            auto& roadSize = World::TrackData::getUnkRoad(initialInterest.tad()._data);
+            nextLoc += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                nextLoc -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+
+            const auto rotation = World::kReverseRotation[roadSize.rotationEnd];
+            auto tc2 = World::Track::getRoadConnections(nextLoc, rotation, initialInterest.company, initialInterest.trackType, 0, 0);
+            for (auto c : tc2.connections)
+            {
+                uint16_t trackAndDirection2 = c & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
+                LocationOfInterest interest{ nextLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
+                if (hashMap.tryAdd(interest))
+                {
+                    if (!filterFunction(interest))
+                    {
+                        findAllUsableRoadPieces(additionalRoadToCheck, interest, filterFunction, hashMap);
+                        additionalRoadToCheck.push_back(interest);
+                    }
+                }
+            }
+        }
+    }
+
+    template<typename FilterFunction, typename TransformFunction>
+    static void findAllRoadsFilterTransform(LocationOfInterestHashMap& interestMap, TrackNetworkSearchFlags searchFlags, const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
+    {
+        // _1135F06 = &interestMap;
+        // _filterFunction = filterFunction;
+        // _transformFunction = transformFunction;
+        // _1135F0A = 0;
+
+        _findTrackNetworkFlags = searchFlags;
+
+        // Note: This function and its call chain findAllUsableTrackInNetwork and findAllUsableTrackPieces have been modified
+        // to not be recursive anymore.
+        LocationOfInterestQueue roadToCheck{ LocationOfInterest{ loc, trackAndDirection._data, company, trackType } };
+        while (!roadToCheck.empty())
+        {
+            const auto interest = roadToCheck.back();
+            roadToCheck.pop_back();
+            findAllUsableRoadInNetwork(roadToCheck, interest, filterFunction, interestMap);
+        }
+        transformFunction(interestMap);
+    }
+
     // 0x004A2AD7
     void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
@@ -1164,5 +1343,35 @@ namespace OpenLoco::Vehicles
         };
         findAllTracksFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
         return cost;
+    }
+
+    // 0x0047A5E6
+    static bool applyRoadModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    {
+        return true;
+    }
+
+    ApplyTrackModsResult applyRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, ModSection modSelection, uint8_t trackModObjIds)
+    {
+        ApplyTrackModsResult result{};
+        result.cost = 0;
+        result.allPlacementsFailed = true;
+        result.networkTooComplex = false;
+
+        if (modSelection == Track::ModSection::single)
+        {
+            LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
+            applyRoadModToTrack(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+            return result;
+        }
+
+        LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
+
+        auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
+            return applyRoadModToTrack(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+        };
+        findAllRoadsFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+        result.networkTooComplex = interestHashMap.count >= interestHashMap.maxEntries;
+        return result;
     }
 }
