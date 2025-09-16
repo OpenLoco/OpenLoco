@@ -155,7 +155,7 @@ namespace OpenLoco::Scenario
                         presetMods |= 1U << i;
                     }
                 }
-                construction.trackMods[roadObjId] = presetMods;
+                construction.roadMods[roadObjId] = presetMods;
             }
         }
     }
