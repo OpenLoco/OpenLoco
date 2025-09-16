@@ -1538,4 +1538,160 @@ namespace OpenLoco::Vehicles
         result.networkTooComplex = interestHashMap.count >= interestHashMap.maxEntries;
         return result;
     }
+
+    // 0x0047A8F0
+    static bool removeRoadModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    {
+        // If not in single segment mode then we should add the reverse
+        // direction of track to the hashmap to prevent it being visited.
+        // This is because track mods do not have directions so applying
+        // to the reverse would do nothing (or worse double spend)
+        if (hashMap != nullptr)
+        {
+            LocationOfInterest reverseInterest = interest;
+            reverseInterest.loc = interest.loc;
+            const auto rad = interest.rad();
+            auto& roadSize = World::TrackData::getUnkRoad(rad._data);
+            reverseInterest.loc += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                reverseInterest.loc -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+            reverseInterest.trackAndDirection ^= (1 << 2); // Reverse flag
+
+            hashMap->tryAdd(reverseInterest);
+        }
+
+        auto* roadObj = ObjectManager::get<RoadObject>(roadObjectId);
+
+        auto roadStart = interest.loc;
+        const auto rad = interest.rad();
+        if (rad.isReversed())
+        {
+            auto& roadSize = World::TrackData::getUnkRoad(rad._data);
+            roadStart += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                roadStart -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+        }
+
+        for (auto& roadPiece : TrackData::getRoadPiece(rad.id()))
+        {
+            auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece.x, roadPiece.y }, rad.cardinalDirection()), 0 };
+            roadLoc.z += roadPiece.z;
+
+            auto tile = TileManager::get(roadLoc);
+            World::RoadElement* elRoad = nullptr;
+            for (auto& el : tile)
+            {
+                elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->baseHeight() != roadLoc.z)
+                {
+                    continue;
+                }
+                if (elRoad->rotation() != rad.cardinalDirection())
+                {
+                    continue;
+                }
+                if (elRoad->sequenceIndex() != roadPiece.index)
+                {
+                    continue;
+                }
+                if (elRoad->roadObjectId() != roadObjectId)
+                {
+                    continue;
+                }
+                if (elRoad->roadId() != rad.id())
+                {
+                    continue;
+                }
+
+                break;
+            }
+            if (elRoad == nullptr)
+            {
+                break;
+            }
+
+            if (roadPiece.index == 0)
+            {
+                // For each track mod
+                //   Get mod cost (changes depending on track id)
+                for (auto i = 0; i < 2; ++i)
+                {
+                    if (!(roadModObjectIds & (1U << i)))
+                    {
+                        continue;
+                    }
+                    if (!(elRoad->mods() & (1U << i)))
+                    {
+                        continue;
+                    }
+
+                    auto* roadModObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[i]);
+                    const auto baseCost = Economy::getInflationAdjustedCost(roadModObj->sellCostFactor, roadModObj->costIndex, 10);
+                    const auto cost = (baseCost * TrackData::getRoadMiscData(rad.id()).costFactor) / 256;
+                    totalCost += cost;
+                }
+            }
+
+            if (flags & GameCommands::Flags::apply)
+            {
+                bool invalidate = false;
+                if (flags & GameCommands::Flags::ghost)
+                {
+                    if (CompanyManager::getControllingId() == companyId)
+                    {
+                        elRoad->setHasGhostMods(false);
+                        invalidate = true;
+                    }
+                }
+                else
+                {
+                    for (auto i = 0; i < 4; ++i)
+                    {
+                        if (roadModObjectIds & (1U << i))
+                        {
+                            elRoad->setMod(i, false);
+                        }
+                    }
+                    invalidate = true;
+                }
+                if (invalidate)
+                {
+                    Ui::ViewportManager::invalidate(roadLoc, elRoad->baseHeight(), elRoad->clearHeight(), ZoomLevel::half);
+                }
+            }
+        }
+
+        if (modSelection == ModSection::block)
+        {
+            return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
+        }
+        return false;
+    }
+
+    currency32_t removeRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, uint8_t flags, World::Track::ModSection modSelection, uint8_t roadModObjIds)
+    {
+        currency32_t cost = 0;
+        if (modSelection == Track::ModSection::single)
+        {
+            LocationOfInterest interest{ pos, roadAndDirection._data, company, roadType };
+            removeRoadModToTrack(interest, flags, nullptr, modSelection, roadType, roadModObjIds, cost, company);
+            return cost;
+        }
+
+        LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
+
+        auto filterFunction = [flags, modSelection, roadType, roadModObjIds, &cost, company, &interestHashMap](const LocationOfInterest& interest) {
+            return removeRoadModToTrack(interest, flags, &interestHashMap, modSelection, roadType, roadModObjIds, cost, company);
+        };
+        findAllRoadsFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, roadAndDirection, company, roadType, filterFunction, kNullTransformFunction);
+        return cost;
+    }
 }
