@@ -2,31 +2,11 @@
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
+#include "Ui/WindowManager.h"
+#include "Vehicles/Vehicle.h"
 
 namespace OpenLoco::GameCommands
 {
-    /*
-    struct RoadModsPlacementArgs
-    {
-        World::Pos3 pos;
-        uint8_t rotation;
-        uint8_t roadId;
-        uint8_t index;
-        uint8_t type;
-        uint8_t roadObjType;
-        World::Track::ModSection modSection;
-
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.bh = rotation;
-        regs.dl = roadId;
-        regs.dh = index;
-        regs.edi = pos.z | (type << 16);
-        regs.ebp = roadObjType | (enumValue(modSection) << 16);
-    };
-    */
-
     static World::RoadElement* getRoadElement(const RoadModsPlacementArgs& args)
     {
         auto tile = World::TileManager::get(args.pos);
@@ -69,8 +49,6 @@ namespace OpenLoco::GameCommands
     // 0x0047A21E
     static uint32_t createRoadMod(const RoadModsPlacementArgs& args, uint8_t flags)
     {
-        uint32_t totalCost = 0;
-
         auto* roadEl = getRoadElement(args);
         if (roadEl == nullptr || !sub_431E6A(roadEl->owner(), reinterpret_cast<const World::TileElement*>(roadEl)))
         {
@@ -78,11 +56,24 @@ namespace OpenLoco::GameCommands
         }
 
         auto& piece = World::TrackData::getRoadPiece(args.roadId)[roadEl->sequenceIndex()];
-        const auto roadLoc = args.pos + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
+        const auto roadLoc = World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
         // 0x0047A34C
+        const auto firstTilePos = args.pos - roadLoc;
+        const auto rad = Vehicles::TrackAndDirection::_RoadAndDirection(roadEl->roadId(), roadEl->rotation());
 
-        return totalCost;
+        auto result = Vehicles::applyRoadModsToTrackNetwork(firstTilePos, rad, roadEl->owner(), args.roadObjType, flags, args.modSection, args.type);
+        if (result.allPlacementsFailed)
+        {
+            setErrorText(StringIds::track_road_unsuitable);
+            return FAILURE;
+        }
+        if (result.networkTooComplex && (flags & Flags::apply) && !(flags & Flags::ghost))
+        {
+            Ui::Windows::Error::open(StringIds::null, StringIds::too_much_track_some_track_not_upgraded);
+        }
+
+        return result.cost;
     }
 
     void createRoadMod(registers& regs)

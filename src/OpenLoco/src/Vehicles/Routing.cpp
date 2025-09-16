@@ -1515,7 +1515,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    ApplyTrackModsResult applyRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, ModSection modSelection, uint8_t trackModObjIds)
+    ApplyTrackModsResult applyRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, uint8_t flags, ModSection modSelection, uint8_t roadModObjIds)
     {
         ApplyTrackModsResult result{};
         result.cost = 0;
@@ -1524,17 +1524,17 @@ namespace OpenLoco::Vehicles
 
         if (modSelection == Track::ModSection::single)
         {
-            LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
-            applyRoadModToRoad(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+            LocationOfInterest interest{ pos, roadAndDirection._data, company, roadType };
+            applyRoadModToRoad(interest, flags, nullptr, modSelection, roadType, roadModObjIds, result.cost, company, result.allPlacementsFailed);
             return result;
         }
 
         LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
 
-        auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
-            return applyRoadModToRoad(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+        auto filterFunction = [flags, modSelection, roadType, roadModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
+            return applyRoadModToRoad(interest, flags, &interestHashMap, modSelection, roadType, roadModObjIds, result.cost, company, result.allPlacementsFailed);
         };
-        findAllRoadsFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+        findAllRoadsFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, roadAndDirection, company, roadType, filterFunction, kNullTransformFunction);
         result.networkTooComplex = interestHashMap.count >= interestHashMap.maxEntries;
         return result;
     }
