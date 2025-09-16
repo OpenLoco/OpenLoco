@@ -395,7 +395,7 @@ namespace OpenLoco::Scenario
         CompanyManager::setRecords(CompanyManager::kZeroRecords);
         getObjectiveProgress().timeLimitUntilYear = getObjective().timeLimitYears - 1 + gameState.currentYear;
         getObjectiveProgress().monthsInChallenge = 0;
-        call(0x0049B546);
+        initialiseDefaultTrackRoadMods();
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
 
         TownManager::updateLabels();
