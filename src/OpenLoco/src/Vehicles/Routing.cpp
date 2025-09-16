@@ -3,6 +3,7 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Map/AnimationManager.h"
+#include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
