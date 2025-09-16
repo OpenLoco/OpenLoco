@@ -4995,16 +4995,7 @@ namespace OpenLoco::Vehicles
             const auto tile = TileManager::get(pos);
             const auto rotation = tad.cardinalDirection() * 2;
 
-            // TODO: This is definitely incorrect but it is to match vanilla
-            // The issue is that 0x1F8 will include a bit for isChangingLane which will then
-            // mean we walk off the end of the array which is 32 elements long (64 below as we want it to walk off the end)
-            // The memory it walks into is used for a variety of things including ai so will change depending on what the ai is doing
-            const auto offset = ((tad._data & 0x1F8) >> 3) ^ (tad.isReversed() ? (1 << 4) : 0);
-            const auto buggedValue = addr<0x112C32C, uint8_t[64]>()[offset];
-            const auto dh = std::rotl(buggedValue, rotation);
-
-            // Replace with the following when we want to diverge from vanilla
-            // const auto dh = std::rotl(getRoadUnkThing()[tad.isBackToFront() ^ tad.isReversed()][tad.id()], rotation);
+            const auto dh = std::rotl(getRoadUnkThing()[tad.isOvertaking() ^ tad.isReversed()][tad.id()], rotation);
 
             RoadOccupationFlags res = RoadOccupationFlags::none;
             for (auto& el : tile)
