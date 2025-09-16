@@ -1096,17 +1096,6 @@ namespace OpenLoco::Vehicles
     bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId);
     void connectJacobsBogies(VehicleHead& head);
 
-    enum class RoadOccupationFlags : uint8_t
-    {
-        none = 0U,
-        isLaneOccupied = 1U << 0,
-        isLevelCrossingClosed = 1U << 1,
-        hasLevelCrossing = 1U << 2,
-        hasStation = 1U << 3,
-        isOneWay = 1U << 4,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadOccupationFlags);
-    RoadOccupationFlags getRoadOccupation(const World::Pos3 pos, const TrackAndDirection::_RoadAndDirection tad);
     void applyVehicleObjectLength(Vehicle& train);
     bool positionVehicleOnTrack(VehicleHead& head);
 }
