@@ -11,6 +11,7 @@
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
 #include "RoutingManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
@@ -358,49 +359,6 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    static constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
-    {
-        uint8_t nibble = 0;
-        if (pos1.x != pos2.x)
-        {
-            nibble |= (1U << 0);
-        }
-        if (pos1.y != pos2.y)
-        {
-            nibble |= (1U << 1);
-        }
-        if (pos1.z != pos2.z)
-        {
-            nibble |= (1U << 2);
-        }
-        return nibble;
-    }
-
-    // 0x00500120
-    static constexpr std::array<uint32_t, 8> movementNibbleToDistance = {
-        0,
-        0x220C,
-        0x220C,
-        0x3027,
-        0x199A,
-        0x2A99,
-        0x2A99,
-        0x3689,
-    };
-
-    // 0x00500244
-    static constexpr std::array<World::TilePos2, 9> kMooreNeighbourhood = {
-        World::TilePos2{ 0, 0 },
-        World::TilePos2{ 0, 1 },
-        World::TilePos2{ 1, 1 },
-        World::TilePos2{ 1, 0 },
-        World::TilePos2{ 1, -1 },
-        World::TilePos2{ 0, -1 },
-        World::TilePos2{ -1, -1 },
-        World::TilePos2{ -1, 0 },
-        World::TilePos2{ -1, 1 },
-    };
-
     // If candidate within 8 vehicle components of src we ignore a self collision
     // TODO: If we stored the car index this could be simplified
     static bool ignoreSelfCollision(VehicleBase& sourceVehicleId, const VehicleBase& candidateVehicleId)
@@ -491,87 +449,6 @@ namespace OpenLoco::Vehicles
         return EntityId::null;
     }
 
-    enum class OvertakeResult
-    {
-        overtakeAvailble,
-        noOvertakeAvailble,
-        mayBeOvertaken,
-    };
-
-    // 0x0047CD78
-    // ax : pos.x
-    // cx : pos.y
-    // dl : pos.z / World::kSmallZStep
-    // ebp : tad
-    // esi : veh1
-    //
-    // return mayBeOvertaken == high carry flag
-    //        overtakeAvailable   0x0112C328 == 5
-    //        noOvertakeAvailable 0x0112C328 == 0
-    static OvertakeResult getRoadOvertakeAvailability(const Vehicle1& veh1, World::Pos3 pos, uint16_t tad)
-    {
-        OvertakeResult result = OvertakeResult::noOvertakeAvailble;
-        for (const auto& nearby : kMooreNeighbourhood)
-        {
-            const auto inspectionPos = World::toTileSpace(pos) + nearby;
-            for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
-            {
-                auto* vehicleBase = entity->asBase<VehicleBase>();
-                if (vehicleBase == nullptr || !vehicleBase->isVehicleTail())
-                {
-                    continue;
-                }
-                auto* vehicleTail = vehicleBase->asVehicleTail();
-                if (vehicleTail == nullptr)
-                {
-                    continue;
-                }
-                if (vehicleTail->getTransportMode() != TransportMode::road)
-                {
-                    continue;
-                }
-                if (vehicleTail->tileBaseZ * World::kSmallZStep != pos.z)
-                {
-                    continue;
-                }
-                if (vehicleTail->tileX != pos.x || vehicleTail->tileY != pos.y)
-                {
-                    continue;
-                }
-                if ((vehicleTail->trackAndDirection.road._data & World::Track::AdditionalTaDFlags::basicTaDMask) != (tad & World::Track::AdditionalTaDFlags::basicTaDMask))
-                {
-                    continue;
-                }
-
-                // Perhaps a little expensive to do this (we don't do it on rail vehicles for example)
-                Vehicle train(vehicleTail->head);
-                if (train.veh1->var_3C < 0x220C0)
-                {
-                    continue;
-                }
-                if ((train.veh2->var_73 & Flags73::isBrokenDown) != Flags73::none)
-                {
-                    continue;
-                }
-                if (veh1.var_3C < train.veh1->var_3C)
-                {
-                    return OvertakeResult::mayBeOvertaken;
-                }
-                auto* veh2 = EntityManager::get<Vehicle2>(veh1.nextCarId);
-                if (veh2 == nullptr)
-                {
-                    continue;
-                }
-                if (veh2->maxSpeed <= train.veh2->maxSpeed)
-                {
-                    return OvertakeResult::mayBeOvertaken;
-                }
-                result = OvertakeResult::overtakeAvailble;
-            }
-        }
-        return result;
-    }
-
     // 0x0047C7FA
     static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
     {
@@ -603,7 +480,7 @@ namespace OpenLoco::Vehicles
             component.subPosition = newSubPosition;
             const auto& moveData = World::TrackData::getRoadSubPositon(component.trackAndDirection.road._data)[newSubPosition];
             const auto nextNewPosition = moveData.loc + World::Pos3(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
-            component.remainingDistance -= movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+            component.remainingDistance -= kMovementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
             intermediatePosition = nextNewPosition;
             component.spriteYaw = moveData.yaw;
             component.spritePitch = moveData.pitch;
@@ -663,7 +540,7 @@ namespace OpenLoco::Vehicles
                 component.subPosition = newSubPosition;
                 const auto& moveData = World::TrackData::getTrackSubPositon(component.trackAndDirection.track._data)[newSubPosition];
                 const auto nextNewPosition = moveData.loc + World::Pos3(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
-                component.remainingDistance -= movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+                component.remainingDistance -= kMovementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
                 intermediatePosition = nextNewPosition;
                 component.spriteYaw = moveData.yaw;
                 component.spritePitch = moveData.pitch;
@@ -1221,23 +1098,6 @@ namespace OpenLoco::Vehicles
                 connectJacobsBogies(*head);
                 regs = backup;
                 return 0;
-            });
-
-        registerHook(
-            0x0047CD78,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dl * World::kSmallZStep);
-                const uint16_t tad = regs.bp;
-
-                const auto res = getRoadOvertakeAvailability(*veh1, pos, tad);
-
-                addr<0x0112C328, uint8_t>() = res == OvertakeResult::overtakeAvailble ? 5 : 0;
-
-                regs = backup;
-                return res == OvertakeResult::mayBeOvertaken ? X86_FLAG_CARRY : 0;
             });
 
         registerHeadHooks();
