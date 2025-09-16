@@ -11,6 +11,8 @@
 #include "Map/Track/TrackData.h"
 #include "Map/Track/TrackModSection.h"
 #include "Map/TrackElement.h"
+#include "Objects/RoadExtraObject.h"
+#include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Vehicle.h"
@@ -51,6 +53,11 @@ namespace OpenLoco::Vehicles
         TrackAndDirection::_TrackAndDirection tad() const
         {
             return TrackAndDirection::_TrackAndDirection((trackAndDirection & 0x1F8) >> 3, trackAndDirection & 0x7);
+        }
+
+        TrackAndDirection::_RoadAndDirection rad() const
+        {
+            return TrackAndDirection::_RoadAndDirection((trackAndDirection & 0x78) >> 3, trackAndDirection & 0x7);
         }
     };
 
@@ -697,11 +704,11 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        const auto tad = interest.tad();
+        const auto rad = interest.rad();
         auto nextLoc = interest.loc;
-        if (tad.isReversed())
+        if (rad.isReversed())
         {
-            auto& roadSize = World::TrackData::getUnkRoad(tad._data);
+            auto& roadSize = World::TrackData::getUnkRoad(rad._data);
             nextLoc += roadSize.pos;
             if (roadSize.rotationEnd < 12)
             {
@@ -709,10 +716,10 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        for (auto& piece : World::TrackData::getRoadPiece(tad.id()))
+        for (auto& piece : World::TrackData::getRoadPiece(rad.id()))
         {
-            const auto connectFlags = piece.connectFlags[tad.cardinalDirection()];
-            const auto pieceLoc = nextLoc + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, tad.cardinalDirection()), piece.z };
+            const auto connectFlags = piece.connectFlags[rad.cardinalDirection()];
+            const auto pieceLoc = nextLoc + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rad.cardinalDirection()), piece.z };
             auto tile = World::TileManager::get(pieceLoc);
             for (auto& el : tile)
             {
@@ -740,10 +747,10 @@ namespace OpenLoco::Vehicles
                 }
 
                 // If identical then no need to keep checking
-                if (elRoad->rotation() == tad.cardinalDirection()
+                if (elRoad->rotation() == rad.cardinalDirection()
                     && elRoad->sequenceIndex() == piece.index
                     && elRoad->roadObjectId() == interest.trackType
-                    && elRoad->roadId() == tad.id())
+                    && elRoad->roadId() == rad.id())
                 {
                     continue;
                 }
@@ -788,7 +795,7 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableRoadInNetwork(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
-        const auto [roadEndLoc, roadEndRotation] = World::Track::getRoadConnectionEnd(initialInterest.loc, initialInterest.tad()._data);
+        const auto [roadEndLoc, roadEndRotation] = World::Track::getRoadConnectionEnd(initialInterest.loc, initialInterest.rad()._data);
         auto tc = World::Track::getRoadConnections(roadEndLoc, roadEndRotation, initialInterest.company, initialInterest.trackType, 0, 0);
 
         if (!tc.connections.empty())
@@ -816,7 +823,7 @@ namespace OpenLoco::Vehicles
         {
             // odd logic here clearing a flag in a branch that can never hit
             auto nextLoc = initialInterest.loc;
-            auto& roadSize = World::TrackData::getUnkRoad(initialInterest.tad()._data);
+            auto& roadSize = World::TrackData::getUnkRoad(initialInterest.rad()._data);
             nextLoc += roadSize.pos;
             if (roadSize.rotationEnd < 12)
             {
@@ -1347,9 +1354,165 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047A5E6
-    static bool applyRoadModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    static bool applyRoadModToRoad(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
     {
-        return true;
+        // If not in single segment mode then we should add the reverse
+        // direction of track to the hashmap to prevent it being visited.
+        // This is because track mods do not have directions so applying
+        // to the reverse would do nothing (or worse double spend)
+        if (hashMap != nullptr)
+        {
+            LocationOfInterest reverseInterest = interest;
+            reverseInterest.loc = interest.loc;
+            const auto rad = interest.rad();
+            auto& roadSize = World::TrackData::getUnkRoad(rad._data);
+            reverseInterest.loc += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                reverseInterest.loc -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+            reverseInterest.trackAndDirection ^= (1 << 2); // Reverse flag
+
+            hashMap->tryAdd(reverseInterest);
+        }
+
+        auto* roadObj = ObjectManager::get<RoadObject>(roadObjectId);
+        bool placementFailure = false;
+
+        for (auto i = 0; i < 2; ++i)
+        {
+            if (!(roadModObjectIds & (1U << i)))
+            {
+                continue;
+            }
+
+            auto* roadModObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[i]);
+
+            const auto pieceFlags = TrackData::getRoadMiscData(interest.rad().id()).compatibleFlags;
+            if ((roadModObj->roadPieces & pieceFlags) != pieceFlags)
+            {
+                //_1135F64 |= (1 << 0); placement failed at least once
+                placementFailure = true;
+                break;
+            }
+        }
+
+        if (!placementFailure)
+        {
+            auto roadStart = interest.loc;
+            const auto rad = interest.rad();
+            if (rad.isReversed())
+            {
+                auto& roadSize = World::TrackData::getUnkRoad(rad._data);
+                roadStart += roadSize.pos;
+                if (roadSize.rotationEnd < 12)
+                {
+                    roadStart -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+                }
+            }
+
+            for (auto& roadPiece : TrackData::getRoadPiece(rad.id()))
+            {
+                auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece.x, roadPiece.y }, rad.cardinalDirection()), 0 };
+                roadLoc.z += roadPiece.z;
+
+                auto tile = TileManager::get(roadLoc);
+                World::RoadElement* elRoad = nullptr;
+                for (auto& el : tile)
+                {
+                    elRoad = el.as<World::RoadElement>();
+                    if (elRoad == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elRoad->baseHeight() != roadLoc.z)
+                    {
+                        continue;
+                    }
+                    if (elRoad->rotation() != rad.cardinalDirection())
+                    {
+                        continue;
+                    }
+                    if (elRoad->sequenceIndex() != roadPiece.index)
+                    {
+                        continue;
+                    }
+                    if (elRoad->roadObjectId() != roadObjectId)
+                    {
+                        continue;
+                    }
+                    if (elRoad->roadId() != rad.id())
+                    {
+                        continue;
+                    }
+
+                    break;
+                }
+                if (elRoad == nullptr)
+                {
+                    placementFailure = true;
+                    break;
+                }
+
+                if (roadPiece.index == 0)
+                {
+                    // increment successful placement count
+                    hasFailedAllPlacement = false;
+                    // For each road mod
+                    //   Get mod cost (changes depending on road id)
+                    for (auto i = 0; i < 2; ++i)
+                    {
+                        if (!(roadModObjectIds & (1U << i)))
+                        {
+                            continue;
+                        }
+                        if (elRoad->mods() & (1U << i))
+                        {
+                            continue;
+                        }
+
+                        auto* roadModObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[i]);
+                        const auto baseCost = Economy::getInflationAdjustedCost(roadModObj->buildCostFactor, roadModObj->costIndex, 10);
+                        const auto cost = (baseCost * TrackData::getRoadMiscData(rad.id()).costFactor) / 256;
+                        totalCost += cost;
+                    }
+                }
+
+                if (flags & GameCommands::Flags::apply)
+                {
+                    bool invalidate = false;
+                    if (flags & GameCommands::Flags::ghost)
+                    {
+                        if (CompanyManager::getControllingId() == companyId)
+                        {
+                            elRoad->setHasGhostMods(true);
+                            invalidate = true;
+                        }
+                    }
+                    else
+                    {
+                        for (auto i = 0; i < 2; ++i)
+                        {
+                            if (roadModObjectIds & (1U << i))
+                            {
+                                elRoad->setMod(i, true);
+                            }
+                        }
+                        invalidate = true;
+                    }
+                    if (invalidate)
+                    {
+                        Ui::ViewportManager::invalidate(roadLoc, elRoad->baseHeight(), elRoad->clearHeight(), ZoomLevel::half);
+                    }
+                }
+            }
+        }
+
+        if (modSelection == ModSection::block)
+        {
+            return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
+        }
+        return false;
     }
 
     ApplyTrackModsResult applyRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, ModSection modSelection, uint8_t trackModObjIds)
@@ -1362,14 +1525,14 @@ namespace OpenLoco::Vehicles
         if (modSelection == Track::ModSection::single)
         {
             LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
-            applyRoadModToTrack(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+            applyRoadModToRoad(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
             return result;
         }
 
         LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
 
         auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
-            return applyRoadModToTrack(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+            return applyRoadModToRoad(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
         };
         findAllRoadsFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
         result.networkTooComplex = interestHashMap.count >= interestHashMap.maxEntries;
