@@ -4713,24 +4713,13 @@ namespace OpenLoco::Vehicles
         return getGameState().trafficHandedness ? kRightHand4F7338 : k4F7338;
     }
 
-    enum class RoadOccupationFlags : uint8_t
-    {
-        none = 0U,
-        isLaneOccupied = 1U << 0,
-        isLevelCrossingClosed = 1U << 1,
-        hasLevelCrossing = 1U << 2,
-        hasStation = 1U << 3,
-        isOneWay = 1U << 4,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadOccupationFlags);
-
     // 0x0047D5D6
     // pos.x : ax
     // pos.y : cx
     // pos.z : dl * kWorld::kSmallZStep
     // tad : bp (was ebp need to check high word is zero)
     // return: dh
-    static RoadOccupationFlags getRoadOccupation(const World::Pos3 pos, const TrackAndDirection::_RoadAndDirection tad)
+    RoadOccupationFlags getRoadOccupation(const World::Pos3 pos, const TrackAndDirection::_RoadAndDirection tad)
     {
         if (World::TrackData::getRoadMiscData(tad.id()).reverseLane != 1)
         {
