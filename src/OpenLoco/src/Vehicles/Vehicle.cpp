@@ -856,6 +856,76 @@ namespace OpenLoco::Vehicles
         return distanceMoved;
     }
 
+    // 0x0047D46F
+    // veh1 : esi
+    // numRoadPieces : ah
+    static void applyOvertakeToVehicle1(Vehicle1& veh1, uint8_t numRoadPieces)
+    {
+        const auto noOvertakeDistance = vehicle1UpdateRoadMotionByPiecesNoMove(veh1, numRoadPieces);
+        auto routingRing = RoutingManager::RingView(veh1.routingHandle);
+        auto iter = ++routingRing.begin();
+        constexpr auto kResetRouting = static_cast<uint16_t>(~((1U << 7) | (1U << 8)));
+        for (auto i = 0; i < numRoadPieces; ++iter, ++i)
+        {
+            if (iter == routingRing.end())
+            {
+                break;
+            }
+            const auto routing = RoutingManager::getRouting(*iter);
+            if (i == 0)
+            {
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1U << 8));
+            }
+            else if (i == (numRoadPieces - 1))
+            {
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1U << 8) | (1U << 7));
+            }
+            else
+            {
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1 << 7));
+            }
+        }
+
+        const auto newDistance = vehicle1UpdateRoadMotionByPieces(veh1, numRoadPieces);
+        veh1.var_3C += newDistance;
+        auto* head = EntityManager::get<VehicleHead>(veh1.head);
+        head->var_3C += newDistance - noOvertakeDistance;
+    }
+
+    // 0x0047D52B
+    // veh1 : esi
+    // numRoadPieces : ah
+    static void applyChangeLaneToVehicle1(Vehicle1& veh1, uint8_t numRoadPieces)
+    {
+        const auto noOvertakeDistance = vehicle1UpdateRoadMotionByPiecesNoMove(veh1, numRoadPieces);
+        auto routingRing = RoutingManager::RingView(veh1.routingHandle);
+        auto iter = ++routingRing.begin();
+        constexpr auto kResetRouting = static_cast<uint16_t>(~((1U << 7) | (1U << 8)));
+        for (auto i = 0; i < numRoadPieces; ++iter, ++i)
+        {
+            if (iter == routingRing.end())
+            {
+                break;
+            }
+            const auto routing = RoutingManager::getRouting(*iter);
+            if (i == 0)
+            {
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1U << 8));
+            }
+            else
+            {
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1 << 7));
+            }
+        }
+
+        const auto newDistance = vehicle1UpdateRoadMotionByPieces(veh1, numRoadPieces);
+        veh1.var_3C += newDistance;
+        auto* head = EntityManager::get<VehicleHead>(veh1.head);
+        head->var_3C += newDistance - noOvertakeDistance;
+        head->trackAndDirection.road._data &= kResetRouting;
+        head->trackAndDirection.road._data |= numRoadPieces <= 1 ? (1U << 8) : (1U << 7);
+    }
+
     // 0x0047C7FA
     static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
     {
@@ -1642,6 +1712,28 @@ namespace OpenLoco::Vehicles
                 VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
                 Vehicle train(*head);
                 applyVehicleObjectLength(train);
+                regs = backup;
+                return 0;
+            });
+
+        registerHook(
+            0x0047D46F,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
+                const uint8_t numRoadPieces = regs.ah;
+                applyOvertakeToVehicle1(*veh1, numRoadPieces);
+                regs = backup;
+                return 0;
+            });
+
+        registerHook(
+            0x0047D52B,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
+                const uint8_t numRoadPieces = regs.ah;
+                applyChangeLaneToVehicle1(*veh1, numRoadPieces);
                 regs = backup;
                 return 0;
             });
