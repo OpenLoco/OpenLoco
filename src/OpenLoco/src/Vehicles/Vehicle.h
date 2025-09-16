@@ -229,7 +229,7 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SignalStateFlags);
 
-    static constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
+    constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
     {
         uint8_t nibble = 0;
         if (pos1.x != pos2.x)
@@ -248,7 +248,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00500120
-    static constexpr std::array<uint32_t, 8> kMovementNibbleToDistance = {
+    constexpr std::array<uint32_t, 8> kMovementNibbleToDistance = {
         0,
         0x220C,
         0x220C,
@@ -260,7 +260,7 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x00500244
-    static constexpr std::array<World::TilePos2, 9> kMooreNeighbourhood = {
+    constexpr std::array<World::TilePos2, 9> kMooreNeighbourhood = {
         World::TilePos2{ 0, 0 },
         World::TilePos2{ 0, 1 },
         World::TilePos2{ 1, 1 },
