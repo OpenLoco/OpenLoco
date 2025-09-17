@@ -35,9 +35,6 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
 
-    constexpr uint16_t mapSelectedTilesSize = 300;
-    static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
-
 #pragma pack(push, 1)
     struct ConstructionState
     {
