@@ -16,10 +16,14 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Environment
 {
-    loco_global<char[257], 0x0050B0CE> _pathInstall;
-    loco_global<char[257], 0x0050B1CF> _pathSavesSinglePlayer;
-    loco_global<char[257], 0x0050B2EC> _pathSavesTwoPlayer;
-    loco_global<char[257], 0x0050B518> _pathLandscapes;
+    struct ConfigurablePaths
+    {
+        fs::path install;
+        fs::path saves;
+        fs::path landscapes;
+    };
+
+    static ConfigurablePaths _configurablePaths;
 
     static fs::path getBasePath(PathId id);
     static fs::path getSubPath(PathId id);
@@ -121,11 +125,6 @@ namespace OpenLoco::Environment
         std::exit(-1);
     }
 
-    static fs::path getLocoInstallPath()
-    {
-        return fs::u8path(_pathInstall.get());
-    }
-
 #ifndef _WIN32
     /**
      * Performs a case-insensitive search on the containing directory of
@@ -158,9 +157,7 @@ namespace OpenLoco::Environment
     // 0x004416B5
     fs::path getPath(PathId id)
     {
-        auto basePath = getBasePath(id);
-        auto subPath = getSubPath(id);
-        auto result = (basePath / subPath).lexically_normal();
+        fs::path result = getPathNoWarning(id);
         if (!fs::exists(result))
         {
 #ifndef _WIN32
@@ -180,12 +177,28 @@ namespace OpenLoco::Environment
         return result;
     }
 
-    fs::path getPathNoWarning(PathId id)
+    static fs::path getDefaultPathNoWarning(PathId id)
     {
         auto basePath = getBasePath(id);
         auto subPath = getSubPath(id);
         auto result = (basePath / subPath).lexically_normal();
         return result;
+    }
+
+    fs::path getPathNoWarning(PathId id)
+    {
+        if (id == PathId::save)
+        {
+            return _configurablePaths.saves;
+        }
+        else if (id == PathId::landscape)
+        {
+            return _configurablePaths.landscapes;
+        }
+        else
+        {
+            return getDefaultPathNoWarning(id);
+        }
     }
 
     template<typename T>
@@ -237,7 +250,7 @@ namespace OpenLoco::Environment
         }
 
         // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
-        auto defaultPath = getPathNoWarning(defaultPathId) / "";
+        auto defaultPath = getDefaultPathNoWarning(defaultPathId) / "";
         autoCreateDirectory(defaultPath);
         return defaultPath;
     }
@@ -245,21 +258,15 @@ namespace OpenLoco::Environment
     // 0x004412CE
     void resolvePaths()
     {
-        auto basePath = resolveLocoInstallPath();
-        setDirectory(_pathInstall, basePath);
+        _configurablePaths.install = resolveLocoInstallPath();
 
         // Figure out what save directory to default to
         auto configLastSavePath = fs::u8path(Config::get().lastSavePath);
-        auto saveDirectory = tryPathOrDefault(configLastSavePath, PathId::save);
-
-        setDirectory(_pathSavesSinglePlayer, saveDirectory);
-        setDirectory(_pathSavesTwoPlayer, saveDirectory);
+        _configurablePaths.saves = tryPathOrDefault(configLastSavePath, PathId::save);
 
         // Figure out what landscape directory to default to
         auto configLastLandscapePath = fs::u8path(Config::get().lastLandscapePath);
-        auto landscapeDirectory = tryPathOrDefault(configLastLandscapePath, PathId::landscape);
-
-        setDirectory(_pathLandscapes, landscapeDirectory / "*.SC5");
+        _configurablePaths.landscapes = tryPathOrDefault(configLastLandscapePath, PathId::landscape);
 
         autoCreateDirectory(getPath(PathId::customObjects));
     }
@@ -312,7 +319,7 @@ namespace OpenLoco::Environment
                 return Platform::getCurrentExecutablePath().parent_path() / "data";
 #endif
             default:
-                return getLocoInstallPath();
+                return _configurablePaths.install;
         }
     }
 
