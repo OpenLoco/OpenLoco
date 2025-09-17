@@ -19,9 +19,7 @@ namespace OpenLoco::Environment
     loco_global<char[257], 0x0050B0CE> _pathInstall;
     loco_global<char[257], 0x0050B1CF> _pathSavesSinglePlayer;
     loco_global<char[257], 0x0050B2EC> _pathSavesTwoPlayer;
-    loco_global<char[257], 0x0050B406> _pathScenarios;
     loco_global<char[257], 0x0050B518> _pathLandscapes;
-    loco_global<char[257], 0x0050B635> _pathObjects;
 
     static fs::path getBasePath(PathId id);
     static fs::path getSubPath(PathId id);
@@ -262,8 +260,6 @@ namespace OpenLoco::Environment
         auto landscapeDirectory = tryPathOrDefault(configLastLandscapePath, PathId::landscape);
 
         setDirectory(_pathLandscapes, landscapeDirectory / "*.SC5");
-        setDirectory(_pathScenarios, basePath / "Scenarios/*.SC5");
-        setDirectory(_pathObjects, basePath / "ObjData/*.DAT");
 
         autoCreateDirectory(getPath(PathId::customObjects));
     }

@@ -30,7 +30,6 @@ namespace OpenLoco::Game
     // TODO: make accessible from Environment
     static loco_global<char[257], 0x0050B1CF> _pathSavesSinglePlayer;
     static loco_global<char[257], 0x0050B2EC> _pathSavesTwoPlayer;
-    static loco_global<char[257], 0x0050B406> _pathScenarios;
     static loco_global<char[257], 0x0050B518> _pathLandscapes;
 
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
@@ -101,7 +100,7 @@ namespace OpenLoco::Game
     // 0x004418DB
     bool saveScenarioOpen()
     {
-        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / Scenario::getOptions().scenarioName;
+        auto path = Environment::getPath(Environment::PathId::scenarios) / Scenario::getOptions().scenarioName;
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
