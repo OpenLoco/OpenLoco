@@ -11,8 +11,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Jukebox
 {
-    static MusicId currentTrack;       // 0x0050D434
-    static MusicId requestedNextTrack; // Song manually chosen to play next. kNoSong means nothing has been requested.
+    static MusicId currentTrack; // 0x0050D434
+    static bool trackRequested;
 
     // 0x004FE910
     static constexpr MusicInfo kMusicInfo[] = {
@@ -65,10 +65,6 @@ namespace OpenLoco::Jukebox
 
     StringId getSelectedTrackTitleId()
     {
-        if (requestedNextTrack != kNoSong)
-        {
-            return kMusicInfo[requestedNextTrack].titleId;
-        }
         if (currentTrack != kNoSong)
         {
             return kMusicInfo[currentTrack].titleId;
@@ -135,19 +131,17 @@ namespace OpenLoco::Jukebox
         throw Exception::RuntimeError("Invalid MusicPlaylistType");
     }
 
-    // Changes the value of `currentTrack`, and returns the information of that track (so that Audio.cpp can get its PathId to play).
+    // Have the jukebox update to a new track. Returns the information of the track (so that Audio.cpp can get its PathId to play).
     const MusicInfo& changeTrack()
     {
-        // Was a specific track requested?
-        if (requestedNextTrack != kNoSong)
+        // Track requested? If so, currentTrack has already been set for us.
+        if (trackRequested)
         {
-            currentTrack = requestedNextTrack;
-            requestedNextTrack = kNoSong;
-
+            trackRequested = false;
             return kMusicInfo[currentTrack];
         }
 
-        // No requests? Get a playlist that we can choose a track from!
+        // No requests? Get a playlist that we can choose a track from.
         auto playlist = makeSelectedPlaylist();
 
         const auto& cfg = Config::get().old;
@@ -172,25 +166,26 @@ namespace OpenLoco::Jukebox
             }
         }
 
-        // And pick one
+        // And pick one.
         auto r = std::rand() % playlist.size();
         currentTrack = playlist[r];
         return kMusicInfo[currentTrack];
     }
 
-    // The player manually selects a song from the drop-down in the music options.
+    // The player manually selects a song from the drop-down in the music options. changeTrack() is expected to be called shortly after this.
     bool requestTrack(MusicId track)
     {
-        assert(track < kNumMusicTracks); // Will also catch kNoSong ("[None]"), which isn't in the drop-down and would be weird to request
+        assert(track < kNumMusicTracks); // Will also catch kNoSong ("[None]"), which isn't in the drop-down and would be weird to request.
 
         if (track == currentTrack)
         {
             return false;
         }
 
-        requestedNextTrack = track;
+        currentTrack = track;
+        trackRequested = true;
 
-        // Stop the currently playing song prematurely
+        // If a song is playing, stop it prematurely.
         Audio::stopMusic();
 
         // Previously 0x0050D430 '_songProgress' would be set to 0 here, but that loco global was no longer used for anything.
@@ -198,7 +193,7 @@ namespace OpenLoco::Jukebox
         return true;
     }
 
-    // Prematurely stops the current song so that another can be played.
+    // Prematurely stops the current song so that another will be played.
     bool skipCurrentTrack()
     {
         if (Config::get().old.musicPlaying == 0)
@@ -250,6 +245,6 @@ namespace OpenLoco::Jukebox
     void resetJukebox()
     {
         currentTrack = kNoSong;
-        requestedNextTrack = kNoSong;
+        trackRequested = false;
     }
 }
