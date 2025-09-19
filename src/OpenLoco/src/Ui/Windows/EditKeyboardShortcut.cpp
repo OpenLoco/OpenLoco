@@ -24,8 +24,6 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
     static constexpr Ui::Size32 kWindowSize = { 280, 72 };
 
-    static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
-
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::change_keyboard_shortcut),
@@ -46,12 +44,13 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     }
 
     // 0x004BF7B9
-    Window* open(const uint8_t shortcutIndex)
+    Window* open(const Input::Shortcut shortcutIndex)
     {
         WindowManager::close(WindowType::editKeyboardShortcut);
-        _editingShortcutIndex = shortcutIndex;
 
         auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, getEvents());
+
+        window->editingShortcutIndex = shortcutIndex;
 
         window->setWidgets(_widgets);
         window->initScrollWidgets();
@@ -71,7 +70,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         self.draw(drawingCtx);
 
         FormatArguments args{};
-        args.push(ShortcutManager::getName(static_cast<Shortcut>(*_editingShortcutIndex)));
+        args.push(ShortcutManager::getName(self.editingShortcutIndex));
         auto point = Ui::Point(140, 32);
         tr.drawStringCentredWrapped(point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, args);
     }

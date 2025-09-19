@@ -4,7 +4,7 @@
 
 namespace OpenLoco::Input
 {
-    enum class Shortcut : uint32_t
+    enum class Shortcut : uint16_t
     {
         closeTopmostWindow,
         closeAllFloatingWindows,

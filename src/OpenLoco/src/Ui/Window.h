@@ -23,6 +23,11 @@ namespace OpenLoco::Gfx
     class DrawingContext;
 }
 
+namespace OpenLoco::Input
+{
+    enum class Shortcut : uint16_t;
+}
+
 namespace OpenLoco::Ui
 {
     using WindowNumber_t = uint16_t;
@@ -217,6 +222,7 @@ namespace OpenLoco::Ui
         {
             uint16_t filterLevel;     // ObjectSelectionWindow
             uint16_t numTicksVisible; // TimePanel
+            Input::Shortcut editingShortcutIndex; // EditKeyboardShortcut
         };
         uint16_t var_858 = 0;
         uint16_t currentTab = 0;

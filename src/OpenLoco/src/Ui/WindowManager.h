@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace EditKeyboardShortcut
     {
-        Window* open(uint8_t shortcutIndex);
+        Window* open(Input::Shortcut shortcutIndex);
     }
 
     namespace Error

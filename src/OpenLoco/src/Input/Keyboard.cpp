@@ -48,7 +48,6 @@ namespace OpenLoco::Input
     static uint32_t _keyQueueReadIndex;
     static uint32_t _keyQueueWriteIndex;
     static std::array<uint8_t, 256> _keyboardState;
-    static uint8_t _editingShortcutIndex;
     static bool _hasKeyboardState = false;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
@@ -304,7 +303,7 @@ namespace OpenLoco::Input
         }
     }
 
-    static void editShortcut(const Key& k)
+    static void editShortcut(const Key& k, Input::Shortcut editingShortcutIndex)
     {
         if (k.keyCode == SDLK_UP)
         {
@@ -348,7 +347,7 @@ namespace OpenLoco::Input
         }
 
         // Assign this keybinding to the shortcut we're currently rebinding.
-        auto& shortcut = cfg.shortcuts.at(static_cast<Input::Shortcut>(_editingShortcutIndex));
+        auto& shortcut = cfg.shortcuts.at(editingShortcutIndex);
         shortcut.keyCode = k.keyCode;
         shortcut.modifiers = _keyModifier;
 
@@ -397,7 +396,7 @@ namespace OpenLoco::Input
             auto ti = WindowManager::find(WindowType::editKeyboardShortcut);
             if (ti != nullptr)
             {
-                editShortcut(*nextKey);
+                editShortcut(*nextKey, ti->editingShortcutIndex);
                 continue;
             }
 
