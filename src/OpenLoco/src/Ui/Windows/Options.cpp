@@ -1463,7 +1463,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets &= ~(1ULL << Widx::preferred_currency_always);
             }
 
-            if (Config::get().usePreferredCurrencyAlways)
+            if (Config::get().usePreferredCurrencyAlways || SceneManager::isTitleMode())
             {
                 w.disabledWidgets |= (1ULL << Widx::currency);
                 w.disabledWidgets |= (1ULL << Widx::currency_btn);
