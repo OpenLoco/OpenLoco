@@ -55,7 +55,6 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Scenario
 {
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
-    static loco_global<uint16_t, 0x0050C19A> _50C19A;
 
     // 0x0046115C
     void sub_46115C()
@@ -403,7 +402,6 @@ namespace OpenLoco::Scenario
         Gfx::loadDefaultPalette();
         Gfx::invalidateScreen();
         SceneManager::resetSceneAge();
-        _50C19A = 62000;
         MultiPlayer::setFlag(MultiPlayer::flags::flag_10);
         throw GameException::Interrupt;
     }
