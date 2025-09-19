@@ -843,7 +843,7 @@ namespace OpenLoco::Ui::Windows::Construction
             }
 
             removeConstructionGhosts();
-            World::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionFreeFormTiles();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
             _cState->trackCost = 0x80000000;
             _cState->signalCost = 0x80000000;
@@ -1172,7 +1172,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
-            World::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionFreeFormTiles();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             Windows::Main::hideDirectionArrows();

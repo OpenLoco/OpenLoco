@@ -378,7 +378,7 @@ namespace OpenLoco::Ui::ViewportManager
             0x0046112C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                World::mapInvalidateMapSelectionTiles();
+                World::mapInvalidateMapSelectionFreeFormTiles();
                 regs = backup;
                 return 0;
             });
