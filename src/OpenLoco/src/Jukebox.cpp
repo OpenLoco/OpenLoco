@@ -46,7 +46,7 @@ namespace OpenLoco::Jukebox
         { PathId::music_get_me_to_gladstone_bay, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
         { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 }
     };
-    static_assert(sizeof(kMusicInfo) / sizeof(kMusicInfo[0]) == kNumMusicTracks);
+    static_assert(std::size(kMusicInfo) == kNumMusicTracks);
 
     const MusicInfo& getMusicInfo(MusicId track)
     {
