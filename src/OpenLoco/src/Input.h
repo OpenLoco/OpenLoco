@@ -94,6 +94,7 @@ namespace OpenLoco::Input
     void readKeyboardState();
     void handleKeyInput(uint32_t keycode);
     bool hasKeyModifier(KeyModifier modifier);
+    KeyModifier getKeyModifier();
 
     StationId getHoveredStationId();
 
