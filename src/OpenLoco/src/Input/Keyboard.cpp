@@ -345,12 +345,12 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
+            if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
             {
                 continue;
             }
 
-            if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
+            if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
             {
                 continue;
             }
