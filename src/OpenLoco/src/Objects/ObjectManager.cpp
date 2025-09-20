@@ -1118,12 +1118,23 @@ namespace OpenLoco::ObjectManager
         getGameState().lastLandOption = 0xFFU;
     }
 
+    // 0x0047D9F2
+    static void updateTrafficHandedness()
+    {
+        getGameState().trafficHandedness = 0; // Default to left hand traffic
+
+        auto* regionObj = ObjectManager::get<RegionObject>();
+        if (regionObj != nullptr)
+        {
+            getGameState().trafficHandedness = (regionObj->flags & RegionObjectFlags::rightHandTraffic) != RegionObjectFlags::none;
+        }
+    }
+
     // 0x004748FA
     void sub_4748FA()
     {
         updateLandObjectFlags();
-        // determine trafficHandedness
-        call(0x0047D9F2);
+        updateTrafficHandedness();
         updateWaterPalette();
         resetDefaultLandObject();
     }
