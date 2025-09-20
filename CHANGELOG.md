@@ -4,6 +4,7 @@
 - Change: [#3258] Current currency dropdown is now disabled when in the title screen.
 - Fix: [#3232] Crash when moving vehicle window when a message is showing a vehicle.
 - Fix: [#3256] Preferred currency not being loaded from config.
+- Fix: [#3266] When text input reached the maximum length it can instead trigger shortcuts.
 
 25.08 (2025-08-26)
 ------------------------------------------------------------------------
