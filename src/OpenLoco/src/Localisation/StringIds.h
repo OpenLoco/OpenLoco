@@ -2024,6 +2024,8 @@ namespace OpenLoco::StringIds
     constexpr StringId vehicleRepaintTool = 2358;
     constexpr StringId vehicleRepaintTooltip = 2359;
     constexpr StringId vehicleRepaintEntireVehicle = 2360;
+    constexpr StringId title_options_rendering = 2361;
+    constexpr StringId tooltip_options_rendering = 2362;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
