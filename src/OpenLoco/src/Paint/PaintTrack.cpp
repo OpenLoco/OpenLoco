@@ -242,16 +242,6 @@ namespace OpenLoco::Paint
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
-        if (elTrack.isAiAllocated())
-        {
-            return;
-        }
-        if (elTrack.isGhost()
-            && CompanyManager::getSecondaryPlayerId() != CompanyId::null
-            && CompanyManager::getSecondaryPlayerId() == elTrack.owner())
-        {
-            return;
-        }
         const auto height = elTrack.baseZ() * 4;
         const auto rotation = (session.getRotation() + elTrack.rotation()) & 0x3;
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_tracks_roads) != Ui::ViewportFlags::none)
@@ -277,10 +267,12 @@ namespace OpenLoco::Paint
         // This is an ImageId but it has no image index set!
         auto baseTrackImageColour = ImageId(0, CompanyManager::getCompanyColour(elTrack.owner()));
 
-        if (elTrack.isGhost())
+        if (elTrack.isGhost() || elTrack.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             baseTrackImageColour = Gfx::applyGhostToImage(0);
+
+            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
         }
 
         TrackPaintCommon trackSession{ baseTrackImageColour.withIndex(trackObj->image), baseTrackImageColour, trackObj->tunnel };

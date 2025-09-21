@@ -444,16 +444,6 @@ namespace OpenLoco::Paint
     // 0x004759A6
     void paintRoad(PaintSession& session, const World::RoadElement& elRoad)
     {
-        if (elRoad.isAiAllocated())
-        {
-            return;
-        }
-        if (elRoad.isGhost()
-            && CompanyManager::getSecondaryPlayerId() != CompanyId::null
-            && CompanyManager::getSecondaryPlayerId() == elRoad.owner())
-        {
-            return;
-        }
         const auto height = elRoad.baseHeight();
         const auto rotation = (session.getRotation() + elRoad.rotation()) & 0x3;
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_tracks_roads) != Ui::ViewportFlags::none)
@@ -498,10 +488,12 @@ namespace OpenLoco::Paint
         // This is an ImageId but it has no image index set!
         auto baseRoadImageColour = ImageId(0, CompanyManager::getCompanyColour(elRoad.owner()));
 
-        if (elRoad.isGhost())
+        if (elRoad.isGhost() || elRoad.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             baseRoadImageColour = Gfx::applyGhostToImage(0);
+
+            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
         }
 
         RoadPaintCommon roadSession{ baseRoadImageColour.withIndex(roadObj->image), baseRoadImageColour, roadObj->tunnel };
