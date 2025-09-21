@@ -21,4 +21,6 @@ namespace OpenLoco::Scenario
     Construction& getConstruction();
     void resetRoadObjects();
     void resetTrackObjects();
+
+    void initialiseDefaultTrackRoadMods();
 }
