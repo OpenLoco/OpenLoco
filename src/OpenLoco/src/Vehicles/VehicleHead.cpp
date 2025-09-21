@@ -595,9 +595,12 @@ namespace OpenLoco::Vehicles
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
             // Places first car with VehicleObjectFlags::topAndTailPosition to the front of train
-            // and all subsequent cars with VehicleObjectFlags::topAndTailPosition to the back of the train
+            // and last car with VehicleObjectFlags::topAndTailPosition to the back of the train
+            // If there is only one topAndTailPosition car and it isn't at the front due to other
+            // rules it will be placed at the back of the train
 
             bool isFirst = true;
+            auto lastTopTail = -1;
             for (auto i = 0U; i < carData.size(); ++i)
             {
                 auto& cd = carData[i];
@@ -615,12 +618,16 @@ namespace OpenLoco::Vehicles
                     }
                     if (cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
                     {
-                        cd.isReversed = true;
-                        pushCarToBack(i);
+                        lastTopTail = i;
                     }
-                    break;
                 }
                 isFirst = false;
+            }
+            if (lastTopTail != -1)
+            {
+                auto& cd = carData[lastTopTail];
+                cd.isReversed = true;
+                pushCarToBack(lastTopTail);
             }
         }
 
