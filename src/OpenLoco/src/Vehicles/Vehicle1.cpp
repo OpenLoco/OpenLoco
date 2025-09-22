@@ -524,33 +524,46 @@ namespace OpenLoco::Vehicles
         head->trackAndDirection.road._data &= kResetRouting;
         head->trackAndDirection.road._data |= numRoadPieces <= 1 ? (1U << 8) : (1U << 7);
     }
-    struct Sub47CEB7Result
+
+    enum class LookaheadType
     {
-        uint8_t al;
-        uint8_t ah;
+        // These were flags in the original but you only ever had
+        // one at a time so have been changed to an enum
+
+        none,          // 0
+        overtake,      // 1 << 0
+        noRoute,       // 1 << 1
+        levelCrossing, // 1 << 2
+        changeLane,    // 1 << 3
+    };
+
+    struct LookaheadResult
+    {
+        LookaheadType type;
+        uint8_t numRoadPieces;
     };
 
     // 0x0047CEB7
     // veh1 : esi
-    // return : al, ah
-    static Sub47CEB7Result sub_47CEB7(Vehicle1& veh1)
+    // return : type : al, numRoadPieces : ah
+    static LookaheadResult lookaheadRoad(Vehicle1& veh1)
     {
         const auto startPos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
-        uint8_t unk112C327 = 0;
+        uint8_t numRoadPieces = 0;
 
         auto pos = startPos + World::TrackData::getUnkRoad(veh1.trackAndDirection.road._data & 0x7F).pos;
-        unk112C327++;
+        numRoadPieces++;
 
         auto routings = RoutingManager::RingView(veh1.routingHandle);
         auto routingIter = routings.begin();
         if (routingIter == routings.end())
         {
-            return Sub47CEB7Result{ 0, 0 };
+            return LookaheadResult{ LookaheadType::none, 0 };
         }
         routingIter++;
         if (routingIter == routings.end())
         {
-            return Sub47CEB7Result{ 0, 0 };
+            return LookaheadResult{ LookaheadType::none, 0 };
         }
         auto routing = RoutingManager::getRouting(*routingIter);
         TrackAndDirection::_RoadAndDirection tad(0, 0);
@@ -562,30 +575,30 @@ namespace OpenLoco::Vehicles
             // 0x0047D0B9
             if ((occupationFlags & (RoadOccupationFlags::isLaneOccupied | RoadOccupationFlags::isLevelCrossingClosed)) != RoadOccupationFlags::none)
             {
-                return Sub47CEB7Result{ 2, 0 };
+                return LookaheadResult{ LookaheadType::noRoute, 0 };
             }
-            ++unk112C327;
-            for (; unk112C327 < 255; ++unk112C327)
+            ++numRoadPieces;
+            for (; numRoadPieces < 255; ++numRoadPieces)
             {
                 pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
                 routingIter++;
                 if (routingIter == routings.end())
                 {
-                    return Sub47CEB7Result{ 2, 0 };
+                    return LookaheadResult{ LookaheadType::noRoute, 0 };
                 }
                 tad._data = RoutingManager::getRouting(*routingIter) & World::Track::AdditionalTaDFlags::basicTaDMask;
 
                 const auto fwdOccupationFlags = getRoadOccupation(pos, tad);
                 if ((fwdOccupationFlags & (RoadOccupationFlags::isLaneOccupied | RoadOccupationFlags::isLevelCrossingClosed)) != RoadOccupationFlags::none)
                 {
-                    return Sub47CEB7Result{ 2, 0 };
+                    return LookaheadResult{ LookaheadType::noRoute, 0 };
                 }
                 if ((fwdOccupationFlags & RoadOccupationFlags::hasLevelCrossing) == RoadOccupationFlags::none)
                 {
-                    return Sub47CEB7Result{ 4, unk112C327 };
+                    return LookaheadResult{ LookaheadType::levelCrossing, numRoadPieces };
                 }
             }
-            return Sub47CEB7Result{ 2, 0 };
+            return LookaheadResult{ LookaheadType::noRoute, 0 };
         }
         else
         {
@@ -595,7 +608,7 @@ namespace OpenLoco::Vehicles
                 overtakeResult = getRoadOvertakeAvailability(veh1, pos, tad._data);
                 if (overtakeResult == OvertakeResult::mayBeOvertaken)
                 {
-                    return Sub47CEB7Result{ 0, 0 };
+                    return LookaheadResult{ LookaheadType::none, 0 };
                 }
             }
             else
@@ -606,7 +619,7 @@ namespace OpenLoco::Vehicles
                 const auto nextPos = pos + World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
                 if (nextRoutingIter == routings.end())
                 {
-                    return Sub47CEB7Result{ 0, 0 };
+                    return LookaheadResult{ LookaheadType::none, 0 };
                 }
                 auto nextRouting = RoutingManager::getRouting(*nextRoutingIter);
                 TrackAndDirection::_RoadAndDirection nextTad(0, 0);
@@ -614,35 +627,35 @@ namespace OpenLoco::Vehicles
                 const auto nextOccupationFlags = getRoadOccupation(nextPos, nextTad);
                 if ((nextOccupationFlags & RoadOccupationFlags::isLaneOccupied) == RoadOccupationFlags::none)
                 {
-                    return Sub47CEB7Result{ 0, 0 };
+                    return LookaheadResult{ LookaheadType::none, 0 };
                 }
                 overtakeResult = getRoadOvertakeAvailability(veh1, nextPos, nextTad._data);
                 if (overtakeResult == OvertakeResult::mayBeOvertaken)
                 {
-                    return Sub47CEB7Result{ 0, 0 };
+                    return LookaheadResult{ LookaheadType::none, 0 };
                 }
             }
             // 0x0047CFB5
             const auto& roadObj = ObjectManager::get<RoadObject>(veh1.trackType);
             if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
             {
-                return Sub47CEB7Result{ 0, 0 };
+                return LookaheadResult{ LookaheadType::none, 0 };
             }
             if (tad.isUnk8() || tad.isBackToFront())
             {
-                return Sub47CEB7Result{ 0, 0 };
+                return LookaheadResult{ LookaheadType::none, 0 };
             }
             auto backToFrontTad = tad;
             backToFrontTad._data ^= (1U << 7);
             auto btfOccupationFlags = getRoadOccupation(pos, backToFrontTad);
             if ((btfOccupationFlags & (RoadOccupationFlags::hasLevelCrossing | RoadOccupationFlags::isLaneOccupied)) != RoadOccupationFlags::none)
             {
-                return Sub47CEB7Result{ 0, 0 };
+                return LookaheadResult{ LookaheadType::none, 0 };
             }
             const auto unkCount = overtakeResult == OvertakeResult::overtakeAvailble ? 5 : 0;
-            ++unk112C327;
+            ++numRoadPieces;
             auto i = 0;
-            for (; unk112C327 < 11; ++unk112C327)
+            for (; numRoadPieces < 11; ++numRoadPieces)
             {
                 pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
                 routingIter++;
@@ -650,9 +663,9 @@ namespace OpenLoco::Vehicles
                 {
                     if ((btfOccupationFlags & RoadOccupationFlags::hasStation) == RoadOccupationFlags::none)
                     {
-                        return Sub47CEB7Result{ 0, 0 };
+                        return LookaheadResult{ LookaheadType::none, 0 };
                     }
-                    return Sub47CEB7Result{ 8, static_cast<uint8_t>(unk112C327 - 1) };
+                    return LookaheadResult{ LookaheadType::changeLane, static_cast<uint8_t>(numRoadPieces - 1) };
                 }
                 tad._data = RoutingManager::getRouting(*routingIter) & World::Track::AdditionalTaDFlags::basicTaDMask;
 
@@ -661,7 +674,7 @@ namespace OpenLoco::Vehicles
                 btfOccupationFlags = getRoadOccupation(pos, backToFrontTad);
                 if ((btfOccupationFlags & (RoadOccupationFlags::hasLevelCrossing | RoadOccupationFlags::isLaneOccupied)) != RoadOccupationFlags::none)
                 {
-                    return Sub47CEB7Result{ 0, 0 };
+                    return LookaheadResult{ LookaheadType::none, 0 };
                 }
                 const auto fwdOccupationFlags = getRoadOccupation(pos, tad);
                 if ((fwdOccupationFlags & RoadOccupationFlags::isLaneOccupied) != RoadOccupationFlags::none)
@@ -674,9 +687,9 @@ namespace OpenLoco::Vehicles
                 {
                     continue;
                 }
-                return Sub47CEB7Result{ 1, unk112C327 };
+                return LookaheadResult{ LookaheadType::overtake, numRoadPieces };
             }
-            return Sub47CEB7Result{ 0, 0 };
+            return LookaheadResult{ LookaheadType::none, 0 };
         }
     }
 
@@ -708,25 +721,26 @@ namespace OpenLoco::Vehicles
         auto* head = EntityManager::get<VehicleHead>(component.head);
         if (head->var_52 != 1)
         {
-            auto res = sub_47CEB7(component);
-            if (res.al & (1U << 1))
+            auto res = lookaheadRoad(component);
+            switch (res.type)
             {
-                return RoadMotionNewPieceResult::noFurther;
-            }
-            else if (res.al & (1U << 0))
-            {
-                applyOvertakeToVehicle1(component, res.ah);
-                return RoadMotionNewPieceResult::performedLookahead;
-            }
-            else if (res.al & (1U << 3))
-            {
-                applyChangeLaneToVehicle1(component, res.ah);
-                return RoadMotionNewPieceResult::performedLookahead;
-            }
-            else if (res.al & (1U << 2))
-            {
-                component.var_3C += vehicle1UpdateRoadMotionByPieces(component, res.ah);
-                return RoadMotionNewPieceResult::performedLookahead;
+                case LookaheadType::none:
+                    break;
+
+                case LookaheadType::overtake:
+                    applyOvertakeToVehicle1(component, res.numRoadPieces);
+                    return RoadMotionNewPieceResult::performedLookahead;
+
+                case LookaheadType::noRoute:
+                    return RoadMotionNewPieceResult::noFurther;
+
+                case LookaheadType::levelCrossing:
+                    component.var_3C += vehicle1UpdateRoadMotionByPieces(component, res.numRoadPieces);
+                    return RoadMotionNewPieceResult::performedLookahead;
+
+                case LookaheadType::changeLane:
+                    applyChangeLaneToVehicle1(component, res.numRoadPieces);
+                    return RoadMotionNewPieceResult::performedLookahead;
             }
         }
 
