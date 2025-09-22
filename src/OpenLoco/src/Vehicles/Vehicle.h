@@ -632,7 +632,7 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
-        int32_t var_3C;              // 0x3C filed same in all vehicles unread for veh2
+        int32_t var_3C;              // 0x3C field same in all vehicles unread for veh2
         uint8_t pad_40[0x42 - 0x40]; // 0x40
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
@@ -683,7 +683,7 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
-        int32_t var_3C;           // 0x3C filed same in all vehicles unread for body
+        int32_t var_3C;           // 0x3C field same in all vehicles unread for body
         uint16_t objectId;        // 0x40
         TransportMode mode;       // 0x42
         uint8_t pad_43;
@@ -749,7 +749,7 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
-        int32_t var_3C;           // 0x3C filed same in all vehicles unread for bogie
+        int32_t var_3C;           // 0x3C field same in all vehicles unread for bogie
         uint16_t objectId;        // 0x40
         TransportMode mode;       // 0x42 field same in all vehicles
         uint8_t pad_43;
@@ -805,7 +805,7 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
-        int32_t var_3C;              // 0x3C filed same in all vehicles unread for tail
+        int32_t var_3C;              // 0x3C field same in all vehicles unread for tail
         uint8_t pad_40[0x42 - 0x40]; // 0x40
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
