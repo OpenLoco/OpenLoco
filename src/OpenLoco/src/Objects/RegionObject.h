@@ -25,14 +25,21 @@ namespace OpenLoco
         inDesert, // Towns located in a desert (>=100 desert surface tiles)
     };
 
+    enum class DrivingSide : uint8_t
+    {
+        left = 0,
+        right = 1,
+    };
+
 #pragma pack(push, 1)
     struct RegionObject
     {
         static constexpr auto kObjectType = ObjectType::region;
 
         StringId name;
-        uint32_t image; // 0x02
-        uint8_t pad_06[0x8 - 0x6];
+        uint32_t image;          // 0x02
+        DrivingSide drivingSide; // 0x06
+        uint8_t pad_07;
         uint8_t numCargoInflunceObjects;                          // 0x08 length of cargoInfluenceObjectIds and cargoInfluenceTownFilter
         uint8_t cargoInfluenceObjectIds[4];                       // 0x09
         CargoInfluenceTownFilterType cargoInfluenceTownFilter[4]; // 0x0D valid values 0, 1, 2

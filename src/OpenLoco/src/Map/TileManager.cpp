@@ -1504,7 +1504,7 @@ namespace OpenLoco::World::TileManager
         surface->setSlope(slopeFlags);
 
         landObj = ObjectManager::get<LandObject>(surface->terrain());
-        if (landObj->hasFlags(LandObjectFlags::unk1) && !SceneManager::isEditorMode())
+        if (landObj->hasFlags(LandObjectFlags::hasExtraCliffEdge) && !SceneManager::isEditorMode())
         {
             surface->setTerrain(landObj->cliffEdgeHeader2);
         }

@@ -50,7 +50,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (drawStyle >= 1)
+        if (paintStyle >= 1)
         {
             return false;
         }
@@ -133,7 +133,7 @@ namespace OpenLoco
         for (size_t i = 0; i < sizeof(var_12) / sizeof(var_12[0]); ++i)
         {
             var_12[i] = imageOffset;
-            imageOffset += kDrawStyleTotalNumImages[drawStyle];
+            imageOffset += kDrawStyleTotalNumImages[paintStyle];
         }
     }
 

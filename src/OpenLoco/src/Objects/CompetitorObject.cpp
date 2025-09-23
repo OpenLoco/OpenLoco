@@ -90,7 +90,7 @@ namespace OpenLoco
         };
 
         loadString(name, 0);
-        loadString(lastName, 1);
+        loadString(availableNamePrefixes, 1);
 
         // Load images
         auto imageRes = ObjectManager::loadImageTable(remainingData);
@@ -119,7 +119,7 @@ namespace OpenLoco
     void CompetitorObject::unload()
     {
         name = 0;
-        lastName = 0;
+        availableNamePrefixes = 0;
 
         std::fill(std::begin(images), std::end(images), 0);
     }

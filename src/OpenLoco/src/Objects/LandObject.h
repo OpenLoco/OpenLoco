@@ -20,7 +20,7 @@ namespace OpenLoco
     {
         none = 0U,
         unk0 = 1U << 0,
-        unk1 = 1U << 1,
+        hasExtraCliffEdge = 1U << 1,
         isDesert = 1U << 2,
         noTrees = 1U << 3,
         unk4 = 1U << 4,

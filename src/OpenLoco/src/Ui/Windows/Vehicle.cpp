@@ -2110,7 +2110,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             BodyItems bodyItems{};
             const auto isCarReversed = car.body->has38Flags(Vehicles::Flags38::isReversed);
             const auto isAnimated = false;
-            uint8_t componentIndex = isCarReversed ? vehObject.var_04 - 1 : 0;
+            uint8_t componentIndex = isCarReversed ? vehObject.numCarComponents - 1 : 0;
             for (auto& carComponent : car)
             {
                 auto& componentObject = vehObject.carComponents[componentIndex];

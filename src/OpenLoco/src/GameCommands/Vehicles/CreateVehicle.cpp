@@ -294,7 +294,7 @@ namespace OpenLoco::GameCommands
             newBody->var_38 |= Flags38::jacobsBogieAvailable;
         }
 
-        if (bodyNumber + 1 == vehObject.var_04 && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieRear))
+        if (bodyNumber + 1 == vehObject.numCarComponents && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieRear))
         {
             newBody->var_38 |= Flags38::jacobsBogieAvailable;
         }
@@ -334,14 +334,15 @@ namespace OpenLoco::GameCommands
         const auto company = CompanyManager::get(getUpdatingCompanyId());
         _1136140 = company->mainColours; // Copy to global variable. Can be removed when all global uses confirmed
         auto colourScheme = company->mainColours;
-        if (company->customVehicleColoursSet & (1 << vehObject->colourType))
+        auto companyColourSchemeIndex = static_cast<uint8_t>(vehObject->companyColourSchemeIndex);
+        if (company->customVehicleColoursSet & (1 << companyColourSchemeIndex))
         {
-            _1136140 = company->vehicleColours[vehObject->colourType - 1]; // Copy to global variable. Can be removed when all global uses confirmed
-            colourScheme = company->vehicleColours[vehObject->colourType - 1];
+            _1136140 = company->vehicleColours[companyColourSchemeIndex - 1]; // Copy to global variable. Can be removed when all global uses confirmed
+            colourScheme = company->vehicleColours[companyColourSchemeIndex - 1];
         }
 
         VehicleBogie* newCarStart = nullptr;
-        for (auto bodyNumber = 0; bodyNumber < vehObject->var_04; ++bodyNumber)
+        for (auto bodyNumber = 0; bodyNumber < vehObject->numCarComponents; ++bodyNumber)
         {
             auto* const firstBogie = createFirstBogie(head->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
             lastVeh = firstBogie;

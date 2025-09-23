@@ -1373,13 +1373,13 @@ namespace OpenLoco::Vehicles
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;
 
-        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
+        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->shipWakeOffset, yaw) / 2;
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 
         Exhaust::create(loc, vehicleObject->animation[num].objectId);
 
-        if (vehicleObject->var_113 == 0)
+        if (vehicleObject->shipWakeOffset == 0)
         {
             return;
         }
@@ -1387,7 +1387,7 @@ namespace OpenLoco::Vehicles
         // 90 degrees C.C.W.
         yaw = (spriteYaw - 16) & 0x3F;
 
-        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
+        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->shipWakeOffset, yaw) / 2;
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 

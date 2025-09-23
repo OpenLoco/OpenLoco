@@ -46,7 +46,7 @@ namespace OpenLoco
         uint8_t costIndex;                       // 0x0A
         RoadStationFlags flags;                  // 0x0B
         uint32_t image;                          // 0x0C
-        uint32_t var_10[4];                      // 0x10
+        uint32_t imageOffsets[4];                // 0x10
         uint8_t numCompatible;                   // 0x20
         uint8_t mods[7];                         // 0x21
         uint16_t designedYear;                   // 0x28

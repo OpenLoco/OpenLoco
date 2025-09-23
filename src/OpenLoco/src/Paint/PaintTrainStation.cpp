@@ -303,7 +303,7 @@ namespace OpenLoco::Paint
             imageIdTranslucentBase = ImageId{ stationObj->var_12[elStation.sequenceIndex()] }.withTranslucency(translucentColour);
         }
 
-        switch (stationObj->drawStyle)
+        switch (stationObj->paintStyle)
         {
             case 0:
                 paintTrainStationStyle0(session, elStation, elTrack->trackId(), elTrack->sequenceIndex(), imageIdbase, imageIdTranslucentBase);

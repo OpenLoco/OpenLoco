@@ -64,7 +64,7 @@ namespace OpenLoco
         }
         remainingData = remainingData.subspan(sizeof(ObjectHeader));
 
-        if (hasFlags(LandObjectFlags::unk1))
+        if (hasFlags(LandObjectFlags::hasExtraCliffEdge))
         {
             // TBC
             ObjectHeader cliffEdgeHeader2_ = *reinterpret_cast<const ObjectHeader*>(remainingData.data());

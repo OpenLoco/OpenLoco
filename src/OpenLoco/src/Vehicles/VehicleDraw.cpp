@@ -256,13 +256,13 @@ namespace OpenLoco
     {
         DrawItems drawItems{};
         const auto unk11360E8 = kUnk500264[roll & 0x7];
-        for (auto i = 0; i < vehObject.var_04; ++i)
+        for (auto i = 0; i < vehObject.numCarComponents; ++i)
         {
             if (vehObject.hasFlags(VehicleObjectFlags::jacobsBogieFront) && i == 0)
             {
                 continue;
             }
-            if (vehObject.hasFlags(VehicleObjectFlags::jacobsBogieRear) && i + 1 == vehObject.var_04)
+            if (vehObject.hasFlags(VehicleObjectFlags::jacobsBogieRear) && i + 1 == vehObject.numCarComponents)
             {
                 continue;
             }
@@ -358,7 +358,7 @@ namespace OpenLoco
         DrawItems drawItems{};
         const auto isCarReversed = car.body->has38Flags(Vehicles::Flags38::isReversed);
         const auto isAnimated = mode == VehicleInlineMode::animated;
-        uint8_t componentIndex = isCarReversed ? vehObject.var_04 - 1 : 0;
+        uint8_t componentIndex = isCarReversed ? vehObject.numCarComponents - 1 : 0;
         for (auto& carComponent : car)
         {
             auto& componentObject = vehObject.carComponents[componentIndex];
@@ -526,9 +526,10 @@ namespace OpenLoco
         auto* company = CompanyManager::get(companyId);
 
         auto colourScheme = company->mainColours;
-        if (company->customVehicleColoursSet & (1 << vehObject.colourType))
+        auto companyColourSchemeIndex = static_cast<uint8_t>(vehObject.companyColourSchemeIndex);
+        if (company->customVehicleColoursSet & (1 << companyColourSchemeIndex))
         {
-            colourScheme = company->vehicleColours[vehObject.colourType - 1];
+            colourScheme = company->vehicleColours[companyColourSchemeIndex - 1];
         }
         return colourScheme;
     }
