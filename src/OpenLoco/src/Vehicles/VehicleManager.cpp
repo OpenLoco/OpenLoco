@@ -187,7 +187,7 @@ namespace OpenLoco::VehicleManager
             const auto subPositionLength = World::TrackData::getRoadSubPositon(unk1.road._data).size();
             subPosition = subPositionLength - 1 - unk2;
 
-            const auto& roadSize = World::TrackData::getUnkRoad(unk1.road._data & 0x7F);
+            const auto& roadSize = World::TrackData::getUnkRoad(unk1.road.basicRad());
             reversePos += roadSize.pos;
             if (roadSize.rotationEnd < 12)
             {
@@ -195,10 +195,10 @@ namespace OpenLoco::VehicleManager
             }
             reverseTad.road.setReversed(!unk1.road.isReversed());
             reverseTad.road._data ^= (1U << 7);
-            if (reverseTad.road.isUnk8())
+            if (reverseTad.road.isChangingLane())
             {
                 reverseTad.road._data ^= (1U << 7);
-                if (!reverseTad.road.isBackToFront())
+                if (!reverseTad.road.isOvertaking())
                 {
                     reverseTad.road._data ^= (1U << 8);
                 }

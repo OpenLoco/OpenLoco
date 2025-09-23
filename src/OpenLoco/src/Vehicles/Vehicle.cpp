@@ -273,13 +273,13 @@ namespace OpenLoco::Vehicles
             }
             World::Pos3 pos(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
 
-            auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, component.trackAndDirection.road._data & 0x7F);
+            auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, component.trackAndDirection.road.basicRad());
             const auto tc = World::Track::getRoadConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
 
             bool routingFound = false;
             for (auto& connection : tc.connections)
             {
-                if ((connection & 0x7F) == (routing & 0x7F))
+                if ((connection & World::Track::AdditionalTaDFlags::basicRaDMask) == (routing & World::Track::AdditionalTaDFlags::basicRaDMask))
                 {
                     routingFound = true;
                     break;
@@ -298,7 +298,7 @@ namespace OpenLoco::Vehicles
                 component.asVehicle2()->var_4F = tc.roadObjectId;
             }
 
-            pos += World::TrackData::getUnkRoad(oldTaD & 0x7F).pos;
+            pos += World::TrackData::getUnkRoad(oldTaD & World::Track::AdditionalTaDFlags::basicRaDMask).pos;
             component.tileX = pos.x;
             component.tileY = pos.y;
             component.tileBaseZ = pos.z / World::kSmallZStep;
@@ -336,7 +336,7 @@ namespace OpenLoco::Vehicles
             bool routingFound = false;
             for (auto& connection : tc.connections)
             {
-                if ((connection & 0x1FF) == (routing & 0x1FF))
+                if ((connection & World::Track::AdditionalTaDFlags::basicTaDMask) == (routing & World::Track::AdditionalTaDFlags::basicTaDMask))
                 {
                     routingFound = true;
                     break;
@@ -349,7 +349,7 @@ namespace OpenLoco::Vehicles
             }
             component.routingHandle = newRoutingHandle;
             const auto oldTaD = component.trackAndDirection.track._data;
-            component.trackAndDirection.track._data = routing & 0x1FF;
+            component.trackAndDirection.track._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
             pos += World::TrackData::getUnkTrack(oldTaD).pos;
             component.tileX = pos.x;
             component.tileY = pos.y;

@@ -342,7 +342,7 @@ namespace OpenLoco::Vehicles
         }
 
         const auto newPos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep)
-            + World::TrackData::getUnkRoad(veh1.trackAndDirection.road._data & 0x7F).pos;
+            + World::TrackData::getUnkRoad(veh1.trackAndDirection.road.basicRad()).pos;
 
         TrackAndDirection::_RoadAndDirection newRad(0, 0);
         newRad._data = routing & 0x1FFU;
@@ -411,7 +411,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        pos += World::TrackData::getUnkRoad(rad._data & 0x7F).pos;
+        pos += World::TrackData::getUnkRoad(rad.basicRad()).pos;
 
         rad._data = routing & 0x1FFU;
         return true;
@@ -463,7 +463,7 @@ namespace OpenLoco::Vehicles
         const auto noOvertakeDistance = vehicle1UpdateRoadMotionByPiecesNoMove(veh1, numRoadPieces);
         auto routingRing = RoutingManager::RingView(veh1.routingHandle);
         auto iter = ++routingRing.begin();
-        constexpr auto kResetRouting = static_cast<uint16_t>(~((1U << 7) | (1U << 8)));
+        constexpr auto kResetRouting = static_cast<uint16_t>(~(World::Track::AdditionalTaDFlags::isChangingLane | World::Track::AdditionalTaDFlags::isOvertaking));
         for (auto i = 0; i < numRoadPieces; ++iter, ++i)
         {
             if (iter == routingRing.end())
@@ -473,15 +473,15 @@ namespace OpenLoco::Vehicles
             const auto routing = RoutingManager::getRouting(*iter);
             if (i == 0)
             {
-                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1U << 8));
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | World::Track::AdditionalTaDFlags::isChangingLane);
             }
             else if (i == (numRoadPieces - 1))
             {
-                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1U << 8) | (1U << 7));
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | World::Track::AdditionalTaDFlags::isChangingLane | World::Track::AdditionalTaDFlags::isOvertaking);
             }
             else
             {
-                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1 << 7));
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | World::Track::AdditionalTaDFlags::isOvertaking);
             }
         }
 
@@ -499,7 +499,7 @@ namespace OpenLoco::Vehicles
         const auto noOvertakeDistance = vehicle1UpdateRoadMotionByPiecesNoMove(veh1, numRoadPieces);
         auto routingRing = RoutingManager::RingView(veh1.routingHandle);
         auto iter = ++routingRing.begin();
-        constexpr auto kResetRouting = static_cast<uint16_t>(~((1U << 7) | (1U << 8)));
+        constexpr auto kResetRouting = static_cast<uint16_t>(~(World::Track::AdditionalTaDFlags::isChangingLane | World::Track::AdditionalTaDFlags::isOvertaking));
         for (auto i = 0; i < numRoadPieces; ++iter, ++i)
         {
             if (iter == routingRing.end())
@@ -509,11 +509,11 @@ namespace OpenLoco::Vehicles
             const auto routing = RoutingManager::getRouting(*iter);
             if (i == 0)
             {
-                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1U << 8));
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | World::Track::AdditionalTaDFlags::isChangingLane);
             }
             else
             {
-                RoutingManager::setRouting(*iter, (routing & kResetRouting) | (1 << 7));
+                RoutingManager::setRouting(*iter, (routing & kResetRouting) | World::Track::AdditionalTaDFlags::isOvertaking);
             }
         }
 
@@ -522,7 +522,7 @@ namespace OpenLoco::Vehicles
         auto* head = EntityManager::get<VehicleHead>(veh1.head);
         head->var_3C += newDistance - noOvertakeDistance;
         head->trackAndDirection.road._data &= kResetRouting;
-        head->trackAndDirection.road._data |= numRoadPieces <= 1 ? (1U << 8) : (1U << 7);
+        head->trackAndDirection.road._data |= numRoadPieces <= 1 ? World::Track::AdditionalTaDFlags::isChangingLane : World::Track::AdditionalTaDFlags::isOvertaking;
     }
 
     enum class LookaheadType
@@ -551,7 +551,7 @@ namespace OpenLoco::Vehicles
         const auto startPos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
         uint8_t numRoadPieces = 0;
 
-        auto pos = startPos + World::TrackData::getUnkRoad(veh1.trackAndDirection.road._data & 0x7F).pos;
+        auto pos = startPos + World::TrackData::getUnkRoad(veh1.trackAndDirection.road.basicRad()).pos;
         numRoadPieces++;
 
         auto routings = RoutingManager::RingView(veh1.routingHandle);
@@ -580,7 +580,7 @@ namespace OpenLoco::Vehicles
             ++numRoadPieces;
             for (; numRoadPieces < 255; ++numRoadPieces)
             {
-                pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
                 routingIter++;
                 if (routingIter == routings.end())
                 {
@@ -616,7 +616,7 @@ namespace OpenLoco::Vehicles
                 // 0x0047CF32
                 auto nextRoutingIter = routingIter;
                 nextRoutingIter++;
-                const auto nextPos = pos + World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                const auto nextPos = pos + World::TrackData::getUnkRoad(tad.basicRad()).pos;
                 if (nextRoutingIter == routings.end())
                 {
                     return LookaheadResult{ LookaheadType::none, 0 };
@@ -641,7 +641,7 @@ namespace OpenLoco::Vehicles
             {
                 return LookaheadResult{ LookaheadType::none, 0 };
             }
-            if (tad.isUnk8() || tad.isBackToFront())
+            if (tad.isChangingLane() || tad.isOvertaking())
             {
                 return LookaheadResult{ LookaheadType::none, 0 };
             }
@@ -657,7 +657,7 @@ namespace OpenLoco::Vehicles
             auto i = 0;
             for (; numRoadPieces < 11; ++numRoadPieces)
             {
-                pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
                 routingIter++;
                 if (routingIter == routings.end())
                 {
@@ -746,17 +746,17 @@ namespace OpenLoco::Vehicles
 
         World::Pos3 pos(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
 
-        auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, component.trackAndDirection.road._data & 0x7F);
+        auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, component.trackAndDirection.road.basicRad());
         const auto tc = World::Track::getRoadConnections(nextPos, nextRot, component.owner, head->trackType, head->var_53, 0);
 
         auto newRad = TrackAndDirection::_RoadAndDirection(0, 0);
         newRad._data = routing & 0x1FFU;
-        const auto basicRad = routing & 0x7F;
+        const auto basicRad = routing & World::Track::AdditionalTaDFlags::basicRaDMask;
 
         bool routingFound = false;
         for (auto& connection : tc.connections)
         {
-            if ((connection & 0x7F) == basicRad)
+            if ((connection & World::Track::AdditionalTaDFlags::basicRaDMask) == basicRad)
             {
                 routingFound = true;
                 break;

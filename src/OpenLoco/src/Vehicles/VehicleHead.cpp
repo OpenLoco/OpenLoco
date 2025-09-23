@@ -1383,7 +1383,7 @@ namespace OpenLoco::Vehicles
 
         if (trackType == 0xFF || ObjectManager::get<RoadObject>(trackType)->hasFlags(RoadObjectFlags::isRoad))
         {
-            if (train.veh1->trackAndDirection.road.isBackToFront())
+            if (train.veh1->trackAndDirection.road.isOvertaking())
             {
                 param1 = 128;
                 turnaroundAtSignalTimeout = 544;
@@ -1393,7 +1393,7 @@ namespace OpenLoco::Vehicles
         {
             // Tram
             turnaroundAtSignalTimeout = kTramSignalTimeout;
-            if (train.veh1->trackAndDirection.road.isBackToFront())
+            if (train.veh1->trackAndDirection.road.isOvertaking())
             {
                 param1 = 64;
                 turnaroundAtSignalTimeout = 128;
@@ -3941,7 +3941,7 @@ namespace OpenLoco::Vehicles
                     veh2.sub_47D959(pos, tad, false);
                 }
 
-                pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
                 if (handle != veh2.routingHandle)
                 {
                     RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
@@ -4247,7 +4247,7 @@ namespace OpenLoco::Vehicles
         const auto requiredMods = head.var_53;
         const auto queryMods = train.veh1->var_49;
 
-        auto [nextPos, nextRotation] = World::Track::getRoadConnectionEnd(pos, head.trackAndDirection.road._data & 0x7F);
+        auto [nextPos, nextRotation] = World::Track::getRoadConnectionEnd(pos, head.trackAndDirection.road.basicRad());
         const bool isOneWay = head.var_5C == 0 && head.var_52 != 1;
 
         auto tc = isOneWay ? World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, head.owner, head.trackType, requiredMods, queryMods)
@@ -4316,9 +4316,9 @@ namespace OpenLoco::Vehicles
             }
             connection |= (1U << 14);
         }
-        if (head.trackAndDirection.road.isBackToFront() ^ head.trackAndDirection.road.isUnk8())
+        if (head.trackAndDirection.road.isOvertaking() ^ head.trackAndDirection.road.isChangingLane())
         {
-            connection ^= (1U << 7);
+            connection ^= World::Track::AdditionalTaDFlags::isOvertaking;
             if (head.var_52 != 1)
             {
                 if (head.trackType != 0xFFU)
@@ -4326,12 +4326,12 @@ namespace OpenLoco::Vehicles
                     auto* roadObj = ObjectManager::get<RoadObject>(head.trackType);
                     if (roadObj->hasFlags(RoadObjectFlags::isRoad))
                     {
-                        connection ^= (1U << 8);
+                        connection ^= World::Track::AdditionalTaDFlags::isChangingLane;
                     }
                 }
                 else
                 {
-                    connection ^= (1U << 8);
+                    connection ^= World::Track::AdditionalTaDFlags::isChangingLane;
                 }
             }
         }
@@ -4353,11 +4353,11 @@ namespace OpenLoco::Vehicles
         }
 
         auto curPos = World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep);
-        curPos += World::TrackData::getUnkRoad(head.trackAndDirection.road._data & 0x7F).pos;
+        curPos += World::TrackData::getUnkRoad(head.trackAndDirection.road.basicRad()).pos;
 
         if (curPos != waypointOrder->getWaypoint())
         {
-            auto& trackSize = World::TrackData::getUnkRoad(connection & 0x7F);
+            auto& trackSize = World::TrackData::getUnkRoad(connection & World::Track::AdditionalTaDFlags::basicRaDMask);
             auto connectPos = curPos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
@@ -4705,7 +4705,7 @@ namespace OpenLoco::Vehicles
         const auto waypointTaD = (waypointOrder->getTrackId() << 3) | waypointOrder->getDirection();
         if (curPos != waypointOrder->getWaypoint() || (connection & World::Track::AdditionalTaDFlags::basicTaDMask) != waypointTaD)
         {
-            auto& trackSize = World::TrackData::getUnkTrack(connection & 0x1FF);
+            auto& trackSize = World::TrackData::getUnkTrack(connection & World::Track::AdditionalTaDFlags::basicTaDMask);
             auto connectPos = curPos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
@@ -4921,11 +4921,11 @@ namespace OpenLoco::Vehicles
         if (World::TrackData::getRoadMiscData(tad.id()).reverseLane != 1)
         {
             // 0x0047D6F2
-            bool isBackToFront = tad.isBackToFront();
+            bool isBackToFront = tad.isOvertaking();
             auto startPos = pos;
             if (tad.isReversed())
             {
-                auto& roadSize = World::TrackData::getUnkRoad(tad._data & 0x7F);
+                auto& roadSize = World::TrackData::getUnkRoad(tad.basicRad());
                 startPos += roadSize.pos;
                 if (roadSize.rotationEnd < 12)
                 {
@@ -4996,7 +4996,7 @@ namespace OpenLoco::Vehicles
             const auto rotation = tad.cardinalDirection() * 2;
 
             // TODO: This is definitely incorrect but it is to match vanilla
-            // The issue is that 0x1F8 will include a bit for isUnk8 which will then
+            // The issue is that 0x1F8 will include a bit for isChangingLane which will then
             // mean we walk off the end of the array which is 32 elements long (64 below as we want it to walk off the end)
             // The memory it walks into is used for a variety of things including ai so will change depending on what the ai is doing
             const auto offset = ((tad._data & 0x1F8) >> 3) ^ (tad.isReversed() ? (1 << 4) : 0);
@@ -5161,11 +5161,11 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                if (curPos == target.pos && (curTad._data & 0x7F) == target.tad)
+                if (curPos == target.pos && (curTad.basicRad()) == target.tad)
                 {
                     hasReachedTarget = true;
                 }
-                else if (curPos == target.reversePos && (curTad._data & 0x7F) == target.reverseTad)
+                else if (curPos == target.reversePos && (curTad.basicRad()) == target.reverseTad)
                 {
                     hasReachedTarget = true;
                 }
@@ -5189,7 +5189,7 @@ namespace OpenLoco::Vehicles
                 break;
             }
 
-            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(curPos, curTad._data & 0x7F);
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(curPos, curTad.basicRad());
             auto rc = World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, companyId, roadObjectId, requiredMods, queryMods);
 
             if (rc.connections.empty())
@@ -5383,8 +5383,8 @@ namespace OpenLoco::Vehicles
             uint32_t bestConnection = 0;
             for (auto i = 0U; i < rc.connections.size(); ++i)
             {
-                const auto connection = rc.connections[i] & 0x807F;
-                const auto connectionTad = connection & 0x7F;
+                const auto connection = rc.connections[i] & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
+                const auto connectionTad = connection & World::Track::AdditionalTaDFlags::basicRaDMask;
 
                 if ((pos == target.pos && connectionTad == target.tad)
                     || (pos == target.reversePos && connectionTad == target.reverseTad))
@@ -5416,7 +5416,7 @@ namespace OpenLoco::Vehicles
             // aimless wander pathing
             for (auto i = 0U; i < rc.connections.size(); ++i)
             {
-                const auto connection = rc.connections[i] & 0x807F;
+                const auto connection = rc.connections[i] & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
                 const auto flags = roadAimlessWanderPathing(pos, connection, companyId, roadObjId, requiredMods, queryMods);
 
                 const auto newValue = k500234[flags] + (randVal & 0x7);
@@ -5517,7 +5517,7 @@ namespace OpenLoco::Vehicles
         // No target pathing
         for (auto i = 0U; i < rc.connections.size(); ++i)
         {
-            const auto connection = rc.connections[i] & 0x807F;
+            const auto connection = rc.connections[i] & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
             const auto newValue = roadLongestPathingCalculate(pos, connection, companyId, roadObjId, requiredMods, queryMods);
 
             if (newValue >= bestValue)
@@ -6132,7 +6132,7 @@ namespace OpenLoco::Vehicles
         const auto allowedStationTypes = *_vehicleUpdate_compatibleRoadStationTypes;
         Sub4AC3D3State state{};
         {
-            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road.basicRad());
             const auto rc = World::Track::getRoadConnections(nextPos, nextRotation, head.owner, head.trackType, head.var_53, train.veh1->var_49);
             if (rc.connections.empty())
             {
@@ -6142,7 +6142,7 @@ namespace OpenLoco::Vehicles
             roadPathing(head, nextPos, rc, requiredMods, queryMods, allowedStationTypes, false, state);
         }
         {
-            auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
+            auto tailTaD = train.tail->trackAndDirection.road.basicRad();
             const auto& trackSize = TrackData::getUnkRoad(tailTaD);
             const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
             tailTaD ^= (1U << 2); // Reverse
@@ -6386,7 +6386,7 @@ namespace OpenLoco::Vehicles
                 TrackAndDirection::_RoadAndDirection tad{ 0, 0 };
                 tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
                 sub_47D959(routingPos, tad, false);
-                routingPos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
+                routingPos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
             }
 
             // Routings are back to front with regard to walking the length of the train
@@ -6410,13 +6410,13 @@ namespace OpenLoco::Vehicles
                 for (auto& routing : copiedRoutings)
                 {
                     // Reverse the routing and reverse the lane
-                    routing ^= (1 << 2 | 1 << 7);
-                    if (routing & (1 << 8))
+                    routing ^= (1 << 2 | World::Track::AdditionalTaDFlags::isOvertaking);
+                    if (routing & World::Track::AdditionalTaDFlags::isChangingLane)
                     {
-                        routing ^= (1 << 7);
-                        if (!(routing & (1 << 7)))
+                        routing ^= World::Track::AdditionalTaDFlags::isOvertaking;
+                        if (!(routing & World::Track::AdditionalTaDFlags::isOvertaking))
                         {
-                            routing ^= (1 << 8);
+                            routing ^= World::Track::AdditionalTaDFlags::isChangingLane;
                         }
                     }
                     // Clear ???
@@ -6553,20 +6553,20 @@ namespace OpenLoco::Vehicles
             const auto subPositionLength = World::TrackData::getRoadSubPositon(newTad.road._data).size();
             newSubPos = subPositionLength - 1 - train.veh2->subPosition;
 
-            const auto& roadSize = World::TrackData::getUnkRoad(newTad.road._data & 0x7F);
+            const auto& roadSize = World::TrackData::getUnkRoad(newTad.road.basicRad());
             newPos += roadSize.pos;
             if (roadSize.rotationEnd < 12)
             {
                 newPos -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
             }
             newTad.road.setReversed(!newTad.road.isReversed());
-            newTad.road._data ^= (1U << 7);
-            if (newTad.road.isUnk8())
+            newTad.road._data ^= World::Track::AdditionalTaDFlags::isOvertaking;
+            if (newTad.road.isChangingLane())
             {
-                newTad.road._data ^= (1U << 7);
-                if (!newTad.road.isBackToFront())
+                newTad.road._data ^= World::Track::AdditionalTaDFlags::isOvertaking;
+                if (!newTad.road.isOvertaking())
                 {
-                    newTad.road._data ^= (1U << 8);
+                    newTad.road._data ^= World::Track::AdditionalTaDFlags::isChangingLane;
                 }
             }
         }

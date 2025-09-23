@@ -198,11 +198,12 @@ namespace OpenLoco::Vehicles
                 _data &= ~(1 << 2);
                 _data |= state ? (1 << 2) : 0;
             }
-            // Road vehicles are briefly back to front when reaching dead ends
-            // Trams can stay back to front
-            constexpr bool isBackToFront() const { return _data & (1 << 7); }
+
+            constexpr uint8_t basicRad() const { return _data & 0x7F; }
+            // Vehicles can be in overtaking lane (trams can stay in that lane)
+            constexpr bool isOvertaking() const { return _data & (1 << 7); }
             // Related to road vehicles turning around
-            constexpr bool isUnk8() const { return _data & (1 << 8); }
+            constexpr bool isChangingLane() const { return _data & (1 << 8); }
             constexpr bool operator==(const _RoadAndDirection other) const { return _data == other._data; }
         };
 

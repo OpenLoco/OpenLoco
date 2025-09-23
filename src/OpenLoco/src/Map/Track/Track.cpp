@@ -317,7 +317,7 @@ namespace OpenLoco::World::Track
             {
                 if (!elSignal->isAiAllocated() && !elSignal->isGhost())
                 {
-                    trackAndDirection2 |= (1 << 15);
+                    trackAndDirection2 |= AdditionalTaDFlags::hasSignal;
                 }
             }
         }
