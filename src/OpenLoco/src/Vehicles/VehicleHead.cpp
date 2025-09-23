@@ -514,12 +514,208 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x004AF7A4
-    void VehicleHead::sub_4AF7A4()
+    struct CarMetaData
     {
-        registers regs{};
-        regs.esi = X86Pointer(this);
-        call(0x004AF7A4, regs);
+        EntityId frontId;
+        VehicleObjectFlags flags;
+        uint16_t power;
+        bool isReversed; // At start matches wasReversed could be modified during the function
+        bool wasReversed;
+        constexpr bool hasFlags(VehicleObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != VehicleObjectFlags::none;
+        }
+    };
+
+    // 0x004AF7A4
+    void VehicleHead::autoLayoutTrain()
+    {
+        Vehicle train(*this);
+        if (train.cars.empty())
+        {
+            return;
+        }
+
+        // This function has been modified from vanilla but it should
+        // produce the same results. Vanilla version performed a lot
+        // of flipping and inserting to reorder the cars. This version
+        // does the final flipping/inserting in one go at the end.
+
+        // Pretty safe to assume this as its hard to exceed 30
+        // you can do about ~200 if you use some tricks
+        assert(train.cars.size() < 100);
+
+        sfl::static_vector<CarMetaData, 100> carData;
+
+        for (auto& car : train.cars)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            CarMetaData data{};
+            data.frontId = car.front->id;
+            data.flags = vehicleObj->flags;
+            data.power = vehicleObj->power;
+            data.isReversed = car.body->has38Flags(Flags38::isReversed);
+            data.wasReversed = car.body->has38Flags(Flags38::isReversed);
+            carData.push_back(data);
+        }
+        auto pushCarToFront = [&carData](const size_t index) {
+            std::rotate(carData.begin(), carData.begin() + index, carData.begin() + index + 1);
+        };
+        auto pushCarToBack = [&carData](const size_t index) {
+            std::rotate(carData.begin() + index, carData.begin() + index + 1, carData.end());
+        };
+
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // Places first powered car at front of train
+
+            for (auto i = 0U; i < carData.size(); ++i)
+            {
+                auto& cd = carData[i];
+                if (cd.power != 0)
+                {
+                    pushCarToFront(i);
+                    break;
+                }
+            }
+        }
+
+        {
+            // Alternate forward/backward if VehicleObjectFlags::alternatingDirection set
+            bool curIsReversed = false;
+            for (auto& cd : carData)
+            {
+                if (cd.hasFlags(VehicleObjectFlags::alternatingDirection))
+                {
+                    cd.isReversed = curIsReversed;
+                    curIsReversed ^= true;
+                }
+            }
+        }
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // Places first car with VehicleObjectFlags::topAndTailPosition to the front of train
+            // and last car with VehicleObjectFlags::topAndTailPosition to the back of the train
+            // If there is only one topAndTailPosition car and it isn't at the front due to other
+            // rules it will be placed at the back of the train
+
+            bool isFirst = true;
+            auto lastTopTail = -1;
+            for (auto i = 0U; i < carData.size(); ++i)
+            {
+                auto& cd = carData[i];
+                if (cd.power != 0 || cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
+                {
+                    if (isFirst)
+                    {
+                        if (cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
+                        {
+                            cd.isReversed = false;
+                            pushCarToFront(i);
+                        }
+                        isFirst = false;
+                        continue;
+                    }
+                    if (cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
+                    {
+                        lastTopTail = i;
+                    }
+                }
+                isFirst = false;
+            }
+            if (lastTopTail != -1)
+            {
+                auto& cd = carData[lastTopTail];
+                cd.isReversed = true;
+                pushCarToBack(lastTopTail);
+            }
+        }
+
+        // 0x004AFBC0
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // Places all cars with VehicleObjectFlags::centerPosition in the middle of the train
+            const auto numMiddles = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::centerPosition); });
+            const auto middle = (carData.size() / 2) + 1;
+            if (middle < carData.size())
+            {
+                std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::centerPosition); });
+                const auto middleStart = middle - numMiddles / 2;
+                const auto middleEnd = middleStart + numMiddles;
+                std::rotate(carData.begin() + middleStart, carData.begin() + middleEnd, carData.end());
+            }
+        }
+
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // If there are at least 4 cars with VehicleObjectFlags::flag_04 places 2 of them in the middle of the train
+            // This flag is used to create train sets comprised of 2 double ended trains
+            const auto numFlag4s = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::flag_04); });
+            if (numFlag4s >= 4)
+            {
+                uint8_t moveCount = 0;
+                const auto middle = (carData.size() / 2) + 1;
+                std::array<CarMetaData, 2> toBeMoved{};
+                if (middle < carData.size())
+                {
+                    for (auto i = 1U; i < carData.size() - 1; ++i)
+                    {
+                        auto& cd = carData[i];
+                        if (cd.hasFlags(VehicleObjectFlags::flag_04))
+                        {
+                            toBeMoved[moveCount++] = cd;
+                            carData.erase(carData.begin() + i);
+                            i--;
+                            if (moveCount == 2)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    carData.insert(carData.begin() + middle - 1, toBeMoved[0]);
+                    carData.insert(carData.begin() + middle, toBeMoved[1]);
+                }
+            }
+        }
+
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // Apply the reordering and flipping
+            VehicleBase* dest = train.tail;
+            for (auto i = carData.size(); i > 0; --i)
+            {
+                auto& cd = carData[i - 1];
+                auto* frontCar = EntityManager::get<VehicleBogie>(cd.frontId);
+                if (frontCar == nullptr)
+                {
+                    continue;
+                }
+                if (cd.isReversed != cd.wasReversed)
+                {
+                    frontCar = flipCar(*frontCar);
+                }
+                insertCarBefore(*frontCar, *dest);
+                dest = frontCar;
+            }
+        }
+
+        // Train is invalid after insertCarBefore
+        train = Vehicle(*this);
+        {
+            bool front = true;
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::alternatingCarSprite))
+                {
+                    continue;
+                }
+                car.body->bodyIndex = front ? 0 : 1;
+                car.body->objectSpriteType = vehicleObj->carComponents[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::isReversed;
+                front ^= true;
+            }
+        }
+        connectJacobsBogies(*this);
     }
 
     // 0x004B90F0
