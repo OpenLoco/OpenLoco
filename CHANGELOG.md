@@ -1,5 +1,6 @@
 25.08+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3274] Add a button to rotate company headquarters when building them.
 - Change: [#3227] The accuracy of cursor-relative zooming has been improved.
 - Change: [#3258] Current currency dropdown is now disabled when in the title screen.
 - Fix: [#3232] Crash when moving vehicle window when a message is showing a vehicle.

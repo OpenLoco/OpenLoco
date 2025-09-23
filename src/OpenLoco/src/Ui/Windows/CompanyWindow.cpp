@@ -692,6 +692,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             viewport = 11,
             build_hq,
+            rotate_hq,
             centre_on_viewport,
         };
 
@@ -699,8 +700,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::makeCommonWidgets(340, 194, StringIds::title_company_details),
             Widgets::Viewport({ 219, 54 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
             Widgets::ImageButton({ 315, 92 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
+            Widgets::ImageButton({ 315, 92 + 26 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
             Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
-
         );
 
         // 0x004327CF
@@ -742,6 +743,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
             self.widgets[widx::build_hq].hidden = CompanyId(self.number) != CompanyManager::getControllingId();
+            self.widgets[widx::rotate_hq].hidden = !ToolManager::isToolActive(self.type, self.number, build_hq);
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
@@ -910,6 +912,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
+        static void rotateHQGhost90Deg()
+        {
+            _headquarterConstructionRotation = (_headquarterConstructionRotation + 1) & 3;
+        }
+
         // 0x00432C08
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
@@ -922,6 +929,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::build_hq:
                     ToolManager::toolSet(self, widgetIndex, CursorId::placeHQ);
                     Input::setFlag(Input::Flags::flag6);
+                    break;
+
+                case widx::rotate_hq:
+                    rotateHQGhost90Deg();
                     break;
             }
         }
@@ -938,11 +949,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onTabSwitch()
         {
             _headquarterConstructionRotation = (WindowManager::getCurrentRotation() + 2) & 3;
-        }
-
-        static void rotateHQGhost90Deg()
-        {
-            _headquarterConstructionRotation = (_headquarterConstructionRotation + 1) & 3;
         }
 
         // 0x00432C24
