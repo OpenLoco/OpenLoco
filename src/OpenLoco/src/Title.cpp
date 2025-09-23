@@ -83,7 +83,6 @@ namespace OpenLoco::Title
     static TitleSequence::const_iterator _sequenceIterator;
     static uint16_t _waitCounter;
 
-    static loco_global<uint16_t, 0x0050C19A> _50C19A;
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
 
     static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
@@ -122,7 +121,6 @@ namespace OpenLoco::Title
     {
         loadTitle();
         SceneManager::resetSceneAge();
-        _50C19A = 55000;
         update();
     }
 
