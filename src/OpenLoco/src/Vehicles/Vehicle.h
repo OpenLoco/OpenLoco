@@ -632,7 +632,8 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
-        uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
+        int32_t var_3C;              // 0x3C field same in all vehicles unread for veh2
+        uint8_t pad_40[0x42 - 0x40]; // 0x40
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
         SoundObjectId_t drivingSoundId;       // 0x44
@@ -682,9 +683,9 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
-        uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t objectId;  // 0x40
-        TransportMode mode; // 0x42
+        int32_t var_3C;           // 0x3C field same in all vehicles unread for body
+        uint16_t objectId;        // 0x40
+        TransportMode mode;       // 0x42
         uint8_t pad_43;
         int16_t var_44;
         uint8_t animationFrame;    // 0x46 roll/animation sprite index
@@ -748,9 +749,9 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
-        uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t objectId;  // 0x40
-        TransportMode mode; // 0x42 field same in all vehicles
+        int32_t var_3C;           // 0x3C field same in all vehicles unread for bogie
+        uint16_t objectId;        // 0x40
+        TransportMode mode;       // 0x42 field same in all vehicles
         uint8_t pad_43;
         uint16_t var_44;
         uint8_t animationIndex;      // 0x46 animation index
@@ -804,7 +805,8 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
-        uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
+        int32_t var_3C;              // 0x3C field same in all vehicles unread for tail
+        uint8_t pad_40[0x42 - 0x40]; // 0x40
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
         SoundObjectId_t drivingSoundId;       // 0x44
@@ -1094,4 +1096,7 @@ namespace OpenLoco::Vehicles
 
     bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId);
     void connectJacobsBogies(VehicleHead& head);
+
+    void applyVehicleObjectLength(Vehicle& train);
+    bool positionVehicleOnTrack(VehicleHead& head);
 }

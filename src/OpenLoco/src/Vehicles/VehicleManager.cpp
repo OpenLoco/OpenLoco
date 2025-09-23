@@ -7,6 +7,8 @@
 #include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Map/Track/SubpositionData.h"
+#include "Map/Track/TrackData.h"
 #include "MessageManager.h"
 #include "OrderManager.h"
 #include "Orders.h"
@@ -23,6 +25,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::VehicleManager
 {
+    static loco_global<Vehicles::SignalStateFlags, 0x005220BC> _vehicleManagerIgnoreSignalFlagsMasks;
+
     // 0x004A8826
     void update()
     {
@@ -119,21 +123,146 @@ namespace OpenLoco::VehicleManager
         company.availableVehicles = determineAvailableVehicleTypes(company);
     }
 
+    template<typename T>
+    static void moveComponentToSubPosition(T& base)
+    {
+        base.invalidateSprite();
+        if (base.getTransportMode() == TransportMode::road)
+        {
+            auto& moveInfo = World::TrackData::getRoadSubPositon(base.getTrackAndDirection().road._data)[base.subPosition];
+            const auto newPos = World::Pos3{ base.tileX, base.tileY, base.tileBaseZ * World::kSmallZStep } + moveInfo.loc;
+            base.spriteYaw = moveInfo.yaw;
+            base.spritePitch = moveInfo.pitch;
+            base.moveTo(newPos);
+        }
+        else
+        {
+            auto& moveInfo = World::TrackData::getTrackSubPositon(base.getTrackAndDirection().track._data)[base.subPosition];
+            const auto newPos = World::Pos3{ base.tileX, base.tileY, base.tileBaseZ * World::kSmallZStep } + moveInfo.loc;
+            base.spriteYaw = moveInfo.yaw;
+            base.spritePitch = moveInfo.pitch;
+            base.moveTo(newPos);
+        }
+        base.invalidateSprite();
+    }
+
     // 0x004B05E4
     PlaceDownResult placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2)
     {
-        registers regs{};
-        regs.esi = X86Pointer(head);
-        regs.ax = x;
-        regs.cx = y;
-        regs.bx = unk2;
-        regs.dl = baseZ;
-        regs.ebp = unk1.track._data;
-        bool hasFailed = call(0x004B05E4, regs) & X86_FLAG_CARRY;
-        if (hasFailed)
+        const auto pos = World::Pos3{ x, y, baseZ * World::kSmallZStep };
+        if (head->tileX != -1)
         {
-            return regs.al == 0 ? PlaceDownResult::Unk0 : PlaceDownResult::Unk1;
+            return PlaceDownResult::Okay;
         }
+
+        auto subPosition = 0;
+        World::Pos3 reversePos = pos;
+        Vehicles::TrackAndDirection reverseTad = unk1;
+        if (head->mode != TransportMode::road)
+        {
+            if (Vehicles::sub_4A2A58(pos, unk1.track, head->owner, head->trackType) & (1U << 0))
+            {
+                return PlaceDownResult::Unk1;
+            }
+
+            if (Vehicles::isBlockOccupied(pos, unk1.track, head->owner, head->trackType))
+            {
+                return PlaceDownResult::Unk1;
+            }
+
+            const auto subPositionLength = World::TrackData::getTrackSubPositon(unk1.track._data).size();
+            subPosition = subPositionLength - 1 - unk2;
+
+            const auto& trackSize = World::TrackData::getUnkTrack(unk1.track._data);
+            reversePos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            reverseTad.track.setReversed(!unk1.track.isReversed());
+        }
+        else
+        {
+
+            const auto subPositionLength = World::TrackData::getRoadSubPositon(unk1.road._data).size();
+            subPosition = subPositionLength - 1 - unk2;
+
+            const auto& roadSize = World::TrackData::getUnkRoad(unk1.road._data & 0x7F);
+            reversePos += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                reversePos -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+            reverseTad.road.setReversed(!unk1.road.isReversed());
+            reverseTad.road._data ^= (1U << 7);
+            if (reverseTad.road.isUnk8())
+            {
+                reverseTad.road._data ^= (1U << 7);
+                if (!reverseTad.road.isBackToFront())
+                {
+                    reverseTad.road._data ^= (1U << 8);
+                }
+            }
+        }
+
+        Vehicles::RoutingManager::resetRoutings(head->routingHandle);
+        Vehicles::RoutingManager::setRouting(head->routingHandle, reverseTad.track._data);
+
+        if (head->mode == TransportMode::road)
+        {
+            if ((Vehicles::getRoadOccupation(reversePos, reverseTad.road) & (Vehicles::RoadOccupationFlags::isLaneOccupied | Vehicles::RoadOccupationFlags::isLevelCrossingClosed)) != Vehicles::RoadOccupationFlags::none)
+            {
+                return PlaceDownResult::Unk1;
+            }
+        }
+        else
+        {
+            if (Vehicles::sub_4A2A58(reversePos, reverseTad.track, head->owner, head->trackType) & (1U << 0))
+            {
+                return PlaceDownResult::Unk1;
+            }
+
+            if (Vehicles::isBlockOccupied(reversePos, reverseTad.track, head->owner, head->trackType))
+            {
+                return PlaceDownResult::Unk1;
+            }
+        }
+
+        // 0x004B077E
+        auto train = Vehicles::Vehicle(*head);
+
+        train.applyToComponents([&reversePos, reverseTad, subPosition, head](auto& component) {
+            component.routingHandle = head->routingHandle;
+            component.tileX = reversePos.x;
+            component.tileY = reversePos.y;
+            component.tileBaseZ = reversePos.z / World::kSmallZStep;
+            component.subPosition = subPosition;
+            component.trackAndDirection = reverseTad;
+            component.remainingDistance = 0;
+            component.var_3C = 0;
+            moveComponentToSubPosition(component);
+        });
+
+        _vehicleManagerIgnoreSignalFlagsMasks &= ~(Vehicles::SignalStateFlags::occupiedOneWay | Vehicles::SignalStateFlags::blockedNoRoute);
+        Vehicles::applyVehicleObjectLength(train);
+        auto oldVar52 = head->var_52;
+        head->var_52 = 1;
+        const bool failure = Vehicles::positionVehicleOnTrack(*head);
+        head->var_52 = oldVar52;
+        _vehicleManagerIgnoreSignalFlagsMasks |= (Vehicles::SignalStateFlags::occupiedOneWay | Vehicles::SignalStateFlags::blockedNoRoute);
+
+        if (failure)
+        {
+            head->liftUpVehicle();
+            return PlaceDownResult::Unk0;
+        }
+
+        head->var_52 = 1;
+        head->sub_4ADB47(true);
+        head->var_52 = oldVar52;
+        head->status = Vehicles::Status::stopped;
+        train.veh1->var_48 |= Vehicles::Flags48::flag2;
+
         return PlaceDownResult::Okay;
     }
 

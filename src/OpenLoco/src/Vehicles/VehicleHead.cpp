@@ -6828,7 +6828,7 @@ namespace OpenLoco::Vehicles
     // esi : head
     //
     // return eax : bool
-    static bool positionVehicleOnTrack(VehicleHead& head)
+    bool positionVehicleOnTrack(VehicleHead& head)
     {
         Vehicle train(head);
         _vehicleUpdate_1 = train.veh1;
