@@ -25,7 +25,7 @@ namespace OpenLoco
         water = 3
     };
 
-    enum class SimpleAnimationType : uint8_t
+    enum class EmitterAnimationType : uint8_t
     {
         none = 0,
         steam_puff1,
@@ -100,7 +100,7 @@ namespace OpenLoco
     {
         uint8_t objectId;           // 0x00 (object loader fills this in)
         uint8_t emitterVerticalPos; // 0x01
-        SimpleAnimationType type;   // 0x02
+        EmitterAnimationType type;  // 0x02
     };
     static_assert(sizeof(VehicleObjectEmitterAnimation) == 0x3);
 
@@ -221,21 +221,6 @@ namespace OpenLoco
         gearboxMotor
     };
 
-    enum class CompanyColourType : uint8_t
-    {
-        none = 0,
-        steamLoco = 1,
-        dieselLoco = 2,
-        electricLoco = 3,
-        multipleUnit = 4,
-        passengerRailcar = 5,
-        freightRailcar = 6,
-        busAndTram = 7,
-        freightTruck = 8,
-        airplane = 9,
-        ship = 10,
-    };
-
     namespace NumStartSounds
     {
         constexpr uint8_t kHasCrossingWhistle = 1 << 7;
@@ -260,7 +245,7 @@ namespace OpenLoco
         uint8_t reliability;                                  // 0x0A
         uint8_t runCostIndex;                                 // 0x0B
         int16_t runCostFactor;                                // 0x0C
-        CompanyColourType companyColourSchemeIndex;           // 0x0E
+        uint8_t colourType;                                   // 0x0E
         uint8_t numCompatibleVehicles;                        // 0x0F
         uint16_t compatibleVehicles[8];                       // 0x10 array of compatible vehicle_types
         uint8_t requiredTrackExtras[4];                       // 0x20
@@ -277,7 +262,7 @@ namespace OpenLoco
         uint8_t cargoTypeSpriteOffsets[32];                   // 0xEC
         uint8_t numSimultaneousCargoTypes;                    // 0x10C
         VehicleObjectEmitterAnimation animation[2];           // 0x10D
-        uint8_t shipWakeOffset;                               // 0x113 the distance between each wake of the boat. 0 will be a single wake. anything > 0 gives dual wakes
+        uint8_t shipWakeSpacing;                              // 0x113 the distance between each wake of the boat. 0 will be a single wake. anything > 0 gives dual wakes with this spacing
         uint16_t designed;                                    // 0x114
         uint16_t obsolete;                                    // 0x116
         uint8_t rackRailType;                                 // 0x118

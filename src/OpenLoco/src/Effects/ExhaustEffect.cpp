@@ -97,7 +97,7 @@ namespace OpenLoco
             }
 
             const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
-            if (stationObj->hasFlags(TrainStationFlags::noGlass))
+            if (stationObj->hasFlags(TrainStationFlags::noCanopy))
             {
                 continue;
             }

@@ -425,7 +425,7 @@ namespace OpenLoco
 
         for (auto& anim : animation)
         {
-            if (anim.type == SimpleAnimationType::none)
+            if (anim.type == EmitterAnimationType::none)
             {
                 continue;
             }

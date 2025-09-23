@@ -526,10 +526,9 @@ namespace OpenLoco
         auto* company = CompanyManager::get(companyId);
 
         auto colourScheme = company->mainColours;
-        auto companyColourSchemeIndex = static_cast<uint8_t>(vehObject.companyColourSchemeIndex);
-        if (company->customVehicleColoursSet & (1 << companyColourSchemeIndex))
+        if (company->customVehicleColoursSet & (1 << vehObject.colourType))
         {
-            colourScheme = company->vehicleColours[companyColourSchemeIndex - 1];
+            colourScheme = company->vehicleColours[vehObject.colourType - 1];
         }
         return colourScheme;
     }
