@@ -235,6 +235,30 @@ namespace OpenLoco::Ui::Windows::Options
             free(__11364A0);
         }
 
+        static bool onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        {
+            switch (wi)
+            {
+                case Widx::close_button:
+                    WindowManager::close(&w);
+                    return true;
+
+                case Widx::tab_display:
+                case Widx::tab_rendering:
+                case Widx::tab_sound:
+                case Widx::tab_music:
+                case Widx::tab_regional:
+                case Widx::tab_controls:
+                case Widx::tab_company:
+                case Widx::tab_miscellaneous:
+                    Options::tabOnMouseUp(&w, wi);
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         static constexpr auto makeCommonWidgets(Ui::Size32 windowSize, StringId windowCaptionId)
         {
             return makeWidgets(
@@ -307,23 +331,13 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFB8C
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_rendering:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::show_fps:
                 {
                     auto& cfg = OpenLoco::Config::get();
@@ -641,23 +655,13 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFB8C
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_rendering:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::landscape_smoothing:
                 {
                     auto& cfg = OpenLoco::Config::get();
@@ -1017,23 +1021,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_rendering:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::play_title_music:
                     playTitleMusicOnMouseUp(&w);
                     return;
@@ -1264,23 +1258,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_rendering:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::music_controls_stop:
                     stopMusic(&w);
                     return;
@@ -1626,23 +1610,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_rendering:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::preferred_currency_for_new_games:
                     preferredCurrencyNewGameMouseUp(&w);
                     return;
@@ -2050,23 +2024,13 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C114A
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_rendering:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::customize_keys:
                     openKeyboardShortcuts();
                     break;
@@ -2346,23 +2310,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_rendering:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::usePreferredOwnerName:
                     usePreferredOwnerNameMouseUp(&w);
                     break;
@@ -2722,23 +2676,13 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C12D2
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_rendering:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::enableCheatsToolbarButton:
                     enableCheatsToolbarButtonMouseUp(&w);
                     break;
