@@ -17,6 +17,12 @@ namespace OpenLoco::Vehicles::RoutingManager
         return std::distance(std::begin(routingArr), res);
     }
 
+    void resetRoutings(const RoutingHandle handle)
+    {
+        auto& vehRoutingArr = routings()[handle.getVehicleRef()];
+        std::fill(std::begin(vehRoutingArr), std::end(vehRoutingArr), kAllocatedButFreeRoutingStation);
+    }
+
     bool isEmptyRoutingSlotAvailable()
     {
         return findFreeRoutingVehicleRef().has_value();

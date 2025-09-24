@@ -11,6 +11,7 @@
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
 #include "RoutingManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
@@ -24,6 +25,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
     static loco_global<UpdateVar1136114Flags, 0x01136114> _vehicleUpdate_var_1136114;
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
+    static constexpr int32_t kObjDistToHighPrecisionDistance = 2179;
 
 #pragma pack(push, 1)
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
@@ -358,49 +360,6 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    static constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
-    {
-        uint8_t nibble = 0;
-        if (pos1.x != pos2.x)
-        {
-            nibble |= (1U << 0);
-        }
-        if (pos1.y != pos2.y)
-        {
-            nibble |= (1U << 1);
-        }
-        if (pos1.z != pos2.z)
-        {
-            nibble |= (1U << 2);
-        }
-        return nibble;
-    }
-
-    // 0x00500120
-    static constexpr std::array<uint32_t, 8> movementNibbleToDistance = {
-        0,
-        0x220C,
-        0x220C,
-        0x3027,
-        0x199A,
-        0x2A99,
-        0x2A99,
-        0x3689,
-    };
-
-    // 0x00500244
-    static constexpr std::array<World::TilePos2, 9> kNearbyTiles = {
-        World::TilePos2{ 0, 0 },
-        World::TilePos2{ 0, 1 },
-        World::TilePos2{ 1, 1 },
-        World::TilePos2{ 1, 0 },
-        World::TilePos2{ 1, -1 },
-        World::TilePos2{ 0, -1 },
-        World::TilePos2{ -1, -1 },
-        World::TilePos2{ -1, 0 },
-        World::TilePos2{ -1, 1 },
-    };
-
     // If candidate within 8 vehicle components of src we ignore a self collision
     // TODO: If we stored the car index this could be simplified
     static bool ignoreSelfCollision(VehicleBase& sourceVehicleId, const VehicleBase& candidateVehicleId)
@@ -431,7 +390,7 @@ namespace OpenLoco::Vehicles
 
         Vehicle srcTrain(bogie.head);
 
-        for (const auto& nearby : kNearbyTiles)
+        for (const auto& nearby : kMooreNeighbourhood)
         {
             const auto inspectionPos = World::toTileSpace(loc) + nearby;
             for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
@@ -522,7 +481,7 @@ namespace OpenLoco::Vehicles
             component.subPosition = newSubPosition;
             const auto& moveData = World::TrackData::getRoadSubPositon(component.trackAndDirection.road._data)[newSubPosition];
             const auto nextNewPosition = moveData.loc + World::Pos3(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
-            component.remainingDistance -= movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+            component.remainingDistance -= kMovementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
             intermediatePosition = nextNewPosition;
             component.spriteYaw = moveData.yaw;
             component.spritePitch = moveData.pitch;
@@ -582,7 +541,7 @@ namespace OpenLoco::Vehicles
                 component.subPosition = newSubPosition;
                 const auto& moveData = World::TrackData::getTrackSubPositon(component.trackAndDirection.track._data)[newSubPosition];
                 const auto nextNewPosition = moveData.loc + World::Pos3(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
-                component.remainingDistance -= movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+                component.remainingDistance -= kMovementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
                 intermediatePosition = nextNewPosition;
                 component.spriteYaw = moveData.yaw;
                 component.spritePitch = moveData.pitch;
@@ -1042,6 +1001,78 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x004B1C48
+    // Applies the vehicle object lengths to the bogies of the train
+    // with some specified starting distance. Bodies are not set as
+    // they are calculated later based on the positions of the bogies.
+    // returns the final distance
+    static int32_t applyVehicleObjectLengthToBogies(Vehicle& train, const int32_t startDistance)
+    {
+        auto distance = startDistance;
+        for (auto& car : train.cars)
+        {
+            const auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            assert(std::distance(car.begin(), car.end()) == vehicleObj->var_04);
+            if (car.body->has38Flags(Flags38::isReversed))
+            {
+                auto objCarIndex = vehicleObj->var_04 - 1;
+                for (auto& component : car)
+                {
+                    auto& objCar = vehicleObj->carComponents[objCarIndex];
+                    const auto frontLength = objCar.backBogiePosition * -kObjDistToHighPrecisionDistance;
+                    component.front->remainingDistance = distance + frontLength;
+
+                    if (objCar.bodySpriteInd != 0xFFU)
+                    {
+                        const auto bodyLength = vehicleObj->bodySprites[objCar.bodySpriteInd & 0x7F].halfLength * -(kObjDistToHighPrecisionDistance * 2);
+                        distance += bodyLength;
+                    }
+                    const auto backLength = objCar.frontBogiePosition * kObjDistToHighPrecisionDistance;
+                    component.back->remainingDistance = distance + backLength;
+
+                    objCarIndex--;
+                }
+            }
+            else
+            {
+                auto objCarIndex = 0;
+                for (auto& component : car)
+                {
+                    auto& objCar = vehicleObj->carComponents[objCarIndex];
+                    const auto frontLength = objCar.frontBogiePosition * -kObjDistToHighPrecisionDistance;
+                    component.front->remainingDistance = distance + frontLength;
+
+                    if (objCar.bodySpriteInd != 0xFFU)
+                    {
+                        const auto bodyLength = vehicleObj->bodySprites[objCar.bodySpriteInd & 0x7F].halfLength * -(kObjDistToHighPrecisionDistance * 2);
+                        distance += bodyLength;
+                    }
+                    const auto backLength = objCar.backBogiePosition * kObjDistToHighPrecisionDistance;
+                    component.back->remainingDistance = distance + backLength;
+
+                    objCarIndex++;
+                }
+            }
+        }
+        return distance;
+    }
+
+    // 0x004AE2AB
+    // head: esi
+    void applyVehicleObjectLength(Vehicle& train)
+    {
+        // We want the tail to have a remaining distance of 0
+        // so we first apply the lengths from 0 then take the return
+        // length and set that as the negative start offset and reapply
+
+        const auto negStartDistance = -applyVehicleObjectLengthToBogies(train, 0);
+        train.head->remainingDistance = negStartDistance;
+        train.veh1->remainingDistance = negStartDistance;
+        train.veh2->remainingDistance = negStartDistance;
+        applyVehicleObjectLengthToBogies(train, negStartDistance);
+        train.tail->remainingDistance = 0;
+    }
+
     void registerHooks()
     {
         registerHook(
@@ -1138,6 +1169,17 @@ namespace OpenLoco::Vehicles
                 registers backup = regs;
                 VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
                 connectJacobsBogies(*head);
+                regs = backup;
+                return 0;
+            });
+
+        registerHook(
+            0x004AE2AB,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
+                Vehicle train(*head);
+                applyVehicleObjectLength(train);
                 regs = backup;
                 return 0;
             });

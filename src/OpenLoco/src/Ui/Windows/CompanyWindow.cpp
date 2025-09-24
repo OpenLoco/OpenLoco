@@ -680,10 +680,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size32 kWindowSize = { 340, 194 };
 
-        loco_global<World::Pos3, 0x009C68D6> _headquarterGhostPos;
-        loco_global<uint8_t, 0x009C68F0> _headquarterGhostRotation;
-        loco_global<uint8_t, 0x009C68F1> _headquarterGhostType;
-        loco_global<bool, 0x009C68EF> _headquarterGhostPlaced;
+        static std::optional<GameCommands::HeadquarterPlacementArgs> _headquarterGhost;
 
         // New in OpenLoco; not to be confused with rotation of already-placed HQ ghost
         static uint8_t _headquarterConstructionRotation;
@@ -957,13 +954,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00434E94
         static void removeHeadquarterGhost()
         {
-            if (_headquarterGhostPlaced)
+            if (_headquarterGhost.has_value())
             {
-                _headquarterGhostPlaced = false;
                 auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
                 GameCommands::HeadquarterRemovalArgs args;
-                args.pos = _headquarterGhostPos;
+                args.pos = _headquarterGhost->pos;
                 GameCommands::doCommand(args, flags);
+                _headquarterGhost = std::nullopt;
             }
         }
 
@@ -974,10 +971,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto flags = GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
             if (GameCommands::doCommand(args, flags) != GameCommands::FAILURE)
             {
-                _headquarterGhostPlaced = true;
-                _headquarterGhostPos = args.pos;
-                _headquarterGhostRotation = args.rotation;
-                _headquarterGhostType = args.type;
+                _headquarterGhost = args;
             }
         }
 
@@ -1046,9 +1040,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             World::setMapSelectionArea(placementArgs->pos, posB);
             World::mapInvalidateSelectionRect();
 
-            if (_headquarterGhostPlaced)
+            if (_headquarterGhost.has_value())
             {
-                if (*_headquarterGhostPos == placementArgs->pos && _headquarterGhostRotation == placementArgs->rotation && _headquarterGhostType == placementArgs->type)
+                if (_headquarterGhost.value().pos == placementArgs->pos
+                    && _headquarterGhost.value().rotation == placementArgs->rotation
+                    && _headquarterGhost.value().type == placementArgs->type)
                 {
                     return;
                 }

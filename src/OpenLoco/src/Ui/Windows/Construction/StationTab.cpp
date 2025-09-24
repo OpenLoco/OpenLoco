@@ -249,14 +249,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static void setMapSelectedTilesFromRange(const World::TilePosRangeView& range)
     {
-        size_t i = 0;
+        resetMapSelectionFreeFormTiles();
         for (const auto& pos : range)
         {
-            _mapSelectedTiles[i++] = World::toWorldSpace(pos);
+            addMapSelectionFreeFormTile(World::toWorldSpace(pos));
         }
 
-        _mapSelectedTiles[i].x = -1;
-        mapInvalidateMapSelectionTiles();
+        mapInvalidateMapSelectionFreeFormTiles();
     }
 
     static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y);
@@ -286,7 +285,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A4F3B
     static void onToolUpdateAirport(const Ui::Point& mousePos)
     {
-        World::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionFreeFormTiles();
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         const auto args = getAirportPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
@@ -349,7 +348,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A5158
     static void onToolUpdateDock(const Ui::Point& mousePos)
     {
-        World::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionFreeFormTiles();
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         const auto args = getDockPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
@@ -551,7 +550,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if (_isDragging)
         {
-            mapInvalidateMapSelectionTiles();
+            mapInvalidateMapSelectionFreeFormTiles();
             removeConstructionGhosts();
             return;
         }
