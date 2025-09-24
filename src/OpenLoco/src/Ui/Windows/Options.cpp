@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void prepareDraw(Window& w)
         {
-            auto skin = ObjectManager::get<InterfaceSkinObject>();
+            const auto* skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Rendering tab
             {
