@@ -126,7 +126,7 @@ namespace OpenLoco
     // 0x0044080C
     Exhaust* Exhaust::create(World::Pos3 loc, uint8_t type)
     {
-        if (!World::validCoords(loc))
+        if (!World::TileManager::validCoords(loc))
         {
             return nullptr;
         }

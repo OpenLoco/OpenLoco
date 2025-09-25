@@ -90,7 +90,7 @@ namespace OpenLoco::CompanyAi
         const auto randX = ((randVal & 0xFU) - 7) * 32;
         const auto randY = (((randVal >> 4) & 0xFU) - 7) * 32;
         const auto randPos = World::Pos2(pos.x + randX, pos.y + randY);
-        if (!validCoords(randPos))
+        if (!TileManager::validCoords(randPos))
         {
             return std::nullopt;
         }
@@ -212,7 +212,7 @@ namespace OpenLoco::CompanyAi
         const auto randX = ((randVal & 0xFU) - 7) * 32;
         const auto randY = (((randVal >> 4) & 0xFU) - 7) * 32;
         const auto randPos = World::Pos2(pos.x + randX, pos.y + randY);
-        if (!validCoords(randPos))
+        if (!TileManager::validCoords(randPos))
         {
             return std::nullopt;
         }

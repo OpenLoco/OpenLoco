@@ -68,7 +68,7 @@ namespace OpenLoco::GameCommands
                 slopeFlags &= ~SurfaceSlope::requiresHeightAdjustment;
             }
 
-            auto cost = TileManager::adjustSurfaceHeight(toWorldSpace(tilePos), targetBaseZ, slopeFlags, removedBuildings, flags);
+            auto cost = TileManager::adjustSurfaceHeight(World::toWorldSpace(tilePos), targetBaseZ, slopeFlags, removedBuildings, flags);
             if (cost == FAILURE)
             {
                 return FAILURE;

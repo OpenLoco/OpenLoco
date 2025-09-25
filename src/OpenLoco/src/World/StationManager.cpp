@@ -483,7 +483,7 @@ namespace OpenLoco::StationManager
             for (; searchOffset.x < catchmentSize.x; ++searchOffset.x)
             {
                 const auto searchLoc = initialLoc + searchOffset;
-                if (!World::validCoords(searchLoc))
+                if (!World::TileManager::validCoords(searchLoc))
                 {
                     continue;
                 }
@@ -613,7 +613,7 @@ namespace OpenLoco::StationManager
     // 0x0048F8A0
     StationId allocateNewStation(const World::Pos3 pos, const CompanyId owner, const uint8_t mode)
     {
-        if (!World::validCoords(pos))
+        if (!World::TileManager::validCoords(pos))
         {
             GameCommands::setErrorTitle(StringIds::off_edge_of_map);
             return StationId::null;

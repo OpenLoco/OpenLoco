@@ -1,6 +1,7 @@
 #include "PaintBuilding.h"
 #include "Graphics/RenderTarget.h"
 #include "Map/BuildingElement.h"
+#include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"

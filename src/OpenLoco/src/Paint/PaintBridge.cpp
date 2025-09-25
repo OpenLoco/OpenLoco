@@ -1,6 +1,7 @@
 #include "PaintBridge.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
+#include "Map/TileManager.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/ObjectManager.h"
 #include "Paint.h"

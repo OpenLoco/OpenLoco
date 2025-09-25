@@ -19,9 +19,16 @@ namespace OpenLoco::World
 
 namespace OpenLoco::World::TileManager
 {
-    constexpr size_t kMaxElements = 3 * kMapColumns * kMapRows;
+    constexpr coord_t getMapRows() { return 384; }
+    constexpr coord_t getMapColumns() { return 384; }
+    constexpr coord_t kMapPitch = 512;
+    constexpr uint32_t getMapHeight() { return getMapRows() * World::kTileSize; }
+    constexpr uint32_t getMapWidth() { return getMapColumns() * World::kTileSize; }
+    constexpr uint32_t getMapSize() { return getMapColumns() * getMapRows(); }
+
+    constexpr size_t getMaxElements() { return 3U * getMapColumns() * getMapRows(); }
     constexpr size_t kMaxElementsOnOneTile = 1024; // If you exceed this then the game may buffer overflow in certain situations
-    constexpr size_t kMaxUsableElements = kMaxElements - kMaxElementsOnOneTile;
+    constexpr size_t getMaxUsableElements() { return getMaxElements() - kMaxElementsOnOneTile };
     const TileElement* const kInvalidTile = reinterpret_cast<const TileElement*>(static_cast<intptr_t>(-1));
 
     enum class ElementPositionFlags : uint8_t
@@ -107,4 +114,55 @@ namespace OpenLoco::World::TileManager
     void setTerrainStyleAsClearedAtHeight(const Pos3& pos);
     uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
     uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
+
+    constexpr bool validCoord(const coord_t coord)
+    {
+        return (coord >= 0) && (coord < getMapWidth());
+    }
+
+    constexpr bool validTileCoord(const tile_coord_t coord)
+    {
+        return (coord >= 0) && (coord < getMapColumns());
+    }
+
+    constexpr bool validCoords(const Pos2& coords)
+    {
+        return validCoord(coords.x) && validCoord(coords.y);
+    }
+
+    constexpr bool validCoords(const TilePos2& coords)
+    {
+        return validTileCoord(coords.x) && validTileCoord(coords.y);
+    }
+
+    // drawing coordinates validation differs from general valid coordinate validation
+    constexpr bool drawableCoord(const coord_t coord)
+    {
+        return (coord >= World::kTileSize) && (coord < (getMapWidth() - World::kTileSize - 1));
+    }
+
+    constexpr bool drawableTileCoord(const tile_coord_t coord)
+    {
+        return (coord >= 1) && (coord < (getMapColumns() - 2));
+    }
+
+    constexpr bool drawableCoords(const Pos2& coords)
+    {
+        return drawableCoord(coords.x) && drawableCoord(coords.y);
+    }
+
+    constexpr bool drawableCoords(const TilePos2& coords)
+    {
+        return drawableTileCoord(coords.x) && drawableTileCoord(coords.y);
+    }
+
+    constexpr coord_t clampCoord(coord_t coord)
+    {
+        return std::clamp<coord_t>(coord, 0, getMapWidth() - 1);
+    }
+
+    constexpr coord_t clampTileCoord(coord_t coord)
+    {
+        return std::clamp<coord_t>(coord, 0, getMapColumns() - 1);
+    }
 }

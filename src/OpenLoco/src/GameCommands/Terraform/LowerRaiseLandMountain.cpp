@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
 
     static void adjustSurfaceSlope(Pos2 pos, int8_t targetBaseZ, uint8_t targetCorner, uint8_t referenceCornerFlag, World::TileClearance::RemovedBuildings& removedBuildings)
     {
-        if (!validCoords(pos))
+        if (!TileManager::validCoords(pos))
         {
             return;
         }
@@ -247,7 +247,7 @@ namespace OpenLoco::GameCommands
             Audio::playSound(Audio::SoundId::construct, World::Pos3(args.centre.x, args.centre.y, height));
         }
 
-        if (!validCoords(args.pointA) || !validCoords(args.pointB))
+        if (!TileManager::validCoords(args.pointA) || !TileManager::validCoords(args.pointB))
         {
             return FAILURE;
         }

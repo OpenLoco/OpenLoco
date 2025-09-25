@@ -1395,7 +1395,7 @@ namespace OpenLoco::Paint
             TileDescriptor& descriptor = tileDescriptors[i];
 
             descriptor.elSurface = nullptr;
-            if (!World::validCoords(position))
+            if (!World::TileManager::validCoords(position))
             {
                 continue;
             }
@@ -1747,7 +1747,7 @@ namespace OpenLoco::Paint
             // Draw waves
             if (elSurface.isFlag6() && zoomLevel == 0)
             {
-                const auto waveIndex = WaveManager::getWaveIndex(toTileSpace(session.getUnkPosition()));
+                const auto waveIndex = WaveManager::getWaveIndex(World::toTileSpace(session.getUnkPosition()));
                 const auto& wave = WaveManager::getWave(waveIndex);
 
                 const auto waveImage = ImageId(waterObj->image).withIndexOffset(wave.frame + 60);

@@ -1,6 +1,7 @@
 #include "Config.h"
 #include "Graphics/Gfx.h"
 #include "Map/Tile.h"
+#include "Map/TileManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
@@ -47,7 +48,7 @@ namespace OpenLoco::Ui::Windows::Main
             { window->x, window->y },
             { window->width, window->height },
             ZoomLevel::full,
-            { (World::kMapRows * World::kTileSize) / 2 - 1, (World::kMapRows * World::kTileSize) / 2 - 1, 480 });
+            { (World::TileManager::getMapRows() * World::kTileSize) / 2 - 1, (World::TileManager::getMapRows() * World::kTileSize) / 2 - 1, 480 });
     }
 
     // 0x0043B2E4

@@ -133,7 +133,7 @@ namespace OpenLoco::Ui
         {
             viewport_pos vpos = vp->screenToViewport(mouse - w->position());
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
-            if (World::validCoords(position))
+            if (World::TileManager::validCoords(position))
             {
                 return position;
             }

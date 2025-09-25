@@ -1,6 +1,7 @@
 #include "PaintAirport.h"
 #include "Graphics/RenderTarget.h"
 #include "Map/StationElement.h"
+#include "Map/TileManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
 #include "Paint.h"
