@@ -280,36 +280,6 @@ namespace OpenLoco::Scenario
         Economy::sub_46E2C0(getCurrentYear());
     }
 
-    void registerHooks()
-    {
-        registerHook(
-            0x0043C88C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                reset();
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0043C90C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                generateLandscape();
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0049685C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                initialiseDate(regs.ax);
-                regs = backup;
-                return 0;
-            });
-    }
-
     // 0x00442837
     bool load(const fs::path& path)
     {

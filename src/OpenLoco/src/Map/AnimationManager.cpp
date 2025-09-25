@@ -116,16 +116,4 @@ namespace OpenLoco::World::AnimationManager
             numAnimations() = last;
         }
     }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x004612A6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                createAnimation(regs.dh, { regs.ax, regs.cx }, regs.dl);
-                regs = backup;
-                return 0;
-            });
-    }
 }

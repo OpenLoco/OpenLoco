@@ -44,26 +44,6 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     );
 
-    void registerHooks()
-    {
-        registerHook(
-            0x004C906B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::ToolTip::open((Ui::Window*)regs.esi, regs.edx, regs.ax, regs.bx);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004C9216,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::ToolTip::update((Ui::Window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
-                regs = backup;
-                return 0;
-            });
-    }
-
     static const WindowEventList& getEvents();
 
     static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)

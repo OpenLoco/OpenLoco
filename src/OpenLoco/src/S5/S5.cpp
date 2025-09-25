@@ -968,26 +968,4 @@ namespace OpenLoco::S5
         }
         return nullptr;
     }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00441C26,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto path = fs::u8path(std::string(_savePath));
-                const auto res = exportGameStateToFile(path, static_cast<SaveFlags>(regs.eax)) ? 0 : X86_FLAG_CARRY;
-                regs = backup;
-                return res;
-            });
-        registerHook(
-            0x00441FA7,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto path = fs::u8path(std::string(_savePath));
-                const auto res = importSaveToGameState(path, static_cast<LoadFlags>(regs.eax)) ? X86_FLAG_CARRY : 0;
-                regs = backup;
-                return res;
-            });
-    }
 }

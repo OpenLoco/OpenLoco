@@ -94,7 +94,6 @@ namespace OpenLoco::World::TileManager
     uint16_t countNearbyWaterTiles(Pos2 pos);
     void update();
     void updateYearly();
-    void registerHooks();
     void removeSurfaceIndustry(const Pos2& pos);
     void removeSurfaceIndustryAtHeight(const Pos3& pos);
     void createDestructExplosion(const World::Pos3& pos);

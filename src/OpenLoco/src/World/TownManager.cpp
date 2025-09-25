@@ -519,18 +519,6 @@ namespace OpenLoco::TownManager
         const uint8_t density = std::min(4 - unk, 3); // edx
         return { std::make_pair(town->id(), density) };
     }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00497348,
-            []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                resetBuildingsInfluence();
-                regs = backup;
-                return 0;
-            });
-    }
 }
 
 OpenLoco::TownId OpenLoco::Town::id() const
