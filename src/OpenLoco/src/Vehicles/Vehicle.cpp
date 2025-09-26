@@ -1015,7 +1015,7 @@ namespace OpenLoco::Vehicles
             assert(std::distance(car.begin(), car.end()) == vehicleObj->var_04);
             if (car.body->has38Flags(Flags38::isReversed))
             {
-                auto objCarIndex = vehicleObj->var_04 - 1;
+                auto objCarIndex = vehicleObj->numCarComponents - 1;
                 for (auto& component : car)
                 {
                     auto& objCar = vehicleObj->carComponents[objCarIndex];

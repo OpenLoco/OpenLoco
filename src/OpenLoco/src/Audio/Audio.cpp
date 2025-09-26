@@ -455,7 +455,7 @@ namespace OpenLoco::Audio
         if (isObjectSoundId(id))
         {
             auto obj = getSoundObject(id);
-            return obj->var_06 != 0;
+            return obj->shouldLoop != 0;
         }
         else
         {

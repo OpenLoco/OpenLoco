@@ -50,7 +50,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (drawStyle >= 1)
+        if (paintStyle >= 1)
         {
             return false;
         }
@@ -130,10 +130,10 @@ namespace OpenLoco
         assert(remainingData.size() == imgRes.tableLength);
 
         auto imageOffset = image + TrainStation::ImageIds::totalPreviewImages;
-        for (size_t i = 0; i < sizeof(var_12) / sizeof(var_12[0]); ++i)
+        for (size_t i = 0; i < sizeof(imageOffsets) / sizeof(imageOffsets[0]); ++i)
         {
-            var_12[i] = imageOffset;
-            imageOffset += kDrawStyleTotalNumImages[drawStyle];
+            imageOffsets[i] = imageOffset;
+            imageOffset += kDrawStyleTotalNumImages[paintStyle];
         }
     }
 
@@ -142,7 +142,7 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        std::fill(std::begin(var_12), std::end(var_12), 0);
+        std::fill(std::begin(imageOffsets), std::end(imageOffsets), 0);
         std::fill(std::begin(mods), std::end(mods), 0);
         std::fill(&cargoOffsetBytes[0][0], &cargoOffsetBytes[0][0] + sizeof(cargoOffsetBytes) / sizeof(uint32_t), 0);
         std::fill(std::begin(var_6E), std::end(var_6E), 0);

@@ -49,7 +49,7 @@ namespace OpenLoco
         uint16_t shadowImageOffset;      // 0x3A
         uint8_t var_3C;                  // 0x3C
         uint8_t seasonState;             // 0x3D (index for sprites, seasons + dying)
-        uint8_t var_3E;                  // 0x3E
+        uint8_t currentSeason;           // 0x3E
         uint8_t costIndex;               // 0x3F
         int16_t buildCostFactor;         // 0x40
         int16_t clearCostFactor;         // 0x42

@@ -1496,7 +1496,7 @@ namespace OpenLoco::World::TileManager
         if (!SceneManager::isEditorMode())
         {
             // Reset terrain growth when not in editor
-            surface->setTerrain(surface->terrain());
+            surface->setGrowthStage(0);
         }
 
         surface->setBaseZ(targetBaseZ);
@@ -1504,9 +1504,9 @@ namespace OpenLoco::World::TileManager
         surface->setSlope(slopeFlags);
 
         landObj = ObjectManager::get<LandObject>(surface->terrain());
-        if (landObj->hasFlags(LandObjectFlags::unk1) && !SceneManager::isEditorMode())
+        if (landObj->hasFlags(LandObjectFlags::hasReplacementLandHeader) && !SceneManager::isEditorMode())
         {
-            surface->setTerrain(landObj->cliffEdgeHeader2);
+            surface->setTerrain(landObj->replacementLandHeader);
         }
 
         if (surface->water() * kMicroToSmallZStep <= targetBaseZ)
