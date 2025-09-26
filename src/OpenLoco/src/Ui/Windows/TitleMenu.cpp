@@ -453,24 +453,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         window.var_846++;
 
-        if (Intro::isActive())
-        {
-            window.invalidate();
-            return;
-        }
-
-        if (!MultiPlayer::hasFlag(MultiPlayer::flags::flag_8) && !MultiPlayer::hasFlag(MultiPlayer::flags::flag_9))
-        {
-            window.invalidate();
-            return;
-        }
-
-        if (addr<0x0050C1AE, int32_t>() < 20)
-        {
-            window.invalidate();
-            return;
-        }
-
         window.invalidate();
     }
 

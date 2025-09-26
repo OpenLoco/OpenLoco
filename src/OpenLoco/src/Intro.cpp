@@ -53,7 +53,6 @@ namespace OpenLoco::Intro
     {
         _state = State::none;
         Gfx::loadDefaultPalette();
-        addr<0x0005252E0, int32_t>() = 0;
         Gfx::invalidateScreen();
         initialiseViewports();
         Gui::init();
@@ -219,7 +218,6 @@ namespace OpenLoco::Intro
         auto& drawingEngine = Gfx::getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();
 
-        addr<0x0005252E0, int32_t>() = 1;
         if (_state == State::end)
         {
             updateEnd(drawingCtx);
