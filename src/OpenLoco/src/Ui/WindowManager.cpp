@@ -38,11 +38,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::WindowManager
 {
-    namespace FindFlag
-    {
-        constexpr uint16_t byType = 1 << 7;
-    }
-
     static constexpr size_t kMaxWindows = 64;
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
