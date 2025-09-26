@@ -360,7 +360,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static Ui::CursorId onCursor([[maybe_unused]] Window& window, [[maybe_unused]] WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         // Reset tooltip timeout to keep tooltips open.
-        addr<0x0052338A, uint16_t>() = 2000;
+        Input::setTooltipTimeout(2000);
         return fallback;
     }
 
