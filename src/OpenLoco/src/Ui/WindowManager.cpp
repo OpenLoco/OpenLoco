@@ -888,9 +888,6 @@ namespace OpenLoco::Ui::WindowManager
             w->setColour(WindowColour::primary, static_cast<Colour>(CompanyManager::getCompanyColour(w->owner)));
         }
 
-        addr<0x1136F9C, int16_t>() = w->x;
-        addr<0x1136F9E, int16_t>() = w->y;
-
         // Text colouring
         setWindowColours(WindowColour::primary, w->getColour(WindowColour::primary).opaque());
         setWindowColours(WindowColour::secondary, w->getColour(WindowColour::secondary).opaque());
