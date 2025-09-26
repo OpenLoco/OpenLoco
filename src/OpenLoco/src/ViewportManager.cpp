@@ -24,8 +24,6 @@ namespace OpenLoco::Ui::ViewportManager
 {
     static sfl::static_vector<Viewport, kMaxViewports> _viewports{};
 
-    static Viewport* create(registers regs, int index);
-
     void init()
     {
         _viewports.clear();
