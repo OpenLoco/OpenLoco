@@ -191,10 +191,8 @@ namespace OpenLoco::Game
             if (playerCompanyId != previousUpdatingId)
             {
                 // 0x0043C1CD
-                addr<0x00F25428, uint32_t>() = 0;
                 SceneManager::removeSceneFlags(SceneManager::Flags::networked);
                 SceneManager::removeSceneFlags(SceneManager::Flags::networkHost);
-                addr<0x00508F0C, uint32_t>() = 0;
                 CompanyManager::setControllingId(CompanyId(0));
                 CompanyManager::setSecondaryPlayerId(CompanyId::null);
 
