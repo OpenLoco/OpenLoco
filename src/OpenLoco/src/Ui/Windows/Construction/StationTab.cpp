@@ -1337,7 +1337,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             if (((*_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none) && StationId(_cState->constructingStationId) == id) // _constructingStationId
             {
-                _cState->constructingStationId = -1;
+                _cState->constructingStationId = 0xFFFFFFFFU;
                 w->invalidate();
             }
         }
