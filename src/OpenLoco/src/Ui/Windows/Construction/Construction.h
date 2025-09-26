@@ -281,6 +281,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void tabReset(Window& self);
         void removeStationGhost();
         const WindowEventList& getEvents();
+        void sub_49E1F1(StationId id);
     }
 
     namespace Signal
