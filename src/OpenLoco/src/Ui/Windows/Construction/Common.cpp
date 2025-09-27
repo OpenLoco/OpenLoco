@@ -1388,25 +1388,4 @@ namespace OpenLoco::Ui::Windows::Construction
         }
         return false;
     }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0049F1B5,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Construction::activateSelectedConstructionWidgets();
-                regs = backup;
-                return 0;
-            });
-
-        // registerHook(
-        //     0x0049DC97,
-        //     [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //         registers backup = regs;
-        //         construction::on_tool_down(*((Ui::window*)regs.esi), regs.dx, regs.ax, regs.cx);
-        //         regs = backup;
-        //         return 0;
-        //     });
-    }
 }

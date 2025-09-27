@@ -61,36 +61,6 @@ namespace OpenLoco::Ui::Windows::TextInput
 
     );
 
-    void registerHooks()
-    {
-        registerHook(
-            0x004CE523,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                openTextInput((Ui::Window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CE6C9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_4CE6C9((WindowType)regs.cl, (WindowNumber_t)regs.dx);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CE6F2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                cancel();
-                regs = backup;
-                return 0;
-            });
-    }
-
     static const WindowEventList& getEvents();
 
     /**

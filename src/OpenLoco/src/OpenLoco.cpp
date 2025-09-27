@@ -787,7 +787,6 @@ namespace OpenLoco
         }
 
         Environment::resolvePaths();
-        registerHooks();
 
         try
         {
@@ -863,8 +862,6 @@ namespace OpenLoco
 
             const auto& cfg = Config::read();
             Environment::resolvePaths();
-
-            registerHooks();
 
             Ui::createWindow(cfg.display);
             generateSystemStats();

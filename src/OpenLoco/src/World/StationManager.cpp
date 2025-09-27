@@ -806,21 +806,6 @@ namespace OpenLoco::StationManager
             return NearbyStation{ minDistanceStation, isPhysicallyAttached };
         }
     }
-
-    void registerHooks()
-    {
-        // Can be removed once the createStation function has been implemented (used by place.*Station game commands)
-        registerHook(
-            0x048F988,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto stationId = (reinterpret_cast<Station*>(regs.esi))->id();
-                const auto newName = generateNewStationName(stationId, TownId(regs.ebx), World::Pos3(regs.ax, regs.cx, regs.dh * World::kSmallZStep), regs.dl);
-                regs = backup;
-                regs.bx = newName;
-                return 0;
-            });
-    }
 }
 
 OpenLoco::StationId OpenLoco::Station::id() const

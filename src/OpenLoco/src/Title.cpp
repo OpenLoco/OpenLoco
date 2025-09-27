@@ -248,24 +248,4 @@ namespace OpenLoco::Title
             std::visit([](auto&& step) { handleStep(step); }, command);
         } while (_waitCounter == 0);
     }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0046AD7D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                start();
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004442C4,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                loadTitle();
-                regs = backup;
-                return 0;
-            });
-    }
 }

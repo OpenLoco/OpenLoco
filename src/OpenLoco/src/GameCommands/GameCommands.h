@@ -126,7 +126,6 @@ namespace OpenLoco::GameCommands
 
     constexpr uint32_t FAILURE = 0x80000000;
 
-    void registerHooks();
     uint32_t doCommand(GameCommand command, const registers& registers);
     uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers);
     bool sub_431E6A(const CompanyId company, const World::TileElement* const tile = nullptr);

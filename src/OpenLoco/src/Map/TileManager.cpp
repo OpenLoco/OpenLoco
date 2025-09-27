@@ -1630,37 +1630,4 @@ namespace OpenLoco::World::TileManager
             }
         }
     }
-
-    void registerHooks()
-    {
-        // This hook can be removed once sub_4599B3 has been implemented
-        registerHook(
-            0x004BE048,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                const auto count = countSurroundingTrees({ regs.ax, regs.cx });
-                regs = backup;
-                regs.dx = count;
-                return 0;
-            });
-
-        registerHook(
-            0x004C5596,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                const auto count = countSurroundingWaterTiles({ regs.ax, regs.cx });
-                regs = backup;
-                regs.dx = count;
-                return 0;
-            });
-
-        registerHook(
-            0x0046902E,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                removeSurfaceIndustry({ regs.ax, regs.cx });
-                regs = backup;
-                return 0;
-            });
-    }
 }

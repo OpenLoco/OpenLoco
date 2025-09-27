@@ -435,19 +435,4 @@ namespace OpenLoco::Config
 
         write();
     }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00441BB8,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto& newConfig = get();
-                // Copy the old config into the new config as callers will be modifying the old memory
-                newConfig.old = getLegacy();
-                write();
-                regs = backup;
-                return 0;
-            });
-    }
 }

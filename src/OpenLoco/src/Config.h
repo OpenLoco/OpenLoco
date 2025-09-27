@@ -220,5 +220,4 @@ namespace OpenLoco::Config
     void write();
 
     void resetShortcuts();
-    void registerHooks();
 }

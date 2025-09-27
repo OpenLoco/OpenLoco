@@ -20,7 +20,6 @@ namespace OpenLoco::StationManager
     void updateDaily();
     StringId generateNewStationName(StationId stationId, TownId townId, World::Pos3 position, uint8_t mode);
     void zeroUnused();
-    void registerHooks();
     uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const World::Pos2& pos, const World::TilePos2& size);
     uint16_t deliverCargoToStations(std::span<const StationId> stations, const uint8_t cargoType, const uint8_t cargoQty);
     bool exceedsStationSize(Station& station, World::Pos3 pos);
