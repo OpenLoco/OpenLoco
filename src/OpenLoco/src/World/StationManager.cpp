@@ -19,6 +19,7 @@
 #include "TownManager.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -86,19 +87,6 @@ namespace OpenLoco::StationManager
         }
     }
 
-    static void sub_49E1F1(StationId id)
-    {
-        auto w = WindowManager::find(WindowType::construction);
-        if (w != nullptr && w->currentTab == 1)
-        {
-            if ((addr<0x00522096, uint8_t>() & 8) && StationId(addr<0x01135F70, int32_t>()) == id) // _constructingStationId
-            {
-                addr<0x01135F70, int32_t>() = -1;
-                w->invalidate();
-            }
-        }
-    }
-
     // 0x0048B244
     void updateDaily()
     {
@@ -118,7 +106,7 @@ namespace OpenLoco::StationManager
                 }
                 if (station.noTilesTimeout >= 10)
                 {
-                    sub_49E1F1(station.id());
+                    Ui::Windows::Construction::Station::sub_49E1F1(station.id());
                     station.invalidate();
                     deallocateStation(station.id());
                 }
