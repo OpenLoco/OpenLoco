@@ -105,7 +105,7 @@ namespace OpenLoco::Input
     static Ui::WindowNumber_t _focusedWindowNumber;
     static Ui::WidgetIndex_t _focusedWidgetIndex;
 
-    static uint32_t _rightMouseButtonStatus;
+    static bool _rightMouseButtonDown;
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
@@ -1774,12 +1774,12 @@ namespace OpenLoco::Input
 
     bool isRightMouseButtonDown()
     {
-        return _rightMouseButtonStatus == 0;
+        return _rightMouseButtonDown;
     }
 
     void setRightMouseButtonDown(bool status)
     {
-        _rightMouseButtonStatus = status;
+        _rightMouseButtonDown = status;
     }
 
     // 0x00113E9E0
@@ -1918,7 +1918,7 @@ namespace OpenLoco::Input
                     return loc_4C70F1(x, y);
                 }
             }
-            else if (isRightMouseButtonDown())
+            else if (!isRightMouseButtonDown())
             {
                 return loc_4C70F1(x, y);
             }
