@@ -1817,7 +1817,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004C70F1
-    static MouseButton loc_4C70F1(uint32_t& x, int16_t& y)
+    static MouseButton rightMouseButtonReleased(uint32_t& x, int16_t& y)
     {
         stopCursorDrag();
         resetFlag(Flags::rightMousePressed);
@@ -1915,12 +1915,12 @@ namespace OpenLoco::Input
                 auto button = MouseButton(Tutorial::nextInput());
                 if (button == MouseButton::released)
                 {
-                    return loc_4C70F1(x, y);
+                    return rightMouseButtonReleased(x, y);
                 }
             }
             else if (!isRightMouseButtonDown())
             {
-                return loc_4C70F1(x, y);
+                return rightMouseButtonReleased(x, y);
             }
 
             // 0x004C704E
@@ -1929,12 +1929,12 @@ namespace OpenLoco::Input
                 auto next = Tutorial::nextInput();
                 if (!(next & 0x80))
                 {
-                    return loc_4C70F1(x, y);
+                    return rightMouseButtonReleased(x, y);
                 }
             }
             else if (!(addr<0x01140845, uint8_t>() & 0x80))
             {
-                return loc_4C70F1(x, y);
+                return rightMouseButtonReleased(x, y);
             }
 
             // 0x004C7085
