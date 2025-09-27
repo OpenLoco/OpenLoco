@@ -1910,19 +1910,6 @@ namespace OpenLoco::Input
         }
         else
         {
-            if (Tutorial::state() == Tutorial::State::playing)
-            {
-                auto button = MouseButton(Tutorial::nextInput());
-                if (button == MouseButton::released)
-                {
-                    return rightMouseButtonReleased(x, y);
-                }
-            }
-            else if (!isRightMouseButtonDown())
-            {
-                return rightMouseButtonReleased(x, y);
-            }
-
             // 0x004C704E
             if (Tutorial::state() == Tutorial::State::playing)
             {
