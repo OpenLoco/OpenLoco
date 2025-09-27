@@ -1932,7 +1932,7 @@ namespace OpenLoco::Input
                     return rightMouseButtonReleased(x, y);
                 }
             }
-            else if (!(addr<0x01140845, uint8_t>() & 0x80))
+            else if (!isRightMouseButtonDown())
             {
                 return rightMouseButtonReleased(x, y);
             }
