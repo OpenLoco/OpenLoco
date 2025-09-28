@@ -240,6 +240,7 @@ namespace OpenLoco::Config
             audioConfig.playJukeboxMusic = audioNode["playJukeboxMusic"].as<bool>(true);
             audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>(true);
             audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>(true);
+            audioConfig.playlist = audioNode["playlist"].as<MusicPlaylistType>(MusicPlaylistType::currentEra);
 
             if (audioNode["jukebox"])
             {
@@ -386,6 +387,7 @@ namespace OpenLoco::Config
         audioNode["playJukeboxMusic"] = audioConfig.playJukeboxMusic;
         audioNode["play_title_music"] = audioConfig.playTitleMusic;
         audioNode["playNewsSounds"] = audioConfig.playNewsSounds;
+        audioNode["playlist"] = audioConfig.playlist;
         audioNode["jukebox"] = audioConfig.jukebox;
         node["audio"] = audioNode;
 
