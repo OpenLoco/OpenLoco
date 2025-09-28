@@ -761,7 +761,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
             Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
-            Dropdown::setItemSelected(Config::get().old.vehiclesMinScale);
+            Dropdown::setItemSelected(Config::get().vehiclesMinScale);
         }
 
         // 0x004BFF4C
@@ -772,12 +772,12 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            if (ax == Config::get().old.vehiclesMinScale)
+            if (ax == Config::get().vehiclesMinScale)
             {
                 return;
             }
 
-            auto& cfg = OpenLoco::Config::get().old;
+            auto& cfg = OpenLoco::Config::get();
             cfg.vehiclesMinScale = ax;
             OpenLoco::Config::write();
             Gfx::invalidateScreen();
@@ -795,7 +795,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
             Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
-            Dropdown::setItemSelected(Config::get().old.stationNamesMinScale);
+            Dropdown::setItemSelected(Config::get().stationNamesMinScale);
         }
 
         // 0x004C0000
@@ -806,12 +806,12 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            if (ax == Config::get().old.stationNamesMinScale)
+            if (ax == Config::get().stationNamesMinScale)
             {
                 return;
             }
 
-            auto& cfg = OpenLoco::Config::get().old;
+            auto& cfg = OpenLoco::Config::get();
             cfg.stationNamesMinScale = ax;
             OpenLoco::Config::write();
             Gfx::invalidateScreen();
@@ -891,8 +891,8 @@ namespace OpenLoco::Ui::Windows::Options
                 StringIds::eighth_scale,
             };
 
-            w.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().old.vehiclesMinScale];
-            w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().old.stationNamesMinScale];
+            w.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
+            w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
 
             w.activatedWidgets &= ~(1ULL << Widx::landscape_smoothing);
             if (!Config::get().hasFlags(Config::Flags::landscapeSmoothing))
