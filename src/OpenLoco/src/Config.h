@@ -224,7 +224,9 @@ namespace OpenLoco::Config
         bool showFPS = false;
         bool uncapFPS = false;
 
+        uint8_t constructionMarker;
         bool gridlinesOnLandscape = false;
+        uint8_t heightMarkerOffset;
         bool landscapeSmoothing = true;
         bool showHeightAsUnits = false;
         uint8_t stationNamesMinScale = 2;
