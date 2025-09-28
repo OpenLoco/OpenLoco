@@ -262,12 +262,17 @@ namespace OpenLoco::Config
         _newConfig.usePreferredCurrencyForNewGames = config["usePreferredCurrencyForNewGames"].as<bool>(false);
         _newConfig.usePreferredCurrencyAlways = config["usePreferredCurrencyAlways"].as<bool>(false);
 
-        // Rendering
+        // Display
         _newConfig.scaleFactor = config["scale_factor"].as<float>(1.0f);
         _newConfig.showFPS = config["showFPS"].as<bool>(false);
         _newConfig.uncapFPS = config["uncapFPS"].as<bool>(false);
-        _newConfig.vehiclesMinScale = config["vehiclesMinScale"].as<int32_t>(2);
+
+        // Rendering
+        _newConfig.gridlinesOnLandscape = config["gridlinesOnLandscape"].as<bool>(false);
+        _newConfig.landscapeSmoothing = config["landscapeSmoothing"].as<bool>(true);
+        _newConfig.showHeightAsUnits = config["showHeightAsUnits"].as<bool>(false);
         _newConfig.stationNamesMinScale = config["stationNamesMinScale"].as<int32_t>(2);
+        _newConfig.vehiclesMinScale = config["vehiclesMinScale"].as<int32_t>(2);
 
         // News settings
         auto& newsNode = config["news"];
@@ -298,9 +303,10 @@ namespace OpenLoco::Config
         _newConfig.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>(12);
         _newConfig.zoomToCursor = config["zoom_to_cursor"].as<bool>(true);
 
-        // Autosaves
+        // Saving and autosaves
         _newConfig.autosaveAmount = config["autosave_amount"].as<int32_t>(12);
         _newConfig.autosaveFrequency = config["autosave_frequency"].as<int32_t>(1);
+        _newConfig.exportObjectsWithSaves = config["exportObjectsWithSaves"].as<bool>(true);
 
         // Cheats
         _newConfig.breakdownsDisabled = config["breakdowns_disabled"].as<bool>(false);
@@ -391,10 +397,15 @@ namespace OpenLoco::Config
         node["usePreferredCurrencyForNewGames"] = _newConfig.usePreferredCurrencyForNewGames;
         node["usePreferredCurrencyAlways"] = _newConfig.usePreferredCurrencyAlways;
 
-        // Rendering
+        // Display
         node["scale_factor"] = _newConfig.scaleFactor;
         node["showFPS"] = _newConfig.showFPS;
         node["uncapFPS"] = _newConfig.uncapFPS;
+
+        // Rendering
+        node["gridlinesOnLandscape"] = _newConfig.gridlinesOnLandscape;
+        node["showHeightAsUnits"] = _newConfig.showHeightAsUnits;
+        node["landscapeSmoothing"] = _newConfig.landscapeSmoothing;
         node["vehiclesMinScale"] = _newConfig.vehiclesMinScale;
         node["stationNamesMinScale"] = _newConfig.stationNamesMinScale;
 
@@ -416,9 +427,10 @@ namespace OpenLoco::Config
         node["edgeScrollingSpeed"] = _newConfig.edgeScrollingSpeed;
         node["zoom_to_cursor"] = _newConfig.zoomToCursor;
 
-        // Autosaves
+        // Saving and autosaves
         node["autosave_amount"] = _newConfig.autosaveAmount;
         node["autosave_frequency"] = _newConfig.autosaveFrequency;
+        node["exportObjectsWithSaves"] = _newConfig.exportObjectsWithSaves;
 
         // Cheats
         node["breakdowns_disabled"] = _newConfig.breakdownsDisabled;
