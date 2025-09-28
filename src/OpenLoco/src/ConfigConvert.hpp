@@ -195,6 +195,18 @@ namespace YAML
         static const convert_pair_vector<MeasurementFormat>& getEntries() { return measurementFormatEntries; }
     };
 
+    // NewsType
+    const convert_pair_vector<NewsType> newsTypeEntries = {
+        enum_def(NewsType, none),
+        enum_def(NewsType, ticker),
+        enum_def(NewsType, newsWindow),
+    };
+    template<>
+    struct convert<NewsType> : convert_enum_base<NewsType>
+    {
+        static const convert_pair_vector<NewsType>& getEntries() { return newsTypeEntries; }
+    };
+
     // ScreenMode
     const convert_pair_vector<ScreenMode> screenModeEntries = {
         enum_def(ScreenMode, window),

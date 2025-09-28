@@ -1,6 +1,7 @@
 #include "Config.h"
 #include "ConfigConvert.hpp"
 #include "Environment.h"
+#include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -268,6 +269,28 @@ namespace OpenLoco::Config
         _newConfig.vehiclesMinScale = config["vehiclesMinScale"].as<int32_t>(2);
         _newConfig.stationNamesMinScale = config["stationNamesMinScale"].as<int32_t>(2);
 
+        // News settings
+        auto& newsNode = config["news"];
+        auto& newsConfig = _newConfig.newsSettings;
+        if (newsNode && newsNode.IsMap())
+        {
+            newsConfig[enumValue(MessageCriticality::majorCompany)] = newsNode["majorCompany"].as<NewsType>(NewsType::newsWindow);
+            newsConfig[enumValue(MessageCriticality::majorCompetitor)] = newsNode["majorCompetitor"].as<NewsType>(NewsType::newsWindow);
+            newsConfig[enumValue(MessageCriticality::minorCompany)] = newsNode["minorCompany"].as<NewsType>(NewsType::newsWindow);
+            newsConfig[enumValue(MessageCriticality::minorCompetitor)] = newsNode["minorCompetitor"].as<NewsType>(NewsType::newsWindow);
+            newsConfig[enumValue(MessageCriticality::general)] = newsNode["general"].as<NewsType>(NewsType::newsWindow);
+            newsConfig[enumValue(MessageCriticality::advice)] = newsNode["advice"].as<NewsType>(NewsType::newsWindow);
+        }
+        else
+        {
+            newsConfig[enumValue(MessageCriticality::majorCompany)] = NewsType::newsWindow;
+            newsConfig[enumValue(MessageCriticality::majorCompetitor)] = NewsType::newsWindow;
+            newsConfig[enumValue(MessageCriticality::minorCompany)] = NewsType::newsWindow;
+            newsConfig[enumValue(MessageCriticality::minorCompetitor)] = NewsType::newsWindow;
+            newsConfig[enumValue(MessageCriticality::general)] = NewsType::newsWindow;
+            newsConfig[enumValue(MessageCriticality::advice)] = NewsType::newsWindow;
+        }
+
         // General UI
         _newConfig.allowMultipleInstances = config["allow_multiple_instances"].as<bool>(false);
         _newConfig.cashPopupRendering = config["cashPopupRendering"].as<bool>(true);
@@ -374,6 +397,17 @@ namespace OpenLoco::Config
         node["uncapFPS"] = _newConfig.uncapFPS;
         node["vehiclesMinScale"] = _newConfig.vehiclesMinScale;
         node["stationNamesMinScale"] = _newConfig.stationNamesMinScale;
+
+        // News settings
+        const auto& newsConfig = _newConfig.newsSettings;
+        auto newsNode = node["news"];
+        newsNode["majorCompany"] = newsConfig[enumValue(MessageCriticality::majorCompany)];
+        newsNode["majorCompetitor"] = newsConfig[enumValue(MessageCriticality::majorCompetitor)];
+        newsNode["minorCompany"] = newsConfig[enumValue(MessageCriticality::minorCompany)];
+        newsNode["minorCompetitor"] = newsConfig[enumValue(MessageCriticality::minorCompetitor)];
+        newsNode["general"] = newsConfig[enumValue(MessageCriticality::general)];
+        newsNode["advice"] = newsConfig[enumValue(MessageCriticality::advice)];
+        node["news"] = newsNode;
 
         // General UI
         node["allow_multiple_instances"] = _newConfig.allowMultipleInstances;
