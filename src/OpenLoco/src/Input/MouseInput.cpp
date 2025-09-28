@@ -105,7 +105,7 @@ namespace OpenLoco::Input
     static Ui::WindowNumber_t _focusedWindowNumber;
     static Ui::WidgetIndex_t _focusedWidgetIndex;
 
-    static uint32_t _rightMouseButtonStatus;
+    static bool _rightMouseButtonDown;
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
@@ -1774,12 +1774,12 @@ namespace OpenLoco::Input
 
     bool isRightMouseButtonDown()
     {
-        return _rightMouseButtonStatus == 0;
+        return _rightMouseButtonDown;
     }
 
     void setRightMouseButtonDown(bool status)
     {
-        _rightMouseButtonStatus = status;
+        _rightMouseButtonDown = status;
     }
 
     // 0x00113E9E0
@@ -1817,7 +1817,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004C70F1
-    static MouseButton loc_4C70F1(uint32_t& x, int16_t& y)
+    static MouseButton rightMouseButtonReleased(uint32_t& x, int16_t& y)
     {
         stopCursorDrag();
         resetFlag(Flags::rightMousePressed);
@@ -1910,31 +1910,18 @@ namespace OpenLoco::Input
         }
         else
         {
-            if (Tutorial::state() == Tutorial::State::playing)
-            {
-                auto button = MouseButton(Tutorial::nextInput());
-                if (button == MouseButton::released)
-                {
-                    return loc_4C70F1(x, y);
-                }
-            }
-            else if (isRightMouseButtonDown())
-            {
-                return loc_4C70F1(x, y);
-            }
-
             // 0x004C704E
             if (Tutorial::state() == Tutorial::State::playing)
             {
                 auto next = Tutorial::nextInput();
                 if (!(next & 0x80))
                 {
-                    return loc_4C70F1(x, y);
+                    return rightMouseButtonReleased(x, y);
                 }
             }
-            else if (!(addr<0x01140845, uint8_t>() & 0x80))
+            else if (!isRightMouseButtonDown())
             {
-                return loc_4C70F1(x, y);
+                return rightMouseButtonReleased(x, y);
             }
 
             // 0x004C7085

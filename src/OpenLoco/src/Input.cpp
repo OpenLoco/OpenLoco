@@ -167,13 +167,10 @@ namespace OpenLoco::Input
                     {
                         case SDL_BUTTON_LEFT:
                             enqueueMouseButton({ { x, y }, 1 });
-                            addr<0x0113E8A0, int32_t>() = 1;
                             break;
                         case SDL_BUTTON_RIGHT:
                             enqueueMouseButton({ { x, y }, 2 });
-                            addr<0x0113E0C0, int32_t>() = 1;
                             setRightMouseButtonDown(true);
-                            addr<0x01140845, uint8_t>() = 0x80;
                             break;
                     }
                     break;
@@ -188,13 +185,10 @@ namespace OpenLoco::Input
                     {
                         case SDL_BUTTON_LEFT:
                             enqueueMouseButton({ { x, y }, 3 });
-                            addr<0x0113E8A0, int32_t>() = 0;
                             break;
                         case SDL_BUTTON_RIGHT:
                             enqueueMouseButton({ { x, y }, 4 });
-                            addr<0x0113E0C0, int32_t>() = 0;
                             setRightMouseButtonDown(false);
-                            addr<0x01140845, uint8_t>() = 0;
                             break;
                     }
                     break;
