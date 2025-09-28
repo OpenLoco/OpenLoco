@@ -235,6 +235,7 @@ namespace OpenLoco::Config
         {
             auto& audioConfig = _newConfig.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
+            audioConfig.mainVolume = audioNode["mainVolume"].as<int32_t>(-1100);
             audioConfig.playJukeboxMusic = audioNode["playJukeboxMusic"].as<bool>(true);
             audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>(true);
             audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>(true);
@@ -343,6 +344,7 @@ namespace OpenLoco::Config
         {
             audioNode.remove("device");
         }
+        audioNode["mainVolume"] = audioConfig.mainVolume;
         audioNode["playJukeboxMusic"] = audioConfig.playJukeboxMusic;
         audioNode["play_title_music"] = audioConfig.playTitleMusic;
         audioNode["playNewsSounds"] = audioConfig.playNewsSounds;
