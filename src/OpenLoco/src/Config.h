@@ -190,6 +190,7 @@ namespace OpenLoco::Config
         bool edgeScrolling = true;
         int32_t edgeScrollingSpeed = 12;
         bool zoomToCursor = true;
+        NewsType newsSettings[messageCriticalityCount];
 
         int32_t autosaveAmount = 12;
         int32_t autosaveFrequency = 1;
