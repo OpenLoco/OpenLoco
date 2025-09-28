@@ -535,12 +535,7 @@ namespace OpenLoco::Audio
                 pan = 0;
             }
 
-            const auto& cfg = Config::get().old;
-            if (cfg.var_1E == 0)
-            {
-                pan = 0;
-            }
-            else if (pan != 0)
+            if (pan != 0)
             {
                 pan = calculatePan(pan, Ui::width());
             }
