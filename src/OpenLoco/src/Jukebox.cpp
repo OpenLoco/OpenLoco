@@ -55,7 +55,7 @@ namespace OpenLoco::Jukebox
 
     bool isMusicPlaying()
     {
-        return (currentTrack != kNoSong && Config::get().old.musicPlaying);
+        return (currentTrack != kNoSong && Config::get().audio.playJukeboxMusic);
     }
 
     MusicId getCurrentTrack()
@@ -207,7 +207,7 @@ namespace OpenLoco::Jukebox
     // Prematurely stops the current song so that another can be played.
     bool skipCurrentTrack()
     {
-        if (Config::get().old.musicPlaying == 0)
+        if (Config::get().audio.playJukeboxMusic == 0)
         {
             return false;
         }
@@ -222,14 +222,14 @@ namespace OpenLoco::Jukebox
     // When the player disables "Play Music" from the top toolbar, or clicks the stop button in the music options.
     bool disableMusic()
     {
-        auto& cfg = Config::get().old;
+        auto& cfg = Config::get().audio;
 
-        if (cfg.musicPlaying == 0)
+        if (cfg.playJukeboxMusic == 0)
         {
             return false;
         }
 
-        cfg.musicPlaying = 0;
+        cfg.playJukeboxMusic = 0;
         Config::write();
 
         Audio::stopMusic();
@@ -240,14 +240,14 @@ namespace OpenLoco::Jukebox
 
     bool enableMusic()
     {
-        auto& cfg = Config::get().old;
+        auto& cfg = Config::get().audio;
 
-        if (cfg.musicPlaying != 0)
+        if (cfg.playJukeboxMusic != 0)
         {
             return false;
         }
 
-        cfg.musicPlaying = 1;
+        cfg.playJukeboxMusic = 1;
         Config::write();
 
         return true;
