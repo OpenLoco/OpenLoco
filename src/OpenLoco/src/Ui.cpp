@@ -490,11 +490,6 @@ namespace OpenLoco::Ui
             config.display.fullscreenResolution = newResolution;
         }
 
-        // We're also keeping track the resolution in the legacy config, for now.
-        auto& legacyConfig = Config::get().old;
-        legacyConfig.resolutionWidth = newResolution.width;
-        legacyConfig.resolutionHeight = newResolution.height;
-
         OpenLoco::Config::write();
         Ui::triggerResize();
         Gfx::invalidateScreen();
@@ -547,16 +542,12 @@ namespace OpenLoco::Ui
         });
         resolutions.erase(last, resolutions.end());
 
-        // Update config fullscreen resolution if not set
-        auto& cfg = Config::get().old;
-        auto& cfgNew = Config::get();
-
-        if (!(cfgNew.display.fullscreenResolution.isPositive() && cfg.resolutionWidth > 0 && cfg.resolutionHeight > 0))
+        // Update configured fullscreen resolution if not set
+        auto& cfg = Config::get().display.fullscreenResolution;
+        if (!cfg.isPositive())
         {
-            cfg.resolutionWidth = resolutions.back().width;
-            cfg.resolutionHeight = resolutions.back().height;
-            cfgNew.display.fullscreenResolution.width = resolutions.back().width;
-            cfgNew.display.fullscreenResolution.height = resolutions.back().height;
+            cfg.width = resolutions.back().width;
+            cfg.height = resolutions.back().height;
         }
 
         _fsResolutions = resolutions;
