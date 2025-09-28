@@ -366,17 +366,12 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
     static void showMultiplayer(Window* window)
     {
-        auto& cfg = Config::get().old;
-        StringManager::setString(StringIds::buffer_2039, Utility::nullTerminatedView(cfg.lastHost));
+        StringManager::setString(StringIds::buffer_2039, "");
         TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, nullptr);
     }
 
     static void multiplayerConnect(std::string_view host)
     {
-        auto& cfg = Config::get().old;
-        auto szHost = std::string(host);
-        Utility::strcpy_safe(cfg.lastHost, szHost.c_str());
-
         Network::joinServer(host);
     }
 
