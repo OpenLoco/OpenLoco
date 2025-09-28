@@ -11,23 +11,6 @@
 
 namespace OpenLoco::Config
 {
-#pragma pack(push, 1)
-
-    enum class Flags : uint32_t
-    {
-        none = 0U,
-        gridlinesOnLandscape = 1U << 0,   // unused
-        showHeightAsUnits = 1U << 1,      // unused
-        landscapeSmoothing = 1U << 2,     // unused
-        exportObjectsWithSaves = 1U << 3, // unused
-
-        preferredCurrencyForNewGames = 1U << 6, // unused
-        preferredCurrencyAlways = 1U << 7,      // unused
-
-        usePreferredOwnerName = 1U << 9, // unused
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
-
     enum class MeasurementFormat : uint8_t
     {
         imperial = 0,
@@ -40,8 +23,6 @@ namespace OpenLoco::Config
         ticker,
         newsWindow,
     };
-
-    constexpr auto messageCriticalityCount = 6;
 
     enum class ScreenMode
     {
@@ -56,56 +37,6 @@ namespace OpenLoco::Config
         all,
         custom,
     };
-
-    struct LocoConfig
-    {
-        // This struct has been deprecated; please use Config::KeyboardShortcut instead.
-        struct KeyboardShortcut
-        {
-            uint8_t var_0;
-            uint8_t var_1;
-        };
-
-        Flags flags;                                    // 0x50AEB4, 0x00
-        int16_t resolutionWidth;                        // 0x50AEB8, 0x04
-        int16_t resolutionHeight;                       // 0x50AEBA, 0x06
-        uint16_t backupResolutionWidth;                 // 0x50AEBC, 0x08
-        uint16_t backupResolutionHeight;                // 0x50AEBE, 0x10
-        uint8_t countdown;                              // 0x50AEC0, 0x0C
-        bool var_0D;                                    // 0x0D
-        uint8_t audioDeviceGuid[16];                    // 0x0E
-        uint8_t var_1E;                                 // 0x1E
-        uint32_t forceSoftwareAudioMixer;               // 0x1F
-        uint8_t musicPlaying;                           // 0x23
-        uint8_t constructionMarker;                     // 0x50AED8, 0x24
-        uint8_t maxVehicleSounds;                       // 0x25
-        uint8_t maxSoundInstances;                      // 0x26
-        uint8_t soundQuality;                           // 0x27
-        MeasurementFormat measurementFormat;            // 0x50AEDC, 0x28
-        uint8_t pad_29;                                 // 0x29
-        KeyboardShortcut keyboardShortcuts[35];         // 0x2A
-        uint8_t edgeScrolling;                          // 0x70
-        uint8_t vehiclesMinScale;                       // 0x50AF25, 0x71
-        uint8_t var_72;                                 // 0x50AF26, 0x72
-        MusicPlaylistType musicPlaylist;                // 0x50AF27, 0x73
-        uint16_t heightMarkerOffset;                    // 0x50AF28, 0x74
-        NewsType newsSettings[messageCriticalityCount]; // 0x50AF2A, 0x76
-        ObjectHeader preferredCurrency;                 // 0x7C
-        uint8_t enabledMusic[29];                       // 0x50AF40, 0x8C
-        uint8_t pad_A9[0xCC - 0xA9];                    // 0xA9
-        int32_t volume;                                 // 0x50AF80, 0xCC
-        uint32_t connectionTimeout;                     // 0xD0
-        char lastHost[64];                              // 0xD4
-        uint8_t stationNamesMinScale;                   // 0x114
-        uint8_t scenarioSelectedTab;                    // 0x115
-        char preferredName[256];                        // 0x116
-    };
-    static_assert(offsetof(LocoConfig, keyboardShortcuts) == 0x2A);
-    static_assert(offsetof(LocoConfig, preferredName) == 0x116);
-    static_assert(offsetof(LocoConfig, lastHost) == 0xD4);
-    static_assert(sizeof(LocoConfig) == 0x216);
-
-#pragma pack(pop)
 
     struct Resolution
     {
@@ -205,7 +136,9 @@ namespace OpenLoco::Config
         bool enabled{};
     };
 
-    struct NewConfig
+    constexpr auto messageCriticalityCount = 6;
+
+    struct Config
     {
         Display display;
         Audio audio;
@@ -262,13 +195,11 @@ namespace OpenLoco::Config
         uint8_t scenarioSelectedTab;
 
         std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
-
-        LocoConfig old;
     };
 
-    NewConfig& get();
+    Config& get();
 
-    NewConfig& read();
+    Config& read();
     void write();
 
     void resetShortcuts();
