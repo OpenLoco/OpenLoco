@@ -345,6 +345,7 @@ namespace OpenLoco::Config
         }
         audioNode["playJukeboxMusic"] = audioConfig.playJukeboxMusic;
         audioNode["play_title_music"] = audioConfig.playTitleMusic;
+        audioNode["playNewsSounds"] = audioConfig.playNewsSounds;
         node["audio"] = audioNode;
 
         // Network
