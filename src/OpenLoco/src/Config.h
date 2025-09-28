@@ -179,6 +179,9 @@ namespace OpenLoco::Config
         bool showFPS = false;
         bool uncapFPS = false;
 
+        uint8_t vehiclesMinScale;
+        uint8_t stationNamesMinScale;
+
         bool allowMultipleInstances = false;
         bool cashPopupRendering = true;
         bool edgeScrolling = true;

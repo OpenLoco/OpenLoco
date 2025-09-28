@@ -262,6 +262,8 @@ namespace OpenLoco::Config
         _newConfig.scaleFactor = config["scale_factor"].as<float>(1.0f);
         _newConfig.showFPS = config["showFPS"].as<bool>(false);
         _newConfig.uncapFPS = config["uncapFPS"].as<bool>(false);
+        _newConfig.vehiclesMinScale = config["vehiclesMinScale"].as<int32_t>(2);
+        _newConfig.stationNamesMinScale = config["stationNamesMinScale"].as<int32_t>(2);
 
         // General UI
         _newConfig.allowMultipleInstances = config["allow_multiple_instances"].as<bool>(false);
@@ -363,6 +365,8 @@ namespace OpenLoco::Config
         node["scale_factor"] = _newConfig.scaleFactor;
         node["showFPS"] = _newConfig.showFPS;
         node["uncapFPS"] = _newConfig.uncapFPS;
+        node["vehiclesMinScale"] = _newConfig.vehiclesMinScale;
+        node["stationNamesMinScale"] = _newConfig.stationNamesMinScale;
 
         // General UI
         node["allow_multiple_instances"] = _newConfig.allowMultipleInstances;
