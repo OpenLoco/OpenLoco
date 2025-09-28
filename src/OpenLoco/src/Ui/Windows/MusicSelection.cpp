@@ -176,7 +176,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         config.jukebox.enabledMusic[currentTrack] ^= true;
 
         // Are any tracks enabled?
-        uint8_t anyEnabled = 0;
+        bool anyEnabled = false;
         for (uint8_t i = 0; i < Jukebox::kNumMusicTracks; i++)
         {
             anyEnabled |= config.jukebox.enabledMusic[i];
