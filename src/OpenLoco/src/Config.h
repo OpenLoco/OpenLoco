@@ -190,6 +190,7 @@ namespace OpenLoco::Config
         bool playJukeboxMusic = true;
         bool playTitleMusic = true;
         bool playNewsSounds = true;
+        MusicPlaylistType playlist;
         Playlist jukebox;
     };
 

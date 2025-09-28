@@ -1201,7 +1201,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 auto args = FormatArguments(w.widgets[Widx::music_playlist].textArgs);
 
-                StringId currentSongStringId = playlist_string_ids[(uint8_t)Config::get().old.musicPlaylist];
+                StringId currentSongStringId = playlist_string_ids[enumValue(Config::get().audio.playlist)];
                 args.push(currentSongStringId);
             }
 
@@ -1214,7 +1214,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             w.disabledWidgets |= (1ULL << Widx::edit_selection);
-            if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::custom)
+            if (Config::get().audio.playlist == Config::MusicPlaylistType::custom)
             {
                 w.disabledWidgets &= ~(1ULL << Widx::edit_selection);
             }
@@ -1348,19 +1348,19 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::play_custom_music_selection);
 
-            Dropdown::setItemSelected((uint8_t)Config::get().old.musicPlaylist);
+            Dropdown::setItemSelected(enumValue(Config::get().audio.playlist));
         }
 
         // 0x004C084A
-        static void musicPlaylistDropdown(Window* w, int16_t ax)
+        static void musicPlaylistDropdown(Window* w, int16_t index)
         {
-            if (ax == -1)
+            if (index == -1)
             {
                 return;
             }
 
-            auto& cfg = OpenLoco::Config::get().old;
-            cfg.musicPlaylist = (Config::MusicPlaylistType)ax;
+            auto& cfg = Config::get().audio;
+            cfg.playlist = Config::MusicPlaylistType(index);
             Config::write();
 
             w->invalidate();

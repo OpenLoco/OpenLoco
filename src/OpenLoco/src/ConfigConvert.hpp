@@ -270,6 +270,18 @@ namespace YAML
         static const convert_pair_vector<MeasurementFormat>& getEntries() { return measurementFormatEntries; }
     };
 
+    // MusicPlaylistType
+    const convert_pair_vector<MusicPlaylistType> kMusicPlaylistTypes = {
+        enum_def(MusicPlaylistType, currentEra),
+        enum_def(MusicPlaylistType, all),
+        enum_def(MusicPlaylistType, custom),
+    };
+    template<>
+    struct convert<MusicPlaylistType> : convert_enum_base<MusicPlaylistType>
+    {
+        static const convert_pair_vector<MusicPlaylistType>& getEntries() { return kMusicPlaylistTypes; }
+    };
+
     // NewsType
     const convert_pair_vector<NewsType> newsTypeEntries = {
         enum_def(NewsType, none),

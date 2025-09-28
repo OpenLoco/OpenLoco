@@ -120,7 +120,7 @@ namespace OpenLoco::Jukebox
     {
         using Config::MusicPlaylistType;
 
-        switch (Config::get().old.musicPlaylist)
+        switch (Config::get().audio.playlist)
         {
             case MusicPlaylistType::currentEra:
                 return makeCurrentEraPlaylist();
@@ -139,9 +139,8 @@ namespace OpenLoco::Jukebox
     {
         auto playlist = makeSelectedPlaylist();
 
-        const auto& cfg = Config::get().old;
-
-        if (playlist.empty() && cfg.musicPlaylist != Config::MusicPlaylistType::currentEra)
+        const auto& cfg = Config::get();
+        if (playlist.empty() && cfg.audio.playlist != Config::MusicPlaylistType::currentEra)
         {
             playlist = makeCurrentEraPlaylist();
         }

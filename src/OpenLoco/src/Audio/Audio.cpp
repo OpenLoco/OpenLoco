@@ -1018,18 +1018,17 @@ namespace OpenLoco::Audio
     // 0x0048AA0C
     void revalidateCurrentTrack()
     {
-        using MusicPlaylistType = Config::MusicPlaylistType;
-        const auto& cfg = Config::get();
-
         const auto currentTrack = Jukebox::getCurrentTrack();
-
         if (currentTrack == Jukebox::kNoSong)
         {
             return;
         }
 
+        using Config::MusicPlaylistType;
+        const auto& cfg = Config::get();
+
         bool trackStillApplies = true;
-        switch (cfg.old.musicPlaylist)
+        switch (cfg.audio.playlist)
         {
             case MusicPlaylistType::currentEra:
             {
