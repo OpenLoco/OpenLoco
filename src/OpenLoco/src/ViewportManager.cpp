@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::ViewportManager
         vp->zoom = static_cast<uint8_t>(zoom);
         vp->flags = ViewportFlags::none;
 
-        if (OpenLoco::Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+        if (Config::get().gridlinesOnLandscape)
         {
             vp->flags |= ViewportFlags::gridlines_on_landscape;
         }

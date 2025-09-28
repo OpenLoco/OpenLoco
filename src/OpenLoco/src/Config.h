@@ -16,10 +16,10 @@ namespace OpenLoco::Config
     enum class Flags : uint32_t
     {
         none = 0U,
-        gridlinesOnLandscape = 1U << 0,
-        showHeightAsUnits = 1U << 1,
-        landscapeSmoothing = 1U << 2,
-        exportObjectsWithSaves = 1U << 3,
+        gridlinesOnLandscape = 1U << 0,   // unused
+        showHeightAsUnits = 1U << 1,      // unused
+        landscapeSmoothing = 1U << 2,     // unused
+        exportObjectsWithSaves = 1U << 3, // unused
 
         preferredCurrencyForNewGames = 1U << 6, // unused
         preferredCurrencyAlways = 1U << 7,      // unused
@@ -182,8 +182,11 @@ namespace OpenLoco::Config
         bool showFPS = false;
         bool uncapFPS = false;
 
-        uint8_t vehiclesMinScale;
-        uint8_t stationNamesMinScale;
+        bool gridlinesOnLandscape = false;
+        bool landscapeSmoothing = true;
+        bool showHeightAsUnits = false;
+        uint8_t stationNamesMinScale = 2;
+        uint8_t vehiclesMinScale = 2;
 
         bool allowMultipleInstances = false;
         bool cashPopupRendering = true;
@@ -194,6 +197,7 @@ namespace OpenLoco::Config
 
         int32_t autosaveAmount = 12;
         int32_t autosaveFrequency = 1;
+        bool exportObjectsWithSaves = true;
 
         bool breakdownsDisabled = false;
         bool buildLockedVehicles = false;
@@ -214,11 +218,6 @@ namespace OpenLoco::Config
         std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
 
         LocoConfig old;
-
-        constexpr bool hasFlags(Flags flagsToTest) const
-        {
-            return (old.flags & flagsToTest) != Flags::none;
-        }
     };
 
     NewConfig& get();

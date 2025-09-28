@@ -665,16 +665,8 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::landscape_smoothing:
                 {
                     auto& cfg = OpenLoco::Config::get();
-                    // TODO: is there a better way to toggle a flag?
-                    if (cfg.hasFlags(Config::Flags::landscapeSmoothing))
-                    {
-                        cfg.old.flags &= ~Config::Flags::landscapeSmoothing;
-                    }
-                    else
-                    {
-                        cfg.old.flags |= Config::Flags::landscapeSmoothing;
-                    }
-                    OpenLoco::Config::write();
+                    cfg.landscapeSmoothing ^= true;
+                    Config::write();
                     Gfx::invalidateScreen();
                     return;
                 }
@@ -682,15 +674,8 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::gridlines_on_landscape:
                 {
                     auto& cfg = OpenLoco::Config::get();
-                    if (cfg.hasFlags(Config::Flags::gridlinesOnLandscape))
-                    {
-                        cfg.old.flags &= ~Config::Flags::gridlinesOnLandscape;
-                    }
-                    else
-                    {
-                        cfg.old.flags |= Config::Flags::gridlinesOnLandscape;
-                    }
-                    OpenLoco::Config::write();
+                    cfg.gridlinesOnLandscape ^= true;
+                    Config::write();
                     Gfx::invalidateScreen();
 
                     auto main = WindowManager::getMainWindow();
@@ -698,7 +683,7 @@ namespace OpenLoco::Ui::Windows::Options
                     {
                         main->viewports[0]->flags &= ~ViewportFlags::gridlines_on_landscape;
 
-                        if (cfg.hasFlags(Config::Flags::gridlinesOnLandscape))
+                        if (cfg.gridlinesOnLandscape)
                         {
                             main->viewports[0]->flags |= ViewportFlags::gridlines_on_landscape;
                         }
@@ -895,13 +880,13 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
 
             w.activatedWidgets &= ~(1ULL << Widx::landscape_smoothing);
-            if (!Config::get().hasFlags(Config::Flags::landscapeSmoothing))
+            if (Config::get().landscapeSmoothing)
             {
                 w.activatedWidgets |= (1ULL << Widx::landscape_smoothing);
             }
 
             w.activatedWidgets &= ~(1ULL << Widx::gridlines_on_landscape);
-            if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+            if (Config::get().gridlinesOnLandscape)
             {
                 w.activatedWidgets |= (1ULL << Widx::gridlines_on_landscape);
             }
@@ -910,10 +895,6 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().cashPopupRendering)
             {
                 w.activatedWidgets |= (1ULL << Widx::cash_popup_rendering);
-            }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::cash_popup_rendering);
             }
 
             sub_4C13BE(&w);
@@ -1559,7 +1540,7 @@ namespace OpenLoco::Ui::Windows::Options
                 auto args = FormatArguments(w.widgets[Widx::heights].textArgs);
 
                 StringId current_height_units = StringIds::height_units;
-                if (!OpenLoco::Config::get().hasFlags(Config::Flags::showHeightAsUnits))
+                if (!OpenLoco::Config::get().showHeightAsUnits)
                 {
                     current_height_units = StringIds::height_real_values;
                 }
@@ -1875,7 +1856,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             // 0x004C0FC2
             cfg.old.heightMarkerOffset = 0;
-            if (!cfg.hasFlags(Config::Flags::showHeightAsUnits))
+            if (!cfg.showHeightAsUnits)
             {
                 cfg.old.heightMarkerOffset = cfg.measurementFormat == Config::MeasurementFormat::imperial ? 0x100 : 0x200;
             }
@@ -1894,7 +1875,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::height_real_values);
 
             int selectedItem = 0;
-            if (!Config::get().hasFlags(Config::Flags::showHeightAsUnits))
+            if (!Config::get().showHeightAsUnits)
             {
                 selectedItem = 1;
             }
@@ -1902,26 +1883,21 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C106C
-        static void heightsLabelsDropdown([[maybe_unused]] Window* w, int16_t ax)
+        static void heightsLabelsDropdown([[maybe_unused]] Window* w, int16_t index)
         {
-            if (ax == -1)
+            if (index == -1)
             {
                 return;
             }
 
-            auto& cfg = Config::get().old;
-            cfg.flags &= ~Config::Flags::showHeightAsUnits;
-
-            if (ax == 0)
-            {
-                cfg.flags |= Config::Flags::showHeightAsUnits;
-            }
+            auto& cfg = Config::get();
+            cfg.showHeightAsUnits = index == 0;
 
             // 0x004C0FC2
-            cfg.heightMarkerOffset = 0;
-            if ((cfg.flags & Config::Flags::showHeightAsUnits) == Config::Flags::none)
+            cfg.old.heightMarkerOffset = 0;
+            if (!cfg.showHeightAsUnits)
             {
-                cfg.heightMarkerOffset = cfg.measurementFormat == Config::MeasurementFormat::imperial ? 0x100 : 0x200;
+                cfg.old.heightMarkerOffset = cfg.measurementFormat == Config::MeasurementFormat::imperial ? 0x100 : 0x200;
             }
 
             Config::write();
@@ -2533,7 +2509,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             w.activatedWidgets &= ~(1ULL << Widx::export_plugin_objects);
-            if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
+            if (Config::get().exportObjectsWithSaves)
             {
                 w.activatedWidgets |= (1ULL << Widx::export_plugin_objects);
             }
@@ -2788,15 +2764,8 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void exportPluginObjectsMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::get();
-            if (cfg.hasFlags(Config::Flags::exportObjectsWithSaves))
-            {
-                cfg.old.flags &= ~Config::Flags::exportObjectsWithSaves;
-            }
-            else
-            {
-                cfg.old.flags |= Config::Flags::exportObjectsWithSaves;
-            }
+            auto& cfg = Config::get();
+            cfg.exportObjectsWithSaves ^= true;
             Config::write();
 
             w->invalidate();

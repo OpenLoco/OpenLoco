@@ -1634,7 +1634,7 @@ namespace OpenLoco::Paint
 
         if (zoomLevel == 0
             && (session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) == Ui::ViewportFlags::none
-            && ((Config::get().old.flags & Config::Flags::landscapeSmoothing) == Config::Flags::none))
+            && Config::get().landscapeSmoothing)
         {
             paintSurfaceSmoothenEdge(session, 2, selfDescriptor, tileDescriptors[2]);
             paintSurfaceSmoothenEdge(session, 3, selfDescriptor, tileDescriptors[3]);
