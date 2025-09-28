@@ -257,6 +257,8 @@ namespace OpenLoco::Config
         bool usePreferredOwnerFace;
         ObjectHeader preferredOwnerFace;
 
+        uint8_t scenarioSelectedTab;
+
         std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
 
         LocoConfig old;
