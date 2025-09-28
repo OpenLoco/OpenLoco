@@ -104,10 +104,10 @@ namespace OpenLoco::Jukebox
     {
         auto playlist = std::vector<MusicId>();
 
-        const auto& cfg = Config::get().old;
+        const auto& cfg = Config::get().audio;
         for (auto i = 0; i < kNumMusicTracks; i++)
         {
-            if (cfg.enabledMusic[i] & 1)
+            if (cfg.jukebox.enabledMusic[i] & 1)
             {
                 playlist.push_back(i);
             }
