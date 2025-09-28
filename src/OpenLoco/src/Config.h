@@ -171,6 +171,7 @@ namespace OpenLoco::Config
         std::string lastLandscapePath;
 
         std::string language = "en-GB";
+        MeasurementFormat measurementFormat;
         ObjectHeader preferredCurrency;
         bool usePreferredCurrencyForNewGames = false;
         bool usePreferredCurrencyAlways = false;

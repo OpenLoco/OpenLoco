@@ -254,6 +254,7 @@ namespace OpenLoco::Config
 
         // Regional
         _newConfig.language = config["language"].as<std::string>("en-GB");
+        _newConfig.measurementFormat = config["measurementFormat"].as<MeasurementFormat>(MeasurementFormat::metric);
         _newConfig.preferredCurrency = config["preferredCurrency"].as<ObjectHeader>(kDefaultPreferredCurrency);
         _newConfig.usePreferredCurrencyForNewGames = config["usePreferredCurrencyForNewGames"].as<bool>(false);
         _newConfig.usePreferredCurrencyAlways = config["usePreferredCurrencyAlways"].as<bool>(false);
@@ -357,6 +358,7 @@ namespace OpenLoco::Config
 
         // Regional
         node["language"] = _newConfig.language;
+        node["measurementFormat"] = _newConfig.measurementFormat;
         node["preferredCurrency"] = _newConfig.preferredCurrency;
         node["usePreferredCurrencyForNewGames"] = _newConfig.usePreferredCurrencyForNewGames;
         node["usePreferredCurrencyAlways"] = _newConfig.usePreferredCurrencyAlways;
