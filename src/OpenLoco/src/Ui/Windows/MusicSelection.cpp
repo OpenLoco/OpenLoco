@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
         drawingCtx.clearSingle(shade);
 
-        const auto& config = Config::get().old;
+        const auto& config = Config::get().audio;
 
         uint16_t y = 0;
         for (uint16_t row = 0; row < window.rowCount; row++)
@@ -119,7 +119,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             drawingCtx.fillRectInset(2, y, 11, y + 10, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::fillDarker | Gfx::RectInsetFlags::borderInset);
 
             // Draw checkmark if track is enabled.
-            if (config.enabledMusic[musicTrack])
+            if (config.jukebox.enabledMusic[musicTrack])
             {
                 auto point = Point(2, y);
 
@@ -170,22 +170,22 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             return;
         }
 
-        auto& config = Config::get().old;
+        auto& config = Config::get().audio;
 
         // Toggle the track in question.
-        config.enabledMusic[currentTrack] = !config.enabledMusic[currentTrack];
+        config.jukebox.enabledMusic[currentTrack] ^= true;
 
         // Are any tracks enabled?
         uint8_t anyEnabled = 0;
         for (uint8_t i = 0; i < Jukebox::kNumMusicTracks; i++)
         {
-            anyEnabled |= config.enabledMusic[i];
+            anyEnabled |= config.jukebox.enabledMusic[i];
         }
 
         // Ensure at least this track is enabled.
         if (!anyEnabled)
         {
-            config.enabledMusic[currentTrack] = true;
+            config.jukebox.enabledMusic[currentTrack] = true;
         }
 
         Config::write();

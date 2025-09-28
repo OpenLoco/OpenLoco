@@ -143,6 +143,46 @@ namespace OpenLoco::Config
         Resolution fullscreenResolution;
     };
 
+    struct Playlist
+    {
+        union
+        {
+            bool enabledMusic[29];
+            struct
+            {
+                bool chuggin_along;
+                bool long_dusty_road;
+                bool flying_high;
+                bool gettin_on_the_gas;
+                bool jumpin_the_rails;
+                bool smooth_running;
+                bool traffic_jam;
+                bool never_stop_til_you_get_there;
+                bool soaring_away;
+                bool techno_torture;
+                bool everlasting_high_rise;
+                bool solace;
+                bool chrysanthemum;
+                bool eugenia;
+                bool the_ragtime_dance;
+                bool easy_winners;
+                bool setting_off;
+                bool a_travellers_serenade;
+                bool latino_trip;
+                bool a_good_head_of_steam;
+                bool hop_to_the_bop;
+                bool the_city_lights;
+                bool steamin_down_town;
+                bool bright_expectations;
+                bool mo_station;
+                bool far_out;
+                bool running_on_time;
+                bool get_me_to_gladstone_bay;
+                bool sandy_track_blues;
+            };
+        };
+    };
+
     struct Audio
     {
         std::string device;
@@ -150,6 +190,7 @@ namespace OpenLoco::Config
         bool playJukeboxMusic = true;
         bool playTitleMusic = true;
         bool playNewsSounds = true;
+        Playlist jukebox;
     };
 
     struct KeyboardShortcut

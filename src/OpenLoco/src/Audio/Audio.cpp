@@ -1019,7 +1019,7 @@ namespace OpenLoco::Audio
     void revalidateCurrentTrack()
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
-        const auto& cfg = Config::get().old;
+        const auto& cfg = Config::get();
 
         const auto currentTrack = Jukebox::getCurrentTrack();
 
@@ -1029,7 +1029,7 @@ namespace OpenLoco::Audio
         }
 
         bool trackStillApplies = true;
-        switch (cfg.musicPlaylist)
+        switch (cfg.old.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
             {
@@ -1046,7 +1046,7 @@ namespace OpenLoco::Audio
                 return;
 
             case MusicPlaylistType::custom:
-                if (!cfg.enabledMusic[currentTrack])
+                if (!cfg.audio.jukebox.enabledMusic[currentTrack])
                 {
                     trackStillApplies = false;
                 }
