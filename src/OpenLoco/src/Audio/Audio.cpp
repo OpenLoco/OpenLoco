@@ -48,8 +48,10 @@ namespace OpenLoco::Audio
         int32_t channels{};
     };
 
-    [[maybe_unused]] constexpr int32_t kPlayAtCentre = 0x8000;
-    [[maybe_unused]] constexpr int32_t kPlayAtLocation = 0x8001;
+    static constexpr uint8_t kMaxVehicleSounds = 16;
+    static constexpr int32_t kPlayAtCentre = 0x8000;
+    static constexpr int32_t kPlayAtLocation = 0x8001;
+
     [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
     static loco_global<uint32_t, 0x0050D1EC> _audioInitialised;
@@ -719,7 +721,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        if (_numActiveVehicleSounds >= Config::get().old.maxVehicleSounds)
+        if (_numActiveVehicleSounds >= kMaxVehicleSounds)
         {
             return;
         }
