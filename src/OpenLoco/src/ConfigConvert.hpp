@@ -184,6 +184,17 @@ namespace YAML
         }
     };
 
+    // MeasurementFormat
+    const convert_pair_vector<MeasurementFormat> measurementFormatEntries = {
+        enum_def(MeasurementFormat, imperial),
+        enum_def(MeasurementFormat, metric),
+    };
+    template<>
+    struct convert<MeasurementFormat> : convert_enum_base<MeasurementFormat>
+    {
+        static const convert_pair_vector<MeasurementFormat>& getEntries() { return measurementFormatEntries; }
+    };
+
     // ScreenMode
     const convert_pair_vector<ScreenMode> screenModeEntries = {
         enum_def(ScreenMode, window),
