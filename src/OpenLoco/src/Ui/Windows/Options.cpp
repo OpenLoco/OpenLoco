@@ -712,7 +712,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
-            Dropdown::setItemSelected(Config::get().old.constructionMarker);
+            Dropdown::setItemSelected(Config::get().constructionMarker);
         }
 
         // 0x004BFE98
@@ -723,12 +723,12 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            if (ax == Config::get().old.constructionMarker)
+            if (ax == Config::get().constructionMarker)
             {
                 return;
             }
 
-            auto& cfg = OpenLoco::Config::get().old;
+            auto& cfg = OpenLoco::Config::get();
             cfg.constructionMarker = ax;
             OpenLoco::Config::write();
             Gfx::invalidateScreen();
@@ -860,7 +860,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            if (Config::get().old.constructionMarker)
+            if (Config::get().constructionMarker)
             {
                 w.widgets[Widx::construction_marker].text = StringIds::translucent;
             }
@@ -1855,10 +1855,10 @@ namespace OpenLoco::Ui::Windows::Options
             cfg.measurementFormat = Config::MeasurementFormat(ax);
 
             // 0x004C0FC2
-            cfg.old.heightMarkerOffset = 0;
+            cfg.heightMarkerOffset = 0;
             if (!cfg.showHeightAsUnits)
             {
-                cfg.old.heightMarkerOffset = cfg.measurementFormat == Config::MeasurementFormat::imperial ? 0x100 : 0x200;
+                cfg.heightMarkerOffset = cfg.measurementFormat == Config::MeasurementFormat::imperial ? 1 : 2;
             }
 
             Config::write();
@@ -1894,10 +1894,10 @@ namespace OpenLoco::Ui::Windows::Options
             cfg.showHeightAsUnits = index == 0;
 
             // 0x004C0FC2
-            cfg.old.heightMarkerOffset = 0;
+            cfg.heightMarkerOffset = 0;
             if (!cfg.showHeightAsUnits)
             {
-                cfg.old.heightMarkerOffset = cfg.measurementFormat == Config::MeasurementFormat::imperial ? 0x100 : 0x200;
+                cfg.heightMarkerOffset = cfg.measurementFormat == Config::MeasurementFormat::imperial ? 1 : 2;
             }
 
             Config::write();

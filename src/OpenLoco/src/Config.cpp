@@ -278,7 +278,9 @@ namespace OpenLoco::Config
         _newConfig.uncapFPS = config["uncapFPS"].as<bool>(false);
 
         // Rendering
+        _newConfig.constructionMarker = config["constructionMarker"].as<int32_t>(0);
         _newConfig.gridlinesOnLandscape = config["gridlinesOnLandscape"].as<bool>(false);
+        _newConfig.heightMarkerOffset = config["heightMarkerOffset"].as<int32_t>(1);
         _newConfig.landscapeSmoothing = config["landscapeSmoothing"].as<bool>(true);
         _newConfig.showHeightAsUnits = config["showHeightAsUnits"].as<bool>(false);
         _newConfig.stationNamesMinScale = config["stationNamesMinScale"].as<int32_t>(2);
@@ -419,7 +421,10 @@ namespace OpenLoco::Config
         node["uncapFPS"] = _newConfig.uncapFPS;
 
         // Rendering
+
+        node["constructionMarker"] = _newConfig.constructionMarker;
         node["gridlinesOnLandscape"] = _newConfig.gridlinesOnLandscape;
+        node["heightMarkerOffset"] = _newConfig.heightMarkerOffset;
         node["showHeightAsUnits"] = _newConfig.showHeightAsUnits;
         node["landscapeSmoothing"] = _newConfig.landscapeSmoothing;
         node["vehiclesMinScale"] = _newConfig.vehiclesMinScale;
