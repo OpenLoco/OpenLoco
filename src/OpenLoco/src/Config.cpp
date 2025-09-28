@@ -336,10 +336,14 @@ namespace OpenLoco::Config
         _newConfig.preferredOwnerFace = config["preferredOwnerFace"].as<ObjectHeader>(kEmptyObjectHeader);
         _newConfig.usePreferredOwnerFace = config["usePreferredOwnerFace"].as<bool>(false);
 
+        // Misc settings
+        _newConfig.scenarioSelectedTab = config["scenarioSelectedTab"].as<int32_t>(2);
+
         // Shortcuts
         auto& scNode = config["shortcuts"];
         // Protect from empty shortcuts
         readShortcutConfig(scNode ? scNode : YAML::Node{});
+
         return _newConfig;
     }
 
@@ -479,6 +483,9 @@ namespace OpenLoco::Config
             }
         }
         node["shortcuts"] = scNode;
+
+        // Misc settings
+        node["scenarioSelectedTab"] = _newConfig.scenarioSelectedTab;
 
         std::ofstream stream(configPath);
         if (stream.is_open())
