@@ -1080,7 +1080,7 @@ namespace OpenLoco::Audio
             // Set the next song to play and load its info
             const auto& mi = Jukebox::changeTrack();
 
-            playMusic(mi.pathId, cfg.old.volume, false);
+            playMusic(mi.pathId, cfg.audio.mainVolume, false);
 
             WindowManager::invalidate(WindowType::options);
         }
@@ -1163,13 +1163,13 @@ namespace OpenLoco::Audio
     // 0x0048AA67
     void setBgmVolume(int32_t volume)
     {
-        if (Config::get().old.volume == volume)
+        auto& cfg = Config::get().audio;
+        if (cfg.mainVolume == volume)
         {
             return;
         }
 
-        auto& cfg = Config::get().old;
-        cfg.volume = volume;
+        cfg.mainVolume = volume;
         Config::write();
 
         auto* channel = getChannel(ChannelId::music);

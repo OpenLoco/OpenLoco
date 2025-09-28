@@ -1089,7 +1089,7 @@ namespace OpenLoco::Ui::Windows::Options
                 auto& config = Config::get();
                 if (SceneManager::isTitleMode() && config.audio.playTitleMusic)
                 {
-                    Audio::playMusic(Environment::PathId::css5, config.old.volume, true);
+                    Audio::playMusic(Environment::PathId::css5, config.audio.mainVolume, true);
                 }
 
                 WindowManager::invalidateWidget(w->type, w->number, Widx::audio_device);
@@ -1112,7 +1112,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (cfg.audio.playTitleMusic)
             {
-                Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
+                Audio::playMusic(Environment::PathId::css5, Config::get().audio.mainVolume, true);
             }
             else
             {
@@ -1252,7 +1252,7 @@ namespace OpenLoco::Ui::Windows::Options
             // TODO: Move this in Slider widget.
             drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
 
-            int16_t x = 90 + (Config::get().old.volume / 32);
+            int16_t x = 90 + (Config::get().audio.mainVolume / 32);
             drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left + x, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w.getColour(WindowColour::secondary).c()));
         }
 
