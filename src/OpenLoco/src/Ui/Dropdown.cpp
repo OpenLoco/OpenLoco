@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::Dropdown
     static loco_global<uint32_t, 0x0113DC6C> _dropdownItemWidth;
     static loco_global<uint32_t, 0x0113DC70> _dropdownColumnCount;
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
-    static loco_global<uint16_t, 0x0113DC78> _word_113DC78;
+    static loco_global<Flags, 0x0113DC78> _dropdownFlags;
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
     static loco_global<StringId[40], 0x0113D850> _dropdownItemFormats;
@@ -455,7 +455,7 @@ namespace OpenLoco::Ui::Dropdown
         common::setColourAndInputFlags(colour, flags);
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         _dropdownColumnCount = 1;
         _dropdownItemWidth = 0;
@@ -561,10 +561,10 @@ namespace OpenLoco::Ui::Dropdown
         common::setColourAndInputFlags(colour, flags);
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
         _dropdownItemHeight = height;
         _dropdownItemWidth = width;
         _dropdownItemCount = count;
@@ -629,11 +629,11 @@ namespace OpenLoco::Ui::Dropdown
         assert(count < std::numeric_limits<uint8_t>::max());
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         if (Input::state() != Input::State::widgetPressed || Input::hasFlag(Input::Flags::widgetPressed))
         {
-            _word_113DC78 = _word_113DC78 | 1;
+            _dropdownFlags = _dropdownFlags | Flags::unk1;
         }
 
         if (Input::getPressedWindowType() != WindowType::undefined)
@@ -696,7 +696,7 @@ namespace OpenLoco::Ui::Dropdown
         common::setColourAndInputFlags(colour, flags);
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         common::showText(x, y, width, height, itemHeight, colour, count, flags);
     }
@@ -724,7 +724,7 @@ namespace OpenLoco::Ui::Dropdown
         common::setColourAndInputFlags(colour, flags);
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         _dropdownColumnCount = 1;
         _dropdownItemWidth = width;
@@ -847,7 +847,7 @@ namespace OpenLoco::Ui::Dropdown
     // 0x004CF3CC
     void forceCloseCompanySelect()
     {
-        if (_word_113DC78 & (1U << 1))
+        if (hasFlags(Flags::unk1))
         {
             WindowManager::close(WindowType::dropdown);
         }
@@ -915,7 +915,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         setHighlightedItem(highlightedIndex);
-        _word_113DC78 = _word_113DC78 | (1 << 1);
+        _dropdownFlags = _dropdownFlags | Flags::unk2;
     }
 
     // 0x004CF284
@@ -1094,4 +1094,10 @@ namespace OpenLoco::Ui::Dropdown
 
         return item;
     }
+
+    bool hasFlags(Flags flags)
+    {
+        return (_dropdownFlags & flags) != Flags::none;
+    }
+
 }

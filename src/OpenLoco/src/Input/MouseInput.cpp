@@ -111,8 +111,6 @@ namespace OpenLoco::Input
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
-    static loco_global<uint16_t, 0x0113DC78> _dropdownFlags;
-
     static int32_t _cursorWheel;
 
     static const std::map<Ui::ScrollPart, StringId> kScrollWidgetTooltips = {
@@ -946,7 +944,7 @@ namespace OpenLoco::Input
 
         if (Input::state() == State::dropdownActive)
         {
-            if (_dropdownFlags & (1 << 0))
+            if (Ui::Dropdown::hasFlags(Ui::Dropdown::Flags::unk1))
             {
                 if (widgetIndex == -1 || _pressedWindowType != window->type || _pressedWindowNumber != window->number || _pressedWidgetIndex != widgetIndex)
                 {

@@ -4,6 +4,7 @@
 #include "Localisation/StringManager.h"
 #include "Window.h"
 #include "World/Company.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstdlib>
 #include <optional>
 
@@ -56,6 +57,15 @@ namespace OpenLoco
 
 namespace OpenLoco::Ui::Dropdown
 {
+    enum class Flags : uint16_t
+    {
+        none = 0,
+        unk1 = 1U << 0,
+        unk2 = 1U << 1,
+
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
+
     void addSeparator(size_t index);
     void add(size_t index, StringId title);
     void add(size_t index, StringId title, std::initializer_list<format_arg> l);
@@ -130,4 +140,6 @@ namespace OpenLoco::Ui::Dropdown
     }
 
     std::optional<int> dropdownIndexFromPoint(Ui::Window* window, int x, int y);
+
+    bool hasFlags(Flags flags);
 }
