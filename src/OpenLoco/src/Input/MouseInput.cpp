@@ -61,8 +61,6 @@ namespace OpenLoco::Input
 
     static MouseButton _lastKnownButtonState;
 
-    static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
-
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
     static Ui::Point _cursorPressed;
@@ -83,12 +81,15 @@ namespace OpenLoco::Input
     static Ui::WindowType _dragWindowType;
     static uint8_t _dragWidgetIndex;
     static uint8_t _dragScrollIndex;
+
     static loco_global<Ui::WindowType, 0x00523381> _tooltipWindowType;
     static loco_global<int16_t, 0x00523382> _tooltipWindowNumber;
     static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
     static loco_global<Ui::Point, 0x00523386> _tooltipCursor;
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
+    static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
+
     static uint16_t _ticksSinceDragStart;
 
     static Ui::Point _scrollLast;
@@ -109,8 +110,6 @@ namespace OpenLoco::Input
     static bool _rightMouseButtonDown;
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
-
-    static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
     static loco_global<uint16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint16_t, 0x0113DC78> _dropdownFlags;
