@@ -85,7 +85,7 @@ namespace OpenLoco::Input
     static loco_global<Ui::WindowType, 0x00523381> _tooltipWindowType;
     static loco_global<int16_t, 0x00523382> _tooltipWindowNumber;
     static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
-    static loco_global<Ui::Point, 0x00523386> _tooltipCursor;
+    static Ui::Point _tooltipCursor;
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
@@ -384,8 +384,8 @@ namespace OpenLoco::Input
         switch (state())
         {
             case State::reset:
-                _tooltipCursor->x = x;
-                _tooltipCursor->y = y;
+                _tooltipCursor.x = x;
+                _tooltipCursor.y = y;
                 _tooltipTimeout = 0;
                 _tooltipWindowType = Ui::WindowType::undefined;
                 state(State::normal);
@@ -1216,7 +1216,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (_tooltipNotShownTicks < 500 || (x == _tooltipCursor->x && y == _tooltipCursor->y))
+        if (_tooltipNotShownTicks < 500 || (x == _tooltipCursor.x && y == _tooltipCursor.y))
         {
             _tooltipTimeout += _timeSinceLastTick;
             int bp = 2000;
@@ -1241,8 +1241,8 @@ namespace OpenLoco::Input
         }
 
         _tooltipTimeout = 0;
-        _tooltipCursor->x = x;
-        _tooltipCursor->y = y;
+        _tooltipCursor.x = x;
+        _tooltipCursor.y = y;
     }
 
     // 0x004C84BE
@@ -1329,8 +1329,8 @@ namespace OpenLoco::Input
                 _pressedWidgetIndex = widgetIndex;
                 _pressedWindowType = window->type;
                 _pressedWindowNumber = window->number;
-                _tooltipCursor->x = x;
-                _tooltipCursor->y = y;
+                _tooltipCursor.x = x;
+                _tooltipCursor.y = y;
                 Ui::ScrollView::scrollLeftBegin(x, y, *window, widget, widgetIndex);
                 break;
 
