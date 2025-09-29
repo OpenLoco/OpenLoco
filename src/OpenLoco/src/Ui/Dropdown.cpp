@@ -15,7 +15,6 @@
 #include "Window.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
 #include <cstdarg>
@@ -28,24 +27,24 @@ namespace OpenLoco::Ui::Dropdown
 {
     static constexpr int kBytesPerItem = 8;
 
-    static loco_global<Colour[31], 0x00504619> _byte_504619;
-    static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
-    static loco_global<char[512], 0x0112CC04> _byte_112CC04;
-    static loco_global<uint8_t, 0x01136F94> _windowDropdownOnpaintCellX;
-    static loco_global<uint8_t, 0x01136F96> _windowDropdownOnpaintCellY;
-    static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
-    static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
-    static loco_global<uint32_t, 0x0113DC68> _dropdownItemHeight;
-    static loco_global<uint32_t, 0x0113DC6C> _dropdownItemWidth;
-    static loco_global<uint32_t, 0x0113DC70> _dropdownColumnCount;
-    static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
-    static loco_global<Flags, 0x0113DC78> _dropdownFlags;
-    static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
-    static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
-    static loco_global<StringId[40], 0x0113D850> _dropdownItemFormats;
-    static loco_global<std::byte[40][kBytesPerItem], 0x0113D8A0> _dropdownItemArgs;
-    static loco_global<std::byte[40][kBytesPerItem], 0x0113D9E0> _dropdownItemArgs2;
-    static loco_global<CompanyId[40], 0x00113DB20> _menuOptions;
+    static Colour _byte_504619[31];
+    static std::uint8_t _appropriateImageDropdownItemsPerRow[33];
+    static char _byte_112CC04[512];
+    static uint8_t _windowDropdownOnpaintCellX;
+    static uint8_t _windowDropdownOnpaintCellY;
+    static uint16_t _dropdownItemCount;
+    static uint32_t _dropdownDisabledItems;
+    static uint32_t _dropdownItemHeight;
+    static uint32_t _dropdownItemWidth;
+    static uint32_t _dropdownColumnCount;
+    static uint32_t _dropdownRowCount;
+    static Flags _dropdownFlags;
+    static int16_t _dropdownHighlightedIndex;
+    static uint32_t _dropdownSelection;
+    static StringId _dropdownItemFormats[40];
+    static std::byte _dropdownItemArgs[40][kBytesPerItem];
+    static std::byte _dropdownItemArgs2[40][kBytesPerItem];
+    static CompanyId _menuOptions[40];
 
     static std::vector<std::optional<DropdownItemId>> _dropdownIds;
     static bool _dropdownUseDefault;
