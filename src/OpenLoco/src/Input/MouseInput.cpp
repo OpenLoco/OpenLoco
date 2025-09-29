@@ -111,7 +111,6 @@ namespace OpenLoco::Input
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
-    static loco_global<uint16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint16_t, 0x0113DC78> _dropdownFlags;
 
     static int32_t _cursorWheel;
@@ -1115,7 +1114,7 @@ namespace OpenLoco::Input
                 auto item = Ui::Dropdown::dropdownIndexFromPoint(window, x, y);
                 if (item.has_value())
                 {
-                    _dropdownHighlightedIndex = *item;
+                    Ui::Dropdown::setHighlightedItem(*item);
                     WindowManager::invalidate(Ui::WindowType::dropdown, 0);
                 }
             }
