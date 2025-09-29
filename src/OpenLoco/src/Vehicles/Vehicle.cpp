@@ -1012,7 +1012,7 @@ namespace OpenLoco::Vehicles
         for (auto& car : train.cars)
         {
             const auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-            assert(std::distance(car.begin(), car.end()) == vehicleObj->var_04);
+            assert(std::distance(car.begin(), car.end()) == vehicleObj->numCarComponents);
             if (car.body->has38Flags(Flags38::isReversed))
             {
                 auto objCarIndex = vehicleObj->numCarComponents - 1;
