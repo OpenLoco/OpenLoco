@@ -61,7 +61,7 @@ namespace OpenLoco::Scenario
     {
         Game::setFlags(GameStateFlags::none);
         AnimationManager::reset();
-        addr<0x0052624C, S5::S5FixFlags>() = S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1;
+        getGameState().fixFlags = enumValue(S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1);
     }
 
     Season nextSeason(Season season)

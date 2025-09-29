@@ -21,6 +21,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ToolManager.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
@@ -887,9 +888,6 @@ namespace OpenLoco::Ui::WindowManager
             w->setColour(WindowColour::primary, static_cast<Colour>(CompanyManager::getCompanyColour(w->owner)));
         }
 
-        addr<0x1136F9C, int16_t>() = w->x;
-        addr<0x1136F9E, int16_t>() = w->y;
-
         // Text colouring
         setWindowColours(WindowColour::primary, w->getColour(WindowColour::primary).opaque());
         setWindowColours(WindowColour::secondary, w->getColour(WindowColour::secondary).opaque());
@@ -1111,7 +1109,7 @@ namespace OpenLoco::Ui::WindowManager
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
         ToolManager::toolCancel();
-        addr<0x00522096, uint8_t>() = 0;
+        Windows::Construction::_ghostVisibilityFlags = Windows::Construction::GhostVisibilityFlags::none;
     }
 
     // 0x004BF089

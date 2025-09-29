@@ -1328,4 +1328,18 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     {
         return kEvents;
     }
+
+    // 0x0049E1F1
+    void sub_49E1F1(StationId id)
+    {
+        auto w = WindowManager::find(WindowType::construction);
+        if (w != nullptr && w->currentTab == 1)
+        {
+            if (((*_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none) && StationId(_cState->constructingStationId) == id) // _constructingStationId
+            {
+                _cState->constructingStationId = 0xFFFFFFFFU;
+                w->invalidate();
+            }
+        }
+    }
 }
