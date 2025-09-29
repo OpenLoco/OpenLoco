@@ -862,7 +862,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFA04
         static void prepareDraw(Window& w)
         {
-            assert(w.currentTab == Common::tab::display);
+            assert(w.currentTab == Common::tab::rendering);
 
             w.activatedWidgets &= ~Common::tabWidgets;
             w.activatedWidgets |= 1ULL << (w.currentTab + 4);
