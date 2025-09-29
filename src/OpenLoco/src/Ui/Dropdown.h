@@ -128,4 +128,6 @@ namespace OpenLoco::Ui::Dropdown
         }
         return std::nullopt;
     }
+
+    std::optional<int> dropdownIndexFromPoint(Ui::Window* window, int x, int y);
 }

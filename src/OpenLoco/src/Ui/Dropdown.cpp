@@ -1033,4 +1033,65 @@ namespace OpenLoco::Ui::Dropdown
         }
         return std::nullopt;
     }
+
+    std::optional<int> dropdownIndexFromPoint(Ui::Window* window, int x, int y)
+    {
+        // Check whether x and y are over a list item
+        int left = x - window->x;
+        if (left < 0)
+        {
+            return std::nullopt;
+        }
+        if (left >= window->width)
+        {
+            return std::nullopt;
+        }
+
+        // 2px of padding on the top of the list?
+        int top = y - window->y - 2;
+        if (top < 0)
+        {
+            return std::nullopt;
+        }
+
+        unsigned int itemY = top / _dropdownItemHeight;
+        if (itemY >= _dropdownItemCount)
+        {
+            return std::nullopt;
+        }
+
+        left -= 2;
+        if (left < 0)
+        {
+            return std::nullopt;
+        }
+
+        unsigned int itemX = left / _dropdownItemWidth;
+        if (itemX >= _dropdownColumnCount)
+        {
+            return std::nullopt;
+        }
+        if (itemY >= _dropdownRowCount)
+        {
+            return std::nullopt;
+        }
+
+        int item = itemY * _dropdownColumnCount + itemX;
+        if (item >= _dropdownItemCount)
+        {
+            return std::nullopt;
+        }
+
+        if (item < 32 && (_dropdownDisabledItems & (1ULL << item)) != 0)
+        {
+            return std::nullopt;
+        }
+
+        if (_dropdownItemFormats[item] == 0)
+        {
+            return std::nullopt;
+        }
+
+        return item;
+    }
 }

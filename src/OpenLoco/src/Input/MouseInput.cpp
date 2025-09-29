@@ -16,6 +16,7 @@
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
+#include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
@@ -82,11 +83,11 @@ namespace OpenLoco::Input
     static Ui::WindowType _dragWindowType;
     static uint8_t _dragWidgetIndex;
     static uint8_t _dragScrollIndex;
-    static loco_global<Ui::WindowType, 0x00523381>_tooltipWindowType;
-    static loco_global<int16_t, 0x00523382>_tooltipWindowNumber;
-    static loco_global<int16_t, 0x00523384>_tooltipWidgetIndex;
-    static loco_global<Ui::Point, 0x00523386>_tooltipCursor;
-    static loco_global<uint16_t, 0x0052338A>_tooltipTimeout;
+    static loco_global<Ui::WindowType, 0x00523381> _tooltipWindowType;
+    static loco_global<int16_t, 0x00523382> _tooltipWindowNumber;
+    static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
+    static loco_global<Ui::Point, 0x00523386> _tooltipCursor;
+    static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static uint16_t _ticksSinceDragStart;
 
@@ -942,67 +943,6 @@ namespace OpenLoco::Input
         }
     }
 
-    static std::optional<int> dropdownIndexFromPoint(Ui::Window* window, int x, int y)
-    {
-        // Check whether x and y are over a list item
-        int left = x - window->x;
-        if (left < 0)
-        {
-            return std::nullopt;
-        }
-        if (left >= window->width)
-        {
-            return std::nullopt;
-        }
-
-        // 2px of padding on the top of the list?
-        int top = y - window->y - 2;
-        if (top < 0)
-        {
-            return std::nullopt;
-        }
-
-        unsigned int itemY = top / _dropdownItemHeight;
-        if (itemY >= _dropdownItemCount)
-        {
-            return std::nullopt;
-        }
-
-        left -= 2;
-        if (left < 0)
-        {
-            return std::nullopt;
-        }
-
-        unsigned int itemX = left / _dropdownItemWidth;
-        if (itemX >= _dropdownColumnCount)
-        {
-            return std::nullopt;
-        }
-        if (itemY >= _dropdownRowCount)
-        {
-            return std::nullopt;
-        }
-
-        int item = itemY * _dropdownColumnCount + itemX;
-        if (item >= _dropdownItemCount)
-        {
-            return std::nullopt;
-        }
-
-        if (item < 32 && (_dropdownDisabledItems & (1ULL << item)) != 0)
-        {
-            return std::nullopt;
-        }
-
-        if (_dropdownItemFormats[item] == 0)
-        {
-            return std::nullopt;
-        }
-
-        return item;
-    }
-
     // 0x004C7AE7
     static void stateWidgetPressed(MouseButton button, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex)
     {
@@ -1118,7 +1058,7 @@ namespace OpenLoco::Input
                 {
                     if (window->type == Ui::WindowType::dropdown)
                     {
-                        auto item = dropdownIndexFromPoint(window, x, y);
+                        auto item = Ui::Dropdown::dropdownIndexFromPoint(window, x, y);
                         if (item.has_value())
                         {
                             dropdownRegisterSelection(*item);
@@ -1182,7 +1122,7 @@ namespace OpenLoco::Input
         {
             if (window != nullptr && window->type == Ui::WindowType::dropdown)
             {
-                auto item = dropdownIndexFromPoint(window, x, y);
+                auto item = Ui::Dropdown::dropdownIndexFromPoint(window, x, y);
                 if (item.has_value())
                 {
                     _dropdownHighlightedIndex = *item;
