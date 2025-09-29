@@ -139,4 +139,10 @@ namespace OpenLoco::Input
     };
     void enqueueMouseButton(const QueuedMouseInput& input);
     MouseButton nextMouseInput(uint32_t& x, int16_t& y);
+
+    Ui::WindowType getPressedWindowType();
+    void setPressedWindowType(Ui::WindowType wndType);
+
+    Ui::WindowNumber_t getPressedWindowNumber();
+    void setPressedWindowNumber(Ui::WindowNumber_t wndNumber);
 }

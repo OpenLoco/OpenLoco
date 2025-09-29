@@ -30,9 +30,6 @@ namespace OpenLoco::Ui::Dropdown
 
     static loco_global<Colour[31], 0x00504619> _byte_504619;
     static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
-    static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
-    static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
-    static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
     static loco_global<char[512], 0x0112CC04> _byte_112CC04;
     static loco_global<uint8_t, 0x01136F94> _windowDropdownOnpaintCellX;
     static loco_global<uint8_t, 0x01136F96> _windowDropdownOnpaintCellY;
@@ -639,15 +636,15 @@ namespace OpenLoco::Ui::Dropdown
             _word_113DC78 = _word_113DC78 | 1;
         }
 
-        if (_pressedWindowType != WindowType::undefined)
+        if (Input::getPressedWindowType() != WindowType::undefined)
         {
-            WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+            WindowManager::invalidateWidget(Input::getPressedWindowType(), Input::getPressedWindowNumber(), Input::getPressedWidgetIndex());
         }
 
-        _pressedWidgetIndex = widgetIndex;
-        _pressedWindowType = window->type;
-        _pressedWindowNumber = window->number;
-        WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+        Input::setPressedWidgetIndex(widgetIndex);
+        Input::setPressedWindowType(window->type);
+        Input::setPressedWindowNumber(window->number);
+        WindowManager::invalidateWidget(window->type, window->number, widgetIndex);
 
         auto widget = window->widgets[widgetIndex];
         auto colour = window->getColour(widget.windowColour).translucent();

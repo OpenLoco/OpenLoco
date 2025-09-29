@@ -1999,4 +1999,23 @@ namespace OpenLoco::Input
         WindowManager::wheelInput(wheel);
     }
 
+    Ui::WindowType getPressedWindowType()
+    {
+        return _pressedWindowType;
+    }
+
+    void setPressedWindowType(Ui::WindowType wndType)
+    {
+        _pressedWindowType = wndType;
+    }
+
+    Ui::WindowNumber_t getPressedWindowNumber()
+    {
+        return _pressedWindowNumber;
+    }
+
+    void setPressedWindowNumber(Ui::WindowNumber_t wndNumber)
+    {
+        _pressedWindowNumber = wndNumber;
+    }
 }

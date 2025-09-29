@@ -222,4 +222,5 @@ namespace OpenLoco::Input
         readKeyboardState();
         return true;
     }
+
 }
