@@ -18,6 +18,7 @@
 #include "MultiPlayer.h"
 #include "SceneManager.h"
 #include "ScrollView.h"
+#include "ToolTip.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ToolManager.h"
@@ -147,7 +148,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x00439BA5
     void updateDaily()
     {
-        if (find(WindowType::tooltip) && Windows::ToolTip::isTimeTooltip())
+        if (find(WindowType::tooltip) && ToolTip::isTimeTooltip())
         {
             Windows::ToolTip::closeAndReset();
         }

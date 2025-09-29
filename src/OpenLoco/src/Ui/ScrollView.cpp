@@ -1,5 +1,6 @@
 #include "ScrollView.h"
 #include "Input.h"
+#include "ToolTip.h"
 #include "Ui.h"
 #include "Widget.h"
 #include "WindowManager.h"
@@ -536,18 +537,18 @@ namespace OpenLoco::Ui::ScrollView
         auto scrollIndex = getCurrentScrollIndex();
         if (_currentScrollArea == ScrollPart::hscrollbarThumb)
         {
-            auto toolTipLoc = Input::getTooltipMouseLocation();
+            auto toolTipLoc = Ui::ToolTip::getTooltipMouseLocation();
             int16_t deltaX = x - toolTipLoc.x;
             toolTipLoc.x = x;
-            Input::setTooltipMouseLocation(toolTipLoc);
+            Ui::ToolTip::setTooltipMouseLocation(toolTipLoc);
             ScrollView::horizontalFollow(window, widget, widgetIndex, scrollIndex, deltaX);
         }
         else if (_currentScrollArea == ScrollPart::vscrollbarThumb)
         {
-            auto toolTipLoc = Input::getTooltipMouseLocation();
+            auto toolTipLoc = Ui::ToolTip::getTooltipMouseLocation();
             int16_t deltaY = y - toolTipLoc.y;
             toolTipLoc.y = y;
-            Input::setTooltipMouseLocation(toolTipLoc);
+            Ui::ToolTip::setTooltipMouseLocation(toolTipLoc);
             ScrollView::verticalFollow(window, widget, widgetIndex, scrollIndex, deltaY);
         }
         else

@@ -24,6 +24,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
@@ -360,7 +361,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static Ui::CursorId onCursor([[maybe_unused]] Window& window, [[maybe_unused]] WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         // Reset tooltip timeout to keep tooltips open.
-        Input::setTooltipTimeout(2000);
+        Ui::ToolTip::setTooltipTimeout(2000);
         return fallback;
     }
 

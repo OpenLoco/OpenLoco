@@ -67,6 +67,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include "Ui/ToolTip.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -99,8 +100,6 @@ namespace OpenLoco
 
     static loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
     static loco_global<uint32_t, 0x0050C19E> _last_tick_time;
-
-    static loco_global<int8_t, 0x0052336E> _52336E; // bool
 
     static int32_t _monthsSinceLastAutosave;
 
@@ -178,7 +177,7 @@ namespace OpenLoco
         Input::initMouse();
 
         // tooltip-related
-        _52336E = 0;
+        Ui::ToolTip::set_52336E(false);
 
         Ui::Windows::TextInput::cancel();
 

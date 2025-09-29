@@ -19,6 +19,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ToolTip.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
@@ -82,14 +83,6 @@ namespace OpenLoco::Input
     static uint8_t _dragWidgetIndex;
     static uint8_t _dragScrollIndex;
 
-    static loco_global<Ui::WindowType, 0x00523381> _tooltipWindowType;
-    static loco_global<int16_t, 0x00523382> _tooltipWindowNumber;
-    static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
-    static Ui::Point _tooltipCursor;
-    static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
-    static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
-    static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
-
     static uint16_t _ticksSinceDragStart;
 
     static Ui::Point _scrollLast;
@@ -132,7 +125,7 @@ namespace OpenLoco::Input
     {
         _pressedWindowType = Ui::WindowType::undefined;
 
-        _tooltipNotShownTicks = 0xFFFFU;
+        Ui::ToolTip::setNotShownTicks(0xFFFFU);
         _hoverWindowType = Ui::WindowType::undefined;
         _focusedWindowType = Ui::WindowType::undefined;
 
@@ -382,10 +375,9 @@ namespace OpenLoco::Input
         switch (state())
         {
             case State::reset:
-                _tooltipCursor.x = x;
-                _tooltipCursor.y = y;
-                _tooltipTimeout = 0;
-                _tooltipWindowType = Ui::WindowType::undefined;
+                Ui::ToolTip::setTooltipMouseLocation({ x, y });
+                Ui::ToolTip::setTooltipTimeout(0);
+                Ui::ToolTip::setWindowType(Ui::WindowType::undefined);
                 state(State::normal);
                 resetFlag(Flags::leftMousePressed);
                 stateNormal(button, x, y, window, widget, widgetIndex);
@@ -742,10 +734,10 @@ namespace OpenLoco::Input
 
             case MouseButton::leftReleased:
                 state(State::normal);
-                _tooltipTimeout = 0;
-                _tooltipWidgetIndex = _pressedWidgetIndex;
-                _tooltipWindowType = _dragWindowType;
-                _tooltipWindowNumber = _dragWindowNumber;
+                Ui::ToolTip::setTooltipTimeout(0);
+                Ui::ToolTip::setWidgetIndex(_pressedWidgetIndex);
+                Ui::ToolTip::setWindowType(_dragWindowType);
+                Ui::ToolTip::setWindowNumber(_dragWindowNumber);
 
                 if (w->hasFlags(Ui::WindowFlags::flag_15))
                 {
@@ -919,10 +911,11 @@ namespace OpenLoco::Input
         }
 
         Input::state(State::normal);
-        _tooltipTimeout = 0;
-        _tooltipWidgetIndex = _pressedWidgetIndex;
-        _tooltipWindowType = _pressedWindowType;
-        _tooltipWindowNumber = _pressedWindowNumber;
+
+        Ui::ToolTip::setTooltipTimeout(0);
+        Ui::ToolTip::setWidgetIndex(_pressedWidgetIndex);
+        Ui::ToolTip::setWindowType(_pressedWindowType);
+        Ui::ToolTip::setWindowNumber(_pressedWindowNumber);
 
         if (WindowManager::getCurrentModalType() == Ui::WindowType::undefined || WindowManager::getCurrentModalType() == window->type)
         {
@@ -1076,10 +1069,12 @@ namespace OpenLoco::Input
             }
 
             Input::state(State::normal);
-            _tooltipTimeout = 0;
-            _tooltipWidgetIndex = _pressedWidgetIndex;
-            _tooltipWindowType = _pressedWindowType;
-            _tooltipWindowNumber = _pressedWindowNumber;
+
+            Ui::ToolTip::setTooltipTimeout(0);
+            Ui::ToolTip::setWidgetIndex(_pressedWidgetIndex);
+            Ui::ToolTip::setWindowType(_pressedWindowType);
+            Ui::ToolTip::setWindowNumber(_pressedWindowNumber);
+
             if (window != nullptr)
             {
                 Audio::playSound(Audio::SoundId::clickUp, window->x + widget->midX());
@@ -1185,9 +1180,9 @@ namespace OpenLoco::Input
                 else
                 {
                     tooltipStringId = kScrollWidgetTooltips.at(res.area);
-                    if (_tooltipWindowType != Ui::WindowType::undefined)
+                    if (Ui::ToolTip::getWindowType() != Ui::WindowType::undefined)
                     {
-                        if (tooltipStringId != _currentTooltipStringId)
+                        if (tooltipStringId != Ui::ToolTip::getCurrentStringId())
                         {
                             Ui::Windows::ToolTip::closeAndReset();
                         }
@@ -1196,12 +1191,15 @@ namespace OpenLoco::Input
             }
         }
 
-        if (_tooltipWindowType != Ui::WindowType::undefined)
+        if (Ui::ToolTip::getWindowType() != Ui::WindowType::undefined)
         {
-            if (window != nullptr && _tooltipWindowType == window->type && _tooltipWindowNumber == window->number && _tooltipWidgetIndex == widgetIndex)
+            if (window != nullptr && Ui::ToolTip::getWindowType() == window->type && Ui::ToolTip::getWindowNumber() == window->number && Ui::ToolTip::getWidgetIndex() == widgetIndex)
             {
-                _tooltipTimeout += _timeSinceLastTick;
-                if (_tooltipTimeout >= 8000)
+                auto tooltipTimeout = Ui::ToolTip::getTooltipTimeout();
+                tooltipTimeout += _timeSinceLastTick;
+                Ui::ToolTip::setTooltipTimeout(tooltipTimeout);
+
+                if (tooltipTimeout >= 8000)
                 {
                     WindowManager::close(Ui::WindowType::tooltip);
                 }
@@ -1214,16 +1212,21 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (_tooltipNotShownTicks < 500 || (x == _tooltipCursor.x && y == _tooltipCursor.y))
+        const auto tooltipNotShownTicks = Ui::ToolTip::getNotShownTicks();
+        const auto tooltipMousePos = Ui::ToolTip::getTooltipMouseLocation();
+        if (tooltipNotShownTicks < 500 || (x == tooltipMousePos.x && y == tooltipMousePos.y))
         {
-            _tooltipTimeout += _timeSinceLastTick;
+            auto tooltipTimeout = Ui::ToolTip::getTooltipTimeout();
+            tooltipTimeout += _timeSinceLastTick;
+            Ui::ToolTip::setTooltipTimeout(tooltipTimeout);
+
             int bp = 2000;
-            if (_tooltipNotShownTicks <= 1000)
+            if (tooltipNotShownTicks <= 1000)
             {
                 bp = 0;
             }
 
-            if (bp > _tooltipTimeout)
+            if (bp > tooltipTimeout)
             {
                 return;
             }
@@ -1238,9 +1241,8 @@ namespace OpenLoco::Input
             }
         }
 
-        _tooltipTimeout = 0;
-        _tooltipCursor.x = x;
-        _tooltipCursor.y = y;
+        Ui::ToolTip::setTooltipTimeout(0);
+        Ui::ToolTip::setTooltipMouseLocation({ x, y });
     }
 
     // 0x004C84BE
@@ -1327,8 +1329,7 @@ namespace OpenLoco::Input
                 _pressedWidgetIndex = widgetIndex;
                 _pressedWindowType = window->type;
                 _pressedWindowNumber = window->number;
-                _tooltipCursor.x = x;
-                _tooltipCursor.y = y;
+                Ui::ToolTip::setTooltipMouseLocation({ x, y });
                 Ui::ScrollView::scrollLeftBegin(x, y, *window, widget, widgetIndex);
                 break;
 
@@ -1444,10 +1445,10 @@ namespace OpenLoco::Input
     static void windowPositionEnd()
     {
         state(State::normal);
-        _tooltipTimeout = 0;
-        _tooltipWidgetIndex = _pressedWidgetIndex;
-        _tooltipWindowType = _dragWindowType;
-        _tooltipWindowNumber = _dragWindowNumber;
+        Ui::ToolTip::setTooltipTimeout(0);
+        Ui::ToolTip::setWidgetIndex(_pressedWidgetIndex);
+        Ui::ToolTip::setWindowType(_dragWindowType);
+        Ui::ToolTip::setWindowNumber(_dragWindowNumber);
     }
 
 #pragma mark - Window resizing
@@ -1656,11 +1657,6 @@ namespace OpenLoco::Input
         return Ui::Point(static_cast<int16_t>(_cursor2.x), static_cast<int16_t>(_cursor2.y));
     }
 
-    Ui::Point getTooltipMouseLocation()
-    {
-        return _tooltipCursor;
-    }
-
     Ui::Point getCursorPressedLocation()
     {
         return _cursorPressed;
@@ -1674,20 +1670,6 @@ namespace OpenLoco::Input
     Ui::Point getScrollLastLocation()
     {
         return _scrollLast;
-    }
-
-    void setTooltipMouseLocation(const Ui::Point& loc)
-    {
-        _tooltipCursor = loc;
-    }
-
-    uint16_t getTooltipTimeout()
-    {
-        return _tooltipTimeout;
-    }
-    void setTooltipTimeout(uint16_t tooltipTimeout)
-    {
-        _tooltipTimeout = tooltipTimeout;
     }
 
     uint16_t getClickRepeatTicks()

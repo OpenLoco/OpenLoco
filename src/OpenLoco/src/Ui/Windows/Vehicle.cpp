@@ -55,6 +55,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ToolTip.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
@@ -1422,7 +1423,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B399E
         static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
         {
-            Input::setTooltipTimeout(2000);
+            Ui::ToolTip::setTooltipTimeout(2000);
             self.flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(self, y);
             StringId tooltipFormat = StringIds::null;
@@ -1456,7 +1457,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            ToolTip::set_52336E(true);
+            Ui::ToolTip::set_52336E(true);
 
             auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->objectId);
             {
@@ -2514,7 +2515,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4404
         static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
         {
-            Input::setTooltipTimeout(2000);
+            Ui::ToolTip::setTooltipTimeout(2000);
             self.flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(self, y);
             StringId tooltipFormat = StringIds::null;
@@ -2548,7 +2549,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            ToolTip::set_52336E(true);
+            Ui::ToolTip::set_52336E(true);
 
             {
                 auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->objectId);
