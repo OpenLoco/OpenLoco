@@ -112,16 +112,7 @@ namespace OpenLoco::Input
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
-    static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
     static loco_global<uint16_t, 0x0113D84E> _dropdownHighlightedIndex;
-    static loco_global<StringId[40], 0x0113D850> _dropdownItemFormats;
-
-    static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
-
-    static loco_global<uint32_t, 0x0113DC68> _dropdownItemHeight;
-    static loco_global<uint32_t, 0x0113DC6C> _dropdownItemWidth;
-    static loco_global<uint32_t, 0x0113DC70> _dropdownColumnCount;
-    static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _dropdownFlags;
 
     static int32_t _cursorWheel;
