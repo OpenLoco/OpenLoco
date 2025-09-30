@@ -1,4 +1,4 @@
-#ifndef _WIN32
+#if !defined(_WIN32) && !(defined(__APPLE__) && defined(__MACH__))
 
 #include "Platform.h"
 #include <cstdlib>
@@ -17,10 +17,6 @@
 #if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
 #include <sys/sysctl.h>
 #include <sys/types.h>
-#include <unistd.h>
-#endif
-
-#if defined(__APPLE__) && defined(__MACH__)
 #include <unistd.h>
 #endif
 
