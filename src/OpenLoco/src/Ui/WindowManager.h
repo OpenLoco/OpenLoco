@@ -218,6 +218,11 @@ namespace OpenLoco::Ui::Windows
         void hideGridlines();
         void showDirectionArrows();
         void hideDirectionArrows();
+
+        void viewportFocusOnEntity(Window& main, EntityId targetEntity);
+        bool viewportIsFocusedOnEntity(const Window& main, EntityId targetEntity);
+        bool viewportIsFocusedOnAnyEntity(const Window& main);
+        void viewportUnfocusFromEntity(Window& main);
     }
 
     namespace MapToolTip

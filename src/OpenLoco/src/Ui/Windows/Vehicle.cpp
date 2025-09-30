@@ -775,7 +775,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 // Focus viewport on vehicle, with locking.
                 auto main = WindowManager::getMainWindow();
-                main->viewportFocusOnEntity(targetEntity);
+                Windows::Main::viewportFocusOnEntity(*main, targetEntity);
             }
         }
 
@@ -4981,9 +4981,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Vehicles::Vehicle train(*head);
             EntityId viewportFollowEntity = train.veh2->id;
             auto main = Ui::WindowManager::getMainWindow();
-            if (main->viewportIsFocusedOnEntity(viewportFollowEntity))
+            if (Windows::Main::viewportIsFocusedOnEntity(*main, viewportFollowEntity))
             {
-                main->viewportUnfocusFromEntity();
+                Windows::Main::viewportUnfocusFromEntity(*main);
             }
 
             GameCommands::setErrorTitle(StringIds::cant_remove_string_id);

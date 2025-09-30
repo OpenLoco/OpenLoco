@@ -615,9 +615,10 @@ namespace OpenLoco::Input
                 {
                     _ticksSinceDragStart = 1000;
 
-                    if (window->viewportIsFocusedOnAnyEntity())
+                    auto* main = WindowManager::getMainWindow();
+                    if (Windows::Main::viewportIsFocusedOnAnyEntity(*main))
                     {
-                        window->viewportUnfocusFromEntity();
+                        Windows::Main::viewportUnfocusFromEntity(*main);
                     }
                     else
                     {

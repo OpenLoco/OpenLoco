@@ -606,7 +606,8 @@ namespace OpenLoco::Ui
         moveWindowToLocation(pos);
     }
 
-    void Window::viewportCentreMain()
+    // Centres the main viewport on this window's saved view.
+    void Window::viewportCentreMain() const
     {
         if (viewports[0] == nullptr || savedView.isEmpty())
         {
@@ -616,7 +617,7 @@ namespace OpenLoco::Ui
         auto main = WindowManager::getMainWindow();
 
         // Unfocus the viewport.
-        main->viewportConfigurations[0].viewportTargetSprite = EntityId::null;
+        Ui::Windows::Main::viewportFocusOnEntity(*main, EntityId::null);
 
         // Centre viewport on tile/entity.
         if (savedView.isEntityView())
@@ -628,53 +629,6 @@ namespace OpenLoco::Ui
         {
             main->viewportCentreOnTile(savedView.getPos());
         }
-    }
-
-    void Window::viewportFocusOnEntity(EntityId targetEntity)
-    {
-        if (viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return;
-        }
-
-        viewportConfigurations[0].viewportTargetSprite = targetEntity;
-    }
-
-    bool Window::viewportIsFocusedOnEntity(EntityId targetEntity) const
-    {
-        if (targetEntity == EntityId::null || viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return false;
-        }
-
-        return viewportConfigurations[0].viewportTargetSprite == targetEntity;
-    }
-
-    bool Window::viewportIsFocusedOnAnyEntity() const
-    {
-        if (viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return false;
-        }
-
-        return viewportConfigurations[0].viewportTargetSprite != EntityId::null;
-    }
-
-    void Window::viewportUnfocusFromEntity()
-    {
-        if (viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return;
-        }
-
-        if (viewportConfigurations[0].viewportTargetSprite == EntityId::null)
-        {
-            return;
-        }
-
-        auto entity = EntityManager::get<EntityBase>(viewportConfigurations[0].viewportTargetSprite);
-        viewportConfigurations[0].viewportTargetSprite = EntityId::null;
-        viewportCentreOnTile(entity->position);
     }
 
     void Window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
