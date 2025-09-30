@@ -113,6 +113,7 @@ function(loco_target_compile_link_flags TARGET)
         $<$<CXX_COMPILER_ID:MSVC>:${COMMON_COMPILE_OPTIONS_MSVC}>
         $<$<CXX_COMPILER_ID:GNU>:${COMMON_COMPILE_OPTIONS_GNU}>
         $<$<CXX_COMPILER_ID:Clang>:${COMMON_COMPILE_OPTIONS_GNU}>
+        $<$<CXX_COMPILER_ID:AppleClang>:${COMMON_COMPILE_OPTIONS_GNU}>
     )
 
     # Set common link options
