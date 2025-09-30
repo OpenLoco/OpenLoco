@@ -767,7 +767,6 @@ else ()
         target_sources(OpenLoco
             PRIVATE
                 ${LOCO_SECTIONS})
-        set_target_properties(OpenLoco PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 
         if (TARGET SDL2::SDL2main)
             target_link_libraries(OpenLoco SDL2::SDL2main)
@@ -795,10 +794,6 @@ if (WIN32)
     # Loco.exe is looking for openloco.dll. Remove this when standalone.
     set_target_properties(OpenLoco PROPERTIES OUTPUT_NAME "openloco")
 endif ()
-
-if (NOT WIN32)
-    add_dependencies(OpenLoco segfiles)
-endif()
 
 if (MINGW)
     target_compile_definitions(OpenLoco
