@@ -894,7 +894,7 @@ endif ()
 # Only valid for Clang for now:
 # - GCC 8 does not support -Wno-pragma-once-outside-header
 # - Other compilers status unknown
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     add_library(OpenLoco-headers-check OBJECT ${OLOCO_HEADERS})
     set_target_properties(OpenLoco-headers-check PROPERTIES LINKER_LANGUAGE CXX)
     set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
