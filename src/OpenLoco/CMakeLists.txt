@@ -757,7 +757,7 @@ else ()
             PRIVATE_FILES
                 ${OLOCO_SOURCES}
         )
-        add_dependencies(OpenLoco linkable_sections)
+        #add_dependencies(OpenLoco linkable_sections)
         # set_source_files_properties has to be set in the CMakeLists that uses them
         set_source_files_properties(
             ${LOCO_SECTIONS}
