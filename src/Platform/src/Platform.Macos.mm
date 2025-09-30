@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <limits.h>
 #include <mach-o/dyld.h>
-
+#include <unistd.h>
 #import <Cocoa/Cocoa.h>
 
 namespace OpenLoco::Platform
