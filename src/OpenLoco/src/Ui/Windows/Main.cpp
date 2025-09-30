@@ -1,4 +1,5 @@
 #include "Config.h"
+#include "Entities/EntityManager.h"
 #include "Graphics/Gfx.h"
 #include "Map/Tile.h"
 #include "Ui/Widget.h"
@@ -109,6 +110,54 @@ namespace OpenLoco::Ui::Windows::Main
 
         mainWindow->viewports[0]->flags &= ~ViewportFlags::one_way_direction_arrows;
         mainWindow->invalidate();
+    }
+
+    void viewportFocusOnEntity(Window& main, EntityId targetEntity)
+    {
+        if (main.viewports[0] == nullptr)
+        {
+            return;
+        }
+
+        main.viewportConfigurations[0].viewportTargetSprite = targetEntity;
+    }
+
+    bool viewportIsFocusedOnEntity(const Window& main, EntityId targetEntity)
+    {
+        if (targetEntity == EntityId::null || main.viewports[0] == nullptr)
+        {
+            return false;
+        }
+
+        return main.viewportConfigurations[0].viewportTargetSprite == targetEntity;
+    }
+
+    bool viewportIsFocusedOnAnyEntity(const Window& main)
+    {
+        if (main.viewports[0] == nullptr)
+        {
+            return false;
+        }
+
+        return main.viewportConfigurations[0].viewportTargetSprite != EntityId::null;
+    }
+
+    // Stop following the followed entity, leaving the viewport centred on it.
+    void viewportUnfocusFromEntity(Window& main)
+    {
+        if (main.viewports[0] == nullptr)
+        {
+            return;
+        }
+
+        if (main.viewportConfigurations[0].viewportTargetSprite == EntityId::null)
+        {
+            return;
+        }
+
+        auto entity = EntityManager::get<EntityBase>(main.viewportConfigurations[0].viewportTargetSprite);
+        main.viewportConfigurations[0].viewportTargetSprite = EntityId::null;
+        main.viewportCentreOnTile(entity->position);
     }
 
     static constexpr WindowEventList kEvents = {

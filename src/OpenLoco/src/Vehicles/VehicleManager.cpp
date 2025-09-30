@@ -354,9 +354,9 @@ namespace OpenLoco::VehicleManager
         Vehicles::Vehicle train(head);
         EntityId viewportFollowEntity = train.veh2->id;
         auto main = Ui::WindowManager::getMainWindow();
-        if (main->viewportIsFocusedOnEntity(viewportFollowEntity))
+        if (Ui::Windows::Main::viewportIsFocusedOnEntity(*main, viewportFollowEntity))
         {
-            main->viewportUnfocusFromEntity();
+            Ui::Windows::Main::viewportUnfocusFromEntity(*main);
         }
 
         Ui::WindowManager::close(Ui::WindowType::vehicle, enumValue(head.id));

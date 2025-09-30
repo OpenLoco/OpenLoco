@@ -617,7 +617,7 @@ namespace OpenLoco::Ui
         auto main = WindowManager::getMainWindow();
 
         // Unfocus the viewport.
-        main->viewportConfigurations[0].viewportTargetSprite = EntityId::null;
+        Ui::Windows::Main::viewportFocusOnEntity(*main, EntityId::null);
 
         // Centre viewport on tile/entity.
         if (savedView.isEntityView())
@@ -629,54 +629,6 @@ namespace OpenLoco::Ui
         {
             main->viewportCentreOnTile(savedView.getPos());
         }
-    }
-
-    void Window::viewportFocusOnEntity(EntityId targetEntity)
-    {
-        if (viewports[0] == nullptr)
-        {
-            return;
-        }
-
-        viewportConfigurations[0].viewportTargetSprite = targetEntity;
-    }
-
-    bool Window::viewportIsFocusedOnEntity(EntityId targetEntity) const
-    {
-        if (targetEntity == EntityId::null || viewports[0] == nullptr)
-        {
-            return false;
-        }
-
-        return viewportConfigurations[0].viewportTargetSprite == targetEntity;
-    }
-
-    bool Window::viewportIsFocusedOnAnyEntity() const
-    {
-        if (viewports[0] == nullptr)
-        {
-            return false;
-        }
-
-        return viewportConfigurations[0].viewportTargetSprite != EntityId::null;
-    }
-
-    // Stop following the followed entity, leaving the viewport centred on it.
-    void Window::viewportUnfocusFromEntity()
-    {
-        if (viewports[0] == nullptr)
-        {
-            return;
-        }
-
-        if (viewportConfigurations[0].viewportTargetSprite == EntityId::null)
-        {
-            return;
-        }
-
-        auto entity = EntityManager::get<EntityBase>(viewportConfigurations[0].viewportTargetSprite);
-        viewportConfigurations[0].viewportTargetSprite = EntityId::null;
-        viewportCentreOnTile(entity->position);
     }
 
     void Window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
