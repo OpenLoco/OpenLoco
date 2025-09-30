@@ -11,7 +11,7 @@ set(private_files
 
 if (APPLE)
     list(APPEND private_files 
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Platform.Macos.mm")
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform.Macos.mm")
     set_source_files_properties(${private_files} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
