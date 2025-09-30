@@ -71,13 +71,6 @@ if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
 endif()
 
-if (APPLE)
-    # Detection of this variable seems to fail with CMake.
-    # Since we only support 32-bit builds at the moment, fix it this way.
-    # TODO: find out a proper fix for this.
-    set(CMAKE_SIZEOF_VOID_P 4)
-endif()
-
 if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
     message(FATAL_ERROR "Building in-source is not supported! Create a build dir and remove ${CMAKE_SOURCE_DIR}/CMakeCache.txt")
 endif()
