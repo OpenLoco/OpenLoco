@@ -20,6 +20,10 @@
 #include <unistd.h>
 #endif
 
+#if defined(__APPLE__) && defined(__MACH__)
+#include <unistd.h>
+#endif
+
 namespace OpenLoco::Platform
 {
     static constexpr auto kSingleInstanceMutexName = "OpenLoco.lock";
