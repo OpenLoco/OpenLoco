@@ -1,4 +1,4 @@
-25.08+ (???)
+25.09 (2025-09-30)
 ------------------------------------------------------------------------
 - Feature: [#3274] Add a button to rotate company headquarters when building them.
 - Feature: [#3284] Add tunnel, land, road station, streetlight, hill shape OpenGraphics objects.
