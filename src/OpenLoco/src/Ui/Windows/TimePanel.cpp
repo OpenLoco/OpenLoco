@@ -32,7 +32,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
 {
     static constexpr Ui::Size32 kWindowSize = { 140, 27 };
 
-    static constexpr auto kPausedStatusTextDuration = 30; // When paused, the time panel will alternate between displaying "* paused *" and the in-game date every this many ticks.
+    // When paused, the time panel will alternate between displaying "* paused *" and the in-game date every this many ticks.
+    static constexpr auto kPausedStatusTextDuration = 30;
 
     namespace Widx
     {
