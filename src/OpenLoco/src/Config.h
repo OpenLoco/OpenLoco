@@ -136,7 +136,7 @@ namespace OpenLoco::Config
         bool enabled{};
     };
 
-    constexpr auto messageCriticalityCount = 6;
+    constexpr auto kMessageCriticalityCount = 6;
 
     struct Config
     {
@@ -170,7 +170,7 @@ namespace OpenLoco::Config
         bool edgeScrolling = true;
         int32_t edgeScrollingSpeed = 12;
         bool zoomToCursor = true;
-        NewsType newsSettings[messageCriticalityCount];
+        NewsType newsSettings[kMessageCriticalityCount];
 
         int32_t autosaveAmount = 12;
         int32_t autosaveFrequency = 1;
