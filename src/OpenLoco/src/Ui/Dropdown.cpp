@@ -27,7 +27,41 @@ namespace OpenLoco::Ui::Dropdown
 {
     static constexpr int kBytesPerItem = 8;
 
-    static Colour _byte_504619[31];
+    // 0x00504619
+    static constexpr Colour _dropdownColourTable[31] = {
+        Colour::grey,              // 0x01
+        Colour::grey,              // 0x01
+        Colour::white,             // 0x02
+        Colour::mutedPurple,       // 0x04
+        Colour::mutedPurple,       // 0x04
+        Colour::purple,            // 0x05
+        Colour::blue,              // 0x07
+        Colour::blue,              // 0x07
+        Colour::mutedDarkTeal,     // 0x08
+        Colour::mutedDarkTeal,     // 0x08
+        Colour::green,             // 0x0D
+        Colour::mutedSeaGreen,     // 0x0B
+        Colour::mutedGrassGreen,   // 0x0C
+        Colour::green,             // 0x0D
+        Colour::mutedAvocadoGreen, // 0x0E
+        Colour::mutedOliveGreen,   // 0x0F
+        Colour::yellow,            // 0x10
+        Colour::yellow,            // 0x10
+        Colour::orange,            // 0x12
+        Colour::amber,             // 0x13
+        Colour::orange,            // 0x12
+        Colour::mutedDarkYellow,   // 0x15
+        Colour::mutedDarkYellow,   // 0x15
+        Colour::brown,             // 0x17
+        Colour::mutedOrange,       // 0x18
+        Colour::mutedDarkRed,      // 0x19
+        Colour::red,               // 0x1B
+        Colour::red,               // 0x1B
+        Colour::pink,              // 0x1D
+        Colour::pink,              // 0x1D
+        Colour::mutedRed           // 0x1E
+    };
+
     static std::uint8_t _appropriateImageDropdownItemsPerRow[33];
     static char _byte_112CC04[512];
     static uint8_t _windowDropdownOnpaintCellX;
@@ -332,7 +366,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             if (colour.isTranslucent())
             {
-                colour = _byte_504619[enumValue(colour.c())];
+                colour = _dropdownColourTable[enumValue(colour.c())];
                 colour = colour.translucent();
             }
 
@@ -653,7 +687,7 @@ namespace OpenLoco::Ui::Dropdown
 
         if (colour.isTranslucent())
         {
-            colour = static_cast<Colour>(_byte_504619[enumValue(colour.c())]);
+            colour = static_cast<Colour>(_dropdownColourTable[enumValue(colour.c())]);
             colour = colour.translucent();
         }
 
