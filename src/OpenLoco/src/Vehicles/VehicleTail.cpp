@@ -17,6 +17,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
 
     // 0x004794BC
+    // This is enter level crossing if unk==8 and leave level crossing if unk==9
     void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
     {
         auto levelCrossingLoc = loc;
@@ -57,6 +58,7 @@ namespace OpenLoco::Vehicles
             {
                 continue;
             }
+            road->setUnk7_10(true);
 
             World::AnimationManager::createAnimation(1, levelCrossingLoc, levelCrossingLoc.z / 4);
         }
@@ -104,7 +106,7 @@ namespace OpenLoco::Vehicles
                 setSignalState(_oldTilePos, trackAndDir.track, trackType, 0);
             }
 
-            const auto& trackSize = World::TrackData::getUnkTrack(ref & 0x1FF);
+            const auto& trackSize = World::TrackData::getUnkTrack(ref & World::Track::AdditionalTaDFlags::basicTaDMask);
             auto nextTile = _oldTilePos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
@@ -135,7 +137,7 @@ namespace OpenLoco::Vehicles
                 tad._data = routing & Track::AdditionalTaDFlags::basicTaDMask;
                 tail.sub_47D959(pos, tad, false);
 
-                pos += World::TrackData::getUnkRoad(tad._data).pos;
+                pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
             }
         }
         else

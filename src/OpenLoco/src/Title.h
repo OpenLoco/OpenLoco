@@ -2,7 +2,6 @@
 
 namespace OpenLoco::Title
 {
-    void registerHooks();
     void start();
     void update();
     void stop();

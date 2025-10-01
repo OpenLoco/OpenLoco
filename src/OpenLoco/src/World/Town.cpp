@@ -418,10 +418,11 @@ namespace OpenLoco
             for (auto j = 0U; j < buildingObj->numVariations; ++j)
             {
                 uint16_t height = 0;
-                auto parts = buildingObj->getBuildingParts(j);
+                const auto parts = buildingObj->getBuildingParts(j);
+                const auto partHeights = buildingObj->getBuildingPartHeights();
                 for (const auto part : parts)
                 {
-                    height += buildingObj->partHeights[part];
+                    height += partHeights[part];
                 }
 
                 if (height <= targetHeight)
@@ -729,10 +730,11 @@ namespace OpenLoco
         for (auto j = 0U; j < buildingObj->numVariations; ++j)
         {
             uint16_t height = 0;
-            auto parts = buildingObj->getBuildingParts(j);
+            const auto parts = buildingObj->getBuildingParts(j);
+            const auto partHeights = buildingObj->getBuildingPartHeights();
             for (const auto part : parts)
             {
-                height += buildingObj->partHeights[part];
+                height += partHeights[part];
             }
 
             if (height <= targetHeight)

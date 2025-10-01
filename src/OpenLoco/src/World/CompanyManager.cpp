@@ -610,7 +610,7 @@ namespace OpenLoco::CompanyManager
                 sfl::static_vector<uint8_t, 32> availableNamePrefixes;
                 for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->var_04 & (1U << j))
+                    if (competitorObj->availablePlayStyles & (1U << j))
                     {
                         availableNamePrefixes.push_back(j);
                     }
@@ -701,7 +701,7 @@ namespace OpenLoco::CompanyManager
             }
 
             const auto stringId = kCompanyAiPlaystyleString[companyPlaystyle];
-            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->lastName);
+            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->availableNamePrefixes);
             if (company->aiPlaystyleTownId != 0xFFU)
             {
                 args.push(TownManager::get(static_cast<TownId>(company->aiPlaystyleTownId))->name);

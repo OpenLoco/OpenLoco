@@ -18,7 +18,8 @@ namespace OpenLoco::Ui::TextInput
         {
             if (inputLenLimit > 0 && buffer.length() == inputLenLimit)
             {
-                return false;
+                // Limit reached but we need to consume this input.
+                return true;
             }
 
             if (cursorPosition == buffer.length())

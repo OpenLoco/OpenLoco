@@ -22,11 +22,15 @@ namespace OpenLoco::World::Track
     namespace AdditionalTaDFlags
     {
         constexpr uint16_t basicTaDMask = 0b0000'0001'1111'1111;
+        constexpr uint16_t basicRaDMask = 0b0000'0000'0111'1111;
         constexpr uint16_t bridgeMask = 0b0000'1110'0000'0000;
+        constexpr uint16_t isOvertaking = (1U << 7);   // road only
+        constexpr uint16_t isChangingLane = (1U << 8); // road only
         constexpr uint16_t hasBridge = (1U << 12);
         constexpr uint16_t hasMods = (1U << 13);
         constexpr uint16_t hasSignal = (1U << 15); // Track only (not roads)
         constexpr uint16_t basicTaDWithSignalMask = basicTaDMask | hasSignal;
+        constexpr uint16_t basicRaDWithSignalMask = basicRaDMask | hasSignal; // Roads don't have signals so this seems a bit pointless
     }
 
     struct RoadConnections

@@ -36,8 +36,8 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::sound;
 
         StringId name;
-        const SoundObjectData* data;
-        uint8_t var_06;
+        uint32_t dataOffset;
+        uint8_t shouldLoop;
         uint8_t pad_07;
         uint32_t volume; // 0x08
 
@@ -45,6 +45,8 @@ namespace OpenLoco
         bool validate() const { return true; }
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> objData, ObjectManager::DependentObjects*);
         void unload();
+
+        const SoundObjectData* getData() const;
     };
 #pragma pack(pop)
     static_assert(sizeof(SoundObject) == 0xC);

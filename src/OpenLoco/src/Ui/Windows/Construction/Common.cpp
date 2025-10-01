@@ -843,7 +843,7 @@ namespace OpenLoco::Ui::Windows::Construction
             }
 
             removeConstructionGhosts();
-            World::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionFreeFormTiles();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
             _cState->trackCost = 0x80000000;
             _cState->signalCost = 0x80000000;
@@ -1172,7 +1172,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
-            World::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionFreeFormTiles();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             Windows::Main::hideDirectionArrows();
@@ -1387,26 +1387,5 @@ namespace OpenLoco::Ui::Windows::Construction
                 break;
         }
         return false;
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0049F1B5,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Construction::activateSelectedConstructionWidgets();
-                regs = backup;
-                return 0;
-            });
-
-        // registerHook(
-        //     0x0049DC97,
-        //     [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //         registers backup = regs;
-        //         construction::on_tool_down(*((Ui::window*)regs.esi), regs.dx, regs.ax, regs.cx);
-        //         regs = backup;
-        //         return 0;
-        //     });
     }
 }

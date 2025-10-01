@@ -1121,10 +1121,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B9E7
-    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollWidth = kRenderedMapWidth;
-        *scrollHeight = kRenderedMapHeight;
+        scrollWidth = kRenderedMapWidth;
+        scrollHeight = kRenderedMapHeight;
     }
 
     // 0x0046B9D4
@@ -2178,7 +2178,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         drawViewportPosition(drawingCtx);
 
-        if (self.savedView.mapX & (1 << 0))
+        if (self.showTownNames)
         {
             drawTownNames(drawingCtx);
         }
@@ -2440,7 +2440,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         centerOnViewPoint();
 
         window->currentTab = 0;
-        window->savedView.mapX = 1;
+        window->showTownNames = true;
         window->var_854 = 0;
 
         assignIndustryColours();
@@ -2477,8 +2477,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         const int16_t vpCentreY = ((viewport->viewHeight / 2) + viewport->viewY) / 16;
 
         auto& widget = window->widgets[widx::scrollview];
-        const int16_t miniMapWidth = widget.width() - ScrollView::barWidth;
-        const int16_t miniMapHeight = widget.height() - ScrollView::barWidth;
+        const int16_t miniMapWidth = widget.width() - ScrollView::kScrollbarSize;
+        const int16_t miniMapHeight = widget.height() - ScrollView::kScrollbarSize;
 
         const int16_t visibleMapWidth = window->scrollAreas[0].contentWidth - miniMapWidth;
         const int16_t visibleMapHeight = window->scrollAreas[0].contentHeight - miniMapHeight;

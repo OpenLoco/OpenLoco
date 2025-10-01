@@ -197,8 +197,6 @@ namespace OpenLoco::ObjectManager
     void sub_4748FA();
     void sub_47AC05();
 
-    void registerHooks();
-
     // Calls function with the handle (LoadedObjectHandle) of each loaded object
     template<typename Function>
     void forEachLoadedObject(Function&& func)

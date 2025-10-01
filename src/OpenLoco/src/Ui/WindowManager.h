@@ -41,7 +41,6 @@ namespace OpenLoco::Ui::WindowManager
     };
 
     void init();
-    void registerHooks();
 
     void setWindowColours(WindowColour slot, AdvancedColour colour);
     AdvancedColour getWindowColour(WindowColour slot);
@@ -128,7 +127,6 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open(uint32_t vehicle, uint32_t flags);
         void sub_4B92A5(Ui::Window* window);
-        void registerHooks();
     }
 
     namespace Cheats
@@ -170,7 +168,6 @@ namespace OpenLoco::Ui::Windows
         bool isSignalTabOpen();
         bool rotate(Window& self);
         void removeConstructionGhosts();
-        void registerHooks();
         uint16_t getLastSelectedMods();
         World::Track::ModSection getLastSelectedTrackModSection();
     }
@@ -190,7 +187,6 @@ namespace OpenLoco::Ui::Windows
         void open(StringId title, StringId message = StringIds::null);
         void openQuiet(StringId title, StringId message = StringIds::null);
         void openWithCompetitor(StringId title, StringId message, CompanyId competitorId);
-        void registerHooks();
     }
 
     namespace Industry
@@ -222,6 +218,11 @@ namespace OpenLoco::Ui::Windows
         void hideGridlines();
         void showDirectionArrows();
         void hideDirectionArrows();
+
+        void viewportFocusOnEntity(Window& main, EntityId targetEntity);
+        bool viewportIsFocusedOnEntity(const Window& main, EntityId targetEntity);
+        bool viewportIsFocusedOnAnyEntity(const Window& main);
+        void viewportUnfocusFromEntity(Window& main);
     }
 
     namespace MapToolTip
@@ -281,7 +282,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         Window* openMusicSettings();
-        constexpr uint8_t kTabOffsetMusic = 2;
+        constexpr uint8_t kTabOffsetMusic = 3;
     }
 
     namespace PlayerInfoPanel
@@ -365,8 +366,6 @@ namespace OpenLoco::Ui::Windows
 
     namespace TextInput
     {
-        void registerHooks();
-
         void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, const void* valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
         void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
@@ -428,7 +427,6 @@ namespace OpenLoco::Ui::Windows
 
     namespace ToolTip
     {
-        void registerHooks();
         void open(Ui::Window* window, int32_t widgetIndex, int16_t x, int16_t y);
         void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int16_t x, int16_t y);
         void set_52336E(bool value);

@@ -492,9 +492,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A4FA
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = kRowHeight * self.var_83C;
+            scrollHeight = kRowHeight * self.var_83C;
         }
 
         // 0x00491841
@@ -999,8 +999,8 @@ namespace OpenLoco::Ui::Windows::TownList
                         WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
                         if (activeWidget > Common::widx::panel)
                         {
-                            self.savedView.mapX += 1;
-                            if (self.savedView.mapX >= 8)
+                            self.expandContentCounter += 1;
+                            if (self.expandContentCounter >= 8)
                             {
                                 auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
@@ -1027,7 +1027,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
                 else
                 {
-                    self.savedView.mapX = 0;
+                    self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
                         self.minWidth = kWindowSize.width;
@@ -1223,8 +1223,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049B2B5
         static void updateActiveThumb(Window& self)
         {
-            uint16_t scrollHeight = 0;
-            self.callGetScrollSize(0, nullptr, &scrollHeight);
+            int32_t scrollWidth = 0, scrollHeight = 0;
+            self.callGetScrollSize(0, scrollWidth, scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -1262,14 +1262,14 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AE83
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = (4 + self.var_83C) / 5;
-            if (*scrollHeight == 0)
+            scrollHeight = (4 + self.var_83C) / 5;
+            if (scrollHeight == 0)
             {
-                *scrollHeight += 1;
+                scrollHeight += 1;
             }
-            *scrollHeight *= kRowHeight;
+            scrollHeight *= kRowHeight;
         }
 
         // 0x0049ABBB
@@ -1394,7 +1394,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
-                    self.savedView.mapX = -16;
+                    self.expandContentCounter = -16;
                     _dword_1135C34 = GameCommands::FAILURE;
                     _buildingVariation = 0;
                     self.invalidate();

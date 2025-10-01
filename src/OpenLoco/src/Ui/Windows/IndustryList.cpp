@@ -448,9 +448,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458108
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = kRowHeight * self.var_83C;
+            scrollHeight = kRowHeight * self.var_83C;
         }
 
         // 0x00457D2A
@@ -839,7 +839,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
-                    self.savedView.mapX = -16;
+                    self.expandContentCounter = -16;
                     _dword_E0C39C = 0x80000000;
                     self.invalidate();
                     break;
@@ -944,8 +944,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self.savedView.mapX += 1;
-                            if (self.savedView.mapX >= 8)
+                            self.expandContentCounter += 1;
+                            if (self.expandContentCounter >= 8)
                             {
                                 auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
@@ -972,7 +972,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 }
                 else
                 {
-                    self.savedView.mapX = 0;
+                    self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
                         self.minWidth = kWindowSize.width;
@@ -1002,14 +1002,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004586EA
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = (4 + self.var_83C) / 5;
-            if (*scrollHeight == 0)
+            scrollHeight = (4 + self.var_83C) / 5;
+            if (scrollHeight == 0)
             {
-                *scrollHeight += 1;
+                scrollHeight += 1;
             }
-            *scrollHeight *= kRowHeight;
+            scrollHeight *= kRowHeight;
         }
 
         // 0x00458352
@@ -1223,8 +1223,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458B51
         static void updateActiveThumb(Window& self)
         {
-            uint16_t scrollHeight = 0;
-            self.callGetScrollSize(0, nullptr, &scrollHeight);
+            int32_t scrollWidth = 0, scrollHeight = 0;
+            self.callGetScrollSize(0, scrollWidth, scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;

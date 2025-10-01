@@ -1255,6 +1255,58 @@ namespace OpenLoco::World::TileManager
         }
     }
 
+    // 0x004795D1
+    void setLevelCrossingFlags(const World::Pos3 pos)
+    {
+        auto findLevelTrackAndRoad = [pos](auto&& trackFunction, auto&& roadFunction) {
+            auto tile = World::TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                if (el.baseHeight() != pos.z)
+                {
+                    continue;
+                }
+                if (el.isAiAllocated())
+                {
+                    continue;
+                }
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack != nullptr)
+                {
+                    if (elTrack->trackId() == 0)
+                    {
+                        trackFunction(*elTrack);
+                    }
+                }
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad != nullptr)
+                {
+                    if (elRoad->roadId() == 0)
+                    {
+                        roadFunction(*elRoad);
+                    }
+                }
+            }
+        };
+
+        bool hasRoad = false;
+        bool hasTrack = false;
+        findLevelTrackAndRoad(
+            [&hasTrack](World::TrackElement& elTrack) { hasTrack |= elTrack.hasLevelCrossing(); },
+            [&hasRoad](World::RoadElement& elRoad) { hasRoad |= elRoad.hasLevelCrossing(); });
+
+        if (hasRoad ^ hasTrack)
+        {
+            findLevelTrackAndRoad(
+                [hasTrack](World::TrackElement& elTrack) { if (hasTrack) { elTrack.setHasLevelCrossing(false); } },
+                [hasRoad](World::RoadElement& elRoad) { if (hasRoad) {
+                    elRoad.setHasLevelCrossing(false);
+                    elRoad.setUnk7_10(false);
+                    elRoad.setLevelCrossingObjectId(0);
+                } });
+        }
+    }
+
     // 0x004690FC
     void setTerrainStyleAsCleared(const Pos2& pos)
     {
@@ -1444,7 +1496,7 @@ namespace OpenLoco::World::TileManager
         if (!SceneManager::isEditorMode())
         {
             // Reset terrain growth when not in editor
-            surface->setTerrain(surface->terrain());
+            surface->setGrowthStage(0);
         }
 
         surface->setBaseZ(targetBaseZ);
@@ -1452,9 +1504,9 @@ namespace OpenLoco::World::TileManager
         surface->setSlope(slopeFlags);
 
         landObj = ObjectManager::get<LandObject>(surface->terrain());
-        if (landObj->hasFlags(LandObjectFlags::unk1) && !SceneManager::isEditorMode())
+        if (landObj->hasFlags(LandObjectFlags::hasReplacementLandHeader) && !SceneManager::isEditorMode())
         {
-            surface->setTerrain(landObj->cliffEdgeHeader2);
+            surface->setTerrain(landObj->replacementLandHeader);
         }
 
         if (surface->water() * kMicroToSmallZStep <= targetBaseZ)
@@ -1577,38 +1629,5 @@ namespace OpenLoco::World::TileManager
                 }
             }
         }
-    }
-
-    void registerHooks()
-    {
-        // This hook can be removed once sub_4599B3 has been implemented
-        registerHook(
-            0x004BE048,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                const auto count = countSurroundingTrees({ regs.ax, regs.cx });
-                regs = backup;
-                regs.dx = count;
-                return 0;
-            });
-
-        registerHook(
-            0x004C5596,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                const auto count = countSurroundingWaterTiles({ regs.ax, regs.cx });
-                regs = backup;
-                regs.dx = count;
-                return 0;
-            });
-
-        registerHook(
-            0x0046902E,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                removeSurfaceIndustry({ regs.ax, regs.cx });
-                regs = backup;
-                return 0;
-            });
     }
 }

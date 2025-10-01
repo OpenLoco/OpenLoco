@@ -17,6 +17,7 @@
 #include "Graphics/TextRenderer.h"
 #include "HillShapesObject.h"
 #include "IndustryObject.h"
+#include "Input.h"
 #include "InterfaceSkinObject.h"
 #include "LandObject.h"
 #include "LevelCrossingObject.h"
@@ -716,7 +717,7 @@ namespace OpenLoco::ObjectManager
         strcat(str, objectname.c_str());
         Ui::ProgressBar::begin(caption);
         Ui::ProgressBar::setProgress(50);
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
 
         // Get new file path
         std::string filename = objectname;
@@ -1117,12 +1118,23 @@ namespace OpenLoco::ObjectManager
         getGameState().lastLandOption = 0xFFU;
     }
 
+    // 0x0047D9F2
+    static void updateTrafficHandedness()
+    {
+        getGameState().trafficHandedness = 0; // Default to left hand traffic
+
+        auto* regionObj = ObjectManager::get<RegionObject>();
+        if (regionObj != nullptr)
+        {
+            getGameState().trafficHandedness = (regionObj->flags & RegionObjectFlags::rightHandTraffic) != RegionObjectFlags::none;
+        }
+    }
+
     // 0x004748FA
     void sub_4748FA()
     {
         updateLandObjectFlags();
-        // determine trafficHandedness
-        call(0x0047D9F2);
+        updateTrafficHandedness();
         updateWaterPalette();
         resetDefaultLandObject();
     }
@@ -1151,53 +1163,5 @@ namespace OpenLoco::ObjectManager
             }
         }
         getGameState().lastTrackTypeOption = lastIndex;
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00472172,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                uint8_t index = regs.edx;
-                LoadedObjectHandle handle = { static_cast<ObjectType>(regs.ecx), static_cast<LoadedObjectId>(regs.ebx) };
-
-                // 0x2000 chosen as a large number
-                std::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x2000);
-                auto res = ObjectManager::loadStringTable(data, handle, index);
-
-                regs = backup;
-                regs.ebp += res.tableLength;
-                regs.eax = res.str;
-                return 0;
-            });
-
-        registerHook(
-            0x0047221F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                // 0x20000 chosen as a large number
-                std::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x20000);
-                auto res = ObjectManager::loadImageTable(data);
-
-                regs = backup;
-                regs.ebp += res.tableLength;
-                regs.eax = res.imageOffset;
-                return 0;
-            });
-
-        registerHook(
-            0x00471BCE,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                ObjectHeader* header = X86Pointer<ObjectHeader>(regs.ebp);
-                auto res = load(*header);
-                regs = backup;
-
-                return res ? 0 : X86_FLAG_CARRY;
-            });
     }
 }

@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <span>
 
 namespace OpenLoco
@@ -25,14 +26,21 @@ namespace OpenLoco
         inDesert, // Towns located in a desert (>=100 desert surface tiles)
     };
 
+    enum class RegionObjectFlags : uint16_t
+    {
+        none = 0,
+        rightHandTraffic = 1U << 0, // 0 = left hand traffic, 1 = right hand traffic
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RegionObjectFlags);
+
 #pragma pack(push, 1)
     struct RegionObject
     {
         static constexpr auto kObjectType = ObjectType::region;
 
         StringId name;
-        uint32_t image; // 0x02
-        uint8_t pad_06[0x8 - 0x6];
+        uint32_t image;                                           // 0x02
+        RegionObjectFlags flags;                                  // 0x06
         uint8_t numCargoInflunceObjects;                          // 0x08 length of cargoInfluenceObjectIds and cargoInfluenceTownFilter
         uint8_t cargoInfluenceObjectIds[4];                       // 0x09
         CargoInfluenceTownFilterType cargoInfluenceTownFilter[4]; // 0x0D valid values 0, 1, 2

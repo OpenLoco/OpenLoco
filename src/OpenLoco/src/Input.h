@@ -64,6 +64,9 @@ namespace OpenLoco::Input
     State state();
     void state(State);
 
+    bool processMessages();
+    bool processMessagesMini();
+
     Ui::Point getMouseLocation();
     Ui::Point getMouseLocation2();
     bool isHovering(Ui::WindowType);
@@ -88,7 +91,10 @@ namespace OpenLoco::Input
 
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);
+    void readKeyboardState();
+    void handleKeyInput(uint32_t keycode);
     bool hasKeyModifier(KeyModifier modifier);
+    KeyModifier getKeyModifier();
 
     StationId getHoveredStationId();
 

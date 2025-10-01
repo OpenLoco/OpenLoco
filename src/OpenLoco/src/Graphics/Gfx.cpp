@@ -277,11 +277,11 @@ namespace OpenLoco::Gfx
 
         if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
-            Ui::processMessagesMini();
+            Input::processMessagesMini();
         }
         else
         {
-            Ui::processMessages();
+            Input::processMessages();
         }
     }
 

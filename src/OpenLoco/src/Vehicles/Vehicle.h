@@ -198,11 +198,12 @@ namespace OpenLoco::Vehicles
                 _data &= ~(1 << 2);
                 _data |= state ? (1 << 2) : 0;
             }
-            // Road vehicles are briefly back to front when reaching dead ends
-            // Trams can stay back to front
-            constexpr bool isBackToFront() const { return _data & (1 << 7); }
+
+            constexpr uint8_t basicRad() const { return _data & 0x7F; }
+            // Vehicles can be in overtaking lane (trams can stay in that lane)
+            constexpr bool isOvertaking() const { return _data & (1 << 7); }
             // Related to road vehicles turning around
-            constexpr bool isUnk8() const { return _data & (1 << 8); }
+            constexpr bool isChangingLane() const { return _data & (1 << 8); }
             constexpr bool operator==(const _RoadAndDirection other) const { return _data == other._data; }
         };
 
@@ -229,10 +230,56 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SignalStateFlags);
 
+    constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
+    {
+        uint8_t nibble = 0;
+        if (pos1.x != pos2.x)
+        {
+            nibble |= (1U << 0);
+        }
+        if (pos1.y != pos2.y)
+        {
+            nibble |= (1U << 1);
+        }
+        if (pos1.z != pos2.z)
+        {
+            nibble |= (1U << 2);
+        }
+        return nibble;
+    }
+
+    // 0x00500120
+    constexpr std::array<uint32_t, 8> kMovementNibbleToDistance = {
+        0,
+        0x220C,
+        0x220C,
+        0x3027,
+        0x199A,
+        0x2A99,
+        0x2A99,
+        0x3689,
+    };
+
+    // 0x00500244
+    constexpr std::array<World::TilePos2, 9> kMooreNeighbourhood = {
+        World::TilePos2{ 0, 0 },
+        World::TilePos2{ 0, 1 },
+        World::TilePos2{ 1, 1 },
+        World::TilePos2{ 1, 0 },
+        World::TilePos2{ 1, -1 },
+        World::TilePos2{ 0, -1 },
+        World::TilePos2{ -1, -1 },
+        World::TilePos2{ -1, 0 },
+        World::TilePos2{ -1, 1 },
+    };
+
     void setSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
     SignalStateFlags getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
     void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+    void setReverseSignalOccupiedInBlock(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+    bool isBlockOccupied(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+    uint8_t sub_4A2A77(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     struct ApplyTrackModsResult
     {
         currency32_t cost;
@@ -241,7 +288,21 @@ namespace OpenLoco::Vehicles
     };
     ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
     currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
+    ApplyTrackModsResult applyRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, uint8_t flags, World::Track::ModSection modSelection, uint8_t roadModObjIds);
+    currency32_t removeRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, uint8_t flags, World::Track::ModSection modSelection, uint8_t roadModObjIds);
     void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk);
+
+    enum class RoadOccupationFlags : uint8_t
+    {
+        none = 0U,
+        isLaneOccupied = 1U << 0,
+        isLevelCrossingClosed = 1U << 1,
+        hasLevelCrossing = 1U << 2,
+        hasStation = 1U << 3,
+        isOneWay = 1U << 4,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadOccupationFlags);
+    RoadOccupationFlags getRoadOccupation(const World::Pos3 pos, const TrackAndDirection::_RoadAndDirection tad);
 
     EntityId checkForCollisions(VehicleBogie& bogie, World::Pos3& loc);
     void playPickupSound(Vehicles::Vehicle2* veh2);
@@ -383,7 +444,7 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
-        uint32_t var_3C;     // 0x3C
+        int32_t var_3C;      // 0x3C
         uint8_t pad_40[0x2]; // 0x40
         TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
@@ -436,9 +497,9 @@ namespace OpenLoco::Vehicles
         void sub_4ADB47(bool unk);
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
-        void sub_4AF7A4();
         void landCrashedUpdate();
         void updateSegmentCrashed();
+        void autoLayoutTrain();
         uint32_t getVehicleTotalLength() const;
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -446,6 +507,7 @@ namespace OpenLoco::Vehicles
         }
         void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
+        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
 
     private:
         void updateDrivingSounds();
@@ -493,7 +555,6 @@ namespace OpenLoco::Vehicles
         void produceLeavingDockSound();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
-        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
         bool pathingShouldReverse();
@@ -572,7 +633,8 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
-        uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
+        int32_t var_3C;              // 0x3C field same in all vehicles unread for veh2
+        uint8_t pad_40[0x42 - 0x40]; // 0x40
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
         SoundObjectId_t drivingSoundId;       // 0x44
@@ -622,9 +684,9 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
-        uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t objectId;  // 0x40
-        TransportMode mode; // 0x42
+        int32_t var_3C;           // 0x3C field same in all vehicles unread for body
+        uint16_t objectId;        // 0x40
+        TransportMode mode;       // 0x42
         uint8_t pad_43;
         int16_t var_44;
         uint8_t animationFrame;    // 0x46 roll/animation sprite index
@@ -652,10 +714,10 @@ namespace OpenLoco::Vehicles
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
+        void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
 
     private:
         void animationUpdate();
-        void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
         void steamPuffsAnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05);
@@ -688,9 +750,9 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
-        uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t objectId;  // 0x40
-        TransportMode mode; // 0x42 field same in all vehicles
+        int32_t var_3C;           // 0x3C field same in all vehicles unread for bogie
+        uint16_t objectId;        // 0x40
+        TransportMode mode;       // 0x42 field same in all vehicles
         uint8_t pad_43;
         uint16_t var_44;
         uint8_t animationIndex;      // 0x46 animation index
@@ -744,7 +806,8 @@ namespace OpenLoco::Vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
-        uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
+        int32_t var_3C;              // 0x3C field same in all vehicles unread for tail
+        uint8_t pad_40[0x42 - 0x40]; // 0x40
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
         SoundObjectId_t drivingSoundId;       // 0x44
@@ -1011,6 +1074,8 @@ namespace OpenLoco::Vehicles
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
     void removeAllCargo(CarComponent& carComponent);
 
+    struct VehicleCommon;
+
     /* flipCar
      * Reverses a Car in-place and returns the new front bogie
      * frontBogie: front bogie of the Car
@@ -1026,9 +1091,10 @@ namespace OpenLoco::Vehicles
      * returns nothing
      */
     void insertCarBefore(VehicleBogie& source, VehicleBase& dest);
-    void registerHooks();
-    void registerHeadHooks();
 
     bool canVehiclesCouple(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId);
     void connectJacobsBogies(VehicleHead& head);
+
+    void applyVehicleObjectLength(Vehicle& train);
+    bool positionVehicleOnTrack(VehicleHead& head);
 }

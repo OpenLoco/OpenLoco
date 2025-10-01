@@ -58,34 +58,4 @@ namespace OpenLoco::Ui::ProgressBar
             assert(false);
         }
     }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x004CF5C5,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                begin(regs.eax);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CF621,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                setProgress(regs.eax);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CF60B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                end();
-                regs = backup;
-                return 0;
-            });
-    }
 }

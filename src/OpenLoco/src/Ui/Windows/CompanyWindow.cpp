@@ -680,10 +680,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size32 kWindowSize = { 340, 194 };
 
-        loco_global<World::Pos3, 0x009C68D6> _headquarterGhostPos;
-        loco_global<uint8_t, 0x009C68F0> _headquarterGhostRotation;
-        loco_global<uint8_t, 0x009C68F1> _headquarterGhostType;
-        loco_global<bool, 0x009C68EF> _headquarterGhostPlaced;
+        static std::optional<GameCommands::HeadquarterPlacementArgs> _headquarterGhost;
 
         // New in OpenLoco; not to be confused with rotation of already-placed HQ ghost
         static uint8_t _headquarterConstructionRotation;
@@ -692,6 +689,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             viewport = 11,
             build_hq,
+            rotate_hq,
             centre_on_viewport,
         };
 
@@ -699,6 +697,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::makeCommonWidgets(340, 194, StringIds::title_company_details),
             Widgets::Viewport({ 219, 54 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
             Widgets::ImageButton({ 315, 92 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
+            Widgets::ImageButton({ 315, 92 + 26 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
             Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
@@ -742,6 +741,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
             self.widgets[widx::build_hq].hidden = CompanyId(self.number) != CompanyManager::getControllingId();
+            self.widgets[widx::rotate_hq].hidden = !ToolManager::isToolActive(self.type, self.number, build_hq);
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
@@ -910,6 +910,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
+        static void rotateHQGhost90Deg()
+        {
+            _headquarterConstructionRotation = (_headquarterConstructionRotation + 1) & 3;
+        }
+
         // 0x00432C08
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
@@ -922,6 +927,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::build_hq:
                     ToolManager::toolSet(self, widgetIndex, CursorId::placeHQ);
                     Input::setFlag(Input::Flags::flag6);
+                    break;
+
+                case widx::rotate_hq:
+                    rotateHQGhost90Deg();
                     break;
             }
         }
@@ -940,11 +949,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             _headquarterConstructionRotation = (WindowManager::getCurrentRotation() + 2) & 3;
         }
 
-        static void rotateHQGhost90Deg()
-        {
-            _headquarterConstructionRotation = (_headquarterConstructionRotation + 1) & 3;
-        }
-
         // 0x00432C24
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
@@ -957,13 +961,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00434E94
         static void removeHeadquarterGhost()
         {
-            if (_headquarterGhostPlaced)
+            if (_headquarterGhost.has_value())
             {
-                _headquarterGhostPlaced = false;
                 auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
                 GameCommands::HeadquarterRemovalArgs args;
-                args.pos = _headquarterGhostPos;
+                args.pos = _headquarterGhost->pos;
                 GameCommands::doCommand(args, flags);
+                _headquarterGhost = std::nullopt;
             }
         }
 
@@ -974,10 +978,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto flags = GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
             if (GameCommands::doCommand(args, flags) != GameCommands::FAILURE)
             {
-                _headquarterGhostPlaced = true;
-                _headquarterGhostPos = args.pos;
-                _headquarterGhostRotation = args.rotation;
-                _headquarterGhostType = args.type;
+                _headquarterGhost = args;
             }
         }
 
@@ -1046,9 +1047,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             World::setMapSelectionArea(placementArgs->pos, posB);
             World::mapInvalidateSelectionRect();
 
-            if (_headquarterGhostPlaced)
+            if (_headquarterGhost.has_value())
             {
-                if (*_headquarterGhostPos == placementArgs->pos && _headquarterGhostRotation == placementArgs->rotation && _headquarterGhostType == placementArgs->type)
+                if (_headquarterGhost.value().pos == placementArgs->pos
+                    && _headquarterGhost.value().rotation == placementArgs->rotation
+                    && _headquarterGhost.value().type == placementArgs->type)
                 {
                     return;
                 }
@@ -2127,7 +2130,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto widgetWidth = widget.width() - 2;
             if (self.scrollAreas[0].hasFlags(ScrollFlags::vscrollbarVisible))
             {
-                widgetWidth -= ScrollView::barWidth;
+                widgetWidth -= ScrollView::kScrollbarSize;
             }
             // This gets the offset of the last full page (widgetWidth) of the scroll view
             const auto newOffset = std::max(0, self.scrollAreas[0].contentWidth - widgetWidth);
@@ -2147,10 +2150,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043386F
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, [[maybe_unused]] uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, int32_t& scrollWidth, [[maybe_unused]] int32_t& scrollHeight)
         {
             const auto& company = CompanyManager::get(CompanyId(self.number));
-            *scrollWidth = company->numExpenditureYears * expenditureColumnWidth;
+            scrollWidth = company->numExpenditureYears * expenditureColumnWidth;
         }
 
         // 0x00433887

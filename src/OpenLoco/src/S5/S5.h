@@ -400,7 +400,6 @@ namespace OpenLoco::S5
 
     bool exportGameStateToFile(const fs::path& path, SaveFlags flags);
     bool exportGameStateToFile(Stream& stream, SaveFlags flags);
-    void registerHooks();
 
     const std::vector<ObjectHeader>& getObjectErrorList();
 

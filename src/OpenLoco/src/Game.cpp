@@ -25,350 +25,337 @@
 
 namespace OpenLoco::Game
 {
-    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
+	static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
 
-    // TODO: make accessible from Environment
-    static loco_global<char[257], 0x0050B1CF> _pathSavesSinglePlayer;
-    static loco_global<char[257], 0x0050B2EC> _pathSavesTwoPlayer;
-    static loco_global<char[257], 0x0050B406> _pathScenarios;
-    static loco_global<char[257], 0x0050B518> _pathLandscapes;
+	static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
 
-    static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
+	static loco_global<char[512], 0x0112CE04> _savePath;
 
-    static loco_global<char[512], 0x0112CE04> _savePath;
+	using Ui::Windows::PromptBrowse::browse_type;
 
-    using Ui::Windows::PromptBrowse::browse_type;
+	static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
+	{
+		auto previousGameSpeed = SceneManager::getGameSpeed();
+		SceneManager::setGameSpeed(GameSpeed::Paused);
 
-    static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
-    {
-        auto previousGameSpeed = SceneManager::getGameSpeed();
-        SceneManager::setGameSpeed(GameSpeed::Paused);
+		Gfx::invalidateScreen();
+		Gfx::renderAndUpdate();
 
-        Gfx::invalidateScreen();
-        Gfx::renderAndUpdate();
+		bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
 
-        bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
+		Audio::unpauseSound();
+		Input::processMessagesMini();
+		SceneManager::setGameSpeed(previousGameSpeed);
+		Gfx::invalidateScreen();
+		Gfx::renderAndUpdate();
 
-        SceneManager::setGameSpeed(previousGameSpeed);
+		return confirm;
+	}
 
-        Ui::processMessagesMini();
-        Gfx::invalidateScreen();
-        Gfx::renderAndUpdate();
+	// 0x004416FF
+	bool loadSaveGameOpen()
+	{
+		auto path = Environment::getPath(Environment::PathId::save).make_preferred().u8string();
+		strncpy(&_savePath[0], path.c_str(), std::size(_savePath));
 
-        return confirm;
-    }
+		return openBrowsePrompt(StringIds::title_prompt_load_game, browse_type::load, S5::filterSV5);
+	}
 
-    // 0x004416FF
-    bool loadSaveGameOpen()
-    {
-        if (!SceneManager::isNetworked())
-        {
-            strncpy(&_savePath[0], &_pathSavesSinglePlayer[0], std::size(_savePath));
-        }
-        else
-        {
-            strncpy(&_savePath[0], &_pathSavesTwoPlayer[0], std::size(_savePath));
-        }
+	// 0x004417A7
+	bool loadLandscapeOpen()
+	{
+		auto path = Environment::getPath(Environment::PathId::landscape).make_preferred().u8string();
+		strncpy(&_savePath[0], path.c_str(), std::size(_savePath));
 
-        return openBrowsePrompt(StringIds::title_prompt_load_game, browse_type::load, S5::filterSV5);
-    }
+		return openBrowsePrompt(StringIds::title_prompt_load_landscape, browse_type::load, S5::filterSC5);
+	}
 
-    // 0x004417A7
-    bool loadLandscapeOpen()
-    {
-        strncpy(&_savePath[0], &_pathLandscapes[0], std::size(_savePath));
+	bool loadHeightmapOpen()
+	{
+		fs::path basePath = Environment::getPath(Environment::PathId::heightmap);
+		Environment::autoCreateDirectory(basePath);
+		strncpy(&_savePath[0], basePath.make_preferred().u8string().c_str(), std::size(_savePath));
 
-        return openBrowsePrompt(StringIds::title_prompt_load_landscape, browse_type::load, S5::filterSC5);
-    }
+		// TODO: make named constant for filter?
+		return openBrowsePrompt(StringIds::title_load_png_heightmap_file, browse_type::load, "*.png");
+	}
 
-    bool loadHeightmapOpen()
-    {
-        fs::path basePath = Environment::getPath(Environment::PathId::heightmap);
-        Environment::autoCreateDirectory(basePath);
-        strncpy(&_savePath[0], basePath.make_preferred().u8string().c_str(), std::size(_savePath));
+	// 0x00441843
+	bool saveSaveGameOpen()
+	{
+		strncpy(&_savePath[0], &_currentScenarioFilename[0], std::size(_savePath));
 
-        // TODO: make named constant for filter?
-        return openBrowsePrompt(StringIds::title_load_png_heightmap_file, browse_type::load, "*.png");
-    }
+		return openBrowsePrompt(StringIds::title_prompt_save_game, browse_type::save, S5::filterSV5);
+	}
 
-    // 0x00441843
-    bool saveSaveGameOpen()
-    {
-        strncpy(&_savePath[0], &_currentScenarioFilename[0], std::size(_savePath));
+	// 0x004418DB
+	bool saveScenarioOpen()
+	{
+		auto path = Environment::getPath(Environment::PathId::scenarios) / Scenario::getOptions().scenarioName;
+		strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
+		strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
-        return openBrowsePrompt(StringIds::title_prompt_save_game, browse_type::save, S5::filterSV5);
-    }
+		return openBrowsePrompt(StringIds::title_prompt_save_scenario, browse_type::save, S5::filterSC5);
+	}
 
-    // 0x004418DB
-    bool saveScenarioOpen()
-    {
-        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / Scenario::getOptions().scenarioName;
-        strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
-        strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
+	// 0x00441993
+	bool saveLandscapeOpen()
+	{
+		Scenario::getOptions().scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
+		if (hasFlags(GameStateFlags::tileManagerLoaded))
+		{
+			Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
+			S5::drawScenarioPreviewImage();
+		}
 
-        return openBrowsePrompt(StringIds::title_prompt_save_scenario, browse_type::save, S5::filterSC5);
-    }
+		auto path = Environment::getPath(Environment::PathId::landscape) / Scenario::getOptions().scenarioName;
+		strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
+		strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
-    // 0x00441993
-    bool saveLandscapeOpen()
-    {
-        Scenario::getOptions().scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
-        if (hasFlags(GameStateFlags::tileManagerLoaded))
-        {
-            Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
-            S5::drawScenarioPreviewImage();
-        }
+		return openBrowsePrompt(StringIds::title_prompt_save_landscape, browse_type::save, S5::filterSC5);
+	}
 
-        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / Scenario::getOptions().scenarioName;
-        strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
-        strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
+	// 0x0043BFF8
+	void loadGame()
+	{
+		GameCommands::LoadSaveQuitGameArgs args{};
+		args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::closeSavePrompt;
+		args.option2 = LoadOrQuitMode::loadGamePrompt;
+		GameCommands::doCommand(args, GameCommands::Flags::apply);
 
-        return openBrowsePrompt(StringIds::title_prompt_save_landscape, browse_type::save, S5::filterSC5);
-    }
+		ToolManager::toolCancel();
 
-    // 0x0043BFF8
-    void loadGame()
-    {
-        GameCommands::LoadSaveQuitGameArgs args{};
-        args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::closeSavePrompt;
-        args.option2 = LoadOrQuitMode::loadGamePrompt;
-        GameCommands::doCommand(args, GameCommands::Flags::apply);
+		if (SceneManager::isEditorMode())
+		{
+			if (Game::loadLandscapeOpen())
+			{
+				// 0x0043C087
+				auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
+				std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-        ToolManager::toolCancel();
+				// 0x004424CE
+				if (S5::importSaveToGameState(path, S5::LoadFlags::landscape))
+				{
+					SceneManager::resetSceneAge();
+					throw GameException::Interrupt;
+				}
+			}
+		}
+		else if (!SceneManager::isNetworked())
+		{
+			if (Game::loadSaveGameOpen())
+			{
+				// 0x0043C033
+				auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+				std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-        if (SceneManager::isEditorMode())
-        {
-            if (Game::loadLandscapeOpen())
-            {
-                // 0x0043C087
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+				if (S5::importSaveToGameState(path, S5::LoadFlags::none))
+				{
+					SceneManager::resetSceneAge();
+					throw GameException::Interrupt;
+				}
+			}
+		}
+		else if (SceneManager::isNetworked())
+		{
+			// 0x0043C0DB
+			if (CompanyManager::getControllingId() == GameCommands::getUpdatingCompanyId())
+			{
+				MultiPlayer::setFlag(MultiPlayer::flags::flag_4);
+				MultiPlayer::setFlag(MultiPlayer::flags::flag_3);
+			}
+		}
 
-                // 0x004424CE
-                if (S5::importSaveToGameState(path, S5::LoadFlags::landscape))
-                {
-                    SceneManager::resetSceneAge();
-                    throw GameException::Interrupt;
-                }
-            }
-        }
-        else if (!SceneManager::isNetworked())
-        {
-            if (Game::loadSaveGameOpen())
-            {
-                // 0x0043C033
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+		// 0x0043C0D1
+		Gfx::invalidateScreen();
+	}
 
-                if (S5::importSaveToGameState(path, S5::LoadFlags::none))
-                {
-                    SceneManager::resetSceneAge();
-                    throw GameException::Interrupt;
-                }
-            }
-        }
-        else if (SceneManager::isNetworked())
-        {
-            // 0x0043C0DB
-            if (CompanyManager::getControllingId() == GameCommands::getUpdatingCompanyId())
-            {
-                MultiPlayer::setFlag(MultiPlayer::flags::flag_4);
-                MultiPlayer::setFlag(MultiPlayer::flags::flag_3);
-            }
-        }
+	// 0x0043C182
+	void quitGame()
+	{
+		GameCommands::resetCommandNestLevel();
 
-        // 0x0043C0D1
-        Gfx::invalidateScreen();
-    }
+		// Path for networked games; untested.
+		if (SceneManager::isNetworked())
+		{
+			SceneManager::removeSceneFlags(SceneManager::Flags::networked);
+			auto playerCompanyId = CompanyManager::getControllingId();
+			auto previousUpdatingId = GameCommands::getUpdatingCompanyId();
+			GameCommands::setUpdatingCompanyId(playerCompanyId);
 
-    // 0x0043C182
-    void quitGame()
-    {
-        GameCommands::resetCommandNestLevel();
+			Ui::WindowManager::closeAllFloatingWindows();
 
-        // Path for networked games; untested.
-        if (SceneManager::isNetworked())
-        {
-            SceneManager::removeSceneFlags(SceneManager::Flags::networked);
-            auto playerCompanyId = CompanyManager::getControllingId();
-            auto previousUpdatingId = GameCommands::getUpdatingCompanyId();
-            GameCommands::setUpdatingCompanyId(playerCompanyId);
+			GameCommands::setUpdatingCompanyId(previousUpdatingId);
+			SceneManager::addSceneFlags(SceneManager::Flags::networked);
 
-            Ui::WindowManager::closeAllFloatingWindows();
+			// If the other party is leaving the game, go back to the title screen.
+			if (playerCompanyId != previousUpdatingId)
+			{
+				// 0x0043C1CD
+				SceneManager::removeSceneFlags(SceneManager::Flags::networked);
+				SceneManager::removeSceneFlags(SceneManager::Flags::networkHost);
+				CompanyManager::setControllingId(CompanyId(0));
+				CompanyManager::setSecondaryPlayerId(CompanyId::null);
 
-            GameCommands::setUpdatingCompanyId(previousUpdatingId);
-            SceneManager::addSceneFlags(SceneManager::Flags::networked);
+				Gfx::invalidateScreen();
+				ObjectManager::loadIndex();
 
-            // If the other party is leaving the game, go back to the title screen.
-            if (playerCompanyId != previousUpdatingId)
-            {
-                // 0x0043C1CD
-                addr<0x00F25428, uint32_t>() = 0;
-                SceneManager::removeSceneFlags(SceneManager::Flags::networked);
-                SceneManager::removeSceneFlags(SceneManager::Flags::networkHost);
-                addr<0x00508F0C, uint32_t>() = 0;
-                CompanyManager::setControllingId(CompanyId(0));
-                CompanyManager::setSecondaryPlayerId(CompanyId::null);
+				Ui::WindowManager::close(Ui::WindowType::options);
+				Ui::WindowManager::close(Ui::WindowType::companyFaceSelection);
+				Ui::WindowManager::close(Ui::WindowType::objectSelection);
 
-                Gfx::invalidateScreen();
-                ObjectManager::loadIndex();
+				SceneManager::removeSceneFlags(SceneManager::Flags::editor);
+				Audio::pauseSound();
+				Audio::unpauseSound();
 
-                Ui::WindowManager::close(Ui::WindowType::options);
-                Ui::WindowManager::close(Ui::WindowType::companyFaceSelection);
-                Ui::WindowManager::close(Ui::WindowType::objectSelection);
+				if (Input::hasFlag(Input::Flags::rightMousePressed))
+				{
+					Input::stopCursorDrag();
+					Input::resetFlag(Input::Flags::rightMousePressed);
+				}
 
-                SceneManager::removeSceneFlags(SceneManager::Flags::editor);
-                Audio::pauseSound();
-                Audio::unpauseSound();
+				Title::start();
 
-                if (Input::hasFlag(Input::Flags::rightMousePressed))
-                {
-                    Input::stopCursorDrag();
-                    Input::resetFlag(Input::Flags::rightMousePressed);
-                }
+				Ui::Windows::Error::open(StringIds::error_the_other_player_has_exited_the_game);
 
-                Title::start();
+				throw GameException::Interrupt;
+			}
+		}
 
-                Ui::Windows::Error::open(StringIds::error_the_other_player_has_exited_the_game);
+		// 0x0043C1C8
+		exitCleanly();
+	}
 
-                throw GameException::Interrupt;
-            }
-        }
+	// 0x0043C0FD
+	void returnToTitle()
+	{
+		if (SceneManager::isNetworked())
+		{
+			Ui::WindowManager::closeAllFloatingWindows();
+		}
 
-        // 0x0043C1C8
-        exitCleanly();
-    }
+		Ui::WindowManager::close(Ui::WindowType::options);
+		Ui::WindowManager::close(Ui::WindowType::companyFaceSelection);
+		Ui::WindowManager::close(Ui::WindowType::objectSelection);
+		Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
 
-    // 0x0043C0FD
-    void returnToTitle()
-    {
-        if (SceneManager::isNetworked())
-        {
-            Ui::WindowManager::closeAllFloatingWindows();
-        }
+		SceneManager::removeSceneFlags(SceneManager::Flags::editor);
+		Audio::pauseSound();
+		Audio::unpauseSound();
 
-        Ui::WindowManager::close(Ui::WindowType::options);
-        Ui::WindowManager::close(Ui::WindowType::companyFaceSelection);
-        Ui::WindowManager::close(Ui::WindowType::objectSelection);
-        Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
+		if (Input::hasFlag(Input::Flags::rightMousePressed))
+		{
+			Input::stopCursorDrag();
+			Input::resetFlag(Input::Flags::rightMousePressed);
+		}
 
-        SceneManager::removeSceneFlags(SceneManager::Flags::editor);
-        Audio::pauseSound();
-        Audio::unpauseSound();
+		Title::start();
 
-        if (Input::hasFlag(Input::Flags::rightMousePressed))
-        {
-            Input::stopCursorDrag();
-            Input::resetFlag(Input::Flags::rightMousePressed);
-        }
+		throw GameException::Interrupt;
+	}
 
-        Title::start();
+	// 0x0043C427
+	void confirmSaveGame()
+	{
+		ToolManager::toolCancel();
 
-        throw GameException::Interrupt;
-    }
+		if (SceneManager::isEditorMode())
+		{
+			if (Game::saveLandscapeOpen())
+			{
+				if (saveLandscape())
+				{
+					// load landscape
+					GameCommands::LoadSaveQuitGameArgs args{};
+					args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
+					args.option2 = LoadOrQuitMode::loadGamePrompt;
+					GameCommands::doCommand(args, GameCommands::Flags::apply);
+				}
+			}
+		}
+		else if (!SceneManager::isNetworked())
+		{
+			if (Game::saveSaveGameOpen())
+			{
+				// 0x0043C446
+				auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+				std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-    // 0x0043C427
-    void confirmSaveGame()
-    {
-        ToolManager::toolCancel();
+				S5::SaveFlags flags = S5::SaveFlags::none;
+				if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
+				{
+					flags = S5::SaveFlags::packCustomObjects;
+				}
 
-        if (SceneManager::isEditorMode())
-        {
-            if (Game::saveLandscapeOpen())
-            {
-                if (saveLandscape())
-                {
-                    // load landscape
-                    GameCommands::LoadSaveQuitGameArgs args{};
-                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
-                    args.option2 = LoadOrQuitMode::loadGamePrompt;
-                    GameCommands::doCommand(args, GameCommands::Flags::apply);
-                }
-            }
-        }
-        else if (!SceneManager::isNetworked())
-        {
-            if (Game::saveSaveGameOpen())
-            {
-                // 0x0043C446
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+				if (!S5::exportGameStateToFile(path, flags))
+				{
+					Ui::Windows::Error::open(StringIds::error_game_save_failed, StringIds::null);
+				}
+				else
+				{
+					GameCommands::LoadSaveQuitGameArgs args{};
+					args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
+					args.option2 = LoadOrQuitMode::loadGamePrompt;
+					GameCommands::doCommand(args, GameCommands::Flags::apply);
+				}
+			}
+		}
+		else
+		{
+			// 0x0043C511
+			GameCommands::do_72();
+			MultiPlayer::setFlag(MultiPlayer::flags::flag_2);
 
-                S5::SaveFlags flags = S5::SaveFlags::none;
-                if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
-                {
-                    flags = S5::SaveFlags::packCustomObjects;
-                }
+			switch (_savePromptType)
+			{
+			case LoadOrQuitMode::loadGamePrompt:
+				MultiPlayer::setFlag(MultiPlayer::flags::flag_13); // intend to load?
+				break;
+			case LoadOrQuitMode::returnToTitlePrompt:
+				MultiPlayer::setFlag(MultiPlayer::flags::flag_14); // intend to return to title?
+				break;
+			case LoadOrQuitMode::quitGamePrompt:
+				MultiPlayer::setFlag(MultiPlayer::flags::flag_15); // intend to quit game?
+				break;
+			}
+		}
 
-                if (!S5::exportGameStateToFile(path, flags))
-                {
-                    Ui::Windows::Error::open(StringIds::error_game_save_failed, StringIds::null);
-                }
-                else
-                {
-                    GameCommands::LoadSaveQuitGameArgs args{};
-                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
-                    args.option2 = LoadOrQuitMode::loadGamePrompt;
-                    GameCommands::doCommand(args, GameCommands::Flags::apply);
-                }
-            }
-        }
-        else
-        {
-            // 0x0043C511
-            GameCommands::do_72();
-            MultiPlayer::setFlag(MultiPlayer::flags::flag_2);
+		// 0x0043C411
+		Gfx::invalidateScreen();
+	}
 
-            switch (_savePromptType)
-            {
-                case LoadOrQuitMode::loadGamePrompt:
-                    MultiPlayer::setFlag(MultiPlayer::flags::flag_13); // intend to load?
-                    break;
-                case LoadOrQuitMode::returnToTitlePrompt:
-                    MultiPlayer::setFlag(MultiPlayer::flags::flag_14); // intend to return to title?
-                    break;
-                case LoadOrQuitMode::quitGamePrompt:
-                    MultiPlayer::setFlag(MultiPlayer::flags::flag_15); // intend to quit game?
-                    break;
-            }
-        }
+	bool saveLandscape()
+	{
+		// 0x0043C4B3
+		auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
+		std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-        // 0x0043C411
-        Gfx::invalidateScreen();
-    }
+		bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
+		if (saveResult)
+		{
+			Ui::Windows::Error::open(StringIds::landscape_save_failed);
+		}
 
-    bool saveLandscape()
-    {
-        // 0x0043C4B3
-        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
-        std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+		return saveResult;
+	}
 
-        bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
-        if (saveResult)
-        {
-            Ui::Windows::Error::open(StringIds::landscape_save_failed);
-        }
+	GameStateFlags getFlags()
+	{
+		return getGameState().flags;
+	}
 
-        return saveResult;
-    }
+	void setFlags(GameStateFlags flags)
+	{
+		getGameState().flags = flags;
+	}
 
-    GameStateFlags getFlags()
-    {
-        return getGameState().flags;
-    }
+	bool hasFlags(GameStateFlags flags)
+	{
+		return (getFlags() & flags) != GameStateFlags::none;
+	}
 
-    void setFlags(GameStateFlags flags)
-    {
-        getGameState().flags = flags;
-    }
-
-    bool hasFlags(GameStateFlags flags)
-    {
-        return (getFlags() & flags) != GameStateFlags::none;
-    }
-
-    void removeFlags(GameStateFlags flags)
-    {
-        setFlags(getFlags() & ~flags);
-    }
+	void removeFlags(GameStateFlags flags)
+	{
+		setFlags(getFlags() & ~flags);
+	}
 }

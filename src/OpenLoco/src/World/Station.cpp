@@ -819,8 +819,8 @@ namespace OpenLoco
                 {
                     newDensity = stationCargo.quantity / stationTileSize;
                     auto* cargoObj = ObjectManager::get<CargoObject>(i);
-                    newDensity += (1 << cargoObj->var_14) - 1;
-                    newDensity >>= cargoObj->var_14;
+                    newDensity += (1 << cargoObj->stationCargoDensity) - 1;
+                    newDensity >>= cargoObj->stationCargoDensity;
 
                     newDensity = std::min<int32_t>(newDensity, Limits::kMaxStationCargoDensity);
                 }

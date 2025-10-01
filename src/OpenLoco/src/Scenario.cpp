@@ -55,14 +55,13 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Scenario
 {
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
-    static loco_global<uint16_t, 0x0050C19A> _50C19A;
 
     // 0x0046115C
     void sub_46115C()
     {
         Game::setFlags(GameStateFlags::none);
         AnimationManager::reset();
-        addr<0x0052624C, S5::S5FixFlags>() = S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1;
+        getGameState().fixFlags = enumValue(S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1);
     }
 
     Season nextSeason(Season season)
@@ -281,36 +280,6 @@ namespace OpenLoco::Scenario
         Economy::sub_46E2C0(getCurrentYear());
     }
 
-    void registerHooks()
-    {
-        registerHook(
-            0x0043C88C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                reset();
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0043C90C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                generateLandscape();
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0049685C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                initialiseDate(regs.ax);
-                regs = backup;
-                return 0;
-            });
-    }
-
     // 0x00442837
     bool load(const fs::path& path)
     {
@@ -395,7 +364,7 @@ namespace OpenLoco::Scenario
         CompanyManager::setRecords(CompanyManager::kZeroRecords);
         getObjectiveProgress().timeLimitUntilYear = getObjective().timeLimitYears - 1 + gameState.currentYear;
         getObjectiveProgress().monthsInChallenge = 0;
-        call(0x0049B546);
+        initialiseDefaultTrackRoadMods();
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
 
         TownManager::updateLabels();
@@ -403,7 +372,6 @@ namespace OpenLoco::Scenario
         Gfx::loadDefaultPalette();
         Gfx::invalidateScreen();
         SceneManager::resetSceneAge();
-        _50C19A = 62000;
         MultiPlayer::setFlag(MultiPlayer::flags::flag_10);
         throw GameException::Interrupt;
     }

@@ -186,8 +186,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC4B7
         static void updateActiveThumb(Window& self)
         {
-            uint16_t scrollHeight = 0;
-            self.callGetScrollSize(0, nullptr, &scrollHeight);
+            int32_t scrollWidth = 0, scrollHeight = 0;
+            self.callGetScrollSize(0, scrollWidth, scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -399,8 +399,8 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self.savedView.mapX += 1;
-                            if (self.savedView.mapX >= 8)
+                            self.expandContentCounter += 1;
+                            if (self.expandContentCounter >= 8)
                             {
                                 auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 562);
                                 if (Ui::height() < 600)
@@ -427,7 +427,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 else
                 {
-                    self.savedView.mapX = 0;
+                    self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
                         self.minWidth = kWindowSize.width;
@@ -630,14 +630,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBEC1
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = (self.var_83C + 8) / 9;
-            if (*scrollHeight == 0)
+            scrollHeight = (self.var_83C + 8) / 9;
+            if (scrollHeight == 0)
             {
-                *scrollHeight += 1;
+                scrollHeight += 1;
             }
-            *scrollHeight *= kRowHeight;
+            scrollHeight *= kRowHeight;
         }
 
         static int getRowIndex(int16_t x, int16_t y)
@@ -663,7 +663,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
-                    self.savedView.mapX = -16;
+                    self.expandContentCounter = -16;
                     _lastTreeCost = 0x80000000;
                     self.invalidate();
                     break;
@@ -924,7 +924,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             _lastTreeCost = 0x80000000;
             window->owner = CompanyManager::getControllingId();
             window->var_846 = 0xFFFF;
-            window->savedView.mapX = 0;
+            window->expandContentCounter = 0;
             _treeClusterType = PlantTrees::treeCluster::none;
 
             WindowManager::sub_4CEE0B(*window);
@@ -2255,8 +2255,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC506
         static void updateActiveThumb(Window& self)
         {
-            uint16_t scrollHeight = 0;
-            self.callGetScrollSize(0, nullptr, &scrollHeight);
+            int32_t scrollWidth = 0, scrollHeight = 0;
+            self.callGetScrollSize(0, scrollWidth, scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -2385,8 +2385,8 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self.savedView.mapX += 1;
-                            if (self.savedView.mapX >= 8)
+                            self.expandContentCounter += 1;
+                            if (self.expandContentCounter >= 8)
                             {
                                 auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 562);
                                 if (Ui::height() < 600)
@@ -2413,7 +2413,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 else
                 {
-                    self.savedView.mapX = 0;
+                    self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
                         self.minWidth = kWindowSize.width;
@@ -2554,14 +2554,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC359
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = (self.var_83C + 9) / 10;
-            if (*scrollHeight == 0)
+            scrollHeight = (self.var_83C + 9) / 10;
+            if (scrollHeight == 0)
             {
-                *scrollHeight += 1;
+                scrollHeight += 1;
             }
-            *scrollHeight *= kRowHeight;
+            scrollHeight *= kRowHeight;
         }
 
         static int getRowIndex(int16_t x, int16_t y)
@@ -2585,7 +2585,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
-                    self.savedView.mapX = -16;
+                    self.expandContentCounter = -16;
                     self.invalidate();
                     break;
                 }

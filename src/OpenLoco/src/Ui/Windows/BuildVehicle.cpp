@@ -438,28 +438,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return window;
     }
 
-    void registerHooks()
-    {
-        registerHook(
-            0x004B92A5,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_4B92A5((Ui::Window*)regs.esi);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x4C1AF7,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = open(regs.eax, regs.eax);
-                regs = backup;
-                regs.esi = X86Pointer(window);
-                return 0;
-            });
-    }
-
     static bool contains(const std::string_view& a, const std::string_view& b)
     {
         return std::search(a.begin(), a.end(), b.begin(), b.end(), [](char a, char b) {
@@ -1025,9 +1003,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37B9
-    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = window.var_83C * window.rowHeight;
+        scrollHeight = window.var_83C * window.rowHeight;
     }
 
     // 0x4C384B

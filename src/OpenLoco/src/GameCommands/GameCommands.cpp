@@ -26,6 +26,7 @@
 #include "Industries/RenameIndustry.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/Tile.h"
@@ -164,9 +165,9 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleOrderDelete,           vehicleOrderDelete,        0x0047057A, false },
         { GameCommand::vehicleOrderSkip,             vehicleOrderSkip,          0x0047071A, false },
         { GameCommand::createRoad,                   createRoad,                0x00475FBC, true  },
-        { GameCommand::removeRoad,                   nullptr,                   0x004775A5, true  },
-        { GameCommand::createRoadMod,                nullptr,                   0x0047A21E, true  },
-        { GameCommand::removeRoadMod,                nullptr,                   0x0047A42F, true  },
+        { GameCommand::removeRoad,                   removeRoad,                0x004775A5, true  },
+        { GameCommand::createRoadMod,                createRoadMod,             0x0047A21E, true  },
+        { GameCommand::removeRoadMod,                removeRoadMod,             0x0047A42F, true  },
         { GameCommand::createRoadStation,            createRoadStation,         0x0048C708, true  },
         { GameCommand::removeRoadStation,            removeRoadStation,         0x0048D2AC, true  },
         { GameCommand::createBuilding,               createBuilding,            0x0042D133, true  },
@@ -212,74 +213,6 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleRepaint,               vehicleRepaint,            0,          false },
     };
     // clang-format on
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00431315,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto ebx = doCommand(GameCommand(regs.esi), backup);
-
-                regs = backup;
-                regs.ebx = ebx;
-                return 0;
-            });
-
-        // Used by a number of functions instead of going via doCommand
-        registerHook(0x004BB138, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createTree(backup);
-
-            regs.ebx = backup.ebx;
-            return 0;
-        });
-
-        // Used by a aiCreateTrackAndStation instead of going via doCommand
-        registerHook(0x0048BB20, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createTrainStation(backup);
-
-            regs = backup;
-            return 0;
-        });
-
-        // Used by a aiCreateTrackAndStation and sub_4854B2 ai function instead of going via doCommand
-        registerHook(0x0049BB98, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createTrack(backup);
-
-            regs = backup;
-            return 0;
-        });
-
-        // Used by a aiCreateRoadAndStation instead of going via doCommand
-        registerHook(0x0048C708, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createRoadStation(backup);
-
-            regs = backup;
-            return 0;
-        });
-
-        // Used by a aiCreateRoadAndStation and queryRoadPlacementScore ai function instead of going via doCommand
-        registerHook(0x00475FBC, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createRoad(backup);
-
-            regs = backup;
-            return 0;
-        });
-
-        // Used by sub_485B68 ai function instead of going via doCommand
-        registerHook(0x004A734F, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            aiTrackReplacement(backup);
-
-            regs = backup;
-            return 0;
-        });
-    }
 
     static uint32_t loc_4314EA();
     static uint32_t loc_4313C6(int esi, const registers& regs);
@@ -375,7 +308,7 @@ namespace OpenLoco::GameCommands
         else
         {
             auto addr = gameCommand.originalAddress;
-            call(addr, regs);
+            Diagnostics::Logging::error("Unimplemented game command called: id:{}, address:{}", static_cast<uint32_t>(gameCommand.id), addr);
         }
     }
 

@@ -309,6 +309,18 @@ namespace OpenLoco::EditorController
         return StringIds::null;
     }
 
+    // 0x0046F910
+    static void setupMultiplayerData()
+    {
+        auto& gameState = getGameState();
+
+        gameState.multiplayerPrng = gameState.rng;
+        // Vanilla would compute a checksum of the tile elements here
+        // but we don't bother as our multiplayer doesn't work the same
+        gameState.multiplayerChecksumA = 0;
+        gameState.multiplayerChecksumB = 0;
+    }
+
     // 0x0043D15D
     void goToNextStep()
     {
@@ -386,7 +398,7 @@ namespace OpenLoco::EditorController
                 }
 
                 Scenario::getOptions().editorStep = Step::null;
-                call(0x0046F910); // Sets up new multiplayer related rands
+                setupMultiplayerData();
 
                 auto path = fs::u8path(_scenarioFilename.get());
                 path.replace_extension(S5::extensionSC5);
