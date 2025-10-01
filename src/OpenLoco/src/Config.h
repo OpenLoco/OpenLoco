@@ -117,7 +117,7 @@ namespace OpenLoco::Config
     struct Audio
     {
         std::string device;
-        int32_t mainVolume;
+        int32_t mainVolume = -1100;
         bool playJukeboxMusic = true;
         bool playTitleMusic = true;
         bool playNewsSounds = true;
