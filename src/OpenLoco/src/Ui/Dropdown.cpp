@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::Dropdown
     static constexpr int kBytesPerItem = 8;
 
     // 0x00504619
-    static constexpr Colour _dropdownColourTable[31] = {
+    static constexpr Colour kDropdownColourTable[31] = {
         Colour::grey,              // 0x01
         Colour::grey,              // 0x01
         Colour::white,             // 0x02
@@ -366,7 +366,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             if (colour.isTranslucent())
             {
-                colour = _dropdownColourTable[enumValue(colour.c())];
+                colour = kDropdownColourTable[enumValue(colour.c())];
                 colour = colour.translucent();
             }
 
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Dropdown
 
         if (colour.isTranslucent())
         {
-            colour = _dropdownColourTable[enumValue(colour.c())];
+            colour = kDropdownColourTable[enumValue(colour.c())];
             colour = colour.translucent();
         }
 
