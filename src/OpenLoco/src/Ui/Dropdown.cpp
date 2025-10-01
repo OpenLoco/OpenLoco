@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Dropdown
 
         if (colour.isTranslucent())
         {
-            colour = static_cast<Colour>(_dropdownColourTable[enumValue(colour.c())]);
+            colour = _dropdownColourTable[enumValue(colour.c())];
             colour = colour.translucent();
         }
 
