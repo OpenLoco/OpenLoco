@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Dropdown
     static StringId _dropdownItemFormats[40];
     static std::byte _dropdownItemArgs[40][kBytesPerItem];
     static std::byte _dropdownItemArgs2[40][kBytesPerItem];
-    static CompanyId _menuOptions[40];
+    static uint8_t _menuOptions[40];
 
     static std::vector<std::optional<DropdownItemId>> _dropdownIds;
     static bool _dropdownUseDefault;
@@ -884,7 +884,7 @@ namespace OpenLoco::Ui::Dropdown
 
             companyOrdered[enumValue(companyId)] |= 1;
             _dropdownItemFormats[index] = StringIds::dropdown_company_select;
-            _menuOptions[index] = companyId;
+            _menuOptions[index] = enumValue(companyId);
 
             auto company = CompanyManager::get(companyId);
             auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
@@ -902,7 +902,7 @@ namespace OpenLoco::Ui::Dropdown
 
         size_t highlightedIndex = 0;
 
-        while (window->owner != _menuOptions[highlightedIndex])
+        while (enumValue(window->owner) != _menuOptions[highlightedIndex])
         {
             highlightedIndex++;
 
@@ -925,7 +925,7 @@ namespace OpenLoco::Ui::Dropdown
             itemIndex = _dropdownHighlightedIndex;
         }
 
-        auto companyId = _menuOptions[itemIndex];
+        auto companyId = static_cast<CompanyId>(_menuOptions[itemIndex]);
         auto company = CompanyManager::get(companyId);
 
         if (company->empty())
@@ -1097,6 +1097,20 @@ namespace OpenLoco::Ui::Dropdown
     bool hasFlags(Flags flags)
     {
         return (_dropdownFlags & flags) != Flags::none;
+    }
+
+    void setMenuOption(size_t index, uint8_t value)
+    {
+        assert(index < std::size(_menuOptions));
+
+        _menuOptions[index] = value;
+    }
+
+    uint8_t getMenuOption(size_t index)
+    {
+        assert(index < std::size(_menuOptions));
+
+        return _menuOptions[index];
     }
 
 }
