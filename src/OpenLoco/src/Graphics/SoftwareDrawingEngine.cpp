@@ -20,10 +20,10 @@ namespace OpenLoco::Gfx
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
 
     // TODO: Move into the renderer.
-    static loco_global<RenderTarget, 0x0050B884> _screenRT;
-    static loco_global<Ui::ScreenInfo, 0x0050B894> _screenInfo;
-
-    loco_global<SetPaletteFunc, 0x0052524C> _setPaletteCallback;
+    // 0x0050B884
+    static RenderTarget _screenRT{};
+    // 0x0050B894
+    static Ui::ScreenInfo _screenInfo;
 
     SoftwareDrawingEngine::SoftwareDrawingEngine()
     {
@@ -184,12 +184,12 @@ namespace OpenLoco::Gfx
         rt.height = scaledHeight;
         rt.pitch = pitch - scaledWidth;
 
-        _screenInfo->width = scaledWidth;
-        _screenInfo->height = scaledHeight;
-        _screenInfo->width_2 = scaledWidth;
-        _screenInfo->height_2 = scaledHeight;
-        _screenInfo->width_3 = scaledWidth;
-        _screenInfo->height_3 = scaledHeight;
+        _screenInfo.width = scaledWidth;
+        _screenInfo.height = scaledHeight;
+        _screenInfo.width_2 = scaledWidth;
+        _screenInfo.height_2 = scaledHeight;
+        _screenInfo.width_3 = scaledWidth;
+        _screenInfo.height_3 = scaledHeight;
 
         int32_t widthShift = 6;
         int16_t blockWidth = 1 << widthShift;
@@ -221,17 +221,10 @@ namespace OpenLoco::Gfx
         _invalidationGrid.invalidate(left, top, right, bottom);
     }
 
-    // Helper function until all users of set_palette_callback are implemented
-    static void updatePaletteStatic(const PaletteEntry* entries, int32_t index, int32_t count)
-    {
-        getDrawingEngine().updatePalette(entries, index, count);
-    }
-
     void SoftwareDrawingEngine::createPalette()
     {
         // Create a palette for the window
         _palette = SDL_AllocPalette(256);
-        _setPaletteCallback = updatePaletteStatic;
     }
 
     void SoftwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
@@ -288,8 +281,8 @@ namespace OpenLoco::Gfx
         rt.height = rect.height();
         rt.x = rect.left();
         rt.y = rect.top();
-        rt.bits = _screenRT->bits + rect.left() + ((_screenRT->width + _screenRT->pitch) * rect.top());
-        rt.pitch = _screenRT->width + _screenRT->pitch - rect.width();
+        rt.bits = _screenRT.bits + rect.left() + ((_screenRT.width + _screenRT.pitch) * rect.top());
+        rt.pitch = _screenRT.width + _screenRT.pitch - rect.width();
         rt.zoomLevel = 0;
 
         // Set the render target to the screen rt.
@@ -419,7 +412,7 @@ namespace OpenLoco::Gfx
 
     const Ui::ScreenInfo& SoftwareDrawingEngine::getScreenInfo() const
     {
-        return *_screenInfo;
+        return _screenInfo;
     }
 
 }

@@ -45,7 +45,6 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x00508F10> __508F10;
-    static loco_global<Gfx::RenderTarget, 0x0050B884> _screenRT;
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
     static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;

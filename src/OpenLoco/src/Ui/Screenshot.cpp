@@ -82,7 +82,7 @@ namespace OpenLoco::Ui
 
     static void saveRenderTargetToPng(const Gfx::RenderTarget& rt, std::fstream& outputStream)
     {
-        static loco_global<uint8_t[256][4], 0x0113ED20> _113ED20;
+        auto& rgbaPalette = Gfx::getRgbaPalette();
 
         png_structp pngPtr = nullptr;
         png_colorp palette = nullptr;
@@ -116,9 +116,9 @@ namespace OpenLoco::Ui
 
             for (size_t i = 0; i < 246; i++)
             {
-                palette[i].blue = _113ED20[i][0];
-                palette[i].green = _113ED20[i][1];
-                palette[i].red = _113ED20[i][2];
+                palette[i].blue = rgbaPalette[i].b;
+                palette[i].green = rgbaPalette[i].g;
+                palette[i].red = rgbaPalette[i].r;
             }
             png_set_PLTE(pngPtr, infoPtr, palette, 246);
 
