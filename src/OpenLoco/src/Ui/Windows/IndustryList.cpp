@@ -37,8 +37,8 @@
 #include "Ui/Widgets/TableHeaderWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 
