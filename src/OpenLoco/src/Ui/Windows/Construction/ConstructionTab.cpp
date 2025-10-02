@@ -335,8 +335,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activateSelectedConstructionWidgets();
     }
 
-    static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
-
     // 0x004A012E
     static void removeTrack()
     {
@@ -369,10 +367,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             loc += World::Pos3{ World::kRotationOffset[_cState->constructionRotation], 0 };
         }
         trackAndDirection |= (1 << 2) | (_cState->constructionRotation & 0x3);
-        _113609C->size = 0;
         auto trackEnd = World::Track::getTrackConnectionEnd(loc, trackAndDirection);
         auto tc = World::Track::getTrackConnections(trackEnd.nextPos, trackEnd.nextRotation, CompanyManager::getControllingId(), _cState->trackType, 0, 0);
-        World::Track::toLegacyConnections(tc, _113609C); // Unsure if still needed
         if (tc.connections.empty())
         {
             return;
@@ -429,7 +425,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         World::Pos3 loc(_cState->x, _cState->y, _cState->constructionZ);
         uint32_t trackAndDirection = (1 << 2) | (_cState->constructionRotation & 0x3);
-        _113609C->size = 0;
         const auto roadEnd = World::Track::getRoadConnectionEnd(loc, trackAndDirection);
         auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, CompanyManager::getControllingId(), _cState->trackType & ~(1 << 7), 0, 0);
 
