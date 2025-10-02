@@ -62,7 +62,11 @@ namespace OpenLoco::Ui::Dropdown
         Colour::mutedRed           // 0x1E
     };
 
-    static std::uint8_t _appropriateImageDropdownItemsPerRow[33];
+    // 0x005046FA
+    static constexpr std::uint8_t kAppropriateImageDropdownItemsPerRow[33] = {
+        1, 1, 1, 1, 2, 2, 3, 3, 4, 3, 5, 4, 4, 5, 5, 5, 4, 5, 6, 5, 5, 7, 4, 5, 6, 5, 6, 6, 6, 6, 6, 8, 8
+    };
+
     static char _byte_112CC04[512];
     static uint8_t _windowDropdownOnpaintCellX;
     static uint8_t _windowDropdownOnpaintCellY;
@@ -589,7 +593,7 @@ namespace OpenLoco::Ui::Dropdown
     void showImage(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, AdvancedColour colour, uint8_t columnCount, uint8_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
-        assert(count < std::size(_appropriateImageDropdownItemsPerRow));
+        assert(count < std::size(kAppropriateImageDropdownItemsPerRow));
 
         common::setColourAndInputFlags(colour, flags);
 
@@ -977,7 +981,7 @@ namespace OpenLoco::Ui::Dropdown
 
     uint16_t getItemsPerRow(uint8_t itemCount)
     {
-        return _appropriateImageDropdownItemsPerRow[itemCount];
+        return kAppropriateImageDropdownItemsPerRow[itemCount];
     }
 
     Builder& Builder::below(Window& window, WidgetIndex_t widgetIndex)
