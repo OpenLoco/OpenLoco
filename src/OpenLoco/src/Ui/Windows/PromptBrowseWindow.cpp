@@ -74,10 +74,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     );
 
-    static loco_global<uint8_t, 0x009D9D63> _type;
-    static loco_global<BrowseFileType, 0x009DA284> _fileType;
-    static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
-    static loco_global<char[32], 0x009D9E64> _filter;
+    static uint8_t _type;                  // 0x009D9D63
+    static BrowseFileType _fileType;       // 0x009DA284
+    static char _displayFolderBuffer[512]; // 0x009DA084
+    static char _filter[32];               // 0x009D9E64
+
     static loco_global<char[512], 0x0112CE04> _savePath;
 
     // 0x0050AEA8
@@ -122,18 +123,18 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         TextInput::cancel();
 
-        *_type = type;
-        *_fileType = BrowseFileType::savedGame;
+        _type = type;
+        _fileType = BrowseFileType::savedGame;
         if (Utility::iequals(filter, S5::filterSC5))
         {
-            *_fileType = BrowseFileType::landscape;
+            _fileType = BrowseFileType::landscape;
         }
         // TODO: make named constant for filter
         else if (Utility::iequals(filter, "*.png"))
         {
-            *_fileType = BrowseFileType::heightmap;
+            _fileType = BrowseFileType::heightmap;
         }
-        Utility::strlcpy(_filter, filter, _filter.size());
+        Utility::strlcpy(_filter, filter, std::size(_filter));
 
         changeDirectory(directory.make_preferred());
         inputSession = Ui::TextInput::InputSession(baseName, 200);
@@ -327,7 +328,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         self.widgets[widx::close_button].left = self.width - 15;
         self.widgets[widx::close_button].right = self.width - 3;
 
-        if (*_type == browse_type::save)
+        if (_type == browse_type::save)
         {
             self.widgets[widx::ok_button].left = self.width - 86;
             self.widgets[widx::ok_button].right = self.width - 16;
@@ -351,7 +352,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         self.widgets[widx::scrollview].right = self.width - 259;
-        if (*_fileType != BrowseFileType::savedGame)
+        if (_fileType != BrowseFileType::savedGame)
         {
             self.widgets[widx::scrollview].right += 122;
         }
@@ -386,7 +387,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             // If we're omitting part of the folder, prepend ellipses.
             if (relativeDirectory != nameBuffer.c_str())
             {
-                strncpy(&_displayFolderBuffer[0], "...", 512);
+                strncpy(_displayFolderBuffer, "...", std::size(_displayFolderBuffer) - 1);
             }
 
             // Seek the next directory separator token.
@@ -396,7 +397,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             }
 
             // Use the truncated directory name in the buffer.
-            strncat(&_displayFolderBuffer[0], relativeDirectory, 512);
+            strncat(_displayFolderBuffer, relativeDirectory, std::size(_displayFolderBuffer) - 1);
 
             // Prepare for the next pass, if needed.
             relativeDirectory++;
@@ -450,7 +451,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     args);
                 y += 12;
 
-                if (*_fileType == BrowseFileType::savedGame)
+                if (_fileType == BrowseFileType::savedGame)
                 {
                     // Preview image
                     if (_previewSaveDetails != nullptr)
@@ -458,7 +459,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                         drawSavePreview(window, drawingCtx, x, y, width, 201, *_previewSaveDetails);
                     }
                 }
-                else if (*_fileType == BrowseFileType::landscape)
+                else if (_fileType == BrowseFileType::landscape)
                 {
                     if (_previewScenarioOptions != nullptr)
                     {
