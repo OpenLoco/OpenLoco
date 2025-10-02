@@ -8,6 +8,7 @@
 #include <array>
 #include <cstdint>
 #include <optional>
+#include <span>
 
 namespace OpenLoco
 {
@@ -177,7 +178,7 @@ namespace OpenLoco::Gfx
     void loadCurrency();
     void loadDefaultPalette();
     void loadPalette(uint32_t imageIndex, uint8_t modifier);
-    const std::array<PaletteEntry, 256>& getRgbaPalette();
+    std::span<const PaletteEntry> getRgbaPalette();
 
     ImageExtents getImagesMaxExtent(const ImageId baseImageId, const size_t numImages);
 

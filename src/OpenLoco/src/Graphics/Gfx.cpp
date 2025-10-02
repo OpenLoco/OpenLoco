@@ -385,7 +385,7 @@ namespace OpenLoco::Gfx
         getDrawingEngine().updatePalette(_rgbaPalette.data(), 10, 236);
     }
 
-    const std::array<PaletteEntry, 256>& getRgbaPalette()
+    std::span<const PaletteEntry> getRgbaPalette()
     {
         return _rgbaPalette;
     }

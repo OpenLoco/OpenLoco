@@ -82,7 +82,7 @@ namespace OpenLoco::Ui
 
     static void saveRenderTargetToPng(const Gfx::RenderTarget& rt, std::fstream& outputStream)
     {
-        auto& rgbaPalette = Gfx::getRgbaPalette();
+        auto rgbaPalette = Gfx::getRgbaPalette();
 
         png_structp pngPtr = nullptr;
         png_colorp palette = nullptr;
