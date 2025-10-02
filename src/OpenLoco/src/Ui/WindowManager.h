@@ -429,9 +429,7 @@ namespace OpenLoco::Ui::Windows
     {
         void open(Ui::Window* window, int32_t widgetIndex, int16_t x, int16_t y);
         void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int16_t x, int16_t y);
-        void set_52336E(bool value);
         void closeAndReset();
-        bool isTimeTooltip();
     }
 
     namespace Town

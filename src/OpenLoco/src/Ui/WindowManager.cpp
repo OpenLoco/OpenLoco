@@ -18,6 +18,7 @@
 #include "MultiPlayer.h"
 #include "SceneManager.h"
 #include "ScrollView.h"
+#include "ToolTip.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ToolManager.h"
@@ -43,7 +44,6 @@ namespace OpenLoco::Ui::WindowManager
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
     static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
-    static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x00508F10> __508F10;
     static loco_global<Gfx::RenderTarget, 0x0050B884> _screenRT;
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
@@ -113,7 +113,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C6118
     void update()
     {
-        _tooltipNotShownTicks = _tooltipNotShownTicks + _timeSinceLastTick;
+        ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + _timeSinceLastTick);
 
         // 1000 tick update
         _thousandthTickCounter = _thousandthTickCounter + _timeSinceLastTick;
@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x00439BA5
     void updateDaily()
     {
-        if (find(WindowType::tooltip) && Windows::ToolTip::isTimeTooltip())
+        if (find(WindowType::tooltip) && ToolTip::isTimeTooltip())
         {
             Windows::ToolTip::closeAndReset();
         }

@@ -19,6 +19,7 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
@@ -300,7 +301,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         switch (widgetIdx)
         {
             case Widx::date_btn:
-                Input::setTooltipTimeout(2000);
+                Ui::ToolTip::setTooltipTimeout(2000);
                 break;
         }
 

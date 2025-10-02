@@ -689,6 +689,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ScrollView.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/TextInput.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ToolManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ToolTip.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ViewportInteraction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ButtonWidget.h"

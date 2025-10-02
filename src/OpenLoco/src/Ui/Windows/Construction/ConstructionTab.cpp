@@ -29,6 +29,7 @@
 #include "Paint/PaintTile.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ToolTip.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/DropdownWidget.h"
@@ -2753,7 +2754,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
         {
-            Input::setTooltipTimeout(2000);
+            Ui::ToolTip::setTooltipTimeout(2000);
         }
         return fallback;
     }
