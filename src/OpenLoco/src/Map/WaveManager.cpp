@@ -61,7 +61,7 @@ namespace OpenLoco::World::WaveManager
         for (const auto& offset : _offsets)
         {
             auto searchLoc = pos + offset;
-            if (!World::validCoords(searchLoc))
+            if (!World::TileManager::validCoords(searchLoc))
             {
                 return;
             }

@@ -32,7 +32,7 @@ namespace OpenLoco::Audio
 
     static int8_t getUndergroundVolumeModifier(const World::Pos3& pos)
     {
-        if (pos.x == Location::null || !World::validCoords(pos))
+        if (pos.x == Location::null || !World::TileManager::validCoords(pos))
         {
             return 0;
         }

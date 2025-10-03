@@ -2136,7 +2136,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             for (const auto& tile : getMapSelectionFreeFormTiles())
             {
-                if (!World::validCoords(tile))
+                if (!World::TileManager::validCoords(tile))
                 {
                     continue;
                 }
