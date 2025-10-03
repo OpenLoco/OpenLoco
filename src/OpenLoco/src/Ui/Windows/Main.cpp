@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::Main
     // 0x00468FFE
     void hideGridlines()
     {
-        if (!Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+        if (!Config::get().gridlinesOnLandscape)
         {
             auto window = WindowManager::getMainWindow();
             if (window == nullptr || !window->viewports[0]->hasFlags(ViewportFlags::gridlines_on_landscape))

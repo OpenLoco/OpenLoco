@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::ViewportManager
         vp->flags = ViewportFlags::none;
         vp->owner = owner;
 
-        if (OpenLoco::Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+        if (Config::get().gridlinesOnLandscape)
         {
             vp->flags |= ViewportFlags::gridlines_on_landscape;
         }
@@ -318,7 +318,7 @@ namespace OpenLoco::Ui::ViewportManager
         rect.right = t->spriteRight;
         rect.bottom = t->spriteBottom;
 
-        auto level = (ZoomLevel)std::min(Config::get().old.vehiclesMinScale, (uint8_t)zoom);
+        auto level = (ZoomLevel)std::min(Config::get().vehiclesMinScale, (uint8_t)zoom);
         invalidate(rect, level);
     }
 

@@ -160,6 +160,81 @@ namespace YAML
         }
     };
 
+    // Playlist
+    template<>
+    struct convert<Playlist>
+    {
+        static Node encode(const Playlist& rhs)
+        {
+            Node node;
+            node["chugginAlong"] = rhs.chugginAlong;
+            node["longDustyRoad"] = rhs.longDustyRoad;
+            node["flyingHigh"] = rhs.flyingHigh;
+            node["gettinOnTheGas"] = rhs.gettinOnTheGas;
+            node["jumpinTheRails"] = rhs.jumpinTheRails;
+            node["smoothRunning"] = rhs.smoothRunning;
+            node["trafficJam"] = rhs.trafficJam;
+            node["neverStopTilYouGetThere"] = rhs.neverStopTilYouGetThere;
+            node["soaringAway"] = rhs.soaringAway;
+            node["technoTorture"] = rhs.technoTorture;
+            node["everlastingHighRise"] = rhs.everlastingHighRise;
+            node["solace"] = rhs.solace;
+            node["chrysanthemum"] = rhs.chrysanthemum;
+            node["eugenia"] = rhs.eugenia;
+            node["theRagtimeDance"] = rhs.theRagtimeDance;
+            node["easyWinners"] = rhs.easyWinners;
+            node["settingOff"] = rhs.settingOff;
+            node["aTravellersSerenade"] = rhs.aTravellersSerenade;
+            node["latinoTrip"] = rhs.latinoTrip;
+            node["aGoodHeadOfSteam"] = rhs.aGoodHeadOfSteam;
+            node["hopToTheBop"] = rhs.hopToTheBop;
+            node["theCityLights"] = rhs.theCityLights;
+            node["steaminDownTown"] = rhs.steaminDownTown;
+            node["brightExpectations"] = rhs.brightExpectations;
+            node["moStation"] = rhs.moStation;
+            node["farOut"] = rhs.farOut;
+            node["runningOnTime"] = rhs.runningOnTime;
+            node["getMeToGladstoneBay"] = rhs.getMeToGladstoneBay;
+            node["sandyTrackBlues"] = rhs.sandyTrackBlues;
+            return node;
+        }
+
+        static bool decode(const Node& node, Playlist& rhs)
+        {
+            const bool enableAll = !node.IsMap();
+            rhs.chugginAlong = enableAll || node["chugginAlong"].as<bool>(true);
+            rhs.longDustyRoad = enableAll || node["longDustyRoad"].as<bool>(true);
+            rhs.flyingHigh = enableAll || node["flyingHigh"].as<bool>(true);
+            rhs.gettinOnTheGas = enableAll || node["gettinOnTheGas"].as<bool>(true);
+            rhs.jumpinTheRails = enableAll || node["jumpinTheRails"].as<bool>(true);
+            rhs.smoothRunning = enableAll || node["smoothRunning"].as<bool>(true);
+            rhs.trafficJam = enableAll || node["trafficJam"].as<bool>(true);
+            rhs.neverStopTilYouGetThere = enableAll || node["neverStopTilYouGetThere"].as<bool>(true);
+            rhs.soaringAway = enableAll || node["soaringAway"].as<bool>(true);
+            rhs.technoTorture = enableAll || node["technoTorture"].as<bool>(true);
+            rhs.everlastingHighRise = enableAll || node["everlastingHighRise"].as<bool>(true);
+            rhs.solace = enableAll || node["solace"].as<bool>(true);
+            rhs.chrysanthemum = enableAll || node["chrysanthemum"].as<bool>(true);
+            rhs.eugenia = enableAll || node["eugenia"].as<bool>(true);
+            rhs.theRagtimeDance = enableAll || node["theRagtimeDance"].as<bool>(true);
+            rhs.easyWinners = enableAll || node["easyWinners"].as<bool>(true);
+            rhs.settingOff = enableAll || node["settingOff"].as<bool>(true);
+            rhs.aTravellersSerenade = enableAll || node["aTravellersSerenade"].as<bool>(true);
+            rhs.latinoTrip = enableAll || node["latinoTrip"].as<bool>(true);
+            rhs.aGoodHeadOfSteam = enableAll || node["aGoodHeadOfSteam"].as<bool>(true);
+            rhs.hopToTheBop = enableAll || node["hopToTheBop"].as<bool>(true);
+            rhs.theCityLights = enableAll || node["theCityLights"].as<bool>(true);
+            rhs.steaminDownTown = enableAll || node["steaminDownTown"].as<bool>(true);
+            rhs.brightExpectations = enableAll || node["brightExpectations"].as<bool>(true);
+            rhs.moStation = enableAll || node["moStation"].as<bool>(true);
+            rhs.farOut = enableAll || node["farOut"].as<bool>(true);
+            rhs.runningOnTime = enableAll || node["runningOnTime"].as<bool>(true);
+            rhs.getMeToGladstoneBay = enableAll || node["getMeToGladstoneBay"].as<bool>(true);
+            rhs.sandyTrackBlues = enableAll || node["sandyTrackBlues"].as<bool>(true);
+            return true;
+        }
+    };
+
     // Resolution
     template<>
     struct convert<Resolution>
@@ -182,6 +257,41 @@ namespace YAML
             }
             return false;
         }
+    };
+
+    // MeasurementFormat
+    const convert_pair_vector<MeasurementFormat> measurementFormatEntries = {
+        enum_def(MeasurementFormat, imperial),
+        enum_def(MeasurementFormat, metric),
+    };
+    template<>
+    struct convert<MeasurementFormat> : convert_enum_base<MeasurementFormat>
+    {
+        static const convert_pair_vector<MeasurementFormat>& getEntries() { return measurementFormatEntries; }
+    };
+
+    // MusicPlaylistType
+    const convert_pair_vector<MusicPlaylistType> kMusicPlaylistTypes = {
+        enum_def(MusicPlaylistType, currentEra),
+        enum_def(MusicPlaylistType, all),
+        enum_def(MusicPlaylistType, custom),
+    };
+    template<>
+    struct convert<MusicPlaylistType> : convert_enum_base<MusicPlaylistType>
+    {
+        static const convert_pair_vector<MusicPlaylistType>& getEntries() { return kMusicPlaylistTypes; }
+    };
+
+    // NewsType
+    const convert_pair_vector<NewsType> newsTypeEntries = {
+        enum_def(NewsType, none),
+        enum_def(NewsType, ticker),
+        enum_def(NewsType, newsWindow),
+    };
+    template<>
+    struct convert<NewsType> : convert_enum_base<NewsType>
+    {
+        static const convert_pair_vector<NewsType>& getEntries() { return newsTypeEntries; }
     };
 
     // ScreenMode
