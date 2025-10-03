@@ -73,28 +73,28 @@ namespace OpenLoco::Input
     // TODO: name?
     static Ui::Point32 _cursor2;
 
-    static Ui::WindowType _pressedWindowType;
-    static Ui::WindowNumber_t _pressedWindowNumber;
-    static int32_t _pressedWidgetIndex;
-    static uint16_t _clickRepeatTicks;
-    static Ui::Point _dragLast;
-    static Ui::WindowNumber_t _dragWindowNumber;
-    static Ui::WindowType _dragWindowType;
-    static uint8_t _dragWidgetIndex;
-    static uint8_t _dragScrollIndex;
+    static Ui::WindowType _pressedWindowType;       // 0x0052336F
+    static Ui::WindowNumber_t _pressedWindowNumber; // 0x00523370
+    static int32_t _pressedWidgetIndex;             // 0x00523372
+    static uint16_t _clickRepeatTicks;              // 0x00523376
+    static Ui::Point _dragLast;                     // 0x00523378
+    static Ui::WindowNumber_t _dragWindowNumber;    // 0x0052337C
+    static Ui::WindowType _dragWindowType;          // 0x0052337E
+    static uint8_t _dragWidgetIndex;                // 0x0052337F
+    static uint8_t _dragScrollIndex;                // 0x00523380
 
-    static uint16_t _ticksSinceDragStart;
+    static uint16_t _ticksSinceDragStart; // 0x0052338E
 
-    static Ui::Point _scrollLast;
-    static Ui::WindowType _hoverWindowType;
+    static Ui::Point _scrollLast;           // 0x005233A4
+    static Ui::WindowType _hoverWindowType; // 0x005233A8
     static uint8_t _5233A9;
-    static Ui::WindowNumber_t _hoverWindowNumber;
-    static Ui::WidgetIndex_t _hoverWidgetIdx;
+    static Ui::WindowNumber_t _hoverWindowNumber; // 0x005233AA
+    static Ui::WidgetIndex_t _hoverWidgetIdx;     // 0x005233AC
 
-    static int32_t _mouseDeltaX;
-    static int32_t _mouseDeltaY;
-    static int32_t _mousePosX;
-    static int32_t _mousePosY;
+    static int32_t _mouseDeltaX; // 0x0114084C
+    static int32_t _mouseDeltaY; // 0x01140840
+    static int32_t _mousePosX;   // 0x005233AE
+    static int32_t _mousePosY;   // 0x005233B2
 
     static Ui::WindowType _focusedWindowType;
     static Ui::WindowNumber_t _focusedWindowNumber;
@@ -1665,6 +1665,11 @@ namespace OpenLoco::Input
     Ui::Point getDragLastLocation()
     {
         return _dragLast;
+    }
+
+    void setDragLastLocation(Ui::Point pos)
+    {
+        _dragLast = pos;
     }
 
     Ui::Point getScrollLastLocation()

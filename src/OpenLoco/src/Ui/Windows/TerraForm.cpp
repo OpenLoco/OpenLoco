@@ -112,7 +112,6 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x01136496> _treeRotation;
 
     static int16_t _adjustToolSize;                             // 0x0050A000
-    static int16_t _dragLastY;                                  // 0x0052337A
     static uint8_t _adjustLandToolSize;                         // 0x009C870E
     static uint8_t _clearAreaToolSize;                          // 0x009C870F
     static uint8_t _adjustWaterToolSize;                        // 0x009C8710
@@ -1698,12 +1697,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                     {
                         dY = -1;
                     }
-                    auto deltaY = y - _dragLastY;
+                    auto deltaY = y - Input::getDragLastLocation().y;
                     auto flags = Flags::apply;
 
                     if (deltaY <= dY)
                     {
-                        _dragLastY = _dragLastY + dY;
+                        Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                         raiseLand(flags);
                     }
                     else
@@ -1713,7 +1712,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         {
                             break;
                         }
-                        _dragLastY = _dragLastY + dY;
+                        Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                         lowerLand(flags);
                     }
                     _raiseLandCost = 0x80000000;
@@ -2110,12 +2109,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 dY = -1;
             }
 
-            auto deltaY = y - _dragLastY;
+            auto deltaY = y - Input::getDragLastLocation().y;
             auto flags = Flags::apply;
 
             if (deltaY <= dY)
             {
-                _dragLastY = _dragLastY + dY;
+                Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                 raiseWater(flags);
             }
             else
@@ -2125,7 +2124,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     return;
                 }
-                _dragLastY = _dragLastY + dY;
+                Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                 lowerWater(flags);
             }
             _raiseWaterCost = 0x80000000;

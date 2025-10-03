@@ -121,6 +121,7 @@ namespace OpenLoco::Input
     Ui::Point getScrollLastLocation();
     Ui::Point getCursorPressedLocation();
     Ui::Point getDragLastLocation();
+    void setDragLastLocation(Ui::Point pos);
 
     uint16_t getClickRepeatTicks();
     void setClickRepeatTicks(uint16_t ticks);
