@@ -1,7 +1,6 @@
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
-#include "GameCommands/General/TogglePause.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -165,7 +164,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         args.push<uint32_t>(getCurrentDay());
 
         StringId format = StringIds::date_daymonthyear;
-        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
+        if (SceneManager::isPaused())
         {
             if (self.numTicksVisible >= 30)
             {
@@ -198,7 +197,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
                 MessageWindow::open();
                 break;
             case Widx::pause_btn:
-                GameCommands::doCommand(GameCommands::PauseGameArgs{}, GameCommands::Flags::apply);
+                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Paused }, GameCommands::Flags::apply);
                 break;
             case Widx::normal_speed_btn:
                 GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);
