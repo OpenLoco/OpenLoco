@@ -18840,7 +18840,89 @@ namespace OpenLoco::World::TrackData
         },
     };
 
-    static loco_global<const MoveInfo* [80], 0x04D9CA4> _4D9CA4; // 10 roadId's * 8 directions
+    // 0x4D9CA4 - 10 roadId's * 8 directions
+    static constexpr auto kRoadPlacementSubPositions = std::to_array<std::span<const MoveInfo>>({
+        moveInfoT0R0D0,
+        moveInfoT0R0D1,
+        moveInfoT0R0D2,
+        moveInfoT0R0D3,
+        moveInfoT0R0D2,
+        moveInfoT0R0D3,
+        moveInfoT0R0D0,
+        moveInfoT0R0D1,
+        moveInfoT2R0D0,
+        moveInfoT2R0D1,
+        moveInfoT2R0D2,
+        moveInfoT2R0D3,
+        moveInfoT2R1D0,
+        moveInfoT2R1D1,
+        moveInfoT2R1D2,
+        moveInfoT2R1D3,
+        moveInfoT2R1D3,
+        moveInfoT2R1D0,
+        moveInfoT2R1D1,
+        moveInfoT2R1D2,
+        moveInfoT2R0D3,
+        moveInfoT2R0D0,
+        moveInfoT2R0D1,
+        moveInfoT2R0D2,
+        moveInfoT4R0D0,
+        moveInfoT4R0D1,
+        moveInfoT4R0D2,
+        moveInfoT4R0D3,
+        moveInfoT4R1D0,
+        moveInfoT4R1D1,
+        moveInfoT4R1D2,
+        moveInfoT4R1D3,
+        moveInfoT4R1D3,
+        moveInfoT4R1D0,
+        moveInfoT4R1D1,
+        moveInfoT4R1D2,
+        moveInfoT4R0D3,
+        moveInfoT4R0D0,
+        moveInfoT4R0D1,
+        moveInfoT4R0D2,
+        moveInfoT14R0D0,
+        moveInfoT14R0D1,
+        moveInfoT14R0D2,
+        moveInfoT14R0D3,
+        moveInfoT14R1D0,
+        moveInfoT14R1D1,
+        moveInfoT14R1D2,
+        moveInfoT14R1D3,
+        moveInfoT14R1D2,
+        moveInfoT14R1D3,
+        moveInfoT14R1D0,
+        moveInfoT14R1D1,
+        moveInfoT14R0D2,
+        moveInfoT14R0D3,
+        moveInfoT14R0D0,
+        moveInfoT14R0D1,
+        moveInfoT16R0D0,
+        moveInfoT16R0D1,
+        moveInfoT16R0D2,
+        moveInfoT16R0D3,
+        moveInfoT16R1D0,
+        moveInfoT16R1D1,
+        moveInfoT16R1D2,
+        moveInfoT16R1D3,
+        moveInfoT16R1D2,
+        moveInfoT16R1D3,
+        moveInfoT16R1D0,
+        moveInfoT16R1D1,
+        moveInfoT16R0D2,
+        moveInfoT16R0D3,
+        moveInfoT16R0D0,
+        moveInfoT16R0D1,
+        moveInfoT42R0D0,
+        moveInfoT42R0D1,
+        moveInfoT42R0D2,
+        moveInfoT42R0D3,
+        moveInfoT42R1D0,
+        moveInfoT42R1D1,
+        moveInfoT42R1D2,
+        moveInfoT42R1D3,
+    });
 
     std::span<const MoveInfo> getRoadSubPositon(const uint16_t trackAndDirection)
     {
@@ -18858,8 +18940,6 @@ namespace OpenLoco::World::TrackData
     std::span<const MoveInfo> getRoadPlacementSubPositon(const uint16_t trackAndDirection)
     {
         // TODO: investigate if this mirrors one side of getRoadSubPositon
-        auto* moveInfoStart = _4D9CA4[trackAndDirection];
-        auto moveInfoSize = *(reinterpret_cast<const uint16_t*>(moveInfoStart) - 1);
-        return std::span<const MoveInfo>(moveInfoStart, moveInfoSize);
+        return kRoadPlacementSubPositions[trackAndDirection];
     }
 }
