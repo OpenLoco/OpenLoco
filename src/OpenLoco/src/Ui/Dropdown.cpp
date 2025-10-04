@@ -28,7 +28,42 @@ namespace OpenLoco::Ui::Dropdown
 {
     static constexpr int kBytesPerItem = 8;
 
-    static loco_global<Colour[31], 0x00504619> _byte_504619;
+    // 0x00504619
+    // Translucent colour to base colour mapping table
+    // Maps each colour index to its base colour when handling translucent colours
+    static constexpr std::array<Colour, 31> _translucentColourMap = { {
+        Colour::grey,              // black -> grey
+        Colour::grey,              // grey -> grey
+        Colour::white,             // white -> white
+        Colour::mutedPurple,       // mutedDarkPurple -> mutedPurple
+        Colour::mutedPurple,       // mutedPurple -> mutedPurple
+        Colour::purple,            // purple -> purple
+        Colour::blue,              // darkBlue -> blue
+        Colour::blue,              // blue -> blue
+        Colour::mutedDarkTeal,     // mutedDarkTeal -> mutedDarkTeal
+        Colour::mutedDarkTeal,     // mutedTeal -> mutedDarkTeal
+        Colour::green,             // darkGreen -> green
+        Colour::mutedSeaGreen,     // mutedSeaGreen -> mutedSeaGreen
+        Colour::mutedGrassGreen,   // mutedGrassGreen -> mutedGrassGreen
+        Colour::green,             // green -> green
+        Colour::mutedAvocadoGreen, // mutedAvocadoGreen -> mutedAvocadoGreen
+        Colour::mutedOliveGreen,   // mutedOliveGreen -> mutedOliveGreen
+        Colour::yellow,            // yellow -> yellow
+        Colour::yellow,            // darkYellow -> yellow
+        Colour::orange,            // orange -> orange
+        Colour::amber,             // amber -> amber
+        Colour::orange,            // darkOrange -> orange
+        Colour::mutedDarkYellow,   // mutedDarkYellow -> mutedDarkYellow
+        Colour::mutedDarkYellow,   // mutedYellow -> mutedDarkYellow
+        Colour::brown,             // brown -> brown
+        Colour::mutedOrange,       // mutedOrange -> mutedOrange
+        Colour::mutedDarkRed,      // mutedDarkRed -> mutedDarkRed
+        Colour::red,               // darkRed -> red
+        Colour::red,               // red -> red
+        Colour::pink,              // darkPink -> pink
+        Colour::pink,              // pink -> pink
+        Colour::mutedRed,          // mutedRed -> mutedRed
+    } };
     static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
@@ -336,7 +371,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             if (colour.isTranslucent())
             {
-                colour = _byte_504619[enumValue(colour.c())];
+                colour = _translucentColourMap[enumValue(colour.c())];
                 colour = colour.translucent();
             }
 
@@ -657,7 +692,7 @@ namespace OpenLoco::Ui::Dropdown
 
         if (colour.isTranslucent())
         {
-            colour = static_cast<Colour>(_byte_504619[enumValue(colour.c())]);
+            colour = _translucentColourMap[enumValue(colour.c())];
             colour = colour.translucent();
         }
 
