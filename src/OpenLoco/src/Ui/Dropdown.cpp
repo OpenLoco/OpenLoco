@@ -64,7 +64,33 @@ namespace OpenLoco::Ui::Dropdown
         Colour::pink,              // pink -> pink
         Colour::mutedRed,          // mutedRed -> mutedRed
     } };
-    static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
+
+    // 0x005046FA
+    // Optimal items per row for image dropdown layouts, indexed by total item count
+    // Determines grid layout to best fit items in a dropdown (balances width vs height)
+    static constexpr std::array<uint8_t, 33> _appropriateImageDropdownItemsPerRow = { {
+        // clang-format off
+        1, 1, 1, 1, // 0-3 items
+        2, 2,       // 4-5 items
+        3, 3,       // 6-7 items
+        4,          // 8 items
+        3,          // 9 items
+        5,          // 10 items
+        4, 4,       // 11-12 items
+        5, 5, 5,    // 13-15 items
+        4,          // 16 items
+        5,          // 17 items
+        6,          // 18 items
+        5, 5,       // 19-20 items
+        7,          // 21 items
+        4,          // 22 items
+        5,          // 23 items
+        6,          // 24 items
+        5,          // 25 items
+        6, 6, 6, 6, 6, // 26-30 items
+        8, 8,       // 31-32 items
+        // clang-format on
+    } };
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
     static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
