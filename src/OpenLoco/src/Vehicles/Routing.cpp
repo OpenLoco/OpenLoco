@@ -37,6 +37,7 @@ namespace OpenLoco::Vehicles
         unk2 = 1U << 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrackNetworkSearchFlags);
+    static_assert(sizeof(TrackNetworkSearchFlags) == 2);
 
     struct LocationOfInterest
     {
@@ -180,6 +181,10 @@ namespace OpenLoco::Vehicles
 
     // using FilterFunction = bool (*)(const LocationOfInterest& interest);          // TODO C++20 make these concepts
     // using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap); // TODO C++20 make these concepts
+    using FilterFunction = bool (*)(const LocationOfInterest& interest);
+    // static_assert(sizeof(FilterFunction) == 4);
+    using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap);
+    // static_assert(sizeof(TransformFunction) == 4);
 
     constexpr auto kNullTransformFunction = [](const LocationOfInterestHashMap&) {};
 

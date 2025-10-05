@@ -15,6 +15,7 @@ namespace OpenLoco::ToolManager
     static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<Ui::CursorId, 0x00523393> _toolWindowCursor;
+    static_assert(sizeof(Ui::CursorId) == 1);
     static loco_global<uint16_t, 0x00523394> _toolWidgetIndex;
 
     Window* toolGetActiveWindow()

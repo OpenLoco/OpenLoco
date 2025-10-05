@@ -41,6 +41,7 @@ namespace OpenLoco::EditorController
     static loco_global<char[267], 0x00050B745> _activeSavePath;
 
     static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
+    static_assert(sizeof(ObjectManager::ObjectSelectionMeta) == 0x48);
 
     static void resetLandDistributionPatterns();
 
