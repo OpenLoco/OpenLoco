@@ -33,7 +33,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
     static loco_global<uint8_t, 0x009C870C> _lastTownOption;
 
-    static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
+    // Temporary storage for road menu dropdown (populated in mouseDown, consumed in dropdown callback)
+    static AvailableTracksAndRoads _roadMenuObjects;
 
     // 0x00439DE4
     void draw(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -235,12 +236,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A19F
     void roadMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        const auto availableObjects = companyGetAvailableRoads(CompanyManager::getControllingId());
-        // Copy to global as its used in the dropdown event
-        std::copy(availableObjects.begin(), availableObjects.end(), _availableObjects.begin());
+        _roadMenuObjects = companyGetAvailableRoads(CompanyManager::getControllingId());
 
         // Sanity check: any objects available?
-        if (availableObjects.empty())
+        if (_roadMenuObjects.empty())
         {
             return;
         }
@@ -249,12 +248,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         // Add available objects to Dropdown.
         uint16_t highlightedItem = 0;
-        for (auto i = 0U; i < std::size(availableObjects); i++)
+        for (auto i = 0U; i < _roadMenuObjects.size(); i++)
         {
             uint32_t objImage;
             StringId objStringId;
 
-            auto objIndex = availableObjects[i];
+            auto objIndex = _roadMenuObjects[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
@@ -276,7 +275,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             }
         }
 
-        Dropdown::showBelow(window, widgetIndex, std::size(availableObjects), 25, (1 << 6));
+        Dropdown::showBelow(window, widgetIndex, _roadMenuObjects.size(), 25, (1 << 6));
         Dropdown::setHighlightedItem(highlightedItem);
     }
 
@@ -454,7 +453,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             return;
         }
 
-        uint8_t objIndex = _availableObjects[itemIndex];
+        uint8_t objIndex = _roadMenuObjects[itemIndex];
         Construction::openWithFlags(objIndex);
     }
 
