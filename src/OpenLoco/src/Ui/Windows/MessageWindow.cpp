@@ -509,6 +509,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                     auto ddIndex = wIndex - widx::company_major_news;
                     auto currentItem = Config::get().newsSettings[ddIndex / kNumWidgetsPerDropdown];
+                    Config::write();
                     Dropdown::setItemSelected(static_cast<size_t>(currentItem));
                     break;
                 }
