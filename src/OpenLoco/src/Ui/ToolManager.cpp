@@ -92,7 +92,7 @@ namespace OpenLoco::ToolManager
             Input::resetFlag(Input::Flags::toolActive);
 
             World::mapInvalidateSelectionRect();
-            World::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionFreeFormTiles();
 
             resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::enableConstructionArrow | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
 

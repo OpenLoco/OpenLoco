@@ -64,6 +64,9 @@ namespace OpenLoco::Input
     State state();
     void state(State);
 
+    bool processMessages();
+    bool processMessagesMini();
+
     Ui::Point getMouseLocation();
     Ui::Point getMouseLocation2();
     bool isHovering(Ui::WindowType);
@@ -88,7 +91,10 @@ namespace OpenLoco::Input
 
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);
+    void readKeyboardState();
+    void handleKeyInput(uint32_t keycode);
     bool hasKeyModifier(KeyModifier modifier);
+    KeyModifier getKeyModifier();
 
     StationId getHoveredStationId();
 
@@ -115,10 +121,7 @@ namespace OpenLoco::Input
     Ui::Point getScrollLastLocation();
     Ui::Point getCursorPressedLocation();
     Ui::Point getDragLastLocation();
-    Ui::Point getTooltipMouseLocation();
-    void setTooltipMouseLocation(const Ui::Point& loc);
-    uint16_t getTooltipTimeout();
-    void setTooltipTimeout(uint16_t tooltipTimeout);
+    void setDragLastLocation(Ui::Point pos);
 
     uint16_t getClickRepeatTicks();
     void setClickRepeatTicks(uint16_t ticks);
@@ -133,4 +136,10 @@ namespace OpenLoco::Input
     };
     void enqueueMouseButton(const QueuedMouseInput& input);
     MouseButton nextMouseInput(uint32_t& x, int16_t& y);
+
+    Ui::WindowType getPressedWindowType();
+    void setPressedWindowType(Ui::WindowType wndType);
+
+    Ui::WindowNumber_t getPressedWindowNumber();
+    void setPressedWindowNumber(Ui::WindowNumber_t wndNumber);
 }

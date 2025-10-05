@@ -18,5 +18,4 @@ namespace OpenLoco::TownManager
     void updateMonthly();
     Town* updateTownInfo(const World::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings);
     void resetBuildingsInfluence();
-    void registerHooks();
 }

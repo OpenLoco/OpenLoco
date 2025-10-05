@@ -14,12 +14,6 @@
 #define assert_struct_size(x, y)
 #endif
 
-#if (defined(__clang__) || (defined(__GNUC__) && !defined(__MINGW32__))) && defined(__SSE2__)
-#define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
-#else
-#define FORCE_ALIGN_ARG_POINTER
-#endif
-
 constexpr int32_t kDefaultRegValue = 0xCCCCCCCC;
 
 namespace OpenLoco::Interop
@@ -136,21 +130,6 @@ namespace OpenLoco::Interop
         // We use std::launder to prevent the compiler from doing optimizations that lead to undefined behavior.
         return *std::launder(reinterpret_cast<T*>(ptrAddr));
     }
-
-    /**
-     * Returns the flags register
-     *
-     * Flags register is as follows:
-     * 0bSZ0A_0P0C_0000_0000
-     * S = Signed flag
-     * Z = Zero flag
-     * C = Carry flag
-     * A = Adjust flag
-     * P = Parity flag
-     * All other bits are undefined.
-     */
-    int32_t call(int32_t address);
-    int32_t call(int32_t address, registers& registers);
 
     struct GlobalStore
     {
@@ -386,47 +365,4 @@ namespace OpenLoco::Interop
             return iterator(ptrEnd);
         }
     };
-
-    enum
-    {
-        X86_FLAG_CARRY = 1 << 0,
-        X86_FLAG_PARITY = 1 << 2,
-        X86_FLAG_ADJUST = 1 << 4,
-        X86_FLAG_ZERO = 1 << 6,
-        X86_FLAG_SIGN = 1 << 7,
-    };
-
-    class save_state
-    {
-    private:
-        uintptr_t begin = 0;
-        uintptr_t end = 0;
-        std::vector<std::byte> state;
-
-    public:
-        const std::vector<std::byte>& getState() const
-        {
-            return state;
-        }
-
-        save_state(uintptr_t begin, uintptr_t end);
-        void reset();
-
-        static void logDiff(const save_state& lhs, const save_state& rhs);
-    };
-
-    bool operator==(const save_state& lhs, const save_state& rhs);
-
-    void readMemory(uint32_t address, void* data, size_t size);
-    void writeMemory(uint32_t address, const void* data, size_t size);
-
-    using hook_function = uint8_t (*)(registers& regs);
-
-    void registerHook(uintptr_t address, hook_function function);
-    void writeRet(uint32_t address);
-    void writeJmp(uint32_t address, void* fn);
-    void writeLocoCall(uint32_t address, uint32_t fnAddress);
-    void writeNop(uint32_t address, size_t count);
-    void hookDump(uint32_t address, void* fn);
-    void hookLib(uint32_t address, void* fn);
 }

@@ -15,6 +15,7 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
@@ -310,7 +311,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         {
             case Widx::company_value:
             case Widx::performanceIndex:
-                Input::setTooltipTimeout(2000);
+                Ui::ToolTip::setTooltipTimeout(2000);
                 break;
         }
         return fallback;

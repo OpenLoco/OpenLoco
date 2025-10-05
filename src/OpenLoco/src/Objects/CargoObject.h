@@ -56,14 +56,14 @@ namespace OpenLoco
         CargoCategory cargoCategory;   // 0x10
         CargoObjectFlags flags;        // 0x12
         uint8_t numPlatformVariations; // 0x13
-        uint8_t var_14;
-        uint8_t premiumDays;       // 0x15
-        uint8_t maxNonPremiumDays; // 0x16
-        uint16_t nonPremiumRate;   // 0x17
-        uint16_t penaltyRate;      // 0x19
-        uint16_t paymentFactor;    // 0x1B
-        uint8_t paymentIndex;      // 0x1D
-        uint8_t unitSize;          // 0x1E
+        uint8_t stationCargoDensity;   // 0x14
+        uint8_t premiumDays;           // 0x15
+        uint8_t maxNonPremiumDays;     // 0x16
+        uint16_t nonPremiumRate;       // 0x17
+        uint16_t penaltyRate;          // 0x19
+        uint16_t paymentFactor;        // 0x1B
+        uint8_t paymentIndex;          // 0x1D
+        uint8_t unitSize;              // 0x1E
 
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);

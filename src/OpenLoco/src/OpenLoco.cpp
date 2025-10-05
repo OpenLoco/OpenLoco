@@ -67,6 +67,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include "Ui/ToolTip.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -100,8 +101,6 @@ namespace OpenLoco
     static loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
     static loco_global<uint32_t, 0x0050C19E> _last_tick_time;
 
-    static loco_global<int8_t, 0x0052336E> _52336E; // bool
-
     static int32_t _monthsSinceLastAutosave;
 
     static void autosaveReset();
@@ -112,13 +111,6 @@ namespace OpenLoco
     std::string getVersionInfo()
     {
         return version;
-    }
-
-    // 0x00407FFD
-    static bool isAlreadyRunning(const char* mutexName)
-    {
-        auto result = ((int32_t(*)(const char*))(0x00407FFD))(mutexName);
-        return result != 0;
     }
 
     // 0x004BE621
@@ -136,8 +128,8 @@ namespace OpenLoco
     // 0x004BE65E
     [[noreturn]] void exitCleanly()
     {
-        Audio::disposeDSound();
         Audio::close();
+        Audio::disposeDSound();
         Ui::disposeCursors();
         Localisation::unloadLanguageFile();
 
@@ -161,7 +153,7 @@ namespace OpenLoco
     static void startupChecks()
     {
         const auto& config = Config::get();
-        if (!config.allowMultipleInstances && isAlreadyRunning("Locomotion"))
+        if (!config.allowMultipleInstances && !Platform::lockSingleInstance())
         {
             exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
         }
@@ -185,7 +177,7 @@ namespace OpenLoco
         Input::initMouse();
 
         // tooltip-related
-        _52336E = 0;
+        Ui::ToolTip::set_52336E(false);
 
         Ui::Windows::TextInput::cancel();
 
@@ -199,7 +191,6 @@ namespace OpenLoco
         _last_tick_time = Platform::getTime();
 
         std::srand(std::time(nullptr));
-        addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
 
         World::TileManager::allocateMapElements();
         Environment::resolvePaths();
@@ -305,17 +296,10 @@ namespace OpenLoco
     {
         try
         {
-            addr<0x00113E87C, int32_t>() = 0;
-            addr<0x0005252E0, int32_t>() = 0;
-
             uint32_t time = Platform::getTime();
             _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
             _last_tick_time = time;
 
-            if (!SceneManager::isPaused())
-            {
-                addr<0x0050C1A2, uint32_t>() += _time_since_last_tick;
-            }
             if (Tutorial::state() != Tutorial::State::none)
             {
                 _time_since_last_tick = 31;
@@ -325,13 +309,8 @@ namespace OpenLoco
             Ui::update();
 
             {
-                call(0x00440DEC); // install scenario from 0x0050C18C ptr??
-
-                if (addr<0x00525340, int32_t>() == 1)
-                {
-                    addr<0x00525340, int32_t>() = 0;
-                    MultiPlayer::setFlag(MultiPlayer::flags::flag_1);
-                }
+                // Original called 0x00440DEC here which handled legacy cmd line options
+                // like installing scenarios and handling multiplayer.
 
                 Input::handleKeyboard();
                 Input::processMouseMovement();
@@ -339,7 +318,6 @@ namespace OpenLoco
 
                 Network::update();
 
-                addr<0x0050C1AE, int32_t>()++;
                 if (Intro::isActive())
                 {
                     Intro::update();
@@ -420,16 +398,6 @@ namespace OpenLoco
                     }
 
                     Audio::playBackgroundMusic();
-
-                    // 0x0052532C != 0 isMinimized
-                    if (Tutorial::state() != Tutorial::State::none && addr<0x0052532C, int32_t>() != 0 && Ui::width() < 64)
-                    {
-                        Tutorial::stop();
-
-                        // This ends with a premature tick termination
-                        Game::returnToTitle();
-                        return; // won't be reached
-                    }
 
                     sub_431695(var_F253A0);
 
@@ -688,7 +656,7 @@ namespace OpenLoco
         {
             _last_tick_time = Platform::getTime();
             _time_since_last_tick = 31;
-            if (!Ui::processMessages())
+            if (!Input::processMessages())
             {
                 return false;
             }
@@ -773,7 +741,7 @@ namespace OpenLoco
 #endif
         initialise();
 
-        while (Ui::processMessages())
+        while (Input::processMessages())
         {
             update();
         }
@@ -781,17 +749,6 @@ namespace OpenLoco
 #ifdef _WIN32
         CoUninitialize();
 #endif
-    }
-
-    /**
-     * We do our own command line logic, but we still execute routines that try to read lpCmdLine,
-     * so make sure it is initialised to a pointer to an empty string. Remove this when no more
-     * original code is called that uses lpCmdLine (e.g. 0x00440DEC)
-     */
-    static void resetCmdline()
-    {
-        loco_global<const char*, 0x00525348> _glpCmdLine;
-        _glpCmdLine = "";
     }
 
     void simulateGame(const fs::path& savePath, int32_t ticks)
@@ -805,8 +762,6 @@ namespace OpenLoco
         }
 
         Environment::resolvePaths();
-        resetCmdline();
-        registerHooks();
 
         try
         {
@@ -829,6 +784,19 @@ namespace OpenLoco
             }
         }
         tickLogic(ticks);
+    }
+
+    // 0x004078FE
+    static void generateSystemStats()
+    {
+        // Vanilla would actually query the system for this and would
+        // also get the system computer name for default multiplayer name.
+        // But there isn't much point nowadays to do this so lets just
+        // set it to a large fixed value.
+        // The value is only used by config to decide how many sounds
+        // to have active at once.
+        static loco_global<uint32_t, 0x0113E21C> _totalPhysicalMemory;
+        _totalPhysicalMemory = 0xFFFFFFFFU;
     }
 
     // 0x00406D13
@@ -870,11 +838,8 @@ namespace OpenLoco
             const auto& cfg = Config::read();
             Environment::resolvePaths();
 
-            resetCmdline();
-            registerHooks();
-
             Ui::createWindow(cfg.display);
-            call(0x004078FE); // getSystemInfo used for some config, multiplayer name,
+            generateSystemStats();
             Audio::initialiseDSound();
             run();
             exitCleanly();

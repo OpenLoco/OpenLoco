@@ -236,9 +236,9 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE84E
-    static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = self.rowCount * kRowHeight;
+        scrollHeight = self.rowCount * kRowHeight;
     }
 
     // 0x004BE853

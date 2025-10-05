@@ -81,10 +81,9 @@ namespace OpenLoco
         uint8_t preferredAICompetitiveness;                                      // 0x0003FF (0x00526217)
         uint16_t startingLoanSize;                                               // 0x000400 (0x00526218)
         uint16_t maxLoanSize;                                                    // 0x000402 (0x0052621A)
-        uint32_t var_404;                                                        // 0x000404 (0x0052621C)
-        uint32_t var_408;                                                        // 0x000408 (0x00526220)
-        uint32_t var_40C;                                                        // 0x00040C (0x00526224)
-        uint32_t var_410;                                                        // 0x000410 (0x00526228)
+        Core::Prng multiplayerPrng;                                              // 0x000404 (0x0052621C)
+        uint32_t multiplayerChecksumA;                                           // 0x00040C (0x00526224) unused
+        uint32_t multiplayerChecksumB;                                           // 0x000410 (0x00526228) unused
         VehicleType lastBuildVehiclesOption;                                     // 0x000414 (0x0052622C)
         uint8_t numberOfIndustries;                                              // 0x000415 (0x0052622D)
         uint16_t vehiclePreviewRotationFrame;                                    // 0x000416 (0x0052622E)

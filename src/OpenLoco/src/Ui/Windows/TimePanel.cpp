@@ -19,18 +19,19 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TimePanel
 {
     static constexpr Ui::Size32 kWindowSize = { 140, 27 };
+
+    // When paused, the time panel will alternate between displaying "* paused *" and the in-game date every this many ticks.
+    static constexpr auto kPausedStatusTextDuration = 30;
 
     namespace Widx
     {
@@ -60,7 +61,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Widgets::ImageButton({ 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
         Widgets::ImageButton({ 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
-    static loco_global<uint16_t, 0x0050A004> _50A004;
+    static bool redrawScheduled = false; // 0x0050A004 (2nd bit)
 
     static const WindowEventList& getEvents();
 
@@ -166,7 +167,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         StringId format = StringIds::date_daymonthyear;
         if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & PauseFlags::browsePrompt) == PauseFlags::none) // Is this the correct logic?
         {
-            if (self.numTicksVisible >= 30)
+            if (self.numTicksVisible >= kPausedStatusTextDuration)
             {
                 format = StringIds::toolbar_status_paused;
             }
@@ -300,7 +301,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         switch (widgetIdx)
         {
             case Widx::date_btn:
-                Input::setTooltipTimeout(2000);
+                Ui::ToolTip::setTooltipTimeout(2000);
                 break;
         }
 
@@ -378,7 +379,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     void invalidateFrame()
     {
-        _50A004 = _50A004 | (1 << 1);
+        redrawScheduled = true;
     }
 
     // 0x00439AD9
@@ -391,19 +392,25 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
 
         w.numTicksVisible += 1;
-        if (w.numTicksVisible >= 60)
+        if (w.numTicksVisible >= kPausedStatusTextDuration * 2)
         {
             w.numTicksVisible = 0;
         }
 
-        if (_50A004 & (1 << 1))
+        // Determine if the text needs to be updated
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
         {
-            _50A004 = _50A004 & ~(1 << 1);
-            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
+            if (w.numTicksVisible == 0 || w.numTicksVisible == kPausedStatusTextDuration)
+            {
+                redrawScheduled = true;
+            }
         }
 
-        if (SceneManager::isPaused())
+        if (redrawScheduled)
         {
+            redrawScheduled = false;
+
+            // Invalidating the inner frame widget effectively causes the entire time panel to be redrawn.
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
     }

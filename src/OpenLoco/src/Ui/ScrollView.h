@@ -4,9 +4,13 @@
 
 namespace OpenLoco::Ui::ScrollView
 {
-    constexpr uint8_t thumbSize = 10;
-    constexpr uint8_t barWidth = 11;
-    constexpr uint8_t buttonClickStep = 3;
+    // For horizontal scrollbars its N wide, for vertical its N tall
+    static constexpr uint8_t kScrollbarSize = 11;
+    static constexpr auto kScrollButtonSize = Ui::Size(kScrollbarSize, kScrollbarSize);
+    static constexpr auto kScrollbarMargin = 1;
+    static constexpr uint8_t kThumbSize = kScrollbarSize - kScrollbarMargin;
+    static constexpr uint8_t kMinThumbSize = kThumbSize * 2;
+    static constexpr uint8_t kButtonClickStep = 3;
 
     struct GetPartResult
     {

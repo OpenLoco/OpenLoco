@@ -192,27 +192,6 @@ namespace OpenLoco::Ui::Windows::Error
         createErrorWindow(title, message);
     }
 
-    void registerHooks()
-    {
-        registerHook(
-            0x00431A8A,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::Error::open(regs.bx, regs.dx);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x00431908,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::Error::openWithCompetitor(regs.bx, regs.dx, CompanyId(regs.al));
-                regs = backup;
-                return 0;
-            });
-    }
-
     namespace Common
     {
         // 0x00431C05
@@ -232,8 +211,8 @@ namespace OpenLoco::Ui::Windows::Error
             }
             else
             {
-                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left + self.x;
-                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top + self.y;
+                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left;
+                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top;
 
                 auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);

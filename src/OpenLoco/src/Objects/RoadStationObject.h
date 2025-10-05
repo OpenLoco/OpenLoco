@@ -46,14 +46,14 @@ namespace OpenLoco
         uint8_t costIndex;                       // 0x0A
         RoadStationFlags flags;                  // 0x0B
         uint32_t image;                          // 0x0C
-        uint32_t var_10[4];                      // 0x10
+        uint32_t imageOffsets[4];                // 0x10 "sequenceIndexImageOffsets"
         uint8_t numCompatible;                   // 0x20
         uint8_t mods[7];                         // 0x21
         uint16_t designedYear;                   // 0x28
         uint16_t obsoleteYear;                   // 0x2A
         uint8_t cargoType;                       // 0x2C
         uint8_t pad_2D;
-        const std::byte* cargoOffsetBytes[4][4]; // 0x2E
+        uint32_t cargoOffsetBytes[4][4]; // 0x2E
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;

@@ -23,6 +23,8 @@ namespace OpenLoco::Localisation
         constexpr uint8_t z_acute_uc = 215;  // 0xD7
 
         // Quotation marks
+        constexpr uint8_t single_quote_open = 96;
+        constexpr uint8_t single_quote_close = 39; // Also the preferred character to use for apostrophe
         constexpr uint8_t quote_open = 180;
         constexpr uint8_t quote_close = 34;
 
@@ -32,8 +34,10 @@ namespace OpenLoco::Localisation
         constexpr uint8_t tick = 172;
         constexpr uint8_t cross = 173;
         constexpr uint8_t right = 175;
+        constexpr uint8_t bullet = 186;
         constexpr uint8_t small_up = 188;
         constexpr uint8_t small_down = 189;
+        constexpr uint8_t left = 190;
 
         // Special symbols
         constexpr uint8_t railway = 177;
@@ -73,6 +77,8 @@ namespace OpenLoco::Localisation
         constexpr utf32_t z_dot = 380;
 
         // Quotation marks
+        constexpr utf32_t single_quote_open = 0x2018;
+        constexpr utf32_t single_quote_close = 0x2019; // Also the preferred character to use for apostrophe
         constexpr utf32_t quote_open = 0x201C;
         constexpr utf32_t quote_close = 0x201D;
 
@@ -80,11 +86,13 @@ namespace OpenLoco::Localisation
         constexpr utf32_t superscript_minus = 0x207B;
 
         // Dingbats
+        constexpr utf32_t bullet = 0x2022;
         constexpr utf32_t up = 0x25B2;
         constexpr utf32_t small_up = 0x25B4;
         constexpr utf32_t right = 0x25B6;
         constexpr utf32_t down = 0x25BC;
         constexpr utf32_t small_down = 0x25BE;
+        constexpr utf32_t left = 0x25C0;
         constexpr utf32_t air = 0x2601;
         constexpr utf32_t tick = 0x2713;
 

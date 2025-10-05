@@ -36,19 +36,6 @@ namespace OpenLoco::Tutorial
         return *_state;
     }
 
-    void registerHooks()
-    {
-        registerHook(
-            0x0043C7A2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                uint16_t next = nextInput();
-                regs = backup;
-                regs.ax = next;
-                return 0;
-            });
-    }
-
     static std::vector<uint16_t> readTutorialFile(fs::path filename)
     {
         std::ifstream file(filename, std::ios::in | std::ios::binary);

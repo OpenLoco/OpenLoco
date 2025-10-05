@@ -25,16 +25,11 @@
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <optional>
 #include <ranges>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
-    static loco_global<CompanyId, 0x9C68F2> _9C68F2; // Use in a game command??
-
     // Count was previously 0x112C1C1
     static std::vector<ObjectManager::ObjIndexPair> _competitorList;
 
@@ -80,7 +75,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         populateCompetitorList();
         if (self != nullptr)
         {
-            _9C68F2 = id;
             self->owner = id;
             self->invalidate();
         }
@@ -89,7 +83,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, WindowFlags::none, getEvents());
             self->setWidgets(widgets);
             self->initScrollWidgets();
-            _9C68F2 = id;
             self->owner = id;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
@@ -149,9 +142,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352BB
-    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const scrollWidth, uint16_t* const scrollHeight)
+    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = static_cast<uint16_t>(_competitorList.size()) * kRowHeight;
+        scrollHeight = _competitorList.size() * kRowHeight;
     }
 
     static bool isInUseCompetitor(const uint32_t objIndex)

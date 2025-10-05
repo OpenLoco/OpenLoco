@@ -94,6 +94,7 @@ namespace OpenLoco::Ui::Windows::Options
                 close_button = 2,
                 panel = 3,
                 tab_display,
+                tab_rendering,
                 tab_sound,
                 tab_music,
                 tab_regional,
@@ -108,6 +109,7 @@ namespace OpenLoco::Ui::Windows::Options
         enum tab
         {
             display,
+            rendering,
             sound,
             music,
             regional,
@@ -118,6 +120,34 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void prepareDraw(Window& w)
         {
+            const auto* skin = ObjectManager::get<InterfaceSkinObject>();
+
+            // Rendering tab
+            {
+                static constexpr uint32_t kRedenderingTabImageIds[] = {
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame0,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame1,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame2,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame3,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame4,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame5,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame6,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame7,
+                };
+
+                uint32_t imageId = skin->img;
+                if (w.currentTab == tab::rendering)
+                {
+                    imageId += kRedenderingTabImageIds[(w.frameNo / 4) % std::size(kRedenderingTabImageIds)];
+                }
+                else
+                {
+                    imageId += kRedenderingTabImageIds[0];
+                }
+
+                w.widgets[Widx::tab_rendering].image = imageId;
+            }
+
             static constexpr uint32_t music_tab_ids[] = {
                 ImageIds::tab_music_0,
                 ImageIds::tab_music_1,
@@ -194,7 +224,6 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Company tab
             {
-                auto skin = ObjectManager::get<InterfaceSkinObject>();
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
                 w.widgets[Widx::tab_company].image = imageId;
             }
@@ -206,6 +235,30 @@ namespace OpenLoco::Ui::Windows::Options
             free(__11364A0);
         }
 
+        static bool onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        {
+            switch (wi)
+            {
+                case Widx::close_button:
+                    WindowManager::close(&w);
+                    return true;
+
+                case Widx::tab_display:
+                case Widx::tab_rendering:
+                case Widx::tab_sound:
+                case Widx::tab_music:
+                case Widx::tab_regional:
+                case Widx::tab_controls:
+                case Widx::tab_company:
+                case Widx::tab_miscellaneous:
+                    Options::tabOnMouseUp(&w, wi);
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         static constexpr auto makeCommonWidgets(Ui::Size32 windowSize, StringId windowCaptionId)
         {
             return makeWidgets(
@@ -214,27 +267,28 @@ namespace OpenLoco::Ui::Windows::Options
                 Widgets::ImageButton({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { windowSize.width, 102 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_display, StringIds::tooltip_display_options),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_sound, StringIds::tooltip_sound_options),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_music_0, StringIds::tooltip_music_options),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_globe_0, StringIds::tooltip_regional_options),
-                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_control, StringIds::tooltip_control_options),
-                Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
-                Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_miscellaneous, StringIds::tooltip_miscellaneous_options));
+                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_options_rendering),
+                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_sound, StringIds::tooltip_sound_options),
+                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_music_0, StringIds::tooltip_music_options),
+                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_globe_0, StringIds::tooltip_regional_options),
+                Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_control, StringIds::tooltip_control_options),
+                Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
+                Widgets::Tab({ 220, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_miscellaneous, StringIds::tooltip_miscellaneous_options));
         }
 
         static constexpr int tabWidgets = (1ULL << Widx::tab_display)
+            | (1ULL << Widx::tab_rendering)
             | (1ULL << Widx::tab_sound)
             | (1ULL << Widx::tab_music)
             | (1ULL << Widx::tab_regional)
             | (1ULL << Widx::tab_controls)
             | (1ULL << Widx::tab_company)
             | (1ULL << Widx::tab_miscellaneous);
-
     }
 
     namespace Display
     {
-        static constexpr Ui::Size32 kWindowSize = { 400, 266 };
+        static constexpr Ui::Size32 kWindowSize = { 400, 151 };
 
         namespace Widx
         {
@@ -253,19 +307,6 @@ namespace OpenLoco::Ui::Windows::Options
                 display_scale_up_btn,
                 uncap_fps,
                 show_fps,
-                frame_map_rendering,
-                vehicles_min_scale_label,
-                vehicles_min_scale,
-                vehicles_min_scale_btn,
-                station_names_min_scale_label,
-                station_names_min_scale,
-                station_names_min_scale_btn,
-                construction_marker_label,
-                construction_marker,
-                construction_marker_btn,
-                landscape_smoothing,
-                gridlines_on_landscape,
-                cash_popup_rendering,
             };
         }
 
@@ -283,44 +324,20 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::stepperWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::scale_formatted),
 
             Widgets::Checkbox({ 10, 111 }, { 174, 12 }, WindowColour::secondary, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
-            Widgets::Checkbox({ 10, 127 }, { 174, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
-
-            Widgets::GroupBox({ 4, 150 }, { 392, 112 }, WindowColour::secondary, StringIds::frame_map_rendering),
-
-            Widgets::Label({ 10, 164 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::vehicles_min_scale),
-            Widgets::dropdownWidgets({ 235, 164 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
-
-            Widgets::Label({ 10, 180 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::station_names_min_scale),
-            Widgets::dropdownWidgets({ 235, 180 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
-
-            Widgets::Label({ 10, 196 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::construction_marker),
-            Widgets::dropdownWidgets({ 235, 196 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
-
-            Widgets::Checkbox({ 10, 211 }, { 346, 12 }, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
-            Widgets::Checkbox({ 10, 227 }, { 346, 12 }, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
-            Widgets::Checkbox({ 10, 243 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering)
+            Widgets::Checkbox({ 10, 127 }, { 174, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip)
 
         );
 
         // 0x004BFB8C
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::show_fps:
                 {
                     auto& cfg = OpenLoco::Config::get();
@@ -337,7 +354,314 @@ namespace OpenLoco::Ui::Windows::Options
                     Gfx::invalidateScreen();
                     return;
                 }
+            }
+        }
 
+#if !(defined(__APPLE__) && defined(__MACH__))
+        static void screenModeToggleEnabled(Window* w)
+        {
+            if (Config::get().display.mode == Config::ScreenMode::fullscreen)
+            {
+                w->disabledWidgets &= ~(1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
+                w->disabledWidgets &= ~((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
+            }
+            else
+            {
+                w->disabledWidgets |= ((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
+                w->disabledWidgets |= (1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
+            }
+        }
+#endif
+
+        static void screenModeMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
+        {
+            Widget dropdown = w->widgets[Widx::screen_mode];
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen_window);
+
+            auto selection = static_cast<uint16_t>(Config::get().display.mode);
+            Dropdown::setItemSelected(selection);
+        }
+
+        static void screenModeDropdown([[maybe_unused]] Window* w, int16_t selection)
+        {
+            if (selection == -1)
+            {
+                return;
+            }
+
+            auto new_mode = static_cast<Config::ScreenMode>(selection);
+            if (new_mode == Config::get().display.mode)
+            {
+                return;
+            }
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+            Ui::setDisplayMode(new_mode);
+#endif
+        }
+
+#pragma mark - Resolution dropdown (Widget 11)
+
+        // 0x004C0026
+        static void resolutionMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
+        {
+            std::vector<Resolution> resolutions = getFullscreenResolutions();
+
+            Widget dropdown = w->widgets[Widx::display_resolution];
+            Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->getColour(WindowColour::secondary), resolutions.size(), 0x80);
+
+            auto& cfg = Config::get();
+            for (size_t i = 0; i < resolutions.size(); i++)
+            {
+                Dropdown::add(i, StringIds::dropdown_stringid, { StringIds::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
+                if (cfg.display.fullscreenResolution.width == resolutions[i].width && cfg.display.fullscreenResolution.height == resolutions[i].height)
+                {
+                    Dropdown::setItemSelected((int16_t)i);
+                }
+            }
+        }
+
+        // 0x004C00F4
+        static void resolutionDropdown([[maybe_unused]] Window* w, int16_t index)
+        {
+            if (index == -1)
+            {
+                return;
+            }
+            std::vector<Resolution> resolutions = getFullscreenResolutions();
+            Ui::setDisplayMode(Config::ScreenMode::fullscreen, { resolutions[index].width, resolutions[index].height });
+        }
+
+#pragma mark -
+
+        static void displayScaleMouseDown([[maybe_unused]] Window* w, [[maybe_unused]] WidgetIndex_t wi, float adjust_by)
+        {
+            OpenLoco::Ui::adjustWindowScale(adjust_by);
+        }
+
+        // 0x004BFBB7
+        static void onMouseDown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        {
+            switch (wi)
+            {
+                case Widx::screen_mode_btn:
+                    screenModeMouseDown(&w, wi);
+                    break;
+                case Widx::display_resolution_btn:
+                    resolutionMouseDown(&w, wi);
+                    break;
+                case Widx::display_scale_down_btn:
+                    displayScaleMouseDown(&w, wi, -OpenLoco::Ui::ScaleFactor::step);
+                    break;
+                case Widx::display_scale_up_btn:
+                    displayScaleMouseDown(&w, wi, OpenLoco::Ui::ScaleFactor::step);
+                    break;
+            }
+        }
+
+        // 0x004BFBE8
+        static void onDropdown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id, int16_t item_index)
+        {
+            switch (wi)
+            {
+                case Widx::screen_mode_btn:
+                    screenModeDropdown(&w, item_index);
+                    break;
+                case Widx::display_resolution_btn:
+                    resolutionDropdown(&w, item_index);
+                    break;
+            }
+        }
+
+        // 0x004C01F5
+        static void onUpdate(Window& w)
+        {
+            w.frameNo += 1;
+            w.callPrepareDraw();
+            WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
+        }
+
+        // 0x004BFA04
+        static void prepareDraw(Window& w)
+        {
+            assert(w.currentTab == Common::tab::display);
+
+            w.activatedWidgets &= ~Common::tabWidgets;
+            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
+
+            w.widgets[Common::Widx::frame].right = w.width - 1;
+            w.widgets[Common::Widx::frame].bottom = w.height - 1;
+            w.widgets[Common::Widx::panel].right = w.width - 1;
+            w.widgets[Common::Widx::panel].bottom = w.height - 1;
+            w.widgets[Common::Widx::caption].right = w.width - 2;
+            w.widgets[Common::Widx::close_button].left = w.width - 15;
+            w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
+
+            StringId screenModeStringId = StringIds::empty;
+            switch (Config::get().display.mode)
+            {
+                case Config::ScreenMode::window:
+                    screenModeStringId = StringIds::options_mode_windowed;
+                    break;
+                case Config::ScreenMode::fullscreen:
+                    screenModeStringId = StringIds::options_mode_fullscreen;
+                    break;
+                case Config::ScreenMode::fullscreenBorderless:
+                    screenModeStringId = StringIds::options_mode_fullscreen_window;
+                    break;
+            }
+            w.widgets[Widx::screen_mode].text = screenModeStringId;
+
+            // Resolution.
+            {
+                auto args = FormatArguments(w.widgets[Widx::display_resolution].textArgs);
+                auto& resolution = Config::get().display.fullscreenResolution;
+                args.push<uint16_t>(resolution.width);
+                args.push<uint16_t>(resolution.height);
+            }
+
+            // Scale.
+            {
+                auto args = FormatArguments(w.widgets[Widx::display_scale].textArgs);
+                args.push<int32_t>(Config::get().scaleFactor * 100);
+            }
+
+            w.activatedWidgets &= ~(1ULL << Widx::show_fps);
+            if (Config::get().showFPS)
+            {
+                w.activatedWidgets |= (1ULL << Widx::show_fps);
+            }
+
+            w.activatedWidgets &= ~(1ULL << Widx::uncap_fps);
+            if (Config::get().uncapFPS)
+            {
+                w.activatedWidgets |= (1ULL << Widx::uncap_fps);
+            }
+
+            if (Config::get().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)
+            {
+                w.disabledWidgets |= (1ULL << Widx::display_scale_down_btn);
+            }
+            else
+            {
+                w.disabledWidgets &= ~(1ULL << Widx::display_scale_down_btn);
+            }
+
+            if (Config::get().scaleFactor >= OpenLoco::Ui::ScaleFactor::max)
+            {
+                w.disabledWidgets |= (1ULL << Widx::display_scale_up_btn);
+            }
+            else
+            {
+                w.disabledWidgets &= ~(1ULL << Widx::display_scale_up_btn);
+            }
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+            screenModeToggleEnabled(&w);
+#endif
+
+            sub_4C13BE(&w);
+
+            Common::prepareDraw(w);
+        }
+
+        // 0x004BFAF9
+        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
+        {
+            // Draw widgets.
+            w.draw(drawingCtx);
+        }
+
+        static void applyScreenModeRestrictions(Window* w)
+        {
+            if (Config::get().display.mode != Config::ScreenMode::fullscreen)
+            {
+                w->disabledWidgets = (1ULL << Display::Widx::display_resolution) | (1ULL << Display::Widx::display_resolution_btn);
+            }
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+            Display::screenModeToggleEnabled(w);
+#else
+            w->disabledWidgets |= (1ULL << Display::Widx::screen_mode)
+                | (1ULL << Display::Widx::screen_mode_btn)
+                | (1ULL << Display::Widx::display_resolution)
+                | (1ULL << Display::Widx::display_resolution_btn);
+#endif
+        }
+
+        static constexpr WindowEventList kEvents = {
+            .onClose = Common::onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
+        {
+            return kEvents;
+        }
+    }
+
+    namespace Rendering
+    {
+        static constexpr Ui::Size32 kWindowSize = { 400, 166 };
+
+        namespace Widx
+        {
+            enum
+            {
+                frame_map_rendering = Common::Widx::tab_miscellaneous + 1,
+                vehicles_min_scale_label,
+                vehicles_min_scale,
+                vehicles_min_scale_btn,
+                station_names_min_scale_label,
+                station_names_min_scale,
+                station_names_min_scale_btn,
+                construction_marker_label,
+                construction_marker,
+                construction_marker_btn,
+                landscape_smoothing,
+                gridlines_on_landscape,
+                cash_popup_rendering,
+            };
+        }
+
+        static constexpr auto _widgets = makeWidgets(
+            Common::makeCommonWidgets(kWindowSize, StringIds::title_options_rendering),
+            Widgets::GroupBox({ 4, 49 }, { 392, 112 }, WindowColour::secondary, StringIds::frame_map_rendering),
+
+            Widgets::Label({ 10, 63 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::vehicles_min_scale),
+            Widgets::dropdownWidgets({ 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
+
+            Widgets::Label({ 10, 79 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::station_names_min_scale),
+            Widgets::dropdownWidgets({ 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
+
+            Widgets::Label({ 10, 95 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::construction_marker),
+            Widgets::dropdownWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+
+            Widgets::Checkbox({ 10, 110 }, { 346, 12 }, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
+            Widgets::Checkbox({ 10, 126 }, { 346, 12 }, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
+            Widgets::Checkbox({ 10, 142 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering)
+
+        );
+
+        // 0x004BFB8C
+        static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
+            switch (wi)
+            {
                 case Widx::landscape_smoothing:
                 {
                     auto& cfg = OpenLoco::Config::get();
@@ -493,103 +817,11 @@ namespace OpenLoco::Ui::Windows::Options
             Gfx::invalidateScreen();
         }
 
-#if !(defined(__APPLE__) && defined(__MACH__))
-        static void screenModeToggleEnabled(Window* w)
-        {
-            if (Config::get().display.mode == Config::ScreenMode::fullscreen)
-            {
-                w->disabledWidgets &= ~(1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
-                w->disabledWidgets &= ~((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
-            }
-            else
-            {
-                w->disabledWidgets |= ((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
-                w->disabledWidgets |= (1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
-            }
-        }
-#endif
-
-        static void screenModeMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
-        {
-            Widget dropdown = w->widgets[Widx::screen_mode];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
-
-            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen);
-            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen_window);
-
-            auto selection = static_cast<uint16_t>(Config::get().display.mode);
-            Dropdown::setItemSelected(selection);
-        }
-
-        static void screenModeDropdown([[maybe_unused]] Window* w, int16_t selection)
-        {
-            if (selection == -1)
-            {
-                return;
-            }
-
-            auto new_mode = static_cast<Config::ScreenMode>(selection);
-            if (new_mode == Config::get().display.mode)
-            {
-                return;
-            }
-
-#if !(defined(__APPLE__) && defined(__MACH__))
-            Ui::setDisplayMode(new_mode);
-#endif
-        }
-
-#pragma mark - Resolution dropdown (Widget 11)
-
-        // 0x004C0026
-        static void resolutionMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
-        {
-            std::vector<Resolution> resolutions = getFullscreenResolutions();
-
-            Widget dropdown = w->widgets[Widx::display_resolution];
-            Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->getColour(WindowColour::secondary), resolutions.size(), 0x80);
-
-            auto& cfg = Config::get();
-            for (size_t i = 0; i < resolutions.size(); i++)
-            {
-                Dropdown::add(i, StringIds::dropdown_stringid, { StringIds::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
-                if (cfg.display.fullscreenResolution.width == resolutions[i].width && cfg.display.fullscreenResolution.height == resolutions[i].height)
-                {
-                    Dropdown::setItemSelected((int16_t)i);
-                }
-            }
-        }
-
-        // 0x004C00F4
-        static void resolutionDropdown([[maybe_unused]] Window* w, int16_t index)
-        {
-            if (index == -1)
-            {
-                return;
-            }
-            std::vector<Resolution> resolutions = getFullscreenResolutions();
-            Ui::setDisplayMode(Config::ScreenMode::fullscreen, { resolutions[index].width, resolutions[index].height });
-        }
-
-#pragma mark -
-
-        static void displayScaleMouseDown([[maybe_unused]] Window* w, [[maybe_unused]] WidgetIndex_t wi, float adjust_by)
-        {
-            OpenLoco::Ui::adjustWindowScale(adjust_by);
-        }
-
         // 0x004BFBB7
         static void onMouseDown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             switch (wi)
             {
-                case Widx::screen_mode_btn:
-                    screenModeMouseDown(&w, wi);
-                    break;
-                case Widx::display_resolution_btn:
-                    resolutionMouseDown(&w, wi);
-                    break;
                 case Widx::construction_marker_btn:
                     constructionMarkerMouseDown(&w, wi);
                     break;
@@ -599,26 +831,14 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::station_names_min_scale_btn:
                     stationNamesScaleMouseDown(&w, wi);
                     break;
-                case Widx::display_scale_down_btn:
-                    displayScaleMouseDown(&w, wi, -OpenLoco::Ui::ScaleFactor::step);
-                    break;
-                case Widx::display_scale_up_btn:
-                    displayScaleMouseDown(&w, wi, OpenLoco::Ui::ScaleFactor::step);
-                    break;
             }
         }
 
         // 0x004BFBE8
-        static void onDropdown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id, int16_t item_index)
+        static void onDropdown([[maybe_unused]] Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id, int16_t item_index)
         {
             switch (wi)
             {
-                case Widx::screen_mode_btn:
-                    screenModeDropdown(&w, item_index);
-                    break;
-                case Widx::display_resolution_btn:
-                    resolutionDropdown(&w, item_index);
-                    break;
                 case Widx::construction_marker_btn:
                     constructionMarkerDropdown(item_index);
                     break;
@@ -642,7 +862,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFA04
         static void prepareDraw(Window& w)
         {
-            assert(w.currentTab == Common::tab::display);
+            assert(w.currentTab == Common::tab::rendering);
 
             w.activatedWidgets &= ~Common::tabWidgets;
             w.activatedWidgets |= 1ULL << (w.currentTab + 4);
@@ -654,35 +874,6 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::caption].right = w.width - 2;
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
-
-            StringId screenModeStringId = StringIds::empty;
-            switch (Config::get().display.mode)
-            {
-                case Config::ScreenMode::window:
-                    screenModeStringId = StringIds::options_mode_windowed;
-                    break;
-                case Config::ScreenMode::fullscreen:
-                    screenModeStringId = StringIds::options_mode_fullscreen;
-                    break;
-                case Config::ScreenMode::fullscreenBorderless:
-                    screenModeStringId = StringIds::options_mode_fullscreen_window;
-                    break;
-            }
-            w.widgets[Widx::screen_mode].text = screenModeStringId;
-
-            // Resolution.
-            {
-                auto args = FormatArguments(w.widgets[Widx::display_resolution].textArgs);
-                auto& resolution = Config::get().display.fullscreenResolution;
-                args.push<uint16_t>(resolution.width);
-                args.push<uint16_t>(resolution.height);
-            }
-
-            // Scale.
-            {
-                auto args = FormatArguments(w.widgets[Widx::display_scale].textArgs);
-                args.push<int32_t>(Config::get().scaleFactor * 100);
-            }
 
             if (Config::get().old.constructionMarker)
             {
@@ -702,18 +893,6 @@ namespace OpenLoco::Ui::Windows::Options
 
             w.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().old.vehiclesMinScale];
             w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().old.stationNamesMinScale];
-
-            w.activatedWidgets &= ~(1ULL << Widx::show_fps);
-            if (Config::get().showFPS)
-            {
-                w.activatedWidgets |= (1ULL << Widx::show_fps);
-            }
-
-            w.activatedWidgets &= ~(1ULL << Widx::uncap_fps);
-            if (Config::get().uncapFPS)
-            {
-                w.activatedWidgets |= (1ULL << Widx::uncap_fps);
-            }
 
             w.activatedWidgets &= ~(1ULL << Widx::landscape_smoothing);
             if (!Config::get().hasFlags(Config::Flags::landscapeSmoothing))
@@ -737,28 +916,6 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets &= ~(1ULL << Widx::cash_popup_rendering);
             }
 
-            if (Config::get().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)
-            {
-                w.disabledWidgets |= (1ULL << Widx::display_scale_down_btn);
-            }
-            else
-            {
-                w.disabledWidgets &= ~(1ULL << Widx::display_scale_down_btn);
-            }
-
-            if (Config::get().scaleFactor >= OpenLoco::Ui::ScaleFactor::max)
-            {
-                w.disabledWidgets |= (1ULL << Widx::display_scale_up_btn);
-            }
-            else
-            {
-                w.disabledWidgets &= ~(1ULL << Widx::display_scale_up_btn);
-            }
-
-#if !(defined(__APPLE__) && defined(__MACH__))
-            screenModeToggleEnabled(&w);
-#endif
-
             sub_4C13BE(&w);
 
             Common::prepareDraw(w);
@@ -769,23 +926,6 @@ namespace OpenLoco::Ui::Windows::Options
         {
             // Draw widgets.
             w.draw(drawingCtx);
-        }
-
-        static void applyScreenModeRestrictions(Window* w)
-        {
-            if (Config::get().display.mode != Config::ScreenMode::fullscreen)
-            {
-                w->disabledWidgets = (1ULL << Display::Widx::display_resolution) | (1ULL << Display::Widx::display_resolution_btn);
-            }
-
-#if !(defined(__APPLE__) && defined(__MACH__))
-            Display::screenModeToggleEnabled(w);
-#else
-            w->disabledWidgets |= (1ULL << Display::Widx::screen_mode)
-                | (1ULL << Display::Widx::screen_mode_btn)
-                | (1ULL << Display::Widx::display_resolution)
-                | (1ULL << Display::Widx::display_resolution_btn);
-#endif
         }
 
         static constexpr WindowEventList kEvents = {
@@ -881,22 +1021,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::play_title_music:
                     playTitleMusicOnMouseUp(&w);
                     return;
@@ -1127,22 +1258,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::music_controls_stop:
                     stopMusic(&w);
                     return;
@@ -1463,7 +1585,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets &= ~(1ULL << Widx::preferred_currency_always);
             }
 
-            if (Config::get().usePreferredCurrencyAlways)
+            if (Config::get().usePreferredCurrencyAlways || SceneManager::isTitleMode())
             {
                 w.disabledWidgets |= (1ULL << Widx::currency);
                 w.disabledWidgets |= (1ULL << Widx::currency_btn);
@@ -1488,22 +1610,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::preferred_currency_for_new_games:
                     preferredCurrencyNewGameMouseUp(&w);
                     return;
@@ -1911,22 +2024,13 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C114A
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::customize_keys:
                     openKeyboardShortcuts();
                     break;
@@ -2206,22 +2310,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::usePreferredOwnerName:
                     usePreferredOwnerNameMouseUp(&w);
                     break;
@@ -2581,22 +2676,13 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C12D2
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
+            if (Common::onMouseUp(w, wi, id))
+            {
+                return;
+            }
+
             switch (wi)
             {
-                case Common::Widx::close_button:
-                    WindowManager::close(&w);
-                    return;
-
-                case Common::Widx::tab_display:
-                case Common::Widx::tab_sound:
-                case Common::Widx::tab_music:
-                case Common::Widx::tab_regional:
-                case Common::Widx::tab_controls:
-                case Common::Widx::tab_company:
-                case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(&w, wi);
-                    return;
-
                 case Widx::enableCheatsToolbarButton:
                     enableCheatsToolbarButtonMouseUp(&w);
                     break;
@@ -2840,14 +2926,15 @@ namespace OpenLoco::Ui::Windows::Options
     };
 
     // clang-format off
-    static TabInformation tabInformationByTabOffset[] = {
-        { Display::_widgets,  Display::getEvents(),  Display::kWindowSize  },
-        { Sound::_widgets,    Sound::getEvents(),    Sound::kWindowSize    },
-        { Music::_widgets,    Music::getEvents(),    Music::kWindowSize    },
-        { Regional::_widgets, Regional::getEvents(), Regional::kWindowSize },
-        { Controls::_widgets, Controls::getEvents(), Controls::kWindowSize },
-        { Company::_widgets,  Company::getEvents(),  Company::kWindowSize  },
-        { Misc::_widgets,     Misc::getEvents(),     Misc::kWindowSize     },
+    static TabInformation kTabInformationByTabOffset[] = {
+        { Display::_widgets,   Display::getEvents(),   Display::kWindowSize  },
+        { Rendering::_widgets, Rendering::getEvents(), Rendering::kWindowSize  },
+        { Sound::_widgets,     Sound::getEvents(),     Sound::kWindowSize    },
+        { Music::_widgets,     Music::getEvents(),     Music::kWindowSize    },
+        { Regional::_widgets,  Regional::getEvents(),  Regional::kWindowSize },
+        { Controls::_widgets,  Controls::getEvents(),  Controls::kWindowSize },
+        { Company::_widgets,   Company::getEvents(),   Company::kWindowSize  },
+        { Misc::_widgets,      Misc::getEvents(),      Misc::kWindowSize     },
     };
     // clang-format on
 
@@ -2866,7 +2953,7 @@ namespace OpenLoco::Ui::Windows::Options
         w->rowHover = -1;
         w->viewportRemove(0);
 
-        auto& tabInfo = tabInformationByTabOffset[w->currentTab];
+        auto& tabInfo = kTabInformationByTabOffset[w->currentTab];
         w->eventHandlers = &tabInfo.events;
         w->setWidgets(tabInfo.widgets);
         w->invalidate();

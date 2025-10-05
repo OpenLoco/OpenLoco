@@ -294,7 +294,7 @@ namespace OpenLoco::GameCommands
             newBody->var_38 |= Flags38::jacobsBogieAvailable;
         }
 
-        if (bodyNumber + 1 == vehObject.var_04 && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieRear))
+        if (bodyNumber + 1 == vehObject.numCarComponents && vehObject.hasFlags(VehicleObjectFlags::jacobsBogieRear))
         {
             newBody->var_38 |= Flags38::jacobsBogieAvailable;
         }
@@ -341,7 +341,7 @@ namespace OpenLoco::GameCommands
         }
 
         VehicleBogie* newCarStart = nullptr;
-        for (auto bodyNumber = 0; bodyNumber < vehObject->var_04; ++bodyNumber)
+        for (auto bodyNumber = 0; bodyNumber < vehObject->numCarComponents; ++bodyNumber)
         {
             auto* const firstBogie = createFirstBogie(head->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
             lastVeh = firstBogie;
@@ -592,7 +592,7 @@ namespace OpenLoco::GameCommands
     // 0x004AE6DE
     static void updateWholeVehicle(VehicleHead* const head)
     {
-        head->sub_4AF7A4();
+        head->autoLayoutTrain();
         auto company = CompanyManager::get(getUpdatingCompanyId());
         company->recalculateTransportCounts();
 

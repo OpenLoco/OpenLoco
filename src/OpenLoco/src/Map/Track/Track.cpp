@@ -8,27 +8,9 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "TrackData.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World::Track
 {
-    void LegacyTrackConnections::push_back(uint16_t value)
-    {
-        if (size + 1 < std::size(data))
-        {
-            data[size++] = value;
-            data[size] = 0xFFFF;
-        }
-    }
-
-    static loco_global<uint8_t, 0x0112C2EE> _112C2EE;
-    static loco_global<uint8_t, 0x0112C2ED> _112C2ED;
-    static loco_global<StationId, 0x01135FAE> _1135FAE;
-    static loco_global<uint16_t, 0x01136087> _1136087;
-    static loco_global<uint8_t, 0x0113607D> _113607D;
-
     // Part of 0x00478895
     // For 0x00478895 call this followed by getRoadConnections
     ConnectionEnd getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
@@ -45,7 +27,6 @@ namespace OpenLoco::World::Track
         RoadConnections result{};
 
         uint8_t baseZ = nextTrackPos.z / 4;
-        _112C2EE = nextRotation;
 
         const auto tile = World::TileManager::get(nextTrackPos);
         for (const auto& el : tile)
@@ -220,29 +201,6 @@ namespace OpenLoco::World::Track
         return ConnectionEnd{ pos + trackData.pos, trackData.rotationEnd };
     }
 
-    void toLegacyConnections(const TrackConnections& src, LegacyTrackConnections& data)
-    {
-        for (auto& c : src.connections)
-        {
-            data.push_back(c);
-        }
-        data.data[data.size] = 0xFFFF;
-        _1135FAE = src.stationId;
-        _113607D = src.hasLevelCrossing ? 1 : 0;
-    }
-
-    void toLegacyConnections(const RoadConnections& src, LegacyTrackConnections& data)
-    {
-        for (auto& c : src.connections)
-        {
-            data.push_back(c);
-        }
-        data.data[data.size] = 0xFFFF;
-        _1135FAE = src.stationId;
-        _112C2ED = src.roadObjectId;
-        _1136087 = src.stationObjectId;
-    }
-
     constexpr uint16_t kNullTad = 0xFFFFU;
 
     static uint16_t getElTrackConnection(const World::TrackElement& elTrack, uint8_t nextRotation, uint8_t baseZ, uint8_t queryMods)
@@ -317,7 +275,7 @@ namespace OpenLoco::World::Track
             {
                 if (!elSignal->isAiAllocated() && !elSignal->isGhost())
                 {
-                    trackAndDirection2 |= (1 << 15);
+                    trackAndDirection2 |= AdditionalTaDFlags::hasSignal;
                 }
             }
         }

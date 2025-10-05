@@ -84,7 +84,7 @@ namespace OpenLoco::Ui
         void (*toolUp)(Window&, const WidgetIndex_t, WidgetId, const int16_t, const int16_t) = nullptr;
         void (*onToolAbort)(Window&, const WidgetIndex_t, WidgetId) = nullptr;
         Ui::CursorId (*toolCursor)(Window&, const int16_t x, const int16_t y, const Ui::CursorId, bool&) = nullptr;
-        void (*getScrollSize)(Window&, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight) = nullptr;
+        void (*getScrollSize)(Window&, uint32_t scrollIndex, int32_t& scrollWidth, int32_t& scrollHeight) = nullptr;
         void (*scrollMouseDown)(Ui::Window&, int16_t x, int16_t y, uint8_t scrollIndex) = nullptr;
         void (*scrollMouseDrag)(Ui::Window&, int16_t x, int16_t y, uint8_t scrollIndex) = nullptr;
         void (*scrollMouseOver)(Ui::Window& window, int16_t x, int16_t y, uint8_t scrollIndex) = nullptr;
@@ -185,6 +185,8 @@ namespace OpenLoco::Ui
         };
         Ui::Viewport* viewports[2] = { nullptr, nullptr };
         SavedView savedView;
+        int16_t expandContentCounter = 0; // Used to delay content expand when hovering over expandable scroll content
+        bool showTownNames = false;       // Map window only
         WindowFlags flags;
         WindowNumber_t number = 0;
         int16_t x;
@@ -335,16 +337,12 @@ namespace OpenLoco::Ui
         void initScrollWidgets();
         int8_t getScrollDataIndex(WidgetIndex_t index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabledWidgets);
-        void viewportCentreMain();
+        void viewportCentreMain() const;
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const World::Pos3& loc);
         void viewportCentreTileAroundCursor(int16_t mapX, int16_t mapY, int16_t offsetX, int16_t offsetY);
-        void viewportFocusOnEntity(EntityId targetEntity);
-        bool viewportIsFocusedOnEntity(EntityId targetEntity) const;
-        bool viewportIsFocusedOnAnyEntity() const;
-        void viewportUnfocusFromEntity();
         void viewportZoomSet(int8_t zoomLevel, bool toCursor);
         void viewportZoomIn(bool toCursor);
         void viewportZoomOut(bool toCursor);
@@ -376,7 +374,7 @@ namespace OpenLoco::Ui
         void callToolUp(WidgetIndex_t widgetIndex, WidgetId id, const int16_t xPos, const int16_t yPos);                  // 13
         void callToolAbort(WidgetIndex_t widgetIndex, WidgetId id);                                                       // 14
         Ui::CursorId callToolCursor(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out);                        // 15
-        void callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);                      // 16
+        void callGetScrollSize(uint32_t scrollIndex, int32_t& scrollWidth, int32_t& scrollHeight);                        // 16
         void callScrollMouseDown(int16_t x, int16_t y, uint8_t scrollIndex);                                              // 17
         void callScrollMouseDrag(int16_t x, int16_t y, uint8_t scrollIndex);                                              // 18
         void callScrollMouseOver(int16_t x, int16_t y, uint8_t scrollIndex);                                              // 19

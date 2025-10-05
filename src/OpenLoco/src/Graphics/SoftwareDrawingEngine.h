@@ -15,19 +15,14 @@ struct SDL_Renderer;
 struct SDL_Texture;
 struct SDL_PixelFormat;
 
+namespace OpenLoco::Ui
+{
+    struct ScreenInfo;
+}
+
 namespace OpenLoco::Gfx
 {
     struct RenderTarget;
-
-#pragma pack(push, 1)
-    struct PaletteEntry
-    {
-        uint8_t b;
-        uint8_t g;
-        uint8_t r;
-        uint8_t a;
-    };
-#pragma pack(pop)
 
     class SoftwareDrawingEngine
     {
@@ -68,6 +63,8 @@ namespace OpenLoco::Gfx
             int16_t height,
             int16_t srcX,
             int16_t srcY);
+
+        const Ui::ScreenInfo& getScreenInfo() const;
 
     private:
         void renderDirtyRegions();

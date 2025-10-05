@@ -254,7 +254,7 @@ namespace OpenLoco::Config
 
         // Regional
         _newConfig.language = config["language"].as<std::string>("en-GB");
-        _newConfig.preferredCurrency = config["language"].as<ObjectHeader>(kDefaultPreferredCurrency);
+        _newConfig.preferredCurrency = config["preferredCurrency"].as<ObjectHeader>(kDefaultPreferredCurrency);
         _newConfig.usePreferredCurrencyForNewGames = config["usePreferredCurrencyForNewGames"].as<bool>(false);
         _newConfig.usePreferredCurrencyAlways = config["usePreferredCurrencyAlways"].as<bool>(false);
 
@@ -434,20 +434,5 @@ namespace OpenLoco::Config
         }
 
         write();
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00441BB8,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto& newConfig = get();
-                // Copy the old config into the new config as callers will be modifying the old memory
-                newConfig.old = getLegacy();
-                write();
-                regs = backup;
-                return 0;
-            });
     }
 }

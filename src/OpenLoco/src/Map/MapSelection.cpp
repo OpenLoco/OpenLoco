@@ -16,8 +16,8 @@ namespace OpenLoco::World
     static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
     static loco_global<MapSelectionType, 0x00F2448E> _word_F2448E;
 
-    constexpr uint16_t kMapSelectedTilesSize = 300;
-    static loco_global<Pos2[kMapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
+    constexpr uint16_t kMapSelectedFreeFormTilesSize = 300;
+    sfl::static_vector<Pos2, kMapSelectedFreeFormTilesSize> _mapSelectedFreeFormTiles;
 
     // TODO: Return std::optional
     uint16_t setMapSelectionTiles(const Pos2& loc, const MapSelectionType selectionType, uint16_t toolSizeA)
@@ -153,45 +153,43 @@ namespace OpenLoco::World
         }
     }
 
+    void resetMapSelectionFreeFormTiles()
+    {
+        _mapSelectedFreeFormTiles.clear();
+    }
+
+    void addMapSelectionFreeFormTile(const Pos2& pos)
+    {
+        _mapSelectedFreeFormTiles.push_back(pos);
+    }
+
+    std::span<const Pos2> getMapSelectionFreeFormTiles()
+    {
+        return _mapSelectedFreeFormTiles;
+    }
+
     // 0x0046112C
-    void mapInvalidateMapSelectionTiles()
+    void mapInvalidateMapSelectionFreeFormTiles()
     {
         if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
         {
             return;
         }
 
-        for (uint16_t index = 0; index < kMapSelectedTilesSize; ++index)
+        for (const auto& position : _mapSelectedFreeFormTiles)
         {
-            auto& position = _mapSelectedTiles[index];
-            if (position.x == -1)
-            {
-                break;
-            }
             TileManager::mapInvalidateTileFull(position);
         }
     }
 
-    bool isWithinMapSelectionTiles(const Pos2 pos)
+    bool isWithinMapSelectionFreeFormTiles(const Pos2 pos)
     {
         if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
         {
             return false;
         }
 
-        for (uint16_t index = 0; index < kMapSelectedTilesSize; ++index)
-        {
-            auto& position = _mapSelectedTiles[index];
-            if (position.x == -1)
-            {
-                return false;
-            }
-            if (position == pos)
-            {
-                return true;
-            }
-        }
-        return false;
+        return std::ranges::find(_mapSelectedFreeFormTiles, pos) != _mapSelectedFreeFormTiles.end();
     }
 
     void setMapSelectionArea(const Pos2& locA, const Pos2& locB)

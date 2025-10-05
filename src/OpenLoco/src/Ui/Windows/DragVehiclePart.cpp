@@ -2,6 +2,7 @@
 #include "Graphics/RenderTarget.h"
 #include "Input.h"
 #include "OpenLoco.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
@@ -39,7 +40,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         WindowManager::invalidate(WindowType::vehicle, enumValue(car.front->head));
 
         uint16_t width = getWidthVehicleInline(car);
-        auto pos = Input::getTooltipMouseLocation();
+        auto pos = Ui::ToolTip::getTooltipMouseLocation();
         pos.y -= 30;
         pos.x -= width / 2;
         Ui::Size32 size = { width, 60 };
@@ -48,7 +49,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         self->setWidgets(widgets);
         self->widgets[widx::frame].right = width - 1;
 
-        Input::windowPositionBegin(Input::getTooltipMouseLocation().x, Input::getTooltipMouseLocation().y, self, widx::frame);
+        Input::windowPositionBegin(Ui::ToolTip::getTooltipMouseLocation().x, Ui::ToolTip::getTooltipMouseLocation().y, self, widx::frame);
     }
 
     // 0x004B62FE

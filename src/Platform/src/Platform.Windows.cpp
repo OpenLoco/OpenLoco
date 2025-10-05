@@ -27,6 +27,8 @@
 
 namespace OpenLoco::Platform
 {
+    static constexpr auto kSingleInstanceMutexName = L"OpenLocoMutex";
+
     uint32_t getTime()
     {
         return timeGetTime();
@@ -293,6 +295,25 @@ namespace OpenLoco::Platform
         }
         LocalFree(reinterpret_cast<HLOCAL>(argw));
         return argvStrs;
+    }
+
+    // 0x00407FFD
+    bool lockSingleInstance()
+    {
+        // Check if operating system mutex exists
+        HANDLE mutex = CreateMutexW(nullptr, FALSE, kSingleInstanceMutexName);
+        if (mutex == nullptr)
+        {
+            std::cerr << "unable to create mutex";
+            return true;
+        }
+        else if (GetLastError() == ERROR_ALREADY_EXISTS)
+        {
+            // Already running
+            CloseHandle(mutex);
+            return false;
+        }
+        return true;
     }
 }
 

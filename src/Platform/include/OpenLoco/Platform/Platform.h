@@ -22,4 +22,8 @@ namespace OpenLoco::Platform
     bool hasTerminalVT100Support();
     bool enableVT100TerminalMode();
     std::vector<std::string> getCmdLineVector(int argc, const char** argv);
+
+    // Prevents multiple instances of OpenLoco running at the same time
+    // returns true if this is the only instance
+    bool lockSingleInstance();
 }

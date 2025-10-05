@@ -2413,3 +2413,5 @@ strings:
   2358: "Toggle paint tool"
   2359: "{SMALLFONT}{COLOUR BLACK}Repaint {POP16}{STRINGID} vehicles{NEWLINE}shift+click to paint all{NEWLINE}ctrl+click to paint sub-vehicles"
   2360: "Paint all connected"
+  2361: "Options - Rendering"
+  2362: "{SMALLFONT}{COLOUR BLACK}Rendering options"

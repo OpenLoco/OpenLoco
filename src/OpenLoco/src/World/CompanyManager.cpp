@@ -610,7 +610,7 @@ namespace OpenLoco::CompanyManager
                 sfl::static_vector<uint8_t, 32> availableNamePrefixes;
                 for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->var_04 & (1U << j))
+                    if (competitorObj->availablePlayStyles & (1U << j))
                     {
                         availableNamePrefixes.push_back(j);
                     }
@@ -701,7 +701,7 @@ namespace OpenLoco::CompanyManager
             }
 
             const auto stringId = kCompanyAiPlaystyleString[companyPlaystyle];
-            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->lastName);
+            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->availableNamePrefixes);
             if (company->aiPlaystyleTownId != 0xFFU)
             {
                 args.push(TownManager::get(static_cast<TownId>(company->aiPlaystyleTownId))->name);
@@ -1252,7 +1252,7 @@ namespace OpenLoco::CompanyManager
 
         // Temporarily store the preferred name in buffer string 2039.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(buffer_2039, Config::get().old.preferredName, 256);
+        strncpy(buffer_2039, Config::get().preferredOwnerName.c_str(), 256);
 
         // Prepare '{NAME} Transport' in a buffer.
         {

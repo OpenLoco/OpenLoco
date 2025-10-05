@@ -102,7 +102,10 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Industries/RemoveIndustry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Industries/RenameIndustry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoad.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoadMod.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoadStation.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/RemoveRoad.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/RemoveRoadMod.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/RemoveRoadStation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/ChangeLandMaterial.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/ClearLand.cpp"
@@ -686,6 +689,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ScrollView.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/TextInput.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ToolManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ToolTip.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ViewportInteraction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ButtonWidget.h"
@@ -783,6 +787,7 @@ target_link_libraries(OpenLoco
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
+    ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
 
@@ -814,10 +819,6 @@ elseif (MSVC)
             _USE_MATH_DEFINES
             SDL_MAIN_HANDLED
             _WINSOCK_DEPRECATED_NO_WARNINGS)
-
-    target_link_libraries(OpenLoco
-        ZLIB::ZLIB) # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
-
 else ()
     target_compile_definitions(OpenLoco
         PRIVATE

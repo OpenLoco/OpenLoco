@@ -17,6 +17,7 @@
 #include "OpenLoco.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/DropdownWidget.h"
@@ -1024,9 +1025,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C265B
-    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = self.var_83C * self.rowHeight;
+        scrollHeight = self.var_83C * self.rowHeight;
     }
 
     // 0x004C266D
@@ -1049,7 +1050,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C26A4
     static void onScrollMouseOver(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
-        Input::setTooltipTimeout(2000);
+        Ui::ToolTip::setTooltipTimeout(2000);
 
         self.flags &= ~WindowFlags::notScrollView;
 

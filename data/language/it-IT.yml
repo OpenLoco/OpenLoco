@@ -2097,7 +2097,7 @@ strings:
   2042: "Dati non trovati per il seguente oggetto: "
   2043: Spazio insufficiente per le immagini
   2044: Troppi oggetti di questo tipo selezionati
-  2045: "Prima bisogna selezionare il seguente oggetto: "
+  2045: "Selezionare prima il seguente oggetto: "
   2046: Questo oggetto è attualmente in uso
   2047: Questo oggetto è richiesto da un altro
   2048: Questo oggetto è sempre richiesto
@@ -2143,33 +2143,33 @@ strings:
   2088: "Mancano i dati per un oggetto, ID: "
   2089: Includi nei salvataggi gli oggetti aggiuntivi
   2090: "{SMALLFONT}{COLOUR BLACK}Permette di includere i dati richiesti da eventuali oggetti aggiuntivi (non presenti nel gioco principale) nei file dei salvataggi o degli scenari, in modo che siano utilizzabili anche da chi non possiede tali oggetti aggiuntivi"
-  2091: Bisogna selezionare almeno un tipo generico di strada a doppio senso
-  2092: Bisogna selezionare un tipo di ponteggio
+  2091: Richiesto almeno un tipo generico di strada a doppio senso
+  2092: Richiesto un tipo di ponteggio
   2093: Avanzata
   2094: "{SMALLFONT}{COLOUR BLACK}Consenti una selezione più avanzata dei singoli oggetti"
   2095: "{COLOUR WHITE}{BIGFONT}£"
   2096: Nuovi oggetti installati con successo
-  2097: Bisogna selezionare almeno uno stabilimento
-  2098: Bisogna selezionare almeno un edificio cittadino
-  2099: Bisogna selezionare un tipo di edificio per la sede centrale dell'azienda
-  2100: Bisogna selezionare un solo tipo di edificio per la sede centrale dell'azienda
-  2101: Bisogna selezionare un tipo di interfaccia
-  2102: Bisogna selezionare almeno un tipo di veicolo
-  2103: Bisogna selezionare almeno un tipo di terreno
-  2104: Bisogna selezionare un tipo di valuta
-  2105: Bisogna selezionare un tipo d'acqua
-  2106: Bisogna selezionare uno stile per il nome delle città
-  2107: Bisogna selezionare almeno un tipo di passaggio a livello
-  2108: Bisogna selezionare un tipo di lampioni
-  2109: Bisogna selezionare un tipo di neve (anche se non serve)
-  2110: Bisogna selezionare un tipo di clima
-  2111: Bisogna selezionare un tipo di dati per generare la mappa
-  2112: Bisogna selezionare un tipo di regione
+  2097: Richiesto almeno uno stabilimento
+  2098: Richiesto almeno un edificio cittadino
+  2099: Richiesta tipologia edificio per la sede aziendale
+  2100: Richiesto un sola tipologia edificio per la sede aziendale
+  2101: Richiesto un tipo per interfaccia
+  2102: Richiesto almeno un tipo di veicolo
+  2103: Richiesto almeno un tipo di terreno
+  2104: Richiesto un tipo di valuta
+  2105: Richiesto un tipo d'acqua
+  2106: Richiesto uno stile per i nomi delle città
+  2107: Richiesto almeno un tipo di passaggio a livello
+  2108: Richiesto un tipo di lampioni
+  2109: Richiesto un tipo di neve (anche se non serve)
+  2110: Richiesto un tipo di clima
+  2111: Richiesto un tipo di dati per generare la mappa
+  2112: Richiesta tipologia di regione
   2113: mph
   2114: km/h
   2115: "ora:"
   2116: "ore:"
-  2117: minuti
+  2117: min
   2118: "min:"
   2119: sec
   2120: " unità"
@@ -2178,8 +2178,238 @@ strings:
   2123: CV
   2124: kW
   2125: "{COLOUR WINDOW_2}Lingua:"
-
+  2126: "{COLOUR WINDOW_2}Disabilita guasti ai veicoli"
   2127: "{COLOUR WINDOW_2}Modalità schermo:"
-  2128: In finestra
-  2129: A schermo intero
-  2130: A schermo intero (desktop)
+  2128: Finestra
+  2129: Schermo intero
+  2130: Schermo intero (senza bordi)
+  2131: Dispositivo audio predefinito
+  2132: "{COLOUR WINDOW_2}Fattore di scala della finestra:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_2DP}"
+  2136: "{COLOUR WINDOW_2}Zoom sulla posizione del cursore"
+  2137: "{SMALLFONT}{COLOUR BLACK}Se abilitato, lo zoom sarà centrato attorno al cursore, anziché al centro dello schermo."
+  2138: "{COLOUR WINDOW_2}Riproduci musica nella schermata iniziale"
+  2139: "Torna al menu"
+  2140: "Esci da OpenLoco"
+  2141: "{COLOUR WINDOW_2}Disabilita aziende IA"
+  2142: "{SMALLFONT}{COLOUR BLACK}Impedisce all'IA di 'pensare', rendendola inefficace.{NEWLINE}Creando nuove partite, questo impedisce la formazione di nuove aziende IA."
+  2143: "{COLOUR WINDOW_2}Numero salvataggi automatici:"
+  2144: "{COLOUR WINDOW_2}Frequenza salvataggio automatico:"
+  2145: "Mai"
+  2146: "Ogni mese"
+  2147: "Ogni {INT32} mesi"
+  2148: "{COLOUR WINDOW_2}Sorgente Heightmap:"
+  2149: Generatore originale
+  2150: Generatore Simplex
+  2151: "Modifica veicolo"
+  2152: "Clona veicolo"
+  2153: "Impossibile clonare il veicolo..."
+  2154: "Centra la schermata sul veicolo"
+  2155: "Segui il veicolo sulla schermata"
+  2156: "Abilita il menu trucchi/debug"
+  2157: "{SMALLFONT}{COLOUR BLACK}Questo aggiunge un pulsante extra alla barra degli strumenti, permettendo un accesso facile ai trucchi e opzioni di debug."
+  2158: "Abilita modalità sandbox"
+  2159: "Consenti guida manuale"
+  2160: "Consenti costruzione durante la pausa"
+  2161: "Mostra contatore FPS"
+  2162: "{SMALLFONT}{COLOUR BLACK}Mostra un contatore nella parte superiore dello schermo, indicando il numero di fotogrammi disegnati per secondo."
+  2163: "Rimuovi limitatore fotogrammi"
+  2164: "{SMALLFONT}{COLOUR BLACK}Rimuove la restrizione di rendering a 40Hz."
+  2165: "Hardware"
+  2166: "Rendering mappa"
+  2167: "Ispettore caselle"
+  2168: "{SMALLFONT}{COLOUR BLACK}Attiva per selezionare una casella sulla mappa da ispezionare."
+  2169: "Superficie"
+  2170: "Binario"
+  2171: "Stazione"
+  2172: "Segnale"
+  2173: "Edificio"
+  2174: "Albero"
+  2175: "Muro"
+  2176: "Strada"
+  2177: "Stabilimento"
+  2178: "{COLOUR WINDOW_2} {STRINGID} ({STRINGID})"
+  2179: "{COLOUR WINDOW_2} {STRINGID} - {STRINGID} ({STRINGID})"
+  2180: "X:"
+  2181: "Y:"
+  2182: "{COLOUR WINDOW_2}{INT16}"
+  2183: "Dati elemento casella"
+  2184: "Trucchi"
+  2185: "Trucchi finanziari"
+  2186: "Trucchi azienda"
+  2187: "Trucchi veicoli"
+  2188: "Trucchi città"
+  2189: "Cancella prestito"
+  2190: "Cancella"
+  2191: "{COLOUR BLACK}{CURRENCY32}"
+  2192: "Seleziona azienda target"
+  2193: "Seleziona trucco da applicare"
+  2194: "Controlla questa azienda"
+  2195: "Acquisisci tutti i beni dell'azienda"
+  2196: "Attiva/disattiva bancarotta"
+  2197: "Attiva/disattiva stato di prigione"
+  2198: "Aumenta fondi"
+  2199: "{COLOUR WINDOW_2}Importo:"
+  2200: "Aggiungi"
+  2201: "Affidabilità veicolo"
+  2202: "Imposta tutti a zero (illimitato)"
+  2203: "Imposta tutti a cento (rinnovo completo)"
+  2204: "Imposta valutazioni azienda"
+  2205: "-10% ovunque"
+  2206: "+10% ovunque"
+  2207: "Minimo ovunque"
+  2208: "Massimo ovunque"
+  2209: "Tutti i veicoli"
+  2210: "Fermando alla stazione"
+  2211: "Trasportando merci"
+  2212: "{MOVE_X 10}Trasporta {STRINGID} {SPRITE}"
+  2213: "»{MOVE_X 10}Trasporta {STRINGID} {SPRITE}"
+  2214: "Nessuna stazione selezionata"
+  2215: "Nessun tipo di merci selezionato"
+  2216: "{SMALLFONT}{COLOUR BLACK}Apri i dettagli della stazione per filtrare per stazione"
+  2217: "{SMALLFONT}{COLOUR BLACK}Seleziona un tipo di merci dall'elenco di quelle disponibili"
+  2218: "Costruzione: Tab precedente"
+  2219: "Costruzione: Tab successiva"
+  2220: "Costruzione: Pezzo binario precedente"
+  2221: "Costruzione: Pezzo binario successivo"
+  2222: "Costruzione: Pendenza precedente"
+  2223: "Costruzione: Pendenza successiva"
+  2224: "Costruzione: Costruisci alla posizione corrente"
+  2225: "Costruzione: Rimuovi alla posizione corrente"
+  2226: "Costruzione: Seleziona posizione"
+  2227: "Treni cambiano direzione ai segnali"
+  2228: Auto-pagamento
+  2229: "{SMALLFONT}{COLOUR BLACK}Una volta al giorno, i tuoi fondi saranno utilizzati per ripagare il tuo prestito, se attivo."
+  2230: "{COLOUR WINDOW_2}Anno:"
+  2231: "{COLOUR WINDOW_2}Mese:"
+  2232: "{COLOUR WINDOW_2}Giorno:"
+  2233: Imposta data
+  2234: "{COLOUR BLACK}{UINT16 RAW}"
+  2235: "{COLOUR BLACK}{INT32}"
+  2236: "{COLOUR BLACK}{INT32}"
+  2237: "{DATE DMY}"
+  2238: "Velocità gioco: Normale"
+  2239: "Velocità gioco: Avanti veloce"
+  2240: "Velocità gioco: Avanti extra veloce"
+  2241: "{COLOUR WINDOW_2}Capacità: {COLOUR BLACK}{STRINGID}"
+  2242: "{NEWLINE}{COLOUR WINDOW_2} Obsoleto: {COLOUR BLACK}{UINT16 RAW}"
+  2243: "Veicolo bloccato!"
+  2244: "Mostra veicoli bloccati"
+  2245: "{SMALLFONT}{COLOUR BLACK}Se abilitato, mostrerà i veicoli obsoleti e previsti"
+  2246: "{NEWLINE}{COLOUR WINDOW_2} Proposto: {COLOUR BLACK}{UINT16 RAW}"
+  2247: "Consenti costruzione veicoli bloccati"
+  2248: "{SMALLFONT}{COLOUR BLACK}Se abilitato, consentirà la costruzione di veicoli obsoleti e previsti"
+  2249: "Finestra Costruisci Veicoli"
+  2250: "{SMALLFONT}{COLOUR BLACK}Abilita per cambiare tipo di terreno invece del livellamento"
+  2251: "Inverti trascinamento tasto destro"
+  2252: "{SMALLFONT}{COLOUR BLACK}Se abilitato, il panning della vista principale del gioco avrà movimento invertito"
+  2253: "Mostra popup denaro"
+  2254: "{SMALLFONT}{COLOUR BLACK}Attiva/disattiva visibilità dei popup denaro da costruzioni e veicoli"
+  2255: "Avvia Server"
+  2256: "Chiudi Server"
+  2257: "Disconnetti"
+  2258: "{COLOUR WINDOW_2}Lunghezza: {COLOUR BLACK}{INT32_2DP} casella/e, {INT32} carrozze"
+  2259: "{COLOUR WINDOW_2}Lunghezza: {COLOUR BLACK}{INT32_2DP} casella/e"
+  2260: "{COLOUR WINDOW_2} Lunghezza: {COLOUR BLACK}{INT32_2DP} casella/e"
+  2261: "{NEWLINE}{COLOUR WINDOW_2} Lunghezza: {COLOUR BLACK}{INT32_2DP} casella/e"
+  2262: "{NEWLINE}Lunghezza:  {INT32_2DP} casella/e"
+  2263: "{COLOUR WINDOW_2}{UINT16}/{UINT16}"
+  2264: "Screenshot gigante"
+  2265: "{COLOUR WINDOW_2} Nome file: {COLOUR BLACK}{STRINGID}"
+  2266: "Opzioni scenario"
+  2267: "Selezione oggetti"
+  2268: "Modifiche gameplay"
+  2269: "Proprietario preferito"
+  2270: "Preferenze salvataggio automatico"
+  2271: "Disabilita espansione città"
+  2272: "{SMALLFONT}{COLOUR BLACK}Se abilitato, le città non si modernizeranno o espanderanno nel tempo"
+  2273: "Completa la sfida"
+  2274: "Cancella"
+  2275: "Errore caricamento oggetti"
+  2276: "{COLOUR BLACK}Il file non può essere caricato perché alcuni degli oggetti referenziati in esso sono mancanti o corrotti. Un elenco di questi oggetti è riportato di sotto."
+  2277: "{COLOUR BLACK}ID Oggetto"
+  2278: "{COLOUR BLACK}Tipo"
+  2279: "{COLOUR BLACK}Checksum"
+  2280: "Riproduci effetti sonori per nuovi messaggi"
+  2281: "{SMALLFONT}{COLOUR BLACK}Se abilitato, i nuovi messaggi saranno accompagnati dal suono di una folla che applaude."
+  2282: "{SMALLFONT}{COLOUR BLACK}Inverti tabella ordine percorso"
+  2283: "Nome e tipo"
+  2284: "BH"
+  2285: "CH"
+  2286: "D"
+  2287: "G"
+  2288: "{SMALLFONT}{COLOUR BLACK}Nome oggetto e tipo dell'elemento casella"
+  2289: "{SMALLFONT}{COLOUR BLACK}Altezza base dell'elemento casella"
+  2290: "{SMALLFONT}{COLOUR BLACK}Altezza libera disponibile dell'elemento casella"
+  2291: "{SMALLFONT}{COLOUR BLACK}Direzione dell'elemento casella"
+  2292: "{SMALLFONT}{COLOUR BLACK}'Ghost status' dell'elemento casella"
+  2293: "Principiante"
+  2294: "Avanzato"
+  2295: "Esperto"
+  2296: "Vanilla"
+  2297: "Personalizzato"
+  2298: "Componenti"
+  2299: "Ordina per anno di progettazione"
+  2300: "Ordina per nome"
+  2301: "Non alimentato"
+  2302: "Alimentato"
+  2303: "Sbloccato"
+  2304: "Bloccato"
+  2305: "Merci"
+  2306: "Tutti i tipi di merci"
+  2307: "{MOVE_X 10}{STRINGID} {SPRITE}"
+  2308: "»{MOVE_X 10}{STRINGID} {SPRITE}"
+  2309: "{COLOUR BLACK}{STRINGID} {SPRITE}"
+  2310: "Senza merci"
+  2311: "Disabilita penalità carico veicolo"
+  2312: "{SMALLFONT}{COLOUR BLACK}Se attivato, la velocità di carico/scarico rimarrà invariata per i veicoli più lunghi della stazione"
+  2313: "Edifici trasparenti"
+  2314: "Strade trasparenti"
+  2315: "Scenari trasparenti"
+  2316: "Binari trasparenti"
+  2317: "Alberi trasparenti"
+  2318: "Attiva/disattiva edifici trasparenti"
+  2319: "Attiva/disattiva strade trasparenti"
+  2320: "Attiva/disattiva scenari trasparenti"
+  2321: "Attiva/disattiva binari trasparenti"
+  2322: "Attiva/disattiva alberi trasparenti"
+  2323: "{SMALLFONT}{COLOUR BLACK}Abilita per smussare i bordi esterni del terreno sollevato. Utile per creare montagne."
+  2324: "Comportamento veicoli/binari"
+  2325: "{SMALLFONT}{COLOUR BLACK}Opzioni azienda"
+  2326: "Opzioni - Azienda"
+  2327: "Volto azienda preferito"
+  2328: "Usa volto azienda preferito quando inizi un nuovo gioco"
+  2329: "{SMALLFONT}{COLOUR BLACK}Se selezionato, il volto azienda preferito sarà utilizzato quando si inizia un nuovo scenario."
+  2330: "{COLOUR WINDOW_2}Volto proprietario preferito: {COLOUR BLACK}{STRINGID}"
+  2331: "Seleziona volto proprietario azienda preferito"
+  2332: "{COLOUR WINDOW_2}Disabilita limite dimensione stazione"
+  2333: "{SMALLFONT}{COLOUR BLACK}Se abilitato, la lunghezza massima per le stazioni ferroviarie non è più limitata a 16 caselle. Nota che le stazioni non possono comunque occupare più di 80 caselle in totale."
+  2334: Generazione Paesaggio - Acqua
+  2335: "{SMALLFONT}{COLOUR BLACK}Opzioni generazione acqua"
+  2336: Generale
+  2337: Generatore
+  2338: "{COLOUR WINDOW_2}Oggetto collina attuale: {COLOUR BLACK}{STRINGID}"
+  2339: "{COLOUR WINDOW_2}Numero di passaggi livellamento terreno:"
+  2340: "File mappa altezza PNG"
+  2341: "Carica file mappa altezza PNG"
+  2342: "Sfoglia..."
+  2343: "{COLOUR WINDOW_2}File mappa altezza attuale: {COLOUR BLACK}{STRING}"
+  2344: "(nessuno selezionato)"
+  2345: "Controllo file scenario..."
+  2346: "{COLOUR BLACK}Produzione Mese Scorso"
+  2347: "{COLOUR BLACK}Produzione Mese Scorso ▼"
+  2348: "{SMALLFONT}{COLOUR BLACK}Ordina elenco per produzione mese scorso"
+  2349: "Mostra Finestra Opzioni"
+  2350: "Ponti trasparenti"
+  2351: "Attiva/disattiva ponti trasparenti"
+  2352: "{COLOUR WINDOW_2}N. di letti di fiume:"
+  2353: "{COLOUR WINDOW_2}Larghezza minima fiume:"
+  2354: "{COLOUR WINDOW_2}Larghezza massima fiume:"
+  2355: "{COLOUR WINDOW_2}Larghezza riva fiume:"
+  2356: "{COLOUR WINDOW_2}Tasso di meandri:"
+  2357: "OpenLoco"
+  2358: "Attiva/disattiva strumento evidenzia"
+  2359: "{SMALLFONT}{COLOUR BLACK}Ricolora veicoli {POP16}{STRINGID}{NEWLINE}shift+click per evidenziare tutti{NEWLINE}ctrl+click per evidenziare sotto-veicoli"
+  2360: "Evidenzia tutti i collegati"

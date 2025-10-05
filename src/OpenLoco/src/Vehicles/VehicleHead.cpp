@@ -17,6 +17,7 @@
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/SubpositionData.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
@@ -72,7 +73,10 @@ namespace OpenLoco::Vehicles
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
-    static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
+    static loco_global<uint32_t, 0x0112C30C> _vehicleUpdate_compatibleRoadStationTypes;
+    static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C; // This is static move to TrackData
+    static loco_global<SignalStateFlags, 0x005220BC> _vehicleManagerIgnoreSignalFlagsMasks;
+    static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B; // This shouldn't be used as it will be mangled but it is
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
@@ -82,6 +86,40 @@ namespace OpenLoco::Vehicles
     static constexpr uint8_t kRestartStoppedRoadVehiclesTimeout = 20; // Number of days before stopped road vehicle (bus and tram) is restarted
     static constexpr uint16_t kReliabilityLossPerDay = 4;
     static constexpr uint16_t kReliabilityLossPerDayObsolete = 10;
+
+    // In order of preference when finding a route
+    enum class RouteSignalState : uint32_t
+    {
+        noSignals = 1,
+        signalClear = 2,
+        signalBlockedOneWay = 3,
+        signalBlockedTwoWay = 4,
+        signalNoRoute = 6, // E.g. its a one way track and we are going the wrong way
+        null = 0xFFFFFFFFU,
+    };
+
+    struct RoutingResult
+    {
+        uint16_t bestDistToTarget;    // 0x01136448
+        uint32_t bestTrackWeighting;  // 0x01136444
+        RouteSignalState signalState; // 0x0113644C
+    };
+
+    struct Sub4AC3D3State
+    {
+        RoutingResult result;
+        // The following are now in result
+        // RouteSignalState signalState; // 0x01136450
+        // uint16_t bestDistToTarget;    // 0x01136456
+        // uint32_t bestTrackWeighting;  // 0x0113643C
+
+        uint16_t hadNewResult; // 0x01136458
+    };
+
+    static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods);
+    static uint16_t roadPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, bool isSecondRun, Sub4AC3D3State& state);
+    static uint16_t trackLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods);
+    static uint16_t trackPathing(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods, bool isSecondRun, Sub4AC3D3State& state);
 
     struct WaterPathingResult
     {
@@ -476,12 +514,208 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x004AF7A4
-    void VehicleHead::sub_4AF7A4()
+    struct CarMetaData
     {
-        registers regs{};
-        regs.esi = X86Pointer(this);
-        call(0x004AF7A4, regs);
+        EntityId frontId;
+        VehicleObjectFlags flags;
+        uint16_t power;
+        bool isReversed; // At start matches wasReversed could be modified during the function
+        bool wasReversed;
+        constexpr bool hasFlags(VehicleObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != VehicleObjectFlags::none;
+        }
+    };
+
+    // 0x004AF7A4
+    void VehicleHead::autoLayoutTrain()
+    {
+        Vehicle train(*this);
+        if (train.cars.empty())
+        {
+            return;
+        }
+
+        // This function has been modified from vanilla but it should
+        // produce the same results. Vanilla version performed a lot
+        // of flipping and inserting to reorder the cars. This version
+        // does the final flipping/inserting in one go at the end.
+
+        // Pretty safe to assume this as its hard to exceed 30
+        // you can do about ~200 if you use some tricks
+        assert(train.cars.size() < 100);
+
+        sfl::static_vector<CarMetaData, 100> carData;
+
+        for (auto& car : train.cars)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            CarMetaData data{};
+            data.frontId = car.front->id;
+            data.flags = vehicleObj->flags;
+            data.power = vehicleObj->power;
+            data.isReversed = car.body->has38Flags(Flags38::isReversed);
+            data.wasReversed = car.body->has38Flags(Flags38::isReversed);
+            carData.push_back(data);
+        }
+        auto pushCarToFront = [&carData](const size_t index) {
+            std::rotate(carData.begin(), carData.begin() + index, carData.begin() + index + 1);
+        };
+        auto pushCarToBack = [&carData](const size_t index) {
+            std::rotate(carData.begin() + index, carData.begin() + index + 1, carData.end());
+        };
+
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // Places first powered car at front of train
+
+            for (auto i = 0U; i < carData.size(); ++i)
+            {
+                auto& cd = carData[i];
+                if (cd.power != 0)
+                {
+                    pushCarToFront(i);
+                    break;
+                }
+            }
+        }
+
+        {
+            // Alternate forward/backward if VehicleObjectFlags::alternatingDirection set
+            bool curIsReversed = false;
+            for (auto& cd : carData)
+            {
+                if (cd.hasFlags(VehicleObjectFlags::alternatingDirection))
+                {
+                    cd.isReversed = curIsReversed;
+                    curIsReversed ^= true;
+                }
+            }
+        }
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // Places first car with VehicleObjectFlags::topAndTailPosition to the front of train
+            // and last car with VehicleObjectFlags::topAndTailPosition to the back of the train
+            // If there is only one topAndTailPosition car and it isn't at the front due to other
+            // rules it will be placed at the back of the train
+
+            bool isFirst = true;
+            auto lastTopTail = -1;
+            for (auto i = 0U; i < carData.size(); ++i)
+            {
+                auto& cd = carData[i];
+                if (cd.power != 0 || cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
+                {
+                    if (isFirst)
+                    {
+                        if (cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
+                        {
+                            cd.isReversed = false;
+                            pushCarToFront(i);
+                        }
+                        isFirst = false;
+                        continue;
+                    }
+                    if (cd.hasFlags(VehicleObjectFlags::topAndTailPosition))
+                    {
+                        lastTopTail = i;
+                    }
+                }
+                isFirst = false;
+            }
+            if (lastTopTail != -1)
+            {
+                auto& cd = carData[lastTopTail];
+                cd.isReversed = true;
+                pushCarToBack(lastTopTail);
+            }
+        }
+
+        // 0x004AFBC0
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // Places all cars with VehicleObjectFlags::centerPosition in the middle of the train
+            const auto numMiddles = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::centerPosition); });
+            const auto middle = (carData.size() / 2) + 1;
+            if (middle < carData.size())
+            {
+                std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::centerPosition); });
+                const auto middleStart = middle - numMiddles / 2;
+                const auto middleEnd = middleStart + numMiddles;
+                std::rotate(carData.begin() + middleStart, carData.begin() + middleEnd, carData.end());
+            }
+        }
+
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // If there are at least 4 cars with VehicleObjectFlags::flag_04 places 2 of them in the middle of the train
+            // This flag is used to create train sets comprised of 2 double ended trains
+            const auto numFlag4s = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::flag_04); });
+            if (numFlag4s >= 4)
+            {
+                uint8_t moveCount = 0;
+                const auto middle = (carData.size() / 2) + 1;
+                std::array<CarMetaData, 2> toBeMoved{};
+                if (middle < carData.size())
+                {
+                    for (auto i = 1U; i < carData.size() - 1; ++i)
+                    {
+                        auto& cd = carData[i];
+                        if (cd.hasFlags(VehicleObjectFlags::flag_04))
+                        {
+                            toBeMoved[moveCount++] = cd;
+                            carData.erase(carData.begin() + i);
+                            i--;
+                            if (moveCount == 2)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    carData.insert(carData.begin() + middle - 1, toBeMoved[0]);
+                    carData.insert(carData.begin() + middle, toBeMoved[1]);
+                }
+            }
+        }
+
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // Apply the reordering and flipping
+            VehicleBase* dest = train.tail;
+            for (auto i = carData.size(); i > 0; --i)
+            {
+                auto& cd = carData[i - 1];
+                auto* frontCar = EntityManager::get<VehicleBogie>(cd.frontId);
+                if (frontCar == nullptr)
+                {
+                    continue;
+                }
+                if (cd.isReversed != cd.wasReversed)
+                {
+                    frontCar = flipCar(*frontCar);
+                }
+                insertCarBefore(*frontCar, *dest);
+                dest = frontCar;
+            }
+        }
+
+        // Train is invalid after insertCarBefore
+        train = Vehicle(*this);
+        {
+            bool front = true;
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::alternatingCarSprite))
+                {
+                    continue;
+                }
+                car.body->bodyIndex = front ? 0 : 1;
+                car.body->objectSpriteType = vehicleObj->carComponents[car.body->bodyIndex].bodySpriteInd & ~SpriteIndex::isReversed;
+                front ^= true;
+            }
+        }
+        connectJacobsBogies(*this);
     }
 
     // 0x004B90F0
@@ -1062,7 +1296,7 @@ namespace OpenLoco::Vehicles
                 }
                 else if (bl == 2)
                 {
-                    return sub_4A8F22();
+                    return tryReverse();
                 }
             }
 
@@ -1148,7 +1382,7 @@ namespace OpenLoco::Vehicles
 
         if (trackType == 0xFF || ObjectManager::get<RoadObject>(trackType)->hasFlags(RoadObjectFlags::isRoad))
         {
-            if (train.veh1->trackAndDirection.road.isBackToFront())
+            if (train.veh1->trackAndDirection.road.isOvertaking())
             {
                 param1 = 128;
                 turnaroundAtSignalTimeout = 544;
@@ -1158,7 +1392,7 @@ namespace OpenLoco::Vehicles
         {
             // Tram
             turnaroundAtSignalTimeout = kTramSignalTimeout;
-            if (train.veh1->trackAndDirection.road.isBackToFront())
+            if (train.veh1->trackAndDirection.road.isOvertaking())
             {
                 param1 = 64;
                 turnaroundAtSignalTimeout = 128;
@@ -1192,7 +1426,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8F22
-    bool VehicleHead::sub_4A8F22()
+    bool VehicleHead::tryReverse()
     {
         if (isOnExpectedRoadOrTrack())
         {
@@ -1307,9 +1541,9 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        if (sub_4ACCDC())
+        if (pathingShouldReverse())
         {
-            return sub_4A8F22();
+            return tryReverse();
         }
 
         return true;
@@ -1341,7 +1575,7 @@ namespace OpenLoco::Vehicles
         }
         else if (bl == 2)
         {
-            return sub_4A8F22();
+            return tryReverse();
         }
         else if (al == 4)
         {
@@ -1356,7 +1590,7 @@ namespace OpenLoco::Vehicles
             {
                 return true;
             }
-            return sub_4A8F22();
+            return tryReverse();
         }
         else
         {
@@ -1486,7 +1720,7 @@ namespace OpenLoco::Vehicles
         {
             return true;
         }
-        return sub_4A8F22();
+        return tryReverse();
     }
 
     // 0x004A9051
@@ -1752,9 +1986,10 @@ namespace OpenLoco::Vehicles
             }
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementEdges = airportObject->getMovementEdges();
 
-            uint8_t al = airportObject->movementEdges[airportMovementEdge].var_03;
-            uint8_t cl = airportObject->movementEdges[airportMovementEdge].var_00;
+            uint8_t al = movementEdges[airportMovementEdge].var_03;
+            uint8_t cl = movementEdges[airportMovementEdge].var_00;
 
             auto veh2 = train.veh2;
             if (al != 0)
@@ -2216,13 +2451,15 @@ namespace OpenLoco::Vehicles
             }
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementNodes = airportObject->getMovementNodes();
+            const auto movementEdges = airportObject->getMovementEdges();
 
             if (curEdge == kAirportMovementNodeNull)
             {
                 for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                 {
-                    const auto& transition = airportObject->movementEdges[movementEdge];
-                    if (!airportObject->movementNodes[transition.curNode].hasFlags(AirportMovementNodeFlags::flag2))
+                    const auto& transition = movementEdges[movementEdge];
+                    if (!movementNodes[transition.curNode].hasFlags(AirportMovementNodeFlags::flag2))
                     {
                         continue;
                     }
@@ -2249,8 +2486,8 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                uint8_t targetNode = airportObject->movementEdges[curEdge].nextNode;
-                if (status == Status::takingOff && airportObject->movementNodes[targetNode].hasFlags(AirportMovementNodeFlags::takeoffEnd))
+                uint8_t targetNode = movementEdges[curEdge].nextNode;
+                if (status == Status::takingOff && movementNodes[targetNode].hasFlags(AirportMovementNodeFlags::takeoffEnd))
                 {
                     return kAirportMovementNodeNull;
                 }
@@ -2261,14 +2498,14 @@ namespace OpenLoco::Vehicles
                 {
                     for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                     {
-                        const auto& transition = airportObject->movementEdges[movementEdge];
+                        const auto& transition = movementEdges[movementEdge];
 
                         if (transition.curNode != targetNode)
                         {
                             continue;
                         }
 
-                        if (airportObject->movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::takeoffBegin))
+                        if (movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::takeoffBegin))
                         {
                             continue;
                         }
@@ -2297,13 +2534,13 @@ namespace OpenLoco::Vehicles
                 {
                     for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                     {
-                        const auto& transition = airportObject->movementEdges[movementEdge];
+                        const auto& transition = movementEdges[movementEdge];
                         if (transition.curNode != targetNode)
                         {
                             continue;
                         }
 
-                        if (airportObject->movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::heliTakeoffBegin))
+                        if (movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::heliTakeoffBegin))
                         {
                             continue;
                         }
@@ -2359,20 +2596,22 @@ namespace OpenLoco::Vehicles
             }
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementNodes = airportObject->getMovementNodes();
+            const auto movementEdges = airportObject->getMovementEdges();
 
-            auto destinationNode = airportObject->movementEdges[curEdge].nextNode;
+            auto destinationNode = movementEdges[curEdge].nextNode;
 
             Pos2 loc2 = {
-                static_cast<int16_t>(airportObject->movementNodes[destinationNode].x - 16),
-                static_cast<int16_t>(airportObject->movementNodes[destinationNode].y - 16)
+                static_cast<int16_t>(movementNodes[destinationNode].x - 16),
+                static_cast<int16_t>(movementNodes[destinationNode].y - 16)
             };
             loc2 = Math::Vector::rotate(loc2, elStation->rotation());
-            auto airportMovement = airportObject->movementNodes[destinationNode];
+            auto airportMovement = movementNodes[destinationNode];
 
             loc2.x += 16 + stationLoc.x;
             loc2.y += 16 + stationLoc.y;
 
-            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(airportObject->movementNodes[destinationNode].z + stationLoc.z) };
+            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(movementNodes[destinationNode].z + stationLoc.z) };
 
             if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
             {
@@ -3645,12 +3884,133 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x0047C722
+    static void sub_47C722(VehicleHead& head)
+    {
+        head.var_38 |= Flags38::unk_2;
+        auto train = Vehicle(head);
+        auto& veh1 = *train.veh1;
+
+        // Clear out all routings after the first one
+        RoutingManager::RingView ring(veh1.routingHandle);
+        for (auto& handle : ring)
+        {
+            if (handle != veh1.routingHandle)
+            {
+                RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+            }
+        }
+
+        head.tileX = veh1.tileX;
+        head.tileY = veh1.tileY;
+        head.tileBaseZ = veh1.tileBaseZ;
+        head.routingHandle = veh1.routingHandle;
+        head.remainingDistance = veh1.remainingDistance;
+        head.var_3C = veh1.var_3C;
+        head.var_38 &= ~Flags38::unk_2;
+        head.subPosition = veh1.subPosition;
+        head.trackAndDirection = veh1.trackAndDirection;
+        head.moveTo(veh1.position);
+    }
+
     // 0x004AD778
     void VehicleHead::sub_4AD778()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AD778, regs);
+        Vehicle train(head);
+        auto& veh1 = *train.veh1;
+        auto& veh2 = *train.veh2;
+        if (mode == TransportMode::road)
+        {
+            // 0x0047C5B0
+            sub_47C722(*this);
+            var_38 |= Flags38::unk_2;
+            veh1.var_38 |= Flags38::unk_2;
+
+            auto pos = World::Pos3(veh2.tileX, veh2.tileY, veh2.tileBaseZ * World::kSmallZStep);
+            auto ring = RoutingManager::RingView(veh2.routingHandle);
+            for (auto& handle : ring)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+
+                TrackAndDirection::_RoadAndDirection tad{ 0, 0 };
+                tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+                if (handle != veh2.routingHandle)
+                {
+                    veh2.sub_47D959(pos, tad, false);
+                }
+
+                pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
+                if (handle != veh2.routingHandle)
+                {
+                    RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+                }
+            }
+        }
+        else
+        {
+            // 0x004AD782
+            var_38 |= Flags38::unk_2;
+            veh1.var_38 |= Flags38::unk_2;
+
+            const auto companyId = veh2.owner;
+            const auto trackObjId = veh2.trackType;
+            auto pos = World::Pos3(veh2.tileX, veh2.tileY, veh2.tileBaseZ * World::kSmallZStep);
+
+            RoutingManager::RingView ring(veh2.routingHandle);
+            for (auto& handle : ring)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+
+                TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+                const auto hasSignal = routing & World::Track::AdditionalTaDFlags::hasSignal;
+                {
+                    TrackAndDirection::_TrackAndDirection signaledTad = tad;
+                    signaledTad._data |= (routing & World::Track::AdditionalTaDFlags::hasSignal);
+                    sub_4A2AD7(pos, signaledTad, companyId, trackObjId);
+                }
+                if (handle != veh2.routingHandle)
+                {
+                    if (hasSignal)
+                    {
+                        setSignalState(pos, tad, trackObjId, 0);
+                    }
+                    leaveLevelCrossing(pos, tad, 9);
+                }
+
+                pos += World::TrackData::getUnkTrack(tad._data).pos;
+
+                // Clear out all routings after the first one
+                if (handle != veh2.routingHandle)
+                {
+                    RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+                }
+            }
+        }
+
+        tileX = veh2.tileX;
+        tileY = veh2.tileY;
+        tileBaseZ = veh2.tileBaseZ;
+        routingHandle = veh2.routingHandle;
+        remainingDistance = veh2.remainingDistance;
+        var_3C = 0;
+        var_38 &= ~(Flags38::unk_2);
+        trackAndDirection = veh2.trackAndDirection;
+        subPosition = veh2.subPosition;
+        moveTo(veh2.position);
+
+        veh1.tileX = veh2.tileX;
+        veh1.tileY = veh2.tileY;
+        veh1.tileBaseZ = veh2.tileBaseZ;
+        veh1.routingHandle = veh2.routingHandle;
+        veh1.remainingDistance = veh2.remainingDistance;
+        veh1.var_3C = 0;
+        veh1.var_38 &= ~(Flags38::unk_2);
+        veh1.trackAndDirection = veh2.trackAndDirection;
+        veh1.subPosition = veh2.subPosition;
+        veh1.moveTo(veh2.position);
     }
 
     // 0x004AA625
@@ -3693,16 +4053,689 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_2 = train.veh2;
     }
 
-    // 0x004ACEE7
-    std::tuple<uint8_t, uint8_t, StationId> VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
+    // 0x004A3EF6
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : ebp
+    //
+    // ebp clobbered, dl will have rotation, dh will have track id.
+    // return: pos : ax, cx, di
+    static World::Pos3 getTrackStartFromTad(World::Pos3 pos, uint16_t tad)
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.eax = unk1;
-        regs.ebx = var_113612C;
-        call(0x004ACEE7, regs);
-        // status, flags, stationId
-        return std::make_tuple(static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<StationId>(regs.bp));
+        World::Pos3 adjustedPos = pos;
+        if (tad & (1U << 2))
+        {
+            auto& trackSize = World::TrackData::getUnkTrack(tad);
+            adjustedPos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                adjustedPos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+        }
+
+        return adjustedPos;
+    }
+
+    // 0x004A3EF6
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : ebp
+    // trackType : bh
+    static void bringTrackElementToFront(World::Pos3 pos, uint8_t trackType, uint16_t tad)
+    {
+        // TRACK only
+        const auto trackStart = getTrackStartFromTad(pos, tad);
+        const auto trackId = (tad >> 3) & 0x3F;
+        const auto rotation = tad & 0x3;
+
+        const auto& trackPieces = World::TrackData::getTrackPiece(trackId);
+        for (auto& piece : trackPieces)
+        {
+            const auto piecePos = trackStart + World::Pos3(Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation), piece.z);
+
+            Ui::ViewportManager::invalidate(piecePos, piecePos.z, piecePos.z + 32);
+
+            auto tile = TileManager::get(piecePos);
+            World::TrackElement* beginTrackElement = nullptr;
+            World::TrackElement* lastTrackElement = nullptr;
+            for (auto& el : tile)
+            {
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    beginTrackElement = nullptr;
+                    continue;
+                }
+                if (elTrack->baseHeight() != piecePos.z)
+                {
+                    beginTrackElement = nullptr;
+                    continue;
+                }
+                if (beginTrackElement == nullptr)
+                {
+                    beginTrackElement = elTrack;
+                }
+                if (elTrack->rotation() != rotation)
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != piece.index)
+                {
+                    continue;
+                }
+                if (elTrack->trackObjectId() != trackType)
+                {
+                    continue;
+                }
+                if (elTrack->trackId() != trackId)
+                {
+                    continue;
+                }
+
+                if (elTrack->hasSignal() || elTrack->hasStationElement())
+                {
+                    break;
+                }
+                lastTrackElement = elTrack;
+                break;
+            }
+            if (lastTrackElement == nullptr || beginTrackElement == nullptr || beginTrackElement == lastTrackElement)
+            {
+                continue;
+            }
+            // Move the track element we are on to the front of the list of track elements
+            const bool isLastElement = lastTrackElement->isLast();
+            lastTrackElement->setLastFlag(false);
+            auto* iter = lastTrackElement;
+            while (iter > beginTrackElement)
+            {
+                std::swap(*iter, *(iter - 1));
+                iter--;
+            }
+            lastTrackElement->setLastFlag(isLastElement);
+        }
+    }
+
+    // 0x0047DA8D
+    static Sub4ACEE7Result sub_47DA8D(VehicleHead& head, uint32_t unk1, uint32_t var_113612C)
+    {
+        // ROAD only
+
+        // 0x0112C30C
+        uint32_t compatibleStations = 0U;
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::roadStation); ++i)
+        {
+            auto* roadStationObj = ObjectManager::get<RoadStationObject>(i);
+            if (roadStationObj == nullptr)
+            {
+                continue;
+            }
+            if (roadStationObj->hasFlags(RoadStationFlags::passenger))
+            {
+                if (head.trainAcceptedCargoTypes & (1U << roadStationObj->cargoType))
+                {
+                    compatibleStations |= (1U << i);
+                }
+            }
+            else if (roadStationObj->hasFlags(RoadStationFlags::freight))
+            {
+                // Eh? is this a not accepted cargo type
+                if (!(head.trainAcceptedCargoTypes & (1U << roadStationObj->cargoType)))
+                {
+                    compatibleStations |= (1U << i);
+                }
+            }
+            else
+            {
+                compatibleStations |= (1U << i);
+            }
+        }
+        _vehicleUpdate_compatibleRoadStationTypes = compatibleStations;
+
+        {
+            auto routings = RoutingManager::RingView(head.routingHandle);
+            auto iter = routings.begin();
+            iter++;
+            iter++;
+            if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result{ 1, 0, StationId::null };
+            }
+            if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result{ 1, 0, StationId::null };
+            }
+        }
+
+        resetUpdateVar1136114Flags();
+        if (head.var_52 == 1)
+        {
+            head.remainingDistance += head.updateTrackMotion(0);
+        }
+        else
+        {
+            const int32_t distance1 = unk1 - head.var_3C;
+            const auto distance2 = std::max(var_113612C * 4, 0xCC48U);
+            const auto distance = std::min<int32_t>(distance1, distance2);
+            head.var_3C += distance - head.updateTrackMotion(distance);
+        }
+        // NOTE: head.routingHandle can be modified by updateTrackMotion
+
+        if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        const auto pos = World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep);
+        const auto roadId = head.trackAndDirection.road.id();
+        const auto rotation = head.trackAndDirection.road.cardinalDirection();
+        const auto tile = TileManager::get(pos);
+        auto elStation = tile.roadStation(roadId, rotation, head.tileBaseZ);
+        if (elStation != nullptr && (elStation->isGhost() || elStation->isAiAllocated()))
+        {
+            elStation = nullptr;
+        }
+        // 0x011361F6
+        const auto tileStationId = elStation != nullptr ? elStation->stationId() : StationId::null;
+        // 0x0112C32B
+        const auto stationObjId = elStation != nullptr ? elStation->objectId() : 0xFF;
+
+        auto train = Vehicle(head);
+        const auto requiredMods = head.var_53;
+        const auto queryMods = train.veh1->var_49;
+
+        auto [nextPos, nextRotation] = World::Track::getRoadConnectionEnd(pos, head.trackAndDirection.road.basicRad());
+        const bool isOneWay = head.var_5C == 0 && head.var_52 != 1;
+
+        auto tc = isOneWay ? World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, head.owner, head.trackType, requiredMods, queryMods)
+                           : World::Track::getRoadConnections(nextPos, nextRotation, head.owner, head.trackType, requiredMods, queryMods);
+
+        if (head.var_52 != 1
+            && tileStationId != StationId::null
+            && tileStationId != tc.stationId
+            && compatibleStations & (1U << stationObjId))
+        {
+            auto orders = OrderRingView(head.orderTableOffset, head.currentOrder);
+            auto curOrder = orders.begin();
+            auto* stationOrder = curOrder->as<OrderStation>();
+            bool stationProcessed = false;
+            if (stationOrder != nullptr)
+            {
+                if (stationOrder->is<OrderStopAt>())
+                {
+                    if (tileStationId == stationOrder->getStation())
+                    {
+                        return Sub4ACEE7Result{ 4, 0, tileStationId };
+                    }
+                }
+                else if (stationOrder->is<OrderRouteThrough>())
+                {
+                    if (tileStationId == stationOrder->getStation())
+                    {
+                        curOrder++;
+                        head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
+                        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+                        stationProcessed = true;
+                    }
+                }
+            }
+            // Handles the non-express stop at any station we pass case
+            if (!stationProcessed)
+            {
+                if (head.stationId != tileStationId
+                    && (train.veh1->var_48 & Flags48::expressMode) == Flags48::none)
+                {
+                    auto* station = StationManager::get(tileStationId);
+                    if (station->owner == train.veh1->owner)
+                    {
+                        return Sub4ACEE7Result{ 4, 0, tileStationId };
+                    }
+                }
+            }
+        }
+
+        if (tc.connections.empty())
+        {
+            return Sub4ACEE7Result{ 2, 0, StationId::null };
+        }
+        // 0x0047DD74
+        uint16_t connection = tc.connections[0];
+        if (tc.connections.size() > 1)
+        {
+            if (head.var_52 == 1)
+            {
+                connection = roadLongestPathing(head, nextPos, tc, requiredMods, queryMods);
+            }
+            else
+            {
+                Sub4AC3D3State state{};
+                connection = roadPathing(head, nextPos, tc, requiredMods, queryMods, compatibleStations, false, state);
+            }
+            connection |= (1U << 14);
+        }
+        if (head.trackAndDirection.road.isOvertaking() ^ head.trackAndDirection.road.isChangingLane())
+        {
+            connection ^= World::Track::AdditionalTaDFlags::isOvertaking;
+            if (head.var_52 != 1)
+            {
+                if (head.trackType != 0xFFU)
+                {
+                    auto* roadObj = ObjectManager::get<RoadObject>(head.trackType);
+                    if (roadObj->hasFlags(RoadObjectFlags::isRoad))
+                    {
+                        connection ^= World::Track::AdditionalTaDFlags::isChangingLane;
+                    }
+                }
+                else
+                {
+                    connection ^= World::Track::AdditionalTaDFlags::isChangingLane;
+                }
+            }
+        }
+        // 0x0047DDFB
+        auto routings = RoutingManager::RingView(head.routingHandle);
+        const auto& nextHandle = *++(routings.begin());
+        RoutingManager::setRouting(nextHandle, connection);
+
+        if (head.var_52 == 1)
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        auto curOrder = OrderRingView(head.orderTableOffset, head.currentOrder).begin();
+        auto* waypointOrder = curOrder->as<OrderRouteWaypoint>();
+        if (waypointOrder == nullptr)
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        auto curPos = World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep);
+        curPos += World::TrackData::getUnkRoad(head.trackAndDirection.road.basicRad()).pos;
+
+        if (curPos != waypointOrder->getWaypoint())
+        {
+            auto& trackSize = World::TrackData::getUnkRoad(connection & World::Track::AdditionalTaDFlags::basicRaDMask);
+            auto connectPos = curPos + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                connectPos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            if (connectPos != waypointOrder->getWaypoint())
+            {
+                return Sub4ACEE7Result{ 0, 0, StationId::null };
+            }
+        }
+        curOrder++;
+        head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
+        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+        return Sub4ACEE7Result{ 0, 0, StationId::null };
+    }
+
+    // 0x004AD24C
+    // Updates the target signal (targetPos, targetRouting, targetTrackType) to reflect
+    // the state of the signal based on newRouting (and the track connections, tc).
+    static void updateJunctionSignalLights(World::Pos3 targetPos, uint16_t targetRouting, uint8_t targetTrackType, uint16_t newRouting, const World::Track::TrackConnections& tc)
+    {
+        TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+        tad._data = targetRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
+        sfl::static_vector<int8_t, 16> unk113621F;
+        for (const auto& otherConnection : tc.connections)
+        {
+            unk113621F.push_back(_vehicle_arr_4F865C[(otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2]);
+        }
+
+        const auto curUnk = _vehicle_arr_4F865C[(newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2];
+
+        int8_t cl = unk113621F[0];
+        int8_t ch = unk113621F[0];
+        uint32_t ebp = 0;
+        for (auto i = 1U; i < unk113621F.size(); ++i)
+        {
+            const auto unk = unk113621F[i];
+            cl = std::min(cl, unk);
+            ch = std::max(ch, unk);
+            const auto absUnk = std::abs(unk);
+            const auto absUnk2 = std::abs(unk113621F[ebp]);
+            if (absUnk < absUnk2)
+            {
+                ebp = i;
+            }
+        }
+        const auto ah = unk113621F[ebp];
+        uint32_t lightStateFlags = 0x10;
+        if (ah != cl)
+        {
+            lightStateFlags |= 1U << 30;
+            if (curUnk < ah)
+            {
+                lightStateFlags |= 1U << 28;
+            }
+        }
+        if (ah != ch)
+        {
+            lightStateFlags |= 1U << 29;
+            if (curUnk > ah)
+            {
+                lightStateFlags |= 1U << 27;
+            }
+        }
+
+        setSignalState(targetPos, tad, targetTrackType, lightStateFlags);
+    }
+
+    // 0x004ACEF1
+    static Sub4ACEE7Result sub_4ACEF1(VehicleHead& head, uint32_t unk1, uint32_t var_113612C)
+    {
+        // TRACK only
+
+        // Identical to ROAD
+        {
+            auto routings = RoutingManager::RingView(head.routingHandle);
+            auto iter = routings.begin();
+            iter++;
+            iter++;
+            if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result{ 1, 0, StationId::null };
+            }
+            if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            {
+                return Sub4ACEE7Result{ 1, 0, StationId::null };
+            }
+        }
+
+        // Identical to ROAD
+        resetUpdateVar1136114Flags();
+        if (head.var_52 == 1)
+        {
+            head.remainingDistance += head.updateTrackMotion(0);
+        }
+        else
+        {
+            const int32_t distance1 = unk1 - head.var_3C;
+            const auto distance2 = std::max(var_113612C * 4, 0xCC48U);
+            const auto distance = std::min<int32_t>(distance1, distance2);
+            head.var_3C += distance - head.updateTrackMotion(distance);
+        }
+        // NOTE: head.routingHandle may have changed here due to updateTrackMotion
+
+        if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        // Similar to ROAD (calls Track equivalents)
+        const auto pos = World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep);
+        const auto trackId = head.trackAndDirection.track.id();
+        const auto rotation = head.trackAndDirection.track.cardinalDirection();
+        const auto tile = TileManager::get(pos);
+        auto elStation = tile.trainStation(trackId, rotation, head.tileBaseZ);
+        if (elStation != nullptr && (elStation->isGhost() || elStation->isAiAllocated()))
+        {
+            elStation = nullptr;
+        }
+
+        // 0x011361F6
+        const auto tileStationId = elStation != nullptr ? elStation->stationId() : StationId::null;
+
+        auto train = Vehicle(head);
+        const auto requiredMods = head.var_53;
+        const auto queryMods = train.veh1->var_49;
+
+        auto [nextPos, nextRotation] = World::Track::getTrackConnectionEnd(pos, head.trackAndDirection.track._data);
+
+        // Quite a few differences to ROAD
+        auto tc = World::Track::getTrackConnections(nextPos, nextRotation, head.owner, head.trackType, requiredMods, queryMods);
+        if (head.var_52 != 1
+            && tileStationId != StationId::null
+            && tileStationId != tc.stationId)
+        {
+            auto orders = OrderRingView(head.orderTableOffset, head.currentOrder);
+            auto curOrder = orders.begin();
+            auto* stationOrder = curOrder->as<OrderStation>();
+            bool stationProcessed = false;
+            if (stationOrder != nullptr)
+            {
+                if (stationOrder->is<OrderStopAt>())
+                {
+                    if (tileStationId == stationOrder->getStation())
+                    {
+                        // Why? unsure why manual control needs this
+                        stationProcessed = true;
+                        if (!head.hasVehicleFlags(VehicleFlags::manualControl))
+                        {
+                            return Sub4ACEE7Result{ 4, 0, tileStationId };
+                        }
+                    }
+                }
+                else if (stationOrder->is<OrderRouteThrough>())
+                {
+                    if (tileStationId == stationOrder->getStation())
+                    {
+                        curOrder++;
+                        head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
+                        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+                        stationProcessed = true;
+                    }
+                }
+            }
+            // Handles the non-express stop at any station we pass case
+            if (!stationProcessed)
+            {
+                if (head.stationId != tileStationId
+                    && (train.veh1->var_48 & Flags48::expressMode) == Flags48::none)
+                {
+                    return Sub4ACEE7Result{ 4, 0, tileStationId };
+                }
+            }
+        }
+        // 0x004AD13C
+
+        if (tc.connections.empty())
+        {
+            return Sub4ACEE7Result{ 2, 0, StationId::null };
+        }
+
+        auto routings = RoutingManager::RingView(head.routingHandle);
+        uint16_t connection = tc.connections[0];
+        if (tc.connections.size() > 1)
+        {
+            if (head.var_52 == 1)
+            {
+                connection = trackLongestPathing(head, nextPos, tc, requiredMods, queryMods);
+            }
+            else
+            {
+                Sub4AC3D3State state{};
+                connection = trackPathing(head, nextPos, tc, requiredMods, queryMods, false, state);
+            }
+            connection |= (1U << 14);
+
+            // 0x004AD16E
+            bringTrackElementToFront(nextPos, head.trackType, connection & World::Track::AdditionalTaDFlags::basicTaDMask);
+
+            // Simplified from vanilla as I'm pretty sure its the same
+            // NOT CONVINCED ITS THE SAME!
+
+            // Walk backwards through the routings to find the previous signal
+            // so we can work set its signal lights
+            auto iter2 = routings.begin();
+            auto reversePos = pos;
+            for (auto i = 0; i < 6; ++i, --iter2)
+            {
+                if (RoutingManager::getRouting(*iter2) == RoutingManager::kAllocatedButFreeRoutingStation)
+                {
+                    break;
+                }
+
+                const auto reverseRouting = RoutingManager::getRouting(*iter2);
+                if (*iter2 != *routings.begin())
+                {
+                    auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
+                    reversePos -= trackSize.pos;
+                }
+                if (reverseRouting & World::Track::AdditionalTaDFlags::hasSignal)
+                {
+                    // 0x004AD24C
+                    updateJunctionSignalLights(reversePos, reverseRouting, head.trackType, connection, tc);
+                    break;
+                }
+                else if (reverseRouting & (1U << 14))
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            // 0x004AD347
+            if (tc.hasLevelCrossing)
+            {
+                TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                tad._data = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
+                leaveLevelCrossing(nextPos, tad, 8);
+            }
+
+            if (connection & World::Track::AdditionalTaDFlags::hasSignal)
+            {
+                // 0x004AD3A3
+
+                TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                tad._data = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
+                const auto signalState = getSignalState(nextPos, tad, head.trackType, 0U) & *_vehicleManagerIgnoreSignalFlagsMasks;
+
+                if ((signalState & SignalStateFlags::blockedNoRoute) != SignalStateFlags::none)
+                {
+                    return Sub4ACEE7Result{ 2, 0, StationId::null };
+                }
+                else if ((signalState & SignalStateFlags::occupied) != SignalStateFlags::none)
+                {
+                    // 0x004AD3F8
+                    const auto reverseSignalState = getSignalState(nextPos, tad, head.trackType, 1U << 31);
+                    _vehicleMangled_113623B = enumValue(reverseSignalState);
+                    if (head.var_5C == 0)
+                    {
+                        train.veh1->var_48 &= ~Flags48::passSignal;
+                        return Sub4ACEE7Result{ 3, enumValue(reverseSignalState), StationId::null };
+                    }
+                }
+                else
+                {
+                    // 0x004AD469
+                    if ((train.veh1->var_48 & Flags48::passSignal) != Flags48::none)
+                    {
+                        train.veh1->var_48 &= ~Flags48::passSignal;
+                        if (isBlockOccupied(nextPos, tad, head.owner, head.trackType))
+                        {
+                            setSignalState(nextPos, tad, head.trackType, 8);
+                            return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                        }
+                    }
+
+                    if ((signalState & SignalStateFlags::occupiedOneWay) != SignalStateFlags::none)
+                    {
+                        // 0x004AD490
+                        if (train.veh1->var_52 != 0)
+                        {
+                            _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
+                            train.veh1->var_52--;
+
+                            return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                        }
+                        else
+                        {
+                            if (!(sub_4A2A77(nextPos, tad, head.owner, head.trackType) & ((1U << 0) | (1U << 1))))
+                            {
+                                _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
+                                train.veh1->var_52 = 55;
+
+                                return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                            }
+                        }
+                    }
+                }
+                // 0x004AD4B1
+
+                setReverseSignalOccupiedInBlock(nextPos, tad, head.owner, head.trackType);
+                if (head.var_5C == 0)
+                {
+                    setSignalState(nextPos, tad, head.trackType, 1);
+                }
+                uint8_t edi = 2;
+                auto reversePos = pos;
+                for (auto iter3 = routings.begin(); RoutingManager::getRouting(*iter3) != RoutingManager::kAllocatedButFreeRoutingStation; --iter3)
+                {
+                    const auto reverseRouting = RoutingManager::getRouting(*iter3);
+                    if (*iter3 != *routings.begin())
+                    {
+                        auto& trackSize = World::TrackData::getUnkTrack(reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask);
+                        reversePos -= trackSize.pos;
+                    }
+                    if (reverseRouting & World::Track::AdditionalTaDFlags::hasSignal)
+                    {
+                        auto reverseTad = TrackAndDirection::_TrackAndDirection{ 0, 0 };
+                        reverseTad._data = reverseRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
+                        setSignalState(reversePos, reverseTad, head.trackType, edi);
+                        edi = std::min(edi + 1, 3);
+                    }
+                }
+            }
+        }
+        // 0x004AD5F1
+        // Mostly the same as ROAD but with track equivalent functions
+        const auto& nextHandle = *++(routings.begin());
+        RoutingManager::setRouting(nextHandle, connection);
+
+        if (head.var_52 == 1)
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        auto curOrder = OrderRingView(head.orderTableOffset, head.currentOrder).begin();
+        auto* waypointOrder = curOrder->as<OrderRouteWaypoint>();
+        if (waypointOrder == nullptr)
+        {
+            return Sub4ACEE7Result{ 0, 0, StationId::null };
+        }
+
+        auto curPos = nextPos;
+        const auto waypointTaD = (waypointOrder->getTrackId() << 3) | waypointOrder->getDirection();
+        if (curPos != waypointOrder->getWaypoint() || (connection & World::Track::AdditionalTaDFlags::basicTaDMask) != waypointTaD)
+        {
+            auto& trackSize = World::TrackData::getUnkTrack(connection & World::Track::AdditionalTaDFlags::basicTaDMask);
+            auto connectPos = curPos + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                connectPos -= World::Pos3{ kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            auto reverseTaD = (connection & World::Track::AdditionalTaDFlags::basicTaDMask);
+            reverseTaD ^= (1U << 2);
+            reverseTaD &= ~0x3;
+            reverseTaD |= World::kReverseRotation[trackSize.rotationEnd] & 0x3;
+            if (connectPos != waypointOrder->getWaypoint() || reverseTaD != waypointTaD)
+            {
+                return Sub4ACEE7Result{ 0, 0, StationId::null };
+            }
+        }
+        curOrder++;
+        head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
+        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+        return Sub4ACEE7Result{ 0, 0, StationId::null };
+    }
+
+    // 0x004ACEE7
+    Sub4ACEE7Result VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
+    {
+        if (mode == TransportMode::road)
+        {
+            return sub_47DA8D(*this, unk1, var_113612C);
+        }
+        else
+        {
+            return sub_4ACEF1(*this, unk1, var_113612C);
+        }
     }
 
     // 0x004AC1C2
@@ -3768,43 +4801,1278 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
+    struct Sub4AC884State
+    {
+        uint16_t recursionDepth;      // 0x0113642C
+        uint16_t unkFlags;            // 0x0113642E this is a result
+        uint32_t totalTrackWeighting; // 0x01136430
+    };
+
+    static void roadAimlessWanderPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods, Sub4AC884State& state)
+    {
+        if (state.recursionDepth >= 5)
+        {
+            return;
+        }
+
+        auto curPos = pos;
+        TrackAndDirection::_RoadAndDirection curTad{ 0, 0 };
+        curTad._data = tad;
+        for (; true;)
+        {
+            state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
+
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
+            auto tc = World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, companyId, roadObjectId, requiredMods, queryMods);
+
+            if (tc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            if (tc.connections.size() == 1)
+            {
+                continue;
+            }
+            for (auto& connection : tc.connections)
+            {
+                const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                roadAimlessWanderPathingRecurse(curPos, connectTad, companyId, roadObjectId, requiredMods, queryMods, recurseState);
+                state.unkFlags |= recurseState.unkFlags;
+            }
+            break;
+        }
+    }
+
+    // 0x0047E481
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    // state : see above
+    static uint16_t roadAimlessWanderPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        Sub4AC884State state{};
+        roadAimlessWanderPathingRecurse(pos, tad, companyId, roadObjectId, requiredMods, queryMods, state);
+        return state.unkFlags;
+    }
+
+    // TODO: Move to TrackData
+    static constexpr std::array<uint8_t, 10> k4F7338Lane0{
+        0b0100'0001, // straight
+        0b0100'0000, // leftCurveVerySmall
+        0b0100'0101, // rightCurveVerySmall
+        0b0100'0000, // leftCurveSmall
+        0b0100'0000, // rightCurveSmall
+        0b0100'0001, // straightSlopeUp
+        0b0100'0001, // straightSlopeDown
+        0b0100'0001, // straightSteepSlopeUp
+        0b0100'0001, // straightSteepSlopeDown
+        0b0101'0000, // turnaround
+    };
+    static constexpr std::array<uint8_t, 10> k4F7338Lane1{
+        0b0001'0100, // straight
+        0b0001'0101, // leftCurveVerySmall
+        0b0001'0000, // rightCurveVerySmall
+        0b0001'0000, // leftCurveSmall
+        0b0001'0000, // rightCurveSmall
+        0b0001'0100, // straightSlopeUp
+        0b0001'0100, // straightSlopeDown
+        0b0001'0100, // straightSteepSlopeUp
+        0b0001'0100, // straightSteepSlopeDown
+        0b0101'0000, // turnaround
+    };
+    static constexpr std::array<std::array<uint8_t, 10>, 2> k4F7338{
+        k4F7338Lane0,
+        k4F7338Lane1,
+    };
+    static constexpr std::array<std::array<uint8_t, 10>, 2> kRightHand4F7338{
+        k4F7338Lane1,
+        k4F7338Lane0,
+    };
+
+    // 0x0112C32C
+    static const std::array<std::array<uint8_t, 10>, 2>& getRoadUnkThing()
+    {
+        // TODO: rework after 0x0047D9F2 is implemented and hooked
+        return getGameState().trafficHandedness ? kRightHand4F7338 : k4F7338;
+    }
+
+    // 0x0047D5D6
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dl * kWorld::kSmallZStep
+    // tad : bp (was ebp need to check high word is zero)
+    // return: dh
+    RoadOccupationFlags getRoadOccupation(const World::Pos3 pos, const TrackAndDirection::_RoadAndDirection tad)
+    {
+        if (World::TrackData::getRoadMiscData(tad.id()).reverseLane != 1)
+        {
+            // 0x0047D6F2
+            bool isBackToFront = tad.isOvertaking();
+            auto startPos = pos;
+            if (tad.isReversed())
+            {
+                auto& roadSize = World::TrackData::getUnkRoad(tad.basicRad());
+                startPos += roadSize.pos;
+                if (roadSize.rotationEnd < 12)
+                {
+                    startPos -= World::Pos3{ kRotationOffset[roadSize.rotationEnd], 0 };
+                }
+                isBackToFront = !isBackToFront;
+            }
+            const auto startRot = tad.cardinalDirection();
+            const auto roadId = tad.id();
+            const World::RoadElement* compatibleElRoad = nullptr;
+
+            const auto& roadPieces = TrackData::getRoadPiece(roadId);
+            for (const auto& piece : roadPieces)
+            {
+                const auto curPos = startPos + World::Pos3(Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, startRot), piece.z);
+
+                const auto tile = TileManager::get(curPos);
+                for (auto& el : tile)
+                {
+                    auto* elRoad = el.as<World::RoadElement>();
+                    if (elRoad == nullptr)
+                    {
+                        continue;
+                    }
+                    if (std::abs(elRoad->baseZ() - (curPos.z / World::kSmallZStep)) > 4)
+                    {
+                        continue;
+                    }
+                    bool isCompatible = elRoad->rotation() == startRot
+                        || elRoad->sequenceIndex() == piece.index;
+                    bool isOverLap = !isCompatible
+                        || elRoad->roadId() != roadId;
+                    if (isCompatible)
+                    {
+                        compatibleElRoad = elRoad;
+                    }
+
+                    const uint8_t lane = isBackToFront ^ isOverLap ? 0b10 : 0b01;
+                    if (!(elRoad->unk4u() & lane))
+                    {
+                        continue;
+                    }
+
+                    auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                    if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
+                    {
+                        return RoadOccupationFlags::isOneWay | RoadOccupationFlags::isLaneOccupied;
+                    }
+                    return RoadOccupationFlags::isLaneOccupied;
+                }
+            }
+
+            if (compatibleElRoad == nullptr)
+            {
+                return RoadOccupationFlags::none;
+            }
+            auto* roadObj = ObjectManager::get<RoadObject>(compatibleElRoad->roadObjectId());
+            if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
+            {
+                return RoadOccupationFlags::isOneWay;
+            }
+            return RoadOccupationFlags::none;
+        }
+        else
+        {
+            // 0x0047D5EF
+            const auto tile = TileManager::get(pos);
+            const auto rotation = tad.cardinalDirection() * 2;
+
+            const auto dh = std::rotl(getRoadUnkThing()[tad.isOvertaking() ^ tad.isReversed()][tad.id()], rotation);
+
+            RoadOccupationFlags res = RoadOccupationFlags::none;
+            for (auto& el : tile)
+            {
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (std::abs(elRoad->baseZ() - (pos.z / World::kSmallZStep)) > 4)
+                {
+                    continue;
+                }
+                if (elRoad->hasStationElement())
+                {
+                    res |= RoadOccupationFlags::hasStation;
+                }
+                const auto al = std::rotl(getRoadUnkThing()[0][elRoad->roadId()], elRoad->rotation() * 2);
+                if (al & dh)
+                {
+                    if (elRoad->hasLevelCrossing())
+                    {
+                        res |= RoadOccupationFlags::hasLevelCrossing;
+                        if (elRoad->hasUnk7_10())
+                        {
+                            res |= RoadOccupationFlags::isLevelCrossingClosed;
+                        }
+                    }
+                    if (elRoad->unk4u() & 0b01)
+                    {
+                        res |= RoadOccupationFlags::isLaneOccupied;
+                    }
+                    const auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                    if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
+                    {
+                        res |= RoadOccupationFlags::isOneWay;
+                    }
+                }
+                const auto al2 = std::rotl(getRoadUnkThing()[1][elRoad->roadId()], elRoad->rotation() * 2);
+                if (al2 & dh)
+                {
+                    if (elRoad->hasLevelCrossing())
+                    {
+                        res |= RoadOccupationFlags::hasLevelCrossing;
+                        if (elRoad->hasUnk7_10())
+                        {
+                            res |= RoadOccupationFlags::isLevelCrossingClosed;
+                        }
+                    }
+                    if (elRoad->unk4u() & 0b10)
+                    {
+                        res |= RoadOccupationFlags::isLaneOccupied;
+                    }
+                    const auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                    if (roadObj->hasFlags(RoadObjectFlags::isOneWay))
+                    {
+                        res |= RoadOccupationFlags::isOneWay;
+                    }
+                }
+            }
+            return res;
+        }
+    }
+
+    struct Sub4AC94FState
+    {
+        uint16_t recursionDepth;      // 0x0113642C
+        uint32_t totalTrackWeighting; // 0x01136430
+        RoutingResult result;
+    };
+
+    struct Sub4AC94FTarget
+    {
+        StationId stationId; // 0x0113644A
+        Pos3 pos;            // 0x0113645A
+        uint16_t tad;        // 0x01136460
+        Pos3 reversePos;     // 0x01136462
+        uint16_t reverseTad; // 0x01136468
+    };
+
+    // 0x004AC9FD & 0x0047E5E8
+    // Returns true if this is the best route so far and we should stop processing this route.
+    // Unsure why we continue processing the route if it is not the best route
+    static bool processReachedTargetRouteEnd(Sub4AC94FState& state)
+    {
+        if (state.result.bestDistToTarget != 0 || state.totalTrackWeighting <= state.result.bestTrackWeighting)
+        {
+            state.result.bestDistToTarget = 0;
+            state.result.bestTrackWeighting = state.totalTrackWeighting;
+            if (state.result.signalState == RouteSignalState::null)
+            {
+                state.result.signalState = RouteSignalState::noSignals; // This is the No signals best root
+            }
+            return true;
+        }
+        return false;
+    }
+
+    // 0x0047E582
+    static void roadUpdateDistanceToTarget(const Pos3 curPos, const Sub4AC94FTarget& target, Sub4AC94FState& state)
+    {
+        const auto dist = Math::Vector::manhattanDistance3D(curPos, target.pos);
+        if (dist <= state.result.bestDistToTarget)
+        {
+            if (dist < state.result.bestDistToTarget || state.totalTrackWeighting <= state.result.bestTrackWeighting)
+            {
+                state.result.bestDistToTarget = static_cast<uint16_t>(dist);
+                state.result.bestTrackWeighting = state.totalTrackWeighting;
+            }
+        }
+    }
+
+    static void roadTargetedPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, const Sub4AC94FTarget& target, Sub4AC94FState& state)
+    {
+        // 0x01135FAE (copy in from the tc)
+        StationId curStationId = StationId::null;
+        uint8_t curStationObjId = 0;
+        if (state.recursionDepth >= 5)
+        {
+            return;
+        }
+        auto curPos = pos;
+        TrackAndDirection::_RoadAndDirection curTad{ 0, 0 };
+        curTad._data = tad;
+        for (; true;)
+        {
+            bool hasReachedTarget = false;
+            if (target.stationId != StationId::null)
+            {
+                if (curStationId == target.stationId)
+                {
+                    if (allowedStationTypes & (1U << curStationObjId))
+                    {
+                        const auto forwardRes = getRoadOccupation(curPos, curTad);
+                        if ((forwardRes & RoadOccupationFlags::hasStation) != RoadOccupationFlags::none)
+                        {
+                            if ((forwardRes & RoadOccupationFlags::isLaneOccupied) == RoadOccupationFlags::none)
+                            {
+                                hasReachedTarget = true;
+                            }
+                            else
+                            {
+                                auto reverseTad = curTad;
+                                reverseTad.setReversed(!reverseTad.isReversed());
+                                const auto backwardRes = getRoadOccupation(curPos, reverseTad);
+                                if ((backwardRes & RoadOccupationFlags::isLaneOccupied) == RoadOccupationFlags::none)
+                                {
+                                    hasReachedTarget = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (curPos == target.pos && (curTad.basicRad()) == target.tad)
+                {
+                    hasReachedTarget = true;
+                }
+                else if (curPos == target.reversePos && (curTad.basicRad()) == target.reverseTad)
+                {
+                    hasReachedTarget = true;
+                }
+            }
+            if (hasReachedTarget)
+            {
+                if (processReachedTargetRouteEnd(state))
+                {
+                    break;
+                }
+            }
+            else
+            {
+                roadUpdateDistanceToTarget(curPos, target, state);
+            }
+
+            // 0x0047E696
+            state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
+
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(curPos, curTad.basicRad());
+            auto rc = World::Track::getRoadConnectionsOneWay(nextPos, nextRotation, companyId, roadObjectId, requiredMods, queryMods);
+
+            if (rc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = rc.connections.front() & 0x807FU;
+            curStationId = rc.stationId;
+            curStationObjId = rc.stationObjectId;
+            if (rc.connections.size() == 1)
+            {
+                continue;
+            }
+
+            for (auto& connection : rc.connections)
+            {
+                const auto connectTad = connection & 0x807FU;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                roadTargetedPathingRecurse(curPos, connectTad, companyId, roadObjectId, requiredMods, queryMods, allowedStationTypes, target, recurseState);
+                // TODO: May need to copy over results
+                state.result.signalState = std::min(state.result.signalState, recurseState.result.signalState);
+                state.result.bestDistToTarget = recurseState.result.bestDistToTarget;
+                state.result.bestTrackWeighting = recurseState.result.bestTrackWeighting;
+            }
+            break;
+        }
+    }
+
+    // 0x0047E50A
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    // allowedStationTypes : 0x0112C30C
+    // target : see above
+    // state : see above
+    static RoutingResult roadTargetedPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, const Sub4AC94FTarget& target)
+    {
+        Sub4AC94FState state{};
+        state.result.bestDistToTarget = std::numeric_limits<uint16_t>::max();
+        state.result.bestTrackWeighting = std::numeric_limits<uint32_t>::max();
+        state.result.signalState = RouteSignalState::null;
+        roadTargetedPathingRecurse(pos, tad, companyId, roadObjectId, requiredMods, queryMods, allowedStationTypes, target, state);
+        return state.result;
+    }
+
+    constexpr static std::array<uint16_t, 8> k500234 = {
+        10,
+        0,
+        70,
+        70,
+        40,
+        40,
+        70,
+        70,
+    };
+
+    // 0x0047E2B6
+    static bool isRoadRoutingResultBetter(const RoutingResult& base, const RoutingResult& newResult)
+    {
+        // Routing results for road only have two signal states: null and noSignals (route found to destination)
+        // Unfortunately vanilla copied over some logic from track which has more signal
+        // state and so the logic here is a bit convoluted.
+
+        const bool newReachedTarget = newResult.bestDistToTarget == 0;
+        const bool baseReachedTarget = base.bestDistToTarget == 0;
+
+        // None of this logic makes much sense but i think it matches vanilla
+        if (newReachedTarget && newResult.signalState != RouteSignalState::null)
+        {
+            if (base.signalState == RouteSignalState::null)
+            {
+                return true;
+            }
+            if (!baseReachedTarget)
+            {
+                return true;
+            }
+
+            return newResult.bestTrackWeighting < base.bestTrackWeighting;
+        }
+
+        if (baseReachedTarget && base.signalState != RouteSignalState::null)
+        {
+            return false;
+        }
+
+        if (newResult.signalState == RouteSignalState::null)
+        {
+            if (newResult.bestDistToTarget < base.bestDistToTarget)
+            {
+                return true;
+            }
+            else if (newResult.bestDistToTarget == base.bestDistToTarget)
+            {
+                return newResult.bestTrackWeighting < base.bestTrackWeighting;
+            }
+            return false;
+        }
+        else
+        {
+            if (base.signalState == RouteSignalState::null)
+            {
+                return true;
+            }
+            if (newResult.bestDistToTarget < base.bestDistToTarget)
+            {
+                return true;
+            }
+            else if (newResult.bestDistToTarget == base.bestDistToTarget)
+            {
+                return newResult.bestTrackWeighting < base.bestTrackWeighting;
+            }
+            return false;
+        }
+
+        // TODO: Replace the above with the following when we want to diverge from vanilla
+        //
+        // if (newResult.signalState < base.signalState)
+        //{
+        //    return true;
+        //}
+        //// Road only has two signal states so we don't need to consider > base.signalState
+
+        // if (newResult.bestDistToTarget < base.bestDistToTarget)
+        //{
+        //     return true;
+        // }
+        // else if (newResult.bestDistToTarget == base.bestDistToTarget)
+        //{
+        //     return newResult.bestTrackWeighting < base.bestTrackWeighting;
+        // }
+        // return false;
+    }
+
     // 0x0047DFD0
-    static void sub_47DFD0(VehicleHead& head, World::Pos3 pos, Track::LegacyTrackConnections& connections, bool unk)
+    static uint16_t roadPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods, const uint32_t allowedStationTypes, bool isSecondRun, Sub4AC3D3State& state)
     {
         // ROAD only
-        static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
-        _113609C = connections;
 
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z | (unk ? 0x8000 : 0);
-        regs.esi = X86Pointer(&head);
-        call(0x0047DFD0, regs);
+        state.hadNewResult = 0;
+        // isSecondRun is a second run flag
+        if (!isSecondRun)
+        {
+            state.result.signalState = RouteSignalState::null;
+        }
+
+        // 0x01136438
+        uint32_t randVal = gPrng1().randNext();
+
+        const auto companyId = head.owner;
+        const auto roadObjId = head.trackType;
+
+        // TODO: Lots of similar code to track
+        auto orders = head.getCurrentOrders();
+        auto curOrder = orders.begin();
+        auto* stationOrder = curOrder->as<OrderStation>();
+        auto* routeOrder = curOrder->as<OrderRouteWaypoint>();
+        if (stationOrder != nullptr || routeOrder != nullptr)
+        {
+            Sub4AC94FTarget target{};
+            if (stationOrder != nullptr)
+            {
+                // 0x0047E0F3
+                target.stationId = stationOrder->getStation();
+                auto* station = StationManager::get(target.stationId);
+                target.pos = World::Pos3{ station->x, station->y, station->z };
+            }
+            else
+            {
+                // 0x0047E033
+                target.stationId = StationId::null;
+                target.pos = routeOrder->getWaypoint();
+                target.tad = (routeOrder->getTrackId() << 3) | routeOrder->getDirection();
+                const auto& trackSize = TrackData::getUnkRoad(target.tad);
+                target.reversePos = target.pos + trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    target.reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                target.reverseTad = target.tad ^ (1U << 2); // Reverse
+            }
+            // 0x004AC5F5
+
+            uint32_t bestConnection = 0;
+            for (auto i = 0U; i < rc.connections.size(); ++i)
+            {
+                const auto connection = rc.connections[i] & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
+                const auto connectionTad = connection & World::Track::AdditionalTaDFlags::basicRaDMask;
+
+                if ((pos == target.pos && connectionTad == target.tad)
+                    || (pos == target.reversePos && connectionTad == target.reverseTad))
+                {
+                    state.result.signalState = RouteSignalState::noSignals;
+                    state.result.bestDistToTarget = 0;
+                    state.result.bestTrackWeighting = 0;
+                    state.hadNewResult = 1;
+                    return rc.connections[i];
+                }
+
+                auto newResult = roadTargetedPathing(pos, connection, companyId, roadObjId, requiredMods, queryMods, allowedStationTypes, target);
+
+                if ((state.hadNewResult == 0 && !isSecondRun) || isRoadRoutingResultBetter(state.result, newResult))
+                {
+                    // 0x004AC807
+                    state.result = newResult;
+                    state.hadNewResult = 1;
+                    bestConnection = i;
+                }
+                // 0x004AC83C
+            }
+            return rc.connections[bestConnection];
+        }
+        else
+        {
+            uint16_t bestValue = 0;
+            uint16_t bestConnection = 0;
+            // aimless wander pathing
+            for (auto i = 0U; i < rc.connections.size(); ++i)
+            {
+                const auto connection = rc.connections[i] & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
+                const auto flags = roadAimlessWanderPathing(pos, connection, companyId, roadObjId, requiredMods, queryMods);
+
+                const auto newValue = k500234[flags] + (randVal & 0x7);
+                if (newValue >= bestValue)
+                {
+                    bestValue = newValue;
+                    bestConnection = i;
+                }
+                randVal = std::rotr(randVal, 3);
+            }
+
+            return rc.connections[bestConnection];
+        }
+    }
+
+    struct Sub47E72FState
+    {
+        uint16_t recursionDepth;      // 0x0113642C
+        uint32_t totalTrackWeighting; // 0x01136430
+        uint32_t bestTrackWeighting;  // 0x01136434
+    };
+
+    static void roadLongestPathingCalculateRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods, Sub47E72FState& state)
+    {
+        if (state.recursionDepth >= 5)
+        {
+            return;
+        }
+
+        auto curPos = pos;
+        TrackAndDirection::_RoadAndDirection curTad{ 0, 0 };
+        curTad._data = tad;
+        for (; true;)
+        {
+            // TODO: This is a vanilla mistake where it accesses the wrong data!
+            // CHANGE THIS WHEN WE DIVERGE FROM VANILLA
+            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
+            // state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
+
+            state.bestTrackWeighting = std::max(state.bestTrackWeighting, state.totalTrackWeighting);
+
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
+            auto tc = World::Track::getRoadConnections(nextPos, nextRotation, companyId, roadObjectId, requiredMods, queryMods);
+
+            if (tc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            if (tc.connections.size() == 1)
+            {
+                continue;
+            }
+            for (auto& connection : tc.connections)
+            {
+                const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                roadLongestPathingCalculateRecurse(curPos, connectTad, companyId, roadObjectId, requiredMods, queryMods, recurseState);
+                state.bestTrackWeighting = recurseState.bestTrackWeighting;
+            }
+            break;
+        }
+    }
+
+    // 0x0047E72F
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    static uint16_t roadLongestPathingCalculate(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        Sub47E72FState state{};
+        roadLongestPathingCalculateRecurse(pos, tad, companyId, roadObjectId, requiredMods, queryMods, state);
+        return state.bestTrackWeighting;
+    }
+
+    // 0x0047DF4A
+    // Finds the longest road at a junction
+    static uint16_t roadLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::RoadConnections& rc, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        // ROAD only
+
+        const auto companyId = head.owner;
+        const auto roadObjId = head.trackType;
+
+        uint16_t bestValue = 0;
+        uint16_t bestConnection = 0;
+        // No target pathing
+        for (auto i = 0U; i < rc.connections.size(); ++i)
+        {
+            const auto connection = rc.connections[i] & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
+            const auto newValue = roadLongestPathingCalculate(pos, connection, companyId, roadObjId, requiredMods, queryMods);
+
+            if (newValue >= bestValue)
+            {
+                bestValue = newValue;
+                bestConnection = i;
+            }
+        }
+
+        return rc.connections[bestConnection];
+    }
+
+    static void trackLongestPathingCalculateRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, Sub47E72FState& state)
+    {
+        if (state.recursionDepth >= 5)
+        {
+            return;
+        }
+
+        auto curPos = pos;
+        TrackAndDirection::_TrackAndDirection curTad{ 0, 0 };
+        curTad._data = tad;
+        for (; true;)
+        {
+            if (curTad._data & World::Track::AdditionalTaDFlags::hasSignal)
+            {
+                TrackAndDirection::_TrackAndDirection basicTad{ 0, 0 };
+                basicTad._data = curTad._data & ~World::Track::AdditionalTaDFlags::hasSignal;
+                const auto sigState = getSignalState(curPos, basicTad, trackType, 0);
+
+                if ((sigState & SignalStateFlags::occupied) != SignalStateFlags::none)
+                {
+                    break;
+                }
+                const auto reverseSigState = getSignalState(curPos, basicTad, trackType, 1U << 31);
+                if ((reverseSigState & SignalStateFlags::blockedNoRoute) != SignalStateFlags::none)
+                {
+                    break;
+                }
+            }
+
+            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
+
+            state.bestTrackWeighting = std::max(state.bestTrackWeighting, state.totalTrackWeighting);
+
+            auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
+            auto tc = World::Track::getTrackConnections(nextPos, nextRotation, companyId, trackType, requiredMods, queryMods);
+
+            if (tc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            if (tc.connections.size() == 1)
+            {
+                continue;
+            }
+            for (auto& connection : tc.connections)
+            {
+                const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                trackLongestPathingCalculateRecurse(curPos, connectTad, companyId, trackType, requiredMods, queryMods, recurseState);
+                state.bestTrackWeighting = recurseState.bestTrackWeighting;
+            }
+            break;
+        }
+    }
+
+    // 0x004ACBFF
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    static uint16_t trackLongestPathingCalculate(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        Sub47E72FState state{};
+        trackLongestPathingCalculateRecurse(pos, tad, companyId, trackType, requiredMods, queryMods, state);
+        return state.bestTrackWeighting;
+    }
+
+    // 0x004AC34D
+    // Finds the longest track at a junction
+    static uint16_t trackLongestPathing(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        // TRACK only
+
+        const auto companyId = head.owner;
+        const auto trackType = head.trackType;
+
+        uint16_t bestValue = 0;
+        uint16_t bestConnection = 0;
+        // No target pathing
+        for (auto i = 0U; i < tc.connections.size(); ++i)
+        {
+            const auto connection = tc.connections[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            const auto newValue = trackLongestPathingCalculate(pos, connection, companyId, trackType, requiredMods, queryMods);
+
+            if (newValue >= bestValue)
+            {
+                bestValue = newValue;
+                bestConnection = i;
+            }
+        }
+
+        return tc.connections[bestConnection];
+    }
+
+    static void trackAimlessWanderPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, Sub4AC884State& state)
+    {
+        if (state.recursionDepth >= 5)
+        {
+            return;
+        }
+        auto curPos = pos;
+        TrackAndDirection::_TrackAndDirection curTad{ 0, 0 };
+        curTad._data = tad;
+        for (; true;)
+        {
+            if (curTad._data & World::Track::AdditionalTaDFlags::hasSignal)
+            {
+                TrackAndDirection::_TrackAndDirection basicTad{ 0, 0 };
+                basicTad._data = curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask;
+                const auto sigState = getSignalState(curPos, basicTad, trackType, 0);
+
+                if ((sigState & SignalStateFlags::blockedNoRoute) != SignalStateFlags::none)
+                {
+                    state.unkFlags |= (1U << 0);
+                    break;
+                }
+                else if ((sigState & SignalStateFlags::occupied) != SignalStateFlags::none)
+                {
+                    state.unkFlags |= (1U << 2);
+                    break;
+                }
+
+                state.unkFlags |= (1U << 1);
+            }
+
+            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
+
+            auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
+            auto tc = World::Track::getTrackConnections(nextPos, nextRotation, companyId, trackType, requiredMods, queryMods);
+
+            if (tc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            if (tc.connections.size() == 1)
+            {
+                continue;
+            }
+            for (auto& connection : tc.connections)
+            {
+                const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                trackAimlessWanderPathingRecurse(curPos, connectTad, companyId, trackType, requiredMods, queryMods, recurseState);
+                state.unkFlags |= recurseState.unkFlags;
+            }
+            break;
+        }
+    }
+
+    // 0x004AC884
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    // state : see above
+    static uint16_t trackAimlessWanderPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        Sub4AC884State state{};
+        trackAimlessWanderPathingRecurse(pos, tad, companyId, trackType, requiredMods, queryMods, state);
+        return state.unkFlags;
+    }
+
+    // 0x004AC98B
+    static void trackUpdateDistanceToTarget(const Pos3 curPos, const Sub4AC94FTarget& target, Sub4AC94FState& state)
+    {
+        const uint32_t xDiff = std::abs(curPos.x - target.pos.x);
+        const uint32_t yDiff = std::abs(curPos.y - target.pos.y);
+        const uint32_t zDiff = std::abs(curPos.z - target.pos.z);
+
+        const auto dist = std::min(xDiff, yDiff) / 4 + std::max(xDiff, yDiff) + zDiff;
+        if (dist <= state.result.bestDistToTarget)
+        {
+            if (dist < state.result.bestDistToTarget || state.totalTrackWeighting <= state.result.bestTrackWeighting)
+            {
+                state.result.bestDistToTarget = static_cast<uint16_t>(dist);
+                state.result.bestTrackWeighting = state.totalTrackWeighting;
+            }
+        }
+    }
+
+    static void trackTargetedPathingRecurse(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, const Sub4AC94FTarget& target, Sub4AC94FState& state)
+    {
+        // 0x01135FAE (copy in from the tc)
+        StationId curStationId = StationId::null;
+        if (state.recursionDepth >= 5)
+        {
+            return;
+        }
+        auto curPos = pos;
+        TrackAndDirection::_TrackAndDirection curTad{ 0, 0 };
+        curTad._data = tad;
+        for (; true;)
+        {
+            bool hasReachedTarget = false;
+            if (target.stationId != StationId::null)
+            {
+                hasReachedTarget = (curStationId == target.stationId);
+            }
+            else
+            {
+                if (curPos == target.pos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == target.tad)
+                {
+                    hasReachedTarget = true;
+                }
+                else if (curPos == target.reversePos && (curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask) == target.reverseTad)
+                {
+                    hasReachedTarget = true;
+                }
+            }
+            if (hasReachedTarget)
+            {
+                // 0x004AC9FD
+                if (processReachedTargetRouteEnd(state))
+                {
+                    break;
+                }
+            }
+            else
+            {
+                // 0x004AC98B
+                trackUpdateDistanceToTarget(curPos, target, state);
+            }
+
+            // 0x004ACAAD
+            if (curTad._data & World::Track::AdditionalTaDFlags::hasSignal)
+            {
+                TrackAndDirection::_TrackAndDirection basicTad{ 0, 0 };
+                // This looks so wrong! Why aren't we just doing basic tad mask?
+                basicTad._data = curTad._data & ~World::Track::AdditionalTaDFlags::hasSignal;
+                const auto sigState = getSignalState(curPos, basicTad, trackType, 0);
+
+                if ((sigState & SignalStateFlags::blockedNoRoute) != SignalStateFlags::none)
+                {
+                    // Root blocked by one way signal facing opposite direction
+                    if (state.result.signalState == RouteSignalState::null)
+                    {
+                        state.result.signalState = RouteSignalState::signalNoRoute;
+                    }
+                    break;
+                }
+                else if ((sigState & SignalStateFlags::occupied) != SignalStateFlags::none)
+                {
+                    if (state.result.signalState == RouteSignalState::null)
+                    {
+                        state.result.signalState = RouteSignalState::signalBlockedTwoWay;
+                        // Its a one way signal facing our direction
+                        if ((sigState & SignalStateFlags::occupiedOneWay) != SignalStateFlags::none)
+                        {
+                            state.result.signalState = RouteSignalState::signalBlockedOneWay;
+                        }
+                    }
+                }
+                else
+                {
+                    // Has signal and signal is green
+                    if (state.result.signalState == RouteSignalState::null)
+                    {
+                        state.result.signalState = RouteSignalState::signalClear;
+                    }
+                }
+            }
+
+            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
+            if (state.totalTrackWeighting > 1280)
+            {
+                break;
+            }
+
+            auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(curPos, curTad._data & World::Track::AdditionalTaDFlags::basicTaDMask);
+            auto tc = World::Track::getTrackConnections(nextPos, nextRotation, companyId, trackType, requiredMods, queryMods);
+
+            if (tc.connections.empty())
+            {
+                break;
+            }
+            curPos = nextPos;
+            curTad._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+            curStationId = tc.stationId;
+            if (tc.connections.size() == 1)
+            {
+                continue;
+            }
+
+            auto unk11360CC = state.result.signalState;
+            for (auto& connection : tc.connections)
+            {
+                const auto connectTad = connection & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                auto recurseState = state;
+                recurseState.recursionDepth++;
+                trackTargetedPathingRecurse(curPos, connectTad, companyId, trackType, requiredMods, queryMods, target, recurseState);
+                // TODO: May need to copy over results
+                unk11360CC = std::min(unk11360CC, recurseState.result.signalState);
+                state.result.bestDistToTarget = recurseState.result.bestDistToTarget;
+                state.result.bestTrackWeighting = recurseState.result.bestTrackWeighting;
+            }
+            state.result.signalState = unk11360CC;
+            break;
+        }
+    }
+
+    // 0x004AC94F
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tad : bp
+    // companyId : bl
+    // trackType : bh
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    // target : see above
+    // state : see above
+    static RoutingResult trackTargetedPathing(const World::Pos3 pos, const uint16_t tad, const CompanyId companyId, const uint8_t trackType, const uint8_t requiredMods, const uint8_t queryMods, const Sub4AC94FTarget& target)
+    {
+        Sub4AC94FState state{};
+        state.result.bestDistToTarget = std::numeric_limits<uint16_t>::max();
+        state.result.bestTrackWeighting = std::numeric_limits<uint32_t>::max();
+        state.result.signalState = RouteSignalState::null;
+        trackTargetedPathingRecurse(pos, tad, companyId, trackType, requiredMods, queryMods, target, state);
+        return state.result;
+    }
+
+    // 0x004AC6DA
+    static bool isTrackRoutingResultBetter(const RoutingResult& base, const RoutingResult& newResult)
+    {
+        if (base.signalState == RouteSignalState::null)
+        {
+            return true;
+        }
+        const bool newReachedTarget = newResult.bestDistToTarget == 0;
+        const bool baseReachedTarget = base.bestDistToTarget == 0;
+        if (newReachedTarget && newResult.signalState == RouteSignalState::signalBlockedOneWay)
+        {
+            if (base.signalState <= RouteSignalState::signalClear && base.bestTrackWeighting > 288)
+            {
+                const auto adjustedWeighting = newResult.bestTrackWeighting * 5 / 4;
+                if (adjustedWeighting <= base.bestTrackWeighting)
+                {
+                    return true;
+                }
+            }
+        }
+        if (baseReachedTarget && base.signalState == RouteSignalState::signalBlockedOneWay)
+        {
+            if (newResult.signalState <= RouteSignalState::signalClear && newResult.bestTrackWeighting > 288)
+            {
+                const auto adjustedWeighting = base.bestTrackWeighting * 5 / 4;
+                if (adjustedWeighting <= newResult.bestTrackWeighting)
+                {
+                    return false;
+                }
+            }
+        }
+        if (!newReachedTarget && newResult.signalState == RouteSignalState::signalBlockedOneWay)
+        {
+            if (!baseReachedTarget && base.signalState == RouteSignalState::signalClear)
+            {
+                const auto adjustedDist = newResult.bestDistToTarget * 5 / 4;
+                if (adjustedDist <= base.bestDistToTarget
+                    || newResult.bestDistToTarget + 320 <= base.bestDistToTarget)
+                {
+                    return true;
+                }
+            }
+        }
+        if (!baseReachedTarget && base.signalState == RouteSignalState::signalBlockedOneWay)
+        {
+            if (!newReachedTarget && newResult.signalState == RouteSignalState::signalClear)
+            {
+                const auto adjustedDist = base.bestDistToTarget * 5 / 4;
+                if (adjustedDist <= newResult.bestDistToTarget
+                    || base.bestDistToTarget + 320 <= newResult.bestDistToTarget)
+                {
+                    return false;
+                }
+            }
+        }
+        if (newReachedTarget && !baseReachedTarget)
+        {
+            return true;
+        }
+        if (!newReachedTarget && baseReachedTarget)
+        {
+            return false;
+        }
+        if (newResult.signalState < base.signalState)
+        {
+            return true;
+        }
+        if (newResult.signalState > base.signalState)
+        {
+            return false;
+        }
+        if (newResult.bestDistToTarget < base.bestDistToTarget)
+        {
+            return true;
+        }
+        else if (newResult.bestDistToTarget == base.bestDistToTarget)
+        {
+            if (newResult.bestTrackWeighting <= base.bestTrackWeighting)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // 0x004AC3D3
-    static void sub_4AC3D3(VehicleHead& head, World::Pos3 pos, Track::LegacyTrackConnections& connections, bool unk)
+    // pos.x : ax
+    // pos.y : cx
+    // pos.z : dx
+    // tc : 0x0113609C as legacy connections
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    // isSecondRun : dx & 0x8000
+    // state : see above
+    // return ebx
+    static uint16_t trackPathing(VehicleHead& head, const World::Pos3 pos, const Track::TrackConnections& tc, const uint8_t requiredMods, const uint8_t queryMods, bool isSecondRun, Sub4AC3D3State& state)
     {
         // TRACK only
-        static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
-        _113609C = connections;
 
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z | (unk ? 0x8000 : 0);
-        regs.esi = X86Pointer(&head);
-        call(0x004AC3D3, regs);
+        state.hadNewResult = 0;
+        // isSecondRun is a second run flag
+        if (!isSecondRun)
+        {
+            state.result.signalState = RouteSignalState::null;
+        }
+
+        // 0x01136438
+        uint32_t randVal = 0U;
+        if (Tutorial::state() == Tutorial::State::none)
+        {
+            randVal = gPrng1().randNext();
+        }
+
+        const auto companyId = head.owner;
+        const auto trackType = head.trackType;
+
+        auto orders = head.getCurrentOrders();
+        auto curOrder = orders.begin();
+        auto* stationOrder = curOrder->as<OrderStation>();
+        auto* routeOrder = curOrder->as<OrderRouteWaypoint>();
+        if (stationOrder != nullptr || routeOrder != nullptr)
+        {
+            Sub4AC94FTarget target{};
+            if (stationOrder != nullptr)
+            {
+                // 0x004AC504
+                target.stationId = stationOrder->getStation();
+                auto* station = StationManager::get(target.stationId);
+                target.pos = World::Pos3{ station->x, station->y, station->z };
+            }
+            else
+            {
+                // 0x004AC441
+                target.stationId = StationId::null;
+                target.pos = routeOrder->getWaypoint();
+                target.tad = (routeOrder->getTrackId() << 3) | routeOrder->getDirection();
+                const auto& trackSize = TrackData::getUnkTrack(target.tad);
+                target.reversePos = target.pos + trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    target.reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+                target.reverseTad = target.tad ^ (1U << 2); // Reverse
+            }
+            // 0x004AC5F5
+
+            uint32_t bestConnection = 0;
+            for (auto i = 0U; i < tc.connections.size(); ++i)
+            {
+                const auto connection = tc.connections[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                const auto connectionTad = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+                if ((pos == target.pos && connectionTad == target.tad)
+                    || (pos == target.reversePos && connectionTad == target.reverseTad))
+                {
+                    state.result.signalState = RouteSignalState::noSignals;
+                    state.result.bestDistToTarget = 0;
+                    state.result.bestTrackWeighting = 0;
+                    state.hadNewResult = 1;
+                    return tc.connections[i];
+                }
+
+                auto newResult = trackTargetedPathing(pos, connection, companyId, trackType, requiredMods, queryMods, target);
+                if (newResult.signalState == RouteSignalState::null)
+                {
+                    newResult.signalState = RouteSignalState::signalClear;
+                }
+
+                if (isTrackRoutingResultBetter(state.result, newResult))
+                {
+                    // 0x004AC807
+                    state.result = newResult;
+                    state.hadNewResult = 1;
+                    bestConnection = i;
+                }
+                // 0x004AC83C
+            }
+            return tc.connections[bestConnection];
+        }
+        else
+        {
+            uint16_t bestValue = 0;
+            uint16_t bestConnection = 0;
+            // aimless wander pathing
+            for (auto i = 0U; i < tc.connections.size(); ++i)
+            {
+                const auto connection = tc.connections[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                const auto flags = trackAimlessWanderPathing(pos, connection, companyId, trackType, requiredMods, queryMods);
+
+                const auto value = k500234[flags] + (randVal & 0x7);
+                if (value >= bestValue)
+                {
+                    bestValue = value;
+                    bestConnection = i;
+                }
+                randVal = std::rotr(randVal, 3);
+            }
+
+            return tc.connections[bestConnection];
+        }
     }
 
     // 0x004ACCE6
-    static bool trackSub_4ACCE6(VehicleHead& head)
+    static bool trackPathingShouldReverse(VehicleHead& head)
     {
         auto train = Vehicle(head);
 
-        _113601A[0] = head.var_53;        // TODO: Remove after sub_4AC3D3
-        _113601A[1] = train.veh1->var_49; // TODO: Remove after sub_4AC3D3
+        const auto requiredMods = head.var_53;
+        const auto queryMods = train.veh1->var_49;
+        Sub4AC3D3State state{};
         {
             auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.track._data);
             auto tc = World::Track::getTrackConnections(nextPos, nextRotation, head.owner, head.trackType, head.var_53, train.veh1->var_49);
@@ -3812,9 +6080,7 @@ namespace OpenLoco::Vehicles
             {
                 return false;
             }
-            Track::LegacyTrackConnections legacyTc{};
-            Track::toLegacyConnections(tc, legacyTc);
-            sub_4AC3D3(head, nextPos, legacyTc, false);
+            trackPathing(head, nextPos, tc, requiredMods, queryMods, false, state);
         }
         {
             auto tailTaD = train.tail->trackAndDirection.track._data;
@@ -3833,16 +6099,13 @@ namespace OpenLoco::Vehicles
                 return false;
             }
 
-            _1136458 = 0;
-            Track::LegacyTrackConnections legacyTc{};
-            Track::toLegacyConnections(tailTc, legacyTc);
-            sub_4AC3D3(head, nextTailPos, legacyTc, true);
-            return _1136458 != 0;
+            trackPathing(head, nextTailPos, tailTc, requiredMods, queryMods, true, state);
+            return state.hadNewResult != 0;
         }
     }
 
     // 0x004ACDE0
-    static bool roadSub_4ACDE0(VehicleHead& head)
+    static bool roadPathingShouldReverse(VehicleHead& head)
     {
         auto train = Vehicle(head);
         if (head.trackType != 0xFFU)
@@ -3854,22 +6117,22 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        _113601A[0] = head.var_53;        // TODO: Remove after sub_47DFD0
-        _113601A[1] = train.veh1->var_49; // TODO: Remove after sub_47DFD0
+        const auto requiredMods = head.var_53;
+        const auto queryMods = train.veh1->var_49;
+        const auto allowedStationTypes = *_vehicleUpdate_compatibleRoadStationTypes;
+        Sub4AC3D3State state{};
         {
-            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road.basicRad());
             const auto rc = World::Track::getRoadConnections(nextPos, nextRotation, head.owner, head.trackType, head.var_53, train.veh1->var_49);
             if (rc.connections.empty())
             {
                 return false;
             }
-            Track::LegacyTrackConnections connections{};
-            Track::toLegacyConnections(rc, connections);
 
-            sub_47DFD0(head, nextPos, connections, false);
+            roadPathing(head, nextPos, rc, requiredMods, queryMods, allowedStationTypes, false, state);
         }
         {
-            auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
+            auto tailTaD = train.tail->trackAndDirection.road.basicRad();
             const auto& trackSize = TrackData::getUnkRoad(tailTaD);
             const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
             tailTaD ^= (1U << 2); // Reverse
@@ -3881,33 +6144,85 @@ namespace OpenLoco::Vehicles
                 return false;
             }
 
-            Track::LegacyTrackConnections tailConnections{};
-            Track::toLegacyConnections(tailRc, tailConnections);
-            _1136458 = 0;
-            sub_47DFD0(head, nextTailPos, tailConnections, true);
-            return _1136458 != 0;
+            roadPathing(head, nextTailPos, tailRc, requiredMods, queryMods, allowedStationTypes, true, state);
+            return state.hadNewResult != 0;
         }
     }
 
     // 0x004ACCDC
-    bool VehicleHead::sub_4ACCDC()
+    bool VehicleHead::pathingShouldReverse()
     {
         if (mode == TransportMode::rail)
         {
-            return trackSub_4ACCE6(*this);
+            return trackPathingShouldReverse(*this);
         }
         else
         {
-            return roadSub_4ACDE0(*this);
+            return roadPathingShouldReverse(*this);
         }
     }
 
     // 0x004AD93A
     void VehicleHead::sub_4AD93A()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AD93A, regs);
+        if (mode == TransportMode::road)
+        {
+            sub_47C722(*this);
+            return;
+        }
+
+        var_38 |= Flags38::unk_2;
+        auto train = Vehicle(*this);
+        auto& veh1 = *train.veh1;
+
+        const auto companyId = veh1.owner;
+        const auto trackObjId = veh1.trackType;
+        auto pos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
+
+        bool unk = false;
+        RoutingManager::RingView ring(veh1.routingHandle);
+        for (auto& handle : ring)
+        {
+            const auto routing = RoutingManager::getRouting(handle);
+
+            TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+            tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+            const auto hasSignal = routing & World::Track::AdditionalTaDFlags::hasSignal;
+            if (hasSignal || !unk)
+            {
+                TrackAndDirection::_TrackAndDirection signaledTad = tad;
+                signaledTad._data |= (routing & World::Track::AdditionalTaDFlags::hasSignal);
+                sub_4A2AD7(pos, signaledTad, companyId, trackObjId);
+            }
+            if (handle != veh1.routingHandle)
+            {
+                if (hasSignal)
+                {
+                    setSignalState(pos, tad, trackObjId, 0);
+                }
+                leaveLevelCrossing(pos, tad, 9);
+            }
+
+            pos += World::TrackData::getUnkTrack(tad._data).pos;
+
+            // Clear out all routings after the first one
+            if (handle != veh1.routingHandle)
+            {
+                RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+            }
+        }
+
+        tileX = veh1.tileX;
+        tileY = veh1.tileY;
+        tileBaseZ = veh1.tileBaseZ;
+        routingHandle = veh1.routingHandle;
+        remainingDistance = veh1.remainingDistance;
+        var_3C = veh1.var_3C;
+        var_38 &= ~Flags38::unk_2;
+        subPosition = veh1.subPosition;
+        trackAndDirection = veh1.trackAndDirection;
+        moveTo(veh1.position);
     }
 
     static StationId tryFindStationAt(VehicleBogie* bogie)
@@ -4035,10 +6350,283 @@ namespace OpenLoco::Vehicles
     // 0x004ADB47
     void VehicleHead::sub_4ADB47(bool unk)
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.eax = unk ? 1 : 0;
-        call(0x004ADB47, regs);
+        Vehicle train(*this);
+        for (auto& car : train.cars)
+        {
+            for (auto& component : car)
+            {
+                component.front->invalidateSprite();
+                component.back->invalidateSprite();
+                component.body->invalidateSprite();
+            }
+        }
+        sub_4AD778();
+        if (status == Status::approaching)
+        {
+            status = Status::travelling;
+        }
+
+        if (mode == TransportMode::road)
+        {
+            auto routingPos = World::Pos3{ train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep };
+            auto routingRing = RoutingManager::RingView(train.tail->routingHandle);
+            for (auto& handle : routingRing)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+                TrackAndDirection::_RoadAndDirection tad{ 0, 0 };
+                tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+                sub_47D959(routingPos, tad, false);
+                routingPos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
+            }
+
+            // Routings are back to front with regard to walking the length of the train
+            // that is why we copy in reverse order
+            // copy all the routings from underneath the train (veh2.routingHandle to tail.routingHandle in reverse)
+            sfl::static_vector<uint16_t, 64> copiedRoutings{};
+            {
+                auto iterHandle = train.veh2->routingHandle;
+                auto endHandle = train.tail->routingHandle;
+                while (iterHandle.getIndex() != endHandle.getIndex())
+                {
+                    copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
+                    iterHandle.setIndex((iterHandle.getIndex() - 1) & 0x3F);
+                }
+                copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
+            }
+            // paste the routings at the start of the table with some reverse adjustments
+            {
+                auto iterHandle = train.veh2->routingHandle;
+                iterHandle.setIndex(0);
+                for (auto& routing : copiedRoutings)
+                {
+                    // Reverse the routing and reverse the lane
+                    routing ^= (1 << 2 | World::Track::AdditionalTaDFlags::isOvertaking);
+                    if (routing & World::Track::AdditionalTaDFlags::isChangingLane)
+                    {
+                        routing ^= World::Track::AdditionalTaDFlags::isOvertaking;
+                        if (!(routing & World::Track::AdditionalTaDFlags::isOvertaking))
+                        {
+                            routing ^= World::Track::AdditionalTaDFlags::isChangingLane;
+                        }
+                    }
+                    // Clear ???
+                    routing &= ~(1 << 14);
+                    RoutingManager::setRouting(iterHandle, routing);
+                    iterHandle.setIndex(iterHandle.getIndex() + 1);
+                }
+                while (iterHandle.getIndex() != 0)
+                {
+                    RoutingManager::freeRouting(iterHandle);
+                    iterHandle.setIndex(iterHandle.getIndex() + 1);
+                }
+            }
+        }
+        else
+        {
+            // 0x4ADB84
+            auto routingPos = World::Pos3{ train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep };
+            auto routingRing = RoutingManager::RingView(train.tail->routingHandle);
+            for (auto& handle : routingRing)
+            {
+                const auto routing = RoutingManager::getRouting(handle);
+
+                TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+                tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+                if (routing & World::Track::AdditionalTaDFlags::hasSignal)
+                {
+                    setSignalState(routingPos, tad, train.tail->trackType, 0);
+                }
+                routingPos += World::TrackData::getUnkTrack(tad._data).pos;
+            }
+
+            // Routings are back to front with regard to walking the length of the train
+            // that is why we copy in reverse order
+            // copy all the routings from underneath the train (veh2.routingHandle to tail.routingHandle in reverse)
+            sfl::static_vector<uint16_t, 64> copiedRoutings{};
+            {
+                auto iterHandle = train.veh2->routingHandle;
+                auto endHandle = train.tail->routingHandle;
+                while (iterHandle.getIndex() != endHandle.getIndex())
+                {
+                    copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
+                    iterHandle.setIndex((iterHandle.getIndex() - 1) & 0x3F);
+                }
+                copiedRoutings.push_back(RoutingManager::getRouting(iterHandle));
+            }
+            // paste the routings at the start of the table with some reverse adjustments
+            {
+                auto iterHandle = train.veh2->routingHandle;
+                iterHandle.setIndex(0);
+                for (auto& routing : copiedRoutings)
+                {
+                    // Reverse the routing
+                    routing ^= (1 << 2);
+                    // Clear ???
+                    routing &= ~(1 << 14);
+                    RoutingManager::setRouting(iterHandle, routing);
+                    iterHandle.setIndex(iterHandle.getIndex() + 1);
+                }
+                while (iterHandle.getIndex() != 0)
+                {
+                    RoutingManager::freeRouting(iterHandle);
+                    iterHandle.setIndex(iterHandle.getIndex() + 1);
+                }
+            }
+        }
+        // Note: We should really at this point zero everyones routing handles on the train
+        // but we do it later on. Lets hope we don't exit early...
+
+        // 0x4ADDBE
+
+        if (!unk)
+        {
+            VehicleBody* lastBody = nullptr;
+            for (auto& car : train.cars)
+            {
+                for (auto& component : car)
+                {
+                    lastBody = component.body;
+                }
+            }
+            auto* lastObj = ObjectManager::get<VehicleObject>(lastBody->objectId);
+            bool shouldReverseTrainCars = [&lastObj, this]() {
+                if (hasVehicleFlags(VehicleFlags::shuntCheat) && hasVehicleFlags(VehicleFlags::manualControl))
+                {
+                    return true;
+                }
+                if (lastObj->hasFlags(VehicleObjectFlags::flag_08))
+                {
+                    return false;
+                }
+                if (lastObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+                {
+                    return true;
+                }
+                if (lastObj->power == 0)
+                {
+                    return false;
+                }
+                return !lastObj->hasFlags(VehicleObjectFlags::centerPosition);
+            }();
+            if (shouldReverseTrainCars)
+            {
+                // 0x004ADE36
+                // Reverse the train and flip the cars
+                VehicleBase* dest = train.tail;
+                // Can't use the train cars iterator as we are shuffling it about
+                // The front of the train will keep changing as we move the cars to the end
+                for (VehicleBase* vehicleComponent = EntityManager::get<VehicleBase>(train.veh2->nextCarId); vehicleComponent != dest; vehicleComponent = EntityManager::get<VehicleBase>(train.veh2->nextCarId))
+                {
+                    auto* bogie = vehicleComponent->asVehicleBogie();
+                    if (bogie == nullptr)
+                    {
+                        break;
+                    }
+                    auto* newFront = flipCar(*bogie);
+                    insertCarBefore(*newFront, *dest);
+                    dest = newFront;
+                }
+                // TRAIN invalid after this so re-get it
+                train = Vehicle(*this);
+            }
+        }
+        // 0x004ADE8A
+
+        applyVehicleObjectLength(train);
+        auto newTad = train.veh2->trackAndDirection;
+        auto newSubPos = 0;
+        auto newPos = World::Pos3{ train.veh2->tileX, train.veh2->tileY, train.veh2->tileBaseZ * World::kSmallZStep };
+
+        // Very similar to code in VehicleManager::placeDownVehicle
+        if (mode == TransportMode::road)
+        {
+            const auto subPositionLength = World::TrackData::getRoadSubPositon(newTad.road._data).size();
+            newSubPos = subPositionLength - 1 - train.veh2->subPosition;
+
+            const auto& roadSize = World::TrackData::getUnkRoad(newTad.road.basicRad());
+            newPos += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                newPos -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+            newTad.road.setReversed(!newTad.road.isReversed());
+            newTad.road._data ^= World::Track::AdditionalTaDFlags::isOvertaking;
+            if (newTad.road.isChangingLane())
+            {
+                newTad.road._data ^= World::Track::AdditionalTaDFlags::isOvertaking;
+                if (!newTad.road.isOvertaking())
+                {
+                    newTad.road._data ^= World::Track::AdditionalTaDFlags::isChangingLane;
+                }
+            }
+        }
+        else
+        {
+            const auto subPositionLength = World::TrackData::getTrackSubPositon(newTad.track._data).size();
+            newSubPos = subPositionLength - 1 - train.veh2->subPosition;
+
+            const auto& trackSize = World::TrackData::getUnkTrack(newTad.track._data);
+            newPos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                newPos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            newTad.track.setReversed(!newTad.track.isReversed());
+        }
+
+        // Ahh great finally zeroing the routing handles
+        train.applyToComponents([newTad, newPos, newSubPos](auto& component) {
+            auto zeroedHandle = component.routingHandle;
+            zeroedHandle.setIndex(0);
+            component.routingHandle = zeroedHandle;
+            component.tileX = newPos.x;
+            component.tileY = newPos.y;
+            component.tileBaseZ = newPos.z / World::kSmallZStep;
+            component.subPosition = newSubPos;
+            component.trackAndDirection = newTad;
+        });
+
+        if (mode == TransportMode::road)
+        {
+            newTad.road._data &= World::Track::AdditionalTaDFlags::basicTaDMask;
+            sub_47D959(newPos, newTad.road, true);
+        }
+
+        auto& moveInfo = mode == TransportMode::road ? World::TrackData::getRoadSubPositon(trackAndDirection.road._data)[subPosition]
+                                                     : World::TrackData::getTrackSubPositon(trackAndDirection.track._data)[subPosition];
+
+        const auto newEntityPos = newPos + moveInfo.loc;
+
+        train.applyToComponents([newEntityPos, &moveInfo](auto& component) {
+            component.moveTo(newEntityPos);
+            component.spritePitch = moveInfo.pitch;
+            component.spriteYaw = moveInfo.yaw;
+        });
+
+        var_3C = -train.veh2->remainingDistance;
+        train.veh1->var_3C = -train.veh2->remainingDistance;
+
+        if (positionVehicleOnTrack(*this))
+        {
+            vehicleFlags |= VehicleFlags::commandStop;
+            liftUpVehicle();
+            return;
+        }
+
+        connectJacobsBogies(*this);
+        if (mode != TransportMode::road)
+        {
+            auto headPos = World::Pos3{ tileX, tileY, tileBaseZ * World::kSmallZStep };
+            auto simplifiedTad = trackAndDirection;
+            simplifiedTad.track._data &= World::Track::AdditionalTaDFlags::basicTaDMask;
+            leaveLevelCrossing(headPos, simplifiedTad.track, 8);
+        }
+
+        var_3C = 0;
+        train.veh1->var_3C = 0;
+        train.veh1->targetSpeed = 0_mph;
+        train.veh2->currentSpeed = 0_mph;
+        updateTrainProperties();
     }
 
     // 0x004BADE4
@@ -4498,5 +7086,91 @@ namespace OpenLoco::Vehicles
             totalRunCost += runCost;
         }
         return totalRunCost;
+    }
+
+    // 0x004AE133
+    // esi : head
+    //
+    // return eax : bool
+    bool positionVehicleOnTrack(VehicleHead& head)
+    {
+        Vehicle train(head);
+        _vehicleUpdate_1 = train.veh1;
+        _vehicleUpdate_2 = train.veh2;
+        for (auto i = 0; i < 32; ++i)
+        {
+            const auto res = head.sub_4ACEE7(0, 0);
+            if (res.status != 0)
+            {
+                break;
+            }
+        }
+
+        bool unkFlag = false;
+        train.applyToComponents([&unkFlag](auto& veh) {
+            if ((veh.var_38 & Flags38::unk_0) != Flags38::none)
+            {
+                if (!veh.isVehicleBody())
+                {
+                    throw std::runtime_error("Expected body component");
+                }
+                auto* vehBody = veh.asVehicleBody();
+                vehBody->sub_4AC255(_vehicleUpdate_backBogie, _vehicleUpdate_frontBogie);
+            }
+            else
+            {
+                resetUpdateVar1136114Flags();
+                int32_t remainingDistance = 0;
+                if (veh.isVehicle1() && veh.mode == TransportMode::road)
+                {
+                    auto* veh1 = veh.asVehicle1();
+                    remainingDistance = veh1->updateRoadMotion(0);
+                }
+                else
+                {
+                    remainingDistance = veh.updateTrackMotion(0);
+                }
+
+                if (!veh.isVehicleHead())
+                {
+                    if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::unk_m03))
+                    {
+                        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03) || remainingDistance >= 2454)
+                        {
+                            unkFlag = true;
+                        }
+                    }
+                }
+                if (veh.isVehicleBogie())
+                {
+                    auto* vehBogie = veh.asVehicleBogie();
+                    _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
+                    _vehicleUpdate_backBogie = vehBogie;
+                }
+            }
+            veh.invalidateSprite();
+        });
+        // 0x004AE1E4
+
+        if (head.mode != TransportMode::road)
+        {
+            const auto pos = World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep);
+            const auto routing = RoutingManager::getRouting(head.routingHandle);
+            auto tad = TrackAndDirection::_TrackAndDirection(0, 0);
+            tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+            auto reverseTad = tad;
+            reverseTad.setReversed(!reverseTad.isReversed());
+            const auto& trackSize = TrackData::getUnkTrack(tad._data);
+            auto reversePos = pos + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+
+            sub_4A2AD7(reversePos, reverseTad, head.owner, head.trackType);
+            sub_4A2AD7(pos, tad, head.owner, head.trackType);
+        }
+        return unkFlag;
     }
 }

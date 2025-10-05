@@ -110,26 +110,26 @@ namespace OpenLoco::Vehicles
 
         switch (vehicleObject->animation[0].type)
         {
-            case SimpleAnimationType::none:
+            case EmitterAnimationType::none:
                 break;
-            case SimpleAnimationType::steam_puff1:
-            case SimpleAnimationType::steam_puff2:
-            case SimpleAnimationType::steam_puff3:
+            case EmitterAnimationType::steam_puff1:
+            case EmitterAnimationType::steam_puff2:
+            case EmitterAnimationType::steam_puff3:
                 steamPuffsAnimationUpdate(0, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::diesel_exhaust1:
+            case EmitterAnimationType::diesel_exhaust1:
                 dieselExhaust1AnimationUpdate(0, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::electric_spark1:
+            case EmitterAnimationType::electric_spark1:
                 electricSpark1AnimationUpdate(0, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::electric_spark2:
+            case EmitterAnimationType::electric_spark2:
                 electricSpark2AnimationUpdate(0, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::diesel_exhaust2:
+            case EmitterAnimationType::diesel_exhaust2:
                 dieselExhaust2AnimationUpdate(0, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::ship_wake:
+            case EmitterAnimationType::ship_wake:
                 shipWakeAnimationUpdate(0, emitterHorizontalPos);
                 break;
             default:
@@ -905,26 +905,26 @@ namespace OpenLoco::Vehicles
 
         switch (vehicleObject->animation[1].type)
         {
-            case SimpleAnimationType::none:
+            case EmitterAnimationType::none:
                 return;
-            case SimpleAnimationType::steam_puff1:
-            case SimpleAnimationType::steam_puff2:
-            case SimpleAnimationType::steam_puff3:
+            case EmitterAnimationType::steam_puff1:
+            case EmitterAnimationType::steam_puff2:
+            case EmitterAnimationType::steam_puff3:
                 steamPuffsAnimationUpdate(1, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::diesel_exhaust1:
+            case EmitterAnimationType::diesel_exhaust1:
                 dieselExhaust1AnimationUpdate(1, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::electric_spark1:
+            case EmitterAnimationType::electric_spark1:
                 electricSpark1AnimationUpdate(1, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::electric_spark2:
+            case EmitterAnimationType::electric_spark2:
                 electricSpark2AnimationUpdate(1, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::diesel_exhaust2:
+            case EmitterAnimationType::diesel_exhaust2:
                 dieselExhaust2AnimationUpdate(1, emitterHorizontalPos);
                 break;
-            case SimpleAnimationType::ship_wake:
+            case EmitterAnimationType::ship_wake:
                 shipWakeAnimationUpdate(1, emitterHorizontalPos);
                 break;
             default:
@@ -1373,13 +1373,13 @@ namespace OpenLoco::Vehicles
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;
 
-        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
+        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->shipWakeSpacing, yaw) / 2;
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 
         Exhaust::create(loc, vehicleObject->animation[num].objectId);
 
-        if (vehicleObject->var_113 == 0)
+        if (vehicleObject->shipWakeSpacing == 0)
         {
             return;
         }
@@ -1387,7 +1387,7 @@ namespace OpenLoco::Vehicles
         // 90 degrees C.C.W.
         yaw = (spriteYaw - 16) & 0x3F;
 
-        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
+        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->shipWakeSpacing, yaw) / 2;
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 

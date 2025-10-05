@@ -109,7 +109,7 @@ namespace OpenLoco::GameCommands
             elTree->setColour(args.colour);
             elTree->setIsDying(false);
             elTree->setSnow(false);
-            elTree->setSeason(treeObj->var_3E);
+            elTree->setSeason(treeObj->currentSeason);
             elTree->setUnk7l(7);
             elTree->setClearZ(treeObj->initialHeight / World::kSmallZStep + elTree->baseZ());
             Scenario::getOptions().madeAnyChanges = 1;

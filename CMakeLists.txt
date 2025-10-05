@@ -26,15 +26,22 @@ endif (CCache_FOUND)
 
 include(FetchContent)
 
-# On windows VCPKG is used to get all dependencies other platforms can use it as well by specifying it
-# in the CMAKE_TOOLCHAIN_FILE
 if (WIN32)
+    set(OPENLOCO_USE_VCPKG_DEFAULT YES)
+else()
+    set(OPENLOCO_USE_VCPKG_DEFAULT NO)
+endif()
+option(OPENLOCO_USE_VCPKG "Use vcpkg for dependencies and toolchain" ${OPENLOCO_USE_VCPKG_DEFAULT})
+
+
+# On windows VCPKG is used to get all dependencies other platforms can use it as well by setting OPENLOCO_USE_VCPKG
+if (OPENLOCO_USE_VCPKG)
     if (EXISTS ${VCPKG_ROOT})
         set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
     else()
         # Provide a message for first time invocations
         if (NOT CMAKE_TOOLCHAIN_FILE)
-            message("VCPKG not installed on windows fetching and building VCPKG. Warning may take a while on slow connections.")
+            message("VCPKG not installed, fetching and building VCPKG. Warning may take a while on slow connections.")
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
@@ -46,7 +53,7 @@ if (WIN32)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.07)
+project(${PROJECT} LANGUAGES CXX VERSION 25.09)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
@@ -163,8 +170,8 @@ if (UNIX)
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.3/objects.zip
-            URL_HASH SHA256=c08937691b9d7a956305864b535c6e4537a84b81a9dc5d4c9016edff83dcceb6)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.4/objects.zip
+            URL_HASH SHA256=37283c621c36fff6035079a04af1e1fa6f2b314cddb65f8f3e0451867917776a)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)

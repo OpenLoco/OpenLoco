@@ -38,15 +38,18 @@
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Interop/Interop.hpp>
+
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::IndustryList
 {
-    static currency32_t _dword_E0C39C;    // 0x00E0C39C
-    static bool _industryGhostPlaced;     // 0x00E0C3D9
-    static World::Pos2 _industryGhostPos; // 0x00E0C3C2
-    static uint8_t _industryGhostType;    // 0x00E0C3DA
-    static IndustryId _industryGhostId;   // 0x00E0C3DB
-    static Core::Prng _placementPrng;     // 0x00E0C394
+    static Core::Prng _placementPrng;           // 0x00E0C394
+    static currency32_t _industryPlacementCost; // 0x00E0C39C
+    static bool _industryGhostPlaced;           // 0x00E0C3D9
+    static World::Pos2 _industryGhostPos;       // 0x00E0C3C2
+    static uint8_t _industryGhostType;          // 0x00E0C3DA
+    static IndustryId _industryGhostId;         // 0x00E0C3DB
 
     static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
 
@@ -448,9 +451,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458108
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = kRowHeight * self.var_83C;
+            scrollHeight = kRowHeight * self.var_83C;
         }
 
         // 0x00457D2A
@@ -770,10 +773,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (self.var_846 == 0xFFFF)
             {
-                industryCost = _dword_E0C39C;
+                industryCost = _industryPlacementCost;
             }
 
-            if ((self.var_846 == 0xFFFF && _dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self.var_846 != 0xFFFF)
+            if ((self.var_846 == 0xFFFF && _industryPlacementCost == static_cast<currency32_t>(0x80000000)) || self.var_846 != 0xFFFF)
             {
                 industryCost = Economy::getInflationAdjustedCost(industryObj->costFactor, industryObj->costIndex, 3);
             }
@@ -839,8 +842,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
-                    self.savedView.mapX = -16;
-                    _dword_E0C39C = 0x80000000;
+                    self.expandContentCounter = -16;
+                    _industryPlacementCost = 0x80000000;
                     self.invalidate();
                     break;
                 }
@@ -944,8 +947,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self.savedView.mapX += 1;
-                            if (self.savedView.mapX >= 8)
+                            self.expandContentCounter += 1;
+                            if (self.expandContentCounter >= 8)
                             {
                                 auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
@@ -972,7 +975,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 }
                 else
                 {
-                    self.savedView.mapX = 0;
+                    self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
                         self.minWidth = kWindowSize.width;
@@ -1002,14 +1005,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004586EA
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = (4 + self.var_83C) / 5;
-            if (*scrollHeight == 0)
+            scrollHeight = (4 + self.var_83C) / 5;
+            if (scrollHeight == 0)
             {
-                *scrollHeight += 1;
+                scrollHeight += 1;
             }
-            *scrollHeight *= kRowHeight;
+            scrollHeight *= kRowHeight;
         }
 
         // 0x00458352
@@ -1179,9 +1182,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             removeIndustryGhost();
             auto cost = placeIndustryGhost(*placementArgs);
-            if (cost != _dword_E0C39C)
+            if (cost != _industryPlacementCost)
             {
-                _dword_E0C39C = cost;
+                _industryPlacementCost = cost;
                 self.invalidate();
             }
         }
@@ -1223,8 +1226,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458B51
         static void updateActiveThumb(Window& self)
         {
-            uint16_t scrollHeight = 0;
-            self.callGetScrollSize(0, nullptr, &scrollHeight);
+            int32_t scrollWidth = 0, scrollHeight = 0;
+            self.callGetScrollSize(0, scrollWidth, scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -1315,7 +1318,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
             _industryGhostPlaced = false;
-            _dword_E0C39C = 0x80000000;
+            _industryPlacementCost = 0x80000000;
 
             self.var_83C = 0;
             self.rowHover = -1;

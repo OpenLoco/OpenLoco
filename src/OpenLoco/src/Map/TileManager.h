@@ -94,7 +94,6 @@ namespace OpenLoco::World::TileManager
     uint16_t countNearbyWaterTiles(Pos2 pos);
     void update();
     void updateYearly();
-    void registerHooks();
     void removeSurfaceIndustry(const Pos2& pos);
     void removeSurfaceIndustryAtHeight(const Pos3& pos);
     void createDestructExplosion(const World::Pos3& pos);
@@ -102,6 +101,7 @@ namespace OpenLoco::World::TileManager
     void removeTree(TreeElement& element, const uint8_t flags, const World::Pos2& pos);
     void removeAllWallsOnTileAbove(const World::TilePos2& pos, SmallZ baseZ);
     void removeAllWallsOnTileBelow(const World::TilePos2& pos, SmallZ baseZ);
+    void setLevelCrossingFlags(const World::Pos3 pos);
     void setTerrainStyleAsCleared(const Pos2& pos);
     void setTerrainStyleAsClearedAtHeight(const Pos3& pos);
     uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);

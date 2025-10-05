@@ -4,6 +4,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
+#include "Input.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -444,7 +445,7 @@ namespace OpenLoco::ObjectManager
         uint8_t progress = 0; // Progress is used for the ProgressBar Ui element
         uint32_t i = 0;
         iterateObjectFolder(path, shouldRecurse, [&i, &numObjects, &progress](const fs::directory_entry& file) {
-            Ui::processMessagesMini();
+            Input::processMessagesMini();
             i++;
 
             // Cheap calculation of (curObjectCount / totalObjectCount) * 256
@@ -468,7 +469,7 @@ namespace OpenLoco::ObjectManager
     // 0x0047118B
     static void createIndex(const ObjectFoldersState& currentState)
     {
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
         const auto progressString = _isFirstTime ? StringIds::starting_for_the_first_time : StringIds::checking_object_files;
         Ui::ProgressBar::begin(progressString);
 

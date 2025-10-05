@@ -46,14 +46,14 @@ namespace OpenLoco::Ui
     struct ScrollArea
     {
         ScrollFlags flags;      // 0x00
-        int16_t contentOffsetX; // 0x02
-        int16_t contentWidth;   // 0x04
-        uint16_t hThumbLeft;    // 0x06
-        uint16_t hThumbRight;   // 0x08
-        int16_t contentOffsetY; // 0x0A
-        int16_t contentHeight;  // 0x0C
-        uint16_t vThumbTop;     // 0x0E
-        uint16_t vThumbBottom;  // 0x10
+        int32_t contentOffsetX; // 0x02
+        int32_t contentWidth;   // 0x04
+        int32_t hThumbLeft;     // 0x06
+        int32_t hThumbRight;    // 0x08
+        int32_t contentOffsetY; // 0x0A
+        int32_t contentHeight;  // 0x0C
+        int32_t vThumbTop;      // 0x0E
+        int32_t vThumbBottom;   // 0x10
 
         constexpr bool hasFlags(ScrollFlags flagsToTest) const
         {

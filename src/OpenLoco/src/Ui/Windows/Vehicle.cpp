@@ -55,6 +55,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ToolTip.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"
@@ -775,7 +776,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 // Focus viewport on vehicle, with locking.
                 auto main = WindowManager::getMainWindow();
-                main->viewportFocusOnEntity(targetEntity);
+                Windows::Main::viewportFocusOnEntity(*main, targetEntity);
             }
         }
 
@@ -1379,9 +1380,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x4B38FA
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *height = static_cast<uint16_t>(Common::getNumCars(self) * self.rowHeight);
+            scrollHeight = Common::getNumCars(self) * self.rowHeight;
         }
 
         // 0x004B3B54
@@ -1422,7 +1423,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B399E
         static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
         {
-            Input::setTooltipTimeout(2000);
+            Ui::ToolTip::setTooltipTimeout(2000);
             self.flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(self, y);
             StringId tooltipFormat = StringIds::null;
@@ -1456,7 +1457,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            ToolTip::set_52336E(true);
+            Ui::ToolTip::set_52336E(true);
 
             auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->objectId);
             {
@@ -2110,7 +2111,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             BodyItems bodyItems{};
             const auto isCarReversed = car.body->has38Flags(Vehicles::Flags38::isReversed);
             const auto isAnimated = false;
-            uint8_t componentIndex = isCarReversed ? vehObject.var_04 - 1 : 0;
+            uint8_t componentIndex = isCarReversed ? vehObject.numCarComponents - 1 : 0;
             for (auto& carComponent : car)
             {
                 auto& componentObject = vehObject.carComponents[componentIndex];
@@ -2467,9 +2468,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4360
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *height = static_cast<uint16_t>(Common::getNumCars(self) * self.rowHeight);
+            scrollHeight = Common::getNumCars(self) * self.rowHeight;
         }
 
         static char* generateCargoTooltipDetails(char* buffer, const StringId cargoFormat, const uint8_t cargoType, const uint8_t maxCargo, const uint32_t acceptedCargoTypes)
@@ -2514,7 +2515,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4404
         static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
         {
-            Input::setTooltipTimeout(2000);
+            Ui::ToolTip::setTooltipTimeout(2000);
             self.flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(self, y);
             StringId tooltipFormat = StringIds::null;
@@ -2548,7 +2549,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            ToolTip::set_52336E(true);
+            Ui::ToolTip::set_52336E(true);
 
             {
                 auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->objectId);
@@ -3561,7 +3562,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4D9B
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
             auto head = Common::getVehicle(self);
             if (head == nullptr)
@@ -3569,10 +3570,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             auto table = getOrderTable(head);
-            *height = lineHeight * std::distance(table.begin(), table.end());
+            scrollHeight = lineHeight * std::distance(table.begin(), table.end());
 
             // Space for the 'end of orders' item
-            *height += lineHeight;
+            scrollHeight += lineHeight;
         }
 
         static void scrollMouseDown(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
@@ -4339,12 +4340,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             placementArgs.stationId = elStation->stationId();
             placementArgs.head = head.id;
             auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementNodes = airportObj->getMovementNodes();
 
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint8_t bestNode = 0;
+            // TODO: Use std::ranges::reverse_view
             for (auto node = airportObj->numMovementNodes - 1; node > -1; node--)
             {
-                const auto& movementNode = airportObj->movementNodes[node];
+                const auto& movementNode = movementNodes[node];
                 if (!movementNode.hasFlags(AirportMovementNodeFlags::terminal))
                 {
                     continue;
@@ -4979,9 +4982,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Vehicles::Vehicle train(*head);
             EntityId viewportFollowEntity = train.veh2->id;
             auto main = Ui::WindowManager::getMainWindow();
-            if (main->viewportIsFocusedOnEntity(viewportFollowEntity))
+            if (Windows::Main::viewportIsFocusedOnEntity(*main, viewportFollowEntity))
             {
-                main->viewportUnfocusFromEntity();
+                Windows::Main::viewportUnfocusFromEntity(*main);
             }
 
             GameCommands::setErrorTitle(StringIds::cant_remove_string_id);

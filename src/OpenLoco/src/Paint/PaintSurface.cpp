@@ -1571,7 +1571,7 @@ namespace OpenLoco::Paint
 
         if (World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
         {
-            if (isWithinMapSelectionTiles(session.getUnkPosition()))
+            if (isWithinMapSelectionFreeFormTiles(session.getUnkPosition()))
             {
                 const auto colour = World::hasMapSelectionFlag(World::MapSelectionFlags::unk_03) ? ExtColour::unk2B : ExtColour::unk25;
 

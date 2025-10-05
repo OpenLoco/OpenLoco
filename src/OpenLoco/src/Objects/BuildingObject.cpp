@@ -27,6 +27,7 @@ namespace OpenLoco
     {
         ImageId baseImage(image, colour);
         Ui::Point pos{ x, y };
+        const auto partHeights = getBuildingPartHeights();
         for (const auto part : getBuildingParts(0))
         {
             auto partImage = baseImage.withIndexOffset(part * 4 + buildingRotation);
@@ -65,18 +66,17 @@ namespace OpenLoco
 
         // LOAD BUILDING PARTS Start
         // Load Part Heights
-        partHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        partHeightsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numParts * sizeof(uint8_t));
 
         // Load Part Animations (probably)
-        partAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
+        partAnimationsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numParts * sizeof(BuildingPartAnimation));
 
         // Load Parts
         for (auto i = 0; i < numVariations; ++i)
         {
-            auto& part = variationParts[i];
-            part = reinterpret_cast<const uint8_t*>(remainingData.data());
+            variationPartsOffset[i] = remainingData.data() - data.data();
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 remainingData = remainingData.subspan(1);
@@ -129,8 +129,8 @@ namespace OpenLoco
         // Load Elevator Sequences
         for (auto i = 0; i < numElevatorSequences; ++i)
         {
-            elevatorHeightSequences[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
-            const auto size = *reinterpret_cast<const uint16_t*>(elevatorHeightSequences[i]);
+            elevatorHeightSequencesOffset[i] = static_cast<uint32_t>(remainingData.data() - data.data());
+            const auto size = *reinterpret_cast<const uint16_t*>(remainingData.data());
             remainingData = remainingData.subspan(sizeof(uint16_t) + size);
         }
 
@@ -145,18 +145,24 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        partHeights = nullptr;
-        partAnimations = nullptr;
-        std::fill(std::begin(variationParts), std::end(variationParts), nullptr);
+        partHeightsOffset = 0;
+        partAnimationsOffset = 0;
+        std::fill(std::begin(variationPartsOffset), std::end(variationPartsOffset), 0);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
-        std::fill(std::begin(elevatorHeightSequences), std::end(elevatorHeightSequences), nullptr);
+        std::fill(std::begin(elevatorHeightSequencesOffset), std::end(elevatorHeightSequencesOffset), 0);
+    }
+
+    std::span<const uint8_t> BuildingObject::getBuildingPartHeights() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        return std::span<const std::uint8_t>(base + partHeightsOffset, numParts);
     }
 
     std::span<const std::uint8_t> BuildingObject::getBuildingParts(const uint8_t variation) const
     {
-        const auto* partsPointer = variationParts[variation];
-        auto* end = partsPointer;
+        const auto* partsPointer = reinterpret_cast<const std::uint8_t*>(this) + variationPartsOffset[variation];
+        const auto* end = partsPointer;
         while (*end != 0xFF)
         {
             end++;
@@ -168,8 +174,18 @@ namespace OpenLoco
     std::span<const std::uint8_t> BuildingObject::getElevatorHeightSequence(const uint8_t animIdx) const
     {
         // elevatorHeightSequences comprises of a size (16bit) then data (8 bit). Size will always be a power of 2
-        const auto size = *reinterpret_cast<const uint16_t*>(elevatorHeightSequences[animIdx]);
-        const auto* sequencePointer = elevatorHeightSequences[animIdx] + sizeof(uint16_t);
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto offset = elevatorHeightSequencesOffset[animIdx];
+        const auto size = *reinterpret_cast<const uint16_t*>(base + offset);
+        const auto* sequencePointer = base + offset + sizeof(uint16_t);
         return std::span<const std::uint8_t>(sequencePointer, size);
     }
+
+    std::span<const BuildingPartAnimation> BuildingObject::getBuildingPartAnimations() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + partAnimationsOffset);
+        return std::span<const BuildingPartAnimation>(ptr, numParts);
+    }
+
 }

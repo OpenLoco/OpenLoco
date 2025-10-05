@@ -17,7 +17,7 @@ namespace OpenLoco
         name = strRes.str;
         remainingData = remainingData.subspan(strRes.tableLength);
 
-        frameInfoType0 = reinterpret_cast<const ImageAndHeight*>(remainingData.data());
+        frameInfoType0Offset = static_cast<uint32_t>(remainingData.data() - data.data());
         totalNumFramesType0 = 0;
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
@@ -26,7 +26,7 @@ namespace OpenLoco
         }
         remainingData = remainingData.subspan(1);
 
-        frameInfoType1 = reinterpret_cast<const ImageAndHeight*>(remainingData.data());
+        frameInfoType1Offset = static_cast<uint32_t>(remainingData.data() - data.data());
         totalNumFramesType1 = 0;
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
@@ -71,8 +71,8 @@ namespace OpenLoco
         baseImageId = 0;
         totalNumFramesType0 = 0;
         totalNumFramesType1 = 0;
-        frameInfoType0 = nullptr;
-        frameInfoType1 = nullptr;
+        frameInfoType0Offset = 0;
+        frameInfoType1Offset = 0;
         spriteWidth = 0;
         spriteHeightNegative = 0;
         spriteHeightPositive = 0;

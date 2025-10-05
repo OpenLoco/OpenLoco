@@ -18,9 +18,11 @@
 #include "MultiPlayer.h"
 #include "SceneManager.h"
 #include "ScrollView.h"
+#include "ToolTip.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ToolManager.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
@@ -38,18 +40,11 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::WindowManager
 {
-    namespace FindFlag
-    {
-        constexpr uint16_t byType = 1 << 7;
-    }
-
     static constexpr size_t kMaxWindows = 64;
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
     static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
-    static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x00508F10> __508F10;
-    static loco_global<Gfx::RenderTarget, 0x0050B884> _screenRT;
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
     static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
@@ -65,425 +60,6 @@ namespace OpenLoco::Ui::WindowManager
     {
         _windows.clear();
         _523508 = 0;
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0043454F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::CompanyWindow::open(CompanyId(regs.ax));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004345EE,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::CompanyWindow::openFinances(CompanyId(regs.ax));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x00434731,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::CompanyWindow::openChallenge(CompanyId(regs.ax));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x0043EE58,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::ScenarioOptions::open();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004B6033,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto* w = Windows::Vehicle::Main::open(reinterpret_cast<Vehicles::VehicleBase*>(regs.edx));
-                regs = backup;
-                regs.esi = X86Pointer(w);
-                return 0;
-            });
-
-        registerHook(
-            0x0045EFDB,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = (Ui::Window*)regs.esi;
-                window->viewportZoomIn(false);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0045F015,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = (Ui::Window*)regs.esi;
-                window->viewportZoomOut(false);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0045F18B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                callViewportRotateEventOnAllWindows();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x0045FCE6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Point mouse = { regs.ax, regs.bx };
-                auto pos = Ui::screenGetMapXyWithZ(mouse, regs.bp);
-                regs = backup;
-                if (pos)
-                {
-                    regs.ax = (*pos).x;
-                    regs.bx = (*pos).y;
-                }
-                else
-                {
-                    regs.ax = -32768;
-                }
-                return 0;
-            });
-
-        registerHook(
-            0x004610F2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                World::mapInvalidateSelectionRect();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x00456D2D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::Industry::open(IndustryId(regs.dl));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x00495685,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                const char* buffer = (const char*)regs.esi;
-                const auto font = *loco_global<Gfx::Font, 0x0112C876>();
-                uint16_t width = Gfx::TextRenderer::getStringWidth(font, buffer);
-                regs = backup;
-                regs.cx = width;
-
-                return 0;
-            });
-
-        registerHook(
-            0x00499B7E,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = Windows::Town::open(regs.dx);
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x0048F210,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = Windows::Station::open(StationId(regs.dx));
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x004577FF,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = Windows::IndustryList::open();
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x00428F8B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::NewsWindow::open(MessageId(regs.ax));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004B93A5,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_4B93A5(regs.bx);
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C5C69,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Gfx::invalidateRegion(regs.ax, regs.bx, regs.dx, regs.bp);
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9984,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                invalidateAllWindowsAfterInput();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9A95,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = findAt(regs.ax, regs.bx);
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9AFA,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = findAtAlt(regs.ax, regs.bx);
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9B56,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Window* w;
-                if (regs.cx & FindFlag::byType)
-                {
-                    w = find((WindowType)(regs.cx & ~FindFlag::byType));
-                }
-                else
-                {
-                    w = find((WindowType)regs.cx, regs.dx);
-                }
-                regs = backup;
-                regs.esi = X86Pointer(w);
-                if (w == nullptr)
-                {
-                    return X86_FLAG_ZERO;
-                }
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CA4BD,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = (Ui::Window*)regs.esi;
-                if (window != nullptr)
-                {
-                    window->invalidate();
-                }
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CB966,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                if (regs.al < 0)
-                {
-                    invalidateWidget((WindowType)(regs.al & 0x7F), regs.bx, regs.ah);
-                }
-                else if ((regs.al & 1 << 6) != 0)
-                {
-                    invalidate((WindowType)(regs.al & 0xBF));
-                }
-                else
-                {
-                    invalidate((WindowType)regs.al, regs.bx);
-                }
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CC692,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                if ((regs.cx & FindFlag::byType) != 0)
-                {
-                    close((WindowType)(regs.cx & ~FindFlag::byType));
-                }
-                else
-                {
-                    close((WindowType)regs.cx, regs.dx);
-                }
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CC6EA,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = (Ui::Window*)regs.esi;
-                close(window);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CD296,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                relocateWindows();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CD3D0,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                dispatchUpdateAll();
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CE3D6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                ToolManager::toolCancel();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CE438,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto w = getMainWindow();
-                regs = backup;
-                regs.esi = X86Pointer(w);
-                if (w == nullptr)
-                {
-                    return X86_FLAG_CARRY;
-                }
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CEE0B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_4CEE0B(*(Ui::Window*)regs.esi);
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9F5D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto w = createWindow((WindowType)regs.cl, Ui::Point32(regs.ax, regs.eax >> 16), Ui::Size32(regs.bx, regs.ebx >> 16), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
-                regs = backup;
-
-                regs.esi = X86Pointer(w);
-                return 0;
-            });
-
-        registerHook(
-            0x004C9C68,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto w = createWindow((WindowType)regs.cl, Ui::Size32(regs.bx, (((uint32_t)regs.ebx) >> 16)), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
-                regs = backup;
-
-                regs.esi = X86Pointer(w);
-                return 0;
-            });
-
-        registerHook(
-            0x004CF456,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                closeAllFloatingWindows();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CD3A9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto w = bringToFront((WindowType)regs.cx, regs.dx);
-                regs = backup;
-
-                regs.esi = X86Pointer(w);
-                if (w == nullptr)
-                {
-                    return X86_FLAG_ZERO;
-                }
-
-                return 0;
-            });
     }
 
     Window* get(size_t index)
@@ -536,7 +112,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C6118
     void update()
     {
-        _tooltipNotShownTicks = _tooltipNotShownTicks + _timeSinceLastTick;
+        ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + _timeSinceLastTick);
 
         // 1000 tick update
         _thousandthTickCounter = _thousandthTickCounter + _timeSinceLastTick;
@@ -570,7 +146,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x00439BA5
     void updateDaily()
     {
-        if (find(WindowType::tooltip) && Windows::ToolTip::isTimeTooltip())
+        if (find(WindowType::tooltip) && ToolTip::isTimeTooltip())
         {
             Windows::ToolTip::closeAndReset();
         }
@@ -1311,9 +887,6 @@ namespace OpenLoco::Ui::WindowManager
             w->setColour(WindowColour::primary, static_cast<Colour>(CompanyManager::getCompanyColour(w->owner)));
         }
 
-        addr<0x1136F9C, int16_t>() = w->x;
-        addr<0x1136F9E, int16_t>() = w->y;
-
         // Text colouring
         setWindowColours(WindowColour::primary, w->getColour(WindowColour::primary).opaque());
         setWindowColours(WindowColour::secondary, w->getColour(WindowColour::secondary).opaque());
@@ -1535,7 +1108,7 @@ namespace OpenLoco::Ui::WindowManager
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
         ToolManager::toolCancel();
-        addr<0x00522096, uint8_t>() = 0;
+        Windows::Construction::_ghostVisibilityFlags = Windows::Construction::GhostVisibilityFlags::none;
     }
 
     // 0x004BF089
@@ -1853,6 +1426,14 @@ namespace OpenLoco::Ui::WindowManager
      */
     void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int16_t dX, int16_t dY)
     {
+        auto vpX = viewport->x;
+        auto vpY = viewport->y;
+        if (viewport->owner != nullptr)
+        {
+            vpX += viewport->owner->x;
+            vpY += viewport->owner->y;
+        }
+
         const auto index = indexOf(*window);
         for (auto it = _windows.begin() + index; it != _windows.end(); it++)
         {
@@ -1872,22 +1453,22 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
             }
 
-            if (viewport->x + viewport->width <= w.x)
+            if (vpX + viewport->width <= w.x)
             {
                 continue;
             }
 
-            if (w.x + w.width <= viewport->x)
+            if (w.x + w.width <= vpX)
             {
                 continue;
             }
 
-            if (viewport->y + viewport->height <= w.y)
+            if (vpY + viewport->height <= w.y)
             {
                 continue;
             }
 
-            if (w.y + w.height <= viewport->y)
+            if (w.y + w.height <= vpY)
             {
                 continue;
             }
@@ -1900,25 +1481,25 @@ namespace OpenLoco::Ui::WindowManager
             bottom = w.y + w.height;
 
             // TODO: replace these with min/max
-            cx = viewport->x;
+            cx = vpX;
             if (left < cx)
             {
                 left = cx;
             }
 
-            cx = viewport->x + viewport->width;
+            cx = vpX + viewport->width;
             if (right > cx)
             {
                 right = cx;
             }
 
-            cx = viewport->y;
+            cx = vpY;
             if (top < cx)
             {
                 top = cx;
             }
 
-            cx = viewport->y + viewport->height;
+            cx = vpY + viewport->height;
             if (bottom > cx)
             {
                 bottom = cx;
@@ -1943,15 +1524,23 @@ namespace OpenLoco::Ui::WindowManager
      */
     void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y)
     {
+        auto vpX = viewport->x;
+        auto vpY = viewport->y;
+        if (viewport->owner != nullptr)
+        {
+            vpX += viewport->owner->x;
+            vpY += viewport->owner->y;
+        }
+
         while (window != nullptr)
         {
             // skip current window and non-intersecting windows
             if (viewport == window->viewports[0]
                 || viewport == window->viewports[1]
-                || viewport->x + viewport->width <= window->x
-                || viewport->x >= window->x + window->width
-                || viewport->y + viewport->height <= window->y
-                || viewport->y >= window->y + window->height)
+                || vpX + viewport->width <= window->x
+                || vpX >= window->x + window->width
+                || vpY + viewport->height <= window->y
+                || vpY >= window->y + window->height)
             {
                 size_t nextWindowIndex = WindowManager::indexOf(*window) + 1;
                 window = nextWindowIndex >= count() ? nullptr : WindowManager::get(nextWindowIndex);
@@ -1961,9 +1550,9 @@ namespace OpenLoco::Ui::WindowManager
             // save viewport
             Ui::Viewport viewCopy = *viewport;
 
-            if (viewport->x < window->x)
+            if (vpX < window->x)
             {
-                viewport->width = window->x - viewport->x;
+                viewport->width = window->x - vpX;
                 viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
@@ -1973,9 +1562,9 @@ namespace OpenLoco::Ui::WindowManager
                 viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
-            else if (viewport->x + viewport->width > window->x + window->width)
+            else if (vpX + viewport->width > window->x + window->width)
             {
-                viewport->width = window->x + window->width - viewport->x;
+                viewport->width = window->x + window->width - vpX;
                 viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
@@ -1985,9 +1574,9 @@ namespace OpenLoco::Ui::WindowManager
                 viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
-            else if (viewport->y < window->y)
+            else if (vpY < window->y)
             {
-                viewport->height = window->y - viewport->y;
+                viewport->height = window->y - vpY;
                 viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
@@ -1997,9 +1586,9 @@ namespace OpenLoco::Ui::WindowManager
                 viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
-            else if (viewport->y + viewport->height > window->y + window->height)
+            else if (vpY + viewport->height > window->y + window->height)
             {
-                viewport->height = window->y + window->height - viewport->y;
+                viewport->height = window->y + window->height - vpY;
                 viewport->viewHeight = viewport->height << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
@@ -2015,8 +1604,8 @@ namespace OpenLoco::Ui::WindowManager
             return;
         }
 
-        int16_t left = viewport->x;
-        int16_t top = viewport->y;
+        int16_t left = vpX;
+        int16_t top = vpY;
         int16_t right = left + viewport->width;
         int16_t bottom = top + viewport->height;
 
