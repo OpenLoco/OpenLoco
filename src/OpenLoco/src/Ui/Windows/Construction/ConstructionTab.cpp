@@ -55,7 +55,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
 
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
-    static loco_global<uint8_t[18], 0x0050A006> _availableObjects;   // top toolbar
 
     // TODO: move to ConstructionState when no longer a loco_global?
     static bool _isDragging = false;
@@ -190,17 +189,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
 
-        for (const auto objId : _availableObjects)
+        // Check if the alternate road object is available for the current company
+        auto availableRoads = companyGetAvailableRoads(CompanyManager::getControllingId());
+        auto targetId = _alternateTrackObjectId | (1 << 7);
+        for (const auto objId : availableRoads)
         {
-            if (objId == 0xFF)
+            if (objId == targetId)
             {
-                return;
-            }
-
-            if (objId == (_alternateTrackObjectId | (1 << 7)))
-            {
-                cState.trackType = _alternateTrackObjectId | (1 << 7);
+                cState.trackType = targetId;
                 Common::sub_4A3A50();
+                break;
             }
         }
     }
