@@ -408,6 +408,4 @@ namespace OpenLoco::S5
     bool importSaveToGameState(Stream& stream, LoadFlags flags);
     std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path);
     std::unique_ptr<Scenario::Options> readScenarioOptions(const fs::path& path);
-
-    void sub_4BAEC4();
 }
