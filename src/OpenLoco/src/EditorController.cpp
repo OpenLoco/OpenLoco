@@ -267,7 +267,7 @@ namespace OpenLoco::EditorController
             case Step::scenarioOptions:
                 // 0x0043D12C
                 WindowManager::closeAllFloatingWindows();
-                S5::sub_4BAEC4();
+                Windows::Terraform::resetLastSelections();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 break;
@@ -341,7 +341,7 @@ namespace OpenLoco::EditorController
                 }
                 Scenario::sub_4748D4();
                 Scenario::initialiseSnowLine();
-                S5::sub_4BAEC4();
+                Windows::Terraform::resetLastSelections();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)

@@ -602,13 +602,6 @@ namespace OpenLoco::S5
         }
     };
 
-    void sub_4BAEC4() // TerraformConfig
-    {
-        addr<0x001136496, uint8_t>() = 2; // last tree rotation
-        getGameState().lastTreeOption = 0xFF;
-        getGameState().lastWallOption = 0xFF;
-    }
-
     // 0x00441FA7
     bool importSaveToGameState(const fs::path& path, LoadFlags flags)
     {
@@ -853,7 +846,7 @@ namespace OpenLoco::S5
             EntityManager::updateSpatialIndex();
             TownManager::updateLabels();
             StationManager::updateLabels();
-            sub_4BAEC4();
+            Ui::Windows::Terraform::resetLastSelections();
             WindowManager::resetThousandthTickCounter();
             Gfx::invalidateScreen();
             if (!hasLoadFlags(flags, LoadFlags::landscape))
