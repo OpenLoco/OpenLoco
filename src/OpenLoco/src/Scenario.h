@@ -145,4 +145,7 @@ namespace OpenLoco::Scenario
 
     void loadPreferredCurrencyAlways();
     void loadPreferredCurrencyNewGame();
+
+    uint8_t getMadeAnyChangesBackup();
+    void setMadeAnyChangesBackup(uint8_t value);
 }

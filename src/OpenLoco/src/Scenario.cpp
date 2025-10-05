@@ -55,6 +55,7 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Scenario
 {
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
+    static loco_global<uint8_t, 0x00F25374> _madeAnyChangesBackup;
 
     // 0x0046115C
     void sub_46115C()
@@ -241,7 +242,7 @@ namespace OpenLoco::Scenario
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         reset();
         Scenario::getOptions().madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0;
+        setMadeAnyChangesBackup(0);
         Gfx::invalidateScreen();
     }
 
@@ -251,7 +252,7 @@ namespace OpenLoco::Scenario
         auto& options = Scenario::getOptions();
         MapGenerator::generate(options);
         options.madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0;
+        setMadeAnyChangesBackup(0);
     }
 
     // 0x0049685C
@@ -524,5 +525,15 @@ namespace OpenLoco::Scenario
         }
 
         loadPreferredCurrency();
+    }
+
+    uint8_t getMadeAnyChangesBackup()
+    {
+        return _madeAnyChangesBackup;
+    }
+
+    void setMadeAnyChangesBackup(uint8_t value)
+    {
+        _madeAnyChangesBackup = value;
     }
 }
