@@ -21,6 +21,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
 #include "S5/S5.h"
+#include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
@@ -182,8 +183,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
         }
 
-        static loco_global<char[512], 0x0112CE04> _savePath;
-        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+        auto path = fs::u8path(ScenarioManager::getScenarioFilename()).replace_extension(S5::extensionSV5);
 
         // Store path to active file
         static loco_global<char[256], 0x0050B745> _currentGameFilePath;

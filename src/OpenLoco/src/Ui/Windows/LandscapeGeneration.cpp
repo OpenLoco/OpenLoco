@@ -17,6 +17,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/WaterObject.h"
 #include "Scenario.h"
+#include "ScenarioManager.h"
 #include "ScenarioOptions.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
@@ -516,8 +517,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     if (Game::loadHeightmapOpen())
                     {
-                        static loco_global<char[512], 0x0112CE04> _savePath;
-                        World::MapGenerator::setPngHeightmapPath(fs::u8path(&*_savePath));
+                        World::MapGenerator::setPngHeightmapPath(fs::u8path(ScenarioManager::getScenarioFilename()));
                         window.invalidate();
                     }
                     break;

@@ -15,6 +15,7 @@
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "Scenario.h"
+#include "ScenarioManager.h"
 #include "ScenarioOptions.h"
 #include "Ui.h"
 #include "Ui/TextInput.h"
@@ -78,7 +79,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static loco_global<BrowseFileType, 0x009DA284> _fileType;
     static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
     static loco_global<char[32], 0x009D9E64> _filter;
-    static loco_global<char[512], 0x0112CE04> _savePath;
 
     // 0x0050AEA8
     static std::unique_ptr<S5::SaveDetails> _previewSaveDetails;
@@ -178,7 +178,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             WindowManager::setCurrentModalType(WindowType::undefined);
 
             // TODO: return std::optional instead
-            return success && _savePath[0] != '\0';
+            return success && ScenarioManager::getScenarioFilename()[0] != '\0';
         }
         return false;
     }
@@ -209,7 +209,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             case widx::close_button:
                 _currentDirectory.clear();
-                _savePath[0] = '\0';
+                ScenarioManager::getSavePathBuffer()[0] = '\0';
                 WindowManager::close(&window);
                 break;
             case widx::parent_button:
@@ -921,7 +921,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         // Copy directory and filename to buffer.
-        strncpy(_savePath.get(), path.u8string().c_str(), std::size(_savePath));
+        strncpy(ScenarioManager::getSavePathBuffer(), path.u8string().c_str(), 512);
 
         // Remember the current path for saved games
         if (_fileType == BrowseFileType::savedGame)

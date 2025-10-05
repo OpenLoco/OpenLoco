@@ -64,4 +64,9 @@ namespace OpenLoco::ScenarioManager
     // 0x00525F64
     uint32_t getScenarioTicks2();
     void setScenarioTicks2(uint32_t ticks);
+
+    // 0x00112CE04 (_scenarioFilename / _savePath - same memory location)
+    const char* getScenarioFilename();
+    void setScenarioFilename(const char* filename);
+    char* getSavePathBuffer(); // Returns writable buffer for legacy code
 }
