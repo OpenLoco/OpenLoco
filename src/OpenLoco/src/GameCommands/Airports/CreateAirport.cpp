@@ -21,7 +21,6 @@
 namespace OpenLoco::GameCommands
 {
     static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
-    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     // 0x00490372
     static StationManager::NearbyStation findNearbyStationAirport(World::Pos3 pos, uint8_t airportObjectId, uint8_t rotation)
@@ -315,7 +314,7 @@ namespace OpenLoco::GameCommands
             companySetObservation(getUpdatingCompanyId(), ObservationStatus::buildingAirport, World::Pos2(args.pos) + World::Pos2{ 16, 16 }, EntityId::null, args.type);
         }
 
-        _lastConstructedAdjoiningStationCentrePos = World::Pos2(-1, -1);
+        StationManager::setLastConstructedAdjoiningStationCentrePos(World::Pos2(-1, -1));
         StationManager::setLastConstructedAdjoiningStationId(0xFFFFFFFFU);
 
         if (!World::TileManager::checkFreeElementsAndReorganise())
@@ -352,7 +351,7 @@ namespace OpenLoco::GameCommands
 
         if ((flags & Flags::ghost) && (flags & Flags::apply))
         {
-            _lastConstructedAdjoiningStationCentrePos = args.pos;
+            StationManager::setLastConstructedAdjoiningStationCentrePos(args.pos);
             auto nearbyStation = findNearbyStationAirport(args.pos, args.type, args.rotation);
             StationManager::setLastConstructedAdjoiningStationId(static_cast<int16_t>(nearbyStation.id));
         }

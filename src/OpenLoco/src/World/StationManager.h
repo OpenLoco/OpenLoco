@@ -39,4 +39,6 @@ namespace OpenLoco::StationManager
     // Station construction state (shared between GameCommands and UI)
     uint32_t getLastConstructedAdjoiningStationId();
     void setLastConstructedAdjoiningStationId(uint32_t value);
+    World::Pos2 getLastConstructedAdjoiningStationCentrePos();
+    void setLastConstructedAdjoiningStationCentrePos(World::Pos2 value);
 }
