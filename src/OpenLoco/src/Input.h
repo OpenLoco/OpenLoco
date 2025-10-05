@@ -139,4 +139,8 @@ namespace OpenLoco::Input
     };
     void enqueueMouseButton(const QueuedMouseInput& input);
     MouseButton nextMouseInput(uint32_t& x, int16_t& y);
+
+    bool hasPendingMouseInputUpdate();
+    void clearPendingMouseInputUpdate();
+    void setPendingMouseInputUpdate();
 }
