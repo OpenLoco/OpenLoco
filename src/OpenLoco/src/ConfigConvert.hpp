@@ -296,14 +296,14 @@ namespace YAML
     };
 
     // MeasurementFormat
-    const convert_pair_vector<MeasurementFormat> measurementFormatEntries = {
+    const convert_pair_vector<MeasurementFormat> kMeasurementFormatEntries = {
         enum_def(MeasurementFormat, imperial),
         enum_def(MeasurementFormat, metric),
     };
     template<>
     struct convert<MeasurementFormat> : convert_enum_base<MeasurementFormat>
     {
-        static const convert_pair_vector<MeasurementFormat>& getEntries() { return measurementFormatEntries; }
+        static const convert_pair_vector<MeasurementFormat>& getEntries() { return kMeasurementFormatEntries; }
     };
 
     // MusicPlaylistType
@@ -319,7 +319,7 @@ namespace YAML
     };
 
     // NewsType
-    const convert_pair_vector<NewsType> newsTypeEntries = {
+    const convert_pair_vector<NewsType> kNewsTypeEntries = {
         enum_def(NewsType, none),
         enum_def(NewsType, ticker),
         enum_def(NewsType, newsWindow),
@@ -327,11 +327,11 @@ namespace YAML
     template<>
     struct convert<NewsType> : convert_enum_base<NewsType>
     {
-        static const convert_pair_vector<NewsType>& getEntries() { return newsTypeEntries; }
+        static const convert_pair_vector<NewsType>& getEntries() { return kNewsTypeEntries; }
     };
 
     // ScreenMode
-    const convert_pair_vector<ScreenMode> screenModeEntries = {
+    const convert_pair_vector<ScreenMode> kScreenModeEntries = {
         enum_def(ScreenMode, window),
         enum_def(ScreenMode, fullscreen),
         enum_def(ScreenMode, fullscreenBorderless),
@@ -339,7 +339,7 @@ namespace YAML
     template<>
     struct convert<ScreenMode> : convert_enum_base<ScreenMode>
     {
-        static const convert_pair_vector<ScreenMode>& getEntries() { return screenModeEntries; }
+        static const convert_pair_vector<ScreenMode>& getEntries() { return kScreenModeEntries; }
     };
 }
 
