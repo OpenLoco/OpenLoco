@@ -40,13 +40,7 @@ namespace OpenLoco::EditorController
 {
     static loco_global<char[267], 0x00050B745> _activeSavePath;
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
     static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
-    }
 
     static void resetLandDistributionPatterns();
 
@@ -75,7 +69,7 @@ namespace OpenLoco::EditorController
         Audio::unpauseSound();
         ObjectManager::unloadAll();
         ObjectManager::prepareSelectionList(false);
-        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::loadSelectionListObjects(ObjectManager::getSelectionFlags());
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();
