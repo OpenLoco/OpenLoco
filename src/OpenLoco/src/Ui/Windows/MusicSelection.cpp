@@ -119,7 +119,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             drawingCtx.fillRectInset(2, y, 11, y + 10, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::fillDarker | Gfx::RectInsetFlags::borderInset);
 
             // Draw checkmark if track is enabled.
-            if (config.jukebox.enabledMusic[musicTrack])
+            if (config.customJukebox[musicTrack])
             {
                 auto point = Point(2, y);
 
@@ -173,19 +173,19 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         auto& config = Config::get().audio;
 
         // Toggle the track in question.
-        config.jukebox.enabledMusic[currentTrack] ^= true;
+        config.customJukebox[currentTrack] ^= true;
 
         // Are any tracks enabled?
         bool anyEnabled = false;
         for (uint8_t i = 0; i < Jukebox::kNumMusicTracks; i++)
         {
-            anyEnabled |= config.jukebox.enabledMusic[i];
+            anyEnabled |= config.customJukebox[i];
         }
 
         // Ensure at least this track is enabled.
         if (!anyEnabled)
         {
-            config.jukebox.enabledMusic[currentTrack] = true;
+            config.customJukebox[currentTrack] = true;
         }
 
         Config::write();

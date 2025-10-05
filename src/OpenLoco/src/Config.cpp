@@ -83,13 +83,13 @@ namespace OpenLoco::Config
             audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>(true);
             audioConfig.playlist = audioNode["playlist"].as<MusicPlaylistType>(MusicPlaylistType::currentEra);
 
-            if (audioNode["jukebox"])
+            if (audioNode["customJukebox"])
             {
-                audioConfig.jukebox = audioNode["jukebox"].as<Playlist>(Playlist{});
+                audioConfig.customJukebox = audioNode["customJukebox"].as<Playlist>(Playlist{});
             }
             else
             {
-                std::fill_n(audioConfig.jukebox.enabledMusic, std::size(audioConfig.jukebox.enabledMusic), true);
+                std::fill(audioConfig.customJukebox.begin(), audioConfig.customJukebox.end(), true);
             }
         }
 
@@ -228,7 +228,7 @@ namespace OpenLoco::Config
         audioNode["play_title_music"] = audioConfig.playTitleMusic;
         audioNode["playNewsSounds"] = audioConfig.playNewsSounds;
         audioNode["playlist"] = audioConfig.playlist;
-        audioNode["jukebox"] = audioConfig.jukebox;
+        audioNode["customJukebox"] = audioConfig.customJukebox;
         node["audio"] = audioNode;
 
         // Network

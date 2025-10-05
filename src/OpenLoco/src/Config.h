@@ -4,6 +4,7 @@
 #include "Objects/Object.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <map>
@@ -74,45 +75,7 @@ namespace OpenLoco::Config
         Resolution fullscreenResolution;
     };
 
-    struct Playlist
-    {
-        union
-        {
-            bool enabledMusic[29];
-            struct
-            {
-                bool chugginAlong;
-                bool longDustyRoad;
-                bool flyingHigh;
-                bool gettinOnTheGas;
-                bool jumpinTheRails;
-                bool smoothRunning;
-                bool trafficJam;
-                bool neverStopTilYouGetThere;
-                bool soaringAway;
-                bool technoTorture;
-                bool everlastingHighRise;
-                bool solace;
-                bool chrysanthemum;
-                bool eugenia;
-                bool theRagtimeDance;
-                bool easyWinners;
-                bool settingOff;
-                bool aTravellersSerenade;
-                bool latinoTrip;
-                bool aGoodHeadOfSteam;
-                bool hopToTheBop;
-                bool theCityLights;
-                bool steaminDownTown;
-                bool brightExpectations;
-                bool moStation;
-                bool farOut;
-                bool runningOnTime;
-                bool getMeToGladstoneBay;
-                bool sandyTrackBlues;
-            };
-        };
-    };
+    using Playlist = std::array<bool, 29>;
 
     struct Audio
     {
@@ -122,7 +85,7 @@ namespace OpenLoco::Config
         bool playTitleMusic = true;
         bool playNewsSounds = true;
         MusicPlaylistType playlist;
-        Playlist jukebox;
+        Playlist customJukebox;
     };
 
     struct KeyboardShortcut
