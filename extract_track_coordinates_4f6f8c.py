@@ -25,6 +25,17 @@ Supported data types:
 4. Int32 array:
     int32_t data[N];
 
+5. Bounding box factors (4 x int8_t per entry):
+    struct BoundingBoxFactors {
+        int8_t xOffsetFactor;
+        int8_t yOffsetFactor;
+        int8_t xSizeFactor;
+        int8_t ySizeFactor;
+    };
+
+6. Colour mapping array (uint8_t enum values):
+    Colour colourMap[N];
+
 Usage:
     # TrackCoordinates
     python3 extract_track_coordinates_4f6f8c.py loco.exe 0x4F6F8C 80 --type coords
@@ -41,10 +52,51 @@ Usage:
 
     # Int32 array
     python3 extract_track_coordinates_4f6f8c.py loco.exe 0x4FEAB8 32 --type int32_array
+
+    # Bounding box factors (indexed by yaw angle)
+    python3 extract_track_coordinates_4f6f8c.py loco.exe 0x5001B4 32 --type bbox_factors
+
+    # Colour mapping array
+    python3 extract_track_coordinates_4f6f8c.py loco.exe 0x504619 31 --type colour_map
 """
 
 import struct
 import sys
+
+# Colour enum names (index corresponds to Colour enum value)
+COLOUR_NAMES = [
+    'black',
+    'grey',
+    'white',
+    'mutedDarkPurple',
+    'mutedPurple',
+    'purple',
+    'darkBlue',
+    'blue',
+    'mutedDarkTeal',
+    'mutedTeal',
+    'darkGreen',
+    'mutedSeaGreen',
+    'mutedGrassGreen',
+    'green',
+    'mutedAvocadoGreen',
+    'mutedOliveGreen',
+    'yellow',
+    'darkYellow',
+    'orange',
+    'amber',
+    'darkOrange',
+    'mutedDarkYellow',
+    'mutedYellow',
+    'brown',
+    'mutedOrange',
+    'mutedDarkRed',
+    'darkRed',
+    'red',
+    'darkPink',
+    'pink',
+    'mutedRed',
+]
 
 # Enum value names for different types
 ROAD_ID_NAMES = [
@@ -237,6 +289,69 @@ def extract_int32_array(exe_path, target_vma, num_entries):
 
         return entries
 
+def extract_bbox_factors(exe_path, target_vma, num_entries):
+    """Extract bounding box factor structures from loco.exe."""
+    STRUCT_SIZE = 4  # 4 x int8_t = 4 bytes
+    total_bytes = num_entries * STRUCT_SIZE
+
+    file_offset = calculate_file_offset(target_vma)
+
+    print(f"Extracting BoundingBoxFactors[{num_entries}] from {exe_path}")
+    print(f"Virtual address: 0x{target_vma:08X}")
+    print(f"File offset: 0x{file_offset:08X} ({file_offset} bytes)")
+    print(f"Structure size: {STRUCT_SIZE} bytes")
+    print(f"Total data size: {total_bytes} bytes")
+    print()
+
+    with open(exe_path, 'rb') as f:
+        f.seek(file_offset)
+
+        entries = []
+        for i in range(num_entries):
+            data = f.read(STRUCT_SIZE)
+            if len(data) != STRUCT_SIZE:
+                raise ValueError(f"Could not read entry {i}")
+
+            # Unpack: 4 x int8_t (signed)
+            x_offset, y_offset, x_size, y_size = struct.unpack('<bbbb', data)
+
+            entries.append({
+                'index': i,
+                'x_offset_factor': x_offset,
+                'y_offset_factor': y_offset,
+                'x_size_factor': x_size,
+                'y_size_factor': y_size
+            })
+
+        return entries
+
+def extract_colour_map(exe_path, target_vma, num_entries):
+    """Extract colour mapping array from loco.exe."""
+    file_offset = calculate_file_offset(target_vma)
+
+    print(f"Extracting Colour mapping array[{num_entries}] from {exe_path}")
+    print(f"Virtual address: 0x{target_vma:08X}")
+    print(f"File offset: 0x{file_offset:08X} ({file_offset} bytes)")
+    print(f"Total data size: {num_entries} bytes")
+    print()
+
+    with open(exe_path, 'rb') as f:
+        f.seek(file_offset)
+        data = f.read(num_entries)
+        if len(data) != num_entries:
+            raise ValueError(f"Could only read {len(data)} bytes of {num_entries}")
+
+        entries = []
+        for i, colour_value in enumerate(data):
+            entries.append({
+                'index': i,
+                'value': colour_value,
+                'source_name': COLOUR_NAMES[i] if i < len(COLOUR_NAMES) else f'unknown_{i}',
+                'target_name': COLOUR_NAMES[colour_value] if colour_value < len(COLOUR_NAMES) else f'unknown_{colour_value}'
+            })
+
+        return entries
+
 def format_coords_output(entries, address, count):
     """Format TrackCoordinates entries as C++ code."""
     print(f"// 0x{address:X}")
@@ -331,9 +446,67 @@ def format_int32_array_output(int32_data, address, count):
     print(f"    // clang-format on")
     print(f"}} }};")
 
+def format_bbox_factors_output(entries, address, count):
+    """Format bounding box factors as modern C++ code."""
+    print(f"// 0x{address:X}")
+    print(f"// Bounding box offset and size scaling factors indexed by yaw angle (0-31)")
+    print(f"// These factors are multiplied by bodyLength and divided by 256")
+    print(f"// Used in paintBody to calculate vehicle bounding boxes based on orientation")
+    print(f"struct BoundingBoxFactors")
+    print(f"{{")
+    print(f"    int8_t xOffsetFactor;")
+    print(f"    int8_t yOffsetFactor;")
+    print(f"    int8_t xSizeFactor;")
+    print(f"    int8_t ySizeFactor;")
+    print(f"}};")
+    print()
+    print(f"static constexpr std::array<BoundingBoxFactors, {count}> kBoundingBoxFactorsByYaw = {{{{")
+
+    for entry in entries:
+        x_off = entry['x_offset_factor']
+        y_off = entry['y_offset_factor']
+        x_size = entry['x_size_factor']
+        y_size = entry['y_size_factor']
+        idx = entry['index']
+
+        # Calculate angle in degrees for documentation
+        angle_deg = (idx * 360) // 32
+
+        print(f"    {{ {x_off:4}, {y_off:4}, {x_size:4}, {y_size:4} }},  // yaw={idx:2} ({angle_deg:3}°)")
+
+    print(f"}}}};")
+    print()
+    print(f"// Helper function to get bounding box parameters for a given yaw angle")
+    print(f"constexpr BoundingBoxFactors getBoundingBoxFactors(uint8_t yaw)")
+    print(f"{{")
+    print(f"    return kBoundingBoxFactorsByYaw[yaw & 0x1F];")
+    print(f"}}")
+
+def format_colour_map_output(entries, address, count):
+    """Format colour mapping as modern C++ code."""
+    print(f"// 0x{address:X}")
+    print(f"// Translucent colour to base colour mapping table")
+    print(f"// Maps each colour index to its base colour when handling translucent colours")
+    print(f"static constexpr std::array<Colour, {count}> kTranslucentColourBaseMap = {{ {{")
+
+    # Find the longest colour name for alignment
+    max_name_len = max(len(f"Colour::{e['target_name']}") for e in entries)
+
+    for entry in entries:
+        idx = entry['index']
+        target = entry['target_name']
+        source = entry['source_name']
+
+        colour_str = f"Colour::{target},"
+        comment = f"// {source} -> {target}"
+
+        print(f"    {colour_str:<{max_name_len + 1}} {comment}")
+
+    print(f"}} }};")
+
 def main():
     if len(sys.argv) < 4:
-        print("Usage: python3 extract_track_coordinates_4f6f8c.py <exe_path> <address> <count> [--type coords|height_offsets|raw_bytes|int32_array] [--enum RoadId|TrackId]")
+        print("Usage: python3 extract_track_coordinates_4f6f8c.py <exe_path> <address> <count> [--type coords|height_offsets|raw_bytes|int32_array|bbox_factors|colour_map] [--enum RoadId|TrackId]")
         print("Examples:")
         print("  python3 extract_track_coordinates_4f6f8c.py loco.exe 0x4F6F8C 80 --type coords")
         print("  python3 extract_track_coordinates_4f6f8c.py loco.exe 0x4F7B5C 352 --type coords")
@@ -341,6 +514,8 @@ def main():
         print("  python3 extract_track_coordinates_4f6f8c.py loco.exe 0x4F86B4 44 --type height_offsets --enum TrackId")
         print("  python3 extract_track_coordinates_4f6f8c.py loco.exe 0x4F7358 128 --type raw_bytes")
         print("  python3 extract_track_coordinates_4f6f8c.py loco.exe 0x4FEAB8 32 --type int32_array")
+        print("  python3 extract_track_coordinates_4f6f8c.py loco.exe 0x5001B4 32 --type bbox_factors")
+        print("  python3 extract_track_coordinates_4f6f8c.py loco.exe 0x504619 31 --type colour_map")
         sys.exit(1)
 
     exe_path = sys.argv[1]
@@ -390,6 +565,16 @@ def main():
             print(f"\nSuccessfully extracted {len(int32_data)} int32 values\n")
             print("=" * 70)
             format_int32_array_output(int32_data, address, count)
+        elif data_type == 'bbox_factors':
+            entries = extract_bbox_factors(exe_path, address, count)
+            print(f"\nSuccessfully extracted {len(entries)} bounding box factor entries\n")
+            print("=" * 70)
+            format_bbox_factors_output(entries, address, count)
+        elif data_type == 'colour_map':
+            entries = extract_colour_map(exe_path, address, count)
+            print(f"\nSuccessfully extracted {len(entries)} colour mapping entries\n")
+            print("=" * 70)
+            format_colour_map_output(entries, address, count)
         else:
             print(f"Error: Unknown data type '{data_type}'")
             sys.exit(1)
