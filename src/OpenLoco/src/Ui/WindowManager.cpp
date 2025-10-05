@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x00508F10> __508F10;
     static loco_global<Gfx::RenderTarget, 0x0050B884> _screenRT;
-    static loco_global<uint8_t, 0x005233B6> _currentModalType;
+    static uint8_t _currentModalType= 0xFF;
     static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
     static loco_global<int32_t, 0x00E3F0B8> _gCurrentRotation;
@@ -94,7 +94,7 @@ namespace OpenLoco::Ui::WindowManager
 
     WindowType getCurrentModalType()
     {
-        return (WindowType)*_currentModalType;
+        return (WindowType)_currentModalType;
     }
 
     void setCurrentModalType(WindowType type)
