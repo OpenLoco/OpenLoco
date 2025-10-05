@@ -441,4 +441,22 @@ namespace OpenLoco::ScenarioManager
     {
         getGameState().scenarioTicks2 = ticks;
     }
+
+    static loco_global<char[512], 0x00112CE04> _scenarioFilename; // Also known as _savePath in other parts of code
+
+    // 0x00112CE04
+    const char* getScenarioFilename()
+    {
+        return _scenarioFilename;
+    }
+
+    void setScenarioFilename(const char* filename)
+    {
+        std::strncpy(&*_scenarioFilename, filename, 512);
+    }
+
+    char* getSavePathBuffer()
+    {
+        return _scenarioFilename;
+    }
 }
