@@ -94,6 +94,26 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
+                "CMAKE_PREFIX_PATH": {
+                    "type": "PATH",
+                    "value": "/opt/homebrew;/opt/homebrew/opt/openal-soft"
+                },
+                "CMAKE_EXE_LINKER_FLAGS": {
+                    "type": "STRING",
+                    "value": "-L/opt/homebrew/lib"
+                },
+                "CMAKE_CXX_FLAGS": {
+                    "type": "STRING",
+                    "value": "-isystem /opt/homebrew/opt/openal-soft/include"
+                },
+                "DEBUG_LEVEL": {
+                    "type": "STRING",
+                    "value": "3"
+                },
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Debug"
+                },
                 "OPENLOCO_BUILD_TESTS": {
                     "type": "BOOL",
                     "value": false

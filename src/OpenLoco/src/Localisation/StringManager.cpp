@@ -12,8 +12,33 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::StringManager
 {
+    // 0x005183FC
     // 0x2000 lang strings, 0x10 temp obj strings, 0x45E loaded obj strings
-    static loco_global<char* [0x246E], 0x005183FC> _strings;
+    constexpr size_t kNumStringPointers = 0x246E; // 9326 strings
+
+    // Pre-allocated buffers for string IDs that need mutable storage
+    static constexpr size_t kStringBufferSize = 512;
+    static std::array<char, kStringBufferSize> _buffer_337 = {};
+    static std::array<char, kStringBufferSize> _buffer_338 = {};
+    static std::array<char, kStringBufferSize> _buffer_1250 = {};
+    static std::array<char, kStringBufferSize> _buffer_1506 = {}; // preferred_currency_buffer
+    static std::array<char, kStringBufferSize> _buffer_1719 = {};
+    static std::array<char, kStringBufferSize> _buffer_2039 = {};
+    static std::array<char, kStringBufferSize> _buffer_2040 = {};
+
+    // Initialize string pointer array with buffers for specific IDs
+    static std::array<char*, kNumStringPointers> _strings = []() {
+        std::array<char*, kNumStringPointers> strings = {};
+        // Assign pre-allocated buffers to specific string IDs
+        strings[337] = _buffer_337.data();
+        strings[338] = _buffer_338.data();
+        strings[1250] = _buffer_1250.data();
+        strings[1506] = _buffer_1506.data();
+        strings[1719] = _buffer_1719.data();
+        strings[2039] = _buffer_2039.data();
+        strings[2040] = _buffer_2040.data();
+        return strings;
+    }();
 
     static auto& rawUserStrings() { return getGameState().userStrings; }
 

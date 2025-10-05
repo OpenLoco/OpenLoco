@@ -1,0 +1,1091 @@
+<?xml version="1.0" ?>
+<loco_globals total_instances="457" unique_offsets="315">
+  <offset hex="0x004F865C" decimal="5211740">
+    <instance type="int8_t[88]" name="_vehicle_arr_4F865C" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="78"/>
+    <instance type="int8_t[88]" name="_vehicle_arr_4F865C" file="src/OpenLoco/src/Vehicles/VehicleBody.cpp" line="35"/>
+  </offset>
+  <offset hex="0x00508F08" decimal="5279496">
+    <instance type="uint8_t" name="_gameCommandNestLevel" file="src/OpenLoco/src/GameCommands/GameCommands.cpp" line="106"/>
+  </offset>
+  <offset hex="0x00508F09" decimal="5279497">
+    <instance type="bool" name="_suppressErrorSound" file="src/OpenLoco/src/Ui/Windows/Error.cpp" line="25"/>
+    <instance type="uint8_t" name="_suppressErrorSound" file="src/OpenLoco/src/Ui/Windows/Construction/StationTab.cpp" line="51"/>
+    <instance type="uint8_t" name="_suppressErrorSound" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="47"/>
+  </offset>
+  <offset hex="0x00508F10" decimal="5279504">
+    <instance type="uint16_t" name="_flags" file="src/OpenLoco/src/MultiPlayer.cpp" line="8"/>
+    <instance type="uint16_t" name="__508F10" file="src/OpenLoco/src/Ui/WindowManager.cpp" line="47"/>
+  </offset>
+  <offset hex="0x00508F12" decimal="5279506">
+    <instance type="uint16_t" name="_sceneAge" file="src/OpenLoco/src/SceneManager.cpp" line="9"/>
+  </offset>
+  <offset hex="0x00508F14" decimal="5279508">
+    <instance type="Flags" name="_sceneFlags" file="src/OpenLoco/src/SceneManager.cpp" line="10"/>
+  </offset>
+  <offset hex="0x00508F16" decimal="5279510">
+    <instance type="int8_t" name="_screenshotCountdown" file="src/OpenLoco/src/Ui/Screenshot.cpp" line="28"/>
+  </offset>
+  <offset hex="0x00508F17" decimal="5279511">
+    <instance type="uint8_t" name="_pausedState" file="src/OpenLoco/src/SceneManager.cpp" line="11"/>
+  </offset>
+  <offset hex="0x00508F19" decimal="5279513">
+    <instance type="State" name="_state" file="src/OpenLoco/src/Tutorial.cpp" line="20"/>
+  </offset>
+  <offset hex="0x00508F1A" decimal="5279514">
+    <instance type="GameSpeed" name="_gameSpeed" file="src/OpenLoco/src/SceneManager.cpp" line="12"/>
+  </offset>
+  <offset hex="0x0050A000" decimal="5283840">
+    <instance type="int16_t" name="_adjustToolSize" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="121"/>
+  </offset>
+  <offset hex="0x0050A002" decimal="5283842">
+    <instance type="LoadOrQuitMode" name="_savePromptType" file="src/OpenLoco/src/Game.cpp" line="28"/>
+    <instance type="LoadOrQuitMode" name="_savePromptType" file="src/OpenLoco/src/Ui/Windows/PromptSaveWindow.cpp" line="25"/>
+    <instance type="LoadOrQuitMode" name="_savePromptType" file="src/OpenLoco/src/GameCommands/General/LoadSaveQuit.cpp" line="16"/>
+  </offset>
+  <offset hex="0x0050A004" decimal="5283844">
+    <instance type="uint16_t" name="_50A004" file="src/OpenLoco/src/Ui/Windows/PlayerInfoPanel.cpp" line="62"/>
+    <instance type="uint16_t" name="_50A004" file="src/OpenLoco/src/Ui/Windows/TimePanel.cpp" line="63"/>
+  </offset>
+  <offset hex="0x0050A006" decimal="5283846">
+    <instance type="uint8_t[18]" name="_availableObjects" file="src/OpenLoco/src/Ui/Windows/ToolbarTop.cpp" line="48"/>
+    <instance type="uint8_t[18]" name="_availableObjects" file="src/OpenLoco/src/Ui/Windows/ToolbarTopCommon.cpp" line="36"/>
+    <instance type="uint8_t[18]" name="_availableObjects" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="56"/>
+  </offset>
+  <offset hex="0x0050A018" decimal="5283864">
+    <instance type="StringId" name="_mapTooltipFormatArguments" file="src/OpenLoco/src/Input/MouseInput.cpp" line="63"/>
+    <instance type="std::byte[40]" name="_mapTooltipFormatArguments" file="src/OpenLoco/src/Localisation/FormatArguments.hpp" line="83"/>
+  </offset>
+  <offset hex="0x0050AE04" decimal="5287428">
+    <instance type="ScoreHeader" name="_scenarioHeader" file="src/OpenLoco/src/ScenarioManager.cpp" line="49"/>
+  </offset>
+  <offset hex="0x0050AE8C" decimal="5287564">
+    <instance type="ScenarioIndexEntry*" name="_scenarioList" file="src/OpenLoco/src/ScenarioManager.cpp" line="48"/>
+  </offset>
+  <offset hex="0x0050AEAD" decimal="5287597">
+    <instance type="uint8_t" name="_50AEAD" file="src/OpenLoco/src/Config.cpp" line="16"/>
+    <instance type="bool" name="_isFirstTime" file="src/OpenLoco/src/Objects/ObjectIndex.cpp" line="51"/>
+  </offset>
+  <offset hex="0x0050AEB4" decimal="5287604">
+    <instance type="LocoConfig" name="_legacyConfig" file="src/OpenLoco/src/Config.cpp" line="15"/>
+  </offset>
+  <offset hex="0x00050B745" decimal="5289797">
+    <instance type="char[267]" name="_activeSavePath" file="src/OpenLoco/src/EditorController.cpp" line="41"/>
+    <instance type="char[256]" name="_currentScenarioFilename" file="src/OpenLoco/src/Scenario.cpp" line="57"/>
+    <instance type="char[256]" name="_currentScenarioFilename" file="src/OpenLoco/src/Game.cpp" line="30"/>
+    <instance type="char[256]" name="_currentGameFilePath" file="src/OpenLoco/src/Ui/Windows/ToolbarTop.cpp" line="189"/>
+  </offset>
+  <offset hex="0x0050B884" decimal="5290116">
+    <instance type="Gfx::RenderTarget" name="_screenRT" file="src/OpenLoco/src/Ui/WindowManager.cpp" line="48"/>
+    <instance type="RenderTarget" name="_screenRT" file="src/OpenLoco/src/Graphics/SoftwareDrawingEngine.cpp" line="24"/>
+  </offset>
+  <offset hex="0x0050B894" decimal="5290132">
+    <instance type="Ui::ScreenInfo" name="_screenInfo" file="src/OpenLoco/src/Graphics/SoftwareDrawingEngine.cpp" line="25"/>
+  </offset>
+  <offset hex="0x0050BF68" decimal="5291880">
+    <instance type="uint8_t" name="_byte_50BF68" file="src/OpenLoco/src/Paint/PaintRoad.cpp" line="28"/>
+    <instance type="uint8_t" name="_50BF68" file="src/OpenLoco/src/Ui/ViewportInteraction.cpp" line="1477"/>
+  </offset>
+  <offset hex="0x0050BF6C" decimal="5291884">
+    <instance type="bool" name="_disablePeriodicDefrag" file="src/OpenLoco/src/Map/TileManager.cpp" line="57"/>
+  </offset>
+  <offset hex="0x0050C190" decimal="5292432">
+    <instance type="int32_t" name="_50C190" file="src/OpenLoco/src/Intro.cpp" line="21"/>
+  </offset>
+  <offset hex="0x0050C195" decimal="5292437">
+    <instance type="State" name="_state" file="src/OpenLoco/src/Intro.cpp" line="22"/>
+  </offset>
+  <offset hex="0x0050C196" decimal="5292438">
+    <instance type="bool" name="_50C196" file="src/OpenLoco/src/Intro.cpp" line="23"/>
+  </offset>
+  <offset hex="0x0050C197" decimal="5292439">
+    <instance type="int8_t" name="_loadErrorCode" file="src/OpenLoco/src/OpenLoco.cpp" line="432"/>
+    <instance type="uint8_t" name="_loadErrorCode" file="src/OpenLoco/src/S5/S5.cpp" line="60"/>
+  </offset>
+  <offset hex="0x0050C198" decimal="5292440">
+    <instance type="StringId" name="_loadErrorMessage" file="src/OpenLoco/src/OpenLoco.cpp" line="433"/>
+    <instance type="StringId" name="_loadErrorMessage" file="src/OpenLoco/src/S5/S5.cpp" line="61"/>
+  </offset>
+  <offset hex="0x0050C19C" decimal="5292444">
+    <instance type="uint16_t" name="_time_since_last_tick" file="src/OpenLoco/src/OpenLoco.cpp" line="100"/>
+    <instance type="uint16_t" name="_timeSinceLastTick" file="src/OpenLoco/src/Ui/WindowManager.cpp" line="44"/>
+    <instance type="uint16_t" name="_timeSinceLastTick" file="src/OpenLoco/src/Input/MouseInput.cpp" line="65"/>
+  </offset>
+  <offset hex="0x0050C19E" decimal="5292446">
+    <instance type="uint32_t" name="_last_tick_time" file="src/OpenLoco/src/OpenLoco.cpp" line="101"/>
+  </offset>
+  <offset hex="0x0050D13C" decimal="5296444">
+    <instance type="std::byte*" name="_installedObjectList" file="src/OpenLoco/src/Ui/Windows/Options.cpp" line="1680"/>
+  </offset>
+  <offset hex="0x50D144" decimal="5296452">
+    <instance type="ObjectManager::SelectedObjectsFlags*" name="_inUseobjectSelection" file="src/OpenLoco/src/EditorController.cpp" line="44"/>
+    <instance type="ObjectManager::SelectedObjectsFlags*" name="_inUseobjectSelection" file="src/OpenLoco/src/Scenario.cpp" line="471"/>
+    <instance type="ObjectManager::SelectedObjectsFlags*" name="_objectSelection" file="src/OpenLoco/src/Title.cpp" line="86"/>
+    <instance type="ObjectManager::SelectedObjectsFlags*" name="_objectSelection" file="src/OpenLoco/src/Ui/Windows/ObjectSelectionWindow.cpp" line="214"/>
+    <instance type="SelectedObjectsFlags*" name="_50D144" file="src/OpenLoco/src/Objects/ObjectIndex.cpp" line="54"/>
+  </offset>
+  <offset hex="0x0050D148" decimal="5296456">
+    <instance type="int32_t" name="_50D144refCount" file="src/OpenLoco/src/Objects/ObjectIndex.cpp" line="53"/>
+  </offset>
+  <offset hex="0x0050D154" decimal="5296468">
+    <instance type="uint32_t" name="_totalNumImages" file="src/OpenLoco/src/Objects/ObjectImageTable.cpp" line="10"/>
+  </offset>
+  <offset hex="0x0050D15C" decimal="5296476">
+    <instance type="Object*" name="_temporaryObject" file="src/OpenLoco/src/Objects/ObjectManager.cpp" line="130"/>
+  </offset>
+  <offset hex="0x0050D160" decimal="5296480">
+    <instance type="uint8_t" name="_isTemporaryObject" file="src/OpenLoco/src/Objects/ObjectManager.cpp" line="129"/>
+  </offset>
+  <offset hex="0x0050D161" decimal="5296481">
+    <instance type="bool" name="_isPartialLoaded" file="src/OpenLoco/src/Objects/ObjectIndex.cpp" line="52"/>
+    <instance type="bool" name="_isPartialLoaded" file="src/OpenLoco/src/Objects/ObjectManager.cpp" line="128"/>
+  </offset>
+  <offset hex="0x0050D1EC" decimal="5296620">
+    <instance type="uint32_t" name="_audioInitialised" file="src/OpenLoco/src/Audio/Audio.cpp" line="55"/>
+  </offset>
+  <offset hex="0x0050D514" decimal="5297428">
+    <instance type="uint8_t[64]" name="_unk_50D514" file="src/OpenLoco/src/Audio/Audio.cpp" line="464"/>
+  </offset>
+  <offset hex="0x0050D554" decimal="5297492">
+    <instance type="bool" name="_audioIsPaused" file="src/OpenLoco/src/Audio/Audio.cpp" line="56"/>
+  </offset>
+  <offset hex="0x0050D555" decimal="5297493">
+    <instance type="bool" name="_audioIsEnabled" file="src/OpenLoco/src/Audio/Audio.cpp" line="57"/>
+  </offset>
+  <offset hex="0x0050D5AC" decimal="5297580">
+    <instance type="uint32_t" name="_50D5AC" file="src/OpenLoco/src/Audio/Audio.cpp" line="1010"/>
+  </offset>
+  <offset hex="0x00522090" decimal="5382288">
+    <instance type="uint8_t" name="_byte_522090" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="48"/>
+  </offset>
+  <offset hex="0x00522091" decimal="5382289">
+    <instance type="uint8_t" name="_byte_522091" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="49"/>
+  </offset>
+  <offset hex="0x00522092" decimal="5382290">
+    <instance type="uint8_t" name="_byte_522092" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="50"/>
+  </offset>
+  <offset hex="0x00522093" decimal="5382291">
+    <instance type="uint8_t" name="_ghostRemovalTrackObjectId" file="src/OpenLoco/src/Ui/Windows/Construction/Construction.h" line="35"/>
+  </offset>
+  <offset hex="0x00522095" decimal="5382293">
+    <instance type="uint8_t" name="_byte_522095" file="src/OpenLoco/src/Paint/PaintTrack.cpp" line="27"/>
+    <instance type="uint8_t" name="_byte_522095" file="src/OpenLoco/src/Paint/PaintRoad.cpp" line="27"/>
+    <instance type="uint8_t" name="_byte_522095" file="src/OpenLoco/src/Ui/Windows/Construction/Construction.h" line="36"/>
+  </offset>
+  <offset hex="0x00522096" decimal="5382294">
+    <instance type="GhostVisibilityFlags" name="_ghostVisibilityFlags" file="src/OpenLoco/src/Ui/Windows/Construction/Construction.h" line="37"/>
+  </offset>
+  <offset hex="0x005220BC" decimal="5382332">
+    <instance type="Vehicles::SignalStateFlags" name="_vehicleManagerIgnoreSignalFlagsMasks" file="src/OpenLoco/src/Vehicles/VehicleManager.cpp" line="28"/>
+    <instance type="SignalStateFlags" name="_vehicleManagerIgnoreSignalFlagsMasks" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="79"/>
+  </offset>
+  <offset hex="0x005230C8" decimal="5386440">
+    <instance type="TileElement*" name="_elements" file="src/OpenLoco/src/Map/TileManager.cpp" line="51"/>
+  </offset>
+  <offset hex="0x0052334E" decimal="5387086">
+    <instance type="uint16_t" name="_thousandthTickCounter" file="src/OpenLoco/src/Ui/WindowManager.cpp" line="45"/>
+  </offset>
+  <offset hex="0x0052336E" decimal="5387118">
+    <instance type="int8_t" name="_52336E" file="src/OpenLoco/src/OpenLoco.cpp" line="103"/>
+    <instance type="bool" name="_52336E" file="src/OpenLoco/src/Ui/Windows/ToolTip.cpp" line="23"/>
+  </offset>
+  <offset hex="0x0052336F" decimal="5387119">
+    <instance type="Ui::WindowType" name="_pressedWindowType" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="94"/>
+    <instance type="Ui::WindowType" name="_pressedWindowType" file="src/OpenLoco/src/Input/MouseInput.cpp" line="76"/>
+  </offset>
+  <offset hex="0x00523370" decimal="5387120">
+    <instance type="Ui::WindowNumber_t" name="_pressedWindowNumber" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="95"/>
+    <instance type="Ui::WindowNumber_t" name="_pressedWindowNumber" file="src/OpenLoco/src/Input/MouseInput.cpp" line="77"/>
+  </offset>
+  <offset hex="0x00523372" decimal="5387122">
+    <instance type="int32_t" name="_pressedWidgetIndex" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="96"/>
+    <instance type="int32_t" name="_pressedWidgetIndex" file="src/OpenLoco/src/Input/MouseInput.cpp" line="78"/>
+  </offset>
+  <offset hex="0x00523376" decimal="5387126">
+    <instance type="uint16_t" name="_clickRepeatTicks" file="src/OpenLoco/src/Input/MouseInput.cpp" line="79"/>
+  </offset>
+  <offset hex="0x00523378" decimal="5387128">
+    <instance type="Ui::Point" name="_dragLast" file="src/OpenLoco/src/Input/MouseInput.cpp" line="80"/>
+  </offset>
+  <offset hex="0x0052337A" decimal="5387130">
+    <instance type="int16_t" name="_dragLastY" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="111"/>
+  </offset>
+  <offset hex="0x0052337C" decimal="5387132">
+    <instance type="Ui::WindowNumber_t" name="_dragWindowNumber" file="src/OpenLoco/src/Input/MouseInput.cpp" line="81"/>
+  </offset>
+  <offset hex="0x0052337E" decimal="5387134">
+    <instance type="Ui::WindowType" name="_dragWindowType" file="src/OpenLoco/src/Input/MouseInput.cpp" line="82"/>
+  </offset>
+  <offset hex="0x0052337F" decimal="5387135">
+    <instance type="uint8_t" name="_dragWidgetIndex" file="src/OpenLoco/src/Input/MouseInput.cpp" line="83"/>
+  </offset>
+  <offset hex="0x00523380" decimal="5387136">
+    <instance type="uint8_t" name="_dragScrollIndex" file="src/OpenLoco/src/Input/MouseInput.cpp" line="84"/>
+  </offset>
+  <offset hex="0x00523381" decimal="5387137">
+    <instance type="WindowType" name="_tooltipWindowType" file="src/OpenLoco/src/Ui/Windows/ToolTip.cpp" line="25"/>
+    <instance type="Ui::WindowType" name="_tooltipWindowType" file="src/OpenLoco/src/Input/MouseInput.cpp" line="85"/>
+  </offset>
+  <offset hex="0x00523382" decimal="5387138">
+    <instance type="WindowNumber_t" name="_tooltipWindowNumber" file="src/OpenLoco/src/Ui/Windows/ToolTip.cpp" line="26"/>
+    <instance type="int16_t" name="_tooltipWindowNumber" file="src/OpenLoco/src/Input/MouseInput.cpp" line="86"/>
+  </offset>
+  <offset hex="0x00523384" decimal="5387140">
+    <instance type="int16_t" name="_tooltipWidgetIndex" file="src/OpenLoco/src/Ui/Windows/ToolTip.cpp" line="27"/>
+    <instance type="int16_t" name="_tooltipWidgetIndex" file="src/OpenLoco/src/Input/MouseInput.cpp" line="87"/>
+  </offset>
+  <offset hex="0x00523386" decimal="5387142">
+    <instance type="Ui::Point" name="_tooltipCursor" file="src/OpenLoco/src/Input/MouseInput.cpp" line="88"/>
+  </offset>
+  <offset hex="0x0052338A" decimal="5387146">
+    <instance type="uint16_t" name="_tooltipTimeout" file="src/OpenLoco/src/Input/MouseInput.cpp" line="89"/>
+  </offset>
+  <offset hex="0x0052338C" decimal="5387148">
+    <instance type="uint16_t" name="_tooltipNotShownTicks" file="src/OpenLoco/src/Ui/WindowManager.cpp" line="46"/>
+    <instance type="uint16_t" name="_tooltipNotShownTicks" file="src/OpenLoco/src/Ui/Windows/ToolTip.cpp" line="29"/>
+    <instance type="uint16_t" name="_tooltipNotShownTicks" file="src/OpenLoco/src/Input/MouseInput.cpp" line="90"/>
+  </offset>
+  <offset hex="0x0052338E" decimal="5387150">
+    <instance type="uint16_t" name="_ticksSinceDragStart" file="src/OpenLoco/src/Input/MouseInput.cpp" line="91"/>
+  </offset>
+  <offset hex="0x00523390" decimal="5387152">
+    <instance type="Ui::WindowNumber_t" name="_toolWindowNumber" file="src/OpenLoco/src/Ui/ToolManager.cpp" line="15"/>
+  </offset>
+  <offset hex="0x00523392" decimal="5387154">
+    <instance type="Ui::WindowType" name="_toolWindowType" file="src/OpenLoco/src/Ui/ToolManager.cpp" line="16"/>
+  </offset>
+  <offset hex="0x00523393" decimal="5387155">
+    <instance type="Ui::CursorId" name="_toolWindowCursor" file="src/OpenLoco/src/Ui/ToolManager.cpp" line="17"/>
+  </offset>
+  <offset hex="0x00523394" decimal="5387156">
+    <instance type="uint16_t" name="_toolWidgetIndex" file="src/OpenLoco/src/Ui/ToolManager.cpp" line="19"/>
+  </offset>
+  <offset hex="0x00523396" decimal="5387158">
+    <instance type="Ui::ScrollPart" name="_currentScrollArea" file="src/OpenLoco/src/Ui/ScrollView.cpp" line="13"/>
+  </offset>
+  <offset hex="0x00523398" decimal="5387160">
+    <instance type="uint32_t" name="_currentScrollOffset" file="src/OpenLoco/src/Ui/ScrollView.cpp" line="16"/>
+  </offset>
+  <offset hex="0x005233A4" decimal="5387172">
+    <instance type="Ui::Point" name="_scrollLast" file="src/OpenLoco/src/Input/MouseInput.cpp" line="93"/>
+  </offset>
+  <offset hex="0x005233A8" decimal="5387176">
+    <instance type="Ui::WindowType" name="_hoverWindowType" file="src/OpenLoco/src/Input/MouseInput.cpp" line="94"/>
+  </offset>
+  <offset hex="0x005233AA" decimal="5387178">
+    <instance type="Ui::WindowNumber_t" name="_hoverWindowNumber" file="src/OpenLoco/src/Input/MouseInput.cpp" line="96"/>
+  </offset>
+  <offset hex="0x005233AC" decimal="5387180">
+    <instance type="Ui::WidgetIndex_t" name="_hoverWidgetIdx" file="src/OpenLoco/src/Input/MouseInput.cpp" line="97"/>
+  </offset>
+  <offset hex="0x005233AE" decimal="5387182">
+    <instance type="int32_t" name="_mousePosX" file="src/OpenLoco/src/Input/MouseInput.cpp" line="101"/>
+  </offset>
+  <offset hex="0x005233B2" decimal="5387186">
+    <instance type="int32_t" name="_mousePosY" file="src/OpenLoco/src/Input/MouseInput.cpp" line="102"/>
+  </offset>
+  <offset hex="0x005233B6" decimal="5387190">
+    <instance type="uint8_t" name="_currentModalType" file="src/OpenLoco/src/Ui/WindowManager.cpp" line="49"/>
+  </offset>
+  <offset hex="0x00523508" decimal="5387528">
+    <instance type="uint32_t" name="_523508" file="src/OpenLoco/src/Ui/WindowManager.cpp" line="50"/>
+  </offset>
+  <offset hex="0x0052524C" decimal="5395020">
+    <instance type="SetPaletteFunc" name="_setPaletteCallback" file="src/OpenLoco/src/Graphics/SoftwareDrawingEngine.cpp" line="27"/>
+  </offset>
+  <offset hex="0x00525BB0" decimal="5397424">
+    <instance type="AirportMovementNodeFlags" name="_vehicleUpdate_helicopterAirportMovement" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="75"/>
+  </offset>
+  <offset hex="0x00525D20" decimal="5397792">
+    <instance type="Town*" name="_525D20" file="src/OpenLoco/src/World/Town.cpp" line="698"/>
+    <instance type="Town*" name="_525D20" file="src/OpenLoco/src/World/Town.cpp" line="1442"/>
+  </offset>
+  <offset hex="0x00525E18" decimal="5398040">
+    <instance type="GameState" name="_gameState" file="src/OpenLoco/src/GameState.cpp" line="11"/>
+    <instance type="GameState" name="_gameState" file="src/OpenLoco/src/S5/S5.cpp" line="56"/>
+  </offset>
+  <offset hex="0x009C645C" decimal="10249308">
+    <instance type="Colour[Limits::kMaxCompanies + 1]" name="_companyColours" file="src/OpenLoco/src/World/CompanyManager.cpp" line="51"/>
+  </offset>
+  <offset hex="0x009C68D0" decimal="10250448">
+    <instance type="const TileElement*" name="_9C68D0" file="src/OpenLoco/src/GameCommands/GameCommands.cpp" line="110"/>
+  </offset>
+  <offset hex="0x009C68E0" decimal="10250464">
+    <instance type="Pos3" name="_gGameCommandPosition" file="src/OpenLoco/src/GameCommands/GameCommands.cpp" line="112"/>
+  </offset>
+  <offset hex="0x009C68E6" decimal="10250470">
+    <instance type="StringId" name="_gGameCommandErrorText" file="src/OpenLoco/src/GameCommands/GameCommands.cpp" line="113"/>
+  </offset>
+  <offset hex="0x009C68E8" decimal="10250472">
+    <instance type="StringId" name="_gGameCommandErrorTitle" file="src/OpenLoco/src/GameCommands/GameCommands.cpp" line="114"/>
+  </offset>
+  <offset hex="0x009C68EA" decimal="10250474">
+    <instance type="uint8_t" name="_gGameCommandExpenditureType" file="src/OpenLoco/src/GameCommands/GameCommands.cpp" line="115"/>
+  </offset>
+  <offset hex="0x009C68EB" decimal="10250475">
+    <instance type="CompanyId" name="_updatingCompanyId" file="src/OpenLoco/src/GameCommands/GameCommands.cpp" line="105"/>
+  </offset>
+  <offset hex="0x009C68EE" decimal="10250478">
+    <instance type="CompanyId" name="_errorCompanyId" file="src/OpenLoco/src/GameCommands/GameCommands.cpp" line="116"/>
+  </offset>
+  <offset hex="0x9C68F2" decimal="10250482">
+    <instance type="CompanyId" name="_9C68F2" file="src/OpenLoco/src/Ui/Windows/CompanyFaceSelection.cpp" line="36"/>
+  </offset>
+  <offset hex="0x009C86F8" decimal="10258168">
+    <instance type="uint32_t" name="_zoomTicks" file="src/OpenLoco/src/Ui/Windows/ToolbarTop.cpp" line="45"/>
+    <instance type="uint32_t" name="_zoomTicks" file="src/OpenLoco/src/Ui/Windows/ToolbarTopCommon.cpp" line="32"/>
+  </offset>
+  <offset hex="0x009C86FC" decimal="10258172">
+    <instance type="uint16_t*" name="_tutorialOffset" file="src/OpenLoco/src/Tutorial.cpp" line="23"/>
+  </offset>
+  <offset hex="0x009C8704" decimal="10258180">
+    <instance type="uint16_t*" name="_tutorialEnd" file="src/OpenLoco/src/Tutorial.cpp" line="24"/>
+  </offset>
+  <offset hex="0x009C8708" decimal="10258184">
+    <instance type="StringId" name="_tutorialString" file="src/OpenLoco/src/Tutorial.cpp" line="26"/>
+  </offset>
+  <offset hex="0x009C870A" decimal="10258186">
+    <instance type="uint8_t" name="_tutorialNumber" file="src/OpenLoco/src/Tutorial.cpp" line="27"/>
+  </offset>
+  <offset hex="0x009C870C" decimal="10258188">
+    <instance type="uint8_t" name="_lastTownOption" file="src/OpenLoco/src/Ui/Windows/ToolbarTop.cpp" line="46"/>
+    <instance type="uint8_t" name="_lastTownOption" file="src/OpenLoco/src/Ui/Windows/ToolbarTopAlt.cpp" line="38"/>
+    <instance type="uint8_t" name="_lastTownOption" file="src/OpenLoco/src/Ui/Windows/ToolbarTopCommon.cpp" line="34"/>
+  </offset>
+  <offset hex="0x009C870D" decimal="10258189">
+    <instance type="uint8_t" name="_lastPortOption" file="src/OpenLoco/src/Ui/Windows/ToolbarTop.cpp" line="47"/>
+  </offset>
+  <offset hex="0x009C870E" decimal="10258190">
+    <instance type="uint8_t" name="_adjustLandToolSize" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="112"/>
+  </offset>
+  <offset hex="0x009C870F" decimal="10258191">
+    <instance type="uint8_t" name="_clearAreaToolSize" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="113"/>
+  </offset>
+  <offset hex="0x009C8710" decimal="10258192">
+    <instance type="uint8_t" name="_adjustWaterToolSize" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="114"/>
+  </offset>
+  <offset hex="0x009C8714" decimal="10258196">
+    <instance type="Options" name="_activeOptions" file="src/OpenLoco/src/ScenarioOptions.cpp" line="6"/>
+    <instance type="Options" name="_activeOptions" file="src/OpenLoco/src/S5/S5.cpp" line="57"/>
+  </offset>
+  <offset hex="0x009CCA34" decimal="10275380">
+    <instance type="Header" name="_header" file="src/OpenLoco/src/S5/S5.cpp" line="58"/>
+  </offset>
+  <offset hex="0x009D9D52" decimal="10329426">
+    <instance type="uint32_t" name="_decodedSize" file="src/OpenLoco/src/Objects/ObjectManager.cpp" line="131"/>
+  </offset>
+  <offset hex="0x009D9D63" decimal="10329443">
+    <instance type="uint8_t" name="_type" file="src/OpenLoco/src/Ui/Windows/PromptBrowseWindow.cpp" line="78"/>
+  </offset>
+  <offset hex="0x009D9E64" decimal="10329700">
+    <instance type="char[32]" name="_filter" file="src/OpenLoco/src/Ui/Windows/PromptBrowseWindow.cpp" line="81"/>
+  </offset>
+  <offset hex="0x009DA084" decimal="10330244">
+    <instance type="char[512]" name="_displayFolderBuffer" file="src/OpenLoco/src/Ui/Windows/PromptBrowseWindow.cpp" line="80"/>
+  </offset>
+  <offset hex="0x009DA284" decimal="10330756">
+    <instance type="BrowseFileType" name="_fileType" file="src/OpenLoco/src/Ui/Windows/PromptBrowseWindow.cpp" line="79"/>
+  </offset>
+  <offset hex="0x009DA3D4" decimal="10331092">
+    <instance type="uint32_t" name="_9DA3D4" file="src/OpenLoco/src/Ui/WindowManager.cpp" line="51"/>
+  </offset>
+  <offset hex="0x9E2424" decimal="10363940">
+    <instance type="G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects]" name="_g1Elements" file="src/OpenLoco/src/Graphics/Gfx.cpp" line="41"/>
+  </offset>
+  <offset hex="0x00E04324" decimal="14697252">
+    <instance type="uint32_t" name="_interactionFlags" file="src/OpenLoco/src/Paint/Paint.cpp" line="1218"/>
+  </offset>
+  <offset hex="0x00E0C3C6" decimal="14730182">
+    <instance type="uint16_t" name="_word_E0C3C6" file="src/OpenLoco/src/Ui/Windows/IndustryList.cpp" line="1023"/>
+  </offset>
+  <offset hex="0x00E0C3C9" decimal="14730185">
+    <instance type="IndustryId" name="_industryLastPlacedId" file="src/OpenLoco/src/Ui/Windows/IndustryList.cpp" line="51"/>
+    <instance type="IndustryId" name="_industryLastPlacedId" file="src/OpenLoco/src/GameCommands/Industries/CreateIndustry.cpp" line="34"/>
+  </offset>
+  <offset hex="0x00E0C3E4" decimal="14730212">
+    <instance type="Gfx::RenderTarget" name="_rt1" file="src/OpenLoco/src/Ui/ViewportInteraction.cpp" line="1478"/>
+  </offset>
+  <offset hex="0x00E0C3F4" decimal="14730228">
+    <instance type="Gfx::RenderTarget" name="_rt2" file="src/OpenLoco/src/Ui/ViewportInteraction.cpp" line="1479"/>
+  </offset>
+  <offset hex="0x00E3F0B8" decimal="14938296">
+    <instance type="int32_t" name="_gCurrentRotation" file="src/OpenLoco/src/Ui/WindowManager.cpp" line="52"/>
+  </offset>
+  <offset hex="0x00E40114" decimal="14942484">
+    <instance type="bool" name="_interactionResult" file="src/OpenLoco/src/Paint/Paint.cpp" line="1217"/>
+  </offset>
+  <offset hex="0x00E40134" decimal="14942516">
+    <instance type="TileElement* [kNumTiles]" name="_tiles" file="src/OpenLoco/src/Map/TileManager.cpp" line="52"/>
+  </offset>
+  <offset hex="0x00F00134" decimal="15728948">
+    <instance type="TileElement*" name="_elementsEnd" file="src/OpenLoco/src/Map/TileManager.cpp" line="54"/>
+  </offset>
+  <offset hex="0x00F00138" decimal="15728952">
+    <instance type="uint32_t" name="_F00138" file="src/OpenLoco/src/Map/TileClearance.cpp" line="32"/>
+  </offset>
+  <offset hex="0x00F0014E" decimal="15728974">
+    <instance type="uint32_t" name="_mtnToolCost" file="src/OpenLoco/src/GameCommands/Terraform/LowerRaiseLandMountain.cpp" line="20"/>
+  </offset>
+  <offset hex="0x00F00154" decimal="15728980">
+    <instance type="uint8_t" name="_mtnToolGCFlags" file="src/OpenLoco/src/GameCommands/Terraform/LowerRaiseLandMountain.cpp" line="21"/>
+  </offset>
+  <offset hex="0x00F00155" decimal="15728981">
+    <instance type="uint8_t" name="_mtnToolHeightDiff" file="src/OpenLoco/src/GameCommands/Terraform/LowerRaiseLandMountain.cpp" line="22"/>
+  </offset>
+  <offset hex="0x00F00156" decimal="15728982">
+    <instance type="int8_t" name="_mtnToolOuterLoopIndex" file="src/OpenLoco/src/GameCommands/Terraform/LowerRaiseLandMountain.cpp" line="23"/>
+  </offset>
+  <offset hex="0x00F00158" decimal="15728984">
+    <instance type="const TileElement*" name="_F00158" file="src/OpenLoco/src/Map/TileManager.cpp" line="55"/>
+  </offset>
+  <offset hex="0x00F0015C" decimal="15728988">
+    <instance type="TileElement*" name="_F0015C" file="src/OpenLoco/src/Map/TileClearance.cpp" line="33"/>
+  </offset>
+  <offset hex="0x00F00166" decimal="15728998">
+    <instance type="ElementPositionFlags" name="_constructAtElementPositionFlags" file="src/OpenLoco/src/Map/TileClearance.cpp" line="34"/>
+  </offset>
+  <offset hex="0x00F00168" decimal="15729000">
+    <instance type="uint32_t" name="_periodicDefragStartTile" file="src/OpenLoco/src/Map/TileManager.cpp" line="56"/>
+  </offset>
+  <offset hex="0x00F003D2" decimal="15729618">
+    <instance type="uint8_t" name="_lastSelectedLand" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="115"/>
+  </offset>
+  <offset hex="0x00F003D3" decimal="15729619">
+    <instance type="LandObjectFlags[32]" name="_F003D3" file="src/OpenLoco/src/Paint/PaintSurface.cpp" line="27"/>
+    <instance type="LandObjectFlags[getMaxObjects(ObjectType::land)]" name="_landObjectFlags" file="src/OpenLoco/src/Objects/ObjectManager.cpp" line="1093"/>
+  </offset>
+  <offset hex="0x00F00484" decimal="15729796">
+    <instance type="uint8_t[kMapSize]" name="_byte_F00484" file="src/OpenLoco/src/Ui/Windows/StationWindow.cpp" line="47"/>
+    <instance type="uint8_t[kMapSize]" name="_map" file="src/OpenLoco/src/World/Station.cpp" line="56"/>
+  </offset>
+  <offset hex="0x00F24484" decimal="15877252">
+    <instance type="MapSelectionFlags" name="_mapSelectionFlags" file="src/OpenLoco/src/Map/MapSelection.cpp" line="12"/>
+  </offset>
+  <offset hex="0x00F24486" decimal="15877254">
+    <instance type="coord_t" name="_mapSelectionAX" file="src/OpenLoco/src/Map/MapSelection.cpp" line="13"/>
+  </offset>
+  <offset hex="0x00F24488" decimal="15877256">
+    <instance type="coord_t" name="_mapSelectionBX" file="src/OpenLoco/src/Map/MapSelection.cpp" line="14"/>
+  </offset>
+  <offset hex="0x00F2448A" decimal="15877258">
+    <instance type="coord_t" name="_mapSelectionAY" file="src/OpenLoco/src/Map/MapSelection.cpp" line="15"/>
+  </offset>
+  <offset hex="0x00F2448C" decimal="15877260">
+    <instance type="coord_t" name="_mapSelectionBY" file="src/OpenLoco/src/Map/MapSelection.cpp" line="16"/>
+  </offset>
+  <offset hex="0x00F2448E" decimal="15877262">
+    <instance type="MapSelectionType" name="_word_F2448E" file="src/OpenLoco/src/Map/MapSelection.cpp" line="17"/>
+  </offset>
+  <offset hex="0x00F24942" decimal="15878466">
+    <instance type="World::Pos3" name="_constructionArrowLocation" file="src/OpenLoco/src/Paint/PaintTile.cpp" line="69"/>
+    <instance type="World::Pos3" name="_constructionArrowPos" file="src/OpenLoco/src/Ui/Windows/Construction/StationTab.cpp" line="52"/>
+    <instance type="World::Pos3" name="_constructionArrowPos" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="52"/>
+  </offset>
+  <offset hex="0x00F24948" decimal="15878472">
+    <instance type="uint8_t" name="_constructionArrowDirection" file="src/OpenLoco/src/Paint/PaintTile.cpp" line="70"/>
+    <instance type="uint8_t" name="_constructionArrowDirection" file="src/OpenLoco/src/Ui/Windows/Construction/StationTab.cpp" line="53"/>
+    <instance type="uint8_t" name="_constructionArrowDirection" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="53"/>
+  </offset>
+  <offset hex="0x00F252A4" decimal="15880868">
+    <instance type="StationId" name="_hoveredStationId" file="src/OpenLoco/src/Ui/ViewportInteraction.cpp" line="164"/>
+    <instance type="StationId" name="_hoveredStationId" file="src/OpenLoco/src/Ui/Windows/Vehicle.cpp" line="94"/>
+    <instance type="StationId" name="_hoveredStationId" file="src/OpenLoco/src/Input/MouseInput.cpp" line="110"/>
+  </offset>
+  <offset hex="0x00F2530C" decimal="15880972">
+    <instance type="uint32_t" name="_raiseLandCost" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="122"/>
+  </offset>
+  <offset hex="0x00F25310" decimal="15880976">
+    <instance type="uint32_t" name="_lowerLandCost" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="123"/>
+  </offset>
+  <offset hex="0x01025A88" decimal="16931464">
+    <instance type="uint32_t" name="_entitySpatialCount" file="src/OpenLoco/src/Entities/EntityManager.cpp" line="24"/>
+  </offset>
+  <offset hex="0x01025A8C" decimal="16931468">
+    <instance type="EntityId[kSpatialEntityMapSize]" name="_entitySpatialIndex" file="src/OpenLoco/src/Entities/EntityManager.cpp" line="22"/>
+  </offset>
+  <offset hex="0x0112A168" decimal="17998184">
+    <instance type="uint32_t" name="_numImages" file="src/OpenLoco/src/Objects/ObjectManager.cpp" line="132"/>
+  </offset>
+  <offset hex="0x0112A17E" decimal="17998206">
+    <instance type="uint8_t" name="_customObjectsInIndex" file="src/OpenLoco/src/Ui/Windows/Options.cpp" line="2447"/>
+    <instance type="bool" name="_customObjectsInIndex" file="src/OpenLoco/src/Objects/ObjectIndex.cpp" line="50"/>
+  </offset>
+  <offset hex="0x00112C181" decimal="18006401">
+    <instance type="uint16_t[33]" name="_tabObjectCounts" file="src/OpenLoco/src/Ui/Windows/ObjectSelectionWindow.cpp" line="222"/>
+  </offset>
+  <offset hex="0x0112C185" decimal="18006405">
+    <instance type="uint16_t" name="_112C185" file="src/OpenLoco/src/Ui/Windows/Options.cpp" line="55"/>
+  </offset>
+  <offset hex="0x0112C1C5" decimal="18006469">
+    <instance type="ObjectManager::ObjectSelectionMeta" name="_objectSelectionMeta" file="src/OpenLoco/src/EditorController.cpp" line="45"/>
+    <instance type="ObjectManager::ObjectSelectionMeta" name="_objectSelectionMeta" file="src/OpenLoco/src/Scenario.cpp" line="472"/>
+    <instance type="uint16_t[kMaxObjectTypes]" name="_112C1C5" file="src/OpenLoco/src/Ui/Windows/ObjectSelectionWindow.cpp" line="637"/>
+    <instance type="ObjectSelectionMeta" name="_objectSelectionMeta" file="src/OpenLoco/src/Objects/ObjectIndex.cpp" line="55"/>
+  </offset>
+  <offset hex="0x0112C209" decimal="18006537">
+    <instance type="uint32_t" name="_112C209" file="src/OpenLoco/src/Ui/Windows/ObjectSelectionWindow.cpp" line="639"/>
+  </offset>
+  <offset hex="0x0112C211" decimal="18006545">
+    <instance type="uint8_t" name="_intelligence" file="src/OpenLoco/src/Objects/CompetitorObject.cpp" line="14"/>
+  </offset>
+  <offset hex="0x0112C212" decimal="18006546">
+    <instance type="uint8_t" name="_aggressiveness" file="src/OpenLoco/src/Objects/CompetitorObject.cpp" line="15"/>
+  </offset>
+  <offset hex="0x0112C213" decimal="18006547">
+    <instance type="uint8_t" name="_competitiveness" file="src/OpenLoco/src/Objects/CompetitorObject.cpp" line="16"/>
+  </offset>
+  <offset hex="0x0112C2E9" decimal="18006761">
+    <instance type="uint8_t" name="_alternateTrackObjectId" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="55"/>
+    <instance type="uint8_t" name="_alternateTrackObjectId" file="src/OpenLoco/src/GameCommands/Road/CreateRoad.cpp" line="33"/>
+    <instance type="uint8_t" name="_alternateTrackObjectId" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="73"/>
+  </offset>
+  <offset hex="0x0112C2ED" decimal="18006765">
+    <instance type="uint8_t" name="_112C2ED" file="src/OpenLoco/src/Map/Track/Track.cpp" line="27"/>
+  </offset>
+  <offset hex="0x0112C2EE" decimal="18006766">
+    <instance type="uint8_t" name="_112C2EE" file="src/OpenLoco/src/Map/Track/Track.cpp" line="26"/>
+  </offset>
+  <offset hex="0x0112C30C" decimal="18006796">
+    <instance type="uint32_t" name="_vehicleUpdate_compatibleRoadStationTypes" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="77"/>
+  </offset>
+  <offset hex="0x0112C34C" decimal="18006860">
+    <instance type="uint32_t" name="_unk112C34C" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="52"/>
+  </offset>
+  <offset hex="0x0112C358" decimal="18006872">
+    <instance type="uint32_t" name="_maxTrackRoadWeightingLimit" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="57"/>
+  </offset>
+  <offset hex="0x0112C35C" decimal="18006876">
+    <instance type="uint32_t" name="_unk112C35C" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="51"/>
+  </offset>
+  <offset hex="0x0112C364" decimal="18006884">
+    <instance type="uint32_t" name="_unk112C364" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="49"/>
+  </offset>
+  <offset hex="0x0112C36C" decimal="18006892">
+    <instance type="uint32_t" name="_unk112C36C" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="50"/>
+  </offset>
+  <offset hex="0x0112C374" decimal="18006900">
+    <instance type="uint32_t" name="_createTrackRoadCommandAiUnkFlags" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="58"/>
+  </offset>
+  <offset hex="0x0112C378" decimal="18006904">
+    <instance type="uint32_t" name="_trackRoadPlacementCurrentWeighting" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="59"/>
+  </offset>
+  <offset hex="0x0112C37C" decimal="18006908">
+    <instance type="uint32_t" name="_trackRoadPlacementBridgeWeighting" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="60"/>
+  </offset>
+  <offset hex="0x0112C380" decimal="18006912">
+    <instance type="uint32_t" name="_numBuildingRequiredDestroyed112C380" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="61"/>
+  </offset>
+  <offset hex="0x0112C388" decimal="18006920">
+    <instance type="uint32_t" name="_createTrackRoadCommandMods" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="54"/>
+  </offset>
+  <offset hex="0x0112C38C" decimal="18006924">
+    <instance type="uint32_t" name="_createTrackRoadCommandRackRail" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="55"/>
+  </offset>
+  <offset hex="0x0112C390" decimal="18006928">
+    <instance type="Company*" name="_unk112C390" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="56"/>
+  </offset>
+  <offset hex="0x0112C398" decimal="18006936">
+    <instance type="int32_t" name="_pathFindTotalTrackRoadWeighting" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="39"/>
+  </offset>
+  <offset hex="0x0112C3C2" decimal="18006978">
+    <instance type="World::Pos2" name="_unk1Pos112C3C2" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="41"/>
+  </offset>
+  <offset hex="0x0112C3C6" decimal="18006982">
+    <instance type="World::Pos2" name="_unk2Pos112C3C6" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="45"/>
+  </offset>
+  <offset hex="0x0112C3CA" decimal="18006986">
+    <instance type="uint16_t" name="_unkTad112C3CA" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="67"/>
+  </offset>
+  <offset hex="0x0112C3CC" decimal="18006988">
+    <instance type="World::Pos2" name="_unk3Pos112C3CC" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="47"/>
+  </offset>
+  <offset hex="0x0112C3D0" decimal="18006992">
+    <instance type="uint16_t" name="_queryTrackRoadPlacementMinScore" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="68"/>
+  </offset>
+  <offset hex="0x0112C3D2" decimal="18006994">
+    <instance type="uint16_t" name="_queryTrackRoadPlacementMinWeighting" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="69"/>
+  </offset>
+  <offset hex="0x0112C4D4" decimal="18007252">
+    <instance type="uint16_t" name="_unkTad112C4D4" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="66"/>
+  </offset>
+  <offset hex="0x0112C515" decimal="18007317">
+    <instance type="World::SmallZ" name="_unk1PosBaseZ112C515" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="42"/>
+  </offset>
+  <offset hex="0x0112C516" decimal="18007318">
+    <instance type="uint8_t" name="_unk1Rot112C516" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="44"/>
+  </offset>
+  <offset hex="0x0112C517" decimal="18007319">
+    <instance type="World::SmallZ" name="_unk2PosBaseZ112C517" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="46"/>
+  </offset>
+  <offset hex="0x0112C518" decimal="18007320">
+    <instance type="uint8_t" name="_pathFindUndoCount112C518" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="38"/>
+  </offset>
+  <offset hex="0x0112C519" decimal="18007321">
+    <instance type="uint8_t" name="_trackRoadObjType112C519" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="40"/>
+  </offset>
+  <offset hex="0x0112C59B" decimal="18007451">
+    <instance type="uint8_t" name="_queryTrackRoadPlacementFlags" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="62"/>
+  </offset>
+  <offset hex="0x0112C59C" decimal="18007452">
+    <instance type="World::SmallZ" name="_unk3PosBaseZ112C59C" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="48"/>
+  </offset>
+  <offset hex="0x0112C59E" decimal="18007454">
+    <instance type="uint8_t" name="_unk3Rot112C59E" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="53"/>
+  </offset>
+  <offset hex="0x0112C59F" decimal="18007455">
+    <instance type="uint8_t" name="_createTrackRoadCommandBridge0" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="63"/>
+  </offset>
+  <offset hex="0x0112C5A0" decimal="18007456">
+    <instance type="uint8_t" name="_createTrackRoadCommandBridge1" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="64"/>
+  </offset>
+  <offset hex="0x0112C5A1" decimal="18007457">
+    <instance type="uint8_t" name="_createTrackRoadCommandBridge2" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="65"/>
+  </offset>
+  <offset hex="0x0112C68C" decimal="18007692">
+    <instance type="uint32_t" name="_filter" file="src/OpenLoco/src/World/Station.cpp" line="57"/>
+  </offset>
+  <offset hex="0x0112C690" decimal="18007696">
+    <instance type="uint32_t[kMaxCargoStats]" name="_score" file="src/OpenLoco/src/World/Station.cpp" line="58"/>
+  </offset>
+  <offset hex="0x0112C710" decimal="18007824">
+    <instance type="uint32_t" name="_producedCargoTypes" file="src/OpenLoco/src/World/Station.cpp" line="60"/>
+  </offset>
+  <offset hex="0x0112C730" decimal="18007856">
+    <instance type="StationId" name="_lastPlacedTrackStationId" file="src/OpenLoco/src/GameCommands/CompanyAi/AiTrackReplacement.cpp" line="29"/>
+    <instance type="StationId" name="_lastPlacedTrackStationId" file="src/OpenLoco/src/GameCommands/Track/CreateTrainStation.cpp" line="20"/>
+    <instance type="StationId" name="_lastPlacedTrackStationId" file="src/OpenLoco/src/GameCommands/Road/CreateRoadStation.cpp" line="21"/>
+    <instance type="StationId" name="_lastPlacedTrackStationId" file="src/OpenLoco/src/World/CompanyAi/CompanyAi.cpp" line="86"/>
+  </offset>
+  <offset hex="0x00112C734" decimal="18007860">
+    <instance type="uint32_t" name="_lastConstructedAdjoiningStationId" file="src/OpenLoco/src/Ui/Windows/Construction/StationTab.cpp" line="54"/>
+    <instance type="uint32_t" name="_lastConstructedAdjoiningStationId" file="src/OpenLoco/src/GameCommands/Track/CreateTrainStation.cpp" line="21"/>
+    <instance type="uint32_t" name="_lastConstructedAdjoiningStationId" file="src/OpenLoco/src/GameCommands/Road/CreateRoadStation.cpp" line="23"/>
+    <instance type="uint32_t" name="_lastConstructedAdjoiningStationId" file="src/OpenLoco/src/GameCommands/Docks/CreatePort.cpp" line="27"/>
+    <instance type="uint32_t" name="_lastConstructedAdjoiningStationId" file="src/OpenLoco/src/GameCommands/Airports/CreateAirport.cpp" line="24"/>
+  </offset>
+  <offset hex="0x0112C744" decimal="18007876">
+    <instance type="StationId" name="_lastPlacedAirportStationId" file="src/OpenLoco/src/GameCommands/Airports/CreateAirport.cpp" line="23"/>
+    <instance type="StationId" name="_lastPlacedAirportStationId" file="src/OpenLoco/src/World/CompanyAi/CompanyAi.cpp" line="87"/>
+  </offset>
+  <offset hex="0x0112C748" decimal="18007880">
+    <instance type="StationId" name="_lastPlacedDockStationId" file="src/OpenLoco/src/GameCommands/Docks/CreatePort.cpp" line="26"/>
+    <instance type="StationId" name="_lastPlacedPortStationId" file="src/OpenLoco/src/World/CompanyAi/CompanyAi.cpp" line="88"/>
+  </offset>
+  <offset hex="0x00112C786" decimal="18007942">
+    <instance type="StationId" name="_lastSelectedStation" file="src/OpenLoco/src/Ui/Windows/StationWindow.cpp" line="49"/>
+  </offset>
+  <offset hex="0x00112C792" decimal="18007954">
+    <instance type="World::Pos2" name="_lastConstructedAdjoiningStationCentrePos" file="src/OpenLoco/src/Ui/Windows/Construction/StationTab.cpp" line="55"/>
+    <instance type="World::Pos2" name="_lastConstructedAdjoiningStationCentrePos" file="src/OpenLoco/src/GameCommands/Track/CreateTrainStation.cpp" line="22"/>
+    <instance type="World::Pos2" name="_lastConstructedAdjoiningStationCentrePos" file="src/OpenLoco/src/GameCommands/Road/CreateRoadStation.cpp" line="24"/>
+    <instance type="World::Pos2" name="_lastConstructedAdjoiningStationCentrePos" file="src/OpenLoco/src/GameCommands/Docks/CreatePort.cpp" line="28"/>
+    <instance type="World::Pos2" name="_lastConstructedAdjoiningStationCentrePos" file="src/OpenLoco/src/GameCommands/Airports/CreateAirport.cpp" line="25"/>
+  </offset>
+  <offset hex="0x0112C7A9" decimal="18007977">
+    <instance type="bool" name="_112C7A9" file="src/OpenLoco/src/GameCommands/Road/CreateRoadStation.cpp" line="22"/>
+  </offset>
+  <offset hex="0x0112C7D2" decimal="18008018">
+    <instance type="IndustryId[kMaxCargoStats]" name="_industry" file="src/OpenLoco/src/World/Station.cpp" line="61"/>
+  </offset>
+  <offset hex="0x0112C7F2" decimal="18008050">
+    <instance type="uint8_t" name="_byte_112C7F2" file="src/OpenLoco/src/World/Station.cpp" line="63"/>
+  </offset>
+  <offset hex="0x0112C826" decimal="18008102">
+    <instance type="char[16]" name="_commonFormatArgs" file="src/OpenLoco/src/Ui/Windows/TextInputWindow.cpp" line="39"/>
+    <instance type="std::byte[20]" name="_commonFormatArgs" file="src/OpenLoco/src/Localisation/FormatArguments.hpp" line="64"/>
+    <instance type="std::byte[20]" name="_commonFormatArgs" file="src/OpenLoco/src/Localisation/FormatArguments.hpp" line="74"/>
+  </offset>
+  <offset hex="0x112C884" decimal="18008196">
+    <instance type="uint8_t[224 * 4]" name="_characterWidths" file="src/OpenLoco/src/Graphics/Gfx.cpp" line="46"/>
+  </offset>
+  <offset hex="0x0112CC04" decimal="18009092">
+    <instance type="char[512]" name="_byte_112CC04" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="97"/>
+  </offset>
+  <offset hex="0x00112CE04" decimal="18009604">
+    <instance type="char[512]" name="_scenarioFilename" file="src/OpenLoco/src/EditorController.cpp" line="42"/>
+    <instance type="char[512]" name="_scenarioFilename" file="src/OpenLoco/src/Scenario.cpp" line="298"/>
+    <instance type="char[512]" name="_savePath" file="src/OpenLoco/src/Game.cpp" line="32"/>
+    <instance type="char[512]" name="_savePath" file="src/OpenLoco/src/Ui/Windows/PromptBrowseWindow.cpp" line="82"/>
+    <instance type="char[512]" name="_savePath" file="src/OpenLoco/src/Ui/Windows/LandscapeGeneration.cpp" line="519"/>
+    <instance type="char[512]" name="_savePath" file="src/OpenLoco/src/Ui/Windows/ToolbarTop.cpp" line="185"/>
+    <instance type="char[512]" name="_savePath" file="src/OpenLoco/src/S5/S5.cpp" line="59"/>
+  </offset>
+  <offset hex="0x01135C34" decimal="18046004">
+    <instance type="currency32_t" name="_dword_1135C34" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="49"/>
+  </offset>
+  <offset hex="0x01135C38" decimal="18046008">
+    <instance type="Town*" name="_dword_1135C38" file="src/OpenLoco/src/World/TownManager.cpp" line="31"/>
+  </offset>
+  <offset hex="0x01135C50" decimal="18046032">
+    <instance type="World::Pos3" name="_buildingGhostPos" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="51"/>
+  </offset>
+  <offset hex="0x01135C60" decimal="18046048">
+    <instance type="bool" name="_buildingGhostPlaced" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="50"/>
+    <instance type="uint8_t" name="_byte_1135C60" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="1528"/>
+  </offset>
+  <offset hex="0x01135C61" decimal="18046049">
+    <instance type="Colour" name="_buildingColour" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="52"/>
+  </offset>
+  <offset hex="0x01135C62" decimal="18046050">
+    <instance type="uint8_t" name="_buildingGhostType" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="53"/>
+  </offset>
+  <offset hex="0x01135C63" decimal="18046051">
+    <instance type="uint8_t" name="_buildingRotation" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="54"/>
+  </offset>
+  <offset hex="0x01135C64" decimal="18046052">
+    <instance type="uint8_t" name="_buildingGhostRotation" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="55"/>
+  </offset>
+  <offset hex="0x01135C65" decimal="18046053">
+    <instance type="uint8_t" name="_buildingVariation" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="56"/>
+  </offset>
+  <offset hex="0x01135C66" decimal="18046054">
+    <instance type="uint8_t" name="_townSize" file="src/OpenLoco/src/Ui/Windows/TownList.cpp" line="57"/>
+  </offset>
+  <offset hex="0x01135F06" decimal="18046726">
+    <instance type="LocationOfInterestHashMap*" name="_1135F06" file="src/OpenLoco/src/Vehicles/Routing.cpp" line="194"/>
+  </offset>
+  <offset hex="0x01135F0A" decimal="18046730">
+    <instance type="uint32_t" name="_hashMapSize" file="src/OpenLoco/src/Vehicles/Routing.cpp" line="192"/>
+  </offset>
+  <offset hex="0x01135F0E" decimal="18046734">
+    <instance type="FilterFunction" name="_filterFunction" file="src/OpenLoco/src/Vehicles/Routing.cpp" line="191"/>
+  </offset>
+  <offset hex="0x01135F12" decimal="18046738">
+    <instance type="TransformFunction" name="_transformFunction" file="src/OpenLoco/src/Vehicles/Routing.cpp" line="193"/>
+  </offset>
+  <offset hex="0x01135F3E" decimal="18046782">
+    <instance type="ConstructionState" name="_cState" file="src/OpenLoco/src/Ui/Windows/Construction/Construction.h" line="134"/>
+  </offset>
+  <offset hex="0x01135F52" decimal="18046802">
+    <instance type="Viewport*" name="_1135F52" file="src/OpenLoco/src/Ui/Windows/Construction/SignalTab.cpp" line="151"/>
+    <instance type="Viewport*" name="_1135F52" file="src/OpenLoco/src/Ui/Windows/Construction/OverheadTab.cpp" line="146"/>
+    <instance type="Viewport*" name="_1135F52" file="src/OpenLoco/src/Ui/Windows/Construction/OverheadTab.cpp" line="175"/>
+    <instance type="Viewport*" name="_1135F52" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="2033"/>
+    <instance type="Viewport*" name="_1135F52" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="2060"/>
+  </offset>
+  <offset hex="0x001135F7C" decimal="18046844">
+    <instance type="World::Pos2" name="_1135F7C" file="src/OpenLoco/src/Ui/Windows/Construction/StationTab.cpp" line="271"/>
+  </offset>
+  <offset hex="0x001135F80" decimal="18046848">
+    <instance type="World::Pos2" name="_1135F90" file="src/OpenLoco/src/Ui/Windows/Construction/StationTab.cpp" line="272"/>
+  </offset>
+  <offset hex="0x001135F88" decimal="18046856">
+    <instance type="uint16_t" name="_routingTransformData" file="src/OpenLoco/src/Vehicles/Routing.cpp" line="195"/>
+  </offset>
+  <offset hex="0x01135FA6" decimal="18046886">
+    <instance type="TrackNetworkSearchFlags" name="_findTrackNetworkFlags" file="src/OpenLoco/src/Vehicles/Routing.cpp" line="197"/>
+  </offset>
+  <offset hex="0x01135FAE" decimal="18046894">
+    <instance type="StationId" name="_1135FAE" file="src/OpenLoco/src/Map/Track/Track.cpp" line="28"/>
+  </offset>
+  <offset hex="0x0113601A" decimal="18047002">
+    <instance type="uint8_t[2]" name="_113601A" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="76"/>
+  </offset>
+  <offset hex="0x01136072" decimal="18047090">
+    <instance type="World::TileManager::ElementPositionFlags" name="_byte_1136072" file="src/OpenLoco/src/GameCommands/CompanyAi/AiTrackReplacement.cpp" line="31"/>
+    <instance type="ElementPositionFlags" name="_byte_1136072" file="src/OpenLoco/src/GameCommands/Track/CreateTrack.cpp" line="31"/>
+    <instance type="ElementPositionFlags" name="_byte_1136072" file="src/OpenLoco/src/GameCommands/Road/CreateRoad.cpp" line="34"/>
+  </offset>
+  <offset hex="0x01136073" decimal="18047091">
+    <instance type="uint8_t" name="_byte_1136073" file="src/OpenLoco/src/GameCommands/CompanyAi/AiCreateRoadAndStation.cpp" line="12"/>
+    <instance type="uint8_t" name="_byte_1136073" file="src/OpenLoco/src/GameCommands/CompanyAi/AiCreateTrackAndStation.cpp" line="12"/>
+    <instance type="uint8_t" name="_byte_1136073" file="src/OpenLoco/src/GameCommands/CompanyAi/AiTrackReplacement.cpp" line="33"/>
+    <instance type="uint8_t" name="_byte_1136073" file="src/OpenLoco/src/GameCommands/Track/CreateTrack.cpp" line="32"/>
+    <instance type="uint8_t" name="_byte_1136073" file="src/OpenLoco/src/GameCommands/Road/CreateRoad.cpp" line="35"/>
+    <instance type="uint8_t" name="_byte_1136073" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="70"/>
+  </offset>
+  <offset hex="0x01136074" decimal="18047092">
+    <instance type="World::MicroZ" name="_byte_1136074" file="src/OpenLoco/src/GameCommands/CompanyAi/AiTrackReplacement.cpp" line="34"/>
+    <instance type="World::MicroZ" name="_byte_1136074" file="src/OpenLoco/src/GameCommands/Track/CreateTrack.cpp" line="33"/>
+    <instance type="World::MicroZ" name="_byte_1136074" file="src/OpenLoco/src/GameCommands/Road/CreateRoad.cpp" line="36"/>
+    <instance type="World::MicroZ" name="_byte_1136074" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="71"/>
+  </offset>
+  <offset hex="0x01136075" decimal="18047093">
+    <instance type="uint8_t" name="_byte_1136075" file="src/OpenLoco/src/GameCommands/CompanyAi/AiTrackReplacement.cpp" line="36"/>
+    <instance type="uint8_t" name="_byte_1136075" file="src/OpenLoco/src/GameCommands/Track/CreateTrack.cpp" line="34"/>
+    <instance type="uint8_t" name="_byte_1136075" file="src/OpenLoco/src/GameCommands/Road/CreateRoad.cpp" line="37"/>
+    <instance type="uint8_t" name="_byte_1136075" file="src/OpenLoco/src/World/CompanyAi/CompanyAiPathfinding.cpp" line="72"/>
+  </offset>
+  <offset hex="0x0113607D" decimal="18047101">
+    <instance type="uint8_t" name="_113607D" file="src/OpenLoco/src/Map/Track/Track.cpp" line="30"/>
+  </offset>
+  <offset hex="0x01136085" decimal="18047109">
+    <instance type="uint8_t" name="_1136085" file="src/OpenLoco/src/Vehicles/Routing.cpp" line="198"/>
+  </offset>
+  <offset hex="0x01136087" decimal="18047111">
+    <instance type="uint16_t" name="_1136087" file="src/OpenLoco/src/Map/Track/Track.cpp" line="29"/>
+  </offset>
+  <offset hex="0x00113608A" decimal="18047114">
+    <instance type="uint8_t" name="_113608A" file="src/OpenLoco/src/Ui/Windows/Construction/StationTab.cpp" line="797"/>
+  </offset>
+  <offset hex="0x0113609C" decimal="18047132">
+    <instance type="World::Track::LegacyTrackConnections" name="_113609C" file="src/OpenLoco/src/Ui/Windows/Construction/ConstructionTab.cpp" line="338"/>
+  </offset>
+  <offset hex="0x011360D0" decimal="18047184">
+    <instance type="uint32_t" name="_vehicleUpdate_manhattanDistanceToStation" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="63"/>
+  </offset>
+  <offset hex="0x011360FC" decimal="18047228">
+    <instance type="int32_t" name="_11360FC" file="src/OpenLoco/src/GameCommands/Vehicles/CreateVehicle.cpp" line="43"/>
+  </offset>
+  <offset hex="0x0113610E" decimal="18047246">
+    <instance type="EntityId" name="_vehicleUpdate_collisionCarComponent" file="src/OpenLoco/src/Vehicles/VehicleBogie.cpp" line="27"/>
+    <instance type="EntityId" name="_vehicleUpdate_collisionCarComponent" file="src/OpenLoco/src/Vehicles/Vehicle.cpp" line="44"/>
+  </offset>
+  <offset hex="0x01136114" decimal="18047252">
+    <instance type="UpdateVar1136114Flags" name="_vehicleUpdate_var_1136114" file="src/OpenLoco/src/Vehicles/Vehicle.cpp" line="43"/>
+  </offset>
+  <offset hex="0x01136118" decimal="18047256">
+    <instance type="VehicleHead*" name="_vehicleUpdate_head" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="64"/>
+    <instance type="VehicleHead*" name="_vehicleUpdate_head" file="src/OpenLoco/src/Vehicles/VehicleBody.cpp" line="28"/>
+    <instance type="VehicleHead*" name="_vehicleUpdate_head" file="src/OpenLoco/src/Vehicles/Vehicle2.cpp" line="18"/>
+  </offset>
+  <offset hex="0x0113611C" decimal="18047260">
+    <instance type="Vehicle1*" name="_vehicleUpdate_1" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="65"/>
+  </offset>
+  <offset hex="0x01136120" decimal="18047264">
+    <instance type="Vehicle2*" name="_vehicleUpdate_2" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="66"/>
+    <instance type="Vehicle2*" name="_vehicleUpdate_2" file="src/OpenLoco/src/Vehicles/VehicleBody.cpp" line="29"/>
+  </offset>
+  <offset hex="0x01136124" decimal="18047268">
+    <instance type="VehicleBogie*" name="_vehicleUpdate_frontBogie" file="src/OpenLoco/src/Vehicles/VehicleBogie.cpp" line="21"/>
+    <instance type="VehicleBogie*" name="_vehicleUpdate_frontBogie" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="67"/>
+    <instance type="VehicleBogie*" name="_vehicleUpdate_frontBogie" file="src/OpenLoco/src/Vehicles/VehicleBody.cpp" line="30"/>
+  </offset>
+  <offset hex="0x01136128" decimal="18047272">
+    <instance type="VehicleBogie*" name="_vehicleUpdate_backBogie" file="src/OpenLoco/src/Vehicles/VehicleBogie.cpp" line="22"/>
+    <instance type="VehicleBogie*" name="_vehicleUpdate_backBogie" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="68"/>
+    <instance type="VehicleBogie*" name="_vehicleUpdate_backBogie" file="src/OpenLoco/src/Vehicles/VehicleBody.cpp" line="31"/>
+  </offset>
+  <offset hex="0x0113612C" decimal="18047276">
+    <instance type="int32_t" name="_vehicleUpdate_var_113612C" file="src/OpenLoco/src/Vehicles/VehicleBogie.cpp" line="25"/>
+    <instance type="int32_t" name="_vehicleUpdate_var_113612C" file="src/OpenLoco/src/Vehicles/VehicleTail.cpp" line="17"/>
+    <instance type="int32_t" name="_vehicleUpdate_var_113612C" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="69"/>
+    <instance type="int32_t" name="_vehicleUpdate_var_113612C" file="src/OpenLoco/src/Vehicles/Vehicle2.cpp" line="15"/>
+    <instance type="int32_t" name="_vehicleUpdate_var_113612C" file="src/OpenLoco/src/Vehicles/Vehicle1.cpp" line="20"/>
+  </offset>
+  <offset hex="0x01136130" decimal="18047280">
+    <instance type="int32_t" name="_vehicleUpdate_var_1136130" file="src/OpenLoco/src/Vehicles/VehicleBogie.cpp" line="26"/>
+    <instance type="int32_t" name="_vehicleUpdate_var_1136130" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="70"/>
+    <instance type="int32_t" name="_vehicleUpdate_var_1136130" file="src/OpenLoco/src/Vehicles/VehicleBody.cpp" line="32"/>
+    <instance type="int32_t" name="_vehicleUpdate_var_1136130" file="src/OpenLoco/src/Vehicles/Vehicle2.cpp" line="16"/>
+  </offset>
+  <offset hex="0x01136134" decimal="18047284">
+    <instance type="Speed32" name="_vehicleUpdate_var_1136134" file="src/OpenLoco/src/Vehicles/Vehicle2.cpp" line="17"/>
+    <instance type="Speed32" name="_vehicleUpdate_var_1136134" file="src/OpenLoco/src/Vehicles/Vehicle1.cpp" line="21"/>
+  </offset>
+  <offset hex="0x01136140" decimal="18047296">
+    <instance type="ColourScheme" name="_1136140" file="src/OpenLoco/src/GameCommands/Vehicles/CreateVehicle.cpp" line="42"/>
+  </offset>
+  <offset hex="0x0113614E" decimal="18047310">
+    <instance type="Vehicles::VehicleBogie*" name="_dragCarComponent" file="src/OpenLoco/src/Ui/Windows/Vehicle.cpp" line="287"/>
+    <instance type="Vehicles::VehicleBogie*" name="_dragCarComponent" file="src/OpenLoco/src/Ui/Windows/DragVehiclePart.cpp" line="28"/>
+  </offset>
+  <offset hex="0x01136156" decimal="18047318">
+    <instance type="EntityId" name="_dragVehicleHead" file="src/OpenLoco/src/Ui/Windows/Vehicle.cpp" line="288"/>
+    <instance type="EntityId" name="_dragVehicleHead" file="src/OpenLoco/src/Ui/Windows/DragVehiclePart.cpp" line="29"/>
+  </offset>
+  <offset hex="0x01136168" decimal="18047336">
+    <instance type="int16_t" name="_vehicleUpdate_targetZ" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="71"/>
+  </offset>
+  <offset hex="0x0113621D" decimal="18047517">
+    <instance type="EntityId" name="_headId_113621D" file="src/OpenLoco/src/GameCommands/Vehicles/RenameVehicle.cpp" line="36"/>
+  </offset>
+  <offset hex="0x01136237" decimal="18047543">
+    <instance type="bool" name="_vehicleUpdate_frontBogieHasMoved" file="src/OpenLoco/src/Vehicles/VehicleBogie.cpp" line="23"/>
+    <instance type="bool" name="_vehicleUpdate_frontBogieHasMoved" file="src/OpenLoco/src/Vehicles/VehicleBody.cpp" line="33"/>
+  </offset>
+  <offset hex="0x01136238" decimal="18047544">
+    <instance type="bool" name="_vehicleUpdate_backBogieHasMoved" file="src/OpenLoco/src/Vehicles/VehicleBogie.cpp" line="24"/>
+    <instance type="bool" name="_vehicleUpdate_backBogieHasMoved" file="src/OpenLoco/src/Vehicles/VehicleBody.cpp" line="34"/>
+  </offset>
+  <offset hex="0x0113623B" decimal="18047547">
+    <instance type="uint8_t" name="_vehicleMangled_113623B" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="80"/>
+  </offset>
+  <offset hex="0x01136240" decimal="18047552">
+    <instance type="VehicleHead*" name="_backupVeh0" file="src/OpenLoco/src/GameCommands/Vehicles/CreateVehicle.cpp" line="44"/>
+  </offset>
+  <offset hex="0x01136248" decimal="18047560">
+    <instance type="int16_t" name="_backup2E" file="src/OpenLoco/src/GameCommands/Vehicles/CreateVehicle.cpp" line="45"/>
+  </offset>
+  <offset hex="0x0113624C" decimal="18047564">
+    <instance type="TrackAndDirection" name="_backup2C" file="src/OpenLoco/src/GameCommands/Vehicles/CreateVehicle.cpp" line="46"/>
+  </offset>
+  <offset hex="0x01136250" decimal="18047568">
+    <instance type="int16_t" name="_backupX" file="src/OpenLoco/src/GameCommands/Vehicles/CreateVehicle.cpp" line="47"/>
+  </offset>
+  <offset hex="0x01136254" decimal="18047572">
+    <instance type="int16_t" name="_backupY" file="src/OpenLoco/src/GameCommands/Vehicles/CreateVehicle.cpp" line="48"/>
+  </offset>
+  <offset hex="0x01136258" decimal="18047576">
+    <instance type="uint8_t" name="_backupZ" file="src/OpenLoco/src/GameCommands/Vehicles/CreateVehicle.cpp" line="49"/>
+  </offset>
+  <offset hex="0x0113625A" decimal="18047578">
+    <instance type="StationId" name="_ghostAirportStationId" file="src/OpenLoco/src/Ui/Windows/Vehicle.cpp" line="292"/>
+    <instance type="uint32_t" name="_ghostLandTrackAndDirection" file="src/OpenLoco/src/Ui/Windows/Vehicle.cpp" line="293"/>
+  </offset>
+  <offset hex="0x0113625E" decimal="18047582">
+    <instance type="World::Pos3" name="_ghostVehiclePos" file="src/OpenLoco/src/Ui/Windows/Vehicle.cpp" line="291"/>
+  </offset>
+  <offset hex="0x01136264" decimal="18047588">
+    <instance type="int32_t" name="_1136264" file="src/OpenLoco/src/Ui/Windows/Vehicle.cpp" line="289"/>
+    <instance type="uint8_t" name="_ghostAirportNode" file="src/OpenLoco/src/Ui/Windows/Vehicle.cpp" line="290"/>
+  </offset>
+  <offset hex="0x01136268" decimal="18047592">
+    <instance type="int16_t" name="_numAvailableVehicles" file="src/OpenLoco/src/Ui/Windows/BuildVehicle.cpp" line="292"/>
+  </offset>
+  <offset hex="0x0113626A" decimal="18047594">
+    <instance type="uint16_t[ObjectManager::getMaxObjects(ObjectType::vehicle)]" name="_availableVehicles" file="src/OpenLoco/src/Ui/Windows/BuildVehicle.cpp" line="293"/>
+  </offset>
+  <offset hex="0x0113642A" decimal="18048042">
+    <instance type="EntityId" name="_113642A" file="src/OpenLoco/src/Ui/Windows/Vehicle.cpp" line="1107"/>
+    <instance type="EntityId" name="_113642A" file="src/OpenLoco/src/Ui/Windows/BuildVehicle.cpp" line="295"/>
+    <instance type="EntityId" name="_113642A" file="src/OpenLoco/src/GameCommands/Vehicles/CreateVehicle.cpp" line="50"/>
+    <instance type="EntityId" name="_113642A" file="src/OpenLoco/src/GameCommands/Vehicles/CloneVehicle.cpp" line="32"/>
+    <instance type="EntityId" name="_lastCreatedVehicleId" file="src/OpenLoco/src/World/CompanyAi/CompanyAi.cpp" line="89"/>
+  </offset>
+  <offset hex="0x01136458" decimal="18048088">
+    <instance type="uint16_t" name="_1136458" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="72"/>
+  </offset>
+  <offset hex="0x0113646C" decimal="18048108">
+    <instance type="Status" name="_vehicleUpdate_initialStatus" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="73"/>
+  </offset>
+  <offset hex="0x0113646D" decimal="18048109">
+    <instance type="uint8_t" name="_vehicleUpdate_helicopterTargetYaw" file="src/OpenLoco/src/Vehicles/VehicleHead.cpp" line="74"/>
+  </offset>
+  <offset hex="0x01136470" decimal="18048112">
+    <instance type="World::TileElement*" name="_lastPlacedWall" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="125"/>
+    <instance type="World::TreeElement*" name="_lastPlacedTree" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="126"/>
+    <instance type="World::WallElement*" name="_lastPlacedWall" file="src/OpenLoco/src/GameCommands/Terraform/CreateWall.cpp" line="278"/>
+  </offset>
+  <offset hex="0x01136484" decimal="18048132">
+    <instance type="uint32_t" name="_lastTreeCost" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="124"/>
+  </offset>
+  <offset hex="0x01136488" decimal="18048136">
+    <instance type="World::Pos2" name="_terraformGhostPos" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="127"/>
+  </offset>
+  <offset hex="0x01136490" decimal="18048144">
+    <instance type="uint16_t" name="_lastTreeColourFlag" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="128"/>
+  </offset>
+  <offset hex="0x01136492" decimal="18048146">
+    <instance type="uint16_t" name="_terraformGhostTreeRotationFlag" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="129"/>
+  </offset>
+  <offset hex="0x01136496" decimal="18048150">
+    <instance type="uint8_t" name="_treeRotation" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="116"/>
+  </offset>
+  <offset hex="0x01136497" decimal="18048151">
+    <instance type="Colour" name="_treeColour" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="117"/>
+  </offset>
+  <offset hex="0x01136499" decimal="18048153">
+    <instance type="uint8_t" name="_terraformGhostBaseZ" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="130"/>
+  </offset>
+  <offset hex="0x0113649A" decimal="18048154">
+    <instance type="Common::GhostPlacedFlags" name="_terraformGhostPlacedFlags" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="118"/>
+  </offset>
+  <offset hex="0x0113649B" decimal="18048155">
+    <instance type="uint8_t" name="_terraformGhostTreeElementType" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="131"/>
+  </offset>
+  <offset hex="0x0113649C" decimal="18048156">
+    <instance type="uint8_t" name="_terraformGhostType" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="132"/>
+  </offset>
+  <offset hex="0x0113649D" decimal="18048157">
+    <instance type="uint8_t" name="_terraformGhostRotation" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="133"/>
+    <instance type="uint8_t" name="_terraformGhostQuadrant" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="134"/>
+  </offset>
+  <offset hex="0x0113649E" decimal="18048158">
+    <instance type="uint8_t" name="_treeClusterType" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="120"/>
+  </offset>
+  <offset hex="0x011364A0" decimal="18048160">
+    <instance type="ObjectManager::SelectedObjectsFlags*" name="__11364A0" file="src/OpenLoco/src/Ui/Windows/Options.cpp" line="54"/>
+  </offset>
+  <offset hex="0x011364E8" decimal="18048232">
+    <instance type="int32_t" name="_buildTargetVehicle" file="src/OpenLoco/src/Ui/Windows/BuildVehicle.cpp" line="296"/>
+  </offset>
+  <offset hex="0x011364EC" decimal="18048236">
+    <instance type="uint32_t" name="_numTrackTypeTabs" file="src/OpenLoco/src/Ui/Windows/BuildVehicle.cpp" line="297"/>
+    <instance type="uint32_t" name="_numTrackTypeTabs" file="src/OpenLoco/src/Ui/Windows/News/News.cpp" line="36"/>
+  </offset>
+  <offset hex="0x011364F0" decimal="18048240">
+    <instance type="uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1]" name="_trackTypesForTab" file="src/OpenLoco/src/Ui/Windows/BuildVehicle.cpp" line="299"/>
+    <instance type="int8_t[8]" name="_trackTypesForTab" file="src/OpenLoco/src/Ui/Windows/News/News.cpp" line="37"/>
+  </offset>
+  <offset hex="0x01136528" decimal="18048296">
+    <instance type="uint32_t" name="_lowerWaterCost" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="136"/>
+  </offset>
+  <offset hex="0x0113652C" decimal="18048300">
+    <instance type="uint32_t" name="_raiseWaterCost" file="src/OpenLoco/src/Ui/Windows/TerraForm.cpp" line="135"/>
+  </offset>
+  <offset hex="0x01136F94" decimal="18050964">
+    <instance type="uint8_t" name="_windowDropdownOnpaintCellX" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="98"/>
+  </offset>
+  <offset hex="0x01136F96" decimal="18050966">
+    <instance type="uint8_t" name="_windowDropdownOnpaintCellY" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="99"/>
+  </offset>
+  <offset hex="0x01136F98" decimal="18050968">
+    <instance type="int32_t" name="_currentTooltipStringId" file="src/OpenLoco/src/Ui/Windows/ToolTip.cpp" line="34"/>
+    <instance type="int32_t" name="_currentTooltipStringId" file="src/OpenLoco/src/Input/MouseInput.cpp" line="112"/>
+  </offset>
+  <offset hex="0x0113D84C" decimal="18077772">
+    <instance type="uint16_t" name="_dropdownItemCount" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="100"/>
+    <instance type="uint16_t" name="_dropdownItemCount" file="src/OpenLoco/src/Input/MouseInput.cpp" line="114"/>
+  </offset>
+  <offset hex="0x0113D84E" decimal="18077774">
+    <instance type="int16_t" name="_dropdownHighlightedIndex" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="107"/>
+    <instance type="uint16_t" name="_dropdownHighlightedIndex" file="src/OpenLoco/src/Input/MouseInput.cpp" line="115"/>
+  </offset>
+  <offset hex="0x0113D850" decimal="18077776">
+    <instance type="StringId[40]" name="_dropdownItemFormats" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="109"/>
+    <instance type="StringId[40]" name="_dropdownItemFormats" file="src/OpenLoco/src/Input/MouseInput.cpp" line="116"/>
+  </offset>
+  <offset hex="0x0113D8A0" decimal="18077856">
+    <instance type="std::byte[40][kBytesPerItem]" name="_dropdownItemArgs" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="110"/>
+  </offset>
+  <offset hex="0x0113D9E0" decimal="18078176">
+    <instance type="std::byte[40][kBytesPerItem]" name="_dropdownItemArgs2" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="112"/>
+  </offset>
+  <offset hex="0x00113DB20" decimal="18078496">
+    <instance type="CompanyId[40]" name="_menuOptions" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="114"/>
+    <instance type="uint8_t[40]" name="_menuOptions" file="src/OpenLoco/src/Ui/Windows/ToolbarTop.cpp" line="44"/>
+  </offset>
+  <offset hex="0x0113DC60" decimal="18078816">
+    <instance type="uint32_t" name="_dropdownDisabledItems" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="101"/>
+    <instance type="uint32_t" name="_dropdownDisabledItems" file="src/OpenLoco/src/Input/MouseInput.cpp" line="118"/>
+  </offset>
+  <offset hex="0x0113DC64" decimal="18078820">
+    <instance type="uint32_t" name="_dropdownSelection" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="108"/>
+  </offset>
+  <offset hex="0x0113DC68" decimal="18078824">
+    <instance type="uint32_t" name="_dropdownItemHeight" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="102"/>
+    <instance type="uint32_t" name="_dropdownItemHeight" file="src/OpenLoco/src/Input/MouseInput.cpp" line="120"/>
+  </offset>
+  <offset hex="0x0113DC6C" decimal="18078828">
+    <instance type="uint32_t" name="_dropdownItemWidth" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="103"/>
+    <instance type="uint32_t" name="_dropdownItemWidth" file="src/OpenLoco/src/Input/MouseInput.cpp" line="121"/>
+  </offset>
+  <offset hex="0x0113DC70" decimal="18078832">
+    <instance type="uint32_t" name="_dropdownColumnCount" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="104"/>
+    <instance type="uint32_t" name="_dropdownColumnCount" file="src/OpenLoco/src/Input/MouseInput.cpp" line="122"/>
+  </offset>
+  <offset hex="0x0113DC74" decimal="18078836">
+    <instance type="uint32_t" name="_dropdownRowCount" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="105"/>
+    <instance type="uint32_t" name="_dropdownRowCount" file="src/OpenLoco/src/Input/MouseInput.cpp" line="123"/>
+  </offset>
+  <offset hex="0x0113DC78" decimal="18078840">
+    <instance type="uint16_t" name="_word_113DC78" file="src/OpenLoco/src/Ui/Dropdown.cpp" line="106"/>
+    <instance type="uint16_t" name="_113DC78" file="src/OpenLoco/src/Ui/Windows/PlayerInfoPanel.cpp" line="63"/>
+    <instance type="uint16_t" name="_113DC78" file="src/OpenLoco/src/Input/MouseInput.cpp" line="124"/>
+  </offset>
+  <offset hex="0x0113E21C" decimal="18080284">
+    <instance type="uint32_t" name="_totalPhysicalMemory" file="src/OpenLoco/src/OpenLoco.cpp" line="799"/>
+    <instance type="uint32_t" name="_totalPhysicalMemory" file="src/OpenLoco/src/Config.cpp" line="17"/>
+  </offset>
+  <offset hex="0x0113ED20" decimal="18083104">
+    <instance type="uint8_t[256][4]" name="_113ED20" file="src/OpenLoco/src/Ui/Screenshot.cpp" line="85"/>
+    <instance type="Gfx::PaletteEntry[256]" name="_113ED20" file="src/OpenLoco/src/Graphics/Gfx.cpp" line="318"/>
+  </offset>
+  <offset hex="0x01140840" decimal="18090048">
+    <instance type="int32_t" name="_mouseDeltaY" file="src/OpenLoco/src/Input/MouseInput.cpp" line="100"/>
+  </offset>
+  <offset hex="0x0114084C" decimal="18090060">
+    <instance type="int32_t" name="_mouseDeltaX" file="src/OpenLoco/src/Input/MouseInput.cpp" line="99"/>
+  </offset>
+</loco_globals>
+
