@@ -107,7 +107,7 @@ namespace OpenLoco::Jukebox
         const auto& cfg = Config::get().audio;
         for (auto i = 0; i < kNumMusicTracks; i++)
         {
-            if (cfg.jukebox.enabledMusic[i] & 1)
+            if (cfg.customJukebox[i] & 1)
             {
                 playlist.push_back(i);
             }

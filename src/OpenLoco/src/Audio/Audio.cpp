@@ -1042,7 +1042,7 @@ namespace OpenLoco::Audio
                 return;
 
             case MusicPlaylistType::custom:
-                if (!cfg.audio.jukebox.enabledMusic[currentTrack])
+                if (!cfg.audio.customJukebox[currentTrack])
                 {
                     trackStillApplies = false;
                 }

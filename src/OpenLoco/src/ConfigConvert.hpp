@@ -3,6 +3,7 @@
 #include "Config.h"
 #include "Input.h"
 #include "Objects/Object.h"
+#include <OpenLoco/Engine/Types.hpp>
 #include <SDL2/SDL.h>
 #include <yaml-cpp/yaml.h>
 
@@ -160,77 +161,112 @@ namespace YAML
         }
     };
 
+    enum class PlaylistItem : uint8_t
+    {
+        chugginAlong,
+        longDustyRoad,
+        flyingHigh,
+        gettinOnTheGas,
+        jumpinTheRails,
+        smoothRunning,
+        trafficJam,
+        neverStopTilYouGetThere,
+        soaringAway,
+        technoTorture,
+        everlastingHighRise,
+        solace,
+        chrysanthemum,
+        eugenia,
+        theRagtimeDance,
+        easyWinners,
+        settingOff,
+        aTravellersSerenade,
+        latinoTrip,
+        aGoodHeadOfSteam,
+        hopToTheBop,
+        theCityLights,
+        steaminDownTown,
+        brightExpectations,
+        moStation,
+        farOut,
+        runningOnTime,
+        getMeToGladstoneBay,
+        sandyTrackBlues,
+    };
+
     // Playlist
     template<>
     struct convert<Playlist>
     {
         static Node encode(const Playlist& rhs)
         {
+            using namespace OpenLoco;
             Node node;
-            node["chugginAlong"] = rhs.chugginAlong;
-            node["longDustyRoad"] = rhs.longDustyRoad;
-            node["flyingHigh"] = rhs.flyingHigh;
-            node["gettinOnTheGas"] = rhs.gettinOnTheGas;
-            node["jumpinTheRails"] = rhs.jumpinTheRails;
-            node["smoothRunning"] = rhs.smoothRunning;
-            node["trafficJam"] = rhs.trafficJam;
-            node["neverStopTilYouGetThere"] = rhs.neverStopTilYouGetThere;
-            node["soaringAway"] = rhs.soaringAway;
-            node["technoTorture"] = rhs.technoTorture;
-            node["everlastingHighRise"] = rhs.everlastingHighRise;
-            node["solace"] = rhs.solace;
-            node["chrysanthemum"] = rhs.chrysanthemum;
-            node["eugenia"] = rhs.eugenia;
-            node["theRagtimeDance"] = rhs.theRagtimeDance;
-            node["easyWinners"] = rhs.easyWinners;
-            node["settingOff"] = rhs.settingOff;
-            node["aTravellersSerenade"] = rhs.aTravellersSerenade;
-            node["latinoTrip"] = rhs.latinoTrip;
-            node["aGoodHeadOfSteam"] = rhs.aGoodHeadOfSteam;
-            node["hopToTheBop"] = rhs.hopToTheBop;
-            node["theCityLights"] = rhs.theCityLights;
-            node["steaminDownTown"] = rhs.steaminDownTown;
-            node["brightExpectations"] = rhs.brightExpectations;
-            node["moStation"] = rhs.moStation;
-            node["farOut"] = rhs.farOut;
-            node["runningOnTime"] = rhs.runningOnTime;
-            node["getMeToGladstoneBay"] = rhs.getMeToGladstoneBay;
-            node["sandyTrackBlues"] = rhs.sandyTrackBlues;
+            node["chugginAlong"] = rhs[enumValue(PlaylistItem::chugginAlong)];
+            node["longDustyRoad"] = rhs[enumValue(PlaylistItem::longDustyRoad)];
+            node["flyingHigh"] = rhs[enumValue(PlaylistItem::flyingHigh)];
+            node["gettinOnTheGas"] = rhs[enumValue(PlaylistItem::gettinOnTheGas)];
+            node["jumpinTheRails"] = rhs[enumValue(PlaylistItem::jumpinTheRails)];
+            node["smoothRunning"] = rhs[enumValue(PlaylistItem::smoothRunning)];
+            node["trafficJam"] = rhs[enumValue(PlaylistItem::trafficJam)];
+            node["neverStopTilYouGetThere"] = rhs[enumValue(PlaylistItem::neverStopTilYouGetThere)];
+            node["soaringAway"] = rhs[enumValue(PlaylistItem::soaringAway)];
+            node["technoTorture"] = rhs[enumValue(PlaylistItem::technoTorture)];
+            node["everlastingHighRise"] = rhs[enumValue(PlaylistItem::everlastingHighRise)];
+            node["solace"] = rhs[enumValue(PlaylistItem::solace)];
+            node["chrysanthemum"] = rhs[enumValue(PlaylistItem::chrysanthemum)];
+            node["eugenia"] = rhs[enumValue(PlaylistItem::eugenia)];
+            node["theRagtimeDance"] = rhs[enumValue(PlaylistItem::theRagtimeDance)];
+            node["easyWinners"] = rhs[enumValue(PlaylistItem::easyWinners)];
+            node["settingOff"] = rhs[enumValue(PlaylistItem::settingOff)];
+            node["aTravellersSerenade"] = rhs[enumValue(PlaylistItem::aTravellersSerenade)];
+            node["latinoTrip"] = rhs[enumValue(PlaylistItem::latinoTrip)];
+            node["aGoodHeadOfSteam"] = rhs[enumValue(PlaylistItem::aGoodHeadOfSteam)];
+            node["hopToTheBop"] = rhs[enumValue(PlaylistItem::hopToTheBop)];
+            node["theCityLights"] = rhs[enumValue(PlaylistItem::theCityLights)];
+            node["steaminDownTown"] = rhs[enumValue(PlaylistItem::steaminDownTown)];
+            node["brightExpectations"] = rhs[enumValue(PlaylistItem::brightExpectations)];
+            node["moStation"] = rhs[enumValue(PlaylistItem::moStation)];
+            node["farOut"] = rhs[enumValue(PlaylistItem::farOut)];
+            node["runningOnTime"] = rhs[enumValue(PlaylistItem::runningOnTime)];
+            node["getMeToGladstoneBay"] = rhs[enumValue(PlaylistItem::getMeToGladstoneBay)];
+            node["sandyTrackBlues"] = rhs[enumValue(PlaylistItem::sandyTrackBlues)];
             return node;
         }
 
         static bool decode(const Node& node, Playlist& rhs)
         {
+            using namespace OpenLoco;
             const bool enableAll = !node.IsMap();
-            rhs.chugginAlong = enableAll || node["chugginAlong"].as<bool>(true);
-            rhs.longDustyRoad = enableAll || node["longDustyRoad"].as<bool>(true);
-            rhs.flyingHigh = enableAll || node["flyingHigh"].as<bool>(true);
-            rhs.gettinOnTheGas = enableAll || node["gettinOnTheGas"].as<bool>(true);
-            rhs.jumpinTheRails = enableAll || node["jumpinTheRails"].as<bool>(true);
-            rhs.smoothRunning = enableAll || node["smoothRunning"].as<bool>(true);
-            rhs.trafficJam = enableAll || node["trafficJam"].as<bool>(true);
-            rhs.neverStopTilYouGetThere = enableAll || node["neverStopTilYouGetThere"].as<bool>(true);
-            rhs.soaringAway = enableAll || node["soaringAway"].as<bool>(true);
-            rhs.technoTorture = enableAll || node["technoTorture"].as<bool>(true);
-            rhs.everlastingHighRise = enableAll || node["everlastingHighRise"].as<bool>(true);
-            rhs.solace = enableAll || node["solace"].as<bool>(true);
-            rhs.chrysanthemum = enableAll || node["chrysanthemum"].as<bool>(true);
-            rhs.eugenia = enableAll || node["eugenia"].as<bool>(true);
-            rhs.theRagtimeDance = enableAll || node["theRagtimeDance"].as<bool>(true);
-            rhs.easyWinners = enableAll || node["easyWinners"].as<bool>(true);
-            rhs.settingOff = enableAll || node["settingOff"].as<bool>(true);
-            rhs.aTravellersSerenade = enableAll || node["aTravellersSerenade"].as<bool>(true);
-            rhs.latinoTrip = enableAll || node["latinoTrip"].as<bool>(true);
-            rhs.aGoodHeadOfSteam = enableAll || node["aGoodHeadOfSteam"].as<bool>(true);
-            rhs.hopToTheBop = enableAll || node["hopToTheBop"].as<bool>(true);
-            rhs.theCityLights = enableAll || node["theCityLights"].as<bool>(true);
-            rhs.steaminDownTown = enableAll || node["steaminDownTown"].as<bool>(true);
-            rhs.brightExpectations = enableAll || node["brightExpectations"].as<bool>(true);
-            rhs.moStation = enableAll || node["moStation"].as<bool>(true);
-            rhs.farOut = enableAll || node["farOut"].as<bool>(true);
-            rhs.runningOnTime = enableAll || node["runningOnTime"].as<bool>(true);
-            rhs.getMeToGladstoneBay = enableAll || node["getMeToGladstoneBay"].as<bool>(true);
-            rhs.sandyTrackBlues = enableAll || node["sandyTrackBlues"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::chugginAlong)] = enableAll || node["chugginAlong"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::longDustyRoad)] = enableAll || node["longDustyRoad"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::flyingHigh)] = enableAll || node["flyingHigh"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::gettinOnTheGas)] = enableAll || node["gettinOnTheGas"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::jumpinTheRails)] = enableAll || node["jumpinTheRails"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::smoothRunning)] = enableAll || node["smoothRunning"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::trafficJam)] = enableAll || node["trafficJam"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::neverStopTilYouGetThere)] = enableAll || node["neverStopTilYouGetThere"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::soaringAway)] = enableAll || node["soaringAway"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::technoTorture)] = enableAll || node["technoTorture"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::everlastingHighRise)] = enableAll || node["everlastingHighRise"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::solace)] = enableAll || node["solace"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::chrysanthemum)] = enableAll || node["chrysanthemum"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::eugenia)] = enableAll || node["eugenia"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::theRagtimeDance)] = enableAll || node["theRagtimeDance"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::easyWinners)] = enableAll || node["easyWinners"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::settingOff)] = enableAll || node["settingOff"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::aTravellersSerenade)] = enableAll || node["aTravellersSerenade"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::latinoTrip)] = enableAll || node["latinoTrip"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::aGoodHeadOfSteam)] = enableAll || node["aGoodHeadOfSteam"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::hopToTheBop)] = enableAll || node["hopToTheBop"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::theCityLights)] = enableAll || node["theCityLights"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::steaminDownTown)] = enableAll || node["steaminDownTown"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::brightExpectations)] = enableAll || node["brightExpectations"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::moStation)] = enableAll || node["moStation"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::farOut)] = enableAll || node["farOut"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::runningOnTime)] = enableAll || node["runningOnTime"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::getMeToGladstoneBay)] = enableAll || node["getMeToGladstoneBay"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::sandyTrackBlues)] = enableAll || node["sandyTrackBlues"].as<bool>(true);
             return true;
         }
     };
