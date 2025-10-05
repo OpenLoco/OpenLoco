@@ -57,7 +57,7 @@ namespace OpenLoco::EditorController
         options.editorStep = Step::objectSelection;
         options.difficulty = 2;
         options.madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0; // ?? backup for madeAnyChanges?
+        Scenario::setMadeAnyChangesBackup(0);
         options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
         gameState.lastLandOption = 0xFF;
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
