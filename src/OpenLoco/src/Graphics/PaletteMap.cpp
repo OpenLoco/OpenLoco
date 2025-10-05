@@ -38,6 +38,7 @@ namespace OpenLoco::Gfx::PaletteMap
         2298, 2299, 2300, 2301, 2302, 2303, 2304,       // 0x8C-0x92: (continued to max)
         // clang-format on
     } };
+    static_assert(sizeof(_paletteToG1Offset) == 588);
 
     // Default immutable palette map.
     static const auto _defaultPaletteMapBuffer = [] {

@@ -20,6 +20,7 @@ namespace OpenLoco::Ui
         vscrollbarTrackBottom = 9,
         vscrollbarThumb = 10,
     };
+    static_assert(sizeof(ScrollPart) == 2);
 
     namespace Scrollbars
     {

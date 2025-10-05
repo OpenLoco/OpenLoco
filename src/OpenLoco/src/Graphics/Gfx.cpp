@@ -39,6 +39,7 @@ namespace OpenLoco::Gfx
     constexpr uint32_t kG1CountTemporary = 0x1000;
 
     static loco_global<G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects], 0x9E2424> _g1Elements;
+    // static_assert(sizeof(G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects]) == 2129920); // Platform-dependent: G1Element has pointers
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
 
@@ -315,6 +316,7 @@ namespace OpenLoco::Gfx
     }
 
     static loco_global<Gfx::PaletteEntry[256], 0x0113ED20> _113ED20;
+    static_assert(sizeof(Gfx::PaletteEntry[256]) == 1024);
 
     // 0x0046E07B
     void loadCurrency()

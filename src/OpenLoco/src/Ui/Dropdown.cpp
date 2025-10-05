@@ -108,7 +108,9 @@ namespace OpenLoco::Ui::Dropdown
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
     static loco_global<StringId[40], 0x0113D850> _dropdownItemFormats;
     static loco_global<std::byte[40][kBytesPerItem], 0x0113D8A0> _dropdownItemArgs;
+    static_assert(sizeof(std::byte[40][kBytesPerItem]) == 320);
     static loco_global<std::byte[40][kBytesPerItem], 0x0113D9E0> _dropdownItemArgs2;
+    static_assert(sizeof(std::byte[40][kBytesPerItem]) == 320);
     static loco_global<CompanyId[40], 0x00113DB20> _menuOptions;
 
     static std::vector<std::optional<DropdownItemId>> _dropdownIds;

@@ -19,6 +19,7 @@ namespace OpenLoco::World
         hoveringOverStation = 1U << 6,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(MapSelectionFlags);
+    static_assert(sizeof(MapSelectionFlags) == 1);
 
     enum MapSelectionType : uint8_t
     {
@@ -37,6 +38,7 @@ namespace OpenLoco::World
         edge2,
         edge3,
     };
+    static_assert(sizeof(MapSelectionType) == 1);
 
     uint16_t setMapSelectionTiles(const Pos2& loc, const MapSelectionType selectionType, uint16_t toolSize);
     uint16_t setMapSelectionSingleTile(const Pos2& loc, bool setQuadrant = false);

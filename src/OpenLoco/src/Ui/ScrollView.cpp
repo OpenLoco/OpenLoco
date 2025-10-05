@@ -11,6 +11,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::ScrollView
 {
     static loco_global<Ui::ScrollPart, 0x00523396> _currentScrollArea;
+    static_assert(sizeof(Ui::ScrollPart) == 2);
     // TODO: Convert to a scrollIndex when all scroll functions implemented
     static loco_global<uint32_t, 0x00523398> _currentScrollOffset;
     static void setCurrentScrollIndex(size_t index)

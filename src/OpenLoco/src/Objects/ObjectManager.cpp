@@ -1091,6 +1091,7 @@ namespace OpenLoco::ObjectManager
 
     // TODO: Refactor this, variable is also defined in PaintSurface.cpp.
     static loco_global<LandObjectFlags[getMaxObjects(ObjectType::land)], 0x00F003D3> _landObjectFlags;
+    static_assert(sizeof(LandObjectFlags[getMaxObjects(ObjectType::land)]) == 32);
 
     // 0x004697A1
     static void updateLandObjectFlags()

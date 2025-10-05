@@ -32,6 +32,7 @@ namespace OpenLoco::Gfx
         uint8_t r;
         uint8_t a;
     };
+    static_assert(sizeof(PaletteEntry) == 4);
 #pragma pack(pop)
 
     class SoftwareDrawingEngine

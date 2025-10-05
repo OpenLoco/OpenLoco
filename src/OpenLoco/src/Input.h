@@ -29,6 +29,7 @@ namespace OpenLoco::Input
         resizing,          // 8
         scrollRight,       // 9
     };
+    static_assert(sizeof(State) == 1);
 
     enum class Flags : uint32_t
     {

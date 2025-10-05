@@ -330,6 +330,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activateSelectedConstructionWidgets();
     }
 
+    static_assert(sizeof(World::Track::LegacyTrackConnections) == 0x24);
     static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
 
     // 0x004A012E

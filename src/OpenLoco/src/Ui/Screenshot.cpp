@@ -83,6 +83,7 @@ namespace OpenLoco::Ui
     static void saveRenderTargetToPng(const Gfx::RenderTarget& rt, std::fstream& outputStream)
     {
         static loco_global<uint8_t[256][4], 0x0113ED20> _113ED20;
+        static_assert(sizeof(uint8_t[256][4]) == 1024);
 
         png_structp pngPtr = nullptr;
         png_colorp palette = nullptr;

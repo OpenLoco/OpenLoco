@@ -33,6 +33,7 @@ namespace OpenLoco
         touchdown = 1U << 8,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(AirportMovementNodeFlags);
+    static_assert(sizeof(AirportMovementNodeFlags) == 2);
 
     enum class AirportObjectFlags : uint16_t
     {

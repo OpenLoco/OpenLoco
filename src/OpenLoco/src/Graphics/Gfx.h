@@ -62,6 +62,7 @@ namespace OpenLoco::Gfx
         G1ElementFlags flags; // 0x0C
         int16_t zoomOffset;   // 0x0E
     };
+    static_assert(sizeof(G1Element32) == 16);
 
     // A version that can be 64-bit when ready...
     struct G1Element

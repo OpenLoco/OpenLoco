@@ -105,6 +105,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             wall = 1 << 1,
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
+        static_assert(sizeof(GhostPlacedFlags) == 1);
     }
 
     static loco_global<int16_t, 0x0052337A> _dragLastY;
@@ -115,6 +116,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x01136496> _treeRotation;
     static loco_global<Colour, 0x01136497> _treeColour;
     static loco_global<Common::GhostPlacedFlags, 0x0113649A> _terraformGhostPlacedFlags;
+    static_assert(sizeof(Common::GhostPlacedFlags) == 1);
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
     static loco_global<uint32_t, 0x00F2530C> _raiseLandCost;
