@@ -20,6 +20,7 @@ namespace OpenLoco::EntityManager
     static_assert(kEntitySpatialIndexNull == 0x40000);
 
     loco_global<EntityId[kSpatialEntityMapSize], 0x01025A8C> _entitySpatialIndex;
+    static_assert(sizeof(EntityId[kSpatialEntityMapSize]) == 524290);
     loco_global<uint32_t, 0x01025A88> _entitySpatialCount;
 
     static auto& rawEntities() { return getGameState().entities; }

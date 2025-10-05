@@ -73,4 +73,5 @@ namespace OpenLoco::Ui
 
         undefined = 255
     };
+    static_assert(sizeof(WindowType) == 1);
 }

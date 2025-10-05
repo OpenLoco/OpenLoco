@@ -23,6 +23,11 @@ namespace OpenLoco::Gfx
         Ui::Rect getUiRect() const;
         Ui::Rect getDrawableRect() const;
     };
+    // Note: Size is 16 bytes on 32-bit systems, 20 bytes on 64-bit systems (pointer size difference)
+#if defined(__i386__) || defined(_M_IX86) || defined(__arm__) || defined(_M_ARM)
+    static_assert(sizeof(RenderTarget) == 16);
+    static_assert(sizeof(Gfx::RenderTarget) == 16);
+#endif
 
 #pragma pack(pop)
 

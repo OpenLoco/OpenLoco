@@ -12,6 +12,7 @@ namespace OpenLoco
         ExtraFastForward = 2,
         MAX = ExtraFastForward,
     };
+    static_assert(sizeof(GameSpeed) == 1);
 
     namespace SceneManager
     {
@@ -29,6 +30,7 @@ namespace OpenLoco
             pauseOverrideEnabled = 1U << 8, // new in OpenLoco
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
+        static_assert(sizeof(Flags) == 2);
 
         void resetSceneAge();
         uint16_t getSceneAge();
