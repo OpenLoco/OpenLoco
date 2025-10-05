@@ -335,9 +335,9 @@ namespace OpenLoco
                     {
                         numUpdates = 1;
                     }
-                    if (addr<0x00525324, int32_t>() == 1)
+                    if (Input::hasPendingMouseInputUpdate())
                     {
-                        addr<0x00525324, int32_t>() = 0;
+                        Input::clearPendingMouseInputUpdate();
                         numUpdates = 1;
                     }
                     else

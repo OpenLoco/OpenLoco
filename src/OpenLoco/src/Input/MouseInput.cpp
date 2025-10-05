@@ -28,9 +28,11 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 #include <queue>
 
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Ui::ScrollView;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -59,15 +61,12 @@ namespace OpenLoco::Input
 
 #pragma mark - Input
 
+    static int32_t _pendingMouseInputUpdate; // 0x00525324
     static MouseButton _lastKnownButtonState;
 
     static Ui::Point _cursorPressed;
-
     static Ui::CursorId _52336C;
-
     static Ui::Point32 _cursor;
-
-    // TODO: name?
     static Ui::Point32 _cursor2;
 
     static Ui::WindowType _pressedWindowType;       // 0x0052336F
@@ -1928,5 +1927,20 @@ namespace OpenLoco::Input
     void setPressedWindowNumber(Ui::WindowNumber_t wndNumber)
     {
         _pressedWindowNumber = wndNumber;
+    }
+
+    bool hasPendingMouseInputUpdate()
+    {
+        return _pendingMouseInputUpdate == 1;
+    }
+
+    void clearPendingMouseInputUpdate()
+    {
+        _pendingMouseInputUpdate = 0;
+    }
+
+    void setPendingMouseInputUpdate()
+    {
+        _pendingMouseInputUpdate = 1;
     }
 }
