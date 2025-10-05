@@ -7,9 +7,10 @@ namespace OpenLoco
 {
     enum class GameSpeed : uint8_t
     {
-        Normal = 0,
-        FastForward = 1,
-        ExtraFastForward = 2,
+        Paused = 0,
+        Normal = 1,
+        FastForward = 2,
+        ExtraFastForward = 3,
         MAX = ExtraFastForward,
     };
 
@@ -48,9 +49,6 @@ namespace OpenLoco
         bool isSandboxMode();
         bool isPauseOverrideEnabled();
         bool isPaused();
-        uint8_t getPauseFlags();
-        void setPauseFlag(uint8_t value);
-        void unsetPauseFlag(uint8_t value);
         GameSpeed getGameSpeed();
         void setGameSpeed(const GameSpeed speed);
     }
