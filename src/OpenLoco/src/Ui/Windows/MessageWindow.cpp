@@ -508,7 +508,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     }
 
                     auto ddIndex = wIndex - widx::company_major_news;
-                    auto currentItem = Config::get().old.newsSettings[ddIndex / kNumWidgetsPerDropdown];
+                    auto currentItem = Config::get().newsSettings[ddIndex / kNumWidgetsPerDropdown];
+                    Config::write();
                     Dropdown::setItemSelected(static_cast<size_t>(currentItem));
                     break;
                 }
@@ -535,9 +536,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto dropdownIndex = (widgetIndex - widx::company_major_news) / kNumWidgetsPerDropdown;
                     auto newValue = static_cast<Config::NewsType>(itemIndex);
 
-                    if (newValue != Config::get().old.newsSettings[dropdownIndex])
+                    if (newValue != Config::get().newsSettings[dropdownIndex])
                     {
-                        Config::get().old.newsSettings[dropdownIndex] = newValue;
+                        Config::get().newsSettings[dropdownIndex] = newValue;
                         Config::write();
                         Gfx::invalidateScreen();
                     }
@@ -562,7 +563,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             for (auto i = 0; i < 6; i++)
             {
                 auto widgetIndex = widx::company_major_news + (kNumWidgetsPerDropdown * i);
-                auto setting = static_cast<uint8_t>(Config::get().old.newsSettings[i]);
+                auto setting = static_cast<uint8_t>(Config::get().newsSettings[i]);
                 self.widgets[widgetIndex].text = kNewsDropdownStringIds[setting];
             }
         }

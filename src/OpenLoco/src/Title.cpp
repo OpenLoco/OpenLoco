@@ -165,7 +165,7 @@ namespace OpenLoco::Title
 
         if (Config::get().audio.playTitleMusic)
         {
-            Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
+            Audio::playMusic(Environment::PathId::css5, Config::get().audio.mainVolume, true);
         }
 
         SceneManager::addSceneFlags(SceneManager::Flags::initialised);
