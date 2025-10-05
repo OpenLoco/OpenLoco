@@ -810,7 +810,8 @@ OpenLoco::StationId OpenLoco::Station::id() const
 
 namespace OpenLoco::StationManager
 {
-    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId; // Can be 0xFFFF'FFFFU for no adjoining station
+    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
+    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     uint32_t getLastConstructedAdjoiningStationId()
     {
@@ -820,5 +821,15 @@ namespace OpenLoco::StationManager
     void setLastConstructedAdjoiningStationId(uint32_t value)
     {
         _lastConstructedAdjoiningStationId = value;
+    }
+
+    World::Pos2 getLastConstructedAdjoiningStationCentrePos()
+    {
+        return _lastConstructedAdjoiningStationCentrePos;
+    }
+
+    void setLastConstructedAdjoiningStationCentrePos(World::Pos2 value)
+    {
+        _lastConstructedAdjoiningStationCentrePos = value;
     }
 }

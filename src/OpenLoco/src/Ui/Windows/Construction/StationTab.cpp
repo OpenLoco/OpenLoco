@@ -51,7 +51,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
-    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     // TODO: move to ConstructionState when no longer a loco_global
     static bool _isDragging = false;
@@ -331,7 +330,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto* station = StationManager::getLastConstructedAdjoiningStationId() != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(StationManager::getLastConstructedAdjoiningStationId())) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
-        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        auto pos = StationManager::getLastConstructedAdjoiningStationCentrePos();
         if (pos.x == -1)
         {
             pos = args->pos;
@@ -394,7 +393,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto* station = StationManager::getLastConstructedAdjoiningStationId() != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(StationManager::getLastConstructedAdjoiningStationId())) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
-        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        auto pos = StationManager::getLastConstructedAdjoiningStationCentrePos();
         if (pos.x == -1)
         {
             pos = args->pos;
@@ -453,7 +452,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto* station = StationManager::getLastConstructedAdjoiningStationId() != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(StationManager::getLastConstructedAdjoiningStationId())) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
-        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        auto pos = StationManager::getLastConstructedAdjoiningStationCentrePos();
         if (pos.x == -1)
         {
             pos = args->pos;
@@ -525,7 +524,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto* station = StationManager::getLastConstructedAdjoiningStationId() != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(StationManager::getLastConstructedAdjoiningStationId())) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
-        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        auto pos = StationManager::getLastConstructedAdjoiningStationCentrePos();
         if (pos.x == -1)
         {
             pos = args->pos;

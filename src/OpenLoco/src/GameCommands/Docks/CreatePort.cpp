@@ -24,7 +24,6 @@ namespace OpenLoco::GameCommands
 {
     // Used by company ai
     static loco_global<StationId, 0x0112C748> _lastPlacedDockStationId;
-    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     // 0x0049060C
     static StationManager::NearbyStation findNearbyStationDocks(World::Pos3 pos)
@@ -422,7 +421,7 @@ namespace OpenLoco::GameCommands
             companySetObservation(getUpdatingCompanyId(), ObservationStatus::buildingDock, World::Pos2(args.pos) + World::Pos2{ 16, 16 }, EntityId::null, args.type);
         }
 
-        _lastConstructedAdjoiningStationCentrePos = World::Pos2(-1, -1);
+        StationManager::setLastConstructedAdjoiningStationCentrePos(World::Pos2(-1, -1));
         StationManager::setLastConstructedAdjoiningStationId(0xFFFFFFFFU);
 
         if (!World::TileManager::checkFreeElementsAndReorganise())
@@ -442,7 +441,7 @@ namespace OpenLoco::GameCommands
 
         if ((flags & Flags::ghost) && (flags & Flags::apply))
         {
-            _lastConstructedAdjoiningStationCentrePos = args.pos;
+            StationManager::setLastConstructedAdjoiningStationCentrePos(args.pos);
             auto nearbyStation = flags & Flags::aiAllocated ? findNearbyStationDocksAi(args.pos) : findNearbyStationDocks(args.pos);
             StationManager::setLastConstructedAdjoiningStationId(static_cast<int16_t>(nearbyStation.id));
         }
