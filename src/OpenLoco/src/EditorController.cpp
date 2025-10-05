@@ -38,6 +38,9 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::EditorController
 {
+    static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
+    static_assert(sizeof(ObjectManager::ObjectSelectionMeta) == 0x48);
+
     static void resetLandDistributionPatterns();
 
     // 0x0043D7DC

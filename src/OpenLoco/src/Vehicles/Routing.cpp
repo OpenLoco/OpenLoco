@@ -37,6 +37,7 @@ namespace OpenLoco::Vehicles
         unk2 = 1U << 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrackNetworkSearchFlags);
+    static_assert(sizeof(TrackNetworkSearchFlags) == 2);
 
     struct LocationOfInterest
     {

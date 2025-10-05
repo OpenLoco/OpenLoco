@@ -628,6 +628,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     static loco_global<uint16_t[kMaxObjectTypes], 0x0112C1C5> _112C1C5;
+    static_assert(sizeof(uint16_t[kMaxObjectTypes]) == 68);
     static loco_global<uint32_t, 0x0112C209> _112C209;
 
     // 0x0047328D

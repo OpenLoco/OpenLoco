@@ -39,6 +39,7 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<int32_t, 0x0112C398> _pathFindTotalTrackRoadWeighting; // company 0x85DE
     static Interop::loco_global<World::Pos2, 0x0112C3C2> _unk1Pos112C3C2;
     static Interop::loco_global<World::SmallZ, 0x0112C515> _unk1PosBaseZ112C515;
+    static_assert(sizeof(World::SmallZ) == 1);
     static Interop::loco_global<uint8_t, 0x0112C516> _unk1Rot112C516;
     static Interop::loco_global<World::Pos2, 0x0112C3C6> _unk2Pos112C3C6;
     static Interop::loco_global<World::SmallZ, 0x0112C517> _unk2PosBaseZ112C517;

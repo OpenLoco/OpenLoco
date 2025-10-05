@@ -294,13 +294,19 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     // Array of types if 0xFF then no type, flag (1<<7) as well
     static uint8_t _trackTypesForTab[widxToTrackTypeTab(widx::tab_track_type_7) + 1];      // 0x011364F0
+    static_assert(sizeof(uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1]) == 8);
+
     static uint16_t _availableVehicles[ObjectManager::getMaxObjects(ObjectType::vehicle)]; // 0x0113626A
+    static_assert(sizeof(uint16_t[ObjectManager::getMaxObjects(ObjectType::vehicle)]) == 448);
 
     static int32_t _buildTargetVehicle; // 0x011364E8; -1 for no target VehicleHead
 
     static loco_global<EntityId, 0x0113642A> _113642A; // used by several windows/game commands/company ai
 
     static constexpr std::array<uint16_t, 6> kScrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
+
+    // Array of types if 0xFF then no type, flag (1<<7) as well
+    static loco_global<uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _trackTypesForTab;
 
     static Ui::TextInput::InputSession inputSession;
 

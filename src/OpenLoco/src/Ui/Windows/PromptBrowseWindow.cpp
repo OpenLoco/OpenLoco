@@ -49,6 +49,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         landscape,
         heightmap,
     };
+    static_assert(sizeof(BrowseFileType) == 1);
 
     enum widx
     {
