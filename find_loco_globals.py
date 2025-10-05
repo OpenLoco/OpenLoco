@@ -168,8 +168,39 @@ def get_type_size(type_str):
 
     return None
 
-def check_warnings(globals_dict, sorted_offsets):
-    """Check for warnings: multiple types at same offset, overlapping ranges."""
+def calculate_file_offset(vma_address):
+    """Calculate file offset from virtual memory address (from extract_track_coordinates_4f6f8c.py)."""
+    DATA_SEGMENT_VMA = 0x4D7000
+    DATA_SEGMENT_FILE_OFFSET = 215 * 4096  # 880640 bytes
+
+    if vma_address < DATA_SEGMENT_VMA:
+        # Could be in text segment, but we only care about data segment for zero-fill check
+        return None
+
+    offset_in_data = vma_address - DATA_SEGMENT_VMA
+    return DATA_SEGMENT_FILE_OFFSET + offset_in_data
+
+def is_zero_filled(exe_path, vma_address, size):
+    """Check if a memory region in loco.exe is zero-filled."""
+    if not exe_path or not os.path.exists(exe_path):
+        return None  # Can't check
+
+    file_offset = calculate_file_offset(vma_address)
+    if file_offset is None:
+        return None  # Not in data segment
+
+    try:
+        with open(exe_path, 'rb') as f:
+            f.seek(file_offset)
+            data = f.read(size)
+            if len(data) != size:
+                return None  # Couldn't read full size
+            return all(b == 0 for b in data)
+    except:
+        return None  # Error reading
+
+def check_warnings(globals_dict, sorted_offsets, exe_path=None):
+    """Check for warnings: multiple types at same offset, overlapping ranges, non-zero-filled data."""
     warnings = []
 
     for i, offset in enumerate(sorted_offsets):
@@ -203,6 +234,22 @@ def check_warnings(globals_dict, sorted_offsets):
                         'next_offset': next_offset,
                         'next_offset_hex': globals_dict[next_offset][0]['offset_str'],
                         'var_type': type_str
+                    })
+
+        # Check if offset is NOT zero-filled in the exe
+        if exe_path:
+            type_str = entries[0]['type']
+            size = get_type_size(type_str)
+            if size:
+                zero_filled = is_zero_filled(exe_path, offset, size)
+                if zero_filled is False:  # Explicitly False, not None
+                    warnings.append({
+                        'type': 'not_zero_filled',
+                        'offset': offset,
+                        'offset_hex': entries[0]['offset_str'],
+                        'size': size,
+                        'var_type': type_str,
+                        'var_name': entries[0]['name']
                     })
 
     return warnings
@@ -262,6 +309,11 @@ def main():
         default='text',
         help='Output format (default: text)'
     )
+    parser.add_argument(
+        '--exe',
+        type=str,
+        help='Path to loco.exe for zero-fill checking'
+    )
 
     args = parser.parse_args()
 
@@ -315,15 +367,22 @@ def main():
             print(f"  {t}", file=sys.stderr)
         sys.exit(1)
 
+    # ANSI color codes
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    RESET = '\033[0m'
+
     # Check for warnings
-    warnings = check_warnings(globals_dict, sorted_offsets)
+    warnings = check_warnings(globals_dict, sorted_offsets, args.exe)
     if warnings:
         print("WARNINGS:", file=sys.stderr)
         for warning in warnings:
             if warning['type'] == 'multiple_types':
                 print(f"  Offset {warning['offset_hex']} has multiple types: {', '.join(warning['types'])}", file=sys.stderr)
             elif warning['type'] == 'overlap':
-                print(f"  Offset {warning['offset_hex']} (type {warning['var_type']}, size {warning['size']}) overlaps next offset {warning['next_offset_hex']} (ends at {warning['end_offset']})", file=sys.stderr)
+                print(f"{YELLOW}  Offset {warning['offset_hex']} (type {warning['var_type']}, size {warning['size']}) overlaps next offset {warning['next_offset_hex']} (ends at {warning['end_offset']}){RESET}", file=sys.stderr)
+            elif warning['type'] == 'not_zero_filled':
+                print(f"{RED}  Offset {warning['offset_hex']} ({warning['var_name']}: {warning['var_type']}, size {warning['size']}) is NOT zero-filled in exe{RESET}", file=sys.stderr)
         print(file=sys.stderr)
 
     if args.format == 'xml':
