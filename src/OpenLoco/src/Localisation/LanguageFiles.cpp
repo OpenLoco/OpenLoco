@@ -55,15 +55,16 @@ namespace OpenLoco::Localisation
         { "GREEN", ControlCodes::Colour::green },
     };
 
-    static constexpr StringId kBufferIds[] = {
-        StringIds::buffer_337,
-        StringIds::buffer_338,
-        StringIds::buffer_1250,
-        StringIds::preferred_currency_buffer,
-        StringIds::buffer_1719,
-        StringIds::buffer_2039,
-        StringIds::buffer_2040,
-    };
+    // Size for buffer strings that are used for temporary text storage
+    static constexpr size_t kBufferStringSize = 512;
+
+    static char _buffer_337[kBufferStringSize];
+    static char _buffer_338[kBufferStringSize];
+    static char _buffer_1250[kBufferStringSize];
+    static char _preferred_currency_buffer[kBufferStringSize];
+    static char _buffer_1719[kBufferStringSize];
+    static char _buffer_2039[kBufferStringSize];
+    static char _buffer_2040[kBufferStringSize];
 
     static std::unique_ptr<char[]> readString(const char* value, size_t size)
     {
@@ -243,14 +244,19 @@ namespace OpenLoco::Localisation
 
     static bool stringIsBuffer(int id)
     {
-        for (auto bufferId : kBufferIds)
+        switch (id)
         {
-            if (id == bufferId)
-            {
+            case StringIds::buffer_337:
+            case StringIds::buffer_338:
+            case StringIds::buffer_1250:
+            case StringIds::preferred_currency_buffer:
+            case StringIds::buffer_1719:
+            case StringIds::buffer_2039:
+            case StringIds::buffer_2040:
                 return true;
-            }
+            default:
+                return false;
         }
-        return false;
     }
 
     static bool loadLanguageStringTable(fs::path languageFile)
@@ -288,26 +294,21 @@ namespace OpenLoco::Localisation
         }
     }
 
-    static void allocateBufferStrings()
+    static void setBufferStrings()
     {
-        // Allocate memory for buffer strings that are used for temporary text storage
-        constexpr size_t kBufferSize = 512; // Size for each buffer string
-
-        for (auto bufferId : kBufferIds)
-        {
-            auto buffer = std::make_unique<char[]>(kBufferSize);
-            buffer[0] = '\0';
-
-            StringManager::swapString(bufferId, buffer.get());
-
-            _stringsOwner.emplace_back(std::move(buffer));
-        }
+        StringManager::swapString(StringIds::buffer_337, _buffer_337);
+        StringManager::swapString(StringIds::buffer_338, _buffer_338);
+        StringManager::swapString(StringIds::buffer_1250, _buffer_1250);
+        StringManager::swapString(StringIds::preferred_currency_buffer, _preferred_currency_buffer);
+        StringManager::swapString(StringIds::buffer_1719, _buffer_1719);
+        StringManager::swapString(StringIds::buffer_2039, _buffer_2039);
+        StringManager::swapString(StringIds::buffer_2040, _buffer_2040);
     }
 
     void loadLanguageFile()
     {
-        // First, allocate buffer strings that are used for temporary storage
-        allocateBufferStrings();
+        // First, set buffer strings that are used for temporary storage
+        setBufferStrings();
 
         // Load en-GB for fallback strings.
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
