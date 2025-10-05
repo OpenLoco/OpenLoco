@@ -110,6 +110,11 @@ namespace OpenLoco::Ui::WindowManager
         }
     }
 
+    void resetThousandthTickCounter()
+    {
+        _thousandthTickCounter = 0;
+    }
+
     // 0x004C6118
     void update()
     {
