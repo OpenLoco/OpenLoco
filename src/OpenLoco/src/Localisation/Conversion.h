@@ -34,12 +34,10 @@ namespace OpenLoco::Localisation
         constexpr uint8_t tick = 172;
         constexpr uint8_t cross = 173;
         constexpr uint8_t right = 175;
+        constexpr uint8_t bullet = 186;
         constexpr uint8_t small_up = 188;
         constexpr uint8_t small_down = 189;
         constexpr uint8_t left = 190;
-
-        // Bullet point
-        constexpr uint8_t bullet = 186;
 
         // Special symbols
         constexpr uint8_t railway = 177;
@@ -84,13 +82,11 @@ namespace OpenLoco::Localisation
         constexpr utf32_t quote_open = 0x201C;
         constexpr utf32_t quote_close = 0x201D;
 
-        // Bullet point
-        constexpr utf32_t bullet = 0x2022;
-
         // Superscript
         constexpr utf32_t superscript_minus = 0x207B;
 
         // Dingbats
+        constexpr utf32_t bullet = 0x2022;
         constexpr utf32_t up = 0x25B2;
         constexpr utf32_t small_up = 0x25B4;
         constexpr utf32_t right = 0x25B6;
