@@ -18,7 +18,6 @@
 namespace OpenLoco::GameCommands
 {
     static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
-    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     // 0x0048FF36
@@ -203,7 +202,7 @@ namespace OpenLoco::GameCommands
 
         _lastPlacedTrackStationId = StationId::null;
         _lastConstructedAdjoiningStationCentrePos = World::Pos2(-1, -1);
-        _lastConstructedAdjoiningStationId = 0xFFFFFFFFU;
+        StationManager::setLastConstructedAdjoiningStationId(0xFFFFFFFFU);
 
         auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
         auto* stationObj = ObjectManager::get<TrainStationObject>(args.type);
@@ -254,7 +253,7 @@ namespace OpenLoco::GameCommands
             _lastConstructedAdjoiningStationCentrePos = trackStart;
             uint16_t tad = (args.trackId << 3) | args.rotation;
             auto nearbyStation = findNearbyStationOnTrack(trackStart, tad, args.trackObjectId);
-            _lastConstructedAdjoiningStationId = static_cast<int16_t>(nearbyStation.id);
+            StationManager::setLastConstructedAdjoiningStationId(static_cast<int16_t>(nearbyStation.id));
         }
 
         if (!(flags & Flags::ghost))

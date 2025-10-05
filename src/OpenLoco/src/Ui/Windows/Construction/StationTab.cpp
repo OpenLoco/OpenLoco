@@ -51,7 +51,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
-    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     // TODO: move to ConstructionState when no longer a loco_global
@@ -328,9 +327,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        _cState->constructingStationId = _lastConstructedAdjoiningStationId;
+        _cState->constructingStationId = StationManager::getLastConstructedAdjoiningStationId();
 
-        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        auto* station = StationManager::getLastConstructedAdjoiningStationId() != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(StationManager::getLastConstructedAdjoiningStationId())) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
         auto pos = *_lastConstructedAdjoiningStationCentrePos;
         if (pos.x == -1)
@@ -391,9 +390,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        _cState->constructingStationId = _lastConstructedAdjoiningStationId;
+        _cState->constructingStationId = StationManager::getLastConstructedAdjoiningStationId();
 
-        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        auto* station = StationManager::getLastConstructedAdjoiningStationId() != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(StationManager::getLastConstructedAdjoiningStationId())) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
         auto pos = *_lastConstructedAdjoiningStationCentrePos;
         if (pos.x == -1)
@@ -450,9 +449,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        _cState->constructingStationId = _lastConstructedAdjoiningStationId;
+        _cState->constructingStationId = StationManager::getLastConstructedAdjoiningStationId();
 
-        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        auto* station = StationManager::getLastConstructedAdjoiningStationId() != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(StationManager::getLastConstructedAdjoiningStationId())) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
         auto pos = *_lastConstructedAdjoiningStationCentrePos;
         if (pos.x == -1)
@@ -522,9 +521,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        _cState->constructingStationId = _lastConstructedAdjoiningStationId;
+        _cState->constructingStationId = StationManager::getLastConstructedAdjoiningStationId();
 
-        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        auto* station = StationManager::getLastConstructedAdjoiningStationId() != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(StationManager::getLastConstructedAdjoiningStationId())) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
         auto pos = *_lastConstructedAdjoiningStationCentrePos;
         if (pos.x == -1)

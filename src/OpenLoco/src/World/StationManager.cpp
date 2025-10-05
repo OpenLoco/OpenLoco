@@ -807,3 +807,18 @@ OpenLoco::StationId OpenLoco::Station::id() const
     }
     return StationId(index);
 }
+
+namespace OpenLoco::StationManager
+{
+    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId; // Can be 0xFFFF'FFFFU for no adjoining station
+
+    uint32_t getLastConstructedAdjoiningStationId()
+    {
+        return _lastConstructedAdjoiningStationId;
+    }
+
+    void setLastConstructedAdjoiningStationId(uint32_t value)
+    {
+        _lastConstructedAdjoiningStationId = value;
+    }
+}
