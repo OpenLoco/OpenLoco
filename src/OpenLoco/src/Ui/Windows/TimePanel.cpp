@@ -398,7 +398,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
 
         // Determine if the text needs to be updated
-        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & PauseFlags::browsePrompt) == PauseFlags::none)
         {
             if (w.numTicksVisible == 0 || w.numTicksVisible == kPausedStatusTextDuration)
             {
