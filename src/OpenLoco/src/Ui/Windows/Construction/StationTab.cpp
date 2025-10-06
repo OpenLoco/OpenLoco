@@ -127,8 +127,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 }
 
                 auto widget = self.widgets[widx::station];
-                auto xPos = self.x + widget.left;
-                auto yPos = self.y + widget.top;
+                auto xPos = widget.left + self.x;
+                auto yPos = widget.top + self.y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
                 Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), stationCount, (1 << 7));
@@ -1155,8 +1155,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto company = CompanyManager::getPlayerCompany();
         auto companyColour = company->mainColours.primary;
-        int16_t xPos = self.widgets[widx::image].left;
-        int16_t yPos = self.widgets[widx::image].top;
+        int16_t xPos = self.widgets[widx::image].left + self.x;
+        int16_t yPos = self.widgets[widx::image].top + self.y;
 
         if (_cState->byte_1136063 & (1 << 7))
         {
@@ -1206,7 +1206,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         if (_cState->stationCost != 0x80000000 && _cState->stationCost != 0)
         {
             auto& widget = self.widgets[widx::image];
-            auto point = Point(69, widget.bottom + 4);
+            auto point = Point(self.x + 69, widget.bottom + self.y + 4);
 
             FormatArguments args{};
             args.push<uint32_t>(_cState->stationCost);
@@ -1214,8 +1214,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
 
-        xPos = 3;
-        yPos = self.widgets[widx::image].bottom + 16;
+        xPos = self.x + 3;
+        yPos = self.widgets[widx::image].bottom + self.y + 16;
         auto width = self.width - 4;
         drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
@@ -1238,15 +1238,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             args.push(station->town);
         }
 
-        xPos = 69;
-        yPos = self.widgets[widx::image].bottom + 18;
+        xPos = self.x + 69;
+        yPos = self.widgets[widx::image].bottom + self.y + 18;
 
         auto origin = Point(xPos, yPos);
         width = self.width - 4;
         tr.drawStringCentredClipped(origin, width, Colour::black, StringIds::new_station_buffer, args);
 
-        xPos = 2;
-        yPos = self.widgets[widx::image].bottom + 29;
+        xPos = self.x + 2;
+        yPos = self.widgets[widx::image].bottom + self.y + 29;
 
         origin = Point(xPos, yPos);
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_accepts);
@@ -1262,7 +1262,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 if (_cState->constructingStationAcceptedCargoTypes & (1 << i))
                 {
-                    auto xPosMax = self.width - 12;
+                    auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
@@ -1274,8 +1274,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
         }
 
-        xPos = 2;
-        yPos = self.widgets[widx::image].bottom + 49;
+        xPos = self.x + 2;
+        yPos = self.widgets[widx::image].bottom + self.y + 49;
         origin = Point(xPos, yPos);
 
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_produces);
@@ -1291,7 +1291,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 if (_cState->constructingStationProducedCargoTypes & (1 << i))
                 {
-                    auto xPosMax = self.width - 12;
+                    auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);

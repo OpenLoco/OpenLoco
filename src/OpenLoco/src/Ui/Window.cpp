@@ -2,7 +2,6 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
-#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -129,9 +128,9 @@ namespace OpenLoco::Ui
             return std::nullopt;
         }
 
-        if (vp->containsUi(mouse - w->position()))
+        if (vp->containsUi(mouse))
         {
-            viewport_pos vpos = vp->screenToViewport(mouse - w->position());
+            viewport_pos vpos = vp->screenToViewport(mouse);
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (World::validCoords(position))
             {
@@ -812,6 +811,18 @@ namespace OpenLoco::Ui
         this->x += dx;
         this->y += dy;
 
+        if (this->viewports[0] != nullptr)
+        {
+            this->viewports[0]->x += dx;
+            this->viewports[0]->y += dy;
+        }
+
+        if (this->viewports[1] != nullptr)
+        {
+            this->viewports[1]->x += dx;
+            this->viewports[1]->y += dy;
+        }
+
         this->invalidate();
 
         return true;
@@ -859,6 +870,18 @@ namespace OpenLoco::Ui
         this->x += offset.x;
         this->y += offset.y;
         this->invalidate();
+
+        if (this->viewports[0] != nullptr)
+        {
+            this->viewports[0]->x += offset.x;
+            this->viewports[0]->y += offset.y;
+        }
+
+        if (this->viewports[1] != nullptr)
+        {
+            this->viewports[1]->x += offset.x;
+            this->viewports[1]->y += offset.y;
+        }
     }
 
     bool Window::moveToCentre()
@@ -1221,7 +1244,7 @@ namespace OpenLoco::Ui
     {
         if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(0, 0, this->width - 1, this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;
@@ -1262,10 +1285,10 @@ namespace OpenLoco::Ui
         if (this->hasFlags(WindowFlags::whiteBorderMask))
         {
             drawingCtx.fillRectInset(
-                0,
-                0,
-                this->width - 1,
-                this->height - 1,
+                this->x,
+                this->y,
+                this->x + this->width - 1,
+                this->y + this->height - 1,
                 Colour::white,
                 Gfx::RectInsetFlags::fillNone);
         }

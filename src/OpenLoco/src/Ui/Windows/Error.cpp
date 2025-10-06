@@ -204,8 +204,8 @@ namespace OpenLoco::Ui::Windows::Error
 
             if (_errorCompetitorId == CompanyId::null)
             {
-                uint16_t xPos = self.width / 2;
-                uint16_t yPos = kPadding;
+                uint16_t xPos = self.x + self.width / 2;
+                uint16_t yPos = self.y + kPadding;
 
                 tr.drawStringCentredRaw(Point(xPos, yPos), _linebreakCount, colour, &_errorText[0]);
             }
@@ -228,7 +228,7 @@ namespace OpenLoco::Ui::Windows::Error
                     drawingCtx.drawImage(xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                auto point = Point((self.width - kCompetitorSize) / 2 + kCompetitorSize + kPadding, 20);
+                auto point = Point(self.x + (self.width - kCompetitorSize) / 2 + kCompetitorSize + kPadding, self.y + 20);
                 tr.drawStringCentredRaw(point, _linebreakCount, colour, &_errorText[0]);
             }
         }

@@ -169,7 +169,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             const auto& widget = self.widgets[widx::status_bar];
             const auto width = widget.width() - 1;
-            auto point = Point(widget.left - 1, widget.top - 1);
+            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
             tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
         }
 
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 auto widget = &self.widgets[widx::viewport];
                 auto tile = World::Pos3({ station->x, station->y, station->z });
-                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
+                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
                 self.invalidate();
@@ -440,7 +440,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             const auto& widget = self.widgets[widx::status_bar];
             const auto width = widget.width();
-            auto point = Point(widget.left - 1, widget.top - 1);
+            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
 
             tr.drawStringLeftClipped(point, width, Colour::black, StringIds::buffer_1250);
         }
@@ -1485,8 +1485,8 @@ namespace OpenLoco::Ui::Windows::Station
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_cargo_ratings);
 
                 auto widget = self.widgets[widx::tab_cargo_ratings];
-                auto yOffset = widget.top + 14;
-                auto xOffset = widget.left + 4;
+                auto yOffset = widget.top + self.y + 14;
+                auto xOffset = widget.left + self.x + 4;
                 auto totalRatingBars = 0;
 
                 for (const auto& cargoStats : station->cargoStats)

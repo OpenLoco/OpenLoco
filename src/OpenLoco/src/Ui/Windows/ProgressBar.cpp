@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
         self.draw(drawingCtx);
 
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(2, 17, self.width - 5, self.height - 19));
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x + 2, self.y + 17, self.width - 5, self.height - 19));
         if (!clipped)
         {
             return;
