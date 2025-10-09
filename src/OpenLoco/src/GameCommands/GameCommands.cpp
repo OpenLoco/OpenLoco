@@ -276,9 +276,9 @@ namespace OpenLoco::GameCommands
 
         if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == CompanyManager::getControllingId())
         {
-            if (SceneManager::getPauseFlags() & 1)
+            if ((SceneManager::getPauseFlags() & PauseFlags::standard) != PauseFlags::none)
             {
-                SceneManager::unsetPauseFlag(1);
+                SceneManager::unsetPauseFlag(PauseFlags::standard);
                 WindowManager::invalidate(WindowType::timeToolbar);
                 Audio::unpauseSound();
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
