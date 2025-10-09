@@ -630,6 +630,11 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        {
+            removeTreeGhost();
+        }
+
         // 0x004BBEC1
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
@@ -885,6 +890,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .event_08 = event_08,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = scrollMouseDown,
             .scrollMouseOver = scrollMouseOver,
@@ -2554,6 +2560,11 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        {
+            removeWallGhost();
+        }
+
         // 0x004BC359
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
@@ -2720,6 +2731,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .event_08 = event_08,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = scrollMouseDown,
             .scrollMouseOver = scrollMouseOver,
