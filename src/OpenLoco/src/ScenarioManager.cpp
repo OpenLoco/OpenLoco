@@ -22,8 +22,6 @@
 #include <OpenLoco/Utility/String.hpp>
 #include <fstream>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::ScenarioManager
 {
 #pragma pack(push, 1)
@@ -45,14 +43,15 @@ namespace OpenLoco::ScenarioManager
     static_assert(sizeof(ScoreHeader) == 0x10);
 #pragma pack(pop)
 
-    loco_global<ScenarioIndexEntry*, 0x0050AE8C> _scenarioList;
-    loco_global<ScoreHeader, 0x0050AE04> _scenarioHeader;
+    // 0x0050AE8C
+    static std::vector<ScenarioIndexEntry> _scenarioList;
+    // 0x0050AE04
+    static ScoreHeader _scenarioHeader;
 
     bool hasScenariosForCategory(uint8_t category)
     {
-        for (uint32_t i = 0; i < _scenarioHeader->numScenarios; i++)
+        for (const auto& entry : _scenarioList)
         {
-            ScenarioIndexEntry& entry = _scenarioList[i];
             if (!entry.hasFlag(ScenarioIndexFlags::flag_0))
             {
                 continue;
@@ -69,7 +68,7 @@ namespace OpenLoco::ScenarioManager
 
     bool hasScenarioInCategory(uint8_t category, ScenarioIndexEntry* scenario)
     {
-        for (uint32_t i = 0; i < _scenarioHeader->numScenarios; i++)
+        for (uint32_t i = 0; i < _scenarioHeader.numScenarios; i++)
         {
             ScenarioIndexEntry* entry = &_scenarioList[i];
 
@@ -98,9 +97,8 @@ namespace OpenLoco::ScenarioManager
     uint16_t getScenarioCountByCategory(uint8_t category)
     {
         auto scenarioCountInCategory = 0;
-        for (uint32_t i = 0; i < _scenarioHeader->numScenarios; i++)
+        for (const auto& entry : _scenarioList)
         {
-            ScenarioIndexEntry& entry = _scenarioList[i];
             if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
             {
                 continue;
@@ -115,9 +113,8 @@ namespace OpenLoco::ScenarioManager
     ScenarioIndexEntry* getNthScenarioFromCategory(uint8_t category, uint8_t index)
     {
         uint8_t j = 0;
-        for (uint32_t i = 0; i < _scenarioHeader->numScenarios; i++)
+        for (auto& entry : _scenarioList)
         {
-            ScenarioIndexEntry& entry = _scenarioList[i];
             if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
             {
                 continue;
@@ -145,8 +142,8 @@ namespace OpenLoco::ScenarioManager
             return;
         }
 
-        stream.write(reinterpret_cast<const char*>(&*_scenarioHeader), sizeof(ScoreHeader));
-        stream.write(reinterpret_cast<const char*>(&_scenarioList[0]), sizeof(ScenarioIndexEntry) * _scenarioHeader->numScenarios);
+        stream.write(reinterpret_cast<const char*>(&_scenarioHeader), sizeof(ScoreHeader));
+        stream.write(reinterpret_cast<const char*>(_scenarioList.data()), sizeof(ScenarioIndexEntry) * _scenarioHeader.numScenarios);
     }
 
     // 0x00444574
@@ -182,33 +179,33 @@ namespace OpenLoco::ScenarioManager
         }
         // 0x00112A14C -> 160
         _scenarioHeader = ScoreHeader{};
-        Utility::readData(stream, *_scenarioHeader);
+        Utility::readData(stream, _scenarioHeader);
         if (stream.gcount() != sizeof(ScoreHeader))
         {
             return false;
         }
 
-        const auto scenarioListSize = _scenarioHeader->numScenarios * sizeof(ScenarioIndexEntry);
-        _scenarioList = static_cast<ScenarioIndexEntry*>(malloc(scenarioListSize));
-        if (_scenarioList == nullptr)
+        const auto scenarioListSize = _scenarioHeader.numScenarios * sizeof(ScenarioIndexEntry);
+        _scenarioList.clear();
+        _scenarioList.resize(_scenarioHeader.numScenarios);
+        if (_scenarioList.empty())
         {
             exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
             return false;
         }
-        Utility::readData(stream, *_scenarioList, _scenarioHeader->numScenarios);
+        Utility::readData(stream, _scenarioList.data(), _scenarioHeader.numScenarios);
         if (stream.gcount() != static_cast<int32_t>(scenarioListSize))
         {
             _scenarioHeader = ScoreHeader{};
-            free(_scenarioList);
-            _scenarioList = nullptr;
+            _scenarioList.clear();
             return false;
         }
-        if (currentState != _scenarioHeader->state)
+        if (currentState != _scenarioHeader.state)
         {
             return false;
         }
         // version?
-        if ((_scenarioHeader->state.numFiles >> 24) != 1)
+        if ((_scenarioHeader.state.numFiles >> 24) != 1)
         {
             return false;
         }
@@ -281,14 +278,12 @@ namespace OpenLoco::ScenarioManager
     static std::optional<uint32_t> findScenario(const fs::path& fileName)
     {
         const auto u8FileName = fileName.filename().u8string();
-        const auto* begin = &_scenarioList[0];
-        const auto* end = &_scenarioList[_scenarioHeader->numScenarios];
-        auto res = std::find_if(begin, end, [&u8FileName](const ScenarioIndexEntry& entry) {
+        auto res = std::ranges::find_if(_scenarioList, [&u8FileName](const ScenarioIndexEntry& entry) {
             return std::strcmp(entry.filename, u8FileName.c_str()) == 0;
         });
-        if (res != end)
+        if (res != _scenarioList.end())
         {
-            return std::distance(begin, res);
+            return std::distance(_scenarioList.begin(), res);
         }
         return std::nullopt;
     }
@@ -299,25 +294,21 @@ namespace OpenLoco::ScenarioManager
         Input::processMessagesMini();
         Ui::ProgressBar::begin(StringIds::checkingScenarioFiles);
 
-        auto indexAllocSize = _scenarioHeader->numScenarios;
-        if (_scenarioList == reinterpret_cast<ScenarioIndexEntry*>(-1) || _scenarioList == nullptr)
+        if (_scenarioList.empty())
         {
-            _scenarioHeader->numScenarios = 0;
-            indexAllocSize = currentState.numFiles;
-            _scenarioList = static_cast<ScenarioIndexEntry*>(malloc(currentState.numFiles * sizeof(ScenarioIndexEntry)));
-            if (_scenarioList == nullptr)
+            _scenarioHeader.numScenarios = 0;
+            _scenarioList.resize(currentState.numFiles);
+            if (_scenarioList.empty())
             {
                 exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
                 return;
             }
-            std::fill(*_scenarioList, *_scenarioList + currentState.numFiles, ScenarioIndexEntry{});
         }
-        _scenarioHeader->state = currentState;
-        _scenarioHeader->state.numFiles = (currentState.numFiles & 0xFFFFFF) | (1 << 24);
+        _scenarioHeader.state = currentState;
+        _scenarioHeader.state.numFiles = (currentState.numFiles & 0xFFFFFF) | (1 << 24);
 
-        for (uint32_t i = 0; i < _scenarioHeader->numScenarios; i++)
+        for (auto& entry : _scenarioList)
         {
-            ScenarioIndexEntry& entry = _scenarioList[i];
             entry.flags &= ~ScenarioIndexFlags::flag_0;
         }
 
@@ -371,20 +362,9 @@ namespace OpenLoco::ScenarioManager
             {
                 // Its possible to have more scenarios than files in the scenario folder
                 // this is because even deleted scenarios need to keep their scores entry
-                // due to this we will realloc if we get to this point. Also when adding
-                // a scenario to the folder you will need to realloc as it has alloc'd only,
-                // enough space for the previous amount of scenarios.
-                // TODO: Use a vector after all free/mallocs of _scenarioList implemented
-                if (_scenarioHeader->numScenarios >= indexAllocSize)
-                {
-                    const auto clearFromIndex = _scenarioHeader->numScenarios;
-                    indexAllocSize = _scenarioHeader->numScenarios + 1;
-                    _scenarioList = static_cast<ScenarioIndexEntry*>(realloc(_scenarioList, indexAllocSize * sizeof(ScenarioIndexEntry)));
-                    // Zero the new entries
-                    std::fill_n(&_scenarioList[clearFromIndex], indexAllocSize - clearFromIndex, ScenarioIndexEntry{});
-                }
+                _scenarioList.push_back({});
             }
-            ScenarioIndexEntry& entry = _scenarioList[foundId.value_or(_scenarioHeader->numScenarios)];
+            ScenarioIndexEntry& entry = _scenarioList[foundId.value_or(_scenarioHeader.numScenarios)];
 
             entry.flags |= ScenarioIndexFlags::flag_0;
             entry.category = options->difficulty;
@@ -402,13 +382,13 @@ namespace OpenLoco::ScenarioManager
             loadScenarioProgress(entry, *options);
             if (!foundId.has_value())
             {
-                _scenarioHeader->numScenarios++;
+                _scenarioHeader.numScenarios++;
                 std::strcpy(entry.filename, u8FileName.c_str());
             }
             loadScenarioDetails(entry, *options);
         }
 
-        std::sort(*_scenarioList, *_scenarioList + _scenarioHeader->numScenarios, [](const ScenarioIndexEntry& lhs, const ScenarioIndexEntry& rhs) {
+        std::ranges::sort(_scenarioList, [](const ScenarioIndexEntry& lhs, const ScenarioIndexEntry& rhs) {
             return strcmp(lhs.scenarioName, rhs.scenarioName) < 0;
         });
 
@@ -425,10 +405,9 @@ namespace OpenLoco::ScenarioManager
         const auto oldFlags = SceneManager::getSceneFlags();
         SceneManager::setSceneFlags(SceneManager::Flags::title | oldFlags);
 
-        if (_scenarioList != reinterpret_cast<ScenarioIndexEntry*>(-1) && _scenarioList != nullptr)
+        if (!_scenarioList.empty())
         {
-            free(_scenarioList);
-            _scenarioList = nullptr;
+            _scenarioList.clear();
         }
 
         const auto currentState = getCurrentScenarioFolderState();
