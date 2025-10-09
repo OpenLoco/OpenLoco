@@ -249,8 +249,8 @@ namespace OpenLoco::Ui::Dropdown
                 {
                     if (itemCount == _dropdownHighlightedIndex)
                     {
-                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + 2;
-                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + 2;
+                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
                         drawingCtx.drawRect(x, y, _dropdownItemWidth, _dropdownItemHeight, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
                     }
 
@@ -287,8 +287,8 @@ namespace OpenLoco::Ui::Dropdown
                                 }
                             }
 
-                            auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + 2;
-                            auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + 1;
+                            auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                            auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 1;
                             auto width = self.width - 5;
                             sub_494BF6(&self, drawingCtx, dropdownItemFormat, x, y, width, colour, args);
                         }
@@ -296,8 +296,8 @@ namespace OpenLoco::Ui::Dropdown
 
                     if (dropdownItemFormat == (StringId)-2 || dropdownItemFormat == StringIds::null)
                     {
-                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + 2;
-                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + 2;
+                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
 
                         auto imageId = *(uint32_t*)&args;
                         if (dropdownItemFormat == (StringId)-2 && itemCount == _dropdownHighlightedIndex)
@@ -309,8 +309,8 @@ namespace OpenLoco::Ui::Dropdown
                 }
                 else
                 {
-                    auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + 2;
-                    auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + 1 + _dropdownItemHeight / 2;
+                    auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                    auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 1 + _dropdownItemHeight / 2;
 
                     if (!self.getColour(WindowColour::primary).isTranslucent())
                     {

@@ -3002,7 +3002,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto x = self->widgets[widx::construct].midX();
-        auto y = self->widgets[widx::construct].bottom - 23;
+        x += self->x;
+        auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
         if (_cState->constructionHover != 1)
         {
@@ -3097,8 +3098,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     auto company = CompanyManager::getPlayerCompany();
                     auto imageId = Gfx::recolour(bridgeObj->image, company->mainColours.primary);
-                    auto x = self.widgets[widx::bridge].left + 2;
-                    auto y = self.widgets[widx::bridge].top + 1;
+                    auto x = self.x + self.widgets[widx::bridge].left + 2;
+                    auto y = self.y + self.widgets[widx::bridge].top + 1;
 
                     drawingCtx.drawImage(x, y, imageId);
                 }
@@ -3126,8 +3127,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _cState->lastSelectedTrackPieceId = road->id;
             _cState->word_1135FD6 = (_cState->lastSelectedBridge << 8) & 0x1F;
 
-            auto x = self.widgets[widx::construct].left + 1;
-            auto y = self.widgets[widx::construct].top + 1;
+            auto x = self.x + self.widgets[widx::construct].left + 1;
+            auto y = self.y + self.widgets[widx::construct].top + 1;
             auto width = self.widgets[widx::construct].width();
             auto height = self.widgets[widx::construct].height();
 
@@ -3179,8 +3180,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _cState->lastSelectedTrackPieceId = track->id;
             _cState->word_1135FD6 = (_cState->lastSelectedBridge << 8) & 0x1F;
 
-            auto x = self.widgets[widx::construct].left + 1;
-            auto y = self.widgets[widx::construct].top + 1;
+            auto x = self.x + self.widgets[widx::construct].left + 1;
+            auto y = self.y + self.widgets[widx::construct].top + 1;
             auto width = self.widgets[widx::construct].width();
             auto height = self.widgets[widx::construct].height();
 
