@@ -517,7 +517,7 @@ namespace OpenLoco::GameCommands
         // fallback
         auto formatter = FormatArguments::common();
         formatter.push(CompanyManager::get(_errorCompanyId)->name);
-        Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
+        Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_belongs_to, _errorCompanyId);
         return GameCommands::FAILURE;
     }
 
