@@ -1,4 +1,4 @@
-25.09+ (???)
+25.10 (2025-10-10)
 ------------------------------------------------------------------------
 - Fix: [#2741] Tree, fence, and wall ghosts can be left behind when using Terraform keyboard shortcuts (original bug).
 - Fix: [#3238] Vehicle positioning hint is shown even when there is a viewport present.
