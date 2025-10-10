@@ -389,6 +389,17 @@ namespace OpenLoco::Audio
         return nullptr;
     }
 
+    // 0x004FEAB8
+    // Sound volume levels indexed by SoundId
+    static constexpr std::array<int32_t, 32> kSoundVolumeTable = { {
+        // clang-format off
+           0,    0,    0,    0,    0, -400,    0,    0,
+           0,    0,    0, -500,    0,    0,    0,    0,
+           0,    0,    0,    0,    0,    0, -1900,    0,
+           0,    0, -600, -600, -600, -600, -600, -600,
+        // clang-format on
+    } };
+
     static int32_t getVolumeForSoundId(SoundId id)
     {
         if (isObjectSoundId(id))
@@ -402,8 +413,7 @@ namespace OpenLoco::Audio
         }
         else
         {
-            loco_global<int32_t[32], 0x004FEAB8> _unk_4FEAB8;
-            return _unk_4FEAB8[(int32_t)id];
+            return kSoundVolumeTable[static_cast<int32_t>(id)];
         }
     }
 

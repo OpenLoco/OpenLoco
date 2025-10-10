@@ -46,9 +46,6 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Ui::Windows::Construction::Construction
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
-    static loco_global<uint8_t, 0x00522090> _byte_522090;
-    static loco_global<uint8_t, 0x00522091> _byte_522091;
-    static loco_global<uint8_t, 0x00522092> _byte_522092;
 
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
@@ -130,7 +127,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return widgets;
     }
 
-    const uint8_t trackPieceWidgets[] = {
+    // 0x00522085
+    uint8_t trackPieceWidgets[] = {
         widx::straight,
         widx::left_hand_curve_very_small,
         widx::right_hand_curve_very_small,
@@ -940,8 +938,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_left_dual_track;
             window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_right_dual_track;
 
-            _byte_522090 = 16;
-            _byte_522091 = 20;
+            trackPieceWidgets[TrackPiece::s_bend_to_dual_track] = widx::s_bend_dual_track_left;
+            trackPieceWidgets[TrackPiece::s_bend_to_single_track] = widx::s_bend_dual_track_right;
 
             if (_cState->constructionRotation >= 4 && _cState->constructionRotation < 12)
             {
@@ -949,16 +947,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_to_single_track_left;
                 window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
                 window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_to_single_track;
-                _byte_522090 = 20;
-                _byte_522092 = 16;
+                trackPieceWidgets[TrackPiece::s_bend_to_dual_track] = widx::s_bend_dual_track_right;
+                trackPieceWidgets[TrackPiece::turnaround] = widx::s_bend_dual_track_left;
                 if (_cState->constructionRotation >= 8)
                 {
                     window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_to_single_track_right;
                     window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_left_turnaround;
                     window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_to_single_track;
                     window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_turnaround;
-                    _byte_522091 = 16;
-                    _byte_522092 = 20;
+                    trackPieceWidgets[TrackPiece::s_bend_to_single_track] = widx::s_bend_dual_track_left;
+                    trackPieceWidgets[TrackPiece::turnaround] = widx::s_bend_dual_track_right;
                 }
             }
         }
