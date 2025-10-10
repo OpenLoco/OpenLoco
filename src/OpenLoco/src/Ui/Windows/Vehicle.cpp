@@ -1056,7 +1056,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     Gfx::recolour(ImageIds::speed_control_thumb, self.getColour(WindowColour::secondary).c()));
             }
 
-            if (ToolManager::isToolActive(self.type, self.number))
+            if (self.viewports[0] == nullptr && ToolManager::isToolActive(self.type, self.number))
             {
                 FormatArguments args = {};
                 args.push(StringIds::getVehicleType(veh->vehicleType));
