@@ -1,6 +1,7 @@
 25.09+ (???)
 ------------------------------------------------------------------------
 - Fix: [#3301] Assigning keyboard shortcuts not working correctly, the function parameters were swapped.
+- Fix: [#3294] Wrong error message when attempting to remove the headquarters of another company.
 
 25.09 (2025-09-30)
 ------------------------------------------------------------------------
