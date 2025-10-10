@@ -844,8 +844,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void drawDescription(const ObjectHeader& header, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object& objectPtr)
     {
-        int16_t width = self->width - x;
-        int16_t height = self->height - y;
+        int16_t width = self->x + self->width - x;
+        int16_t height = self->y + self->height - y;
 
         // Clip the draw area to simplify image draw
         const auto& rt = drawingCtx.currentRenderTarget();
@@ -901,8 +901,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
     {
-        int16_t width = self->width - x;
-        int16_t height = self->height - y;
+        int16_t width = self->x + self->width - x;
+        int16_t height = self->y + self->height - y;
 
         // Clip the draw area to simplify image draw
         const auto& rt = drawingCtx.currentRenderTarget();
@@ -939,7 +939,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto& widget = widgets[widx::textInput];
         const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget.left + 1, widget.top + 1, widget.width() - 2, widget.height() - 2));
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget.left + 1 + self.x, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
         if (!clipped)
         {
             return;
@@ -974,7 +974,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.fillRectInset(0, 20, self.width - 1, 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+        drawingCtx.fillRectInset(self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
         self.draw(drawingCtx);
 
         drawTabs(self, drawingCtx);
@@ -992,7 +992,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             args.push(levelStringIds[self.filterLevel]);
 
             auto& widget = self.widgets[widx::filterLabel];
-            auto point = Point(widget.left, widget.top);
+            auto point = Point(self.x + widget.left, self.y + widget.top);
 
             // Draw current level on combobox
             tr.drawStringLeftClipped(point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
@@ -1012,13 +1012,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 5);
-            drawingCtx.drawRect(widget.left, widget.top, widget.width(), widget.height(), colour, Gfx::RectFlags::none);
+            drawingCtx.drawRect(self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour, Gfx::RectFlags::none);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
-            drawingCtx.drawRect(widget.left + 1, widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
+            drawingCtx.drawRect(self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
         }
 
         ObjectType type{};
@@ -1037,7 +1037,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         args.push(ObjectManager::getMaxObjects(type));
 
         {
-            auto point = Point(3, self.height - 12);
+            auto point = Point(self.x + 3, self.y + self.height - 12);
             tr.drawStringLeft(point, Colour::black, StringIds::num_selected_num_max, args);
         }
 
@@ -1059,13 +1059,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawPreviewImage(
                 objectHeader,
                 drawingCtx,
-                widgets[widx::objectImage].midX() + 1,
-                widgets[widx::objectImage].midY() + 1,
+                widgets[widx::objectImage].midX() + 1 + self.x,
+                widgets[widx::objectImage].midY() + 1 + self.y,
                 *temporaryObject);
         }
 
-        auto x = self.widgets[widx::objectImage].midX();
-        auto y = self.widgets[widx::objectImage].bottom + 3;
+        auto x = self.widgets[widx::objectImage].midX() + self.x;
+        auto y = self.widgets[widx::objectImage].bottom + 3 + self.y;
         auto width = self.width - self.widgets[widx::scrollview].right - 6;
 
         {
@@ -1086,7 +1086,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 objHeader,
                 &self,
                 drawingCtx,
-                self.widgets[widx::scrollview].right + 4,
+                self.widgets[widx::scrollview].right + self.x + 4,
                 y + kDescriptionRowHeight,
                 *temporaryObject);
         }
@@ -1096,7 +1096,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 ObjectManager::getObjectInIndex(self.rowHover),
                 &self,
                 drawingCtx,
-                self.widgets[widx::scrollview].right + 4,
+                self.widgets[widx::scrollview].right + self.x + 4,
                 y + kDescriptionRowHeight);
         }
     }

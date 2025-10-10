@@ -64,7 +64,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         return window;
     }
 
-    static void editShortcut(uint32_t keyCode, [[maybe_unused]] uint32_t charCode)
+    static void editShortcut([[maybe_unused]] const uint32_t charCode, const uint32_t keyCode)
     {
         if (keyCode == SDLK_UP)
         {
@@ -126,7 +126,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
         FormatArguments args{};
         args.push(ShortcutManager::getName(static_cast<Shortcut>(_editingShortcutIndex)));
-        auto point = Ui::Point(140, 32);
+        auto point = Ui::Point(self.x + 140, self.y + 32);
         tr.drawStringCentredWrapped(point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, args);
     }
 
@@ -141,9 +141,9 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         }
     }
 
-    static bool onKeyUp([[maybe_unused]] Window& self, const uint32_t keyCode, const uint32_t charCode)
+    static bool onKeyUp([[maybe_unused]] Window& self, const uint32_t charCode, const uint32_t keyCode)
     {
-        editShortcut(keyCode, charCode);
+        editShortcut(charCode, keyCode);
 
         return true;
     }

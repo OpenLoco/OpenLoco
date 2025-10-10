@@ -797,7 +797,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 FormatArguments args{};
                 args.push<uint32_t>(treeCost);
 
-                auto point = Point(3 + self.width - 17, self.height - 13);
+                auto point = Point(self.x + 3 + self.width - 17, self.y + self.height - 13);
                 tr.drawStringRight(point, Colour::black, StringIds::build_cost, args);
             }
 
@@ -805,7 +805,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 FormatArguments args{};
                 args.push(treeObj->name);
 
-                auto point = Point(3, self.height - 13);
+                auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19 - point.x;
                 tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
             }
@@ -1158,8 +1158,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             // Draw as a number if we can't fit a sprite
             if (_adjustToolSize > 10)
             {
-                auto xPos = toolArea.midX();
-                auto yPos = toolArea.midY() - 5;
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -1178,8 +1178,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             {
-                auto xPos = toolArea.midX();
-                auto yPos = toolArea.bottom + 5;
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.bottom + self.y + 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -1302,8 +1302,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            auto xPos = self->x + self->widgets[widgetIndex].left;
-            auto yPos = self->y + self->widgets[widgetIndex].bottom;
+            auto xPos = self->widgets[widgetIndex].left + self->x;
+            auto yPos = self->widgets[widgetIndex].bottom + self->y;
             auto heightOffset = self->widgets[widgetIndex].height() - 18;
             auto colour = self->getColour(WindowColour::secondary).translucent();
             auto count = Dropdown::getItemsPerRow(landCount);
@@ -1805,7 +1805,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (isMountainMode)
                 {
                     auto areaImage = ImageId(ImageIds::tool_area);
-                    Ui::Point placeForImage(toolArea.left, toolArea.top);
+                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
 
                     if ((_adjustToolSize & 1) == 0)
                     {
@@ -1828,15 +1828,15 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (!isMountainMode || _adjustToolSize > 1)
                 {
                     auto areaImage = ImageId(ImageIds::tool_area).withIndexOffset(_adjustToolSize);
-                    Ui::Point placeForImage(toolArea.left, toolArea.top);
+                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
                     drawingCtx.drawImage(placeForImage, areaImage);
                 }
             }
             // Or draw as a number, if we can't fit a sprite
             else
             {
-                auto xPos = toolArea.midX();
-                auto yPos = toolArea.midY() - 5;
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -1844,8 +1844,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 tr.drawStringCentred(point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
-            auto xPos = toolArea.midX();
-            auto yPos = toolArea.bottom + 28;
+            auto xPos = toolArea.midX() + self.x;
+            auto yPos = toolArea.bottom + self.y + 28;
 
             if (_raiseLandCost != 0x80000000)
             {
@@ -2181,8 +2181,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             // Draw as a number if we can't fit a sprite
             if (_adjustToolSize > 10)
             {
-                auto xPos = toolArea.midX();
-                auto yPos = toolArea.midY() - 5;
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -2190,8 +2190,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 tr.drawStringCentred(point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
-            auto xPos = toolArea.midX();
-            auto yPos = toolArea.bottom + 5;
+            auto xPos = toolArea.midX() + self.x;
+            auto yPos = toolArea.bottom + self.y + 5;
 
             if (_raiseWaterCost != 0x80000000)
             {
@@ -2666,8 +2666,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             auto wallObj = ObjectManager::get<WallObject>(wallId);
-            auto xPos = 3;
-            auto yPos = self.height - 13;
+            auto xPos = self.x + 3;
+            auto yPos = self.y + self.height - 13;
             auto width = self.width - 19;
             auto point = Point(xPos, yPos);
 

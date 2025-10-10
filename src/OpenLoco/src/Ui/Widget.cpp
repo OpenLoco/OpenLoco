@@ -85,24 +85,14 @@ namespace OpenLoco::Ui
         widgetState.hovered = (hoveredWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.scrollviewIndex = scrollviewIndex;
 
-        auto clippedRT = clipRenderTarget(drawingCtx.currentRenderTarget(), Rect{ left, top, width(), height() });
-        if (!clippedRT)
-        {
-            // Widget position is outside the windows canvas which is the current clipped RT.
-            return;
-        }
-
-        drawingCtx.pushRenderTarget(*clippedRT);
-
         // With the only exception of WidgetType::empty everything else should implement it.
         assert(events.draw != nullptr);
 
         if (events.draw != nullptr)
         {
             events.draw(drawingCtx, *this, widgetState);
+            return;
         }
-
-        drawingCtx.popRenderTarget();
     }
 
     // 0x004CF194
@@ -111,8 +101,8 @@ namespace OpenLoco::Ui
         auto& widget = w.widgets[index];
 
         Ui::Point pos = {};
-        pos.x = widget.left;
-        pos.y = widget.top;
+        pos.x = widget.left + w.x;
+        pos.y = widget.top + w.y;
 
         if (w.isDisabled(index))
         {

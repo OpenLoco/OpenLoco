@@ -750,7 +750,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (self.var_83C == 0)
             {
-                auto point = Point(3, self.height - 13);
+                auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19;
                 tr.drawStringLeftClipped(point, width, Colour::black, StringIds::no_industry_available);
                 return;
@@ -788,7 +788,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 FormatArguments args{};
                 args.push(industryCost);
 
-                auto point = Point(3 + self.width - 19, self.height - 13);
+                auto point = Point(self.x + 3 + self.width - 19, self.y + self.height - 13);
                 widthOffset = 138;
 
                 tr.drawStringRight(point, Colour::black, StringIds::build_cost, args);
@@ -798,7 +798,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 FormatArguments args{};
                 args.push(industryObj->name);
 
-                auto point = Point(3, self.height - 13);
+                auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19 - widthOffset;
 
                 tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);

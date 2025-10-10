@@ -75,17 +75,25 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     }
 
     // 0x004B6197
-    static void draw([[maybe_unused]] Ui::Window& self, Gfx::DrawingContext& drawingCtx)
+    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        Vehicles::Vehicle train(_dragVehicleHead);
-        for (auto& car : train.cars)
+        const auto& rt = drawingCtx.currentRenderTarget();
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x, self.y, self.width, self.height));
+        if (clipped)
         {
-            if (car.front == _dragCarComponent)
+            drawingCtx.pushRenderTarget(*clipped);
+
+            Vehicles::Vehicle train(_dragVehicleHead);
+            for (auto& car : train.cars)
             {
-                drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bogies);
-                drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bodies);
-                break;
+                if (car.front == _dragCarComponent)
+                {
+                    drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bogies);
+                    drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bodies);
+                    break;
+                }
             }
+            drawingCtx.popRenderTarget();
         }
     }
 

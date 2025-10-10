@@ -1,6 +1,8 @@
 25.09+ (???)
 ------------------------------------------------------------------------
-- Fix: [#2741] Tree, fence, and wall ghosts being left behind when using keyboard shortcuts that open the Terraform window (original bug).
+- Fix: [#2741] Tree, fence, and wall ghosts can be left behind when using Terraform keyboard shortcuts (original bug).
+- Fix: [#3294] Wrong error message when attempting to remove the headquarters of another company.
+- Fix: [#3301] Assigning keyboard shortcuts not working correctly, the function parameters were swapped.
 
 25.09 (2025-09-30)
 ------------------------------------------------------------------------

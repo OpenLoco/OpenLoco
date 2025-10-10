@@ -1244,16 +1244,16 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C05F9
-        static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
+        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
             // Draw widgets.
-            self.draw(drawingCtx);
+            w.draw(drawingCtx);
 
             // TODO: Move this in Slider widget.
-            drawingCtx.drawImage(self.widgets[Widx::volume].left, self.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, self.getColour(WindowColour::secondary).c()));
+            drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
 
             int16_t x = 90 + (Config::get().old.volume / 32);
-            drawingCtx.drawImage(self.widgets[Widx::volume].left + x, self.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, self.getColour(WindowColour::secondary).c()));
+            drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left + x, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w.getColour(WindowColour::secondary).c()));
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
@@ -2558,7 +2558,7 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(stringId);
             args.push(value);
 
-            auto point = Point(widget.left + 1, widget.top + 1);
+            auto point = Point(w->x + widget.left + 1, w->y + widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
         }
 

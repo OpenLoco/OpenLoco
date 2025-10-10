@@ -208,8 +208,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::scenario_list_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::scenario_list_btn].left;
-            int16_t y = window.widgets[Widx::scenario_list_btn].top;
+            int16_t x = window.widgets[Widx::scenario_list_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_list_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_list_btn))
@@ -223,8 +223,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::load_game_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::load_game_btn].left;
-            int16_t y = window.widgets[Widx::load_game_btn].top;
+            int16_t x = window.widgets[Widx::load_game_btn].left + window.x;
+            int16_t y = window.widgets[Widx::load_game_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::load_game_btn))
@@ -238,8 +238,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::tutorial_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::tutorial_btn].left;
-            int16_t y = window.widgets[Widx::tutorial_btn].top;
+            int16_t x = window.widgets[Widx::tutorial_btn].left + window.x;
+            int16_t y = window.widgets[Widx::tutorial_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::tutorial_btn))
@@ -255,8 +255,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::scenario_editor_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::scenario_editor_btn].left;
-            int16_t y = window.widgets[Widx::scenario_editor_btn].top;
+            int16_t x = window.widgets[Widx::scenario_editor_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_editor_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_construct_24;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_editor_btn))
@@ -270,8 +270,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         if (!window.widgets[Widx::multiplayer_toggle_btn].hidden)
         {
             auto& widget = window.widgets[Widx::multiplayer_toggle_btn];
-            auto point = Point(window.width / 2, widget.top + 3);
-
+            auto point = Point(widget.top + 3 + window.y, window.width / 2 + window.x);
             StringId string = StringIds::single_player_mode;
             FormatArguments args{};
 
