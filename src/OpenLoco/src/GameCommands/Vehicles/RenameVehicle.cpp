@@ -41,12 +41,9 @@ namespace OpenLoco::GameCommands
 
         static char staticRenameBuffer[37]{};
 
-        if ((flags & Flags::apply) != 0)
-        {
-            static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
-            int arrayIndex = kTransformTable.at(args.i);
-            std::memcpy(staticRenameBuffer + arrayIndex * 12, args.buffer, 12);
-        }
+        static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
+        int arrayIndex = kTransformTable.at(args.i);
+        std::memcpy(staticRenameBuffer + arrayIndex * 12, args.buffer, 12);
 
         if (args.i != 0)
         {
