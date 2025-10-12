@@ -5,7 +5,6 @@
 #include "VehiclePickupWater.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
-#include "World/CompanyManager.h"
 
 using namespace OpenLoco::Vehicles;
 
