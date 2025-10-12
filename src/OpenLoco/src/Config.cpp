@@ -28,7 +28,7 @@ namespace OpenLoco::Config
         return _newConfig;
     }
 
-    constexpr ObjectHeader kDefaultPreferredCurrency = { 0x00000082u, { 'C', 'U', 'R', 'R', 'D', 'O', 'L', 'L' }, 0u };
+    constexpr ObjectHeader kDefaultPreferredCurrency = { ObjectType::currency, SourceGame::vanilla, "CURRDOLL" };
 
     constexpr LocoConfig kDefaultConfig = {
         /*flags*/ Flags::exportObjectsWithSaves,
