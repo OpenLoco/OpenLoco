@@ -1,5 +1,5 @@
 #include "Vehicles/Vehicle.h"
-#include "../../TempState.h"
+#include "Vehicles/VehicleManager.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -2053,6 +2053,36 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
+        bool checkDeletion(const EntityId id)
+        {
+            auto* vehBase = EntityManager::get<Vehicles::VehicleBase>(id);
+            if (vehBase == nullptr)
+            {
+                // Should still run GameCommand so code path is identical to vanilla
+                return true;
+            }
+
+            auto* head = EntityManager::get<Vehicles::VehicleHead>(vehBase->getHead());
+            if (head == nullptr)
+            {
+                return true;
+            }
+
+            if (!head->hasAnyCargo())
+            {
+                return true;
+            }
+
+            if (head->getCarCount() > 0 && OpenLoco::CompanyManager::getControllingId() == head->owner)
+            {
+                auto titleId = StringIds::confirm_vehicle_cargo_deletion_title;
+                FormatArguments args{};
+                return Windows::PromptOkCancel::open(titleId, StringIds::confirm_vehicle_cargo_deletion_txt, args, StringIds::confirm_vehicle_cargo_deletion_btn);
+            }
+
+            return false;
+        }
+
         void scrollDragEnd(const Ui::Point& pos)
         {
             if (_dragCarComponent == nullptr)
@@ -2075,21 +2105,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     GameCommands::VehicleSellArgs gcArgs{};
                     gcArgs.car = (*_dragCarComponent)->id;
 
-                    GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
-                    GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
-
-                    // If, after running the command, a confirmation request is pending,
-                    // prompt the user with a dialog. If confirmed, reissue the command with
-                    // the confirmation flag set.
-                    if ((uint16_t)OpenLoco::GetTempState()->deleteAfterConfirmation != 0)
+                    if (checkDeletion(gcArgs.car))
                     {
-                        auto titleId = StringIds::confirm_vehicle_cargo_deletion_title;
-                        FormatArguments args{};
-                        if (Windows::PromptOkCancel::open(titleId, StringIds::confirm_vehicle_cargo_deletion_txt, args, StringIds::confirm_vehicle_cargo_deletion_btn))
-                        {
-                            OpenLoco::GetTempState()->confirmedEntityDeletion = true;
-                            GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
-                        }
+                        GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
+                        GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
                     }
 
                     break;

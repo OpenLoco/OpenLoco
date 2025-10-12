@@ -460,6 +460,7 @@ namespace OpenLoco::Ui::Windows
         {
             Window* open(const Vehicles::VehicleBase* vehicle);
             void scrollDrag(const Ui::Point& pos);
+            bool checkDeletion(const EntityId id);
             void scrollDragEnd(const Ui::Point& pos);
         }
         bool rotate();

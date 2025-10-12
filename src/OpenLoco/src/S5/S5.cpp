@@ -28,7 +28,6 @@
 #include "ScenarioManager.h"
 #include "ScenarioOptions.h"
 #include "SceneManager.h"
-#include "TempState.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
@@ -620,7 +619,6 @@ namespace OpenLoco::S5
 
     bool importSaveToGameState(Stream& stream, LoadFlags flags)
     {
-        OpenLoco::ResetTempState();
         SceneManager::setGameSpeed(GameSpeed::Normal);
         if ((flags & LoadFlags::titleSequence) == LoadFlags::none
             && (flags & LoadFlags::twoPlayer) == LoadFlags::none)

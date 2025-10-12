@@ -1,5 +1,4 @@
 #include "VehicleSell.h"
-#include "../../TempState.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "VehiclePickupAir.h"
@@ -54,25 +53,6 @@ namespace OpenLoco::GameCommands
             }
             else
             {
-                // Warn if deletion of 1 wagon will cause player to lose all
-                // cargo aboard train, as this could be costly to the player
-                if (head->hasAnyCargo() && head->getCarCount() > 0
-                    && OpenLoco::CompanyManager::getControllingId() == head->owner)
-                {
-                    // Only run the rest of the deletion routine if we haven't yet
-                    // confirmed we were going to.
-                    if (!OpenLoco::GetTempState()->confirmedEntityDeletion)
-                    {
-                        OpenLoco::GetTempState()->deleteAfterConfirmation = id;
-                        return FAILURE;
-                    }
-                    else
-                    {
-                        OpenLoco::GetTempState()->deleteAfterConfirmation = (EntityId)0;
-                        OpenLoco::GetTempState()->confirmedEntityDeletion = false;
-                    }
-                }
-
                 struct PlaceDown
                 {
                     EntityId head;

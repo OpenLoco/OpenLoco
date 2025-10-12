@@ -34,7 +34,6 @@
 #include "ScenarioObjective.h"
 #include "ScenarioOptions.h"
 #include "SceneManager.h"
-#include "TempState.h"
 #include "Title.h"
 #include "Ui/WindowManager.h"
 #include "Ui/Windows/Construction/Construction.h"
@@ -384,7 +383,6 @@ namespace OpenLoco::Scenario
         // TODO do we really need to use the current rng? seems unnecessary, keeping with vanilla logic for now
         auto& gameState = getGameState();
         auto oldRng = gameState.rng;
-        OpenLoco::ResetTempState();
 
         if (!load(path))
         {
