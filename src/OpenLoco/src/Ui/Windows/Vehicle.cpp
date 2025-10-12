@@ -80,6 +80,7 @@
 #include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
+#include "../../TempState.h"
 #include <map>
 #include <sfl/static_vector.hpp>
 #include <sstream>
@@ -2076,6 +2077,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
                     GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
+
+                    // If, after running the command, a confirmation request is pending,
+                    // prompt the user with a dialog. If confirmed, reissue the command with
+                    // the confirmation flag set.
+                    if ((uint16_t)OpenLoco::GetTempState()->deleteAfterConfirmation != 0) {
+                        auto titleId = StringIds::confirm_vehicle_cargo_deletion_title;
+                        FormatArguments args{};
+                        if (Windows::PromptOkCancel::open(titleId, StringIds::confirm_vehicle_cargo_deletion_txt, args, StringIds::confirm_vehicle_cargo_deletion_btn))
+                        {
+                            OpenLoco::GetTempState()->confirmedEntityDeletion = true;
+                            GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
+                        }
+                    }
+
                     break;
                 }
                 case widx::carList:

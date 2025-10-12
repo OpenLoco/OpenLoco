@@ -40,6 +40,7 @@
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
+#include "TempState.h"
 #include <fstream>
 #include <iomanip>
 
@@ -619,6 +620,7 @@ namespace OpenLoco::S5
 
     bool importSaveToGameState(Stream& stream, LoadFlags flags)
     {
+        OpenLoco::ResetTempState();
         SceneManager::setGameSpeed(GameSpeed::Normal);
         if ((flags & LoadFlags::titleSequence) == LoadFlags::none
             && (flags & LoadFlags::twoPlayer) == LoadFlags::none)

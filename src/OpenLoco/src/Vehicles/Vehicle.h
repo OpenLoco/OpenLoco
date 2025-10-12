@@ -485,6 +485,7 @@ namespace OpenLoco::Vehicles
         VehicleStatus getStatus() const;
         OrderRingView getCurrentOrders() const;
         bool isPlaced() const { return tileX != -1 && !has38Flags(Flags38::isGhost); }
+        bool hasAnyCargo();
         char* generateCargoTotalString(char* buffer);
         char* generateCargoCapacityString(char* buffer);
         char* cargoLUTToString(CargoTotalArray& cargoTotals, char* buffer);

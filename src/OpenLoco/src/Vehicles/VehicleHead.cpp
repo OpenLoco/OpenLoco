@@ -6244,6 +6244,27 @@ namespace OpenLoco::Vehicles
         return elStation->stationId();
     }
 
+    bool VehicleHead::hasAnyCargo() {
+        uint16_t cargoTotal = 0;
+        Vehicles::Vehicle train(head);
+        for (const auto& car : train.cars)
+        {
+            auto front = car.front;
+            auto body = car.body;
+
+            if (front->secondaryCargo.type != 0xFF)
+            {
+                cargoTotal += front->secondaryCargo.qty;
+            }
+            if (body->primaryCargo.type != 0xFF)
+            {
+                cargoTotal += body->primaryCargo.qty;
+            }
+        }
+
+        return cargoTotal > 0;
+    }
+
     // 0x004B6669
     char* VehicleHead::generateCargoTotalString(char* buffer)
     {

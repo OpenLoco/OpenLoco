@@ -44,6 +44,7 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include "TempState.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 
@@ -383,6 +384,7 @@ namespace OpenLoco::Scenario
         // TODO do we really need to use the current rng? seems unnecessary, keeping with vanilla logic for now
         auto& gameState = getGameState();
         auto oldRng = gameState.rng;
+        OpenLoco::ResetTempState();
 
         if (!load(path))
         {

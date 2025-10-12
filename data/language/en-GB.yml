@@ -2415,3 +2415,6 @@ strings:
   2360: "Paint all connected"
   2361: "Options - Rendering"
   2362: "{SMALLFONT}{COLOUR BLACK}Rendering options"
+  2363: "Confirm Deletion"
+  2364: "Deleting this will clear ALL cargo aboard the vehicle. Are you sure you want to continue?"
+  2365: "Yes, Delete It"
