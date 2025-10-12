@@ -28,6 +28,7 @@
 #include "ScenarioManager.h"
 #include "ScenarioOptions.h"
 #include "SceneManager.h"
+#include "TempState.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
@@ -40,7 +41,6 @@
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
-#include "TempState.h"
 #include <fstream>
 #include <iomanip>
 

@@ -11,7 +11,8 @@ namespace OpenLoco
         return _tempState;
     }
 
-    void ResetTempState() {
+    void ResetTempState()
+    {
         if (!tempInit)
         {
             _tempState = (TempState*)calloc(1, sizeof(TempState));

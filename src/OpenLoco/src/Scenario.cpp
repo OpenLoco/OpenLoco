@@ -34,6 +34,7 @@
 #include "ScenarioObjective.h"
 #include "ScenarioOptions.h"
 #include "SceneManager.h"
+#include "TempState.h"
 #include "Title.h"
 #include "Ui/WindowManager.h"
 #include "Ui/Windows/Construction/Construction.h"
@@ -44,7 +45,6 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include "TempState.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 

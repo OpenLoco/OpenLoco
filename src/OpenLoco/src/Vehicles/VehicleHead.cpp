@@ -6244,7 +6244,8 @@ namespace OpenLoco::Vehicles
         return elStation->stationId();
     }
 
-    bool VehicleHead::hasAnyCargo() {
+    bool VehicleHead::hasAnyCargo()
+    {
         uint16_t cargoTotal = 0;
         Vehicles::Vehicle train(head);
         for (const auto& car : train.cars)

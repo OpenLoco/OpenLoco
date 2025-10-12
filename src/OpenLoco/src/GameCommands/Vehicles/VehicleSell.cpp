@@ -1,4 +1,5 @@
 #include "VehicleSell.h"
+#include "../../TempState.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "VehiclePickupAir.h"
@@ -6,7 +7,6 @@
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
-#include "../../TempState.h"
 
 using namespace OpenLoco::Vehicles;
 
@@ -60,8 +60,7 @@ namespace OpenLoco::GameCommands
                     && OpenLoco::CompanyManager::getControllingId() == head->owner)
                 {
                     // Only run the rest of the deletion routine if we haven't yet
-                    // confirmed we were going to. (The dialog repeats this 
-                    // GameCommand on user confirmaiton)
+                    // confirmed we were going to.
                     if (!OpenLoco::GetTempState()->confirmedEntityDeletion)
                     {
                         OpenLoco::GetTempState()->deleteAfterConfirmation = id;

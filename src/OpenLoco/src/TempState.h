@@ -8,7 +8,7 @@ namespace OpenLoco
     struct TempState
     {
         EntityId deleteAfterConfirmation; // The entity to be deleted if the player confirms their intent
-        bool confirmedEntityDeletion; // Confirmation that the player intends to delete the above entity
+        bool confirmedEntityDeletion;     // Confirmation that the player intends to delete the above entity
     };
 
     TempState* GetTempState(); // Returns a pointer to the global TempState instance
