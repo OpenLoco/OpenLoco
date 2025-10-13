@@ -2072,11 +2072,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return true;
             }
 
-            if (head->getCarCount() > 0 && OpenLoco::CompanyManager::getControllingId() == head->owner)
+            if (head->getCarCount() > 0 && CompanyManager::getControllingId() == head->owner)
             {
                 auto titleId = StringIds::confirm_vehicle_cargo_deletion_title;
-                FormatArguments args{};
-                return Windows::PromptOkCancel::open(titleId, StringIds::confirm_vehicle_cargo_deletion_txt, args, StringIds::confirm_vehicle_cargo_deletion_btn);
+                auto promptId = StringIds::confirm_vehicle_cargo_deletion_txt;
+                auto buttonId = StringIds::confirm_vehicle_cargo_deletion_btn;
+                auto format = FormatArguments{};
+                return Windows::PromptOkCancel::open(titleId, promptId, format, buttonId);
             }
 
             return false;
