@@ -95,10 +95,11 @@ namespace OpenLoco::ObjectManager
     loco_global<ObjectRepositoryItem[kMaxObjectTypes], 0x4FE0B8> _objectRepository;
 
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
-    static loco_global<uint8_t, 0x0050D160> _isTemporaryObject; // 0xFF or 0
-    static loco_global<Object*, 0x0050D15C> _temporaryObject;
-    static loco_global<uint32_t, 0x009D9D52> _decodedSize; // return of loadTemporaryObject (badly named)
-    static loco_global<uint32_t, 0x0112A168> _numImages;   // return of loadTemporaryObject (badly named)
+
+    // 0x0050D160
+    static bool _isTemporaryObject;
+    // 0x0050D15C
+    static Object* _temporaryObject;
 
     static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
     {
@@ -368,11 +369,10 @@ namespace OpenLoco::ObjectManager
     // 0x00471B95
     void freeTemporaryObject()
     {
-        if (_temporaryObject != nullptr && _temporaryObject != reinterpret_cast<Object*>(-1))
+        if (_temporaryObject != nullptr)
         {
             free(_temporaryObject);
-            // For vanilla compatibility set as -1. Replace with nullptr when all users of temporaryObject implemented.
-            _temporaryObject = reinterpret_cast<Object*>(-1);
+            _temporaryObject = nullptr;
         }
     }
 
@@ -442,8 +442,6 @@ namespace OpenLoco::ObjectManager
             return std::nullopt;
         }
 
-        _decodedSize = preLoadObj.objectData.size();
-
         return preLoadObj;
     }
 
@@ -462,7 +460,7 @@ namespace OpenLoco::ObjectManager
 
         _temporaryObject = preLoadObj->object;
         _isPartialLoaded = true;
-        _isTemporaryObject = 0xFF;
+        _isTemporaryObject = true;
 
         DependentObjects dependencies;
         try
@@ -472,19 +470,19 @@ namespace OpenLoco::ObjectManager
         catch (Exception::OutOfRange&) // catches the ImageTable incorrectly sized which can cause bad crashes
         {
             freeTemporaryObject();
-            _isTemporaryObject = 0;
+            _isTemporaryObject = false;
             _isPartialLoaded = false;
             return std::nullopt;
         }
-        _isTemporaryObject = 0;
+        _isTemporaryObject = false;
         _isPartialLoaded = false;
 
-        _numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
+        const auto numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
         setTotalNumImages(oldNumImages);
 
         TempLoadMetaData result{};
         result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
-        result.displayData.numImages = _numImages;
+        result.displayData.numImages = numImages;
         result.dependentObjects = dependencies;
 
         if (header.getType() == ObjectType::competitor)
@@ -505,18 +503,13 @@ namespace OpenLoco::ObjectManager
 
     Object* getTemporaryObject()
     {
-        Object* obj = _temporaryObject;
-        if (obj == reinterpret_cast<Object*>(-1))
-        {
-            return nullptr;
-        }
-        return obj;
+        return _temporaryObject;
     }
 
     // TODO: Pass this through other means to users
     bool isTemporaryObjectLoad()
     {
-        return _isTemporaryObject == 0xFF;
+        return _isTemporaryObject;
     }
 
     // 0x00471BC5
