@@ -2052,7 +2052,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static bool checkDeletion(const EntityId id)
+        static bool confirmComponentDeletion(const EntityId id)
         {
             auto* vehBase = EntityManager::get<Vehicles::VehicleBase>(id);
             if (vehBase == nullptr)
@@ -2100,11 +2100,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case widx::remove:
                 {
-
                     GameCommands::VehicleSellArgs gcArgs{};
                     gcArgs.car = (*_dragCarComponent)->id;
 
-                    if (checkDeletion(gcArgs.car))
+                    if (confirmComponentDeletion(gcArgs.car))
                     {
                         GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
                         GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
