@@ -2052,7 +2052,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        bool checkDeletion(const EntityId id)
+        static bool checkDeletion(const EntityId id)
         {
             auto* vehBase = EntityManager::get<Vehicles::VehicleBase>(id);
             if (vehBase == nullptr)
