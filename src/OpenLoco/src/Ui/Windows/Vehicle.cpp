@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void pickupToolAbort(Window& self);
         static size_t getNumCars(Ui::Window& self);
         static std::optional<Vehicles::Car> getCarFromScrollView(Window& self, const int16_t y);
-        static std::pair<uint32_t, StringId> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);        
+        static std::pair<uint32_t, StringId> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);
     }
 
     namespace Details
@@ -2103,10 +2103,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     GameCommands::VehicleSellArgs gcArgs{};
                     gcArgs.car = (*_dragCarComponent)->id;
 
-                    if (Common::confirmComponentChange(gcArgs.car,
-                        StringIds::confirm_vehicle_component_sell_cargo_warning_title,
-                        StringIds::confirm_vehicle_component_sell_cargo_warning_message,
-                        StringIds::confirm_vehicle_component_sell_cargo_warning_confirm))
+                    if (Common::confirmComponentChange(gcArgs.car, StringIds::confirm_vehicle_component_sell_cargo_warning_title, StringIds::confirm_vehicle_component_sell_cargo_warning_message, StringIds::confirm_vehicle_component_sell_cargo_warning_confirm))
                     {
                         GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
                         GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
@@ -2428,10 +2425,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     args.head = static_cast<EntityId>(self.number);
                     args.cargoType = Dropdown::getItemArgument(dropdownIndex, 3);
 
-                    if (Common::confirmComponentChange(args.head,
-                        StringIds::confirm_vehicle_component_refit_cargo_warning_title,
-                        StringIds::confirm_vehicle_component_refit_cargo_warning_message,
-                        StringIds::confirm_vehicle_component_refit_cargo_warning_confirm))
+                    if (Common::confirmComponentChange(args.head, StringIds::confirm_vehicle_component_refit_cargo_warning_title, StringIds::confirm_vehicle_component_refit_cargo_warning_message, StringIds::confirm_vehicle_component_refit_cargo_warning_confirm))
                     {
                         GameCommands::setErrorTitle(StringIds::cant_refit_vehicle);
                         GameCommands::doCommand(args, GameCommands::Flags::apply);
