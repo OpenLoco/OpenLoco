@@ -134,6 +134,36 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return veh;
         }
 
+        static bool confirmComponentChange(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
+        {
+            auto* vehBase = EntityManager::get<Vehicles::VehicleBase>(id);
+            if (vehBase == nullptr)
+            {
+                // Should still run GameCommand so code path is identical to vanilla
+                return true;
+            }
+
+            auto* head = EntityManager::get<Vehicles::VehicleHead>(vehBase->getHead());
+            if (head == nullptr)
+            {
+                return true;
+            }
+
+            if (!head->hasAnyCargo())
+            {
+                return true;
+            }
+
+            if (head->getCarCount() > 0 && CompanyManager::getControllingId() == head->owner)
+            {
+                
+                auto format = FormatArguments{};
+                return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
+            }
+
+            return false;
+        }
+
         static void onClose(Window& self);
         static void setActiveTabs(Window& self);
         static void textInput(Window& self, const WidgetIndex_t callingWidget, const WidgetId id, const char* const input);
@@ -150,7 +180,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void pickupToolAbort(Window& self);
         static size_t getNumCars(Ui::Window& self);
         static std::optional<Vehicles::Car> getCarFromScrollView(Window& self, const int16_t y);
-        static std::pair<uint32_t, StringId> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);
+        static std::pair<uint32_t, StringId> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);        
     }
 
     namespace Details
@@ -2052,38 +2082,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static bool confirmComponentDeletion(const EntityId id)
-        {
-            auto* vehBase = EntityManager::get<Vehicles::VehicleBase>(id);
-            if (vehBase == nullptr)
-            {
-                // Should still run GameCommand so code path is identical to vanilla
-                return true;
-            }
-
-            auto* head = EntityManager::get<Vehicles::VehicleHead>(vehBase->getHead());
-            if (head == nullptr)
-            {
-                return true;
-            }
-
-            if (!head->hasAnyCargo())
-            {
-                return true;
-            }
-
-            if (head->getCarCount() > 0 && CompanyManager::getControllingId() == head->owner)
-            {
-                auto titleId = StringIds::confirm_vehicle_cargo_deletion_title;
-                auto promptId = StringIds::confirm_vehicle_cargo_deletion_txt;
-                auto buttonId = StringIds::confirm_vehicle_cargo_deletion_btn;
-                auto format = FormatArguments{};
-                return Windows::PromptOkCancel::open(titleId, promptId, format, buttonId);
-            }
-
-            return false;
-        }
-
         void scrollDragEnd(const Ui::Point& pos)
         {
             if (_dragCarComponent == nullptr)
@@ -2105,7 +2103,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     GameCommands::VehicleSellArgs gcArgs{};
                     gcArgs.car = (*_dragCarComponent)->id;
 
-                    if (confirmComponentDeletion(gcArgs.car))
+                    if (Common::confirmComponentChange(gcArgs.car,
+                        StringIds::confirm_vehicle_component_sell_cargo_warning_title,
+                        StringIds::confirm_vehicle_component_sell_cargo_warning_message,
+                        StringIds::confirm_vehicle_component_sell_cargo_warning_confirm))
                     {
                         GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
                         GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
@@ -2427,8 +2428,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     args.head = static_cast<EntityId>(self.number);
                     args.cargoType = Dropdown::getItemArgument(dropdownIndex, 3);
 
-                    GameCommands::setErrorTitle(StringIds::cant_refit_vehicle);
-                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+                    if (Common::confirmComponentChange(args.head,
+                        StringIds::confirm_vehicle_component_refit_cargo_warning_title,
+                        StringIds::confirm_vehicle_component_refit_cargo_warning_message,
+                        StringIds::confirm_vehicle_component_refit_cargo_warning_confirm))
+                    {
+                        GameCommands::setErrorTitle(StringIds::cant_refit_vehicle);
+                        GameCommands::doCommand(args, GameCommands::Flags::apply);
+                    }
+
                     break;
                 }
             }

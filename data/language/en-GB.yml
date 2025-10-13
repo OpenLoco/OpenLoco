@@ -2418,3 +2418,6 @@ strings:
   2363: "Confirm sell component"
   2364: "Selling this vehicle component will remove all cargo aboard the entire vehicle. Continue?"
   2365: "Sell component"
+  2366: "Confirm refit component"
+  2367: "Refitting this vehicle component will remove all cargo aboard the entire vehicle. Continue?"
+  2368: "Refit component"
