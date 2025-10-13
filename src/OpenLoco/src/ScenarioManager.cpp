@@ -68,13 +68,11 @@ namespace OpenLoco::ScenarioManager
 
     bool hasScenarioInCategory(uint8_t category, ScenarioIndexEntry* scenario)
     {
-        for (uint32_t i = 0; i < _scenarioHeader.numScenarios; i++)
+        for (const auto& entry : _scenarioList)
         {
-            ScenarioIndexEntry* entry = &_scenarioList[i];
-
-            if (entry->category != category || !entry->hasFlag(ScenarioIndexFlags::flag_0))
+            if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
             {
-                if (entry == scenario)
+                if (&entry == scenario)
                 {
                     return false;
                 }
@@ -84,7 +82,7 @@ namespace OpenLoco::ScenarioManager
                 }
             }
 
-            if (entry == scenario)
+            if (&entry == scenario)
             {
                 return true;
             }
@@ -142,8 +140,9 @@ namespace OpenLoco::ScenarioManager
             return;
         }
 
+        assert(_scenarioHeader.numScenarios == _scenarioList.size());
         stream.write(reinterpret_cast<const char*>(&_scenarioHeader), sizeof(ScoreHeader));
-        stream.write(reinterpret_cast<const char*>(_scenarioList.data()), sizeof(ScenarioIndexEntry) * _scenarioHeader.numScenarios);
+        stream.write(reinterpret_cast<const char*>(_scenarioList.data()), sizeof(ScenarioIndexEntry) * _scenarioList.size());
     }
 
     // 0x00444574
@@ -294,16 +293,6 @@ namespace OpenLoco::ScenarioManager
         Input::processMessagesMini();
         Ui::ProgressBar::begin(StringIds::checkingScenarioFiles);
 
-        if (_scenarioList.empty())
-        {
-            _scenarioHeader.numScenarios = 0;
-            _scenarioList.resize(currentState.numFiles);
-            if (_scenarioList.empty())
-            {
-                exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
-                return;
-            }
-        }
         _scenarioHeader.state = currentState;
         _scenarioHeader.state.numFiles = (currentState.numFiles & 0xFFFFFF) | (1 << 24);
 
@@ -360,11 +349,14 @@ namespace OpenLoco::ScenarioManager
             }
             if (!foundId.has_value())
             {
-                // Its possible to have more scenarios than files in the scenario folder
-                // this is because even deleted scenarios need to keep their scores entry
-                _scenarioList.push_back({});
+                // This is a new entry so we will need to clear fields and add to the list
+                ScenarioIndexEntry entry{};
+                std::strcpy(entry.filename, u8FileName.c_str());
+                foundId = _scenarioList.size();
+                _scenarioList.push_back(entry);
+                _scenarioHeader.numScenarios++;
             }
-            ScenarioIndexEntry& entry = _scenarioList[foundId.value_or(_scenarioHeader.numScenarios)];
+            ScenarioIndexEntry& entry = _scenarioList[foundId.value()];
 
             entry.flags |= ScenarioIndexFlags::flag_0;
             entry.category = options->difficulty;
@@ -377,14 +369,9 @@ namespace OpenLoco::ScenarioManager
             entry.startYear = options->scenarioStartYear;
             entry.numCompetingCompanies = options->maxCompetingCompanies;
             entry.competingCompanyDelay = options->competitorStartDelay;
-
             entry.currency = options->currency;
+
             loadScenarioProgress(entry, *options);
-            if (!foundId.has_value())
-            {
-                _scenarioHeader.numScenarios++;
-                std::strcpy(entry.filename, u8FileName.c_str());
-            }
             loadScenarioDetails(entry, *options);
         }
 
@@ -405,13 +392,10 @@ namespace OpenLoco::ScenarioManager
         const auto oldFlags = SceneManager::getSceneFlags();
         SceneManager::setSceneFlags(SceneManager::Flags::title | oldFlags);
 
-        if (!_scenarioList.empty())
-        {
-            _scenarioList.clear();
-        }
-
         const auto currentState = getCurrentScenarioFolderState();
-        if (forceReload || !tryLoadIndex(currentState))
+        // We should always try and load as we want to keep scores
+        // when adding/removing scenarios
+        if (!tryLoadIndex(currentState) || forceReload)
         {
             createIndex(currentState);
         }
