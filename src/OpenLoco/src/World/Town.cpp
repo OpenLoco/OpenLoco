@@ -668,6 +668,7 @@ namespace OpenLoco
     }
 
     // 0x0042CF7C
+    // targetTown
     // pos : (ax, cx, di)
     // isLargeTile : bh bit 0
     // buildImmediately : bh bit 1
@@ -675,10 +676,7 @@ namespace OpenLoco
     // targetHeight : ebp
     // return std::nullopt : Carry flag set
     //        See also BuildingPlacementArgs
-    //
-    // TODO: Pass in targetTownId when not hooking return nullopt
-    // if nearby town is not targetTownId and remove the loco_global
-    static std::optional<GameCommands::BuildingPlacementArgs> generateNewBuildingArgs(const World::Pos3 pos, int16_t targetHeight, uint8_t rotation, bool isLargeTile, bool buildImmediately)
+    static std::optional<GameCommands::BuildingPlacementArgs> generateNewBuildingArgs(const TownId targetTown, const World::Pos3 pos, int16_t targetHeight, uint8_t rotation, bool isLargeTile, bool buildImmediately)
     {
         const auto res = TownManager::getClosestTownAndDensity(pos);
         if (!res.has_value())
@@ -687,16 +685,8 @@ namespace OpenLoco
         }
 
         const auto& [townId, townDensity] = res.value();
-        // See TODO
-        // if (targetTownId != townId)
-        // {
-        //     return std::nullopt;
-        // }
 
         auto* town = TownManager::get(townId);
-        // See TODO
-        loco_global<Town*, 0x00525D20> _525D20;
-        _525D20 = town;
 
         uint32_t unk525D24 = 0;
         const auto buildingsFactor = (town->numBuildings + 64) / 128;
@@ -758,6 +748,13 @@ namespace OpenLoco
         {
             const auto randColourIndex = ((town->prng.randNext() & 0xFFFFU) * potentialColours.size()) / 65536;
             colour = potentialColours[randColourIndex];
+        }
+
+        // TODO: This should be done earlier but would cause a divergence
+        // move higher when we want to diverge
+        if (targetTown != townId)
+        {
+            return std::nullopt;
         }
 
         GameCommands::BuildingPlacementArgs args{};
@@ -1439,9 +1436,8 @@ namespace OpenLoco
             return;
         }
 
-        loco_global<Town*, 0x00525D20> _525D20;
-        auto args = generateNewBuildingArgs(buildingPos, maxHeight, buildingRot, isLarge, false);
-        if (args.has_value() && _525D20 == &town)
+        auto args = generateNewBuildingArgs(town.id(), buildingPos, maxHeight, buildingRot, isLarge, false);
+        if (args.has_value())
         {
             if ((growFlags & TownGrowFlags::buildImmediately) != TownGrowFlags::none)
             {
