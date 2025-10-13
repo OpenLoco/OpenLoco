@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (head->getCarCount() > 0 && CompanyManager::getControllingId() == head->owner)
             {
-                
+
                 auto format = FormatArguments{};
                 return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
             }
