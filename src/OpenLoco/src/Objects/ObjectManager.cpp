@@ -97,9 +97,9 @@ namespace OpenLoco::ObjectManager
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
 
     // 0x0050D160
-    static bool _isTemporaryObject;
+    static bool _isTemporaryObject = false;
     // 0x0050D15C
-    static Object* _temporaryObject;
+    static Object* _temporaryObject = nullptr;
 
     static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
     {
