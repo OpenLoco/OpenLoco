@@ -17,6 +17,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Joe Bloomfield (Svelbeard)
 * LeeSpork
 * Kelson Blakewood (spacek531)
+* luciditee
 
 ## Bugfixes
 * seifer7
