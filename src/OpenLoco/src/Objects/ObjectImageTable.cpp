@@ -7,7 +7,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ObjectManager
 {
-    static loco_global<uint32_t, 0x0050D154> _totalNumImages;
+    // 0x0050D154
+    static uint32_t _totalNumImages = 0;
 
     // 0x0047221F
     ImageTableResult loadImageTable(std::span<const std::byte> data)
