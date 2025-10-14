@@ -61,36 +61,6 @@ namespace OpenLoco::Ui::Windows::TextInput
 
     );
 
-    void registerHooks()
-    {
-        registerHook(
-            0x004CE523,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                openTextInput((Ui::Window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CE6C9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_4CE6C9((WindowType)regs.cl, (WindowNumber_t)regs.dx);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CE6F2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                cancel();
-                regs = backup;
-                return 0;
-            });
-    }
-
     static const WindowEventList& getEvents();
 
     /**
@@ -228,22 +198,22 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param window @<esi>
      * @param context @<edi>
      */
-    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
+    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
         const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        self.draw(drawingCtx);
+        window.draw(drawingCtx);
 
         // FIXME: This is pretty horrible.
         *((StringId*)(&_commonFormatArgs[0])) = _message;
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
-        Ui::Point position = Point(self.width / 2, 30);
-        tr.drawStringCentredWrapped(position, self.width - 8, Colour::black, StringIds::wcolour2_stringid, FormatArguments::common());
+        Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
+        tr.drawStringCentredWrapped(position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, FormatArguments::common());
 
         auto widget = &_widgets[Widx::input];
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget->left + 1, widget->top + 1, widget->width() - 2, widget->height() - 2));
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
         if (!clipped)
         {
             return;
@@ -271,7 +241,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             args.push<uint16_t>(maxNumCharacters);
 
             widget = &_widgets[Widx::ok];
-            auto point = Point(widget->left - 5, widget->top + 1);
+            auto point = Point(window.x + widget->left - 5, window.y + widget->top + 1);
             tr.drawStringRight(point, Colour::black, StringIds::num_characters_left_int_int, args);
         }
 
@@ -280,11 +250,11 @@ namespace OpenLoco::Ui::Windows::TextInput
             strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
             drawnBuffer[inputSession.cursorPosition] = '\0';
 
-            if (Input::isFocused(self.type, self.number, Widx::input))
+            if (Input::isFocused(window.type, window.number, Widx::input))
             {
                 auto width = tr.getStringWidth(drawnBuffer);
                 auto cursorPos = Point(inputSession.xOffset + width, 1);
-                drawingCtx.fillRect(cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
+                drawingCtx.fillRect(cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
             }
         }
 

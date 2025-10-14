@@ -25,16 +25,11 @@
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <optional>
 #include <ranges>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
-    static loco_global<CompanyId, 0x9C68F2> _9C68F2; // Use in a game command??
-
     // Count was previously 0x112C1C1
     static std::vector<ObjectManager::ObjIndexPair> _competitorList;
 
@@ -80,7 +75,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         populateCompetitorList();
         if (self != nullptr)
         {
-            _9C68F2 = id;
             self->owner = id;
             self->invalidate();
         }
@@ -89,7 +83,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, WindowFlags::none, getEvents());
             self->setWidgets(widgets);
             self->initScrollWidgets();
-            _9C68F2 = id;
             self->owner = id;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
@@ -275,10 +268,10 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
         {
             const auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
-            const auto l = self.widgets[widx::face_frame].left + 1;
-            const auto t = self.widgets[widx::face_frame].top + 1;
-            const auto r = self.widgets[widx::face_frame].right - 1;
-            const auto b = self.widgets[widx::face_frame].bottom - 1;
+            const auto l = self.x + 1 + self.widgets[widx::face_frame].left;
+            const auto t = self.y + 1 + self.widgets[widx::face_frame].top;
+            const auto r = self.x - 1 + self.widgets[widx::face_frame].right;
+            const auto b = self.y - 1 + self.widgets[widx::face_frame].bottom;
             drawingCtx.fillRect(l, t, r, b, colour, Gfx::RectFlags::none);
 
             const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(ObjectManager::getTemporaryObject());
@@ -287,8 +280,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
 
         {
-            const auto x = self.widgets[widx::face_frame].midX();
-            const auto y = self.widgets[widx::face_frame].bottom + 3;
+            const auto x = self.x + self.widgets[widx::face_frame].midX();
+            const auto y = self.y + self.widgets[widx::face_frame].bottom + 3;
             const auto width = self.width - self.widgets[widx::scrollview].right - 6;
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *str++ = ControlCodes::windowColour2;

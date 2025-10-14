@@ -127,8 +127,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 }
 
                 auto widget = self.widgets[widx::station];
-                auto xPos = self.x + widget.left;
-                auto yPos = self.y + widget.top;
+                auto xPos = widget.left + self.x;
+                auto yPos = widget.top + self.y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
                 Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), stationCount, (1 << 7));
@@ -249,14 +249,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static void setMapSelectedTilesFromRange(const World::TilePosRangeView& range)
     {
-        size_t i = 0;
+        resetMapSelectionFreeFormTiles();
         for (const auto& pos : range)
         {
-            _mapSelectedTiles[i++] = World::toWorldSpace(pos);
+            addMapSelectionFreeFormTile(World::toWorldSpace(pos));
         }
 
-        _mapSelectedTiles[i].x = -1;
-        mapInvalidateMapSelectionTiles();
+        mapInvalidateMapSelectionFreeFormTiles();
     }
 
     static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y);
@@ -286,7 +285,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A4F3B
     static void onToolUpdateAirport(const Ui::Point& mousePos)
     {
-        World::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionFreeFormTiles();
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         const auto args = getAirportPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
@@ -349,7 +348,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A5158
     static void onToolUpdateDock(const Ui::Point& mousePos)
     {
-        World::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionFreeFormTiles();
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         const auto args = getDockPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
@@ -551,7 +550,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if (_isDragging)
         {
-            mapInvalidateMapSelectionTiles();
+            mapInvalidateMapSelectionFreeFormTiles();
             removeConstructionGhosts();
             return;
         }
@@ -1156,8 +1155,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto company = CompanyManager::getPlayerCompany();
         auto companyColour = company->mainColours.primary;
-        int16_t xPos = self.widgets[widx::image].left;
-        int16_t yPos = self.widgets[widx::image].top;
+        int16_t xPos = self.widgets[widx::image].left + self.x;
+        int16_t yPos = self.widgets[widx::image].top + self.y;
 
         if (_cState->byte_1136063 & (1 << 7))
         {
@@ -1207,7 +1206,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         if (_cState->stationCost != 0x80000000 && _cState->stationCost != 0)
         {
             auto& widget = self.widgets[widx::image];
-            auto point = Point(69, widget.bottom + 4);
+            auto point = Point(self.x + 69, widget.bottom + self.y + 4);
 
             FormatArguments args{};
             args.push<uint32_t>(_cState->stationCost);
@@ -1215,8 +1214,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
 
-        xPos = 3;
-        yPos = self.widgets[widx::image].bottom + 16;
+        xPos = self.x + 3;
+        yPos = self.widgets[widx::image].bottom + self.y + 16;
         auto width = self.width - 4;
         drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
@@ -1239,15 +1238,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             args.push(station->town);
         }
 
-        xPos = 69;
-        yPos = self.widgets[widx::image].bottom + 18;
+        xPos = self.x + 69;
+        yPos = self.widgets[widx::image].bottom + self.y + 18;
 
         auto origin = Point(xPos, yPos);
         width = self.width - 4;
         tr.drawStringCentredClipped(origin, width, Colour::black, StringIds::new_station_buffer, args);
 
-        xPos = 2;
-        yPos = self.widgets[widx::image].bottom + 29;
+        xPos = self.x + 2;
+        yPos = self.widgets[widx::image].bottom + self.y + 29;
 
         origin = Point(xPos, yPos);
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_accepts);
@@ -1263,7 +1262,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 if (_cState->constructingStationAcceptedCargoTypes & (1 << i))
                 {
-                    auto xPosMax = self.width - 12;
+                    auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
@@ -1275,8 +1274,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
         }
 
-        xPos = 2;
-        yPos = self.widgets[widx::image].bottom + 49;
+        xPos = self.x + 2;
+        yPos = self.widgets[widx::image].bottom + self.y + 49;
         origin = Point(xPos, yPos);
 
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_produces);
@@ -1292,7 +1291,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 if (_cState->constructingStationProducedCargoTypes & (1 << i))
                 {
-                    auto xPosMax = self.width - 12;
+                    auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
@@ -1328,5 +1327,19 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     const WindowEventList& getEvents()
     {
         return kEvents;
+    }
+
+    // 0x0049E1F1
+    void sub_49E1F1(StationId id)
+    {
+        auto w = WindowManager::find(WindowType::construction);
+        if (w != nullptr && w->currentTab == 1)
+        {
+            if (((*_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none) && StationId(_cState->constructingStationId) == id) // _constructingStationId
+            {
+                _cState->constructingStationId = 0xFFFFFFFFU;
+                w->invalidate();
+            }
+        }
     }
 }

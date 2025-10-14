@@ -192,27 +192,6 @@ namespace OpenLoco::Ui::Windows::Error
         createErrorWindow(title, message);
     }
 
-    void registerHooks()
-    {
-        registerHook(
-            0x00431A8A,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::Error::open(regs.bx, regs.dx);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x00431908,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::Error::openWithCompetitor(regs.bx, regs.dx, CompanyId(regs.al));
-                regs = backup;
-                return 0;
-            });
-    }
-
     namespace Common
     {
         // 0x00431C05
@@ -225,15 +204,15 @@ namespace OpenLoco::Ui::Windows::Error
 
             if (_errorCompetitorId == CompanyId::null)
             {
-                uint16_t xPos = self.width / 2;
-                uint16_t yPos = kPadding;
+                uint16_t xPos = self.x + self.width / 2;
+                uint16_t yPos = self.y + kPadding;
 
                 tr.drawStringCentredRaw(Point(xPos, yPos), _linebreakCount, colour, &_errorText[0]);
             }
             else
             {
-                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left;
-                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top;
+                auto xPos = self.x + self.widgets[ErrorCompetitor::widx::innerFrame].left;
+                auto yPos = self.y + self.widgets[ErrorCompetitor::widx::innerFrame].top;
 
                 auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);
@@ -249,7 +228,7 @@ namespace OpenLoco::Ui::Windows::Error
                     drawingCtx.drawImage(xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                auto point = Point((self.width - kCompetitorSize) / 2 + kCompetitorSize + kPadding, 20);
+                auto point = Point(self.x + (self.width - kCompetitorSize) / 2 + kCompetitorSize + kPadding, self.y + 20);
                 tr.drawStringCentredRaw(point, _linebreakCount, colour, &_errorText[0]);
             }
         }

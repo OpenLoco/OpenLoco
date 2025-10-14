@@ -95,10 +95,11 @@ namespace OpenLoco::ObjectManager
     loco_global<ObjectRepositoryItem[kMaxObjectTypes], 0x4FE0B8> _objectRepository;
 
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
-    static loco_global<uint8_t, 0x0050D160> _isTemporaryObject; // 0xFF or 0
-    static loco_global<Object*, 0x0050D15C> _temporaryObject;
-    static loco_global<uint32_t, 0x009D9D52> _decodedSize; // return of loadTemporaryObject (badly named)
-    static loco_global<uint32_t, 0x0112A168> _numImages;   // return of loadTemporaryObject (badly named)
+
+    // 0x0050D160
+    static bool _isTemporaryObject = false;
+    // 0x0050D15C
+    static Object* _temporaryObject = nullptr;
 
     static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
     {
@@ -368,11 +369,10 @@ namespace OpenLoco::ObjectManager
     // 0x00471B95
     void freeTemporaryObject()
     {
-        if (_temporaryObject != nullptr && _temporaryObject != reinterpret_cast<Object*>(-1))
+        if (_temporaryObject != nullptr)
         {
             free(_temporaryObject);
-            // For vanilla compatibility set as -1. Replace with nullptr when all users of temporaryObject implemented.
-            _temporaryObject = reinterpret_cast<Object*>(-1);
+            _temporaryObject = nullptr;
         }
     }
 
@@ -442,8 +442,6 @@ namespace OpenLoco::ObjectManager
             return std::nullopt;
         }
 
-        _decodedSize = preLoadObj.objectData.size();
-
         return preLoadObj;
     }
 
@@ -462,7 +460,7 @@ namespace OpenLoco::ObjectManager
 
         _temporaryObject = preLoadObj->object;
         _isPartialLoaded = true;
-        _isTemporaryObject = 0xFF;
+        _isTemporaryObject = true;
 
         DependentObjects dependencies;
         try
@@ -472,19 +470,19 @@ namespace OpenLoco::ObjectManager
         catch (Exception::OutOfRange&) // catches the ImageTable incorrectly sized which can cause bad crashes
         {
             freeTemporaryObject();
-            _isTemporaryObject = 0;
+            _isTemporaryObject = false;
             _isPartialLoaded = false;
             return std::nullopt;
         }
-        _isTemporaryObject = 0;
+        _isTemporaryObject = false;
         _isPartialLoaded = false;
 
-        _numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
+        const auto numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
         setTotalNumImages(oldNumImages);
 
         TempLoadMetaData result{};
         result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
-        result.displayData.numImages = _numImages;
+        result.displayData.numImages = numImages;
         result.dependentObjects = dependencies;
 
         if (header.getType() == ObjectType::competitor)
@@ -505,18 +503,13 @@ namespace OpenLoco::ObjectManager
 
     Object* getTemporaryObject()
     {
-        Object* obj = _temporaryObject;
-        if (obj == reinterpret_cast<Object*>(-1))
-        {
-            return nullptr;
-        }
-        return obj;
+        return _temporaryObject;
     }
 
     // TODO: Pass this through other means to users
     bool isTemporaryObjectLoad()
     {
-        return _isTemporaryObject == 0xFF;
+        return _isTemporaryObject;
     }
 
     // 0x00471BC5
@@ -1118,12 +1111,23 @@ namespace OpenLoco::ObjectManager
         getGameState().lastLandOption = 0xFFU;
     }
 
+    // 0x0047D9F2
+    static void updateTrafficHandedness()
+    {
+        getGameState().trafficHandedness = 0; // Default to left hand traffic
+
+        auto* regionObj = ObjectManager::get<RegionObject>();
+        if (regionObj != nullptr)
+        {
+            getGameState().trafficHandedness = (regionObj->flags & RegionObjectFlags::rightHandTraffic) != RegionObjectFlags::none;
+        }
+    }
+
     // 0x004748FA
     void sub_4748FA()
     {
         updateLandObjectFlags();
-        // determine trafficHandedness
-        call(0x0047D9F2);
+        updateTrafficHandedness();
         updateWaterPalette();
         resetDefaultLandObject();
     }
@@ -1152,53 +1156,5 @@ namespace OpenLoco::ObjectManager
             }
         }
         getGameState().lastTrackTypeOption = lastIndex;
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00472172,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                uint8_t index = regs.edx;
-                LoadedObjectHandle handle = { static_cast<ObjectType>(regs.ecx), static_cast<LoadedObjectId>(regs.ebx) };
-
-                // 0x2000 chosen as a large number
-                std::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x2000);
-                auto res = ObjectManager::loadStringTable(data, handle, index);
-
-                regs = backup;
-                regs.ebp += res.tableLength;
-                regs.eax = res.str;
-                return 0;
-            });
-
-        registerHook(
-            0x0047221F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                // 0x20000 chosen as a large number
-                std::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x20000);
-                auto res = ObjectManager::loadImageTable(data);
-
-                regs = backup;
-                regs.ebp += res.tableLength;
-                regs.eax = res.imageOffset;
-                return 0;
-            });
-
-        registerHook(
-            0x00471BCE,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                ObjectHeader* header = X86Pointer<ObjectHeader>(regs.ebp);
-                auto res = load(*header);
-                regs = backup;
-
-                return res ? 0 : X86_FLAG_CARRY;
-            });
     }
 }

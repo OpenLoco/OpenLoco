@@ -48,7 +48,6 @@ namespace OpenLoco::Input
     static uint32_t _keyQueueReadIndex;
     static uint32_t _keyQueueWriteIndex;
     static std::array<uint8_t, 256> _keyboardState;
-    static uint8_t _editingShortcutIndex;
     static bool _hasKeyboardState = false;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
@@ -61,6 +60,11 @@ namespace OpenLoco::Input
     {
         KeyModifier keyModifier = _keyModifier;
         return (keyModifier & modifier) != KeyModifier::none;
+    }
+
+    KeyModifier getKeyModifier()
+    {
+        return _keyModifier;
     }
 
     static void loc_4BECDE()
@@ -304,59 +308,6 @@ namespace OpenLoco::Input
         }
     }
 
-    static void editShortcut(const Key& k)
-    {
-        if (k.keyCode == SDLK_UP)
-        {
-            return;
-        }
-        if (k.keyCode == SDLK_DOWN)
-        {
-            return;
-        }
-        if (k.keyCode == SDLK_LEFT)
-        {
-            return;
-        }
-        if (k.keyCode == SDLK_RIGHT)
-        {
-            return;
-        }
-        if (k.keyCode == SDLK_NUMLOCKCLEAR)
-        {
-            return;
-        }
-        if (k.keyCode == SDLK_LGUI)
-        {
-            return;
-        }
-        if (k.keyCode == SDLK_RGUI)
-        {
-            return;
-        }
-
-        auto& cfg = Config::get();
-
-        // Unbind any shortcuts that may be using the current keycode.
-        for (auto& [id, shortcut] : cfg.shortcuts)
-        {
-            if (shortcut.keyCode == k.keyCode && shortcut.modifiers == _keyModifier)
-            {
-                shortcut.keyCode = 0xFFFFFFFF;
-                shortcut.modifiers = KeyModifier::invalid;
-            }
-        }
-
-        // Assign this keybinding to the shortcut we're currently rebinding.
-        auto& shortcut = cfg.shortcuts.at(static_cast<Input::Shortcut>(_editingShortcutIndex));
-        shortcut.keyCode = k.keyCode;
-        shortcut.modifiers = _keyModifier;
-
-        WindowManager::close(WindowType::editKeyboardShortcut);
-        WindowManager::invalidate(WindowType::keyboardShortcuts);
-        Config::write();
-    }
-
     // 0x004BEDA0
     static void normalKey()
     {
@@ -394,19 +345,12 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            auto ti = WindowManager::find(WindowType::editKeyboardShortcut);
-            if (ti != nullptr)
+            if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
             {
-                editShortcut(*nextKey);
                 continue;
             }
 
             if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
-            {
-                continue;
-            }
-
-            if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
             {
                 continue;
             }

@@ -83,7 +83,6 @@ namespace OpenLoco::Title
     static TitleSequence::const_iterator _sequenceIterator;
     static uint16_t _waitCounter;
 
-    static loco_global<uint16_t, 0x0050C19A> _50C19A;
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
 
     static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
@@ -122,7 +121,6 @@ namespace OpenLoco::Title
     {
         loadTitle();
         SceneManager::resetSceneAge();
-        _50C19A = 55000;
         update();
     }
 
@@ -167,7 +165,7 @@ namespace OpenLoco::Title
 
         if (Config::get().audio.playTitleMusic)
         {
-            Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
+            Audio::playMusic(Environment::PathId::css5, Config::get().audio.mainVolume, true);
         }
 
         SceneManager::addSceneFlags(SceneManager::Flags::initialised);
@@ -249,25 +247,5 @@ namespace OpenLoco::Title
             auto& command = *_sequenceIterator++;
             std::visit([](auto&& step) { handleStep(step); }, command);
         } while (_waitCounter == 0);
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0046AD7D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                start();
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004442C4,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                loadTitle();
-                regs = backup;
-                return 0;
-            });
     }
 }

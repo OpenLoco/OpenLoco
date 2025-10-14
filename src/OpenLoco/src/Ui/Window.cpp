@@ -2,7 +2,6 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
-#include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -129,9 +128,9 @@ namespace OpenLoco::Ui
             return std::nullopt;
         }
 
-        if (vp->containsUi(mouse - w->position()))
+        if (vp->containsUi(mouse))
         {
-            viewport_pos vpos = vp->screenToViewport(mouse - w->position());
+            viewport_pos vpos = vp->screenToViewport(mouse);
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (World::validCoords(position))
             {
@@ -606,7 +605,8 @@ namespace OpenLoco::Ui
         moveWindowToLocation(pos);
     }
 
-    void Window::viewportCentreMain()
+    // Centres the main viewport on this window's saved view.
+    void Window::viewportCentreMain() const
     {
         if (viewports[0] == nullptr || savedView.isEmpty())
         {
@@ -616,7 +616,7 @@ namespace OpenLoco::Ui
         auto main = WindowManager::getMainWindow();
 
         // Unfocus the viewport.
-        main->viewportConfigurations[0].viewportTargetSprite = EntityId::null;
+        Ui::Windows::Main::viewportFocusOnEntity(*main, EntityId::null);
 
         // Centre viewport on tile/entity.
         if (savedView.isEntityView())
@@ -628,53 +628,6 @@ namespace OpenLoco::Ui
         {
             main->viewportCentreOnTile(savedView.getPos());
         }
-    }
-
-    void Window::viewportFocusOnEntity(EntityId targetEntity)
-    {
-        if (viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return;
-        }
-
-        viewportConfigurations[0].viewportTargetSprite = targetEntity;
-    }
-
-    bool Window::viewportIsFocusedOnEntity(EntityId targetEntity) const
-    {
-        if (targetEntity == EntityId::null || viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return false;
-        }
-
-        return viewportConfigurations[0].viewportTargetSprite == targetEntity;
-    }
-
-    bool Window::viewportIsFocusedOnAnyEntity() const
-    {
-        if (viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return false;
-        }
-
-        return viewportConfigurations[0].viewportTargetSprite != EntityId::null;
-    }
-
-    void Window::viewportUnfocusFromEntity()
-    {
-        if (viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return;
-        }
-
-        if (viewportConfigurations[0].viewportTargetSprite == EntityId::null)
-        {
-            return;
-        }
-
-        auto entity = EntityManager::get<EntityBase>(viewportConfigurations[0].viewportTargetSprite);
-        viewportConfigurations[0].viewportTargetSprite = EntityId::null;
-        viewportCentreOnTile(entity->position);
     }
 
     void Window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
@@ -858,6 +811,18 @@ namespace OpenLoco::Ui
         this->x += dx;
         this->y += dy;
 
+        if (this->viewports[0] != nullptr)
+        {
+            this->viewports[0]->x += dx;
+            this->viewports[0]->y += dy;
+        }
+
+        if (this->viewports[1] != nullptr)
+        {
+            this->viewports[1]->x += dx;
+            this->viewports[1]->y += dy;
+        }
+
         this->invalidate();
 
         return true;
@@ -905,6 +870,18 @@ namespace OpenLoco::Ui
         this->x += offset.x;
         this->y += offset.y;
         this->invalidate();
+
+        if (this->viewports[0] != nullptr)
+        {
+            this->viewports[0]->x += offset.x;
+            this->viewports[0]->y += offset.y;
+        }
+
+        if (this->viewports[1] != nullptr)
+        {
+            this->viewports[1]->x += offset.x;
+            this->viewports[1]->y += offset.y;
+        }
     }
 
     bool Window::moveToCentre()
@@ -1267,7 +1244,7 @@ namespace OpenLoco::Ui
     {
         if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(0, 0, this->width - 1, this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;
@@ -1308,10 +1285,10 @@ namespace OpenLoco::Ui
         if (this->hasFlags(WindowFlags::whiteBorderMask))
         {
             drawingCtx.fillRectInset(
-                0,
-                0,
-                this->width - 1,
-                this->height - 1,
+                this->x,
+                this->y,
+                this->x + this->width - 1,
+                this->y + this->height - 1,
                 Colour::white,
                 Gfx::RectInsetFlags::fillNone);
         }

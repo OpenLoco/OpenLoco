@@ -24,8 +24,6 @@ namespace OpenLoco::Ui::ViewportManager
 {
     static sfl::static_vector<Viewport, kMaxViewports> _viewports{};
 
-    static Viewport* create(registers regs, int index);
-
     void init()
     {
         _viewports.clear();
@@ -62,7 +60,7 @@ namespace OpenLoco::Ui::ViewportManager
         }
     }
 
-    static Viewport* initViewport(Ui::Point origin, Ui::Size size, ZoomLevel zoom, Window* owner)
+    static Viewport* initViewport(Ui::Point origin, Ui::Size size, ZoomLevel zoom)
     {
         // Viewports with 0 width are invalid.
         if (size.width == 0)
@@ -86,9 +84,8 @@ namespace OpenLoco::Ui::ViewportManager
         vp->viewHeight = size.height << static_cast<uint8_t>(zoom);
         vp->zoom = static_cast<uint8_t>(zoom);
         vp->flags = ViewportFlags::none;
-        vp->owner = owner;
 
-        if (OpenLoco::Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+        if (Config::get().gridlinesOnLandscape)
         {
             vp->flags |= ViewportFlags::gridlines_on_landscape;
         }
@@ -126,36 +123,6 @@ namespace OpenLoco::Ui::ViewportManager
         viewport->viewY = dest.y;
     }
 
-    static Viewport* create(registers regs, int index)
-    {
-        Ui::Window* window = (Ui::Window*)regs.esi;
-        ZoomLevel zoom = ZoomLevel::full;
-        if (regs.edx & (1 << 30))
-        {
-            regs.edx &= ~(1 << 30);
-            zoom = (ZoomLevel)regs.cl;
-        }
-
-        int16_t x = regs.ax;
-        int16_t y = regs.eax >> 16;
-        uint16_t width = regs.bx;
-        uint16_t height = regs.ebx >> 16;
-
-        if (regs.edx & (1 << 31))
-        {
-            EntityId id = EntityId(regs.dx);
-            return create(window, index, { x, y }, { width, height }, zoom, id);
-        }
-        else
-        {
-            World::Pos3 tile;
-            tile.x = regs.dx;
-            tile.y = regs.edx >> 16;
-            tile.z = regs.ecx >> 16;
-            return create(window, index, { x, y }, { width, height }, zoom, tile);
-        }
-    }
-
     /* 0x004CA2D0
      * ax : x
      * eax >> 16 : y
@@ -173,7 +140,7 @@ namespace OpenLoco::Ui::ViewportManager
      */
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, EntityId entityId)
     {
-        Viewport* viewport = initViewport(origin, size, zoom, window);
+        Viewport* viewport = initViewport(origin, size, zoom);
 
         if (viewport == nullptr)
         {
@@ -203,7 +170,7 @@ namespace OpenLoco::Ui::ViewportManager
      */
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, World::Pos3 tile)
     {
-        Viewport* viewport = initViewport(origin, size, zoom, window);
+        Viewport* viewport = initViewport(origin, size, zoom);
 
         if (viewport == nullptr)
         {
@@ -257,14 +224,6 @@ namespace OpenLoco::Ui::ViewportManager
             top += viewport.y;
             bottom += viewport.y;
 
-            if (viewport.owner != nullptr)
-            {
-                left += viewport.owner->x;
-                right += viewport.owner->x;
-                top += viewport.owner->y;
-                bottom += viewport.owner->y;
-            }
-
             Gfx::invalidateRegion(left, top, right, bottom);
         }
     }
@@ -316,14 +275,6 @@ namespace OpenLoco::Ui::ViewportManager
             top += viewport.y;
             bottom += viewport.y;
 
-            if (viewport.owner != nullptr)
-            {
-                left += viewport.owner->x;
-                right += viewport.owner->x;
-                top += viewport.owner->y;
-                bottom += viewport.owner->y;
-            }
-
             Gfx::invalidateRegion(left, top, right, bottom);
         }
     }
@@ -350,7 +301,7 @@ namespace OpenLoco::Ui::ViewportManager
         rect.right = t->spriteRight;
         rect.bottom = t->spriteBottom;
 
-        auto level = (ZoomLevel)std::min(Config::get().old.vehiclesMinScale, (uint8_t)zoom);
+        auto level = (ZoomLevel)std::min(Config::get().vehiclesMinScale, (uint8_t)zoom);
         invalidate(rect, level);
     }
 
@@ -371,151 +322,4 @@ namespace OpenLoco::Ui::ViewportManager
 
         invalidate(rect, zoom);
     }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0046112C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                World::mapInvalidateMapSelectionTiles();
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CA2D0,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto viewport = create(regs, 0);
-                regs = backup;
-                regs.edi = X86Pointer(viewport);
-                return 0;
-            });
-        registerHook(
-            0x004CA38A,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto viewport = create(regs, 1);
-                regs = backup;
-                regs.edi = X86Pointer(viewport);
-                return 0;
-            });
-        registerHook(
-            0x004CBA2D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                invalidate((Station*)regs.esi);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CBB01,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                invalidate((EntityBase*)regs.esi, ZoomLevel::eighth);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CBBD2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                invalidate((EntityBase*)regs.esi, ZoomLevel::quarter);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CBCAC,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                invalidate((EntityBase*)regs.esi, ZoomLevel::half);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CBD86,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                invalidate((EntityBase*)regs.esi, ZoomLevel::full);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CBE5F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto pos = World::Pos2(regs.ax, regs.cx);
-                World::TileManager::mapInvalidateTileFull(pos);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CBFBF,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto pos = World::Pos2(regs.ax, regs.cx);
-                invalidate(pos, regs.di, regs.si, ZoomLevel::eighth, 56);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CC098,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto pos = World::Pos2(regs.ax, regs.cx);
-                invalidate(pos, regs.di, regs.si, ZoomLevel::eighth);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CC20F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto pos = World::Pos2(regs.ax, regs.cx);
-                invalidate(pos, regs.di, regs.si, ZoomLevel::full);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CC390,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto pos = World::Pos2(regs.ax, regs.cx);
-                invalidate(pos, regs.di, regs.si, ZoomLevel::half);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CC511,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto pos = World::Pos2(regs.ax, regs.cx);
-                invalidate(pos, regs.di, regs.si, ZoomLevel::quarter);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004CEC25,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x00459E54,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto flags = static_cast<Ui::ViewportInteraction::InteractionItemFlags>(regs.edx);
-                auto [interaction, vp] = Ui::ViewportInteraction::getMapCoordinatesFromPos(regs.ax, regs.bx, flags);
-                regs = backup;
-                regs.ax = interaction.pos.x;
-                regs.cx = interaction.pos.y;
-                regs.bl = static_cast<uint8_t>(interaction.type);
-                regs.bh = static_cast<uint8_t>(interaction.modId);
-                regs.edx = static_cast<uint32_t>(interaction.value);
-                regs.edi = X86Pointer(vp);
-                return 0;
-            });
-    }
-
 }

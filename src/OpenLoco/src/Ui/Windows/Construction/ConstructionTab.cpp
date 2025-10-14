@@ -29,6 +29,7 @@
 #include "Paint/PaintTile.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ToolTip.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/DropdownWidget.h"
@@ -45,9 +46,6 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Ui::Windows::Construction::Construction
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
-    static loco_global<uint8_t, 0x00522090> _byte_522090;
-    static loco_global<uint8_t, 0x00522091> _byte_522091;
-    static loco_global<uint8_t, 0x00522092> _byte_522092;
 
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
@@ -129,7 +127,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return widgets;
     }
 
-    const uint8_t trackPieceWidgets[] = {
+    // 0x00522085
+    uint8_t trackPieceWidgets[] = {
         widx::straight,
         widx::left_hand_curve_very_small,
         widx::right_hand_curve_very_small,
@@ -334,8 +333,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activateSelectedConstructionWidgets();
     }
 
-    static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
-
     // 0x004A012E
     static void removeTrack()
     {
@@ -368,10 +365,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             loc += World::Pos3{ World::kRotationOffset[_cState->constructionRotation], 0 };
         }
         trackAndDirection |= (1 << 2) | (_cState->constructionRotation & 0x3);
-        _113609C->size = 0;
         auto trackEnd = World::Track::getTrackConnectionEnd(loc, trackAndDirection);
         auto tc = World::Track::getTrackConnections(trackEnd.nextPos, trackEnd.nextRotation, CompanyManager::getControllingId(), _cState->trackType, 0, 0);
-        World::Track::toLegacyConnections(tc, _113609C); // Unsure if still needed
         if (tc.connections.empty())
         {
             return;
@@ -428,7 +423,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         World::Pos3 loc(_cState->x, _cState->y, _cState->constructionZ);
         uint32_t trackAndDirection = (1 << 2) | (_cState->constructionRotation & 0x3);
-        _113609C->size = 0;
         const auto roadEnd = World::Track::getRoadConnectionEnd(loc, trackAndDirection);
         auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, CompanyManager::getControllingId(), _cState->trackType & ~(1 << 7), 0, 0);
 
@@ -655,23 +649,22 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void setMapSelectedTilesFromPiece(const std::span<const TrackData::PreviewTrack> pieces, const World::Pos2& origin, const uint8_t rotation)
     {
-        size_t i = 0;
+        resetMapSelectionFreeFormTiles();
         for (const auto& piece : pieces)
         {
             if (piece.hasFlags(World::TrackData::PreviewTrackFlags::diagonal))
             {
                 continue;
             }
-            _mapSelectedTiles[i++] = origin + Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation);
+            addMapSelectionFreeFormTile(origin + Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation));
         }
 
-        _mapSelectedTiles[i].x = -1;
-        mapInvalidateMapSelectionTiles();
+        mapInvalidateMapSelectionFreeFormTiles();
     }
 
     static void activateSelectedRoadWidgets(Window* window)
     {
-        World::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionFreeFormTiles();
         World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::unk_03);
 
         auto road = getRoadPieceId(_cState->lastSelectedTrackPiece, _cState->lastSelectedTrackGradient, _cState->constructionRotation);
@@ -851,7 +844,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void activateSelectedTrackWidgets(Window* window)
     {
-        World::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionFreeFormTiles();
         World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::unk_03);
 
         auto track = getTrackPieceId(_cState->lastSelectedTrackPiece, _cState->lastSelectedTrackGradient, _cState->constructionRotation);
@@ -945,8 +938,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_left_dual_track;
             window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_right_dual_track;
 
-            _byte_522090 = 16;
-            _byte_522091 = 20;
+            trackPieceWidgets[TrackPiece::s_bend_to_dual_track] = widx::s_bend_dual_track_left;
+            trackPieceWidgets[TrackPiece::s_bend_to_single_track] = widx::s_bend_dual_track_right;
 
             if (_cState->constructionRotation >= 4 && _cState->constructionRotation < 12)
             {
@@ -954,16 +947,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_to_single_track_left;
                 window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
                 window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_to_single_track;
-                _byte_522090 = 20;
-                _byte_522092 = 16;
+                trackPieceWidgets[TrackPiece::s_bend_to_dual_track] = widx::s_bend_dual_track_right;
+                trackPieceWidgets[TrackPiece::turnaround] = widx::s_bend_dual_track_left;
                 if (_cState->constructionRotation >= 8)
                 {
                     window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_to_single_track_right;
                     window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_left_turnaround;
                     window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_to_single_track;
                     window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_turnaround;
-                    _byte_522091 = 16;
-                    _byte_522092 = 20;
+                    trackPieceWidgets[TrackPiece::s_bend_to_single_track] = widx::s_bend_dual_track_left;
+                    trackPieceWidgets[TrackPiece::turnaround] = widx::s_bend_dual_track_right;
                 }
             }
         }
@@ -2139,12 +2132,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
         {
-            for (const auto& tile : _mapSelectedTiles)
+            for (const auto& tile : getMapSelectionFreeFormTiles())
             {
-                if (tile.x == -1)
-                {
-                    break;
-                }
                 if (!World::validCoords(tile))
                 {
                     continue;
@@ -2476,7 +2465,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece, typename GetPlacementArgsFunc, typename PlaceGhostFunc>
     static void onToolUpdateSingle(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
-        World::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionFreeFormTiles();
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
@@ -2507,14 +2496,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         _constructionArrowPos = World::Pos3(constructPos.x, constructPos.y, constructHeight);
         _constructionArrowDirection = _cState->constructionRotation;
-        _mapSelectedTiles[0] = constructPos;
-        _mapSelectedTiles[1].x = -1;
+        resetMapSelectionFreeFormTiles();
+        addMapSelectionFreeFormTile(constructPos);
 
         auto pieceId = getPieceId(_cState->lastSelectedTrackPiece, _cState->lastSelectedTrackGradient, _cState->constructionRotation);
         if (!pieceId)
         {
             removeConstructionGhosts();
-            World::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionFreeFormTiles();
             return;
         }
         _cState->byte_1136065 = pieceId->id;
@@ -2538,7 +2527,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _constructionArrowPos->z = constructHeight;
         }
         constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries, getPlacementArgs, placeGhost);
-        World::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionFreeFormTiles();
     }
 
     // 0x0049DC8C
@@ -2551,7 +2540,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_isDragging)
         {
-            mapInvalidateMapSelectionTiles();
+            mapInvalidateMapSelectionFreeFormTiles();
             removeConstructionGhosts();
             return;
         }
@@ -2608,7 +2597,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
     static void onToolUpSingle(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece)
     {
-        mapInvalidateMapSelectionTiles();
+        mapInvalidateMapSelectionFreeFormTiles();
         removeConstructionGhosts();
 
         auto pieceId = getPieceId(_cState->lastSelectedTrackPiece, _cState->lastSelectedTrackGradient, _cState->constructionRotation);
@@ -2758,7 +2747,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
         {
-            Input::setTooltipTimeout(2000);
+            Ui::ToolTip::setTooltipTimeout(2000);
         }
         return fallback;
     }
@@ -3011,7 +3000,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto x = self->widgets[widx::construct].midX();
-        auto y = self->widgets[widx::construct].bottom - 23;
+        x += self->x;
+        auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
         if (_cState->constructionHover != 1)
         {
@@ -3106,8 +3096,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     auto company = CompanyManager::getPlayerCompany();
                     auto imageId = Gfx::recolour(bridgeObj->image, company->mainColours.primary);
-                    auto x = self.widgets[widx::bridge].left + 2;
-                    auto y = self.widgets[widx::bridge].top + 1;
+                    auto x = self.x + self.widgets[widx::bridge].left + 2;
+                    auto y = self.y + self.widgets[widx::bridge].top + 1;
 
                     drawingCtx.drawImage(x, y, imageId);
                 }
@@ -3135,8 +3125,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _cState->lastSelectedTrackPieceId = road->id;
             _cState->word_1135FD6 = (_cState->lastSelectedBridge << 8) & 0x1F;
 
-            auto x = self.widgets[widx::construct].left + 1;
-            auto y = self.widgets[widx::construct].top + 1;
+            auto x = self.x + self.widgets[widx::construct].left + 1;
+            auto y = self.y + self.widgets[widx::construct].top + 1;
             auto width = self.widgets[widx::construct].width();
             auto height = self.widgets[widx::construct].height();
 
@@ -3188,8 +3178,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _cState->lastSelectedTrackPieceId = track->id;
             _cState->word_1135FD6 = (_cState->lastSelectedBridge << 8) & 0x1F;
 
-            auto x = self.widgets[widx::construct].left + 1;
-            auto y = self.widgets[widx::construct].top + 1;
+            auto x = self.x + self.widgets[widx::construct].left + 1;
+            auto y = self.y + self.widgets[widx::construct].top + 1;
             auto width = self.widgets[widx::construct].width();
             auto height = self.widgets[widx::construct].height();
 

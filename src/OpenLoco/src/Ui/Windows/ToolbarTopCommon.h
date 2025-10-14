@@ -2,8 +2,6 @@
 
 #include "Ui/WindowManager.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
     namespace Widx

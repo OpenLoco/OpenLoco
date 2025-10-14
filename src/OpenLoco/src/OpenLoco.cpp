@@ -67,6 +67,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include "Ui/ToolTip.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -99,8 +100,6 @@ namespace OpenLoco
 
     static loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
     static loco_global<uint32_t, 0x0050C19E> _last_tick_time;
-
-    static loco_global<int8_t, 0x0052336E> _52336E; // bool
 
     static int32_t _monthsSinceLastAutosave;
 
@@ -178,7 +177,7 @@ namespace OpenLoco
         Input::initMouse();
 
         // tooltip-related
-        _52336E = 0;
+        Ui::ToolTip::set_52336E(false);
 
         Ui::Windows::TextInput::cancel();
 
@@ -297,17 +296,10 @@ namespace OpenLoco
     {
         try
         {
-            addr<0x00113E87C, int32_t>() = 0;
-            addr<0x0005252E0, int32_t>() = 0;
-
             uint32_t time = Platform::getTime();
             _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
             _last_tick_time = time;
 
-            if (!SceneManager::isPaused())
-            {
-                addr<0x0050C1A2, uint32_t>() += _time_since_last_tick;
-            }
             if (Tutorial::state() != Tutorial::State::none)
             {
                 _time_since_last_tick = 31;
@@ -320,19 +312,12 @@ namespace OpenLoco
                 // Original called 0x00440DEC here which handled legacy cmd line options
                 // like installing scenarios and handling multiplayer.
 
-                if (addr<0x00525340, int32_t>() == 1)
-                {
-                    addr<0x00525340, int32_t>() = 0;
-                    MultiPlayer::setFlag(MultiPlayer::flags::flag_1);
-                }
-
                 Input::handleKeyboard();
                 Input::processMouseMovement();
                 Audio::updateSounds();
 
                 Network::update();
 
-                addr<0x0050C1AE, int32_t>()++;
                 if (Intro::isActive())
                 {
                     Intro::update();
@@ -414,26 +399,7 @@ namespace OpenLoco
 
                     Audio::playBackgroundMusic();
 
-                    // 0x0052532C != 0 isMinimized
-                    if (Tutorial::state() != Tutorial::State::none && addr<0x0052532C, int32_t>() != 0 && Ui::width() < 64)
-                    {
-                        Tutorial::stop();
-
-                        // This ends with a premature tick termination
-                        Game::returnToTitle();
-                        return; // won't be reached
-                    }
-
                     sub_431695(var_F253A0);
-
-                    if (Config::get().old.countdown != 0xFF)
-                    {
-                        Config::get().old.countdown++;
-                        if (Config::get().old.countdown != 0xFF)
-                        {
-                            Config::write();
-                        }
-                    }
                 }
             }
         }
@@ -787,7 +753,6 @@ namespace OpenLoco
         }
 
         Environment::resolvePaths();
-        registerHooks();
 
         try
         {
@@ -863,8 +828,6 @@ namespace OpenLoco
 
             const auto& cfg = Config::read();
             Environment::resolvePaths();
-
-            registerHooks();
 
             Ui::createWindow(cfg.display);
             generateSystemStats();

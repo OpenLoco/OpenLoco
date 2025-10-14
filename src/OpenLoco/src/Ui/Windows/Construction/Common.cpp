@@ -843,7 +843,7 @@ namespace OpenLoco::Ui::Windows::Construction
             }
 
             removeConstructionGhosts();
-            World::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionFreeFormTiles();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
             _cState->trackCost = 0x80000000;
             _cState->signalCost = 0x80000000;
@@ -905,8 +905,8 @@ namespace OpenLoco::Ui::Windows::Construction
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_station);
                 if (!self.isDisabled(widx::tab_station))
                 {
-                    auto x = self.widgets[widx::tab_station].left + 1;
-                    auto y = self.widgets[widx::tab_station].top + 1;
+                    auto x = self.widgets[widx::tab_station].left + self.x + 1;
+                    auto y = self.widgets[widx::tab_station].top + self.y + 1;
                     auto width = 29;
                     auto height = 25;
                     if (self.currentTab == widx::tab_station - widx::tab_construction)
@@ -948,8 +948,8 @@ namespace OpenLoco::Ui::Windows::Construction
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
                 if (!self.isDisabled(widx::tab_overhead))
                 {
-                    auto x = self.widgets[widx::tab_overhead].left + 2;
-                    auto y = self.widgets[widx::tab_overhead].top + 2;
+                    auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
+                    auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
 
                     for (auto i = 0; i < 2; i++)
                     {
@@ -1026,8 +1026,8 @@ namespace OpenLoco::Ui::Windows::Construction
                         Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_station);
                         if (!self.isDisabled(widx::tab_station))
                         {
-                            auto x = self.widgets[widx::tab_station].left + 1;
-                            auto y = self.widgets[widx::tab_station].top + 1;
+                            auto x = self.widgets[widx::tab_station].left + self.x + 1;
+                            auto y = self.widgets[widx::tab_station].top + self.y + 1;
                             auto width = 29;
                             auto height = 25;
                             if (self.currentTab == widx::tab_station - widx::tab_construction)
@@ -1072,8 +1072,8 @@ namespace OpenLoco::Ui::Windows::Construction
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_signal);
                 if (!self.isDisabled(widx::tab_signal))
                 {
-                    auto x = self.widgets[widx::tab_signal].left + 1;
-                    auto y = self.widgets[widx::tab_signal].top + 1;
+                    auto x = self.widgets[widx::tab_signal].left + self.x + 1;
+                    auto y = self.widgets[widx::tab_signal].top + self.y + 1;
                     auto width = 29;
                     auto height = 25;
                     if (self.currentTab == widx::tab_station - widx::tab_construction)
@@ -1111,9 +1111,8 @@ namespace OpenLoco::Ui::Windows::Construction
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
                 if (!self.isDisabled(widx::tab_overhead))
                 {
-                    auto x = self.widgets[widx::tab_overhead].left + 2;
-                    auto y = self.widgets[widx::tab_overhead].top + 2;
-
+                    auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
+                    auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
                     for (auto i = 0; i < 4; i++)
                     {
                         if (_cState->modList[i] != 0xFF)
@@ -1172,7 +1171,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
-            World::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionFreeFormTiles();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             Windows::Main::hideDirectionArrows();
@@ -1387,26 +1386,5 @@ namespace OpenLoco::Ui::Windows::Construction
                 break;
         }
         return false;
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0049F1B5,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Construction::activateSelectedConstructionWidgets();
-                regs = backup;
-                return 0;
-            });
-
-        // registerHook(
-        //     0x0049DC97,
-        //     [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //         registers backup = regs;
-        //         construction::on_tool_down(*((Ui::window*)regs.esi), regs.dx, regs.ax, regs.cx);
-        //         regs = backup;
-        //         return 0;
-        //     });
     }
 }

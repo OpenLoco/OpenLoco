@@ -15,7 +15,6 @@
 #include "Window.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
 #include <cstdarg>
@@ -28,27 +27,62 @@ namespace OpenLoco::Ui::Dropdown
 {
     static constexpr int kBytesPerItem = 8;
 
-    static loco_global<Colour[31], 0x00504619> _byte_504619;
-    static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
-    static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
-    static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
-    static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
-    static loco_global<char[512], 0x0112CC04> _byte_112CC04;
-    static loco_global<uint8_t, 0x01136F94> _windowDropdownOnpaintCellX;
-    static loco_global<uint8_t, 0x01136F96> _windowDropdownOnpaintCellY;
-    static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
-    static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
-    static loco_global<uint32_t, 0x0113DC68> _dropdownItemHeight;
-    static loco_global<uint32_t, 0x0113DC6C> _dropdownItemWidth;
-    static loco_global<uint32_t, 0x0113DC70> _dropdownColumnCount;
-    static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
-    static loco_global<uint16_t, 0x0113DC78> _word_113DC78;
-    static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
-    static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
-    static loco_global<StringId[40], 0x0113D850> _dropdownItemFormats;
-    static loco_global<std::byte[40][kBytesPerItem], 0x0113D8A0> _dropdownItemArgs;
-    static loco_global<std::byte[40][kBytesPerItem], 0x0113D9E0> _dropdownItemArgs2;
-    static loco_global<CompanyId[40], 0x00113DB20> _menuOptions;
+    // 0x00504619
+    static constexpr Colour kDropdownColourTable[31] = {
+        Colour::grey,              // 0x01
+        Colour::grey,              // 0x01
+        Colour::white,             // 0x02
+        Colour::mutedPurple,       // 0x04
+        Colour::mutedPurple,       // 0x04
+        Colour::purple,            // 0x05
+        Colour::blue,              // 0x07
+        Colour::blue,              // 0x07
+        Colour::mutedDarkTeal,     // 0x08
+        Colour::mutedDarkTeal,     // 0x08
+        Colour::green,             // 0x0D
+        Colour::mutedSeaGreen,     // 0x0B
+        Colour::mutedGrassGreen,   // 0x0C
+        Colour::green,             // 0x0D
+        Colour::mutedAvocadoGreen, // 0x0E
+        Colour::mutedOliveGreen,   // 0x0F
+        Colour::yellow,            // 0x10
+        Colour::yellow,            // 0x10
+        Colour::orange,            // 0x12
+        Colour::amber,             // 0x13
+        Colour::orange,            // 0x12
+        Colour::mutedDarkYellow,   // 0x15
+        Colour::mutedDarkYellow,   // 0x15
+        Colour::brown,             // 0x17
+        Colour::mutedOrange,       // 0x18
+        Colour::mutedDarkRed,      // 0x19
+        Colour::red,               // 0x1B
+        Colour::red,               // 0x1B
+        Colour::pink,              // 0x1D
+        Colour::pink,              // 0x1D
+        Colour::mutedRed           // 0x1E
+    };
+
+    // 0x005046FA
+    static constexpr std::uint8_t kAppropriateImageDropdownItemsPerRow[33] = {
+        1, 1, 1, 1, 2, 2, 3, 3, 4, 3, 5, 4, 4, 5, 5, 5, 4, 5, 6, 5, 5, 7, 4, 5, 6, 5, 6, 6, 6, 6, 6, 8, 8
+    };
+
+    static char _byte_112CC04[512];
+    static uint8_t _windowDropdownOnpaintCellX;
+    static uint8_t _windowDropdownOnpaintCellY;
+    static uint16_t _dropdownItemCount;
+    static uint32_t _dropdownDisabledItems;
+    static uint32_t _dropdownItemHeight;
+    static uint32_t _dropdownItemWidth;
+    static uint32_t _dropdownColumnCount;
+    static uint32_t _dropdownRowCount;
+    static Flags _dropdownFlags;
+    static int16_t _dropdownHighlightedIndex;
+    static uint32_t _dropdownSelection;
+    static StringId _dropdownItemFormats[40];
+    static std::byte _dropdownItemArgs[40][kBytesPerItem];
+    static std::byte _dropdownItemArgs2[40][kBytesPerItem];
+    static uint8_t _menuOptions[40];
 
     static std::vector<std::optional<DropdownItemId>> _dropdownIds;
     static bool _dropdownUseDefault;
@@ -215,8 +249,8 @@ namespace OpenLoco::Ui::Dropdown
                 {
                     if (itemCount == _dropdownHighlightedIndex)
                     {
-                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + 2;
-                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + 2;
+                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
                         drawingCtx.drawRect(x, y, _dropdownItemWidth, _dropdownItemHeight, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
                     }
 
@@ -253,8 +287,8 @@ namespace OpenLoco::Ui::Dropdown
                                 }
                             }
 
-                            auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + 2;
-                            auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + 1;
+                            auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                            auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 1;
                             auto width = self.width - 5;
                             sub_494BF6(&self, drawingCtx, dropdownItemFormat, x, y, width, colour, args);
                         }
@@ -262,8 +296,8 @@ namespace OpenLoco::Ui::Dropdown
 
                     if (dropdownItemFormat == (StringId)-2 || dropdownItemFormat == StringIds::null)
                     {
-                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + 2;
-                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + 2;
+                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
 
                         auto imageId = *(uint32_t*)&args;
                         if (dropdownItemFormat == (StringId)-2 && itemCount == _dropdownHighlightedIndex)
@@ -275,8 +309,8 @@ namespace OpenLoco::Ui::Dropdown
                 }
                 else
                 {
-                    auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + 2;
-                    auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + 1 + _dropdownItemHeight / 2;
+                    auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                    auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 1 + _dropdownItemHeight / 2;
 
                     if (!self.getColour(WindowColour::primary).isTranslucent())
                     {
@@ -336,7 +370,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             if (colour.isTranslucent())
             {
-                colour = _byte_504619[enumValue(colour.c())];
+                colour = kDropdownColourTable[enumValue(colour.c())];
                 colour = colour.translucent();
             }
 
@@ -458,7 +492,7 @@ namespace OpenLoco::Ui::Dropdown
         common::setColourAndInputFlags(colour, flags);
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         _dropdownColumnCount = 1;
         _dropdownItemWidth = 0;
@@ -559,15 +593,15 @@ namespace OpenLoco::Ui::Dropdown
     void showImage(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, AdvancedColour colour, uint8_t columnCount, uint8_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
-        assert(count < std::size(_appropriateImageDropdownItemsPerRow));
+        assert(count < std::size(kAppropriateImageDropdownItemsPerRow));
 
         common::setColourAndInputFlags(colour, flags);
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
         _dropdownItemHeight = height;
         _dropdownItemWidth = width;
         _dropdownItemCount = count;
@@ -632,22 +666,22 @@ namespace OpenLoco::Ui::Dropdown
         assert(count < std::numeric_limits<uint8_t>::max());
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         if (Input::state() != Input::State::widgetPressed || Input::hasFlag(Input::Flags::widgetPressed))
         {
-            _word_113DC78 = _word_113DC78 | 1;
+            _dropdownFlags = _dropdownFlags | Flags::unk1;
         }
 
-        if (_pressedWindowType != WindowType::undefined)
+        if (Input::getPressedWindowType() != WindowType::undefined)
         {
-            WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+            WindowManager::invalidateWidget(Input::getPressedWindowType(), Input::getPressedWindowNumber(), Input::getPressedWidgetIndex());
         }
 
-        _pressedWidgetIndex = widgetIndex;
-        _pressedWindowType = window->type;
-        _pressedWindowNumber = window->number;
-        WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+        Input::setPressedWidgetIndex(widgetIndex);
+        Input::setPressedWindowType(window->type);
+        Input::setPressedWindowNumber(window->number);
+        WindowManager::invalidateWidget(window->type, window->number, widgetIndex);
 
         auto widget = window->widgets[widgetIndex];
         auto colour = window->getColour(widget.windowColour).translucent();
@@ -657,7 +691,7 @@ namespace OpenLoco::Ui::Dropdown
 
         if (colour.isTranslucent())
         {
-            colour = static_cast<Colour>(_byte_504619[enumValue(colour.c())]);
+            colour = kDropdownColourTable[enumValue(colour.c())];
             colour = colour.translucent();
         }
 
@@ -699,7 +733,7 @@ namespace OpenLoco::Ui::Dropdown
         common::setColourAndInputFlags(colour, flags);
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         common::showText(x, y, width, height, itemHeight, colour, count, flags);
     }
@@ -727,7 +761,7 @@ namespace OpenLoco::Ui::Dropdown
         common::setColourAndInputFlags(colour, flags);
 
         WindowManager::close(WindowType::dropdown, 0);
-        _word_113DC78 = 0;
+        _dropdownFlags = Flags::none;
 
         _dropdownColumnCount = 1;
         _dropdownItemWidth = width;
@@ -850,7 +884,7 @@ namespace OpenLoco::Ui::Dropdown
     // 0x004CF3CC
     void forceCloseCompanySelect()
     {
-        if (_word_113DC78 & (1U << 1))
+        if (hasFlags(Flags::unk1))
         {
             WindowManager::close(WindowType::dropdown);
         }
@@ -888,7 +922,7 @@ namespace OpenLoco::Ui::Dropdown
 
             companyOrdered[enumValue(companyId)] |= 1;
             _dropdownItemFormats[index] = StringIds::dropdown_company_select;
-            _menuOptions[index] = companyId;
+            _menuOptions[index] = enumValue(companyId);
 
             auto company = CompanyManager::get(companyId);
             auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
@@ -906,7 +940,7 @@ namespace OpenLoco::Ui::Dropdown
 
         size_t highlightedIndex = 0;
 
-        while (window->owner != _menuOptions[highlightedIndex])
+        while (enumValue(window->owner) != _menuOptions[highlightedIndex])
         {
             highlightedIndex++;
 
@@ -918,7 +952,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         setHighlightedItem(highlightedIndex);
-        _word_113DC78 = _word_113DC78 | (1 << 1);
+        _dropdownFlags = _dropdownFlags | Flags::unk2;
     }
 
     // 0x004CF284
@@ -929,7 +963,7 @@ namespace OpenLoco::Ui::Dropdown
             itemIndex = _dropdownHighlightedIndex;
         }
 
-        auto companyId = _menuOptions[itemIndex];
+        auto companyId = static_cast<CompanyId>(_menuOptions[itemIndex]);
         auto company = CompanyManager::get(companyId);
 
         if (company->empty())
@@ -947,7 +981,7 @@ namespace OpenLoco::Ui::Dropdown
 
     uint16_t getItemsPerRow(uint8_t itemCount)
     {
-        return _appropriateImageDropdownItemsPerRow[itemCount];
+        return kAppropriateImageDropdownItemsPerRow[itemCount];
     }
 
     Builder& Builder::below(Window& window, WidgetIndex_t widgetIndex)
@@ -1036,4 +1070,85 @@ namespace OpenLoco::Ui::Dropdown
         }
         return std::nullopt;
     }
+
+    std::optional<int> dropdownIndexFromPoint(Ui::Window* window, int x, int y)
+    {
+        // Check whether x and y are over a list item
+        int left = x - window->x;
+        if (left < 0)
+        {
+            return std::nullopt;
+        }
+        if (left >= window->width)
+        {
+            return std::nullopt;
+        }
+
+        // 2px of padding on the top of the list?
+        int top = y - window->y - 2;
+        if (top < 0)
+        {
+            return std::nullopt;
+        }
+
+        unsigned int itemY = top / _dropdownItemHeight;
+        if (itemY >= _dropdownItemCount)
+        {
+            return std::nullopt;
+        }
+
+        left -= 2;
+        if (left < 0)
+        {
+            return std::nullopt;
+        }
+
+        unsigned int itemX = left / _dropdownItemWidth;
+        if (itemX >= _dropdownColumnCount)
+        {
+            return std::nullopt;
+        }
+        if (itemY >= _dropdownRowCount)
+        {
+            return std::nullopt;
+        }
+
+        int item = itemY * _dropdownColumnCount + itemX;
+        if (item >= _dropdownItemCount)
+        {
+            return std::nullopt;
+        }
+
+        if (item < 32 && (_dropdownDisabledItems & (1ULL << item)) != 0)
+        {
+            return std::nullopt;
+        }
+
+        if (_dropdownItemFormats[item] == 0)
+        {
+            return std::nullopt;
+        }
+
+        return item;
+    }
+
+    bool hasFlags(Flags flags)
+    {
+        return (_dropdownFlags & flags) != Flags::none;
+    }
+
+    void setMenuOption(size_t index, uint8_t value)
+    {
+        assert(index < std::size(_menuOptions));
+
+        _menuOptions[index] = value;
+    }
+
+    uint8_t getMenuOption(size_t index)
+    {
+        assert(index < std::size(_menuOptions));
+
+        return _menuOptions[index];
+    }
+
 }

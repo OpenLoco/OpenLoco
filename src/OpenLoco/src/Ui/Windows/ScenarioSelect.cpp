@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         initTabs(self);
 
         // Select the last tab used, or the first available one.
-        uint8_t selectedTab = Config::get().old.scenarioSelectedTab;
+        uint8_t selectedTab = Config::get().scenarioSelectedTab;
         if (self->widgets[widx::tab0 + selectedTab].hidden)
         {
             selectedTab = 0;
@@ -169,7 +169,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.drawRectInset(0, 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+        drawingCtx.drawRectInset(self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
 
         // Draw widgets.
         self.draw(drawingCtx);
@@ -192,7 +192,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
 
             const auto offset = self.currentTab == i ? 1 : 0;
-            auto origin = Ui::Point(widget.midX(), widget.midY() - 3 - offset);
+            auto origin = Ui::Point(widget.midX() + self.x, widget.midY() + self.y - 3 - offset);
             const StringId caption = scenarioGroupIds[i];
 
             auto argsBuf = FormatArgumentsBuffer{};
@@ -235,8 +235,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
         }
 
-        const int16_t baseX = self.widgets[widx::list].right + 4;
-        const int16_t baseY = self.widgets[widx::panel].top + 5;
+        const int16_t baseX = self.x + self.widgets[widx::list].right + 4;
+        const int16_t baseY = self.y + self.widgets[widx::panel].top + 5;
         const int16_t colWidth = self.widgets[widx::panel].right - self.widgets[widx::list].right - 6;
 
         int16_t x = baseX, y = baseY;
@@ -474,7 +474,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
                 self.currentTab = selectedCategory;
 
-                auto& config = Config::get().old;
+                auto& config = Config::get();
                 config.scenarioSelectedTab = selectedCategory;
                 Config::write();
 

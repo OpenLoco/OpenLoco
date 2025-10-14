@@ -38,15 +38,18 @@
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Interop/Interop.hpp>
+
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::IndustryList
 {
-    static currency32_t _dword_E0C39C;    // 0x00E0C39C
-    static bool _industryGhostPlaced;     // 0x00E0C3D9
-    static World::Pos2 _industryGhostPos; // 0x00E0C3C2
-    static uint8_t _industryGhostType;    // 0x00E0C3DA
-    static IndustryId _industryGhostId;   // 0x00E0C3DB
-    static Core::Prng _placementPrng;     // 0x00E0C394
+    static Core::Prng _placementPrng;           // 0x00E0C394
+    static currency32_t _industryPlacementCost; // 0x00E0C39C
+    static bool _industryGhostPlaced;           // 0x00E0C3D9
+    static World::Pos2 _industryGhostPos;       // 0x00E0C3C2
+    static uint8_t _industryGhostType;          // 0x00E0C3DA
+    static IndustryId _industryGhostId;         // 0x00E0C3DB
 
     static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
 
@@ -747,7 +750,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (self.var_83C == 0)
             {
-                auto point = Point(3, self.height - 13);
+                auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19;
                 tr.drawStringLeftClipped(point, width, Colour::black, StringIds::no_industry_available);
                 return;
@@ -770,10 +773,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (self.var_846 == 0xFFFF)
             {
-                industryCost = _dword_E0C39C;
+                industryCost = _industryPlacementCost;
             }
 
-            if ((self.var_846 == 0xFFFF && _dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self.var_846 != 0xFFFF)
+            if ((self.var_846 == 0xFFFF && _industryPlacementCost == static_cast<currency32_t>(0x80000000)) || self.var_846 != 0xFFFF)
             {
                 industryCost = Economy::getInflationAdjustedCost(industryObj->costFactor, industryObj->costIndex, 3);
             }
@@ -785,7 +788,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 FormatArguments args{};
                 args.push(industryCost);
 
-                auto point = Point(3 + self.width - 19, self.height - 13);
+                auto point = Point(self.x + 3 + self.width - 19, self.y + self.height - 13);
                 widthOffset = 138;
 
                 tr.drawStringRight(point, Colour::black, StringIds::build_cost, args);
@@ -795,7 +798,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 FormatArguments args{};
                 args.push(industryObj->name);
 
-                auto point = Point(3, self.height - 13);
+                auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19 - widthOffset;
 
                 tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
@@ -840,7 +843,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
                     self.expandContentCounter = -16;
-                    _dword_E0C39C = 0x80000000;
+                    _industryPlacementCost = 0x80000000;
                     self.invalidate();
                     break;
                 }
@@ -1179,9 +1182,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             removeIndustryGhost();
             auto cost = placeIndustryGhost(*placementArgs);
-            if (cost != _dword_E0C39C)
+            if (cost != _industryPlacementCost)
             {
-                _dword_E0C39C = cost;
+                _industryPlacementCost = cost;
                 self.invalidate();
             }
         }
@@ -1315,7 +1318,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
             _industryGhostPlaced = false;
-            _dword_E0C39C = 0x80000000;
+            _industryPlacementCost = 0x80000000;
 
             self.var_83C = 0;
             self.rowHover = -1;

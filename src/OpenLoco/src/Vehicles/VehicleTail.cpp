@@ -106,7 +106,7 @@ namespace OpenLoco::Vehicles
                 setSignalState(_oldTilePos, trackAndDir.track, trackType, 0);
             }
 
-            const auto& trackSize = World::TrackData::getUnkTrack(ref & 0x1FF);
+            const auto& trackSize = World::TrackData::getUnkTrack(ref & World::Track::AdditionalTaDFlags::basicTaDMask);
             auto nextTile = _oldTilePos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
@@ -137,7 +137,7 @@ namespace OpenLoco::Vehicles
                 tad._data = routing & Track::AdditionalTaDFlags::basicTaDMask;
                 tail.sub_47D959(pos, tad, false);
 
-                pos += World::TrackData::getUnkRoad(tad._data).pos;
+                pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
             }
         }
         else

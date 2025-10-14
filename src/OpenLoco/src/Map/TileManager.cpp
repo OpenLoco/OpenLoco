@@ -1496,7 +1496,7 @@ namespace OpenLoco::World::TileManager
         if (!SceneManager::isEditorMode())
         {
             // Reset terrain growth when not in editor
-            surface->setTerrain(surface->terrain());
+            surface->setGrowthStage(0);
         }
 
         surface->setBaseZ(targetBaseZ);
@@ -1504,9 +1504,9 @@ namespace OpenLoco::World::TileManager
         surface->setSlope(slopeFlags);
 
         landObj = ObjectManager::get<LandObject>(surface->terrain());
-        if (landObj->hasFlags(LandObjectFlags::unk1) && !SceneManager::isEditorMode())
+        if (landObj->hasFlags(LandObjectFlags::hasReplacementLandHeader) && !SceneManager::isEditorMode())
         {
-            surface->setTerrain(landObj->cliffEdgeHeader2);
+            surface->setTerrain(landObj->replacementLandHeader);
         }
 
         if (surface->water() * kMicroToSmallZStep <= targetBaseZ)
@@ -1629,38 +1629,5 @@ namespace OpenLoco::World::TileManager
                 }
             }
         }
-    }
-
-    void registerHooks()
-    {
-        // This hook can be removed once sub_4599B3 has been implemented
-        registerHook(
-            0x004BE048,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                const auto count = countSurroundingTrees({ regs.ax, regs.cx });
-                regs = backup;
-                regs.dx = count;
-                return 0;
-            });
-
-        registerHook(
-            0x004C5596,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                const auto count = countSurroundingWaterTiles({ regs.ax, regs.cx });
-                regs = backup;
-                regs.dx = count;
-                return 0;
-            });
-
-        registerHook(
-            0x0046902E,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                removeSurfaceIndustry({ regs.ax, regs.cx });
-                regs = backup;
-                return 0;
-            });
     }
 }

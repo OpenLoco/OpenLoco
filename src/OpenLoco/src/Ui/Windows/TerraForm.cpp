@@ -107,31 +107,32 @@ namespace OpenLoco::Ui::Windows::Terraform
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
     }
 
-    static loco_global<int16_t, 0x0052337A> _dragLastY;
-    static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
-    static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
-    static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
-    static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
-    static loco_global<uint8_t, 0x01136496> _treeRotation;
-    static loco_global<Colour, 0x01136497> _treeColour;
-    static loco_global<Common::GhostPlacedFlags, 0x0113649A> _terraformGhostPlacedFlags;
-    static loco_global<uint8_t, 0x0113649E> _treeClusterType;
-    static loco_global<int16_t, 0x0050A000> _adjustToolSize;
-    static loco_global<uint32_t, 0x00F2530C> _raiseLandCost;
-    static loco_global<uint32_t, 0x00F25310> _lowerLandCost;
-    static loco_global<uint32_t, 0x01136484> _lastTreeCost;
+    // These are still referred to in CreateWall and S5
     static loco_global<World::TileElement*, 0x01136470> _lastPlacedWall;
-    static loco_global<World::TreeElement*, 0x01136470> _lastPlacedTree;
-    static loco_global<World::Pos2, 0x01136488> _terraformGhostPos;
-    static loco_global<uint16_t, 0x01136490> _lastTreeColourFlag;
-    static loco_global<uint16_t, 0x01136492> _terraformGhostTreeRotationFlag;
-    static loco_global<uint8_t, 0x01136499> _terraformGhostBaseZ;
-    static loco_global<uint8_t, 0x0113649B> _terraformGhostTreeElementType;
-    static loco_global<uint8_t, 0x0113649C> _terraformGhostType;
-    static loco_global<uint8_t, 0x0113649D> _terraformGhostRotation; // wall
-    static loco_global<uint8_t, 0x0113649D> _terraformGhostQuadrant; // tree
-    static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
-    static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
+    static loco_global<uint8_t, 0x01136496> _treeRotation;
+
+    static int16_t _adjustToolSize;                             // 0x0050A000
+    static uint8_t _adjustLandToolSize;                         // 0x009C870E
+    static uint8_t _clearAreaToolSize;                          // 0x009C870F
+    static uint8_t _adjustWaterToolSize;                        // 0x009C8710
+    static uint8_t _lastSelectedLand;                           // 0x00F003D2
+    static uint32_t _raiseLandCost;                             // 0x00F2530C
+    static uint32_t _lowerLandCost;                             // 0x00F25310
+    static World::TreeElement* _lastPlacedTree;                 // 0x01136470
+    static uint32_t _lastTreeCost;                              // 0x01136484
+    static World::Pos2 _terraformGhostPos;                      // 0x01136488
+    static uint16_t _lastTreeColourFlag;                        // 0x01136490
+    static uint16_t _terraformGhostTreeRotationFlag;            // 0x01136492
+    static Colour _treeColour;                                  // 0x01136497
+    static uint8_t _terraformGhostBaseZ;                        // 0x01136499
+    static Common::GhostPlacedFlags _terraformGhostPlacedFlags; // 0x0113649A
+    static uint8_t _terraformGhostTreeElementType;              // 0x0113649B
+    static uint8_t _terraformGhostType;                         // 0x0113649C
+    static uint8_t _terraformGhostQuadrant;                     // 0x0113649D (trees)
+    static uint8_t _terraformGhostRotation;                     // 0x0113649D (walls)
+    static uint8_t _treeClusterType;                            // 0x0113649E
+    static uint32_t _lowerWaterCost;                            // 0x01136528
+    static uint32_t _raiseWaterCost;                            // 0x0113652C
 
     namespace PlantTrees
     {
@@ -459,7 +460,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 _terraformGhostPlacedFlags = _terraformGhostPlacedFlags & ~Common::GhostPlacedFlags::tree;
                 GameCommands::TreeRemovalArgs args;
-                args.pos = World::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * World::kSmallZStep);
+                args.pos = World::Pos3((_terraformGhostPos).x, (_terraformGhostPos).y, _terraformGhostBaseZ * World::kSmallZStep);
                 args.type = _terraformGhostType;
                 args.elementType = _terraformGhostTreeElementType;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
@@ -475,9 +476,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (res != GameCommands::FAILURE)
             {
                 _terraformGhostPos = placementArgs.pos;
-                _terraformGhostTreeElementType = (*_lastPlacedTree)->rawData()[0];
+                _terraformGhostTreeElementType = (_lastPlacedTree)->rawData()[0];
                 _terraformGhostType = placementArgs.type;
-                _terraformGhostBaseZ = (*_lastPlacedTree)->baseZ();
+                _terraformGhostBaseZ = (_lastPlacedTree)->baseZ();
                 _terraformGhostPlacedFlags |= Common::GhostPlacedFlags::tree;
 
                 _terraformGhostQuadrant = placementArgs.quadrant;
@@ -511,7 +512,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             args.pos = World::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
             args.quadrant = World::getQuadrantFromPos(res->first) ^ (1 << 1);
-            args.colour = *_treeColour;
+            args.colour = _treeColour;
             args.rotation = (_treeRotation - WindowManager::getCurrentRotation()) & 0x3;
             if (SceneManager::isEditorMode())
             {
@@ -544,7 +545,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::tree) != Common::GhostPlacedFlags::none)
             {
-                if (*_terraformGhostPos == placementArgs->pos
+                if (_terraformGhostPos == placementArgs->pos
                     && _terraformGhostQuadrant == placementArgs->quadrant
                     && _terraformGhostType == placementArgs->type
                     && _terraformGhostTreeRotationFlag == (placementArgs->rotation | (placementArgs->buildImmediately ? 0x8000 : 0)))
@@ -627,6 +628,11 @@ namespace OpenLoco::Ui::Windows::Terraform
                         break;
                 }
             }
+        }
+
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        {
+            removeTreeGhost();
         }
 
         // 0x004BBEC1
@@ -730,7 +736,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                     if (treeObj->colours != 0)
                     {
-                        self.widgets[widx::object_colour].image = Widget::kImageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_treeColour);
+                        self.widgets[widx::object_colour].image = Widget::kImageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, _treeColour);
                         self.widgets[widx::object_colour].hidden = false;
                     }
                 }
@@ -791,7 +797,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 FormatArguments args{};
                 args.push<uint32_t>(treeCost);
 
-                auto point = Point(3 + self.width - 17, self.height - 13);
+                auto point = Point(self.x + 3 + self.width - 17, self.y + self.height - 13);
                 tr.drawStringRight(point, Colour::black, StringIds::build_cost, args);
             }
 
@@ -799,7 +805,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 FormatArguments args{};
                 args.push(treeObj->name);
 
-                auto point = Point(3, self.height - 13);
+                auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19 - point.x;
                 tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
             }
@@ -815,7 +821,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto colourOptions = treeObj->colours;
             if (colourOptions != 0)
             {
-                auto colour = *_treeColour;
+                auto colour = _treeColour;
                 if (!(_lastTreeColourFlag & (1 << 5)))
                 {
                     auto bit = Numerics::bitScanReverse(colourOptions);
@@ -884,6 +890,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .event_08 = event_08,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = scrollMouseDown,
             .scrollMouseOver = scrollMouseOver,
@@ -1151,8 +1158,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             // Draw as a number if we can't fit a sprite
             if (_adjustToolSize > 10)
             {
-                auto xPos = toolArea.midX();
-                auto yPos = toolArea.midY() - 5;
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -1171,8 +1178,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             {
-                auto xPos = toolArea.midX();
-                auto yPos = toolArea.bottom + 5;
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.bottom + self.y + 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -1295,8 +1302,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            auto xPos = self->x + self->widgets[widgetIndex].left;
-            auto yPos = self->y + self->widgets[widgetIndex].bottom;
+            auto xPos = self->widgets[widgetIndex].left + self->x;
+            auto yPos = self->widgets[widgetIndex].bottom + self->y;
             auto heightOffset = self->widgets[widgetIndex].height() - 18;
             auto colour = self->getColour(WindowColour::secondary).translucent();
             auto count = Dropdown::getItemsPerRow(landCount);
@@ -1696,12 +1703,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                     {
                         dY = -1;
                     }
-                    auto deltaY = y - _dragLastY;
+                    auto deltaY = y - Input::getDragLastLocation().y;
                     auto flags = Flags::apply;
 
                     if (deltaY <= dY)
                     {
-                        _dragLastY = _dragLastY + dY;
+                        Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                         raiseLand(flags);
                     }
                     else
@@ -1711,7 +1718,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         {
                             break;
                         }
-                        _dragLastY = _dragLastY + dY;
+                        Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                         lowerLand(flags);
                     }
                     _raiseLandCost = 0x80000000;
@@ -1798,7 +1805,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (isMountainMode)
                 {
                     auto areaImage = ImageId(ImageIds::tool_area);
-                    Ui::Point placeForImage(toolArea.left, toolArea.top);
+                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
 
                     if ((_adjustToolSize & 1) == 0)
                     {
@@ -1821,15 +1828,15 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (!isMountainMode || _adjustToolSize > 1)
                 {
                     auto areaImage = ImageId(ImageIds::tool_area).withIndexOffset(_adjustToolSize);
-                    Ui::Point placeForImage(toolArea.left, toolArea.top);
+                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
                     drawingCtx.drawImage(placeForImage, areaImage);
                 }
             }
             // Or draw as a number, if we can't fit a sprite
             else
             {
-                auto xPos = toolArea.midX();
-                auto yPos = toolArea.midY() - 5;
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -1837,8 +1844,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 tr.drawStringCentred(point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
-            auto xPos = toolArea.midX();
-            auto yPos = toolArea.bottom + 28;
+            auto xPos = toolArea.midX() + self.x;
+            auto yPos = toolArea.bottom + self.y + 28;
 
             if (_raiseLandCost != 0x80000000)
             {
@@ -2108,12 +2115,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 dY = -1;
             }
 
-            auto deltaY = y - _dragLastY;
+            auto deltaY = y - Input::getDragLastLocation().y;
             auto flags = Flags::apply;
 
             if (deltaY <= dY)
             {
-                _dragLastY = _dragLastY + dY;
+                Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                 raiseWater(flags);
             }
             else
@@ -2123,7 +2130,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     return;
                 }
-                _dragLastY = _dragLastY + dY;
+                Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                 lowerWater(flags);
             }
             _raiseWaterCost = 0x80000000;
@@ -2174,8 +2181,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             // Draw as a number if we can't fit a sprite
             if (_adjustToolSize > 10)
             {
-                auto xPos = toolArea.midX();
-                auto yPos = toolArea.midY() - 5;
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -2183,8 +2190,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 tr.drawStringCentred(point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
-            auto xPos = toolArea.midX();
-            auto yPos = toolArea.bottom + 5;
+            auto xPos = toolArea.midX() + self.x;
+            auto yPos = toolArea.bottom + self.y + 5;
 
             if (_raiseWaterCost != 0x80000000)
             {
@@ -2446,7 +2453,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 _terraformGhostPlacedFlags = _terraformGhostPlacedFlags & ~Common::GhostPlacedFlags::wall;
                 GameCommands::WallRemovalArgs args;
-                args.pos = World::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * World::kSmallZStep);
+                args.pos = World::Pos3((_terraformGhostPos).x, (_terraformGhostPos).y, _terraformGhostBaseZ * World::kSmallZStep);
                 args.rotation = _terraformGhostRotation;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
@@ -2523,7 +2530,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::wall) != Common::GhostPlacedFlags::none)
             {
-                if (*_terraformGhostPos == placementArgs->pos && _terraformGhostRotation == placementArgs->rotation && _terraformGhostType == placementArgs->type)
+                if (_terraformGhostPos == placementArgs->pos && _terraformGhostRotation == placementArgs->rotation && _terraformGhostType == placementArgs->type)
                 {
                     return;
                 }
@@ -2551,6 +2558,11 @@ namespace OpenLoco::Ui::Windows::Terraform
                     Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
                 }
             }
+        }
+
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        {
+            removeWallGhost();
         }
 
         // 0x004BC359
@@ -2654,8 +2666,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             auto wallObj = ObjectManager::get<WallObject>(wallId);
-            auto xPos = 3;
-            auto yPos = self.height - 13;
+            auto xPos = self.x + 3;
+            auto yPos = self.y + self.height - 13;
             auto width = self.width - 19;
             auto point = Point(xPos, yPos);
 
@@ -2719,6 +2731,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .event_08 = event_08,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = scrollMouseDown,
             .scrollMouseOver = scrollMouseOver,

@@ -1,7 +1,27 @@
-25.08+ (???)
+25.10+ (???)
 ------------------------------------------------------------------------
+- Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
+- Fix: [#2797] Single player scenario scores reset when adding a new scenario.
+- Fix: [#3281] Modifying the news options does not trigger a config file write, potentially losing the changes.
+
+25.10 (2025-10-10)
+------------------------------------------------------------------------
+- Fix: [#2741] Tree, fence, and wall ghosts can be left behind when using Terraform keyboard shortcuts (original bug).
+- Fix: [#3238] Vehicle positioning hint is shown even when there is a viewport present.
+- Fix: [#3279] Game crashes when the news window slides into view.
+- Fix: [#3294] Wrong error message when attempting to remove the headquarters of another company.
+- Fix: [#3301] Assigning keyboard shortcuts not working correctly, the function parameters were swapped.
+
+25.09 (2025-09-30)
+------------------------------------------------------------------------
+- Feature: [#3274] Add a button to rotate company headquarters when building them.
+- Feature: [#3284] Add tunnel, land, road station, streetlight, hill shape OpenGraphics objects.
 - Change: [#3227] The accuracy of cursor-relative zooming has been improved.
+- Change: [#3258] Current currency dropdown is now disabled when in the title screen.
+- Fix: [#3135] Follow vehicle on main view not working.
 - Fix: [#3232] Crash when moving vehicle window when a message is showing a vehicle.
+- Fix: [#3256] Preferred currency not being loaded from config.
+- Fix: [#3266] When text input reached the maximum length it can instead trigger shortcuts.
 
 25.08 (2025-08-26)
 ------------------------------------------------------------------------

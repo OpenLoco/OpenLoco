@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
+
     static loco_global<UpdateVar1136114Flags, 0x01136114> _vehicleUpdate_var_1136114;
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
     static constexpr int32_t kObjDistToHighPrecisionDistance = 2179;
@@ -273,13 +273,13 @@ namespace OpenLoco::Vehicles
             }
             World::Pos3 pos(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
 
-            auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, component.trackAndDirection.road._data & 0x7F);
+            auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, component.trackAndDirection.road.basicRad());
             const auto tc = World::Track::getRoadConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
 
             bool routingFound = false;
             for (auto& connection : tc.connections)
             {
-                if ((connection & 0x7F) == (routing & 0x7F))
+                if ((connection & World::Track::AdditionalTaDFlags::basicRaDMask) == (routing & World::Track::AdditionalTaDFlags::basicRaDMask))
                 {
                     routingFound = true;
                     break;
@@ -298,7 +298,7 @@ namespace OpenLoco::Vehicles
                 component.asVehicle2()->var_4F = tc.roadObjectId;
             }
 
-            pos += World::TrackData::getUnkRoad(oldTaD & 0x7F).pos;
+            pos += World::TrackData::getUnkRoad(oldTaD & World::Track::AdditionalTaDFlags::basicRaDMask).pos;
             component.tileX = pos.x;
             component.tileY = pos.y;
             component.tileBaseZ = pos.z / World::kSmallZStep;
@@ -336,7 +336,7 @@ namespace OpenLoco::Vehicles
             bool routingFound = false;
             for (auto& connection : tc.connections)
             {
-                if ((connection & 0x1FF) == (routing & 0x1FF))
+                if ((connection & World::Track::AdditionalTaDFlags::basicTaDMask) == (routing & World::Track::AdditionalTaDFlags::basicTaDMask))
                 {
                     routingFound = true;
                     break;
@@ -349,7 +349,7 @@ namespace OpenLoco::Vehicles
             }
             component.routingHandle = newRoutingHandle;
             const auto oldTaD = component.trackAndDirection.track._data;
-            component.trackAndDirection.track._data = routing & 0x1FF;
+            component.trackAndDirection.track._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
             pos += World::TrackData::getUnkTrack(oldTaD).pos;
             component.tileX = pos.x;
             component.tileY = pos.y;
@@ -359,49 +359,6 @@ namespace OpenLoco::Vehicles
 
         return false;
     }
-
-    static constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
-    {
-        uint8_t nibble = 0;
-        if (pos1.x != pos2.x)
-        {
-            nibble |= (1U << 0);
-        }
-        if (pos1.y != pos2.y)
-        {
-            nibble |= (1U << 1);
-        }
-        if (pos1.z != pos2.z)
-        {
-            nibble |= (1U << 2);
-        }
-        return nibble;
-    }
-
-    // 0x00500120
-    static constexpr std::array<uint32_t, 8> movementNibbleToDistance = {
-        0,
-        0x220C,
-        0x220C,
-        0x3027,
-        0x199A,
-        0x2A99,
-        0x2A99,
-        0x3689,
-    };
-
-    // 0x00500244
-    static constexpr std::array<World::TilePos2, 9> kMooreNeighbourhood = {
-        World::TilePos2{ 0, 0 },
-        World::TilePos2{ 0, 1 },
-        World::TilePos2{ 1, 1 },
-        World::TilePos2{ 1, 0 },
-        World::TilePos2{ 1, -1 },
-        World::TilePos2{ 0, -1 },
-        World::TilePos2{ -1, -1 },
-        World::TilePos2{ -1, 0 },
-        World::TilePos2{ -1, 1 },
-    };
 
     // If candidate within 8 vehicle components of src we ignore a self collision
     // TODO: If we stored the car index this could be simplified
@@ -493,369 +450,6 @@ namespace OpenLoco::Vehicles
         return EntityId::null;
     }
 
-    enum class OvertakeResult
-    {
-        overtakeAvailble,
-        noOvertakeAvailble,
-        mayBeOvertaken,
-    };
-
-    // 0x0047CD78
-    // ax : pos.x
-    // cx : pos.y
-    // dl : pos.z / World::kSmallZStep
-    // ebp : tad
-    // esi : veh1
-    //
-    // return mayBeOvertaken == high carry flag
-    //        overtakeAvailable   0x0112C328 == 5
-    //        noOvertakeAvailable 0x0112C328 == 0
-    static OvertakeResult getRoadOvertakeAvailability(const Vehicle1& veh1, World::Pos3 pos, uint16_t tad)
-    {
-        OvertakeResult result = OvertakeResult::noOvertakeAvailble;
-        for (const auto& nearby : kMooreNeighbourhood)
-        {
-            const auto inspectionPos = World::toTileSpace(pos) + nearby;
-            for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
-            {
-                auto* vehicleBase = entity->asBase<VehicleBase>();
-                if (vehicleBase == nullptr || !vehicleBase->isVehicleTail())
-                {
-                    continue;
-                }
-                auto* vehicleTail = vehicleBase->asVehicleTail();
-                if (vehicleTail == nullptr)
-                {
-                    continue;
-                }
-                if (vehicleTail->getTransportMode() != TransportMode::road)
-                {
-                    continue;
-                }
-                if (vehicleTail->tileBaseZ * World::kSmallZStep != pos.z)
-                {
-                    continue;
-                }
-                if (vehicleTail->tileX != pos.x || vehicleTail->tileY != pos.y)
-                {
-                    continue;
-                }
-                if ((vehicleTail->trackAndDirection.road._data & World::Track::AdditionalTaDFlags::basicTaDMask) != (tad & World::Track::AdditionalTaDFlags::basicTaDMask))
-                {
-                    continue;
-                }
-
-                // Perhaps a little expensive to do this (we don't do it on rail vehicles for example)
-                Vehicle train(vehicleTail->head);
-                if (train.veh1->var_3C < 0x220C0)
-                {
-                    continue;
-                }
-                if ((train.veh2->var_73 & Flags73::isBrokenDown) != Flags73::none)
-                {
-                    continue;
-                }
-                if (veh1.var_3C < train.veh1->var_3C)
-                {
-                    return OvertakeResult::mayBeOvertaken;
-                }
-                auto* veh2 = EntityManager::get<Vehicle2>(veh1.nextCarId);
-                if (veh2 == nullptr)
-                {
-                    continue;
-                }
-                if (veh2->maxSpeed <= train.veh2->maxSpeed)
-                {
-                    return OvertakeResult::mayBeOvertaken;
-                }
-                result = OvertakeResult::overtakeAvailble;
-            }
-        }
-        return result;
-    }
-
-    struct Sub47CEB7Result
-    {
-        uint8_t al;
-        uint8_t ah;
-    };
-
-    // 0x0047CEB7
-    // veh1 : esi
-    // return : al, ah
-    static Sub47CEB7Result sub_47CEB7(Vehicle1& veh1)
-    {
-        const auto startPos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
-        uint8_t unk112C327 = 0;
-
-        auto pos = startPos + World::TrackData::getUnkRoad(veh1.trackAndDirection.road._data & 0x7F).pos;
-        unk112C327++;
-
-        auto routings = RoutingManager::RingView(veh1.routingHandle);
-        auto routingIter = routings.begin();
-        if (routingIter == routings.end())
-        {
-            return Sub47CEB7Result{ 0, 0 };
-        }
-        routingIter++;
-        if (routingIter == routings.end())
-        {
-            return Sub47CEB7Result{ 0, 0 };
-        }
-        auto routing = RoutingManager::getRouting(*routingIter);
-        TrackAndDirection::_RoadAndDirection tad(0, 0);
-        tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
-        const auto occupationFlags = getRoadOccupation(pos, tad);
-
-        if ((occupationFlags & RoadOccupationFlags::hasLevelCrossing) != RoadOccupationFlags::none)
-        {
-            // 0x0047D0B9
-            if ((occupationFlags & (RoadOccupationFlags::isLaneOccupied | RoadOccupationFlags::isLevelCrossingClosed)) != RoadOccupationFlags::none)
-            {
-                return Sub47CEB7Result{ 2, 0 };
-            }
-            ++unk112C327;
-            for (; unk112C327 < 255; ++unk112C327)
-            {
-                pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
-                routingIter++;
-                if (routingIter == routings.end())
-                {
-                    return Sub47CEB7Result{ 2, 0 };
-                }
-                tad._data = RoutingManager::getRouting(*routingIter) & World::Track::AdditionalTaDFlags::basicTaDMask;
-
-                const auto fwdOccupationFlags = getRoadOccupation(pos, tad);
-                if ((fwdOccupationFlags & (RoadOccupationFlags::isLaneOccupied | RoadOccupationFlags::isLevelCrossingClosed)) != RoadOccupationFlags::none)
-                {
-                    return Sub47CEB7Result{ 2, 0 };
-                }
-                if ((fwdOccupationFlags & RoadOccupationFlags::hasLevelCrossing) == RoadOccupationFlags::none)
-                {
-                    return Sub47CEB7Result{ 4, unk112C327 };
-                }
-            }
-            return Sub47CEB7Result{ 2, 0 };
-        }
-        else
-        {
-            OvertakeResult overtakeResult = OvertakeResult::overtakeAvailble;
-            if ((occupationFlags & RoadOccupationFlags::isLaneOccupied) != RoadOccupationFlags::none)
-            {
-                overtakeResult = getRoadOvertakeAvailability(veh1, pos, tad._data);
-                if (overtakeResult == OvertakeResult::mayBeOvertaken)
-                {
-                    return Sub47CEB7Result{ 0, 0 };
-                }
-            }
-            else
-            {
-                // 0x0047CF32
-                auto nextRoutingIter = routingIter;
-                nextRoutingIter++;
-                const auto nextPos = pos + World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
-                if (nextRoutingIter == routings.end())
-                {
-                    return Sub47CEB7Result{ 0, 0 };
-                }
-                auto nextRouting = RoutingManager::getRouting(*nextRoutingIter);
-                TrackAndDirection::_RoadAndDirection nextTad(0, 0);
-                nextTad._data = nextRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
-                const auto nextOccupationFlags = getRoadOccupation(nextPos, nextTad);
-                if ((nextOccupationFlags & RoadOccupationFlags::isLaneOccupied) == RoadOccupationFlags::none)
-                {
-                    return Sub47CEB7Result{ 0, 0 };
-                }
-                overtakeResult = getRoadOvertakeAvailability(veh1, nextPos, nextTad._data);
-                if (overtakeResult == OvertakeResult::mayBeOvertaken)
-                {
-                    return Sub47CEB7Result{ 0, 0 };
-                }
-            }
-            // 0x0047CFB5
-            const auto& roadObj = ObjectManager::get<RoadObject>(veh1.trackType);
-            if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
-            {
-                return Sub47CEB7Result{ 0, 0 };
-            }
-            if (tad.isUnk8() || tad.isBackToFront())
-            {
-                return Sub47CEB7Result{ 0, 0 };
-            }
-            auto backToFrontTad = tad;
-            backToFrontTad._data ^= (1U << 7);
-            auto btfOccupationFlags = getRoadOccupation(pos, backToFrontTad);
-            if ((btfOccupationFlags & (RoadOccupationFlags::hasLevelCrossing | RoadOccupationFlags::isLaneOccupied)) != RoadOccupationFlags::none)
-            {
-                return Sub47CEB7Result{ 0, 0 };
-            }
-            const auto unkCount = overtakeResult == OvertakeResult::overtakeAvailble ? 5 : 0;
-            ++unk112C327;
-            auto i = 0;
-            for (; unk112C327 < 11; ++unk112C327)
-            {
-                pos += World::TrackData::getUnkRoad(tad._data & 0x7F).pos;
-                routingIter++;
-                if (routingIter == routings.end())
-                {
-                    if ((btfOccupationFlags & RoadOccupationFlags::hasStation) == RoadOccupationFlags::none)
-                    {
-                        return Sub47CEB7Result{ 0, 0 };
-                    }
-                    return Sub47CEB7Result{ 8, static_cast<uint8_t>(unk112C327 - 1) };
-                }
-                tad._data = RoutingManager::getRouting(*routingIter) & World::Track::AdditionalTaDFlags::basicTaDMask;
-
-                backToFrontTad = tad;
-                backToFrontTad._data ^= (1U << 7);
-                btfOccupationFlags = getRoadOccupation(pos, backToFrontTad);
-                if ((btfOccupationFlags & (RoadOccupationFlags::hasLevelCrossing | RoadOccupationFlags::isLaneOccupied)) != RoadOccupationFlags::none)
-                {
-                    return Sub47CEB7Result{ 0, 0 };
-                }
-                const auto fwdOccupationFlags = getRoadOccupation(pos, tad);
-                if ((fwdOccupationFlags & RoadOccupationFlags::isLaneOccupied) != RoadOccupationFlags::none)
-                {
-                    i = 0;
-                    continue;
-                }
-                i++;
-                if (i <= unkCount)
-                {
-                    continue;
-                }
-                return Sub47CEB7Result{ 1, unk112C327 };
-            }
-            return Sub47CEB7Result{ 0, 0 };
-        }
-    }
-
-    // 0x0047D308
-    static bool veh1UpdateRoadMotionNewRoadPiece(Vehicle1& veh1)
-    {
-        auto newRoutingHandle = veh1.routingHandle;
-        auto newIndex = newRoutingHandle.getIndex() + 1;
-        newRoutingHandle.setIndex(newIndex);
-        const auto routing = RoutingManager::getRouting(newRoutingHandle);
-        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
-        {
-            return false;
-        }
-
-        const auto newPos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep)
-            + World::TrackData::getUnkRoad(veh1.trackAndDirection.road._data & 0x7F).pos;
-
-        TrackAndDirection::_RoadAndDirection newRad(0, 0);
-        newRad._data = routing & 0x1FFU;
-        veh1.sub_47D959(newPos, newRad, true);
-
-        veh1.routingHandle = newRoutingHandle;
-        veh1.trackAndDirection.road = newRad;
-
-        veh1.tileX = newPos.x;
-        veh1.tileY = newPos.y;
-        veh1.tileBaseZ = newPos.z / World::kSmallZStep;
-        return true;
-    }
-
-    // 0x0047D2D6
-    // veh1 : esi
-    // numRoadPieces : ah
-    // return eax
-    static int32_t vehicle1UpdateRoadMotionByPieces(Vehicle1& veh1, const uint8_t numRoadPieces)
-    {
-        auto intermediatePosition = veh1.position;
-        auto distanceMoved = 0;
-        for (auto i = 0; i < numRoadPieces;)
-        {
-            auto newSubPosition = veh1.subPosition + 1U;
-            const auto subPositionDataSize = World::TrackData::getRoadSubPositon(veh1.trackAndDirection.road._data).size();
-            // This means we have moved forward by a road piece
-            if (newSubPosition >= subPositionDataSize)
-            {
-                if (!veh1UpdateRoadMotionNewRoadPiece(veh1))
-                {
-                    // This seems wrong but its what vanilla does
-                    // Todo investigate if we should return 0 or actually move
-                    // the vehicle
-                    return distanceMoved;
-                }
-                else
-                {
-                    newSubPosition = 0;
-                    i++;
-                }
-            }
-            veh1.subPosition = newSubPosition;
-            const auto& moveData = World::TrackData::getRoadSubPositon(veh1.trackAndDirection.road._data)[newSubPosition];
-            const auto nextNewPosition = moveData.loc + World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
-            distanceMoved += movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
-            intermediatePosition = nextNewPosition;
-            veh1.spriteYaw = moveData.yaw;
-            veh1.spritePitch = moveData.pitch;
-        }
-
-        veh1.moveTo(intermediatePosition);
-        return distanceMoved;
-    }
-
-    // 0x0047D1B4
-    // Similar to the others but doesn't update the vehicle
-    // due to that it must take reference to all the variables
-    static bool veh1UpdateRoadMotionNewRoadPieceNoMove(World::Pos3& pos, RoutingHandle& handle, TrackAndDirection::_RoadAndDirection& rad)
-    {
-        auto newIndex = handle.getIndex() + 1;
-        handle.setIndex(newIndex);
-        const auto routing = RoutingManager::getRouting(handle);
-        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
-        {
-            return false;
-        }
-
-        pos += World::TrackData::getUnkRoad(rad._data & 0x7F).pos;
-
-        rad._data = routing & 0x1FFU;
-        return true;
-    }
-
-    // 0x0047D142
-    // veh1 : esi
-    // numRoadPieces : ah
-    // return eax
-    static int32_t vehicle1UpdateRoadMotionByPiecesNoMove(Vehicle1& veh1, const uint8_t numRoadPieces)
-    {
-        auto intermediatePosition = veh1.position;
-        auto distanceMoved = 0;
-        auto pos = World::Pos3(veh1.tileX, veh1.tileY, veh1.tileBaseZ * World::kSmallZStep);
-        auto rad = veh1.trackAndDirection.road;
-        auto handle = veh1.routingHandle;
-        auto subPosition = veh1.subPosition;
-        for (auto i = 0; i < numRoadPieces;)
-        {
-            auto newSubPosition = subPosition + 1U;
-            const auto subPositionDataSize = World::TrackData::getRoadSubPositon(rad._data).size();
-            // This means we have moved forward by a road piece
-            if (newSubPosition >= subPositionDataSize)
-            {
-                if (!veh1UpdateRoadMotionNewRoadPieceNoMove(pos, handle, rad))
-                {
-                    return distanceMoved;
-                }
-                else
-                {
-                    newSubPosition = 0;
-                    i++;
-                }
-            }
-            subPosition = newSubPosition;
-            const auto& moveData = World::TrackData::getRoadSubPositon(rad._data)[newSubPosition];
-            const auto nextNewPosition = moveData.loc + pos;
-            distanceMoved += movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
-            intermediatePosition = nextNewPosition;
-        }
-        return distanceMoved;
-    }
-
     // 0x0047C7FA
     static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
     {
@@ -887,7 +481,7 @@ namespace OpenLoco::Vehicles
             component.subPosition = newSubPosition;
             const auto& moveData = World::TrackData::getRoadSubPositon(component.trackAndDirection.road._data)[newSubPosition];
             const auto nextNewPosition = moveData.loc + World::Pos3(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
-            component.remainingDistance -= movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+            component.remainingDistance -= kMovementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
             intermediatePosition = nextNewPosition;
             component.spriteYaw = moveData.yaw;
             component.spritePitch = moveData.pitch;
@@ -947,7 +541,7 @@ namespace OpenLoco::Vehicles
                 component.subPosition = newSubPosition;
                 const auto& moveData = World::TrackData::getTrackSubPositon(component.trackAndDirection.track._data)[newSubPosition];
                 const auto nextNewPosition = moveData.loc + World::Pos3(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
-                component.remainingDistance -= movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+                component.remainingDistance -= kMovementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
                 intermediatePosition = nextNewPosition;
                 component.spriteYaw = moveData.yaw;
                 component.spritePitch = moveData.pitch;
@@ -1023,7 +617,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            const auto newUnk4u = _4F7358[trackAndDirection._data >> 2] >> 4;
+            const auto newUnk4u = World::TrackData::getRoadOccupationMask(trackAndDirection._data >> 2) >> 4;
             if (setOccupied)
             {
                 elRoad->setUnk4u(elRoad->unk4u() | newUnk4u);
@@ -1418,10 +1012,10 @@ namespace OpenLoco::Vehicles
         for (auto& car : train.cars)
         {
             const auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-            assert(std::distance(car.begin(), car.end()) == vehicleObj->var_04);
+            assert(std::distance(car.begin(), car.end()) == vehicleObj->numCarComponents);
             if (car.body->has38Flags(Flags38::isReversed))
             {
-                auto objCarIndex = vehicleObj->var_04 - 1;
+                auto objCarIndex = vehicleObj->numCarComponents - 1;
                 for (auto& component : car)
                 {
                     auto& objCar = vehicleObj->carComponents[objCarIndex];
@@ -1465,7 +1059,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004AE2AB
     // head: esi
-    static void applyVehicleObjectLength(Vehicle& train)
+    void applyVehicleObjectLength(Vehicle& train)
     {
         // We want the tail to have a remaining distance of 0
         // so we first apply the lengths from 0 then take the return
@@ -1477,176 +1071,6 @@ namespace OpenLoco::Vehicles
         train.veh2->remainingDistance = negStartDistance;
         applyVehicleObjectLengthToBogies(train, negStartDistance);
         train.tail->remainingDistance = 0;
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0047C7FA,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                uint32_t distance = regs.eax;
-                VehicleCommon* component = X86Pointer<VehicleCommon>(regs.esi);
-
-                const auto res = updateRoadMotion(*component, distance);
-
-                regs = backup;
-                regs.eax = res;
-                return 0;
-            });
-
-        registerHook(
-            0x004AFFF3,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                VehicleBogie* component = X86Pointer<VehicleBogie>(regs.esi);
-                VehicleBogie* newComponent = flipCar(*component);
-                regs = backup;
-                regs.esi = X86Pointer(newComponent);
-                return 0;
-            });
-
-        registerHook(
-            0x004AF4D6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                VehicleBogie* source = X86Pointer<VehicleBogie>(regs.esi);
-                VehicleBase* dest = X86Pointer<VehicleBase>(regs.edi);
-
-                insertCarBefore(*source, *dest);
-
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x00478CE9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
-                const uint16_t tad = regs.bp;
-                const auto companyId = CompanyId(regs.bl);
-                const uint8_t roadObjId = regs.bh;
-                const auto requiredMods = addr<0x0113601A, uint8_t>();
-                const auto queryMods = addr<0x0113601B, uint8_t>();
-                auto& legacyConnections = *X86Pointer<World::Track::LegacyTrackConnections>(regs.edi - 4);
-                legacyConnections.size = 0;
-                const auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, tad);
-                const auto connections = World::Track::getRoadConnectionsOneWay(nextPos, nextRot, companyId, roadObjId, requiredMods, queryMods);
-                World::Track::toLegacyConnections(connections, legacyConnections);
-                regs = backup;
-                regs.ax = nextPos.x;
-                regs.cx = nextPos.y;
-                regs.dx = nextPos.z;
-                return 0;
-            });
-
-        registerHook(
-            0x00478AC9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dx);
-                const uint16_t tad = regs.bp;
-                const auto companyId = CompanyId(regs.bl);
-                const uint8_t roadObjId = regs.bh;
-                const auto requiredMods = addr<0x0113601A, uint8_t>();
-                const auto queryMods = addr<0x0113601B, uint8_t>();
-                auto& legacyConnections = *X86Pointer<World::Track::LegacyTrackConnections>(regs.edi - 4);
-                legacyConnections.size = 0;
-                const auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, tad);
-                const auto connections = World::Track::getRoadConnectionsAiAllocated(nextPos, nextRot, companyId, roadObjId, requiredMods, queryMods);
-                World::Track::toLegacyConnections(connections, legacyConnections);
-                regs = backup;
-                regs.ax = nextPos.x;
-                regs.cx = nextPos.y;
-                regs.dx = nextPos.z;
-
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004AF5E1,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
-                connectJacobsBogies(*head);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0047CD78,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
-                const auto pos = World::Pos3(regs.ax, regs.cx, regs.dl * World::kSmallZStep);
-                const uint16_t tad = regs.bp;
-
-                const auto res = getRoadOvertakeAvailability(*veh1, pos, tad);
-
-                addr<0x0112C328, uint8_t>() = res == OvertakeResult::overtakeAvailble ? 5 : 0;
-
-                regs = backup;
-                return res == OvertakeResult::mayBeOvertaken ? X86_FLAG_CARRY : 0;
-            });
-
-        registerHook(
-            0x0047CEB7,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
-
-                const auto res = sub_47CEB7(*veh1);
-
-                regs = backup;
-                regs.al = res.al;
-                regs.ah = res.ah;
-                return 0;
-            });
-
-        registerHook(
-            0x0047D2D6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
-                const uint8_t numRoadPieces = regs.ah;
-                const auto res = vehicle1UpdateRoadMotionByPieces(*veh1, numRoadPieces);
-                regs = backup;
-                regs.eax = res;
-                return 0;
-            });
-
-        registerHook(
-            0x0047D142,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Vehicle1* veh1 = X86Pointer<Vehicle1>(regs.esi);
-                const uint8_t numRoadPieces = regs.ah;
-                const auto res = vehicle1UpdateRoadMotionByPiecesNoMove(*veh1, numRoadPieces);
-                regs = backup;
-                regs.eax = res;
-                return 0;
-            });
-
-        registerHook(
-            0x004AE2AB,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                VehicleHead* head = X86Pointer<VehicleHead>(regs.esi);
-                Vehicle train(*head);
-                applyVehicleObjectLength(train);
-                regs = backup;
-                return 0;
-            });
-
-        registerHeadHooks();
     }
 
     bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags)

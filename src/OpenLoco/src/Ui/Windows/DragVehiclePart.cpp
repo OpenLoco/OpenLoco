@@ -2,6 +2,7 @@
 #include "Graphics/RenderTarget.h"
 #include "Input.h"
 #include "OpenLoco.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
@@ -39,7 +40,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         WindowManager::invalidate(WindowType::vehicle, enumValue(car.front->head));
 
         uint16_t width = getWidthVehicleInline(car);
-        auto pos = Input::getTooltipMouseLocation();
+        auto pos = Ui::ToolTip::getTooltipMouseLocation();
         pos.y -= 30;
         pos.x -= width / 2;
         Ui::Size32 size = { width, 60 };
@@ -48,7 +49,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         self->setWidgets(widgets);
         self->widgets[widx::frame].right = width - 1;
 
-        Input::windowPositionBegin(Input::getTooltipMouseLocation().x, Input::getTooltipMouseLocation().y, self, widx::frame);
+        Input::windowPositionBegin(Ui::ToolTip::getTooltipMouseLocation().x, Ui::ToolTip::getTooltipMouseLocation().y, self, widx::frame);
     }
 
     // 0x004B62FE
@@ -74,17 +75,25 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     }
 
     // 0x004B6197
-    static void draw([[maybe_unused]] Ui::Window& self, Gfx::DrawingContext& drawingCtx)
+    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        Vehicles::Vehicle train(_dragVehicleHead);
-        for (auto& car : train.cars)
+        const auto& rt = drawingCtx.currentRenderTarget();
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x, self.y, self.width, self.height));
+        if (clipped)
         {
-            if (car.front == _dragCarComponent)
+            drawingCtx.pushRenderTarget(*clipped);
+
+            Vehicles::Vehicle train(_dragVehicleHead);
+            for (auto& car : train.cars)
             {
-                drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bogies);
-                drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bodies);
-                break;
+                if (car.front == _dragCarComponent)
+                {
+                    drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bogies);
+                    drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic, VehiclePartsToDraw::bodies);
+                    break;
+                }
             }
+            drawingCtx.popRenderTarget();
         }
     }
 

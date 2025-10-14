@@ -337,16 +337,12 @@ namespace OpenLoco::Ui
         void initScrollWidgets();
         int8_t getScrollDataIndex(WidgetIndex_t index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabledWidgets);
-        void viewportCentreMain();
+        void viewportCentreMain() const;
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const World::Pos3& loc);
         void viewportCentreTileAroundCursor(int16_t mapX, int16_t mapY, int16_t offsetX, int16_t offsetY);
-        void viewportFocusOnEntity(EntityId targetEntity);
-        bool viewportIsFocusedOnEntity(EntityId targetEntity) const;
-        bool viewportIsFocusedOnAnyEntity() const;
-        void viewportUnfocusFromEntity();
         void viewportZoomSet(int8_t zoomLevel, bool toCursor);
         void viewportZoomIn(bool toCursor);
         void viewportZoomOut(bool toCursor);

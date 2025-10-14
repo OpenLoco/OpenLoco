@@ -24,6 +24,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
@@ -207,8 +208,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::scenario_list_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::scenario_list_btn].left;
-            int16_t y = window.widgets[Widx::scenario_list_btn].top;
+            int16_t x = window.widgets[Widx::scenario_list_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_list_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_list_btn))
@@ -222,8 +223,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::load_game_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::load_game_btn].left;
-            int16_t y = window.widgets[Widx::load_game_btn].top;
+            int16_t x = window.widgets[Widx::load_game_btn].left + window.x;
+            int16_t y = window.widgets[Widx::load_game_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::load_game_btn))
@@ -237,8 +238,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::tutorial_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::tutorial_btn].left;
-            int16_t y = window.widgets[Widx::tutorial_btn].top;
+            int16_t x = window.widgets[Widx::tutorial_btn].left + window.x;
+            int16_t y = window.widgets[Widx::tutorial_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::tutorial_btn))
@@ -254,8 +255,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::scenario_editor_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::scenario_editor_btn].left;
-            int16_t y = window.widgets[Widx::scenario_editor_btn].top;
+            int16_t x = window.widgets[Widx::scenario_editor_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_editor_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_construct_24;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_editor_btn))
@@ -269,8 +270,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         if (!window.widgets[Widx::multiplayer_toggle_btn].hidden)
         {
             auto& widget = window.widgets[Widx::multiplayer_toggle_btn];
-            auto point = Point(window.width / 2, widget.top + 3);
-
+            auto point = Point(widget.top + 3 + window.y, window.width / 2 + window.x);
             StringId string = StringIds::single_player_mode;
             FormatArguments args{};
 
@@ -360,23 +360,18 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static Ui::CursorId onCursor([[maybe_unused]] Window& window, [[maybe_unused]] WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         // Reset tooltip timeout to keep tooltips open.
-        addr<0x0052338A, uint16_t>() = 2000;
+        Ui::ToolTip::setTooltipTimeout(2000);
         return fallback;
     }
 
     static void showMultiplayer(Window* window)
     {
-        auto& cfg = Config::get().old;
-        StringManager::setString(StringIds::buffer_2039, Utility::nullTerminatedView(cfg.lastHost));
+        StringManager::setString(StringIds::buffer_2039, "");
         TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, nullptr);
     }
 
     static void multiplayerConnect(std::string_view host)
     {
-        auto& cfg = Config::get().old;
-        auto szHost = std::string(host);
-        Utility::strcpy_safe(cfg.lastHost, szHost.c_str());
-
         Network::joinServer(host);
     }
 
@@ -452,24 +447,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void onUpdate(Window& window)
     {
         window.var_846++;
-
-        if (Intro::isActive())
-        {
-            window.invalidate();
-            return;
-        }
-
-        if (!MultiPlayer::hasFlag(MultiPlayer::flags::flag_8) && !MultiPlayer::hasFlag(MultiPlayer::flags::flag_9))
-        {
-            window.invalidate();
-            return;
-        }
-
-        if (addr<0x0050C1AE, int32_t>() < 20)
-        {
-            window.invalidate();
-            return;
-        }
 
         window.invalidate();
     }
