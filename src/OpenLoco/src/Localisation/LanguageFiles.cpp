@@ -55,17 +55,6 @@ namespace OpenLoco::Localisation
         { "GREEN", ControlCodes::Colour::green },
     };
 
-    // Size for buffer strings that are used for temporary text storage
-    static constexpr size_t kBufferStringSize = 512;
-
-    static char _buffer_337[kBufferStringSize];
-    static char _buffer_338[kBufferStringSize];
-    static char _buffer_1250[kBufferStringSize];
-    static char _preferred_currency_buffer[kBufferStringSize];
-    static char _buffer_1719[kBufferStringSize];
-    static char _buffer_2039[kBufferStringSize];
-    static char _buffer_2040[kBufferStringSize];
-
     static std::unique_ptr<char[]> readString(const char* value, size_t size)
     {
         // Take terminating NULL character in account
@@ -294,22 +283,8 @@ namespace OpenLoco::Localisation
         }
     }
 
-    static void setBufferStrings()
-    {
-        StringManager::swapString(StringIds::buffer_337, _buffer_337);
-        StringManager::swapString(StringIds::buffer_338, _buffer_338);
-        StringManager::swapString(StringIds::buffer_1250, _buffer_1250);
-        StringManager::swapString(StringIds::preferred_currency_buffer, _preferred_currency_buffer);
-        StringManager::swapString(StringIds::buffer_1719, _buffer_1719);
-        StringManager::swapString(StringIds::buffer_2039, _buffer_2039);
-        StringManager::swapString(StringIds::buffer_2040, _buffer_2040);
-    }
-
     void loadLanguageFile()
     {
-        // First, set buffer strings that are used for temporary storage
-        setBufferStrings();
-
         // Load en-GB for fallback strings.
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
         fs::path languageFile = languageDir / "en-GB.yml";
