@@ -442,7 +442,7 @@ namespace OpenLoco
         World::WaveManager::update();
         TownManager::update();
         IndustryManager::update();
-        VehicleManager::update();
+        // VehicleManager::update();
         StationManager::update();
         EffectsManager::update();
         CompanyManager::update();
