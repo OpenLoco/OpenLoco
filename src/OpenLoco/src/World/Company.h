@@ -302,12 +302,14 @@ namespace OpenLoco
     };
 #pragma pack(pop)
 
-    // static_assert(sizeof(Company) == 0x8FA8);
-    // static_assert(sizeof(Company::expenditures) == 0x440);
-    // static_assert(offsetof(Company, companyValueHistory[0]) == 0x88CE);
-    // static_assert(offsetof(Company, vehicleProfit) == 0x8B9E);
-    // static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
-    // static_assert(offsetof(Company, activeEmotions) == 0x8BB0);
+    static_assert(sizeof(Company) == 0x8FA8);
+    static_assert(sizeof(Company::expenditures) == 0x440);
+    static_assert(offsetof(Company, customVehicleColoursSet) == 0x30);
+    static_assert(offsetof(Company, availableVehicles) == 0x50);
+    static_assert(offsetof(Company, companyValueHistory[0]) == 0x88CE);
+    static_assert(offsetof(Company, vehicleProfit) == 0x8B9E);
+    static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
+    static_assert(offsetof(Company, activeEmotions) == 0x8BB0);
 
     StringId getCorporateRatingAsStringId(CorporateRating rating);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);
