@@ -244,7 +244,7 @@ namespace OpenLoco::Ui
                 {
                     if (!options.hasFlags(ViewportFlags::station_names_displayed))
                     {
-                        if (columnRt.zoomLevel <= Config::get().old.stationNamesMinScale)
+                        if (columnRt.zoomLevel <= Config::get().stationNamesMinScale)
                         {
                             drawStationNames(drawingCtx);
                         }

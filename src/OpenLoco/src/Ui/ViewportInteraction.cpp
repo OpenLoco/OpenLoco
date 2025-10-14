@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return InteractionArg{};
         }
 
-        if (viewport->zoom > Config::get().old.vehiclesMinScale)
+        if (viewport->zoom > Config::get().vehiclesMinScale)
         {
             return InteractionArg{};
         }
@@ -1522,7 +1522,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction = session.getNormalInteractionInfo(flags);
             if (!vp->hasFlags(ViewportFlags::station_names_displayed))
             {
-                if (_rt2->zoomLevel <= Config::get().old.stationNamesMinScale)
+                if (_rt2->zoomLevel <= Config::get().stationNamesMinScale)
                 {
                     auto stationInteraction = session.getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)
