@@ -289,7 +289,10 @@ namespace OpenLoco::S5
             file->saveDetails = prepareSaveDetails(_gameState);
         }
         std::memcpy(file->requiredObjects, requiredObjects.data(), sizeof(file->requiredObjects));
-        file->gameState = _gameState;
+
+        auto& gameState = getGameState();
+        std::memcpy(reinterpret_cast<void*>(&file->gameState), reinterpret_cast<const void*>(&gameState), sizeof(gameState));
+
         file->gameState.savedViewX = savedView.viewX;
         file->gameState.savedViewY = savedView.viewY;
         file->gameState.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
@@ -625,6 +628,9 @@ namespace OpenLoco::S5
             Ui::ProgressBar::setProgress(10);
 
             auto file = importSave(stream);
+
+            auto& gameState = getGameState();
+            std::memcpy(reinterpret_cast<void*>(&gameState), reinterpret_cast<const void*>(&file->gameState), sizeof(gameState));
 
             Ui::ProgressBar::setProgress(90);
 
