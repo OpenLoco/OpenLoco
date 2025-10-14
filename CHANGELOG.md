@@ -1,5 +1,6 @@
 25.10+ (???)
 ------------------------------------------------------------------------
+- Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
 
 25.10 (2025-10-10)
 ------------------------------------------------------------------------
