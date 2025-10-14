@@ -1186,15 +1186,18 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
             {
-                StringId songName;
-                if (SceneManager::isTitleMode())
-                {
-                    // Name of the title screen music
-                    songName = StringIds::locomotion_title;
-                }
-                else
+                StringId songName = StringIds::music_none;
+                if (SceneManager::isPlayMode())
                 {
                     songName = Jukebox::getSelectedTrackTitleId();
+                }
+                else if (SceneManager::isTitleMode())
+                {
+                    auto& cfg = Config::get();
+                    if (cfg.audio.playTitleMusic)
+                    {
+                        songName = StringIds::locomotion_title; // Name of the title screen music
+                    }
                 }
                 auto args = FormatArguments(w.widgets[Widx::currently_playing].textArgs);
                 args.push(songName);
@@ -1213,9 +1216,9 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push(selectedPlaylistStringId);
             }
 
-            if (SceneManager::isTitleMode())
+            if (!SceneManager::isPlayMode())
             {
-                w.disabledWidgets |= (1ULL << Widx::currently_playing_btn) | (1ULL << Widx::music_controls_play) | (1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_next);
+                w.disabledWidgets |= (1ULL << Widx::currently_playing) | (1ULL << Widx::currently_playing_btn) | (1ULL << Widx::music_controls_play) | (1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_next);
             }
             else if (Jukebox::isMusicPlaying())
             {
@@ -1382,7 +1385,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             w->invalidate();
 
-            if (!SceneManager::isTitleMode())
+            if (!SceneManager::isTitleMode()) // Prevents title music from stopping
             {
                 Audio::revalidateCurrentTrack();
             }
