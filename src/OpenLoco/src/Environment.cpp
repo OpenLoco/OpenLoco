@@ -162,14 +162,14 @@ namespace OpenLoco::Environment
             auto similarResult = findSimilarFile(result);
             if (similarResult.empty())
             {
-                Logging::error("Warning: file {} could not be not found", result.u8string());
+                Logging::error("Warning: file {} could not be found", result.u8string());
             }
             else
             {
                 result = similarResult;
             }
 #else
-            Logging::error("Warning: file {} could not be not found", result.u8string());
+            Logging::error("Warning: file {} could not be found", result.u8string());
 #endif
         }
         return result;
