@@ -30,7 +30,6 @@ namespace OpenLoco::Game
 
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
 
-
     using Ui::Windows::PromptBrowse::browse_type;
 
     static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
