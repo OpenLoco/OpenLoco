@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Dropdown
     // 0x005046FA
     // Optimal items per row for image dropdown layouts, indexed by total item count
     // Determines grid layout to best fit items in a dropdown (balances width vs height)
-    static constexpr std::array<uint8_t, 33> _appropriateImageDropdownItemsPerRow = { {
+    static constexpr std::array<uint8_t, 33> kAppropriateImageDropdownItemsPerRow = { {
         // clang-format off
         1, 1, 1, 1, // 0-3 items
         2, 2,       // 4-5 items
