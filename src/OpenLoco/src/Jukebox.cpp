@@ -53,6 +53,7 @@ namespace OpenLoco::Jukebox
         return kMusicInfo[track];
     }
 
+    // Note: this counts paused as playing
     bool isMusicPlaying()
     {
         return (currentTrack != kNoSong && Config::get().audio.playJukeboxMusic);
@@ -65,11 +66,11 @@ namespace OpenLoco::Jukebox
 
     StringId getSelectedTrackTitleId()
     {
-        if (currentTrack != kNoSong)
+        if (currentTrack == kNoSong)
         {
-            return kMusicInfo[currentTrack].titleId;
+            return StringIds::music_none;
         }
-        return StringIds::music_none;
+        return kMusicInfo[currentTrack].titleId;
     }
 
     static std::vector<MusicId> makeAllMusicPlaylist()
@@ -166,7 +167,7 @@ namespace OpenLoco::Jukebox
             }
         }
 
-        // And pick one.
+        // And pick a song!
         auto r = std::rand() % playlist.size();
         currentTrack = playlist[r];
         return kMusicInfo[currentTrack];
@@ -175,7 +176,7 @@ namespace OpenLoco::Jukebox
     // The player manually selects a song from the drop-down in the music options. changeTrack() is expected to be called shortly after this.
     bool requestTrack(MusicId track)
     {
-        assert(track < kNumMusicTracks); // Will also catch kNoSong ("[None]"), which isn't in the drop-down and would be weird to request.
+        assert(track < kNumMusicTracks); // Also catches kNoSong ("[None]"), which is impossible to request.
 
         if (track == currentTrack)
         {
