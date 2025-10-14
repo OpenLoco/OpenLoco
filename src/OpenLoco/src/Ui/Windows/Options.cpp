@@ -1201,8 +1201,8 @@ namespace OpenLoco::Ui::Windows::Options
 
                 auto args = FormatArguments(w.widgets[Widx::music_playlist].textArgs);
 
-                StringId currentSongStringId = playlist_string_ids[enumValue(Config::get().audio.playlist)];
-                args.push(currentSongStringId);
+                StringId selectedPlaylistStringId = playlist_string_ids[enumValue(Config::get().audio.playlist)];
+                args.push(selectedPlaylistStringId);
             }
 
             w.activatedWidgets &= ~((1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_play));
@@ -2804,6 +2804,7 @@ namespace OpenLoco::Ui::Windows::Options
         ObjectManager::markOnlyLoadedObjects(getLoadedSelectedObjectFlags());
     }
 
+    // Disables tabs that are not relevent to the current scene (scenario editor, title screen).
     static void sub_4C13BE(Window* w)
     {
         w->disabledWidgets &= ~((1ULL << Common::Widx::tab_music) | (1ULL << Common::Widx::tab_regional));
