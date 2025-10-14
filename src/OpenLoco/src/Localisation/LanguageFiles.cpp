@@ -285,7 +285,7 @@ namespace OpenLoco::Localisation
 
     void loadLanguageFile()
     {
-        // Load en-GB for fallback strings.
+        // First, load en-GB for fallback strings.
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
         fs::path languageFile = languageDir / "en-GB.yml";
         if (!loadLanguageStringTable(languageFile))
