@@ -40,7 +40,7 @@ namespace OpenLoco::ScenarioManager
         ObjectHeader currency;          // 0x468
         uint8_t preview[128][128];      // 0x478
 
-        bool hasFlag(ScenarioIndexFlags flag)
+        constexpr bool hasFlag(ScenarioIndexFlags flag) const
         {
             return (flags & flag) != ScenarioIndexFlags::none;
         }
