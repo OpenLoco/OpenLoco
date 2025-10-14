@@ -28,39 +28,41 @@ namespace OpenLoco::Ui::Dropdown
     static constexpr int kBytesPerItem = 8;
 
     // 0x00504619
-    static constexpr Colour kDropdownColourTable[31] = {
-        Colour::grey,              // 0x01
-        Colour::grey,              // 0x01
-        Colour::white,             // 0x02
-        Colour::mutedPurple,       // 0x04
-        Colour::mutedPurple,       // 0x04
-        Colour::purple,            // 0x05
-        Colour::blue,              // 0x07
-        Colour::blue,              // 0x07
-        Colour::mutedDarkTeal,     // 0x08
-        Colour::mutedDarkTeal,     // 0x08
-        Colour::green,             // 0x0D
-        Colour::mutedSeaGreen,     // 0x0B
-        Colour::mutedGrassGreen,   // 0x0C
-        Colour::green,             // 0x0D
-        Colour::mutedAvocadoGreen, // 0x0E
-        Colour::mutedOliveGreen,   // 0x0F
-        Colour::yellow,            // 0x10
-        Colour::yellow,            // 0x10
-        Colour::orange,            // 0x12
-        Colour::amber,             // 0x13
-        Colour::orange,            // 0x12
-        Colour::mutedDarkYellow,   // 0x15
-        Colour::mutedDarkYellow,   // 0x15
-        Colour::brown,             // 0x17
-        Colour::mutedOrange,       // 0x18
-        Colour::mutedDarkRed,      // 0x19
-        Colour::red,               // 0x1B
-        Colour::red,               // 0x1B
-        Colour::pink,              // 0x1D
-        Colour::pink,              // 0x1D
-        Colour::mutedRed           // 0x1E
-    };
+    // Translucent colour to base colour mapping table
+    // Maps each colour index to its base colour when handling translucent colours
+    static constexpr std::array<Colour, 31> kDropdownColourTable = { {
+        Colour::grey,              // black -> grey
+        Colour::grey,              // grey -> grey
+        Colour::white,             // white -> white
+        Colour::mutedPurple,       // mutedDarkPurple -> mutedPurple
+        Colour::mutedPurple,       // mutedPurple -> mutedPurple
+        Colour::purple,            // purple -> purple
+        Colour::blue,              // darkBlue -> blue
+        Colour::blue,              // blue -> blue
+        Colour::mutedDarkTeal,     // mutedDarkTeal -> mutedDarkTeal
+        Colour::mutedDarkTeal,     // mutedTeal -> mutedDarkTeal
+        Colour::green,             // darkGreen -> green
+        Colour::mutedSeaGreen,     // mutedSeaGreen -> mutedSeaGreen
+        Colour::mutedGrassGreen,   // mutedGrassGreen -> mutedGrassGreen
+        Colour::green,             // green -> green
+        Colour::mutedAvocadoGreen, // mutedAvocadoGreen -> mutedAvocadoGreen
+        Colour::mutedOliveGreen,   // mutedOliveGreen -> mutedOliveGreen
+        Colour::yellow,            // yellow -> yellow
+        Colour::yellow,            // darkYellow -> yellow
+        Colour::orange,            // orange -> orange
+        Colour::amber,             // amber -> amber
+        Colour::orange,            // darkOrange -> orange
+        Colour::mutedDarkYellow,   // mutedDarkYellow -> mutedDarkYellow
+        Colour::mutedDarkYellow,   // mutedYellow -> mutedDarkYellow
+        Colour::brown,             // brown -> brown
+        Colour::mutedOrange,       // mutedOrange -> mutedOrange
+        Colour::mutedDarkRed,      // mutedDarkRed -> mutedDarkRed
+        Colour::red,               // darkRed -> red
+        Colour::red,               // red -> red
+        Colour::pink,              // darkPink -> pink
+        Colour::pink,              // pink -> pink
+        Colour::mutedRed,          // mutedRed -> mutedRed
+    } };
 
     // 0x005046FA
     static constexpr std::uint8_t kAppropriateImageDropdownItemsPerRow[33] = {
