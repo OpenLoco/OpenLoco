@@ -172,7 +172,6 @@ namespace OpenLoco::Jukebox
     // Returns the information for this track so that Audio.cpp can get its PathId to play.
     const MusicInfo& consumeTrack()
     {
-        // Track requested? If so, selectedTrack has already been set for us.
         if (!selectedTrackNotPlayedYet)
         {
             chooseNextTrack();
@@ -182,7 +181,7 @@ namespace OpenLoco::Jukebox
         return kMusicInfo[selectedTrack];
     }
 
-    // The player manually selects a song from the drop-down in the music options. consumeTrack() is expected to be called shortly after this.
+    // The player manually selects a song from the drop-down in the music options.
     bool requestTrack(MusicId track)
     {
         assert(track < kNumMusicTracks); // Also catches kNoSong ("[None]"), which is impossible to request.
@@ -203,7 +202,6 @@ namespace OpenLoco::Jukebox
         return true;
     }
 
-    // Prematurely stops the current song so that another will be played.
     bool skipCurrentTrack()
     {
         if (Config::get().audio.playJukeboxMusic == 0)
@@ -214,7 +212,7 @@ namespace OpenLoco::Jukebox
         // Changing the track here makes the skip button responsive even when paused.
         chooseNextTrack();
 
-        // Audio::playBackgroundMusic() will call Jukebox::consumeTrack() if the music is stopped.
+        // Stopping the music causes Audio::playBackgroundMusic() to call Jukebox::consumeTrack() next time it is called.
         Audio::stopMusic();
 
         return true;
