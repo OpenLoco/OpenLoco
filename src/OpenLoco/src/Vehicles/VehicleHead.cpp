@@ -3740,7 +3740,7 @@ namespace OpenLoco::Vehicles
     static PathFindingResult waterPathfindToTarget(const World::TilePos2 tilePos, const MicroZ waterMicroZ, const World::TilePos2 targetOrderPos, const NearbyBoats& nearbyVehicles, uint8_t cost, const PathFindingResult& bestResult)
     {
         PathFindingResult result = bestResult;
-        if (!validCoords(tilePos))
+        if (!World::TileManager::validCoords(tilePos))
         {
             return result;
         }
@@ -3772,7 +3772,7 @@ namespace OpenLoco::Vehicles
                 return result;
             }
         }
-        auto distToTarget = toWorldSpace(tilePos - targetOrderPos);
+        auto distToTarget = World::toWorldSpace(tilePos - targetOrderPos);
         distToTarget.x = std::abs(distToTarget.x);
         distToTarget.y = std::abs(distToTarget.y);
         // Lower is better
@@ -3788,7 +3788,7 @@ namespace OpenLoco::Vehicles
             cost++;
             for (auto i = 0U; i < 4; ++i)
             {
-                result = waterPathfindToTarget(tilePos + toTileSpace(kRotationOffset[i]), waterMicroZ, targetOrderPos, nearbyVehicles, cost, result);
+                result = waterPathfindToTarget(tilePos + World::toTileSpace(kRotationOffset[i]), waterMicroZ, targetOrderPos, nearbyVehicles, cost, result);
             }
         }
         return result;
@@ -3809,7 +3809,7 @@ namespace OpenLoco::Vehicles
         World::TilePos2 targetOrderPos{};
         if (routeOrder != nullptr)
         {
-            targetOrderPos = toTileSpace(routeOrder->getWaypoint());
+            targetOrderPos = World::toTileSpace(routeOrder->getWaypoint());
         }
         else if (stationOrder != nullptr)
         {
@@ -3817,17 +3817,17 @@ namespace OpenLoco::Vehicles
             dockRes = getDockTargetFromStation(targetStationId);
             if (dockRes.has_value())
             {
-                targetOrderPos = toTileSpace(dockRes->headTarget);
+                targetOrderPos = World::toTileSpace(dockRes->headTarget);
             }
             else
             {
                 auto* station = StationManager::get(targetStationId);
-                targetOrderPos = toTileSpace(Pos2{ station->x, station->y });
+                targetOrderPos = World::toTileSpace(Pos2{ station->x, station->y });
             }
         }
         else
         {
-            targetOrderPos = toTileSpace(head.position);
+            targetOrderPos = World::toTileSpace(head.position);
         }
 
         Vehicle train(head);
@@ -3835,14 +3835,14 @@ namespace OpenLoco::Vehicles
         // 0x00525BE3
         const uint8_t curRotation = ((veh2.spriteYaw + 7) >> 4) & 3;
 
-        const auto initialTile = toTileSpace(head.position);
+        const auto initialTile = World::toTileSpace(head.position);
         const auto waterMicroZ = veh2.position.z / World::kMicroZStep;
 
         PathFindingResult bestResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
         uint8_t bestResultDirection = 0xFFU;
         for (auto i = 0U; i < 4; ++i)
         {
-            const auto tilePos = initialTile + toTileSpace(kRotationOffset[i]);
+            const auto tilePos = initialTile + World::toTileSpace(kRotationOffset[i]);
             PathFindingResult initResult{ std::numeric_limits<uint16_t>::max(), std::numeric_limits<uint8_t>::max() };
             const auto pathResult = waterPathfindToTarget(tilePos, waterMicroZ, targetOrderPos, nearbyVehicles, 0, initResult);
             if (pathResult != initResult && (pathResult < bestResult || (pathResult == bestResult && i == curRotation)))
@@ -3854,7 +3854,7 @@ namespace OpenLoco::Vehicles
 
         if (bestResultDirection == 0xFF)
         {
-            return WaterPathingResult(toWorldSpace(initialTile) + World::Pos2(16, 16));
+            return WaterPathingResult(World::toWorldSpace(initialTile) + World::Pos2(16, 16));
         }
 
         if (dockRes.has_value() && bestResult == PathFindingResult{ 0, 0 })
@@ -3863,7 +3863,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            const auto targetPos = toWorldSpace(initialTile) + kRotationOffset[bestResultDirection] + World::Pos2(16, 16);
+            const auto targetPos = World::toWorldSpace(initialTile) + kRotationOffset[bestResultDirection] + World::Pos2(16, 16);
             return WaterPathingResult(targetPos);
         }
     }

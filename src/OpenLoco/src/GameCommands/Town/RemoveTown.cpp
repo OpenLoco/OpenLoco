@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
                             continue;
                         }
 
-                        auto worldPos = toWorldSpace(tilePos);
+                        auto worldPos = World::toWorldSpace(tilePos);
                         auto maybeTown = TownManager::getClosestTownAndDensity(worldPos);
                         if (maybeTown)
                         {
@@ -106,7 +106,7 @@ namespace OpenLoco::GameCommands
                             continue;
                         }
 
-                        auto worldPos = toWorldSpace(tilePos);
+                        auto worldPos = World::toWorldSpace(tilePos);
                         auto maybeTown = TownManager::getClosestTownAndDensity(worldPos);
                         if (maybeTown)
                         {

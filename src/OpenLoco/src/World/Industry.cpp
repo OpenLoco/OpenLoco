@@ -482,7 +482,7 @@ namespace OpenLoco
     // 0x0045510C bl == 0
     static bool isSurfaceClaimed(const World::TilePos2& pos)
     {
-        if (!World::validCoords(pos))
+        if (!World::TileManager::validCoords(pos))
         {
             return false;
         }
@@ -550,7 +550,7 @@ namespace OpenLoco
     {
         std::size_t numBorders = 0;
         // Search a 5x5 area centred on Pos
-        const auto initialTilePos = toTileSpace(pos);
+        const auto initialTilePos = World::toTileSpace(pos);
         const auto topRight = initialTilePos - TilePos2{ 2, 2 };
         const auto bottomLeft = initialTilePos + TilePos2{ 2, 2 };
 

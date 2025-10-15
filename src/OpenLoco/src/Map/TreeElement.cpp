@@ -291,7 +291,7 @@ namespace OpenLoco::World
             }
 
             const auto newTreePos = loc + randOffset;
-            if (!validCoords(newTreePos))
+            if (!TileManager::validCoords(newTreePos))
             {
                 return true;
             }
@@ -299,7 +299,7 @@ namespace OpenLoco::World
             auto newTreeObjId = elTree.treeObjectId();
             if (!(rand & 0x0F00'0000))
             {
-                const auto randTreeObjId = getRandomTreeTypeFromSurface(toTileSpace(newTreePos), true);
+                const auto randTreeObjId = getRandomTreeTypeFromSurface(World::toTileSpace(newTreePos), true);
                 if (!randTreeObjId.has_value())
                 {
                     return true;

@@ -699,7 +699,7 @@ namespace OpenLoco::GameCommands
             _byte_1136073 = _byte_1136073 & ~(1U << 1);
 
             // Why aren't we just failing invalid???
-            if (World::validCoords(roadLoc))
+            if (World::TileManager::validCoords(roadLoc))
             {
                 const auto tile = World::TileManager::get(roadLoc);
                 auto* elSurface = tile.surface();

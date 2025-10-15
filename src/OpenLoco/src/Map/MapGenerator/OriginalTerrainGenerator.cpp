@@ -184,7 +184,7 @@ namespace OpenLoco::World::MapGenerator
                 src++;
             }
 
-            src += kMapPitch;
+            src += TileManager::kMapPitch;
         }
     }
 

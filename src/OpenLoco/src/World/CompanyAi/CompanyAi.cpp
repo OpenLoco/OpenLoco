@@ -2145,8 +2145,8 @@ namespace OpenLoco
     {
         std::array<uint32_t, Limits::kMaxCargoObjects> scores{};
         World::Pos2 townPos{ town.x, town.y };
-        auto tilePosA = toTileSpace(townPos) - World::TilePos2{ 5, 5 };
-        auto tilePosB = toTileSpace(townPos) + World::TilePos2{ 5, 5 };
+        auto tilePosA = World::toTileSpace(townPos) - World::TilePos2{ 5, 5 };
+        auto tilePosB = World::toTileSpace(townPos) + World::TilePos2{ 5, 5 };
         for (auto& tilePos : getClampedRange(tilePosA, tilePosB))
         {
             auto tile = TileManager::get(tilePos);
@@ -3122,8 +3122,8 @@ namespace OpenLoco
     // If there are less than 4 buildings in the area (5x5) then the station can be placed there
     static bool isSuitableForStation(const World::Pos2& pos)
     {
-        auto tilePosA = toTileSpace(pos) - TilePos2{ 2, 2 };
-        auto tilePosB = toTileSpace(pos) + TilePos2{ 2, 2 };
+        auto tilePosA = World::toTileSpace(pos) - TilePos2{ 2, 2 };
+        auto tilePosB = World::toTileSpace(pos) + TilePos2{ 2, 2 };
         auto numBuildings = 0U;
         for (const auto& tilePos : TilePosRangeView(tilePosA, tilePosB))
         {
@@ -3264,7 +3264,7 @@ namespace OpenLoco
         auto maxBaseZ = std::numeric_limits<SmallZ>::min();
         for (auto& aiStation : thought.stations)
         {
-            if (!World::validCoords(aiStation.pos))
+            if (!World::TileManager::validCoords(aiStation.pos))
             {
                 continue;
             }
@@ -3417,7 +3417,7 @@ namespace OpenLoco
 
         if (!aiStationA.hasFlags(AiThoughtStationFlags::operational))
         {
-            const auto posDiff1 = toTileSpace(aiStationB.pos - aiStationA.pos);
+            const auto posDiff1 = World::toTileSpace(aiStationB.pos - aiStationA.pos);
             const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
 
             aiStationA.pos += kYaw0RotationOffsets[rotation1] * 4;
@@ -3428,7 +3428,7 @@ namespace OpenLoco
         }
         if (!aiStationB.hasFlags(AiThoughtStationFlags::operational))
         {
-            const auto posDiff1 = toTileSpace(aiStationA.pos - aiStationB.pos);
+            const auto posDiff1 = World::toTileSpace(aiStationA.pos - aiStationB.pos);
             const auto rotation1 = Vehicles::calculateYaw1FromVector(posDiff1.x, posDiff1.y) / 8;
 
             aiStationB.pos += kYaw0RotationOffsets[rotation1] * 4;
@@ -3780,8 +3780,8 @@ namespace OpenLoco
         auto& aiStation0 = thought.stations[aiStationIdx0];
         auto& aiStation1 = thought.stations[aiStationIdx1];
 
-        const auto tilePos0 = toTileSpace(aiStation0.pos);
-        const auto tilePos1 = toTileSpace(aiStation1.pos);
+        const auto tilePos0 = World::toTileSpace(aiStation0.pos);
+        const auto tilePos1 = World::toTileSpace(aiStation1.pos);
 
         return Math::Vector::manhattanDistance2D(tilePos0, tilePos1);
     }
@@ -3950,8 +3950,8 @@ namespace OpenLoco
         auto& aiStation0 = thought.stations[aiStationIdx0];
         auto& aiStation1 = thought.stations[aiStationIdx1];
 
-        const auto tilePos0 = toTileSpace(aiStation0.pos);
-        const auto tilePos1 = toTileSpace(aiStation1.pos);
+        const auto tilePos0 = World::toTileSpace(aiStation0.pos);
+        const auto tilePos1 = World::toTileSpace(aiStation1.pos);
 
         return Math::Vector::distance2D(tilePos0, tilePos1);
     }
@@ -4300,7 +4300,7 @@ namespace OpenLoco
             maxHeight = std::max<int>(maxHeight, height);
         }
         // 0x00482FA4
-        if (!World::validCoords(maxPos))
+        if (!World::TileManager::validCoords(maxPos))
         {
             return true;
         }
@@ -4502,7 +4502,7 @@ namespace OpenLoco
         for (auto& offset : kPortBorderOffsetsAi)
         {
             const auto borderPos = offset + newPortTilePos;
-            if (!World::validCoords(borderPos))
+            if (!World::TileManager::validCoords(borderPos))
             {
                 continue;
             }
@@ -4518,7 +4518,7 @@ namespace OpenLoco
                     {
                         // TODO: Use kRotationToBuildingFront instead of this broken logic
                         // (then we don't even need calculateYaw0FromVector)
-                        const auto diffWorld = toWorldSpace(offset) - World::Pos2(16, 16);
+                        const auto diffWorld = World::toWorldSpace(offset) - World::Pos2(16, 16);
                         // This gets the direction of this water from a point not at the origin which is
                         // not a good idea. The -16, -16 should really be removed. Only here to match vanilla
                         directionLand = (Vehicles::calculateYaw0FromVector(diffWorld.x, diffWorld.y) >> 4) ^ (1U << 1);
@@ -4551,14 +4551,14 @@ namespace OpenLoco
                 if (industryObj->hasFlags(IndustryObjectFlags::builtOnWater))
                 {
                     const auto diff = borderPos - minPos - World::TilePos2(1, 1);
-                    const auto diffWorld = toWorldSpace(diff);
+                    const auto diffWorld = World::toWorldSpace(diff);
                     directionWaterIndustry = Vehicles::calculateYaw0FromVector(diffWorld.x, diffWorld.y) >> 4;
                     break;
                 }
             }
         }
 
-        if (!World::validCoords(maxPos) || height == -1)
+        if (!World::TileManager::validCoords(maxPos) || height == -1)
         {
             return true;
         }
@@ -4831,7 +4831,7 @@ namespace OpenLoco
         const auto randStationTilePos = World::toTileSpace(aiStation.pos) + randTileOffset;
 
         const auto length = thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased) ? thought.stationLength : 1;
-        const auto newStationTilePos = randStationTilePos - toTileSpace(kRotationOffset[aiStation.rotation]) * (length / 2);
+        const auto newStationTilePos = randStationTilePos - World::toTileSpace(kRotationOffset[aiStation.rotation]) * (length / 2);
 
         auto checkLength = length;
         auto minPos = newStationTilePos;
@@ -4839,16 +4839,16 @@ namespace OpenLoco
         {
             if (aiStation.var_9 != 0xFFU)
             {
-                minPos -= toTileSpace(kRotationOffset[aiStation.rotation]) * 2;
+                minPos -= World::toTileSpace(kRotationOffset[aiStation.rotation]) * 2;
                 checkLength += 2;
             }
             if (aiStation.var_A != 0xFFU)
             {
-                minPos += toTileSpace(kRotationOffset[aiStation.rotation]) * 2;
+                minPos += World::toTileSpace(kRotationOffset[aiStation.rotation]) * 2;
                 checkLength += 2;
             }
         }
-        auto maxPos = minPos + toTileSpace(kRotationOffset[aiStation.rotation]) * (checkLength - 1);
+        auto maxPos = minPos + World::toTileSpace(kRotationOffset[aiStation.rotation]) * (checkLength - 1);
 
         if (minPos.x > maxPos.x)
         {
@@ -4885,7 +4885,7 @@ namespace OpenLoco
         auto stationMax = stationMin;
         if (length != 1)
         {
-            stationMax += toTileSpace(kRotationOffset[aiStation.rotation]) * (length - 1);
+            stationMax += World::toTileSpace(kRotationOffset[aiStation.rotation]) * (length - 1);
         }
 
         if (stationMin.x > stationMax.x)
@@ -4897,7 +4897,7 @@ namespace OpenLoco
             std::swap(stationMin.y, stationMax.y);
         }
 
-        if (!World::validCoords(stationMax))
+        if (!World::TileManager::validCoords(stationMax))
         {
             return true;
         }
@@ -5536,7 +5536,7 @@ namespace OpenLoco
         }
         for (auto i = 0U; i < 2; ++i)
         {
-            auto [numElements, numOwnedAiAllocated] = nearbyTrackElementsStats(toTileSpace(thought.stations[i].pos));
+            auto [numElements, numOwnedAiAllocated] = nearbyTrackElementsStats(World::toTileSpace(thought.stations[i].pos));
             if (numOwnedAiAllocated > 4 && numElements > 120)
             {
                 return 1;
@@ -5544,7 +5544,7 @@ namespace OpenLoco
         }
 
         const auto mid = (thought.stations[0].pos + thought.stations[1].pos) / 2;
-        auto [numElements, numOwnedAiAllocated] = nearbyTrackElementsStats(toTileSpace(mid));
+        auto [numElements, numOwnedAiAllocated] = nearbyTrackElementsStats(World::toTileSpace(mid));
         if (numOwnedAiAllocated > 4 && numElements > 120)
         {
             return 1;
@@ -7080,13 +7080,13 @@ namespace OpenLoco
             removeAiAllocatedCompanyTracksRoadsOnTile(pos);
 
             pos.x += 32;
-            if (pos.x < World::kMapWidth)
+            if (pos.x < TileManager::getMapWidth())
             {
                 continue;
             }
             pos.x = 0;
             pos.y += 32;
-            if (pos.y < World::kMapHeight)
+            if (pos.y < TileManager::getMapHeight())
             {
                 continue;
             }
@@ -7613,7 +7613,7 @@ namespace OpenLoco
     {
         auto remainingRange = World::TilePosRangeView(
             World::toTileSpace(company.var_85C4),
-            World::TilePos2{ World::kMapColumns - 1, World::kMapRows - 1 });
+            World::TilePos2{ World::TileManager::getMapColumns() - 1, World::TileManager::getMapRows() - 1 });
 
         auto count = 1500;
         for (auto& tilePos : remainingRange)
@@ -7621,7 +7621,7 @@ namespace OpenLoco
             removeCompanyTracksRoadsOnTile(company.id(), tilePos);
             count--;
             // TODO: Remove when divergence from vanilla as this is silly
-            if (tilePos.x == World::kMapColumns - 1)
+            if (tilePos.x == World::TileManager::getMapColumns() - 1)
             {
                 count--;
             }
@@ -7728,7 +7728,7 @@ namespace OpenLoco
         } - World::toWorldSpace(World::TilePos2{ 16, 16 });
 
         const auto selectedPos = randPos + pos;
-        if (World::validCoords(selectedPos))
+        if (World::TileManager::validCoords(selectedPos))
         {
             auto tile = World::TileManager::get(selectedPos);
             auto* surface = tile.surface();

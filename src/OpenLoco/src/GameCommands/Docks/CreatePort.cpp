@@ -153,7 +153,7 @@ namespace OpenLoco::GameCommands
         for (auto& offset : kPortBorderOffsets)
         {
             const auto testPos = pos + World::toWorldSpace(offset);
-            if (!World::validCoords(testPos))
+            if (!World::TileManager::validCoords(testPos))
             {
                 continue;
             }
@@ -186,7 +186,7 @@ namespace OpenLoco::GameCommands
     {
         // 0x00112C80B
         bool isWaterIndustryPort = false;
-        if (World::validCoords(args.pos))
+        if (World::TileManager::validCoords(args.pos))
         {
             auto* elSurface = World::TileManager::get(args.pos).surface();
             if (elSurface->water())
@@ -218,7 +218,7 @@ namespace OpenLoco::GameCommands
         for (auto& offset : buildingFootprint)
         {
             const auto tilePos = World::toTileSpace(World::Pos2(args.pos) + offset.pos);
-            if (!World::validCoords(tilePos))
+            if (!World::TileManager::validCoords(tilePos))
             {
                 setErrorText(StringIds::off_edge_of_map);
                 return FAILURE;
@@ -399,7 +399,7 @@ namespace OpenLoco::GameCommands
 
     static bool tileHasWater(World::Pos2 pos)
     {
-        if (!World::validCoords(pos))
+        if (!World::TileManager::validCoords(pos))
         {
             return false;
         }
