@@ -110,7 +110,12 @@ namespace OpenLoco
 
     std::string getVersionInfo()
     {
-        return version;
+        return kVersion;
+    }
+
+    std::string getPlatformInfo()
+    {
+        return kPlatform;
     }
 
     // 0x004BE621
@@ -796,8 +801,9 @@ namespace OpenLoco
         // Bootstrap the logging system.
         Logging::initialize(options.logLevels);
 
-        // Always print the product name and version first.
+        // Always print the product name, version, and platform info first.
         Logging::info("{}", OpenLoco::getVersionInfo());
+        Logging::info("{}", OpenLoco::getPlatformInfo());
 
         Environment::setLocale();
 
