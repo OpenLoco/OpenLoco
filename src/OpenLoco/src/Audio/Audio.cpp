@@ -1074,7 +1074,7 @@ namespace OpenLoco::Audio
         if (!channel->isPlaying())
         {
             // Set the next song to play and load its info
-            const auto& mi = Jukebox::changeTrack();
+            const auto& mi = Jukebox::consumeTrack();
 
             playMusic(mi.pathId, cfg.audio.mainVolume, false);
 
