@@ -138,16 +138,16 @@ namespace OpenLoco::Jukebox
     {
         auto playlist = makeSelectedPlaylist();
 
-        // Fallback playlist (TODO: does this even make sense?)
+        // Fallback playlists (TODO: does this even make sense? Surely the only danger to look out for is someone config editing their custom playlist)
         const auto& cfg = Config::get();
         if (playlist.empty() && cfg.audio.playlist != Config::MusicPlaylistType::currentEra)
         {
             playlist = makeCurrentEraPlaylist();
+        }
 
-            if (playlist.empty())
-            {
-                playlist = makeAllMusicPlaylist();
-            }
+        if (playlist.empty())
+        {
+            playlist = makeAllMusicPlaylist();
         }
 
         // Unless it is the only track, prevent the same song from playing twice in a row.
