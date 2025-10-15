@@ -1186,8 +1186,19 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
             {
-                StringId songName = Jukebox::getSelectedTrackTitleId();
-
+                StringId songName = StringIds::music_none;
+                if (SceneManager::isPlayMode())
+                {
+                    songName = Jukebox::getSelectedTrackTitleId();
+                }
+                else if (SceneManager::isTitleMode())
+                {
+                    auto& cfg = Config::get();
+                    if (cfg.audio.playTitleMusic)
+                    {
+                        songName = StringIds::locomotion_title; // Name of the title screen music
+                    }
+                }
                 auto args = FormatArguments(w.widgets[Widx::currently_playing].textArgs);
                 args.push(songName);
             }
@@ -1201,16 +1212,25 @@ namespace OpenLoco::Ui::Windows::Options
 
                 auto args = FormatArguments(w.widgets[Widx::music_playlist].textArgs);
 
-                StringId currentSongStringId = playlist_string_ids[enumValue(Config::get().audio.playlist)];
-                args.push(currentSongStringId);
+                StringId selectedPlaylistStringId = playlist_string_ids[enumValue(Config::get().audio.playlist)];
+                args.push(selectedPlaylistStringId);
             }
 
-            w.activatedWidgets &= ~((1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_play));
-            w.activatedWidgets |= (1ULL << Widx::music_controls_stop);
-            if (Jukebox::isMusicPlaying())
+            if (!SceneManager::isPlayMode())
             {
-                w.activatedWidgets &= ~((1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_play));
+                w.disabledWidgets |= (1ULL << Widx::currently_playing) | (1ULL << Widx::currently_playing_btn) | (1ULL << Widx::music_controls_play) | (1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_next);
+            }
+            else if (Jukebox::isMusicPlaying())
+            {
+                // Play button appears pressed
+                w.activatedWidgets &= ~(1ULL << Widx::music_controls_stop);
                 w.activatedWidgets |= (1ULL << Widx::music_controls_play);
+            }
+            else
+            {
+                // Stop button appears pressed
+                w.activatedWidgets &= ~(1ULL << Widx::music_controls_play);
+                w.activatedWidgets |= (1ULL << Widx::music_controls_stop);
             }
 
             w.disabledWidgets |= (1ULL << Widx::edit_selection);
@@ -1365,7 +1385,10 @@ namespace OpenLoco::Ui::Windows::Options
 
             w->invalidate();
 
-            Audio::revalidateCurrentTrack();
+            if (!SceneManager::isTitleMode()) // Prevents title music from stopping
+            {
+                Audio::revalidateCurrentTrack();
+            }
 
             WindowManager::close(WindowType::musicSelection);
         }
@@ -2804,10 +2827,11 @@ namespace OpenLoco::Ui::Windows::Options
         ObjectManager::markOnlyLoadedObjects(getLoadedSelectedObjectFlags());
     }
 
+    // Disables tabs that are not relevent to the current scene (scenario editor, title screen (formerly)).
     static void sub_4C13BE(Window* w)
     {
         w->disabledWidgets &= ~((1ULL << Common::Widx::tab_music) | (1ULL << Common::Widx::tab_regional));
-        if (SceneManager::isEditorMode() || SceneManager::isTitleMode())
+        if (SceneManager::isEditorMode())
         {
             w->disabledWidgets |= 1ULL << Common::Widx::tab_music;
         }
