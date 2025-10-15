@@ -1,6 +1,6 @@
 25.10+ (???)
 ------------------------------------------------------------------------
-- Change: [#3260] "Next music track" button is now responsive even when paused.
+- Change: [#3260] "Play music" and "Next music track" buttons are now responsive even when paused.
 - Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
 - Fix: [#2797] Single player scenario scores reset when adding a new scenario.
 - Fix: [#3281] Modifying the news options does not trigger a config file write, potentially losing the changes.

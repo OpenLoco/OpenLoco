@@ -54,6 +54,7 @@ namespace OpenLoco::Jukebox
     }
 
     // Note: this counts paused as playing
+    // TODO: there is no reason to check for kNoSong. Then this function can be deleted as it would be needless.
     bool isMusicPlaying()
     {
         return (selectedTrack != kNoSong && Config::get().audio.playJukeboxMusic);
@@ -249,6 +250,8 @@ namespace OpenLoco::Jukebox
 
         cfg.playJukeboxMusic = 1;
         Config::write();
+
+        chooseNextTrack();
 
         return true;
     }
