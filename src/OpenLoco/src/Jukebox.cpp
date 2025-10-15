@@ -210,6 +210,9 @@ namespace OpenLoco::Jukebox
             return false;
         }
 
+        // Changing the track here makes the skip button responsive even when paused.
+        chooseNextTrack();
+
         // Audio::playBackgroundMusic() will call Jukebox::consumeTrack() if the music is stopped.
         Audio::stopMusic();
 
