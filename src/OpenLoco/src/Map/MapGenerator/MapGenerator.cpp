@@ -586,7 +586,7 @@ namespace OpenLoco::World::MapGenerator
             if (!surface->isIndustrial())
             {
                 auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
-                if (landObj->hasFlags(LandObjectFlags::unk0))
+                if (landObj->hasFlags(LandObjectFlags::regrows))
                 {
                     bool setVariation = false;
                     if (surface->water())
