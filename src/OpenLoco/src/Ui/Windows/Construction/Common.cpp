@@ -339,6 +339,9 @@ namespace OpenLoco::Ui::Windows::Construction
 
         cState.lastSelectedMods = copyElement->mods();
         cState.byte_113603A = 0;
+
+        Construction::activateSelectedConstructionWidgets();
+
         auto* window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
@@ -436,6 +439,8 @@ namespace OpenLoco::Ui::Windows::Construction
             cState.lastSelectedMods = copyElement->mods();
         }
         cState.byte_113603A = 0;
+
+        Construction::activateSelectedConstructionWidgets();
 
         auto* window = WindowManager::find(WindowType::construction);
 
