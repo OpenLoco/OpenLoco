@@ -19,6 +19,7 @@ namespace OpenLoco::Intro
         end = 254,
         end2 = 255,
     };
+    static_assert(sizeof(State) == 1);
 
     bool isActive();
     State state();

@@ -21,6 +21,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
 #include "S5/S5.h"
+#include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
@@ -44,9 +45,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static loco_global<uint32_t, 0x009C86F8> _zoomTicks;
     static loco_global<uint8_t, 0x009C870C> _lastTownOption;
     static loco_global<uint8_t, 0x009C870D> _lastPortOption;
-    static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
-    // Replaces 0x0050A006
-    AvailableTracksAndRoads availableTracks;
+
+    // Temporary storage for railroad menu dropdown (populated in mouseDown, consumed in dropdown callback)
+    static AvailableTracksAndRoads _railroadMenuObjects;
 
     namespace Widx
     {
@@ -181,8 +182,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
         }
 
-        static loco_global<char[512], 0x0112CE04> _savePath;
-        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+        auto path = fs::u8path(ScenarioManager::getScenarioFilename()).replace_extension(S5::extensionSV5);
 
         // Store path to active file
         static loco_global<char[256], 0x0050B745> _currentGameFilePath;
@@ -429,14 +429,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         // Load dropdown objects removing any that are not unlocked.
         // Note: This is not using player company id! This looks odd.
-        availableTracks = companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId());
+        _railroadMenuObjects = companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId());
 
-        assert(std::size(_availableObjects) >= std::size(availableTracks));
-        // Legacy copy to available_objects remove when all users of 0x0050A006 accounted for
-        std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(_availableObjects));
-        _availableObjects[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
-
-        if (availableTracks.size() == 0)
+        if (_railroadMenuObjects.size() == 0)
         {
             return;
         }
@@ -446,12 +441,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         // Add available objects to Dropdown.
         uint16_t highlightedItem = 0;
 
-        for (auto i = 0u; i < std::size(availableTracks); i++)
+        for (auto i = 0u; i < _railroadMenuObjects.size(); i++)
         {
             uint32_t objImage;
             StringId objStringId;
 
-            auto objIndex = availableTracks[i];
+            auto objIndex = _railroadMenuObjects[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
@@ -473,7 +468,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             }
         }
 
-        Dropdown::showBelow(window, widgetIndex, std::size(availableTracks), 25, (1 << 6));
+        Dropdown::showBelow(window, widgetIndex, _railroadMenuObjects.size(), 25, (1 << 6));
         Dropdown::setHighlightedItem(highlightedItem);
     }
 
@@ -490,7 +485,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
         }
 
-        uint8_t objIndex = availableTracks[itemIndex];
+        uint8_t objIndex = _railroadMenuObjects[itemIndex];
         Construction::openWithFlags(objIndex);
     }
 

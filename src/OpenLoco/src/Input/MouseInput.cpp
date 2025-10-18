@@ -64,6 +64,8 @@ namespace OpenLoco::Input
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
+    static loco_global<int32_t, 0x00525324> _pendingMouseInputUpdate;
+
     static Ui::Point _cursorPressed;
 
     static Ui::CursorId _52336C;
@@ -1931,5 +1933,20 @@ namespace OpenLoco::Input
     void setPressedWindowNumber(Ui::WindowNumber_t wndNumber)
     {
         _pressedWindowNumber = wndNumber;
+    }
+
+    bool hasPendingMouseInputUpdate()
+    {
+        return _pendingMouseInputUpdate == 1;
+    }
+
+    void clearPendingMouseInputUpdate()
+    {
+        _pendingMouseInputUpdate = 0;
+    }
+
+    void setPendingMouseInputUpdate()
+    {
+        _pendingMouseInputUpdate = 1;
     }
 }

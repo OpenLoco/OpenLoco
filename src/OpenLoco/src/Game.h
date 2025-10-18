@@ -12,6 +12,7 @@ namespace OpenLoco
         returnToTitlePrompt,
         quitGamePrompt,
     };
+    static_assert(sizeof(LoadOrQuitMode) == 2);
 }
 
 namespace OpenLoco::Game

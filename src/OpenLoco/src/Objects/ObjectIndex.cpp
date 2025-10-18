@@ -1146,6 +1146,11 @@ namespace OpenLoco::ObjectManager
         }
     }
 
+    std::span<SelectedObjectsFlags> getSelectionFlags()
+    {
+        return std::span<SelectedObjectsFlags>(*_50D144, getNumInstalledObjects());
+    }
+
     // 0x004BF935
     void markOnlyLoadedObjects(std::span<SelectedObjectsFlags> objectFlags)
     {

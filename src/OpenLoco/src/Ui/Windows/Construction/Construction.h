@@ -30,6 +30,7 @@ namespace OpenLoco::Ui::Windows::Construction
         overhead = 1U << 4,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GhostVisibilityFlags);
+    static_assert(sizeof(GhostVisibilityFlags) == 1);
 
     static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
@@ -129,6 +130,7 @@ namespace OpenLoco::Ui::Windows::Construction
 #pragma pack(pop)
 
     static_assert(sizeof(ConstructionState) == 0x01136090 + 8 - 0x01135F3E);
+    static_assert(sizeof(ConstructionState) == 346);
     static loco_global<ConstructionState, 0x01135F3E> _cState;
 
     namespace Common

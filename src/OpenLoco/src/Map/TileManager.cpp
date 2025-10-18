@@ -50,6 +50,7 @@ namespace OpenLoco::World::TileManager
     constexpr auto kNumTiles = kMapPitch * kMapColumns;
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [kNumTiles], 0x00E40134> _tiles;
+    // static_assert(sizeof(TileElement* [kNumTiles]) == 1228800); // Platform-dependent: 32-bit=1228800, 64-bit=2457600
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
     static loco_global<const TileElement*, 0x00F00158> _F00158;
     static loco_global<uint32_t, 0x00F00168> _periodicDefragStartTile;

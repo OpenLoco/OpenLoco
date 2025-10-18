@@ -35,4 +35,10 @@ namespace OpenLoco::StationManager
     NearbyStation findNearbyStation(World::Pos3 pos, CompanyId companyId);
     // Subfunction of findNearbyStation (For create airport)
     StationId findNearbyEmptyStation(const World::Pos3 pos, const CompanyId companyId, const int16_t currentMinDistanceStation);
+
+    // Station construction state (shared between GameCommands and UI)
+    uint32_t getLastConstructedAdjoiningStationId();
+    void setLastConstructedAdjoiningStationId(uint32_t value);
+    World::Pos2 getLastConstructedAdjoiningStationCentrePos();
+    void setLastConstructedAdjoiningStationCentrePos(World::Pos2 value);
 }

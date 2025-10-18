@@ -39,15 +39,9 @@ using namespace OpenLoco::Ui;
 namespace OpenLoco::EditorController
 {
     static loco_global<char[267], 0x00050B745> _activeSavePath;
-    static loco_global<char[512], 0x00112CE04> _scenarioFilename;
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
     static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
-    }
+    static_assert(sizeof(ObjectManager::ObjectSelectionMeta) == 0x48);
 
     static void resetLandDistributionPatterns();
 
@@ -64,7 +58,7 @@ namespace OpenLoco::EditorController
         options.editorStep = Step::objectSelection;
         options.difficulty = 2;
         options.madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0; // ?? backup for madeAnyChanges?
+        Scenario::setMadeAnyChangesBackup(0);
         options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
         gameState.lastLandOption = 0xFF;
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
@@ -76,7 +70,7 @@ namespace OpenLoco::EditorController
         Audio::unpauseSound();
         ObjectManager::unloadAll();
         ObjectManager::prepareSelectionList(false);
-        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::loadSelectionListObjects(ObjectManager::getSelectionFlags());
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();
@@ -270,7 +264,7 @@ namespace OpenLoco::EditorController
             case Step::scenarioOptions:
                 // 0x0043D12C
                 WindowManager::closeAllFloatingWindows();
-                S5::sub_4BAEC4();
+                Windows::Terraform::resetLastSelections();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 break;
@@ -344,7 +338,7 @@ namespace OpenLoco::EditorController
                 }
                 Scenario::sub_4748D4();
                 Scenario::initialiseSnowLine();
-                S5::sub_4BAEC4();
+                Windows::Terraform::resetLastSelections();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
@@ -400,7 +394,7 @@ namespace OpenLoco::EditorController
                 Scenario::getOptions().editorStep = Step::null;
                 setupMultiplayerData();
 
-                auto path = fs::u8path(_scenarioFilename.get());
+                auto path = fs::u8path(ScenarioManager::getScenarioFilename());
                 path.replace_extension(S5::extensionSC5);
                 strncpy(_activeSavePath, path.u8string().c_str(), 257); // Or 256?
                 S5::SaveFlags saveFlags = S5::SaveFlags::scenario;
