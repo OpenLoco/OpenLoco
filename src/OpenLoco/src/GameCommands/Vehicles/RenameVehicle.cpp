@@ -64,6 +64,12 @@ namespace OpenLoco::GameCommands
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
         renameStringBuffer[36] = '\0';
 
+        // Fix #3320
+        if ((flags & Flags::apply) == 0)
+        {
+            std::memcpy(renameStringBuffer + 2 * 12, args.buffer, 12);
+        }
+
         char existingVehicleName[512];
         FormatArguments fArgs{};
         fArgs.push(vehicleHead->ordinalNumber);
