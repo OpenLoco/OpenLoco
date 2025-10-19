@@ -1693,6 +1693,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     break;
             }
 
+            y -= self.y;
             y += 14;
             y = std::max(y, kMinimumWindowHeight);
 
