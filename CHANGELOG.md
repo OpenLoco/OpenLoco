@@ -1,5 +1,8 @@
 25.10+ (???)
 ------------------------------------------------------------------------
+- Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
+- Fix: [#2797] Single player scenario scores reset when adding a new scenario.
+- Fix: [#3281] Modifying the news options does not trigger a config file write, potentially losing the changes.
 - Fix: [#3320] False potitive duplicate name detection when renaming vehicles (original bug).
 
 25.10 (2025-10-10)

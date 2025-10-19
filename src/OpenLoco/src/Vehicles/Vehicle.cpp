@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
+
     static loco_global<UpdateVar1136114Flags, 0x01136114> _vehicleUpdate_var_1136114;
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
     static constexpr int32_t kObjDistToHighPrecisionDistance = 2179;
@@ -617,7 +617,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            const auto newUnk4u = _4F7358[trackAndDirection._data >> 2] >> 4;
+            const auto newUnk4u = World::TrackData::getRoadOccupationMask(trackAndDirection._data >> 2) >> 4;
             if (setOccupied)
             {
                 elRoad->setUnk4u(elRoad->unk4u() | newUnk4u);

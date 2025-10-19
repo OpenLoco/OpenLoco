@@ -404,7 +404,7 @@ namespace OpenLoco::EditorController
                 path.replace_extension(S5::extensionSC5);
                 strncpy(_activeSavePath, path.u8string().c_str(), 257); // Or 256?
                 S5::SaveFlags saveFlags = S5::SaveFlags::scenario;
-                if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
+                if (Config::get().exportObjectsWithSaves)
                 {
                     saveFlags |= S5::SaveFlags::packCustomObjects;
                 }

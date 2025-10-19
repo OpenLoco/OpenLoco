@@ -134,6 +134,36 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return veh;
         }
 
+        static bool confirmComponentChange(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
+        {
+            auto* vehBase = EntityManager::get<Vehicles::VehicleBase>(id);
+            if (vehBase == nullptr)
+            {
+                // Should still run GameCommand so code path is identical to vanilla
+                return true;
+            }
+
+            auto* head = EntityManager::get<Vehicles::VehicleHead>(vehBase->getHead());
+            if (head == nullptr)
+            {
+                return true;
+            }
+
+            if (!head->hasAnyCargo())
+            {
+                return true;
+            }
+
+            if (head->getCarCount() > 0 && CompanyManager::getControllingId() == head->owner)
+            {
+
+                auto format = FormatArguments{};
+                return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
+            }
+
+            return false;
+        }
+
         static void onClose(Window& self);
         static void setActiveTabs(Window& self);
         static void textInput(Window& self, const WidgetIndex_t callingWidget, const WidgetId id, const char* const input);
@@ -393,7 +423,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             else
             {
-                if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+                if (Config::get().gridlinesOnLandscape)
                 {
                     flags |= ViewportFlags::gridlines_on_landscape;
                 }
@@ -2070,12 +2100,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case widx::remove:
                 {
-
                     GameCommands::VehicleSellArgs gcArgs{};
                     gcArgs.car = (*_dragCarComponent)->id;
 
-                    GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
-                    GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
+                    if (Common::confirmComponentChange(gcArgs.car, StringIds::confirm_vehicle_component_sell_cargo_warning_title, StringIds::confirm_vehicle_component_sell_cargo_warning_message, StringIds::confirm_vehicle_component_sell_cargo_warning_confirm))
+                    {
+                        GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
+                        GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
+                    }
+
                     break;
                 }
                 case widx::carList:
@@ -2392,8 +2425,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     args.head = static_cast<EntityId>(self.number);
                     args.cargoType = Dropdown::getItemArgument(dropdownIndex, 3);
 
-                    GameCommands::setErrorTitle(StringIds::cant_refit_vehicle);
-                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+                    if (Common::confirmComponentChange(args.head, StringIds::confirm_vehicle_component_refit_cargo_warning_title, StringIds::confirm_vehicle_component_refit_cargo_warning_message, StringIds::confirm_vehicle_component_refit_cargo_warning_confirm))
+                    {
+                        GameCommands::setErrorTitle(StringIds::cant_refit_vehicle);
+                        GameCommands::doCommand(args, GameCommands::Flags::apply);
+                    }
+
                     break;
                 }
             }

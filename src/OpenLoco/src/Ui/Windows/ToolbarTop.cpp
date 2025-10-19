@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         strncpy(&_currentGameFilePath[0], path.u8string().c_str(), std::size(_currentGameFilePath));
 
         S5::SaveFlags flags = S5::SaveFlags::none;
-        if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
+        if (Config::get().exportObjectsWithSaves)
         {
             flags = S5::SaveFlags::packCustomObjects;
         }
@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             Dropdown::setItemSelected(0);
         }
 
-        if (Config::get().old.musicPlaying)
+        if (Config::get().audio.playJukeboxMusic)
         {
             Dropdown::setItemSelected(1);
         }
@@ -318,8 +318,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             case 1: // "Play Music"
             {
-                auto& config = Config::get().old;
-                if (config.musicPlaying)
+                auto& config = Config::get().audio;
+                if (config.playJukeboxMusic)
                 {
                     Jukebox::disableMusic();
                 }

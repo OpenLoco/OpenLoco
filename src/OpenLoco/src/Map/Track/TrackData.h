@@ -101,4 +101,14 @@ namespace OpenLoco::World::TrackData
         uint8_t rotation; // 0x03
     };
     std::span<const RoadUnkNextTo> getRoadUnkNextTo(uint16_t trackAndDirection);
+
+    // 0x004F7358
+    // Returns the lane occupation mask for a given road trackAndDirection value.
+    // The index is (trackAndDirection._data >> 2), which encodes:
+    // - roadId (track piece identifier)
+    // - isBackwards (direction of travel)
+    // - isOvertakeLane (which lane the vehicle is in)
+    // - isChangingLane (whether the vehicle is in the process of changing lanes)
+    // The returned value's upper nibble (>> 4) contains a 2-bit lane occupation mask.
+    uint8_t getRoadOccupationMask(uint8_t index);
 }

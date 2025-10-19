@@ -400,15 +400,6 @@ namespace OpenLoco
                     Audio::playBackgroundMusic();
 
                     sub_431695(var_F253A0);
-
-                    if (Config::get().old.countdown != 0xFF)
-                    {
-                        Config::get().old.countdown++;
-                        if (Config::get().old.countdown != 0xFF)
-                        {
-                            Config::write();
-                        }
-                    }
                 }
             }
         }

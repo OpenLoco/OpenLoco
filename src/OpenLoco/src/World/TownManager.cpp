@@ -28,8 +28,6 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::TownManager
 {
-    static loco_global<Town*, 0x01135C38> _dword_1135C38;
-
     // 0x0049B45F
     static uint32_t calcCargoInfluenceFlags(const Town& town)
     {
@@ -312,7 +310,6 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00497DC1
-    // The return value of this function is also being returned via dword_1135C38.
     // esi population
     // edi capacity
     // ebp rating | (numBuildings << 16)
@@ -321,12 +318,10 @@ namespace OpenLoco::TownManager
         auto res = getClosestTownAndDensity(loc);
         if (res == std::nullopt)
         {
-            _dword_1135C38 = nullptr;
             return nullptr;
         }
         auto townId = res->first;
         auto town = get(townId);
-        _dword_1135C38 = town;
 
         if (town == nullptr)
         {

@@ -48,8 +48,10 @@ namespace OpenLoco::Audio
         int32_t channels{};
     };
 
-    [[maybe_unused]] constexpr int32_t kPlayAtCentre = 0x8000;
-    [[maybe_unused]] constexpr int32_t kPlayAtLocation = 0x8001;
+    static constexpr uint8_t kMaxVehicleSounds = 16;
+    static constexpr int32_t kPlayAtCentre = 0x8000;
+    static constexpr int32_t kPlayAtLocation = 0x8001;
+
     [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
     static loco_global<uint32_t, 0x0050D1EC> _audioInitialised;
@@ -389,6 +391,17 @@ namespace OpenLoco::Audio
         return nullptr;
     }
 
+    // 0x004FEAB8
+    // Sound volume levels indexed by SoundId
+    static constexpr std::array<int32_t, 32> kSoundVolumeTable = { {
+        // clang-format off
+           0,    0,    0,    0,    0, -400,    0,    0,
+           0,    0,    0, -500,    0,    0,    0,    0,
+           0,    0,    0,    0,    0,    0, -1900,    0,
+           0,    0, -600, -600, -600, -600, -600, -600,
+        // clang-format on
+    } };
+
     static int32_t getVolumeForSoundId(SoundId id)
     {
         if (isObjectSoundId(id))
@@ -402,8 +415,7 @@ namespace OpenLoco::Audio
         }
         else
         {
-            loco_global<int32_t[32], 0x004FEAB8> _unk_4FEAB8;
-            return _unk_4FEAB8[(int32_t)id];
+            return kSoundVolumeTable[static_cast<int32_t>(id)];
         }
     }
 
@@ -525,12 +537,7 @@ namespace OpenLoco::Audio
                 pan = 0;
             }
 
-            const auto& cfg = Config::get().old;
-            if (cfg.var_1E == 0)
-            {
-                pan = 0;
-            }
-            else if (pan != 0)
+            if (pan != 0)
             {
                 pan = calculatePan(pan, Ui::width());
             }
@@ -714,7 +721,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        if (_numActiveVehicleSounds >= Config::get().old.maxVehicleSounds)
+        if (_numActiveVehicleSounds >= kMaxVehicleSounds)
         {
             return;
         }
@@ -1008,18 +1015,17 @@ namespace OpenLoco::Audio
     // 0x0048AA0C
     void revalidateCurrentTrack()
     {
-        using MusicPlaylistType = Config::MusicPlaylistType;
-        const auto& cfg = Config::get().old;
-
         const auto currentTrack = Jukebox::getCurrentTrack();
-
         if (currentTrack == Jukebox::kNoSong)
         {
             return;
         }
 
+        using Config::MusicPlaylistType;
+        const auto& cfg = Config::get();
+
         bool trackStillApplies = true;
-        switch (cfg.musicPlaylist)
+        switch (cfg.audio.playlist)
         {
             case MusicPlaylistType::currentEra:
             {
@@ -1036,7 +1042,7 @@ namespace OpenLoco::Audio
                 return;
 
             case MusicPlaylistType::custom:
-                if (!cfg.enabledMusic[currentTrack])
+                if (!cfg.audio.customJukebox[currentTrack])
                 {
                     trackStillApplies = false;
                 }
@@ -1053,8 +1059,8 @@ namespace OpenLoco::Audio
     // 0x0048A78D
     void playBackgroundMusic()
     {
-        auto& cfg = Config::get().old;
-        if (cfg.musicPlaying == 0 || SceneManager::isTitleMode() || SceneManager::isEditorMode() || SceneManager::isPaused())
+        auto& cfg = Config::get();
+        if (cfg.audio.playJukeboxMusic == 0 || SceneManager::isTitleMode() || SceneManager::isEditorMode() || SceneManager::isPaused())
         {
             return;
         }
@@ -1070,7 +1076,7 @@ namespace OpenLoco::Audio
             // Set the next song to play and load its info
             const auto& mi = Jukebox::changeTrack();
 
-            playMusic(mi.pathId, cfg.volume, false);
+            playMusic(mi.pathId, cfg.audio.mainVolume, false);
 
             WindowManager::invalidate(WindowType::options);
         }
@@ -1153,13 +1159,13 @@ namespace OpenLoco::Audio
     // 0x0048AA67
     void setBgmVolume(int32_t volume)
     {
-        if (Config::get().old.volume == volume)
+        auto& cfg = Config::get().audio;
+        if (cfg.mainVolume == volume)
         {
             return;
         }
 
-        auto& cfg = Config::get().old;
-        cfg.volume = volume;
+        cfg.mainVolume = volume;
         Config::write();
 
         auto* channel = getChannel(ChannelId::music);
