@@ -1,7 +1,7 @@
 25.10+ (???)
 ------------------------------------------------------------------------
+- Change: [#1625] Music options can now be accessed from the title screen.
 - Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
-- Change: [#3326] Music options can now be accessed from the title screen.
 - Fix: [#2797] Single player scenario scores reset when adding a new scenario.
 - Fix: [#3281] Modifying the news options does not trigger a config file write, potentially losing the changes.
 
