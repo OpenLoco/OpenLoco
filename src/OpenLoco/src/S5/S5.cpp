@@ -756,11 +756,138 @@ namespace OpenLoco::S5
             ObjectManager::reloadAll();
             Ui::ProgressBar::setProgress(200);
 
-            _gameState = file->gameState;
+            // Copy the S5 gamestate contents to the destination gamestate, field by field
+            auto& src = file->gameState;
+            auto& dst = *_gameState;
+            std::ranges::copy(src.rng, dst.rng);
+            std::ranges::copy(src.unkRng, dst.unkRng);
+            dst.flags = src.flags;
+            dst.currentDay = src.currentDay;
+            dst.dayCounter = src.dayCounter;
+            dst.currentYear = src.currentYear;
+            dst.currentMonth = src.currentMonth;
+            dst.currentDayOfMonth = src.currentDayOfMonth;
+            dst.savedViewX = src.savedViewX;
+            dst.savedViewY = src.savedViewY;
+            dst.savedViewZoom = src.savedViewZoom;
+            dst.savedViewRotation = src.savedViewRotation;
+            std::ranges::copy(src.playerCompanies, dst.playerCompanies);
+            std::ranges::copy(src.entityListHeads, dst.entityListHeads);
+            std::ranges::copy(src.entityListCounts, dst.entityListCounts);
+            std::ranges::copy(src.currencyMultiplicationFactor, dst.currencyMultiplicationFactor);
+            std::ranges::copy(src.unusedCurrencyMultiplicationFactor, dst.unusedCurrencyMultiplicationFactor);
+            dst.scenarioTicks = src.scenarioTicks;
+            dst.var_014A = src.var_014A;
+            dst.scenarioTicks2 = src.scenarioTicks2;
+            dst.magicNumber = src.magicNumber;
+            dst.numMapAnimations = src.numMapAnimations;
+            std::ranges::copy(src.tileUpdateStartLocation, dst.tileUpdateStartLocation);
+            dst.scenarioConstruction = src.scenarioConstruction;
+            dst.lastRailroadOption = src.lastRailroadOption;
+            dst.lastRoadOption = src.lastRoadOption;
+            dst.lastAirport = src.lastAirport;
+            dst.lastShipPort = src.lastShipPort;
+            dst.trafficHandedness = src.trafficHandedness;
+            dst.lastVehicleType = src.lastVehicleType;
+            dst.pickupDirection = src.pickupDirection;
+            dst.lastTreeOption = src.lastTreeOption;
+            dst.seaLevel = src.seaLevel;
+            dst.currentSnowLine = src.currentSnowLine;
+            dst.currentSeason = src.currentSeason;
+            dst.lastLandOption = src.lastLandOption;
+            dst.maxCompetingCompanies = src.maxCompetingCompanies;
+            dst.orderTableLength = src.orderTableLength;
+            dst.roadObjectIdIsNotTram = src.roadObjectIdIsNotTram;
+            dst.roadObjectIdIsFlag7 = src.roadObjectIdIsFlag7;
+            dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
+            dst.lastTrackTypeOption = src.lastTrackTypeOption;
+            dst.loanInterestRate = src.loanInterestRate;
+            dst.lastIndustryOption = src.lastIndustryOption;
+            dst.lastBuildingOption = src.lastBuildingOption;
+            dst.lastMiscBuildingOption = src.lastMiscBuildingOption;
+            dst.lastWallOption = src.lastWallOption;
+            dst.produceAICompanyTimeout = src.produceAICompanyTimeout;
+            std::ranges::copy(src.tickStartPrngState, dst.tickStartPrngState);
+            std::ranges::copy(src.scenarioFileName, dst.scenarioFileName);
+            std::ranges::copy(src.scenarioName, dst.scenarioName);
+            std::ranges::copy(src.scenarioDetails, dst.scenarioDetails);
+            dst.competitorStartDelay = src.competitorStartDelay;
+            dst.preferredAIIntelligence = src.preferredAIIntelligence;
+            dst.preferredAIAggressiveness = src.preferredAIAggressiveness;
+            dst.preferredAICompetitiveness = src.preferredAICompetitiveness;
+            dst.startingLoanSize = src.startingLoanSize;
+            dst.maxLoanSize = src.maxLoanSize;
+            dst.var_404 = src.var_404;
+            dst.var_408 = src.var_408;
+            dst.var_40C = src.var_40C;
+            dst.var_410 = src.var_410;
+            dst.lastBuildVehiclesOption = src.lastBuildVehiclesOption;
+            dst.numberOfIndustries = src.numberOfIndustries;
+            dst.vehiclePreviewRotationFrame = src.vehiclePreviewRotationFrame;
+            dst.objectiveType = src.objectiveType;
+            dst.objectiveFlags = src.objectiveFlags;
+            dst.objectiveCompanyValue = src.objectiveCompanyValue;
+            dst.objectiveMonthlyVehicleProfit = src.objectiveMonthlyVehicleProfit;
+            dst.objectivePerformanceIndex = src.objectivePerformanceIndex;
+            dst.objectiveDeliveredCargoType = src.objectiveDeliveredCargoType;
+            dst.objectiveDeliveredCargoAmount = src.objectiveDeliveredCargoAmount;
+            dst.objectiveTimeLimitYears = src.objectiveTimeLimitYears;
+            dst.objectiveTimeLimitUntilYear = src.objectiveTimeLimitUntilYear;
+            dst.objectiveMonthsInChallenge = src.objectiveMonthsInChallenge;
+            dst.objectiveCompletedChallengeInMonths = src.objectiveCompletedChallengeInMonths;
+            dst.industryFlags = src.industryFlags;
+            dst.forbiddenVehiclesPlayers = src.forbiddenVehiclesPlayers;
+            dst.forbiddenVehiclesCompetitors = src.forbiddenVehiclesCompetitors;
+            dst.fixFlags = src.fixFlags;
+            std::ranges::copy(src.recordSpeed, dst.recordSpeed);
+            std::ranges::copy(src.recordCompany, dst.recordCompany);
+            std::ranges::copy(src.recordDate, dst.recordDate);
+            dst.var_44C = src.var_44C;
+            dst.var_450 = src.var_450;
+            dst.var_454 = src.var_454;
+            dst.var_458 = src.var_458;
+            dst.var_45C = src.var_45C;
+            dst.var_460 = src.var_460;
+            dst.var_464 = src.var_464;
+            dst.var_468 = src.var_468;
+            dst.lastMapWindowFlags = src.lastMapWindowFlags;
+            std::ranges::copy(src.lastMapWindowSize, dst.lastMapWindowSize);
+            dst.lastMapWindowVar88A = src.lastMapWindowVar88A;
+            dst.lastMapWindowVar88C = src.lastMapWindowVar88C;
+            dst.var_478 = src.var_478;
+            dst.numMessages = src.numMessages;
+            dst.activeMessageIndex = src.activeMessageIndex;
+            std::ranges::copy(src.messages, dst.messages);
+            dst.var_B94C = src.var_B94C;
+            dst.var_B950 = src.var_B950;
+            dst.var_B952 = src.var_B952;
+            dst.var_B954 = src.var_B954;
+            dst.var_B956 = src.var_B956;
+            dst.currentRainLevel = src.currentRainLevel;
+            std::ranges::copy(src.companies, dst.companies);
+            std::ranges::copy(src.towns, dst.towns);
+            std::ranges::copy(src.industries, dst.industries);
+            std::ranges::copy(src.stations, dst.stations);
+            std::ranges::copy(src.entities, dst.entities);
+            std::ranges::copy(src.animations, dst.animations);
+            std::ranges::copy(src.waves, dst.waves);
+            for (auto i = 0U; i < Limits::kMaxUserStrings; i++)
+            {
+                std::ranges::copy(src.userStrings[i], dst.userStrings[i]);
+            }
+            for (auto i = 0U; i < Limits::kMaxVehicles; i++)
+            {
+                std::ranges::copy(src.routings[i], dst.routings[i]);
+            }
+            std::ranges::copy(src.orders, dst.orders);
+
+            // Copy scenario options
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
                 _activeOptions = *file->scenarioOptions;
             }
+
+            // Copy tile elements
             if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
                 TileManager::setElements(std::span<World::TileElement>(reinterpret_cast<World::TileElement*>(file->tileElements.data()), file->tileElements.size()));
@@ -770,6 +897,8 @@ namespace OpenLoco::S5
                 World::TileManager::initialise();
                 Scenario::sub_46115C();
             }
+
+            // Copy entity and company strings
             if (hasLoadFlags(flags, LoadFlags::landscape))
             {
                 EntityManager::freeUserStrings();
