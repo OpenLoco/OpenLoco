@@ -283,6 +283,11 @@ namespace OpenLoco::GameCommands
                     setErrorText(StringIds::empty);
                     return FAILURE;
                 }
+                // Do not allow replacing station elements owned by other companies
+                if (!sub_431E6A(elStation->owner(), reinterpret_cast<const World::TileElement*>(elStation)))
+                {
+                    return FAILURE;
+                }
                 // Otherwise, allow replacement
             }
         }
