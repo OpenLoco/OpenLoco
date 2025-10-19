@@ -118,8 +118,30 @@ namespace OpenLoco::Ui::Windows::Options
             miscellaneous,
         };
 
+        static constexpr int kTabWidgets = (1ULL << Widx::tab_display)
+            | (1ULL << Widx::tab_rendering)
+            | (1ULL << Widx::tab_sound)
+            | (1ULL << Widx::tab_music)
+            | (1ULL << Widx::tab_regional)
+            | (1ULL << Widx::tab_controls)
+            | (1ULL << Widx::tab_company)
+            | (1ULL << Widx::tab_miscellaneous);
+
         static void prepareDraw(Window& w)
         {
+            w.activatedWidgets &= ~kTabWidgets;
+            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
+
+            w.widgets[Widx::frame].right = w.width - 1;
+            w.widgets[Widx::frame].bottom = w.height - 1;
+            w.widgets[Widx::panel].right = w.width - 1;
+            w.widgets[Widx::panel].bottom = w.height - 1;
+            w.widgets[Widx::caption].right = w.width - 2;
+            w.widgets[Widx::close_button].left = w.width - 15;
+            w.widgets[Widx::close_button].right = w.width - 15 + 12;
+
+            disableTabsByCurrentScene(w);
+
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Rendering tab
@@ -275,15 +297,6 @@ namespace OpenLoco::Ui::Windows::Options
                 Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
                 Widgets::Tab({ 220, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_miscellaneous, StringIds::tooltip_miscellaneous_options));
         }
-
-        static constexpr int tabWidgets = (1ULL << Widx::tab_display)
-            | (1ULL << Widx::tab_rendering)
-            | (1ULL << Widx::tab_sound)
-            | (1ULL << Widx::tab_music)
-            | (1ULL << Widx::tab_regional)
-            | (1ULL << Widx::tab_controls)
-            | (1ULL << Widx::tab_company)
-            | (1ULL << Widx::tab_miscellaneous);
     }
 
     namespace Display
@@ -490,16 +503,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             assert(w.currentTab == Common::tab::display);
 
-            w.activatedWidgets &= ~Common::tabWidgets;
-            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
-
-            w.widgets[Common::Widx::frame].right = w.width - 1;
-            w.widgets[Common::Widx::frame].bottom = w.height - 1;
-            w.widgets[Common::Widx::panel].right = w.width - 1;
-            w.widgets[Common::Widx::panel].bottom = w.height - 1;
-            w.widgets[Common::Widx::caption].right = w.width - 2;
-            w.widgets[Common::Widx::close_button].left = w.width - 15;
-            w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
+            Common::prepareDraw(w);
 
             StringId screenModeStringId = StringIds::empty;
             switch (Config::get().display.mode)
@@ -563,10 +567,6 @@ namespace OpenLoco::Ui::Windows::Options
 #if !(defined(__APPLE__) && defined(__MACH__))
             screenModeToggleEnabled(&w);
 #endif
-
-            disableTabsByCurrentScene(w);
-
-            Common::prepareDraw(w);
         }
 
         // 0x004BFAF9
@@ -849,16 +849,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             assert(w.currentTab == Common::tab::rendering);
 
-            w.activatedWidgets &= ~Common::tabWidgets;
-            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
-
-            w.widgets[Common::Widx::frame].right = w.width - 1;
-            w.widgets[Common::Widx::frame].bottom = w.height - 1;
-            w.widgets[Common::Widx::panel].right = w.width - 1;
-            w.widgets[Common::Widx::panel].bottom = w.height - 1;
-            w.widgets[Common::Widx::caption].right = w.width - 2;
-            w.widgets[Common::Widx::close_button].left = w.width - 15;
-            w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
+            Common::prepareDraw(w);
 
             if (Config::get().constructionMarker)
             {
@@ -896,10 +887,6 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.activatedWidgets |= (1ULL << Widx::cash_popup_rendering);
             }
-
-            disableTabsByCurrentScene(w);
-
-            Common::prepareDraw(w);
         }
 
         // 0x004BFAF9
@@ -955,16 +942,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             assert(w.currentTab == Common::tab::sound);
 
-            w.activatedWidgets &= ~Common::tabWidgets;
-            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
-
-            w.widgets[Common::Widx::frame].right = w.width - 1;
-            w.widgets[Common::Widx::frame].bottom = w.height - 1;
-            w.widgets[Common::Widx::panel].right = w.width - 1;
-            w.widgets[Common::Widx::panel].bottom = w.height - 1;
-            w.widgets[Common::Widx::caption].right = w.width - 2;
-            w.widgets[Common::Widx::close_button].left = w.width - 15;
-            w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
+            Common::prepareDraw(w);
 
             auto args = FormatArguments(w.widgets[Widx::audio_device].textArgs);
 
@@ -987,10 +965,6 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.activatedWidgets &= ~(1ULL << Widx::play_title_music);
             }
-
-            disableTabsByCurrentScene(w);
-
-            Common::prepareDraw(w);
         }
 
         // 0x004C02F5
@@ -1174,16 +1148,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             assert(w.currentTab == Common::tab::music);
 
-            w.activatedWidgets &= ~Common::tabWidgets;
-            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
-
-            w.widgets[Common::Widx::frame].right = w.width - 1;
-            w.widgets[Common::Widx::frame].bottom = w.height - 1;
-            w.widgets[Common::Widx::panel].right = w.width - 1;
-            w.widgets[Common::Widx::panel].bottom = w.height - 1;
-            w.widgets[Common::Widx::caption].right = w.width - 2;
-            w.widgets[Common::Widx::close_button].left = w.width - 15;
-            w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
+            Common::prepareDraw(w);
 
             {
                 StringId songName = StringIds::music_none;
@@ -1238,10 +1203,6 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.disabledWidgets &= ~(1ULL << Widx::edit_selection);
             }
-
-            disableTabsByCurrentScene(w);
-
-            Common::prepareDraw(w);
         }
 
         // 0x004C05F9
@@ -1523,16 +1484,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             assert(w.currentTab == Common::tab::regional);
 
-            w.activatedWidgets &= ~Common::tabWidgets;
-            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
-
-            w.widgets[Common::Widx::frame].right = w.width - 1;
-            w.widgets[Common::Widx::frame].bottom = w.height - 1;
-            w.widgets[Common::Widx::panel].right = w.width - 1;
-            w.widgets[Common::Widx::panel].bottom = w.height - 1;
-            w.widgets[Common::Widx::caption].right = w.width - 2;
-            w.widgets[Common::Widx::close_button].left = w.width - 15;
-            w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
+            Common::prepareDraw(w);
 
             {
                 auto args = FormatArguments(w.widgets[Widx::language].textArgs);
@@ -1599,10 +1551,6 @@ namespace OpenLoco::Ui::Windows::Options
                 w.disabledWidgets &= ~(1ULL << Widx::currency);
                 w.disabledWidgets &= ~(1ULL << Widx::currency_btn);
             }
-
-            disableTabsByCurrentScene(w);
-
-            Common::prepareDraw(w);
         }
 
         // 0x004C0B5B
@@ -1984,16 +1932,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             assert(w.currentTab == Common::tab::controls);
 
-            w.activatedWidgets &= ~Common::tabWidgets;
-            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
-
-            w.widgets[Common::Widx::frame].right = w.width - 1;
-            w.widgets[Common::Widx::frame].bottom = w.height - 1;
-            w.widgets[Common::Widx::panel].right = w.width - 1;
-            w.widgets[Common::Widx::panel].bottom = w.height - 1;
-            w.widgets[Common::Widx::caption].right = w.width - 2;
-            w.widgets[Common::Widx::close_button].left = w.width - 15;
-            w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
+            Common::prepareDraw(w);
 
             w.activatedWidgets &= ~(1ULL << Widx::edge_scrolling | 1ULL << Widx::zoom_to_cursor | 1ULL << Widx::invertRightMouseViewPan);
             if (Config::get().edgeScrolling)
@@ -2008,10 +1947,6 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.activatedWidgets |= (1ULL << Widx::invertRightMouseViewPan);
             }
-
-            disableTabsByCurrentScene(w);
-
-            Common::prepareDraw(w);
         }
 
         // 0x004C113F
@@ -2188,16 +2123,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             assert(w.currentTab == Common::tab::company);
 
-            w.activatedWidgets &= ~Common::tabWidgets;
-            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
-
-            w.widgets[Common::Widx::frame].right = w.width - 1;
-            w.widgets[Common::Widx::frame].bottom = w.height - 1;
-            w.widgets[Common::Widx::panel].right = w.width - 1;
-            w.widgets[Common::Widx::panel].bottom = w.height - 1;
-            w.widgets[Common::Widx::caption].right = w.width - 2;
-            w.widgets[Common::Widx::close_button].left = w.width - 15;
-            w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
+            Common::prepareDraw(w);
 
             if (Config::get().usePreferredOwnerName)
             {
@@ -2251,10 +2177,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.widgets[Widx::ownerFacePreview].image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black).toUInt32();
             }
 
-            disableTabsByCurrentScene(w);
             loadPreferredFace(w);
-
-            Common::prepareDraw(w);
         }
 
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
@@ -2457,16 +2380,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             assert(w.currentTab == Common::tab::miscellaneous);
 
-            w.activatedWidgets &= ~Common::tabWidgets;
-            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
-
-            w.widgets[Common::Widx::frame].right = w.width - 1;
-            w.widgets[Common::Widx::frame].bottom = w.height - 1;
-            w.widgets[Common::Widx::panel].right = w.width - 1;
-            w.widgets[Common::Widx::panel].bottom = w.height - 1;
-            w.widgets[Common::Widx::caption].right = w.width - 2;
-            w.widgets[Common::Widx::close_button].left = w.width - 15;
-            w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
+            Common::prepareDraw(w);
 
             if (Config::get().cheatsMenuEnabled)
             {
@@ -2542,10 +2456,6 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.widgets[Widx::export_plugin_objects].hidden = false;
             }
-
-            disableTabsByCurrentScene(w);
-
-            Common::prepareDraw(w);
         }
 
         static void drawDropdownContent(Window* w, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
