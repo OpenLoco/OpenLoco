@@ -98,22 +98,18 @@
 #include <cassert>
 
 using namespace OpenLoco::Ui;
-using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
-    static loco_global<uint8_t, 0x00508F08> _gameCommandNestLevel;
-
     static uint16_t _gameCommandFlags;
-
-    static loco_global<const TileElement*, 0x009C68D0> _9C68D0;
-
-    static loco_global<Pos3, 0x009C68E0> _gGameCommandPosition;
-    static loco_global<StringId, 0x009C68E6> _gGameCommandErrorText;
-    static loco_global<StringId, 0x009C68E8> _gGameCommandErrorTitle;
-    static loco_global<uint8_t, 0x009C68EA> _gGameCommandExpenditureType; // pre-multiplied by 4
-    static loco_global<CompanyId, 0x009C68EE> _errorCompanyId;
+    static uint8_t _gameCommandNestLevel;                  // 0x00508F08
+    static CompanyId _updatingCompanyId;                   // 0x009C68EB
+    static const World::TileElement* _errorTileElementPtr; // 0x009C68D0
+    static World::Pos3 _gGameCommandPosition;              // 0x009C68E0
+    static StringId _gGameCommandErrorText;                // 0x009C68E6
+    static StringId _gGameCommandErrorTitle;               // 0x009C68E8
+    static uint8_t _gGameCommandExpenditureType;           // 0x009C68EA; pre-multiplied by 4
+    static CompanyId _errorCompanyId;                      // 0x009C68EE
 
     using GameCommandFunc = void (*)(registers& regs);
 
@@ -443,10 +439,11 @@ namespace OpenLoco::GameCommands
         }
 
         // advanced errors
-        if (_9C68D0 != World::TileManager::kInvalidTile)
+        if (_errorTileElementPtr != World::TileManager::kInvalidTile)
         {
-            auto tile = *_9C68D0;
+            using namespace OpenLoco::World;
 
+            auto* tile = _errorTileElementPtr;
             switch (tile->type())
             {
                 case ElementType::track: // 4
@@ -536,7 +533,7 @@ namespace OpenLoco::GameCommands
         }
         _gGameCommandErrorText = 0xFFFEU;
         _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? World::TileManager::kInvalidTile : tile;
+        _errorTileElementPtr = tile == nullptr ? World::TileManager::kInvalidTile : tile;
         return false;
     }
 
