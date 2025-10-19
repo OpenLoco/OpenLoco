@@ -300,8 +300,10 @@ namespace OpenLoco::S5
 
         // Copy the source gamestate contents to the S5 gamestate, field by field
         auto& dst = file->gameState;
-        std::ranges::copy(src.rng, dst.rng);
-        std::ranges::copy(src.unkRng, dst.unkRng);
+        dst.rng[0] = src.rng.srand_0();
+        dst.rng[1] = src.rng.srand_1();
+        dst.unkRng[0] = src.unkRng.srand_0();
+        dst.unkRng[1] = src.unkRng.srand_1();
         dst.flags = src.flags;
         dst.currentDay = src.currentDay;
         dst.dayCounter = src.dayCounter;
@@ -888,6 +890,8 @@ namespace OpenLoco::S5
 
             // Copy the S5 gamestate contents to the destination gamestate, field by field
             auto& src = file->gameState;
+            dst.rng = { src.rng[0], src.rng[1] };
+            dst.unkRng = { src.unkRng[0], src.unkRng[1] };
             std::ranges::copy(src.rng, dst.rng);
             std::ranges::copy(src.unkRng, dst.unkRng);
             dst.flags = src.flags;
