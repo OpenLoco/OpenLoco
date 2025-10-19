@@ -3,6 +3,7 @@
 - Change: [#1625] Music options can now be accessed from the title screen.
 - Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
 - Fix: [#2797] Single player scenario scores reset when adding a new scenario.
+- Fix: [#3032] Toggling "Play Music" from the top toolbar does not refresh the status in the options window.
 - Fix: [#3281] Modifying the news options does not trigger a config file write, potentially losing the changes.
 - Fix: [#3314] Players can remove roads owned by other companies.
 - Fix: [#3315] Players can replace station elements owned by other companies.

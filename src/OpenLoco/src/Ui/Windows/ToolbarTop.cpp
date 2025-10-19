@@ -327,6 +327,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 {
                     Jukebox::enableMusic();
                 }
+
+                WindowManager::invalidate(WindowType::options);
                 break;
             }
 
