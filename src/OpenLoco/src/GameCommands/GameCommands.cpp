@@ -108,7 +108,7 @@ namespace OpenLoco::GameCommands
     static World::Pos3 _gGameCommandPosition;              // 0x009C68E0
     static StringId _gGameCommandErrorText;                // 0x009C68E6
     static StringId _gGameCommandErrorTitle;               // 0x009C68E8
-    static uint8_t _gGameCommandExpenditureType;           // 0x009C68EA; pre-multiplied by 4
+    static ExpenditureType _gGameCommandExpenditureType;   // 0x009C68EA
     static CompanyId _errorCompanyId;                      // 0x009C68EE
 
     using GameCommandFunc = void (*)(registers& regs);
@@ -564,12 +564,12 @@ namespace OpenLoco::GameCommands
 
     ExpenditureType getExpenditureType()
     {
-        return ExpenditureType(_gGameCommandExpenditureType / 4);
+        return _gGameCommandExpenditureType;
     }
 
     void setExpenditureType(const ExpenditureType type)
     {
-        _gGameCommandExpenditureType = static_cast<uint8_t>(type) * 4;
+        _gGameCommandExpenditureType = type;
     }
 
     CompanyId getUpdatingCompanyId()
