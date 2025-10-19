@@ -53,11 +53,9 @@ namespace OpenLoco::S5
     constexpr uint32_t kCurrentVersion = 0x62262;
     constexpr uint32_t kMagicNumber = 0x62300;
 
-    static loco_global<GameState, 0x00525E18> _gameState;
-    static loco_global<Options, 0x009C8714> _activeOptions;
-    static loco_global<Header, 0x009CCA34> _header;
-    static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
-    static loco_global<StringId, 0x0050C198> _loadErrorMessage;
+    static Options _activeOptions;     // 0x009C8714
+    static uint8_t _loadErrorCode;     // 0x0050C197
+    static StringId _loadErrorMessage; // 0x0050C198
 
     // TODO: move this?
     static std::vector<ObjectHeader> _loadErrorObjectsList;
@@ -169,7 +167,7 @@ namespace OpenLoco::S5
     // 0x0046DB4C
     void drawScenarioPreviewImage()
     {
-        auto& options = *_activeOptions;
+        auto& options = _activeOptions;
         const auto kPreviewSize = sizeof(options.preview[0]);
         const auto kMapSkipFactor = kMapRows / kPreviewSize;
 
@@ -226,18 +224,22 @@ namespace OpenLoco::S5
     }
 
     // 0x004471A4
-    static std::unique_ptr<SaveDetails> prepareSaveDetails(GameState& gameState)
+    static std::unique_ptr<SaveDetails> prepareSaveDetails(OpenLoco::GameState& gameState)
     {
         auto saveDetails = std::make_unique<SaveDetails>();
-        const auto& playerCompany = gameState.companies[gameState.playerCompanies[0]];
+
+        const auto& playerCompany = gameState.companies[enumValue(gameState.playerCompanies[0])];
         StringManager::formatString(saveDetails->company, sizeof(saveDetails->company), playerCompany.name);
         StringManager::formatString(saveDetails->owner, sizeof(saveDetails->owner), playerCompany.ownerName);
+
         saveDetails->date = gameState.currentDay;
         saveDetails->performanceIndex = playerCompany.performanceIndex;
         saveDetails->challengeProgress = playerCompany.challengeProgress;
         saveDetails->challengeFlags = playerCompany.challengeFlags;
+
         std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
         drawSavePreviewImage(saveDetails->image, { 250, 200 });
+
         return saveDetails;
     }
 
@@ -280,6 +282,7 @@ namespace OpenLoco::S5
         auto savedView = mainWindow != nullptr && mainWindow->viewports[0] != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple{ 0, 0, 0, 0 };
 
         auto file = std::make_unique<S5File>();
+        auto& src = getGameState();
 
         // Prepare header, scenario or save details
         file->header = prepareHeader(flags, packedObjects.size());
@@ -289,14 +292,13 @@ namespace OpenLoco::S5
         }
         if (file->header.hasFlags(HeaderFlags::hasSaveDetails))
         {
-            file->saveDetails = prepareSaveDetails(_gameState);
+            file->saveDetails = prepareSaveDetails(src);
         }
 
         // Prepare required objects
         std::memcpy(file->requiredObjects, requiredObjects.data(), sizeof(file->requiredObjects));
 
         // Copy the source gamestate contents to the S5 gamestate, field by field
-        auto& src = *_gameState;
         auto& dst = file->gameState;
         std::ranges::copy(src.rng, dst.rng);
         std::ranges::copy(src.unkRng, dst.unkRng);
@@ -820,9 +822,11 @@ namespace OpenLoco::S5
 
             Ui::ProgressBar::setProgress(150);
 
+            auto& dst = getGameState();
+
             if (file->header.type == S5Type::objects)
             {
-                _gameState->var_014A = 0;
+                dst.var_014A = 0;
                 _loadErrorCode = 254;
                 _loadErrorMessage = StringIds::new_objects_installed_successfully;
                 Ui::ProgressBar::end();
@@ -867,7 +871,7 @@ namespace OpenLoco::S5
                 if (hasLoadFlags(flags, LoadFlags::twoPlayer))
                 {
                     CompanyManager::reset();
-                    _gameState->var_014A = 0;
+                    dst.var_014A = 0;
                     Ui::ProgressBar::end();
                     return false;
                 }
@@ -884,7 +888,6 @@ namespace OpenLoco::S5
 
             // Copy the S5 gamestate contents to the destination gamestate, field by field
             auto& src = file->gameState;
-            auto& dst = *_gameState;
             std::ranges::copy(src.rng, dst.rng);
             std::ranges::copy(src.unkRng, dst.unkRng);
             dst.flags = src.flags;
@@ -1054,17 +1057,17 @@ namespace OpenLoco::S5
                     ObjectManager::unload(header);
                     ObjectManager::reloadAll();
                     ObjectManager::updateTerraformObjects();
-                    _activeOptions->editorStep = enumValue(EditorController::Step::landscapeEditor);
-                    _activeOptions->difficulty = 3;
-                    StringManager::formatString(_activeOptions->scenarioDetails, StringIds::no_details_yet);
-                    _activeOptions->scenarioName[0] = '\0';
+                    _activeOptions.editorStep = enumValue(EditorController::Step::landscapeEditor);
+                    _activeOptions.difficulty = 3;
+                    StringManager::formatString(_activeOptions.scenarioDetails, StringIds::no_details_yet);
+                    _activeOptions.scenarioName[0] = '\0';
                 }
             }
             Audio::resetSoundObjects();
 
             if (hasLoadFlags(flags, LoadFlags::scenario))
             {
-                _gameState->var_014A = 0;
+                dst.var_014A = 0;
                 Ui::ProgressBar::end();
                 return true;
             }
@@ -1109,7 +1112,7 @@ namespace OpenLoco::S5
                 Scenario::loadPreferredCurrencyAlways();
             }
             Gfx::loadCurrency();
-            _gameState->var_014A = 0;
+            dst.var_014A = 0;
 
             if (hasLoadFlags(flags, LoadFlags::titleSequence))
             {
