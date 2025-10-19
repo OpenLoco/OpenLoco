@@ -8,10 +8,10 @@ namespace OpenLoco
 {
     static_assert(Traits::IsPOD<GameState>::value == true, "GameState must be POD.");
 
-    loco_global<GameState, 0x00525E18> _gameState;
+    static GameState _gameState; // 0x00525E18
 
     GameState& getGameState()
     {
-        return *_gameState;
+        return _gameState;
     }
 }
