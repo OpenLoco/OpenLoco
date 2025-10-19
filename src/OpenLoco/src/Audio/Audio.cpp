@@ -23,7 +23,6 @@
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileStream.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <cassert>
 #include <numeric>
@@ -34,7 +33,6 @@
 #endif
 
 using namespace OpenLoco::Environment;
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Utility;
 using namespace OpenLoco::Diagnostics;
@@ -54,11 +52,10 @@ namespace OpenLoco::Audio
 
     [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
-    static loco_global<uint32_t, 0x0050D1EC> _audioInitialised;
-    static loco_global<bool, 0x0050D554> _audioIsPaused;
-    static loco_global<bool, 0x0050D555> _audioIsEnabled;
-    // 0x0050D5B0
-    static std::optional<PathId> _chosenAmbientNoisePathId = std::nullopt;
+    static uint32_t _audioInitialised;                                     // 0x0050D1EC
+    static bool _audioIsPaused;                                            // 0x0050D554
+    static bool _audioIsEnabled;                                           // 0x0050D555
+    static std::optional<PathId> _chosenAmbientNoisePathId = std::nullopt; // 0x0050D5B0
 
     static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
