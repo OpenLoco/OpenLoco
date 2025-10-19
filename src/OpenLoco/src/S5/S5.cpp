@@ -275,6 +275,10 @@ namespace OpenLoco::S5
 
     static std::unique_ptr<S5File> prepareGameState(SaveFlags flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
     {
+        // Set saved view from main viewport
+        auto mainWindow = WindowManager::getMainWindow();
+        auto savedView = mainWindow != nullptr && mainWindow->viewports[0] != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple{ 0, 0, 0, 0 };
+
         auto file = std::make_unique<S5File>();
 
         // Prepare header, scenario or save details
@@ -302,6 +306,10 @@ namespace OpenLoco::S5
         dst.currentYear = src.currentYear;
         dst.currentMonth = src.currentMonth;
         dst.currentDayOfMonth = src.currentDayOfMonth;
+        dst.savedViewX = savedView.viewX;
+        dst.savedViewY = savedView.viewY;
+        dst.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
+        dst.savedViewRotation = savedView.rotation;
         std::ranges::copy(src.playerCompanies, dst.playerCompanies);
         std::ranges::copy(src.entityListHeads, dst.entityListHeads);
         std::ranges::copy(src.entityListCounts, dst.entityListCounts);
@@ -310,7 +318,7 @@ namespace OpenLoco::S5
         dst.scenarioTicks = src.scenarioTicks;
         dst.var_014A = src.var_014A;
         dst.scenarioTicks2 = src.scenarioTicks2;
-        dst.magicNumber = src.magicNumber;
+        dst.magicNumber = kMagicNumber; // Match implementation at 0x004437FC
         dst.numMapAnimations = src.numMapAnimations;
         std::ranges::copy(src.tileUpdateStartLocation, dst.tileUpdateStartLocation);
         dst.scenarioConstruction = src.scenarioConstruction;
@@ -411,17 +419,6 @@ namespace OpenLoco::S5
             std::ranges::copy(src.routings[i], dst.routings[i]);
         }
         std::ranges::copy(src.orders, dst.orders);
-
-
-        // Set saved view from main viewport
-        auto mainWindow = WindowManager::getMainWindow();
-        auto savedView = mainWindow != nullptr && mainWindow->viewports[0] != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple{ 0, 0, 0, 0 };
-
-        file->gameState.savedViewX = savedView.viewX;
-        file->gameState.savedViewY = savedView.viewY;
-        file->gameState.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
-        file->gameState.savedViewRotation = savedView.rotation;
-        file->gameState.magicNumber = kMagicNumber; // Match implementation at 0x004437FC
 
         // Copy tile elements; remove any ghosts before saving
         auto tileElements = TileManager::getElements();
