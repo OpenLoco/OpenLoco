@@ -4,24 +4,12 @@
 #include "Ui.h"
 #include "Widget.h"
 #include "WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <cmath>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::ScrollView
 {
-    static loco_global<Ui::ScrollPart, 0x00523396> _currentScrollArea;
-    // TODO: Convert to a scrollIndex when all scroll functions implemented
-    static loco_global<uint32_t, 0x00523398> _currentScrollOffset;
-    static void setCurrentScrollIndex(size_t index)
-    {
-        _currentScrollOffset = index * sizeof(Ui::ScrollArea);
-    }
-    static size_t getCurrentScrollIndex()
-    {
-        return _currentScrollOffset / sizeof(Ui::ScrollArea);
-    }
+    Ui::ScrollPart _currentScrollArea; // 0x00523396
+    size_t _currentScrollIndex;        // 0x00523398
 
     // 0x004C87E1
     // regs.bp: deltaX
@@ -461,7 +449,7 @@ namespace OpenLoco::Ui::ScrollView
         auto res = getPart(window, widget, x, y);
 
         _currentScrollArea = res.area;
-        setCurrentScrollIndex(res.index);
+        _currentScrollIndex = res.index;
 
         // Not implemented for any window
         // window->call_22()
@@ -505,7 +493,7 @@ namespace OpenLoco::Ui::ScrollView
         auto res = getPart(window, widget, x, y);
 
         _currentScrollArea = res.area;
-        setCurrentScrollIndex(res.index);
+        _currentScrollIndex = res.index;
 
         if (res.area == Ui::ScrollPart::view)
         {
@@ -522,26 +510,23 @@ namespace OpenLoco::Ui::ScrollView
             return;
         }
 
-        auto scrollAreaIndex = getCurrentScrollIndex();
-
         constexpr ScrollFlags horizontalFlags = ScrollFlags::hscrollbarThumbPressed | ScrollFlags::hscrollbarLeftPressed | ScrollFlags::hscrollbarRightPressed;
         constexpr ScrollFlags verticalFlags = ScrollFlags::vscrollbarThumbPressed | ScrollFlags::vscrollbarUpPressed | ScrollFlags::vscrollbarDownPressed;
 
-        window->scrollAreas[scrollAreaIndex].flags &= ~(verticalFlags | horizontalFlags);
+        window->scrollAreas[_currentScrollIndex].flags &= ~(verticalFlags | horizontalFlags);
         WindowManager::invalidateWidget(type, number, widgetIndex);
     }
 
     // 0x004C7236
     void scrollLeftContinue(const int16_t x, const int16_t y, Ui::Window& window, Ui::Widget* const widget, const WidgetIndex_t widgetIndex)
     {
-        auto scrollIndex = getCurrentScrollIndex();
         if (_currentScrollArea == ScrollPart::hscrollbarThumb)
         {
             auto toolTipLoc = Ui::ToolTip::getTooltipMouseLocation();
             int16_t deltaX = x - toolTipLoc.x;
             toolTipLoc.x = x;
             Ui::ToolTip::setTooltipMouseLocation(toolTipLoc);
-            ScrollView::horizontalFollow(window, widget, widgetIndex, scrollIndex, deltaX);
+            ScrollView::horizontalFollow(window, widget, widgetIndex, _currentScrollIndex, deltaX);
         }
         else if (_currentScrollArea == ScrollPart::vscrollbarThumb)
         {
@@ -549,7 +534,7 @@ namespace OpenLoco::Ui::ScrollView
             int16_t deltaY = y - toolTipLoc.y;
             toolTipLoc.y = y;
             Ui::ToolTip::setTooltipMouseLocation(toolTipLoc);
-            ScrollView::verticalFollow(window, widget, widgetIndex, scrollIndex, deltaY);
+            ScrollView::verticalFollow(window, widget, widgetIndex, _currentScrollIndex, deltaY);
         }
         else
         {
