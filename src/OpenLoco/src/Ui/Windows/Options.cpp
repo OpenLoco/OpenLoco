@@ -118,19 +118,10 @@ namespace OpenLoco::Ui::Windows::Options
             miscellaneous,
         };
 
-        static constexpr int kTabWidgets = (1ULL << Widx::tab_display)
-            | (1ULL << Widx::tab_rendering)
-            | (1ULL << Widx::tab_sound)
-            | (1ULL << Widx::tab_music)
-            | (1ULL << Widx::tab_regional)
-            | (1ULL << Widx::tab_controls)
-            | (1ULL << Widx::tab_company)
-            | (1ULL << Widx::tab_miscellaneous);
-
         static void prepareDraw(Window& w)
         {
-            w.activatedWidgets &= ~kTabWidgets;
-            w.activatedWidgets |= 1ULL << (w.currentTab + 4);
+            w.activatedWidgets = 1ULL << (w.currentTab + 4);
+            w.disabledWidgets = 0;
 
             w.widgets[Widx::frame].right = w.width - 1;
             w.widgets[Widx::frame].bottom = w.height - 1;
@@ -534,13 +525,11 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push<int32_t>(Config::get().scaleFactor * 100);
             }
 
-            w.activatedWidgets &= ~(1ULL << Widx::show_fps);
             if (Config::get().showFPS)
             {
                 w.activatedWidgets |= (1ULL << Widx::show_fps);
             }
 
-            w.activatedWidgets &= ~(1ULL << Widx::uncap_fps);
             if (Config::get().uncapFPS)
             {
                 w.activatedWidgets |= (1ULL << Widx::uncap_fps);
@@ -550,18 +539,10 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.disabledWidgets |= (1ULL << Widx::display_scale_down_btn);
             }
-            else
-            {
-                w.disabledWidgets &= ~(1ULL << Widx::display_scale_down_btn);
-            }
 
             if (Config::get().scaleFactor >= OpenLoco::Ui::ScaleFactor::max)
             {
                 w.disabledWidgets |= (1ULL << Widx::display_scale_up_btn);
-            }
-            else
-            {
-                w.disabledWidgets &= ~(1ULL << Widx::display_scale_up_btn);
             }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -870,19 +851,16 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
             w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
 
-            w.activatedWidgets &= ~(1ULL << Widx::landscape_smoothing);
             if (Config::get().landscapeSmoothing)
             {
                 w.activatedWidgets |= (1ULL << Widx::landscape_smoothing);
             }
 
-            w.activatedWidgets &= ~(1ULL << Widx::gridlines_on_landscape);
             if (Config::get().gridlinesOnLandscape)
             {
                 w.activatedWidgets |= (1ULL << Widx::gridlines_on_landscape);
             }
 
-            w.activatedWidgets &= ~(1ULL << Widx::cash_popup_rendering);
             if (Config::get().cashPopupRendering)
             {
                 w.activatedWidgets |= (1ULL << Widx::cash_popup_rendering);
@@ -960,10 +938,6 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().audio.playTitleMusic)
             {
                 w.activatedWidgets |= (1ULL << Widx::play_title_music);
-            }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::play_title_music);
             }
         }
 
@@ -1188,20 +1162,17 @@ namespace OpenLoco::Ui::Windows::Options
             else if (Jukebox::isMusicPlaying())
             {
                 // Play button appears pressed
-                w.activatedWidgets &= ~(1ULL << Widx::music_controls_stop);
                 w.activatedWidgets |= (1ULL << Widx::music_controls_play);
             }
             else
             {
                 // Stop button appears pressed
-                w.activatedWidgets &= ~(1ULL << Widx::music_controls_play);
                 w.activatedWidgets |= (1ULL << Widx::music_controls_stop);
             }
 
-            w.disabledWidgets |= (1ULL << Widx::edit_selection);
-            if (Config::get().audio.playlist == Config::MusicPlaylistType::custom)
+            if (Config::get().audio.playlist != Config::MusicPlaylistType::custom)
             {
-                w.disabledWidgets &= ~(1ULL << Widx::edit_selection);
+                w.disabledWidgets |= (1ULL << Widx::edit_selection);
             }
         }
 
@@ -1527,29 +1498,16 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.activatedWidgets |= (1ULL << Widx::preferred_currency_for_new_games);
             }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::preferred_currency_for_new_games);
-            }
 
             if (Config::get().usePreferredCurrencyAlways)
             {
                 w.activatedWidgets |= (1ULL << Widx::preferred_currency_always);
-            }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::preferred_currency_always);
             }
 
             if (Config::get().usePreferredCurrencyAlways || SceneManager::isTitleMode())
             {
                 w.disabledWidgets |= (1ULL << Widx::currency);
                 w.disabledWidgets |= (1ULL << Widx::currency_btn);
-            }
-            else
-            {
-                w.disabledWidgets &= ~(1ULL << Widx::currency);
-                w.disabledWidgets &= ~(1ULL << Widx::currency_btn);
             }
         }
 
@@ -2128,22 +2086,18 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().usePreferredOwnerName)
             {
                 w.activatedWidgets |= (1ULL << Widx::usePreferredOwnerName);
-                w.disabledWidgets &= ~(1ULL << Widx::changeOwnerNameBtn);
             }
             else
             {
-                w.activatedWidgets &= ~(1ULL << Widx::usePreferredOwnerName);
                 w.disabledWidgets |= (1ULL << Widx::changeOwnerNameBtn);
             }
 
             if (Config::get().usePreferredOwnerFace)
             {
                 w.activatedWidgets |= (1ULL << Widx::usePreferredOwnerFace);
-                w.disabledWidgets &= ~((1ULL << Widx::changeOwnerFaceBtn) | (1ULL << Widx::ownerFacePreview));
             }
             else
             {
-                w.activatedWidgets &= ~(1ULL << Widx::usePreferredOwnerFace);
                 w.disabledWidgets |= ((1ULL << Widx::changeOwnerFaceBtn) | (1ULL << Widx::ownerFacePreview));
 
                 w.widgets[Widx::labelOwnerFace].text = StringIds::empty;
@@ -2386,76 +2340,43 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.activatedWidgets |= (1ULL << Widx::enableCheatsToolbarButton);
             }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::enableCheatsToolbarButton);
-            }
 
             if (Config::get().breakdownsDisabled)
             {
                 w.activatedWidgets |= (1ULL << Widx::disable_vehicle_breakdowns);
-            }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::disable_vehicle_breakdowns);
             }
 
             if (Config::get().trainsReverseAtSignals)
             {
                 w.activatedWidgets |= (1ULL << Widx::trainsReverseAtSignals);
             }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::trainsReverseAtSignals);
-            }
 
             if (Config::get().disableVehicleLoadPenaltyCheat)
             {
                 w.activatedWidgets |= (1ULL << Widx::disable_vehicle_load_penalty);
-            }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::disable_vehicle_load_penalty);
             }
 
             if (Config::get().disableStationSizeLimit)
             {
                 w.activatedWidgets |= (1ULL << Widx::disableStationSizeLimit);
             }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::disableStationSizeLimit);
-            }
 
             if (Config::get().companyAIDisabled)
             {
                 w.activatedWidgets |= (1ULL << Widx::disableAICompanies);
-            }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::disableAICompanies);
             }
 
             if (Config::get().townGrowthDisabled)
             {
                 w.activatedWidgets |= (1ULL << Widx::disableTownExpansion);
             }
-            else
-            {
-                w.activatedWidgets &= ~(1ULL << Widx::disableTownExpansion);
-            }
 
-            w.activatedWidgets &= ~(1ULL << Widx::export_plugin_objects);
             if (Config::get().exportObjectsWithSaves)
             {
                 w.activatedWidgets |= (1ULL << Widx::export_plugin_objects);
             }
 
-            w.widgets[Widx::export_plugin_objects].hidden = true;
-            if (_customObjectsInIndex)
-            {
-                w.widgets[Widx::export_plugin_objects].hidden = false;
-            }
+            w.widgets[Widx::export_plugin_objects].hidden = !_customObjectsInIndex;
         }
 
         static void drawDropdownContent(Window* w, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
