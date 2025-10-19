@@ -7,24 +7,17 @@
 #include "Scenario.h"
 #include "SceneManager.h"
 #include "Ui.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <fstream>
 #include <iterator>
 #include <vector>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Tutorial
 {
-    static loco_global<State, 0x00508F19> _state;
+    static State _state; // 0x00508F19
 
-    // The following two globals are unused, but left here for documentation purposes.
-    // static loco_global<uint16_t*, 0x009C86FC> _tutorialOffset;
-    // static loco_global<uint16_t*, 0x009C8704> _tutorialEnd;
-
-    static loco_global<StringId, 0x009C8708> _tutorialString;
-    static loco_global<uint8_t, 0x009C870A> _tutorialNumber;
+    static StringId _tutorialString; // 0x009C8708
+    static uint8_t _tutorialNumber;  // 0x009C870A
 
     static std::vector<uint16_t> _tutorialData;
     static std::vector<uint16_t>::const_iterator _tutorialIt;
@@ -33,7 +26,7 @@ namespace OpenLoco::Tutorial
 
     State state()
     {
-        return *_state;
+        return _state;
     }
 
     static std::vector<uint16_t> readTutorialFile(fs::path filename)
@@ -124,8 +117,8 @@ namespace OpenLoco::Tutorial
             StringIds::tutorial_3_string_1,
         };
 
-        *_state = State::playing;
-        *_tutorialString = openingStringIds[*_tutorialNumber];
+        _state = State::playing;
+        _tutorialString = openingStringIds[_tutorialNumber];
 
         // Load the scenario
         auto scPath = Environment::getPath(Environment::PathId::boulderBreakers);
@@ -142,7 +135,7 @@ namespace OpenLoco::Tutorial
     // 0x0043C70E
     void stop()
     {
-        *_state = State::none;
+        _state = State::none;
         Gfx::invalidateScreen();
         Gui::resize();
     }
@@ -164,7 +157,7 @@ namespace OpenLoco::Tutorial
 
     StringId nextString()
     {
-        StringId currentString = *_tutorialString;
+        StringId currentString = _tutorialString;
         _tutorialString = currentString + 1;
         return currentString;
     }
