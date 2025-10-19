@@ -47,7 +47,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::Options
 {
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi);
-    static void sub_4C13BE(Window* w);
+    static void disableTabsByCurrentScene(Window& w);
     static void setPreferredCurrencyNameBuffer();
 
     // Pointer to an array of SelectedObjectsFlags
@@ -564,7 +564,7 @@ namespace OpenLoco::Ui::Windows::Options
             screenModeToggleEnabled(&w);
 #endif
 
-            sub_4C13BE(&w);
+            disableTabsByCurrentScene(w);
 
             Common::prepareDraw(w);
         }
@@ -897,7 +897,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets |= (1ULL << Widx::cash_popup_rendering);
             }
 
-            sub_4C13BE(&w);
+            disableTabsByCurrentScene(w);
 
             Common::prepareDraw(w);
         }
@@ -988,7 +988,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets &= ~(1ULL << Widx::play_title_music);
             }
 
-            sub_4C13BE(&w);
+            disableTabsByCurrentScene(w);
 
             Common::prepareDraw(w);
         }
@@ -1239,7 +1239,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.disabledWidgets &= ~(1ULL << Widx::edit_selection);
             }
 
-            sub_4C13BE(&w);
+            disableTabsByCurrentScene(w);
 
             Common::prepareDraw(w);
         }
@@ -1600,7 +1600,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.disabledWidgets &= ~(1ULL << Widx::currency_btn);
             }
 
-            sub_4C13BE(&w);
+            disableTabsByCurrentScene(w);
 
             Common::prepareDraw(w);
         }
@@ -2009,7 +2009,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets |= (1ULL << Widx::invertRightMouseViewPan);
             }
 
-            sub_4C13BE(&w);
+            disableTabsByCurrentScene(w);
 
             Common::prepareDraw(w);
         }
@@ -2251,7 +2251,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.widgets[Widx::ownerFacePreview].image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black).toUInt32();
             }
 
-            sub_4C13BE(&w);
+            disableTabsByCurrentScene(w);
             loadPreferredFace(w);
 
             Common::prepareDraw(w);
@@ -2543,7 +2543,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.widgets[Widx::export_plugin_objects].hidden = false;
             }
 
-            sub_4C13BE(&w);
+            disableTabsByCurrentScene(w);
 
             Common::prepareDraw(w);
         }
@@ -2827,21 +2827,20 @@ namespace OpenLoco::Ui::Windows::Options
         ObjectManager::markOnlyLoadedObjects(getLoadedSelectedObjectFlags());
     }
 
-    // Disables tabs that are not relevent to the current scene (scenario editor, title screen (formerly)).
-    static void sub_4C13BE(Window* w)
+    static void disableTabsByCurrentScene(Window& w)
     {
-        w->disabledWidgets &= ~((1ULL << Common::Widx::tab_music) | (1ULL << Common::Widx::tab_regional));
+        w.disabledWidgets &= ~((1ULL << Common::Widx::tab_music) | (1ULL << Common::Widx::tab_regional));
         if (SceneManager::isEditorMode())
         {
-            w->disabledWidgets |= 1ULL << Common::Widx::tab_music;
+            w.disabledWidgets |= 1ULL << Common::Widx::tab_music;
         }
 
         if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
-            w->disabledWidgets |= 1ULL << Common::Widx::tab_regional;
+            w.disabledWidgets |= 1ULL << Common::Widx::tab_regional;
         }
 
-        Widget::leftAlignTabs(*w, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
+        Widget::leftAlignTabs(w, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
     }
 
     // 0x004C1519 & 0x00474911
