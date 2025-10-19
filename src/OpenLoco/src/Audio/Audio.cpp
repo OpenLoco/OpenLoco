@@ -52,7 +52,7 @@ namespace OpenLoco::Audio
 
     [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
-    static uint32_t _audioInitialised;                                     // 0x0050D1EC
+    static bool _audioInitialised;                                         // 0x0050D1EC
     static bool _audioIsPaused;                                            // 0x0050D554
     static bool _audioIsEnabled;                                           // 0x0050D555
     static std::optional<PathId> _chosenAmbientNoisePathId = std::nullopt; // 0x0050D5B0
@@ -203,7 +203,7 @@ namespace OpenLoco::Audio
 
         auto css1path = Environment::getPath(Environment::PathId::css1);
         _samples = loadSoundsFromCSS(css1path);
-        _audioInitialised = 1;
+        _audioInitialised = true;
     }
 
     // 0x00404E58
@@ -214,7 +214,7 @@ namespace OpenLoco::Audio
         _sourceManager.dispose();
         _bufferManager.dispose();
         _device.close();
-        _audioInitialised = 0;
+        _audioInitialised = false;
     }
 
     // 0x00489BA1
