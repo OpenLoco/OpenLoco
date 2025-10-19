@@ -46,6 +46,7 @@ namespace OpenLoco::ObjectManager
     };
 
     uint32_t getNumInstalledObjects();
+    bool hasCustomObjectsInIndex();
 
     void loadIndex();
 

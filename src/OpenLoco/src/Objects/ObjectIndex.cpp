@@ -47,7 +47,6 @@ namespace OpenLoco::ObjectManager
     // Was previously 0x0050D13C count was in 0x0112A110
     static std::vector<ObjectIndexEntry> _installedObjectList;
 
-    static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<int32_t, 0x0050D148> _50D144refCount;
@@ -155,17 +154,27 @@ namespace OpenLoco::ObjectManager
         return currentState;
     }
 
+    static std::optional<bool> _customObjectsInIndex;
+
     // 0x00471712
-    static bool hasCustomObjectsInIndex()
+    bool hasCustomObjectsInIndex()
     {
+        if (_customObjectsInIndex.has_value())
+        {
+            return *_customObjectsInIndex;
+        }
+
         for (auto& obj : _installedObjectList)
         {
             if (obj._header.isCustom())
             {
-                return true;
+                _customObjectsInIndex = true;
+                return *_customObjectsInIndex;
             }
         }
-        return false;
+
+        _customObjectsInIndex = false;
+        return *_customObjectsInIndex;
     }
 
     static void serialiseEntry(Stream& stream, const ObjectIndexEntry& entry)
@@ -561,8 +570,6 @@ namespace OpenLoco::ObjectManager
         {
             createIndex(currentState);
         }
-
-        _customObjectsInIndex = hasCustomObjectsInIndex();
     }
 
     uint32_t getNumInstalledObjects()
