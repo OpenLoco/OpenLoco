@@ -2372,7 +2372,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets |= (1ULL << Widx::export_plugin_objects);
             }
 
-            w.widgets[Widx::export_plugin_objects].hidden = !ObjectManager::hasCustomObjectsInIndex();
+            w.widgets[Widx::export_plugin_objects].hidden = !ObjectManager::getCustomObjectsInIndexStatus();
         }
 
         static void drawDropdownContent(Window* w, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
