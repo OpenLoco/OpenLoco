@@ -305,7 +305,7 @@ namespace OpenLoco::Ui::Windows
             load = 1,
             save = 2
         };
-        bool open(browse_type type, char* path, const char* filter, StringId titleId);
+        std::optional<std::string> open(browse_type type, std::string_view path, const char* filter, StringId titleId);
     }
 
     namespace PromptOkCancel

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
+#include <string>
 
 namespace OpenLoco
 {
@@ -16,17 +18,19 @@ namespace OpenLoco
 
 namespace OpenLoco::Game
 {
-    bool loadSaveGameOpen();
-    bool loadLandscapeOpen();
-    bool loadHeightmapOpen();
-    bool saveSaveGameOpen();
-    bool saveScenarioOpen();
-    bool saveLandscapeOpen();
+    [[nodiscard]] std::optional<std::string> loadSaveGameOpen();
+    [[nodiscard]] std::optional<std::string> loadLandscapeOpen();
+    [[nodiscard]] std::optional<std::string> loadHeightmapOpen();
+    [[nodiscard]] std::optional<std::string> saveSaveGameOpen();
+    [[nodiscard]] std::optional<std::string> saveScenarioOpen();
+    [[nodiscard]] std::optional<std::string> saveLandscapeOpen();
+
     void loadGame();
     void quitGame();
     void returnToTitle();
     void confirmSaveGame();
-    bool saveLandscape();
+    bool saveLandscape(std::string filename);
+
     GameStateFlags getFlags();
     void setFlags(GameStateFlags flags);
     bool hasFlags(GameStateFlags flags);

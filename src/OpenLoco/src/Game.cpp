@@ -33,14 +33,14 @@ namespace OpenLoco::Game
 
     using Ui::Windows::PromptBrowse::browse_type;
 
-    static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
+    static std::optional<std::string> openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
     {
         Audio::pauseSound();
         SceneManager::setPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
 
-        bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
+        auto confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
 
         Audio::unpauseSound();
         Input::processMessagesMini();
@@ -52,7 +52,7 @@ namespace OpenLoco::Game
     }
 
     // 0x004416FF
-    bool loadSaveGameOpen()
+    [[nodiscard]] std::optional<std::string> loadSaveGameOpen()
     {
         auto path = Environment::getPath(Environment::PathId::save).make_preferred().u8string();
         strncpy(&_savePath[0], path.c_str(), std::size(_savePath));
@@ -61,7 +61,7 @@ namespace OpenLoco::Game
     }
 
     // 0x004417A7
-    bool loadLandscapeOpen()
+    [[nodiscard]] std::optional<std::string> loadLandscapeOpen()
     {
         auto path = Environment::getPath(Environment::PathId::landscape).make_preferred().u8string();
         strncpy(&_savePath[0], path.c_str(), std::size(_savePath));
@@ -69,7 +69,7 @@ namespace OpenLoco::Game
         return openBrowsePrompt(StringIds::title_prompt_load_landscape, browse_type::load, S5::filterSC5);
     }
 
-    bool loadHeightmapOpen()
+    [[nodiscard]] std::optional<std::string> loadHeightmapOpen()
     {
         fs::path basePath = Environment::getPath(Environment::PathId::heightmap);
         Environment::autoCreateDirectory(basePath);
@@ -80,7 +80,7 @@ namespace OpenLoco::Game
     }
 
     // 0x00441843
-    bool saveSaveGameOpen()
+    [[nodiscard]] std::optional<std::string> saveSaveGameOpen()
     {
         strncpy(&_savePath[0], &_currentScenarioFilename[0], std::size(_savePath));
 
@@ -88,7 +88,7 @@ namespace OpenLoco::Game
     }
 
     // 0x004418DB
-    bool saveScenarioOpen()
+    [[nodiscard]] std::optional<std::string> saveScenarioOpen()
     {
         auto path = Environment::getPath(Environment::PathId::scenarios) / Scenario::getOptions().scenarioName;
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
@@ -98,7 +98,7 @@ namespace OpenLoco::Game
     }
 
     // 0x00441993
-    bool saveLandscapeOpen()
+    [[nodiscard]] std::optional<std::string> saveLandscapeOpen()
     {
         Scenario::getOptions().scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
         if (hasFlags(GameStateFlags::tileManagerLoaded))
@@ -126,10 +126,10 @@ namespace OpenLoco::Game
 
         if (SceneManager::isEditorMode())
         {
-            if (Game::loadLandscapeOpen())
+            if (auto res = Game::loadLandscapeOpen())
             {
                 // 0x0043C087
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
+                auto path = fs::u8path(*res).replace_extension(S5::extensionSC5);
                 std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
                 // 0x004424CE
@@ -142,10 +142,10 @@ namespace OpenLoco::Game
         }
         else if (!SceneManager::isNetworked())
         {
-            if (Game::loadSaveGameOpen())
+            if (auto res = Game::loadSaveGameOpen())
             {
                 // 0x0043C033
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+                auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
                 std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
                 if (S5::importSaveToGameState(path, S5::LoadFlags::none))
@@ -260,9 +260,9 @@ namespace OpenLoco::Game
 
         if (SceneManager::isEditorMode())
         {
-            if (Game::saveLandscapeOpen())
+            if (auto res = Game::saveLandscapeOpen())
             {
-                if (saveLandscape())
+                if (saveLandscape(*res))
                 {
                     // load landscape
                     GameCommands::LoadSaveQuitGameArgs args{};
@@ -274,10 +274,10 @@ namespace OpenLoco::Game
         }
         else if (!SceneManager::isNetworked())
         {
-            if (Game::saveSaveGameOpen())
+            if (auto res = Game::saveSaveGameOpen())
             {
                 // 0x0043C446
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+                auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
                 std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
                 S5::SaveFlags flags = S5::SaveFlags::none;
@@ -323,10 +323,10 @@ namespace OpenLoco::Game
         Gfx::invalidateScreen();
     }
 
-    bool saveLandscape()
+    bool saveLandscape(std::string filename)
     {
         // 0x0043C4B3
-        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
+        auto path = fs::u8path(filename).replace_extension(S5::extensionSC5);
         std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
         bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
