@@ -16,30 +16,23 @@
     #else
         #define OPENLOCO_ARCHITECTURE "arm"
     #endif
-#endif
-#ifndef OPENLOCO_ARCHITECTURE
+#else
     #error "OPENLOCO_ARCHITECTURE is undefined. Please add identification."
 #endif
 
 #ifdef _WIN32
     #define OPENLOCO_PLATFORM "Windows"
-#endif
-#if defined(__linux__) && !defined(__ANDROID__)
+#elif defined(__linux__) && !defined(__ANDROID__)
     #define OPENLOCO_PLATFORM "Linux"
-#endif
-#if (defined(__APPLE__) && defined(__MACH__))
+#elif (defined(__APPLE__) && defined(__MACH__))
     #define OPENLOCO_PLATFORM "macOS"
-#endif
-#ifdef __FreeBSD__
+#elif defined(__FreeBSD__)
     #define OPENLOCO_PLATFORM "FreeBSD"
-#endif
-#ifdef __NetBSD__
+#elif defined(__NetBSD__)
     #define OPENLOCO_PLATFORM "NetBSD"
-#endif
-#ifdef __OpenBSD__
+#elif defined(__OpenBSD__)
     #define OPENLOCO_PLATFORM "OpenBSD"
-#endif
-#ifndef OPENLOCO_PLATFORM
+#else
     #error "OPENLOCO_PLATFORM is undefined. Please add identification."
 #endif
 
