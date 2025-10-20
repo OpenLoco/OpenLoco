@@ -52,7 +52,7 @@ namespace OpenLoco::Audio
 
     [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
-    static bool _audioInitialised = false;                                 // 0x0050D1EC
+    static bool _audioIsInitialised = false;                               // 0x0050D1EC
     static bool _audioIsPaused = false;                                    // 0x0050D554
     static bool _audioIsEnabled = true;                                    // 0x0050D555
     static std::optional<PathId> _chosenAmbientNoisePathId = std::nullopt; // 0x0050D5B0
@@ -203,7 +203,7 @@ namespace OpenLoco::Audio
 
         auto css1path = Environment::getPath(Environment::PathId::css1);
         _samples = loadSoundsFromCSS(css1path);
-        _audioInitialised = true;
+        _audioIsInitialised = true;
     }
 
     // 0x00404E58
@@ -214,13 +214,13 @@ namespace OpenLoco::Audio
         _sourceManager.dispose();
         _bufferManager.dispose();
         _device.close();
-        _audioInitialised = false;
+        _audioIsInitialised = false;
     }
 
     // 0x00489BA1
     void close()
     {
-        if (_audioInitialised)
+        if (_audioIsInitialised)
         {
             stopAmbientNoise();
             stopVehicleNoise();
@@ -882,7 +882,7 @@ namespace OpenLoco::Audio
     // 0x0048ACFD
     void updateAmbientNoise()
     {
-        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
+        if (!_audioIsInitialised || _audioIsPaused || !_audioIsEnabled)
         {
             return;
         }
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Audio
     void stopAmbientNoise()
     {
         loco_global<uint32_t, 0x0050D5AC> _50D5AC;
-        if (_audioInitialised && _50D5AC != 1)
+        if (_audioIsInitialised && _50D5AC != 1)
         {
             stopChannel(ChannelId::ambient);
             _50D5AC = 1;
@@ -1084,7 +1084,7 @@ namespace OpenLoco::Audio
     void playMusic(PathId sample, int32_t volume, bool loop)
     {
         auto* channel = getChannel(ChannelId::music);
-        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
+        if (!_audioIsInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
         {
             return;
         }
@@ -1115,7 +1115,7 @@ namespace OpenLoco::Audio
     void stopMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && (channel->isPlaying() || channel->isPaused()))
+        if (_audioIsInitialised && channel != nullptr && (channel->isPlaying() || channel->isPaused()))
         {
             channel->stop();
         }
@@ -1124,7 +1124,7 @@ namespace OpenLoco::Audio
     void pauseMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && channel->isPlaying())
+        if (_audioIsInitialised && channel != nullptr && channel->isPlaying())
         {
             channel->pause();
         }
@@ -1133,7 +1133,7 @@ namespace OpenLoco::Audio
     void unpauseMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && channel->isPaused())
+        if (_audioIsInitialised && channel != nullptr && channel->isPaused())
         {
             channel->unpause();
         }
@@ -1170,7 +1170,7 @@ namespace OpenLoco::Audio
         {
             return;
         }
-        if (_audioInitialised && Jukebox::getCurrentTrack() != Jukebox::kNoSong)
+        if (_audioIsInitialised && Jukebox::getCurrentTrack() != Jukebox::kNoSong)
         {
             channel->setVolume(volume);
         }
