@@ -2,19 +2,16 @@
 #include "Input.h"
 #include "Map/TileManager.h"
 #include "Ui/ViewportInteraction.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <utility>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World
 {
-    static loco_global<MapSelectionFlags, 0x00F24484> _mapSelectionFlags;
-    static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
-    static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
-    static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
-    static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
-    static loco_global<MapSelectionType, 0x00F2448E> _word_F2448E;
+    static MapSelectionFlags _mapSelectionFlags = MapSelectionFlags::none; // 0x00F24484
+    static coord_t _mapSelectionAX = 0;                                    // 0x00F24486
+    static coord_t _mapSelectionBX = 0;                                    // 0x00F24488
+    static coord_t _mapSelectionAY = 0;                                    // 0x00F2448A
+    static coord_t _mapSelectionBY = 0;                                    // 0x00F2448C
+    static MapSelectionType _mapSelectionType = MapSelectionType::corner0; // 0x00F2448E
 
     constexpr uint16_t kMapSelectedFreeFormTilesSize = 300;
     sfl::static_vector<Pos2, kMapSelectedFreeFormTilesSize> _mapSelectedFreeFormTiles;
@@ -32,9 +29,9 @@ namespace OpenLoco::World
             count++;
         }
 
-        if (_word_F2448E != selectionType)
+        if (_mapSelectionType != selectionType)
         {
-            _word_F2448E = selectionType;
+            _mapSelectionType = selectionType;
             count++;
         }
 
@@ -98,14 +95,14 @@ namespace OpenLoco::World
             count++;
         }
 
-        if (setQuadrant && _word_F2448E != cursorQuadrant)
+        if (setQuadrant && _mapSelectionType != cursorQuadrant)
         {
-            _word_F2448E = cursorQuadrant;
+            _mapSelectionType = cursorQuadrant;
             count++;
         }
-        else if (!setQuadrant && _word_F2448E != MapSelectionType::full)
+        else if (!setQuadrant && _mapSelectionType != MapSelectionType::full)
         {
-            _word_F2448E = MapSelectionType::full;
+            _mapSelectionType = MapSelectionType::full;
             count++;
         }
 
@@ -207,12 +204,12 @@ namespace OpenLoco::World
 
     void setMapSelectionCorner(const MapSelectionType corner)
     {
-        _word_F2448E = corner;
+        _mapSelectionType = corner;
     }
 
     MapSelectionType getMapSelectionCorner()
     {
-        return _word_F2448E;
+        return _mapSelectionType;
     }
 
     // 0x0045FD8E
