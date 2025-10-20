@@ -25,7 +25,8 @@
 
 namespace OpenLoco::Game
 {
-    static loco_global<char[256], 0x0050B745> _activeSavePath;
+    // TODO: move into GameState?
+    static std::string _activeSavePath; // 0x0050B745
 
     using Ui::Windows::PromptBrowse::browse_type;
 
@@ -76,7 +77,7 @@ namespace OpenLoco::Game
     // 0x00441843
     [[nodiscard]] std::optional<std::string> saveSaveGameOpen()
     {
-        auto path = std::string(&_activeSavePath[0]);
+        auto path = _activeSavePath;
 
         return openBrowsePrompt(path, StringIds::title_prompt_save_game, browse_type::save, S5::filterSV5);
     }
@@ -122,7 +123,7 @@ namespace OpenLoco::Game
             {
                 // 0x0043C087
                 auto path = fs::u8path(*res).replace_extension(S5::extensionSC5);
-                std::strncpy(&_activeSavePath[0], path.u8string().c_str(), std::size(_activeSavePath));
+                _activeSavePath = path.u8string();
 
                 // 0x004424CE
                 if (S5::importSaveToGameState(path, S5::LoadFlags::landscape))
@@ -138,7 +139,7 @@ namespace OpenLoco::Game
             {
                 // 0x0043C033
                 auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
-                std::strncpy(&_activeSavePath[0], path.u8string().c_str(), std::size(_activeSavePath));
+                _activeSavePath = path.u8string();
 
                 if (S5::importSaveToGameState(path, S5::LoadFlags::none))
                 {
@@ -270,7 +271,7 @@ namespace OpenLoco::Game
             {
                 // 0x0043C446
                 auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
-                std::strncpy(&_activeSavePath[0], path.u8string().c_str(), std::size(_activeSavePath));
+                _activeSavePath = path.u8string();
 
                 S5::SaveFlags flags = S5::SaveFlags::none;
                 if (Config::get().exportObjectsWithSaves)
@@ -319,7 +320,7 @@ namespace OpenLoco::Game
     {
         // 0x0043C4B3
         auto path = fs::u8path(filename).replace_extension(S5::extensionSC5);
-        std::strncpy(&_activeSavePath[0], path.u8string().c_str(), std::size(_activeSavePath));
+        _activeSavePath = path.u8string();
 
         bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
         if (saveResult)
@@ -328,6 +329,16 @@ namespace OpenLoco::Game
         }
 
         return saveResult;
+    }
+
+    std::string getActiveSavePath()
+    {
+        return _activeSavePath;
+    }
+
+    void setActiveSavePath(std::string path)
+    {
+        _activeSavePath = path;
     }
 
     GameStateFlags getFlags()

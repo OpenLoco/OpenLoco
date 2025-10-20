@@ -38,8 +38,6 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::EditorController
 {
-    static loco_global<char[267], 0x00050B745> _activeSavePath;
-
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
     static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
 
@@ -402,7 +400,8 @@ namespace OpenLoco::EditorController
 
                 auto path = fs::u8path(*res);
                 path.replace_extension(S5::extensionSC5);
-                strncpy(_activeSavePath, path.u8string().c_str(), 257); // Or 256?
+                Game::setActiveSavePath(path.u8string());
+
                 S5::SaveFlags saveFlags = S5::SaveFlags::scenario;
                 if (Config::get().exportObjectsWithSaves)
                 {

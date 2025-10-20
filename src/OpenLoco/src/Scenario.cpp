@@ -54,8 +54,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Scenario
 {
-    static loco_global<char[256], 0x0050B745> _activeSavePath;
-
     // 0x0046115C
     void sub_46115C()
     {
@@ -350,7 +348,7 @@ namespace OpenLoco::Scenario
 
         auto savePath = Environment::getPath(Environment::PathId::save);
         savePath /= std::string(Scenario::getOptions().scenarioName) + S5::extensionSV5;
-        std::strncpy(_activeSavePath, savePath.u8string().c_str(), std::size(_activeSavePath));
+        Game::setActiveSavePath(savePath.u8string());
 
         loadPreferredCurrencyNewGame();
         Gfx::loadCurrency();
