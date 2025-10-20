@@ -54,7 +54,7 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Scenario
 {
-    static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
+    static loco_global<char[256], 0x0050B745> _activeSavePath;
 
     // 0x0046115C
     void sub_46115C()
@@ -296,7 +296,6 @@ namespace OpenLoco::Scenario
 
         Audio::pauseSound();
 
-        // TODO: should this be setting <0x0050B745> _currentScenarioFilename instead?
         static loco_global<char[512], 0x00112CE04> _scenarioFilename;
         std::strncpy(&*_scenarioFilename, fullPath.u8string().c_str(), std::size(_scenarioFilename));
 
@@ -354,7 +353,7 @@ namespace OpenLoco::Scenario
 
         auto savePath = Environment::getPath(Environment::PathId::save);
         savePath /= std::string(Scenario::getOptions().scenarioName) + S5::extensionSV5;
-        std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
+        std::strncpy(_activeSavePath, savePath.u8string().c_str(), std::size(_activeSavePath));
 
         loadPreferredCurrencyNewGame();
         Gfx::loadCurrency();
