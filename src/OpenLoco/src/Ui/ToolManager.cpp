@@ -10,10 +10,10 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::ToolManager
 {
-    static Ui::WindowNumber_t _toolWindowNumber; // 0x00523390
-    static Ui::WindowType _toolWindowType;       // 0x00523392
-    static Ui::CursorId _toolWindowCursor;       // 0x00523393
-    static uint16_t _toolWidgetIndex;            // 0x00523394
+    static Ui::WindowNumber_t _toolWindowNumber = 0;               // 0x00523390
+    static Ui::WindowType _toolWindowType = Ui::WindowType::main;  // 0x00523392
+    static Ui::CursorId _toolWindowCursor = Ui::CursorId::pointer; // 0x00523393
+    static uint16_t _toolWidgetIndex = 0;                          // 0x00523394
 
     Window* toolGetActiveWindow()
     {
