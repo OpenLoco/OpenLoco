@@ -1587,8 +1587,6 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
-
         static void languageMouseDown(Window* w)
         {
             const auto lds = Localisation::getLanguageDescriptors();
@@ -2320,8 +2318,6 @@ namespace OpenLoco::Ui::Windows::Options
 
         );
 
-        static loco_global<uint8_t, 0x0112A17E> _customObjectsInIndex;
-
         static void enableCheatsToolbarButtonMouseUp(Window* w);
         static void disableVehicleBreakdownsMouseUp(Window* w);
         static void trainsReverseAtSignalsMouseUp(Window* w);
@@ -2376,7 +2372,7 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets |= (1ULL << Widx::export_plugin_objects);
             }
 
-            w.widgets[Widx::export_plugin_objects].hidden = !_customObjectsInIndex;
+            w.widgets[Widx::export_plugin_objects].hidden = !ObjectManager::getCustomObjectsInIndexStatus();
         }
 
         static void drawDropdownContent(Window* w, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)

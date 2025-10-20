@@ -46,8 +46,8 @@ namespace OpenLoco::ObjectManager
 {
     // Was previously 0x0050D13C count was in 0x0112A110
     static std::vector<ObjectIndexEntry> _installedObjectList;
+    static bool _customObjectsInIndex;
 
-    static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<int32_t, 0x0050D148> _50D144refCount;
@@ -563,6 +563,11 @@ namespace OpenLoco::ObjectManager
         }
 
         _customObjectsInIndex = hasCustomObjectsInIndex();
+    }
+
+    bool getCustomObjectsInIndexStatus()
+    {
+        return _customObjectsInIndex;
     }
 
     uint32_t getNumInstalledObjects()
