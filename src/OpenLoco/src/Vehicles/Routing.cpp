@@ -62,7 +62,7 @@ namespace OpenLoco::Vehicles
     };
 
     // Note: This is not binary identical to vanilla so cannot be hooked!
-    struct LocationOfInterestHashMap
+    struct LocationOfInterestHashSet
     {
         static constexpr auto kMinFreeSlots = 100; // There must always be at least 100 free slots otherwise the hashmap gets very inefficient
 
@@ -70,10 +70,10 @@ namespace OpenLoco::Vehicles
         class Iterator
         {
             uint16_t _index;
-            const LocationOfInterestHashMap& _map;
+            const LocationOfInterestHashSet& _map;
 
         public:
-            Iterator(uint16_t index, const LocationOfInterestHashMap& map)
+            Iterator(uint16_t index, const LocationOfInterestHashSet& map)
                 : _index(index)
                 , _map(map)
             {
@@ -126,7 +126,7 @@ namespace OpenLoco::Vehicles
         uint16_t mapSizeMask;
         uint16_t maxEntries;
 
-        LocationOfInterestHashMap(uint16_t _maxSize)
+        LocationOfInterestHashSet(uint16_t _maxSize)
             : count()
             , mapSize(_maxSize)
             , mapSizeMask(_maxSize - 1)
@@ -179,14 +179,14 @@ namespace OpenLoco::Vehicles
     };
 
     // using FilterFunction = bool (*)(const LocationOfInterest& interest);          // TODO C++20 make these concepts
-    // using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap); // TODO C++20 make these concepts
+    // using TransformFunction = void (*)(const LocationOfInterestHashSet& hashMap); // TODO C++20 make these concepts
 
-    constexpr auto kNullTransformFunction = [](const LocationOfInterestHashMap&) {};
+    constexpr auto kNullTransformFunction = [](const LocationOfInterestHashSet&) {};
 
     // static loco_global<FilterFunction, 0x01135F0E> _filterFunction; // Note: No longer passed by global
     // static loco_global<uint32_t, 0x01135F0A> _hashMapSize;          // Note: No longer passed by global
     // static loco_global<TransformFunction, 0x01135F12> _transformFunction; // Note: No longer passed by global
-    // static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06; // Note: No longer binary identical so never set this
+    // static loco_global<LocationOfInterestHashSet*, 0x01135F06> _1135F06; // Note: No longer binary identical so never set this
     // static loco_global<uint16_t, 0x001135F88> _routingTransformData; // Note: No longer passed by global
 
     static loco_global<TrackNetworkSearchFlags, 0x01135FA6> _findTrackNetworkFlags;
@@ -471,7 +471,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2CE7
-    static void setSignalsOccupiedState(const LocationOfInterestHashMap& hashMap, const uint16_t& routingTransformData)
+    static void setSignalsOccupiedState(const LocationOfInterestHashSet& hashMap, const uint16_t& routingTransformData)
     {
         for (const auto& interest : hashMap)
         {
@@ -509,12 +509,12 @@ namespace OpenLoco::Vehicles
     using LocationOfInterestQueue = sfl::static_vector<LocationOfInterest, 4096>;
 
     template<typename FilterFunction>
-    static void findAllUsableTrackInNetwork(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
+    static void findAllUsableTrackInNetwork(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashSet& hashMap);
 
     // 0x004A313B & 0x004A35B7
     // Iterates all individual tiles of a track piece to find tracks that need inspection
     template<typename FilterFunction>
-    static void findAllUsableTrackPieces(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableTrackPieces(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashSet& hashMap)
     {
         if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
         {
@@ -610,7 +610,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004A2FE6 & 0x004A3462
     template<typename FilterFunction>
-    static void findAllUsableTrackInNetwork(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableTrackInNetwork(LocationOfInterestQueue& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashSet& hashMap)
     {
         const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(initialInterest.loc, initialInterest.tad()._data);
         auto tc = World::Track::getTrackConnections(trackEndLoc, trackEndRotation, initialInterest.company, initialInterest.trackType, 0, 0);
@@ -670,7 +670,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004A2E46 & 0x004A2DE4
     template<typename FilterFunction, typename TransformFunction>
-    static void findAllTracksFilterTransform(LocationOfInterestHashMap& interestMap, TrackNetworkSearchFlags searchFlags, const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
+    static void findAllTracksFilterTransform(LocationOfInterestHashSet& interestMap, TrackNetworkSearchFlags searchFlags, const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
     {
         // _1135F06 = &interestMap;
         // _filterFunction = filterFunction;
@@ -692,12 +692,12 @@ namespace OpenLoco::Vehicles
     }
 
     template<typename FilterFunction>
-    static void findAllUsableRoadInNetwork(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
+    static void findAllUsableRoadInNetwork(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashSet& hashMap);
 
     // 0x00479EFA
     // Iterates all individual tiles of a road piece to find roads that need inspection
     template<typename FilterFunction>
-    static void findAllUsableRoadPieces(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableRoadPieces(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashSet& hashMap)
     {
         if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
         {
@@ -793,7 +793,7 @@ namespace OpenLoco::Vehicles
 
     // 0x00479DB1
     template<typename FilterFunction>
-    static void findAllUsableRoadInNetwork(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableRoadInNetwork(LocationOfInterestQueue& additionalRoadToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashSet& hashMap)
     {
         const auto [roadEndLoc, roadEndRotation] = World::Track::getRoadConnectionEnd(initialInterest.loc, initialInterest.rad()._data);
         auto tc = World::Track::getRoadConnections(roadEndLoc, roadEndRotation, initialInterest.company, initialInterest.trackType, 0, 0);
@@ -849,7 +849,7 @@ namespace OpenLoco::Vehicles
     }
 
     template<typename FilterFunction, typename TransformFunction>
-    static void findAllRoadsFilterTransform(LocationOfInterestHashMap& interestMap, TrackNetworkSearchFlags searchFlags, const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
+    static void findAllRoadsFilterTransform(LocationOfInterestHashSet& interestMap, TrackNetworkSearchFlags searchFlags, const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
     {
         // _1135F06 = &interestMap;
         // _filterFunction = filterFunction;
@@ -877,8 +877,8 @@ namespace OpenLoco::Vehicles
         uint16_t routingTransformData = 0;
 
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
-        auto transformFunction = [&routingTransformData](const LocationOfInterestHashMap& interestMap) { setSignalsOccupiedState(interestMap, routingTransformData); };
-        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
+        auto transformFunction = [&routingTransformData](const LocationOfInterestHashSet& interestMap) { setSignalsOccupiedState(interestMap, routingTransformData); };
+        LocationOfInterestHashSet interestMap{ kSignalHashMapSize };
 
         findAllTracksFilterTransform(
             interestMap,
@@ -899,7 +899,7 @@ namespace OpenLoco::Vehicles
 
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
 
-        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
+        LocationOfInterestHashSet interestMap{ kSignalHashMapSize };
 
         findAllTracksFilterTransform(
             interestMap,
@@ -909,7 +909,7 @@ namespace OpenLoco::Vehicles
             company,
             trackType,
             filterFunction,
-            [](LocationOfInterestHashMap&) {});
+            [](LocationOfInterestHashSet&) {});
         return routingTransformData & 1;
     }
 
@@ -930,7 +930,7 @@ namespace OpenLoco::Vehicles
 
     void setReverseSignalOccupiedInBlock(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
-        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
+        LocationOfInterestHashSet interestMap{ kSignalHashMapSize };
 
         findAllTracksFilterTransform(
             interestMap,
@@ -940,7 +940,7 @@ namespace OpenLoco::Vehicles
             company,
             trackType,
             setReverseSignalOccupied,
-            [](LocationOfInterestHashMap&) {});
+            [](LocationOfInterestHashSet&) {});
     }
 
     // 0x004A2A58
@@ -948,7 +948,7 @@ namespace OpenLoco::Vehicles
     {
         // 0x001135F88
         uint16_t unk = 0;
-        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
+        LocationOfInterestHashSet interestMap{ kSignalHashMapSize };
         auto filterFunction = [&unk](const LocationOfInterest& interest) { return sub_4A2D4C(interest, unk); };
 
         findAllTracksFilterTransform(
@@ -992,7 +992,7 @@ namespace OpenLoco::Vehicles
         _1136085 = 0;
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return sub_4A2AA1(interest, routingTransformData); };
 
-        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
+        LocationOfInterestHashSet interestMap{ kSignalHashMapSize };
 
         findAllTracksFilterTransform(
             interestMap,
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Vehicles
             company,
             trackType,
             filterFunction,
-            [](LocationOfInterestHashMap&) {});
+            [](LocationOfInterestHashSet&) {});
 
         if (_1136085 & (1U << 0))
         {
@@ -1012,7 +1012,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A5D94
-    static bool applyTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    static bool applyTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashSet* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the hashmap to prevent it being visited.
@@ -1174,7 +1174,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A6136
-    static bool removeTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    static bool removeTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashSet* hashMap, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the hashmap to prevent it being visited.
@@ -1324,7 +1324,7 @@ namespace OpenLoco::Vehicles
             return result;
         }
 
-        LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
+        LocationOfInterestHashSet interestHashMap{ kTrackModHashMapSize };
 
         auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
             return applyTrackModToTrack(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
@@ -1344,7 +1344,7 @@ namespace OpenLoco::Vehicles
             return cost;
         }
 
-        LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
+        LocationOfInterestHashSet interestHashMap{ kTrackModHashMapSize };
 
         auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &cost, company, &interestHashMap](const LocationOfInterest& interest) {
             return removeTrackModToTrack(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, cost, company);
@@ -1354,7 +1354,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047A5E6
-    static bool applyRoadModToRoad(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    static bool applyRoadModToRoad(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashSet* hashMap, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the hashmap to prevent it being visited.
@@ -1529,7 +1529,7 @@ namespace OpenLoco::Vehicles
             return result;
         }
 
-        LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
+        LocationOfInterestHashSet interestHashMap{ kTrackModHashMapSize };
 
         auto filterFunction = [flags, modSelection, roadType, roadModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
             return applyRoadModToRoad(interest, flags, &interestHashMap, modSelection, roadType, roadModObjIds, result.cost, company, result.allPlacementsFailed);
@@ -1540,7 +1540,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047A8F0
-    static bool removeRoadModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    static bool removeRoadModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashSet* hashMap, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the hashmap to prevent it being visited.
@@ -1686,7 +1686,7 @@ namespace OpenLoco::Vehicles
             return cost;
         }
 
-        LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
+        LocationOfInterestHashSet interestHashMap{ kTrackModHashMapSize };
 
         auto filterFunction = [flags, modSelection, roadType, roadModObjIds, &cost, company, &interestHashMap](const LocationOfInterest& interest) {
             return removeRoadModToTrack(interest, flags, &interestHashMap, modSelection, roadType, roadModObjIds, cost, company);

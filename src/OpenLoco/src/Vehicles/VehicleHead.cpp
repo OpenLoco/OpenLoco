@@ -3897,7 +3897,7 @@ namespace OpenLoco::Vehicles
         {
             if (handle != veh1.routingHandle)
             {
-                RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+                RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRouting);
             }
         }
 
@@ -3943,7 +3943,7 @@ namespace OpenLoco::Vehicles
                 pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
                 if (handle != veh2.routingHandle)
                 {
-                    RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+                    RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRouting);
                 }
             }
         }
@@ -3985,7 +3985,7 @@ namespace OpenLoco::Vehicles
                 // Clear out all routings after the first one
                 if (handle != veh2.routingHandle)
                 {
-                    RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+                    RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRouting);
                 }
             }
         }
@@ -4199,11 +4199,11 @@ namespace OpenLoco::Vehicles
             auto iter = routings.begin();
             iter++;
             iter++;
-            if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRouting)
             {
                 return Sub4ACEE7Result{ 1, 0, StationId::null };
             }
-            if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRouting)
             {
                 return Sub4ACEE7Result{ 1, 0, StationId::null };
             }
@@ -4436,11 +4436,11 @@ namespace OpenLoco::Vehicles
             auto iter = routings.begin();
             iter++;
             iter++;
-            if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            if (RoutingManager::getRouting(*iter) != RoutingManager::kAllocatedButFreeRouting)
             {
                 return Sub4ACEE7Result{ 1, 0, StationId::null };
             }
-            if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRoutingStation)
+            if (RoutingManager::getRouting(*++iter) != RoutingManager::kAllocatedButFreeRouting)
             {
                 return Sub4ACEE7Result{ 1, 0, StationId::null };
             }
@@ -4565,7 +4565,7 @@ namespace OpenLoco::Vehicles
             auto reversePos = pos;
             for (auto i = 0; i < 6; ++i, --iter2)
             {
-                if (RoutingManager::getRouting(*iter2) == RoutingManager::kAllocatedButFreeRoutingStation)
+                if (RoutingManager::getRouting(*iter2) == RoutingManager::kAllocatedButFreeRouting)
                 {
                     break;
                 }
@@ -4665,7 +4665,7 @@ namespace OpenLoco::Vehicles
                 }
                 uint8_t edi = 2;
                 auto reversePos = pos;
-                for (auto iter3 = routings.begin(); RoutingManager::getRouting(*iter3) != RoutingManager::kAllocatedButFreeRoutingStation; --iter3)
+                for (auto iter3 = routings.begin(); RoutingManager::getRouting(*iter3) != RoutingManager::kAllocatedButFreeRouting; --iter3)
                 {
                     const auto reverseRouting = RoutingManager::getRouting(*iter3);
                     if (*iter3 != *routings.begin())
@@ -6209,7 +6209,7 @@ namespace OpenLoco::Vehicles
             // Clear out all routings after the first one
             if (handle != veh1.routingHandle)
             {
-                RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRoutingStation);
+                RoutingManager::setRouting(handle, RoutingManager::kAllocatedButFreeRouting);
             }
         }
 
