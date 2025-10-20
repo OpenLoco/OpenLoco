@@ -8,8 +8,8 @@
 
 namespace OpenLoco::Ui::ScrollView
 {
-    Ui::ScrollPart _currentScrollArea; // 0x00523396
-    size_t _currentScrollIndex;        // 0x00523398
+    Ui::ScrollPart _currentScrollArea = ScrollPart::view; // 0x00523396
+    size_t _currentScrollIndex = 0;                       // 0x00523398
 
     // 0x004C87E1
     // regs.bp: deltaX
