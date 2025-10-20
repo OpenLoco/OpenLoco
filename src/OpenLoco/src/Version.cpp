@@ -1,4 +1,4 @@
-#include "OpenLoco.h"
+#include "Version.h"
 
 // clang-format off
 
@@ -38,7 +38,7 @@
 
 namespace OpenLoco
 {
-    const char kVersion[] = OPENLOCO_NAME ", "
+    static const char kVersion[] = OPENLOCO_NAME ", "
         #ifdef OPENLOCO_VERSION_TAG
             OPENLOCO_VERSION_TAG
         #else
@@ -62,7 +62,16 @@ namespace OpenLoco
         #endif
         ;
 
-    const char kPlatform[] = OPENLOCO_PLATFORM " (" OPENLOCO_ARCHITECTURE ")";
-}
+    static const char kPlatform[] = OPENLOCO_PLATFORM " (" OPENLOCO_ARCHITECTURE ")";
+    // clang-format on
 
-// clang-format on
+    std::string getVersionInfo()
+    {
+        return kVersion;
+    }
+
+    std::string getPlatformInfo()
+    {
+        return kPlatform;
+    }
+}

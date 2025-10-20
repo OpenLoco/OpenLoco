@@ -71,6 +71,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include "Version.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
@@ -107,16 +108,6 @@ namespace OpenLoco
     static void tickLogic(int32_t count);
     static void tickLogic();
     static void dateTick();
-
-    std::string getVersionInfo()
-    {
-        return kVersion;
-    }
-
-    std::string getPlatformInfo()
-    {
-        return kPlatform;
-    }
 
     // 0x004BE621
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)

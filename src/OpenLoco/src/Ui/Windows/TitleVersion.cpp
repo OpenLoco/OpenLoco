@@ -1,11 +1,11 @@
 #include "Graphics/Colour.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
-#include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
+#include "Version.h"
 
 namespace OpenLoco::Ui::Windows::TitleVersion
 {

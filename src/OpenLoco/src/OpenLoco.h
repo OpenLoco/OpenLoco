@@ -17,12 +17,6 @@ namespace OpenLoco
         constexpr uint32_t MaxUpdates = 3;
     }
 
-    extern const char kVersion[];
-    std::string getVersionInfo();
-
-    extern const char kPlatform[];
-    std::string getPlatformInfo();
-
     void* hInstance();
     void initialiseViewports();
     void simulateGame(const fs::path& path, int32_t ticks);
