@@ -20,6 +20,7 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <sfl/static_unordered_set.hpp>
 #include <sfl/static_vector.hpp>
 
 namespace OpenLoco::Vehicles
@@ -61,122 +62,32 @@ namespace OpenLoco::Vehicles
         }
     };
 
-    // Note: This is not binary identical to vanilla so cannot be hooked!
-    struct LocationOfInterestHashSet
+}
+
+template<class T>
+inline void hash_combine(std::size_t& seed, const T& v)
+{
+    std::hash<T> hasher;
+    seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+}
+
+template<>
+struct std::hash<OpenLoco::Vehicles::LocationOfInterest>
+{
+    std::size_t operator()(const OpenLoco::Vehicles::LocationOfInterest& interest) const noexcept
     {
-        static constexpr auto kMinFreeSlots = 100; // There must always be at least 100 free slots otherwise the hashset gets very inefficient
+        std::size_t h = 0;
+        hash_combine(h, interest.loc.x);
+        hash_combine(h, interest.loc.y);
+        hash_combine(h, interest.loc.z);
+        hash_combine(h, interest.trackAndDirection);
+        return h;
+    }
+};
 
-    private:
-        class Iterator
-        {
-            uint16_t _index;
-            const LocationOfInterestHashSet& _map;
-
-        public:
-            Iterator(uint16_t index, const LocationOfInterestHashSet& map)
-                : _index(index)
-                , _map(map)
-            {
-                findAllocatedEntry();
-            }
-
-            void findAllocatedEntry()
-            {
-                while (_index < _map.mapSize && _map.locs[_index].loc == World::Pos3{ -1, -1, 0 })
-                {
-                    _index++;
-                }
-            }
-
-            Iterator& operator++()
-            {
-                _index++;
-                findAllocatedEntry();
-                return *this;
-            }
-
-            Iterator operator++(int)
-            {
-                Iterator retval = *this;
-                ++(*this);
-                return retval;
-            }
-
-            bool operator==(const Iterator& other) const
-            {
-                return _index == other._index;
-            }
-
-            LocationOfInterest operator*() const
-            {
-                return _map.get(_index);
-            }
-            // iterator traits
-            using difference_type = std::ptrdiff_t;
-            using value_type = LocationOfInterest;
-            using pointer = LocationOfInterest*;
-            using reference = LocationOfInterest&;
-            using iterator_category = std::forward_iterator_tag;
-        };
-
-    public:
-        sfl::static_vector<LocationOfInterest, 4096> locs;
-        size_t count;
-        uint16_t mapSize;
-        uint16_t mapSizeMask;
-        uint16_t maxEntries;
-
-        LocationOfInterestHashSet(uint16_t _maxSize)
-            : count()
-            , mapSize(_maxSize)
-            , mapSizeMask(_maxSize - 1)
-            , maxEntries(_maxSize - kMinFreeSlots)
-        {
-            assert(_maxSize <= locs.static_capacity);
-            assert((mapSize & (mapSizeMask)) == 0); // Only works with powers of 2
-            locs.resize(mapSize);
-            std::fill(std::begin(locs), std::end(locs), LocationOfInterest{ World::Pos3{ -1, -1, 0 }, 0, CompanyId::null, 0 });
-        }
-
-        LocationOfInterest get(const uint16_t index) const
-        {
-            return locs[index];
-        }
-
-        constexpr uint16_t hash(const LocationOfInterest& interest) const
-        {
-            return ((((interest.loc.x ^ interest.loc.z) / 32) ^ interest.loc.y) ^ interest.trackAndDirection) & mapSizeMask;
-        }
-
-        // 0x004A38DE & 0x004A3972
-        bool tryAdd(LocationOfInterest& interest)
-        {
-            auto index = hash(interest);
-            for (; locs[index].loc != World::Pos3{ -1, -1, 0 }; ++index, index &= mapSizeMask)
-            {
-                if (get(index) == interest)
-                {
-                    return false;
-                }
-            }
-            if (count >= maxEntries)
-            {
-                return false;
-            }
-            locs[index] = interest;
-            count++;
-            return true;
-        }
-
-        Iterator begin() const
-        {
-            return Iterator(0, *this);
-        }
-        Iterator end() const
-        {
-            return Iterator(mapSize, *this);
-        }
-    };
+namespace OpenLoco::Vehicles
+{
+    using LocationOfInterestHashSet = sfl::static_unordered_set<LocationOfInterest, 4096>;
 
     // using FilterFunction = bool (*)(const LocationOfInterest& interest);          // TODO C++20 make these concepts
     // using TransformFunction = void (*)(const LocationOfInterestHashSet& hashSet); // TODO C++20 make these concepts
@@ -571,7 +482,7 @@ namespace OpenLoco::Vehicles
                 TrackAndDirection::_TrackAndDirection tad2(elTrack->trackId(), elTrack->rotation());
                 LocationOfInterest newInterest{ startTargetPos, tad2._data, elTrack->owner(), elTrack->trackObjectId() };
 
-                if (hashSet.tryAdd(newInterest))
+                if (!hashSet.full() && hashSet.insert(newInterest).second)
                 {
                     if (!filterFunction(newInterest))
                     {
@@ -590,7 +501,7 @@ namespace OpenLoco::Vehicles
                 tad2.setReversed(!tad2.isReversed());
                 LocationOfInterest newInterestR{ endTargetPos, tad2._data, elTrack->owner(), elTrack->trackObjectId() };
 
-                if (hashSet.tryAdd(newInterestR))
+                if (!hashSet.full() && hashSet.insert(newInterestR).second)
                 {
                     if (!filterFunction(newInterestR))
                     {
@@ -615,7 +526,7 @@ namespace OpenLoco::Vehicles
             {
                 uint16_t trackAndDirection2 = c & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 LocationOfInterest interest{ trackEndLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
-                if (hashSet.tryAdd(interest))
+                if (!hashSet.full() && hashSet.insert(interest).second)
                 {
                     if (!filterFunction(interest))
                     {
@@ -647,7 +558,7 @@ namespace OpenLoco::Vehicles
             {
                 uint16_t trackAndDirection2 = c & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 LocationOfInterest interest{ nextLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
-                if (hashSet.tryAdd(interest))
+                if (!hashSet.full() && hashSet.insert(interest).second)
                 {
                     if (!filterFunction(interest))
                     {
@@ -754,7 +665,7 @@ namespace OpenLoco::Vehicles
                 TrackAndDirection::_RoadAndDirection tad2(elRoad->roadId(), elRoad->rotation());
                 LocationOfInterest newInterest{ startTargetPos, tad2._data, elRoad->owner(), elRoad->roadObjectId() };
 
-                if (hashSet.tryAdd(newInterest))
+                if (!hashSet.full() && hashSet.insert(newInterest).second)
                 {
                     if (!filterFunction(newInterest))
                     {
@@ -773,7 +684,7 @@ namespace OpenLoco::Vehicles
                 tad2.setReversed(!tad2.isReversed());
                 LocationOfInterest newInterestR{ endTargetPos, tad2._data, elRoad->owner(), elRoad->roadObjectId() };
 
-                if (hashSet.tryAdd(newInterestR))
+                if (!hashSet.full() && hashSet.insert(newInterestR).second)
                 {
                     if (!filterFunction(newInterestR))
                     {
@@ -798,7 +709,7 @@ namespace OpenLoco::Vehicles
             {
                 uint16_t trackAndDirection2 = c & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
                 LocationOfInterest interest{ roadEndLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
-                if (hashSet.tryAdd(interest))
+                if (!hashSet.full() && hashSet.insert(interest).second)
                 {
                     if (!filterFunction(interest))
                     {
@@ -830,7 +741,7 @@ namespace OpenLoco::Vehicles
             {
                 uint16_t trackAndDirection2 = c & World::Track::AdditionalTaDFlags::basicRaDWithSignalMask;
                 LocationOfInterest interest{ nextLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
-                if (hashSet.tryAdd(interest))
+                if (!hashSet.full() && hashSet.insert(interest).second)
                 {
                     if (!filterFunction(interest))
                     {
@@ -872,7 +783,7 @@ namespace OpenLoco::Vehicles
 
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
         auto transformFunction = [&routingTransformData](const LocationOfInterestHashSet& interestMap) { setSignalsOccupiedState(interestMap, routingTransformData); };
-        LocationOfInterestHashSet interestMap{ kSignalHashSetSize };
+        LocationOfInterestHashSet interestMap{};
 
         findAllTracksFilterTransform(
             interestMap,
@@ -893,7 +804,7 @@ namespace OpenLoco::Vehicles
 
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
 
-        LocationOfInterestHashSet interestMap{ kSignalHashSetSize };
+        LocationOfInterestHashSet interestMap{};
 
         findAllTracksFilterTransform(
             interestMap,
@@ -924,7 +835,7 @@ namespace OpenLoco::Vehicles
 
     void setReverseSignalOccupiedInBlock(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
-        LocationOfInterestHashSet interestMap{ kSignalHashSetSize };
+        LocationOfInterestHashSet interestMap{};
 
         findAllTracksFilterTransform(
             interestMap,
@@ -942,7 +853,7 @@ namespace OpenLoco::Vehicles
     {
         // 0x001135F88
         uint16_t unk = 0;
-        LocationOfInterestHashSet interestMap{ kSignalHashSetSize };
+        LocationOfInterestHashSet interestMap{};
         auto filterFunction = [&unk](const LocationOfInterest& interest) { return sub_4A2D4C(interest, unk); };
 
         findAllTracksFilterTransform(
@@ -986,7 +897,7 @@ namespace OpenLoco::Vehicles
         _1136085 = 0;
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return sub_4A2AA1(interest, routingTransformData); };
 
-        LocationOfInterestHashSet interestMap{ kSignalHashSetSize };
+        LocationOfInterestHashSet interestMap{};
 
         findAllTracksFilterTransform(
             interestMap,
@@ -1025,7 +936,10 @@ namespace OpenLoco::Vehicles
             }
             reverseInterest.trackAndDirection ^= (1 << 2); // Reverse flag
 
-            hashSet->tryAdd(reverseInterest);
+            if (!hashSet->full())
+            {
+                hashSet->insert(reverseInterest);
+            }
         }
 
         auto* trackObj = ObjectManager::get<TrackObject>(trackObjectId);
@@ -1187,7 +1101,10 @@ namespace OpenLoco::Vehicles
             }
             reverseInterest.trackAndDirection ^= (1 << 2); // Reverse flag
 
-            hashSet->tryAdd(reverseInterest);
+            if (!hashSet->full())
+            {
+                hashSet->insert(reverseInterest);
+            }
         }
 
         auto* trackObj = ObjectManager::get<TrackObject>(trackObjectId);
@@ -1318,13 +1235,13 @@ namespace OpenLoco::Vehicles
             return result;
         }
 
-        LocationOfInterestHashSet interestHashSet{ kTrackModHashSetSize };
+        LocationOfInterestHashSet interestHashSet{};
 
         auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashSet](const LocationOfInterest& interest) {
             return applyTrackModToTrack(interest, flags, &interestHashSet, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
         };
         findAllTracksFilterTransform(interestHashSet, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
-        result.networkTooComplex = interestHashSet.count >= interestHashSet.maxEntries;
+        result.networkTooComplex = interestHashSet.available() < 100;
         return result;
     }
 
@@ -1338,7 +1255,7 @@ namespace OpenLoco::Vehicles
             return cost;
         }
 
-        LocationOfInterestHashSet interestHashSet{ kTrackModHashSetSize };
+        LocationOfInterestHashSet interestHashSet{};
 
         auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &cost, company, &interestHashSet](const LocationOfInterest& interest) {
             return removeTrackModToTrack(interest, flags, &interestHashSet, modSelection, trackType, trackModObjIds, cost, company);
@@ -1367,7 +1284,10 @@ namespace OpenLoco::Vehicles
             }
             reverseInterest.trackAndDirection ^= (1 << 2); // Reverse flag
 
-            hashSet->tryAdd(reverseInterest);
+            if (!hashSet->full())
+            {
+                hashSet->insert(reverseInterest);
+            }
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjectId);
@@ -1523,13 +1443,13 @@ namespace OpenLoco::Vehicles
             return result;
         }
 
-        LocationOfInterestHashSet interestHashSet{ kTrackModHashSetSize };
+        LocationOfInterestHashSet interestHashSet{};
 
         auto filterFunction = [flags, modSelection, roadType, roadModObjIds, &result, company, &interestHashSet](const LocationOfInterest& interest) {
             return applyRoadModToRoad(interest, flags, &interestHashSet, modSelection, roadType, roadModObjIds, result.cost, company, result.allPlacementsFailed);
         };
         findAllRoadsFilterTransform(interestHashSet, TrackNetworkSearchFlags::unk0, pos, roadAndDirection, company, roadType, filterFunction, kNullTransformFunction);
-        result.networkTooComplex = interestHashSet.count >= interestHashSet.maxEntries;
+        result.networkTooComplex = interestHashSet.available() < 100;
         return result;
     }
 
@@ -1553,7 +1473,10 @@ namespace OpenLoco::Vehicles
             }
             reverseInterest.trackAndDirection ^= (1 << 2); // Reverse flag
 
-            hashSet->tryAdd(reverseInterest);
+            if (!hashSet->full())
+            {
+                hashSet->insert(reverseInterest);
+            }
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjectId);
@@ -1680,7 +1603,7 @@ namespace OpenLoco::Vehicles
             return cost;
         }
 
-        LocationOfInterestHashSet interestHashSet{ kTrackModHashSetSize };
+        LocationOfInterestHashSet interestHashSet{};
 
         auto filterFunction = [flags, modSelection, roadType, roadModObjIds, &cost, company, &interestHashSet](const LocationOfInterest& interest) {
             return removeRoadModToTrack(interest, flags, &interestHashSet, modSelection, roadType, roadModObjIds, cost, company);
