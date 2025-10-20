@@ -56,7 +56,6 @@ namespace OpenLoco::S5
     static loco_global<GameState, 0x00525E18> _gameState;
     static loco_global<Options, 0x009C8714> _activeOptions;
     static loco_global<Header, 0x009CCA34> _header;
-    static loco_global<char[512], 0x0112CE04> _savePath;
     static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
     static loco_global<StringId, 0x0050C198> _loadErrorMessage;
 

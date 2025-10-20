@@ -514,10 +514,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::browseHeightmapFile:
                 {
-                    if (Game::loadHeightmapOpen())
+                    if (auto res = Game::loadHeightmapOpen())
                     {
-                        static loco_global<char[512], 0x0112CE04> _savePath;
-                        World::MapGenerator::setPngHeightmapPath(fs::u8path(&*_savePath));
+                        World::MapGenerator::setPngHeightmapPath(fs::u8path(*res));
                         window.invalidate();
                     }
                     break;

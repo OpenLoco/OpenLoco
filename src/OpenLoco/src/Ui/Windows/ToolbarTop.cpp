@@ -174,15 +174,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
         }
 
-        if (!OpenLoco::Game::saveSaveGameOpen())
+        auto res = OpenLoco::Game::saveSaveGameOpen();
+        if (!res)
         {
             // Cancelled by user
             Gfx::invalidateScreen();
             return;
         }
 
-        static loco_global<char[512], 0x0112CE04> _savePath;
-        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+        auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
 
         // Store path to active file
         static loco_global<char[256], 0x0050B745> _currentGameFilePath;
