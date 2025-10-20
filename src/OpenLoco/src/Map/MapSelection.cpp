@@ -6,12 +6,12 @@
 
 namespace OpenLoco::World
 {
-    static MapSelectionFlags _mapSelectionFlags; // 0x00F24484
-    static coord_t _mapSelectionAX;              // 0x00F24486
-    static coord_t _mapSelectionBX;              // 0x00F24488
-    static coord_t _mapSelectionAY;              // 0x00F2448A
-    static coord_t _mapSelectionBY;              // 0x00F2448C
-    static MapSelectionType _mapSelectionType;   // 0x00F2448E
+    static MapSelectionFlags _mapSelectionFlags = MapSelectionFlags::none; // 0x00F24484
+    static coord_t _mapSelectionAX = 0;                                    // 0x00F24486
+    static coord_t _mapSelectionBX = 0;                                    // 0x00F24488
+    static coord_t _mapSelectionAY = 0;                                    // 0x00F2448A
+    static coord_t _mapSelectionBY = 0;                                    // 0x00F2448C
+    static MapSelectionType _mapSelectionType = MapSelectionType::corner0; // 0x00F2448E
 
     constexpr uint16_t kMapSelectedFreeFormTilesSize = 300;
     sfl::static_vector<Pos2, kMapSelectedFreeFormTilesSize> _mapSelectedFreeFormTiles;
