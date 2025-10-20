@@ -52,9 +52,9 @@ namespace OpenLoco::Audio
 
     [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
-    static bool _audioInitialised;                                         // 0x0050D1EC
-    static bool _audioIsPaused;                                            // 0x0050D554
-    static bool _audioIsEnabled;                                           // 0x0050D555
+    static bool _audioInitialised = false;                                 // 0x0050D1EC
+    static bool _audioIsPaused = false;                                    // 0x0050D554
+    static bool _audioIsEnabled = true;                                    // 0x0050D555
     static std::optional<PathId> _chosenAmbientNoisePathId = std::nullopt; // 0x0050D5B0
 
     static uint8_t _numActiveVehicleSounds; // 0x0112C666
