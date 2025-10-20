@@ -102,14 +102,14 @@ using namespace OpenLoco::Ui;
 namespace OpenLoco::GameCommands
 {
     static uint16_t _gameCommandFlags;
-    static uint8_t _gameCommandNestLevel;                  // 0x00508F08
-    static CompanyId _updatingCompanyId;                   // 0x009C68EB
-    static const World::TileElement* _errorTileElementPtr; // 0x009C68D0
-    static World::Pos3 _gGameCommandPosition;              // 0x009C68E0
-    static StringId _gGameCommandErrorText;                // 0x009C68E6
-    static StringId _gGameCommandErrorTitle;               // 0x009C68E8
-    static ExpenditureType _gGameCommandExpenditureType;   // 0x009C68EA
-    static CompanyId _errorCompanyId;                      // 0x009C68EE
+    static uint8_t _gameCommandNestLevel = 0;                                                 // 0x00508F08
+    static CompanyId _updatingCompanyId;                                                      // 0x009C68EB
+    static const World::TileElement* _errorTileElementPtr = World::TileManager::kInvalidTile; // 0x009C68D0
+    static World::Pos3 _gGameCommandPosition;                                                 // 0x009C68E0
+    static StringId _gGameCommandErrorText;                                                   // 0x009C68E6
+    static StringId _gGameCommandErrorTitle;                                                  // 0x009C68E8
+    static ExpenditureType _gGameCommandExpenditureType;                                      // 0x009C68EA
+    static CompanyId _errorCompanyId;                                                         // 0x009C68EE
 
     using GameCommandFunc = void (*)(registers& regs);
 
