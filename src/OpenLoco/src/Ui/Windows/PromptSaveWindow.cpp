@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PromptSaveWindow
 {
-    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
+    static LoadOrQuitMode _savePromptType; // 0x0050A002
 
     enum widx
     {
@@ -132,7 +132,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
             case widx::saveButton:
             {
-                Game::confirmSaveGame();
+                Game::confirmSaveGame(_savePromptType);
                 break;
             }
 

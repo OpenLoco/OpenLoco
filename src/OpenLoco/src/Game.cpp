@@ -25,8 +25,6 @@
 
 namespace OpenLoco::Game
 {
-    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
-
     static loco_global<char[256], 0x0050B745> _activeSavePath;
 
     using Ui::Windows::PromptBrowse::browse_type;
@@ -248,7 +246,7 @@ namespace OpenLoco::Game
     }
 
     // 0x0043C427
-    void confirmSaveGame()
+    void confirmSaveGame(LoadOrQuitMode promptSaveType)
     {
         ToolManager::toolCancel();
 
@@ -299,7 +297,7 @@ namespace OpenLoco::Game
             GameCommands::do_72();
             MultiPlayer::setFlag(MultiPlayer::flags::flag_2);
 
-            switch (_savePromptType)
+            switch (promptSaveType)
             {
                 case LoadOrQuitMode::loadGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_13); // intend to load?
