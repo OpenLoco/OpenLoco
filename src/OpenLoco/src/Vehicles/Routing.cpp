@@ -324,9 +324,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2AF0
-    // Passes occupied state via _routingTransformData
-    // Returns true for signal block end
-    static bool findOccupationByBlock(const LocationOfInterest& interest, uint16_t& routingTransformData)
+    static bool isTrackOccupied(const LocationOfInterest& interest)
     {
         auto nextLoc = interest.loc;
         const auto tad = interest.tad();
@@ -361,23 +359,25 @@ namespace OpenLoco::Vehicles
 
                 if (vehicle->getTrackLoc() == interest.loc && vehicle->getTrackAndDirection().track == tad)
                 {
-                    routingTransformData = 1;
-                    break;
+                    return true;
                 }
 
                 if (vehicle->getTrackLoc() == nextLoc && vehicle->getTrackAndDirection().track == backwardTaD)
                 {
-                    routingTransformData = 1;
-                    break;
+                    return true;
                 }
             }
         }
-        return interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal;
+        return false;
     }
 
     // 0x004A2CE7
-    static void setSignalsOccupiedState(const LocationOfInterestHashSet& hashSet, const uint16_t& routingTransformData)
+    static void setSignalsOccupiedState(const LocationOfInterestHashSet& hashSet)
     {
+        bool isOccupied = std::ranges::any_of(hashSet, [](const auto& interest) {
+            return isTrackOccupied(interest);
+        });
+
         for (const auto& interest : hashSet)
         {
             if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
@@ -385,29 +385,14 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            bool isOccupied = routingTransformData & 1;
             uint32_t flags = (1ULL << 31) | (isOccupied ? 8ULL : 9ULL);
             setSignalState(interest.loc, interest.tad(), interest.trackType, flags);
         }
     }
 
-    // 0x004A2D4C
-    static bool sub_4A2D4C(const LocationOfInterest& interest, uint16_t& unk)
+    static bool endAtSignalFilter(const LocationOfInterest& interest)
     {
-        if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
-        {
-            return false;
-        }
-
-        if ((getSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31)) & SignalStateFlags::occupied) != SignalStateFlags::none)
-        {
-            unk |= (1 << 0);
-        }
-        else
-        {
-            unk |= (1 << 1);
-        }
-        return true;
+        return (interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal) != 0;
     }
 
     // The hash map can have a maximum of 4096 entries so the queue can't be larger than that.
@@ -778,11 +763,6 @@ namespace OpenLoco::Vehicles
     // 0x004A2AD7
     void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
-        // 0x001135F88
-        uint16_t routingTransformData = 0;
-
-        auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
-        auto transformFunction = [&routingTransformData](const LocationOfInterestHashSet& interestMap) { setSignalsOccupiedState(interestMap, routingTransformData); };
         LocationOfInterestHashSet interestMap{};
 
         findAllTracksFilterTransform(
@@ -792,17 +772,21 @@ namespace OpenLoco::Vehicles
             trackAndDirection,
             company,
             trackType,
-            filterFunction,
-            transformFunction);
+            endAtSignalFilter,
+            setSignalsOccupiedState);
     }
 
     // 0x004A2A39
     bool isBlockOccupied(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
-        uint16_t routingTransformData = 0;
+        bool isOccupied = false;
 
-        auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
+        auto transformFunction = [&isOccupied](const LocationOfInterestHashSet& hashSet) {
+            isOccupied = std::ranges::any_of(hashSet, [](const auto& interest) {
+                return isTrackOccupied(interest);
+            });
+        };
 
         LocationOfInterestHashSet interestMap{};
 
@@ -813,9 +797,9 @@ namespace OpenLoco::Vehicles
             trackAndDirection,
             company,
             trackType,
-            filterFunction,
-            [](LocationOfInterestHashSet&) {});
-        return routingTransformData & 1;
+            endAtSignalFilter,
+            transformFunction);
+        return isOccupied;
     }
 
     // 0x004AC217
@@ -837,6 +821,18 @@ namespace OpenLoco::Vehicles
     {
         LocationOfInterestHashSet interestMap{};
 
+        auto transformFunction = [](const LocationOfInterestHashSet& set) {
+            for (auto& interest : set)
+            {
+                if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
+                {
+                    continue;
+                }
+
+                setSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31) | (8));
+            }
+        };
+
         findAllTracksFilterTransform(
             interestMap,
             TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
@@ -844,8 +840,8 @@ namespace OpenLoco::Vehicles
             trackAndDirection,
             company,
             trackType,
-            setReverseSignalOccupied,
-            [](LocationOfInterestHashSet&) {});
+            endAtSignalFilter,
+            transformFunction);
     }
 
     // 0x004A2A58
@@ -854,7 +850,26 @@ namespace OpenLoco::Vehicles
         // 0x001135F88
         uint16_t unk = 0;
         LocationOfInterestHashSet interestMap{};
-        auto filterFunction = [&unk](const LocationOfInterest& interest) { return sub_4A2D4C(interest, unk); };
+
+        // 0x004A2D4C
+        auto transformFunction = [&unk](const LocationOfInterestHashSet& set) {
+            for (auto& interest : set)
+            {
+                if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
+                {
+                    continue;
+                }
+
+                if ((getSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31)) & SignalStateFlags::occupied) != SignalStateFlags::none)
+                {
+                    unk |= (1 << 0);
+                }
+                else
+                {
+                    unk |= (1 << 1);
+                }
+            }
+        };
 
         findAllTracksFilterTransform(
             interestMap,
@@ -863,8 +878,8 @@ namespace OpenLoco::Vehicles
             trackAndDirection,
             company,
             trackType,
-            filterFunction,
-            kNullTransformFunction);
+            endAtSignalFilter,
+            transformFunction);
 
         return unk;
     }
