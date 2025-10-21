@@ -336,7 +336,7 @@ namespace OpenLoco::Vehicles
         auto newIndex = newRoutingHandle.getIndex() + 1;
         newRoutingHandle.setIndex(newIndex);
         const auto routing = RoutingManager::getRouting(newRoutingHandle);
-        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
+        if (routing == RoutingManager::kAllocatedButFreeRouting)
         {
             return false;
         }
@@ -406,7 +406,7 @@ namespace OpenLoco::Vehicles
         auto newIndex = handle.getIndex() + 1;
         handle.setIndex(newIndex);
         const auto routing = RoutingManager::getRouting(handle);
-        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
+        if (routing == RoutingManager::kAllocatedButFreeRouting)
         {
             return false;
         }
@@ -713,7 +713,7 @@ namespace OpenLoco::Vehicles
         auto newIndex = newRoutingHandle.getIndex() + 1;
         newRoutingHandle.setIndex(newIndex);
         const auto routing = RoutingManager::getRouting(newRoutingHandle);
-        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
+        if (routing == RoutingManager::kAllocatedButFreeRouting)
         {
             return RoadMotionNewPieceResult::noFurther;
         }
