@@ -2811,7 +2811,7 @@ namespace OpenLoco
                     {
                         return false;
                     }
-                    // Note: unk1 unk2 are swapped on our thought
+                    // Note: excludeReverseDirection unk2 are swapped on our thought
                     if (thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationAIsIndustry) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationBIsIndustry)
                         || thoughtTypeHasFlags(otherThought.type, ThoughtTypeFlags::destinationBIsIndustry) != thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
                     {
