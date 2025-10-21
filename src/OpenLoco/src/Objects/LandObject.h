@@ -19,12 +19,12 @@ namespace OpenLoco
     enum class LandObjectFlags : uint8_t
     {
         none = 0U,
-        regrows = 1U << 0,
+        hasGrowthStages = 1U << 0,
         hasReplacementLandHeader = 1U << 1,
         isDesert = 1U << 2,
         noTrees = 1U << 3,
-        sharpSlopeTransitions = 1U << 4,
-        noTransition = 1U << 5,
+        hasSharpSlopeTransition = 1U << 4,
+        disableSmoothTileTransition = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(LandObjectFlags);
 
