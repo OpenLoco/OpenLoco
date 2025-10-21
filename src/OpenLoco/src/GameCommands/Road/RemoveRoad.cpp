@@ -172,8 +172,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
-        if (!sub_431E6A(companyId, reinterpret_cast<const World::TileElement*>(roadEl)))
+        if (!sub_431E6A(roadEl->owner(), reinterpret_cast<const World::TileElement*>(roadEl)))
         {
             return FAILURE;
         }

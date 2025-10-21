@@ -15,19 +15,15 @@ namespace OpenLoco::ToolManager
     void toolCancel();
     void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
 
-    //  0x00523390
     Ui::WindowNumber_t getToolWindowNumber();
     void setToolWindowNumber(Ui::WindowNumber_t toolWindowNumber);
 
-    // 0x00523392
     Ui::WindowType getToolWindowType();
     void setToolWindowType(Ui::WindowType toolWindowType);
 
-    // 0x00523393
     Ui::CursorId getToolCursor();
     void setToolCursor(Ui::CursorId toolWindowCursor);
 
-    // 0x00523394
     int16_t getToolWidgetIndex();
     void setToolWidgetIndex(uint16_t toolWidgetIndex);
 }
