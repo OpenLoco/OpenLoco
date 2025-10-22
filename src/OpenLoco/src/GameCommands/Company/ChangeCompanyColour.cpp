@@ -27,24 +27,24 @@ namespace OpenLoco::GameCommands
             {
                 if (args.value)
                 {
-                    company->customVehicleColoursSet |= (1 << args.colourType);
+                    company->customVehicleColoursSet |= (1 << enumValue(args.colourType));
                 }
                 else
                 {
-                    company->customVehicleColoursSet &= ~(1 << args.colourType);
+                    company->customVehicleColoursSet &= ~(1 << enumValue(args.colourType));
                 }
             }
             // Setting a colour
             else
             {
                 ColourScheme* colours;
-                if (args.colourType == 0)
+                if (args.colourType == CompanyColourType::company)
                 {
                     colours = &company->mainColours;
                 }
                 else
                 {
-                    colours = &company->vehicleColours[args.colourType - 1];
+                    colours = &company->vehicleColours[enumValue(args.colourType) - 1];
                 }
 
                 if (args.isPrimary)
@@ -70,7 +70,7 @@ namespace OpenLoco::GameCommands
                 return GameCommands::FAILURE;
             }
 
-            if (args.setColourMode || args.colourType > 0 || !args.isPrimary)
+            if (args.setColourMode || args.colourType != CompanyColourType::company || !args.isPrimary)
             {
                 return 0;
             }
