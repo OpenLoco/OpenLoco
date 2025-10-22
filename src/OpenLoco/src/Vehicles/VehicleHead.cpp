@@ -3969,7 +3969,7 @@ namespace OpenLoco::Vehicles
                 {
                     TrackAndDirection::_TrackAndDirection signaledTad = tad;
                     signaledTad._data |= (routing & World::Track::AdditionalTaDFlags::hasSignal);
-                    sub_4A2AD7(pos, signaledTad, companyId, trackObjId);
+                    updateSignalOccupiedInBlock(pos, signaledTad, companyId, trackObjId);
                 }
                 if (handle != veh2.routingHandle)
                 {
@@ -6193,7 +6193,7 @@ namespace OpenLoco::Vehicles
             {
                 TrackAndDirection::_TrackAndDirection signaledTad = tad;
                 signaledTad._data |= (routing & World::Track::AdditionalTaDFlags::hasSignal);
-                sub_4A2AD7(pos, signaledTad, companyId, trackObjId);
+                updateSignalOccupiedInBlock(pos, signaledTad, companyId, trackObjId);
             }
             if (handle != veh1.routingHandle)
             {
@@ -7190,8 +7190,8 @@ namespace OpenLoco::Vehicles
                 reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
 
-            sub_4A2AD7(reversePos, reverseTad, head.owner, head.trackType);
-            sub_4A2AD7(pos, tad, head.owner, head.trackType);
+            updateSignalOccupiedInBlock(reversePos, reverseTad, head.owner, head.trackType);
+            updateSignalOccupiedInBlock(pos, tad, head.owner, head.trackType);
         }
         return unkFlag;
     }
