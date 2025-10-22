@@ -1254,7 +1254,7 @@ namespace OpenLoco::StringIds
     constexpr StringId music_selection_title = 1544;
     constexpr StringId music_selection_tooltip = 1545;
     constexpr StringId checkmark = 1546;
-    constexpr StringId volume = 1547;
+    constexpr StringId volume = UNUSED_STR(1547);
     constexpr StringId set_music_volume_tip = 1548;
     constexpr StringId menu_music_options = 1549;
     constexpr StringId company_face_selection_title = 1550;
