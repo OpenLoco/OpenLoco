@@ -159,35 +159,6 @@ namespace OpenLoco::Ui::Windows::Options
                 w.widgets[Widx::tab_rendering].image = imageId;
             }
 
-            // static constexpr uint32_t music_tab_ids[] = {
-            //     ImageIds::tab_music_0,
-            //     ImageIds::tab_music_1,
-            //     ImageIds::tab_music_2,
-            //     ImageIds::tab_music_3,
-            //     ImageIds::tab_music_4,
-            //     ImageIds::tab_music_5,
-            //     ImageIds::tab_music_6,
-            //     ImageIds::tab_music_7,
-            //     ImageIds::tab_music_8,
-            //     ImageIds::tab_music_9,
-            //     ImageIds::tab_music_10,
-            //     ImageIds::tab_music_11,
-            //     ImageIds::tab_music_12,
-            //     ImageIds::tab_music_13,
-            //     ImageIds::tab_music_14,
-            //     ImageIds::tab_music_15,
-            // };
-
-            // Music tab
-            // {
-            //     auto imageId = music_tab_ids[0];
-            //     if (w.currentTab == tab::music)
-            //     {
-            //         imageId = music_tab_ids[(w.frameNo / 4) % 16];
-            //     }
-            //     w.widgets[Widx::tab_music].image = imageId;
-            // }
-
             static constexpr uint32_t globe_tab_ids[] = {
                 ImageIds::tab_globe_0,
                 ImageIds::tab_globe_1,
