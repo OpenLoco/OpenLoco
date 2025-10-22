@@ -86,7 +86,8 @@ struct std::hash<OpenLoco::Vehicles::LocationOfInterest>
 
 namespace OpenLoco::Vehicles
 {
-    using LocationOfInterestHashSet = sfl::static_unordered_set<LocationOfInterest, 4096>;
+    constexpr size_t kTrackModHashSetSize = 0x1000;
+    using LocationOfInterestHashSet = sfl::static_unordered_set<LocationOfInterest, kTrackModHashSetSize>;
 
     // using FilterFunction = bool (*)(const LocationOfInterest& interest);          // TODO C++20 make these concepts
     // using TransformFunction = void (*)(const LocationOfInterestHashSet& hashSet); // TODO C++20 make these concepts
@@ -552,9 +553,6 @@ namespace OpenLoco::Vehicles
             }
         }
     }
-
-    constexpr size_t kSignalHashSetSize = 0x400;
-    constexpr size_t kTrackModHashSetSize = 0x1000;
 
     // 0x004A2E46 & 0x004A2DE4
     template<typename FilterFunction, typename TransformFunction>
