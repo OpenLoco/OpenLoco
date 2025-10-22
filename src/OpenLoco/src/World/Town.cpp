@@ -336,7 +336,7 @@ namespace OpenLoco
     // return : flags Carry == found road
     static bool sub_498D21(const World::Pos3 pos, const uint8_t rotation)
     {
-        if (!World::validCoords(pos))
+        if (!World::TileManager::validCoords(pos))
         {
             return false;
         }
@@ -523,7 +523,7 @@ namespace OpenLoco
     // return : flags Carry == found road
     static bool sub_498D9A(const World::Pos3 pos, uint8_t edge)
     {
-        if (!World::validCoords(pos))
+        if (!World::TileManager::validCoords(pos))
         {
             return false;
         }
@@ -632,7 +632,7 @@ namespace OpenLoco
         for (auto& offset : offsets)
         {
             const auto loc = World::Pos2{ pos } + offset.pos;
-            if (!World::validCoords(loc))
+            if (!World::TileManager::validCoords(loc))
             {
                 continue;
             }
@@ -649,7 +649,7 @@ namespace OpenLoco
         for (auto& offset : offsets)
         {
             const auto loc = World::Pos2{ pos } + offset.pos;
-            if (!World::validCoords(loc))
+            if (!World::TileManager::validCoords(loc))
             {
                 return 0;
             }
@@ -1144,7 +1144,7 @@ namespace OpenLoco
             }
 
             bridgePos += World::Pos3{ World::kRotationOffset[rotation], 0 };
-            if (!World::validCoords(bridgePos))
+            if (!World::TileManager::validCoords(bridgePos))
             {
                 return false;
             }
@@ -1182,7 +1182,7 @@ namespace OpenLoco
     // 0x004986EA
     static void appendToRoadEnd(Town& town, const World::Pos3 pos, const uint8_t rotation, const uint8_t roadObjectId, const uint32_t iteration, const bool isOnBridge)
     {
-        if (!World::validCoords(pos))
+        if (!World::TileManager::validCoords(pos))
         {
             return;
         }
@@ -1500,7 +1500,7 @@ namespace OpenLoco
         for (auto& offset : kSquareSearchRange<9>)
         {
             const World::Pos2 pos = World::toWorldSpace(offset) + centre;
-            if (World::validCoords(pos))
+            if (World::TileManager::validCoords(pos))
             {
                 if (!predicate(pos))
                 {

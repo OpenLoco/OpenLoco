@@ -388,7 +388,7 @@ namespace OpenLoco::World::TileClearance
     static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, std::function<ClearFuncResult(TileElement& el)> clearFunc)
     {
         _constructAtElementPositionFlags = ElementPositionFlags::aboveGround;
-        if (!drawableCoords(pos))
+        if (!TileManager::drawableCoords(pos))
         {
             GameCommands::setErrorText(StringIds::off_edge_of_map);
             return false;

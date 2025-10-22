@@ -47,7 +47,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::TileManager
 {
-    constexpr auto kNumTiles = kMapPitch * kMapColumns;
+    constexpr auto kNumTiles = getMapRows() * getMapColumns();
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [kNumTiles], 0x00E40134> _tiles;
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
@@ -95,7 +95,7 @@ namespace OpenLoco::World::TileManager
     // 0x004BF476
     void allocateMapElements()
     {
-        TileElement* elements = reinterpret_cast<TileElement*>(malloc(kMaxElements * sizeof(TileElement)));
+        TileElement* elements = reinterpret_cast<TileElement*>(malloc(getMaxElements() * sizeof(TileElement)));
         if (elements == nullptr)
         {
             exitWithError(StringIds::game_init_failure, StringIds::unable_to_allocate_enough_memory);
@@ -118,7 +118,7 @@ namespace OpenLoco::World::TileManager
         defaultElement.setLastFlag(true);
 
         auto* element = *_elements;
-        for (auto i = 0; i < kMapSize; ++i, ++element)
+        for (auto i = 0U; i < getMapSize(); ++i, ++element)
         {
             *element = *reinterpret_cast<TileElement*>(&defaultElement);
         }
@@ -138,13 +138,13 @@ namespace OpenLoco::World::TileManager
 
     uint32_t numFreeElements()
     {
-        return kMaxElements - (_elementsEnd - _elements);
+        return getMaxElements() - (_elementsEnd - _elements);
     }
 
     void setElements(std::span<TileElement> elements)
     {
         TileElement* dst = _elements;
-        std::memset(dst, 0, kMaxElements * sizeof(TileElement));
+        std::memset(dst, 0, getMaxElements() * sizeof(TileElement));
         std::memcpy(dst, elements.data(), elements.size_bytes());
         TileManager::updateTilePointers();
     }
@@ -527,7 +527,7 @@ namespace OpenLoco::World::TileManager
     {
         TileHeight height{ 16, 0 };
         // Off the map
-        if ((unsigned)pos.x >= (World::kMapWidth - 1) || (unsigned)pos.y >= (World::kMapHeight - 1))
+        if ((unsigned)pos.x >= (TileManager::getMapWidth() - 1) || (unsigned)pos.y >= (TileManager::getMapHeight() - 1))
         {
             return height;
         }
@@ -653,9 +653,9 @@ namespace OpenLoco::World::TileManager
         clearTilePointers();
 
         TileElement* el = _elements;
-        for (tile_coord_t y = 0; y < kMapRows; y++)
+        for (tile_coord_t y = 0; y < getMapRows(); y++)
         {
-            for (tile_coord_t x = 0; x < kMapColumns; x++)
+            for (tile_coord_t x = 0; x < getMapColumns(); x++)
             {
                 set(TilePos2(x, y), el);
 
@@ -680,12 +680,12 @@ namespace OpenLoco::World::TileManager
         {
             // Allocate a temporary buffer and tightly pack all the tile elements in the map
             std::vector<TileElement> tempBuffer;
-            tempBuffer.resize(kMaxElements);
+            tempBuffer.resize(getMaxElements());
 
             size_t numElements = 0;
-            for (tile_coord_t y = 0; y < kMapRows; y++)
+            for (tile_coord_t y = 0; y < getMapRows(); y++)
             {
-                for (tile_coord_t x = 0; x < kMapColumns; x++)
+                for (tile_coord_t x = 0; x < getMapColumns(); x++)
                 {
                     auto tile = get(TilePos2(x, y));
                     for (const auto& element : tile)
@@ -700,7 +700,7 @@ namespace OpenLoco::World::TileManager
             std::memcpy(_elements, tempBuffer.data(), numElements * sizeof(TileElement));
 
             // Zero all unused elements
-            auto remainingElements = kMaxElements - numElements;
+            auto remainingElements = getMaxElements() - numElements;
             std::memset(_elements + numElements, 0, remainingElements * sizeof(TileElement));
 
             updateTilePointers();
@@ -860,9 +860,9 @@ namespace OpenLoco::World::TileManager
     // 0x0046A747
     void resetSurfaceClearance()
     {
-        for (coord_t y = 0; y < kMapHeight; y += kTileSize)
+        for (coord_t y = 0; y < getMapHeight(); y += kTileSize)
         {
-            for (coord_t x = 0; x < kMapWidth; x += kTileSize)
+            for (coord_t x = 0; x < getMapWidth(); x += kTileSize)
             {
                 auto tile = get(x, y);
                 auto surface = tile.surface();
@@ -1062,9 +1062,9 @@ namespace OpenLoco::World::TileManager
 
         GameCommands::setUpdatingCompanyId(CompanyId::neutral);
         auto pos = getGameState().tileUpdateStartLocation;
-        for (; pos.y < World::kMapHeight; pos.y += 16 * World::kTileSize)
+        for (; pos.y < TileManager::getMapHeight(); pos.y += 16 * World::kTileSize)
         {
-            for (; pos.x < World::kMapWidth; pos.x += 16 * World::kTileSize)
+            for (; pos.x < TileManager::getMapWidth(); pos.x += 16 * World::kTileSize)
             {
                 auto tile = TileManager::get(pos);
                 for (auto& el : tile)
@@ -1081,9 +1081,9 @@ namespace OpenLoco::World::TileManager
                     }
                 }
             }
-            pos.x -= World::kMapWidth;
+            pos.x -= TileManager::getMapWidth();
         }
-        pos.y -= World::kMapHeight;
+        pos.y -= TileManager::getMapHeight();
 
         const auto tilePos = World::toTileSpace(pos);
         const uint8_t shift = (tilePos.y << 4) + tilePos.x + 9;

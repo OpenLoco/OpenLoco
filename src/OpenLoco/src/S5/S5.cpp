@@ -172,13 +172,13 @@ namespace OpenLoco::S5
     {
         auto& options = *_activeOptions;
         const auto kPreviewSize = sizeof(options.preview[0]);
-        const auto kMapSkipFactor = kMapRows / kPreviewSize;
+        const auto kMapSkipFactor = TileManager::getMapRows() / kPreviewSize;
 
         for (auto y = 0U; y < kPreviewSize; y++)
         {
             for (auto x = 0U; x < kPreviewSize; x++)
             {
-                auto pos = TilePos2(kMapColumns - (x + 1) * kMapSkipFactor + 1, y * kMapSkipFactor + 1);
+                auto pos = TilePos2(TileManager::getMapColumns() - (x + 1) * kMapSkipFactor + 1, y * kMapSkipFactor + 1);
                 options.preview[y][x] = getPreviewColourByTilePos(pos);
             }
         }

@@ -13,7 +13,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t kSpatialEntityMapSize = (World::kMapPitch * World::kMapPitch) + 1;
+    constexpr size_t kSpatialEntityMapSize = (World::TileManager::kMapPitch * World::TileManager::kMapPitch) + 1;
     constexpr size_t kEntitySpatialIndexNull = kSpatialEntityMapSize - 1;
 
     static_assert(kSpatialEntityMapSize == 0x40001);
@@ -141,12 +141,12 @@ namespace OpenLoco::EntityManager
         const auto tileX = std::abs(loc.x) / World::kTileSize;
         const auto tileY = std::abs(loc.y) / World::kTileSize;
 
-        if (tileX >= World::kMapPitch || tileY >= World::kMapPitch)
+        if (tileX >= World::TileManager::kMapPitch || tileY >= World::TileManager::kMapPitch)
         {
             return kEntitySpatialIndexNull;
         }
 
-        return (World::kMapPitch * tileX) + tileY;
+        return (World::TileManager::kMapPitch * tileX) + tileY;
     }
 
     EntityId firstQuadrantId(const World::Pos2& loc)
