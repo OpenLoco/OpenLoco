@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         Window* openMusicSettings();
-        constexpr uint8_t kTabOffsetMusic = 3;
+        constexpr uint8_t kTabOffsetMusic = 2;
     }
 
     namespace PlayerInfoPanel

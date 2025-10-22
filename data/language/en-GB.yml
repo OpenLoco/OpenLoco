@@ -2421,3 +2421,8 @@ strings:
   2366: "Confirm refit component"
   2367: "Refitting this vehicle component will remove all cargo aboard the entire vehicle. Continue?"
   2368: "Refit component"
+  2369: "{SMALLFONT}{COLOUR BLACK}Audio options"
+  2370: "Options - Audio"
+  2371: "Sound"
+  2372: "Jukebox"
+  2373: "{COLOUR WINDOW_2}Music volume:"

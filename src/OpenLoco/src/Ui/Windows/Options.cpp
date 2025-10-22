@@ -95,8 +95,7 @@ namespace OpenLoco::Ui::Windows::Options
                 panel = 3,
                 tab_display,
                 tab_rendering,
-                tab_sound,
-                tab_music,
+                tab_audio,
                 tab_regional,
                 tab_controls,
                 tab_company,
@@ -104,14 +103,13 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static_assert(Widx::tab_music == Widx::tab_display + kTabOffsetMusic);
+        static_assert(Widx::tab_audio == Widx::tab_display + kTabOffsetMusic);
 
         enum tab
         {
             display,
             rendering,
-            sound,
-            music,
+            audio,
             regional,
             controls,
             company,
@@ -161,34 +159,34 @@ namespace OpenLoco::Ui::Windows::Options
                 w.widgets[Widx::tab_rendering].image = imageId;
             }
 
-            static constexpr uint32_t music_tab_ids[] = {
-                ImageIds::tab_music_0,
-                ImageIds::tab_music_1,
-                ImageIds::tab_music_2,
-                ImageIds::tab_music_3,
-                ImageIds::tab_music_4,
-                ImageIds::tab_music_5,
-                ImageIds::tab_music_6,
-                ImageIds::tab_music_7,
-                ImageIds::tab_music_8,
-                ImageIds::tab_music_9,
-                ImageIds::tab_music_10,
-                ImageIds::tab_music_11,
-                ImageIds::tab_music_12,
-                ImageIds::tab_music_13,
-                ImageIds::tab_music_14,
-                ImageIds::tab_music_15,
-            };
+            // static constexpr uint32_t music_tab_ids[] = {
+            //     ImageIds::tab_music_0,
+            //     ImageIds::tab_music_1,
+            //     ImageIds::tab_music_2,
+            //     ImageIds::tab_music_3,
+            //     ImageIds::tab_music_4,
+            //     ImageIds::tab_music_5,
+            //     ImageIds::tab_music_6,
+            //     ImageIds::tab_music_7,
+            //     ImageIds::tab_music_8,
+            //     ImageIds::tab_music_9,
+            //     ImageIds::tab_music_10,
+            //     ImageIds::tab_music_11,
+            //     ImageIds::tab_music_12,
+            //     ImageIds::tab_music_13,
+            //     ImageIds::tab_music_14,
+            //     ImageIds::tab_music_15,
+            // };
 
             // Music tab
-            {
-                auto imageId = music_tab_ids[0];
-                if (w.currentTab == tab::music)
-                {
-                    imageId = music_tab_ids[(w.frameNo / 4) % 16];
-                }
-                w.widgets[Widx::tab_music].image = imageId;
-            }
+            // {
+            //     auto imageId = music_tab_ids[0];
+            //     if (w.currentTab == tab::music)
+            //     {
+            //         imageId = music_tab_ids[(w.frameNo / 4) % 16];
+            //     }
+            //     w.widgets[Widx::tab_music].image = imageId;
+            // }
 
             static constexpr uint32_t globe_tab_ids[] = {
                 ImageIds::tab_globe_0,
@@ -258,8 +256,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 case Widx::tab_display:
                 case Widx::tab_rendering:
-                case Widx::tab_sound:
-                case Widx::tab_music:
+                case Widx::tab_audio:
                 case Widx::tab_regional:
                 case Widx::tab_controls:
                 case Widx::tab_company:
@@ -274,19 +271,20 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr auto makeCommonWidgets(Ui::Size32 windowSize, StringId windowCaptionId)
         {
+            constexpr auto kTabWidth = 31;
+
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, windowSize, WindowColour::primary),
                 Widgets::Caption({ 1, 1 }, { (uint16_t)(windowSize.width - 2), 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
                 Widgets::ImageButton({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { windowSize.width, 102 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_display, StringIds::tooltip_display_options),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_options_rendering),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_sound, StringIds::tooltip_sound_options),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_music_0, StringIds::tooltip_music_options),
-                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_globe_0, StringIds::tooltip_regional_options),
-                Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_control, StringIds::tooltip_control_options),
-                Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
-                Widgets::Tab({ 220, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab_miscellaneous, StringIds::tooltip_miscellaneous_options));
+                Widgets::Tab({ 3 + kTabWidth * 0, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_display, StringIds::tooltip_display_options),
+                Widgets::Tab({ 3 + kTabWidth * 1, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_options_rendering),
+                Widgets::Tab({ 3 + kTabWidth * 2, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_sound, StringIds::tooltip_audio_options),
+                Widgets::Tab({ 3 + kTabWidth * 3, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_globe_0, StringIds::tooltip_regional_options),
+                Widgets::Tab({ 3 + kTabWidth * 4, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_control, StringIds::tooltip_control_options),
+                Widgets::Tab({ 3 + kTabWidth * 5, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
+                Widgets::Tab({ 3 + kTabWidth * 6, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_miscellaneous, StringIds::tooltip_miscellaneous_options));
         }
     }
 
@@ -890,62 +888,168 @@ namespace OpenLoco::Ui::Windows::Options
         }
     }
 
-    namespace Sound
+    namespace AudioTab
     {
-        static constexpr Ui::Size32 kWindowSize = { 366, 84 };
+        // Some widget positions in pixels
+        constexpr auto kSoundGroupOffset = 49;
+        constexpr auto kSoundGroupLastItemOffset = 30;
+        constexpr auto kSoundGroupHeight = kSoundGroupLastItemOffset + 19;
+
+        constexpr auto kMusicGroupOffset = kSoundGroupOffset + kSoundGroupHeight + 4;
+        constexpr auto kMusicGroupLastItemOffset = 73;
+        constexpr auto kMusicGroupHeight = kMusicGroupLastItemOffset + 19;
+
+        static constexpr Ui::Size32 kWindowSize = { 366, 49 + kSoundGroupHeight + 4 + kMusicGroupHeight + 4 };
 
         namespace Widx
         {
             enum
             {
-                audio_device = Common::Widx::tab_miscellaneous + 1,
+                frame_sound = Common::Widx::tab_miscellaneous + 1,
+                audio_device,
                 audio_device_btn,
                 play_title_music,
+
+                frame_jukebox,
+                currently_playing_label,
+                currently_playing,
+                currently_playing_btn,
+                music_controls_stop,
+                music_controls_play,
+                music_controls_next,
+                music_volume_label,
+                music_volume,
+                music_playlist,
+                music_playlist_btn,
+                edit_selection
             };
         }
 
         static constexpr auto _widgets = makeWidgets(
-            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_sound),
-            Widgets::dropdownWidgets({ 10, 49 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::Checkbox({ 10, 65 }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music)
+            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_audio),
 
-        );
+            Widgets::GroupBox({ 4, kSoundGroupOffset }, { kWindowSize.width - 8, kSoundGroupHeight }, WindowColour::secondary, StringIds::frame_sound),
+            Widgets::dropdownWidgets({ 10, kSoundGroupOffset + 14 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::Checkbox({ 10, kSoundGroupOffset + kSoundGroupLastItemOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
+
+            Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_jukebox),
+            Widgets::Label({ 10, kMusicGroupOffset + 14 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currently_playing),
+            Widgets::dropdownWidgets({ 160, kMusicGroupOffset + 14 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::ImageButton({ 10, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
+            Widgets::ImageButton({ 34, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
+            Widgets::ImageButton({ 58, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
+            Widgets::Label({ 160, kMusicGroupOffset + 35 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::music_volume),
+            Widgets::Slider({ 256, kMusicGroupOffset + 35 - 6 }, { 109, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_music_volume_tip),
+            Widgets::dropdownWidgets({ 10, kMusicGroupOffset + 58 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::Button({ 183, kMusicGroupOffset + kMusicGroupLastItemOffset }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip));
 
         static void audioDeviceMouseDown(Ui::Window* window);
         static void audioDeviceDropdown(Ui::Window* window, int16_t itemIndex);
         static void playTitleMusicOnMouseUp(Ui::Window* window);
+        static void currentlyPlayingMouseDown(Window* w);
+        static void currentlyPlayingDropdown(Window* w, int16_t ax);
+        static void stopMusic(Window* w);
+        static void playMusic(Window* w);
+        static void playNextSong(Window* w);
+        static void volumeMouseDown(Window* w);
+        static void musicPlaylistMouseDown(Window* w);
+        static void musicPlaylistDropdown(Window* w, int16_t ax);
 
-        // 0x004C0217
+        // 0x004C0217, 0x004C0217
         static void prepareDraw(Window& w)
         {
-            assert(w.currentTab == Common::tab::sound);
+            assert(w.currentTab == Common::tab::audio);
 
             Common::prepareDraw(w);
 
-            auto args = FormatArguments(w.widgets[Widx::audio_device].textArgs);
-
-            auto audioDeviceName = Audio::getCurrentDeviceName();
-            if (audioDeviceName != nullptr)
+            // Audio device
             {
-                args.push(StringIds::stringptr);
-                args.push(audioDeviceName);
+                auto args = FormatArguments(w.widgets[Widx::audio_device].textArgs);
+                auto audioDeviceName = Audio::getCurrentDeviceName();
+                if (audioDeviceName != nullptr)
+                {
+                    args.push(StringIds::stringptr);
+                    args.push(audioDeviceName);
+                }
+                else
+                {
+                    args.push(StringIds::audio_device_none);
+                }
+            }
+
+            // Currently playing music track
+            {
+                StringId songName = StringIds::music_none;
+                if (SceneManager::isPlayMode())
+                {
+                    songName = Jukebox::getSelectedTrackTitleId();
+                }
+                else if (SceneManager::isTitleMode())
+                {
+                    auto& cfg = Config::get();
+                    if (cfg.audio.playTitleMusic)
+                    {
+                        songName = StringIds::locomotion_title; // Name of the title screen music
+                    }
+                }
+                auto args = FormatArguments(w.widgets[Widx::currently_playing].textArgs);
+                args.push(songName);
+            }
+
+            // Jukebox controls (stop/play/skip)
+            if (!SceneManager::isPlayMode())
+            {
+                w.disabledWidgets |= (1ULL << Widx::currently_playing) | (1ULL << Widx::currently_playing_btn) | (1ULL << Widx::music_controls_play) | (1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_next);
+            }
+            else if (Jukebox::isMusicPlaying())
+            {
+                // Play button appears pressed
+                w.activatedWidgets |= (1ULL << Widx::music_controls_play);
             }
             else
             {
-                args.push(StringIds::audio_device_none);
+                // Stop button appears pressed
+                w.activatedWidgets |= (1ULL << Widx::music_controls_stop);
             }
 
+            // Selected playlist
+            {
+                static constexpr StringId playlist_string_ids[] = {
+                    StringIds::play_only_music_from_current_era,
+                    StringIds::play_all_music,
+                    StringIds::play_custom_music_selection,
+                };
+
+                auto args = FormatArguments(w.widgets[Widx::music_playlist].textArgs);
+
+                StringId selectedPlaylistStringId = playlist_string_ids[enumValue(Config::get().audio.playlist)];
+                args.push(selectedPlaylistStringId);
+            }
+
+            // Edit custom playlist music selection button
+            if (Config::get().audio.playlist != Config::MusicPlaylistType::custom)
+            {
+                w.disabledWidgets |= (1ULL << Widx::edit_selection);
+            }
+
+            // Play title music checkbox
             if (Config::get().audio.playTitleMusic)
             {
                 w.activatedWidgets |= (1ULL << Widx::play_title_music);
             }
         }
 
-        // 0x004C02F5
+        // 0x004C02F5, 0x004C05F9
         static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
             // Draw widgets.
             w.draw(drawingCtx);
+
+            // TODO: Move this in Slider widget.
+            drawingCtx.drawImage(w.x + w.widgets[Widx::music_volume].left, w.y + w.widgets[Widx::music_volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
+
+            int16_t x = 90 + (Config::get().audio.mainVolume / 32);
+            drawingCtx.drawImage(w.x + w.widgets[Widx::music_volume].left + x, w.y + w.widgets[Widx::music_volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w.getColour(WindowColour::secondary).c()));
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
@@ -960,6 +1064,22 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::play_title_music:
                     playTitleMusicOnMouseUp(&w);
                     return;
+
+                case Widx::music_controls_stop:
+                    stopMusic(&w);
+                    return;
+
+                case Widx::music_controls_play:
+                    playMusic(&w);
+                    return;
+
+                case Widx::music_controls_next:
+                    playNextSong(&w);
+                    return;
+
+                case Widx::edit_selection:
+                    MusicSelection::open();
+                    return;
             }
         }
 
@@ -969,6 +1089,15 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 case Widx::audio_device_btn:
                     audioDeviceMouseDown(&w);
+                    break;
+                case Widx::music_playlist_btn:
+                    musicPlaylistMouseDown(&w);
+                    break;
+                case Widx::currently_playing_btn:
+                    currentlyPlayingMouseDown(&w);
+                    break;
+                case Widx::music_volume:
+                    volumeMouseDown(&w);
                     break;
             }
         }
@@ -980,10 +1109,14 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::audio_device_btn:
                     audioDeviceDropdown(&window, itemIndex);
                     break;
+                case Widx::music_playlist_btn:
+                    musicPlaylistDropdown(&window, itemIndex);
+                    break;
+                case Widx::currently_playing_btn:
+                    currentlyPlayingDropdown(&window, itemIndex);
+                    break;
             }
         }
-
-#pragma mark - Widget 11
 
         // 0x004C043D
         static void audioDeviceMouseDown(Ui::Window* w)
@@ -1025,8 +1158,6 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-#pragma mark -
-
         static void playTitleMusicOnMouseUp(Window* w)
         {
             auto& cfg = Config::get();
@@ -1048,284 +1179,6 @@ namespace OpenLoco::Ui::Windows::Options
                 Audio::stopMusic();
             }
         }
-
-        // 0x004C04E0
-        static void onUpdate(Window& w)
-        {
-            w.frameNo += 1;
-            w.callPrepareDraw();
-            WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
-        }
-
-        static constexpr WindowEventList kEvents = {
-            .onClose = Common::onClose,
-            .onMouseUp = onMouseUp,
-            .onMouseDown = onMouseDown,
-            .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-        };
-
-        static const WindowEventList& getEvents()
-        {
-            return kEvents;
-        }
-    }
-
-    namespace Music
-    {
-        static constexpr Ui::Size32 kWindowSize = { 366, 129 };
-
-        namespace Widx
-        {
-            enum
-            {
-                currently_playing_label = Common::Widx::tab_miscellaneous + 1,
-                currently_playing,
-                currently_playing_btn,
-                music_controls_stop,
-                music_controls_play,
-                music_controls_next,
-                volume_label,
-                volume,
-                music_playlist,
-                music_playlist_btn,
-                edit_selection
-            };
-        }
-
-        static constexpr auto _widgets = makeWidgets(
-            Common::makeCommonWidgets(kWindowSize, StringIds::options_title_music),
-            Widgets::Label({ 10, 49 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currently_playing),
-            Widgets::dropdownWidgets({ 160, 49 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::ImageButton({ 10, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
-            Widgets::ImageButton({ 34, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
-            Widgets::ImageButton({ 58, 64 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
-            Widgets::Label({ 183, 70 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::volume),
-            Widgets::Slider({ 256, 64 }, { 109, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
-            Widgets::dropdownWidgets({ 10, 93 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::Button({ 183, 108 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
-
-        );
-
-        static void volumeMouseDown(Window* w);
-        static void stopMusic(Window* w);
-        static void playMusic(Window* w);
-        static void playNextSong(Window* w);
-        static void musicPlaylistMouseDown(Window* w);
-        static void musicPlaylistDropdown(Window* w, int16_t ax);
-        static void currentlyPlayingMouseDown(Window* w);
-        static void currentlyPlayingDropdown(Window* w, int16_t ax);
-
-        static void prepareDraw(Window& w)
-        {
-            assert(w.currentTab == Common::tab::music);
-
-            Common::prepareDraw(w);
-
-            {
-                StringId songName = StringIds::music_none;
-                if (SceneManager::isPlayMode())
-                {
-                    songName = Jukebox::getSelectedTrackTitleId();
-                }
-                else if (SceneManager::isTitleMode())
-                {
-                    auto& cfg = Config::get();
-                    if (cfg.audio.playTitleMusic)
-                    {
-                        songName = StringIds::locomotion_title; // Name of the title screen music
-                    }
-                }
-                auto args = FormatArguments(w.widgets[Widx::currently_playing].textArgs);
-                args.push(songName);
-            }
-
-            {
-                static constexpr StringId playlist_string_ids[] = {
-                    StringIds::play_only_music_from_current_era,
-                    StringIds::play_all_music,
-                    StringIds::play_custom_music_selection,
-                };
-
-                auto args = FormatArguments(w.widgets[Widx::music_playlist].textArgs);
-
-                StringId selectedPlaylistStringId = playlist_string_ids[enumValue(Config::get().audio.playlist)];
-                args.push(selectedPlaylistStringId);
-            }
-
-            if (!SceneManager::isPlayMode())
-            {
-                w.disabledWidgets |= (1ULL << Widx::currently_playing) | (1ULL << Widx::currently_playing_btn) | (1ULL << Widx::music_controls_play) | (1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_next);
-            }
-            else if (Jukebox::isMusicPlaying())
-            {
-                // Play button appears pressed
-                w.activatedWidgets |= (1ULL << Widx::music_controls_play);
-            }
-            else
-            {
-                // Stop button appears pressed
-                w.activatedWidgets |= (1ULL << Widx::music_controls_stop);
-            }
-
-            if (Config::get().audio.playlist != Config::MusicPlaylistType::custom)
-            {
-                w.disabledWidgets |= (1ULL << Widx::edit_selection);
-            }
-        }
-
-        // 0x004C05F9
-        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
-        {
-            // Draw widgets.
-            w.draw(drawingCtx);
-
-            // TODO: Move this in Slider widget.
-            drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
-
-            int16_t x = 90 + (Config::get().audio.mainVolume / 32);
-            drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left + x, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w.getColour(WindowColour::secondary).c()));
-        }
-
-        static void onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
-        {
-            if (Common::onMouseUp(w, wi, id))
-            {
-                return;
-            }
-
-            switch (wi)
-            {
-                case Widx::music_controls_stop:
-                    stopMusic(&w);
-                    return;
-
-                case Widx::music_controls_play:
-                    playMusic(&w);
-                    return;
-
-                case Widx::music_controls_next:
-                    playNextSong(&w);
-                    return;
-
-                case Widx::edit_selection:
-                    MusicSelection::open();
-                    return;
-            }
-        }
-
-        // 0x004C06F2
-        static void onMouseDown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
-        {
-            switch (wi)
-            {
-                case Widx::music_playlist_btn:
-                    musicPlaylistMouseDown(&w);
-                    break;
-                case Widx::currently_playing_btn:
-                    currentlyPlayingMouseDown(&w);
-                    break;
-                case Widx::volume:
-                    volumeMouseDown(&w);
-                    break;
-            }
-        }
-
-        // 0x004C070D
-        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
-        {
-            switch (widgetIndex)
-            {
-                case Widx::music_playlist_btn:
-                    musicPlaylistDropdown(&window, itemIndex);
-                    break;
-                case Widx::currently_playing_btn:
-                    currentlyPlayingDropdown(&window, itemIndex);
-                    break;
-            }
-        }
-
-        // 0x004C072A
-        static void volumeMouseDown(Window* w)
-        {
-            Input::setClickRepeatTicks(31);
-
-            auto mousePos = Input::getScrollLastLocation();
-            int x = mousePos.x - w->x - w->widgets[Widx::volume].left - 10;
-            x = std::clamp(x, 0, 80);
-
-            Audio::setBgmVolume((x * 32) - 2560);
-
-            w->invalidate();
-        }
-
-        // 0x004C0778
-        static void stopMusic(Window* w)
-        {
-            if (Jukebox::disableMusic())
-            {
-                w->invalidate();
-            }
-        }
-
-        // 0x004C07A4
-        static void playMusic(Window* w)
-        {
-            if (Jukebox::enableMusic())
-            {
-                w->invalidate();
-            }
-        }
-
-        // 0x004C07C4
-        static void playNextSong(Window* w)
-        {
-            if (Jukebox::skipCurrentTrack())
-            {
-                w->invalidate();
-            }
-        }
-
-#pragma mark - Widget 17
-
-        // 0x004C07E4
-        static void musicPlaylistMouseDown(Window* w)
-        {
-            Widget dropdown = w->widgets[Widx::music_playlist];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
-
-            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
-            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::play_custom_music_selection);
-
-            Dropdown::setItemSelected(enumValue(Config::get().audio.playlist));
-        }
-
-        // 0x004C084A
-        static void musicPlaylistDropdown(Window* w, int16_t index)
-        {
-            if (index == -1)
-            {
-                return;
-            }
-
-            auto& cfg = Config::get().audio;
-            cfg.playlist = Config::MusicPlaylistType(index);
-            Config::write();
-
-            w->invalidate();
-
-            if (!SceneManager::isTitleMode()) // Prevents title music from stopping
-            {
-                Audio::revalidateCurrentTrack();
-            }
-
-            WindowManager::close(WindowType::musicSelection);
-        }
-
-#pragma mark - Widget 11
 
         // 0x004C0875
         static void currentlyPlayingMouseDown(Window* w)
@@ -1362,7 +1215,83 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        // 0x004C0A37
+        // 0x004C0778
+        static void stopMusic(Window* w)
+        {
+            if (Jukebox::disableMusic())
+            {
+                w->invalidate();
+            }
+        }
+
+        // 0x004C07A4
+        static void playMusic(Window* w)
+        {
+            if (Jukebox::enableMusic())
+            {
+                w->invalidate();
+            }
+        }
+
+        // 0x004C07C4
+        static void playNextSong(Window* w)
+        {
+            if (Jukebox::skipCurrentTrack())
+            {
+                w->invalidate();
+            }
+        }
+
+        // 0x004C072A
+        static void volumeMouseDown(Window* w)
+        {
+            Input::setClickRepeatTicks(31);
+
+            auto mousePos = Input::getScrollLastLocation();
+            int x = mousePos.x - w->x - w->widgets[Widx::music_volume].left - 10;
+            x = std::clamp(x, 0, 80);
+
+            Audio::setBgmVolume((x * 32) - 2560);
+
+            w->invalidate();
+        }
+
+        // 0x004C07E4
+        static void musicPlaylistMouseDown(Window* w)
+        {
+            Widget dropdown = w->widgets[Widx::music_playlist];
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::play_custom_music_selection);
+
+            Dropdown::setItemSelected(enumValue(Config::get().audio.playlist));
+        }
+
+        // 0x004C084A
+        static void musicPlaylistDropdown(Window* w, int16_t index)
+        {
+            if (index == -1)
+            {
+                return;
+            }
+
+            auto& cfg = Config::get().audio;
+            cfg.playlist = Config::MusicPlaylistType(index);
+            Config::write();
+
+            w->invalidate();
+
+            if (!SceneManager::isTitleMode()) // Prevents title music from stopping
+            {
+                Audio::revalidateCurrentTrack();
+            }
+
+            WindowManager::close(WindowType::musicSelection);
+        }
+
+        // 0x004C04E0, 0x004C0A37
         static void onUpdate(Window& w)
         {
             w.frameNo += 1;
@@ -2656,11 +2585,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     static void disableTabsByCurrentScene(Window& w)
     {
-        w.disabledWidgets &= ~((1ULL << Common::Widx::tab_music) | (1ULL << Common::Widx::tab_regional));
-        if (SceneManager::isEditorMode())
-        {
-            w.disabledWidgets |= 1ULL << Common::Widx::tab_music;
-        }
+        w.disabledWidgets &= ~(1ULL << Common::Widx::tab_regional);
 
         if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
@@ -2732,7 +2657,7 @@ namespace OpenLoco::Ui::Windows::Options
     {
         auto window = open();
 
-        window->callOnMouseUp(Common::Widx::tab_music, window->widgets[Common::Widx::tab_music].id);
+        window->callOnMouseUp(Common::Widx::tab_audio, window->widgets[Common::Widx::tab_audio].id);
 
         return window;
     }
@@ -2748,8 +2673,7 @@ namespace OpenLoco::Ui::Windows::Options
     static TabInformation kTabInformationByTabOffset[] = {
         { Display::_widgets,   Display::getEvents(),   Display::kWindowSize  },
         { Rendering::_widgets, Rendering::getEvents(), Rendering::kWindowSize  },
-        { Sound::_widgets,     Sound::getEvents(),     Sound::kWindowSize    },
-        { Music::_widgets,     Music::getEvents(),     Music::kWindowSize    },
+        { AudioTab::_widgets,  AudioTab::getEvents(),  AudioTab::kWindowSize },
         { Regional::_widgets,  Regional::getEvents(),  Regional::kWindowSize },
         { Controls::_widgets,  Controls::getEvents(),  Controls::kWindowSize },
         { Company::_widgets,   Company::getEvents(),   Company::kWindowSize  },
@@ -2783,9 +2707,9 @@ namespace OpenLoco::Ui::Windows::Options
             Display::applyScreenModeRestrictions(w);
         }
 
-        else if ((Common::tab)w->currentTab == Common::tab::music)
+        else if ((Common::tab)w->currentTab == Common::tab::audio)
         {
-            w->holdableWidgets = (1ULL << Music::Widx::volume);
+            w->holdableWidgets = (1ULL << AudioTab::Widx::music_volume);
         }
 
         w->callOnResize();
