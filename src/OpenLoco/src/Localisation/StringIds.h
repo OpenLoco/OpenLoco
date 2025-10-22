@@ -1194,14 +1194,14 @@ namespace OpenLoco::StringIds
     constexpr StringId enter_host_address_description = 1484;
 
     constexpr StringId tooltip_display_options = 1486;
-    constexpr StringId tooltip_sound_options = 1487;
-    constexpr StringId tooltip_music_options = 1488;
+    constexpr StringId tooltip_sound_options = UNUSED_STR(1487);
+    constexpr StringId tooltip_music_options = UNUSED_STR(1488);
     constexpr StringId tooltip_regional_options = 1489;
     constexpr StringId tooltip_control_options = 1490;
     constexpr StringId tooltip_miscellaneous_options = 1491;
     constexpr StringId options_title_display = 1492;
-    constexpr StringId options_title_sound = 1493;
-    constexpr StringId options_title_music = 1494;
+    constexpr StringId options_title_sound = UNUSED_STR(1493);
+    constexpr StringId options_title_music = UNUSED_STR(1494);
     constexpr StringId options_title_regional = 1495;
     constexpr StringId options_title_controls = 1496;
     constexpr StringId options_title_miscellaneous = 1497;
