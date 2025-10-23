@@ -599,4 +599,10 @@ namespace OpenLoco::GameCommands
         const auto frequency = gPrng2().randNext(17955, 26146);
         Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
     }
+
+    // TODO: Maybe move this somewhere else used by multiple game commands
+    bool shouldInvalidateTile([[maybe_unused]] uint8_t flags)
+    {
+        return true; // !(flags & Flags::aiAllocated);
+    }
 }

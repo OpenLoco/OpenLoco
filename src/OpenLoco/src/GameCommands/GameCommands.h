@@ -197,4 +197,5 @@ namespace OpenLoco::GameCommands
     void resetCommandNestLevel();
 
     void playConstructionPlacementSound(World::Pos3 pos);
+    bool shouldInvalidateTile(uint8_t flags);
 }
