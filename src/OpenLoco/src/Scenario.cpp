@@ -228,7 +228,7 @@ namespace OpenLoco::Scenario
         ObjectManager::updateLastTrackTypeOption();
         CompanyManager::updatePlayerInfrastructureOptions();
         Gfx::invalidateScreen();
-        ObjectManager::sub_4748FA();
+        ObjectManager::updateTerraformObjects();
         Gfx::loadCurrency();
     }
 

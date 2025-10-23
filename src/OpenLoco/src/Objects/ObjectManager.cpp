@@ -1123,7 +1123,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x004748FA
-    void sub_4748FA()
+    void updateTerraformObjects()
     {
         updateLandObjectFlags();
         updateTrafficHandedness();

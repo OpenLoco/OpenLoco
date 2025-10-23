@@ -194,7 +194,7 @@ namespace OpenLoco::ObjectManager
     void updateDefaultLevelCrossingType();
     void updateYearly2();
 
-    void sub_4748FA();
+    void updateTerraformObjects();
     void updateLastTrackTypeOption();
 
     // Calls function with the handle (LoadedObjectHandle) of each loaded object
