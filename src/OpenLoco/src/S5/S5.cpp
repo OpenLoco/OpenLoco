@@ -275,6 +275,171 @@ namespace OpenLoco::S5
         }
     }
 
+    static S5::Company exportCompany(OpenLoco::Company& src) {}
+    static S5::Town exportTown(OpenLoco::Town& src) {}
+    static S5::Industry exportIndustry(OpenLoco::Industry& src) {}
+    static S5::Station exportStation(OpenLoco::Station& src) {}
+    static S5::Entity exportEntity(OpenLoco::Entity& src) {}
+    static S5::Animation exportAnimation(OpenLoco::World::Animation& src) {}
+    static S5::Wave exportWave(OpenLoco::World::Wave& src) {}
+    static S5::Records exportRecords(CompanyManager::Records& src) {}
+    static S5::Message exportMessage(OpenLoco::Message& src) {}
+
+    static S5::GameState exportGameState(OpenLoco::GameState& src)
+    {
+        S5::GameState dst{};
+        dst.rng[0] = src.rng.srand_0();
+        dst.rng[1] = src.rng.srand_1();
+        dst.unkRng[0] = src.unkRng.srand_0();
+        dst.unkRng[1] = src.unkRng.srand_1();
+        dst.flags = src.flags;
+        dst.currentDay = src.currentDay;
+        dst.dayCounter = src.dayCounter;
+        dst.currentYear = src.currentYear;
+        dst.currentMonth = src.currentMonth;
+        dst.currentDayOfMonth = src.currentDayOfMonth;
+        dst.playerCompanies[0] = enumValue(src.playerCompanies[0]);
+        dst.playerCompanies[1] = enumValue(src.playerCompanies[1]);
+
+        for (auto i = 0U; i < std::size(src.entityListHeads); ++i)
+        {
+            dst.entityListHeads[i] = enumValue(src.entityListHeads[i]);
+        }
+        std::ranges::copy(src.entityListCounts, dst.entityListCounts);
+        std::ranges::copy(src.currencyMultiplicationFactor, dst.currencyMultiplicationFactor);
+        std::ranges::copy(src.unusedCurrencyMultiplicationFactor, dst.unusedCurrencyMultiplicationFactor);
+        dst.scenarioTicks = src.scenarioTicks;
+        dst.var_014A = src.var_014A;
+        dst.scenarioTicks2 = src.scenarioTicks2;
+        dst.magicNumber = kMagicNumber; // Match implementation at 0x004437FC
+        dst.numMapAnimations = src.numMapAnimations;
+        dst.tileUpdateStartLocation[0] = src.tileUpdateStartLocation.x;
+        dst.tileUpdateStartLocation[1] = src.tileUpdateStartLocation.y;
+        dst.scenarioConstruction = src.scenarioConstruction;
+        dst.lastRailroadOption = src.lastRailroadOption;
+        dst.lastRoadOption = src.lastRoadOption;
+        dst.lastAirport = src.lastAirport;
+        dst.lastShipPort = src.lastShipPort;
+        dst.trafficHandedness = src.trafficHandedness;
+        dst.lastVehicleType = enumValue(src.lastVehicleType);
+        dst.pickupDirection = src.pickupDirection;
+        dst.lastTreeOption = src.lastTreeOption;
+        dst.seaLevel = src.seaLevel;
+        dst.currentSnowLine = src.currentSnowLine;
+        dst.currentSeason = enumValue(src.currentSeason);
+        dst.lastLandOption = src.lastLandOption;
+        dst.maxCompetingCompanies = src.maxCompetingCompanies;
+        dst.orderTableLength = src.orderTableLength;
+        dst.roadObjectIdIsNotTram = src.roadObjectIdIsNotTram;
+        dst.roadObjectIdIsFlag7 = src.roadObjectIdIsFlag7;
+        dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
+        dst.lastTrackTypeOption = src.lastTrackTypeOption;
+        dst.loanInterestRate = src.loanInterestRate;
+        dst.lastIndustryOption = src.lastIndustryOption;
+        dst.lastBuildingOption = src.lastBuildingOption;
+        dst.lastMiscBuildingOption = src.lastMiscBuildingOption;
+        dst.lastWallOption = src.lastWallOption;
+        dst.produceAICompanyTimeout = src.produceAICompanyTimeout;
+        dst.tickStartPrngState[0] = src.tickStartPrngState.srand_0();
+        dst.tickStartPrngState[1] = src.tickStartPrngState.srand_1();
+        std::ranges::copy(src.scenarioFileName, dst.scenarioFileName);
+        std::ranges::copy(src.scenarioName, dst.scenarioName);
+        std::ranges::copy(src.scenarioDetails, dst.scenarioDetails);
+        dst.competitorStartDelay = src.competitorStartDelay;
+        dst.preferredAIIntelligence = src.preferredAIIntelligence;
+        dst.preferredAIAggressiveness = src.preferredAIAggressiveness;
+        dst.preferredAICompetitiveness = src.preferredAICompetitiveness;
+        dst.startingLoanSize = src.startingLoanSize;
+        dst.maxLoanSize = src.maxLoanSize;
+        dst.var_404 = src.multiplayerPrng.srand_0();
+        dst.var_408 = src.multiplayerPrng.srand_1();
+        dst.var_40C = src.multiplayerChecksumA;
+        dst.var_410 = src.multiplayerChecksumB;
+        dst.lastBuildVehiclesOption = enumValue(src.lastBuildVehiclesOption);
+        dst.numberOfIndustries = src.numberOfIndustries;
+        dst.vehiclePreviewRotationFrame = src.vehiclePreviewRotationFrame;
+        dst.objectiveType = enumValue(src.scenarioObjective.type);
+        dst.objectiveFlags = enumValue(src.scenarioObjective.flags);
+        dst.objectiveCompanyValue = src.scenarioObjective.companyValue;
+        dst.objectiveMonthlyVehicleProfit = src.scenarioObjective.monthlyVehicleProfit;
+        dst.objectivePerformanceIndex = src.scenarioObjective.performanceIndex;
+        dst.objectiveDeliveredCargoType = src.scenarioObjective.deliveredCargoType;
+        dst.objectiveDeliveredCargoAmount = src.scenarioObjective.deliveredCargoAmount;
+        dst.objectiveTimeLimitYears = src.scenarioObjective.timeLimitYears;
+        dst.objectiveTimeLimitUntilYear = src.scenarioObjectiveProgress.timeLimitUntilYear;
+        dst.objectiveMonthsInChallenge = src.scenarioObjectiveProgress.monthsInChallenge;
+        dst.objectiveCompletedChallengeInMonths = src.scenarioObjectiveProgress.completedChallengeInMonths;
+        dst.industryFlags = enumValue(src.industryFlags);
+        dst.forbiddenVehiclesPlayers = src.forbiddenVehiclesPlayers;
+        dst.forbiddenVehiclesCompetitors = src.forbiddenVehiclesCompetitors;
+        dst.fixFlags = enumValue(src.fixFlags);
+        dst.companyRecords = exportRecords(src.companyRecords);
+        dst.var_44C = src.var_44C;
+        dst.var_450 = src.var_450;
+        dst.var_454 = src.var_454;
+        dst.var_458 = src.var_458;
+        dst.var_45C = src.var_45C;
+        dst.var_460 = src.var_460;
+        dst.var_464 = src.var_464;
+        dst.var_468 = src.var_468;
+        dst.lastMapWindowFlags = enumValue(src.lastMapWindowAttributes.flags);
+        dst.lastMapWindowSize[0] = enumValue(src.lastMapWindowAttributes.size.width);
+        dst.lastMapWindowSize[1] = enumValue(src.lastMapWindowAttributes.size.height);
+        dst.lastMapWindowVar88A = enumValue(src.lastMapWindowAttributes.var88A);
+        dst.lastMapWindowVar88C = enumValue(src.lastMapWindowAttributes.var88C);
+
+        dst.var_478 = src.var_478;
+        dst.numMessages = src.numMessages;
+        dst.activeMessageIndex = enumValue(src.activeMessageIndex);
+        for (auto i = 0U; i < std::size(src.messages); i++)
+        {
+            dst.messages[i] = exportMessage(src.messages[i]);
+        }
+        dst.var_B94C = src.var_B94C;
+        dst.var_B950 = src.var_B950;
+        dst.var_B952 = src.var_B952;
+        dst.var_B954 = src.var_B954;
+        dst.var_B956 = src.var_B956;
+        dst.currentRainLevel = src.currentRainLevel;
+        for (auto i = 0U; i < std::size(src.companies); i++)
+        {
+            dst.companies[i] = exportCompany(src.companies[i]);
+        }
+        for (auto i = 0U; i < std::size(src.towns); i++)
+        {
+            dst.towns[i] = exportTown(src.towns[i]);
+        }
+        for (auto i = 0U; i < std::size(src.industries); i++)
+        {
+            dst.industries[i] = exportIndustry(src.industries[i]);
+        }
+        for (auto i = 0U; i < std::size(src.stations); i++)
+        {
+            dst.stations[i] = exportStation(src.stations[i]);
+        }
+        for (auto i = 0U; i < std::size(src.entities); i++)
+        {
+            dst.entities[i] = exportEntity(src.entities[i]);
+        }
+        for (auto i = 0U; i < std::size(src.animations); i++)
+        {
+            dst.animations[i] = exportAnimation(src.animations[i]);
+        }
+        for (auto i = 0U; i < std::size(src.waves); i++)
+        {
+            dst.waves[i] = exportWave(src.waves[i]);
+        }
+        for (auto i = 0U; i < Limits::kMaxUserStrings; i++)
+        {
+            std::ranges::copy(src.userStrings[i], dst.userStrings[i]);
+        }
+        for (auto i = 0U; i < Limits::kMaxVehicles; i++)
+        {
+            std::ranges::copy(src.routings[i], dst.routings[i]);
+        }
+        std::ranges::copy(src.orders, dst.orders);
+    }
+
     static std::unique_ptr<S5File> prepareGameState(SaveFlags flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
     {
         // Set saved view from main viewport
@@ -300,129 +465,11 @@ namespace OpenLoco::S5
 
         // Copy the source gamestate contents to the S5 gamestate, field by field
         auto& dst = file->gameState;
-        dst.rng[0] = src.rng.srand_0();
-        dst.rng[1] = src.rng.srand_1();
-        dst.unkRng[0] = src.unkRng.srand_0();
-        dst.unkRng[1] = src.unkRng.srand_1();
-        dst.flags = src.flags;
-        dst.currentDay = src.currentDay;
-        dst.dayCounter = src.dayCounter;
-        dst.currentYear = src.currentYear;
-        dst.currentMonth = src.currentMonth;
-        dst.currentDayOfMonth = src.currentDayOfMonth;
+        dst = exportGameState(src);
         dst.savedViewX = savedView.viewX;
         dst.savedViewY = savedView.viewY;
         dst.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
         dst.savedViewRotation = savedView.rotation;
-        std::ranges::copy(src.playerCompanies, dst.playerCompanies);
-        std::ranges::copy(src.entityListHeads, dst.entityListHeads);
-        std::ranges::copy(src.entityListCounts, dst.entityListCounts);
-        std::ranges::copy(src.currencyMultiplicationFactor, dst.currencyMultiplicationFactor);
-        std::ranges::copy(src.unusedCurrencyMultiplicationFactor, dst.unusedCurrencyMultiplicationFactor);
-        dst.scenarioTicks = src.scenarioTicks;
-        dst.var_014A = src.var_014A;
-        dst.scenarioTicks2 = src.scenarioTicks2;
-        dst.magicNumber = kMagicNumber; // Match implementation at 0x004437FC
-        dst.numMapAnimations = src.numMapAnimations;
-        std::ranges::copy(src.tileUpdateStartLocation, dst.tileUpdateStartLocation);
-        dst.scenarioConstruction = src.scenarioConstruction;
-        dst.lastRailroadOption = src.lastRailroadOption;
-        dst.lastRoadOption = src.lastRoadOption;
-        dst.lastAirport = src.lastAirport;
-        dst.lastShipPort = src.lastShipPort;
-        dst.trafficHandedness = src.trafficHandedness;
-        dst.lastVehicleType = src.lastVehicleType;
-        dst.pickupDirection = src.pickupDirection;
-        dst.lastTreeOption = src.lastTreeOption;
-        dst.seaLevel = src.seaLevel;
-        dst.currentSnowLine = src.currentSnowLine;
-        dst.currentSeason = src.currentSeason;
-        dst.lastLandOption = src.lastLandOption;
-        dst.maxCompetingCompanies = src.maxCompetingCompanies;
-        dst.orderTableLength = src.orderTableLength;
-        dst.roadObjectIdIsNotTram = src.roadObjectIdIsNotTram;
-        dst.roadObjectIdIsFlag7 = src.roadObjectIdIsFlag7;
-        dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
-        dst.lastTrackTypeOption = src.lastTrackTypeOption;
-        dst.loanInterestRate = src.loanInterestRate;
-        dst.lastIndustryOption = src.lastIndustryOption;
-        dst.lastBuildingOption = src.lastBuildingOption;
-        dst.lastMiscBuildingOption = src.lastMiscBuildingOption;
-        dst.lastWallOption = src.lastWallOption;
-        dst.produceAICompanyTimeout = src.produceAICompanyTimeout;
-        std::ranges::copy(src.tickStartPrngState, dst.tickStartPrngState);
-        std::ranges::copy(src.scenarioFileName, dst.scenarioFileName);
-        std::ranges::copy(src.scenarioName, dst.scenarioName);
-        std::ranges::copy(src.scenarioDetails, dst.scenarioDetails);
-        dst.competitorStartDelay = src.competitorStartDelay;
-        dst.preferredAIIntelligence = src.preferredAIIntelligence;
-        dst.preferredAIAggressiveness = src.preferredAIAggressiveness;
-        dst.preferredAICompetitiveness = src.preferredAICompetitiveness;
-        dst.startingLoanSize = src.startingLoanSize;
-        dst.maxLoanSize = src.maxLoanSize;
-        dst.var_404 = src.var_404;
-        dst.var_408 = src.var_408;
-        dst.var_40C = src.var_40C;
-        dst.var_410 = src.var_410;
-        dst.lastBuildVehiclesOption = src.lastBuildVehiclesOption;
-        dst.numberOfIndustries = src.numberOfIndustries;
-        dst.vehiclePreviewRotationFrame = src.vehiclePreviewRotationFrame;
-        dst.objectiveType = src.objectiveType;
-        dst.objectiveFlags = src.objectiveFlags;
-        dst.objectiveCompanyValue = src.objectiveCompanyValue;
-        dst.objectiveMonthlyVehicleProfit = src.objectiveMonthlyVehicleProfit;
-        dst.objectivePerformanceIndex = src.objectivePerformanceIndex;
-        dst.objectiveDeliveredCargoType = src.objectiveDeliveredCargoType;
-        dst.objectiveDeliveredCargoAmount = src.objectiveDeliveredCargoAmount;
-        dst.objectiveTimeLimitYears = src.objectiveTimeLimitYears;
-        dst.objectiveTimeLimitUntilYear = src.objectiveTimeLimitUntilYear;
-        dst.objectiveMonthsInChallenge = src.objectiveMonthsInChallenge;
-        dst.objectiveCompletedChallengeInMonths = src.objectiveCompletedChallengeInMonths;
-        dst.industryFlags = src.industryFlags;
-        dst.forbiddenVehiclesPlayers = src.forbiddenVehiclesPlayers;
-        dst.forbiddenVehiclesCompetitors = src.forbiddenVehiclesCompetitors;
-        dst.fixFlags = src.fixFlags;
-        std::ranges::copy(src.recordSpeed, dst.recordSpeed);
-        std::ranges::copy(src.recordCompany, dst.recordCompany);
-        std::ranges::copy(src.recordDate, dst.recordDate);
-        dst.var_44C = src.var_44C;
-        dst.var_450 = src.var_450;
-        dst.var_454 = src.var_454;
-        dst.var_458 = src.var_458;
-        dst.var_45C = src.var_45C;
-        dst.var_460 = src.var_460;
-        dst.var_464 = src.var_464;
-        dst.var_468 = src.var_468;
-        dst.lastMapWindowFlags = src.lastMapWindowFlags;
-        std::ranges::copy(src.lastMapWindowSize, dst.lastMapWindowSize);
-        dst.lastMapWindowVar88A = src.lastMapWindowVar88A;
-        dst.lastMapWindowVar88C = src.lastMapWindowVar88C;
-        dst.var_478 = src.var_478;
-        dst.numMessages = src.numMessages;
-        dst.activeMessageIndex = src.activeMessageIndex;
-        std::ranges::copy(src.messages, dst.messages);
-        dst.var_B94C = src.var_B94C;
-        dst.var_B950 = src.var_B950;
-        dst.var_B952 = src.var_B952;
-        dst.var_B954 = src.var_B954;
-        dst.var_B956 = src.var_B956;
-        dst.currentRainLevel = src.currentRainLevel;
-        std::ranges::copy(src.companies, dst.companies);
-        std::ranges::copy(src.towns, dst.towns);
-        std::ranges::copy(src.industries, dst.industries);
-        std::ranges::copy(src.stations, dst.stations);
-        std::ranges::copy(src.entities, dst.entities);
-        std::ranges::copy(src.animations, dst.animations);
-        std::ranges::copy(src.waves, dst.waves);
-        for (auto i = 0U; i < Limits::kMaxUserStrings; i++)
-        {
-            std::ranges::copy(src.userStrings[i], dst.userStrings[i]);
-        }
-        for (auto i = 0U; i < Limits::kMaxVehicles; i++)
-        {
-            std::ranges::copy(src.routings[i], dst.routings[i]);
-        }
-        std::ranges::copy(src.orders, dst.orders);
 
         // Copy tile elements; remove any ghosts before saving
         auto tileElements = TileManager::getElements();

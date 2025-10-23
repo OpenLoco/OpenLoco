@@ -141,6 +141,14 @@ namespace OpenLoco::S5
     };
     static_assert(sizeof(Company) == 0x8FA8);
 
+    struct Records
+    {
+        uint16_t speed[3];  // 0x000436 (0x0052624E)
+        uint8_t company[3]; // 0x00043C (0x00526254)
+        uint8_t pad_43A;
+        uint32_t date[3]; // 0x000440 (0x00526258)
+    };
+
     struct Town
     {
         uint8_t pad_000[0x270];
@@ -304,9 +312,7 @@ namespace OpenLoco::S5
         uint16_t forbiddenVehiclesPlayers;                                               // 0x000430 (0x00526248)
         uint16_t forbiddenVehiclesCompetitors;                                           // 0x000432 (0x0052624A)
         S5FixFlags fixFlags;                                                             // 0x000434 (0x0052624C)
-        uint16_t recordSpeed[3];                                                         // 0x000436 (0x0052624E)
-        uint8_t recordCompany[4];                                                        // 0x00043C (0x00526254)
-        uint32_t recordDate[3];                                                          // 0x000440 (0x00526258)
+        Records companyRecords;                                                          // 0x000436 (0x0052624E)
         uint32_t var_44C;                                                                // 0x00044C (0x00526264)
         uint32_t var_450;                                                                // 0x000450 (0x00526268)
         uint32_t var_454;                                                                // 0x000454 (0x0052626C)
