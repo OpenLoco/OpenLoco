@@ -926,8 +926,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047966E
-    // Set road object ID flags
-    void sub_47966E()
+    void updateRoadObjectIdFlags()
     {
         uint32_t roadObjectIdIsNotTram = 0;
         uint32_t roadObjectIdIsFlag7 = 0;

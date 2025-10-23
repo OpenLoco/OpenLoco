@@ -223,7 +223,7 @@ namespace OpenLoco::Scenario
     // ?Set default types for building. Like the initial track type and vehicle type and such.?
     void sub_4748D4()
     {
-        ObjectManager::sub_47966E();
+        ObjectManager::updateRoadObjectIdFlags();
         ObjectManager::updateDefaultLevelCrossingType();
         ObjectManager::sub_47AC05();
         CompanyManager::sub_4A6DA9();
