@@ -909,7 +909,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 // Copy directory and filename to buffer.
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-                strncpy(&buffer_2039[0], inputSession.buffer.c_str(), 512);
+                auto lococode_filename = OpenLoco::Localisation::convertUnicodeToLoco(path.stem().make_preferred().u8string());
+                strncpy(&buffer_2039[0], lococode_filename.c_str(), 512);
 
                 // Arguments for description text in ok/cancel window.
                 FormatArguments args{};
