@@ -444,6 +444,16 @@ namespace OpenLoco::Paint
     // 0x004759A6
     void paintRoad(PaintSession& session, const World::RoadElement& elRoad)
     {
+        if (elRoad.isAiAllocated() && !showAiPlanningGhosts())
+        {
+            return;
+        }
+        if (elRoad.isGhost()
+            && CompanyManager::getSecondaryPlayerId() != CompanyId::null
+            && CompanyManager::getSecondaryPlayerId() == elRoad.owner())
+        {
+            return;
+        }
         const auto height = elRoad.baseHeight();
         const auto rotation = (session.getRotation() + elRoad.rotation()) & 0x3;
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_tracks_roads) != Ui::ViewportFlags::none)
