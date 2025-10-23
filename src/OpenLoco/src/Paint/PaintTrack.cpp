@@ -242,6 +242,16 @@ namespace OpenLoco::Paint
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
+        if (elTrack.isAiAllocated() && !showAiPlanningGhosts())
+        {
+            return;
+        }
+        if (elTrack.isGhost()
+            && CompanyManager::getSecondaryPlayerId() != CompanyId::null
+            && CompanyManager::getSecondaryPlayerId() == elTrack.owner())
+        {
+            return;
+        }
         const auto height = elTrack.baseZ() * 4;
         const auto rotation = (session.getRotation() + elTrack.rotation()) & 0x3;
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_tracks_roads) != Ui::ViewportFlags::none)

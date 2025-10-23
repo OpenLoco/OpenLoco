@@ -1,4 +1,5 @@
 #include "Paint.h"
+#include "Config.h"
 #include "Game.h"
 #include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
@@ -1515,4 +1516,8 @@ namespace OpenLoco::Paint
         return std::span<TunnelEntry>();
     }
 
+    bool showAiPlanningGhosts()
+    {
+        return Config::get().showAiPlanningAsGhosts;
+    }
 }

@@ -121,6 +121,18 @@ namespace OpenLoco::Paint
     // 0x0048B313
     void paintStation(PaintSession& session, const World::StationElement& elStation)
     {
+        if (elStation.isAiAllocated() && !showAiPlanningGhosts())
+        {
+            return;
+        }
+
+        if (elStation.isGhost()
+            && CompanyManager::getSecondaryPlayerId() != CompanyId::null
+            && CompanyManager::getSecondaryPlayerId() == elStation.owner())
+        {
+            return;
+        }
+
         switch (elStation.stationType())
         {
             case StationType::trainStation:
