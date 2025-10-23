@@ -561,7 +561,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Rendering
     {
-        static constexpr Ui::Size32 kWindowSize = { 400, 166 };
+        static constexpr Ui::Size32 kWindowSize = { 400, 182 };
 
         namespace Widx
         {
@@ -580,12 +580,13 @@ namespace OpenLoco::Ui::Windows::Options
                 landscape_smoothing,
                 gridlines_on_landscape,
                 cash_popup_rendering,
+                show_company_ai_planning,
             };
         }
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::title_options_rendering),
-            Widgets::GroupBox({ 4, 49 }, { 392, 112 }, WindowColour::secondary, StringIds::frame_map_rendering),
+            Widgets::GroupBox({ 4, 49 }, { 392, 128 }, WindowColour::secondary, StringIds::frame_map_rendering),
 
             Widgets::Label({ 10, 63 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::vehicles_min_scale),
             Widgets::dropdownWidgets({ 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
@@ -598,7 +599,8 @@ namespace OpenLoco::Ui::Windows::Options
 
             Widgets::Checkbox({ 10, 110 }, { 346, 12 }, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
             Widgets::Checkbox({ 10, 126 }, { 346, 12 }, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
-            Widgets::Checkbox({ 10, 142 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering)
+            Widgets::Checkbox({ 10, 142 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering),
+            Widgets::Checkbox({ 10, 158 }, { 346, 12 }, WindowColour::secondary, StringIds::show_company_ai_planning, StringIds::show_company_ai_planning_tip)
 
         );
 
@@ -648,6 +650,15 @@ namespace OpenLoco::Ui::Windows::Options
                     cfg.cashPopupRendering = !cfg.cashPopupRendering;
                     Config::write();
                     w.invalidate();
+                    return;
+                }
+
+                case Widx::show_company_ai_planning:
+                {
+                    auto& cfg = OpenLoco::Config::get();
+                    cfg.showAiPlanningAsGhosts = !cfg.showAiPlanningAsGhosts;
+                    Config::write();
+                    Gfx::invalidateScreen();
                 }
             }
         }
@@ -833,6 +844,11 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().cashPopupRendering)
             {
                 w.activatedWidgets |= (1ULL << Widx::cash_popup_rendering);
+            }
+
+            if (Config::get().showAiPlanningAsGhosts)
+            {
+                w.activatedWidgets |= (1ULL << Widx::show_company_ai_planning);
             }
         }
 

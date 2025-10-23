@@ -16,6 +16,7 @@
 #include "CompanyAi/AiCreateRoadAndStation.h"
 #include "CompanyAi/AiCreateTrackAndStation.h"
 #include "CompanyAi/AiTrackReplacement.h"
+#include "Config.h"
 #include "Docks/CreatePort.h"
 #include "Docks/RemovePort.h"
 #include "General/LoadSaveQuit.h"
@@ -601,8 +602,8 @@ namespace OpenLoco::GameCommands
     }
 
     // TODO: Maybe move this somewhere else used by multiple game commands
-    bool shouldInvalidateTile([[maybe_unused]] uint8_t flags)
+    bool shouldInvalidateTile(uint8_t flags)
     {
-        return true; // !(flags & Flags::aiAllocated);
+        return !(flags & Flags::aiAllocated) && Config::get().showAiPlanningAsGhosts;
     }
 }
