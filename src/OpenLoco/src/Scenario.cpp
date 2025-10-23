@@ -225,7 +225,7 @@ namespace OpenLoco::Scenario
     {
         ObjectManager::updateRoadObjectIdFlags();
         ObjectManager::updateDefaultLevelCrossingType();
-        ObjectManager::sub_47AC05();
+        ObjectManager::updateLastTrackTypeOption();
         CompanyManager::sub_4A6DA9();
         Gfx::invalidateScreen();
         ObjectManager::sub_4748FA();

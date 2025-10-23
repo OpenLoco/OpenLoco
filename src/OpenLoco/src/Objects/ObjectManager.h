@@ -195,7 +195,7 @@ namespace OpenLoco::ObjectManager
     void updateYearly2();
 
     void sub_4748FA();
-    void sub_47AC05();
+    void updateLastTrackTypeOption();
 
     // Calls function with the handle (LoadedObjectHandle) of each loaded object
     template<typename Function>

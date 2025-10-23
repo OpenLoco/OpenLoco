@@ -1132,8 +1132,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047AC05
-    // Initialise lastTrackTypeOption in game state
-    void sub_47AC05()
+    void updateLastTrackTypeOption()
     {
         static_assert(ObjectManager::getMaxObjects(ObjectType::road) <= 128); // protect against possible int8_t overflow in the future
         TownSize largestTownSize = TownSize::hamlet;
