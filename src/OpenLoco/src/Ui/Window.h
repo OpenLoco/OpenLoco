@@ -26,6 +26,7 @@ namespace OpenLoco::Gfx
 namespace OpenLoco::Ui
 {
     using WindowNumber_t = uint16_t;
+    static_assert(sizeof(WindowNumber_t) == 2);
 
     struct Window;
     struct Viewport;

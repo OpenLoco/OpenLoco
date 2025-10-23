@@ -27,6 +27,7 @@ namespace OpenLoco
         unk5 = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(LandObjectFlags);
+    static_assert(sizeof(LandObjectFlags) == 1);
 
 #pragma pack(push, 1)
     struct LandObject

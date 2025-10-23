@@ -29,6 +29,7 @@ namespace OpenLoco::Input
         resizing,          // 8
         scrollRight,       // 9
     };
+    static_assert(sizeof(State) == 1);
 
     enum class Flags : uint32_t
     {
@@ -142,4 +143,8 @@ namespace OpenLoco::Input
 
     Ui::WindowNumber_t getPressedWindowNumber();
     void setPressedWindowNumber(Ui::WindowNumber_t wndNumber);
+
+    bool hasPendingMouseInputUpdate();
+    void clearPendingMouseInputUpdate();
+    void setPendingMouseInputUpdate();
 }

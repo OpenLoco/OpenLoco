@@ -49,6 +49,7 @@ using namespace OpenLoco::Ui;
 namespace OpenLoco::CompanyManager
 {
     static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
+    static_assert(sizeof(Colour[Limits::kMaxCompanies + 1]) == 16);
 
     static void produceCompanies();
 

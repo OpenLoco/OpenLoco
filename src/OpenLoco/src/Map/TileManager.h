@@ -35,6 +35,7 @@ namespace OpenLoco::World::TileManager
         anyHeightBuildingCollisions = 1U << 7, // Do not use only for interop
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ElementPositionFlags);
+    static_assert(sizeof(ElementPositionFlags) == 1);
 
     void allocateMapElements();
     void initialise();

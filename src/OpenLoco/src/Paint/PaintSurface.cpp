@@ -25,6 +25,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Paint
 {
     static loco_global<LandObjectFlags[32], 0x00F003D3> _F003D3;
+    static_assert(sizeof(LandObjectFlags[32]) == 32);
 
     //    T
     //   ---

@@ -10,6 +10,7 @@ namespace OpenLoco::Tutorial
         playing,
         recording,
     };
+    static_assert(sizeof(State) == 1);
 
     State state();
 

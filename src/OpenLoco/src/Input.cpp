@@ -12,6 +12,8 @@
 #include <SDL2/SDL_syswm.h>
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
 
+using namespace OpenLoco::Interop;
+
 namespace OpenLoco::Input
 {
     static Flags _flags;
@@ -162,7 +164,7 @@ namespace OpenLoco::Input
                     auto scaleFactor = Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
                     const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
-                    addr<0x00525324, int32_t>() = 1;
+                    setPendingMouseInputUpdate();
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
@@ -180,7 +182,7 @@ namespace OpenLoco::Input
                     auto scaleFactor = Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
                     const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
-                    addr<0x00525324, int32_t>() = 1;
+                    setPendingMouseInputUpdate();
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
@@ -222,5 +224,4 @@ namespace OpenLoco::Input
         readKeyboardState();
         return true;
     }
-
 }

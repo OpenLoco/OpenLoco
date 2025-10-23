@@ -95,6 +95,7 @@ namespace OpenLoco::Vehicles
         unk_m15 = (1U << 15),
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(UpdateVar1136114Flags);
+    static_assert(sizeof(UpdateVar1136114Flags) == 4);
 
     bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags);
     void resetUpdateVar1136114Flags();
@@ -118,6 +119,7 @@ namespace OpenLoco::Vehicles
         taxiing2 = 12,
         takingOff = 13,
     };
+    static_assert(sizeof(Status) == 1);
 
     struct OrderRingView;
 
@@ -229,6 +231,7 @@ namespace OpenLoco::Vehicles
         occupiedOneWay = 1U << 2, // Signal occupied with a vehicle and signal is one way
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SignalStateFlags);
+    static_assert(sizeof(SignalStateFlags) == 1);
 
     constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
     {

@@ -333,9 +333,9 @@ namespace OpenLoco
                     {
                         numUpdates = 1;
                     }
-                    if (addr<0x00525324, int32_t>() == 1)
+                    if (Input::hasPendingMouseInputUpdate())
                     {
-                        addr<0x00525324, int32_t>() = 0;
+                        Input::clearPendingMouseInputUpdate();
                         numUpdates = 1;
                     }
                     else
@@ -432,13 +432,13 @@ namespace OpenLoco
 
         recordTickStartPrng();
         World::TileManager::defragmentTilePeriodic();
-        addr<0x00F25374, uint8_t>() = Scenario::getOptions().madeAnyChanges;
+        Scenario::setMadeAnyChangesBackup(Scenario::getOptions().madeAnyChanges);
         dateTick();
         World::TileManager::update();
         World::WaveManager::update();
         TownManager::update();
         IndustryManager::update();
-        VehicleManager::update();
+        // VehicleManager::update();
         StationManager::update();
         EffectsManager::update();
         CompanyManager::update();
@@ -447,7 +447,7 @@ namespace OpenLoco
         Audio::updateAmbientNoise();
         Title::update();
 
-        Scenario::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
+        Scenario::getOptions().madeAnyChanges = Scenario::getMadeAnyChangesBackup();
         if (_loadErrorCode != 0)
         {
             if (_loadErrorCode == -2)

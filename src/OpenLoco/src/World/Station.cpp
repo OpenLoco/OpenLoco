@@ -56,8 +56,10 @@ namespace OpenLoco
         inline static loco_global<uint8_t[kMapSize], 0x00F00484> _map;
         inline static loco_global<uint32_t, 0x0112C68C> _filter;
         inline static loco_global<uint32_t[kMaxCargoStats], 0x0112C690> _score;
+        static_assert(sizeof(uint32_t[kMaxCargoStats]) == 128);
         inline static loco_global<uint32_t, 0x0112C710> _producedCargoTypes;
         inline static loco_global<IndustryId[kMaxCargoStats], 0x0112C7D2> _industry;
+        static_assert(sizeof(IndustryId[kMaxCargoStats]) == 32);
         inline static loco_global<uint8_t, 0x0112C7F2> _byte_112C7F2;
 
     public:
