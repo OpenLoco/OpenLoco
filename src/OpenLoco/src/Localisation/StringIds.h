@@ -2037,6 +2037,8 @@ namespace OpenLoco::StringIds
     constexpr StringId frame_sound = 2371;
     constexpr StringId frame_jukebox = 2372;
     constexpr StringId music_volume = 2373;
+    constexpr StringId show_company_ai_planning = 2374;
+    constexpr StringId show_company_ai_planning_tip = 2375;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
