@@ -970,7 +970,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], entry.stem().u8string().c_str(), 512);
+        auto lococode_filename = OpenLoco::Localisation::convertUnicodeToLoco(path.stem().make_preferred().u8string());
+        strncpy(&buffer_2039[0], lococode_filename.c_str(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
