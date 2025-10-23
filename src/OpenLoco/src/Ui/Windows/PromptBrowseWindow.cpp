@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Utility::strlcpy(_filter, filter, std::size(_filter));
 
         changeDirectory(directory.make_preferred());
-        inputSession = Ui::TextInput::InputSession(baseName, 200);
+        inputSession = Ui::TextInput::InputSession(OpenLoco::Localisation::convertUnicodeToLoco(baseName), 200);
 
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
