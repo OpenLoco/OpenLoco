@@ -14,6 +14,10 @@ namespace OpenLoco::Localisation
     };
 
     static constexpr auto kUnicodeToLocoTable = std::to_array<EncodingConvertEntry>({
+        { UnicodeChar::curly_bracket_open, LocoChar::replacement_character }, // These four are replaced with formatting control codes in Loco
+        { UnicodeChar::vertical_line, LocoChar::replacement_character },
+        { UnicodeChar::curly_bracket_close, LocoChar::replacement_character },
+        { UnicodeChar::tilde, LocoChar::replacement_character },
         { UnicodeChar::a_ogonek_uc, LocoChar::a_ogonek_uc },
         { UnicodeChar::a_ogonek, LocoChar::a_ogonek },
         { UnicodeChar::c_acute_uc, LocoChar::c_acute_uc },
@@ -83,7 +87,7 @@ namespace OpenLoco::Localisation
             return static_cast<uint8_t>(unicode);
         }
 
-        return '?';
+        return LocoChar::replacement_character;
     }
 
     std::string convertUnicodeToLoco(const std::string& unicodeString)

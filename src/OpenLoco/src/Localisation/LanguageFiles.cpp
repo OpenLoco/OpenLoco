@@ -70,17 +70,16 @@ namespace OpenLoco::Localisation
                 continue;
             }
 
-            char readChar = convertUnicodeToLoco(codepoint);
-            if (readChar == '{')
+            if (codepoint == '{')
             {
                 std::vector<std::string_view> commands = {};
                 char* start = nullptr;
                 while (true)
                 {
                     char* pos = (char*)ptr;
-                    readChar = readCodePoint(&ptr);
+                    codepoint = readCodePoint(&ptr);
 
-                    if (readChar == ' ')
+                    if (codepoint == ' ')
                     {
                         if (start != nullptr)
                         {
@@ -90,7 +89,7 @@ namespace OpenLoco::Localisation
                         continue;
                     }
 
-                    if (readChar == '}')
+                    if (codepoint == '}')
                     {
                         if (start != nullptr)
                         {
@@ -218,11 +217,11 @@ namespace OpenLoco::Localisation
             }
             else
             {
-                *out = readChar;
+                *out = convertUnicodeToLoco(codepoint);
                 out++;
             }
 
-            if (readChar == '\0')
+            if (codepoint == '\0')
             {
                 break;
             }
