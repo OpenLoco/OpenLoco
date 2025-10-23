@@ -100,6 +100,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void upOneLevel();
     static void changeDirectory(const fs::path& path);
     static void processFileForLoadSave(Window* window);
+    static void processFileForLoadSave(Window* window, fs::path& entry);
     static void processFileForDelete(Window* self, fs::path& entry);
     static void refreshDirectoryList();
     static void loadFileDetails(Window* self);
@@ -267,13 +268,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Clicking a file, with left mouse button?
         if (Input::state() == Input::State::scrollLeft)
         {
-            // Copy the selected filename without extension to text input buffer.
-            inputSession.buffer = entry.stem().u8string();
-            inputSession.cursorPosition = inputSession.buffer.length();
             self.invalidate();
 
             // Continue processing for load/save.
-            processFileForLoadSave(&self);
+            processFileForLoadSave(&self, entry);
         }
         // Clicking a file, with right mouse button
         else
@@ -893,6 +891,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);
 
+        processFileForLoadSave(self, path);
+    }
+
+    static void processFileForLoadSave(Window* self, fs::path& path)
+    {
         if (_type == browse_type::save)
         {
             if (filenameContainsInvalidChars())
