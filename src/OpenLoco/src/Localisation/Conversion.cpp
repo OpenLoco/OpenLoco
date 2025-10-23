@@ -58,6 +58,12 @@ namespace OpenLoco::Localisation
 
     utf32_t convertLocoToUnicode(uint8_t locoCode)
     {
+        // Do not convert '?' character.
+        if (locoCode == LocoChar::replacement_character)
+        {
+            return LocoChar::replacement_character;
+        }
+
         // We can't do a binary search here, as the table is sorted by Unicode point, not Loco's internal encoding.
         for (const auto& entry : kUnicodeToLocoTable)
         {
