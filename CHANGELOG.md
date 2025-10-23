@@ -1,6 +1,6 @@
 25.10+ (???)
 ------------------------------------------------------------------------
-- Change: [#1625] Merged "Sound" and "Music" options into one "Audio" tab. Instead of the tab being disabled outside of play mode, the inapplicable widgets are disabled.
+- Change: [#1625] The "Sound" and "Music" options have been merged into one "Audio" tab that is now always accessible.
 - Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
 - Fix: [#2797] Single player scenario scores reset when adding a new scenario.
 - Fix: [#3032] Toggling "Play Music" from the top toolbar does not refresh the status in the options window.
