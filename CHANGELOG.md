@@ -1,6 +1,6 @@
 25.10+ (???)
 ------------------------------------------------------------------------
-- Change: [#1625] Music options can now be accessed from the title screen.
+- Change: [#1625] Merged "Sound" and "Music" options into one "Audio" tab. Certain music options widgets are disabled in scenes where they do not apply.
 - Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
 - Fix: [#2797] Single player scenario scores reset when adding a new scenario.
 - Fix: [#3032] Toggling "Play Music" from the top toolbar does not refresh the status in the options window.
