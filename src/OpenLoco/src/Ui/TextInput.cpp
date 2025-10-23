@@ -1,6 +1,7 @@
 #include "Ui/TextInput.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
+#include "Localisation/Conversion.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -14,7 +15,9 @@ namespace OpenLoco::Ui::TextInput
     // Common code from 0x0044685C, 0x004CE910
     bool InputSession::handleInput(uint32_t charCode, uint32_t keyCode)
     {
-        if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
+        uint8_t locoCharCode = Localisation::convertUnicodeToLoco(charCode);
+
+        if ((locoCharCode >= SDLK_SPACE && locoCharCode < SDLK_DELETE) || (locoCharCode >= 159))
         {
             if (inputLenLimit > 0 && buffer.length() == inputLenLimit)
             {
@@ -24,11 +27,11 @@ namespace OpenLoco::Ui::TextInput
 
             if (cursorPosition == buffer.length())
             {
-                buffer.append(1, (char)charCode);
+                buffer.append(1, locoCharCode);
             }
             else
             {
-                buffer.insert(cursorPosition, 1, (char)charCode);
+                buffer.insert(cursorPosition, 1, locoCharCode);
             }
             cursorPosition += 1;
         }

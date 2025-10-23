@@ -15,7 +15,6 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
-#include <Localisation/Conversion.h>
 #include <Localisation/Unicode.h>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <SDL2/SDL_keyboard.h>
@@ -227,7 +226,7 @@ namespace OpenLoco::Input
 
         uint32_t index = _keyQueueLastWrite;
         auto unsignedText = reinterpret_cast<const uint8_t*>(text);
-        _keyQueue[index].charCode = convertUnicodeToLoco(readCodePoint(&unsignedText));
+        _keyQueue[index].charCode = readCodePoint(&unsignedText);
     }
 
     // 0x00407028
