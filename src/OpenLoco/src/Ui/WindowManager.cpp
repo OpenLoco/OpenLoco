@@ -1024,7 +1024,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004CEE0B
-    void sub_4CEE0B(const Window& self)
+    void moveOtherWindowsDown(const Window& self)
     {
         int left = self.x;
         int right = self.x + self.width;

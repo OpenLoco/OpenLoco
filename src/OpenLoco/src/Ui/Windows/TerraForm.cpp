@@ -934,7 +934,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->expandContentCounter = 0;
             _treeClusterType = PlantTrees::treeCluster::none;
 
-            WindowManager::sub_4CEE0B(*window);
+            WindowManager::moveOtherWindowsDown(*window);
 
             window->minWidth = PlantTrees::kWindowSize.width;
             window->minHeight = PlantTrees::kWindowSize.height;
