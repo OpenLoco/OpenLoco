@@ -89,7 +89,7 @@ namespace OpenLoco::Economy
     }
 
     // 0x0046E239
-    // NB: called in sub_46E2C0 below, as well in openloco::date_tick.
+    // NB: called in setInflationForYear below, as well in OpenLoco::::dateTick.
     void updateMonthly()
     {
         auto& factors = currencyMultiplicationFactors();
@@ -107,7 +107,7 @@ namespace OpenLoco::Economy
     }
 
     // 0x0046E2C0
-    void sub_46E2C0(uint16_t year)
+    void setInflationForYear(uint16_t year)
     {
         auto& factors = currencyMultiplicationFactors();
         auto& unusedFactors = unusedCurrencyMultiplicationFactors();

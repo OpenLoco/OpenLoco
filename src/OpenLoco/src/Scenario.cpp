@@ -275,7 +275,7 @@ namespace OpenLoco::Scenario
 
         CompanyManager::determineAvailableVehicles();
 
-        Economy::sub_46E2C0(getCurrentYear());
+        Economy::setInflationForYear(getCurrentYear());
     }
 
     // 0x00442837
