@@ -71,6 +71,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include "Version.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
@@ -107,11 +108,6 @@ namespace OpenLoco
     static void tickLogic(int32_t count);
     static void tickLogic();
     static void dateTick();
-
-    std::string getVersionInfo()
-    {
-        return version;
-    }
 
     // 0x004BE621
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)
@@ -796,8 +792,9 @@ namespace OpenLoco
         // Bootstrap the logging system.
         Logging::initialize(options.logLevels);
 
-        // Always print the product name and version first.
+        // Always print the product name, version, and platform info first.
         Logging::info("{}", OpenLoco::getVersionInfo());
+        Logging::info("{}", OpenLoco::getPlatformInfo());
 
         Environment::setLocale();
 
