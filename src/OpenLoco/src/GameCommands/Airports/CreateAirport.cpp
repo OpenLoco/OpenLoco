@@ -245,12 +245,16 @@ namespace OpenLoco::GameCommands
                     }
                     else
                     {
-                        World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                         surface->setBaseZ(baseHeight / World::kSmallZStep);
                         surface->setClearZ(baseHeight / World::kSmallZStep);
                         surface->setSlope(0);
                         surface->setSnowCoverage(0);
                         surface->setGrowthStage(0);
+                    }
+
+                    if (shouldInvalidateTile(flags))
+                    {
+                        World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                     }
                 }
             }
@@ -288,7 +292,7 @@ namespace OpenLoco::GameCommands
                 World::AnimationManager::createAnimation(7, World::toWorldSpace(tilePos), elStation->baseZ());
 
                 elStation->setAiAllocated(flags & Flags::aiAllocated);
-                if (!(flags & Flags::aiAllocated))
+                if (shouldInvalidateTile(flags))
                 {
                     World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                 }
