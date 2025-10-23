@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        Ui::WindowManager::sub_4B93A5(enumValue(head->id));
+        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
 
         head->currentOrder = Vehicles::OrderManager::reverseVehicleOrderTable(head->orderTableOffset, head->currentOrder);
 

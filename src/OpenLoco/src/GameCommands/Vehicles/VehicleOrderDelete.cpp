@@ -30,7 +30,7 @@ namespace OpenLoco::GameCommands
         {
             return FAILURE;
         }
-        Ui::WindowManager::sub_4B93A5(enumValue(head->id));
+        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
 
         Vehicles::OrderManager::deleteOrder(head, args.orderOffset);
 

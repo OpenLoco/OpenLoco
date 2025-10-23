@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::WindowManager
     bool callKeyUpEventBackToFront(uint32_t charCode, uint32_t keyCode);
     void relocateWindows();
     void sub_4CEE0B(const Window& self);
-    void sub_4B93A5(WindowNumber_t number);
+    void invalidateOrderPageByVehicleNumber(WindowNumber_t number);
     void closeConstructionWindows();
     void closeTopmost();
     void wheelInput(int wheel);

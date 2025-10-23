@@ -1090,7 +1090,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004B93A5
-    void sub_4B93A5(WindowNumber_t number)
+    void invalidateOrderPageByVehicleNumber(WindowNumber_t number)
     {
         for (auto& w : _windows)
         {
