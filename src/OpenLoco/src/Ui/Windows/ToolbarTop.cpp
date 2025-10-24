@@ -174,19 +174,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
         }
 
-        if (!OpenLoco::Game::saveSaveGameOpen())
+        auto res = OpenLoco::Game::saveSaveGameOpen();
+        if (!res)
         {
             // Cancelled by user
             Gfx::invalidateScreen();
             return;
         }
 
-        static loco_global<char[512], 0x0112CE04> _savePath;
-        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
-
-        // Store path to active file
-        static loco_global<char[256], 0x0050B745> _currentGameFilePath;
-        strncpy(&_currentGameFilePath[0], path.u8string().c_str(), std::size(_currentGameFilePath));
+        auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
+        OpenLoco::Game::setActiveSavePath(path.u8string());
 
         S5::SaveFlags flags = S5::SaveFlags::none;
         if (Config::get().exportObjectsWithSaves)
