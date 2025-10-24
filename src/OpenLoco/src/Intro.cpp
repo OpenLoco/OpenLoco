@@ -18,7 +18,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Intro
 {
-    static loco_global<int32_t, 0x0050C190> _50C190;
+    static loco_global<int32_t, 0x0050C190> _introTicks;
     static loco_global<State, 0x0050C195> _state;
     static loco_global<bool, 0x0050C196> _50C196;
 
@@ -46,7 +46,7 @@ namespace OpenLoco::Intro
             _50C196 = false;
         }
         _state = State::end2;
-        _50C190 = 0;
+        _introTicks = 0;
     }
 
     static void updateEnd2([[maybe_unused]] Gfx::DrawingContext& drawingCtx)
@@ -82,28 +82,28 @@ namespace OpenLoco::Intro
         const auto pos = Ui::Point(Ui::width() / 2 - 216, Ui::height() / 2 - 54);
         drawingCtx.drawImage(pos, ImageId(ImageIds::atari_logo_intro_left));
         drawingCtx.drawImage(pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
-        _50C190 = -24;
+        _introTicks = -24;
         _50C196 = false;
         _state = State::displayAtari;
     }
 
     static void updateDisplayAtari(Gfx::DrawingContext& drawingCtx)
     {
-        _50C190++;
+        _introTicks++;
         uint8_t modifier = 0;
-        if (_50C190 >= 0)
+        if (_introTicks >= 0)
         {
-            modifier = _50C190;
-            if (_50C190 >= 55)
+            modifier = _introTicks;
+            if (_introTicks >= 55)
             {
-                modifier = 110 - _50C190;
+                modifier = 110 - _introTicks;
             }
         }
         modifier = std::min(255, modifier * 8);
 
         Gfx::loadPalette(ImageIds::atari_intro_palette, modifier);
 
-        if (_50C190 >= 110)
+        if (_introTicks >= 110)
         {
             Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, 0);
 
@@ -113,26 +113,26 @@ namespace OpenLoco::Intro
             drawingCtx.drawImage(pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
             drawingCtx.drawImage(pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
 
-            _50C190 = 0;
+            _introTicks = 0;
             _state = State::displayCS;
         }
     }
     static void updateDisplayCS(Gfx::DrawingContext& drawingCtx)
     {
-        _50C190++;
+        _introTicks++;
         uint8_t modifier = 0;
-        if (_50C190 >= 0)
+        if (_introTicks >= 0)
         {
-            modifier = _50C190;
-            if (_50C190 >= 50)
+            modifier = _introTicks;
+            if (_introTicks >= 50)
             {
-                modifier = 100 - _50C190;
+                modifier = 100 - _introTicks;
             }
         }
         modifier = std::min(255, modifier * 8);
 
         Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, modifier);
-        if (_50C190 >= 100)
+        if (_introTicks >= 100)
         {
             drawingCtx.clearSingle(PaletteIndex::black0);
 
@@ -170,22 +170,22 @@ namespace OpenLoco::Intro
             noticePos += Ui::Point(0, 10);
         }
 
-        if (_50C190 == 0)
+        if (_introTicks == 0)
         {
             Gfx::loadPalette(ImageIds::default_palette, 0xFF);
         }
-        _50C190++;
+        _introTicks++;
 
         if (MultiPlayer::hasFlag(MultiPlayer::flag_8) || MultiPlayer::hasFlag(MultiPlayer::flag_9))
         {
-            if (_50C190 >= 160)
+            if (_introTicks >= 160)
             {
                 _state = State::end;
             }
         }
         else
         {
-            if (_50C190 >= 1440)
+            if (_introTicks >= 1440)
             {
                 _state = State::end;
             }
@@ -193,7 +193,7 @@ namespace OpenLoco::Intro
     }
     static void updateDisplayNoticeBeginReset(Gfx::DrawingContext& drawingCtx)
     {
-        _50C190 = 0;
+        _introTicks = 0;
         _state = State::displayNotice;
         updateDisplayNotice(drawingCtx);
     }
