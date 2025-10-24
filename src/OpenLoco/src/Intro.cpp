@@ -12,15 +12,11 @@
 #include "Title.h"
 #include "Ui.h"
 #include "ViewportManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Intro
 {
-    static loco_global<int32_t, 0x0050C190> _introTicks;
-    static loco_global<State, 0x0050C195> _state;
-    static loco_global<bool, 0x0050C196> _50C196;
+    static int32_t _introTicks; // 0x0050C190
+    static State _state;        // 0x0050C195
 
     bool isActive()
     {
@@ -29,7 +25,7 @@ namespace OpenLoco::Intro
 
     State state()
     {
-        return *_state;
+        return _state;
     }
 
     void state(State state)
@@ -220,9 +216,9 @@ namespace OpenLoco::Intro
         {
             updateEnd2(drawingCtx);
         }
-        else if (enumValue(*_state) < std::size(kUpdateFunctions))
+        else if (enumValue(_state) < std::size(kUpdateFunctions))
         {
-            kUpdateFunctions[enumValue(*_state)](drawingCtx);
+            kUpdateFunctions[enumValue(_state)](drawingCtx);
         }
         sub_431695(0);
     }
