@@ -4,38 +4,37 @@
 #include "Graphics/Gfx.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 
-using namespace OpenLoco;
-using namespace OpenLoco::Interop;
-
-bool EntityBase::empty() const
+namespace OpenLoco
 {
-    return baseType == EntityBaseType::null;
-}
-
-// 0x0046FC83
-void EntityBase::moveTo(const World::Pos3& loc)
-{
-    EntityManager::moveSpatialEntry(*this, loc);
-
-    // Update sprite boundaries
-    if (position.x == Location::null)
+    bool EntityBase::empty() const
     {
-        spriteLeft = Location::null;
-        return;
+        return baseType == EntityBaseType::null;
     }
 
-    const auto vpPos = World::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
-    spriteLeft = vpPos.x - spriteWidth;
-    spriteRight = vpPos.x + spriteWidth;
-    spriteTop = vpPos.y - spriteHeightNegative;
-    spriteBottom = vpPos.y + spriteHeightPositive;
-}
+    // 0x0046FC83
+    void EntityBase::moveTo(const World::Pos3& loc)
+    {
+        EntityManager::moveSpatialEntry(*this, loc);
 
-// 0x004CBB01
-void OpenLoco::EntityBase::invalidateSprite()
-{
-    Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
+        // Update sprite boundaries
+        if (position.x == Location::null)
+        {
+            spriteLeft = Location::null;
+            return;
+        }
+
+        const auto vpPos = World::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
+        spriteLeft = vpPos.x - spriteWidth;
+        spriteRight = vpPos.x + spriteWidth;
+        spriteTop = vpPos.y - spriteHeightNegative;
+        spriteBottom = vpPos.y + spriteHeightPositive;
+    }
+
+    // 0x004CBB01
+    void EntityBase::invalidateSprite()
+    {
+        Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
+    }
 }
