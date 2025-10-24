@@ -76,6 +76,7 @@ namespace OpenLoco::Paint
             if (elIndustry.isGhost())
             {
                 baseScaffImage = Gfx::applyGhostToImage(baseScaffImageIdx);
+                // TODO: apply company colour if playerCompanyID != elTrack.owner()?
             }
             else
             {

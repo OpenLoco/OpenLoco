@@ -242,7 +242,7 @@ namespace OpenLoco::Paint
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
-        if (elTrack.isAiAllocated())
+        if (elTrack.isAiAllocated() && !showAiPlanningGhosts())
         {
             return;
         }
@@ -277,10 +277,12 @@ namespace OpenLoco::Paint
         // This is an ImageId but it has no image index set!
         auto baseTrackImageColour = ImageId(0, CompanyManager::getCompanyColour(elTrack.owner()));
 
-        if (elTrack.isGhost())
+        if (elTrack.isGhost() || elTrack.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             baseTrackImageColour = Gfx::applyGhostToImage(0);
+
+            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
         }
 
         TrackPaintCommon trackSession{ baseTrackImageColour.withIndex(trackObj->image), baseTrackImageColour, trackObj->tunnel };

@@ -873,7 +873,7 @@ namespace OpenLoco::GameCommands
             newElRoad->setFlag6(piece.index == (roadPieces.size() - 1));
             newElRoad->setGhost(flags & Flags::ghost);
             newElRoad->setAiAllocated(flags & Flags::aiAllocated);
-            if (!(flags & Flags::aiAllocated))
+            if (shouldInvalidateTile(flags))
             {
                 World::TileManager::mapInvalidateTileFull(roadLoc);
             }
