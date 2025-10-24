@@ -242,25 +242,32 @@ namespace OpenLoco
     static void launchGameFromCmdLineOptions()
     {
         const auto& cmdLineOptions = getCommandLineOptions();
-        if (cmdLineOptions.action == CommandLineAction::host)
+        try
         {
-            Network::openServer();
-            loadFile(cmdLineOptions.path);
-        }
-        else if (cmdLineOptions.action == CommandLineAction::join)
-        {
-            if (cmdLineOptions.port)
+            if (cmdLineOptions.action == CommandLineAction::host)
             {
-                Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
+                Network::openServer();
+                loadFile(cmdLineOptions.path);
             }
-            else
+            else if (cmdLineOptions.action == CommandLineAction::join)
             {
-                Network::joinServer(cmdLineOptions.address);
+                if (cmdLineOptions.port)
+                {
+                    Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
+                }
+                else
+                {
+                    Network::joinServer(cmdLineOptions.address);
+                }
+            }
+            else if (!cmdLineOptions.path.empty())
+            {
+                loadFile(cmdLineOptions.path);
             }
         }
-        else if (!cmdLineOptions.path.empty())
+        catch (const std::exception& e)
         {
-            loadFile(cmdLineOptions.path);
+            Logging::error("Unable to load park: {}", e.what());
         }
     }
 
