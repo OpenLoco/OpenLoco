@@ -798,7 +798,6 @@ namespace OpenLoco::Audio
                 v->soundFlags &= ~Vehicles::SoundFlags::flag0;
                 break;
             case 1:
-                // TODO: this does not match IDA
                 // 0x048A268
                 if ((v->soundFlags & Vehicles::SoundFlags::flag1) == Vehicles::SoundFlags::none)
                 {
