@@ -223,12 +223,12 @@ namespace OpenLoco::Scenario
     // ?Set default types for building. Like the initial track type and vehicle type and such.?
     void sub_4748D4()
     {
-        ObjectManager::sub_47966E();
+        ObjectManager::updateRoadObjectIdFlags();
         ObjectManager::updateDefaultLevelCrossingType();
-        ObjectManager::sub_47AC05();
-        CompanyManager::sub_4A6DA9();
+        ObjectManager::updateLastTrackTypeOption();
+        CompanyManager::updatePlayerInfrastructureOptions();
         Gfx::invalidateScreen();
-        ObjectManager::sub_4748FA();
+        ObjectManager::updateTerraformObjects();
         Gfx::loadCurrency();
     }
 
@@ -275,7 +275,7 @@ namespace OpenLoco::Scenario
 
         CompanyManager::determineAvailableVehicles();
 
-        Economy::sub_46E2C0(getCurrentYear());
+        Economy::setInflationForYear(getCurrentYear());
     }
 
     // 0x00442837

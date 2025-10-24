@@ -2692,7 +2692,7 @@ namespace OpenLoco::Vehicles
 
         curOrder++;
         currentOrder = curOrder->getOffset() - orderTableOffset;
-        Ui::WindowManager::sub_4B93A5(enumValue(id));
+        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(id));
     }
 
     // 0x004BACAF
@@ -2913,7 +2913,7 @@ namespace OpenLoco::Vehicles
                 if (point.x == (position.x & 0xFFE0) && point.y == (position.y & 0xFFE0))
                 {
                     currentOrder = (++curOrder)->getOffset() - orderTableOffset;
-                    Ui::WindowManager::sub_4B93A5(enumValue(id));
+                    Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(id));
                 }
             }
 
@@ -3530,7 +3530,7 @@ namespace OpenLoco::Vehicles
             if (!order.hasFlags(OrderFlags::HasCargo))
             {
                 currentOrder = order.getOffset() - orderTableOffset;
-                Ui::WindowManager::sub_4B93A5(enumValue(id));
+                Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(id));
                 break;
             }
             auto* waitFor = order.as<OrderWaitFor>();
@@ -3608,7 +3608,7 @@ namespace OpenLoco::Vehicles
                 if (newOrder != currentOrder)
                 {
                     currentOrder = newOrder;
-                    Ui::WindowManager::sub_4B93A5(enumValue(id));
+                    Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(id));
                 }
                 return;
             }
@@ -4276,7 +4276,7 @@ namespace OpenLoco::Vehicles
                     {
                         curOrder++;
                         head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
-                        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+                        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head.id));
                         stationProcessed = true;
                     }
                 }
@@ -4369,7 +4369,7 @@ namespace OpenLoco::Vehicles
         }
         curOrder++;
         head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
-        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head.id));
         return Sub4ACEE7Result{ 0, 0, StationId::null };
     }
 
@@ -4516,7 +4516,7 @@ namespace OpenLoco::Vehicles
                     {
                         curOrder++;
                         head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
-                        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+                        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head.id));
                         stationProcessed = true;
                     }
                 }
@@ -4721,7 +4721,7 @@ namespace OpenLoco::Vehicles
         }
         curOrder++;
         head.currentOrder = curOrder->getOffset() - head.orderTableOffset;
-        Ui::WindowManager::sub_4B93A5(enumValue(head.id));
+        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head.id));
         return Sub4ACEE7Result{ 0, 0, StationId::null };
     }
 

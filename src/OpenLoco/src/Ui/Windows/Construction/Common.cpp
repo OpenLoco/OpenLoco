@@ -1296,7 +1296,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->windowConstructionColour);
 
-            WindowManager::sub_4CEE0B(*window);
+            WindowManager::moveOtherWindowsDown(*window);
             Windows::Main::showDirectionArrows();
             Windows::Main::showGridlines();
         }

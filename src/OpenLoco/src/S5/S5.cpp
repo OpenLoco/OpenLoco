@@ -790,7 +790,7 @@ namespace OpenLoco::S5
             Audio::stopVehicleNoise();
             EntityManager::resetSpatialIndex();
             CompanyManager::updateColours();
-            ObjectManager::sub_4748FA();
+            ObjectManager::updateTerraformObjects();
             TileManager::resetSurfaceClearance();
             IndustryManager::createAllMapAnimations();
 
@@ -805,7 +805,7 @@ namespace OpenLoco::S5
                     auto header = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::scenarioText, 0 });
                     ObjectManager::unload(header);
                     ObjectManager::reloadAll();
-                    ObjectManager::sub_4748FA();
+                    ObjectManager::updateTerraformObjects();
                     _activeOptions->editorStep = enumValue(EditorController::Step::landscapeEditor);
                     _activeOptions->difficulty = 3;
                     StringManager::formatString(_activeOptions->scenarioDetails, StringIds::no_details_yet);

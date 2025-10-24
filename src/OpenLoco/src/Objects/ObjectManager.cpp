@@ -926,8 +926,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047966E
-    // Set road object ID flags
-    void sub_47966E()
+    void updateRoadObjectIdFlags()
     {
         uint32_t roadObjectIdIsNotTram = 0;
         uint32_t roadObjectIdIsFlag7 = 0;
@@ -1124,7 +1123,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x004748FA
-    void sub_4748FA()
+    void updateTerraformObjects()
     {
         updateLandObjectFlags();
         updateTrafficHandedness();
@@ -1133,8 +1132,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047AC05
-    // Initialise lastTrackTypeOption in game state
-    void sub_47AC05()
+    void updateLastTrackTypeOption()
     {
         static_assert(ObjectManager::getMaxObjects(ObjectType::road) <= 128); // protect against possible int8_t overflow in the future
         TownSize largestTownSize = TownSize::hamlet;

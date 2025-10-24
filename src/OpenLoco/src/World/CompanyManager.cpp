@@ -783,7 +783,7 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x004A6DA9
-    void sub_4A6DA9()
+    void updatePlayerInfrastructureOptions()
     {
         auto* playerCompany = getPlayerCompany();
         auto& gameState = getGameState();
@@ -825,7 +825,7 @@ namespace OpenLoco::CompanyManager
         }
         gameState.playerCompanies[0] = createCompany(competitorId, true);
         gameState.playerCompanies[1] = CompanyId::null;
-        sub_4A6DA9();
+        updatePlayerInfrastructureOptions();
     }
 
     // 0x0042F9AC

@@ -190,12 +190,12 @@ namespace OpenLoco::ObjectManager
 
     void drawGenericDescription(Gfx::DrawingContext& drawingCtx, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete);
 
-    void sub_47966E();
+    void updateRoadObjectIdFlags();
     void updateDefaultLevelCrossingType();
     void updateYearly2();
 
-    void sub_4748FA();
-    void sub_47AC05();
+    void updateTerraformObjects();
+    void updateLastTrackTypeOption();
 
     // Calls function with the handle (LoadedObjectHandle) of each loaded object
     template<typename Function>
