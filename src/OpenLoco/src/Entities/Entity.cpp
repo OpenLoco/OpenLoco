@@ -1,10 +1,7 @@
 #include "Entity.h"
-#include "Config.h"
 #include "EntityManager.h"
-#include "Graphics/Gfx.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include <algorithm>
 
 namespace OpenLoco
 {
