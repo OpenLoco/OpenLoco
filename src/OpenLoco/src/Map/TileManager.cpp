@@ -48,12 +48,13 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::World::TileManager
 {
     constexpr auto kNumTiles = kMapPitch * kMapColumns;
-    static loco_global<TileElement*, 0x005230C8> _elements;
-    static loco_global<TileElement* [kNumTiles], 0x00E40134> _tiles;
-    static loco_global<TileElement*, 0x00F00134> _elementsEnd;
-    static loco_global<const TileElement*, 0x00F00158> _F00158;
-    static loco_global<uint32_t, 0x00F00168> _periodicDefragStartTile;
-    static loco_global<bool, 0x0050BF6C> _disablePeriodicDefrag;
+
+    static std::vector<TileElement> _elements;           // 0x005230C8
+    static std::array<TileElement*, kNumTiles> _tiles{}; // 0x00E40134
+    static ptrdiff_t _elementsEnd = 0;                   // 0x00F00134
+    static const TileElement* _F00158 = nullptr;         // 0x00F00158
+    static uint32_t _periodicDefragStartTile;            // 0x00F00168
+    static bool _disablePeriodicDefrag;                  // 0x0050BF6C
 
     void disablePeriodicDefrag()
     {
@@ -95,14 +96,15 @@ namespace OpenLoco::World::TileManager
     // 0x004BF476
     void allocateMapElements()
     {
-        TileElement* elements = reinterpret_cast<TileElement*>(malloc(kMaxElements * sizeof(TileElement)));
-        if (elements == nullptr)
+        try
+        {
+            _elements.resize(kMaxElements);
+        }
+        catch (std::bad_alloc&)
         {
             exitWithError(StringIds::game_init_failure, StringIds::unable_to_allocate_enough_memory);
             return;
         }
-
-        _elements = elements;
     }
 
     // 0x00461179
@@ -117,10 +119,9 @@ namespace OpenLoco::World::TileManager
         defaultElement.setBaseZ(4);
         defaultElement.setLastFlag(true);
 
-        auto* element = *_elements;
-        for (auto i = 0; i < kMapSize; ++i, ++element)
+        for (auto& element : _elements)
         {
-            *element = *reinterpret_cast<TileElement*>(&defaultElement);
+            element = *reinterpret_cast<TileElement*>(&defaultElement);
         }
         updateTilePointers();
         getGameState().flags |= GameStateFlags::tileManagerLoaded;
@@ -128,24 +129,17 @@ namespace OpenLoco::World::TileManager
 
     std::span<TileElement> getElements()
     {
-        return std::span<TileElement>(static_cast<TileElement*>(_elements), getElementsEnd());
-    }
-
-    TileElement* getElementsEnd()
-    {
-        return _elementsEnd;
+        return std::span<TileElement>(static_cast<TileElement*>(&*_elements.begin()), _elementsEnd);
     }
 
     uint32_t numFreeElements()
     {
-        return kMaxElements - (_elementsEnd - _elements);
+        return kMaxElements - _elementsEnd;
     }
 
     void setElements(std::span<TileElement> elements)
     {
-        TileElement* dst = _elements;
-        std::memset(dst, 0, kMaxElements * sizeof(TileElement));
-        std::memcpy(dst, elements.data(), elements.size_bytes());
+        std::ranges::copy(elements, _elements.begin());
         TileManager::updateTilePointers();
     }
 
@@ -153,7 +147,7 @@ namespace OpenLoco::World::TileManager
     static void markElementAsFree(TileElement& element)
     {
         element.setBaseZ(255);
-        if (element.next() == *_elementsEnd)
+        if (std::distance(&*_elements.begin(), element.next()) == _elementsEnd)
         {
             _elementsEnd--;
         }
@@ -163,11 +157,11 @@ namespace OpenLoco::World::TileManager
     void removeElement(TileElement& element)
     {
         // This is used to indicate if the caller can still use this pointer
-        if (&element == *_F00158)
+        if (&element == _F00158)
         {
             if (element.isLast())
             {
-                *_F00158 = kInvalidTile;
+                _F00158 = nullptr;
             }
         }
 
@@ -193,17 +187,12 @@ namespace OpenLoco::World::TileManager
 
     void setRemoveElementPointerChecker(TileElement& element)
     {
-        *_F00158 = &element;
+        _F00158 = &element;
     }
 
     bool wasRemoveOnLastElement()
     {
-        return *_F00158 == kInvalidTile;
-    }
-
-    TileElement** getElementIndex()
-    {
-        return _tiles.get();
+        return _F00158 == nullptr;
     }
 
     static constexpr size_t getTileIndex(const TilePos2& pos)
@@ -222,10 +211,6 @@ namespace OpenLoco::World::TileManager
         }
 
         auto data = _tiles[index];
-        if (data == kInvalidTile)
-        {
-            data = nullptr;
-        }
         return Tile(pos, data);
     }
 
@@ -258,7 +243,7 @@ namespace OpenLoco::World::TileManager
         // _elementsEnd points to the free space at the end of the
         // tile elements. You must always check there is space (checkFreeElementsAndReorganise)
         // prior to calling this function!
-        auto* dest = *_elementsEnd;
+        auto* dest = &_elements[_elementsEnd];
         set(pos, dest);
         return std::make_pair(source, dest);
     }
@@ -288,7 +273,7 @@ namespace OpenLoco::World::TileManager
                 source++;
             } while (!dest++->isLast());
         }
-        _elementsEnd = dest;
+        _elementsEnd = std::distance(&*_elements.begin(), dest);
 
         return newElement;
     }
@@ -644,7 +629,7 @@ namespace OpenLoco::World::TileManager
 
     static void clearTilePointers()
     {
-        std::fill(_tiles.begin(), _tiles.end(), const_cast<TileElement*>(kInvalidTile));
+        std::ranges::fill(_tiles, nullptr);
     }
 
     // 0x00461348
@@ -652,12 +637,12 @@ namespace OpenLoco::World::TileManager
     {
         clearTilePointers();
 
-        TileElement* el = _elements;
+        auto el = _elements.begin();
         for (tile_coord_t y = 0; y < kMapRows; y++)
         {
             for (tile_coord_t x = 0; x < kMapColumns; x++)
             {
-                set(TilePos2(x, y), el);
+                set(TilePos2(x, y), &*el);
 
                 // Skip remaining elements on this tile
                 do
@@ -667,7 +652,7 @@ namespace OpenLoco::World::TileManager
             }
         }
 
-        _elementsEnd = el;
+        _elementsEnd = std::distance(_elements.begin(), el);
     }
 
     // 0x0046148F
@@ -697,11 +682,7 @@ namespace OpenLoco::World::TileManager
             }
 
             // Copy organised elements back to original element buffer
-            std::memcpy(_elements, tempBuffer.data(), numElements * sizeof(TileElement));
-
-            // Zero all unused elements
-            auto remainingElements = kMaxElements - numElements;
-            std::memset(_elements + numElements, 0, remainingElements * sizeof(TileElement));
+            _elements = tempBuffer;
 
             updateTilePointers();
         }
@@ -732,7 +713,7 @@ namespace OpenLoco::World::TileManager
         for (auto i = 0U; i < kNumTiles; ++i)
         {
             const auto j = (i + searchStart) % kNumTiles;
-            if (_tiles[j] != kInvalidTile)
+            if (_tiles[j] != nullptr)
             {
                 _periodicDefragStartTile = j;
                 break;
@@ -765,8 +746,8 @@ namespace OpenLoco::World::TileManager
 
         // Its possible we have freed up elements at the end so this
         // looks to see if we should move the element end
-        auto* newEnd = _elementsEnd - 1;
-        while (newEnd->baseZ() == 0xFFU)
+        auto newEnd = _elementsEnd - 1;
+        while (_elements[newEnd].baseZ() == 0xFFU)
         {
             newEnd--;
         }
