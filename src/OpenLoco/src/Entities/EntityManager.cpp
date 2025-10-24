@@ -6,9 +6,7 @@
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include <OpenLoco/Core/LocoFixedVector.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::EntityManager
@@ -19,8 +17,8 @@ namespace OpenLoco::EntityManager
     static_assert(kSpatialEntityMapSize == 0x40001);
     static_assert(kEntitySpatialIndexNull == 0x40000);
 
-    loco_global<EntityId[kSpatialEntityMapSize], 0x01025A8C> _entitySpatialIndex;
-    loco_global<uint32_t, 0x01025A88> _entitySpatialCount;
+    static EntityId _entitySpatialIndex[kSpatialEntityMapSize]; // 0x01025A8C
+    static uint32_t _entitySpatialCount;                        // 0x01025A88
 
     static auto& rawEntities() { return getGameState().entities; }
     static auto entities() { return FixedVector(rawEntities()); }
