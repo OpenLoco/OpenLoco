@@ -40,11 +40,6 @@ namespace OpenLoco::Intro
     static void updateEnd(Gfx::DrawingContext& drawingCtx)
     {
         drawingCtx.clearSingle(PaletteIndex::black0);
-        if (!_50C196)
-        {
-            // Audio::stopIntro(); Note: There is no sound!
-            _50C196 = false;
-        }
         _state = State::end2;
         _introTicks = 0;
     }
@@ -83,7 +78,6 @@ namespace OpenLoco::Intro
         drawingCtx.drawImage(pos, ImageId(ImageIds::atari_logo_intro_left));
         drawingCtx.drawImage(pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
         _introTicks = -24;
-        _50C196 = false;
         _state = State::displayAtari;
     }
 
