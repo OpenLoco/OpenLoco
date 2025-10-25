@@ -843,7 +843,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static bool filenameContainsInvalidChars()
     {
         uint8_t numNonSpacesProcessed = 0;
-        for (const char chr : inputSession.getLocoString())
+        const auto buffer = inputSession.getLocoString();
+        for (const char chr : buffer)
         {
             if (chr != ' ')
             {
