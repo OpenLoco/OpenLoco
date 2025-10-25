@@ -13,6 +13,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
+    static LoadOrQuitMode _loadOrQuitMode; // 0x0050A002
+
     // 0x0043BFCB
     static uint32_t loadSaveQuit(const LoadSaveQuitGameArgs& args, const uint8_t flags)
     {
@@ -27,12 +29,12 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        auto loadOrQuitMode = args.loadQuitMode;
-
         if (args.saveMode == LoadSaveQuitGameArgs::SaveMode::promptSave)
         {
+            _loadOrQuitMode = args.loadQuitMode;
+
             Ui::Windows::TextInput::cancel();
-            Ui::Windows::PromptSaveWindow::open(loadOrQuitMode);
+            Ui::Windows::PromptSaveWindow::open(_loadOrQuitMode);
 
             if (!SceneManager::isTitleMode())
             {
@@ -42,9 +44,9 @@ namespace OpenLoco::GameCommands
                 {
                     Tutorial::stop();
                 }
-                else if (!SceneManager::isNetworked() || loadOrQuitMode != LoadOrQuitMode::quitGamePrompt)
+                else if (!SceneManager::isNetworked() || _loadOrQuitMode != LoadOrQuitMode::quitGamePrompt)
                 {
-                    if (SceneManager::getSceneAge() >= 0xF00)
+                    if (SceneManager::getSceneAge() >= 10) // 0xF00)
                     {
                         auto window = Ui::WindowManager::bringToFront(Ui::WindowType::saveGamePrompt);
                         Audio::playSound(Audio::SoundId::openWindow, window->x + (window->width / 2));
@@ -55,7 +57,7 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x0043BFE3
-        switch (loadOrQuitMode)
+        switch (_loadOrQuitMode)
         {
             case LoadOrQuitMode::loadGamePrompt:
                 Game::loadGame();
