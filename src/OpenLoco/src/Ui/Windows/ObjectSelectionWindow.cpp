@@ -406,7 +406,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void applyFilterToObjectList(FilterFlags filterFlags)
     {
-        std::string_view pattern = inputSession.getLocoString();
+        const auto locoString = inputSession.getLocoString();
+        std::string_view pattern = locoString;
         _numVisibleObjectsListed = 0;
         for (auto& entry : _tabObjectList)
         {
