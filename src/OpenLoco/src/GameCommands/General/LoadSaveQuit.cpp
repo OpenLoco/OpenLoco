@@ -46,7 +46,7 @@ namespace OpenLoco::GameCommands
                 }
                 else if (!SceneManager::isNetworked() || _loadOrQuitMode != LoadOrQuitMode::quitGamePrompt)
                 {
-                    if (SceneManager::getSceneAge() >= 10) // 0xF00)
+                    if (SceneManager::getSceneAge() >= 0xF00)
                     {
                         auto window = Ui::WindowManager::bringToFront(Ui::WindowType::saveGamePrompt);
                         Audio::playSound(Audio::SoundId::openWindow, window->x + (window->width / 2));
