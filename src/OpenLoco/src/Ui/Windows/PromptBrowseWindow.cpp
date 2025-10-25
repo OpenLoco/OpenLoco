@@ -890,7 +890,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void processFileForLoadSave(Window* self)
     {
         // Create full path to target file.
-        fs::path path = _currentDirectory / inputSession.getLocoString();
+        fs::path path = _currentDirectory / inputSession.buffer32;
 
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);
