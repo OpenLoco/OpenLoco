@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::TextInput
                 }),
             buffer32.end());
     }
-    
+
     std::string InputSession::getLocoString() const
     {
         return Localisation::convertUnicodeToLoco(buffer32);
