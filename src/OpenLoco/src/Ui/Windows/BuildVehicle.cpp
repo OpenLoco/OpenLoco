@@ -513,7 +513,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 continue;
             }
 
-            std::string_view pattern = inputSession.getLocoString();
+            const auto locoString = inputSession.getLocoString();
+            std::string_view pattern = locoString;
 
             if (!pattern.empty())
             {
