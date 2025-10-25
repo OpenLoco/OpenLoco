@@ -124,8 +124,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 // Load Landscape
                 {
                     GameCommands::LoadSaveQuitGameArgs args{};
-                    args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::save;
                     args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+                    args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::save;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
                 break;
