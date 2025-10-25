@@ -21,15 +21,15 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        if (args.option1 == LoadSaveQuitGameArgs::Options::closeSavePrompt)
+        if (args.saveMode == LoadSaveQuitGameArgs::SaveMode::closeSavePrompt)
         {
             Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
             return 0;
         }
 
-        auto loadOrQuitMode = args.option2;
+        auto loadOrQuitMode = args.loadQuitMode;
 
-        if (args.option1 == LoadSaveQuitGameArgs::Options::save)
+        if (args.saveMode == LoadSaveQuitGameArgs::SaveMode::save)
         {
             Ui::Windows::TextInput::cancel();
             Ui::Windows::PromptSaveWindow::open(loadOrQuitMode);
