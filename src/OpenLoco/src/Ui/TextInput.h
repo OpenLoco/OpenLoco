@@ -2,9 +2,9 @@
 
 #include "Graphics/Gfx.h"
 
+#include <Localisation/Conversion.h>
 #include <cstdint>
 #include <string>
-#include <Localisation/Conversion.h>
 
 namespace OpenLoco::Ui::TextInput
 {
@@ -13,9 +13,9 @@ namespace OpenLoco::Ui::TextInput
     struct InputSession
     {
         std::u32string buffer32; // in UTF-32
-        size_t cursorPosition; // 0x01136FA2
-        int16_t xOffset;       // 0x01136FA4
-        uint8_t cursorFrame;   // 0x011370A9
+        size_t cursorPosition;   // 0x01136FA2
+        int16_t xOffset;         // 0x01136FA4
+        uint8_t cursorFrame;     // 0x011370A9
         uint32_t inputLenLimit;
 
         InputSession() = default;
