@@ -2,6 +2,7 @@
 
 #include "Graphics/Gfx.h"
 
+#include <Localisation/Conversion.h>
 #include <cstdint>
 #include <string>
 
@@ -11,17 +12,19 @@ namespace OpenLoco::Ui::TextInput
 
     struct InputSession
     {
-        std::string buffer;    // 0x011369A0
-        size_t cursorPosition; // 0x01136FA2
-        int16_t xOffset;       // 0x01136FA4
-        uint8_t cursorFrame;   // 0x011370A9
+        std::u32string buffer32; // in UTF-32
+        size_t cursorPosition;   // 0x01136FA2
+        int16_t xOffset;         // 0x01136FA4
+        uint8_t cursorFrame;     // 0x011370A9
         uint32_t inputLenLimit;
 
         InputSession() = default;
+
+        // initialString is in Locomotion's 8-bit encoding
         InputSession(const std::string initialString, uint32_t inputSize)
         {
-            buffer = initialString;
-            cursorPosition = buffer.length();
+            buffer32 = Localisation::convertLocoToUnicode32(initialString);
+            cursorPosition = buffer32.length();
             cursorFrame = 0;
             xOffset = 0;
             inputLenLimit = inputSize;
@@ -32,5 +35,6 @@ namespace OpenLoco::Ui::TextInput
         void calculateTextOffset(int16_t containerWidth);
         void clearInput();
         void sanitizeInput();
+        std::string getLocoString() const;
     };
 }
