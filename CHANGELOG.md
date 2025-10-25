@@ -25,6 +25,7 @@
 - Fix: [#3281] Modifying the news options does not trigger a config file write, potentially losing the changes.
 - Fix: [#3314] Players can remove roads owned by other companies.
 - Fix: [#3315] Players can replace station elements owned by other companies.
+- Fix: [#3354] Characters can be added beyond the length limit when inputting text if the limit has already been exeeded.
 - Fix: [#3355] Text encoding issues with save/load file browse prompt when save file names have non-ASCII characters.
 
 25.10 (2025-10-10)
