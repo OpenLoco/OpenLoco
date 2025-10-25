@@ -8,7 +8,7 @@ namespace OpenLoco::GameCommands
     {
         enum class SaveMode : uint8_t
         {
-            save,
+            promptSave,
             closeSavePrompt,
             dontSave,
         };
@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
         {
             registers regs;
             regs.di = enumValue(loadQuitMode); // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
-            regs.dl = enumValue(saveMode);     // [ 0 = save, 1 = close save prompt, 2 = don't save ]
+            regs.dl = enumValue(saveMode);     // [ 0 = prompt save, 1 = close save prompt, 2 = don't save ]
             return regs;
         }
     };

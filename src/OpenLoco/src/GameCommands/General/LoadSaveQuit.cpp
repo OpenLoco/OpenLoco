@@ -29,7 +29,7 @@ namespace OpenLoco::GameCommands
 
         auto loadOrQuitMode = args.loadQuitMode;
 
-        if (args.saveMode == LoadSaveQuitGameArgs::SaveMode::save)
+        if (args.saveMode == LoadSaveQuitGameArgs::SaveMode::promptSave)
         {
             Ui::Windows::TextInput::cancel();
             Ui::Windows::PromptSaveWindow::open(loadOrQuitMode);

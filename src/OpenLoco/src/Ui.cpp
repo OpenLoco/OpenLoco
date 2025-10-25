@@ -679,7 +679,7 @@ namespace OpenLoco::Ui
         {
             GameCommands::LoadSaveQuitGameArgs args{};
             args.loadQuitMode = LoadOrQuitMode::quitGamePrompt;
-            args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::save;
+            args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 

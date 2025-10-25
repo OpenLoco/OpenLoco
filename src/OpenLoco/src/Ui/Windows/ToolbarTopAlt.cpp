@@ -125,7 +125,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 {
                     GameCommands::LoadSaveQuitGameArgs args{};
                     args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
-                    args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::save;
+                    args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
                 break;
@@ -172,7 +172,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 // Return to title screen
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToMenuArgs{};
-                    quitToMenuArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::save;
+                    quitToMenuArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     quitToMenuArgs.loadQuitMode = LoadOrQuitMode::returnToTitlePrompt;
                     GameCommands::doCommand(quitToMenuArgs, GameCommands::Flags::apply);
                 }
@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 // Exit to desktop
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToDesktopArgs{};
-                    quitToDesktopArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::save;
+                    quitToDesktopArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     quitToDesktopArgs.loadQuitMode = LoadOrQuitMode::quitGamePrompt;
                     GameCommands::doCommand(quitToDesktopArgs, GameCommands::Flags::apply);
                 }
