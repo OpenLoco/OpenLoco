@@ -124,7 +124,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             case widx::cancelButton:
             {
                 GameCommands::LoadSaveQuitGameArgs args{};
-                args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+                args.loadQuitMode = _savePromptType;
                 args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::closeSavePrompt;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             case widx::dontSaveButton:
             {
                 GameCommands::LoadSaveQuitGameArgs args{};
-                args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+                args.loadQuitMode = _savePromptType;
                 args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::dontSave;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
