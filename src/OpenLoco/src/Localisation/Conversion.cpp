@@ -75,6 +75,17 @@ namespace OpenLoco::Localisation
         return locoCode;
     }
 
+    // Converts a string in Locomotion's 8-bit encoding to a UTF-32 string
+    std::u32string convertLocoToUnicode32(const std::string& locoString)
+    {
+        std::u32string out;
+        for (uint8_t locoCode : locoString)
+        {
+            out += convertLocoToUnicode(locoCode);
+        }
+        return out;
+    }
+
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
         const auto it = std::ranges::lower_bound(
@@ -96,6 +107,7 @@ namespace OpenLoco::Localisation
         return LocoChar::replacement_character;
     }
 
+    // Converts a UTF-8 string to a string in Locomotion's encoding
     std::string convertUnicodeToLoco(const std::string& unicodeString)
     {
         std::string out;
@@ -105,6 +117,17 @@ namespace OpenLoco::Localisation
             out += convertUnicodeToLoco(unicodePoint);
         }
 
+        return out;
+    }
+
+    // Converts a UTF-32 string to a string in Locomotion's encoding
+    std::string convertUnicodeToLoco(const std::u32string& unicodeString)
+    {
+        std::string out;
+        for (utf32_t unicodePoint : unicodeString)
+        {
+            out += convertUnicodeToLoco(unicodePoint);
+        }
         return out;
     }
 }

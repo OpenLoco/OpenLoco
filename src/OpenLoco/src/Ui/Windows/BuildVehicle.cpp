@@ -548,7 +548,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 continue;
             }
 
-            std::string_view pattern = inputSession.buffer;
+            std::string_view pattern = inputSession.getLocoString();
 
             if (!pattern.empty())
             {
@@ -1248,7 +1248,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void drawSearchBox(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strncpy(textBuffer, inputSession.buffer.c_str(), 256);
+        strncpy(textBuffer, inputSession.getLocoString().c_str(), 256);
 
         auto& widget = _widgets[widx::searchBox];
         auto clipped = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), Ui::Rect(self.x + widget.left, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));

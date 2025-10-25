@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         drawingCtx.pushRenderTarget(*clipped);
 
         char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strcpy(drawnBuffer, inputSession.buffer.c_str());
+        strcpy(drawnBuffer, inputSession.getLocoString().c_str());
 
         {
             FormatArguments args{};
@@ -230,7 +230,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         if ((inputSession.cursorFrame % 32) < 16)
         {
-            strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
+            strncpy(drawnBuffer, inputSession.getLocoString().c_str(), inputSession.cursorPosition);
             drawnBuffer[inputSession.cursorPosition] = '\0';
 
             if (Input::isFocused(window.type, window.number, Widx::input))
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::TextInput
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
-                    caller->callTextInput(_callingWidget, caller->widgets[_callingWidget].id, inputSession.buffer.c_str());
+                    caller->callTextInput(_callingWidget, caller->widgets[_callingWidget].id, inputSession.getLocoString().c_str());
                 }
                 WindowManager::close(&window);
                 break;
