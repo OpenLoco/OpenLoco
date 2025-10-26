@@ -11,6 +11,11 @@ namespace OpenLoco::Config
     struct Resolution;
 }
 
+namespace OpenLoco::Gfx
+{
+    enum class RenderMode;
+}
+
 namespace OpenLoco::Ui
 {
     struct Viewport;
@@ -96,7 +101,7 @@ namespace OpenLoco::Ui
     int32_t height();
     bool isInitialized();
 
-    void createWindow(const Config::Display& cfg);
+    void createWindow(const Config::Display& cfg, Gfx::RenderMode renderMode);
     void initialise();
     void initialiseCursors();
     void disposeCursors();

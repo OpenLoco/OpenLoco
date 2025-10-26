@@ -833,7 +833,8 @@ namespace OpenLoco
             const auto& cfg = Config::read();
             Environment::resolvePaths();
 
-            Ui::createWindow(cfg.display);
+            // TODO: read render mode from config
+            Ui::createWindow(cfg.display, Gfx::RenderMode::Hardware);
             generateSystemStats();
             Audio::initialiseDSound();
             run();

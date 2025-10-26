@@ -5,8 +5,10 @@
 #include "RenderTarget.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include <GL/gl.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 #include <algorithm>
 #include <cstdlib>
 
@@ -54,19 +56,24 @@ namespace OpenLoco::Gfx
     void HardwareDrawingEngine::initialize(SDL_Window* window)
     {
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
-
-        _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-        if (_renderer == nullptr)
+        auto glContext = SDL_GL_CreateContext(window);
+        if (glContext == nullptr)
         {
-            // Try to fallback to software renderer.
-            Logging::warn("Hardware acceleration not available, falling back to software renderer.");
-            _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-            if (_renderer == nullptr)
-            {
-                Logging::error("Unable to create hardware or software renderer: {}", SDL_GetError());
-                std::abort();
-            }
+            Logging::error("OpenGL context could not be created! SDL_Error: {}", SDL_GetError());
+            std::abort();
         }
+
+        // glEnable(GL_DEPTH_TEST);
+        // glEnable(GL_CULL_FACE);
+        // glCullFace(GL_BACK);
+        // glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+        //_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        /* if (_renderer == nullptr)
+         {
+             Logging::error("Unable to create hardware renderer: {}", SDL_GetError());
+             std::abort();
+         }*/
         _window = window;
         createPalette();
     }

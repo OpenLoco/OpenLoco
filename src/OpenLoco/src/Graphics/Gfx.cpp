@@ -241,9 +241,13 @@ namespace OpenLoco::Gfx
             {
                 engine = std::make_unique<Gfx::SoftwareDrawingEngine>();
             }
-            else
+            else if (renderMode == RenderMode::Hardware)
             {
                 engine = std::make_unique<Gfx::HardwareDrawingEngine>();
+            }
+            else
+            {
+                throw Exception::RuntimeError("Unknown render mode");
             }
         }
         return *engine;

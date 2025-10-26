@@ -135,7 +135,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x00405409
-    void createWindow(const Config::Display& cfg)
+    void createWindow(const Config::Display& cfg, Gfx::RenderMode renderMode)
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
@@ -144,6 +144,10 @@ namespace OpenLoco::Ui
 
         // Create the window
         auto desc = getWindowParams(cfg);
+
+        // TODO: load from config
+        desc.flags |= SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+
         _window = SDL_CreateWindow("OpenLoco", desc.x, desc.y, desc.width, desc.height, desc.flags);
         if (_window == nullptr)
         {
@@ -164,7 +168,7 @@ namespace OpenLoco::Ui
         setWindowIcon();
 
         // Create a palette for the window
-        auto& drawingEngine = Gfx::initialiseDrawingEngine(Gfx::RenderMode::Software);
+        auto& drawingEngine = Gfx::initialiseDrawingEngine(renderMode);
         drawingEngine.initialize(_window);
         drawingEngine.resize(desc.width, desc.height);
     }
