@@ -19,16 +19,12 @@ namespace OpenLoco::Gfx
 {
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
 
-    // TODO: Move into the renderer.
-    // 0x0050B884
-    static RenderTarget _screenRT{};
-    // 0x0050B894
-    static Ui::ScreenInfo _screenInfo;
-
     HardwareDrawingEngine::HardwareDrawingEngine()
     {
         RenderTarget rtDummy{};
-        _ctx.pushRenderTarget(rtDummy);
+
+        initialiseDrawingContext<HardwareDrawingContext>();
+        getDrawingContext().pushRenderTarget(rtDummy);
     }
 
     HardwareDrawingEngine::~HardwareDrawingEngine()
@@ -199,13 +195,13 @@ namespace OpenLoco::Gfx
         _invalidationGrid.reset(scaledWidth, scaledHeight, blockWidth, blockHeight);
 
         // Reset the drawing context, this holds the old screen render target.
-        _ctx.reset();
+        getDrawingContext().reset();
 
         // Push the screen render target so that by default we render to that.
-        _ctx.pushRenderTarget(rt);
+        getDrawingContext().pushRenderTarget(rt);
 
         // Set the normal background colour.
-        _ctx.clearSingle(PaletteIndex::black0);
+        getDrawingContext().clearSingle(PaletteIndex::black0);
     }
 
     /**
@@ -218,30 +214,8 @@ namespace OpenLoco::Gfx
      */
     void HardwareDrawingEngine::invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
+        // TODO: in 3d hardware this isn't required
         _invalidationGrid.invalidate(left, top, right, bottom);
-    }
-
-    void HardwareDrawingEngine::createPalette()
-    {
-        // Create a palette for the window
-        _palette = SDL_AllocPalette(256);
-    }
-
-    void HardwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
-    {
-        assert(index + count < 256);
-
-        SDL_Color base[256]{};
-        SDL_Color* basePtr = &base[index];
-        auto* entryPtr = &entries[index];
-        for (int i = 0; i < count; ++i, basePtr++, entryPtr++)
-        {
-            basePtr->r = entryPtr->r;
-            basePtr->g = entryPtr->g;
-            basePtr->b = entryPtr->b;
-            basePtr->a = 0;
-        }
-        SDL_SetPaletteColors(_palette, &base[index], index, count);
     }
 
     // 0x004C5CFA
@@ -260,7 +234,7 @@ namespace OpenLoco::Gfx
         // Draw FPS counter.
         if (Config::get().showFPS)
         {
-            Gfx::drawFPS(_ctx);
+            Gfx::drawFPS(getDrawingContext());
         }
     }
 
@@ -286,15 +260,15 @@ namespace OpenLoco::Gfx
         rt.zoomLevel = 0;
 
         // Set the render target to the screen rt.
-        _ctx.pushRenderTarget(rt);
+        getDrawingContext().pushRenderTarget(rt);
 
         // TODO: Remove main window and draw that independent from UI.
 
         // Draw UI.
-        Ui::WindowManager::render(_ctx, rect);
+        Ui::WindowManager::render(getDrawingContext(), rect);
 
         // Restore state.
-        _ctx.popRenderTarget();
+        getDrawingContext().popRenderTarget();
     }
 
     void HardwareDrawingEngine::present()
@@ -351,16 +325,6 @@ namespace OpenLoco::Gfx
         SDL_RenderPresent(_renderer);
     }
 
-    DrawingContext& HardwareDrawingEngine::getDrawingContext()
-    {
-        return _ctx;
-    }
-
-    const RenderTarget& HardwareDrawingEngine::getScreenRT()
-    {
-        return _screenRT;
-    }
-
     void HardwareDrawingEngine::movePixels(
         const RenderTarget& rt,
         int16_t dstX,
@@ -409,10 +373,4 @@ namespace OpenLoco::Gfx
             from += stride;
         }
     }
-
-    const Ui::ScreenInfo& HardwareDrawingEngine::getScreenInfo() const
-    {
-        return _screenInfo;
-    }
-
 }

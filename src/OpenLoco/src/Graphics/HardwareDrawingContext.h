@@ -22,7 +22,7 @@ namespace OpenLoco::Gfx
         HardwareDrawingContext();
         ~HardwareDrawingContext() override;
 
-        void reset();
+        void reset() override;
         void pushRenderTarget(const RenderTarget& rt) override;
         void popRenderTarget() override;
         const RenderTarget& currentRenderTarget() const override;

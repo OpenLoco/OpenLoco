@@ -19,11 +19,17 @@ namespace OpenLoco
 
 namespace OpenLoco::Gfx
 {
-    class SoftwareDrawingEngine;
+    class IDrawingEngine;
 }
 
 namespace OpenLoco::Gfx
 {
+    enum class RenderMode
+    {
+        Software,
+        Hardware
+    };
+
     struct RenderTarget;
 
     namespace G1ExpectedCount
@@ -173,7 +179,8 @@ namespace OpenLoco::Gfx
 
     G1Element* getG1Element(uint32_t id);
 
-    Gfx::SoftwareDrawingEngine& getDrawingEngine();
+    Gfx::IDrawingEngine& initialiseDrawingEngine(RenderMode renderMode);
+    Gfx::IDrawingEngine& getDrawingEngine();
 
     void loadCurrency();
     void loadDefaultPalette();

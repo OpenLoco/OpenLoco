@@ -27,22 +27,12 @@ namespace OpenLoco::Gfx
         void initialize(SDL_Window* window) override;
         void resize(int32_t width, int32_t height) override;
         void render() override;
+        void render(const Ui::Rect& rect) override;
         void present() override;
-        DrawingContext& getDrawingContext() override;
 
-        // Renders a specific region.
-        void render(const Ui::Rect& rect);
+        void invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom) override;
+        void renderDirtyRegions() override;
 
-        // Invalidates a region, this forces it to be rendered next frame.
-        void invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom);
-
-        void createPalette();
-        SDL_Palette* getPalette() { return _palette; }
-        void updatePalette(const PaletteEntry* entries, int32_t index, int32_t count);
-
-        const RenderTarget& getScreenRT();
-
-        // Moves the pixels in the specified render target.
         void movePixels(
             const RenderTarget& rt,
             int16_t dstX,
@@ -50,15 +40,6 @@ namespace OpenLoco::Gfx
             int16_t width,
             int16_t height,
             int16_t srcX,
-            int16_t srcY);
-
-        const Ui::ScreenInfo& getScreenInfo() const;
-
-    private:
-        void renderDirtyRegions();
-
-    private:
-        HardwareDrawingContext _ctx;
-        InvalidationGrid _invalidationGrid;
+            int16_t srcY) override;
     };
 }

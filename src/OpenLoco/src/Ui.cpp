@@ -164,7 +164,7 @@ namespace OpenLoco::Ui
         setWindowIcon();
 
         // Create a palette for the window
-        auto& drawingEngine = Gfx::getDrawingEngine();
+        auto& drawingEngine = Gfx::initialiseDrawingEngine(Gfx::RenderMode::Software);
         drawingEngine.initialize(_window);
         drawingEngine.resize(desc.width, desc.height);
     }
