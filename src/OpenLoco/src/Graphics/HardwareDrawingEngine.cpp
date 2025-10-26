@@ -1,4 +1,4 @@
-#include "SoftwareDrawingEngine.h"
+#include "HardwareDrawingEngine.h"
 #include "Config.h"
 #include "Graphics/FPSCounter.h"
 #include "Logging.h"
@@ -19,13 +19,19 @@ namespace OpenLoco::Gfx
 {
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
 
-    SoftwareDrawingEngine::SoftwareDrawingEngine()
+    // TODO: Move into the renderer.
+    // 0x0050B884
+    static RenderTarget _screenRT{};
+    // 0x0050B894
+    static Ui::ScreenInfo _screenInfo;
+
+    HardwareDrawingEngine::HardwareDrawingEngine()
     {
         RenderTarget rtDummy{};
         _ctx.pushRenderTarget(rtDummy);
     }
 
-    SoftwareDrawingEngine::~SoftwareDrawingEngine()
+    HardwareDrawingEngine::~HardwareDrawingEngine()
     {
         if (_palette != nullptr)
         {
@@ -49,7 +55,7 @@ namespace OpenLoco::Gfx
         }
     }
 
-    void SoftwareDrawingEngine::initialize(SDL_Window* window)
+    void HardwareDrawingEngine::initialize(SDL_Window* window)
     {
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
 
@@ -69,7 +75,7 @@ namespace OpenLoco::Gfx
         createPalette();
     }
 
-    void SoftwareDrawingEngine::resize(const int32_t width, const int32_t height)
+    void HardwareDrawingEngine::resize(const int32_t width, const int32_t height)
     {
         // Scale the width and height by configured scale factor
         const auto scaleFactor = Config::get().scaleFactor;
@@ -210,18 +216,18 @@ namespace OpenLoco::Gfx
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    void SoftwareDrawingEngine::invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void HardwareDrawingEngine::invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         _invalidationGrid.invalidate(left, top, right, bottom);
     }
 
-    void SoftwareDrawingEngine::createPalette()
+    void HardwareDrawingEngine::createPalette()
     {
         // Create a palette for the window
         _palette = SDL_AllocPalette(256);
     }
 
-    void SoftwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
+    void HardwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
     {
         assert(index + count < 256);
 
@@ -239,7 +245,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x004C5CFA
-    void SoftwareDrawingEngine::render()
+    void HardwareDrawingEngine::render()
     {
         // Need to first render the current dirty regions before updating the viewports.
         // This is needed to ensure it will copy the correct pixels when the viewport will be moved.
@@ -258,14 +264,14 @@ namespace OpenLoco::Gfx
         }
     }
 
-    void SoftwareDrawingEngine::renderDirtyRegions()
+    void HardwareDrawingEngine::renderDirtyRegions()
     {
         _invalidationGrid.traverseDirtyCells([this](int32_t left, int32_t top, int32_t right, int32_t bottom) {
             this->render(Rect::fromLTRB(left, top, right, bottom));
         });
     }
 
-    void SoftwareDrawingEngine::render(const Rect& _rect)
+    void HardwareDrawingEngine::render(const Rect& _rect)
     {
         auto max = Rect(0, 0, Ui::width(), Ui::height());
         auto rect = _rect.intersection(max);
@@ -291,7 +297,7 @@ namespace OpenLoco::Gfx
         _ctx.popRenderTarget();
     }
 
-    void SoftwareDrawingEngine::present()
+    void HardwareDrawingEngine::present()
     {
         // Lock the surface before setting its pixels
         if (SDL_MUSTLOCK(_screenSurface))
@@ -345,17 +351,17 @@ namespace OpenLoco::Gfx
         SDL_RenderPresent(_renderer);
     }
 
-    DrawingContext& SoftwareDrawingEngine::getDrawingContext()
+    DrawingContext& HardwareDrawingEngine::getDrawingContext()
     {
         return _ctx;
     }
 
-    const RenderTarget& SoftwareDrawingEngine::getScreenRT()
+    const RenderTarget& HardwareDrawingEngine::getScreenRT()
     {
         return _screenRT;
     }
 
-    void SoftwareDrawingEngine::movePixels(
+    void HardwareDrawingEngine::movePixels(
         const RenderTarget& rt,
         int16_t dstX,
         int16_t dstY,
@@ -404,7 +410,7 @@ namespace OpenLoco::Gfx
         }
     }
 
-    const Ui::ScreenInfo& SoftwareDrawingEngine::getScreenInfo() const
+    const Ui::ScreenInfo& HardwareDrawingEngine::getScreenInfo() const
     {
         return _screenInfo;
     }
