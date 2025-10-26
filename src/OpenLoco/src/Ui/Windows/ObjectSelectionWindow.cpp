@@ -42,6 +42,7 @@
 #include "Objects/VehicleObject.h"
 #include "Objects/WallObject.h"
 #include "Objects/WaterObject.h"
+#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/TextInput.h"
@@ -497,9 +498,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     static const WindowEventList& getEvents();
+    static void switchPrimaryTab(Window& self, uint8_t tabIndex);
+    static void switchTabByObjectType(Window& self, ObjectType objectType);
 
-    // 0x00472A20
-    Ui::Window* open()
+    static Ui::Window* internalOpen(std::optional<ObjectType> optionalObjectType)
     {
         auto window = WindowManager::bringToFront(WindowType::objectSelection);
 
@@ -541,18 +543,52 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         inputSession = Ui::TextInput::InputSession();
         inputSession.calculateTextOffset(widgets[widx::textInput].width());
 
+        if (optionalObjectType.has_value())
+        {
+            ObjectType objectType = optionalObjectType.value();
+
+            window->filterLevel = enumValue(FilterLevel::advanced);
+            assignTabPositions(window);
+            switchTabByObjectType(*window, objectType);
+        }
+
+        // If in play mode, the object selection window should be modal and pause the game.
+        if (SceneManager::isPlayMode())
+        {
+            SceneManager::setPauseFlag(1 << 2);
+            WindowManager::invalidate(WindowType::timeToolbar);
+
+            auto originalModal = WindowManager::getCurrentModalType();
+            WindowManager::setCurrentModalType(WindowType::objectSelection);
+            promptTickLoop(
+                []() {
+                    Input::handleKeyboard();
+                    Audio::updateSounds();
+                    WindowManager::dispatchUpdateAll();
+                    Input::processKeyboardInput();
+                    WindowManager::update();
+                    Ui::minimalHandleInput();
+                    Gfx::renderAndUpdate();
+                    return WindowManager::find(WindowType::objectSelection) != nullptr;
+                });
+            WindowManager::setCurrentModalType(originalModal);
+
+            SceneManager::unsetPauseFlag(1 << 2);
+            WindowManager::invalidate(WindowType::timeToolbar);
+        }
+
         return window;
     }
 
-    static void switchPrimaryTab(Window& self, uint8_t tabIndex);
-    static void switchTabByObjectType(Window& self, ObjectType objectType);
+    // 0x00472A20
+    Ui::Window* open()
+    {
+        return internalOpen({});
+    }
 
     Window& openInTab(ObjectType objectType)
     {
-        auto& window = *open();
-        window.filterLevel = enumValue(FilterLevel::advanced);
-        assignTabPositions(&window);
-        switchTabByObjectType(window, objectType);
+        auto& window = *internalOpen(objectType);
         return window;
     }
 
