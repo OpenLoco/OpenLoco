@@ -224,8 +224,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 // Load game
                 {
                     GameCommands::LoadSaveQuitGameArgs loadGameArgs{};
-                    loadGameArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                    loadGameArgs.option2 = LoadOrQuitMode::loadGamePrompt;
+                    loadGameArgs.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+                    loadGameArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(loadGameArgs, GameCommands::Flags::apply);
                 }
                 break;
@@ -259,8 +259,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 // Return to title screen
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToMenuArgs{};
-                    quitToMenuArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                    quitToMenuArgs.option2 = LoadOrQuitMode::returnToTitlePrompt;
+                    quitToMenuArgs.loadQuitMode = LoadOrQuitMode::returnToTitlePrompt;
+                    quitToMenuArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(quitToMenuArgs, GameCommands::Flags::apply);
                 }
                 break;
@@ -269,8 +269,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 // Exit to desktop
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToDesktopArgs{};
-                    quitToDesktopArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                    quitToDesktopArgs.option2 = LoadOrQuitMode::quitGamePrompt;
+                    quitToDesktopArgs.loadQuitMode = LoadOrQuitMode::quitGamePrompt;
+                    quitToDesktopArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(quitToDesktopArgs, GameCommands::Flags::apply);
                 }
                 break;

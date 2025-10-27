@@ -642,8 +642,8 @@ namespace OpenLoco::Ui
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))
         {
             GameCommands::LoadSaveQuitGameArgs args{};
-            args.option1 = LoadSaveQuitGameArgs::Options::dontSave;
-            args.option2 = LoadOrQuitMode::returnToTitlePrompt;
+            args.loadQuitMode = LoadOrQuitMode::returnToTitlePrompt;
+            args.saveMode = LoadSaveQuitGameArgs::SaveMode::dontSave;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
@@ -678,8 +678,8 @@ namespace OpenLoco::Ui
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_1))
         {
             GameCommands::LoadSaveQuitGameArgs args{};
-            args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-            args.option2 = LoadOrQuitMode::quitGamePrompt;
+            args.loadQuitMode = LoadOrQuitMode::quitGamePrompt;
+            args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
