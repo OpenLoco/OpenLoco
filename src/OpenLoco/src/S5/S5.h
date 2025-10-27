@@ -281,14 +281,81 @@ namespace OpenLoco::S5
         uint32_t date[3]; // 0x000440 (0x00526258)
     };
 
+    struct LabelFrame
+    {
+        int16_t left[4]{};
+        int16_t right[4]{};
+        int16_t top[4]{};
+        int16_t bottom[4]{};
+    };
+
     struct Town
     {
-        uint8_t pad_000[0x270];
+        uint16_t name;                // 0x00
+        coord_t x;                    // 0x02
+        coord_t y;                    // 0x04
+        uint16_t flags;               // 0x06
+        LabelFrame labelFrame;        // 0x08
+        uint32_t prng0;               // 0x28
+        uint32_t prng1;               // 0x2C
+        uint32_t population;          // 0x30
+        uint32_t populationCapacity;  // 0x34
+        int16_t numBuildings;         // 0x38
+        int16_t companyRatings[15];   // 0x3A
+        uint16_t companiesWithRating; // 0x58
+        uint8_t size;                 // 0x5A
+        uint8_t historySize;          // 0x5B (<= 20 * 12)
+        uint8_t history[20 * 12];     // 0x5C (20 years, 12 months)
+        int32_t historyMinPopulation; // 0x14C
+        uint8_t var_150[8];
+        uint16_t monthlyCargoDelivered[32]; // 0x158
+        uint32_t cargoInfluenceFlags;       // 0x198
+        uint16_t var_19C[2][2];
+        uint8_t buildSpeed;       // 0x1A4, 1=slow build speed, 4=fast build speed
+        uint8_t numberOfAirports; // 0x1A5
+        uint16_t numStations;     // 0x1A6
+        uint32_t var_1A8;
+        uint8_t pad_1AC[0x270 - 0x1AC];
     };
 
     struct Industry
     {
-        uint8_t pad_000[0x453];
+        uint16_t name;
+        coord_t x;                                               // 0x02
+        coord_t y;                                               // 0x04
+        uint16_t flags;                                          // 0x06
+        uint32_t prng0;                                          // 0x08
+        uint32_t prng1;                                          // 0x0C
+        uint8_t objectId;                                        // 0x10
+        uint8_t under_construction;                              // 0x11 (0xFF = Finished)
+        uint16_t foundingYear;                                   // 0x12
+        uint8_t numTiles;                                        // 0x14
+        World::Pos3 tiles[32];                                   // 0x15 bit 15 of z indicates if multiTile (2x2)
+        uint16_t town;                                           // 0xD5
+        World::Pos2 tileLoop;                                    // 0xD7
+        int16_t numFarmTiles;                                    // 0xDB
+        int16_t numIdleFarmTiles;                                // 0xDD
+        uint8_t productionRate;                                  // 0xDF fraction of dailyTargetProduction out of 256
+        uint8_t owner;                                           // 0xE0
+        uint32_t stationsInRange[32];                            // 0xE1 each bit represents one station
+        uint16_t producedCargoStatsStation[2][4];                // 0x161
+        uint8_t producedCargoStatsRating[2][4];                  // 0x171
+        uint16_t dailyProductionTarget[2];                       // 0x179
+        uint16_t dailyProduction[2];                             // 0x17D
+        uint16_t outputBuffer[2];                                // 0x181
+        uint16_t producedCargoQuantityMonthlyTotal[2];           // 0x185
+        uint16_t producedCargoQuantityPreviousMonth[2];          // 0x189
+        uint16_t receivedCargoQuantityMonthlyTotal[3];           // 0x18D
+        uint16_t receivedCargoQuantityPreviousMonth[3];          // 0x193
+        uint16_t receivedCargoQuantityDailyTotal[3];             // 0x199
+        uint16_t producedCargoQuantityDeliveredMonthlyTotal[2];  // 0x19F
+        uint16_t producedCargoQuantityDeliveredPreviousMonth[2]; // 0x1A3
+        uint8_t producedCargoPercentTransportedPreviousMonth[2]; // 0x1A7 (%)
+        uint8_t producedCargoMonthlyHistorySize[2];              // 0x1A9 (<= 20 * 12)
+        uint8_t producedCargoMonthlyHistory1[20 * 12];           // 0x1AB (20 years, 12 months)
+        uint8_t producedCargoMonthlyHistory2[20 * 12];           // 0x29B
+        int32_t history_min_production[2];                       // 0x38B
+        uint8_t pad_393[0x453 - 0x393];
     };
 
     struct Station
