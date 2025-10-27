@@ -435,8 +435,101 @@ namespace OpenLoco::S5
 
         return dst;
     }
-    static S5::Town exportTown(OpenLoco::Town& src) {}
-    static S5::Industry exportIndustry(OpenLoco::Industry& src) {}
+
+    static S5::LabelFrame exportLabelFrame(OpenLoco::LabelFrame& src)
+    {
+        S5::LabelFrame dst{};
+        std::ranges::copy(src.left, dst.left);
+        std::ranges::copy(src.right, dst.right);
+        std::ranges::copy(src.top, dst.top);
+        std::ranges::copy(src.bottom, dst.bottom);
+        return dst;
+    }
+
+    static S5::Town exportTown(OpenLoco::Town& src)
+    {
+        S5::Town dst{};
+        dst.name = src.name;
+        dst.x = src.x;
+        dst.y = src.y;
+        dst.flags = enumValue(src.flags);
+        dst.labelFrame = exportLabelFrame(src.labelFrame);
+        dst.prng0 = src.prng.srand_0();
+        dst.prng1 = src.prng.srand_1();
+        dst.population = src.population;
+        dst.populationCapacity = src.populationCapacity;
+        dst.numBuildings = src.numBuildings;
+        std::ranges::copy(src.companyRatings, dst.companyRatings);
+        dst.companiesWithRating = src.companiesWithRating;
+        dst.size = enumValue(src.size);
+        dst.historySize = src.historySize;
+        std::ranges::copy(src.history, dst.history);
+        dst.historyMinPopulation = src.historyMinPopulation;
+        std::ranges::copy(src.var_150, dst.var_150);
+        std::ranges::copy(src.monthlyCargoDelivered, dst.monthlyCargoDelivered);
+        dst.cargoInfluenceFlags = src.cargoInfluenceFlags;
+        std::memcpy(dst.var_19C, src.var_19C, sizeof(uint16_t) * sizeof(dst.var_19C));
+        dst.buildSpeed = src.buildSpeed;
+        dst.numberOfAirports = src.numberOfAirports;
+        dst.numStations = src.numStations;
+        dst.var_1A8 = src.var_1A8;
+    }
+
+    static S5::Industry exportIndustry(OpenLoco::Industry& src)
+    {
+        S5::Industry dst{};
+        dst.name = src.name;
+        dst.x = src.x;
+        dst.y = src.y;
+        dst.flags = enumValue(src.flags);
+        dst.prng0 = src.prng.srand_0();
+        dst.prng1 = src.prng.srand_1();
+        dst.objectId = src.objectId;
+        dst.under_construction = src.under_construction;
+        dst.foundingYear = src.foundingYear;
+        dst.numTiles = src.numTiles;
+        std::ranges::copy(src.tiles, dst.tiles);
+        dst.town = enumValue(src.town);
+        dst.tileLoop = src.tileLoop.current();
+        dst.numFarmTiles = src.numFarmTiles;
+        dst.numIdleFarmTiles = src.numIdleFarmTiles;
+        dst.productionRate = src.productionRate;
+        dst.owner = enumValue(src.owner);
+
+        // Copy stations in range bitset to uint32_t array
+        for (auto i = 0U; i < Limits::kMaxStations; ++i)
+        {
+            dst.stationsInRange[i / 32] |= src.stationsInRange[i] << (i % 32);
+        }
+
+        for (auto i = 0U; i < 2; ++i)
+        {
+            for (auto j = 0U; j < 4; ++j)
+            {
+                dst.producedCargoStatsStation[i][j] = enumValue(src.producedCargoStatsStation[i][j]);
+            }
+        }
+
+        std::memcpy(dst.producedCargoStatsRating, src.producedCargoStatsRating, sizeof(dst.producedCargoStatsRating));
+        std::ranges::copy(src.dailyProductionTarget, dst.dailyProductionTarget);
+        std::ranges::copy(src.dailyProduction, dst.dailyProduction);
+        std::ranges::copy(src.outputBuffer, dst.outputBuffer);
+        std::ranges::copy(src.producedCargoQuantityMonthlyTotal, dst.producedCargoQuantityMonthlyTotal);
+        std::ranges::copy(src.producedCargoQuantityPreviousMonth, dst.producedCargoQuantityPreviousMonth);
+        std::ranges::copy(src.receivedCargoQuantityMonthlyTotal, dst.receivedCargoQuantityMonthlyTotal);
+        std::ranges::copy(src.receivedCargoQuantityPreviousMonth, dst.receivedCargoQuantityPreviousMonth);
+        std::ranges::copy(src.receivedCargoQuantityDailyTotal, dst.receivedCargoQuantityDailyTotal);
+        std::ranges::copy(src.producedCargoQuantityDeliveredMonthlyTotal, dst.producedCargoQuantityDeliveredMonthlyTotal);
+        std::ranges::copy(src.producedCargoQuantityDeliveredPreviousMonth, dst.producedCargoQuantityDeliveredPreviousMonth);
+        std::ranges::copy(src.producedCargoPercentTransportedPreviousMonth, dst.producedCargoPercentTransportedPreviousMonth);
+        std::ranges::copy(src.producedCargoMonthlyHistorySize, dst.producedCargoMonthlyHistorySize);
+        std::ranges::copy(src.producedCargoMonthlyHistory1, dst.producedCargoMonthlyHistory1);
+        std::ranges::copy(src.producedCargoMonthlyHistory2, dst.producedCargoMonthlyHistory2);
+        std::ranges::copy(src.history_min_production, dst.history_min_production);
+
+        return dst;
+    }
+
     static S5::Station exportStation(OpenLoco::Station& src) {}
     static S5::Entity exportEntity(OpenLoco::Entity& src) {}
     static S5::Animation exportAnimation(OpenLoco::World::Animation& src) {}
