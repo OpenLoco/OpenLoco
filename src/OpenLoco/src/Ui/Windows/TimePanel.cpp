@@ -164,8 +164,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
         FormatArguments args{};
         args.push<uint32_t>(getCurrentDay());
 
+        // Show "* Paused *" instead of the date half the time when paused, unless the browse prompt is pausing the game.
         StringId format = StringIds::date_daymonthyear;
-        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & PauseFlags::browsePrompt) == PauseFlags::none) // Is this the correct logic?
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & PauseFlags::browsePrompt) == PauseFlags::none)
         {
             if (self.numTicksVisible >= kPausedStatusTextDuration)
             {
