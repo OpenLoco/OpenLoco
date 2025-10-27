@@ -444,7 +444,7 @@ namespace OpenLoco::Paint
     // 0x004759A6
     void paintRoad(PaintSession& session, const World::RoadElement& elRoad)
     {
-        if (elRoad.isAiAllocated())
+        if (elRoad.isAiAllocated() && !showAiPlanningGhosts())
         {
             return;
         }
@@ -498,10 +498,12 @@ namespace OpenLoco::Paint
         // This is an ImageId but it has no image index set!
         auto baseRoadImageColour = ImageId(0, CompanyManager::getCompanyColour(elRoad.owner()));
 
-        if (elRoad.isGhost())
+        if (elRoad.isGhost() || elRoad.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             baseRoadImageColour = Gfx::applyGhostToImage(0);
+
+            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
         }
 
         RoadPaintCommon roadSession{ baseRoadImageColour.withIndex(roadObj->image), baseRoadImageColour, roadObj->tunnel };

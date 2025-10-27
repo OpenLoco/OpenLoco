@@ -534,4 +534,6 @@ namespace OpenLoco::Paint
         void addPSToQuadrant(PaintStruct& ps);
         PaintStruct* createNormalPaintStruct(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
     };
+
+    bool showAiPlanningGhosts();
 }

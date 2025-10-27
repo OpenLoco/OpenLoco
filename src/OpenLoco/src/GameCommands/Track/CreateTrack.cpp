@@ -566,7 +566,8 @@ namespace OpenLoco::GameCommands
             newElTrack->setFlag6(piece.index == (trackPieces.size() - 1));
             newElTrack->setGhost(flags & Flags::ghost);
             newElTrack->setAiAllocated(flags & Flags::aiAllocated);
-            if (!(flags & Flags::aiAllocated))
+
+            if (shouldInvalidateTile(flags))
             {
                 World::TileManager::mapInvalidateTileFull(trackLoc);
             }
