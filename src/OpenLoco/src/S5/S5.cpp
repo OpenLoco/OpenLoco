@@ -1271,9 +1271,9 @@ namespace OpenLoco::S5
             dst.forbiddenVehiclesPlayers = src.forbiddenVehiclesPlayers;
             dst.forbiddenVehiclesCompetitors = src.forbiddenVehiclesCompetitors;
             dst.fixFlags = src.fixFlags;
-            std::ranges::copy(src.recordSpeed, dst.recordSpeed);
-            std::ranges::copy(src.recordCompany, dst.recordCompany);
-            std::ranges::copy(src.recordDate, dst.recordDate);
+            std::ranges::copy(src.companyRecords.speed, dst.recordSpeed);
+            std::ranges::copy(src.companyRecords.company, dst.recordCompany);
+            std::ranges::copy(src.companyRecords.date, dst.recordDate);
             dst.var_44C = src.var_44C;
             dst.var_450 = src.var_450;
             dst.var_454 = src.var_454;
