@@ -496,9 +496,9 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= isLoggedDivergentGameStateField("forbiddenVehiclesPlayers", 0, gameState1.forbiddenVehiclesPlayers, gameState2.forbiddenVehiclesPlayers);
         foundDivergence |= isLoggedDivergentGameStateField("forbiddenVehiclesCompetitors", 0, gameState1.forbiddenVehiclesCompetitors, gameState2.forbiddenVehiclesCompetitors);
         foundDivergence |= isLoggedDivergentGameStateFlag("fixFlags", gameState1.fixFlags, gameState2.fixFlags);
-        foundDivergence |= isLoggedDivergence("recordSpeed", gameState1.recordSpeed, gameState2.recordSpeed, 3, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("recordCompany", gameState1.recordCompany, gameState2.recordCompany, 4, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("recordDate", gameState1.recordDate, gameState2.recordDate, 3, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("recordSpeed", gameState1.companyRecords.speed, gameState2.companyRecords.speed, 3, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("recordCompany", gameState1.companyRecords.company, gameState2.companyRecords.company, 4, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("recordDate", gameState1.companyRecords.date, gameState2.companyRecords.date, 3, displayAllDivergences);
         foundDivergence |= isLoggedDivergentGameStateField("var_44C", 0, gameState1.var_44C, gameState2.var_44C);
         foundDivergence |= isLoggedDivergentGameStateField("var_450", 0, gameState1.var_450, gameState2.var_450);
         foundDivergence |= isLoggedDivergentGameStateField("var_454", 0, gameState1.var_454, gameState2.var_454);
