@@ -4,6 +4,7 @@
 #include "Objects/Object.h"
 #include "S5/S5Company.h"
 #include "S5/S5Industry.h"
+#include "S5/S5LabelFrame.h"
 #include "ScenarioConstruction.h"
 #include "ScenarioObjective.h"
 #include "World/CompanyManager.h"
@@ -126,14 +127,6 @@ namespace OpenLoco::S5
     };
 #pragma pack(pop)
     static_assert(sizeof(SaveDetails) == 0xC618);
-
-    struct LabelFrame
-    {
-        int16_t left[4]{};
-        int16_t right[4]{};
-        int16_t top[4]{};
-        int16_t bottom[4]{};
-    };
 
     struct Town
     {

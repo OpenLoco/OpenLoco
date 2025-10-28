@@ -275,16 +275,6 @@ namespace OpenLoco::S5
         }
     }
 
-    static S5::LabelFrame exportLabelFrame(OpenLoco::LabelFrame& src)
-    {
-        S5::LabelFrame dst{};
-        std::ranges::copy(src.left, dst.left);
-        std::ranges::copy(src.right, dst.right);
-        std::ranges::copy(src.top, dst.top);
-        std::ranges::copy(src.bottom, dst.bottom);
-        return dst;
-    }
-
     static S5::Town exportTown(OpenLoco::Town& src)
     {
         S5::Town dst{};
