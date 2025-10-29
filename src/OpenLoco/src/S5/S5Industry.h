@@ -49,6 +49,7 @@ namespace OpenLoco::S5
         int32_t history_min_production[2];                       // 0x38B
         uint8_t pad_393[0x453 - 0x393];
     };
+    static_assert(sizeof(Industry) == 0x453);
 #pragma pack(pop)
 
     S5::Industry exportIndustry(OpenLoco::Industry& src);

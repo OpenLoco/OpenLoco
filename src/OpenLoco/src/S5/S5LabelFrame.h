@@ -9,6 +9,7 @@ namespace OpenLoco
 
 namespace OpenLoco::S5
 {
+#pragma pack(push, 1)
     struct LabelFrame
     {
         int16_t left[4]{};
@@ -16,6 +17,8 @@ namespace OpenLoco::S5
         int16_t top[4]{};
         int16_t bottom[4]{};
     };
+    static_assert(sizeof(LabelFrame) == 0x20);
+#pragma pack(pop)
 
     S5::LabelFrame exportLabelFrame(OpenLoco::LabelFrame& src);
 }

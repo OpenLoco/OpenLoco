@@ -10,6 +10,7 @@ namespace OpenLoco
 
 namespace OpenLoco::S5
 {
+#pragma pack(push, 1)
     struct Town
     {
         uint16_t name;                // 0x00
@@ -38,6 +39,7 @@ namespace OpenLoco::S5
         uint32_t var_1A8;
         uint8_t pad_1AC[0x270 - 0x1AC];
     };
+#pragma pack(pop)
 
     S5::Town exportTown(OpenLoco::Town& src);
 }
