@@ -289,7 +289,7 @@ namespace OpenLoco::S5
         dst.rng[1] = src.rng.srand_1();
         dst.unkRng[0] = src.unkRng.srand_0();
         dst.unkRng[1] = src.unkRng.srand_1();
-        dst.flags = src.flags;
+        dst.flags = enumValue(src.flags);
         dst.currentDay = src.currentDay;
         dst.dayCounter = src.dayCounter;
         dst.currentYear = src.currentYear;

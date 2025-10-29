@@ -161,6 +161,7 @@ namespace OpenLoco::S5
         uint8_t pad_43A;
         uint32_t date[3]; // 0x000440 (0x00526258)
     };
+#pragma pack(pop)
 
     S5::Company exportCompany(OpenLoco::Company& src);
 }
