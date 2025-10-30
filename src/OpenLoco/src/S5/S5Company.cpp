@@ -1,4 +1,6 @@
 #include "S5/S5Company.h"
+#include "World/Company.h"
+#include "World/CompanyRecords.h"
 #include <cstring>
 
 namespace OpenLoco::S5
@@ -161,6 +163,18 @@ namespace OpenLoco::S5
         std::ranges::copy(src.cargoUnitsDistanceHistory, dst.cargoUnitsDistanceHistory);
         dst.jailStatus = src.jailStatus;
 
+        return dst;
+    }
+
+    S5::Records exportRecords(CompanyManager::Records& src)
+    {
+        S5::Records dst{};
+        for (auto i = 0; i < 3; i++)
+        {
+            dst.speed[i] = src.speed[i].getRaw();
+            dst.company[i] = enumValue(src.company[i]);
+            dst.date[i] = src.date[i];
+        }
         return dst;
     }
 }

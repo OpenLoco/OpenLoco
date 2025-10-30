@@ -5,12 +5,26 @@
 #include "S5Industry.h"
 #include "S5LabelFrame.h"
 #include "S5Message.h"
-#include "S5Town.h"
 #include "S5Station.h"
+#include "S5Town.h"
 #include "S5Wave.h"
 
 namespace OpenLoco::S5
 {
+#pragma pack(push, 1)
+    struct Construction
+    {
+        uint8_t signals[8];       // 0x00015A (0x00525F72)
+        uint8_t bridges[8];       // 0x000162 (0x00525F7A)
+        uint8_t trainStations[8]; // 0x00016A (0x00525F82)
+        uint8_t trackMods[8];     // 0x000172 (0x00525F8A)
+        uint8_t var_17A[8];       // 0x00017A (0x00525F92) NOTE: not used always filled with 0xFF
+        uint8_t roadStations[8];  // 0x000182 (0x00525F9A)
+        uint8_t roadMods[8];      // 0x00018A (0x00525FA2)
+    };
+#pragma pack(pop)
+    static_assert(sizeof(Construction) == 0x38);
+
 #pragma pack(push, 1)
     struct GameState
     {
@@ -38,7 +52,7 @@ namespace OpenLoco::S5
         uint32_t magicNumber;                                                            // 0x000150 (0x00525F68)
         uint16_t numMapAnimations;                                                       // 0x000154 (0x00525F6C)
         int16_t tileUpdateStartLocation[2];                                              // 0x000156 (0x00525F6E)
-        Scenario::Construction scenarioConstruction;                                     // 0x00015A (0x00525F72)
+        Construction scenarioConstruction;                                               // 0x00015A (0x00525F72)
         uint8_t lastRailroadOption;                                                      // 0x000192 (0x00525FAA)
         uint8_t lastRoadOption;                                                          // 0x000193 (0x00525FAB)
         uint8_t lastAirport;                                                             // 0x000194 (0x00525FAC)
