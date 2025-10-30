@@ -1,3 +1,4 @@
+#include <OpenLoco/Engine/World.hpp>
 #include <cstdint>
 
 namespace OpenLoco::World

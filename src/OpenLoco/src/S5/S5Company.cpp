@@ -5,7 +5,7 @@
 
 namespace OpenLoco::S5
 {
-    S5::Company exportCompany(OpenLoco::Company& src)
+    S5::Company exportCompany(const OpenLoco::Company& src)
     {
         S5::Company dst{};
         dst.name = src.name;
@@ -16,7 +16,7 @@ namespace OpenLoco::S5
         dst.updateCounter = src.updateCounter;
         dst.performanceIndex = src.performanceIndex;
         dst.competitorId = src.competitorId;
-        dst.ownerEmotion = src.ownerEmotion;
+        dst.ownerEmotion = enumValue(src.ownerEmotion);
         dst.mainColours[0] = enumValue(src.mainColours.primary);
         dst.mainColours[1] = enumValue(src.mainColours.secondary);
         for (auto i = 0U; i < std::size(src.vehicleColours); ++i)
@@ -166,7 +166,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    S5::Records exportRecords(CompanyManager::Records& src)
+    S5::Records exportRecords(const CompanyManager::Records& src)
     {
         S5::Records dst{};
         for (auto i = 0; i < 3; i++)
