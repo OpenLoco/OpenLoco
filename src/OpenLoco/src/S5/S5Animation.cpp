@@ -1,0 +1,15 @@
+#include "S5Animation.h"
+#include "Map/Animation.h"
+
+namespace OpenLoco::S5
+{
+    S5::Animation exportAnimation(OpenLoco::World::Animation& src)
+    {
+        S5::Animation dst{};
+        dst.baseZ = src.baseZ;
+        dst.type = src.type;
+        dst.pos = src.pos;
+
+        return dst;
+    }
+}

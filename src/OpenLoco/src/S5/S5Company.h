@@ -1,8 +1,16 @@
 #pragma once
 
 #include "Economy/Currency.h"
-#include "World/Company.h"
 #include <OpenLoco/Engine/World.hpp>
+
+namespace OpenLoco
+{
+    struct Company;
+    namespace CompanyManager
+    {
+        struct Records;
+    }
+}
 
 namespace OpenLoco::S5
 {
@@ -164,4 +172,5 @@ namespace OpenLoco::S5
 #pragma pack(pop)
 
     S5::Company exportCompany(OpenLoco::Company& src);
+    S5::Records exportRecords(OpenLoco::CompanyManager::Records& src);
 }

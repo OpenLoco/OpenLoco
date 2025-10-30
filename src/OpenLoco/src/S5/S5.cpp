@@ -276,10 +276,8 @@ namespace OpenLoco::S5
     }
 
     static S5::Station exportStation(OpenLoco::Station& src) {}
+    static S5::Construction exportConstruction(OpenLoco::Scenario::Construction& src) {}
     static S5::Entity exportEntity(OpenLoco::Entity& src) {}
-    static S5::Animation exportAnimation(OpenLoco::World::Animation& src) {}
-    static S5::Wave exportWave(OpenLoco::World::Wave& src) {}
-    static S5::Records exportRecords(CompanyManager::Records& src) {}
     static S5::Message exportMessage(OpenLoco::Message& src) {}
 
     static S5::GameState exportGameState(OpenLoco::GameState& src)
@@ -312,7 +310,7 @@ namespace OpenLoco::S5
         dst.numMapAnimations = src.numMapAnimations;
         dst.tileUpdateStartLocation[0] = src.tileUpdateStartLocation.x;
         dst.tileUpdateStartLocation[1] = src.tileUpdateStartLocation.y;
-        dst.scenarioConstruction = src.scenarioConstruction;
+        dst.scenarioConstruction = exportConstruction(src.scenarioConstruction);
         dst.lastRailroadOption = src.lastRailroadOption;
         dst.lastRoadOption = src.lastRoadOption;
         dst.lastAirport = src.lastAirport;
