@@ -14,6 +14,7 @@
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
 #include "Objects/ObjectManager.h"
+#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui/Dropdown.h"

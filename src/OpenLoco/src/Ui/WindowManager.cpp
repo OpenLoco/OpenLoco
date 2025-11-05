@@ -30,14 +30,11 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <array>
 #include <cinttypes>
 #include <memory>
 #include <sfl/static_vector.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::WindowManager
 {
