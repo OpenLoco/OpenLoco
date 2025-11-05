@@ -1,3 +1,6 @@
+25.11+ (???)
+------------------------------------------------------------------------
+
 25.11 (2025-11-05)
 ------------------------------------------------------------------------
 - Feature: [#3270] Routes planned by AI companies can now be made visible via a checkbox in the rendering options tab.
