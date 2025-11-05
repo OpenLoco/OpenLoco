@@ -289,13 +289,16 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static VehicleSortBy _vehicleSortBy = VehicleSortBy::designYear;
     static uint8_t _cargoSupportedFilter = 0xFF;
 
-    static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
-    static loco_global<uint16_t[ObjectManager::getMaxObjects(ObjectType::vehicle)], 0x0113626A> _availableVehicles;
-    static loco_global<EntityId, 0x0113642A> _113642A;
-    static loco_global<int32_t, 0x011364E8> _buildTargetVehicle; // -1 for no target VehicleHead
-    static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
+    static uint32_t _numTrackTypeTabs;    // 0x011364EC
+    static int16_t _numAvailableVehicles; // 0x01136268
+
     // Array of types if 0xFF then no type, flag (1<<7) as well
-    static loco_global<uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _trackTypesForTab;
+    static uint8_t _trackTypesForTab[widxToTrackTypeTab(widx::tab_track_type_7) + 1];      // 0x011364F0
+    static uint16_t _availableVehicles[ObjectManager::getMaxObjects(ObjectType::vehicle)]; // 0x0113626A
+
+    static int32_t _buildTargetVehicle; // 0x011364E8; -1 for no target VehicleHead
+
+    static loco_global<EntityId, 0x0113642A> _113642A; // used by several windows/game commands/company ai
 
     static constexpr std::array<uint16_t, 6> kScrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
@@ -407,7 +410,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             return window;
         }
-        auto veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(*_buildTargetVehicle));
+        auto veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(_buildTargetVehicle));
         if (veh == nullptr)
         {
             return window;
@@ -704,7 +707,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         Vehicles::VehicleBase* veh = nullptr;
         if (_buildTargetVehicle != -1)
         {
-            veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(*_buildTargetVehicle));
+            veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(_buildTargetVehicle));
         }
 
         generateBuildableVehiclesArray(vehicleType, trackType, veh);
@@ -1065,7 +1068,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         GameCommands::setErrorTitle(StringIds::cant_build_pop_5_string_id);
         if (_buildTargetVehicle != -1)
         {
-            auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
+            auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(_buildTargetVehicle));
             if (vehicle != nullptr)
             {
                 args.push(vehicle->name);
@@ -1075,7 +1078,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         GameCommands::VehicleCreateArgs gcArgs{};
-        gcArgs.vehicleId = EntityId(*_buildTargetVehicle);
+        gcArgs.vehicleId = EntityId(_buildTargetVehicle);
         gcArgs.vehicleType = item;
         if (GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
         {
@@ -1294,7 +1297,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
             {
-                auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
+                auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(_buildTargetVehicle));
                 if (vehicle != nullptr)
                 {
                     args.push(vehicle->name);
@@ -1465,7 +1468,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     FormatArguments args{};
                     if (_buildTargetVehicle != -1)
                     {
-                        auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
+                        auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(_buildTargetVehicle));
                         if (vehicle != nullptr)
                         {
                             defaultMessage = StringIds::no_compatible_vehicles_available;
