@@ -570,6 +570,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             SceneManager::setPauseFlag(1 << 3); // Pause flag 3 was not used by vanilla.
             WindowManager::invalidate(WindowType::timeToolbar);
+            Audio::pauseSound();
         }
 
         return window;
@@ -1640,6 +1641,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             SceneManager::unsetPauseFlag(1 << 3);
             WindowManager::invalidate(WindowType::timeToolbar);
+            Audio::unpauseSound();
         }
         ObjectManager::freeSelectionList();
     }
