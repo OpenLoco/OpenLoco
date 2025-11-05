@@ -121,7 +121,7 @@ namespace OpenLoco::Paint
     // 0x0048B313
     void paintStation(PaintSession& session, const World::StationElement& elStation)
     {
-        if (elStation.isAiAllocated())
+        if (elStation.isAiAllocated() && !showAiPlanningGhosts())
         {
             return;
         }

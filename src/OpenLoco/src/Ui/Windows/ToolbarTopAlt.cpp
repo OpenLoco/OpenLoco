@@ -124,8 +124,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 // Load Landscape
                 {
                     GameCommands::LoadSaveQuitGameArgs args{};
-                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                    args.option2 = LoadOrQuitMode::loadGamePrompt;
+                    args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+                    args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
                 break;
@@ -172,8 +172,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 // Return to title screen
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToMenuArgs{};
-                    quitToMenuArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                    quitToMenuArgs.option2 = LoadOrQuitMode::returnToTitlePrompt;
+                    quitToMenuArgs.loadQuitMode = LoadOrQuitMode::returnToTitlePrompt;
+                    quitToMenuArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(quitToMenuArgs, GameCommands::Flags::apply);
                 }
                 break;
@@ -182,8 +182,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 // Exit to desktop
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToDesktopArgs{};
-                    quitToDesktopArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                    quitToDesktopArgs.option2 = LoadOrQuitMode::quitGamePrompt;
+                    quitToDesktopArgs.loadQuitMode = LoadOrQuitMode::quitGamePrompt;
+                    quitToDesktopArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(quitToDesktopArgs, GameCommands::Flags::apply);
                 }
                 break;

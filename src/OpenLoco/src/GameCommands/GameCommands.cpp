@@ -16,6 +16,7 @@
 #include "CompanyAi/AiCreateRoadAndStation.h"
 #include "CompanyAi/AiCreateTrackAndStation.h"
 #include "CompanyAi/AiTrackReplacement.h"
+#include "Config.h"
 #include "Docks/CreatePort.h"
 #include "Docks/RemovePort.h"
 #include "General/LoadSaveQuit.h"
@@ -598,5 +599,11 @@ namespace OpenLoco::GameCommands
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
         Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
+    }
+
+    // TODO: Maybe move this somewhere else used by multiple game commands
+    bool shouldInvalidateTile(uint8_t flags)
+    {
+        return !(flags & Flags::aiAllocated) && Config::get().showAiPlanningAsGhosts;
     }
 }
