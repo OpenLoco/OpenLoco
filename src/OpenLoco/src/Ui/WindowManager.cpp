@@ -45,7 +45,6 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
     static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
-    static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<int32_t, 0x00E3F0B8> _gCurrentRotation;
 
     static sfl::static_vector<Window, kMaxWindows> _windows;
@@ -57,7 +56,6 @@ namespace OpenLoco::Ui::WindowManager
     void init()
     {
         _windows.clear();
-        _523508 = 0;
     }
 
     Window* get(size_t index)
@@ -355,11 +353,6 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9984
     void invalidateAllWindowsAfterInput()
     {
-        if (SceneManager::isPaused())
-        {
-            _523508++;
-        }
-
         std::for_each(_windows.rbegin(), _windows.rend(), [](Ui::Window& w) {
             w.updateScrollWidgets();
             w.invalidatePressedImageButtons();
@@ -902,7 +895,6 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004CD3D0
     void dispatchUpdateAll()
     {
-        _523508++;
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
 
         std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
