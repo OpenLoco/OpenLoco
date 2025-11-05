@@ -2426,3 +2426,5 @@ strings:
   2371: "Sound"
   2372: "Jukebox"
   2373: "{COLOUR WINDOW_2}Music volume:"
+  2374: Show planned AI track/road as ghosts
+  2375: "{SMALLFONT}{COLOUR BLACK}This shows the routes planned by AI companies as regular ghost elements."

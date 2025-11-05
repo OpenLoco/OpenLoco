@@ -32,7 +32,8 @@ namespace OpenLoco::Diagnostics::Logging
         std::string timestamp;
         if (getWriteTimestamps())
         {
-            timestamp = fmt::format("[{:%Y-%m-%d %H:%M:%S}] ", fmt::localtime(std::time(nullptr)));
+            auto now = std::chrono::system_clock::now();
+            timestamp = fmt::format("[{:%Y-%m-%d %H:%M:%S}] ", std::chrono::floor<std::chrono::seconds>(now));
         }
 
         const int intendSize = getIntendSize();

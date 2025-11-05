@@ -87,8 +87,8 @@ namespace OpenLoco::Ui::Windows::TitleExit
             case Widx::exit_button:
                 // Exit to desktop
                 GameCommands::LoadSaveQuitGameArgs args{};
-                args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                args.option2 = LoadOrQuitMode::quitGamePrompt;
+                args.loadQuitMode = LoadOrQuitMode::quitGamePrompt;
+                args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
         }
