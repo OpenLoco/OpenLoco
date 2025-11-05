@@ -304,6 +304,7 @@ namespace OpenLoco::Gfx
         // Render a textured quad using stored viewport dimensions
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, _glTexture);
+        glColor3f(1.0f, 1.0f, 1.0f); // Reset color to white for proper texture rendering
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 0.0f);
@@ -316,14 +317,17 @@ namespace OpenLoco::Gfx
         glVertex2f(0.0f, (float)_viewportHeight);
         glEnd();
 
-        // demo triangle
+        // disable texture
+        glDisable(GL_TEXTURE_2D);
+
+        // demo triangle - use pixel coordinates
         glBegin(GL_TRIANGLES);
-        glColor3f(1, 0, 0); // red
-        glVertex2f(-0.8, -0.8);
-        glColor3f(0, 1, 0); // green
-        glVertex2f(0.8, -0.8);
-        glColor3f(0, 0, 1); // blue
-        glVertex2f(0, 0.9);
+        glColor3f(1.0f, 0.0f, 0.0f);                               // red
+        glVertex2f(_viewportWidth * 0.3f, _viewportHeight * 0.7f); // bottom left
+        glColor3f(0.0f, 1.0f, 0.0f);                               // green
+        glVertex2f(_viewportWidth * 0.7f, _viewportHeight * 0.7f); // bottom right
+        glColor3f(0.0f, 0.0f, 1.0f);                               // blue
+        glVertex2f(_viewportWidth * 0.5f, _viewportHeight * 0.3f); // top center
         glEnd();
 
         // Swap buffers
