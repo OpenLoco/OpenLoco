@@ -22,9 +22,13 @@ namespace OpenLoco::Gfx
     {
     private:
         void* _glContext = nullptr;  // SDL_GLContext
-        unsigned int _glTexture = 0;  // GLuint
+        unsigned int _glTexture = 0;  // GLuint - Main game texture
+        unsigned int _gl3DTexture = 0; // GLuint - 3D rendering texture
+        unsigned int _glFramebuffer = 0; // GLuint - Framebuffer for offscreen rendering
+        unsigned int _glDepthBuffer = 0; // GLuint - Depth renderbuffer
         int32_t _viewportWidth = 0;
         int32_t _viewportHeight = 0;
+        float _rotationAngle = 0.0f;
 
     public:
         HardwareDrawingEngine();
@@ -47,5 +51,8 @@ namespace OpenLoco::Gfx
             int16_t height,
             int16_t srcX,
             int16_t srcY) override;
+
+    private:
+        void render3DScene(); // New helper method for 3D rendering
     };
 }

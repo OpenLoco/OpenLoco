@@ -9,12 +9,45 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Diagnostics;
+
+// OpenGL FBO extension constants
+#ifndef GL_FRAMEBUFFER
+#define GL_FRAMEBUFFER 0x8D40
+#define GL_RENDERBUFFER 0x8D41
+#define GL_COLOR_ATTACHMENT0 0x8CE0
+#define GL_DEPTH_ATTACHMENT 0x8D00
+#define GL_FRAMEBUFFER_COMPLETE 0x8CD5
+#endif
+
+// OpenGL extension function pointers for framebuffer objects
+typedef void (APIENTRYP PFNGLGENFRAMEBUFFERSPROC)(GLsizei n, GLuint* framebuffers);
+typedef void (APIENTRYP PFNGLDELETEFRAMEBUFFERSPROC)(GLsizei n, const GLuint* framebuffers);
+typedef void (APIENTRYP PFNGLBINDFRAMEBUFFERPROC)(GLenum target, GLuint framebuffer);
+typedef void (APIENTRYP PFNGLFRAMEBUFFERTEXTURE2DPROC)(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+typedef void (APIENTRYP PFNGLGENRENDERBUFFERSPROC)(GLsizei n, GLuint* renderbuffers);
+typedef void (APIENTRYP PFNGLDELETERENDERBUFFERSPROC)(GLsizei n, const GLuint* renderbuffers);
+typedef void (APIENTRYP PFNGLBINDRENDERBUFFERPROC)(GLenum target, GLuint renderbuffer);
+typedef void (APIENTRYP PFNGLRENDERBUFFERSTORAGEPROC)(GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
+typedef void (APIENTRYP PFNGLFRAMEBUFFERRENDERBUFFERPROC)(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
+typedef GLenum (APIENTRYP PFNGLCHECKFRAMEBUFFERSTATUSPROC)(GLenum target);
+
+static PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers = nullptr;
+static PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
+static PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer = nullptr;
+static PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = nullptr;
+static PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers = nullptr;
+static PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers = nullptr;
+static PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer = nullptr;
+static PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage = nullptr;
+static PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer = nullptr;
+static PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus = nullptr;
 
 namespace OpenLoco::Gfx
 {
@@ -30,6 +63,24 @@ namespace OpenLoco::Gfx
 
     HardwareDrawingEngine::~HardwareDrawingEngine()
     {
+        if (_glFramebuffer != 0)
+        {
+            glDeleteFramebuffers(1, &_glFramebuffer);
+            _glFramebuffer = 0;
+        }
+
+        if (_glDepthBuffer != 0)
+        {
+            glDeleteRenderbuffers(1, &_glDepthBuffer);
+            _glDepthBuffer = 0;
+        }
+
+        if (_gl3DTexture != 0)
+        {
+            glDeleteTextures(1, &_gl3DTexture);
+            _gl3DTexture = 0;
+        }
+
         if (_glTexture != 0)
         {
             glDeleteTextures(1, &_glTexture);
@@ -78,6 +129,24 @@ namespace OpenLoco::Gfx
         // Make the context current
         SDL_GL_MakeCurrent(window, _glContext);
 
+        // Load OpenGL extension functions for framebuffer objects
+        glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)SDL_GL_GetProcAddress("glGenFramebuffers");
+        glDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC)SDL_GL_GetProcAddress("glDeleteFramebuffers");
+        glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)SDL_GL_GetProcAddress("glBindFramebuffer");
+        glFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)SDL_GL_GetProcAddress("glFramebufferTexture2D");
+        glGenRenderbuffers = (PFNGLGENRENDERBUFFERSPROC)SDL_GL_GetProcAddress("glGenRenderbuffers");
+        glDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC)SDL_GL_GetProcAddress("glDeleteRenderbuffers");
+        glBindRenderbuffer = (PFNGLBINDRENDERBUFFERPROC)SDL_GL_GetProcAddress("glBindRenderbuffer");
+        glRenderbufferStorage = (PFNGLRENDERBUFFERSTORAGEPROC)SDL_GL_GetProcAddress("glRenderbufferStorage");
+        glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)SDL_GL_GetProcAddress("glFramebufferRenderbuffer");
+        glCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC)SDL_GL_GetProcAddress("glCheckFramebufferStatus");
+
+        if (!glGenFramebuffers || !glBindFramebuffer || !glFramebufferTexture2D)
+        {
+            Logging::error("Failed to load OpenGL framebuffer extensions!");
+            std::abort();
+        }
+
         // Enable VSync
         SDL_GL_SetSwapInterval(1);
 
@@ -94,6 +163,9 @@ namespace OpenLoco::Gfx
         glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
+
+        // Initialize rotation angle
+        _rotationAngle = 0.0f;
 
         createPalette();
     }
@@ -125,6 +197,24 @@ namespace OpenLoco::Gfx
             _glTexture = 0;
         }
 
+        if (_gl3DTexture != 0)
+        {
+            glDeleteTextures(1, &_gl3DTexture);
+            _gl3DTexture = 0;
+        }
+
+        if (_glDepthBuffer != 0)
+        {
+            glDeleteRenderbuffers(1, &_glDepthBuffer);
+            _glDepthBuffer = 0;
+        }
+
+        if (_glFramebuffer != 0)
+        {
+            glDeleteFramebuffers(1, &_glFramebuffer);
+            _glFramebuffer = 0;
+        }
+
         // Create surfaces for palette conversion
         _screenSurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 8, 0, 0, 0, 0);
         if (_screenSurface == nullptr)
@@ -143,7 +233,7 @@ namespace OpenLoco::Gfx
         SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE);
         SDL_SetSurfacePalette(_screenSurface, _palette);
 
-        // Create OpenGL texture
+        // Create OpenGL texture for game rendering
         glGenTextures(1, &_glTexture);
         glBindTexture(GL_TEXTURE_2D, _glTexture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -151,6 +241,36 @@ namespace OpenLoco::Gfx
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, scaledWidth, scaledHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+        // Create OpenGL texture for 3D rendering
+        glGenTextures(1, &_gl3DTexture);
+        glBindTexture(GL_TEXTURE_2D, _gl3DTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+        // Create depth renderbuffer
+        glGenRenderbuffers(1, &_glDepthBuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, _glDepthBuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+
+        // Create framebuffer for offscreen rendering
+        glGenFramebuffers(1, &_glFramebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, _glFramebuffer);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _gl3DTexture, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _glDepthBuffer);
+
+        // Check framebuffer status
+        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if (status != GL_FRAMEBUFFER_COMPLETE)
+        {
+            Logging::error("Framebuffer is not complete! Status: 0x{:X}", status);
+        }
+
+        // Unbind framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // Set up viewport and projection
         glViewport(0, 0, width, height);
@@ -228,6 +348,106 @@ namespace OpenLoco::Gfx
         {
             Gfx::drawFPS(getDrawingContext());
         }
+
+        // Render 3D scene to texture
+        render3DScene();
+    }
+
+    void HardwareDrawingEngine::render3DScene()
+    {
+        // Bind framebuffer for offscreen rendering
+        glBindFramebuffer(GL_FRAMEBUFFER, _glFramebuffer);
+
+        // Clear the framebuffer
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Transparent background
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Enable depth testing for 3D
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_TEXTURE_2D);
+
+        // Set up 3D perspective projection
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        const float aspect = (float)_viewportWidth / (float)_viewportHeight;
+        const float fov = 60.0f;
+        const float zNear = 0.1f;
+        const float zFar = 100.0f;
+        const float fH = std::tan(fov / 360.0f * 3.14159265f) * zNear;
+        const float fW = fH * aspect;
+        glFrustum(-fW, fW, -fH, fH, zNear, zFar);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        // Position camera
+        glTranslatef(0.0f, 0.0f, -5.0f);
+
+        // Apply rotation
+        glRotatef(_rotationAngle, 0.0f, 1.0f, 0.0f);           // Rotate around Y axis
+        glRotatef(_rotationAngle * 0.5f, 1.0f, 0.0f, 0.0f);   // Rotate around X axis
+
+        // Enable blending for transparency
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Draw 3D pyramid
+        glBegin(GL_TRIANGLES);
+        // Front face
+        glColor4f(1.0f, 0.0f, 0.0f, 0.8f); // red with alpha
+        glVertex3f(0.0f, 1.0f, 0.0f);
+        glColor4f(0.0f, 1.0f, 0.0f, 0.8f); // green with alpha
+        glVertex3f(-1.0f, -1.0f, 1.0f);
+        glColor4f(0.0f, 0.0f, 1.0f, 0.8f); // blue with alpha
+        glVertex3f(1.0f, -1.0f, 1.0f);
+
+        // Right face
+        glColor4f(1.0f, 0.0f, 0.0f, 0.8f); // red
+        glVertex3f(0.0f, 1.0f, 0.0f);
+        glColor4f(0.0f, 0.0f, 1.0f, 0.8f); // blue
+        glVertex3f(1.0f, -1.0f, 1.0f);
+        glColor4f(1.0f, 1.0f, 0.0f, 0.8f); // yellow
+        glVertex3f(1.0f, -1.0f, -1.0f);
+
+        // Back face
+        glColor4f(1.0f, 0.0f, 0.0f, 0.8f); // red
+        glVertex3f(0.0f, 1.0f, 0.0f);
+        glColor4f(1.0f, 1.0f, 0.0f, 0.8f); // yellow
+        glVertex3f(1.0f, -1.0f, -1.0f);
+        glColor4f(1.0f, 0.0f, 1.0f, 0.8f); // magenta
+        glVertex3f(-1.0f, -1.0f, -1.0f);
+
+        // Left face
+        glColor4f(1.0f, 0.0f, 0.0f, 0.8f); // red
+        glVertex3f(0.0f, 1.0f, 0.0f);
+        glColor4f(1.0f, 0.0f, 1.0f, 0.8f); // magenta
+        glVertex3f(-1.0f, -1.0f, -1.0f);
+        glColor4f(0.0f, 1.0f, 0.0f, 0.8f); // green
+        glVertex3f(-1.0f, -1.0f, 1.0f);
+
+        // Bottom face (square base)
+        glColor4f(0.0f, 1.0f, 1.0f, 0.8f); // cyan
+        glVertex3f(-1.0f, -1.0f, 1.0f);
+        glVertex3f(1.0f, -1.0f, 1.0f);
+        glVertex3f(1.0f, -1.0f, -1.0f);
+
+        glColor4f(0.0f, 1.0f, 1.0f, 0.8f); // cyan
+        glVertex3f(-1.0f, -1.0f, 1.0f);
+        glVertex3f(1.0f, -1.0f, -1.0f);
+        glVertex3f(-1.0f, -1.0f, -1.0f);
+        glEnd();
+
+        glDisable(GL_BLEND);
+
+        // Update rotation angle for next frame
+        _rotationAngle += 1.0f;
+        if (_rotationAngle >= 360.0f)
+        {
+            _rotationAngle -= 360.0f;
+        }
+
+        // Unbind framebuffer (render to screen again)
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     void HardwareDrawingEngine::renderDirtyRegions()
@@ -294,17 +514,27 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        // Upload texture to OpenGL
+        // Upload game texture to OpenGL
         glBindTexture(GL_TEXTURE_2D, _glTexture);
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _screenRGBASurface->w, _screenRGBASurface->h, GL_RGBA, GL_UNSIGNED_BYTE, _screenRGBASurface->pixels);
 
-        // Clear the framebuffer
-        glClear(GL_COLOR_BUFFER_BIT);
+        // Clear the screen framebuffer
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Render a textured quad using stored viewport dimensions
+        // Disable depth test for 2D rendering
+        glDisable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
+
+        // Set up 2D orthographic projection
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, _viewportWidth, _viewportHeight, 0, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        // Render game texture (background layer)
         glBindTexture(GL_TEXTURE_2D, _glTexture);
-        glColor3f(1.0f, 1.0f, 1.0f); // Reset color to white for proper texture rendering
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // White color for proper texture rendering
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 0.0f);
@@ -317,20 +547,28 @@ namespace OpenLoco::Gfx
         glVertex2f(0.0f, (float)_viewportHeight);
         glEnd();
 
-        // disable texture
-        glDisable(GL_TEXTURE_2D);
+        // Enable blending for 3D overlay
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        // demo triangle - use pixel coordinates
-        glBegin(GL_TRIANGLES);
-        glColor3f(1.0f, 0.0f, 0.0f);                               // red
-        glVertex2f(_viewportWidth * 0.3f, _viewportHeight * 0.7f); // bottom left
-        glColor3f(0.0f, 1.0f, 0.0f);                               // green
-        glVertex2f(_viewportWidth * 0.7f, _viewportHeight * 0.7f); // bottom right
-        glColor3f(0.0f, 0.0f, 1.0f);                               // blue
-        glVertex2f(_viewportWidth * 0.5f, _viewportHeight * 0.3f); // top center
+        // Render 3D texture overlay
+        glBindTexture(GL_TEXTURE_2D, _gl3DTexture);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex2f(0.0f, 0.0f);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex2f((float)_viewportWidth, 0.0f);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex2f((float)_viewportWidth, (float)_viewportHeight);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex2f(0.0f, (float)_viewportHeight);
         glEnd();
 
-        // Swap buffers
+        glDisable(GL_BLEND);
+
+        // Swap buffers to display
         SDL_GL_SwapWindow(_window);
     }
 
