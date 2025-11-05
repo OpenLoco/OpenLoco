@@ -780,19 +780,6 @@ namespace OpenLoco
         tickLogic(ticks);
     }
 
-    // 0x004078FE
-    static void generateSystemStats()
-    {
-        // Vanilla would actually query the system for this and would
-        // also get the system computer name for default multiplayer name.
-        // But there isn't much point nowadays to do this so lets just
-        // set it to a large fixed value.
-        // The value is only used by config to decide how many sounds
-        // to have active at once.
-        static loco_global<uint32_t, 0x0113E21C> _totalPhysicalMemory;
-        _totalPhysicalMemory = 0xFFFFFFFFU;
-    }
-
     // 0x00406D13
     static int main(const CommandLineOptions& options)
     {
@@ -834,7 +821,6 @@ namespace OpenLoco
             Environment::resolvePaths();
 
             Ui::createWindow(cfg.display);
-            generateSystemStats();
             Audio::initialiseDSound();
             run();
             exitCleanly();
