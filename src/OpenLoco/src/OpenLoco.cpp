@@ -745,6 +745,11 @@ namespace OpenLoco
 #endif
     }
 
+    uint16_t getTimeSinceLastTick()
+    {
+        return _time_since_last_tick;
+    }
+
     void simulateGame(const fs::path& savePath, int32_t ticks)
     {
         Config::read();
