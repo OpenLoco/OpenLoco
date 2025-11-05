@@ -111,4 +111,6 @@ namespace OpenLoco::World::TrackData
     // - isChangingLane (whether the vehicle is in the process of changing lanes)
     // The returned value's upper nibble (>> 4) contains a 2-bit lane occupation mask.
     uint8_t getRoadOccupationMask(uint8_t index);
+
+    uint8_t getUnk4F865C(uint8_t index);
 }
