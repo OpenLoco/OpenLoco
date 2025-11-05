@@ -47,6 +47,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
 
+    static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
+    static loco_global<uint8_t, 0x00522095> _byte_522095;
+    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
+    static loco_global<ConstructionState, 0x01135F3E> _cState;
+
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
 

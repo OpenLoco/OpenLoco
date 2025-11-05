@@ -28,6 +28,9 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
+    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
+    static loco_global<ConstructionState, 0x01135F3E> _cState;
+
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 167, StringIds::stringid_2),
         Widgets::dropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),

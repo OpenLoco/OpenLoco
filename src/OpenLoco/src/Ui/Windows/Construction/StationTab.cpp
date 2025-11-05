@@ -49,6 +49,10 @@ using namespace OpenLoco::World::TileManager;
 namespace OpenLoco::Ui::Windows::Construction::Station
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
+
+    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
+    static loco_global<ConstructionState, 0x01135F3E> _cState;
+
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station

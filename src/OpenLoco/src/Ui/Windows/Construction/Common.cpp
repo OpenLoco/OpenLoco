@@ -37,6 +37,9 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction
 {
+    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
+    static loco_global<ConstructionState, 0x01135F3E> _cState;
+
     static Window* nonTrackWindow()
     {
         auto window = WindowManager::find(WindowType::construction);
@@ -1386,5 +1389,10 @@ namespace OpenLoco::Ui::Windows::Construction
                 break;
         }
         return false;
+    }
+
+    void resetGhostVisibilityFlags()
+    {
+        _ghostVisibilityFlags = GhostVisibilityFlags::none;
     }
 }

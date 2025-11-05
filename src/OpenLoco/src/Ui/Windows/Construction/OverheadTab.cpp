@@ -36,6 +36,10 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
+    static loco_global<uint8_t, 0x00522095> _byte_522095;
+    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
+    static loco_global<ConstructionState, 0x01135F3E> _cState;
+
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 192, StringIds::stringid_2),
         Widgets::Checkbox({ 3, 45 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),

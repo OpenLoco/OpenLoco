@@ -11,10 +11,8 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <sfl/static_vector.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::World::TileManager;
 
@@ -30,10 +28,6 @@ namespace OpenLoco::Ui::Windows::Construction
         overhead = 1U << 4,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GhostVisibilityFlags);
-
-    static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
-    static loco_global<uint8_t, 0x00522095> _byte_522095;
-    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
 
 #pragma pack(push, 1)
     struct ConstructionState
@@ -129,7 +123,6 @@ namespace OpenLoco::Ui::Windows::Construction
 #pragma pack(pop)
 
     static_assert(sizeof(ConstructionState) == 0x01136090 + 8 - 0x01135F3E);
-    static loco_global<ConstructionState, 0x01135F3E> _cState;
 
     namespace Common
     {

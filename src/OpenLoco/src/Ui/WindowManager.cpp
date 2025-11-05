@@ -1112,7 +1112,7 @@ namespace OpenLoco::Ui::WindowManager
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
         ToolManager::toolCancel();
-        Windows::Construction::_ghostVisibilityFlags = Windows::Construction::GhostVisibilityFlags::none;
+        Windows::Construction::resetGhostVisibilityFlags();
     }
 
     // 0x004BF089
