@@ -44,8 +44,9 @@ namespace OpenLoco::Ui::WindowManager
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
     static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
-    static loco_global<uint8_t, 0x005233B6> _currentModalType;
-    static loco_global<int32_t, 0x00E3F0B8> _gCurrentRotation;
+
+    static WindowType _currentModalType; // 0x005233B6
+    static int32_t _currentRotation;     // 0x00E3F0B8
 
     static sfl::static_vector<Window, kMaxWindows> _windows;
 
@@ -89,12 +90,12 @@ namespace OpenLoco::Ui::WindowManager
 
     WindowType getCurrentModalType()
     {
-        return (WindowType)*_currentModalType;
+        return _currentModalType;
     }
 
     void setCurrentModalType(WindowType type)
     {
-        _currentModalType = (uint8_t)type;
+        _currentModalType = type;
     }
 
     void updateViewports()
@@ -1794,12 +1795,12 @@ namespace OpenLoco::Ui::WindowManager
 
     int32_t getCurrentRotation()
     {
-        return _gCurrentRotation;
+        return _currentRotation;
     }
 
     void setCurrentRotation(int32_t value)
     {
-        _gCurrentRotation = value;
+        _currentRotation = value;
     }
 
     // 0x0052622E
