@@ -16,6 +16,7 @@
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "MultiPlayer.h"
+#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "ScrollView.h"
 #include "ToolTip.h"
@@ -42,11 +43,9 @@ namespace OpenLoco::Ui::WindowManager
 {
     static constexpr size_t kMaxWindows = 64;
 
-    static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
-    static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
-
-    static WindowType _currentModalType; // 0x005233B6
-    static int32_t _currentRotation;     // 0x00E3F0B8
+    static uint16_t _thousandthTickCounter; // 0x0052334E
+    static WindowType _currentModalType;    // 0x005233B6
+    static int32_t _currentRotation;        // 0x00E3F0B8
 
     static sfl::static_vector<Window, kMaxWindows> _windows;
 
@@ -98,6 +97,11 @@ namespace OpenLoco::Ui::WindowManager
         _currentModalType = type;
     }
 
+    void resetThousandthTickCounter()
+    {
+        _thousandthTickCounter = 0;
+    }
+
     void updateViewports()
     {
         for (auto&& w : _windows)
@@ -109,10 +113,11 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C6118
     void update()
     {
-        ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + _timeSinceLastTick);
+        uint16_t timeSinceLastTick = getTimeSinceLastTick();
+        ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + timeSinceLastTick);
 
         // 1000 tick update
-        _thousandthTickCounter = _thousandthTickCounter + _timeSinceLastTick;
+        _thousandthTickCounter += timeSinceLastTick;
         if (_thousandthTickCounter >= 1000)
         {
             _thousandthTickCounter = 0;

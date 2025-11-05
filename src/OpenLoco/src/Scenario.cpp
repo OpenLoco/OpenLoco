@@ -331,7 +331,7 @@ namespace OpenLoco::Scenario
         }
 
         EntityManager::updateSpatialIndex();
-        addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
+        WindowManager::resetThousandthTickCounter();
         Ui::Windows::Terraform::resetLastSelections();
         MessageManager::reset();
 
