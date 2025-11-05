@@ -440,6 +440,35 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return open(enumValue(vehicleType), true);
     }
 
+    Window* openByVehicleObjectId(uint16_t vehicleObjectId)
+    {
+        auto* vehicleObj = ObjectManager::get<VehicleObject>(vehicleObjectId);
+
+        auto window = openByType(vehicleObj->type);
+        window->rowHover = vehicleObjectId;
+
+        if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
+        {
+            if (vehicleObj->trackType != 0xFF)
+            {
+                for (uint8_t i = 0; i < _numTrackTypeTabs && i < std::size(_trackTypesForTab); ++i)
+                {
+                    if (vehicleObj->trackType == _trackTypesForTab[i])
+                    {
+                        window->currentSecondaryTab = i;
+                        return window;
+                    }
+                }
+            }
+        }
+
+        auto rowHover = window->rowHover;
+        sub_4B92A5(window);
+        window->rowHover = rowHover;
+
+        return window;
+    }
+
     static bool contains(const std::string_view& a, const std::string_view& b)
     {
         return std::search(a.begin(), a.end(), b.begin(), b.end(), [](char a, char b) {
