@@ -40,7 +40,12 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Chinese (Simplified) - (TransshipmentEnvoy)
 
 ## Graphics
-* OpenLoco Logo - Zcooger (zcooger)
+* Zcooger (zcooger) - OpenLoco Logo
+* SteveEmfore
+* Phosphorus551
+* shusaura85
+* glenjimen
+* hibiii
 
 ## Chris Sawyer's Locomotion credits
 Design and programming by Chris Sawyer
