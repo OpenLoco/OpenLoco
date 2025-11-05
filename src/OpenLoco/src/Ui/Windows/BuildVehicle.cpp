@@ -296,7 +296,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     // Array of types if 0xFF then no type, flag (1<<7) as well
     static loco_global<uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _trackTypesForTab;
-    static std::array<uint16_t, 6> _scrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
+
+    static constexpr std::array<uint16_t, 6> kScrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
     static Ui::TextInput::InputSession inputSession;
 
@@ -380,7 +381,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window->currentTab = vehicleId;
             }
 
-            window->rowHeight = _scrollRowHeight[window->currentTab];
+            window->rowHeight = kScrollRowHeight[window->currentTab];
             window->rowCount = 0;
             window->var_83C = 0;
             window->rowHover = -1;
@@ -748,7 +749,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                 auto newTab = widgetIndex - widx::tab_build_new_trains;
                 window.currentTab = newTab;
-                window.rowHeight = _scrollRowHeight[newTab];
+                window.rowHeight = kScrollRowHeight[newTab];
                 window.frameNo = 0;
                 window.currentSecondaryTab = 0;
                 if (newTab != enumValue(getGameState().lastBuildVehiclesOption))
