@@ -78,14 +78,12 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Crash.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Input;
 using namespace OpenLoco::Diagnostics;
@@ -99,8 +97,8 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CrashHandler::Handle _exHandler = nullptr;
 
-    static loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
-    static loco_global<uint32_t, 0x0050C19E> _last_tick_time;
+    static uint16_t _time_since_last_tick; // 0x0050C19C
+    static uint32_t _last_tick_time;       // 0x0050C19E
 
     static int32_t _monthsSinceLastAutosave;
 
