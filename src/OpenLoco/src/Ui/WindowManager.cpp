@@ -23,7 +23,6 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ToolManager.h"
-#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
