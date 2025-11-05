@@ -161,8 +161,11 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/InvalidationGrid.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/PaletteMap.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/RenderTarget.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/IDrawingEngine.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/HardwareDrawingContext.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SoftwareDrawingContext.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SoftwareDrawingEngine.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/HardwareDrawingEngine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/TextRenderer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Gui.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.cpp"
@@ -530,8 +533,12 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/InvalidationGrid.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/PaletteMap.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/RenderTarget.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/GpuRenderTarget.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/IDrawingEngine.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/HardwareDrawingContext.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SoftwareDrawingContext.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SoftwareDrawingEngine.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/HardwareDrawingEngine.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/TextRenderer.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Gui.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.h"
@@ -792,7 +799,7 @@ target_link_libraries(OpenLoco
     ${OPENAL_LIBRARIES})
 
 if (WIN32)
-    target_link_libraries(OpenLoco winmm ws2_32 Resources)
+    target_link_libraries(OpenLoco winmm ws2_32 Resources opengl32)
     # Loco.exe is looking for openloco.dll. Remove this when standalone.
     set_target_properties(OpenLoco PROPERTIES OUTPUT_NAME "openloco")
 endif ()

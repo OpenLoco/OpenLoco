@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "IDrawingEngine.h"
 #include "InvalidationGrid.h"
 #include "SoftwareDrawingContext.h"
 #include <OpenLoco/Engine/Ui/Rect.hpp>
@@ -24,37 +25,21 @@ namespace OpenLoco::Gfx
 {
     struct RenderTarget;
 
-    class SoftwareDrawingEngine
+    class SoftwareDrawingEngine : public IDrawingEngine
     {
     public:
         SoftwareDrawingEngine();
-        ~SoftwareDrawingEngine();
+        ~SoftwareDrawingEngine() override;
 
-        void initialize(SDL_Window* window);
+        void initialize(SDL_Window* window) override;
+        void resize(int32_t width, int32_t height) override;
+        void render() override;
+        void render(const Ui::Rect& rect) override;
+        void present() override;
 
-        void resize(int32_t width, int32_t height);
+        void invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom) override;
+        void renderDirtyRegions() override;
 
-        // Renders all invalidated regions.
-        void render();
-
-        // Renders a specific region.
-        void render(const Ui::Rect& rect);
-
-        // Presents the final image to the screen.
-        void present();
-
-        // Invalidates a region, this forces it to be rendered next frame.
-        void invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom);
-
-        void createPalette();
-        SDL_Palette* getPalette() { return _palette; }
-        void updatePalette(const PaletteEntry* entries, int32_t index, int32_t count);
-
-        DrawingContext& getDrawingContext();
-
-        const RenderTarget& getScreenRT();
-
-        // Moves the pixels in the specified render target.
         void movePixels(
             const RenderTarget& rt,
             int16_t dstX,
@@ -62,27 +47,6 @@ namespace OpenLoco::Gfx
             int16_t width,
             int16_t height,
             int16_t srcX,
-            int16_t srcY);
-
-        const Ui::ScreenInfo& getScreenInfo() const;
-
-    private:
-        void renderDirtyRegions();
-
-    private:
-        SDL_Renderer* _renderer{};
-        SDL_Window* _window{};
-        SDL_Palette* _palette{};
-        SDL_Surface* _screenSurface{};
-        SDL_Surface* _screenRGBASurface{};
-
-        SDL_Texture* _screenTexture{};
-        SDL_Texture* _scaledScreenTexture{};
-        SDL_PixelFormat* _screenTextureFormat{};
-
-        SDL_Texture* _screenRGBATexture{};
-
-        SoftwareDrawingContext _ctx;
-        InvalidationGrid _invalidationGrid;
+            int16_t srcY) override;
     };
 }

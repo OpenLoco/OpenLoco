@@ -4,6 +4,8 @@
 #include "Environment.h"
 #include "Font.h"
 #include "Graphics/DrawSprite.h"
+#include "Graphics/HardwareDrawingEngine.h"
+#include "Graphics/IDrawingEngine.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
@@ -229,14 +231,30 @@ namespace OpenLoco::Gfx
         invalidateRegion(0, 0, Ui::width(), Ui::height());
     }
 
-    static std::unique_ptr<Gfx::SoftwareDrawingEngine> engine;
+    static std::unique_ptr<Gfx::IDrawingEngine> engine;
 
-    Gfx::SoftwareDrawingEngine& getDrawingEngine()
+    Gfx::IDrawingEngine& initialiseDrawingEngine(RenderMode renderMode)
     {
         if (!engine)
         {
-            engine = std::make_unique<Gfx::SoftwareDrawingEngine>();
+            if (renderMode == RenderMode::Software)
+            {
+                engine = std::make_unique<Gfx::SoftwareDrawingEngine>();
+            }
+            else if (renderMode == RenderMode::Hardware)
+            {
+                engine = std::make_unique<Gfx::HardwareDrawingEngine>();
+            }
+            else
+            {
+                throw Exception::RuntimeError("Unknown render mode");
+            }
         }
+        return *engine;
+    }
+
+    Gfx::IDrawingEngine& getDrawingEngine()
+    {
         return *engine;
     }
 
