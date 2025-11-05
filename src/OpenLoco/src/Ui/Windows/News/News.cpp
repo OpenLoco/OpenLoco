@@ -27,15 +27,9 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
-    static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
-
     namespace News1
     {
         static constexpr auto widgets = makeWidgets(
