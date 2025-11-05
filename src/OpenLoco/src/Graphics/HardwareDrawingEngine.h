@@ -20,6 +20,12 @@ namespace OpenLoco::Gfx
 {
     class HardwareDrawingEngine : public IDrawingEngine
     {
+    private:
+        void* _glContext = nullptr;  // SDL_GLContext
+        unsigned int _glTexture = 0;  // GLuint
+        int32_t _viewportWidth = 0;
+        int32_t _viewportHeight = 0;
+
     public:
         HardwareDrawingEngine();
         ~HardwareDrawingEngine() override;

@@ -5,7 +5,6 @@
 #include "RenderTarget.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include <GL/gl.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
@@ -31,50 +30,71 @@ namespace OpenLoco::Gfx
 
     HardwareDrawingEngine::~HardwareDrawingEngine()
     {
+        if (_glTexture != 0)
+        {
+            glDeleteTextures(1, &_glTexture);
+            _glTexture = 0;
+        }
+
         if (_palette != nullptr)
         {
             SDL_FreePalette(_palette);
             _palette = nullptr;
         }
-        if (_screenTexture != nullptr)
+
+        if (_screenSurface != nullptr)
         {
-            SDL_DestroyTexture(_screenTexture);
-            _screenTexture = nullptr;
+            SDL_FreeSurface(_screenSurface);
+            _screenSurface = nullptr;
         }
-        if (_scaledScreenTexture != nullptr)
+
+        if (_screenRGBASurface != nullptr)
         {
-            SDL_DestroyTexture(_scaledScreenTexture);
-            _screenTexture = nullptr;
+            SDL_FreeSurface(_screenRGBASurface);
+            _screenRGBASurface = nullptr;
         }
-        if (_screenTextureFormat != nullptr)
+
+        if (_glContext != nullptr)
         {
-            SDL_FreeFormat(_screenTextureFormat);
-            _screenTextureFormat = nullptr;
+            SDL_GL_DeleteContext(_glContext);
+            _glContext = nullptr;
         }
     }
 
     void HardwareDrawingEngine::initialize(SDL_Window* window)
     {
-        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
-        auto glContext = SDL_GL_CreateContext(window);
-        if (glContext == nullptr)
+        // Set OpenGL attributes before creating context
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+        _glContext = SDL_GL_CreateContext(window);
+        if (_glContext == nullptr)
         {
             Logging::error("OpenGL context could not be created! SDL_Error: {}", SDL_GetError());
             std::abort();
         }
 
-        // glEnable(GL_DEPTH_TEST);
-        // glEnable(GL_CULL_FACE);
-        // glCullFace(GL_BACK);
-        // glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        // Make the context current
+        SDL_GL_MakeCurrent(window, _glContext);
 
-        //_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-        /* if (_renderer == nullptr)
-         {
-             Logging::error("Unable to create hardware renderer: {}", SDL_GetError());
-             std::abort();
-         }*/
+        // Enable VSync
+        SDL_GL_SetSwapInterval(1);
+
         _window = window;
+
+        // Initialize OpenGL state
+        glEnable(GL_TEXTURE_2D);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_CULL_FACE);
+
+        // Set up 2D orthographic projection
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
         createPalette();
     }
 
@@ -84,6 +104,10 @@ namespace OpenLoco::Gfx
         const auto scaleFactor = Config::get().scaleFactor;
         const auto scaledWidth = (int32_t)(width / scaleFactor);
         const auto scaledHeight = (int32_t)(height / scaleFactor);
+
+        // Store viewport dimensions
+        _viewportWidth = width;
+        _viewportHeight = height;
 
         // Release old resources.
         if (_screenSurface != nullptr)
@@ -95,25 +119,13 @@ namespace OpenLoco::Gfx
             SDL_FreeSurface(_screenRGBASurface);
         }
 
-        if (_screenTexture != nullptr)
+        if (_glTexture != 0)
         {
-            SDL_DestroyTexture(_screenTexture);
-            _screenTexture = nullptr;
+            glDeleteTextures(1, &_glTexture);
+            _glTexture = 0;
         }
 
-        if (_scaledScreenTexture != nullptr)
-        {
-            SDL_DestroyTexture(_scaledScreenTexture);
-            _scaledScreenTexture = nullptr;
-        }
-
-        if (_screenTextureFormat != nullptr)
-        {
-            SDL_FreeFormat(_screenTextureFormat);
-            _screenTextureFormat = nullptr;
-        }
-
-        // Surfaces.
+        // Create surfaces for palette conversion
         _screenSurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 8, 0, 0, 0, 0);
         if (_screenSurface == nullptr)
         {
@@ -121,7 +133,7 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        _screenRGBASurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 32, 0, 0, 0, 0);
+        _screenRGBASurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
         if (_screenRGBASurface == nullptr)
         {
             Logging::error("SDL_CreateRGBSurface (_screenRGBASurface) failed: {}", SDL_GetError());
@@ -131,49 +143,22 @@ namespace OpenLoco::Gfx
         SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE);
         SDL_SetSurfacePalette(_screenSurface, _palette);
 
-        SDL_RendererInfo rendererInfo{};
-        int32_t result = SDL_GetRendererInfo(_renderer, &rendererInfo);
-        if (result < 0)
-        {
-            Logging::error("HWDisplayDrawingEngine::Resize error: {}", SDL_GetError());
-            return;
-        }
+        // Create OpenGL texture
+        glGenTextures(1, &_glTexture);
+        glBindTexture(GL_TEXTURE_2D, _glTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, scaleFactor > 1.0f ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, scaledWidth, scaledHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
-        uint32_t pixelFormat = SDL_PIXELFORMAT_UNKNOWN;
-        for (uint32_t i = 0; i < rendererInfo.num_texture_formats; i++)
-        {
-            uint32_t format = rendererInfo.texture_formats[i];
-            if (!SDL_ISPIXELFORMAT_FOURCC(format) && !SDL_ISPIXELFORMAT_INDEXED(format)
-                && (pixelFormat == SDL_PIXELFORMAT_UNKNOWN || SDL_BYTESPERPIXEL(format) < SDL_BYTESPERPIXEL(pixelFormat)))
-            {
-                pixelFormat = format;
-            }
-        }
-
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-        _screenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
-        if (_screenTexture == nullptr)
-        {
-            Logging::error("SDL_CreateTexture (_screenTexture) failed: {}", SDL_GetError());
-            return;
-        }
-
-        if (scaleFactor > 1.0f)
-        {
-            const auto scale = std::ceil(scaleFactor);
-            // We only need this texture when we have a scale above 1x, this texture uses the actual canvas size.
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-            _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width * scale, height * scale);
-            if (_scaledScreenTexture == nullptr)
-            {
-                Logging::error("SDL_CreateTexture (_scaledScreenTexture) failed: {}", SDL_GetError());
-                return;
-            }
-        }
-
-        uint32_t format;
-        SDL_QueryTexture(_screenTexture, &format, nullptr, nullptr, nullptr);
-        _screenTextureFormat = SDL_AllocFormat(format);
+        // Set up viewport and projection
+        glViewport(0, 0, width, height);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, width, height, 0, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
         int32_t pitch = _screenSurface->pitch;
 
@@ -309,27 +294,40 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        // Copy the RGBA pixels into screen texture.
-        SDL_UpdateTexture(_screenTexture, nullptr, _screenRGBASurface->pixels, _screenRGBASurface->pitch);
+        // Upload texture to OpenGL
+        glBindTexture(GL_TEXTURE_2D, _glTexture);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _screenRGBASurface->w, _screenRGBASurface->h, GL_RGBA, GL_UNSIGNED_BYTE, _screenRGBASurface->pixels);
 
-        const auto scaleFactor = Config::get().scaleFactor;
-        if (scaleFactor > 1.0f)
-        {
-            // Copy screen texture to the scaled texture.
-            SDL_SetRenderTarget(_renderer, _scaledScreenTexture);
-            SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
+        // Clear the framebuffer
+        glClear(GL_COLOR_BUFFER_BIT);
 
-            // Copy scaled texture to primary render target.
-            SDL_SetRenderTarget(_renderer, nullptr);
-            SDL_RenderCopy(_renderer, _scaledScreenTexture, nullptr, nullptr);
-        }
-        else
-        {
-            SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
-        }
+        // Render a textured quad using stored viewport dimensions
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, _glTexture);
 
-        // Display buffers.
-        SDL_RenderPresent(_renderer);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex2f(0.0f, 0.0f);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex2f((float)_viewportWidth, 0.0f);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex2f((float)_viewportWidth, (float)_viewportHeight);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex2f(0.0f, (float)_viewportHeight);
+        glEnd();
+
+        // demo triangle
+        glBegin(GL_TRIANGLES);
+        glColor3f(1, 0, 0); // red
+        glVertex2f(-0.8, -0.8);
+        glColor3f(0, 1, 0); // green
+        glVertex2f(0.8, -0.8);
+        glColor3f(0, 0, 1); // blue
+        glVertex2f(0, 0.9);
+        glEnd();
+
+        // Swap buffers
+        SDL_GL_SwapWindow(_window);
     }
 
     void HardwareDrawingEngine::movePixels(
