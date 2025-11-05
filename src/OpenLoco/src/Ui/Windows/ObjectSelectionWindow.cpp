@@ -552,28 +552,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             switchTabByObjectType(*window, objectType);
         }
 
-        // If in play mode, the object selection window should be modal and pause the game.
-        if (SceneManager::isPlayMode())
+        // If in play mode, the object selection window should be modal and pause the game to prevent issues.
+        if (!SceneManager::isEditorMode())
         {
-            SceneManager::setPauseFlag(1 << 2);
-            WindowManager::invalidate(WindowType::timeToolbar);
-
-            auto originalModal = WindowManager::getCurrentModalType();
             WindowManager::setCurrentModalType(WindowType::objectSelection);
-            promptTickLoop(
-                []() {
-                    Input::handleKeyboard();
-                    Audio::updateSounds();
-                    WindowManager::dispatchUpdateAll();
-                    Input::processKeyboardInput();
-                    WindowManager::update();
-                    Ui::minimalHandleInput();
-                    Gfx::renderAndUpdate();
-                    return WindowManager::find(WindowType::objectSelection) != nullptr;
-                });
-            WindowManager::setCurrentModalType(originalModal);
 
-            SceneManager::unsetPauseFlag(1 << 2);
+            SceneManager::setPauseFlag(1 << 3); // Pause flag 3 was not used by vanilla.
             WindowManager::invalidate(WindowType::timeToolbar);
         }
 
@@ -1627,6 +1611,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             Gfx::invalidateScreen();
             CompanyManager::determineAvailableVehicles();
             WindowManager::invalidate(WindowType::buildVehicle);
+
+            // Stop being modal and unpause game.
+            WindowManager::setCurrentModalType(WindowType::undefined);
+
+            SceneManager::unsetPauseFlag(1 << 3);
+            WindowManager::invalidate(WindowType::timeToolbar);
         }
         ObjectManager::freeSelectionList();
     }
