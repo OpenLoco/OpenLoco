@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                             case MessageItemArgumentType::vehicleTab:
                                 auto vehicleObj = ObjectManager::get<VehicleObject>(itemId);
-                                auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1U << 31));
+                                auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), true);
                                 window->rowHover = itemId;
                                 if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
                                 {

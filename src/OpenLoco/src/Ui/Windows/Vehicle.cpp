@@ -1270,7 +1270,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 if (itemIndex <= 0)
                 {
-                    BuildVehicle::open(self.number, 0);
+                    BuildVehicle::open(self.number, false);
                 }
                 else if (itemIndex == 1)
                 {

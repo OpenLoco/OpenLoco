@@ -326,19 +326,16 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return window;
     }
 
-    /* 0x4C1AF7
-     * depending on flags (1<<31) vehicle is a tab id or a VehicleHead id
-     */
-    Window* open(uint32_t vehicle, uint32_t flags)
+    // 0x004C1AF7
+    Window* open(uint32_t vehicleId, bool isTabId)
     {
         auto window = WindowManager::bringToFront(WindowType::buildVehicle, enumValue(CompanyManager::getControllingId()));
-        bool tabMode = flags & (1 << 31);
         if (window)
         {
             WidgetIndex_t tab = widx::tab_build_new_trains;
-            if (!tabMode)
+            if (!isTabId)
             {
-                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
+                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicleId));
                 if (veh == nullptr)
                 {
                     return nullptr;
@@ -348,17 +345,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             else
             {
                 // Not a vehicle but a type
-                tab += vehicle;
+                tab += vehicleId;
             }
             window->callOnMouseUp(tab, window->widgets[tab].id);
 
-            if (tabMode)
+            if (isTabId)
             {
                 _buildTargetVehicle = -1;
             }
             else
             {
-                _buildTargetVehicle = vehicle;
+                _buildTargetVehicle = vehicleId;
             }
         }
         else
@@ -367,10 +364,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             window->width = kWindowSize.width;
             window->height = kWindowSize.height;
             _buildTargetVehicle = -1;
-            if (!tabMode)
+            if (!isTabId)
             {
-                _buildTargetVehicle = vehicle;
-                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
+                _buildTargetVehicle = vehicleId;
+                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicleId));
                 if (veh == nullptr)
                 {
                     WindowManager::close(window);
@@ -380,7 +377,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
             else
             {
-                window->currentTab = vehicle;
+                window->currentTab = vehicleId;
             }
 
             window->rowHeight = _scrollRowHeight[window->currentTab];

@@ -616,7 +616,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         const auto vehicleType = static_cast<VehicleType>(itemIndex);
         getGameState().lastBuildVehiclesOption = vehicleType;
 
-        BuildVehicle::open(enumValue(vehicleType), 1U << 31);
+        BuildVehicle::open(enumValue(vehicleType), true);
     }
 
     // 0x0043ABCB
