@@ -533,6 +533,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/InvalidationGrid.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/PaletteMap.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/RenderTarget.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/GpuRenderTarget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/IDrawingEngine.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/HardwareDrawingContext.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SoftwareDrawingContext.h"

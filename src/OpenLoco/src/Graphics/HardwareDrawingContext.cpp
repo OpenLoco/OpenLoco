@@ -1,6 +1,7 @@
 #include "HardwareDrawingContext.h"
 #include "DrawSprite.h"
 #include "Font.h"
+#include "GpuRenderTarget.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Localisation/Formatting.h"
@@ -12,6 +13,7 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 #include <algorithm>
 #include <cassert>
 #include <stack>
@@ -20,11 +22,24 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
 
+// OpenGL FBO extension constants
+#ifndef GL_FRAMEBUFFER
+#define GL_FRAMEBUFFER 0x8D40
+#define GL_RENDERBUFFER 0x8D41
+#define GL_COLOR_ATTACHMENT0 0x8CE0
+#define GL_DEPTH_ATTACHMENT 0x8D00
+#define GL_FRAMEBUFFER_COMPLETE 0x8CD5
+#endif
+
+// OpenGL extension function pointers (extern from HardwareDrawingEngine.cpp)
+extern void (APIENTRY *glBindFramebuffer)(GLenum target, GLuint framebuffer);
+
 namespace OpenLoco::Gfx
 {
     struct HardwareDrawingContextState
     {
-        std::stack<RenderTarget> rtStack;
+        std::stack<RenderTarget> rtStack;         // CPU render targets (for compatibility)
+        std::stack<GpuRenderTarget> gpuRtStack;   // GPU render targets
     };
 
     namespace Impl
@@ -1078,6 +1093,62 @@ namespace OpenLoco::Gfx
     void HardwareDrawingContext::reset()
     {
         _state->rtStack = {};
+        _state->gpuRtStack = {};
+    }
+
+    // GPU Render Target Management
+    void HardwareDrawingContext::pushGpuRenderTarget(const GpuRenderTarget& gpuRt)
+    {
+        _state->gpuRtStack.push(gpuRt);
+        bindGpuRenderTarget(gpuRt);
+
+        // In case this leaks it will trigger an assert
+        assert(_state->gpuRtStack.size() < 10);
+    }
+
+    void HardwareDrawingContext::popGpuRenderTarget()
+    {
+        // Should not be empty before pop
+        assert(_state->gpuRtStack.empty() == false);
+
+        _state->gpuRtStack.pop();
+
+        // Bind the previous render target if there is one
+        if (!_state->gpuRtStack.empty())
+        {
+            bindGpuRenderTarget(_state->gpuRtStack.top());
+        }
+        else
+        {
+            // Unbind to default framebuffer
+            unbindGpuRenderTarget();
+        }
+    }
+
+    const GpuRenderTarget* HardwareDrawingContext::currentGpuRenderTarget() const
+    {
+        if (_state->gpuRtStack.empty())
+        {
+            return nullptr;
+        }
+        return &_state->gpuRtStack.top();
+    }
+
+    void HardwareDrawingContext::bindGpuRenderTarget(const GpuRenderTarget& gpuRt)
+    {
+        if (gpuRt.isValid() && glBindFramebuffer != nullptr)
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, gpuRt.framebufferId);
+            glViewport(0, 0, gpuRt.width, gpuRt.height);
+        }
+    }
+
+    void HardwareDrawingContext::unbindGpuRenderTarget()
+    {
+        if (glBindFramebuffer != nullptr)
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
     }
 
 }

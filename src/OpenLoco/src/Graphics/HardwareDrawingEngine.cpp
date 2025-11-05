@@ -1,6 +1,7 @@
 #include "HardwareDrawingEngine.h"
 #include "Config.h"
 #include "Graphics/FPSCounter.h"
+#include "GpuRenderTarget.h"
 #include "Logging.h"
 #include "RenderTarget.h"
 #include "Ui.h"
@@ -38,16 +39,16 @@ typedef void (APIENTRYP PFNGLRENDERBUFFERSTORAGEPROC)(GLenum target, GLenum inte
 typedef void (APIENTRYP PFNGLFRAMEBUFFERRENDERBUFFERPROC)(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
 typedef GLenum (APIENTRYP PFNGLCHECKFRAMEBUFFERSTATUSPROC)(GLenum target);
 
-static PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers = nullptr;
-static PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
-static PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer = nullptr;
-static PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = nullptr;
-static PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers = nullptr;
-static PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers = nullptr;
-static PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer = nullptr;
-static PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage = nullptr;
-static PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer = nullptr;
-static PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus = nullptr;
+PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers = nullptr;
+PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
+PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer = nullptr;
+PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = nullptr;
+PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers = nullptr;
+PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers = nullptr;
+PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer = nullptr;
+PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage = nullptr;
+PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer = nullptr;
+PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus = nullptr;
 
 namespace OpenLoco::Gfx
 {
@@ -619,5 +620,80 @@ namespace OpenLoco::Gfx
             to += stride;
             from += stride;
         }
+    }
+
+    GpuRenderTarget HardwareDrawingEngine::createGpuRenderTarget(int32_t width, int32_t height, bool hasDepth)
+    {
+        GpuRenderTarget rt;
+        rt.width = static_cast<int16_t>(width);
+        rt.height = static_cast<int16_t>(height);
+        rt.hasDepth = hasDepth;
+        rt.x = 0;
+        rt.y = 0;
+        rt.zoomLevel = 0;
+
+        // Create texture
+        glGenTextures(1, &rt.textureId);
+        glBindTexture(GL_TEXTURE_2D, rt.textureId);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+        // Create framebuffer
+        glGenFramebuffers(1, &rt.framebufferId);
+        glBindFramebuffer(GL_FRAMEBUFFER, rt.framebufferId);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rt.textureId, 0);
+
+        // Create depth buffer if requested
+        if (hasDepth)
+        {
+            glGenRenderbuffers(1, &rt.depthBufferId);
+            glBindRenderbuffer(GL_RENDERBUFFER, rt.depthBufferId);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rt.depthBufferId);
+        }
+
+        // Check framebuffer status
+        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if (status != GL_FRAMEBUFFER_COMPLETE)
+        {
+            Logging::error("GPU RenderTarget framebuffer is not complete! Status: 0x{:X}", status);
+            destroyGpuRenderTarget(rt);
+            return GpuRenderTarget{}; // Return invalid RT
+        }
+
+        // Unbind framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        Logging::info("Created GPU RenderTarget: {}x{} (texture={}, fbo={}, depth={})",
+                      width, height, rt.textureId, rt.framebufferId, rt.depthBufferId);
+
+        return rt;
+    }
+
+    void HardwareDrawingEngine::destroyGpuRenderTarget(GpuRenderTarget& rt)
+    {
+        if (rt.depthBufferId != 0)
+        {
+            glDeleteRenderbuffers(1, &rt.depthBufferId);
+            rt.depthBufferId = 0;
+        }
+
+        if (rt.framebufferId != 0)
+        {
+            glDeleteFramebuffers(1, &rt.framebufferId);
+            rt.framebufferId = 0;
+        }
+
+        if (rt.textureId != 0)
+        {
+            glDeleteTextures(1, &rt.textureId);
+            rt.textureId = 0;
+        }
+
+        rt.width = 0;
+        rt.height = 0;
     }
 }

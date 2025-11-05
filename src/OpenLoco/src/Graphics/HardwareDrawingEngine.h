@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "GpuRenderTarget.h"
 #include "HardwareDrawingContext.h"
 #include "IDrawingEngine.h"
 #include "InvalidationGrid.h"
@@ -22,13 +23,16 @@ namespace OpenLoco::Gfx
     {
     private:
         void* _glContext = nullptr;  // SDL_GLContext
-        unsigned int _glTexture = 0;  // GLuint - Main game texture
+        unsigned int _glTexture = 0;  // GLuint - Main game texture (for palette conversion)
         unsigned int _gl3DTexture = 0; // GLuint - 3D rendering texture
         unsigned int _glFramebuffer = 0; // GLuint - Framebuffer for offscreen rendering
         unsigned int _glDepthBuffer = 0; // GLuint - Depth renderbuffer
         int32_t _viewportWidth = 0;
         int32_t _viewportHeight = 0;
         float _rotationAngle = 0.0f;
+
+        // GPU-based render targets
+        GpuRenderTarget _gpuScreenRT;  // Main screen render target
 
     public:
         HardwareDrawingEngine();
@@ -53,6 +57,8 @@ namespace OpenLoco::Gfx
             int16_t srcY) override;
 
     private:
-        void render3DScene(); // New helper method for 3D rendering
+        void render3DScene(); // Helper method for 3D rendering
+        GpuRenderTarget createGpuRenderTarget(int32_t width, int32_t height, bool hasDepth = false);
+        void destroyGpuRenderTarget(GpuRenderTarget& rt);
     };
 }

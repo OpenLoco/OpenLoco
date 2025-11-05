@@ -2,8 +2,10 @@
 
 #include "DrawingContext.h"
 #include "Font.h"
+#include "GpuRenderTarget.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
+#include "RenderTarget.h"
 #include "Types.hpp"
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <cstdint>
@@ -17,6 +19,10 @@ namespace OpenLoco::Gfx
     {
     private:
         std::unique_ptr<HardwareDrawingContextState> _state;
+
+        // Helper to convert between CPU and GPU render targets
+        void bindGpuRenderTarget(const GpuRenderTarget& gpuRt);
+        void unbindGpuRenderTarget();
 
     public:
         HardwareDrawingContext();
@@ -38,5 +44,10 @@ namespace OpenLoco::Gfx
         void drawImageMasked(const Ui::Point& pos, const ImageId& image, const ImageId& maskImage) override;
         void drawImageSolid(const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) override;
         void drawImagePaletteSet(const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage) override;
+
+        // Hardware-specific methods
+        void pushGpuRenderTarget(const GpuRenderTarget& gpuRt);
+        void popGpuRenderTarget();
+        const GpuRenderTarget* currentGpuRenderTarget() const;
     };
 }
