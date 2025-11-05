@@ -411,7 +411,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        Windows::BuildVehicle::open(enumValue(getGameState().lastBuildVehiclesOption), true);
+        Windows::BuildVehicle::openByType(getGameState().lastBuildVehiclesOption);
     }
 
     // 0x004BF2D1

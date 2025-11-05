@@ -126,6 +126,7 @@ namespace OpenLoco::Ui::Windows
     namespace BuildVehicle
     {
         Window* open(uint32_t vehicleId, bool isTabId);
+        Window* openByType(VehicleType vehicleType);
         void sub_4B92A5(Ui::Window* window);
     }
 

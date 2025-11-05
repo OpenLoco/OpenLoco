@@ -435,6 +435,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return window;
     }
 
+    Window* openByType(VehicleType vehicleType)
+    {
+        return open(enumValue(vehicleType), true);
+    }
+
     static bool contains(const std::string_view& a, const std::string_view& b)
     {
         return std::search(a.begin(), a.end(), b.begin(), b.end(), [](char a, char b) {
