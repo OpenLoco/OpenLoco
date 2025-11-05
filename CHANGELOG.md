@@ -1,4 +1,4 @@
-25.10+ (???)
+25.11 (2025-11-05)
 ------------------------------------------------------------------------
 - Feature: [#3270] Routes planned by AI companies can now be made visible via a checkbox in the rendering options tab.
 - Change: [#1625] The "Sound" and "Music" options have been merged into one "Audio" tab that is now always accessible.
