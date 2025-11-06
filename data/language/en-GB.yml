@@ -2428,3 +2428,8 @@ strings:
   2373: "{COLOUR WINDOW_2}Music volume:"
   2374: Show planned AI track/road as ghosts
   2375: "{SMALLFONT}{COLOUR BLACK}This shows the routes planned by AI companies as regular ghost elements."
+  2376: "{COLOUR BLACK}Name ▲"
+  2377: "{COLOUR BLACK}Years"
+  2378: "{COLOUR BLACK}Years ▼"
+  2379: "{COLOUR BLACK}Years ▲"
+  2380: "{SMALLFONT}{COLOUR BLACK}Sort list by years this track plays in 'current era' mode"
