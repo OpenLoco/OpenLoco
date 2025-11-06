@@ -1290,94 +1290,94 @@ namespace OpenLoco::World::TrackData
 
     // 0x004F865C
     static constexpr std::array<int8_t, 88> kUnk4F865C = { {
-        0,
-        0,
-        0,
-        0,
-        -60,
-        60,
-        61,
-        -61,
-        -50,
-        50,
-        51,
-        -51,
-        -40,
-        40,
-        41,
-        -41,
-        -30,
-        30,
-        31,
-        -31,
-        -32,
-        32,
-        33,
-        -33,
-        -20,
-        -20,
-        21,
-        21,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        -50,
-        50,
-        50,
-        -50,
-        -50,
-        50,
-        50,
-        -50,
-        -50,
-        50,
-        50,
-        -50,
-        -50,
-        50,
-        50,
-        -50,
-        0,
-        0,
-        0,
-        0,
-        -60,
-        60,
-        -61,
-        61,
-        62,
-        -62,
-        63,
-        -63,
-        22,
-        22,
-        -23,
-        -23,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        -10,
-        -10,
-        11,
-        11,
-        12,
-        12,
-        -13,
-        -13,
-        70,
-        -70,
-        -71,
-        71,
+        0,   // straight
+        0,   // straight, reversed
+        0,   // diagonal
+        0,   // diagonal, reversed
+        -60, // leftCurveVerySmall
+        60,  // leftCurveVerySmall, reversed
+        61,  // rightCurveVerySmall
+        -61, // rightCurveVerySmall, reversed
+        -50, // leftCurveSmall
+        50,  // leftCurveSmall, reversed
+        51,  // rightCurveSmall
+        -51, // rightCurveSmall, reversed
+        -40, // leftCurve
+        40,  // leftCurve, reversed
+        41,  // rightCurve
+        -41, // rightCurve, reversed
+        -30, // leftCurveLarge
+        30,  // leftCurveLarge, reversed
+        31,  // rightCurveLarge
+        -31, // rightCurveLarge, reversed
+        -32, // diagonalLeftCurveLarge
+        32,  // diagonalLeftCurveLarge, reversed
+        33,  // diagonalRightCurveLarge
+        -33, // diagonalRightCurveLarge, reversed
+        -20, // sBendLeft
+        -20, // sBendLeft, reversed
+        21,  // sBendRight
+        21,  // sBendRight, reversed
+        0,   // straightSlopeUp
+        0,   // straightSlopeUp, reversed
+        0,   // straightSlopeDown
+        0,   // straightSlopeDown, reversed
+        0,   // straightSteepSlopeUp
+        0,   // straightSteepSlopeUp, reversed
+        0,   // straightSteepSlopeDown
+        0,   // straightSteepSlopeDown, reversed
+        -50, // leftCurveSmallSlopeUp
+        50,  // leftCurveSmallSlopeUp, reversed
+        50,  // rightCurveSmallSlopeUp
+        -50, // rightCurveSmallSlopeUp, reversed
+        -50, // leftCurveSmallSlopeDown
+        50,  // leftCurveSmallSlopeDown, reversed
+        50,  // rightCurveSmallSlopeDown
+        -50, // rightCurveSmallSlopeDown, reversed
+        -50, // leftCurveSmallSteepSlopeUp
+        50,  // leftCurveSmallSteepSlopeUp, reversed
+        50,  // rightCurveSmallSteepSlopeUp
+        -50, // rightCurveSmallSteepSlopeUp, reversed
+        -50, // leftCurveSmallSteepSlopeDown
+        50,  // leftCurveSmallSteepSlopeDown, reversed
+        50,  // rightCurveSmallSteepSlopeDown
+        -50, // rightCurveSmallSteepSlopeDown, reversed
+        0,   // unkStraight1
+        0,   // unkStraight1, reversed
+        0,   // unkStraight2
+        0,   // unkStraight2, reversed
+        -60, // unkLeftCurveVerySmall1
+        60,  // unkLeftCurveVerySmall1, reversed
+        -61, // unkLeftCurveVerySmall2
+        61,  // unkLeftCurveVerySmall2, reversed
+        62,  // unkRightCurveVerySmall1
+        -62, // unkRightCurveVerySmall1, reversed
+        63,  // unkRightCurveVerySmall2
+        -63, // unkRightCurveVerySmall2, reversed
+        22,  // unkSBendRight
+        22,  // unkSBendRight, reversed
+        -23, // unkSBendLeft
+        -23, // unkSBendLeft, reversed
+        0,   // unkStraightSteepSlopeUp1
+        0,   // unkStraightSteepSlopeUp1, reversed
+        0,   // unkStraightSteepSlopeUp2
+        0,   // unkStraightSteepSlopeUp2, reversed
+        0,   // unkStraightSteepSlopeDown1
+        0,   // unkStraightSteepSlopeDown1, reversed
+        0,   // unkStraightSteepSlopeDown2
+        0,   // unkStraightSteepSlopeDown2, reversed
+        -10, // sBendToDualTrack
+        -10, // sBendToDualTrack, reversed
+        11,  // sBendToSingleTrack
+        11,  // sBendToSingleTrack, reversed
+        12,  // unkSBendToDualTrack
+        12,  // unkSBendToDualTrack, reversed
+        -13, // unkSBendToSingleTrack
+        -13, // unkSBendToSingleTrack, reversed
+        70,  // turnaround
+        -70, // turnaround, reversed
+        -71, // unkTurnaround
+        71,  // unkTurnaround, reversed
     } };
 
     int8_t getUnk4F865C(uint8_t index)
