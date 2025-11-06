@@ -23,7 +23,7 @@ namespace OpenLoco::S5
     S5::Station exportStation(OpenLoco::Station& src)
     {
         S5::Station dst{};
-        dst.name = enumValue(src.name);
+        dst.name = src.name;
         dst.x = src.x;
         dst.y = src.y;
         dst.z = src.z;

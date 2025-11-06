@@ -47,7 +47,7 @@ namespace OpenLoco::S5
         dst.spriteYaw = src.spriteYaw;
         dst.spritePitch = enumValue(src.spritePitch);
         dst.owner = enumValue(src.owner);
-        dst.name = enumValue(src.name);
+        dst.name = src.name;
 
         return dst;
     }
@@ -182,7 +182,7 @@ namespace OpenLoco::S5
         dstHead.tileY = src.tileY;
         dstHead.tileBaseZ = src.tileBaseZ;
         dstHead.trackType = src.trackType;
-        dstHead.routingHandle = enumValue(src.routingHandle);
+        dstHead.routingHandle = src.routingHandle._data;
         dstHead.var_38 = enumValue(src.var_38);
         dstHead.nextCarId = enumValue(src.nextCarId);
         dstHead.var_3C = src.var_3C;
@@ -245,7 +245,7 @@ namespace OpenLoco::S5
         dstVehicle1.tileY = src.tileY;
         dstVehicle1.tileBaseZ = src.tileBaseZ;
         dstVehicle1.trackType = src.trackType;
-        dstVehicle1.routingHandle = enumValue(src.routingHandle);
+        dstVehicle1.routingHandle = src.routingHandle._data;
         dstVehicle1.var_38 = enumValue(src.var_38);
         dstVehicle1.nextCarId = enumValue(src.nextCarId);
         dstVehicle1.var_3C = src.var_3C;
@@ -257,7 +257,7 @@ namespace OpenLoco::S5
         dstVehicle1.dayCreated = src.dayCreated;
         dstVehicle1.var_4E = src.var_4E;
         dstVehicle1.var_50 = src.var_50;
-        dstVehicle1.var_52 = enumValue(src.var_52);
+        dstVehicle1.var_52 = src.var_52;
         dstVehicle1.lastIncome = exportIncomeStats(src.lastIncome);
         return dst;
     }
@@ -275,7 +275,7 @@ namespace OpenLoco::S5
         dstVehicle2.tileY = src.tileY;
         dstVehicle2.tileBaseZ = src.tileBaseZ;
         dstVehicle2.trackType = src.trackType;
-        dstVehicle2.routingHandle = enumValue(src.routingHandle);
+        dstVehicle2.routingHandle = src.routingHandle._data;
         dstVehicle2.var_38 = enumValue(src.var_38);
         dstVehicle2.nextCarId = enumValue(src.nextCarId);
         dstVehicle2.var_3C = src.var_3C;
@@ -330,13 +330,13 @@ namespace OpenLoco::S5
         dstBogie.tileY = src.tileY;
         dstBogie.tileBaseZ = src.tileBaseZ;
         dstBogie.trackType = src.trackType;
-        dstBogie.routingHandle = enumValue(src.routingHandle);
+        dstBogie.routingHandle = src.routingHandle._data;
         dstBogie.var_38 = enumValue(src.var_38);
         dstBogie.nextCarId = enumValue(src.nextCarId);
         dstBogie.var_3C = src.var_3C;
         dstBogie.objectId = src.objectId;
         dstBogie.mode = enumValue(src.mode);
-        dstBogie.var_44 = enumValue(src.var_44);
+        dstBogie.var_44 = src.var_44;
         dstBogie.animationIndex = src.animationIndex;
         dstBogie.var_47 = src.var_47;
         dstBogie.secondaryCargo = exportVehicleCargo(src.secondaryCargo);
@@ -371,14 +371,14 @@ namespace OpenLoco::S5
         dstBody.tileY = src.tileY;
         dstBody.tileBaseZ = src.tileBaseZ;
         dstBody.trackType = src.trackType;
-        dstBody.routingHandle = enumValue(src.routingHandle);
+        dstBody.routingHandle = src.routingHandle._data;
         dstBody.var_38 = enumValue(src.var_38);
         dstBody.objectSpriteType = enumValue(src.objectSpriteType);
         dstBody.nextCarId = enumValue(src.nextCarId);
         dstBody.var_3C = src.var_3C;
         dstBody.objectId = src.objectId;
         dstBody.mode = enumValue(src.mode);
-        dstBody.var_44 = enumValue(src.var_44);
+        dstBody.var_44 = src.var_44;
         dstBody.animationFrame = src.animationFrame;
         dstBody.cargoFrame = src.cargoFrame;
         dstBody.primaryCargo = exportVehicleCargo(src.primaryCargo);
@@ -407,7 +407,7 @@ namespace OpenLoco::S5
         dstTail.tileY = src.tileY;
         dstTail.tileBaseZ = src.tileBaseZ;
         dstTail.trackType = src.trackType;
-        dstTail.routingHandle = enumValue(src.routingHandle);
+        dstTail.routingHandle = src.routingHandle._data;
         dstTail.var_38 = enumValue(src.var_38);
         dstTail.nextCarId = enumValue(src.nextCarId);
         dstTail.var_3C = src.var_3C;
