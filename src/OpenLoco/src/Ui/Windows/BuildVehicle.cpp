@@ -331,7 +331,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x004C1AF7
-    Window* open(uint32_t vehicleId, bool isTabId)
+    static Window* open(uint32_t vehicleId, bool isTabId)
     {
         auto window = WindowManager::bringToFront(WindowType::buildVehicle, enumValue(CompanyManager::getControllingId()));
         if (window)
@@ -437,6 +437,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         window->callOnMouseUp(widgetIndex, window->widgets[widgetIndex].id);
         return window;
+    }
+
+    Window* openByVehicleId(EntityId vehicleId)
+    {
+        return open(enumValue(vehicleId), false);
     }
 
     Window* openByType(VehicleType vehicleType)
