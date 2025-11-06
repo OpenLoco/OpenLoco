@@ -1,5 +1,6 @@
 25.11+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3384] Music selection window is now sortable and displays the time period associated with each track.
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------
