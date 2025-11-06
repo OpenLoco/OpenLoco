@@ -202,6 +202,30 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 tr.drawStringLeft(point, window.getColour(WindowColour::secondary), textColour, args);
             }
 
+            // Draw track years.
+            {
+                auto point = Point(15 + kColumnNameWidth, y);
+                auto argsBuf = FormatArgumentsBuffer{};
+                auto args = FormatArguments{ argsBuf };
+                if (musicInfo.startYear != Jukebox::kNoStartYear && musicInfo.endYear != Jukebox::kNoEndYear)
+                {
+                    args.push(StringIds::year_range);
+                    args.push(musicInfo.startYear);
+                    args.push(musicInfo.endYear);
+                }
+                else if (musicInfo.startYear == Jukebox::kNoStartYear)
+                {
+                    args.push(StringIds::year_range_no_start);
+                    args.push(musicInfo.endYear);
+                }
+                else
+                {
+                    args.push(StringIds::year_range_no_end);
+                    args.push(musicInfo.startYear);
+                }
+                tr.drawStringLeft(point, window.getColour(WindowColour::secondary), textColour, args);
+            }
+
             y += kRowHeight;
         }
     }

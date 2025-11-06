@@ -2044,6 +2044,10 @@ namespace OpenLoco::StringIds
     constexpr StringId table_header_years_desc = 2378;
     constexpr StringId table_header_years_asc = 2379;
     constexpr StringId tooltip_sort_by_music_years = 2380;
+    constexpr StringId year_range = 2381;
+    constexpr StringId year_range_no_end = 2382;
+    constexpr StringId year_range_no_start = 2383;
+    constexpr StringId year_range_no_start_no_end = 2384;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
