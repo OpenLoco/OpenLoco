@@ -1380,6 +1380,10 @@ namespace OpenLoco::World::TrackData
         71,  // unkTurnaround, reversed
     } };
 
+    // 0x004F865C
+    // The index is (trackAndDirection._track.data >> 2), which encodes:
+    // - reversed (bit 0)
+    // - track id (bit 1-6)
     int8_t getCurvatureDegree(uint8_t index)
     {
         assert(index < kCurvatureDegrees.size());
