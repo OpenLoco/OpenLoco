@@ -288,8 +288,6 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static S5::Entity exportEntity(OpenLoco::Entity& src) {}
-
     static S5::GameState exportGameState(OpenLoco::GameState& src)
     {
         S5::GameState dst{};
