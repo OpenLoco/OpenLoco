@@ -2061,11 +2061,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x00478361
     static std::optional<int16_t> getExistingRoadAtLoc(int16_t x, int16_t y)
     {
-        static loco_global<Viewport*, 0x01135F52> _1135F52;
-
         auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::roadAndTram));
-        _1135F52 = viewport;
-
         if (interaction.type != ViewportInteraction::InteractionItem::road)
         {
             return std::nullopt;
@@ -2088,11 +2084,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x004A4011
     static std::optional<std::pair<int16_t, int16_t>> getExistingTrackAtLoc(int16_t x, int16_t y)
     {
-        static loco_global<Viewport*, 0x01135F52> _1135F52;
-
         auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
-        _1135F52 = viewport;
-
         if (interaction.type != ViewportInteraction::InteractionItem::track)
         {
             return std::nullopt;
