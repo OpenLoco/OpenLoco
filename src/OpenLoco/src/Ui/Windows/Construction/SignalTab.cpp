@@ -30,8 +30,6 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
-    static loco_global<ConstructionState, 0x01135F3E> _cState;
-
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 167, StringIds::stringid_2),
         Widgets::dropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
@@ -66,12 +64,13 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049E669
     static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
+        auto& cState = getConstructionState();
         switch (widgetIndex)
         {
             case widx::signal_dropdown:
             {
                 uint8_t signalCount = 0;
-                while (_cState->signalList[signalCount] != 0xFF)
+                while (cState.signalList[signalCount] != 0xFF)
                 {
                     signalCount++;
                 }
@@ -86,8 +85,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
                 for (auto signalIndex = 0; signalIndex < signalCount; signalIndex++)
                 {
-                    auto signal = _cState->signalList[signalIndex];
-                    if (signal == _cState->lastSelectedSignal)
+                    auto signal = cState.signalList[signalIndex];
+                    if (signal == cState.lastSelectedSignal)
                     {
                         Dropdown::setHighlightedItem(signalIndex);
                     }
@@ -101,7 +100,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
             case widx::both_directions:
             {
-                _cState->isSignalBothDirections = 1;
+                cState.isSignalBothDirections = 1;
                 ToolManager::toolCancel();
                 ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
@@ -109,7 +108,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
             case widx::single_direction:
             {
-                _cState->isSignalBothDirections = 0;
+                cState.isSignalBothDirections = 0;
                 ToolManager::toolCancel();
                 ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
@@ -125,10 +124,11 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             return;
         }
 
+        auto& cState = getConstructionState();
         if (itemIndex != -1)
         {
-            _cState->lastSelectedSignal = _cState->signalList[itemIndex];
-            Scenario::getConstruction().signals[_cState->trackType] = _cState->signalList[itemIndex];
+            cState.lastSelectedSignal = cState.signalList[itemIndex];
+            Scenario::getConstruction().signals[cState.trackType] = cState.signalList[itemIndex];
             self.invalidate();
         }
     }
@@ -168,8 +168,10 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             return std::nullopt;
         }
 
+        auto& cState = getConstructionState();
+
         GameCommands::SignalPlacementArgs args;
-        args.type = _cState->lastSelectedSignal;
+        args.type = cState.lastSelectedSignal;
         args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         args.rotation = elTrack->rotation();
         args.trackId = elTrack->trackId();
@@ -192,12 +194,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         if (res != GameCommands::FAILURE)
         {
             Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal);
-            _cState->signalGhostPos = args.pos;
-            _cState->signalGhostRotation = args.rotation;
-            _cState->signalGhostTrackId = args.trackId;
-            _cState->signalGhostTileIndex = args.index;
-            _cState->signalGhostSides = args.sides;
-            _cState->signalGhostTrackObjId = args.trackObjType;
+
+            auto& cState = getConstructionState();
+            cState.signalGhostPos = args.pos;
+            cState.signalGhostRotation = args.rotation;
+            cState.signalGhostTrackId = args.trackId;
+            cState.signalGhostTileIndex = args.index;
+            cState.signalGhostSides = args.sides;
+            cState.signalGhostTrackObjId = args.trackObjType;
         }
         return res;
     }
@@ -207,13 +211,15 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     {
         if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal))
         {
+            auto& cState = getConstructionState();
+
             GameCommands::SignalRemovalArgs args;
-            args.pos = _cState->signalGhostPos;
-            args.rotation = _cState->signalGhostRotation;
-            args.trackId = _cState->signalGhostTrackId;
-            args.index = _cState->signalGhostTileIndex;
-            args.flags = _cState->signalGhostSides;
-            args.trackObjType = _cState->signalGhostTrackObjId;
+            args.pos = cState.signalGhostPos;
+            args.rotation = cState.signalGhostRotation;
+            args.trackId = cState.signalGhostTrackId;
+            args.index = cState.signalGhostTileIndex;
+            args.flags = cState.signalGhostSides;
+            args.trackObjType = cState.signalGhostTrackObjId;
             GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
             Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::signal);
@@ -230,13 +236,15 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         const bool isBothDirections = widgetIndex == widx::both_directions;
 
+        auto& cState = getConstructionState();
+
         auto placementArgs = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
-        if (!placementArgs || (placementArgs->trackObjType != _cState->trackType))
+        if (!placementArgs || (placementArgs->trackObjType != cState.trackType))
         {
             removeConstructionGhosts();
-            if (_cState->signalCost != 0x80000000)
+            if (cState.signalCost != 0x80000000)
             {
-                _cState->signalCost = 0x80000000;
+                cState.signalCost = 0x80000000;
                 self.invalidate();
             }
             return;
@@ -244,12 +252,12 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal))
         {
-            if (_cState->signalGhostPos == placementArgs->pos
-                && _cState->signalGhostRotation == placementArgs->rotation
-                && _cState->signalGhostTrackId == placementArgs->trackId
-                && _cState->signalGhostTileIndex == placementArgs->index
-                && _cState->signalGhostSides == placementArgs->sides
-                && _cState->signalGhostTrackObjId == placementArgs->trackObjType)
+            if (cState.signalGhostPos == placementArgs->pos
+                && cState.signalGhostRotation == placementArgs->rotation
+                && cState.signalGhostTrackId == placementArgs->trackId
+                && cState.signalGhostTileIndex == placementArgs->index
+                && cState.signalGhostSides == placementArgs->sides
+                && cState.signalGhostTrackObjId == placementArgs->trackObjType)
             {
                 return;
             }
@@ -258,9 +266,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         removeConstructionGhosts();
 
         auto cost = placeSignalGhost(*placementArgs);
-        if (cost != _cState->signalCost)
+        if (cost != cState.signalCost)
         {
-            _cState->signalCost = cost;
+            cState.signalCost = cost;
             self.invalidate();
         }
     }
@@ -282,7 +290,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             return;
         }
 
-        if (args->trackObjType != _cState->trackType)
+        auto& cState = getConstructionState();
+
+        if (args->trackObjType != cState.trackType)
         {
             Error::open(StringIds::cant_build_signal_here, StringIds::wrong_type_of_track_road);
             return;
@@ -302,12 +312,13 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     {
         Common::prepareDraw(&self);
 
-        auto trackObj = ObjectManager::get<TrackObject>(_cState->trackType);
+        auto& cState = getConstructionState();
+        auto trackObj = ObjectManager::get<TrackObject>(cState.trackType);
 
         auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
         args.push(trackObj->name);
 
-        auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_cState->lastSelectedSignal);
+        auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
 
         self.widgets[widx::signal].text = trainSignalObject->name;
 
@@ -322,7 +333,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         self.draw(drawingCtx);
         Common::drawTabs(self, drawingCtx);
 
-        auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_cState->lastSelectedSignal);
+        auto& cState = getConstructionState();
+        auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
 
         auto xPos = self.x + 3;
         auto yPos = self.y + 63;
@@ -350,10 +362,10 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         drawingCtx.drawImage(xPos, yPos, imageId);
 
-        if (_cState->signalCost != 0x80000000 && _cState->signalCost != 0)
+        if (cState.signalCost != 0x80000000 && cState.signalCost != 0)
         {
             FormatArguments args{};
-            args.push<uint32_t>(_cState->signalCost);
+            args.push<uint32_t>(cState.signalCost);
 
             auto point = Point(self.x + 69, self.widgets[widx::single_direction].bottom + self.y + 5);
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);

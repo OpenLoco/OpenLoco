@@ -319,4 +319,6 @@ namespace OpenLoco::Ui::Windows::Construction
         void removeTrackModsGhost();
         const WindowEventList& getEvents();
     }
+
+    ConstructionState& getConstructionState();
 }
