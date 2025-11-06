@@ -22,7 +22,10 @@
 
 namespace OpenLoco::Ui::Windows::MusicSelection
 {
-    static constexpr Ui::Size32 kWindowSize = { 360, 249 };
+    static constexpr auto kColumnNameWidth = 260;
+    static constexpr auto kColumnYearsWidth = 65;
+
+    static constexpr Ui::Size32 kWindowSize = { 19 + kColumnNameWidth + kColumnYearsWidth + 16, 249 };
 
     static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
@@ -41,13 +44,13 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     };
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 358, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
-        Widgets::ImageButton({ 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Frame({ 0, 0 }, { kWindowSize.width, kWindowSize.height }, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
+        Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
-        Widgets::TableHeader({ 19, 17 }, { 180 - 19, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-        Widgets::TableHeader({ 180, 17 }, { 160, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
-        Widgets::ScrollView({ 4, 30 }, { 352, 218 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip)
+        Widgets::TableHeader({ 19, 17 }, { kColumnNameWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+        Widgets::TableHeader({ 19 + kColumnNameWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
+        Widgets::ScrollView({ 4, 30 }, { kWindowSize.width - 8, kWindowSize.height - 1 - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip)
 
     );
 
@@ -153,6 +156,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         for (uint16_t row = 0; row < window.rowCount; row++)
         {
             auto musicTrack = playlist[row]; // id of music track on this row
+            const auto& musicInfo = Jukebox::getMusicInfo(musicTrack);
 
             if (y + kRowHeight < rt.y)
             {
@@ -190,7 +194,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw track name.
             {
                 auto point = Point(15, y);
-                StringId musicTitle = Jukebox::getMusicInfo(musicTrack).titleId;
+                StringId musicTitle = musicInfo.titleId;
 
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
