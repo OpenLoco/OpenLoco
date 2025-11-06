@@ -30,7 +30,6 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
-    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
     static loco_global<ConstructionState, 0x01135F3E> _cState;
 
     static constexpr auto widgets = makeWidgets(
@@ -192,7 +191,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res != GameCommands::FAILURE)
         {
-            _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::signal;
+            Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal);
             _cState->signalGhostPos = args.pos;
             _cState->signalGhostRotation = args.rotation;
             _cState->signalGhostTrackId = args.trackId;
@@ -206,7 +205,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049FEF6
     void removeSignalGhost()
     {
-        if ((_ghostVisibilityFlags & GhostVisibilityFlags::signal) != GhostVisibilityFlags::none)
+        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal))
         {
             GameCommands::SignalRemovalArgs args;
             args.pos = _cState->signalGhostPos;
@@ -217,7 +216,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.trackObjType = _cState->signalGhostTrackObjId;
             GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
-            _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::signal;
+            Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::signal);
         }
     }
 
@@ -243,7 +242,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             return;
         }
 
-        if ((_ghostVisibilityFlags & GhostVisibilityFlags::signal) != GhostVisibilityFlags::none)
+        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal))
         {
             if (_cState->signalGhostPos == placementArgs->pos
                 && _cState->signalGhostRotation == placementArgs->rotation

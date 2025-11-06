@@ -39,7 +39,6 @@ using namespace OpenLoco::World::TileManager;
 namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
     static loco_global<uint8_t, 0x00522095> _byte_522095;
-    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
     static loco_global<ConstructionState, 0x01135F3E> _cState;
 
     static constexpr auto widgets = makeWidgets(
@@ -208,7 +207,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     // 0x0049FF0
     void removeTrackModsGhost()
     {
-        if ((_ghostVisibilityFlags & GhostVisibilityFlags::overhead) != GhostVisibilityFlags::none)
+        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::overhead))
         {
             if (_cState->modGhostTrackObjId & (1 << 7))
             {
@@ -234,7 +233,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 args.modSection = _cState->lastSelectedTrackModSection;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
-            _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::overhead;
+            Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::overhead);
         }
     }
 
@@ -243,7 +242,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res != GameCommands::FAILURE)
         {
-            _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::overhead;
+            Common::setGhostVisibilityFlag(GhostVisibilityFlags::overhead);
             _cState->modGhostPos = args.pos;
             _cState->modGhostRotation = args.rotation;
             _cState->modGhostTrackId = args.roadId;
@@ -258,7 +257,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res != GameCommands::FAILURE)
         {
-            _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::overhead;
+            Common::setGhostVisibilityFlag(GhostVisibilityFlags::overhead);
             _cState->modGhostPos = args.pos;
             _cState->modGhostRotation = args.rotation;
             _cState->modGhostTrackId = args.trackId;
@@ -290,7 +289,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 return;
             }
 
-            if ((_ghostVisibilityFlags & GhostVisibilityFlags::overhead) != GhostVisibilityFlags::none)
+            if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::overhead))
             {
                 if (_cState->modGhostPos == placementArgs->pos
                     && _cState->modGhostRotation == placementArgs->rotation
@@ -325,7 +324,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 return;
             }
 
-            if ((_ghostVisibilityFlags & GhostVisibilityFlags::overhead) != GhostVisibilityFlags::none)
+            if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::overhead))
             {
                 if (_cState->modGhostPos == placementArgs->pos
                     && _cState->modGhostRotation == placementArgs->rotation

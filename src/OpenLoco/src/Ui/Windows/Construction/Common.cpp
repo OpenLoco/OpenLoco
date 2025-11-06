@@ -39,7 +39,8 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction
 {
-    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
+    static GhostVisibilityFlags _ghostVisibilityFlags; // 0x00522096
+
     static loco_global<ConstructionState, 0x01135F3E> _cState;
 
     static Window* nonTrackWindow()
@@ -1366,6 +1367,26 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 self->callOnMouseUp(next, self->widgets[next].id);
             }
+        }
+
+        bool hasGhostVisibilityFlag(GhostVisibilityFlags flags)
+        {
+            return (_ghostVisibilityFlags & flags) != GhostVisibilityFlags::none;
+        }
+
+        void setGhostVisibilityFlag(GhostVisibilityFlags flag)
+        {
+            _ghostVisibilityFlags |= flag;
+        }
+
+        void toggleGhostVisibilityFlag(GhostVisibilityFlags flag)
+        {
+            _ghostVisibilityFlags ^= flag;
+        }
+
+        void unsetGhostVisibilityFlag(GhostVisibilityFlags flag)
+        {
+            _ghostVisibilityFlags &= ~flag;
         }
     }
 

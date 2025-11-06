@@ -50,7 +50,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
-    static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
     static loco_global<ConstructionState, 0x01135F3E> _cState;
 
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
@@ -267,7 +266,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _cState->y = newPosition.y;
             _cState->constructionZ = newPosition.z;
             _cState->constructionRotation = trackSize.rotationEnd;
-            _ghostVisibilityFlags = GhostVisibilityFlags::none;
+            resetGhostVisibilityFlags();
             _cState->constructionArrowFrameNum = 0;
             if (_cState->lastSelectedTrackPiece >= 9)
             {
@@ -317,7 +316,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _cState->y = newPosition.y;
         _cState->constructionZ = newPosition.z;
         _cState->constructionRotation = trackSize.rotationEnd;
-        _ghostVisibilityFlags = GhostVisibilityFlags::none;
+        resetGhostVisibilityFlags();
         _cState->constructionArrowFrameNum = 0;
         if (_cState->lastSelectedTrackPiece >= 9)
         {
@@ -1918,11 +1917,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (_cState->constructionArrowFrameNum == 0xFF)
         {
             _cState->constructionArrowFrameNum = 5;
-            _ghostVisibilityFlags = _ghostVisibilityFlags ^ GhostVisibilityFlags::constructArrow;
+            Common::toggleGhostVisibilityFlag(GhostVisibilityFlags::constructArrow);
             _constructionArrowPos = World::Pos3(_cState->x, _cState->y, _cState->constructionZ);
             _constructionArrowDirection = _cState->constructionRotation;
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
-            if ((_ghostVisibilityFlags & GhostVisibilityFlags::constructArrow) != GhostVisibilityFlags::none)
+            if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::constructArrow))
             {
                 World::setMapSelectionFlags(World::MapSelectionFlags::enableConstructionArrow);
             }
@@ -1940,7 +1939,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             return;
         }
-        if ((_ghostVisibilityFlags & GhostVisibilityFlags::track) == GhostVisibilityFlags::none)
+        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::track))
         {
             auto& returnState = GameCommands::getLegacyReturnState();
             if (_cState->trackType & (1 << 7))
@@ -2090,7 +2089,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _cState->x = mapPos.x;
             _cState->y = mapPos.y;
             _cState->constructionZ = height;
-            _ghostVisibilityFlags = GhostVisibilityFlags::none;
+            resetGhostVisibilityFlags();
             _cState->constructionArrowFrameNum = 0;
 
             activateSelectedConstructionWidgets();
@@ -2245,7 +2244,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x004A006C
     void removeTrackGhosts()
     {
-        if ((_ghostVisibilityFlags & GhostVisibilityFlags::track) != GhostVisibilityFlags::none)
+        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::track))
         {
             if (_ghostRemovalTrackObjectId & (1 << 7))
             {
@@ -2269,7 +2268,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 args.trackObjectId = _ghostRemovalTrackObjectId;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
-            _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::track;
+            Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::track);
         }
     }
 
@@ -2314,7 +2313,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _cState->ghostRemovalTrackId = args.trackId;
             _ghostRemovalTrackObjectId = args.trackObjectId;
             _cState->ghostRemovalTrackRotation = args.rotation;
-            _ghostVisibilityFlags = GhostVisibilityFlags::track | *_ghostVisibilityFlags;
+            Common::setGhostVisibilityFlag(GhostVisibilityFlags::track);
 
             auto isUnderground = (GameCommands::getLegacyReturnState().flags_1136072 & World::TileManager::ElementPositionFlags::underground) != World::TileManager::ElementPositionFlags::none;
             const auto newViewState = isUnderground ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
@@ -2369,7 +2368,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _cState->ghostRemovalTrackId = args.roadId;
             _ghostRemovalTrackObjectId = args.roadObjectId | (1 << 7);
             _cState->ghostRemovalTrackRotation = args.rotation;
-            _ghostVisibilityFlags = GhostVisibilityFlags::track | *_ghostVisibilityFlags;
+            Common::setGhostVisibilityFlag(GhostVisibilityFlags::track);
 
             auto isUnderground = (GameCommands::getLegacyReturnState().flags_1136072 & World::TileManager::ElementPositionFlags::underground) != World::TileManager::ElementPositionFlags::none;
             const auto newViewState = isUnderground ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
@@ -2426,7 +2425,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _cState->x = mapPos.x;
         _cState->y = mapPos.y;
         _cState->constructionZ = mapPos.z;
-        if ((_ghostVisibilityFlags & GhostVisibilityFlags::track) != GhostVisibilityFlags::none)
+        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::track))
         {
             if (_cState->ghostTrackPos == mapPos)
             {
