@@ -76,10 +76,69 @@ namespace OpenLoco::Jukebox
         return StringIds::music_none;
     }
 
-    static std::vector<MusicId> makeAllMusicPlaylist()
+    static void sortPlaylistByName(std::vector<uint8_t>& playlist, bool reversed = false)
+    {
+        // Sort alphabetically using lambda expression that compares localised music titles
+        std::sort(playlist.begin(), playlist.end(), [reversed](int a, int b) {
+            const char* aTitle = StringManager::getString(kMusicInfo[a].titleId);
+            const char* bTitle = StringManager::getString(kMusicInfo[b].titleId);
+
+            return !(strcoll(aTitle, bTitle) < 0) != !reversed;
+        });
+    }
+
+    static void sortPlaylistByYear(std::vector<uint8_t>& playlist, bool reversed = false)
+    {
+        std::sort(playlist.begin(), playlist.end(), [reversed](int a, int b) {
+            // Compare by start year
+            auto aStartYear = kMusicInfo[a].startYear;
+            auto bStartYear = kMusicInfo[b].startYear;
+            if (aStartYear != bStartYear)
+            {
+                return (aStartYear < bStartYear) != reversed;
+            }
+            // Compare by end year
+            auto aEndYear = kMusicInfo[a].endYear;
+            auto bEndYear = kMusicInfo[b].endYear;
+            return (aEndYear < bEndYear) != reversed;
+        });
+    }
+
+    static void sortPlaylist(std::vector<uint8_t>& playlist, MusicSortMode mode)
+    {
+        switch (mode)
+        {
+            case MusicSortMode::original:
+                // Assume it is already in this order.
+                assert(std::is_sorted(playlist.cbegin(), playlist.cend()));
+                break;
+
+            case MusicSortMode::name:
+                sortPlaylistByName(playlist);
+                break;
+
+            case MusicSortMode::nameReverse:
+                sortPlaylistByName(playlist, true);
+                break;
+
+            case MusicSortMode::year:
+                sortPlaylistByYear(playlist);
+                break;
+
+            case MusicSortMode::yearReverse:
+                sortPlaylistByYear(playlist, true);
+                break;
+
+            default:
+                throw Exception::RuntimeError("Unknown MusicSortMode");
+        }
+    }
+
+    std::vector<MusicId> makeAllMusicPlaylist(MusicSortMode ordering)
     {
         std::vector<MusicId> playlist(kNumMusicTracks);
         std::iota(playlist.begin(), playlist.end(), 0);
+        sortPlaylist(playlist, ordering);
         return playlist;
     }
 
