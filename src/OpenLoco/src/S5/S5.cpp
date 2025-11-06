@@ -275,10 +275,20 @@ namespace OpenLoco::S5
         }
     }
 
-    static S5::Station exportStation(OpenLoco::Station& src) {}
-    static S5::Construction exportConstruction(OpenLoco::Scenario::Construction& src) {}
+    static S5::Construction exportConstruction(OpenLoco::Scenario::Construction& src)
+    {
+        S5::Construction dst{};
+        std::ranges::copy(src.signals, dst.signals);
+        std::ranges::copy(src.bridges, dst.bridges);
+        std::ranges::copy(src.trainStations, dst.trainStations);
+        std::ranges::copy(src.trackMods, dst.trackMods);
+        std::ranges::copy(src.var_17A, dst.var_17A);
+        std::ranges::copy(src.roadStations, dst.roadStations);
+        std::ranges::copy(src.roadMods, dst.roadMods);
+        return dst;
+    }
+
     static S5::Entity exportEntity(OpenLoco::Entity& src) {}
-    static S5::Message exportMessage(OpenLoco::Message& src) {}
 
     static S5::GameState exportGameState(OpenLoco::GameState& src)
     {
