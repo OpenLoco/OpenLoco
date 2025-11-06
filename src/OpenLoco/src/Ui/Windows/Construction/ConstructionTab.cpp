@@ -46,9 +46,9 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::Construction::Construction
 {
-    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
+    static uint8_t _ghostRemovalTrackObjectId; // 0x00522093
 
-    static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
+    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
