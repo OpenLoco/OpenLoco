@@ -119,6 +119,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window.widgets[widx::sort_years].text = StringIds::table_header_years;
         switch (sortMode)
         {
+            case Jukebox::MusicSortMode::original:
+                break;
             case Jukebox::MusicSortMode::name:
                 window.widgets[widx::sort_name].text = StringIds::table_header_name_desc;
                 break;
@@ -251,7 +253,6 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             case sort_years:
                 cycleSortMode(window, Jukebox::MusicSortMode::year, Jukebox::MusicSortMode::yearReverse);
                 break;
-                
         }
     }
 
