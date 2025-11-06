@@ -288,9 +288,9 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static S5::GameState exportGameState(OpenLoco::GameState& src)
+    static S5::GeneralState exportGeneralState(OpenLoco::GameState& src)
     {
-        S5::GameState dst{};
+        S5::GeneralState dst{};
         dst.rng[0] = src.rng.srand_0();
         dst.rng[1] = src.rng.srand_1();
         dst.unkRng[0] = src.unkRng.srand_0();
@@ -404,6 +404,13 @@ namespace OpenLoco::S5
         dst.var_B954 = src.var_B954;
         dst.var_B956 = src.var_B956;
         dst.currentRainLevel = src.currentRainLevel;
+        return dst;
+    }
+
+    static S5::GameState exportGameState(OpenLoco::GameState& src)
+    {
+        S5::GameState dst{};
+        dst.general = exportGeneralState(src);
         for (auto i = 0U; i < std::size(src.companies); i++)
         {
             dst.companies[i] = exportCompany(src.companies[i]);
@@ -713,10 +720,10 @@ namespace OpenLoco::S5
             fs.readChunk(&file->gameState.towns, sizeof(file->gameState));
             // Load the rest of gamestate after animations
             fs.readChunk(&file->gameState.animations, sizeof(file->gameState));
-            file->gameState.fixFlags |= S5FixFlags::fixFlag1;
-            fixState(file->gameState);
+            file->gameState.general.fixFlags |= enumValue(S5FixFlags::fixFlag1);
+            // fixState(file->gameState); this doesn't do anything as we have set fixFlag1
 
-            if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
+            if ((static_cast<GameStateFlags>(file->gameState.general.flags) & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
                 // Load tile elements
                 auto tileElements = fs.readChunk();
@@ -1071,7 +1078,7 @@ namespace OpenLoco::S5
             }
 
             // Copy tile elements
-            if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
+            if ((dst.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
                 TileManager::setElements(std::span<World::TileElement>(reinterpret_cast<World::TileElement*>(file->tileElements.data()), file->tileElements.size()));
             }
