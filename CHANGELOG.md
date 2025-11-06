@@ -1,5 +1,6 @@
 25.11+ (???)
 ------------------------------------------------------------------------
+- Change: [#3384] Music selection window is now sortable and displays the time period associated with each track.
 - Change: [#3402] Text input windows now show the total characters used rather than the current character position.
 - Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
 - Fix: [#3395] Text input windows no longer show character limits.
