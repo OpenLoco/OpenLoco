@@ -4382,10 +4382,10 @@ namespace OpenLoco::Vehicles
         sfl::static_vector<int8_t, 16> unk113621F;
         for (const auto& otherConnection : tc.connections)
         {
-            unk113621F.push_back(TrackData::getUnk4F865C((otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2));
+            unk113621F.push_back(TrackData::getCurvatureDegree((otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2));
         }
 
-        const auto curUnk = TrackData::getUnk4F865C((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
+        const auto curUnk = TrackData::getCurvatureDegree((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
 
         int8_t cl = unk113621F[0];
         int8_t ch = unk113621F[0];

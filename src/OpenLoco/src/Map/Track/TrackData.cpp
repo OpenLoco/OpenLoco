@@ -1289,7 +1289,7 @@ namespace OpenLoco::World::TrackData
     }
 
     // 0x004F865C
-    static constexpr std::array<int8_t, 88> kUnk4F865C = { {
+    static constexpr std::array<int8_t, 88> kCurvatureDegrees = { {
         0,   // straight
         0,   // straight, reversed
         0,   // diagonal
@@ -1380,9 +1380,9 @@ namespace OpenLoco::World::TrackData
         71,  // unkTurnaround, reversed
     } };
 
-    int8_t getUnk4F865C(uint8_t index)
+    int8_t getCurvatureDegree(uint8_t index)
     {
-        assert(index < kUnk4F865C.size());
-        return kUnk4F865C[index];
+        assert(index < kCurvatureDegrees.size());
+        return kCurvatureDegrees[index];
     }
 }

@@ -194,7 +194,7 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                targetTiltFrame = World::TrackData::getUnk4F865C(frontBogie->trackAndDirection.track._data >> 2);
+                targetTiltFrame = World::TrackData::getCurvatureDegree(frontBogie->trackAndDirection.track._data >> 2);
                 // S-bend
                 if ((frontBogie->trackAndDirection.track.id() == 12) || (frontBogie->trackAndDirection.track.id() == 13))
                 {
