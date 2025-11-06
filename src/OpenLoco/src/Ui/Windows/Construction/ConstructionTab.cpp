@@ -16,6 +16,7 @@
 #include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileManager.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"

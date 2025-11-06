@@ -1,20 +1,21 @@
 #pragma once
 
-#include "GameCommands/Track/CreateTrackMod.h"
-#include "Map/TileManager.h"
 #include "Map/Track/TrackModSection.h"
-#include "Objects/VehicleObject.h"
-#include "ScenarioConstruction.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TabWidget.h"
-#include "Ui/WindowManager.h"
+#include "Ui/Window.h"
 #include <sfl/static_vector.hpp>
 
 using namespace OpenLoco::World;
-using namespace OpenLoco::World::TileManager;
+
+namespace OpenLoco::World
+{
+    struct RoadElement;
+    struct TrackElement;
+}
 
 namespace OpenLoco::Ui::Windows::Construction
 {

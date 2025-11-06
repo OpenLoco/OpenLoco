@@ -21,6 +21,7 @@
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Objects/AirportObject.h"
 #include "Objects/CargoObject.h"
