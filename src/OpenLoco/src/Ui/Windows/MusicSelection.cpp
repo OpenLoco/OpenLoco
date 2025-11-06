@@ -25,6 +25,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
+    // TODO: make this an attribute of the Music Selection window object rather than static
+    static std::vector<Jukebox::MusicId> playlist;
+
     enum widx
     {
         frame,
@@ -69,6 +72,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         window->rowCount = Jukebox::kNumMusicTracks;
         window->rowHover = -1;
+        window->sortMode = static_cast<uint16_t>(Jukebox::MusicSortMode::original);
+
+        playlist = Jukebox::makeAllMusicPlaylist(Jukebox::MusicSortMode(window->sortMode));
 
         return window;
     }
@@ -94,7 +100,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         uint16_t y = 0;
         for (uint16_t row = 0; row < window.rowCount; row++)
         {
-            auto musicTrack = row; // id of music track on this row
+            auto musicTrack = playlist[row]; // id of music track on this row
 
             if (y + kRowHeight < rt.y)
             {
@@ -108,7 +114,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
             StringId textColour = StringIds::black_stringid;
 
-            // Draw hovered track
+            // Draw hightlight on hovered row
             if (row == window.rowHover)
             {
                 drawingCtx.drawRect(0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
@@ -164,8 +170,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1799
     static void onScrollMouseDown(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
-        uint16_t currentTrack = y / kRowHeight;
-        if (currentTrack > window.rowCount)
+        uint16_t currentRow = y / kRowHeight;
+        Jukebox::MusicId currentTrack = playlist[currentRow];
+        if (currentTrack > Jukebox::kNumMusicTracks)
         {
             return;
         }
@@ -196,13 +203,13 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1771
     static void onScrollMouseOver(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
-        uint16_t currentTrack = y / kRowHeight;
-        if (currentTrack > window.rowCount || currentTrack == window.rowHover)
+        uint16_t currentRow = y / kRowHeight;
+        if (currentRow > window.rowCount || currentRow == window.rowHover)
         {
             return;
         }
 
-        window.rowHover = currentTrack;
+        window.rowHover = currentRow;
         window.invalidate();
     }
 
