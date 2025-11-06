@@ -40,13 +40,14 @@
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Math/Bound.hpp>
+#include <array>
 #include <sfl/static_vector.hpp>
 
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::CompanyManager
 {
-    static Colour _companyColours[Limits::kMaxCompanies + 1]; // 0x009C645C
+    static std::array<Colour, Limits::kMaxCompanies + 1> _companyColours; // 0x009C645C
 
     static void produceCompanies();
 
