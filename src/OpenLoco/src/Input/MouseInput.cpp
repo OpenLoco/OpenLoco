@@ -14,6 +14,7 @@
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
 #include "Objects/ObjectManager.h"
+#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui/Dropdown.h"
@@ -27,11 +28,9 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 #include <queue>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Ui::ScrollView;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -61,8 +60,6 @@ namespace OpenLoco::Input
 #pragma mark - Input
 
     static MouseButton _lastKnownButtonState;
-
-    static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
     static Ui::Point _cursorPressed;
 
@@ -567,7 +564,7 @@ namespace OpenLoco::Input
             case MouseButton::released:
             {
                 // 4C74E4
-                _ticksSinceDragStart += _timeSinceLastTick;
+                _ticksSinceDragStart += getTimeSinceLastTick();
                 auto vp = window->viewports[0];
                 if (vp == nullptr)
                 {
@@ -680,7 +677,7 @@ namespace OpenLoco::Input
         {
             case MouseButton::released:
             {
-                _ticksSinceDragStart += _timeSinceLastTick;
+                _ticksSinceDragStart += getTimeSinceLastTick();
 
                 const Ui::Point dragOffset = getNextDragOffset();
                 if (dragOffset.x != 0 || dragOffset.y != 0)
@@ -1196,7 +1193,7 @@ namespace OpenLoco::Input
             if (window != nullptr && Ui::ToolTip::getWindowType() == window->type && Ui::ToolTip::getWindowNumber() == window->number && Ui::ToolTip::getWidgetIndex() == widgetIndex)
             {
                 auto tooltipTimeout = Ui::ToolTip::getTooltipTimeout();
-                tooltipTimeout += _timeSinceLastTick;
+                tooltipTimeout += getTimeSinceLastTick();
                 Ui::ToolTip::setTooltipTimeout(tooltipTimeout);
 
                 if (tooltipTimeout >= 8000)
@@ -1217,7 +1214,7 @@ namespace OpenLoco::Input
         if (tooltipNotShownTicks < 500 || (x == tooltipMousePos.x && y == tooltipMousePos.y))
         {
             auto tooltipTimeout = Ui::ToolTip::getTooltipTimeout();
-            tooltipTimeout += _timeSinceLastTick;
+            tooltipTimeout += getTimeSinceLastTick();
             Ui::ToolTip::setTooltipTimeout(tooltipTimeout);
 
             int bp = 2000;

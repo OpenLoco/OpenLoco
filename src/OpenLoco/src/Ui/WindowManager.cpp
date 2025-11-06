@@ -16,6 +16,7 @@
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "MultiPlayer.h"
+#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "ScrollView.h"
 #include "ToolTip.h"
@@ -29,26 +30,19 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <array>
 #include <cinttypes>
 #include <memory>
 #include <sfl/static_vector.hpp>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Ui::WindowManager
 {
     static constexpr size_t kMaxWindows = 64;
 
-    static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
-    static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
-    static loco_global<uint16_t, 0x00508F10> __508F10;
-    static loco_global<uint8_t, 0x005233B6> _currentModalType;
-    static loco_global<uint32_t, 0x00523508> _523508;
-    static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
-    static loco_global<int32_t, 0x00E3F0B8> _gCurrentRotation;
+    static uint16_t _thousandthTickCounter; // 0x0052334E
+    static WindowType _currentModalType;    // 0x005233B6
+    static int32_t _currentRotation;        // 0x00E3F0B8
 
     static sfl::static_vector<Window, kMaxWindows> _windows;
 
@@ -59,7 +53,6 @@ namespace OpenLoco::Ui::WindowManager
     void init()
     {
         _windows.clear();
-        _523508 = 0;
     }
 
     Window* get(size_t index)
@@ -93,12 +86,17 @@ namespace OpenLoco::Ui::WindowManager
 
     WindowType getCurrentModalType()
     {
-        return (WindowType)*_currentModalType;
+        return _currentModalType;
     }
 
     void setCurrentModalType(WindowType type)
     {
-        _currentModalType = (uint8_t)type;
+        _currentModalType = type;
+    }
+
+    void resetThousandthTickCounter()
+    {
+        _thousandthTickCounter = 0;
     }
 
     void updateViewports()
@@ -112,10 +110,11 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C6118
     void update()
     {
-        ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + _timeSinceLastTick);
+        uint16_t timeSinceLastTick = getTimeSinceLastTick();
+        ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + timeSinceLastTick);
 
         // 1000 tick update
-        _thousandthTickCounter = _thousandthTickCounter + _timeSinceLastTick;
+        _thousandthTickCounter += timeSinceLastTick;
         if (_thousandthTickCounter >= 1000)
         {
             _thousandthTickCounter = 0;
@@ -357,11 +356,6 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9984
     void invalidateAllWindowsAfterInput()
     {
-        if (SceneManager::isPaused())
-        {
-            _523508++;
-        }
-
         std::for_each(_windows.rbegin(), _windows.rend(), [](Ui::Window& w) {
             w.updateScrollWidgets();
             w.invalidatePressedImageButtons();
@@ -904,7 +898,6 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004CD3D0
     void dispatchUpdateAll()
     {
-        _523508++;
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
 
         std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
@@ -1804,12 +1797,12 @@ namespace OpenLoco::Ui::WindowManager
 
     int32_t getCurrentRotation()
     {
-        return _gCurrentRotation;
+        return _currentRotation;
     }
 
     void setCurrentRotation(int32_t value)
     {
-        _gCurrentRotation = value;
+        _currentRotation = value;
     }
 
     // 0x0052622E
