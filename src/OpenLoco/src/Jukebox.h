@@ -14,6 +14,8 @@ namespace OpenLoco::Jukebox
 
     constexpr int32_t kNumMusicTracks = 29;
     static constexpr MusicId kNoSong = 0xFF;
+    static constexpr uint16_t kNoStartYear = 0;
+    static constexpr uint16_t kNoEndYear = 9999;
 
     struct MusicInfo
     {
@@ -25,7 +27,7 @@ namespace OpenLoco::Jukebox
 
     enum class MusicSortMode : uint8_t
     {
-        original, // vanilla ordered tracks by interal ID
+        original, // Tracks were always ordered tracks by interal ID in vanilla
         name,
         nameReverse,
         year,

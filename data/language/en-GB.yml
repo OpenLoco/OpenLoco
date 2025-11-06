@@ -2433,3 +2433,7 @@ strings:
   2378: "{COLOUR BLACK}Years ▼"
   2379: "{COLOUR BLACK}Years ▲"
   2380: "{SMALLFONT}{COLOUR BLACK}Sort list by years this track plays in 'current era' mode"
+  2381: "{UINT16}-{UINT16}"
+  2382: "{UINT16}-"
+  2383: "-{UINT16}"
+  2384: "-"
