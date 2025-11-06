@@ -112,5 +112,5 @@ namespace OpenLoco::World::TrackData
     // The returned value's upper nibble (>> 4) contains a 2-bit lane occupation mask.
     uint8_t getRoadOccupationMask(uint8_t index);
 
-    uint8_t getUnk4F865C(uint8_t index);
+    int8_t getUnk4F865C(uint8_t index);
 }
