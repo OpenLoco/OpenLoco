@@ -3,7 +3,7 @@
 
 namespace OpenLoco::S5
 {
-    S5::Wave exportWave(OpenLoco::World::Wave& src)
+    S5::Wave exportWave(const OpenLoco::World::Wave& src)
     {
         S5::Wave dst{};
         dst.loc = src.loc;

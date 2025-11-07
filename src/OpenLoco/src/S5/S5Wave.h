@@ -17,5 +17,5 @@ namespace OpenLoco::S5
     static_assert(sizeof(Wave) == 0x6);
 #pragma pack(pop)
 
-    S5::Wave exportWave(OpenLoco::World::Wave& src);
+    S5::Wave exportWave(const OpenLoco::World::Wave& src);
 }

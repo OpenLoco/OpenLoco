@@ -4,7 +4,7 @@
 
 namespace OpenLoco::S5
 {
-    S5::Town exportTown(OpenLoco::Town& src)
+    S5::Town exportTown(const OpenLoco::Town& src)
     {
         S5::Town dst{};
         dst.name = src.name;

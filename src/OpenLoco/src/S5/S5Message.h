@@ -21,5 +21,5 @@ namespace OpenLoco::S5
 #pragma pack(pop)
 
     
-    S5::Message exportMessage(OpenLoco::Message& src);
+    S5::Message exportMessage(const OpenLoco::Message& src);
 }

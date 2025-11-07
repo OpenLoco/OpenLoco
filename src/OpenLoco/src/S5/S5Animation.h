@@ -18,5 +18,5 @@ namespace OpenLoco::S5
 #pragma pack(pop)
     static_assert(sizeof(Animation) == 0x6);
 
-    S5::Animation exportAnimation(OpenLoco::World::Animation& src);
+    S5::Animation exportAnimation(const OpenLoco::World::Animation& src);
 }

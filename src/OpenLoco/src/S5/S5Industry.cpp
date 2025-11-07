@@ -4,7 +4,7 @@
 
 namespace OpenLoco::S5
 {
-    S5::Industry exportIndustry(OpenLoco::Industry& src)
+    S5::Industry exportIndustry(const OpenLoco::Industry& src)
     {
         S5::Industry dst{};
         dst.name = src.name;
