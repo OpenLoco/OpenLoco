@@ -56,11 +56,32 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static const WindowEventList& getEvents();
 
-    static void setSortMode(Ui::Window& window, Jukebox::MusicSortMode newSortMode)
+    static void setSortMode(Ui::Window& window, Jukebox::MusicSortMode sortMode)
     {
-        window.sortMode = static_cast<uint16_t>(newSortMode);
-        playlist = Jukebox::makeAllMusicPlaylist(Jukebox::MusicSortMode(window.sortMode));
-        window.invalidate();
+        window.sortMode = static_cast<uint16_t>(sortMode);
+
+        playlist = Jukebox::makeAllMusicPlaylist(sortMode);
+
+        // Set table header button captions
+        window.widgets[widx::sort_name].text = StringIds::table_header_name;
+        window.widgets[widx::sort_years].text = StringIds::table_header_years;
+        switch (sortMode)
+        {
+            case Jukebox::MusicSortMode::original:
+                break;
+            case Jukebox::MusicSortMode::name:
+                window.widgets[widx::sort_name].text = StringIds::table_header_name_desc;
+                break;
+            case Jukebox::MusicSortMode::nameReverse:
+                window.widgets[widx::sort_name].text = StringIds::table_header_name_asc;
+                break;
+            case Jukebox::MusicSortMode::yearsAscending:
+                window.widgets[widx::sort_years].text = StringIds::table_header_years_asc;
+                break;
+            case Jukebox::MusicSortMode::yearsDescending:
+                window.widgets[widx::sort_years].text = StringIds::table_header_years_desc;
+                break;
+        }
     }
 
     // Cycles window.sortMode: (MusicSortMode::original or other) → order1 → order2 → MusicSortMode::original
@@ -78,6 +99,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             newSortMode = order2;
         }
         setSortMode(window, newSortMode);
+
+        window.invalidate();
     }
 
     // 0x004C1602
@@ -104,37 +127,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         window->rowCount = Jukebox::kNumMusicTracks;
         window->rowHover = -1;
-        window->sortMode = static_cast<uint16_t>(Jukebox::MusicSortMode::original);
 
-        playlist = Jukebox::makeAllMusicPlaylist(Jukebox::MusicSortMode(window->sortMode));
+        setSortMode(*window, Jukebox::MusicSortMode::original);
 
         return window;
-    }
-
-    static void prepareDraw(Ui::Window& window)
-    {
-        auto sortMode = Jukebox::MusicSortMode(window.sortMode);
-
-        // Set header button captions
-        window.widgets[widx::sort_name].text = StringIds::table_header_name;
-        window.widgets[widx::sort_years].text = StringIds::table_header_years;
-        switch (sortMode)
-        {
-            case Jukebox::MusicSortMode::original:
-                break;
-            case Jukebox::MusicSortMode::name:
-                window.widgets[widx::sort_name].text = StringIds::table_header_name_desc;
-                break;
-            case Jukebox::MusicSortMode::nameReverse:
-                window.widgets[widx::sort_name].text = StringIds::table_header_name_asc;
-                break;
-            case Jukebox::MusicSortMode::yearsAscending:
-                window.widgets[widx::sort_years].text = StringIds::table_header_years_asc;
-                break;
-            case Jukebox::MusicSortMode::yearsDescending:
-                window.widgets[widx::sort_years].text = StringIds::table_header_years_desc;
-                break;
-        }
     }
 
     // 0x004C165D
@@ -339,7 +335,6 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         .scrollMouseDown = onScrollMouseDown,
         .scrollMouseOver = onScrollMouseOver,
         .tooltip = tooltip,
-        .prepareDraw = prepareDraw,
         .draw = draw,
         .drawScroll = drawScroll,
     };
