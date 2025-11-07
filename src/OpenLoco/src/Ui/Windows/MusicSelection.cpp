@@ -22,10 +22,10 @@
 
 namespace OpenLoco::Ui::Windows::MusicSelection
 {
-    static constexpr auto kColumnNameWidth = 260;
-    static constexpr auto kColumnYearsWidth = 65;
+    static constexpr auto kColumnNameWidth = 261;
+    static constexpr auto kColumnYearsWidth = 59;
 
-    static constexpr Ui::Size32 kWindowSize = { 19 + kColumnNameWidth + kColumnYearsWidth + 16, 249 };
+    static constexpr Ui::Size32 kWindowSize = { 20 + kColumnNameWidth + kColumnYearsWidth + 20, 249 };
 
     static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
@@ -48,8 +48,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
         Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
-        Widgets::TableHeader({ 19, 17 }, { kColumnNameWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-        Widgets::TableHeader({ 19 + kColumnNameWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
+        Widgets::TableHeader({ 20, 17 }, { kColumnNameWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+        Widgets::TableHeader({ 20 + kColumnNameWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
         Widgets::ScrollView({ 4, 30 }, { kWindowSize.width - 8, kWindowSize.height - 1 - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip)
 
     );
