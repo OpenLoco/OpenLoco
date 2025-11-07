@@ -17,4 +17,15 @@ namespace OpenLoco::S5
         return dst;
     }
 
+    OpenLoco::Message importMessage(const S5::Message& src)
+    {
+        OpenLoco::Message dst{};
+        dst.type = static_cast<MessageType>(src.type);
+        std::memcpy(dst.messageString, src.messageString, sizeof(dst.messageString));
+        dst.companyId = static_cast<CompanyId>(src.companyId);
+        dst.timeActive = src.timeActive;
+        std::ranges::copy(src.itemSubjects, dst.itemSubjects);
+        dst.date = src.date;
+        return dst;
+    }
 }

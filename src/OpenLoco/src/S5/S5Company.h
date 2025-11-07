@@ -260,7 +260,7 @@ namespace OpenLoco::S5
         uint8_t challengeProgress;        // 0x8C4E - percent completed on challenge
         uint8_t numMonthsInTheRed;        // 0x8C4F
         uint32_t cargoUnitsTotalDistance; // 0x8C50
-        uint16_t jailStatus;              // 0x8C54
+        uint16_t jailStatus;              // 0x8C54 NO cargoUnitsDistanceHistory in CompanyType2!
         uint8_t pad_8E36[0x8DC8 - 0x8C56];
     };
     static_assert(sizeof(CompanyType2) == 0x8DC8);
