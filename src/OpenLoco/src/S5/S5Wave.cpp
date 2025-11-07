@@ -10,4 +10,12 @@ namespace OpenLoco::S5
         dst.frame = src.frame;
         return dst;
     }
+
+    OpenLoco::World::Wave importWave(const S5::Wave& src)
+    {
+        OpenLoco::World::Wave dst{};
+        dst.loc = src.loc;
+        dst.frame = src.frame;
+        return dst;
+    }
 }

@@ -47,4 +47,47 @@ namespace OpenLoco::S5
 
         return dst;
     }
+
+    static OpenLoco::StationCargoStats importCargoStats(const S5::StationCargoStats& src)
+    {
+        OpenLoco::StationCargoStats dst{};
+        dst.quantity = src.quantity;
+        dst.origin = static_cast<StationId>(src.origin);
+        dst.flags = static_cast<StationCargoStatsFlags>(src.flags);
+        dst.age = src.age;
+        dst.rating = src.rating;
+        dst.enrouteAge = src.enrouteAge;
+        dst.vehicleSpeed = Speed16{ src.vehicleSpeed };
+        dst.vehicleAge = src.vehicleAge;
+        dst.industryId = static_cast<IndustryId>(src.industryId);
+        dst.densityPerTile = src.densityPerTile;
+        return dst;
+    }
+
+    OpenLoco::Station importStation(const S5::Station& src)
+    {
+        OpenLoco::Station dst{};
+        dst.name = src.name;
+        dst.x = src.x;
+        dst.y = src.y;
+        dst.z = src.z;
+        dst.labelFrame = importLabelFrame(src.labelFrame);
+        dst.owner = static_cast<CompanyId>(src.owner);
+        dst.noTilesTimeout = src.noTilesTimeout;
+        dst.flags = static_cast<StationFlags>(src.flags);
+        dst.town = static_cast<TownId>(src.town);
+        for (auto i = 0; i < std::size(dst.cargoStats); ++i)
+        {
+            dst.cargoStats[i] = importCargoStats(src.cargoStats[i]);
+        }
+        dst.stationTileSize = src.stationTileSize;
+        std::ranges::copy(src.stationTiles, dst.stationTiles);
+        dst.var_3B0 = src.var_3B0;
+        dst.var_3B1 = src.var_3B1;
+        dst.var_3B2 = src.var_3B2;
+        dst.airportRotation = src.airportRotation;
+        dst.airportStartPos = src.airportStartPos;
+        dst.airportMovementOccupiedEdges = src.airportMovementOccupiedEdges;
+        return dst;
+    }
 }
