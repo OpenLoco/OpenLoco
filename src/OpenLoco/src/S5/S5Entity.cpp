@@ -461,4 +461,9 @@ namespace OpenLoco::S5
             return exportNullEntity(src);
         }
     }
+
+    OpenLoco::Entity importEntity(const S5::Entity& )
+    {
+        return OpenLoco::Entity();
+    }
 }
