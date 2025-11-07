@@ -450,29 +450,29 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static S5::GameState importGameStateType2(const S5::GameStateType2& src)
+    static std::unique_ptr<S5::GameState> importGameStateType2(const S5::GameStateType2& src)
     {
-        S5::GameState dst{};
-        dst.general = src.general;
+        auto dst = std::make_unique<S5::GameState>();
+        dst->general = src.general;
         for (auto i = 0U; i < std::size(src.companies); i++)
         {
-            dst.companies[i] = importCompanyType2(src.companies[i]);
+            dst->companies[i] = importCompanyType2(src.companies[i]);
         }
-        std::ranges::copy(src.towns, dst.towns);
-        std::ranges::copy(src.industries, dst.industries);
-        std::ranges::copy(src.stations, dst.stations);
-        std::ranges::copy(src.entities, dst.entities);
-        std::ranges::copy(src.animations, dst.animations);
-        std::ranges::copy(src.waves, dst.waves);
+        std::ranges::copy(src.towns, dst->towns);
+        std::ranges::copy(src.industries, dst->industries);
+        std::ranges::copy(src.stations, dst->stations);
+        std::ranges::copy(src.entities, dst->entities);
+        std::ranges::copy(src.animations, dst->animations);
+        std::ranges::copy(src.waves, dst->waves);
         for (auto i = 0U; i < Limits::kMaxUserStrings; i++)
         {
-            std::ranges::copy(src.userStrings[i], dst.userStrings[i]);
+            std::ranges::copy(src.userStrings[i], dst->userStrings[i]);
         }
         for (auto i = 0U; i < Limits::kMaxVehicles; i++)
         {
-            std::ranges::copy(src.routings[i], dst.routings[i]);
+            std::ranges::copy(src.routings[i], dst->routings[i]);
         }
-        std::ranges::copy(src.orders, dst.orders);
+        std::ranges::copy(src.orders, dst->orders);
         return dst;
     }
     static OpenLoco::Scenario::Construction importConstruction(const S5::Construction& src)
@@ -601,47 +601,47 @@ namespace OpenLoco::S5
         dst.currentRainLevel = src.currentRainLevel;
     }
 
-    static OpenLoco::GameState importGameState(const S5::GameState& src)
+    static std::unique_ptr<OpenLoco::GameState> importGameState(const S5::GameState& src)
     {
-        OpenLoco::GameState dst{};
-        importGeneralState(dst, src.general);
+        auto dst = std::make_unique<OpenLoco::GameState>();
+        importGeneralState(*dst, src.general);
         for (auto i = 0U; i < std::size(src.companies); i++)
         {
-            dst.companies[i] = importCompany(src.companies[i]);
+            dst->companies[i] = importCompany(src.companies[i]);
         }
         for (auto i = 0U; i < std::size(src.towns); i++)
         {
-            dst.towns[i] = importTown(src.towns[i]);
+            dst->towns[i] = importTown(src.towns[i]);
         }
         for (auto i = 0U; i < std::size(src.industries); i++)
         {
-            dst.industries[i] = importIndustry(src.industries[i]);
+            dst->industries[i] = importIndustry(src.industries[i]);
         }
         for (auto i = 0U; i < std::size(src.stations); i++)
         {
-            dst.stations[i] = importStation(src.stations[i]);
+            dst->stations[i] = importStation(src.stations[i]);
         }
         for (auto i = 0U; i < std::size(src.entities); i++)
         {
-            dst.entities[i] = importEntity(src.entities[i]);
+            dst->entities[i] = importEntity(src.entities[i]);
         }
         for (auto i = 0U; i < std::size(src.animations); i++)
         {
-            dst.animations[i] = importAnimation(src.animations[i]);
+            dst->animations[i] = importAnimation(src.animations[i]);
         }
         for (auto i = 0U; i < std::size(src.waves); i++)
         {
-            dst.waves[i] = importWave(src.waves[i]);
+            dst->waves[i] = importWave(src.waves[i]);
         }
         for (auto i = 0U; i < Limits::kMaxUserStrings; i++)
         {
-            std::ranges::copy(src.userStrings[i], dst.userStrings[i]);
+            std::ranges::copy(src.userStrings[i], dst->userStrings[i]);
         }
         for (auto i = 0U; i < Limits::kMaxVehicles; i++)
         {
-            std::ranges::copy(src.routings[i], dst.routings[i]);
+            std::ranges::copy(src.routings[i], dst->routings[i]);
         }
-        std::ranges::copy(src.orders, dst.orders);
+        std::ranges::copy(src.orders, dst->orders);
         return dst;
     }
 
@@ -898,9 +898,9 @@ namespace OpenLoco::S5
             const auto fixFlags = static_cast<S5FixFlags>(chunkData[0x434]);
             if (((fixFlags & S5FixFlags::fixFlag0) == S5FixFlags::none) && ((fixFlags & S5FixFlags::fixFlag1) == S5FixFlags::none))
             {
-                S5::GameStateType2 oldGameState{};
-                std::memcpy(&oldGameState, chunkData.data(), sizeof(S5::GameStateType2));
-                file->gameState = importGameStateType2(oldGameState);
+                auto oldGameState = std::make_unique<S5::GameStateType2>();
+                std::memcpy(&*oldGameState, chunkData.data(), sizeof(S5::GameStateType2));
+                file->gameState = *importGameStateType2(*oldGameState);
             }
             else
             {
@@ -1115,7 +1115,7 @@ namespace OpenLoco::S5
 
             // Copy the S5 gamestate contents to the destination gamestate, field by field
             auto& src = file->gameState;
-            dst = importGameState(src);
+            dst = *importGameState(src);
 
             // Copy scenario options
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
