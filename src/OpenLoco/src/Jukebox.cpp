@@ -90,14 +90,12 @@ namespace OpenLoco::Jukebox
     static void sortPlaylistByYear(std::vector<uint8_t>& playlist, bool reversed = false)
     {
         std::sort(playlist.begin(), playlist.end(), [reversed](int a, int b) {
-            // Compare by start year
             auto aStartYear = kMusicInfo[a].startYear;
             auto bStartYear = kMusicInfo[b].startYear;
             if (aStartYear != bStartYear)
             {
                 return (aStartYear < bStartYear) != reversed;
             }
-            // Compare by end year
             auto aEndYear = kMusicInfo[a].endYear;
             auto bEndYear = kMusicInfo[b].endYear;
             return (aEndYear < bEndYear) != reversed;
