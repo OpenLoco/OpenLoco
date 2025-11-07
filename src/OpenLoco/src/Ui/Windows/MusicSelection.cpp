@@ -209,21 +209,27 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 auto point = Point(15 + kColumnNameWidth, y);
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
-                if (musicInfo.startYear != Jukebox::kNoStartYear && musicInfo.endYear != Jukebox::kNoEndYear)
+                bool hasStart = musicInfo.startYear != Jukebox::kNoStartYear;
+                bool hasEnd = musicInfo.endYear != Jukebox::kNoEndYear;
+                if (hasStart && hasEnd)
                 {
                     args.push(StringIds::year_range);
                     args.push(musicInfo.startYear);
                     args.push(musicInfo.endYear);
                 }
-                else if (musicInfo.startYear == Jukebox::kNoStartYear)
+                else if (hasStart)
+                {
+                    args.push(StringIds::year_range_no_end);
+                    args.push(musicInfo.startYear);
+                }
+                else if (hasEnd)
                 {
                     args.push(StringIds::year_range_no_start);
                     args.push(musicInfo.endYear);
                 }
                 else
                 {
-                    args.push(StringIds::year_range_no_end);
-                    args.push(musicInfo.startYear);
+                    args.push(StringIds::year_range_no_start_no_end);
                 }
                 tr.drawStringLeft(point, window.getColour(WindowColour::secondary), textColour, args);
             }
