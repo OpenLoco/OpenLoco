@@ -216,22 +216,26 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                     args.push(StringIds::year_range);
                     args.push(musicInfo.startYear);
                     args.push(musicInfo.endYear);
+                    tr.drawStringLeft(point, window.getColour(WindowColour::secondary), textColour, args);
                 }
                 else if (hasStart)
                 {
                     args.push(StringIds::year_range_no_end);
                     args.push(musicInfo.startYear);
+                    tr.drawStringLeft(point, window.getColour(WindowColour::secondary), textColour, args);
                 }
                 else if (hasEnd)
                 {
                     args.push(StringIds::year_range_no_start);
                     args.push(musicInfo.endYear);
+                    point.x += kColumnYearsWidth;
+                    tr.drawStringRight(point, window.getColour(WindowColour::secondary), textColour, args);
                 }
                 else
                 {
                     args.push(StringIds::year_range_no_start_no_end);
+                    tr.drawStringLeft(point, window.getColour(WindowColour::secondary), textColour, args);
                 }
-                tr.drawStringLeft(point, window.getColour(WindowColour::secondary), textColour, args);
             }
 
             y += kRowHeight;
