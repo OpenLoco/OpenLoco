@@ -42,4 +42,5 @@ namespace OpenLoco::S5
 #pragma pack(pop)
 
     S5::Town exportTown(const OpenLoco::Town& src);
+    OpenLoco::Town importTown(const S5::Town& src);
 }

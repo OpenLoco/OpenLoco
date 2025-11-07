@@ -383,4 +383,5 @@ namespace OpenLoco::S5
 #pragma pack(pop)
 
     S5::Entity exportEntity(const OpenLoco::Entity& src);
+    OpenLoco::Entity importEntity(const S5::Entity& src);
 }
